@@ -1,21 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addons>
-<addon id="plugin.video.vstream"
-	name="vStream"
-	version="0.0.2"
-	provider-name="Venom">
-  <extension point="xbmc.python.pluginsource" library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="fr">vStream</summary>
-    <description lang="fr">vstream et un module de streaming français, trouver tous vos films, séries et mangas.Vstream et basé sur Xstream merci a Murphy</description>
-    <summary lang="en">vStream</summary>
-    <description lang="en">vstream module and a french streaming, find all your movies, TV shows and mangas.Vstream and based on a thank you Xstream Murphy</description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
 <addon id="repository.vstream"
         name="vStream Repository"
         version="0.0.1"
@@ -34,4 +17,3 @@
         <platform>all</platform>
     </extension>
 </addon>
-</addons>
