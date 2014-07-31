@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+        <!-- general begin by 30000 - 30050 -->
+        <string id="30000">Logging</string>
+        <string id="30001">Videoplayer</string>
+        <string id="30002">anonyme Statistiken (wertet nur Plugin Start aus)</string>
+
+        <!-- settingtabs begin by 30021 - 30030 -->
+        <string id="30021">Allgemein</string>
+        <string id="30022">Plugins an/aus</string>
+        <string id="30023">Plugins Einstellungen</string>
+        <string id="30024">Hoster</string>
+
+         <!-- premium begin by 30031 - 30070 -->
+        <string id="30031">Megavideo Premium Account</string>
+        <string id="30032">Megavideo Username</string>
+        <string id="30033">Megavideo Password</string>
+
+        <string id="30034">Duckload Premium Account</string>
+        <string id="30035">Duckload Username</string>
+        <string id="30036">Duckload Password</string>
+
+        <string id="30071">JDownloader an/aus</string>
+        <string id="30072">Host</string>
+        <string id="30073">Port</string>
+        <string id="30074">Download automatsch starten</string>
+        <string id="30075">sende nur an LinkGrabber</string>
+
+
+        <!-- Pluginnames begin by 30201 - 30299 -->
+        <!--<string id="30201">Kino.to</string>
+        <string id="30202">Souhtpark.de</string>
+        <string id="30203">Myp2p.eu</string>
+        <string id="30204">G-Stream.in</string>
+        <string id="30205">NBA.de</string>
+        <string id="30206">Bundesliga.de</string>
+        <string id="30207">MTV.de</string>
+        <string id="30208">Kino.de</string>
+        <string id="30209">Bild.de</string>
+        <string id="30210">MovieMaze.de</string>
+        <string id="30211">Shoutcast.com</string>
+        <string id="30212">Movie2k.com</string>
+        <string id="30213">Simpsons.to</string>
+        <string id="30214">Iload.to</string>
+        <string id="30215">Br-Online.de</string>
+        <string id="30216">Anime-stream24.com</string>
+        <string id="30217">RadioTime.com</string> -->
+
+        <string id="30302">Staffeln Deutsch</string>
+        <string id="30303">Staffeln Englisch</string>
+        <string id="30304">Suche</string>
+        <string id="30305">Staffel %s</string>
+        <string id="30306">%s bis %s Sekunde</string>
+        <string id="30307">alle abspielen</string>
+        <string id="30308">Wartezeit</string>
+        <string id="30309">Bitte warte %s Sekunden</string>
+
+        <string id="30402">Laender</string>
+</strings>
+

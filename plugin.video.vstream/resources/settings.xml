@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>   
+    <!--<category label="30022">-->
+        <setting label="30022" type="lsep"/>
+        <setting id="plugin_kino_to" type="bool" label="Kino.to" default="false"/>
+        <setting id="plugin_southpark_de" type="bool" label="Souhtpark.de" default="false"/>
+        <setting id="plugin_myp2p_eu" type="bool" label="MyP2P.eu" default="false"/>
+        <setting id="plugin_gstream_in" type="bool" label="G-Stream.in" default="false"/>
+        <setting id="plugin_nba_de" type="bool" label="NBA.de" default="false"/>
+        <setting id="plugin_bundesliga_de" type="bool" label="Bundesliga.de" default="false"/>
+        <setting id="plugin_mtv_de" type="bool" label="MTV.de" default="false"/>
+        <setting id="plugin_kino_de" type="bool" label="Kino.de" default="false"/>
+        <setting id="plugin_bild_de" type="bool" label="Bild.de" default="false"/>
+        <setting id="plugin_moviemaze_de" type="bool" label="Moviemaze.de" default="false"/>
+        <setting id="plugin_shoutcast_com" type="bool" label="Shoucast.com" default="false"/>
+        <setting id="plugin_movie2k_com" type="bool" label="Movie2k.com" default="false"/>
+        <setting id="plugin_simpsons_to" type="bool" label="Simpsons.to" default="false"/>
+        <setting id="plugin_iload_to" type="bool" label="iLoad.to" default="false"/>
+        <setting id="plugin_br_online_de" type="bool" label="Br-Online.de" default="false"/>
+        <setting id="plugin_anime_stream24_com" type="bool" label="Anime-Stream24.com" default="false"/>
+        <setting id="plugin_radiotime_com" type="bool" label="RadioTime.com" default="false"/>
+        <setting id="plugin_burning_series_org" type="bool" label="Burning-Series.org" default="false"/>
+        <setting id="plugin_kinokiste_com" type="bool" label="KinoKiste.com" default="false"/>
+        <setting id="plugin_anime_proxer_me" type="bool" label="Anime.Proxer.Me" default="false"/>
+        <setting id="plugin_wwitv_com" type="bool" label="WwiTV.com" default="false"/>
+        <setting id="plugin_streamzer_net" type="bool" label="Streamzer" default="true"/>
+        <setting id="plugin_ustream_tv" type="bool" label="Ustream.tv" default="false"/>
+        <setting id="plugin_adkami_com" type="bool" label="Adkami" default="true"/>
+    <!--</category>
+    <category label="30023">-->
+        <setting label="30023" type="lsep"/>
+        <setting id="jd_enabled" type="bool" label="30071" default="false"/>
+        <setting id="jd_host" type="text" label="30072" default="127.0.0.1"/>
+        <setting id="jd_port" type="text" label="30073" default="10025"/>
+        <setting id="jd_automatic_start" type="bool" label="30074" default="true"/>
+        <setting id="jd_grabber" type="bool" label="30075" default="false"/>
+        <setting type="sep" />
+    <!--</category>
+    <category label="30024">-->
+        <setting label="30024" type="lsep"/>
+        <setting id="hoster_megavideo_premium" type="bool" label="30031" default="false"/>
+        <setting id="hoster_megavideo_username" type="text" label="30032" default=""/>
+        <setting id="hoster_megavideo_password" type="text" label="30033" default="" option="hidden"/>
+        <setting type="sep" />
+        <setting id="hoster_duckload_premium" type="bool" label="30034" default="false"/>
+        <setting id="hoster_duckload_username" type="text" label="30035" default=""/>
+        <setting id="hoster_duckload_password" type="text" label="30036" default="" option="hidden"/>
+    <!--</category>
+     <category label="30021">-->
+        <setting label="30021" type="lsep"/>
+        <setting id="debug" type="bool" label="30000" default="false"/>
+        <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2"/>
+        <setting id="statistic" type="bool" label="30002" default="true"/>
+    <!--</category>-->
+   
+</settings>
