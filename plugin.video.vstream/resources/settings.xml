@@ -26,6 +26,7 @@
         <setting id="plugin_streamzer_net" type="bool" label="Streamzer" default="true"/>
         <setting id="plugin_ustream_tv" type="bool" label="Ustream.tv" default="false"/>
         <setting id="plugin_adkami_com" type="bool" label="Adkami" default="true"/>
+        <setting id="plugin_dpstreaming_org" type="bool" label="Dpstreaming" default="true"/>
     <!--</category>
     <category label="30023">-->
         <setting label="30023" type="lsep"/>

@@ -46,36 +46,30 @@ class cHosterGui:
     
         if ('novamov' in sHosterUrl):
             return cHosterHandler().getHoster('novamov')
-        
         if ('divxstage' in sHosterUrl):
             return cHosterHandler().getHoster('divxstage')
-
         if ('filestage' in sHosterUrl):
             return cHosterHandler().getHoster('filestage')
-
         if ('vidxden' in sHosterUrl):
             return cHosterHandler().getHoster('vidxden')
-
         if ('vidbux' in sHosterUrl):
             return cHosterHandler().getHoster('vidbux')
-
         if ('megavideo' in sHosterUrl):
             return cHosterHandler().getHoster('megavideo')
-        
         if ('videoweed' in sHosterUrl):
             return cHosterHandler().getHoster('videoweed')
-        
         if ('youwatch' in sHosterUrl):
             return cHosterHandler().getHoster('youwatch')
-            
         if ('turbovid' in sHosterUrl):
             return cHosterHandler().getHoster('turbovid')
-            
         if ('youtube' in sHosterUrl):
-            return cHosterHandler().getHoster('youtube')
-            
+            return cHosterHandler().getHoster('youtube')   
         if ('rutube' in sHosterUrl):
             return cHosterHandler().getHoster('rutube')
+        if ('exashare' in sHosterUrl):
+            return cHosterHandler().getHoster('exashare')
+        if ('nowvideo' in sHosterUrl):
+            return cHosterHandler().getHoster('nowvideo')
 
         return False
         # step 2
