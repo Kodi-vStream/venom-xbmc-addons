@@ -4,14 +4,14 @@ from hosters.hoster import iHoster
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'DivxStage.net'
+        self.__sDisplayName = 'DivxStage'
 	self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
 
     def setFileName(self, sFileName):
 	self.__sFileName = sFileName

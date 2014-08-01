@@ -10,11 +10,11 @@ class cParser:
         return False, aMatches
 
     def __replaceSpecialCharacters(self, sString):
-        return sString.replace('\\/','/').replace('&amp;','&').replace('\xc9','E').replace('&#8211;', '-').replace('&#038;', '&')
+        return sString.replace('\\/','/').replace('&amp;','&').replace('\xc9','E').replace('&#8211;', '-').replace('&#038;', '&').replace('&rsquo;','\'')
 
     def parse(self, sHtmlContent, sPattern, iMinFoundValue = 1):
         sHtmlContent = self.__replaceSpecialCharacters(sHtmlContent)
-        aMatches = re.compile(sPattern).findall(sHtmlContent)
+        aMatches = re.compile(sPattern, re.IGNORECASE).findall(sHtmlContent)
         if (len(aMatches) >= iMinFoundValue):                
             return True, aMatches
         return False, aMatches
