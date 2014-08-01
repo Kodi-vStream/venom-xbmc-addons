@@ -1,5 +1,4 @@
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.util import cUtil
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from hosters.hoster import iHoster

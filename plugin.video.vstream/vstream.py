@@ -1,4 +1,4 @@
-from about.about import cAboutGui
+#from about.about import cAboutGui
 from resources.lib.statistic import cStatistic
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.guiElement import cGuiElement
@@ -29,8 +29,8 @@ def parseUrl():
         if (isHosterGui(sSiteName, sFunction) == True):
             return
 
-        if (isAboutGui(sSiteName, sFunction) == True):            
-            return
+        #if (isAboutGui(sSiteName, sFunction) == True):            
+            #return
 
         #try:
         exec "import " + sSiteName + " as plugin"
@@ -61,9 +61,9 @@ def isHosterGui(sSiteName, sFunction):
         return True
     return False
 
-def isAboutGui(sSiteName, sFunction):
-    if (sSiteName == 'cAboutGui'):
-        oAboutGui = cAboutGui()
-        exec "oAboutGui."+ sFunction +"()"
-        return True
-    return False
+# def isAboutGui(sSiteName, sFunction):
+    # if (sSiteName == 'cAboutGui'):
+        # oAboutGui = cAboutGui()
+        # exec "oAboutGui."+ sFunction +"()"
+        # return True
+    # return False

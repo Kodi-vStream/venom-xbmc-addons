@@ -1,7 +1,7 @@
 from hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+from resources.lib.gui.gui import cGui
 import urllib
 
 class cHoster(iHoster):
@@ -64,8 +64,7 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        #sId = self.__sUrl.replace('http://rutube.ru/video/embed/', '')
-        sDialog = cUtil().dialog(self.__sDisplayName)
+        cGui().showInfo('Resolve', self.__sDisplayName, 5)
         
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()

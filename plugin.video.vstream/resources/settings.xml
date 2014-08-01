@@ -27,6 +27,8 @@
         <setting id="plugin_ustream_tv" type="bool" label="Ustream.tv" default="false"/>
         <setting id="plugin_adkami_com" type="bool" label="Adkami" default="true"/>
         <setting id="plugin_dpstreaming_org" type="bool" label="Dpstreaming" default="true"/>
+        <setting id="plugin_frenchstream_org" type="bool" label="FrenchStream" default="true"/>
+        <setting id="plugin_vos_animes_com" type="bool" label="Vos Animes" default="true"/>
     <!--</category>
     <category label="30023">-->
         <setting label="30023" type="lsep"/>
@@ -51,7 +53,6 @@
         <setting label="30021" type="lsep"/>
         <setting id="debug" type="bool" label="30000" default="false"/>
         <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2"/>
-        <setting id="statistic" type="bool" label="30002" default="true"/>
     <!--</category>-->
    
 </settings>

@@ -46,16 +46,16 @@ class cGui:
             oListItem.addContextMenuItems(aContextMenus)
             #oListItem.addContextMenuItems(aContextMenus, True)
 
-        if (oGuiElement.getSiteName() != 'cAboutGui'):            
-            oContextItem = cContextElement()
-            oContextItem.setFile('cAboutGui')
-            oContextItem.setTitle('Ueber xStream')
-            oContextItem.setFunction('show')
-            oOutputParameterHandler = oContextItem.getOutputParameterHandler()
-            sParams = oOutputParameterHandler.getParameterAsUri()
-            sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-            aContextMenus+= [ ( oContextItem.getTitle(), "Container.Update(%s)" % (sTest,),)]
-            oListItem.addContextMenuItems(aContextMenus)
+        # if (oGuiElement.getSiteName() != 'cAboutGui'):            
+            # oContextItem = cContextElement()
+            # oContextItem.setFile('cAboutGui')
+            # oContextItem.setTitle('Ueber xStream')
+            # oContextItem.setFunction('show')
+            # oOutputParameterHandler = oContextItem.getOutputParameterHandler()
+            # sParams = oOutputParameterHandler.getParameterAsUri()
+            # sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
+            # aContextMenus+= [ ( oContextItem.getTitle(), "Container.Update(%s)" % (sTest,),)]
+            # oListItem.addContextMenuItems(aContextMenus)
 
         return oListItem
         

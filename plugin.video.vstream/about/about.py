@@ -10,7 +10,7 @@ class cAboutGui:
 
     SITE_NAME = 'cAboutGui'
 
-    URL_MAIN = 'http://mitglied.multimania.de/murphy/gapi/index.php'
+    URL_MAIN = 'http://mitglied.multimania.de/murphy/gapi/'
 
     def show(self):
         oGui = cGui()
