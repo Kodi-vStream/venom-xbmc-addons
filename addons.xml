@@ -2,7 +2,7 @@
 <addons>
 <addon id="plugin.video.vstream"
 	name="vStream"
-	version="0.0.3"
+	version="0.0.4"
 	provider-name="Venom">
   <extension point="xbmc.python.pluginsource" library="default.py">
     <provides>video</provides>
