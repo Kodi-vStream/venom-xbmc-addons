@@ -22,13 +22,14 @@
         <setting id="plugin_burning_series_org" type="bool" label="Burning-Series.org" default="false"/>
         <setting id="plugin_kinokiste_com" type="bool" label="KinoKiste.com" default="false"/>
         <setting id="plugin_anime_proxer_me" type="bool" label="Anime.Proxer.Me" default="false"/>
-        <setting id="plugin_wwitv_com" type="bool" label="WwiTV.com" default="false"/>
-        <setting id="plugin_streamzer_net" type="bool" label="Streamzer" default="true"/>
+        <setting id="plugin_wwitv_com" type="bool" label="WwiTV.com" default="false"/> 
         <setting id="plugin_ustream_tv" type="bool" label="Ustream.tv" default="false"/>
+        <setting id="plugin_streamzer_net" type="bool" label="Streamzer" default="true"/> 
         <setting id="plugin_adkami_com" type="bool" label="Adkami" default="true"/>
         <setting id="plugin_dpstreaming_org" type="bool" label="Dpstreaming" default="true"/>
         <setting id="plugin_frenchstream_org" type="bool" label="FrenchStream" default="true"/>
         <setting id="plugin_vos_animes_com" type="bool" label="Vos Animes" default="true"/>
+        <setting id="plugin_full_stream_net" type="bool" label="Full Stream" default="true"/>
     <!--</category>
     <category label="30023">-->
         <setting label="30023" type="lsep"/>

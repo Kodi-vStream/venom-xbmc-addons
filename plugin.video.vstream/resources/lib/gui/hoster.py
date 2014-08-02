@@ -17,12 +17,14 @@ class cHosterGui:
     SITE_NAME = 'cHosterGui'
 
     # step 1 - bGetRedirectUrl in ein extra optionsObject verpacken
-    def showHoster(self, oGui, oHoster, sMediaUrl, bGetRedirectUrl = False):
+    def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl = False):
+        
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)
         #oGuiElement.setFunction('showHosterMenu')
         oGuiElement.setFunction('play')
         oGuiElement.setTitle(oHoster.getDisplayName())
+        oGuiElement.setThumbnail(sThumbnail)
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)

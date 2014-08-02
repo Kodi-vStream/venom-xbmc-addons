@@ -280,6 +280,6 @@ def showHosters():
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl) 
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '') 
 
     oGui.setEndOfDirectory()

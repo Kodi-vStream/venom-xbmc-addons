@@ -137,6 +137,7 @@ def showMovies():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
+            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
             if '/series-tv/' in sUrl:
                 __createMenuEntry(oGui, 'showSeries', aEntry[2], aEntry[0], aEntry[3], oOutputParameterHandler)
             elif '/mangas/' in sUrl:
@@ -157,6 +158,7 @@ def showSeries():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
@@ -172,13 +174,15 @@ def showSeries():
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                __createMenuEntry(oGui, 'showSeries', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', '', '', oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                __createMenuEntry(oGui, 'showSeries', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', sThumbnail, '', oOutputParameterHandler)
             else:
                 sTitle = sMovieTitle+' - '+aEntry[1]
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-                __createMenuEntry(oGui, 'serieHosters', sTitle, '', '', oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                __createMenuEntry(oGui, 'serieHosters', sTitle, sThumbnail, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -198,6 +202,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
@@ -216,7 +221,7 @@ def showHosters():
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl) 
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
 
     oGui.setEndOfDirectory()
     
@@ -226,6 +231,7 @@ def mangaHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
@@ -245,7 +251,7 @@ def mangaHosters():
                 sTitle = sMovieTitle+' - '+aEntry[0]
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl) 
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
 
     oGui.setEndOfDirectory()
     
@@ -254,6 +260,7 @@ def serieHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     sPattern = 'href="([^<]+)" target="_blank">.+?</a>'
     oParser = cParser()
@@ -267,7 +274,7 @@ def serieHosters():
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl) 
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
 
     oGui.setEndOfDirectory()
     

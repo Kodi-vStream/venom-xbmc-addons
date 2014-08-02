@@ -97,6 +97,7 @@ def showMovies():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
+            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[1]))
             if '/series-tv/' in sUrl:
                 __createMenuEntry(oGui, 'showSeries', sTitle, aEntry[1], '', oOutputParameterHandler)
             else:
@@ -168,6 +169,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
@@ -185,14 +187,15 @@ def showHosters():
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl) 
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
             
             if aEntry[0]:
                 sTitle = sMovieTitle+' - '+aEntry[1]
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                __createMenuEntry(oGui, 'showHosters', sTitle, '', '', oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                __createMenuEntry(oGui, 'showHosters', sTitle, sThumbnail, '', oOutputParameterHandler)
                 
     oGui.setEndOfDirectory()
     
