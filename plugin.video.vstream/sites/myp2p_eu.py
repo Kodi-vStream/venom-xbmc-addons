@@ -18,6 +18,9 @@ URL_LIVE_TV = 'http://myp2p.eu/channel.php'
 
 def load():
     
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     oConfig = cConfig()
     oGui = cGui()
 

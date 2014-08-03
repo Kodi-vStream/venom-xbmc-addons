@@ -18,7 +18,11 @@ URL_VIDEO_DETAILS = 'http://film.bild.de:80/movie'
 
 
 
-def load():    
+def load():  
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     oGui = cGui()
     __createMainMenuItem(oGui, 'Alle Filme', '2147483647')
     __createMainMenuItem(oGui, 'Action / Thriller' , '22')

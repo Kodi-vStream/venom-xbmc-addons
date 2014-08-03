@@ -14,6 +14,9 @@ URL_MAIN = 'http://www.burning-series.org/'
 URL_SERIES = 'http://www.burning-series.org/andere-serien'
 
 def load():
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
     oGui = cGui()
     __createMenuEntry(oGui, 'showAllSeries', 'Serien', URL_SERIES)   
     oGui.setEndOfDirectory()

@@ -1,6 +1,6 @@
 class cGuiElement:
 
-    DEFAULT_FOLDER_ICON = 'DefaultFolder.png'
+    DEFAULT_FOLDER_ICON = 'icon.png'
 
     def __init__(self):
         self.__sType = 'video'

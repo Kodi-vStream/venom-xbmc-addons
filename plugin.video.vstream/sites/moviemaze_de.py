@@ -19,6 +19,10 @@ URL_TRAILER = 'http://www.moviemaze.de/media/trailer/'
 URL_SEARCH = 'http://www.moviemaze.de/suche/result.phtml'
 
 def load():
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     oGui = cGui()
     __createMainMenuItem(oGui, 'Letzte Updates (Alle)', URL_UPDATES_ALL, 'listVideos', 'Letzte Updates')
     __createMainMenuItem(oGui, 'Letzte Updates (HD)', URL_UPDATES_HD, 'listVideos', 'Letzte Updates')

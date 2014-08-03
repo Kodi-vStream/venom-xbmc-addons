@@ -14,6 +14,10 @@ URL_TV = 'http://www.bundesliga.de/de/bundesliga-tv/navigation.php?area='
 URL_GET_STREAM = 'http://btd-flv-lbwww-01.odmedia.net/bundesliga/'
 
 def load():
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     oGui = cGui()
     __createMainMenuItem(oGui, 'Aktuell', 'aktuell')    
     __createMainMenuItem(oGui, 'Spieltag', 'spieltag')

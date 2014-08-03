@@ -11,7 +11,7 @@
         <string id="30023">Plugins Préférences</string>
         <string id="30024">Hote</string>
 
-         <!-- premium begin by 30031 - 30070 -->
+         <!-- premium begin by 30031 - 30075 -->
         <string id="30031">Megavideo Premium Account</string>
         <string id="30032">Megavideo Username</string>
         <string id="30033">Megavideo Password</string>
@@ -46,14 +46,6 @@
         <string id="30216">Anime-stream24.com</string>
         <string id="30217">RadioTime.com</string> -->
 
-        <string id="30302">Staffeln Deutsch</string>
-        <string id="30303">Staffeln Englisch</string>
-        <string id="30304">Suche</string>
-        <string id="30305">Staffel %s</string>
-        <string id="30306">%s bis %s Sekunde</string>
-        <string id="30307">alle abspielen</string>
-        <string id="30308">Wartezeit</string>
-        <string id="30309">Bitte warte %s Sekunden</string>
 
         <string id="30402">Laender</string>
 </strings>

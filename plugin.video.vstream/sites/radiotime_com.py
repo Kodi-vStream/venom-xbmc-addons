@@ -23,7 +23,11 @@ URL_SPECIAL_SPORT = 'http://radiotime.com/channel/c_424726/RadioTime_Sports.aspx
 URL_SEARCH = 'http://radiotime.com/Search.aspx?query='
 URL_PLAY = 'http://radiotime.com/WebTuner.aspx?StationId='
 
-def load():    
+def load():   
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     oGui = cGui()
 
     sLokalUrl = __getLocalRadioUrl()

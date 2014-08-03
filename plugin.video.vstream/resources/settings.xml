@@ -30,6 +30,8 @@
         <setting id="plugin_frenchstream_org" type="bool" label="FrenchStream" default="true"/>
         <setting id="plugin_vos_animes_com" type="bool" label="Vos Animes" default="true"/>
         <setting id="plugin_full_stream_net" type="bool" label="Full Stream" default="true"/>
+        <setting id="plugin_docspot_fr" type="bool" label="DocSpot" default="true"/>
+        <setting id="plugin_notre_ecole_net" type="bool" label="Notre Ecole" default="true"/>
     <!--</category>
     <category label="30023">-->
         <setting label="30023" type="lsep"/>

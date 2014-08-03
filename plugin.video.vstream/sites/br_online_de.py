@@ -24,6 +24,10 @@ URL_PHYSIK_EINSTEIN = 'http://www.br-online.de/br-alpha/die-physik-albert-einste
 URL_ELEMENTE = 'http://www.br-online.de/br-alpha/die-4-elemente/die-4-elemente-elemente-harald-lesch-ID1225290580446.xml'
 
 def load():
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()

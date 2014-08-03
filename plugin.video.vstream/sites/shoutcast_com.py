@@ -18,6 +18,10 @@ URL_SEARCH = 'http://www.shoutcast.com/search-ajax/'
 COUNT_OF_ENTRIES = 10
 
 def load():
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     oGui = cGui()
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName(SITE_IDENTIFIER)

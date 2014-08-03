@@ -34,6 +34,10 @@ URL_AJAX = 'http://kino.to/aGET/List/'
 URL_LANGUAGE = 'http://kino.to/aSET/PageLang/1'
 
 def load():
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     logger.info('load kinoto :)')
 
     sSecurityValue = __getSecurityCookieValue()

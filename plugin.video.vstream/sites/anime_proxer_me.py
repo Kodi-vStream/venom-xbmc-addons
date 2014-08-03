@@ -18,6 +18,9 @@ URL_OVA = 'http://anime.proxer.me/ova.html'
 URL_SEARCH = 'http://anime.proxer.me/animesuche.html?set=suche&sprache=alle&genre='
 
 def load():
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()

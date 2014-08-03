@@ -20,6 +20,10 @@ URL_MTVN_SERVICES = 'http://media.mtvnservices.com/'
 URL_FEEDS = 'http://www.southpark.de/feeds/as3player/config.php'
 
 def load():
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     oConfig = cConfig()
     oGui = cGui()
 

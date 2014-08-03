@@ -20,6 +20,10 @@ URL_SEARCH = 'http://g-stream.in/search.php'
 
 
 def load():
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     oGui = cGui()
     __createMainMenuEntry(oGui, 'Aktuelle KinoFilme', 542)
     __createMainMenuEntry(oGui, 'Action', 591)

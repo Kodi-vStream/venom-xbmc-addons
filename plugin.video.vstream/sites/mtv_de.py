@@ -22,6 +22,10 @@ URL_SEARCH = 'http://www.mtv.de/videos/search'
 ENTRIES_PER_PAGE = 30
 
 def load():
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     oGui = cGui()
     __createMainMenuItem(oGui, 'Neuste Videos', 'listVideos', 'latest')
     __createMainMenuItem(oGui, 'Meist gesehende Videos', 'listVideos', 'views')

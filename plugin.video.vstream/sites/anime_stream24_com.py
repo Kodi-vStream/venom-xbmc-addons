@@ -13,6 +13,9 @@ SITE_NAME = 'Anime-Stream24.com'
 URL_MAIN = 'http://www.anime-stream24.com'
 
 def load():
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()

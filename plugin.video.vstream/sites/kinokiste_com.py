@@ -18,6 +18,10 @@ URL_BLOCKBUSTER = 'http://www.kinokiste.com/blockbuster/'
 URL_ALL = 'http://www.kinokiste.com/film-index/'
 
 def load():
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     oGui = cGui()
     __createMenuEntry(oGui, 'showMovieEntries', 'Aktuelle Kinofilme', URL_CINEMA, 1)
     __createMenuEntry(oGui, 'showMovieEntries', 'Neue Filme', URL_NEW, 1)

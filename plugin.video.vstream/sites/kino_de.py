@@ -19,6 +19,9 @@ ENTRIES_PER_PAGE = 30
 
 def load():    
 
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     oGui = cGui()
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName(SITE_IDENTIFIER)

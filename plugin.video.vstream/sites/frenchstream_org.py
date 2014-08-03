@@ -21,23 +21,23 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://frenchstream.org/')
-    __createMenuEntry(oGui, 'showMovies', 'Nouveautés', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showMovies', 'Films Nouveautés', 'news.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://frenchstream.org/les-plus-vues')
-    __createMenuEntry(oGui, 'showMovies', 'Les plus vues', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showMovies', 'Films Les plus vues', 'films.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://frenchstream.org/les-plus-commentes')
-    __createMenuEntry(oGui, 'showMovies', 'Les plus commentés', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showMovies', 'Films Les plus commentés', 'films.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://frenchstream.org/les-mieux-notes')
-    __createMenuEntry(oGui, 'showMovies', 'Les mieux notés', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showMovies', 'Films Les mieux notés', 'films.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://frenchstream.org/films-par-genre')
-    __createMenuEntry(oGui, 'showGenre', 'Films Genres', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showGenre', 'Films Genres', 'genres.png', '', '', oOutputParameterHandler)
     
     #oOutputParameterHandler = cOutputParameterHandler()
     #oOutputParameterHandler.addParameter('siteUrl', 'http://frenchstream.org/tv-series')
@@ -46,11 +46,12 @@ def load():
             
     oGui.setEndOfDirectory()
 
-def __createMenuEntry(oGui, sFunction, sLabel, sThumbnail, sDesc, oOutputParameterHandler = ''):
+def __createMenuEntry(oGui, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName(SITE_IDENTIFIER)
     oGuiElement.setFunction(sFunction)
     oGuiElement.setTitle(sLabel)
+    oGuiElement.setIcon(sIcon)
     oGuiElement.setThumbnail(sThumbnail)
     oGuiElement.setDescription(cUtil().removeHtmlTags(sDesc))
     oGui.addFolder(oGuiElement, oOutputParameterHandler)
@@ -73,7 +74,7 @@ def showGenre():
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-            __createMenuEntry(oGui, 'showMovies', sTitle, '', '', oOutputParameterHandler)
+            __createMenuEntry(oGui, 'showMovies', sTitle, 'genres.png', '', '', oOutputParameterHandler)
            
     oGui.setEndOfDirectory()
 
@@ -99,15 +100,15 @@ def showMovies():
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[1]))
             if '/series-tv/' in sUrl:
-                __createMenuEntry(oGui, 'showSeries', sTitle, aEntry[1], '', oOutputParameterHandler)
+                __createMenuEntry(oGui, 'showSeries', sTitle,'', aEntry[1], '', oOutputParameterHandler)
             else:
-                __createMenuEntry(oGui, 'showHosters', sTitle, aEntry[1], '', oOutputParameterHandler)
+                __createMenuEntry(oGui, 'showHosters', sTitle, '', aEntry[1], '', oOutputParameterHandler)
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            __createMenuEntry(oGui, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', '', '', oOutputParameterHandler)
+            __createMenuEntry(oGui, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -131,13 +132,13 @@ def showSeries():
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                __createMenuEntry(oGui, 'showSeries', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', '', '', oOutputParameterHandler)
+                __createMenuEntry(oGui, 'showSeries', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'series.png', '', '', oOutputParameterHandler)
             else:
                 sTitle = sMovieTitle+' - '+aEntry[1]
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-                __createMenuEntry(oGui, 'serieHosters', sTitle, '', '', oOutputParameterHandler)
+                __createMenuEntry(oGui, 'serieHosters', sTitle, '', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -190,12 +191,14 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
             
             if aEntry[0]:
-                sTitle = sMovieTitle+' - '+aEntry[1]
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                __createMenuEntry(oGui, 'showHosters', sTitle, sThumbnail, '', oOutputParameterHandler)
+                sHoster = cHosterGui().checkHoster(aEntry[1].lower())
+                if (sHoster != False):
+                    sTitle = '-- '+sMovieTitle+' - '+aEntry[1]
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+                    oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+                    oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                    __createMenuEntry(oGui, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
                 
     oGui.setEndOfDirectory()
     

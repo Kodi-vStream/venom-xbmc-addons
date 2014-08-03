@@ -23,6 +23,10 @@ URL_CATEGORY_24 = 'http://www.ustream.tv/discovery/live/24-7-broadcasts'
 URL_CATEGORY_NEWS = 'http://www.ustream.tv/discovery/live/news'
 
 def load():
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()

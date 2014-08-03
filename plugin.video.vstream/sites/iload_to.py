@@ -21,6 +21,10 @@ URL_SEARCH_SERIES = URL_MAIN + 'ajax/module/category/6-Serien/search/'
 COOKIE_SECURITY_NAME = 'suilid'
 
 def load():
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     sCookieValue = __getSecurityCookieValue()
 
     oGui = cGui()

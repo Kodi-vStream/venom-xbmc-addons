@@ -26,6 +26,10 @@ URL_SERIES_GENRE = 'http://www.movie2k.com/genres-tvshows.html'
 URL_SEARCH = 'http://www.movie2k.com/movies.php?list=searchnew534'
 
 def load():
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     oGui = cGui()
     __createMainMenuItem(oGui, 'Filme', '', 'showMovieMenu')
     __createMainMenuItem(oGui, 'Serien', '', 'showSeriesMenu')

@@ -45,6 +45,15 @@ class cPluginHandler:
         sRootFolder = os.getcwd()
         logger.info('root folder: ' + sRootFolder)
         return sRootFolder
+        
+    def getRootArt(self):
+        oConfig = cConfig()
+
+        sFolder =  self.getRootFolder()
+        sFolder = os.path.join(sFolder, 'resources/art/')
+       
+        sFolder = sFolder.replace('\\', '/')
+        return sFolder
 
     def getAvailablePlugins(self):
         oConfig = cConfig()

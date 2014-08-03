@@ -17,6 +17,10 @@ URL_PLAYER = 'http://stream.simpsons.to/streamlink/?'
 URL_SEARCH = 'http://www.simpsons.to/functions/search.inc.php'
 
 def load():
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     oGui = cGui()
 
     oGuiElement = cGuiElement()

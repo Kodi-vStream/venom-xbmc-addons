@@ -23,7 +23,8 @@ class cGui:
         xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, True)
 
     def createListItem(self, oGuiElement):
-        oListItem = xbmcgui.ListItem(oGuiElement.getTitle(), oGuiElement.getTitleSecond(), oGuiElement.getIcon(), oGuiElement.getThumbnail())
+        oPath = cPluginHandler().getRootArt()
+        oListItem = xbmcgui.ListItem(oGuiElement.getTitle(), oGuiElement.getTitleSecond(), oPath+oGuiElement.getIcon(), oGuiElement.getThumbnail())
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
             
         aProperties = oGuiElement.getItemProperties()

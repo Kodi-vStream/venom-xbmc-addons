@@ -14,6 +14,10 @@ URL_MAIN = 'http://wwitv.com/'
 URL_MENU = 'http://wwitv.com/menu_left.htm'
 
 def load():
+    
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()

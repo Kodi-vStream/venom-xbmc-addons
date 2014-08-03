@@ -17,6 +17,9 @@ URL_HIGHLIGHTS = 'http://www.nba.de/video/index.php/action/get-videos/category/'
 
 def load():    
         
+    cGui().showInfo('HS', SITE_NAME, 5)
+    return False
+    
     oGui = cGui()
     __createMainMenuItem(oGui, 'Neuste Videos', 'listVideos', 'playlistId', '0_65ltkg6t')
     __createMainMenuItem(oGui, 'Meist gesehende', 'listVideos', 'playlistId', '0_mmdxlq9n')

@@ -25,6 +25,7 @@ class cHosterGui:
         oGuiElement.setFunction('play')
         oGuiElement.setTitle(oHoster.getDisplayName())
         oGuiElement.setThumbnail(sThumbnail)
+        oGuiElement.setIcon('host.png')
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
