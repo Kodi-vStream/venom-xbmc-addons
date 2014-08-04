@@ -28,7 +28,7 @@ class cStatistic:
             ts4 = float(time.time())
             ts5 = float(time.time())
 
-            #sUtmccValue = '__utma=' + str(rndY) + '.' + str(rndX) + '.' + str(ts1) + '.' + str(ts2) + '.' + str(ts3) + '; '
+            sUtmccValue = '__utma=' + str(rndY) + '.' + str(rndX) + '.' + str(ts1) + '.' + str(ts2) + '.' + str(ts3) + '; '
             sUtmccValue = sUtmccValue + '+__utmz=' + str(rndY) + '.' + str(ts4) + '.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); '
             oRequestHandler.addParameters('utmcc', sUtmccValue)
 	    #oRequestHandler.addParameters('aip', '1') # anonymizeIp
@@ -40,7 +40,7 @@ class cStatistic:
             oRequestHandler.addParameters('utmhn', 'code.google.com')
             oRequestHandler.addParameters('utmje', '0')
             oRequestHandler.addParameters('utmn', '771768122')
-            oRequestHandler.addParameters('utmp', '/p/xbmc-vstream-plugin/w/list?plugin=' + str(sPluginName))
+            oRequestHandler.addParameters('utmp', str(sPluginName))
             oRequestHandler.addParameters('utmr', '-')
             oRequestHandler.addParameters('utmsc', '24-bit')
             oRequestHandler.addParameters('utmsr', '1920x1080')
@@ -49,9 +49,6 @@ class cStatistic:
             oRequestHandler.addParameters('utmwv', '4.8.6')
                        
             oRequestHandler.request()
-            print oRequestHandler
         except Exception, e:
             return
-
-      
 

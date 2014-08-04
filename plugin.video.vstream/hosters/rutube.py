@@ -64,7 +64,6 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        cGui().showInfo('Resolve', self.__sDisplayName, 5)
         
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
@@ -73,8 +72,13 @@ class cHoster(iHoster):
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True):       
+        if (aResult[0] == True):
+            cGui().showInfo(self.__sDisplayName, 'Streaming', 5)
             return True, aResult[1][0]
             
-        self.__oDialog.close()
+        else:
+            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
+            return False, False
+            
+
         return False, False

@@ -1,13 +1,15 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
+from resources.lib.util import cUtil
 from hosters.hoster import iHoster
+import xbmcgui
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Youwatch'
-	self.__sFileName = self.__sDisplayName
+        self.__sDisplayName = 'VideoMega'
+        self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
         return  self.__sDisplayName
@@ -16,13 +18,13 @@ class cHoster(iHoster):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
 
     def setFileName(self, sFileName):
-	self.__sFileName = sFileName
+        self.__sFileName = sFileName
 
     def getFileName(self):
-	return self.__sFileName
+        return self.__sFileName
 
     def getPluginIdentifier(self):
-        return 'youwatch'
+        return 'videomega'
 
     def isDownloadable(self):
         return True
@@ -31,23 +33,19 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
+        return ''
         
-    def __getIdFromUrl(self, sUrl):
-        sPattern = "http://youwatch.org/([^<]+)"
+    def __getIdFromUrl(self):
+        sPattern = "ref=([^<]+)"
         oParser = cParser()
-        aResult = oParser.parse(sUrl, sPattern)
+        aResult = oParser.parse(self.__sUrl, sPattern)
         if (aResult[0] == True):
             return aResult[1][0]
 
         return ''
 
     def setUrl(self, sUrl):
-        if 'embed' not in sUrl:
-            self.__sUrl = str(self.__getIdFromUrl(sUrl))
-            self.__sUrl = 'http://youwatch.org/embed-'+str(self.__sUrl)+'.html'
-        else:
-            self.__sUrl = sUrl
+        self.__sUrl = sUrl
 
     def checkUrl(self, sUrl):
         return True
@@ -59,26 +57,30 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
+
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        
-        sPattern = 'mp4/video/([^<]+)/([^<]+)/([^<]+)/setup';
-        
+        sPattern =  'unescape.+?"(.+?)"'
+              
         oParser = cParser()
-        sHtmlContent=sHtmlContent.replace('|','/')
         aResult = oParser.parse(sHtmlContent, sPattern)
-
+        print aResult
         if (aResult[0] == True):
-            cGui().showInfo(self.__sDisplayName, 'Streaming', 5)
-            api_call = ('http://%s.youwatch.org:%s/%s/video.mp4') % (aResult[1][0][2], aResult[1][0][1], aResult[1][0][0])
-            return True, api_call 
+            decoder = cUtil().urlDecode(aResult[1][0])
+            
+            sPattern =  'file: "(.+?)"'
+            oParser = cParser()
+            aResult = oParser.parse(decoder, sPattern)
+            if (aResult[0] == True):
+                cGui().showInfo(self.__sDisplayName, 'Streaming', 5)
+                return True, aResult[1][0]
+            else:
+                cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
+                return False, False
 
         else:
             cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
             return False, False
-            
+        
         return False, False
-        
-        

@@ -3,6 +3,7 @@ from resources.lib.util import cUtil
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from hosters.hoster import iHoster
+import xbmcaddon
 
 class cHoster(iHoster):
 
@@ -60,6 +61,13 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        videoID = str(self.__getIdFromUrl(self.__sUrl))
-        api_call = 'plugin://plugin.video.youtube/?action=play_video&videoid='+videoID
-        return True, api_call
+        
+        if xbmcaddon.Addon('plugin.video.youtube'):
+            print 'passe'
+            videoID = str(self.__getIdFromUrl(self.__sUrl))
+            api_call = 'plugin://plugin.video.youtube/?action=play_video&videoid='+videoID
+            return True, api_call
+        else:
+            cGui().showInfo(self.__sDisplayName, 'Vous devez installer l\'addon video youtube' , 5)
+            return False, False
+        
