@@ -20,6 +20,10 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    __createMenuEntry(oGui, 'showSearch', 'Recherche', 'search.png', '', '', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.docspot.fr/?cat=0')
     __createMenuEntry(oGui, 'showMovies', 'Documentaires', 'doc.png', '', '', oOutputParameterHandler)
     
@@ -50,6 +54,15 @@ def __createMenuEntry(oGui, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutput
     oGuiElement.setThumbnail(sThumbnail)
     oGuiElement.setDescription(cUtil().removeHtmlTags(sDesc))
     oGui.addFolder(oGuiElement, oOutputParameterHandler)
+  
+def showSearch():
+    oGui = cGui()
+    sSearchText = oGui.showKeyBoard()
+    if (sSearchText != False):
+            sUrl = 'http://www.docspot.fr/?s='+sSearchText  
+            showMovies(sUrl)
+            return  
+    oGui.setEndOfDirectory()
     
 def showGenres():
     oGui = cGui()
@@ -84,10 +97,13 @@ def showGenres():
     oGui.setEndOfDirectory() 
 
 
-def showMovies():
+def showMovies(sUrl = ''):
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    if sUrl:
+      sUrl = sUrl
+    else:
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();

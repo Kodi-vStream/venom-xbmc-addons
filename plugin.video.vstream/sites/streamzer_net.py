@@ -18,58 +18,108 @@ URL_MAIN = 'http://www.streamzer.net/'
 
 def load():
     oGui = cGui()
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+    __createMenuEntry(oGui, 'showSearch', 'Recherche', 'search.png', '', '', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Films&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'showMovies', 'Films', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showMovies', 'Films', 'films.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Films&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'showGenre', 'Films Genre', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showGenre', 'Films Genre', 'genres.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Series&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'showMovies', 'Series', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showMovies', 'Series', 'series.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Series&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'showGenre', 'Series Genre', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showGenre', 'Series Genre', 'genres.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Docus&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'showMovies', 'Documentaires', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showMovies', 'Documentaires', 'doc.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Docus&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'docuGenre', 'Documentaires Genre', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'docuGenre', 'Documentaires Genre', 'genres.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Replay&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'showReplay', 'Sport Replay', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showReplay', 'Sport Replay', 'replay.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Replay&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'replayGenre', 'Sport Replay Genre', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'replayGenre', 'Sport Replay Genre', 'genres.png', '', '', oOutputParameterHandler)
     
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Videos&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'showReplay', 'Buzz', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showReplay', 'Buzz', 'buzz.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Videos&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'buzzGenre', 'Buzz Genre', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'buzzGenre', 'Buzz Genre', 'genres.png', '', '', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
 
-def __createMenuEntry(oGui, sFunction, sLabel, sThumbnail, sDesc, oOutputParameterHandler = ''):
+def __createMenuEntry(oGui, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName(SITE_IDENTIFIER)
     oGuiElement.setFunction(sFunction)
     oGuiElement.setTitle(sLabel)
+    oGuiElement.setIcon(sIcon)
     oGuiElement.setThumbnail(sThumbnail)
     oGuiElement.setDescription(cUtil().removeHtmlTags(sDesc))
+    
     oGui.addFolder(oGuiElement, oOutputParameterHandler)
+    
+def showSearch():
+    oGui = cGui()
+
+    sSearchText = oGui.showKeyBoard()
+    if (sSearchText != False):
+            sUrl = 'http://www.streamzer.net/index.php?file=Search&op=mod_search&main='+sSearchText
+            resultSearch(sUrl)
+            return  
+    oGui.setEndOfDirectory()
+    
+def resultSearch(sUrl = ''):
+    oGui = cGui()
+    
+    if sUrl:
+      sUrl = sUrl
+    else:
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+   
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request();
+    sPattern = "<a href='([^<]+)' title=.([^<]+).>.+?<img src='([^<]+)' width='160px' height='213px'.+?>"
+    
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
+            __createMenuEntry(oGui, 'showHosters', aEntry[1], '', aEntry[2], '', oOutputParameterHandler)
+            
+        sNextPage = __checkForNextPage(sHtmlContent)
+        if (sNextPage != False):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            __createMenuEntry(oGui, 'resultSearch', '[COLOR teal]Next >>>[/COLOR]', 'next.png', '', '', oOutputParameterHandler)
+
+            
+    oGui.setEndOfDirectory()
  
 def docuGenre():
     oGui = cGui()
@@ -93,7 +143,7 @@ def docuGenre():
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        __createMenuEntry(oGui, 'showMovies', sTitle, '', '', oOutputParameterHandler)
+        __createMenuEntry(oGui, 'showMovies', sTitle, 'genres.png', '', '', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
     
@@ -129,7 +179,7 @@ def replayGenre():
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        __createMenuEntry(oGui, 'showReplay', sTitle, '', '', oOutputParameterHandler)
+        __createMenuEntry(oGui, 'showReplay', sTitle, 'genres.png', '', '', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
 
@@ -153,7 +203,7 @@ def showGenre():
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
-            __createMenuEntry(oGui, 'showMovies', sTitle, '', '', oOutputParameterHandler)
+            __createMenuEntry(oGui, 'showMovies', sTitle, 'genres.png', '', '', oOutputParameterHandler)
            
     oGui.setEndOfDirectory()
     
@@ -177,7 +227,7 @@ def buzzGenre():
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
-            __createMenuEntry(oGui, 'showReplay', sTitle, '', '', oOutputParameterHandler)
+            __createMenuEntry(oGui, 'showReplay', sTitle, 'genres.png', '', '', oOutputParameterHandler)
            
     oGui.setEndOfDirectory()
 
@@ -199,13 +249,13 @@ def showMovies():
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
-            __createMenuEntry(oGui, 'showHosters', sTitle, aEntry[0], aEntry[3], oOutputParameterHandler)
+            __createMenuEntry(oGui, 'showHosters', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            __createMenuEntry(oGui, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', '', '', oOutputParameterHandler)
+            __createMenuEntry(oGui, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -229,15 +279,15 @@ def showReplay():
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
             if 'Videos' in sUrl:
-                __createMenuEntry(oGui, 'showHosters2', sTitle, aEntry[0], '', oOutputParameterHandler)
+                __createMenuEntry(oGui, 'showHosters2', sTitle, '', aEntry[0], '', oOutputParameterHandler)
             else:
-                __createMenuEntry(oGui, 'showHosters', sTitle, aEntry[0], '', oOutputParameterHandler)
+                __createMenuEntry(oGui, 'showHosters', sTitle, '', aEntry[0], '', oOutputParameterHandler)
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            __createMenuEntry(oGui, 'showReplay', '[COLOR teal]Next >>>[/COLOR]', '', '', oOutputParameterHandler)
+            __createMenuEntry(oGui, 'showReplay', '[COLOR teal]Next >>>[/COLOR]', 'next.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -277,7 +327,7 @@ def showHosters():
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                __createMenuEntry(oGui, 'showHosters', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', '', '', oOutputParameterHandler)
+                __createMenuEntry(oGui, 'showHosters', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'host.png', '', '', oOutputParameterHandler)
                    
         
             if (oHoster != False):

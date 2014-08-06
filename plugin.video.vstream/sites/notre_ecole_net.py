@@ -19,6 +19,10 @@ URL_MAIN = 'http://www.notre-ecole.net/'
 def load():
    
     oGui = cGui()
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    __createMenuEntry(oGui, 'showSearch', 'Recherche', 'search.png', '', '', oOutputParameterHandler)
  
     liste = []
     liste.append( ["Films Documentaires Reportages Enquetes","http://www.notre-ecole.net/c/documentaires/"] )
@@ -54,11 +58,23 @@ def __createMenuEntry(oGui, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutput
     oGuiElement.setDescription(cUtil().removeHtmlTags(sDesc))
     oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-
-def showMovies():
+def showSearch():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    sSearchText = oGui.showKeyBoard()
+    if (sSearchText != False):
+            sUrl = 'http://www.notre-ecole.net/?s='+sSearchText  
+            showMovies(sUrl)
+            return  
+    oGui.setEndOfDirectory()
+
+def showMovies(sUrl = ''):
+    oGui = cGui()
+    if sUrl:
+      sUrl = sUrl
+    else:
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();

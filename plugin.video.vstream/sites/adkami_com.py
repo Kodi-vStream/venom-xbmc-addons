@@ -20,55 +20,70 @@ def load():
     oGui = cGui()
     
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    __createMenuEntry(oGui, 'showSearch', 'Recherche', 'search.png', '', '', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.adkami.com/video?recherche=&version=1&type2=0')
-    __createMenuEntry(oGui, 'showMovies', 'Animés VF', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showMovies', 'Animés VF', 'animes.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.adkami.com/video?recherche=&version=2&type2=0')
-    __createMenuEntry(oGui, 'showMovies', 'Animés VOSTFR', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showMovies', 'Animés VOSTFR', 'animes.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('type2', 0)
     oOutputParameterHandler.addParameter('title', 'Animés')
-    __createMenuEntry(oGui, 'showLang', 'Animés A-Z', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showLang', 'Animés A-Z', 'az.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('type2', 0)
     oOutputParameterHandler.addParameter('title', 'Animés')
-    __createMenuEntry(oGui, 'showLanggenre', 'Animés Genre', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showLanggenre', 'Animés Genre', 'genres.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.adkami.com/video?recherche=&version=1&type2=1')
-    __createMenuEntry(oGui, 'showMovies', 'Séries VF', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showMovies', 'Séries VF', 'series.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.adkami.com/video?recherche=&version=2&type2=1')
-    __createMenuEntry(oGui, 'showMovies', 'Séries VOSTFR', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showMovies', 'Séries VOSTFR', 'series.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('type2', 1)
     oOutputParameterHandler.addParameter('title', 'Séries')
-    __createMenuEntry(oGui, 'showLang', 'Séries A-Z', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showLang', 'Séries A-Z', 'az.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('type2', 1)
     oOutputParameterHandler.addParameter('title', 'Séries')
-    __createMenuEntry(oGui, 'showLanggenre', 'Séries Genre', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showLanggenre', 'Séries Genre', 'genres.png', '', '', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
 
-def __createMenuEntry(oGui, sFunction, sLabel, sThumbnail, sDesc, oOutputParameterHandler = ''):
+def __createMenuEntry(oGui, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName(SITE_IDENTIFIER)
     oGuiElement.setFunction(sFunction)
     oGuiElement.setTitle(sLabel)
+    oGuiElement.setIcon(sIcon)
     oGuiElement.setThumbnail(sThumbnail)
     oGuiElement.setDescription(cUtil().removeHtmlTags(sDesc))
     oGui.addFolder(oGuiElement, oOutputParameterHandler)
+  
+def showSearch():
+    oGui = cGui()
+
+    sSearchText = oGui.showKeyBoard()
+    if (sSearchText != False):
+            sUrl = 'http://www.adkami.com/video?recherche='+sSearchText
+            showMovies(sUrl)
+            return  
+    oGui.setEndOfDirectory()
     
 def showLang():
     oGui = cGui()
@@ -80,19 +95,19 @@ def showLang():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 0)
     oOutputParameterHandler.addParameter('type2', sType2)
-    __createMenuEntry(oGui, 'showAZ', sTitle+' A-Z', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showAZ', sTitle+' A-Z', 'lang.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 1)
     oOutputParameterHandler.addParameter('type2', sType2)
-    __createMenuEntry(oGui, 'showAZ', sTitle+' A-Z VF', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showAZ', sTitle+' A-Z VF', 'lang.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 2)
     oOutputParameterHandler.addParameter('type2', sType2)
-    __createMenuEntry(oGui, 'showAZ', sTitle+' A-Z VOSTFR', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showAZ', sTitle+' A-Z VOSTFR', 'lang.png', '', '', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
     
@@ -107,19 +122,19 @@ def showLanggenre():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 0)
     oOutputParameterHandler.addParameter('type2', sType2)
-    __createMenuEntry(oGui, 'showGenre', sTitle+' Genre', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showGenre', sTitle+' Genre', 'lang.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 1)
     oOutputParameterHandler.addParameter('type2', sType2)
-    __createMenuEntry(oGui, 'showGenre', sTitle+' Genre VF', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showGenre', sTitle+' Genre VF', 'lang.png', '', '', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 2)
     oOutputParameterHandler.addParameter('type2', sType2)
-    __createMenuEntry(oGui, 'showGenre', sTitle+' Genre VOSTFR', '', '', oOutputParameterHandler)
+    __createMenuEntry(oGui, 'showGenre', sTitle+' Genre VOSTFR', 'lang.png', '', '', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
         
@@ -133,13 +148,13 @@ def showAZ():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oOutputParameterHandler.addParameter('AZ', '.')
-    __createMenuEntry(oGui, 'showMoviesAZ', '.', '', '', oOutputParameterHandler)          
+    __createMenuEntry(oGui, 'showMoviesAZ', '.', 'az.png', '', '', oOutputParameterHandler)          
     for i in string.ascii_uppercase:
         sUrl = 'http://www.adkami.com/video?recherche=&version='+str(sVersion)+'&type2='+str(sType2)+'#'+i
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('AZ', i)
-        __createMenuEntry(oGui, 'showMoviesAZ', i, '', '', oOutputParameterHandler)
+        __createMenuEntry(oGui, 'showMoviesAZ', i, 'az.png', '', '', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
         
@@ -182,7 +197,7 @@ def showGenre():
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        __createMenuEntry(oGui, 'showMovies', sTitle, '', '', oOutputParameterHandler)
+        __createMenuEntry(oGui, 'showMovies', sTitle, 'genres.png', '', '', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
 
@@ -204,15 +219,18 @@ def showMoviesAZ():
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-                __createMenuEntry(oGui, 'showEpisode', aEntry[1], '', '', oOutputParameterHandler)
+                __createMenuEntry(oGui, 'showEpisode', aEntry[1], 'films.png', '', '', oOutputParameterHandler)
             
 
     oGui.setEndOfDirectory()
     
-def showMovies():
+def showMovies(sUrl = ''):
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    if sUrl:
+      sUrl = sUrl
+    else:
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
@@ -225,7 +243,7 @@ def showMovies():
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-                __createMenuEntry(oGui, 'showEpisode', aEntry[1], '', '', oOutputParameterHandler)
+                __createMenuEntry(oGui, 'showEpisode', aEntry[1], 'films.png', '', '', oOutputParameterHandler)
             
 
     oGui.setEndOfDirectory()
@@ -249,12 +267,12 @@ def showEpisode():
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                __createMenuEntry(oGui, 'showEpisode', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', '', '', oOutputParameterHandler)
+                __createMenuEntry(oGui, 'showEpisode', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'films.png', '', '', oOutputParameterHandler)
             else:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
-                __createMenuEntry(oGui, 'showHosters', sMovieTitle+' - '+aEntry[2], '', '', oOutputParameterHandler)
+                __createMenuEntry(oGui, 'showHosters', sMovieTitle+' - '+aEntry[2], 'films.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
     

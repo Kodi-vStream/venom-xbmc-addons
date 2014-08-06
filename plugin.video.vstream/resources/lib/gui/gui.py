@@ -26,7 +26,7 @@ class cGui:
         oPath = cPluginHandler().getRootArt()
         oListItem = xbmcgui.ListItem(oGuiElement.getTitle(), oGuiElement.getTitleSecond(), oPath+oGuiElement.getIcon(), oGuiElement.getThumbnail())
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
-            
+        oListItem.setProperty('fanart_image', oPath+'fanart.jpg')
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey in aProperties.keys():
             oListItem.setProperty(sPropertyKey, aProperties[sPropertyKey])
