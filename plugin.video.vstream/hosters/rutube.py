@@ -22,22 +22,39 @@ class cHoster(iHoster):
     def getFileName(self):
 	return self.__sFileName
     
-    def __getIdFromUrl(self, sUrl):
-        sPattern = "http://.+?/.+?/([^<]+)"
+    def setUrl(self, sUrl):
+        self.__sUrl = sUrl.replace('http://rutube.ru/video/embed/', '')
+        self.__sUrl = self.__sUrl.replace('http://video.rutube.ru/', '')
+        self.__sUrl = self.__sUrl.replace('http://rutube.ru/video/', '')
+        self.__sUrl = 'http://rutube.ru/play/embed/' + str(self.__sUrl)
+        self.__sUrl = str(self.__modifyUrl(self.__sUrl))
+    
+    def __getIdFromUrl(self):
+        sPattern = "http://rutube.ru/play/embed/([^<]+)"
         oParser = cParser()
-        aResult = oParser.parse(sUrl, sPattern)
+        aResult = oParser.parse(self.__sUrl, sPattern)
         if (aResult[0] == True):
             return aResult[1][0]
 
         return ''
-    
-    
-    def setUrl(self, sUrl):
-        if 'embed' not in sUrl:
-            self.__sUrl = str(self.__getIdFromUrl(sUrl))
-            self.__sUrl = 'http://rutube.ru/video/embed/' + str(self.__sUrl)
-        else:
-            self.__sUrl = sUrl
+        
+    def __modifyUrl(self, sUrl):
+        api = ('http://rutube.ru/api/play/trackinfo/%s/?format=json') % (self.__getIdFromUrl())
+
+        oRequest = cRequestHandler(api)
+        sHtmlContent = oRequest.request()
+        sHtmlContent = sHtmlContent.replace('\\', '').replace('//', '')
+        
+        sPattern = 'src="(.+?)"'
+        
+        oParser = cParser()
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            self.__sUrl = 'http://' + aResult[1][0]
+            return self.__sUrl
+            
+        return
+
 
     def getPluginIdentifier(self):
         return 'rutube'
@@ -50,9 +67,6 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return '';
-
-    def setUrl(self, sUrl):
-        self.__sUrl = sUrl
 
     def checkUrl(self, sUrl):
         return True

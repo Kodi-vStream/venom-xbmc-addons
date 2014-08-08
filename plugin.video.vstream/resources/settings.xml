@@ -56,6 +56,8 @@
         <setting label="30021" type="lsep"/>
         <setting id="debug" type="bool" label="30000" default="false"/>
         <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2"/>
+        <setting id="meta-view" type="bool" label="Recherche les Métadonnées (ralenti l'Addon)" default="false"/>
+        <setting label="Paramètres des Métadonnées" type="action" action="Addon.OpenSettings(script.module.metahandler)" enable ="true" />
     <!--</category>-->
    
 </settings>
