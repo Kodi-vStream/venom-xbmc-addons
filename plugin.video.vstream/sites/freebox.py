@@ -34,7 +34,7 @@ def load():
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', ligne)
                 oOutputParameterHandler.addParameter('siteTitle', str(chaine))
-                __createMenuEntry(oGui, 'play', chaine, 'tv.png', '', '', 0, oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'play', chaine, 'tv.png', oOutputParameterHandler)
                 chaine=None
             if ligne[:7]=="#EXTINF":
                 line=ligne.split(" - ")
@@ -42,18 +42,6 @@ def load():
                 num=int(line[0].split(",")[-1])
   
     oGui.setEndOfDirectory()
-
-def __createMenuEntry(oGui, sFunction, sLabel, sIcon, sThumbnail, sDesc, sMeta='', oOutputParameterHandler = ''):
-    oGuiElement = cGuiElement()
-    oGuiElement.setSiteName(SITE_IDENTIFIER)
-    oGuiElement.setFunction(sFunction)
-    oGuiElement.setTitle(sLabel)
-    oGuiElement.setIcon(sIcon)
-    oGuiElement.setThumbnail(sThumbnail)
-    oGuiElement.setDescription(cUtil().removeHtmlTags(sDesc))
-    oGuiElement.setMeta(sMeta)
-    
-    oGui.addFolder(oGuiElement, oOutputParameterHandler)
     
 def play():
     oGui = cGui()

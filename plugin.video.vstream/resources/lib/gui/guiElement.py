@@ -10,6 +10,7 @@ class cGuiElement:
         self.__sRootArt = os.path.join(os.getcwd(), 'resources/art/')
         self.__sType = 'video'
         self.__sMeta = 0
+        self.__sPlaycount = 0
         self.__sMetaAddon = cConfig().getSetting('meta-view')
         self.__sMediaUrl = ''
         self.__sTitle = ''
@@ -27,6 +28,12 @@ class cGuiElement:
 
     def getType(self):
         return self.__sType
+     
+    def setMetaAddon(self, sMetaAddon):
+        self.__sMetaAddon = sMetaAddon
+
+    def getMetaAddon(self):
+        return self.__sMetaAddon
         
     def setMeta(self, sMeta):
         self.__sMeta = sMeta
@@ -91,15 +98,80 @@ class cGuiElement:
     def addItemValues(self, sItemKey, mItemValue):
         self.__aItemValues[sItemKey] = mItemValue
     
-    def getMeta(self):
+    def getWatched(self):
+        watched = {}
+        count = 0
+        watched_db = os.path.join( cConfig().getSettingCache(), "watched.db" )
+        try: 
+            if os.path.exists( watched_db ):
+                watched = eval( open(watched_db).read() )
+                sTitle = self.getTitle()
+                sId = self.getSiteName()
+                if sTitle in watched.get(sId):
+                    count = 1
+                else:
+                    count = 0           
+        except:
+            return
+        return count
+        
+    def setWatched(self):
+        try:
+            watched = {}
+            sTitle = self.getTitle()
+            sId = self.getSiteName()
+            watched_db = os.path.join(cConfig().getSettingCache(), "watched.db" )
+            
+            if not os.path.exists(watched_db):
+                file(watched_db, "w").write("%r" % watched) 
+
+            if os.path.exists(watched_db):
+                watched = eval(open(watched_db).read() )
+                watched[ sId ] = watched.get( sId ) or []
+                #add to watched
+                if sTitle not in watched[sId]:
+                     watched[ sId ].append( sTitle )
+                else:
+                    del watched[ sId ][ watched[ sId ].index( sTitle ) ]
+            
+            file(watched_db, "w").write("%r" % watched)
+            watched_db.close()
+        except:
+            return
+            
+    
+    def getUpdateMetadonne(self):
         from metahandler import metahandlers
         grab = metahandlers.MetaData()
         #sTitle = self.__sTitle.decode('latin-1').encode("utf-8")
         sTitle=re.sub(r'\[.*\]|\(.*\)',r'',str(self.__sTitle))
+        sTitle=sTitle.replace('VF','').replace('VOSTFR','')
 
-        if self.__sMeta == 1:
+        if self.getMeta() == 1:
+            meta = grab.update_meta('movie',sTitle,'','','')
+        elif self.getMeta() == 2:
+            sTitle=re.sub(r'[0-9]+?',r'',str(sTitle))
+            sTitle=sTitle.replace('-','').replace('Saison','').replace('saison','').replace('Season','').replace('Episode','').replace('episode','')
+            meta = grab.update_meta('tvshow',sTitle,'','','')
+        else:
+            return
+        for key, value in meta.items():
+            self.addItemValues(key, value) 
+        #print meta['backdrop_url']
+        if meta['backdrop_url']:
+            self.addItemProperties('fanart_image', meta['backdrop_url'])
+        return
+        
+    def getMetadonne(self):
+        from metahandler import metahandlers
+        grab = metahandlers.MetaData()
+        #sTitle = self.__sTitle.decode('latin-1').encode("utf-8")
+        sTitle=re.sub(r'\[.*\]|\(.*\)',r'',str(self.__sTitle))
+        sTitle=sTitle.replace('VF','').replace('VOSTFR','')
+
+        if self.getMeta() == 1:
             meta = grab.get_meta('movie',sTitle,'','','')
-        elif self.__sMeta == 2:
+        elif self.getMeta() == 2:
             sTitle=re.sub(r'[0-9]+?',r'',str(sTitle))
             sTitle=sTitle.replace('-','').replace('Saison','').replace('saison','').replace('Season','').replace('Episode','').replace('episode','')
             meta = grab.get_meta('tvshow',sTitle,'','','')
@@ -115,10 +187,12 @@ class cGuiElement:
     def getItemValues(self):
         self.__aItemValues['Title'] = self.getTitle()
         self.__aItemValues['Plot'] = self.getDescription()
+        self.__aItemValues['Playcount'] = self.getWatched()
+        
         self.addItemProperties('fanart_image', self.__sFanart)
 
-        if self.__sMeta > 0 and self.__sMetaAddon == 'true':
-            self.getMeta()
+        if self.getMeta() > 0 and self.getMetaAddon() == 'true':
+            self.getMetadonne()
         return self.__aItemValues
     
     def addItemProperties(self, sPropertyKey, mPropertyValue):
@@ -132,5 +206,4 @@ class cGuiElement:
 
     def getContextItems(self):
         return self.__aContextElements
-
 

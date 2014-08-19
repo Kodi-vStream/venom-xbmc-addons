@@ -12,7 +12,7 @@ from resources.lib.util import cUtil
 import string
 
 SITE_IDENTIFIER = 'anime_no_paradise_com'
-SITE_NAME = 'anime-no-paradise.com'
+SITE_NAME = 'Anime-no-Paradise.com'
 
 URL_MAIN = 'http://www.anime-no-paradise.com/'
 
@@ -21,32 +21,21 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.anime-no-paradise.com/page-7751108.html')
-    __createMenuEntry(oGui, 'showMovies', 'Animes', 'animes.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.anime-no-paradise.com/page-7751108.html')
-    __createMenuEntry(oGui, 'showAZ', 'Animes A-Z', 'az.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Animes A-Z', 'az.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.anime-no-paradise.com/page-7947543.html')
-    __createMenuEntry(oGui, 'showMovies', 'Animes Films & OAVS', 'animes.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes Films & OAVS', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.anime-no-paradise.com/page-7947543.html')
-    __createMenuEntry(oGui, 'showAZ', 'Animes Films & OAVS A-Z', 'az.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Animes Films & OAVS A-Z', 'az.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
-
-def __createMenuEntry(oGui, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
-    oGuiElement = cGuiElement()
-    oGuiElement.setSiteName(SITE_IDENTIFIER)
-    oGuiElement.setFunction(sFunction)
-    oGuiElement.setTitle(sLabel)
-    oGuiElement.setIcon(sIcon)
-    oGuiElement.setThumbnail(sThumbnail)
-    oGuiElement.setDescription(cUtil().removeHtmlTags(sDesc))
-    
-    oGui.addFolder(oGuiElement, oOutputParameterHandler)
  
 def showAZ():
     oGui = cGui()
@@ -56,12 +45,12 @@ def showAZ():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oOutputParameterHandler.addParameter('AZ', '.')
-    __createMenuEntry(oGui, 'showMoviesAZ', '.', 'az.png', '', '', oOutputParameterHandler)          
+    oGui.addDir(SITE_IDENTIFIER, 'showMoviesAZ', '.', 'az.png', oOutputParameterHandler)          
     for i in string.ascii_uppercase:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('AZ', i)
-        __createMenuEntry(oGui, 'showMoviesAZ', i, 'az.png', '', '', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMoviesAZ', i, 'az.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
 
@@ -83,7 +72,7 @@ def showMoviesAZ():
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-                __createMenuEntry(oGui, 'showHosters', aEntry[1], 'animes.png', '', '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', aEntry[1], 'animes.png', '', '', oOutputParameterHandler)
             
 
     oGui.setEndOfDirectory()
@@ -108,7 +97,7 @@ def showMovies():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            __createMenuEntry(oGui, 'showHosters', sTitle, 'animes.png', '', '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, 'animes.png', '', '', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
 
@@ -145,7 +134,7 @@ def showHosters():
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                __createMenuEntry(oGui, 'showHosters', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'host.png', '', '', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'host.png', oOutputParameterHandler)
                    
         
             if (oHoster != False):
@@ -160,7 +149,7 @@ def showHosters():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('page', iNextPage)
-            __createMenuEntry(oGui, 'showHosters', '[COLOR teal]Next >>>[/COLOR]', 'next.png', '', '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
 
     oGui.setEndOfDirectory()

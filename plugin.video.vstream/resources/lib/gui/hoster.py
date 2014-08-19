@@ -207,14 +207,13 @@ class cHosterGui:
         bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
         sFileName = oInputParameterHandler.getValue('sFileName')
         
-        print sMediaUrl
 
         if (bGetRedirectUrl == 'True'):
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
         logger.info('call play: ' + sMediaUrl)
         oHoster = cHosterHandler().getHoster(sHosterIdentifier)
-	oHoster.setFileName(sFileName)
+        oHoster.setFileName(sFileName)
 
         #try:
 

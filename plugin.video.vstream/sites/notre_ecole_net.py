@@ -12,7 +12,7 @@ from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'notre_ecole_net'
-SITE_NAME = 'Notre-ecole.net'
+SITE_NAME = 'Notre-Ecole.net'
 
 URL_MAIN = 'http://www.notre-ecole.net/'
 
@@ -22,7 +22,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    __createMenuEntry(oGui, 'showSearch', 'Recherche', 'search.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
  
     liste = []
     liste.append( ["Films Documentaires Reportages Enquetes","http://www.notre-ecole.net/c/documentaires/"] )
@@ -44,19 +44,9 @@ def load():
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        __createMenuEntry(oGui, 'showMovies', sTitle, 'doc.png', '', '', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'doc.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
-
-def __createMenuEntry(oGui, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
-    oGuiElement = cGuiElement()
-    oGuiElement.setSiteName(SITE_IDENTIFIER)
-    oGuiElement.setFunction(sFunction)
-    oGuiElement.setTitle(sLabel)
-    oGuiElement.setIcon(sIcon)
-    oGuiElement.setThumbnail(sThumbnail)
-    oGuiElement.setDescription(cUtil().removeHtmlTags(sDesc))
-    oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
 def showSearch():
     oGui = cGui()
@@ -90,13 +80,13 @@ def showMovies(sUrl = ''):
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
-            __createMenuEntry(oGui, 'showHosters', aEntry[2], '', aEntry[0], aEntry[3], oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[2], '', aEntry[0], aEntry[3], oOutputParameterHandler)
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            __createMenuEntry(oGui, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', '', '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

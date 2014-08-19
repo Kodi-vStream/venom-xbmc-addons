@@ -21,39 +21,29 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    __createMenuEntry(oGui, 'showSearch', 'Recherche', 'search.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.docspot.fr/?cat=0')
-    __createMenuEntry(oGui, 'showMovies', 'Documentaires', 'doc.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.docspot.fr/?cat=0&orderby=views')
-    __createMenuEntry(oGui, 'showMovies', 'Documentaires Les plus vues', 'doc.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires Les plus vues', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.docspot.fr/?cat=0&orderby=comments')
-    __createMenuEntry(oGui, 'showMovies', 'Documentaires Les plus commentés', 'doc.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires Les plus commentés', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.docspot.fr/?cat=0&orderby=likes')
-    __createMenuEntry(oGui, 'showMovies', 'Documentaires Les mieux notés', 'doc.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires Les mieux notés', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://frenchstream.org/les-plus-vues')
-    __createMenuEntry(oGui, 'showGenres', 'Documentaires Genres', 'genres.png', '', '', oOutputParameterHandler)    
+    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Documentaires Genres', 'genres.png', oOutputParameterHandler)    
             
     oGui.setEndOfDirectory()
-
-def __createMenuEntry(oGui, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
-    oGuiElement = cGuiElement()
-    oGuiElement.setSiteName(SITE_IDENTIFIER)
-    oGuiElement.setFunction(sFunction)
-    oGuiElement.setTitle(sLabel)
-    oGuiElement.setIcon(sIcon)
-    oGuiElement.setThumbnail(sThumbnail)
-    oGuiElement.setDescription(cUtil().removeHtmlTags(sDesc))
-    oGui.addFolder(oGuiElement, oOutputParameterHandler)
   
 def showSearch():
     oGui = cGui()
@@ -92,7 +82,7 @@ def showGenres():
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        __createMenuEntry(oGui, 'showMovies', sTitle, 'genres.png', '', '', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
 
@@ -119,13 +109,13 @@ def showMovies(sUrl = ''):
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
-            __createMenuEntry(oGui, 'showHosters', aEntry[0], '', aEntry[2], '', oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[0], '', aEntry[2], '', oOutputParameterHandler)
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            __createMenuEntry(oGui, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', '', '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

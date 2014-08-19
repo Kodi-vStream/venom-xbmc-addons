@@ -1,23 +1,100 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.contextElement import cContextElement
+from resources.lib.gui.guiElement import cGuiElement
 import urllib
 import logger
 from resources.lib.config import cConfig
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
-
 import xbmc
 import xbmcgui
 import xbmcplugin
 
 class cGui:
 
+    SITE_NAME = 'cGui'
+
+    def addMovie(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(sId)
+        oGuiElement.setFunction(sFunction)
+        oGuiElement.setTitle(sLabel)
+        oGuiElement.setIcon(sIcon)
+        oGuiElement.setThumbnail(sThumbnail)
+        oGuiElement.setMeta(1)
+        oGuiElement.setDescription(sDesc)
+        
+        oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
+        self.__createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+        self.__createContexMenuWriteFav(oGuiElement, oOutputParameterHandler)
+        
+        self.addFolder(oGuiElement, oOutputParameterHandler)
+        
+    def addTV(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(sId)
+        oGuiElement.setFunction(sFunction)
+        oGuiElement.setTitle(sLabel)
+        oGuiElement.setIcon(sIcon)
+        oGuiElement.setThumbnail(sThumbnail)
+        oGuiElement.setMeta(2)
+        oGuiElement.setDescription(sDesc)
+        
+        oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
+        self.__createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+        self.__createContexMenuWriteFav(oGuiElement, oOutputParameterHandler)
+        
+        self.addFolder(oGuiElement, oOutputParameterHandler)
+        
+    def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(sId)
+        oGuiElement.setFunction(sFunction)
+        oGuiElement.setTitle(sLabel)
+        oGuiElement.setIcon(sIcon)
+        oGuiElement.setThumbnail(sThumbnail)
+        oGuiElement.setMeta(0)
+        oGuiElement.setDescription(sDesc)
+        
+        oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
+        self.__createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+        self.__createContexMenuWriteFav(oGuiElement, oOutputParameterHandler)
+        
+        self.addFolder(oGuiElement, oOutputParameterHandler)
+        
+    def addFav(self, sId, sFunction, sLabel, sIcon, sUrl, oOutputParameterHandler = ''):
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(sId)
+        oGuiElement.setFunction(sFunction)
+        oGuiElement.setTitle(sLabel)
+        oGuiElement.setIcon(sIcon)
+        oGuiElement.setMediaUrl(sUrl)
+        oGuiElement.setMeta(0)
+        
+        self.__createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
+        
+        self.addFolder(oGuiElement, oOutputParameterHandler)     
+    
+    
+    def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler = ''):
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(sId)
+        oGuiElement.setFunction(sFunction)
+        oGuiElement.setTitle(sLabel)
+        oGuiElement.setIcon(sIcon)
+        oGuiElement.setMeta(0)
+        
+        oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
+        
+        self.addFolder(oGuiElement, oOutputParameterHandler)       
+    
     def addFolder(self, oGuiElement, oOutputParameterHandler=''):
         sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)
         oListItem = self.createListItem(oGuiElement)
 
-        oListItem = self.__createContextMenu(oGuiElement, oListItem)        
+        oListItem = self.__createContextMenu(oGuiElement, oListItem)
 
         sPluginHandle = cPluginHandler().getPluginHandle();
         xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, True)
@@ -33,6 +110,63 @@ class cGui:
 
         return oListItem
 
+    def __createContexMenuWatch(self, oGuiElement, oOutputParameterHandler= ''):
+        oContext = cContextElement()
+        oContext.setFile('cGui')
+        oContext.setSiteName(oGuiElement.getSiteName())
+        oContext.setFunction('setWatched')
+        oContext.setTitle('Marquer vu/Non vu')
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
+        oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
+      
+        oContext.setOutputParameterHandler(oOutputParameterHandler)
+
+        oGuiElement.addContextItem(oContext)
+
+
+    def __createContexMenuDelFav(self, oGuiElement, oOutputParameterHandler= ''):
+
+        oContext = cContextElement()
+        oContext.setFile('cFav')
+        oContext.setSiteName('cFav')
+        oContext.setFunction('delFavourites')
+        oContext.setTitle('Supprimer Marque-Page')
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
+        oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
+        oOutputParameterHandler.addParameter('siteUrl', oGuiElement.getMediaUrl())
+      
+        oContext.setOutputParameterHandler(oOutputParameterHandler)
+
+        oGuiElement.addContextItem(oContext)           
+    
+    def __createContexMenuWriteFav(self, oGuiElement, oOutputParameterHandler= ''):
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+        sFav = oInputParameterHandler.getValue('sFav')
+        
+        oContext = cContextElement()
+        oContext.setFile('cFav')
+        oContext.setSiteName('cFav')
+        oContext.setFunction('writeFavourites')
+        oContext.setTitle('Marque-page')
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
+        oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sFav', sFav)
+      
+        oContext.setOutputParameterHandler(oOutputParameterHandler)
+
+        oGuiElement.addContextItem(oContext)
+
+        return
+    
+    
     def __createContextMenu(self, oGuiElement, oListItem):
         sPluginPath = cPluginHandler().getPluginPath();
         aContextMenus = []
@@ -47,17 +181,17 @@ class cGui:
             oListItem.addContextMenuItems(aContextMenus)
             #oListItem.addContextMenuItems(aContextMenus, True)
 
-        # if (oGuiElement.getSiteName() != 'cAboutGui'):            
-            # oContextItem = cContextElement()
-            # oContextItem.setFile('cAboutGui')
-            # oContextItem.setTitle('Ueber xStream')
-            # oContextItem.setFunction('show')
-            # oOutputParameterHandler = oContextItem.getOutputParameterHandler()
-            # sParams = oOutputParameterHandler.getParameterAsUri()
-            # sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-            # aContextMenus+= [ ( oContextItem.getTitle(), "Container.Update(%s)" % (sTest,),)]
-            # oListItem.addContextMenuItems(aContextMenus)
-
+        if (oGuiElement.getSiteName() != 'cAboutGui'):
+            oContextItem = cContextElement()
+            oContextItem.setFile('cFav')
+            oContextItem.setSiteName('cFav')
+            oContextItem.setTitle('Voir Marque-page')
+            oContextItem.setFunction('getFavourites')
+            oOutputParameterHandler = oContextItem.getOutputParameterHandler()
+            sParams = oOutputParameterHandler.getParameterAsUri()
+            sTest = '%s?site=%s&function=%s&contextFav=true&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
+            aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.Container.Update(%s)" % (sTest,),)]
+            oListItem.addContextMenuItems(aContextMenus)
         return oListItem
         
     def __ContextMenu(self, oGuiElement, oListItem):
@@ -122,6 +256,18 @@ class cGui:
 
     def updateDirectory(self):
 	xbmc.executebuiltin("Container.Refresh")
+    
+    def setWatched(self):
+        oGuiElement = cGuiElement()
+        oInputParameterHandler = cInputParameterHandler()
+
+        sTitle = oInputParameterHandler.getValue('sTitle')
+        sId = oInputParameterHandler.getValue('sId')
+
+        oGuiElement.setTitle(sTitle)
+        oGuiElement.setSiteName(sId)
+        oGuiElement.setWatched()
+        xbmc.executebuiltin( 'Container.Refresh' )
 
     def __createItemUrl(self, oGuiElement, oOutputParameterHandler=''):
         if (oOutputParameterHandler == ''):
@@ -134,7 +280,6 @@ class cGui:
             sItemUrl = '%s?site=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), urllib.quote_plus(oGuiElement.getTitle()), sParams)
         else:
             sItemUrl = '%s?site=%s&function=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), oGuiElement.getFunction(), urllib.quote_plus(oGuiElement.getTitle()), sParams)
-            
         return sItemUrl
 
     def showKeyBoard(self, sDefaultText=''):

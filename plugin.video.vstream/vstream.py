@@ -2,6 +2,7 @@
 from resources.lib.statistic import cStatistic
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.guiElement import cGuiElement
+from resources.lib.favourite import cFav
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -27,6 +28,12 @@ def parseUrl():
             cStatistic().callStartPlugin(sSiteName)
 
         if (isHosterGui(sSiteName, sFunction) == True):
+            return
+        
+        if (isGui(sSiteName, sFunction) == True):
+            return
+            
+        if (isFav(sSiteName, sFunction) == True):
             return
 
         #if (isAboutGui(sSiteName, sFunction) == True):            
@@ -58,6 +65,20 @@ def isHosterGui(sSiteName, sFunction):
     if (sSiteName == 'cHosterGui'):
         oHosterGui = cHosterGui()
         exec "oHosterGui."+ sFunction +"()"
+        return True
+    return False
+    
+def isGui(sSiteName, sFunction):
+    if (sSiteName == 'cGui'):
+        oGui = cGui()
+        exec "oGui."+ sFunction +"()"
+        return True
+    return False
+    
+def isFav(sSiteName, sFunction):
+    if (sSiteName == 'cFav'):
+        oFav = cFav()
+        exec "oFav."+ sFunction +"()"
         return True
     return False
 

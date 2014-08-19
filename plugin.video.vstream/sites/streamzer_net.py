@@ -12,7 +12,7 @@ from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'streamzer_net'
-SITE_NAME = 'streamzer.net'
+SITE_NAME = 'Streamzer.net'
 
 URL_MAIN = 'http://www.streamzer.net/'
 
@@ -21,61 +21,51 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    __createMenuEntry(oGui, 'showSearch', 'Recherche', 'search.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Films&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'showMovies', 'Films', 'films.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Films&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'showGenre', 'Films Genre', 'genres.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genre', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Series&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'showMovies', 'Series', 'series.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Series&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'showGenre', 'Series Genre', 'genres.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Series Genre', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Docus&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'showMovies', 'Documentaires', 'doc.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Docus&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'docuGenre', 'Documentaires Genre', 'genres.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'docuGenre', 'Documentaires Genre', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Replay&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'showReplay', 'Sport Replay', 'replay.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showReplay', 'Sport Replay', 'replay.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Replay&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'replayGenre', 'Sport Replay Genre', 'genres.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'replayGenre', 'Sport Replay Genre', 'genres.png', oOutputParameterHandler)
     
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Videos&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'showReplay', 'Buzz', 'buzz.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showReplay', 'Buzz', 'buzz.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Videos&op=classe&secid=&orderby=news&p=1#stream')
-    __createMenuEntry(oGui, 'buzzGenre', 'Buzz Genre', 'genres.png', '', '', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'buzzGenre', 'Buzz Genre', 'genres.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
 
-def __createMenuEntry(oGui, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
-    oGuiElement = cGuiElement()
-    oGuiElement.setSiteName(SITE_IDENTIFIER)
-    oGuiElement.setFunction(sFunction)
-    oGuiElement.setTitle(sLabel)
-    oGuiElement.setIcon(sIcon)
-    oGuiElement.setThumbnail(sThumbnail)
-    oGuiElement.setDescription(cUtil().removeHtmlTags(sDesc))
-    
-    oGui.addFolder(oGuiElement, oOutputParameterHandler)
     
 def showSearch():
     oGui = cGui()
@@ -110,13 +100,13 @@ def resultSearch(sUrl = ''):
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
-            __createMenuEntry(oGui, 'showHosters', aEntry[1], '', aEntry[2], '', oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[1], '', aEntry[2], '', oOutputParameterHandler)
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            __createMenuEntry(oGui, 'resultSearch', '[COLOR teal]Next >>>[/COLOR]', 'next.png', '', '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'resultSearch', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
             
     oGui.setEndOfDirectory()
@@ -143,7 +133,7 @@ def docuGenre():
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        __createMenuEntry(oGui, 'showMovies', sTitle, 'genres.png', '', '', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
     
@@ -179,7 +169,7 @@ def replayGenre():
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        __createMenuEntry(oGui, 'showReplay', sTitle, 'genres.png', '', '', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showReplay', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
 
@@ -203,7 +193,7 @@ def showGenre():
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
-            __createMenuEntry(oGui, 'showMovies', sTitle, 'genres.png', '', '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
            
     oGui.setEndOfDirectory()
     
@@ -227,7 +217,7 @@ def buzzGenre():
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
-            __createMenuEntry(oGui, 'showReplay', sTitle, 'genres.png', '', '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showReplay', sTitle, 'genres.png', oOutputParameterHandler)
            
     oGui.setEndOfDirectory()
 
@@ -249,13 +239,16 @@ def showMovies():
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
-            __createMenuEntry(oGui, 'showHosters', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
+            if '/series/' in aEntry[1]:
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            __createMenuEntry(oGui, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', '', '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -279,15 +272,15 @@ def showReplay():
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
             if 'Videos' in sUrl:
-                __createMenuEntry(oGui, 'showHosters2', sTitle, '', aEntry[0], '', oOutputParameterHandler)
+                oGui.addMisc(SITE_IDENTIFIER, 'showHosters2', sTitle, '', aEntry[0], '', oOutputParameterHandler)
             else:
-                __createMenuEntry(oGui, 'showHosters', sTitle, '', aEntry[0], '', oOutputParameterHandler)
+                oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], '', oOutputParameterHandler)
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            __createMenuEntry(oGui, 'showReplay', '[COLOR teal]Next >>>[/COLOR]', 'next.png', '', '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showReplay', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -327,7 +320,7 @@ def showHosters():
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                __createMenuEntry(oGui, 'showHosters', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'host.png', '', '', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'host.png', oOutputParameterHandler)
                    
         
             if (oHoster != False):
@@ -351,16 +344,25 @@ def showHosters2():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
+    sHtmlContent = sHtmlContent.replace('<iframe src=\'http://www.canalflux.com/pub.html\'','').replace('<iframe src=\'http://www.webzer.fr/pub.html\'','').replace('<iframe src=\'http://www.webzer.fr/pub2.html\'','')
 
 
-    sPattern = '<iframe.+?src="(.+?)"'
+    sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]'
     oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    aResult = oParser.parse(sHtmlContent, sPattern)    
+ 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            mediaID=re.findall('//([^<]+)',aEntry)[0]
-            sHosterUrl='http://'+mediaID
+            #mediaID=re.findall('//([^<]+)',aEntry)[0]
+            aEntry = aEntry.replace('http://', '')
+            aEntry = aEntry.replace('www.', '')
+            aEntry = aEntry.replace('//', '')
+            aEntry = 'http://www.'+aEntry
+            
+            print aEntry
+            #sHosterUrl='http://'+mediaID
             #oHoster = __checkHoster(sHosterUrl)
+            sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
         
             if (oHoster != False):

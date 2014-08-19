@@ -1,3 +1,4 @@
+import os
 import sys
 import xbmc
 import xbmcplugin
@@ -18,6 +19,11 @@ class cConfig:
             import xbmcaddon
             self.__oSettings = xbmcaddon.Addon(self.getPluginId())
             self.__aLanguage = self.__oSettings.getLocalizedString
+            self.__oname = self.__oSettings.getAddonInfo("name")
+            self.__ocache = xbmc.translatePath(self.__oSettings.getAddonInfo("profile"))
+            self.__sRootArt = os.path.join(os.getcwd(), 'resources/art/')
+            self.__sIcon = self.__sRootArt+'icon.png'
+            self.__sFileFav = self.__ocache+'favourite.db'
 
 
     def isDharma(self):
@@ -25,6 +31,12 @@ class cConfig:
 
     def getPluginId(self):
 	return 'plugin.video.vstream'
+    
+    def getSettingCache(self):
+        return self.__ocache
+    
+    def getFileFav(self):
+        return self.__sFileFav
 
     def showSettingsWindow(self):
         if (self.__bIsDharma):
@@ -52,4 +64,18 @@ class cConfig:
 		return xbmc.getLocalizedString(sCode)
             except:
 		return ''
+        
+    def showInfo(self, sTitle, sDescription, iSeconds=0):
+        if (self.__bIsDharma == False):
+            return
+
+        if (iSeconds == 0):
+                iSeconds = 1000
+        else:
+                iSeconds = iSeconds * 1000
+        
+        xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds, self.__sIcon))
+        
+    def update(self):
+        xbmc.executebuiltin("Container.Refresh")
         

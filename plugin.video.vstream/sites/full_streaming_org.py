@@ -12,7 +12,7 @@ from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'full_streaming_org'
-SITE_NAME = 'full-streaming.org'
+SITE_NAME = 'Full-Streaming.org'
 
 URL_MAIN = 'http://full-streaming.org/'
 
@@ -21,50 +21,38 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    __createMenuEntry(oGui, 'showSearch', 'Recherche', 'search.png', '', '', 0, oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://full-streaming.org/index.php?do=lastnews')
-    __createMenuEntry(oGui, 'showMovies', 'Films Nouveautés', 'news.png', '', '', 0, oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://full-streaming.org/films/')
-    __createMenuEntry(oGui, 'showMovies', 'Films', 'films.png', '', '', 0, oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://full-streaming.org/index.php?do=search')
-    __createMenuEntry(oGui, 'showGenre', 'Films Genre', 'genres.png', '', '', 0, oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genre', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://full-streaming.org/index.php?do=search')
-    __createMenuEntry(oGui, 'showQlt', 'Films Qualités', 'films.png', '', '', 0, oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showQlt', 'Films Qualités', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://full-streaming.org/series/')
-    __createMenuEntry(oGui, 'showMovies', 'Series', 'series.png', '', '', 0, oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://full-streaming.org/series-fr/')
-    __createMenuEntry(oGui, 'showMovies', 'Series VF', 'series.png', '', '', 0, oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series VF', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://full-streaming.org/series-vostfr/')
-    __createMenuEntry(oGui, 'showMovies', 'Series VOSTFR', 'series.png', '', '', 0, oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series VOSTFR', 'series.png', oOutputParameterHandler)
     
             
     oGui.setEndOfDirectory()
-
-def __createMenuEntry(oGui, sFunction, sLabel, sIcon, sThumbnail, sDesc, sMeta='', oOutputParameterHandler = ''):
-    oGuiElement = cGuiElement()
-    oGuiElement.setSiteName(SITE_IDENTIFIER)
-    oGuiElement.setFunction(sFunction)
-    oGuiElement.setTitle(sLabel)
-    oGuiElement.setIcon(sIcon)
-    oGuiElement.setThumbnail(sThumbnail)
-    oGuiElement.setDescription(cUtil().removeHtmlTags(sDesc))
-    oGuiElement.setMeta(sMeta)
-    
-    oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
 def showSearch():
     oGui = cGui()
@@ -113,7 +101,7 @@ def showGenre():
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        __createMenuEntry(oGui, 'showMovies', sTitle, 'genres.png', '', '', 0, oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
 
@@ -132,7 +120,7 @@ def showQlt():
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        __createMenuEntry(oGui, 'showMovies', sTitle, 'films.png', '', '', 0, oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'films.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
 
@@ -162,33 +150,21 @@ def showMovies(sUrl = ''):
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
 
             if '/series' in sUrl:
-                __createMenuEntry(oGui, 'seriesHosters', sTitle,'', aEntry[0], aEntry[3], 2, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle,'', aEntry[0], aEntry[3], oOutputParameterHandler)
             else:
-                __createMenuEntry(oGui, 'showHosters', sTitle, '', aEntry[0], aEntry[3], 1, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            __createMenuEntry(oGui, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', '', '', 0, oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
     sPattern = '<div class="navigation".+? <span.+? <a href="(.+?)">'
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        return aResult[1][0]
-
-    return False
-    
-def __checkiframePage(sUrl):
-    sPattern = '<p><!--baslik:.+?--><br />.?<iframe.+?src="(.+?)"'
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/plugins/like.php','').replace('<iframe src="http://www.facebook.com/plugins/likebox.php','')
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
