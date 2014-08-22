@@ -13,6 +13,7 @@ import re
 
 SITE_IDENTIFIER = 'full_streaming_org'
 SITE_NAME = 'Full-Streaming.org'
+SITE_DESC = 'films en streaming, vk streaming, youwatch, vimple , streaming hd , streaming 720p , streaming sans limite'
 
 URL_MAIN = 'http://full-streaming.org/'
 
@@ -212,11 +213,9 @@ def seriesHosters():
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','')
                
-    sPattern = '<dd><a href="([^<]+)" class="zoombox w630% h450%" title="(.+?)"><button class="btn">.+?</button></a></dd>'
-
+    sPattern = '<dd><a href="([^<]+)" class="zoombox.+?" title="(.+?)"><button class="btn">.+?</button></a></dd>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             

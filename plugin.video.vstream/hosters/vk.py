@@ -96,10 +96,9 @@ class cHoster(iHoster):
              
             dialog2 = xbmcgui.Dialog()
             ret = dialog2.select('Select Quality',qua)
-            sUrl = url[ret]+'.'+qua[ret]+'.mp4'
-                
-            return True, sUrl
-            
+            #sUrl = url[ret]+'.'+qua[ret]+'.mp4'
+            api_call = ('%s.%s.mp4') % (url[ret], qua[ret])
+            return True, api_call
         else:
             cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
             return False, False

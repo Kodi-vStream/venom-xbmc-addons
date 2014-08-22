@@ -13,6 +13,7 @@ import re
 
 SITE_IDENTIFIER = 'full_stream_net'
 SITE_NAME = 'Full-Stream.net'
+SITE_DESC = 'Film et Série en Streaming HD - Vk.Com - Netu.tv - ExaShare - YouWatch'
 
 URL_MAIN = 'http://full-stream.net'
 

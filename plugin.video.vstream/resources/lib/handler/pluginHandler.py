@@ -35,8 +35,9 @@ class cPluginHandler:
         try:
             exec "import " + sName
             exec "sSiteName = " + sName + ".SITE_NAME"
+            exec "sSiteDesc = " + sName + ".SITE_DESC"
             sPluginSettingsName = 'plugin_' + sName
-            return sSiteName, sPluginSettingsName
+            return sSiteName, sPluginSettingsName, sSiteDesc
         except Exception, e:
             logger.error("can't import plugin: " + str(sName))            
             return False, False
@@ -76,21 +77,23 @@ class cPluginHandler:
             if (aPlugin[0] != False):
                 sSiteName = aPlugin[0]
                 sPluginSettingsName = aPlugin[1]
+                sSiteDesc = aPlugin[2]
 
                 # existieren zu diesem plugin die an/aus settings
                 bPlugin = oConfig.getSetting(sPluginSettingsName)
                 if (bPlugin != ''):
                     # settings gefunden
                     if (bPlugin == 'true'):
-                        aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName))
+                        aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName, sSiteDesc))
                 else:
                    # settings nicht gefunden, also schalten wir es trotzdem sichtbar
-                   aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName))
+                   aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName, sSiteDesc))
 
         return aPlugins
 
-    def __createAvailablePluginsItem(self, sPluginName, sPluginIdentifier):
+    def __createAvailablePluginsItem(self, sPluginName, sPluginIdentifier, sPluginDesc):
         aPluginEntry = []
         aPluginEntry.append(sPluginName)
         aPluginEntry.append(sPluginIdentifier)
+        aPluginEntry.append(sPluginDesc)
         return aPluginEntry

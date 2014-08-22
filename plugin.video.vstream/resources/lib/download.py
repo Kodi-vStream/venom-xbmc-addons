@@ -1,4 +1,5 @@
-from resources.lib.gui.gui import cGui
+from resources.lib.config import cConfig
+#from traceback import print_exc
 import urllib2
 import xbmc
 import xbmcgui
@@ -6,10 +7,10 @@ import string
 import logger
 
 class cDownload:
-
+        
     def __createProcessDialog(self):
-        oDialog = xbmcgui.DialogProgress()
-        oDialog.create('Download')
+        oDialog = xbmcgui.DialogProgressBG()
+        oDialog.create('Download')            
         self.__oDialog = oDialog
 
     def __createDownloadFilename(self, sTitle):
@@ -23,7 +24,7 @@ class cDownload:
         sTitle = self.__createTitle(sUrl, sTitle)
         self.__sTitle = self.__createDownloadFilename(sTitle)
         
-        oGui = cGui()
+        oGui = cConfig()
         self.__sTitle = oGui.showKeyBoard(self.__sTitle)
         if (self.__sTitle != False and len(self.__sTitle) > 0):
 
@@ -38,8 +39,10 @@ class cDownload:
                     self.__createProcessDialog()
                     self.__download(urllib2.urlopen(sUrl), sDownloadPath)   
                 except:
+                    #print_exc()
+                    cConfig().showInfo('Telechargement impossible', self.__sTitle)
                     pass
-
+                    
                 self.__oDialog.close()
 
     def __download(self, oUrlHandler, fpath):
@@ -55,7 +58,7 @@ class cDownload:
         while 1:
             iCount = iCount +1
             data = oUrlHandler.read(chunk)
-            if not data or self.__processIsCanceled == True:                
+            if not data or self.__processIsCanceled == True:
                 break
             f.write(data)
             self.__stateCallBackFunction(iCount, chunk, iTotalSize)
@@ -75,9 +78,9 @@ class cDownload:
 
     def __stateCallBackFunction(self, iCount, iBlocksize, iTotalSize):
         iPercent = int(float(iCount * iBlocksize * 100) / iTotalSize)
-        self.__oDialog.update(iPercent, self.__sTitle, self.__formatFileSize(iTotalSize))
+        self.__oDialog.update(iPercent, self.__sTitle, self.__formatFileSize(float(iCount * iBlocksize))+'/'+self.__formatFileSize(iTotalSize))
 
-        if (self.__oDialog.iscanceled()):
+        if (self.__oDialog.isFinished()):
             self.__processIsCanceled = True
             self.__oDialog.close()
             

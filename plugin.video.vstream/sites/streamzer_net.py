@@ -13,6 +13,7 @@ import re
 
 SITE_IDENTIFIER = 'streamzer_net'
 SITE_NAME = 'Streamzer.net'
+SITE_DESC = 'Regarder des films et series en streaming illimite avec Youwatch, VK streaming. Streamzer le streaming sans limite avec Youwatch et VK stream.'
 
 URL_MAIN = 'http://www.streamzer.net/'
 

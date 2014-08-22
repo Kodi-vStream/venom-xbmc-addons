@@ -13,6 +13,7 @@ import re
 
 SITE_IDENTIFIER = 'vos_animes_com'
 SITE_NAME = 'Vos_Animes.com'
+SITE_DESC = 'Vos-Animes | Toutes vos meilleures Animes séries et films en VF et VOSTFR en Téléchargement Streaming'
 
 URL_MAIN = 'http://www.vos-animes.com/'
 

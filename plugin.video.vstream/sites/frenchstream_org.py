@@ -13,6 +13,7 @@ import re
 
 SITE_IDENTIFIER = 'frenchstream_org'
 SITE_NAME = 'FrenchStream.org'
+SITE_DESC = 'Film en streaming, regarder film en direct, streaming vf regarder film gratuitement sur Frenchstream.org'
 
 URL_MAIN = 'http://frenchstream.org/'
 

@@ -15,6 +15,8 @@
         <setting id="plugin_freebox" type="bool" label="Freebox" default="true"/>
         <setting id="plugin_anime_no_paradise_com" type="bool" label="Anime no Paradise" default="true"/>
         <setting id="plugin_fifostream_me" type="bool" label="Fifostream" default="true"/>
+        <setting id="plugin_fullmoviz_org" type="bool" label="FullMoviz" default="true"/>
+        <setting id="plugin_reportagestv_com" type="bool" label="ReportagesTV" default="true"/>
     <!--</category>
     <category label="30023">-->
     <!--   <setting label="30023" type="lsep"/>

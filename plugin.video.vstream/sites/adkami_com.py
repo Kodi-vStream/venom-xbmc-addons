@@ -13,6 +13,7 @@ import re,string
 
 SITE_IDENTIFIER = 'adkami_com'
 SITE_NAME = 'Adkami.com'
+SITE_DESC = 'Bienvenue sur ADkami.com. un site Anime (Manga) en streaming.'
 
 URL_MAIN = 'http://www.adkami.com'
 

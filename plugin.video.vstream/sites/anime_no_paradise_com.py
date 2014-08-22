@@ -13,6 +13,7 @@ import string
 
 SITE_IDENTIFIER = 'anime_no_paradise_com'
 SITE_NAME = 'Anime-no-Paradise.com'
+SITE_DESC = 'Anime no Paradise : Streaming Anime Manga - Www.anime-no-paradise.com'
 
 URL_MAIN = 'http://www.anime-no-paradise.com/'
 

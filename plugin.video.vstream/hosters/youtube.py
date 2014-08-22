@@ -45,11 +45,16 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, sUrl):
-        if 'embed' not in sUrl:
-            self.__sUrl = str(self.__getIdFromUrl(sUrl))
-            self.__sUrl = 'http://www.youtube.com/embed/' + str(self.__sUrl)
-        else:
+        if 'plugin' not in sUrl:
             self.__sUrl = sUrl
+            self.__sUrl = self.__sUrl.replace('http:', '')
+            self.__sUrl = self.__sUrl.replace('//', '')
+            self.__sUrl = self.__sUrl.replace('www.youtube.com', '')
+            self.__sUrl = self.__sUrl.replace('www.youtube-nocookie.com', '')
+            self.__sUrl = self.__sUrl.replace('/embed/', '')
+            self.__sUrl = str(self.__sUrl)
+        else:
+            self.__sUrl = sUrl            
 
     def checkUrl(self, sUrl):
         return True
@@ -58,15 +63,26 @@ class cHoster(iHoster):
         return self.__sUrl
 
     def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
+        if 'plugin'  in self.__sUrl:
+            return self.__getMediaLinkForPluging()
+        else:
+            return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
         
         if xbmcaddon.Addon('plugin.video.youtube'):
-            print 'passe'
-            videoID = str(self.__getIdFromUrl(self.__sUrl))
+            videoID = self.__sUrl
             api_call = 'plugin://plugin.video.youtube/?action=play_video&videoid='+videoID
+            print api_call
             return True, api_call
+        else:
+            cGui().showInfo(self.__sDisplayName, 'Vous devez installer l\'addon video youtube' , 5)
+            return False, False
+            
+    def __getMediaLinkForPluging(self):
+        
+        if xbmcaddon.Addon('plugin.video.youtube'):
+            return True, self.__sUrl
         else:
             cGui().showInfo(self.__sDisplayName, 'Vous devez installer l\'addon video youtube' , 5)
             return False, False

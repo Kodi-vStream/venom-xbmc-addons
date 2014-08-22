@@ -5,12 +5,14 @@ import os, re
 class cGuiElement:
 
     DEFAULT_FOLDER_ICON = 'icon.png'
+    COUNT = 0
 
     def __init__(self):
         self.__sRootArt = os.path.join(os.getcwd(), 'resources/art/')
         self.__sType = 'video'
         self.__sMeta = 0
         self.__sPlaycount = 0
+        self.__sTrailerUrl = ''
         self.__sMetaAddon = cConfig().getSetting('meta-view')
         self.__sMediaUrl = ''
         self.__sTitle = ''
@@ -22,6 +24,12 @@ class cGuiElement:
         self.__aItemValues = {}
         self.__aProperties = {}
         self.__aContextElements = []
+        cGuiElement.COUNT += 1
+        
+    #def __len__(self): return self.__sCount
+    
+    def getCount(self): 
+        return cGuiElement.COUNT
 
     def setType(self, sType):
         self.__sType = sType
@@ -34,6 +42,12 @@ class cGuiElement:
 
     def getMetaAddon(self):
         return self.__sMetaAddon
+        
+    def setTrailerUrl(self, sTrailerUrl):
+        self.__sTrailerUrl = sTrailerUrl
+
+    def getTrailerUrl(self):
+        return self.__sTrailerUrl
         
     def setMeta(self, sMeta):
         self.__sMeta = sMeta
@@ -101,6 +115,7 @@ class cGuiElement:
     def getWatched(self):
         watched = {}
         count = 0
+
         watched_db = os.path.join( cConfig().getSettingCache(), "watched.db" )
         try: 
             if os.path.exists( watched_db ):
@@ -115,11 +130,11 @@ class cGuiElement:
             return
         return count
         
-    def setWatched(self):
+    def setWatched(self, sId, sTitle):
         try:
             watched = {}
-            sTitle = self.getTitle()
-            sId = self.getSiteName()
+            #sTitle = self.getTitle()
+            #sId = self.getSiteName()
             watched_db = os.path.join(cConfig().getSettingCache(), "watched.db" )
             
             if not os.path.exists(watched_db):
@@ -177,18 +192,22 @@ class cGuiElement:
             meta = grab.get_meta('tvshow',sTitle,'','','')
         else:
             return
+        del meta['playcount'] 
+        
+        #print meta['trailer_url']
+        
         for key, value in meta.items():
-            self.addItemValues(key, value) 
-        #print meta['backdrop_url']
+            self.addItemValues(key, value)
         if meta['backdrop_url']:
             self.addItemProperties('fanart_image', meta['backdrop_url'])
+        if meta['trailer_url']:
+            self.__sTrailerUrl = meta['trailer']
         return
 
     def getItemValues(self):
         self.__aItemValues['Title'] = self.getTitle()
         self.__aItemValues['Plot'] = self.getDescription()
         self.__aItemValues['Playcount'] = self.getWatched()
-        
         self.addItemProperties('fanart_image', self.__sFanart)
 
         if self.getMeta() > 0 and self.getMetaAddon() == 'true':

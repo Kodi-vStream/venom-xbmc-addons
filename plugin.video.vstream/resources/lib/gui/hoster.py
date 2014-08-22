@@ -33,7 +33,7 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
         oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
         
-        #context menu
+        #context playlit menu
         oContext = cContextElement()
         oContext.setFile('cHosterGui')
         oContext.setSiteName(self.SITE_NAME)
@@ -41,7 +41,16 @@ class cHosterGui:
         oContext.setTitle('Add to playlist')
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
-
+        
+        #context download menu
+        oContext = cContextElement()
+        oContext.setFile('cHosterGui')
+        oContext.setSiteName(self.SITE_NAME)
+        oContext.setFunction('download')
+        oContext.setTitle('Télécharger')
+        oContext.setOutputParameterHandler(oOutputParameterHandler)
+        oGuiElement.addContextItem(oContext)
+        
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     def checkHoster(self, sHosterUrl): 
@@ -243,7 +252,7 @@ class cHosterGui:
         sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
-	sFileName = oInputParameterHandler.getValue('sFileName')
+        sFileName = oInputParameterHandler.getValue('sFileName')
 
         if (bGetRedirectUrl == 'True'):
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
@@ -251,7 +260,7 @@ class cHosterGui:
         logger.info('call download: ' + sMediaUrl)
 
         oHoster = cHosterHandler().getHoster(sHosterIdentifier)
-	oHoster.setFileName(sFileName)
+        oHoster.setFileName(sFileName)
 
         #try:
         oHoster.setUrl(sMediaUrl)

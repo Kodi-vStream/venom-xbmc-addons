@@ -14,6 +14,7 @@ import re, urllib2
 
 SITE_IDENTIFIER = 'freebox'
 SITE_NAME = 'Freebox'
+SITE_DESC = 'Regarder la télévision freebox | Uniquement pour les abonnés free'
 
 URL_MAIN = 'http://mafreebox.freebox.fr/freeboxtv/playlist.m3u'
 

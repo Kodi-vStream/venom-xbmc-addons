@@ -65,6 +65,16 @@ class cConfig:
             except:
 		return ''
         
+    def showKeyBoard(self, sDefaultText=''):
+        keyboard = xbmc.Keyboard(sDefaultText)
+        keyboard.doModal()
+        if (keyboard.isConfirmed()):
+            sSearchText = keyboard.getText()
+            if (len(sSearchText)) > 0:
+                return sSearchText
+
+        return False
+        
     def showInfo(self, sTitle, sDescription, iSeconds=0):
         if (self.__bIsDharma == False):
             return

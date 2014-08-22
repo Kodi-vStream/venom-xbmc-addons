@@ -13,6 +13,7 @@ import re
 
 SITE_IDENTIFIER = 'docspot_fr'
 SITE_NAME = 'Docspot.fr'
+SITE_DESC = 'docspot.fr + 3000 Documentaires et reportages en Streaming gratuit !'
 
 URL_MAIN = 'http://www.docspot.fr/'
 

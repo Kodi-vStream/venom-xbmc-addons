@@ -10,13 +10,12 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re
 
-SITE_IDENTIFIER = 'fifostream_me'
-SITE_NAME = 'FifoStream.me'
-SITE_DESC = 'Film Streaming | Fifostream, Film en streaming Youwatch Exashare'
+SITE_IDENTIFIER = 'fullmoviz_org'
+SITE_NAME = 'FullMoviz.org'
+SITE_DESC = 'Films complets en streaming et en Français sur Fullmoviz. Liste de sorties cinéma streaming. Top streaming FR.'
 
-URL_MAIN = 'http://www.fifostream.me/'
+URL_MAIN = 'http://www.fullmoviz.org/'
 
 def load():
     oGui = cGui()
@@ -26,17 +25,17 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.fifostream.me/film?orderby=date')
+    oOutputParameterHandler.addParameter('siteUrl', 'http://www.fullmoviz.org/?p=movies&orderby=date')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'films.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.fifostream.me/film?orderby=title')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films', 'films.png', oOutputParameterHandler)
-    
+    oOutputParameterHandler.addParameter('siteUrl', 'http://www.fullmoviz.org/?p=movies&orderby=comment_count')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus commentés', 'films.png', oOutputParameterHandler)
+   
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.fifostream.me/?orderby=views')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus vues', 'films.png', oOutputParameterHandler)
-            
+    oOutputParameterHandler.addParameter('siteUrl', 'http://www.fullmoviz.org/')
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'genres.png', oOutputParameterHandler)
+    
     oGui.setEndOfDirectory()
 
     
@@ -45,46 +44,32 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = 'http://www.fifostream.me/?s='+sSearchText
+            sUrl = 'http://www.fullmoviz.org/?s='+sSearchText
             showMovies(sUrl)
             return  
     oGui.setEndOfDirectory()
-    
-def resultSearch(sUrl = ''):
+ 
+def showGenre():
     oGui = cGui()
-    
-    if sUrl:
-      sUrl = sUrl
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sPattern = "<a href='([^<]+)' title=.([^<]+).>.+?<img src='([^<]+)' width='160px' height='213px'.+?>"
-    
+ 
+    sPattern = '<li class="cat-item cat-item-.+?"><a href="([^<]+)" title=".+?">(.+?)</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-
+        
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[1], '', aEntry[2], '', oOutputParameterHandler)
-            
-        sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'resultSearch', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
-
-            
+            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', aEntry[1], 'genres.png', oOutputParameterHandler)
+           
     oGui.setEndOfDirectory()
- 
-
+    
+    
 def showMovies(sUrl=''):
     oGui = cGui()
     if sUrl:
@@ -95,21 +80,23 @@ def showMovies(sUrl=''):
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sPattern = '<a class="clip-link" data-id=".+?" title="([^<]+)" href="([^<]+)">.+?<img src="([^<]+)" alt=".+?"/>.+?<p class="desc">(.+?)</p>'
+    sHtmlContent = sHtmlContent.replace('&#039;', '\'')
+    
+    sPattern = '<div class="loop-thumb"><a href="([^<]+)"><img width=".+?" height=".+?" src="([^<]+)" class="attachment-loop wp-post-image" alt="(.+?)" /></a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sTitle = aEntry[0].decode('latin-1').encode("utf-8")
-            sThumbnail = 'http:'+str(aEntry[2])
-            sUrl = URL_MAIN+str(aEntry[1])
+            #sTitle = aEntry[2].decode('latin-1').encode("utf-8")
+            #sThumbnail = 'http:'+str(aEntry[2])
+            #sUrl = URL_MAIN+str(aEntry[1])
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[0]))
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)            
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[0], '', sThumbnail, aEntry[3], oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
+            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[1]))            
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[2], '', aEntry[1], '', oOutputParameterHandler)
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -121,13 +108,11 @@ def showMovies(sUrl=''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class="page larger" href="([^<]+)">.+?</a>'
+    sPattern = "<span class='page-numbers current'>.+?</span><a class='page-numbers' href='([^<]+)'>.+?</a>"
     oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
- 
+    aResult = oParser.parse(sHtmlContent, sPattern) 
     if (aResult[0] == True):
-        sNext = aResult[1][0].replace('film/', '').replace('page/','')
-        return URL_MAIN+'film/page/'+sNext
+        return aResult[1][0]
 
     return False
     
@@ -142,18 +127,15 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
 
-    sPattern = '<iframe src="(.+?)"'
+    sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sHosterUrl = str(aEntry)
-            sHosterUrl = 'http:'+sHosterUrl
-            #oHoster = __checkHoster(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
         
             if (oHoster != False):
-                #sMovieTitle=re.sub(r'\[.*\]',r'',sMovieTitle)
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 

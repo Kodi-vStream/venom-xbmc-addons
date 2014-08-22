@@ -13,6 +13,7 @@ import re
 
 SITE_IDENTIFIER = 'dpstreaming_org'
 SITE_NAME = 'DPStreaming.org'
+SITE_DESC = 'Streaming ou Telechargement films series mangas gratuitement et sans limite. Des films en exclusivite en qualite DVD a regarder ou telecharger'
 
 URL_MAIN = 'http://dpstreaming.org/'
 

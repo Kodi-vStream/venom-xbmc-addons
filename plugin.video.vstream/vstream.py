@@ -56,6 +56,7 @@ def parseUrl():
                 oGuiElement = cGuiElement()
                 oGuiElement.setTitle(aPlugin[0])
                 oGuiElement.setSiteName(aPlugin[1])
+                oGuiElement.setDescription(aPlugin[2])
                 oGuiElement.setFunction(sFunction)
                 oGui.addFolder(oGuiElement)
 

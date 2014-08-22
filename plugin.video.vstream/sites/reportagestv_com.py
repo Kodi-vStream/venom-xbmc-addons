@@ -8,14 +8,12 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
-import re
 
-SITE_IDENTIFIER = 'notre_ecole_net'
-SITE_NAME = 'Notre-Ecole.net'
-SITE_DESC = 'Un blog qui traite de notre rapport avec l\'argent, de la consommation, de notre modèle économique et qui s\'interroge sur l\'avenir de notre planète'
+SITE_IDENTIFIER = 'reportagestv_com'
+SITE_NAME = 'Reportagestv.com'
+SITE_DESC = 'Reportages TV - Replay des reportages télé français en streaming.'
 
-URL_MAIN = 'http://www.notre-ecole.net/'
+URL_MAIN = 'http://www.reportagestv.com/'
 
 def load():
    
@@ -26,27 +24,23 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
  
     liste = []
-    liste.append( ["Films Documentaires Reportages Enquetes","http://www.notre-ecole.net/c/documentaires/"] )
-    liste.append( ["Ecologie - Environnement","http://www.notre-ecole.net/c/ecologie-environnement/"] )
-    liste.append( ["Economie - Finance","http://www.notre-ecole.net/c/economie-finance/"] )
-    liste.append( ["Histoire","http://www.notre-ecole.net/c/histoire/"] )
-    liste.append( ["Philosophie","http://www.notre-ecole.net/c/philosophie/"] )
-    liste.append( ["Politique","http://www.notre-ecole.net/c/politique/"] )
-    liste.append( ["Politique - France","http://www.notre-ecole.net/c/politique/politique-france/"] )
-    liste.append( ["Politique - Union Européenne","http://www.notre-ecole.net/c/politique/union-europeenne/"] )
-    liste.append( ["Médias - Publicité","http://www.notre-ecole.net/c/medias-publicite/"] )
-    liste.append( ["Société","http://www.notre-ecole.net/c/societe/"] )
-    liste.append( ["Santé et sanitaire","http://www.notre-ecole.net/c/sante-sanitaire/"] )
-    liste.append( ["Guerres","http://www.notre-ecole.net/c/guerres/"] )
-    liste.append( ["Pétitions","http://www.notre-ecole.net/c/petition/"] )
-    
+    liste.append( ["Reportage","http://www.reportagestv.com/"] )
+    liste.append( ["Canal+","http://www.reportagestv.com/category/canal-plus/"] )
+    liste.append( ["D8","http://www.reportagestv.com/category/d8/"] )
+    liste.append( ["France 2","http://www.reportagestv.com/category/france-2/"] )
+    liste.append( ["TF1","http://www.reportagestv.com/category/tf1/"] )
+    liste.append( ["TMC","http://www.reportagestv.com/category/tmc/"] )    
                 
     for sTitle,sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'doc.png', oOutputParameterHandler)
-       
+      
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Emmisions', 'doc.png', oOutputParameterHandler)
+    
     oGui.setEndOfDirectory() 
 
 def showSearch():
@@ -59,6 +53,28 @@ def showSearch():
             return  
     oGui.setEndOfDirectory()
 
+def showGenre():
+    oGui = cGui()
+ 
+    liste = []
+    liste.append( ['Canal+ - Nouvelle Vie','http://www.reportagestv.com/category/canal-plus/nouvelle-vie/'] )
+    liste.append( ['Canal+ - Spécial Investigation','http://www.reportagestv.com/category/canal-plus/special-investigation/'] )
+    liste.append( ['D8 - Au coeur de l\'Enquête','http://www.reportagestv.com/category/d8/au-coeur-de-lenquete/'] )
+    liste.append( ['D8 - En quête d\'Actualité','http://www.reportagestv.com/category/d8/en-quete-dactualite/'] )
+    liste.append( ['France 2 - Apocalypse la 1ère guerre mondiale','http://www.reportagestv.com/category/france-2/apocalypse-la-1-ere-guerre-mondiale/'] )
+    liste.append( ['France 2 - Envoyé Spécial','http://www.reportagestv.com/category/france-2/envoye-special/'] )
+    liste.append( ['TF1 - Appels d\'Urgence','http://www.reportagestv.com/category/tf1/appels-durgence/'] )
+    liste.append( ['TF1 - Sept à Huit','http://www.reportagestv.com/category/tf1/sept-a-huit/'] )
+    liste.append( ['TMC - 90 Enquêtes','http://www.reportagestv.com/category/tmc/90-enquetes/'] )
+                
+    for sTitle,sUrl in liste:
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'doc.png', oOutputParameterHandler)
+       
+    oGui.setEndOfDirectory() 
+    
 def showMovies(sUrl = ''):
     oGui = cGui()
     if sUrl:
@@ -69,8 +85,8 @@ def showMovies(sUrl = ''):
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
-    sPattern = '<img.+?src="([^<]+)".+?/>.+?<a href="([^<]+)" rel="bookmark">([^<]+)</a>.+?</div>(.+?)<p class="quick-read-more">'
+    sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'')
+    sPattern = '<img width=".+?" height=".+?" src="([^<]+)" class="attachment-loop wp-post-image" alt=".+?" />.+?<h3 class="loop-title"><a href="([^<]+)" rel="bookmark">([^<]+)</a></h3>.+?<div class="mh-excerpt">(.+?)<a'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -93,7 +109,7 @@ def showMovies(sUrl = ''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class="page larger" href="(.+?)">.+?</a>'
+    sPattern = "<span class='page-numbers current'>.+?</span><a class='page-numbers' href='(.+?)'>.+?</a>"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -110,9 +126,7 @@ def showHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/plugins/like.php','').replace('<iframe src="http://www.facebook.com/plugins/likebox.php','')
-               
+    sHtmlContent = oRequestHandler.request();        
         
     sPattern = '<iframe.+?src="(.+?)"'
     oParser = cParser()

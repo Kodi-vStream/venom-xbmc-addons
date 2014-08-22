@@ -13,6 +13,7 @@ from resources.lib.player import cPlayer
 
 SITE_IDENTIFIER = 'chaine_tv'
 SITE_NAME = 'Télévision en Stream'
+SITE_DESC = 'Regarder la télévision française'
 
 URL_MAIN = 'http://venom'
 

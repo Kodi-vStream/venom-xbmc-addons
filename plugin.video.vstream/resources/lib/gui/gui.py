@@ -15,8 +15,10 @@ import xbmcplugin
 class cGui:
 
     SITE_NAME = 'cGui'
+    CONTENT = 'files'
 
     def addMovie(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
+        cGui.CONTENT = "movies"
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -32,7 +34,9 @@ class cGui:
         
         self.addFolder(oGuiElement, oOutputParameterHandler)
         
+        
     def addTV(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
+        cGui.CONTENT = "tvshows"
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -49,6 +53,7 @@ class cGui:
         self.addFolder(oGuiElement, oOutputParameterHandler)
         
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
+        cGui.CONTENT = "files"
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -65,6 +70,7 @@ class cGui:
         self.addFolder(oGuiElement, oOutputParameterHandler)
         
     def addFav(self, sId, sFunction, sLabel, sIcon, sUrl, oOutputParameterHandler = ''):
+        cGui.CONTENT = "files"
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -93,21 +99,23 @@ class cGui:
     def addFolder(self, oGuiElement, oOutputParameterHandler=''):
         sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)
         oListItem = self.createListItem(oGuiElement)
-
+        
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
-
+       
+        
         sPluginHandle = cPluginHandler().getPluginHandle();
-        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, True)
+
+        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, True, oGuiElement.getCount())
 
     def createListItem(self, oGuiElement):
         #oPath = cPluginHandler().getRootArt()
         oListItem = xbmcgui.ListItem(oGuiElement.getTitle(), oGuiElement.getTitleSecond(), oGuiElement.getIcon(), oGuiElement.getThumbnail())
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
-        
+
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey in aProperties.keys():
             oListItem.setProperty(sPropertyKey, aProperties[sPropertyKey])
-
+        
         return oListItem
 
     def __createContexMenuWatch(self, oGuiElement, oOutputParameterHandler= ''):
@@ -115,7 +123,7 @@ class cGui:
         oContext.setFile('cGui')
         oContext.setSiteName(oGuiElement.getSiteName())
         oContext.setFunction('setWatched')
-        oContext.setTitle('Marquer vu/Non vu')
+        oContext.setTitle('[COLOR azure]Marquer vu/Non vu[/COLOR]')
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
@@ -132,7 +140,7 @@ class cGui:
         oContext.setFile('cFav')
         oContext.setSiteName('cFav')
         oContext.setFunction('delFavourites')
-        oContext.setTitle('Supprimer Marque-Page')
+        oContext.setTitle('[COLOR red]Supprimer Marque-Page[/COLOR]')
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
@@ -152,7 +160,7 @@ class cGui:
         oContext.setFile('cFav')
         oContext.setSiteName('cFav')
         oContext.setFunction('writeFavourites')
-        oContext.setTitle('Marque-page')
+        oContext.setTitle('[COLOR teal]Marque-page[/COLOR]')
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
@@ -185,13 +193,32 @@ class cGui:
             oContextItem = cContextElement()
             oContextItem.setFile('cFav')
             oContextItem.setSiteName('cFav')
-            oContextItem.setTitle('Voir Marque-page')
+            oContextItem.setTitle('[COLOR teal]Voir Marque-page[/COLOR]')
             oContextItem.setFunction('getFavourites')
             oOutputParameterHandler = oContextItem.getOutputParameterHandler()
             sParams = oOutputParameterHandler.getParameterAsUri()
             sTest = '%s?site=%s&function=%s&contextFav=true&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
             aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.Container.Update(%s)" % (sTest,),)]
             oListItem.addContextMenuItems(aContextMenus)
+            
+        if  oGuiElement.getTrailerUrl(): 
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('sHosterIdentifier', 'youtube')
+                oOutputParameterHandler.addParameter('sMediaUrl', oGuiElement.getTrailerUrl())
+                oOutputParameterHandler.addParameter('sFileName', oGuiElement.getTitle())
+                oContextItem = cContextElement()
+                oContextItem.setFile('cHosterGui')
+                oContextItem.setSiteName('cHosterGui')
+                oContextItem.setTitle('[COLOR azure]Bande Annonce[/COLOR]')
+                oContextItem.setFunction('play')
+                oContextItem.setOutputParameterHandler(oOutputParameterHandler)
+                
+                oOutputParameterHandler = oContextItem.getOutputParameterHandler()
+                sParams = oOutputParameterHandler.getParameterAsUri()
+                sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
+                aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.RunPlugin(%s)" % (sTest,),)]
+                oListItem.addContextMenuItems(aContextMenus)
+        
         return oListItem
         
     def __ContextMenu(self, oGuiElement, oListItem):
@@ -251,6 +278,7 @@ class cGui:
     def setEndOfDirectory(self):
         iHandler = cPluginHandler().getPluginHandle()
         xbmcplugin.setPluginCategory(iHandler, "")
+        xbmcplugin.setContent(iHandler, cGui.CONTENT)
         xbmcplugin.addSortMethod(iHandler, xbmcplugin.SORT_METHOD_NONE)
         xbmcplugin.endOfDirectory(iHandler, True)
 
@@ -264,9 +292,9 @@ class cGui:
         sTitle = oInputParameterHandler.getValue('sTitle')
         sId = oInputParameterHandler.getValue('sId')
 
-        oGuiElement.setTitle(sTitle)
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setWatched()
+        #oGuiElement.setTitle(sTitle)
+        #oGuiElement.setSiteName(sId)
+        oGuiElement.setWatched(sId, sTitle)
         xbmc.executebuiltin( 'Container.Refresh' )
 
     def __createItemUrl(self, oGuiElement, oOutputParameterHandler=''):
