@@ -4,7 +4,7 @@ Venom-Addons-Vstream-XBMC
 C'est quoi!
 ----------
 
-Vstream vous permet de visionner ou télécharger les films, séries, mangas, documentaires, TV, ect.. Le tout disponible  directement depuis XBMC et 100% Français.
+Vstream vous permet de visionner ou télécharger les films, séries, mangas, documentaires, Télé, ect.. Le tout disponible  directement depuis XBMC et 100% Français.
 
 Demo!
 ----------
