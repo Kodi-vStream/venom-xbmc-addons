@@ -33,5 +33,9 @@ Pour me proposer de nouvelles sources ou me rapporter un bug utiliser
 
 [Questions/Réponses](https://github.com/LordVenom/venom-xbmc-addons/issues)
 
+Pour créer un nouvelle source utiliser le fichier avec commentaire pour vous aider.
+
+[Fichier avec commentaire](https://github.com/LordVenom/venom-xbmc-addons/blob/master/ajouter_une_source.py)
+
 
 Bon Film ++
