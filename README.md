@@ -1,12 +1,37 @@
-venom-xbmc-addons
+venom-xbmc-Vstream-addons
 =================
+
+C'est quoi!
+----------
+
+Vstream vous permet de visionner ou télécharger les films, séries, mangas, documentaires, TV, ect.. disponible sur les sites de streaming directement depuis XBMC.
+
+Demo!
+----------
+
+[![Vstream Images](http://img4.hostingpics.net/pics/128778Sanstitre1.jpg)]
+
+
+Installer!
+----------
 
 Installer le zip du repository (pour avoir les mises à jour automatique) ou installer la dernieres version.
 
-https://github.com/LordVenom/venom-xbmc-addons/releases
+[Voir toutes les Versions](https://github.com/LordVenom/venom-xbmc-addons/releases)
+
+
+Quoi de neuf!
+----------
+
+[Voir le changelog](https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/changelog.txt)
+
+
+Contribuer!
+----------
 
 Pour me proposer de nouvelles sources ou me rapporter un bug utiliser
 
-https://github.com/LordVenom/venom-xbmc-addons/issues
+[Question/Réponse](https://github.com/LordVenom/venom-xbmc-addons/issues)
+
 
 Bon Film ++
