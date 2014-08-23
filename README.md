@@ -31,7 +31,7 @@ Contribuer!
 
 Pour me proposer de nouvelles sources ou me rapporter un bug utiliser
 
-[Question/Réponse](https://github.com/LordVenom/venom-xbmc-addons/issues)
+[Questions/Réponses](https://github.com/LordVenom/venom-xbmc-addons/issues)
 
 
 Bon Film ++
