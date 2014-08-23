@@ -1,4 +1,4 @@
-venom-xbmc-Vstream-addons
+Venom-Addons-Vstream-XBMC
 =================
 
 C'est quoi!
