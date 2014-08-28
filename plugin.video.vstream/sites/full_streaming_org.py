@@ -16,6 +16,14 @@ SITE_NAME = 'Full-Streaming.org'
 SITE_DESC = 'films en streaming, vk streaming, youwatch, vimple , streaming hd , streaming 720p , streaming sans limite'
 
 URL_MAIN = 'http://full-streaming.org/'
+MOVIE_NEWS = 'http://full-streaming.org/index.php?dlenewssortby=date'
+MOVIE_VIEWS = 'http://full-streaming.org/index.php?dlenewssortby=news_read'
+MOVIE_COMMENTS = 'http://full-streaming.org/index.php?dlenewssortby=comm_num'
+MOVIE_NOTES = 'http://full-streaming.org/index.php?dlenewssortby=rating'
+MOVIE_GENRES = True
+SERIE_SERIES = 'http://full-streaming.org/series/'
+SERIE_VFS = 'http://full-streaming.org/series-fr/'
+SERIE_VOSTFRS = 'http://full-streaming.org/series-vostfr/'
 
 def load():
     oGui = cGui()
@@ -25,15 +33,23 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://full-streaming.org/index.php?do=lastnews')
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus vues', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus commentés', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les mieux notés', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://full-streaming.org/films/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films', 'films.png', oOutputParameterHandler)
-    
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://full-streaming.org/index.php?do=search')
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genre', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -41,15 +57,15 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showQlt', 'Films Qualités', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://full-streaming.org/series/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series Nouveautés', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://full-streaming.org/series-fr/')
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series VF', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://full-streaming.org/series-vostfr/')
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series VOSTFR', 'series.png', oOutputParameterHandler)
     
             
@@ -62,8 +78,8 @@ def showSearch():
     if (sSearchText != False):
             sUrl = 'http://full-streaming.org/xfsearch/'+sSearchText  
             showMovies(sUrl)
+            oGui.setEndOfDirectory()
             return  
-    oGui.setEndOfDirectory()
     
 def showGenre():
     oGui = cGui()
@@ -125,10 +141,10 @@ def showQlt():
        
     oGui.setEndOfDirectory() 
 
-def showMovies(sUrl = ''):
+def showMovies(sSearch = ''):
     oGui = cGui()
-    if sUrl:
-      sUrl = sUrl
+    if sSearch:
+      sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -136,7 +152,7 @@ def showMovies(sUrl = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
-    sPattern = 'class="movie movie-block"><img src="([^<]+)" alt=".+?" title="([^<]+)"/>.+?<h2 onclick="window.location.href=\'([^<]+)\'">.+?<div style="color:#F29000">.+?<div.+?>(.+?)</div>'
+    sPattern = 'class="movie movie-block">[ ]*<img src="([^<]+)" alt=".+?" title="([^<]+)"[ ]*/>.+?<h2 onclick="window.location.href=\'([^<]+)\'">.+?<div style="color:#F29000">.+?<div.+?>(.+?)</div>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -161,7 +177,8 @@ def showMovies(sUrl = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()
+    if not sSearch:
+        oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):

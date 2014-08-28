@@ -16,6 +16,10 @@ SITE_NAME = 'Vos_Animes.com'
 SITE_DESC = 'Vos-Animes | Toutes vos meilleures Animes séries et films en VF et VOSTFR en Téléchargement Streaming'
 
 URL_MAIN = 'http://www.vos-animes.com/'
+ANIM_ANIMS = 'http://www.vos-animes.com/lastnews/'
+ANIM_VFS = 'http://www.vos-animes.com/animes-vf/'
+ANIM_VOSTFRS = 'http://www.vos-animes.com/animes-vostfr/'
+ANIM_MOVIES = 'http://www.vos-animes.com/films-vf/'
 
 def load():
     oGui = cGui()
@@ -25,15 +29,15 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.vos-animes.com/lastnews/')
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes Nouveautés', 'news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.vos-animes.com/animes-vf/')
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes VF', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.vos-animes.com/animes-vostfr/')
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes VOSTFR', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -41,7 +45,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'OAVS', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.vos-animes.com/films-vf/')
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_MOVIES)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Animes VF', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -57,14 +61,15 @@ def showSearch():
     if (sSearchText != False):
             sUrl = 'http://www.vos-animes.com/xfsearch/'+sSearchText+'/'  
             showMovies(sUrl)
+            oGui.setEndOfDirectory()
             return  
-    oGui.setEndOfDirectory()
+    
 
-def showMovies(sUrl = ''):
+def showMovies(sSearch = ''):
 
     oGui = cGui()        
-    if sUrl:
-      sUrl = sUrl
+    if sSearch:
+      sUrl = sSearch
     else:
       oInputParameterHandler = cInputParameterHandler()
       sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -91,7 +96,8 @@ def showMovies(sUrl = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()
+    if not sSearch:
+        oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):

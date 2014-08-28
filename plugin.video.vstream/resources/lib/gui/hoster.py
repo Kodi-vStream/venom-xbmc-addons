@@ -38,7 +38,7 @@ class cHosterGui:
         oContext.setFile('cHosterGui')
         oContext.setSiteName(self.SITE_NAME)
         oContext.setFunction('addToPlaylist')
-        oContext.setTitle('Add to playlist')
+        oContext.setTitle('Ajouter à la playlist')
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
         
@@ -90,6 +90,10 @@ class cHosterGui:
             return cHosterHandler().getHoster('vidto')
         if ('vidzi' in sHosterUrl):
             return cHosterHandler().getHoster('vidzi')
+        if ('cloudy' in sHosterUrl):
+            return cHosterHandler().getHoster('cloudy')
+        if ('filetrip' in sHosterUrl):
+            return cHosterHandler().getHoster('filetrip')
 
         return False
         # step 2

@@ -16,6 +16,9 @@ SITE_NAME = 'FullMoviz.org'
 SITE_DESC = 'Films complets en streaming et en Français sur Fullmoviz. Liste de sorties cinéma streaming. Top streaming FR.'
 
 URL_MAIN = 'http://www.fullmoviz.org/'
+MOVIE_NEWS = 'http://www.fullmoviz.org/?p=movies&orderby=date'
+MOVIE_COMMENTS = 'http://www.fullmoviz.org/?p=movies&orderby=comment_count'
+MOVIE_GENRES = 'http://www.fullmoviz.org/'
 
 def load():
     oGui = cGui()
@@ -25,15 +28,15 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.fullmoviz.org/?p=movies&orderby=date')
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.fullmoviz.org/?p=movies&orderby=comment_count')
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus commentés', 'films.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.fullmoviz.org/')
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES)
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'genres.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
@@ -46,8 +49,9 @@ def showSearch():
     if (sSearchText != False):
             sUrl = 'http://www.fullmoviz.org/?s='+sSearchText
             showMovies(sUrl)
+            oGui.setEndOfDirectory()
             return  
-    oGui.setEndOfDirectory()
+    
  
 def showGenre():
     oGui = cGui()
@@ -70,10 +74,10 @@ def showGenre():
     oGui.setEndOfDirectory()
     
     
-def showMovies(sUrl=''):
+def showMovies(sSearch=''):
     oGui = cGui()
-    if sUrl:
-      sUrl = sUrl
+    if sSearch:
+      sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -104,7 +108,8 @@ def showMovies(sUrl=''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()
+    if not sSearch:
+        oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):

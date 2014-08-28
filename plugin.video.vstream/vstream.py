@@ -1,11 +1,12 @@
-#from about.about import cAboutGui
 from resources.lib.statistic import cStatistic
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.favourite import cFav
+from resources.lib.home import cHome
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.config import cConfig
 import logger
 
 def run():        
@@ -36,6 +37,9 @@ def parseUrl():
         if (isFav(sSiteName, sFunction) == True):
             return
 
+        if (isHome(sSiteName, sFunction) == True):
+            return
+
         #if (isAboutGui(sSiteName, sFunction) == True):            
             #return
 
@@ -45,6 +49,12 @@ def parseUrl():
         #except:
         #    logger.fatal('could not load site: ' + sSiteName )
     else:
+
+        if (cConfig().getSetting('home-view') == 'true'):
+            oHome = cHome()
+            exec "oHome."+ sFunction +"()"
+            return
+
         oGui = cGui()
         oPluginHandler = cPluginHandler()
         aPlugins = oPluginHandler.getAvailablePlugins()
@@ -61,6 +71,7 @@ def parseUrl():
                 oGui.addFolder(oGuiElement)
 
         oGui.setEndOfDirectory()
+
 
 def isHosterGui(sSiteName, sFunction):
     if (sSiteName == 'cHosterGui'):
@@ -80,6 +91,13 @@ def isFav(sSiteName, sFunction):
     if (sSiteName == 'cFav'):
         oFav = cFav()
         exec "oFav."+ sFunction +"()"
+        return True
+    return False
+
+def isHome(sSiteName, sFunction):
+    if (sSiteName == 'cHome'):
+        oHome = cHome()
+        exec "oHome."+ sFunction +"()"
         return True
     return False
 

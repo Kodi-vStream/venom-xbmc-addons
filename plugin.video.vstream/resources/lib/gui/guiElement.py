@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.config import cConfig
-import os, re
+import os, re, urllib
 class cGuiElement:
 
     DEFAULT_FOLDER_ICON = 'icon.png'
@@ -153,55 +153,34 @@ class cGuiElement:
             watched_db.close()
         except:
             return
-            
-    
-    def getUpdateMetadonne(self):
-        from metahandler import metahandlers
-        grab = metahandlers.MetaData()
-        #sTitle = self.__sTitle.decode('latin-1').encode("utf-8")
-        sTitle=re.sub(r'\[.*\]|\(.*\)',r'',str(self.__sTitle))
-        sTitle=sTitle.replace('VF','').replace('VOSTFR','')
 
-        if self.getMeta() == 1:
-            meta = grab.update_meta('movie',sTitle,'','','')
-        elif self.getMeta() == 2:
-            sTitle=re.sub(r'[0-9]+?',r'',str(sTitle))
-            sTitle=sTitle.replace('-','').replace('Saison','').replace('saison','').replace('Season','').replace('Episode','').replace('episode','')
-            meta = grab.update_meta('tvshow',sTitle,'','','')
-        else:
-            return
-        for key, value in meta.items():
-            self.addItemValues(key, value) 
-        #print meta['backdrop_url']
-        if meta['backdrop_url']:
-            self.addItemProperties('fanart_image', meta['backdrop_url'])
-        return
         
     def getMetadonne(self):
         from metahandler import metahandlers
-        grab = metahandlers.MetaData()
+        grab = metahandlers.MetaData(preparezip=False)
         #sTitle = self.__sTitle.decode('latin-1').encode("utf-8")
         sTitle=re.sub(r'\[.*\]|\(.*\)',r'',str(self.__sTitle))
         sTitle=sTitle.replace('VF','').replace('VOSTFR','')
 
         if self.getMeta() == 1:
-            meta = grab.get_meta('movie',sTitle,'','','')
+            meta = grab.get_meta('movie',sTitle)
         elif self.getMeta() == 2:
             sTitle=re.sub(r'[0-9]+?',r'',str(sTitle))
             sTitle=sTitle.replace('-','').replace('Saison','').replace('saison','').replace('Season','').replace('Episode','').replace('episode','')
-            meta = grab.get_meta('tvshow',sTitle,'','','')
+            meta = grab.get_meta('tvshow',sTitle)
         else:
             return
         del meta['playcount'] 
-        
-        #print meta['trailer_url']
         
         for key, value in meta.items():
             self.addItemValues(key, value)
         if meta['backdrop_url']:
             self.addItemProperties('fanart_image', meta['backdrop_url'])
         if meta['trailer_url']:
+            meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
             self.__sTrailerUrl = meta['trailer']
+        if meta['cover_url']:
+            self.__sThumbnail = meta['cover_url']
         return
 
     def getItemValues(self):

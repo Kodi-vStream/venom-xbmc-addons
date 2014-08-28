@@ -17,6 +17,8 @@ SITE_NAME = 'FifoStream.me'
 SITE_DESC = 'Film Streaming | Fifostream, Film en streaming Youwatch Exashare'
 
 URL_MAIN = 'http://www.fifostream.me/'
+MOVIE_NEWS = 'http://www.fifostream.me/film?orderby=date'
+MOVIE_VIEWS = 'http://www.fifostream.me/?orderby=views'
 
 def load():
     oGui = cGui()
@@ -26,16 +28,16 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.fifostream.me/film?orderby=date')
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://www.fifostream.me/film?orderby=title')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films par Titre', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.fifostream.me/?orderby=views')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus vues', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus vus', 'films.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
 
@@ -47,48 +49,14 @@ def showSearch():
     if (sSearchText != False):
             sUrl = 'http://www.fifostream.me/?s='+sSearchText
             showMovies(sUrl)
+            oGui.setEndOfDirectory()
             return  
-    oGui.setEndOfDirectory()
-    
-def resultSearch(sUrl = ''):
-    oGui = cGui()
-    
-    if sUrl:
-      sUrl = sUrl
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-   
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    sPattern = "<a href='([^<]+)' title=.([^<]+).>.+?<img src='([^<]+)' width='160px' height='213px'.+?>"
-    
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[1], '', aEntry[2], '', oOutputParameterHandler)
-            
-        sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'resultSearch', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
-
-            
-    oGui.setEndOfDirectory()
  
 
-def showMovies(sUrl=''):
+def showMovies(sSearch=''):
     oGui = cGui()
-    if sUrl:
-      sUrl = sUrl
+    if sSearch:
+      sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -101,15 +69,15 @@ def showMovies(sUrl=''):
     
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sTitle = aEntry[0].decode('latin-1').encode("utf-8")
+            sTitle= aEntry[0]
             sThumbnail = 'http:'+str(aEntry[2])
             sUrl = URL_MAIN+str(aEntry[1])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)            
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[0], '', sThumbnail, aEntry[3], oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, aEntry[3], oOutputParameterHandler)
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -117,7 +85,8 @@ def showMovies(sUrl=''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()
+    if not sSearch:
+        oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):

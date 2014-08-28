@@ -16,24 +16,26 @@ SITE_NAME = 'Anime-no-Paradise.com'
 SITE_DESC = 'Anime no Paradise : Streaming Anime Manga - Www.anime-no-paradise.com'
 
 URL_MAIN = 'http://www.anime-no-paradise.com/'
+ANIM_VOSTFRS = 'http://www.anime-no-paradise.com/page-7751108.html'
+ANIM_MOVIES = 'http://www.anime-no-paradise.com/page-7947543.html'
 
 def load():
     oGui = cGui()
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.anime-no-paradise.com/page-7751108.html')
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.anime-no-paradise.com/page-7751108.html')
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS)
     oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Animes A-Z', 'az.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.anime-no-paradise.com/page-7947543.html')
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_MOVIES)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes Films & OAVS', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.anime-no-paradise.com/page-7947543.html')
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_MOVIES)
     oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Animes Films & OAVS A-Z', 'az.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()

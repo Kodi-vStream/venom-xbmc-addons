@@ -17,6 +17,7 @@
         <setting id="plugin_fifostream_me" type="bool" label="Fifostream" default="true"/>
         <setting id="plugin_fullmoviz_org" type="bool" label="FullMoviz" default="true"/>
         <setting id="plugin_reportagestv_com" type="bool" label="ReportagesTV" default="true"/>
+        <setting id="plugin_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr" default="true"/>
     <!--</category>
     <category label="30023">-->
     <!--   <setting label="30023" type="lsep"/>
@@ -42,6 +43,7 @@
         <!-- <setting id="debug" type="bool" label="30000" default="false"/> -->
         <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2"/>
         <setting id="meta-view" type="bool" label="Recherche les Métadonnées (ralenti l'Addon)" default="false"/>
+        <setting id="home-view" type="bool" label="Afficher l'Accueil par Catégories" default="false"/>
         <setting label="Paramètres des Métadonnées" type="action" action="Addon.OpenSettings(script.module.metahandler)" enable ="true" />
     <!--</category>-->
    

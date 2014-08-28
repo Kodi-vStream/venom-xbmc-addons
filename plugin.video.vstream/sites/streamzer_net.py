@@ -16,6 +16,12 @@ SITE_NAME = 'Streamzer.net'
 SITE_DESC = 'Regarder des films et series en streaming illimite avec Youwatch, VK streaming. Streamzer le streaming sans limite avec Youwatch et VK stream.'
 
 URL_MAIN = 'http://www.streamzer.net/'
+MOVIE_NEWS = 'http://www.streamzer.net/index.php?file=Films&op=classe&secid=&orderby=news&p=1#stream'
+MOVIE_GENRES = 'http://www.streamzer.net/index.php?file=Films&op=classe&secid=&orderby=news&p=1#stream'
+SERIE_SERIES = 'http://www.streamzer.net/index.php?file=Series&op=classe&secid=&orderby=news&p=1#stream'
+DOC_DOCS = 'http://www.streamzer.net/index.php?file=Docus&op=classe&secid=&orderby=news&p=1#stream'
+SPORT_SPORTS = 'http://www.streamzer.net/index.php?file=Replay&op=classe&secid=&orderby=news&p=1#stream'
+MOVIE_NETS = 'http://www.streamzer.net/index.php?file=Videos&op=classe&secid=&orderby=news&p=1#stream'
 
 def load():
     oGui = cGui()
@@ -25,15 +31,15 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Films&op=classe&secid=&orderby=news&p=1#stream')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Films&op=classe&secid=&orderby=news&p=1#stream')
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES)
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genre', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Series&op=classe&secid=&orderby=news&p=1#stream')
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -41,7 +47,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Series Genre', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Docus&op=classe&secid=&orderby=news&p=1#stream')
+    oOutputParameterHandler.addParameter('siteUrl', DOC_DOCS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -49,7 +55,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'docuGenre', 'Documentaires Genre', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Replay&op=classe&secid=&orderby=news&p=1#stream')
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS)
     oGui.addDir(SITE_IDENTIFIER, 'showReplay', 'Sport Replay', 'replay.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -58,7 +64,7 @@ def load():
     
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Videos&op=classe&secid=&orderby=news&p=1#stream')
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NETS)
     oGui.addDir(SITE_IDENTIFIER, 'showReplay', 'Buzz', 'buzz.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -75,24 +81,25 @@ def showSearch():
     if (sSearchText != False):
             sUrl = 'http://www.streamzer.net/index.php?file=Search&op=mod_search&main='+sSearchText
             resultSearch(sUrl)
+            oGui.setEndOfDirectory()
             return  
-    oGui.setEndOfDirectory()
     
-def resultSearch(sUrl = ''):
-    oGui = cGui()
     
-    if sUrl:
-      sUrl = sUrl
+def resultSearch(sSearch = ''):
+    oGui = cGui()  
+    if sSearch:
+      sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sPattern = "<a href='([^<]+)' title=.([^<]+).>.+?<img src='([^<]+)' width='160px' height='213px'.+?>"
+    sPattern = "<a href='([^<]+)' title=.([^<]+).>.*?<img src='([^<]+)' width='160px'.+?"
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    print aResult
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -109,8 +116,8 @@ def resultSearch(sUrl = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'resultSearch', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-            
-    oGui.setEndOfDirectory()
+    if not sSearch:       
+        oGui.setEndOfDirectory()
  
 def docuGenre():
     oGui = cGui()

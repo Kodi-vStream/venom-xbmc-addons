@@ -31,7 +31,7 @@ class cGui:
         oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
         self.__createContexMenuWatch(oGuiElement, oOutputParameterHandler)
         self.__createContexMenuWriteFav(oGuiElement, oOutputParameterHandler)
-        
+
         self.addFolder(oGuiElement, oOutputParameterHandler)
         
         
@@ -109,8 +109,9 @@ class cGui:
 
     def createListItem(self, oGuiElement):
         #oPath = cPluginHandler().getRootArt()
-        oListItem = xbmcgui.ListItem(oGuiElement.getTitle(), oGuiElement.getTitleSecond(), oGuiElement.getIcon(), oGuiElement.getThumbnail())
+        oListItem = xbmcgui.ListItem(oGuiElement.getTitle(), oGuiElement.getTitleSecond(), oGuiElement.getIcon())
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
+        oListItem.setThumbnailImage(oGuiElement.getThumbnail())
 
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey in aProperties.keys():
@@ -189,17 +190,16 @@ class cGui:
             oListItem.addContextMenuItems(aContextMenus)
             #oListItem.addContextMenuItems(aContextMenus, True)
 
-        if (oGuiElement.getSiteName() != 'cAboutGui'):
-            oContextItem = cContextElement()
-            oContextItem.setFile('cFav')
-            oContextItem.setSiteName('cFav')
-            oContextItem.setTitle('[COLOR teal]Voir Marque-page[/COLOR]')
-            oContextItem.setFunction('getFavourites')
-            oOutputParameterHandler = oContextItem.getOutputParameterHandler()
-            sParams = oOutputParameterHandler.getParameterAsUri()
-            sTest = '%s?site=%s&function=%s&contextFav=true&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-            aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.Container.Update(%s)" % (sTest,),)]
-            oListItem.addContextMenuItems(aContextMenus)
+        oContextItem = cContextElement()
+        oContextItem.setFile('cFav')
+        oContextItem.setSiteName('cFav')
+        oContextItem.setTitle('[COLOR teal]Voir Marque-page[/COLOR]')
+        oContextItem.setFunction('getFavourites')
+        oOutputParameterHandler = oContextItem.getOutputParameterHandler()
+        sParams = oOutputParameterHandler.getParameterAsUri()
+        sTest = '%s?site=%s&function=%s&contextFav=true&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
+        aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.Container.Update(%s)" % (sTest,),)]
+        oListItem.addContextMenuItems(aContextMenus)
             
         if  oGuiElement.getTrailerUrl(): 
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -235,17 +235,6 @@ class cGui:
             oListItem.addContextMenuItems(aContextMenus)
             #oListItem.addContextMenuItems(aContextMenus, True)
 
-        if (oGuiElement.getSiteName() != 'cAboutGui'):            
-            oContextItem = cContextElement()
-            oContextItem.setFile('cAboutGui')
-            oContextItem.setTitle('Ueber xStream')
-            oContextItem.setFunction('show')
-            oOutputParameterHandler = oContextItem.getOutputParameterHandler()
-            sParams = oOutputParameterHandler.getParameterAsUri()
-            sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-            aContextMenus+= [ ( oContextItem.getTitle(), "Container.Update(%s)" % (sTest,),)]
-            oListItem.addContextMenuItems(aContextMenus)
-
         return oListItem
      
     def __ContextMenuPlay(self, oGuiElement, oListItem):
@@ -261,17 +250,6 @@ class cGui:
 
             oListItem.addContextMenuItems(aContextMenus)
             #oListItem.addContextMenuItems(aContextMenus, True)
-
-        if (oGuiElement.getSiteName() != 'cAboutGui'):            
-            oContextItem = cContextElement()
-            oContextItem.setFile('cAboutGui')
-            oContextItem.setTitle('Playlist')
-            oContextItem.setFunction('show')
-            oOutputParameterHandler = oContextItem.getOutputParameterHandler()
-            sParams = oOutputParameterHandler.getParameterAsUri()
-            sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-            aContextMenus+= [ ( oContextItem.getTitle(), "Container.Update(%s)" % (sTest,),)]
-            oListItem.addContextMenuItems(aContextMenus)
 
         return oListItem
 

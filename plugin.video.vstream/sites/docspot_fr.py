@@ -16,6 +16,7 @@ SITE_NAME = 'Docspot.fr'
 SITE_DESC = 'docspot.fr + 3000 Documentaires et reportages en Streaming gratuit !'
 
 URL_MAIN = 'http://www.docspot.fr/'
+DOC_DOCS = 'http://www.docspot.fr/?cat=0'
 
 def load():
     oGui = cGui()
@@ -25,7 +26,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.docspot.fr/?cat=0')
+    oOutputParameterHandler.addParameter('siteUrl', DOC_DOCS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -52,8 +53,9 @@ def showSearch():
     if (sSearchText != False):
             sUrl = 'http://www.docspot.fr/?s='+sSearchText  
             showMovies(sUrl)
+            oGui.setEndOfDirectory()
             return  
-    oGui.setEndOfDirectory()
+    
     
 def showGenres():
     oGui = cGui()
@@ -88,10 +90,10 @@ def showGenres():
     oGui.setEndOfDirectory() 
 
 
-def showMovies(sUrl = ''):
+def showMovies(sSearch = ''):
     oGui = cGui()
-    if sUrl:
-      sUrl = sUrl
+    if sSearch:
+      sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -118,7 +120,8 @@ def showMovies(sUrl = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()
+    if not sSearch:
+        oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):

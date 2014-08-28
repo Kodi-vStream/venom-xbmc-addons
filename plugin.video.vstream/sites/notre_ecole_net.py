@@ -16,6 +16,7 @@ SITE_NAME = 'Notre-Ecole.net'
 SITE_DESC = 'Un blog qui traite de notre rapport avec l\'argent, de la consommation, de notre modèle économique et qui s\'interroge sur l\'avenir de notre planète'
 
 URL_MAIN = 'http://www.notre-ecole.net/'
+DOC_DOCS = 'http://www.notre-ecole.net/?s=.'
 
 def load():
    
@@ -56,13 +57,14 @@ def showSearch():
     if (sSearchText != False):
             sUrl = 'http://www.notre-ecole.net/?s='+sSearchText  
             showMovies(sUrl)
+            oGui.setEndOfDirectory()
             return  
-    oGui.setEndOfDirectory()
+    
 
-def showMovies(sUrl = ''):
+def showMovies(sSearch = ''):
     oGui = cGui()
-    if sUrl:
-      sUrl = sUrl
+    if sSearch:
+      sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -89,7 +91,8 @@ def showMovies(sUrl = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()
+    if not sSearch:
+        oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):

@@ -16,6 +16,11 @@ SITE_NAME = 'DPStreaming.org'
 SITE_DESC = 'Streaming ou Telechargement films series mangas gratuitement et sans limite. Des films en exclusivite en qualite DVD a regarder ou telecharger'
 
 URL_MAIN = 'http://dpstreaming.org/'
+MOVIE_NEWS = 'http://dpstreaming.org/category/films/'
+MOVIE_VIEWS = 'http://dpstreaming.org/category/films-en-exclus/'
+SERIE_SERIES = 'http://dpstreaming.org/category/series-tv/'
+ANIM_ANIMS = 'http://dpstreaming.org/category/mangas/'
+MOVIE_GENRES = True
 
 def load():
     oGui = cGui()
@@ -25,19 +30,19 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://dpstreaming.org/category/films/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://dpstreaming.org/category/films-en-exclus/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Exclus', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus vus', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://dpstreaming.org/category/series-tv/')
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -45,7 +50,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Series A-Z', 'az.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://dpstreaming.org/category/mangas/')
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Mangas', 'animes.png', oOutputParameterHandler)
     
             
@@ -58,8 +63,9 @@ def showSearch():
     if (sSearchText != False):
             sUrl = 'http://dpstreaming.org/?s='+sSearchText  
             showMovies(sUrl)
+            oGui.setEndOfDirectory()
             return  
-    oGui.setEndOfDirectory()
+    
     
 def showAZ():
     oGui = cGui()
@@ -126,10 +132,10 @@ def showGenre():
     oGui.setEndOfDirectory() 
 
 
-def showMovies(sUrl = ''):
+def showMovies(sSearch = ''):
     oGui = cGui()
-    if sUrl:
-      sUrl = sUrl
+    if sSearch:
+      sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -160,7 +166,8 @@ def showMovies(sUrl = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()
+    if not sSearch:
+        oGui.setEndOfDirectory()
 
 def showSeries():
     oGui = cGui()

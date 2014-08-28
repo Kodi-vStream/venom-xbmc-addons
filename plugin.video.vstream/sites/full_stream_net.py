@@ -16,6 +16,12 @@ SITE_NAME = 'Full-Stream.net'
 SITE_DESC = 'Film et Série en Streaming HD - Vk.Com - Netu.tv - ExaShare - YouWatch'
 
 URL_MAIN = 'http://full-stream.net'
+MOVIE_NEWS = 'http://full-stream.net/lastnews/'
+MOVIE_VIEWS = 'http://full-stream.net/films-en-vk-streaming/'
+MOVIE_GENRES = True
+SERIE_SERIES = 'http://full-stream.net/seriestv/'
+SERIE_VFS = 'http://full-stream.net/seriestv/vf/'
+SERIE_VOSTFRS = 'http://full-stream.net/seriestv/vostfr/'
 
 def load():
     oGui = cGui()
@@ -25,27 +31,27 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://full-stream.net/lastnews/')
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://full-stream.net/films-en-vk-streaming/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus vues', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genre', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://full-stream.net/seriestv/')
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://full-stream.net/seriestv/vf/')
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries VF', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://full-stream.net/seriestv/vostfr/')
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries VOSTFR', 'series.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
@@ -58,8 +64,9 @@ def showSearch():
             #sSearchText = cUtil().urlEncode(sSearchText)
             sUrl = 'http://full-stream.net/xfsearch/'+sSearchText+'/'  
             showMovies(sUrl)
+            oGui.setEndOfDirectory()
             return  
-    oGui.setEndOfDirectory()
+    
     
 def showGenre():
     oGui = cGui()
@@ -92,11 +99,10 @@ def showGenre():
     oGui.setEndOfDirectory() 
     
 
-def showMovies(sUrl = ''):
-    print sUrl
+def showMovies(sSearch = ''):
     oGui = cGui()
-    if sUrl:
-      sUrl = sUrl
+    if sSearch:
+      sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -126,7 +132,8 @@ def showMovies(sUrl = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()
+    if not sSearch:
+        oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):

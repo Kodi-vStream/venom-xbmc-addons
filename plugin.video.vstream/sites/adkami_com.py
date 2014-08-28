@@ -9,13 +9,17 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re,string
+import string
 
 SITE_IDENTIFIER = 'adkami_com'
 SITE_NAME = 'Adkami.com'
 SITE_DESC = 'Bienvenue sur ADkami.com. un site Anime (Manga) en streaming.'
 
 URL_MAIN = 'http://www.adkami.com'
+ANIM_VFS = 'http://www.adkami.com/video?recherche=&version=1&type2=0'
+ANIM_VOSTFRS = 'http://www.adkami.com/video?recherche=&version=2&type2=0'
+SERIE_VFS = 'http://www.adkami.com/video?recherche=&version=1&type2=1'
+SERIE_VOSTFRS = 'http://www.adkami.com/video?recherche=&version=2&type2=1'
 
 def load():
     oGui = cGui()
@@ -25,11 +29,11 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.adkami.com/video?recherche=&version=1&type2=0')
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animés VF', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.adkami.com/video?recherche=&version=2&type2=0')
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animés VOSTFR', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -45,11 +49,11 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showLanggenre', 'Animés Genre', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.adkami.com/video?recherche=&version=1&type2=1')
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries VF', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.adkami.com/video?recherche=&version=2&type2=1')
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries VOSTFR', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -74,8 +78,9 @@ def showSearch():
     if (sSearchText != False):
             sUrl = 'http://www.adkami.com/video?recherche='+sSearchText
             showMovies(sUrl)
+            oGui.setEndOfDirectory()
             return  
-    oGui.setEndOfDirectory()
+    
     
 def showLang():
     oGui = cGui()
@@ -211,15 +216,15 @@ def showMoviesAZ():
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', aEntry[1], 'films.png', '', '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', aEntry[1], 'animes.png', '', '', oOutputParameterHandler)
             
 
     oGui.setEndOfDirectory()
     
-def showMovies(sUrl = ''):
+def showMovies(sSearch = ''):
     oGui = cGui()
-    if sUrl:
-      sUrl = sUrl
+    if sSearch:
+      sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -235,10 +240,11 @@ def showMovies(sUrl = ''):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', aEntry[1], 'films.png', '', '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', aEntry[1], 'animes.png', '', '', oOutputParameterHandler)
             
 
-    oGui.setEndOfDirectory()
+    if not sSearch:
+        oGui.setEndOfDirectory()
 
 def showEpisode():
     oGui = cGui()

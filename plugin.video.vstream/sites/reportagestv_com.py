@@ -10,10 +10,11 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 
 SITE_IDENTIFIER = 'reportagestv_com'
-SITE_NAME = 'Reportagestv.com'
+SITE_NAME = 'ReportagesTV.com'
 SITE_DESC = 'Reportages TV - Replay des reportages télé français en streaming.'
 
 URL_MAIN = 'http://www.reportagestv.com/'
+DOC_DOCS = 'http://www.reportagestv.com/'
 
 def load():
    
@@ -48,10 +49,11 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = 'http://www.notre-ecole.net/?s='+sSearchText  
+            sUrl = 'http://www.reportagestv.com/?s='+sSearchText 
             showMovies(sUrl)
+            oGui.setEndOfDirectory()
             return  
-    oGui.setEndOfDirectory()
+    
 
 def showGenre():
     oGui = cGui()
@@ -75,10 +77,10 @@ def showGenre():
        
     oGui.setEndOfDirectory() 
     
-def showMovies(sUrl = ''):
+def showMovies(sSearch = ''):
     oGui = cGui()
-    if sUrl:
-      sUrl = sUrl
+    if sSearch:
+      sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -105,7 +107,8 @@ def showMovies(sUrl = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()
+    if not sSearch:
+        oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
