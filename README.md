@@ -9,7 +9,7 @@ Vstream est un addon pour xbmc qui vous permet de visionner en streaming un gran
 Demo!
 ----------
 
-[![Vstream Images](http://img4.hostingpics.net/pics/128778Sanstitre1.jpg)]
+[![Vstream Images](http://img4.hostingpics.net/pics/128778Sanstitre1.jpg)](http://img4.hostingpics.net/pics/128778Sanstitre1.jpg)
 
 
 Installer!
