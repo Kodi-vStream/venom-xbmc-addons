@@ -19,6 +19,10 @@ Installer le zip du repository (pour avoir les mises à jour automatique) ou ins
 
 [Voir toutes les Versions](https://github.com/LordVenom/venom-xbmc-addons/releases)
 
+Tutoriel!
+----------
+
+[Video d'installation : Merci à Cédric](http://tvwebdream.com/tutoriel-xbmc-vstream-filmsseriesdocumentaireschaines-tv-en-streaming-xbmc/)
 
 Quoi de neuf!
 ----------
