@@ -203,7 +203,7 @@ def __checkForNextPage(sHtmlContent):
     sPattern = '<span class=\'current\'>.+?</span><a class="page larger" href="(.+?)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    print aResult
+
     if (aResult[0] == True):
         sUrl = aResult[1][0]
         return sUrl
@@ -226,7 +226,7 @@ def showHosters():
     sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    print aResult
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sHosterUrl = str(aEntry)

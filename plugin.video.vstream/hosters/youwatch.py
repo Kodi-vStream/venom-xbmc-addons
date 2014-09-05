@@ -1,28 +1,35 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
+from resources.lib.config import cConfig
 from hosters.hoster import iHoster
 
 class cHoster(iHoster):
 
     def __init__(self):
         self.__sDisplayName = 'Youwatch'
-	self.__sFileName = self.__sDisplayName
+        self.__sFileName = self.__sDisplayName
+        self.__sHD = ''
 
     def getDisplayName(self):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
 
     def setFileName(self, sFileName):
-	self.__sFileName = sFileName
+        self.__sFileName = sFileName
 
     def getFileName(self):
-	return self.__sFileName
+        return self.__sFileName
 
     def getPluginIdentifier(self):
         return 'youwatch'
+
+    def setHD(self, sHD):
+        self.__sHD = ''
+
+    def getHD(self):
+        return self.__sHD
 
     def isDownloadable(self):
         return True
@@ -71,12 +78,12 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True):
-            cGui().showInfo(self.__sDisplayName, 'Streaming', 5)
+            cConfig().showInfo(self.__sDisplayName, 'Streaming')
             api_call = ('http://%s.youwatch.org:%s/%s/video.mp4') % (aResult[1][0][2], aResult[1][0][1], aResult[1][0][0])
             return True, api_call 
 
         else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
+            cConfig().showInfo(self.__sDisplayName, 'Fichier introuvable')
             return False, False
             
         return False, False

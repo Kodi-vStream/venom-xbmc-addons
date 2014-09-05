@@ -9,7 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re
+import re, urllib
 
 SITE_IDENTIFIER = 'frenchstream_org'
 SITE_NAME = 'FrenchStream.org'
@@ -106,6 +106,7 @@ def showMovies(sSearch = ''):
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             
@@ -219,4 +220,65 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
                 
     oGui.setEndOfDirectory()
+
+# #testt
+# def getSource(sUrl = '', sTitle = ''):
+#     if not sUrl: return
+#     else:
+#         sources = []
+#         #sTitle = urllib.unquote(sTitle)
+#         sUrl = sUrl+sTitle
+#         oRequestHandler = cRequestHandler(sUrl)
+#         sHtmlContent = oRequestHandler.request();
+#         sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
+#         sPattern = 'class="moviefilm">.?<a href="([^<]+)">.+?<img src=".+?" alt="(.+?)".+?>.+?<small>(.+?)</small>'
+        
+#         oParser = cParser()
+#         aResult = oParser.parse(sHtmlContent, sPattern)
+#         sTitle = urllib.unquote(sTitle)
+#         if (aResult[0] == True):
+#             for aEntry in aResult[1]:
+#                 if re.search('('+cleantitle(sTitle)+')(\s|$)',cleantitle(aEntry[1]), re.IGNORECASE):
+#                     sources.append({'source': SITE_IDENTIFIER, 'url': aEntry[0], 'title': aEntry[1], 'vu': aEntry[2]})
+#             return sources
+#         else: return False, False
+
+# def getLink(sUrl = ''):
+#     if not sUrl: return
+#     else:
+#         links = []
+#         sUrl = sUrl+'/100/'
+#         oRequestHandler = cRequestHandler(sUrl)
+#         sHtmlContent = oRequestHandler.request();
+#         sPattern = '<a href="([^<]+)"><span>.+?</span></a>'
+        
+#         oParser = cParser()
+#         aResult = oParser.parse(sHtmlContent, sPattern)
+#         if (aResult[0] == True):
+#             for aEntry in aResult[1]:
+#                 links.append({'source': SITE_IDENTIFIER, 'url': aEntry})
+#             return links
+#         else: return False, False
+
+# def getHost(sUrl = ''):
+#     if not sUrl: return
+#     else:
+#         hosts = []
+#         oRequestHandler = cRequestHandler(sUrl)
+#         sHtmlContent = oRequestHandler.request();
+
+#         sPattern = '<p><!--baslik:.+?--><br />.*?<iframe.+?src="(.+?)"'
+        
+#         oParser = cParser()
+#         aResult = oParser.parse(sHtmlContent, sPattern)
+#         if (aResult[0] == True):
+#             for aEntry in aResult[1]:
+#                 hosts.append({'source': SITE_IDENTIFIER, 'url': aEntry})
+#             return hosts
+#         else: return
+
+# def cleantitle(title):
+#         title = re.sub('\n|([[].+?[]])|([(].+?[)])|\s(vs|v[.])\s|(:|;|-|"|,|\'|\.|\?)', '', title).lower()
+#         title = re.sub('\s{2,}', ' ', title)
+#         return title
     

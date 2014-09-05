@@ -70,16 +70,16 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+        cGui().showInfo('Resolve', self.__sDisplayName, 5)
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        sPattern =  'file: "(.+?).m3u8",'
+        sPattern =  'file: "(.+?).m3u8'
               
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            cGui().showInfo(self.__sDisplayName, 'Streaming', 5)
             api_call = aResult[1][0]+'.m3u8'
             return True, api_call
         else:

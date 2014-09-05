@@ -11,19 +11,17 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re
 
-SITE_IDENTIFIER = 'full_streaming_org'
-SITE_NAME = 'Full-Streaming.org'
+SITE_IDENTIFIER = 'vk_filmz_streamiz_com'
+SITE_NAME = 'Vk-Filmz-Streamiz.com'
 SITE_DESC = 'films en streaming, vk streaming, youwatch, vimple , streaming hd , streaming 720p , streaming sans limite'
 
-URL_MAIN = 'http://full-streaming.org/'
-MOVIE_NEWS = 'http://full-streaming.org/index.php?dlenewssortby=date'
-MOVIE_VIEWS = 'http://full-streaming.org/index.php?dlenewssortby=news_read'
-MOVIE_COMMENTS = 'http://full-streaming.org/index.php?dlenewssortby=comm_num'
-MOVIE_NOTES = 'http://full-streaming.org/index.php?dlenewssortby=rating'
+URL_MAIN = 'http://vk-filmz-streamiz.com'
+MOVIE_NEWS = 'http://vk-filmz-streamiz.com/lastmovies/'
 MOVIE_GENRES = True
-SERIE_SERIES = 'http://full-streaming.org/series/'
-SERIE_VFS = 'http://full-streaming.org/series-fr/'
-SERIE_VOSTFRS = 'http://full-streaming.org/series-vostfr/'
+SERIE_SERIES = 'http://vk-filmz-streamiz.com/series/'
+SERIE_VFS = 'http://vk-filmz-streamiz.com/series/version-francaise'
+SERIE_VOSTFRS = 'http://vk-filmz-streamiz.com/series/vostfr'
+ANIM_VOSTFRS = 'http://vk-filmz-streamiz.com/mangas/mangas-vostfr/'
 
 def load():
     oGui = cGui()
@@ -35,25 +33,13 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'news.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS)
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus vues', 'films.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS)
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus commentés', 'films.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES)
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les mieux notés', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genre', 'genres.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://full-streaming.org/index.php?do=search')
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oGui.addDir(SITE_IDENTIFIER, 'showQlt', 'Films Qualités', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -67,6 +53,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series VOSTFR', 'series.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes VOSTFR', 'animes.png', oOutputParameterHandler)
     
             
     oGui.setEndOfDirectory()
@@ -76,7 +66,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = 'http://full-streaming.org/xfsearch/'+sSearchText  
+            sUrl = 'http://vk-filmz-streamiz.com/?do=search&subaction=search&story='+sSearchText  
             showMovies(sUrl)
             oGui.setEndOfDirectory()
             return  
@@ -87,32 +77,31 @@ def showGenre():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['Action','http://full-streaming.org/action/'] )
-    liste.append( ['Animation','http://full-streaming.org/animation/'] )
-    liste.append( ['Arts Martiaux','http://full-streaming.org/arts-martiaux/'] )
-    liste.append( ['Aventure','http://full-streaming.org/aventure/'] )
-    liste.append( ['Biopic','http://full-streaming.org/biopic/'] )
-    liste.append( ['Comedie','http://full-streaming.org/comedie/'] )
-    liste.append( ['Comedie Dramatique','http://full-streaming.org/comedie-dramatique/'] )
-    liste.append( ['Comedie Musicale','http://full-streaming.org/comedie-musicale/'] )
-    liste.append( ['Documentaire','http://full-streaming.org/documentaire/'] )
-    liste.append( ['Drame','http://full-streaming.org/drame/'] )
-    liste.append( ['Epouvante Horreur','http://full-streaming.org/epouvante-horreur/'] ) 
-    liste.append( ['Erotique','http://full-streaming.org/erotique'] )
-    liste.append( ['Espionnage','http://full-streaming.org/espionnage/'] )
-    liste.append( ['Famille','http://full-streaming.org/famille/'] )
-    liste.append( ['Fantastique','http://full-streaming.org/fantastique/'] )  
-    liste.append( ['Guerre','http://full-streaming.org/guerre/'] )
-    liste.append( ['Historique','http://full-streaming.org/historique/'] )
-    liste.append( ['Musical','http://full-streaming.org/musical/'] )
-    liste.append( ['Policier','http://full-streaming.org/policier/'] )
-    liste.append( ['Peplum','http://full-streaming.org/peplum/'] )
-    liste.append( ['Romance','http://full-streaming.org/romance/'] )
-    liste.append( ['Science Fiction','http://full-streaming.org/science-fiction/'] )
-    liste.append( ['Spectacle','http://full-streaming.org/spectacle/'] )
-    liste.append( ['Thriller','http://full-streaming.org/thriller/'] )
-    liste.append( ['Western','http://full-streaming.org/western/'] )
-    liste.append( ['Divers','http://full-streaming.org/divers/'] ) 
+    liste.append( ['Action','http://vk-filmz-streamiz.com/films/action'] )
+    liste.append( ['Animation','http://vk-filmz-streamiz.com/films/animation'] )
+    liste.append( ['Arts Martiaux','http://vk-filmz-streamiz.com/films/arts-martiaux'] )
+    liste.append( ['Aventure','http://vk-filmz-streamiz.com/films/aventure'] )
+    liste.append( ['Biopic','http://vk-filmz-streamiz.com/films/biopic'] )
+    liste.append( ['Comedie','http://vk-filmz-streamiz.com/films/comedie'] )
+    liste.append( ['Comedie Dramatique','http://vk-filmz-streamiz.com/films/comedie-dramatique'] )
+    liste.append( ['Comedie Musicale','http://vk-filmz-streamiz.com/films/comedie-musicale'] )
+    liste.append( ['Disney','http://vk-filmz-streamiz.com/films/disney'] )
+    liste.append( ['Divers','http://vk-filmz-streamiz.com/films/divers'] )    
+    liste.append( ['Documentaire','http://vk-filmz-streamiz.com/films/documentaire'] )
+    liste.append( ['Drame','http://vk-filmz-streamiz.com/films/drame'] )
+    liste.append( ['Epouvante Horreur','http://vk-filmz-streamiz.com/films/horreur'] ) 
+    #liste.append( ['Erotique','http://full-streaming.org/erotique'] )
+    liste.append( ['Espionnage','http://vk-filmz-streamiz.com/films/espionnage'] )
+    liste.append( ['Famille','http://vk-filmz-streamiz.com/films/famille'] )
+    liste.append( ['Fantastique','http://vk-filmz-streamiz.com/films/fantastique'] )  
+    liste.append( ['Guerre','http://vk-filmz-streamiz.com/films/guerre'] )
+    liste.append( ['Historique','http://vk-filmz-streamiz.com/films/historique'] )
+    liste.append( ['Musical','http://vk-filmz-streamiz.com/films/musical'] )
+    liste.append( ['Policier','http://vk-filmz-streamiz.com/films/policier'] )
+    liste.append( ['Romance','http://vk-filmz-streamiz.com/films/romance'] )
+    liste.append( ['Science Fiction','http://vk-filmz-streamiz.com/films/science-fiction'] )
+    liste.append( ['Spectacle','http://vk-filmz-streamiz.com/films/spectacles'] )
+    liste.append( ['Thriller','http://vk-filmz-streamiz.com/films/triller'] )
                 
     for sTitle,sUrl in liste:
         
@@ -128,10 +117,14 @@ def showQlt():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['HD','http://full-streaming.org/hd/'] )
-    liste.append( ['BDrip Dvdrip','http://full-streaming.org/bdrip-dvdrip/'] )
-    liste.append( ['DvdScr R5','http://full-streaming.org/dvdscr-r5/'] )
-    liste.append( ['TS Cam','http://full-streaming.org/ts-cam/'] )
+    liste.append( ['HD','http://vk-filmz-streamiz.com/films-hd'] )
+    liste.append( ['DvdRip','http://vk-filmz-streamiz.com/quality/dvdrip'] )
+    liste.append( ['BdRip','http://vk-filmz-streamiz.com/quality/bdrip'] )
+    liste.append( ['R5','http://vk-filmz-streamiz.com/quality/R5'] )
+    liste.append( ['Cam Rip','http://vk-filmz-streamiz.com/quality/camrip'] )
+    liste.append( ['TS','http://vk-filmz-streamiz.com/quality/ts'] )
+
+    
                 
     for sTitle,sUrl in liste:
         
@@ -151,25 +144,27 @@ def showMovies(sSearch = ''):
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
-    sPattern = 'class="movie movie-block">[ ]*<img src="([^<]+)" alt=".+?" title="([^<]+)"[ ]*/>.+?<h2 onclick="window.location.href=\'([^<]+)\'">.+?<div style="color:#F29000">.+?<div.+?>(.+?)</div>'
-
+    #sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
+    sPattern = '<img class="tubeposter" src="([^<]+)" alt=".+?" title=".+?" />.+?<h2 class="mtitle"><a href="([^<]+)">([^<]+)</a></h2>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            
-            sTitle = aEntry[1]
+            sTitle=re.sub('(.*)(\[.*\])','\\1 [COLOR azure]\\2[/COLOR]', str(aEntry[2]))
+            sMovieTitle=re.sub('(\[.*\])','', str(aEntry[2]))
+
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
 
-            if '/series' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle,'', aEntry[0], aEntry[3], oOutputParameterHandler)
+            if '/series/' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle,'', aEntry[0], '', oOutputParameterHandler)
+            elif '/mangas/' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'mangasHosters', sTitle,'', aEntry[0], '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], '', oOutputParameterHandler)
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -182,9 +177,10 @@ def showMovies(sSearch = ''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<div class="navigation".+? <span.+? <a href="(.+?)">'
+    sPattern = '<div class="navigation ignore-select">.+?<span>.+?</span> <a href="(.+?)">.+?</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         return aResult[1][0]
 
@@ -200,7 +196,7 @@ def showHosters():
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','').replace('<iframe src=\'http://creative.ad120m.com/', '')
+    sHtmlContent = sHtmlContent.replace('http://creative.rev2pub.com','')
                
         
     sPattern = '<iframe.+?src="(.+?)"'
@@ -211,12 +207,8 @@ def showHosters():
         for aEntry in aResult[1]:
             
             sHosterUrl = str(aEntry)
-
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                try:
-                    oHoster.setHD(sHosterUrl)
-                except: pass
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
@@ -232,18 +224,58 @@ def seriesHosters():
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','').replace('<iframe src=\'http://creative.ad120m.com/', '')
+    sHtmlContent = sHtmlContent.replace('http://creative.rev2pub.com','')
                
-    sPattern = '<dd><a href="([^<]+)" class="zoombox.+?" title="(.+?)"><button class="btn">.+?</button></a></dd>'
+    sPattern = '<h2><img src=".+?" style="margin-right:5px" alt="" />([^<]+)</h2>|<a href="([^<]+)" target="vk-filmz" id="(.+?)">'
+
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+
+            if aEntry[0]:
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                oGui.addDir(SITE_IDENTIFIER, 'seriesHosters', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'host.png', oOutputParameterHandler)
+                   
+            
+            sHosterUrl = str(aEntry[1])
+            
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                sTitle = sMovieTitle+'[COLOR azure]'+aEntry[2]+'[/COLOR]'
+                oHoster.setDisplayName(sTitle)
+                oHoster.setFileName(sTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+                
+    oGui.setEndOfDirectory()
+
+def mangasHosters():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = sHtmlContent.replace('http://creative.rev2pub.com','')
+               
+    sPattern = '<a target="vk-filmz" href="(.+?)">(.+?)</a>'
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             
             sHosterUrl = str(aEntry[0])
+            
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                sTitle=re.sub(r'\[.*\]',r'',aEntry[1])
+                sTitle = sMovieTitle+' [COLOR azure]'+aEntry[1]+'[/COLOR]'
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 

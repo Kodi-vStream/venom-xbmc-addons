@@ -36,15 +36,15 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'movieViews', 'Films Les Plus Vus', 'films.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'movieViews', 'Films Les Plus Vus', 'views.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'movieComments', 'Films Les Plus Commentés', 'films.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'movieComments', 'Films Les Plus Commentés', 'comments.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'movieNotes', 'Films Les Mieux Notés', 'films.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'movieNotes', 'Films Les Mieux Notés', 'notes.png', oOutputParameterHandler)
        
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -128,13 +128,13 @@ class cHome:
         self.__callpluging('showMovies','MOVIE_NEWS', 'Nouveautés', 'news.png')
 
     def movieViews(self):
-        self.__callpluging('showMovies','MOVIE_VIEWS', 'Les Plus Vus', 'films.png')
+        self.__callpluging('showMovies','MOVIE_VIEWS', 'Les Plus Vus', 'views.png')
 
     def movieComments(self):
-        self.__callpluging('showMovies','MOVIE_COMMENTS', 'Les Plus Commentés', 'films.png')
+        self.__callpluging('showMovies','MOVIE_COMMENTS', 'Les Plus Commentés', 'comments.png')
 
     def movieNotes(self):
-        self.__callpluging('showMovies','MOVIE_NOTES', 'Les Mieux Notés', 'films.png')
+        self.__callpluging('showMovies','MOVIE_NOTES', 'Les Mieux Notés', 'notes.png')
 
     def movieGenres(self):
         self.__callpluging('showGenre','MOVIE_GENRES', 'Par Genres', 'genres.png')
@@ -164,10 +164,10 @@ class cHome:
         self.__callpluging('showMovies','DOC_DOCS', 'Documentaires', 'doc.png')
 
     def sportSports(self):
-        self.__callpluging('showReplay','SPORT_SPORTS', 'Sport', 'animes.png')
+        self.__callpluging('showReplay','SPORT_SPORTS', 'Sport', 'sport.png')
 
     def movieNets(self):
-        self.__callpluging('showReplay','MOVIE_NETS', 'Vidéo du Net', 'animes.png')
+        self.__callpluging('showReplay','MOVIE_NETS', 'Vidéo du Net', 'buzz.png')
 
     def showSearch(self):
         oGui = cGui()

@@ -94,6 +94,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('cloudy')
         if ('filetrip' in sHosterUrl):
             return cHosterHandler().getHoster('filetrip')
+        if ('uptostream' in sHosterUrl):
+            return cHosterHandler().getHoster('uptostream')
 
         return False
         # step 2

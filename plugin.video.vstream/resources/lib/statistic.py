@@ -22,7 +22,7 @@ class cStatistic:
 
             rndX = random.randint(1, 99999999-10000000)+10000000
             rndY = random.randint(1, 999999999-100001000)+100000000
-	    ts1 = float(time.time())
+            ts1 = float(time.time())
             ts2 = float(time.time())
             ts3 = float(time.time())
             ts4 = float(time.time())

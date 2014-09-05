@@ -9,7 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re
+import re, urllib
 
 SITE_IDENTIFIER = 'dpstreaming_org'
 SITE_NAME = 'DPStreaming.org'
@@ -149,16 +149,19 @@ def showMovies(sSearch = ''):
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
+            sTitle=re.sub('(.*)(\[.*\])','\\1 [COLOR azure]\\2[/COLOR]', str(aEntry[2]))
+            sMovieTitle=re.sub('(\[.*\])','', str(aEntry[2]))
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
             if '/series-tv/' in sUrl or 'saison' in aEntry[1]:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', aEntry[2], '', aEntry[0], aEntry[3], oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
             elif '/mangas/' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'mangaHosters', aEntry[2], '', aEntry[0], aEntry[3], oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'mangaHosters', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[2], '', aEntry[0], aEntry[3], oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -293,4 +296,3 @@ def serieHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
 
     oGui.setEndOfDirectory()
-    

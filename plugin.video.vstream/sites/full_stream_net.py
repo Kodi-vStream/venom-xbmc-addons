@@ -165,9 +165,13 @@ def showHosters():
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)                   
         
-            if (oHoster != False):
+            if (oHoster != False):         
+                try:
+                    oHoster.setHD(sHosterUrl)
+                except: pass
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
+
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
 
     oGui.setEndOfDirectory()
@@ -186,7 +190,7 @@ def serieHosters():
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    print aResult
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sHosterUrl = str(aEntry[0])

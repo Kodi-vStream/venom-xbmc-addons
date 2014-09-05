@@ -73,7 +73,6 @@ class cHoster(iHoster):
         if xbmcaddon.Addon('plugin.video.youtube'):
             videoID = self.__sUrl
             api_call = 'plugin://plugin.video.youtube/?action=play_video&videoid='+videoID
-            print api_call
             return True, api_call
         else:
             cGui().showInfo(self.__sDisplayName, 'Vous devez installer l\'addon video youtube' , 5)

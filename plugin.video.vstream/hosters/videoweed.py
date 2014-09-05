@@ -3,12 +3,13 @@ from resources.lib.util import cUtil
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from hosters.hoster import iHoster
+import urllib
 
 class cHoster(iHoster):
 
     def __init__(self):
         self.__sDisplayName = 'VideoWeed'
-	self.__sFileName = self.__sDisplayName
+        self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
         return  self.__sDisplayName
@@ -17,10 +18,10 @@ class cHoster(iHoster):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
 
     def setFileName(self, sFileName):
-	self.__sFileName = sFileName
+        self.__sFileName = sFileName
 
     def getFileName(self):
-	return self.__sFileName
+        return self.__sFileName
 
     def getPluginIdentifier(self):
         return 'videoweed'
@@ -33,22 +34,37 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return 'flashvars.file=\"([^\"]+)\"';
+
+    def __getKey(self):
+        oRequestHandler = cRequestHandler(self.__sUrl)
+        sHtmlContent = oRequestHandler.request()
+        sPattern = 'var fkz="(.+?)";'
+        oParser = cParser()
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            aResult = aResult[1][0].replace('.','%2E')
+            return aResult
+
+        return ''
         
-    def __getIdFromUrl(self, sUrl):
+    def __getIdFromUrl(self):
         sPattern = "v=([^&]+)"
         oParser = cParser()
-        aResult = oParser.parse(sUrl, sPattern)
+        aResult = oParser.parse(self.__sUrl, sPattern)
         if (aResult[0] == True):
             return aResult[1][0]
 
         return ''
 
     def setUrl(self, sUrl):
-        if 'embed' in sUrl:
-            self.__sUrl = str(self.__getIdFromUrl(sUrl))
-            self.__sUrl = 'http://www.videoweed.es/file/' + str(self.__sUrl)
-        else:
-            self.__sUrl = sUrl
+        self.__sUrl = str(sUrl)
+        self.__sUrl = self.__sUrl.replace('http://www.videoweed.es/', '')
+        self.__sUrl = self.__sUrl.replace('http://embed.videoweed.es/', '')
+        self.__sUrl = self.__sUrl.replace('file/', '')
+        self.__sUrl = self.__sUrl.replace('embed.php?v=', '')
+        self.__sUrl = self.__sUrl.replace('&width=711&height=400', '')
+        self.__sUrl = 'http://embed.videoweed.es/embed.php?v=' + str(self.__sUrl)
+
 
     def checkUrl(self, sUrl):
         return True
@@ -62,27 +78,18 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
         cGui().showInfo('Resolve', self.__sDisplayName, 5)
         
-        oRequest = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequest.request()
+        api_call = ('http://www.videoweed.es/api/player.api.php?user=undefined&codes=1&file=%s&pass=undefined&key=%s') % (self.__getIdFromUrl(), self.__getKey())
        
-        sPattern = 'flashvars.file=\"([^<]+)\";.+?flashvars.filekey=\"([^"]+)\";';
+        oRequest = cRequestHandler(api_call)
+        sHtmlContent = oRequest.request()
         
+        sPattern =  'url=(.+?)&title'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
         if (aResult[0] == True):
-            api_call = ('http://www.videoweed.es/api/player.api.php?user=undefined&codes=1&file=%s'+'&pass=undefined&key=%s') % (aResult[1][0][0], aResult[1][0][1])
-            
-            oRequest = cRequestHandler(api_call)
-            sHtmlContent = oRequest.request()
-            
-            sPattern =  'url=(.+?)&title='
-            oParser = cParser()
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
-                return True, aResult[1][0]
-            
-            
+            stream_url = urllib.unquote(aResult[1][0])
+            return True, stream_url
+        
         return False, False
         
         

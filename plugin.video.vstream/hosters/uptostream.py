@@ -2,20 +2,19 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from hosters.hoster import iHoster
-import xbmcgui
+import urllib
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Vk'
+        self.__sDisplayName = 'Uptostream'
         self.__sFileName = self.__sDisplayName
-        self.__sHD = ''
 
     def getDisplayName(self):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -23,17 +22,8 @@ class cHoster(iHoster):
     def getFileName(self):
         return self.__sFileName
 
-    def setHD(self, sHD):
-        if 'hd' in sHD:
-            self.__sHD = 'HD'
-        else: 
-            self.__sHD = ''
-
-    def getHD(self):
-        return self.__sHD
-
     def getPluginIdentifier(self):
-        return 'vk'
+        return 'uptostream'
 
     def isDownloadable(self):
         return True
@@ -45,7 +35,7 @@ class cHoster(iHoster):
         return ''
         
     def __getIdFromUrl(self):
-        sPattern = "?([^<]+)"
+        sPattern = "id=([^<]+)"
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
         if (aResult[0] == True):
@@ -66,7 +56,7 @@ class cHoster(iHoster):
     def __getKey(self):
         oRequestHandler = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequestHandler.request()
-        sPattern = 'fkzd="(.+?)";'
+        sPattern = 'flashvars.filekey="(.+?)";'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
@@ -76,7 +66,10 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, sUrl):
-        self.__sUrl = sUrl
+        self.__sUrl = str(sUrl)
+        self.__sUrl = self.__sUrl.replace('http://uptostream.com/', '')
+        self.__sUrl = self.__sUrl.replace('iframe/', '')
+        self.__sUrl = 'http://uptostream.com/iframe/' + str(self.__sUrl)
 
     def checkUrl(self, sUrl):
         return True
@@ -88,27 +81,17 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        url=[]
-        qua=[]
+        cGui().showInfo('Resolve', self.__sDisplayName, 5)
         
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        sPattern =  '"url.+?":"(.+?)\.(\d+).mp4'
-              
+        sPattern =  "<source src='(.+?)'"
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            cGui().showInfo(self.__sDisplayName, 'Streaming', 5)
-            for aEntry in aResult[1]:
-                 url.append(aEntry[0])
-                 qua.append(str(aEntry[1]))
-             
-            dialog2 = xbmcgui.Dialog()
-            ret = dialog2.select('Select Quality',qua)
-            #sUrl = url[ret]+'.'+qua[ret]+'.mp4'
-            api_call = ('%s.%s.mp4') % (url[ret], qua[ret])
-            return True, api_call
+            stream_url = urllib.unquote(aResult[1][0])
+            return True, stream_url
         else:
             cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
             return False, False

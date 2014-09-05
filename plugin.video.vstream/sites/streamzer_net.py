@@ -99,7 +99,6 @@ def resultSearch(sSearch = ''):
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    print aResult
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -367,7 +366,6 @@ def showHosters2():
             aEntry = aEntry.replace('//', '')
             aEntry = 'http://www.'+aEntry
             
-            print aEntry
             #sHosterUrl='http://'+mediaID
             #oHoster = __checkHoster(sHosterUrl)
             sHosterUrl = str(aEntry)

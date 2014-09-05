@@ -96,5 +96,8 @@ class cHoster(iHoster):
         if (aResult[0] == True):
             stream_url = urllib.unquote(aResult[1][0])
             return True, stream_url
+        else:
+            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
+            return False, False
         
         return False, False

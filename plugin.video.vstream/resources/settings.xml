@@ -13,11 +13,11 @@
         <setting id="plugin_notre_ecole_net" type="bool" label="Notre Ecole" default="true"/>
         <setting id="plugin_chaine_tv" type="bool" label="Chaine TV" default="true"/>
         <setting id="plugin_freebox" type="bool" label="Freebox" default="true"/>
-        <setting id="plugin_anime_no_paradise_com" type="bool" label="Anime no Paradise" default="true"/>
         <setting id="plugin_fifostream_me" type="bool" label="Fifostream" default="true"/>
         <setting id="plugin_fullmoviz_org" type="bool" label="FullMoviz" default="true"/>
         <setting id="plugin_reportagestv_com" type="bool" label="ReportagesTV" default="true"/>
         <setting id="plugin_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr" default="true"/>
+        <setting id="plugin_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com" default="true"/>
     <!--</category>
     <category label="30023">-->
     <!--   <setting label="30023" type="lsep"/>

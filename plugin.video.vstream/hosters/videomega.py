@@ -65,7 +65,7 @@ class cHoster(iHoster):
               
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        print aResult
+
         if (aResult[0] == True):
             decoder = cUtil().urlDecode(aResult[1][0])
             
