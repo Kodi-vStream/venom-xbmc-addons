@@ -1,6 +1,6 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
+from resources.lib.config import cConfig
 from hosters.hoster import iHoster
 import xbmcgui
 
@@ -99,7 +99,7 @@ class cHoster(iHoster):
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            cGui().showInfo(self.__sDisplayName, 'Streaming', 5)
+            cConfig().showInfo(self.__sDisplayName, 'Streaming')
             for aEntry in aResult[1]:
                  url.append(aEntry[0])
                  qua.append(str(aEntry[1]))
@@ -110,7 +110,7 @@ class cHoster(iHoster):
             api_call = ('%s.%s.mp4') % (url[ret], qua[ret])
             return True, api_call
         else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
+            cConfig().showInfo(self.__sDisplayName, 'Fichier introuvable')
             return False, False
         
         return False, False

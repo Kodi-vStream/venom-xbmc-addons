@@ -82,7 +82,7 @@ class cHosterGui:
             return cHosterHandler().getHoster('exashare')
         if ('nowvideo' in sHosterUrl):
             return cHosterHandler().getHoster('nowvideo')
-        if ('vk' in sHosterUrl):
+        if ('vk.com' in sHosterUrl):
             return cHosterHandler().getHoster('vk')
         if ('videomega' in sHosterUrl):
             return cHosterHandler().getHoster('videomega')

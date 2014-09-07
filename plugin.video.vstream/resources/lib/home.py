@@ -18,6 +18,10 @@ class cHome:
     def load(self):
         oGui = cGui()
 
+        color_films = cConfig().getSetting('color_films')
+        color_series = cConfig().getSetting('color_series')
+        color_anims = cConfig().getSetting('color_anims')
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
@@ -32,51 +36,51 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'movieNews', 'Films Nouveautés', 'news.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'movieNews', '[COLOR '+color_films+']Films Nouveautés[/COLOR]', 'news.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'movieViews', 'Films Les Plus Vus', 'views.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'movieViews', '[COLOR '+color_films+']Films Les Plus Vus[/COLOR]', 'views.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'movieComments', 'Films Les Plus Commentés', 'comments.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'movieComments', '[COLOR '+color_films+']Films Les Plus Commentés[/COLOR]', 'comments.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'movieNotes', 'Films Les Mieux Notés', 'notes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'movieNotes', '[COLOR '+color_films+']Films Les Mieux Notés[/COLOR]', 'notes.png', oOutputParameterHandler)
        
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'movieGenres', 'Films Par Genres', 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'movieGenres', '[COLOR '+color_films+']Films Par Genres[/COLOR]', 'genres.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'serieSeries', 'Séries Nouveautés', 'series.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'serieSeries', '[COLOR '+color_series+']Séries Nouveautés[/COLOR]', 'series.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'serieVfs', 'Séries VF', 'series.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'serieVfs', '[COLOR '+color_series+']Séries VF[/COLOR]', 'series.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'serieVostfrs', 'Séries VOSTFR', 'series.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'serieVostfrs', '[COLOR '+color_series+']Séries VOSTFR[/COLOR]', 'series.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'animAnims', 'Animes Nouveautés', 'animes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'animAnims', '[COLOR '+color_anims+']Animes Nouveautés[/COLOR]', 'animes.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'animVfs', 'Animes VF', 'animes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'animVfs', '[COLOR '+color_anims+']Animes VF[/COLOR]', 'animes.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'animVostfrs', 'Animes VOSTFR', 'animes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'animVostfrs', '[COLOR '+color_anims+']Animes VOSTFR[/COLOR]', 'animes.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'animMovies', 'Animes Films', 'animes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'animMovies', '[COLOR '+color_anims+']Animes Films[/COLOR]', 'animes.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -88,7 +92,7 @@ class cHome:
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('cFav', 'getFavourites', 'Marque-page', 'mark.png', oOutputParameterHandler)
+        oGui.addDir('cFav', 'getFavourites', '[COLOR teal]Marque-page[/COLOR]', 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -103,7 +107,7 @@ class cHome:
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('freebox', 'load', 'FreeBox', 'tv.png', oOutputParameterHandler)
+        oGui.addDir('freebox', 'load', 'Télévision Box', 'tv.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')

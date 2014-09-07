@@ -1,6 +1,6 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
+from resources.lib.config import cConfig
 from hosters.hoster import iHoster
 
 
@@ -60,7 +60,7 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        cGui().showInfo('Resolve', self.__sDisplayName, 5)
+        cConfig().showInfo('Resolve', self.__sDisplayName)
         
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
@@ -72,7 +72,10 @@ class cHoster(iHoster):
 
         if (aResult[0] == True):
             api_call = aResult[1][0]
-            return True, api_call             
+            return True, api_call
+        else:
+            cConfig().showInfo(self.__sDisplayName, 'Fichier introuvable')
+            return False, False             
             
         return False, False
         

@@ -28,8 +28,7 @@ class cPlayer:
         sPlayerType = self.__getPlayerType()
         xbmcPlayer = xbmc.Player(sPlayerType)
         oPlayList = self.__getPlayList()
-	xbmcPlayer.play(oPlayList)
-        
+        xbmcPlayer.play(oPlayList)        
 
         # dirty, but is works 
         if (cConfig().isDharma() == False):

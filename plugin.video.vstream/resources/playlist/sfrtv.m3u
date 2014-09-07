@@ -1,0 +1,39 @@
+#EXTM3U
+#EXTINF:0,France 2
+http://80.118.196.219/webtv-asx.cgi?channel=france_2
+#EXTINF:0,France 3
+http://80.118.196.219/webtv-asx.cgi?channel=france_3
+#EXTINF:0,France 5
+http://80.118.196.219/webtv-asx.cgi?channel=france_5
+#EXTINF:0,Arte
+http://80.118.196.219/webtv-asx.cgi?channel=arte
+#EXTINF:0,Direct 8
+http://80.118.196.219/webtv-asx.cgi?channel=direct_8
+#EXTINF:0,NT1
+http://80.118.196.219/webtv-asx.cgi?channel=nt1
+#EXTINF:0,NRJ 12
+http://80.118.196.219/webtv-asx.cgi?channel=nrj12
+#EXTINF:0,La chaine parlementaire
+http://80.118.196.219/webtv-asx.cgi?channel=lcp
+#EXTINF:0,France 4
+http://80.118.196.219/webtv-asx.cgi?channel=france_4
+#EXTINF:0,BFM TV
+http://80.118.196.219/webtv-asx.cgi?channel=bfm_tv
+#EXTINF:0,TV5
+http://80.118.196.219/webtv-asx.cgi?channel=tv5_monde
+#EXTINF:0,France o
+http://80.118.196.219/webtv-asx.cgi?channel=france_o
+#EXTINF:0,Euronews
+http://80.118.196.219/webtv-asx.cgi?channel=euronews
+#EXTINF:0,Aljazeera
+http://80.118.196.219/webtv-asx.cgi?channel=aljazeera
+#EXTINF:0,Liberty TV
+http://80.118.196.219/webtv-asx.cgi?channel=liberty_tv
+#EXTINF:0,Beur TV
+http://80.118.196.219/webtv-asx.cgi?channel=beur_tv
+#EXTINF:0,NRJ Hits
+http://80.118.196.219/webtv-asx.cgi?channel=nrj_hits
+#EXTINF:0,KTO
+http://80.118.196.219/webtv-asx.cgi?channel=kto
+#EXTINF:0,Apsara
+http://80.118.196.219/webtv-asx.cgi?channel=apsara

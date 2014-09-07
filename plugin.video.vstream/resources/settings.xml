@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>   
-    <!--<category label="30022">-->
+    <category label="30022">-->
         <setting label="30022" type="lsep"/>
         <setting id="plugin_streamzer_net" type="bool" label="Streamzer" default="true"/> 
         <setting id="plugin_adkami_com" type="bool" label="Adkami" default="true"/>
@@ -18,8 +18,9 @@
         <setting id="plugin_reportagestv_com" type="bool" label="ReportagesTV" default="true"/>
         <setting id="plugin_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr" default="true"/>
         <setting id="plugin_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com" default="true"/>
-    <!--</category>
-    <category label="30023">-->
+        <setting id="plugin_you_exclus_net" type="bool" label="You-Exclus.net" default="true"/>
+    </category>
+    <!-- <category label="30023">-->
     <!--   <setting label="30023" type="lsep"/>
         <setting id="jd_enabled" type="bool" label="30071" default="false"/>
         <setting id="jd_host" type="text" label="30072" default="127.0.0.1"/>
@@ -37,14 +38,18 @@
         <setting id="hoster_duckload_premium" type="bool" label="30034" default="false"/>
         <setting id="hoster_duckload_username" type="text" label="30035" default=""/>
         <setting id="hoster_duckload_password" type="text" label="30036" default="" option="hidden"/>
-    <!--</category>
-     <category label="30021">-->
+    <!--</category> -->
+    <category label="30021">-->
         <setting label="30021" type="lsep"/>
         <!-- <setting id="debug" type="bool" label="30000" default="false"/> -->
         <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2"/>
         <setting id="meta-view" type="bool" label="Recherche les Métadonnées (ralenti l'Addon)" default="false"/>
-        <setting id="home-view" type="bool" label="Afficher l'Accueil par Catégories" default="false"/>
         <setting label="Paramètres des Métadonnées" type="action" action="Addon.OpenSettings(script.module.metahandler)" enable ="true" />
-    <!--</category>-->
+        <setting id="home-view" type="bool" label="Afficher l'Accueil par Catégories" default="true"/>
+
+        <setting id="color_films" type="select" label="Couleur Films" values="None|ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="None"/>
+        <setting id="color_series" type="select" label="Couleur Séries" values="None|ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="None"/>
+        <setting id="color_anims" type="select" label="Couleur Animes" values="None|ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="None"/>
+    </category>-->
    
 </settings>
