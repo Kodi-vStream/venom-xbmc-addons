@@ -1,4 +1,5 @@
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.config import cConfig
 import time
 import random
@@ -36,16 +37,16 @@ class cStatistic:
             oRequestHandler.addParameters('utmcs', 'UTF-8')
             oRequestHandler.addParameters('utmdt', 'Plugin Activity')
             oRequestHandler.addParameters('utmfl', '10.1 r102')
-            oRequestHandler.addParameters('utmhid', '1549554730')
+            #oRequestHandler.addParameters('utmhid', '1549554730')
             oRequestHandler.addParameters('utmhn', 'code.google.com')
             oRequestHandler.addParameters('utmje', '0')
-            oRequestHandler.addParameters('utmn', '771768122')
+            oRequestHandler.addParameters('utmn', str(random.randint(0, 0x7fffffff)))
             oRequestHandler.addParameters('utmp', str(sPluginName))
             oRequestHandler.addParameters('utmr', '-')
             oRequestHandler.addParameters('utmsc', '24-bit')
             oRequestHandler.addParameters('utmsr', '1920x1080')
             oRequestHandler.addParameters('utmu', 'qAAg')
-            oRequestHandler.addParameters('utmul', 'de')
+            #oRequestHandler.addParameters('utmul', 'de')
             oRequestHandler.addParameters('utmwv', '4.8.6')
                        
             oRequestHandler.request()

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.vstream" name="vStream" version="0.1.5" provider-name="Venom">
+<addon id="plugin.video.vstream" name="vStream" version="0.1.5" provider-name="VEnom">
   <requires>
     <import addon="script.module.metahandler"  version="1.0.2"/>
   </requires>

@@ -42,6 +42,9 @@ class cConfig:
 
     def getAddonPath(self):
         return self.__oPath
+
+    def getAddonVersion(self):
+        return self.__oVersion
     
     def getFileFav(self):
         return self.__sFileFav

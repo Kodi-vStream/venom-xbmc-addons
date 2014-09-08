@@ -38,9 +38,7 @@ class main:
 	    if (oInputParameterHandler.exist('site')):
 	        sSiteName = oInputParameterHandler.getValue('site')
 	        cConfig().log('load site ' + sSiteName + ' and call function ' + sFunction)
-
-	        if (sFunction == 'load'):
-	            cStatistic().callStartPlugin(sSiteName)
+	        cStatistic().callStartPlugin(sSiteName)
 
 	        if (isHosterGui(sSiteName, sFunction) == True):
 	            return

@@ -11,6 +11,10 @@ import urllib
 
 SITE_IDENTIFIER = 'cHome'
 SITE_NAME = 'Home'
+color_films = cConfig().getSetting('color_films')
+color_series = cConfig().getSetting('color_series')
+color_anims = cConfig().getSetting('color_anims')
+color_tvs = cConfig().getSetting('color_tvs')
 
 class cHome:
       
@@ -18,21 +22,13 @@ class cHome:
     def load(self):
         oGui = cGui()
 
-        color_films = cConfig().getSetting('color_films')
-        color_series = cConfig().getSetting('color_series')
-        color_anims = cConfig().getSetting('color_anims')
-
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'showTV', 'Télévision', 'tv.png', oOutputParameterHandler)
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'docDocs', 'Documentaires', 'doc.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showTV', '[COLOR '+color_tvs+']Télévision[/COLOR]', 'tv.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -84,6 +80,10 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'docDocs', 'Documentaires', 'doc.png', oOutputParameterHandler)
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir(SITE_IDENTIFIER, 'sportSports', 'Sport', 'sport.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -107,11 +107,11 @@ class cHome:
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('freebox', 'load', 'Télévision Box', 'tv.png', oOutputParameterHandler)
+        oGui.addDir('freebox', 'load', '[COLOR '+color_tvs+']Télévision Box[/COLOR]', 'tv.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('chaine_tv', 'load', 'Tv du net', 'tv.png', oOutputParameterHandler)
+        oGui.addDir('chaine_tv', 'load', '[COLOR '+color_tvs+']Tv du net[/COLOR]', 'tv.png', oOutputParameterHandler)
         
         oGui.setEndOfDirectory()
 
@@ -129,40 +129,40 @@ class cHome:
 
 
     def movieNews(self):
-        self.__callpluging('showMovies','MOVIE_NEWS', 'Nouveautés', 'news.png')
+        self.__callpluging('showMovies','MOVIE_NEWS', '[COLOR '+color_films+']Films Nouveautés[/COLOR]', 'news.png')
 
     def movieViews(self):
-        self.__callpluging('showMovies','MOVIE_VIEWS', 'Les Plus Vus', 'views.png')
+        self.__callpluging('showMovies','MOVIE_VIEWS', '[COLOR '+color_films+']Films Les Plus Vus[/COLOR]', 'views.png')
 
     def movieComments(self):
-        self.__callpluging('showMovies','MOVIE_COMMENTS', 'Les Plus Commentés', 'comments.png')
+        self.__callpluging('showMovies','MOVIE_COMMENTS', '[COLOR '+color_films+']Films Les Plus Commentés[/COLOR]', 'comments.png')
 
     def movieNotes(self):
-        self.__callpluging('showMovies','MOVIE_NOTES', 'Les Mieux Notés', 'notes.png')
+        self.__callpluging('showMovies','MOVIE_NOTES', '[COLOR '+color_films+']Films Les Mieux Notés[/COLOR]', 'notes.png')
 
     def movieGenres(self):
-        self.__callpluging('showGenre','MOVIE_GENRES', 'Par Genres', 'genres.png')
+        self.__callpluging('showGenre','MOVIE_GENRES', '[COLOR '+color_films+']Films Par Genres[/COLOR]', 'genres.png')
 
     def serieSeries(self):
-        self.__callpluging('showMovies','SERIE_SERIES', 'Nouveautés', 'series.png')
+        self.__callpluging('showMovies','SERIE_SERIES', '[COLOR '+color_series+']Séries Nouveautés[/COLOR]', 'series.png')
 
     def serieVfs(self):
-        self.__callpluging('showMovies','SERIE_VFS', 'VF', 'series.png')
+        self.__callpluging('showMovies','SERIE_VFS', '[COLOR '+color_series+']Séries VF[/COLOR]', 'series.png')
 
     def serieVostfrs(self):
-        self.__callpluging('showMovies','SERIE_VOSTFRS', 'VOSTFR', 'series.png')
+        self.__callpluging('showMovies','SERIE_VOSTFRS', '[COLOR '+color_series+']Séries VOSTFR[/COLOR]', 'series.png')
 
     def animAnims(self):
-        self.__callpluging('showMovies','ANIM_ANIMS', 'Nouveautés', 'animes.png')
+        self.__callpluging('showMovies','ANIM_ANIMS', '[COLOR '+color_anims+']Animes Nouveautés[/COLOR]', 'animes.png')
 
     def animVfs(self):
-        self.__callpluging('showMovies','ANIM_VFS', 'VF', 'animes.png')
+        self.__callpluging('showMovies','ANIM_VFS', '[COLOR '+color_anims+']Animes VF[/COLOR]', 'animes.png')
 
     def animVostfrs(self):
-        self.__callpluging('showMovies','ANIM_VOSTFRS', 'VOSTFR', 'animes.png')
+        self.__callpluging('showMovies','ANIM_VOSTFRS', '[COLOR '+color_anims+']Animes VOSTFR[/COLOR]', 'animes.png')
 
     def animMovies(self):
-        self.__callpluging('showMovies','ANIM_MOVIES', 'OAVS/Films', 'animes.png')
+        self.__callpluging('showMovies','ANIM_MOVIES', '[COLOR '+color_anims+']Animes OAVS/Films[/COLOR]', 'animes.png')
 
     def docDocs(self):
         self.__callpluging('showMovies','DOC_DOCS', 'Documentaires', 'doc.png')
