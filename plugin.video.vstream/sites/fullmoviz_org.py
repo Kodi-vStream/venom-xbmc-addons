@@ -57,21 +57,34 @@ def showGenre():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-   
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
  
-    sPattern = '<li class="cat-item cat-item-.+?"><a href="([^<]+)" title=".+?">(.+?)</a>'
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
+    liste = []
+    liste.append( ['Action','http://www.fullmoviz.org/category/action/'] )
+    liste.append( ['Animation','http://www.fullmoviz.org/category/animation/'] )
+    liste.append( ['Art martiaux','http://www.fullmoviz.org/category/art-martiaux/'] )
+    liste.append( ['Aventure','http://www.fullmoviz.org/category/aventure/'] )
+    liste.append( ['Biographique','http://www.fullmoviz.org/category/biographique/'] )
+    liste.append( ['Comédie','http://www.fullmoviz.org/category/comedie/'] )
+    liste.append( ['Drame','http://www.fullmoviz.org/category/drame/'] )
+    liste.append( ['Epique','http://www.fullmoviz.org/category/epique/'] )
+    liste.append( ['Epouvante','http://www.fullmoviz.org/category/epouvante/'] )
+    liste.append( ['Familial','http://www.fullmoviz.org/category/familial/'] )
+    liste.append( ['Fantaisie','http://www.fullmoviz.org/category/fantaisie/'] )
+    liste.append( ['Film noir','http://www.fullmoviz.org/category/film-noir'] )
+    liste.append( ['Highlights','http://www.fullmoviz.org/category/highlights/'] )
+    liste.append( ['Historique','http://www.fullmoviz.org/category/historique/'] )
+    liste.append( ['Psychologique','http://www.fullmoviz.org/category/psychologique'] )
+    liste.append( ['Romance','http://www.fullmoviz.org/category/romance/'] )
+    liste.append( ['Science-fiction','http://www.fullmoviz.org/category/science-fiction/'] )
+    liste.append( ['Thriller','http://www.fullmoviz.org/category/thriller/'] )
+                
+    for sTitle,sUrl in liste:
         
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', aEntry[1], 'genres.png', oOutputParameterHandler)
-           
-    oGui.setEndOfDirectory()
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+       
+    oGui.setEndOfDirectory() 
     
     
 def showMovies(sSearch=''):

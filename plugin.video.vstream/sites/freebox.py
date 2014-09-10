@@ -11,16 +11,17 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
 from resources.lib.config import cConfig
-import re, urllib2, os
+import re, urllib2, urllib, os
 
 SITE_IDENTIFIER = 'freebox'
-SITE_NAME = 'Freebox'
+SITE_NAME = 'Télévision Direct / Stream'
 SITE_DESC = 'Regarder la télévision freebox | Uniquement pour les abonnés free'
 
 URL_MAIN = 'http://mafreebox.freebox.fr/freeboxtv/playlist.m3u'
-URL_FREE = os.path.join(cConfig().getAddonPath(),'resources/playlist/freetv.m3u')
-URL_ORANGE = os.path.join(cConfig().getAddonPath(),'resources/playlist/orangetv.m3u')
-URL_SFR = os.path.join(cConfig().getAddonPath(),'resources/playlist/sfrtv.m3u')
+URL_FREE = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/freetv.m3u'
+URL_ORANGE = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/orangetv.m3u'
+URL_SFR = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/sfrtv.m3u'
+URL_WEB = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/webtv.m3u'
 
 
 class track():
@@ -34,19 +35,23 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'load', '[COLOR khaki]Pour lire les chaînes vous devez être chez l\'Opérateur (Si des chaînes ne fonctionnent pas, vous n\'avez peux être pas le bouquet nécessaire[/COLOR]', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'load', '[COLOR khaki]Pour lire les chaînes BOX vous devez être chez l\'Opérateur (Si des chaînes ne fonctionnent pas, vous n\'avez peux être pas le bouquet nécessaire[/COLOR]', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_FREE)
-    oGui.addDir(SITE_IDENTIFIER, 'showBox', 'Free TV', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Free TV', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SFR)
-    oGui.addDir(SITE_IDENTIFIER, 'showBox', 'Sfr TV', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Sfr TV', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_ORANGE)
-    oGui.addDir(SITE_IDENTIFIER, 'showBox', 'Orange TV', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Orange TV', 'tv.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_WEB)
+    oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Tv du web', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -70,36 +75,72 @@ def showBox():
   
     oGui.setEndOfDirectory()
 
+def showWeb():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    playlist = parseWebM3U(sUrl)
+
+    for track in playlist:
+           
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', str(track.path))
+        oOutputParameterHandler.addParameter('siteTitle', str(track.title))
+        oGui.addDir(SITE_IDENTIFIER, 'play', track.title, 'tv.png', oOutputParameterHandler)
+    
+  
+    oGui.setEndOfDirectory()
+
 ### import code https://github.com/dvndrsn/M3uParser ###
 ### David Anderson code thanck's for good job ###
 
-def parseM3U(infile):
-    inf = open(infile,'r')
+def parseWebM3U(infile):
+    inf = urllib.urlopen(infile)
 
-    # # # all m3u files should start with this line:
-        #EXTM3U
-    # this is not a valid M3U and we should stop..
     line = inf.readline()
     if not line.startswith('#EXTM3U'):
        return
 
-    # initialize playlist variables before reading file
     playlist=[]
     song=track(None,None,None)
 
     for line in inf:
         line=line.strip()
         if line.startswith('#EXTINF:'):
-            # pull length and title from #EXTINF line
             length,title=line.split('#EXTINF:')[1].split(',',1)
             song=track(length,title,None)
         elif (len(line) != 0):
-            # pull song path from all other, non-blank lines
-            song.path=line
-            playlist.append(song)
+            if not line.startswith('!'):
+                song.path=line
+                playlist.append(song)
+                song=track(None,None,None)
 
-            # reset the song variable so it doesn't use the same EXTINF more than once
-            song=track(None,None,None)
+    inf.close()
+
+    return playlist
+
+def parseM3U(infile):
+    inf = open(infile,'r')
+
+    line = inf.readline()
+    if not line.startswith('#EXTM3U'):
+       return
+
+    playlist=[]
+    song=track(None,None,None)
+
+    for line in inf:
+        line=line.strip()
+        if line.startswith('#EXTINF:'):
+            length,title=line.split('#EXTINF:')[1].split(',',1)
+            song=track(length,title,None)
+        elif (len(line) != 0):
+            if not line.startswith('!'):
+                song.path=line
+                playlist.append(song)
+                song=track(None,None,None)
 
     inf.close()
 

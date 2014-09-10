@@ -28,7 +28,7 @@ class cHome:
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'showTV', '[COLOR '+color_tvs+']Télévision[/COLOR]', 'tv.png', oOutputParameterHandler)
+        oGui.addDir('freebox', 'load', '[COLOR '+color_tvs+']Télévision[/COLOR]', 'tv.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
