@@ -1,10 +1,10 @@
 #EXTM3U
-!#EXTINF:0,France 2
-!http://80.118.196.219/webtv-asx.cgi?channel=france_2
-!#EXTINF:0,France 3
-!http://dt3zwsgl95oj4.cloudfront.net/live2/france3.smil/playlist.m3u8
-!#EXTINF:0,France 5
-!http://dt3zwsgl95oj4.cloudfront.net/live2/france5.smil/playlist.m3u8
+#EXTINF:0,France 2
+http://live.francetv.fr/simulcast/France_2/hls_v1/index.m3u8
+#EXTINF:0,France 3
+http://live.francetv.fr/simulcast/France_3/hls_v1/index.m3u8
+#EXTINF:0,France 5
+http://live.francetv.fr/simulcast/France_5/hls_v1/index.m3u8
 #EXTINF:0,Arte
 http://frlive.artestras.cshls.lldns.net/artestras/contrib/frlive/frlive_925.m3u8
 #EXTINF:0,M6
@@ -15,8 +15,8 @@ http://hls-live-m1-l3.canal-plus.com/live/hls/d8-clair-v3-sd-andr7/and-sd-clair/
 https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/w9_hls_aes/w9_hls_aes_856.m3u8
 #EXTINF:0,NRJ 12
 http://nrj-apple-live.adaptive.level3.net/apple/nrj/nrj/nrj12hi.m3u8
-!#EXTINF:0,France 4
-!http://dt3zwsgl95oj4.cloudfront.net/live2/france4.smil/playlist.m3u8
+#EXTINF:0,France 4
+http://live.francetv.fr/simulcast/France_4/hls_v1/index.m3u8
 #EXTINF:0,D17
 http://hls-live-m1-l3.canal-plus.com/live/hls/d17-clair-v3-sd-andr7/and-sd-clair/index.m3u8
 !#EXTINF:0,RTL9
@@ -27,8 +27,8 @@ http://hls-live-m1-l3.canal-plus.com/live/hls/d17-clair-v3-sd-andr7/and-sd-clair
 https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/six_ter_hls_aes/six_ter_hls_aes_856.m3u8
 #EXTINF:0,Numéro 23
 http://stream-l3-4.vty.dmcdn.net/17/dm/1/x13p3qi/live.isml/live.m3u8
-!#EXTINF:0,France O
-!http://dt3zwsgl95oj4.cloudfront.net/live2/franceo.smil/playlist.m3u8
+#EXTINF:0,France O
+http://live.francetv.fr/simulcast/France_O/hls_v1/index.m3u8
 #EXTINF:0,I Télé
 http://hls-live-m2-l3.canal-plus.com/live/hls/itele-clair-v3-sd-andr7/and-sd-clair/index.m3u8
 #EXTINF:0,BFM
