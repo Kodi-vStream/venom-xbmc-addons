@@ -95,3 +95,7 @@ http://cdn.djing.com/tv/live.m3u8
 !http://dt3zwsgl95oj4.cloudfront.net/live2/dorceltv.smil/playlist.m3u8
 !#EXTINF:0,XXL
 !http://dt3zwsgl95oj4.cloudfront.net/live2/xxl.smil/playlist.m3u8
+#EXTINF:0,I24
+http://bcoveliveios-i.akamaihd.net/hls/live/215102/master_french/412/master.m3u8
+#EXTINF:0,Weo
+rtmp://str81.creacast.com:80/weo/high
