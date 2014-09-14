@@ -7,6 +7,7 @@ from resources.lib.gui.guiElement import cGuiElement #system d'affichage pour xb
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler #entrer des parametres
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler #sortis des parametres
 from resources.lib.handler.requestHandler import cRequestHandler #requete url
+from resources.lib.config import cConfig #config
 from resources.lib.parser import cParser #recherche de code
 
 #Si vous créer une source et la déposer dans le dossier sites elle seras directement visible sous xbmc
@@ -140,7 +141,10 @@ def showMovies(sSearch = ''):
     # et modifier sPattern si besoin
     print aResult #Commenter ou supprimer cette ligne une foix fini
     if (aResult[0] == True):
+        total = len(aResult[1]) #dialog
+        dialog = cConfig().createDialog(SITE_NAME) #dialog
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total) #dialog
             #L'array affiche vos info dans l'orde de sPattern en commencant a 0
             sTitle = aEntry[1]
             oOutputParameterHandler = cOutputParameterHandler()
@@ -157,7 +161,8 @@ def showMovies(sSearch = ''):
                 
             #il existe aussis addMisc(identifiant, function, titre, icon, poster, description, sortis parametre)
             #la difference et pour les metadonner serie, films ou sans
-            
+        cConfig().finishDialog(dialog)#dialog
+           
         sNextPage = __checkForNextPage(sHtmlContent)#cherche la page suivante
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
