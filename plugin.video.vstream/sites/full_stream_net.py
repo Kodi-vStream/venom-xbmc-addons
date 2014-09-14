@@ -7,6 +7,7 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re
@@ -115,7 +116,10 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
@@ -125,7 +129,9 @@ def showMovies(sSearch = ''):
                 oGui.addTV(SITE_IDENTIFIER, 'serieHosters', aEntry[1], '', aEntry[0], aEntry[3], oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[1], '', aEntry[0], aEntry[3], oOutputParameterHandler)
-            
+        
+        cConfig().finishDialog(dialog)
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -161,7 +167,11 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)                   
         
@@ -173,6 +183,8 @@ def showHosters():
                 oHoster.setFileName(sMovieTitle)
 
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+
+        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
     
@@ -192,7 +204,11 @@ def serieHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+
             sHosterUrl = str(aEntry[0])
             oHoster = cHosterGui().checkHoster(sHosterUrl)
         
@@ -200,6 +216,8 @@ def serieHosters():
                 sTitle = aEntry[1]
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)    
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+
+        cConfig().finishDialog(dialog)    
 
     oGui.setEndOfDirectory()

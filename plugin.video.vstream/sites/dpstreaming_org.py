@@ -7,6 +7,7 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re, urllib
@@ -147,7 +148,10 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
 
             sTitle=re.sub('(.*)(\[.*\])','\\1 [COLOR azure]\\2[/COLOR]', str(aEntry[2]))
             sMovieTitle=re.sub('(\[.*\])','', str(aEntry[2]))
@@ -162,7 +166,9 @@ def showMovies(sSearch = ''):
                 oGui.addTV(SITE_IDENTIFIER, 'mangaHosters', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
-            
+        
+        cConfig().finishDialog(dialog)
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -188,7 +194,11 @@ def showSeries():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+
             if aEntry[0]:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
@@ -202,6 +212,8 @@ def showSeries():
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
 
@@ -232,7 +244,11 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+
             sHosterUrl = str(aEntry)
             #oHoster = __checkHoster(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -240,7 +256,9 @@ def showHosters():
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+
+        cConfig().finishDialog(dialog) 
 
     oGui.setEndOfDirectory()
     
@@ -261,7 +279,11 @@ def mangaHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+
             sHosterUrl = str(aEntry[1])
             #oHoster = __checkHoster(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -271,6 +293,8 @@ def mangaHosters():
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+
+        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
     
@@ -285,7 +309,11 @@ def serieHosters():
     oParser = cParser()
     aResult = oParser.parse(sUrl, sPattern)
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+
             sHosterUrl = str(aEntry)
             #oHoster = __checkHoster(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -294,5 +322,7 @@ def serieHosters():
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+
+        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()

@@ -8,6 +8,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.config import cConfig
 from resources.lib.util import cUtil
 import string
 
@@ -210,13 +211,20 @@ def showMoviesAZ():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+
             if len(sAZ)>0 and aEntry[1].upper()[0] == sAZ :
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', aEntry[1], 'animes.png', '', '', oOutputParameterHandler)
+        
+    
+        cConfig().finishDialog(dialog)
             
 
     oGui.setEndOfDirectory()
@@ -235,13 +243,18 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        for aEntry in aResult[1]:                
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)               
 
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', aEntry[1], 'animes.png', '', '', oOutputParameterHandler)
-            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
+            oGui.addTV(SITE_IDENTIFIER, 'showEpisode', aEntry[1], 'animes.png', '', '', oOutputParameterHandler)
+         
+          
+        cConfig().finishDialog(dialog)   
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -259,7 +272,10 @@ def showEpisode():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
             
             if aEntry[0]:
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -271,6 +287,10 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
                 oGui.addDir(SITE_IDENTIFIER, 'showHosters', sMovieTitle+' - '+aEntry[2], 'films.png', oOutputParameterHandler)
+       
+    
+        cConfig().finishDialog(dialog)
+
 
     oGui.setEndOfDirectory()
     
@@ -289,13 +309,19 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
         
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '') 
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')         
+    
+        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()

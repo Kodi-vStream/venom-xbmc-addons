@@ -2,8 +2,12 @@ import os
 import sys
 import xbmc
 import xbmcplugin
+import xbmcgui
 
-class cConfig:
+class cConfig():
+
+    COUNT = 0
+
 
     def __check(self):
         try:
@@ -67,6 +71,13 @@ class cConfig:
             except:
 		return ''
 
+    def setSetting(self, sName, sValue):
+        if (self.__bIsDharma):
+            return self.__oSettings.setSetting(sName, sValue)
+        else:
+            return xbmcplugin.setSetting(sName, sValue)
+        return
+
     def getLocalizedString(self, sCode):
         if (self.__bIsDharma):
             return self.__aLanguage(sCode)
@@ -84,6 +95,21 @@ class cConfig:
             if (len(sSearchText)) > 0:
                 return sSearchText
 
+        return False
+
+    def createDialog(self, sSite):
+        oDialog = xbmcgui.DialogProgressBG()
+        oDialog.create(sSite)  
+        return oDialog
+
+    def updateDialog(self, dialog, total):
+        iPercent = int(float(cConfig.COUNT * 100) / total)
+        dialog.update(iPercent, '', 'Chargement: (ESC pour Annuler) '+str(cConfig.COUNT)+'/'+str(total))
+        cConfig.COUNT += 1
+
+    def finishDialog(self, dialog):
+        dialog.close()
+        del dialog
         return False
         
     def showInfo(self, sTitle, sDescription, iSeconds=0):

@@ -7,6 +7,7 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re
@@ -132,7 +133,8 @@ def showQlt():
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'films.png', oOutputParameterHandler)
        
-    oGui.setEndOfDirectory() 
+    oGui.setEndOfDirectory()
+
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -148,9 +150,12 @@ def showMovies(sSearch = ''):
     sPattern = '<img class="tubeposter" src="([^<]+)" alt=".+?" title=".+?" />.+?<h2 class="mtitle"><a href="([^<]+)">([^<]+)</a></h2>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            
             sTitle=re.sub('(.*)(\[.*\])','\\1 [COLOR azure]\\2[/COLOR]', str(aEntry[2]))
             sMovieTitle=re.sub('(\[.*\])','', str(aEntry[2]))
 
@@ -165,7 +170,11 @@ def showMovies(sSearch = ''):
                 oGui.addTV(SITE_IDENTIFIER, 'mangasHosters', sTitle,'', aEntry[0], '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], '', oOutputParameterHandler)
-            
+           
+    
+        cConfig().finishDialog(dialog)
+        
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -204,14 +213,19 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
             
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
+    
+        cConfig().finishDialog(dialog)
                 
     oGui.setEndOfDirectory()
     
@@ -232,7 +246,10 @@ def seriesHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
 
             if aEntry[0]:
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -249,7 +266,9 @@ def seriesHosters():
                 sTitle = sMovieTitle+'[COLOR azure]'+aEntry[2]+'[/COLOR]'
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
+    
+        cConfig().finishDialog(dialog)
                 
     oGui.setEndOfDirectory()
 
@@ -269,7 +288,10 @@ def mangasHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
             
             sHosterUrl = str(aEntry[0])
             
@@ -278,7 +300,9 @@ def mangasHosters():
                 sTitle = sMovieTitle+' [COLOR azure]'+aEntry[1]+'[/COLOR]'
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
+    
+        cConfig().finishDialog(dialog)
                 
     oGui.setEndOfDirectory()
     

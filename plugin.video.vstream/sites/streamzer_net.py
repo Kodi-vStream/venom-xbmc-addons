@@ -7,8 +7,8 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'streamzer_net'
@@ -101,14 +101,19 @@ def resultSearch(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[1], '', aEntry[2], '', oOutputParameterHandler)
-            
+        
+        cConfig().finishDialog(dialog)
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -239,18 +244,26 @@ def showMovies():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+
             sTitle = aEntry[2].decode('latin-1').encode("utf-8")
+            sTitle=re.sub('(.*)(\[.*\])','\\1 [COLOR azure]\\2[/COLOR]', str(sTitle))
+            sMovieTitle=re.sub('(\[.*\])','', str(sTitle))
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
             if '/series/' in aEntry[1]:
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSerieHosters', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
-            
+        
+        cConfig().finishDialog(dialog)
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -271,7 +284,11 @@ def showReplay():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+
             sTitle = aEntry[2].decode('latin-1').encode("utf-8")
             
             oOutputParameterHandler = cOutputParameterHandler()
@@ -282,7 +299,9 @@ def showReplay():
                 oGui.addMisc(SITE_IDENTIFIER, 'showHosters2', sTitle, '', aEntry[0], '', oOutputParameterHandler)
             else:
                 oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], '', oOutputParameterHandler)
-            
+        
+        cConfig().finishDialog(dialog)
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -311,13 +330,19 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
+    sHtmlContent = sHtmlContent.replace("<a href='http://www.youtube.com/", "")
 
 
-    sPattern = "<span style='font-size:10px; color: #CD371A;'><b>(.+?)</b><span>|<a href='([^<]+)' target='player'>(.+?)<div class='mirroir'>([^<]+)"
+    sPattern = "<span style='font-size:10px; color: #CD371A;'><b>(.+?)</b><span>|<td class='td-liens'><a href='([^<]+)' target='player'>(.+?)<div class='mirroir'>([^<]+)"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+
             sHosterUrl = str(aEntry[1])
             #oHoster = __checkHoster(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -340,6 +365,8 @@ def showHosters():
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
 
+        cConfig().finishDialog(dialog)
+
     oGui.setEndOfDirectory()
     
 def showHosters2():
@@ -359,7 +386,11 @@ def showHosters2():
     aResult = oParser.parse(sHtmlContent, sPattern)    
  
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+
             #mediaID=re.findall('//([^<]+)',aEntry)[0]
             aEntry = aEntry.replace('http://', '')
             aEntry = aEntry.replace('www.', '')
@@ -375,6 +406,54 @@ def showHosters2():
                 sTitle = str(sMovieTitle)
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)    
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+
+        cConfig().finishDialog(dialog)   
+
+    oGui.setEndOfDirectory()
+
+
+def showSerieHosters():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = sHtmlContent.replace("<a href='http://www.youtube.com/", "").replace("<a href='http://www.allocine.fr/", "")
+
+
+    sPattern = "<span style='font-size:11px; color:#333333;'><b>(.+?)</b></span>|<a href='([^<]+)' target='player'>(.+?)</td>"
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    print aResult
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+
+            sHosterUrl = str(aEntry[1])
+            #oHoster = __checkHoster(sHosterUrl)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            
+            if aEntry[0]:
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'host.png', oOutputParameterHandler)
+                   
+        
+            if (oHoster != False):
+                sMovieTitle=re.sub(r'\[.*\]',r'',sMovieTitle)
+                sTitle = str(sMovieTitle) + ' - ' + str(aEntry[2])
+                oHoster.setDisplayName(sTitle)
+                oHoster.setFileName(sTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+
+        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()

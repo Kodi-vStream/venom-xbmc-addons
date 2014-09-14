@@ -105,7 +105,7 @@ class cGui:
         
         sPluginHandle = cPluginHandler().getPluginHandle();
 
-        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, True, oGuiElement.getCount())
+        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, True)
 
     def createListItem(self, oGuiElement):
         #oPath = cPluginHandler().getRootArt()
@@ -261,7 +261,7 @@ class cGui:
         xbmcplugin.endOfDirectory(iHandler, True)
 
     def updateDirectory(self):
-	xbmc.executebuiltin("Container.Refresh")
+        xbmc.executebuiltin("Container.Refresh")
     
     def setWatched(self):
         oGuiElement = cGuiElement()

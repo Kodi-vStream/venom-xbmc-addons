@@ -9,6 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
+from resources.lib.config import cConfig
 import re, urllib
 
 SITE_IDENTIFIER = 'frenchstream_org'
@@ -108,7 +109,10 @@ def showMovies(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
             
             sTitle = aEntry[2]+' - [COLOR azure]'+aEntry[3]+'[/COLOR]'
             oOutputParameterHandler = cOutputParameterHandler()
@@ -118,8 +122,10 @@ def showMovies(sSearch = ''):
             if '/tv-series' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle,'', aEntry[1], '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', aEntry[1], '', oOutputParameterHandler)
-            
+                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', aEntry[1], '', oOutputParameterHandler)           
+    
+        cConfig().finishDialog(dialog)
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -143,15 +149,20 @@ def showSeries():
     sPattern = '<a href="([^<]+)"><span>(.+?)</span></a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+
             sTitle = sMovieTitle+' - '+aEntry[1]
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)            
+    
+        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
 
@@ -181,7 +192,10 @@ def showLinks():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
             
             sHoster = cHosterGui().checkHoster(aEntry[1].lower())
             if (sHoster != False):
@@ -190,8 +204,10 @@ def showLinks():
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
-                
+                oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)             
+    
+        cConfig().finishDialog(dialog)
+
     oGui.setEndOfDirectory()  
 
 def showHosters():
@@ -210,15 +226,20 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
             
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
-                
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
+    
+        cConfig().finishDialog(dialog)
+
     oGui.setEndOfDirectory()
 
 # #testt

@@ -8,6 +8,7 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re
@@ -68,7 +69,11 @@ def showMovies(sSearch=''):
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+
             sTitle= aEntry[0]
             sThumbnail = 'http:'+str(aEntry[2])
             sUrl = URL_MAIN+str(aEntry[1])
@@ -78,6 +83,8 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)            
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, aEntry[3], oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -115,7 +122,11 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+
             sHosterUrl = str(aEntry)
             sHosterUrl = 'http:'+sHosterUrl
             #oHoster = __checkHoster(sHosterUrl)
@@ -126,6 +137,8 @@ def showHosters():
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+
+        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
     

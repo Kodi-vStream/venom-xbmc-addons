@@ -96,6 +96,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('filetrip')
         if ('uptostream' in sHosterUrl):
             return cHosterHandler().getHoster('uptostream')
+        if ('dailymotion' in sHosterUrl):
+            return cHosterHandler().getHoster('dailymotion')
 
         return False
         # step 2
