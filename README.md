@@ -35,7 +35,7 @@ Contribuer!
 
 Pour me proposer de nouvelles sources ou me rapporter un bug utiliser
 
-[Issues Github](https://github.com/LordVenom/venom-xbmc-addons/issues) ou [twitter @LordVenom57](https://twitter.com/LordVenom57)
+[Issues Github](https://github.com/LordVenom/venom-xbmc-addons/issues) ou [Twitter @LordVenom57](https://twitter.com/LordVenom57)
 
 
 Pour créer un nouvelle source utiliser le fichier avec commentaire pour vous aider.
