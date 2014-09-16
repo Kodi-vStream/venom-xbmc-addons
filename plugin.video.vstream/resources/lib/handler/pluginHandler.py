@@ -44,7 +44,7 @@ class cPluginHandler:
             return False, False
 
     def getRootFolder(self):        
-        sRootFolder = os.getcwd()
+        sRootFolder = cConfig().getAddonPath()
         logger.info('root folder: ' + sRootFolder)
         return sRootFolder
         

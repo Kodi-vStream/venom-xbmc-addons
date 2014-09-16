@@ -80,6 +80,7 @@ class main:
 	                oGuiElement.setSiteName(aPlugin[1])
 	                oGuiElement.setDescription(aPlugin[2])
 	                oGuiElement.setFunction(sFunction)
+	                oGuiElement.setIcon("icon.png")
 	                oGui.addFolder(oGuiElement)
 
 	        oGui.setEndOfDirectory()

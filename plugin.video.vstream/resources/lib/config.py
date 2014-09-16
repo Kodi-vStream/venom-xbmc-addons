@@ -32,6 +32,7 @@ class cConfig():
             self.__oCache = xbmc.translatePath(self.__oSettings.getAddonInfo("profile"))
             self.__sRootArt = os.path.join(self.__oPath,'resources/art/')
             self.__sIcon = os.path.join(self.__oPath,'resources/art/icon.png')
+            self.__sFanart = os.path.join(self.__oPath,'resources/art/fanart.jpg')
             self.__sFileFav = os.path.join(self.__oCache,'favourite.db')
 
 
@@ -47,11 +48,20 @@ class cConfig():
     def getAddonPath(self):
         return self.__oPath
 
+    def getRootArt(self):
+        return self.__sRootArt
+
     def getAddonVersion(self):
         return self.__oVersion
     
     def getFileFav(self):
         return self.__sFileFav
+
+    def getFileIcon(self):
+        return self.__sIcon
+
+    def getFileFanart(self):
+        return self.__sFanart
 
     def showSettingsWindow(self):
         if (self.__bIsDharma):
@@ -98,13 +108,13 @@ class cConfig():
         return False
 
     def createDialog(self, sSite):
-        oDialog = xbmcgui.DialogProgressBG()
+        oDialog = xbmcgui.DialogProgress()
         oDialog.create(sSite)  
         return oDialog
 
     def updateDialog(self, dialog, total):
         iPercent = int(float(cConfig.COUNT * 100) / total)
-        dialog.update(iPercent, '', 'Chargement: (ESC pour Annuler) '+str(cConfig.COUNT)+'/'+str(total))
+        dialog.update(iPercent, 'Chargement: '+str(cConfig.COUNT)+'/'+str(total))
         cConfig.COUNT += 1
 
     def finishDialog(self, dialog):
