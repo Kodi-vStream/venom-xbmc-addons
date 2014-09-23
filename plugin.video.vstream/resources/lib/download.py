@@ -3,6 +3,7 @@ from resources.lib.config import cConfig
 import urllib2
 import xbmc
 import xbmcgui
+import xbmcvfs
 import string
 import logger
 
@@ -52,16 +53,18 @@ class cDownload:
         if "content-length" in headers:
             iTotalSize = int(headers["Content-Length"])
 
-        chunk = 4096
-        f = open(fpath, "w")
+        chunk = 16 * 1024
+        #f = open(fpath, "w")
+        f = xbmcvfs.File(fpath, 'w')
         iCount = 0        
         while 1:
             iCount = iCount +1
             data = oUrlHandler.read(chunk)
-            if not data or self.__processIsCanceled == True:
-                break
+            if not data: break
             f.write(data)
             self.__stateCallBackFunction(iCount, chunk, iTotalSize)
+        oUrlHandler.close()
+        f.close()
             
 
     def __createTitle(self, sUrl, sTitle):        
