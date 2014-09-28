@@ -19,6 +19,9 @@ SITE_DESC = 'docspot.fr + 3000 Documentaires et reportages en Streaming gratuit 
 URL_MAIN = 'http://www.docspot.fr/'
 DOC_DOCS = 'http://www.docspot.fr/?cat=0'
 
+URL_SEARCH = 'http://www.docspot.fr/?s='
+FUNCTION_SEARCH = 'showMovies'
+
 def load():
     oGui = cGui()
 
@@ -111,6 +114,8 @@ def showMovies(sSearch = ''):
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
@@ -160,6 +165,8 @@ def showHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)

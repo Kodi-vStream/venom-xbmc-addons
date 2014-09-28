@@ -17,12 +17,17 @@ SITE_NAME = 'Full-Stream.net'
 SITE_DESC = 'Film et Série en Streaming HD - Vk.Com - Netu.tv - ExaShare - YouWatch'
 
 URL_MAIN = 'http://full-stream.net'
-MOVIE_NEWS = 'http://full-stream.net/lastnews/'
+MOVIE_NEWS = 'http://full-stream.net/'
 MOVIE_VIEWS = 'http://full-stream.net/films-en-vk-streaming/'
 MOVIE_GENRES = True
 SERIE_SERIES = 'http://full-stream.net/seriestv/'
 SERIE_VFS = 'http://full-stream.net/seriestv/vf/'
 SERIE_VOSTFRS = 'http://full-stream.net/seriestv/vostfr/'
+ANIM_VFS = 'http://full-stream.net/mangas/mangas-vf/'
+ANIM_VOSTFRS = 'http://full-stream.net/mangas/mangas-vostfr/'
+
+URL_SEARCH = 'http://full-stream.net/xfsearch/'
+FUNCTION_SEARCH = 'showMovies'
 
 def load():
     oGui = cGui()
@@ -54,8 +59,17 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries VOSTFR', 'series.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animés VF', 'animes.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animés VOSTFR', 'animes.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
+
  
 def showSearch():
     oGui = cGui()
@@ -69,6 +83,22 @@ def showSearch():
             return  
     
     
+def getPremiumUser():
+    sUrl = 'http://full-stream.net/'
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+    oRequestHandler.addParameters('login_name', 'vstream')
+    oRequestHandler.addParameters('login_password', 'vstream')
+    oRequestHandler.addParameters('Submit', '')
+    oRequestHandler.addParameters('login', 'submit')
+    oRequestHandler.request()
+
+    aHeader = oRequestHandler.getResponseHeader()
+    sReponseCookie = aHeader.getheader("Set-Cookie")
+    print sReponseCookie
+    return sReponseCookie
+
+
 def showGenre():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -111,21 +141,26 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('&amp;w=210&amp;h=280','')
-    sPattern = 'full-stream-view-hover"><img src=".+?src=(.+?)" alt="(.+?)".+?<h2><a href="(.+?)">.+?</a></h2>.+?<b>Résumé</b>(.+?)</div>'
+    sPattern = 'full-stream-view-hover"><img src=".+?src=(.+?)&.+?" alt="(.+?)".+?<h2><a href="(.+?)">.+?</a></h2>.+?<b>Résumé</b>(.+?)</div>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
             if '/seriestv/' in sUrl  or 'saison' in aEntry[2]:
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', aEntry[1], '', aEntry[0], aEntry[3], oOutputParameterHandler)
+            elif '/mangas/' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'serieHosters', aEntry[1], '', aEntry[0], aEntry[3], oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[1], '', aEntry[0], aEntry[3], oOutputParameterHandler)
@@ -160,17 +195,25 @@ def showHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+    oRequestHandler.addParameters('login_name', 'vstream')
+    oRequestHandler.addParameters('login_password', 'vstream')
+    oRequestHandler.addParameters('Submit', '')
+    oRequestHandler.addParameters('login', 'submit')
     sHtmlContent = oRequestHandler.request();
 
 
-    sPattern = '<iframe src="(.+?)"'
+    sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)                   
@@ -208,6 +251,8 @@ def serieHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sHosterUrl = str(aEntry[0])
             oHoster = cHosterGui().checkHoster(sHosterUrl)

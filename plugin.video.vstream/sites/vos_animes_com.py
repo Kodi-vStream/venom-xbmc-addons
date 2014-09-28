@@ -22,6 +22,9 @@ ANIM_VFS = 'http://www.vos-animes.com/animes-vf/'
 ANIM_VOSTFRS = 'http://www.vos-animes.com/animes-vostfr/'
 ANIM_MOVIES = 'http://www.vos-animes.com/films-vf/'
 
+URL_SEARCH = 'http://www.vos-animes.com/xfsearch/'
+FUNCTION_SEARCH = 'showMovies'
+
 def load():
     oGui = cGui()
     
@@ -87,6 +90,8 @@ def showMovies(sSearch = ''):
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sTitle=re.sub('(.*)(\[.*\])','\\1 [COLOR azure]\\2[/COLOR]', str(aEntry[1]))
             sMovieTitle=re.sub('(\[.*\])','', str(aEntry[1]))
@@ -138,6 +143,8 @@ def showHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sHosterUrl = str(aEntry[0])
             #oHoster = __checkHoster(sHosterUrl)

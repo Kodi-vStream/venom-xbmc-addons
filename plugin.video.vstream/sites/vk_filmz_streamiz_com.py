@@ -24,6 +24,9 @@ SERIE_VFS = 'http://vk-filmz-streamiz.com/series/version-francaise'
 SERIE_VOSTFRS = 'http://vk-filmz-streamiz.com/series/vostfr'
 ANIM_VOSTFRS = 'http://vk-filmz-streamiz.com/mangas/mangas-vostfr/'
 
+URL_SEARCH = 'http://vk-filmz-streamiz.com/?do=search&subaction=search&story='
+FUNCTION_SEARCH = 'showMovies'
+
 def load():
     oGui = cGui()
 
@@ -155,6 +158,8 @@ def showMovies(sSearch = ''):
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             sTitle=re.sub('(.*)(\[.*\])','\\1 [COLOR azure]\\2[/COLOR]', str(aEntry[2]))
             sMovieTitle=re.sub('(\[.*\])','', str(aEntry[2]))
@@ -217,6 +222,8 @@ def showHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -250,6 +257,8 @@ def seriesHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             if aEntry[0]:
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -292,6 +301,8 @@ def mangasHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             sHosterUrl = str(aEntry[0])
             

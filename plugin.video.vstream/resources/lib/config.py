@@ -117,6 +117,9 @@ class cConfig():
         dialog.update(iPercent, 'Chargement: '+str(cConfig.COUNT)+'/'+str(total))
         cConfig.COUNT += 1
 
+    def updateDialog2(self, dialog, label = ''):
+        dialog.update(0, 'Chargement: '+str(label))
+
     def finishDialog(self, dialog):
         dialog.close()
         del dialog

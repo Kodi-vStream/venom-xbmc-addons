@@ -24,6 +24,9 @@ MOVIE_NOTES = 'http://frenchstream.org/les-mieux-notes'
 MOVIE_GENRES = 'http://frenchstream.org/films-par-genre'
 SERIE_SERIES = 'http://frenchstream.org/tv-series'
 
+URL_SEARCH = 'http://frenchstream.org/?s='
+FUNCTION_SEARCH = 'showMovies'
+
 def load():
     oGui = cGui()
 
@@ -113,6 +116,8 @@ def showMovies(sSearch = ''):
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             sTitle = aEntry[2]+' - [COLOR azure]'+aEntry[3]+'[/COLOR]'
             oOutputParameterHandler = cOutputParameterHandler()
@@ -154,6 +159,8 @@ def showSeries():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sTitle = sMovieTitle+' - '+aEntry[1]
             oOutputParameterHandler = cOutputParameterHandler()
@@ -196,6 +203,8 @@ def showLinks():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             sHoster = cHosterGui().checkHoster(aEntry[1].lower())
             if (sHoster != False):
@@ -230,6 +239,8 @@ def showHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)

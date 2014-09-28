@@ -10,6 +10,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.player import cPlayer
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.config import cConfig
 import logger
 
 class cHosterGui:
@@ -32,6 +33,12 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
         oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
         oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
+
+        oOutputParameterHandler.addParameter('sTitle', oHoster.getFileName())
+        oOutputParameterHandler.addParameter('sId', 'cHosterGui')
+        oOutputParameterHandler.addParameter('siteUrl', sMediaUrl)
+        oOutputParameterHandler.addParameter('sFav', 'play')
+        oOutputParameterHandler.addParameter('sCat', '4')
         
         #context playlit menu
         oContext = cContextElement()
@@ -48,6 +55,22 @@ class cHosterGui:
         oContext.setSiteName(self.SITE_NAME)
         oContext.setFunction('download')
         oContext.setTitle('Télécharger')
+        oContext.setOutputParameterHandler(oOutputParameterHandler)
+        oGuiElement.addContextItem(oContext)
+
+        #context FAV menu
+        oContext = cContextElement()
+        oContext.setFile('cFav')
+        oContext.setSiteName('cFav')
+        oContext.setFunction('writeFavourites')
+        oContext.setTitle('[COLOR teal]Marque-lire[/COLOR]')
+
+        #oOutputParameterHandler = cOutputParameterHandler()
+        #oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
+        #oOutputParameterHandler.addParameter('sId', 'cHosterGui')
+        #oOutputParameterHandler.addParameter('siteUrl', sMediaUrl)
+        #oOutputParameterHandler.addParameter('sFav', 'play')
+      
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
         
@@ -184,34 +207,42 @@ class cHosterGui:
         sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
-	sFileName = oInputParameterHandler.getValue('sFileName')
+        sFileName = oInputParameterHandler.getValue('sFileName')
 
         if (bGetRedirectUrl == 'True'):            
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
         logger.info('call play: ' + sMediaUrl)
+
         oHoster = cHosterHandler().getHoster(sHosterIdentifier)
-	oHoster.setFileName(sFileName)
+        oHoster.setFileName(sFileName)
 
-        #try:
-        
-        oHoster.setUrl(sMediaUrl)
-        aLink = oHoster.getMediaLink()
-        
-        if (aLink[0] == True):
-            oGuiElement = cGuiElement()
-            oGuiElement.setSiteName(self.SITE_NAME)
-            oGuiElement.setMediaUrl(aLink[1])
-	    oGuiElement.setTitle(oHoster.getFileName())
+        sHosterName = oHoster.getDisplayName()
+        cConfig().showInfo(sHosterName, 'Resolve')
 
-            oPlayer = cPlayer()
-	    oPlayer.clearPlayList()
-            oPlayer.addItemToPlaylist(oGuiElement)
-            oPlayer.startPlayer()
+        try:
+        
+            oHoster.setUrl(sMediaUrl)
+            aLink = oHoster.getMediaLink()
+
+            if (aLink[0] == True):
+                oGuiElement = cGuiElement()
+                oGuiElement.setSiteName(self.SITE_NAME)
+                oGuiElement.setMediaUrl(aLink[1])
+                oGuiElement.setTitle(oHoster.getFileName())
+
+                oPlayer = cPlayer()
+                oPlayer.clearPlayList()
+                oPlayer.addItemToPlaylist(oGuiElement)
+                oPlayer.startPlayer()
+                return
+            else:
+                cConfig().showInfo(sHosterName, 'Fichier introuvable')
+                return
+
+        except:
+            cConfig().showInfo(sHosterName, 'Fichier introuvable')
             return
-
-        #except:
-        #    logger.fatal('could not load plugin: ' + sHosterFileName)
 
         oGui.setEndOfDirectory()
 

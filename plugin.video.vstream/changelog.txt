@@ -1,8 +1,15 @@
-﻿================================================================================
-- Contact: https://github.com/LordVenom/venom-xbmc-addons/issues
-- Twitter: @LordVenom57
 ================================================================================
-
+- Version 0.1.9 - 28.09.2014
+================================================================================
+    - Refonte total des marques pages
+    - Refonte total des préference
+    - Ajout de couleur et masque catégories
+    - Ajout du changelog auto
+    - Ajout d'une page information
+    - Refonte total de la recherche
+    - Add animes full_stream.net
+    - Add login auto full_stream
+    - Fix full_stream
 ================================================================================
 - Version 0.1.8 - 16.09.2014
 ================================================================================

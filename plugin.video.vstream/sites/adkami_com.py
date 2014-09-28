@@ -22,6 +22,9 @@ ANIM_VOSTFRS = 'http://www.adkami.com/video?recherche=&version=2&type2=0'
 SERIE_VFS = 'http://www.adkami.com/video?recherche=&version=1&type2=1'
 SERIE_VOSTFRS = 'http://www.adkami.com/video?recherche=&version=2&type2=1'
 
+URL_SEARCH = 'http://www.adkami.com/video?recherche='
+FUNCTION_SEARCH = 'showMovies'
+
 def load():
     oGui = cGui()
     
@@ -215,6 +218,8 @@ def showMoviesAZ():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             if len(sAZ)>0 and aEntry[1].upper()[0] == sAZ :
 
@@ -247,13 +252,14 @@ def showMovies(sSearch = ''):
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)               
+            if dialog.iscanceled():
+                break
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
             oGui.addTV(SITE_IDENTIFIER, 'showEpisode', aEntry[1], 'animes.png', '', '', oOutputParameterHandler)
-         
-          
+
         cConfig().finishDialog(dialog)   
 
     if not sSearch:
@@ -276,6 +282,8 @@ def showEpisode():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             if aEntry[0]:
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -313,6 +321,8 @@ def showHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)

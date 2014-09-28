@@ -25,6 +25,9 @@ MOVIE_NOTES = 'http://filmstreamingz.fr/les-mieux-notes-2/'
 MOVIE_GENRES = True
 SERIE_SERIES = 'http://seriestreaming.org/'
 
+URL_SEARCH = 'http://filmstreamingz.fr/?s='
+FUNCTION_SEARCH = 'showMovies'
+
 def load(): 
     oGui = cGui()
 
@@ -156,6 +159,8 @@ def showMovies(sSearch = ''):
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sSmall = aEntry[3].replace('<span class="likeThis">', '').replace('</span>', '')
             sTitle = aEntry[2]+' - [COLOR azure]'+sSmall+'[/COLOR]'
@@ -198,6 +203,8 @@ def showSeries():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             sTitle = sMovieTitle+' - '+aEntry[1]
             oOutputParameterHandler = cOutputParameterHandler()
@@ -244,6 +251,8 @@ def showHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sHosterUrl = str(aEntry)
             #oHoster = __checkHoster(sHosterUrl)
@@ -274,6 +283,8 @@ def serieHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sHosterUrl = str(aEntry)
             #oHoster = __checkHoster(sHosterUrl)

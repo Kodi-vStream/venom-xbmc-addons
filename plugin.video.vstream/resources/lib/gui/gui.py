@@ -28,9 +28,27 @@ class cGui:
         oGuiElement.setMeta(1)
         oGuiElement.setDescription(sDesc)
         
-        oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
         self.__createContexMenuWatch(oGuiElement, oOutputParameterHandler)
         self.__createContexMenuWriteFav(oGuiElement, oOutputParameterHandler)
+        
+        #oInputParameterHandler = cInputParameterHandler()
+        #sUrl = oInputParameterHandler.getValue('siteUrl')
+        #print oGuiElement.getMediaUrl()
+
+        #context
+        oContext = cContextElement()
+        oContext.setFile('cFav')
+        oContext.setSiteName('cFav')
+        oContext.setFunction('writeFavourites')
+        oContext.setTitle('[COLOR teal]Marque-film[/COLOR]')
+
+        oOutputParameterHandler.addParameter('sTitle', sLabel)
+        oOutputParameterHandler.addParameter('sId', sId)
+        oOutputParameterHandler.addParameter('sFav', sFunction)
+        oOutputParameterHandler.addParameter('sCat', 1)
+      
+        oContext.setOutputParameterHandler(oOutputParameterHandler)
+        oGuiElement.addContextItem(oContext)
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
         
@@ -46,9 +64,23 @@ class cGui:
         oGuiElement.setMeta(2)
         oGuiElement.setDescription(sDesc)
         
-        oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
         self.__createContexMenuWatch(oGuiElement, oOutputParameterHandler)
         self.__createContexMenuWriteFav(oGuiElement, oOutputParameterHandler)
+
+        #context
+        oContext = cContextElement()
+        oContext.setFile('cFav')
+        oContext.setSiteName('cFav')
+        oContext.setFunction('writeFavourites')
+        oContext.setTitle('[COLOR teal]Marque-série[/COLOR]')
+
+        oOutputParameterHandler.addParameter('sTitle', sLabel)
+        oOutputParameterHandler.addParameter('sId', sId)
+        oOutputParameterHandler.addParameter('sFav', sFunction)
+        oOutputParameterHandler.addParameter('sCat', 2)
+      
+        oContext.setOutputParameterHandler(oOutputParameterHandler)
+        oGuiElement.addContextItem(oContext)
         
         self.addFolder(oGuiElement, oOutputParameterHandler)
         
@@ -63,9 +95,23 @@ class cGui:
         oGuiElement.setMeta(0)
         oGuiElement.setDescription(sDesc)
         
-        oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
         self.__createContexMenuWatch(oGuiElement, oOutputParameterHandler)
         self.__createContexMenuWriteFav(oGuiElement, oOutputParameterHandler)
+
+        #context
+        oContext = cContextElement()
+        oContext.setFile('cFav')
+        oContext.setSiteName('cFav')
+        oContext.setFunction('writeFavourites')
+        oContext.setTitle('[COLOR teal]Marque-diver[/COLOR]')
+
+        oOutputParameterHandler.addParameter('sTitle', sLabel)
+        oOutputParameterHandler.addParameter('sId', sId)
+        oOutputParameterHandler.addParameter('sFav', sFunction)
+        oOutputParameterHandler.addParameter('sCat', 5)
+      
+        oContext.setOutputParameterHandler(oOutputParameterHandler)
+        oGuiElement.addContextItem(oContext)
         
         self.addFolder(oGuiElement, oOutputParameterHandler)
         
@@ -92,7 +138,7 @@ class cGui:
         oGuiElement.setIcon(sIcon)
         oGuiElement.setMeta(0)
         
-        oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
+        oOutputParameterHandler.addParameter('sFav', sFunction)
         
         self.addFolder(oGuiElement, oOutputParameterHandler)       
     
@@ -141,7 +187,7 @@ class cGui:
         oContext.setFile('cFav')
         oContext.setSiteName('cFav')
         oContext.setFunction('delFavourites')
-        oContext.setTitle('[COLOR red]Supprimer Marque-Page[/COLOR]')
+        oContext.setTitle('[COLOR red]Supprimer Marque-page[/COLOR]')
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
@@ -164,10 +210,11 @@ class cGui:
         oContext.setTitle('[COLOR teal]Marque-page[/COLOR]')
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
+        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sFav', sFav)
+        oOutputParameterHandler.addParameter('sCat', 3)
       
         oContext.setOutputParameterHandler(oOutputParameterHandler)
 

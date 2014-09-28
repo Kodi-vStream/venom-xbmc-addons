@@ -16,6 +16,7 @@ from resources.lib.statistic import cStatistic
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.favourite import cFav
+from resources.lib.about import cAbout
 from resources.lib.home import cHome
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.pluginHandler import cPluginHandler
@@ -64,6 +65,7 @@ class main:
 
 	        if (cConfig().getSetting("home-view") == 'true'):
 	            oHome = cHome()
+	            cAbout()
 	            exec "oHome."+ sFunction +"()"
 	            return
 

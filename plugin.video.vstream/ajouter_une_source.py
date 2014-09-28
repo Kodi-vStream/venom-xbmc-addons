@@ -145,6 +145,8 @@ def showMovies(sSearch = ''):
         dialog = cConfig().createDialog(SITE_NAME) #dialog
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total) #dialog
+            if dialog.iscanceled():
+                break
             #L'array affiche vos info dans l'orde de sPattern en commencant a 0
             sTitle = aEntry[1]
             oOutputParameterHandler = cOutputParameterHandler()

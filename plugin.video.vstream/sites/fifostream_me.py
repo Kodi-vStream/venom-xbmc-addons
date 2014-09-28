@@ -21,6 +21,9 @@ URL_MAIN = 'http://www.fifostream.me/'
 MOVIE_NEWS = 'http://www.fifostream.me/film?orderby=date'
 MOVIE_VIEWS = 'http://www.fifostream.me/?orderby=views'
 
+URL_SEARCH = 'http://www.fifostream.me/?s='
+FUNCTION_SEARCH = 'showMovies'
+
 def load():
     oGui = cGui()
     
@@ -73,6 +76,8 @@ def showMovies(sSearch=''):
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sTitle= aEntry[0]
             sThumbnail = 'http:'+str(aEntry[2])
@@ -126,6 +131,8 @@ def showHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sHosterUrl = str(aEntry)
             sHosterUrl = 'http:'+sHosterUrl

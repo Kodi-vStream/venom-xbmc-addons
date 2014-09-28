@@ -17,6 +17,9 @@ SITE_DESC = 'Reportages TV - Replay des reportages télé français en streaming
 URL_MAIN = 'http://www.reportagestv.com/'
 DOC_DOCS = 'http://www.reportagestv.com/'
 
+URL_SEARCH = 'http://www.reportagestv.com/?s='
+FUNCTION_SEARCH = 'showMovies'
+
 def load():
    
     oGui = cGui()
@@ -98,6 +101,8 @@ def showMovies(sSearch = ''):
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
@@ -145,6 +150,8 @@ def showHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)

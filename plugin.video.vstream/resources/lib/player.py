@@ -9,7 +9,7 @@ class cPlayer:
     
     def clearPlayList(self):
         oPlaylist = self.__getPlayList()
-	oPlaylist.clear()
+        oPlaylist.clear()
 
     def __getPlayList(self):
         return xbmc.PlayList(xbmc.PLAYLIST_VIDEO)

@@ -19,6 +19,9 @@ SITE_DESC = 'Un blog qui traite de notre rapport avec l\'argent, de la consommat
 URL_MAIN = 'http://www.notre-ecole.net/'
 DOC_DOCS = 'http://www.notre-ecole.net/?s=.'
 
+URL_SEARCH = 'http://www.notre-ecole.net/?s='
+FUNCTION_SEARCH = 'showMovies'
+
 def load():
    
     oGui = cGui()
@@ -82,6 +85,8 @@ def showMovies(sSearch = ''):
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
@@ -131,6 +136,8 @@ def showHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)

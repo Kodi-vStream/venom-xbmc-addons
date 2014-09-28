@@ -1,6 +1,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
+from resources.lib.config import cConfig
 from hosters.hoster import iHoster
 
 class cHoster(iHoster):
@@ -80,8 +81,6 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        cGui().showInfo('Resolve', self.__sDisplayName, 5)
-        
  
         api_call = ('http://www.nowvideo.sx/api/player.api.php?key=%s&file=%s') % (self.__getKey(), self.__getIdFromUrl())
         
@@ -91,7 +90,8 @@ class cHoster(iHoster):
         sPattern =  'url=(.+?)&title'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
+
         if (aResult[0] == True):
             return True, aResult[1][0]
         
-        return True, self.__sUrl
+        return False, False

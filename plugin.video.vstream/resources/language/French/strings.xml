@@ -4,12 +4,15 @@
         <string id="30000">Logging</string>
         <string id="30001">Videoplayer</string>
         <string id="30002">anonyme Statistiken (wertet nur Plugin Start aus)</string>
+        <string id="30500">Séléctionner</string>
+        <string id="30501">Nom</string>
 
         <!-- settingtabs begin by 30021 - 30030 -->
-        <string id="30021">Global</string>
+        <string id="30021">Général</string>
         <string id="30022">Plugins on/off</string>
         <string id="30023">Plugins Préférences</string>
         <string id="30024">Hote</string>
+        <string id="30025">Accueil</string>
 
          <!-- premium begin by 30031 - 30075 -->
         <string id="30031">Megavideo Premium Account</string>
@@ -25,6 +28,13 @@
         <string id="30073">Port</string>
         <string id="30074">Download automatsch starten</string>
         <string id="30075">sende nur an LinkGrabber</string>
+
+        <string id="30076">Recherche</string>
+        <string id="30077">Recherche personnalisée</string>
+        <string id="30078">Recherche personnalisée 1</string>
+        <string id="30079">Recherche personnalisée 2</string>
+        <string id="30080">Recherche personnalisée 3</string>
+        <string id="30081">Recherche personnalisée 4</string>
 
 
         <!-- Pluginnames begin by 30201 - 30299 -->

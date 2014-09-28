@@ -23,6 +23,9 @@ DOC_DOCS = 'http://www.streamzer.net/index.php?file=Docus&op=classe&secid=&order
 SPORT_SPORTS = 'http://www.streamzer.net/index.php?file=Replay&op=classe&secid=&orderby=news&p=1#stream'
 MOVIE_NETS = 'http://www.streamzer.net/index.php?file=Videos&op=classe&secid=&orderby=news&p=1#stream'
 
+URL_SEARCH = 'http://www.streamzer.net/index.php?file=Search&op=mod_search&main='
+FUNCTION_SEARCH = 'resultSearch'
+
 def load():
     oGui = cGui()
     
@@ -105,6 +108,8 @@ def resultSearch(sSearch = ''):
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
@@ -248,6 +253,8 @@ def showMovies():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sTitle = aEntry[2].decode('latin-1').encode("utf-8")
             sTitle=re.sub('(.*)(\[.*\])','\\1 [COLOR azure]\\2[/COLOR]', str(sTitle))
@@ -288,6 +295,8 @@ def showReplay():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sTitle = aEntry[2].decode('latin-1').encode("utf-8")
             
@@ -342,6 +351,8 @@ def showHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sHosterUrl = str(aEntry[1])
             #oHoster = __checkHoster(sHosterUrl)
@@ -390,6 +401,8 @@ def showHosters2():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             #mediaID=re.findall('//([^<]+)',aEntry)[0]
             aEntry = aEntry.replace('http://', '')
@@ -434,6 +447,8 @@ def showSerieHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sHosterUrl = str(aEntry[1])
             #oHoster = __checkHoster(sHosterUrl)

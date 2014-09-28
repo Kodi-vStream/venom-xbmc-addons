@@ -26,6 +26,9 @@ SERIE_SERIES = 'http://full-streaming.org/series/'
 SERIE_VFS = 'http://full-streaming.org/series-fr/'
 SERIE_VOSTFRS = 'http://full-streaming.org/series-vostfr/'
 
+URL_SEARCH = 'http://full-streaming.org/xfsearch/'
+FUNCTION_SEARCH = 'showMovies'
+
 def load():
     oGui = cGui()
 
@@ -163,6 +166,8 @@ def showMovies(sSearch = ''):
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             sTitle = aEntry[1]
             oOutputParameterHandler = cOutputParameterHandler()
@@ -218,6 +223,8 @@ def showHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             sHosterUrl = str(aEntry)
 
@@ -253,6 +260,8 @@ def seriesHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             sHosterUrl = str(aEntry[0])
             oHoster = cHosterGui().checkHoster(sHosterUrl)

@@ -23,6 +23,9 @@ SERIE_SERIES = 'http://dpstreaming.org/category/series-tv/'
 ANIM_ANIMS = 'http://dpstreaming.org/category/mangas/'
 MOVIE_GENRES = True
 
+URL_SEARCH = 'http://dpstreaming.org/?s='
+FUNCTION_SEARCH = 'showMovies'
+
 def load():
     oGui = cGui()
 
@@ -152,6 +155,8 @@ def showMovies(sSearch = ''):
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sTitle=re.sub('(.*)(\[.*\])','\\1 [COLOR azure]\\2[/COLOR]', str(aEntry[2]))
             sMovieTitle=re.sub('(\[.*\])','', str(aEntry[2]))
@@ -198,6 +203,8 @@ def showSeries():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             if aEntry[0]:
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -235,6 +242,9 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
+    print 'passs'
+    print sUrl
+    print sMovieTitle
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('<iframe src="http://ads.affbuzzads.com','')
@@ -248,6 +258,8 @@ def showHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sHosterUrl = str(aEntry)
             #oHoster = __checkHoster(sHosterUrl)
@@ -283,6 +295,8 @@ def mangaHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sHosterUrl = str(aEntry[1])
             #oHoster = __checkHoster(sHosterUrl)
@@ -313,6 +327,8 @@ def serieHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sHosterUrl = str(aEntry)
             #oHoster = __checkHoster(sHosterUrl)

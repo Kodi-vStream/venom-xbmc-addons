@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<settings>   
+<settings>
+
+    <category label="30021">-->
+        <setting label="30021" type="lsep"/>
+        <!-- <setting id="debug" type="bool" label="30000" default="false"/> -->
+        <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2"/>
+        <setting id="meta-view" type="bool" label="Recherche les Métadonnées (ralenti l'Addon)" default="false"/>
+        <setting label="Paramètres des Métadonnées" type="action" action="Addon.OpenSettings(script.module.metahandler)" enable ="true" />
+        <setting id="home-view" type="bool" label="Afficher l'Accueil par Catégories" default="true"/>
+
+        <setting label="Changelog" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/about.py, changelog)"/>
+        <setting label="Information" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/about.py, about)"/>
+    </category>-->
+
     <category label="30022">-->
         <setting label="30022" type="lsep"/>
         <setting id="plugin_streamzer_net" type="bool" label="Streamzer" default="true"/> 
@@ -11,14 +24,94 @@
         <setting id="plugin_full_streaming_org" type="bool" label="Full Streaming" default="true"/>
         <setting id="plugin_docspot_fr" type="bool" label="DocSpot" default="true"/>
         <setting id="plugin_notre_ecole_net" type="bool" label="Notre Ecole" default="true"/>
-        <setting id="plugin_chaine_tv" type="bool" label="Chaine TV" default="true"/>
         <setting id="plugin_freebox" type="bool" label="Freebox" default="true"/>
         <setting id="plugin_fifostream_me" type="bool" label="Fifostream" default="true"/>
         <setting id="plugin_fullmoviz_org" type="bool" label="FullMoviz" default="true"/>
         <setting id="plugin_reportagestv_com" type="bool" label="ReportagesTV" default="true"/>
         <setting id="plugin_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr" default="true"/>
         <setting id="plugin_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com" default="true"/>
-        <setting id="plugin_you_exclus_net" type="bool" label="You-Exclus.net" default="true"/>
+    </category>
+
+<!-- 1 film 2 serie 3 anime 4 doc -->
+    <category label="30076">-->
+        <setting label="30077" type="lsep" />
+        <setting id="select" type="select" label="30500" values="Recherche_1|Recherche_2|Recherche_3|Recherche_4" default="Recherche_1"/>
+
+        <setting id="search1_label" type="text" label="30501" default="Films" visible="eq(-1,Recherche_1)"/>
+        <setting id="search2_label" type="text" label="30501" default="Séries" visible="eq(-2,Recherche_2)"/>
+        <setting id="search3_label" type="text" label="30501" default="Animes" visible="eq(-3,Recherche_3)"/>
+        <setting id="search4_label" type="text" label="30501" default="Documentaires" visible="eq(-4,Recherche_4)"/>
+
+        <setting id="search1_streamzer_net" type="bool" label="Streamzer" default="true" visible="eq(-5,Recherche_1)"/>
+        <setting id="search2_streamzer_net" type="bool" label="Streamzer" default="true" visible="eq(-6,Recherche_2)"/>
+        <setting id="search3_streamzer_net" type="bool" label="Streamzer" default="false" visible="eq(-7,Recherche_3)"/>
+        <setting id="search4_streamzer_net" type="bool" label="Streamzer" default="false" visible="eq(-8,Recherche_4)"/> 
+
+        <setting id="search1_adkami_com" type="bool" label="Adkami" default="false" visible="eq(-9,Recherche_1)"/>
+        <setting id="search2_adkami_com" type="bool" label="Adkami" default="false" visible="eq(-10,Recherche_2)"/>
+        <setting id="search3_adkami_com" type="bool" label="Adkami" default="true" visible="eq(-11,Recherche_3)"/>
+        <setting id="search4_adkami_com" type="bool" label="Adkami" default="false" visible="eq(-12,Recherche_4)"/>
+
+        <setting id="search1_dpstreaming_org" type="bool" label="Dpstreaming" default="true" visible="eq(-13,Recherche_1)"/>
+        <setting id="search2_dpstreaming_org" type="bool" label="Dpstreaming" default="false" visible="eq(-14,Recherche_2)"/>
+        <setting id="search3_dpstreaming_org" type="bool" label="Dpstreaming" default="false" visible="eq(-15,Recherche_3)"/>
+        <setting id="search4_dpstreaming_org" type="bool" label="Dpstreaming" default="false" visible="eq(-16,Recherche_4)"/>
+
+        <setting id="search1_frenchstream_org" type="bool" label="FrenchStream" default="true" visible="eq(-17,Recherche_1)"/>
+        <setting id="search2_frenchstream_org" type="bool" label="FrenchStream" default="false" visible="eq(-18,Recherche_2)"/>
+        <setting id="search3_frenchstream_org" type="bool" label="FrenchStream" default="false" visible="eq(-19,Recherche_3)"/>
+        <setting id="search4_frenchstream_org" type="bool" label="FrenchStream" default="false" visible="eq(-20,Recherche_4)"/>
+
+        <setting id="search1_vos_animes_com" type="bool" label="Vos Animes" default="false" visible="eq(-21,Recherche_1)"/>
+        <setting id="search2_vos_animes_com" type="bool" label="Vos Animes" default="false" visible="eq(-22,Recherche_2)"/>
+        <setting id="search3_vos_animes_com" type="bool" label="Vos Animes" default="true" visible="eq(-23,Recherche_3)"/>
+        <setting id="search4_vos_animes_com" type="bool" label="Vos Animes" default="false" visible="eq(-24,Recherche_4)"/>
+        
+        <setting id="search1_full_stream_net" type="bool" label="Full Stream" default="false" visible="eq(-25,Recherche_1)"/>
+        <setting id="search2_full_stream_net" type="bool" label="Full Stream" default="false" visible="eq(-26,Recherche_2)"/>
+        <setting id="search3_full_stream_net" type="bool" label="Full Stream" default="false" visible="eq(-27,Recherche_3)"/>
+        <setting id="search4_full_stream_net" type="bool" label="Full Stream" default="false" visible="eq(-28,Recherche_4)"/>
+
+        <setting id="search1_full_streaming_org" type="bool" label="Full Streaming" default="true" visible="eq(-29,Recherche_1)"/>
+        <setting id="search2_full_streaming_org" type="bool" label="Full Streaming" default="true" visible="eq(-30,Recherche_2)"/>
+        <setting id="search3_full_streaming_org" type="bool" label="Full Streaming" default="false" visible="eq(-31,Recherche_3)"/>
+        <setting id="search4_full_streaming_org" type="bool" label="Full Streaming" default="false" visible="eq(-32,Recherche_4)"/>
+
+        <setting id="search1_docspot_fr" type="bool" label="DocSpot" default="false" visible="eq(-33,Recherche_1)"/>
+        <setting id="search2_docspot_fr" type="bool" label="DocSpot" default="false" visible="eq(-34,Recherche_2)"/>
+        <setting id="search3_docspot_fr" type="bool" label="DocSpot" default="false" visible="eq(-35,Recherche_3)"/>
+        <setting id="search4_docspot_fr" type="bool" label="DocSpot" default="true" visible="eq(-36,Recherche_4)"/>
+
+        <setting id="search1_notre_ecole_net" type="bool" label="Notre Ecole" default="false" visible="eq(-37,Recherche_1)"/>
+        <setting id="search2_notre_ecole_net" type="bool" label="Notre Ecole" default="false" visible="eq(-38,Recherche_2)"/>
+        <setting id="search3_notre_ecole_net" type="bool" label="Notre Ecole" default="false" visible="eq(-39,Recherche_3)"/>
+        <setting id="search4_notre_ecole_net" type="bool" label="Notre Ecole" default="true" visible="eq(-40,Recherche_4)"/>
+
+
+        <setting id="search1_fifostream_me" type="bool" label="Fifostream" default="false" visible="eq(-41,Recherche_1)"/>
+        <setting id="search2_fifostream_me" type="bool" label="Fifostream" default="false" visible="eq(-42,Recherche_2)"/>
+        <setting id="search3_fifostream_me" type="bool" label="Fifostream" default="false" visible="eq(-43,Recherche_3)"/>
+        <setting id="search4_fifostream_me" type="bool" label="Fifostream" default="false" visible="eq(-44,Recherche_4)"/>
+
+        <setting id="search1_fullmoviz_org" type="bool" label="FullMoviz" default="true" visible="eq(-45,Recherche_1)"/>
+        <setting id="search2_fullmoviz_org" type="bool" label="FullMoviz" default="false" visible="eq(-46,Recherche_2)"/>
+        <setting id="search3_fullmoviz_org" type="bool" label="FullMoviz" default="false" visible="eq(-47,Recherche_3)"/>
+        <setting id="search4_fullmoviz_org" type="bool" label="FullMoviz" default="false" visible="eq(-48,Recherche_4)"/>
+
+        <setting id="search1_reportagestv_com" type="bool" label="ReportagesTV" default="false" visible="eq(-49,Recherche_1)"/>
+        <setting id="search2_reportagestv_com" type="bool" label="ReportagesTV" default="false" visible="eq(-50,Recherche_2)"/>
+        <setting id="search3_reportagestv_com" type="bool" label="ReportagesTV" default="false" visible="eq(-51,Recherche_3)"/>
+        <setting id="search4_reportagestv_com" type="bool" label="ReportagesTV" default="true" visible="eq(-52,Recherche_4)"/>
+
+        <setting id="search1_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr" default="false" visible="eq(-53,Recherche_1)"/>
+        <setting id="search2_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr" default="false" visible="eq(-54,Recherche_2)"/>
+        <setting id="search3_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr" default="false" visible="eq(-55,Recherche_3)"/>
+        <setting id="search4_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr" default="false" visible="eq(-56,Recherche_4)"/>
+
+        <setting id="search1_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com" default="false" visible="eq(-57,Recherche_1)"/>
+        <setting id="search2_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com" default="false" visible="eq(-58,Recherche_2)"/>
+        <setting id="search3_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com" default="false" visible="eq(-59,Recherche_3)"/>
+        <setting id="search4_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com" default="false" visible="eq(-60,Recherche_4)"/>
     </category>
     <!-- <category label="30023">-->
     <!--   <setting label="30023" type="lsep"/>
@@ -39,18 +132,31 @@
         <setting id="hoster_duckload_username" type="text" label="30035" default=""/>
         <setting id="hoster_duckload_password" type="text" label="30036" default="" option="hidden"/>
     <!--</category> -->
-    <category label="30021">-->
-        <setting label="30021" type="lsep"/>
-        <!-- <setting id="debug" type="bool" label="30000" default="false"/> -->
-        <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2"/>
-        <setting id="meta-view" type="bool" label="Recherche les Métadonnées (ralenti l'Addon)" default="false"/>
-        <setting label="Paramètres des Métadonnées" type="action" action="Addon.OpenSettings(script.module.metahandler)" enable ="true" />
-        <setting id="home-view" type="bool" label="Afficher l'Accueil par Catégories" default="true"/>
+    <category label="30025">-->
+        <setting id="home_cherches" type="bool" label="Recherche" default="true"/>
+        <setting id="color_cherches" type="select" label="Couleur Recherche" values="None|ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="None" visible="eq(-1,true)"/>
+        
+        <setting id="home_tvs" type="bool" label="Télévision" default="true"/>
+        <setting id="color_tvs" type="select" label="Couleur Télévision" values="None|ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="None" visible="eq(-1,true)"/>
 
-        <setting id="color_films" type="select" label="Couleur Films" values="None|ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="None"/>
-        <setting id="color_series" type="select" label="Couleur Séries" values="None|ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="None"/>
-        <setting id="color_anims" type="select" label="Couleur Animes" values="None|ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="None"/>
-        <setting id="color_tvs" type="select" label="Couleur Télévision" values="None|ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="None"/>
+        <setting id="home_films" type="bool" label="Films" default="true"/>
+        <setting id="color_films" type="select" label="Couleur Films" values="None|ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="None" visible="eq(-1,true)"/>
+
+        <setting id="home_series" type="bool" label="Séries" default="true"/>
+        <setting id="color_series" type="select" label="Couleur Séries" values="None|ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="None" visible="eq(-1,true)"/>
+
+        <setting id="home_anims" type="bool" label="Animes" default="true"/>
+        <setting id="color_anims" type="select" label="Couleur Animes" values="None|ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="None" visible="eq(-1,true)"/>
+
+        <setting id="home_docs" type="bool" label="Documentaires" default="true"/>
+        <setting id="color_docs" type="select" label="Couleur Documentaires" values="None|ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="None" visible="eq(-1,true)"/>
+
+        <setting id="home_sports" type="bool" label="Sports" default="true"/>
+        <setting id="color_sports" type="select" label="Couleur Sports" values="None|ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="None" visible="eq(-1,true)"/>
+
+        <setting id="home_videos" type="bool" label="Vidéos" default="true"/>
+        <setting id="color_videos" type="select" label="Couleur Vidéos" values="None|ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="None" visible="eq(-1,true)"/>
+
     </category>-->
    
 </settings>

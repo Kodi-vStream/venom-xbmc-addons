@@ -21,6 +21,9 @@ MOVIE_NEWS = 'http://www.fullmoviz.org/?p=movies&orderby=date'
 MOVIE_COMMENTS = 'http://www.fullmoviz.org/?p=movies&orderby=comment_count'
 MOVIE_GENRES = 'http://www.fullmoviz.org/'
 
+URL_SEARCH = 'http://www.fullmoviz.org/?s='
+FUNCTION_SEARCH = 'showMovies'
+
 def load():
     oGui = cGui()
     
@@ -109,6 +112,8 @@ def showMovies(sSearch=''):
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             #sTitle = aEntry[2].decode('latin-1').encode("utf-8")
             #sThumbnail = 'http:'+str(aEntry[2])
@@ -160,6 +165,8 @@ def showHosters():
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
