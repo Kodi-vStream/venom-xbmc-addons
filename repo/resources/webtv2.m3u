@@ -1,0 +1,157 @@
+#EXTM3U
+#EXTINF:0,TF1
+http://tf1-hls.live.numericable.tv/live/hls/tf1/ipad.m3u8
+http://upload.wikimedia.org/wikipedia/fr/thumb/6/6f/TF1_2013.png/320px-TF1_2013.png
+#EXTINF:0,France 2
+http://live.francetv.fr/simulcast/France_2/hls_v1/index.m3u8
+http://upload.wikimedia.org/wikipedia/fr/thumb/e/e8/France_2_logo_antenne_%282008%29.png/153px-France_2_logo_antenne_%282008%29.png
+#EXTINF:0,France 3
+http://live.francetv.fr/simulcast/France_3/hls_v1/index.m3u8
+#EXTINF:0,France 4
+http://live.francetv.fr/simulcast/France_4/hls_v1/index.m3u8
+#EXTINF:0,France 5
+http://live.francetv.fr/simulcast/France_5/hls_v1/index.m3u8
+#EXTINF:0,Paris Premiere
+http://parispremiere-hls.live.numericable.tv/live/hls/parispremiere/ipad.m3u8
+#EXTINF:0,Arte
+http://frlive.artestras.cshls.lldns.net/artestras/contrib/frlive/frlive_925.m3u8
+#EXTINF:0,M6
+!https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/m6_hls_aes/m6_hls_aes_856.m3u8
+http://m6-hls.live.numericable.tv/live/hls/m6/ipad.m3u8
+#EXTINF:0,D8
+http://hls-live-m1-l3.canal-plus.com/live/hls/d8-clair-v3-sd-andr7/and-sd-clair/index.m3u8
+#EXTINF:0,W9
+http://w9-hls.live.numericable.tv/live/hls/w9/ipad.m3u8
+!https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/w9_hls_aes/w9_hls_aes_856.m3u8
+#EXTINF:0,TMC
+http://tmc-hls.live.numericable.tv/live/hls/tmc/ipad.m3u8
+#EXTINF:0,NT1
+http://nt1-hls.live.numericable.tv/live/hls/nt1/ipad.m3u8
+#EXTINF:0,NRJ 12
+http://nrj-apple-live.adaptive.level3.net/apple/nrj/nrj/nrj12hi.m3u8
+#EXTINF:0,D17
+http://hls-live-m1-l3.canal-plus.com/live/hls/d17-clair-v3-sd-andr7/and-sd-clair/index.m3u8
+#EXTINF:0,TEVA
+http://teva-hls.live.numericable.tv/live/hls/teva/ipad.m3u8
+#EXTINF:0,TF6
+http://tf6-hls.live.numericable.tv/live/hls/tf6/ipad.m3u8
+#EXTINF:0,RTL9
+http://rtl9-hls.live.numericable.tv/live/hls/rtl9/ipad.m3u8
+#EXTINF:0,AB1
+http://ab1-hls.live.numericable.tv/live/hls/ab1/ipad.m3u8
+#EXTINF:0,June
+http://june-hls.live.numericable.tv/live/hls/june/ipad.m3u8
+#EXTINF:0,Histoire
+http://histoire-hls.live.numericable.tv/live/hls/histoire/ipad.m3u8
+#EXTINF:0,6Ter
+https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/six_ter_hls_aes/six_ter_hls_aes_856.m3u8
+#EXTINF:0,Numéro 23
+http://stream-l3-4.vty.dmcdn.net/17/dm/1/x13p3qi/live.isml/live.m3u8
+#EXTINF:0,France O
+http://live.francetv.fr/simulcast/France_O/hls_v1/index.m3u8
+#EXTINF:0,I Télé
+http://hls-live-m2-l3.canal-plus.com/live/hls/itele-clair-v3-sd-andr7/and-sd-clair/index.m3u8
+#EXTINF:0,BFM
+http://bfmlive2-i.akamaihd.net/hls/live/214427/bfmtv/04.m3u8
+#EXTINF:0,Equidia Live
+http://equidialive-hls.live.numericable.tv/live/hls/equidialive/ipad.m3u8
+#EXTINF:0,Mezzo Live
+http://mezzolive-hls.live.numericable.tv/live/hls/mezzolive/ipad.m3u8
+#EXTINF:0,Série Club
+http://serieclub-hls.live.numericable.tv/live/hls/serieclub/ipad.m3u8
+#EXTINF:0,EuroNews
+http://hd1.lsops.net/live/euronews_fr_340/.m3u8
+#EXTINF:0,France 24
+http://tv.flux.france24.com/4684/02.m3u8
+#EXTINF:0,LCP
+http://vipwowza.yacast.net/lcplive/_definst_/mp4:lcplive_HVGA/playlist.m3u8
+#EXTINF:0,KTO
+http://mobile.ktotv.com/live/KTO_Layer1.m3u8
+#EXTINF:0,Paramount
+http://paramount-hls.live.numericable.tv/live/hls/paramount/ipad.m3u8
+#EXTINF:0,BFM Business
+http://bfmlive-i.akamaihd.net/hls/live/214272/bfmbusiness/01.m3u8
+#EXTINF:0,Game One
+http://gameone-hls.live.numericable.tv/live/hls/gameone/ipad.m3u8
+#EXTINF:0,Gulli
+http://vipwowza.yacast.net/gulli_live/_definst_/mp4:gulli_850/playlist.m3u8
+#EXTINF:0,Boomerang
+http://boomerang-hls.live.numericable.tv/live/hls/boomerang/ipad.m3u8
+#EXTINF:0,Zouzous
+http://medias2.francetv.fr/playlists/zouzous/zouzous_tablettes.m3u8
+#EXTINF:0,Disney Channel
+http://disneychannel-hls.live.numericable.tv/live/hls/disneychannel/ipad.m3u8
+#EXTINF:0,IDF1
+http://stream7.idf1.yacast.net/iphone/idf1/live01/idf1_live01hd.m3u8
+!#EXTINF:0,Action
+!http://dt3zwsgl95oj4.cloudfront.net/live2/action.smil/playlist.m3u8
+!#EXTINF:0,CineFX
+!http://dt3zwsgl95oj4.cloudfront.net/live2/cinefx.smil/playlist.m3u8
+!#EXTINF:0,CinePolar
+!http://dt3zwsgl95oj4.cloudfront.net/live2/cinepolar.smil/playlist.m3u8
+!#EXTINF:0,National geographic
+!http://195.154.188.161/hls/nationalgeo.m3u8
+#EXTINF:0,RMC Découverte
+rtmp://vipwowza.yacast.net/rmc_decouverte_rtmp//live
+!#EXTINF:0,Escales
+!http://dt3zwsgl95oj4.cloudfront.net/live2/escales.smil/playlist.m3u8
+!#EXTINF:0,Animaux
+!http://dt3zwsgl95oj4.cloudfront.net/live2/animaux.smil/playlist.m3u8
+!#EXTINF:0,Encyclo
+!http://dt3zwsgl95oj4.cloudfront.net/live2/encyclo.smil/playlist.m3u8
+!#EXTINF:0,Chasse et Pêche
+!http://dt3zwsgl95oj4.cloudfront.net/live2/chasseetpeche.smil/playlist.m3u8
+!#EXTINF:0,AB Moteur
+!http://dt3zwsgl95oj4.cloudfront.net/live2/abmoteurs.smil/playlist.m3u8
+!#EXTINF:0,Mangas
+!http://dt3zwsgl95oj4.cloudfront.net/live2/mangas.smil/playlist.m3u8
+!#EXTINF:0,Cartoon Network
+!http://ipm.iphone-tv.eu:1345/index.m3u8?c=cn&auth=82b883ca804dc5ee2c02643590646629106ad07f185bfb4514ecd2df2496e5b8
+!#EXTINF:0,LuckyJack
+!http://dt3zwsgl95oj4.cloudfront.net/live2/luckyjack.smil/playlist.m3u8
+#EXTINF:0,LaTélé
+http://rtmp.infomaniak.ch/livecast/latele/playlist.m3u8
+#EXTINF:0,MenUpTv
+http://videos.mensup.fr/mensuptv/live/01.m3u8
+#EXTINF:0,Oui Tv
+http://rtmp.infomaniak.ch/livecast/ouitv/playlist.m3u8
+#EXTINF:0,PTC
+http://media.rtc.be/vod/mp4:166597.mp4/hasbahca.m3u8
+#EXTINF:0,Rouge Tv
+http://rtmp.infomaniak.ch/livecast/rougetv/playlist.m3u8
+!#EXTINF:0,RTC
+!http://media.webtvlive.eu/rtc/smil:live.smil/playlist.m3u8
+#EXTINF:0,Equipe21
+http://chkg.tdf-cdn.com/5687/index.m3u8
+#EXTINF:0,Discovery
+http://discovery-hls.live.numericable.tv/live/hls/discovery/ipad.m3u8
+#EXTINF:0,Djing
+http://cdn.djing.com/tv/live.m3u8
+#EXTINF:0,Dorcel
+http://dt3zwsgl95oj4.cloudfront.net/live2/dorceltv.smil/manifest.m3u8
+#EXTINF:0,XXL
+http://dt3zwsgl95oj4.cloudfront.net/live2/xxl.smil/manifest.m3u8
+#EXTINF:0,I24
+http://bcoveliveios-i.akamaihd.net/hls/live/215102/master_french/412/master.m3u8
+#EXTINF:0,Weo
+rtmp://str81.creacast.com:80/weo/high
+#EXTINF:0,EuroSport
+http://eurosport-hls.live.numericable.tv/live/hls/eurosport/ipad.m3u8
+#EXTINF:0,EuroSport2
+http://eurosport2-hls.live.numericable.tv/live/hls/eurosport2/ipad.m3u8
+#EXTINF:0,Kombat Sport
+http://kombat-hls.live.numericable.tv/live/hls/kombat/ipad.m3u8
+#EXTINF:0,BeinSport 1
+http://beinsport1-hls.live.numericable.tv/live/hls/beinsport1/ipad.m3u8
+#EXTINF:0,BeinSport 2
+http://beinsport2-hls.live.numericable.tv/live/hls/beinsport2/ipad.m3u8
+#EXTINF:0,MCM
+http://mcm-hls.live.numericable.tv/live/hls/mcm/ipad.m3u8
+#EXTINF:0,MTV
+http://mtv-hls.live.numericable.tv/live/hls/mtv/ipad.m3u8
+#EXTINF:0,MTV Idol
+http://mtvidol-hls.live.numericable.tv/live/hls/mtvidol/ipad.m3u8
+#EXTINF:0,MTV Pulse
+http://mtvpulse-hls.live.numericable.tv/live/hls/mtvpulse/ipad.m3u8
+#EXTINF:0,MTV Base
+http://mtvbase-hls.live.numericable.tv/live/hls/mtvbase/ipad.m3u8
