@@ -1,10 +1,10 @@
 #EXTM3U
 #EXTINF:0,TF1
+#ICON:,http://upload.wikimedia.org/wikipedia/fr/thumb/6/6f/TF1_2013.png/320px-TF1_2013.png
 http://tf1-hls.live.numericable.tv/live/hls/tf1/ipad.m3u8
-http://upload.wikimedia.org/wikipedia/fr/thumb/6/6f/TF1_2013.png/320px-TF1_2013.png
 #EXTINF:0,France 2
+#ICON:,http://upload.wikimedia.org/wikipedia/fr/thumb/e/e8/France_2_logo_antenne_%282008%29.png/153px-France_2_logo_antenne_%282008%29.png
 http://live.francetv.fr/simulcast/France_2/hls_v1/index.m3u8
-http://upload.wikimedia.org/wikipedia/fr/thumb/e/e8/France_2_logo_antenne_%282008%29.png/153px-France_2_logo_antenne_%282008%29.png
 #EXTINF:0,France 3
 http://live.francetv.fr/simulcast/France_3/hls_v1/index.m3u8
 #EXTINF:0,France 4
