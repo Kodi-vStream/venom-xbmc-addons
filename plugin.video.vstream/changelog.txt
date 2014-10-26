@@ -1,4 +1,18 @@
 ================================================================================
+- Version & Repository: https://github.com/LordVenom/venom-xbmc-addons/releases
+- Question & Support: https://github.com/LordVenom/venom-xbmc-addons/issues
+- Question & Support: Twitter @lordvenom57
+================================================================================
+================================================================================
+- Version 0.2.0 - 26.10.2014
+================================================================================
+    - Add Source seriefr.com
+    - Modif youwatch
+    - Bug Full_stream_net
+    - Add Resolver Azerfile
+    - bug dpstreaming
+
+================================================================================
 - Version 0.1.9 - 03.10.2014
 ================================================================================
     - Ajout chaine xxl

@@ -121,6 +121,11 @@ class cHosterGui:
             return cHosterHandler().getHoster('uptostream')
         if ('dailymotion' in sHosterUrl):
             return cHosterHandler().getHoster('dailymotion')
+        if ('azerfile' in sHosterUrl):
+            return cHosterHandler().getHoster('azerfile')
+
+
+            
 
         return False
         # step 2

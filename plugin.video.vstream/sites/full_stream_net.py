@@ -95,7 +95,7 @@ def getPremiumUser():
 
     aHeader = oRequestHandler.getResponseHeader()
     sReponseCookie = aHeader.getheader("Set-Cookie")
-    print sReponseCookie
+
     return sReponseCookie
 
 
@@ -141,7 +141,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('&amp;w=210&amp;h=280','')
-    sPattern = 'full-stream-view-hover"><img src=".+?src=(.+?)&.+?" alt="(.+?)".+?<h2><a href="(.+?)">.+?</a></h2>.+?<b>Résumé</b>(.+?)</div>'
+    sPattern = 'full-stream-view-hover"><img src="(.+?)".+?<h2><a href="(.+?)">(.+?)</a></h2>.+?<b>Résumé</b>(.+?)</div>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -155,15 +155,15 @@ def showMovies(sSearch = ''):
                 break
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
-            if '/seriestv/' in sUrl  or 'saison' in aEntry[2]:
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', aEntry[1], '', aEntry[0], aEntry[3], oOutputParameterHandler)
+            if '/seriestv/' in sUrl  or 'saison' in aEntry[1]:
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', aEntry[2], '', aEntry[0], aEntry[3], oOutputParameterHandler)
             elif '/mangas/' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', aEntry[1], '', aEntry[0], aEntry[3], oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', aEntry[2], '', aEntry[0], aEntry[3], oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[1], '', aEntry[0], aEntry[3], oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[2], '', aEntry[0], aEntry[3], oOutputParameterHandler)
         
         cConfig().finishDialog(dialog)
 
