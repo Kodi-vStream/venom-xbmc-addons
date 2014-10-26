@@ -6,10 +6,13 @@ http://tf1-hls.live.numericable.tv/live/hls/tf1/ipad.m3u8
 #ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/e/e8/France_2_logo_antenne_%282008%29.png/153px-France_2_logo_antenne_%282008%29.png
 http://live.francetv.fr/simulcast/France_2/hls_v1/index.m3u8
 #EXTINF:0,France 3
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/5/5f/Logo_France_3.svg/142px-Logo_France_3.svg.png
 http://live.francetv.fr/simulcast/France_3/hls_v1/index.m3u8
 #EXTINF:0,France 4
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/e/ea/France_4_2014.png/155px-France_4_2014.png
 http://live.francetv.fr/simulcast/France_4/hls_v1/index.m3u8
 #EXTINF:0,France 5
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/4/41/France_5_logo_antenne_%282008%29.png/154px-France_5_logo_antenne_%282008%29.png
 http://live.francetv.fr/simulcast/France_5/hls_v1/index.m3u8
 #EXTINF:0,Paris Premiere
 http://parispremiere-hls.live.numericable.tv/live/hls/parispremiere/ipad.m3u8
