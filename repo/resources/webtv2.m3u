@@ -15,76 +15,111 @@ http://live.francetv.fr/simulcast/France_4/hls_v1/index.m3u8
 #ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/4/41/France_5_logo_antenne_%282008%29.png/154px-France_5_logo_antenne_%282008%29.png
 http://live.francetv.fr/simulcast/France_5/hls_v1/index.m3u8
 #EXTINF:0,Paris Premiere
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/d/d1/Paris_Premi%C3%A8re_2011.svg/320px-Paris_Premi%C3%A8re_2011.svg.png
 http://parispremiere-hls.live.numericable.tv/live/hls/parispremiere/ipad.m3u8
 #EXTINF:0,Arte
+#ICON:http://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Arte_Logo_2011.svg/320px-Arte_Logo_2011.svg.png
 http://frlive.artestras.cshls.lldns.net/artestras/contrib/frlive/frlive_925.m3u8
 #EXTINF:0,M6
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/2/22/M6_2009.svg/310px-M6_2009.svg.png
 !https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/m6_hls_aes/m6_hls_aes_856.m3u8
 http://m6-hls.live.numericable.tv/live/hls/m6/ipad.m3u8
 #EXTINF:0,D8
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/7/78/D8_logo_%282012%29.png/240px-D8_logo_%282012%29.png
 http://hls-live-m1-l3.canal-plus.com/live/hls/d8-clair-v3-sd-andr7/and-sd-clair/index.m3u8
 #EXTINF:0,W9
+#ICON:http://upload.wikimedia.org/wikipedia/fr/8/86/W9_2010.png
 http://w9-hls.live.numericable.tv/live/hls/w9/ipad.m3u8
 !https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/w9_hls_aes/w9_hls_aes_856.m3u8
 #EXTINF:0,TMC
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/2/2e/TMC_new.svg/240px-TMC_new.svg.png
 http://tmc-hls.live.numericable.tv/live/hls/tmc/ipad.m3u8
 #EXTINF:0,NT1
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/a/a7/NT1_logo_2012.png/240px-NT1_logo_2012.png
 http://nt1-hls.live.numericable.tv/live/hls/nt1/ipad.m3u8
 #EXTINF:0,NRJ 12
+#ICON:http://upload.wikimedia.org/wikipedia/fr/e/ea/NRJ12.png
 http://nrj-apple-live.adaptive.level3.net/apple/nrj/nrj/nrj12hi.m3u8
 #EXTINF:0,D17
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/a/a9/D17_%282012-%29.png/237px-D17_%282012-%29.png
 http://hls-live-m1-l3.canal-plus.com/live/hls/d17-clair-v3-sd-andr7/and-sd-clair/index.m3u8
 #EXTINF:0,TEVA
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/7/77/T%C3%A9va_2014.svg/240px-T%C3%A9va_2014.svg.png
 http://teva-hls.live.numericable.tv/live/hls/teva/ipad.m3u8
 #EXTINF:0,TF6
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/2/24/TF6_logo.svg/320px-TF6_logo.svg.png
 http://tf6-hls.live.numericable.tv/live/hls/tf6/ipad.m3u8
 #EXTINF:0,RTL9
+#ICON:http://upload.wikimedia.org/wikipedia/fr/0/01/RTL9_logo_2011.png
 http://rtl9-hls.live.numericable.tv/live/hls/rtl9/ipad.m3u8
 #EXTINF:0,AB1
+#ICON:http://upload.wikimedia.org/wikipedia/fr/e/ed/AB1_logo_2011.png
 http://ab1-hls.live.numericable.tv/live/hls/ab1/ipad.m3u8
 #EXTINF:0,June
+#ICON:http://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/June_TV_logo.svg/240px-June_TV_logo.svg.png
 http://june-hls.live.numericable.tv/live/hls/june/ipad.m3u8
 #EXTINF:0,Histoire
+#ICON:http://upload.wikimedia.org/wikipedia/fr/c/c7/Histoire_TF1.png
 http://histoire-hls.live.numericable.tv/live/hls/histoire/ipad.m3u8
 #EXTINF:0,6Ter
+#ICON:http://upload.wikimedia.org/wikipedia/fr/d/dd/Logo_6ter.png
 https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/six_ter_hls_aes/six_ter_hls_aes_856.m3u8
 #EXTINF:0,Numéro 23
+#ICON:http://upload.wikimedia.org/wikipedia/fr/f/f3/Num%C3%A9ro_23_logo_2013.png
 http://stream-l3-4.vty.dmcdn.net/17/dm/1/x13p3qi/live.isml/live.m3u8
 #EXTINF:0,France O
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/a/a7/France_%C3%94_2005.svg/139px-France_%C3%94_2005.svg.png
 http://live.francetv.fr/simulcast/France_O/hls_v1/index.m3u8
 #EXTINF:0,I Télé
+#ICON:http://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_i_TELE_2013.png/208px-Logo_i_TELE_2013.png
 http://hls-live-m2-l3.canal-plus.com/live/hls/itele-clair-v3-sd-andr7/and-sd-clair/index.m3u8
 #EXTINF:0,BFM
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/f/f8/BFM_TV.svg/320px-BFM_TV.svg.png
 http://bfmlive2-i.akamaihd.net/hls/live/214427/bfmtv/04.m3u8
 #EXTINF:0,Equidia Live
+#ICON:http://upload.wikimedia.org/wikipedia/fr/b/b9/Equidia.png
 http://equidialive-hls.live.numericable.tv/live/hls/equidialive/ipad.m3u8
 #EXTINF:0,Mezzo Live
+#ICON:http://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Mezzo_Logo.svg/320px-Mezzo_Logo.svg.png
 http://mezzolive-hls.live.numericable.tv/live/hls/mezzolive/ipad.m3u8
 #EXTINF:0,Série Club
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/4/4c/Serieclub_%282012%29.svg/320px-Serieclub_%282012%29.svg.png
 http://serieclub-hls.live.numericable.tv/live/hls/serieclub/ipad.m3u8
 #EXTINF:0,EuroNews
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/d/d5/Euronews_logo_2008.svg/240px-Euronews_logo_2008.svg.png
 http://hd1.lsops.net/live/euronews_fr_340/.m3u8
 #EXTINF:0,France 24
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/2/24/Logos_FRANCE24_RVB_2013.svg/240px-Logos_FRANCE24_RVB_2013.svg.png
 http://tv.flux.france24.com/4684/02.m3u8
 #EXTINF:0,LCP
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/9/9c/LCP_Logo.svg/320px-LCP_Logo.svg.png
 http://vipwowza.yacast.net/lcplive/_definst_/mp4:lcplive_HVGA/playlist.m3u8
 #EXTINF:0,KTO
+#ICON:http://upload.wikimedia.org/wikipedia/fr/d/db/KTO_logo_2008.png
 http://mobile.ktotv.com/live/KTO_Layer1.m3u8
 #EXTINF:0,Paramount
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/8/81/Paramount_logo.svg/294px-Paramount_logo.svg.png
 http://paramount-hls.live.numericable.tv/live/hls/paramount/ipad.m3u8
 #EXTINF:0,BFM Business
+#ICON:http://upload.wikimedia.org/wikipedia/fr/0/0d/BFM_Business_logo_2010.png
 http://bfmlive-i.akamaihd.net/hls/live/214272/bfmbusiness/01.m3u8
 #EXTINF:0,Game One
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/4/41/Logo_Game_One_2006.svg/320px-Logo_Game_One_2006.svg.png
 http://gameone-hls.live.numericable.tv/live/hls/gameone/ipad.m3u8
 #EXTINF:0,Gulli
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/c/c6/Gulli_2010_avril_logo.svg/248px-Gulli_2010_avril_logo.svg.png
 http://vipwowza.yacast.net/gulli_live/_definst_/mp4:gulli_850/playlist.m3u8
 #EXTINF:0,Boomerang
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/f/ff/Boomerang_Europe.svg/320px-Boomerang_Europe.svg.png
 http://boomerang-hls.live.numericable.tv/live/hls/boomerang/ipad.m3u8
 #EXTINF:0,Zouzous
+#ICON:http://upload.wikimedia.org/wikipedia/fr/1/10/Logo-zouzous.png
 http://medias2.francetv.fr/playlists/zouzous/zouzous_tablettes.m3u8
 #EXTINF:0,Disney Channel
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/8/87/Disney_Channel_2014.png/320px-Disney_Channel_2014.png
 http://disneychannel-hls.live.numericable.tv/live/hls/disneychannel/ipad.m3u8
 #EXTINF:0,IDF1
+#ICON:http://upload.wikimedia.org/wikipedia/fr/1/19/Idf11_2010_logo.png
 http://stream7.idf1.yacast.net/iphone/idf1/live01/idf1_live01hd.m3u8
 !#EXTINF:0,Action
 !http://dt3zwsgl95oj4.cloudfront.net/live2/action.smil/playlist.m3u8
@@ -95,6 +130,7 @@ http://stream7.idf1.yacast.net/iphone/idf1/live01/idf1_live01hd.m3u8
 !#EXTINF:0,National geographic
 !http://195.154.188.161/hls/nationalgeo.m3u8
 #EXTINF:0,RMC Découverte
+#ICON:http://upload.wikimedia.org/wikipedia/fr/e/ed/RMC_D%C3%A9couverte_logo_2012.png
 rtmp://vipwowza.yacast.net/rmc_decouverte_rtmp//live
 !#EXTINF:0,Escales
 !http://dt3zwsgl95oj4.cloudfront.net/live2/escales.smil/playlist.m3u8
@@ -113,48 +149,68 @@ rtmp://vipwowza.yacast.net/rmc_decouverte_rtmp//live
 !#EXTINF:0,LuckyJack
 !http://dt3zwsgl95oj4.cloudfront.net/live2/luckyjack.smil/playlist.m3u8
 #EXTINF:0,LaTélé
+#ICON:http://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Logo_la_tele_2014.png/240px-Logo_la_tele_2014.png
 http://rtmp.infomaniak.ch/livecast/latele/playlist.m3u8
 #EXTINF:0,MenUpTv
+#ICON:http://static.mensup.fr/images_tv/logo.png
 http://videos.mensup.fr/mensuptv/live/01.m3u8
 #EXTINF:0,Oui Tv
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/3/33/Oui_FM_2014_logo.png/240px-Oui_FM_2014_logo.png
 http://rtmp.infomaniak.ch/livecast/ouitv/playlist.m3u8
 #EXTINF:0,PTC
 http://media.rtc.be/vod/mp4:166597.mp4/hasbahca.m3u8
 #EXTINF:0,Rouge Tv
+#ICON:http://upload.wikimedia.org/wikipedia/fr/2/28/RougeTV_new.gif
 http://rtmp.infomaniak.ch/livecast/rougetv/playlist.m3u8
 !#EXTINF:0,RTC
 !http://media.webtvlive.eu/rtc/smil:live.smil/playlist.m3u8
 #EXTINF:0,Equipe21
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/4/4f/Logo_L%27%C3%89quipe_21.svg/320px-Logo_L%27%C3%89quipe_21.svg.png
 http://chkg.tdf-cdn.com/5687/index.m3u8
 #EXTINF:0,Discovery
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/4/4a/Discovery_Channel_logo.svg/320px-Discovery_Channel_logo.svg.png
 http://discovery-hls.live.numericable.tv/live/hls/discovery/ipad.m3u8
-#EXTINF:0,Djing
-http://cdn.djing.com/tv/live.m3u8
+!#EXTINF:0,Djing
+!http://cdn.djing.com/tv/live.m3u8
 #EXTINF:0,Dorcel
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/a/a6/Dorcel_TV_Logo.svg/320px-Dorcel_TV_Logo.svg.png
 http://dt3zwsgl95oj4.cloudfront.net/live2/dorceltv.smil/manifest.m3u8
 #EXTINF:0,XXL
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/f/fc/XXL_AB_logo.svg/320px-XXL_AB_logo.svg.png
 http://dt3zwsgl95oj4.cloudfront.net/live2/xxl.smil/manifest.m3u8
 #EXTINF:0,I24
+#ICON:http://upload.wikimedia.org/wikipedia/commons/f/fb/I24_official_logo.png
 http://bcoveliveios-i.akamaihd.net/hls/live/215102/master_french/412/master.m3u8
 #EXTINF:0,Weo
+#ICON:http://upload.wikimedia.org/wikipedia/fr/8/83/Logo_Weo.jpg
 rtmp://str81.creacast.com:80/weo/high
 #EXTINF:0,EuroSport
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/c/cb/Eurosport_logo_2011.svg/320px-Eurosport_logo_2011.svg.png
 http://eurosport-hls.live.numericable.tv/live/hls/eurosport/ipad.m3u8
 #EXTINF:0,EuroSport2
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/7/7b/Eurosport_2_2011.svg/320px-Eurosport_2_2011.svg.png
 http://eurosport2-hls.live.numericable.tv/live/hls/eurosport2/ipad.m3u8
 #EXTINF:0,Kombat Sport
+#ICON:http://kombatsport.lu/wp-content/themes/esplanade/images/logo.png
 http://kombat-hls.live.numericable.tv/live/hls/kombat/ipad.m3u8
 #EXTINF:0,BeinSport 1
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/b/b3/BEINSPORTS_1%281%29.jpg/320px-BEINSPORTS_1%281%29.jpg
 http://beinsport1-hls.live.numericable.tv/live/hls/beinsport1/ipad.m3u8
 #EXTINF:0,BeinSport 2
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/d/d5/BEINSPORTS_2.jpg/320px-BEINSPORTS_2.jpg
 http://beinsport2-hls.live.numericable.tv/live/hls/beinsport2/ipad.m3u8
 #EXTINF:0,MCM
+#ICON:http://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/MCM_logo.svg/320px-MCM_logo.svg.png
 http://mcm-hls.live.numericable.tv/live/hls/mcm/ipad.m3u8
 #EXTINF:0,MTV
+#ICON:http://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/MTV_Logo_2010.svg/320px-MTV_Logo_2010.svg.png
 http://mtv-hls.live.numericable.tv/live/hls/mtv/ipad.m3u8
 #EXTINF:0,MTV Idol
+#ICON:http://upload.wikimedia.org/wikipedia/fr/7/7c/MTV_Idol_France.png
 http://mtvidol-hls.live.numericable.tv/live/hls/mtvidol/ipad.m3u8
 #EXTINF:0,MTV Pulse
+#ICON:http://upload.wikimedia.org/wikipedia/fr/8/88/MTV_Pulse_France.png
 http://mtvpulse-hls.live.numericable.tv/live/hls/mtvpulse/ipad.m3u8
 #EXTINF:0,MTV Base
+#ICON:http://upload.wikimedia.org/wikipedia/fr/9/9d/MTV_Base.png
 http://mtvbase-hls.live.numericable.tv/live/hls/mtvbase/ipad.m3u8
