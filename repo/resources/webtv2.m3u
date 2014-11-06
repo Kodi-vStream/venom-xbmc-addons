@@ -22,8 +22,8 @@ http://parispremiere-hls.live.numericable.tv/live/hls/parispremiere/ipad.m3u8
 http://frlive.artestras.cshls.lldns.net/artestras/contrib/frlive/frlive_925.m3u8
 #EXTINF:0,M6
 #ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/2/22/M6_2009.svg/310px-M6_2009.svg.png
-!https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/m6_hls_aes/m6_hls_aes_856.m3u8
-http://m6-hls.live.numericable.tv/live/hls/m6/ipad.m3u8
+https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/m6_hls_aes/m6_hls_aes_856.m3u8
+!http://m6-hls.live.numericable.tv/live/hls/m6/ipad.m3u8
 #EXTINF:0,D8
 #ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/7/78/D8_logo_%282012%29.png/240px-D8_logo_%282012%29.png
 http://hls-live-m1-l3.canal-plus.com/live/hls/d8-clair-v3-sd-andr7/and-sd-clair/index.m3u8
