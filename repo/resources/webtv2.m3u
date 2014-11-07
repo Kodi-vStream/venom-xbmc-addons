@@ -2,6 +2,9 @@
 #EXTINF:0,TF1
 #ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/6/6f/TF1_2013.png/320px-TF1_2013.png
 http://tf1-hls.live.numericable.tv/live/hls/tf1/ipad.m3u8
+#EXTINF:0,TF1 (1)
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/6/6f/TF1_2013.png/320px-TF1_2013.png
+http://se-2.se.tf1-hls.live.numericable.tv/live/hls/tf1/ipad.m3u8
 #EXTINF:0,France 2
 #ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/e/e8/France_2_logo_antenne_%282008%29.png/153px-France_2_logo_antenne_%282008%29.png
 http://live.francetv.fr/simulcast/France_2/hls_v1/index.m3u8
@@ -23,14 +26,18 @@ http://frlive.artestras.cshls.lldns.net/artestras/contrib/frlive/frlive_925.m3u8
 #EXTINF:0,M6
 #ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/2/22/M6_2009.svg/310px-M6_2009.svg.png
 https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/m6_hls_aes/m6_hls_aes_856.m3u8
-!http://m6-hls.live.numericable.tv/live/hls/m6/ipad.m3u8
 #EXTINF:0,D8
 #ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/7/78/D8_logo_%282012%29.png/240px-D8_logo_%282012%29.png
 http://hls-live-m1-l3.canal-plus.com/live/hls/d8-clair-v3-sd-andr7/and-sd-clair/index.m3u8
+#EXTINF:0,D8 (1)
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/7/78/D8_logo_%282012%29.png/240px-D8_logo_%282012%29.png
+http://se-2.se.direct8-hls.live.numericable.tv/live/hls/direct8/ipad.m3u8
 #EXTINF:0,W9
 #ICON:http://upload.wikimedia.org/wikipedia/fr/8/86/W9_2010.png
 http://w9-hls.live.numericable.tv/live/hls/w9/ipad.m3u8
-!https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/w9_hls_aes/w9_hls_aes_856.m3u8
+#EXTINF:0,W9 (1)
+#ICON:http://upload.wikimedia.org/wikipedia/fr/8/86/W9_2010.png
+https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/w9_hls_aes/w9_hls_aes_856.m3u8
 #EXTINF:0,TMC
 #ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/2/2e/TMC_new.svg/240px-TMC_new.svg.png
 http://tmc-hls.live.numericable.tv/live/hls/tmc/ipad.m3u8
@@ -40,21 +47,39 @@ http://nt1-hls.live.numericable.tv/live/hls/nt1/ipad.m3u8
 #EXTINF:0,NRJ 12
 #ICON:http://upload.wikimedia.org/wikipedia/fr/e/ea/NRJ12.png
 http://nrj-apple-live.adaptive.level3.net/apple/nrj/nrj/nrj12hi.m3u8
+#EXTINF:0,NRJ 12 (1)
+#ICON:http://upload.wikimedia.org/wikipedia/fr/e/ea/NRJ12.png
+http://se-2.se.nrj12-hls.live.numericable.tv/live/hls/nrj12/ipad.m3u8
 #EXTINF:0,D17
 #ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/a/a9/D17_%282012-%29.png/237px-D17_%282012-%29.png
 http://hls-live-m1-l3.canal-plus.com/live/hls/d17-clair-v3-sd-andr7/and-sd-clair/index.m3u8
+#EXTINF:0,D17 (1)
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/a/a9/D17_%282012-%29.png/237px-D17_%282012-%29.png
+http://se-2.se.directstar-hls.live.numericable.tv/live/hls/directstar/ipad.m3u8
 #EXTINF:0,TEVA
 #ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/7/77/T%C3%A9va_2014.svg/240px-T%C3%A9va_2014.svg.png
 http://teva-hls.live.numericable.tv/live/hls/teva/ipad.m3u8
 #EXTINF:0,TF6
 #ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/2/24/TF6_logo.svg/320px-TF6_logo.svg.png
 http://tf6-hls.live.numericable.tv/live/hls/tf6/ipad.m3u8
+#EXTINF:0,TF6 (1)
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/2/24/TF6_logo.svg/320px-TF6_logo.svg.png
+http://se-2.se.tf6-hls.live.numericable.tv/live/hls/tf6/ipad.m3u8
 #EXTINF:0,RTL9
 #ICON:http://upload.wikimedia.org/wikipedia/fr/0/01/RTL9_logo_2011.png
 http://rtl9-hls.live.numericable.tv/live/hls/rtl9/ipad.m3u8
+#EXTINF:0,RTL9 (1)
+#ICON:http://upload.wikimedia.org/wikipedia/fr/0/01/RTL9_logo_2011.png
+http://se-2.se.rtl9-hls.live.numericable.tv/live/hls/rtl9/ipad.m3u8
 #EXTINF:0,AB1
 #ICON:http://upload.wikimedia.org/wikipedia/fr/e/ed/AB1_logo_2011.png
 http://ab1-hls.live.numericable.tv/live/hls/ab1/ipad.m3u8
+#EXTINF:0,AB1 (1)
+#ICON:http://upload.wikimedia.org/wikipedia/fr/e/ed/AB1_logo_2011.png
+http://se-2.se.ab1-hls.live.numericable.tv/live/hls/ab1/ipad.m3u8
+#EXTINF:0,Comédie +
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/4/49/Com%C3%A9die%2B_%282011%29.svg/267px-Com%C3%A9die%2B_%282011%29.svg.png
+http://se-2.se.comedie-hls.live.numericable.tv/live/hls/comedie/ipad.m3u8
 #EXTINF:0,June
 #ICON:http://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/June_TV_logo.svg/240px-June_TV_logo.svg.png
 http://june-hls.live.numericable.tv/live/hls/june/ipad.m3u8
@@ -85,6 +110,9 @@ http://mezzolive-hls.live.numericable.tv/live/hls/mezzolive/ipad.m3u8
 #EXTINF:0,Série Club
 #ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/4/4c/Serieclub_%282012%29.svg/320px-Serieclub_%282012%29.svg.png
 http://serieclub-hls.live.numericable.tv/live/hls/serieclub/ipad.m3u8
+#EXTINF:0,Série Club (1)
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/4/4c/Serieclub_%282012%29.svg/320px-Serieclub_%282012%29.svg.png
+http://se-2.se.serieclub-hls.live.numericable.tv/live/hls/serieclub/ipad.m3u8
 #EXTINF:0,EuroNews
 #ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/d/d5/Euronews_logo_2008.svg/240px-Euronews_logo_2008.svg.png
 http://hd1.lsops.net/live/euronews_fr_340/.m3u8
@@ -118,6 +146,9 @@ http://medias2.francetv.fr/playlists/zouzous/zouzous_tablettes.m3u8
 #EXTINF:0,Disney Channel
 #ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/8/87/Disney_Channel_2014.png/320px-Disney_Channel_2014.png
 http://disneychannel-hls.live.numericable.tv/live/hls/disneychannel/ipad.m3u8
+#EXTINF:0,Disney Channel (1)
+#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/8/87/Disney_Channel_2014.png/320px-Disney_Channel_2014.png
+http://se-2.se.disneychannel-hls.live.numericable.tv/live/hls/disneychannel/ipad.m3u8
 #EXTINF:0,IDF1
 #ICON:http://upload.wikimedia.org/wikipedia/fr/1/19/Idf11_2010_logo.png
 http://stream7.idf1.yacast.net/iphone/idf1/live01/idf1_live01hd.m3u8
