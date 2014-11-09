@@ -1,245 +1,145 @@
 #EXTM3U
-#EXTINF:-1 tvg-id="C1.telerama.fr" tvg-name="TF1" tvg-logo="tf1.gif" group-title="Group 1",TF1
+#EXTINF:-1 tvg-id="TF11.kazer.org" tvg-name="TF1" tvg-logo="tf1.gif" group-title="Group 1",TF1
 http://tf1-hls.live.numericable.tv/live/hls/tf1/ipad.m3u8
-#EXTINF:-1 tvg-id="C1.telerama.fr" tvg-name="TF1 (1)" tvg-logo="tf1.gif" group-title="Group 1",TF1 (1)
+#EXTINF:-1 tvg-id="TF11.kazer.org" tvg-name="TF1 (1)" tvg-logo="tf1.gif" group-title="Group 1",TF1 (1)
 http://se-2.se.tf1-hls.live.numericable.tv/live/hls/tf1/ipad.m3u8
-#EXTINF:0,France 2
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/e/e8/France_2_logo_antenne_%282008%29.png/153px-France_2_logo_antenne_%282008%29.png
+#EXTINF:-1 tvg-id="FRA2.kazer.org" tvg-name="France 2" tvg-logo="france2.gif" group-title="Group 2",France 2
 http://live.francetv.fr/simulcast/France_2/hls_v1/index.m3u8
-#EXTINF:0,France 3
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/5/5f/Logo_France_3.svg/142px-Logo_France_3.svg.png
+#EXTINF:-1 tvg-id="FRA3.kazer.org" tvg-name="France 3" tvg-logo="france3.gif" group-title="Group 3",France 3
 http://live.francetv.fr/simulcast/France_3/hls_v1/index.m3u8
-#EXTINF:0,France 4
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/e/ea/France_4_2014.png/155px-France_4_2014.png
+#EXTINF:-1 tvg-id="FRA4.kazer.org" tvg-name="France 4" tvg-logo="france4.gif" group-title="Group 4",France 4
 http://live.francetv.fr/simulcast/France_4/hls_v1/index.m3u8
-#EXTINF:0,France 5
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/4/41/France_5_logo_antenne_%282008%29.png/154px-France_5_logo_antenne_%282008%29.png
+#EXTINF:-1 tvg-id="FRA5.kazer.org" tvg-name="France 5" tvg-logo="france5.gif" group-title="Group 5",France 5
 http://live.francetv.fr/simulcast/France_5/hls_v1/index.m3u8
-#EXTINF:0,Paris Premiere
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/d/d1/Paris_Premi%C3%A8re_2011.svg/320px-Paris_Premi%C3%A8re_2011.svg.png
+#EXTINF:-1 tvg-id="PAR1.kazer.org" tvg-name="Paris Premiere" tvg-logo="parispremiere.gif" group-title="Group 13",Paris Premiere
 http://parispremiere-hls.live.numericable.tv/live/hls/parispremiere/ipad.m3u8
-#EXTINF:0,Arte
-#ICON:http://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Arte_Logo_2011.svg/320px-Arte_Logo_2011.svg.png
+#EXTINF:-1 tvg-id="ART1.kazer.org" tvg-name="Arte" tvg-logo="arte.gif" group-title="Group 14",Arte
 http://frlive.artestras.cshls.lldns.net/artestras/contrib/frlive/frlive_925.m3u8
-#EXTINF:0,M6
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/2/22/M6_2009.svg/310px-M6_2009.svg.png
+#EXTINF:-1 tvg-id="M61.kazer.org" tvg-name="M6" tvg-logo="m6.gif" group-title="Group 6",M6
 https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/m6_hls_aes/m6_hls_aes_856.m3u8
-#EXTINF:0,D8
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/7/78/D8_logo_%282012%29.png/240px-D8_logo_%282012%29.png
+#EXTINF:-1 tvg-id="DIR1.kazer.org" tvg-name="D8" tvg-logo="d8.gif" group-title="Group 8",D8
 http://hls-live-m1-l3.canal-plus.com/live/hls/d8-clair-v3-sd-andr7/and-sd-clair/index.m3u8
-#EXTINF:0,D8 (1)
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/7/78/D8_logo_%282012%29.png/240px-D8_logo_%282012%29.png
+#EXTINF:-1 tvg-id="DIR1.kazer.org" tvg-name="D8 (1)" tvg-logo="d8.gif" group-title="Group 8",D8 (1)
 http://se-2.se.direct8-hls.live.numericable.tv/live/hls/direct8/ipad.m3u8
-#EXTINF:0,W9
-#ICON:http://upload.wikimedia.org/wikipedia/fr/8/86/W9_2010.png
+#EXTINF:-1 tvg-id="W91.kazer.org" tvg-name="W9" tvg-logo="w9.gif" group-title="Group 9",W9
 http://w9-hls.live.numericable.tv/live/hls/w9/ipad.m3u8
-#EXTINF:0,W9 (1)
-#ICON:http://upload.wikimedia.org/wikipedia/fr/8/86/W9_2010.png
+#EXTINF:-1 tvg-id="W91.kazer.org" tvg-name="W9 (1)" tvg-logo="w9.gif" group-title="Group 9",W9 (1)
 https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/w9_hls_aes/w9_hls_aes_856.m3u8
-#EXTINF:0,TMC
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/2/2e/TMC_new.svg/240px-TMC_new.svg.png
+#EXTINF:-1 tvg-id="TMC1.kazer.org" tvg-name="TMC" tvg-logo="tmc.gif" group-title="Group 10",TMC
 http://tmc-hls.live.numericable.tv/live/hls/tmc/ipad.m3u8
-#EXTINF:0,NT1
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/a/a7/NT1_logo_2012.png/240px-NT1_logo_2012.png
+#EXTINF:-1 tvg-id="NT11.kazer.org" tvg-name="NT1" tvg-logo="nt1.gif" group-title="Group 11",NT1
 http://nt1-hls.live.numericable.tv/live/hls/nt1/ipad.m3u8
-#EXTINF:0,NRJ 12
-#ICON:http://upload.wikimedia.org/wikipedia/fr/e/ea/NRJ12.png
+#EXTINF:-1 tvg-id="NRJ1.kazer.org" tvg-name="NRJ12" tvg-logo="nrj12.gif" group-title="Group 12",NRJ 12
 http://nrj-apple-live.adaptive.level3.net/apple/nrj/nrj/nrj12hi.m3u8
-#EXTINF:0,NRJ 12 (1)
-#ICON:http://upload.wikimedia.org/wikipedia/fr/e/ea/NRJ12.png
+#EXTINF:-1 tvg-id="NRJ1.kazer.org" tvg-name="NRJ12 (1)" tvg-logo="nrj12.gif" group-title="Group 12",NRJ 12 (1)
 http://se-2.se.nrj12-hls.live.numericable.tv/live/hls/nrj12/ipad.m3u8
-#EXTINF:0,D17
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/a/a9/D17_%282012-%29.png/237px-D17_%282012-%29.png
+#EXTINF:-1 tvg-id="EUR2.kazer.org" tvg-name="D17" tvg-logo="d17.gif" group-title="Group 17",D17
 http://hls-live-m1-l3.canal-plus.com/live/hls/d17-clair-v3-sd-andr7/and-sd-clair/index.m3u8
-#EXTINF:0,D17 (1)
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/a/a9/D17_%282012-%29.png/237px-D17_%282012-%29.png
+#EXTINF:-1 tvg-id="EUR2.kazer.org" tvg-name="D17 (1)" tvg-logo="d17.gif" group-title="Group 17",D17 (1)
 http://se-2.se.directstar-hls.live.numericable.tv/live/hls/directstar/ipad.m3u8
-#EXTINF:0,TEVA
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/7/77/T%C3%A9va_2014.svg/240px-T%C3%A9va_2014.svg.png
+#EXTINF:-1 tvg-id="TVA1.kazer.org" tvg-name="TEVA" tvg-logo="teva.gif" group-title="Group 27",TEVA
 http://teva-hls.live.numericable.tv/live/hls/teva/ipad.m3u8
-#EXTINF:0,TF6
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/2/24/TF6_logo.svg/320px-TF6_logo.svg.png
+#EXTINF:-1 tvg-id="TF61.kazer.org" tvg-name="TF6" tvg-logo="tf6.gif" group-title="Group 44",TF6
 http://tf6-hls.live.numericable.tv/live/hls/tf6/ipad.m3u8
-#EXTINF:0,TF6 (1)
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/2/24/TF6_logo.svg/320px-TF6_logo.svg.png
+#EXTINF:-1 tvg-id="TF61.kazer.org" tvg-name="TF6 (1)" tvg-logo="tf6.gif" group-title="Group 44",TF6 (1)
 http://se-2.se.tf6-hls.live.numericable.tv/live/hls/tf6/ipad.m3u8
-#EXTINF:0,RTL9
-#ICON:http://upload.wikimedia.org/wikipedia/fr/0/01/RTL9_logo_2011.png
+#EXTINF:-1 tvg-id="RTL2.kazer.org" tvg-name="RTL9" tvg-logo="rtl9.gif" group-title="Group 28",RTL9
 http://rtl9-hls.live.numericable.tv/live/hls/rtl9/ipad.m3u8
-#EXTINF:0,RTL9 (1)
-#ICON:http://upload.wikimedia.org/wikipedia/fr/0/01/RTL9_logo_2011.png
+#EXTINF:-1 tvg-id="RTL2.kazer.org" tvg-name="RTL9 (1)" tvg-logo="rtl9.gif" group-title="Group 28",RTL9 (1)
 http://se-2.se.rtl9-hls.live.numericable.tv/live/hls/rtl9/ipad.m3u8
-#EXTINF:0,AB1
-#ICON:http://upload.wikimedia.org/wikipedia/fr/e/ed/AB1_logo_2011.png
+#EXTINF:-1 tvg-id="AB11.kazer.org" tvg-name="AB1" tvg-logo="ab1.gif" group-title="Group 39",AB1
 http://ab1-hls.live.numericable.tv/live/hls/ab1/ipad.m3u8
-#EXTINF:0,AB1 (1)
-#ICON:http://upload.wikimedia.org/wikipedia/fr/e/ed/AB1_logo_2011.png
+#EXTINF:-1 tvg-id="AB11.kazer.org" tvg-name="AB1" tvg-logo="ab1.gif" group-title="Group 39",AB1 (1)
 http://se-2.se.ab1-hls.live.numericable.tv/live/hls/ab1/ipad.m3u8
-#EXTINF:0,Comédie +
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/4/49/Com%C3%A9die%2B_%282011%29.svg/267px-Com%C3%A9die%2B_%282011%29.svg.png
+#EXTINF:-1 tvg-id="CO11.kazer.org" tvg-name="Comedie+" tvg-logo="comedie.gif" group-title="Group 42",Comédie +
 http://se-2.se.comedie-hls.live.numericable.tv/live/hls/comedie/ipad.m3u8
-#EXTINF:0,June
-#ICON:http://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/June_TV_logo.svg/240px-June_TV_logo.svg.png
+#EXTINF:-1 tvg-id="FIL1.kazer.org" tvg-name="June" tvg-logo="june.gif" group-title="Group 46",June
 http://june-hls.live.numericable.tv/live/hls/june/ipad.m3u8
-#EXTINF:0,Histoire
-#ICON:http://upload.wikimedia.org/wikipedia/fr/c/c7/Histoire_TF1.png
+#EXTINF:-1 tvg-id="HIS1.kazer.org" tvg-name="Histoire" tvg-logo="histoire.gif" group-title="Group 90",Histoire
 http://histoire-hls.live.numericable.tv/live/hls/histoire/ipad.m3u8
-#EXTINF:0,6Ter
-#ICON:http://upload.wikimedia.org/wikipedia/fr/d/dd/Logo_6ter.png
+#EXTINF:-1 tvg-id="6TER.kazer.org" tvg-name="6TER" tvg-logo="6ter.gif" group-title="Group 22",6Ter
 https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/six_ter_hls_aes/six_ter_hls_aes_856.m3u8
-#EXTINF:0,Numéro 23
-#ICON:http://upload.wikimedia.org/wikipedia/fr/f/f3/Num%C3%A9ro_23_logo_2013.png
+#EXTINF:-1 tvg-id="NU23.kazer.org" tvg-name="Numéro 23" tvg-logo="n23.gif" group-title="Group 23",Numéro 23
 http://stream-l3-4.vty.dmcdn.net/17/dm/1/x13p3qi/live.isml/live.m3u8
-#EXTINF:0,France O
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/a/a7/France_%C3%94_2005.svg/139px-France_%C3%94_2005.svg.png
+#EXTINF:-1 tvg-id="FRA1.kazer.org" tvg-name="France O" tvg-logo="franceo.gif" group-title="Group 65",France O
 http://live.francetv.fr/simulcast/France_O/hls_v1/index.m3u8
-#EXTINF:0,I Télé
-#ICON:http://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_i_TELE_2013.png/208px-Logo_i_TELE_2013.png
+#EXTINF:-1 tvg-id="ITL1.kazer.org" tvg-name="I Télé" tvg-logo="itele.gif" group-title="Group 102",I Télé
 http://hls-live-m2-l3.canal-plus.com/live/hls/itele-clair-v3-sd-andr7/and-sd-clair/index.m3u8
-#EXTINF:0,BFM
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/f/f8/BFM_TV.svg/320px-BFM_TV.svg.png
+#EXTINF:-1 tvg-id="BFM1.kazer.org" tvg-name="BFM TV" tvg-logo="bfm.gif" group-title="Group 103",BFM TV
 http://bfmlive2-i.akamaihd.net/hls/live/214427/bfmtv/04.m3u8
-#EXTINF:0,Equidia Live
-#ICON:http://upload.wikimedia.org/wikipedia/fr/b/b9/Equidia.png
+#EXTINF:-1 tvg-id="EQU1.kazer.org" tvg-name="Equipedia" tvg-logo="equidia.gif" group-title="Group 129",Equidia
 http://equidialive-hls.live.numericable.tv/live/hls/equidialive/ipad.m3u8
-#EXTINF:0,Mezzo Live
-#ICON:http://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Mezzo_Logo.svg/320px-Mezzo_Logo.svg.png
+#EXTINF:-1 tvg-id="MEZ1.kazer.org" tvg-name="Mezzo" tvg-logo="mezzo.gif" group-title="Group 189",Mezzo
 http://mezzolive-hls.live.numericable.tv/live/hls/mezzolive/ipad.m3u8
-#EXTINF:0,Série Club
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/4/4c/Serieclub_%282012%29.svg/320px-Serieclub_%282012%29.svg.png
+#EXTINF:-1 tvg-id="SRI1.kazer.org" tvg-name="Série Club" tvg-logo="serieclub.gif" group-title="Group 39",Série Club
 http://serieclub-hls.live.numericable.tv/live/hls/serieclub/ipad.m3u8
-#EXTINF:0,Série Club (1)
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/4/4c/Serieclub_%282012%29.svg/320px-Serieclub_%282012%29.svg.png
+#EXTINF:-1 tvg-id="SRI1.kazer.org" tvg-name="Série Club (1)" tvg-logo="serieclub.gif" group-title="Group 39",Série Club (1)
 http://se-2.se.serieclub-hls.live.numericable.tv/live/hls/serieclub/ipad.m3u8
-#EXTINF:0,EuroNews
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/d/d5/Euronews_logo_2008.svg/240px-Euronews_logo_2008.svg.png
+#EXTINF:-1 tvg-id="EUR6.kazer.org" tvg-name="EuroNews" tvg-logo="euronews.gif" group-title="Group 104",EuroNews
 http://hd1.lsops.net/live/euronews_fr_340/.m3u8
-#EXTINF:0,France 24
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/2/24/Logos_FRANCE24_RVB_2013.svg/240px-Logos_FRANCE24_RVB_2013.svg.png
+#EXTINF:-1 tvg-id="FRA16.kazer.org" tvg-name="France 24" tvg-logo="france24.gif" group-title="Group 105",France 24
 http://tv.flux.france24.com/4684/02.m3u8
-#EXTINF:0,LCP
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/9/9c/LCP_Logo.svg/320px-LCP_Logo.svg.png
+#EXTINF:-1 tvg-id="LAC1.kazer.org" tvg-name="LCP" tvg-logo="lcp.gif" group-title="Group 313",LCP
 http://vipwowza.yacast.net/lcplive/_definst_/mp4:lcplive_HVGA/playlist.m3u8
-#EXTINF:0,KTO
-#ICON:http://upload.wikimedia.org/wikipedia/fr/d/db/KTO_logo_2008.png
+#EXTINF:-1 tvg-id="KTO1.kazer.org" tvg-name="KTO" tvg-logo="kto.gif" group-title="Group 113",KTO
 http://mobile.ktotv.com/live/KTO_Layer1.m3u8
-#EXTINF:0,Paramount
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/8/81/Paramount_logo.svg/294px-Paramount_logo.svg.png
+#EXTINF:-1 tvg-id="PARA1.kazer.org" tvg-name="Paramount" tvg-logo="paramount.gif" group-title="Group 27",Paramount
 http://paramount-hls.live.numericable.tv/live/hls/paramount/ipad.m3u8
-#EXTINF:0,BFM Business
-#ICON:http://upload.wikimedia.org/wikipedia/fr/0/0d/BFM_Business_logo_2010.png
+#EXTINF:-1 tvg-id="BFM2.kazer.org" tvg-name="BFM Business" tvg-logo="bfmbus.gif" group-title="Group 107",BFM Business
 http://bfmlive-i.akamaihd.net/hls/live/214272/bfmbusiness/01.m3u8
-#EXTINF:0,Game One
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/4/41/Logo_Game_One_2006.svg/320px-Logo_Game_One_2006.svg.png
+#EXTINF:-1 tvg-id="GAM1.kazer.org" tvg-name="Game One" tvg-logo="gameone.gif" group-title="Group 51",Game One
 http://gameone-hls.live.numericable.tv/live/hls/gameone/ipad.m3u8
-#EXTINF:0,Gulli
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/c/c6/Gulli_2010_avril_logo.svg/248px-Gulli_2010_avril_logo.svg.png
+#EXTINF:-1 tvg-id="GUL1.kazer.org" tvg-name="Gulli" tvg-logo="gulli.gif" group-title="Group 165",Gulli
 http://vipwowza.yacast.net/gulli_live/_definst_/mp4:gulli_850/playlist.m3u8
-#EXTINF:0,Boomerang
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/f/ff/Boomerang_Europe.svg/320px-Boomerang_Europe.svg.png
+#EXTINF:-1 tvg-id="BOO1.kazer.org" tvg-name="Boomerang" tvg-logo="boomerang.gif" group-title="Group 155",Boomerang
 http://boomerang-hls.live.numericable.tv/live/hls/boomerang/ipad.m3u8
-#EXTINF:0,Zouzous
-#ICON:http://upload.wikimedia.org/wikipedia/fr/1/10/Logo-zouzous.png
+#EXTINF:-1 tvg-id="ZOU1.kazer.org" tvg-name="Zouzous" tvg-logo="zouzous.gif" group-title="Group 205",Zouzous
 http://medias2.francetv.fr/playlists/zouzous/zouzous_tablettes.m3u8
-#EXTINF:0,Disney Channel
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/8/87/Disney_Channel_2014.png/320px-Disney_Channel_2014.png
+#EXTINF:-1 tvg-id="DIS3.kazer.org" tvg-name="Disney Channel" tvg-logo="disneychannel.gif" group-title="Group 158",Disney Channel
 http://disneychannel-hls.live.numericable.tv/live/hls/disneychannel/ipad.m3u8
-#EXTINF:0,Disney Channel (1)
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/8/87/Disney_Channel_2014.png/320px-Disney_Channel_2014.png
+#EXTINF:-1 tvg-id="DIS3.kazer.org" tvg-name="Disney Channel (1)" tvg-logo="disneychannel.gif" group-title="Group 158",Disney Channel (1)
 http://se-2.se.disneychannel-hls.live.numericable.tv/live/hls/disneychannel/ipad.m3u8
-#EXTINF:0,IDF1
-#ICON:http://upload.wikimedia.org/wikipedia/fr/1/19/Idf11_2010_logo.png
+#EXTINF:-1 tvg-id="IDF1.kazer.org" tvg-name="IDF1" tvg-logo="idf1.gif" group-title="Group 32",IDF1
 http://stream7.idf1.yacast.net/iphone/idf1/live01/idf1_live01hd.m3u8
-!#EXTINF:0,Action
-!http://dt3zwsgl95oj4.cloudfront.net/live2/action.smil/playlist.m3u8
-!#EXTINF:0,CineFX
-!http://dt3zwsgl95oj4.cloudfront.net/live2/cinefx.smil/playlist.m3u8
-!#EXTINF:0,CinePolar
-!http://dt3zwsgl95oj4.cloudfront.net/live2/cinepolar.smil/playlist.m3u8
-!#EXTINF:0,National geographic
-!http://195.154.188.161/hls/nationalgeo.m3u8
-#EXTINF:0,RMC Découverte
-#ICON:http://upload.wikimedia.org/wikipedia/fr/e/ed/RMC_D%C3%A9couverte_logo_2012.png
+#EXTINF:-1 tvg-id="RMC2.kazer.org" tvg-name="RMC Découverte" tvg-logo="rmcdecouverte.gif" group-title="Group 98",RMC Découverte
 rtmp://vipwowza.yacast.net/rmc_decouverte_rtmp//live
-!#EXTINF:0,Escales
-!http://dt3zwsgl95oj4.cloudfront.net/live2/escales.smil/playlist.m3u8
-!#EXTINF:0,Animaux
-!http://dt3zwsgl95oj4.cloudfront.net/live2/animaux.smil/playlist.m3u8
-!#EXTINF:0,Encyclo
-!http://dt3zwsgl95oj4.cloudfront.net/live2/encyclo.smil/playlist.m3u8
-!#EXTINF:0,Chasse et Pêche
-!http://dt3zwsgl95oj4.cloudfront.net/live2/chasseetpeche.smil/playlist.m3u8
-!#EXTINF:0,AB Moteur
-!http://dt3zwsgl95oj4.cloudfront.net/live2/abmoteurs.smil/playlist.m3u8
-!#EXTINF:0,Mangas
-!http://dt3zwsgl95oj4.cloudfront.net/live2/mangas.smil/playlist.m3u8
-!#EXTINF:0,Cartoon Network
-!http://ipm.iphone-tv.eu:1345/index.m3u8?c=cn&auth=82b883ca804dc5ee2c02643590646629106ad07f185bfb4514ecd2df2496e5b8
-!#EXTINF:0,LuckyJack
-!http://dt3zwsgl95oj4.cloudfront.net/live2/luckyjack.smil/playlist.m3u8
-#EXTINF:0,LaTélé
-#ICON:http://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Logo_la_tele_2014.png/240px-Logo_la_tele_2014.png
+#EXTINF:-1 tvg-id="LATE1.kazer.org" tvg-name="LaTélé" tvg-logo="latele.gif" group-title="Group 300",LaTélé
 http://rtmp.infomaniak.ch/livecast/latele/playlist.m3u8
-#EXTINF:0,MenUpTv
-#ICON:http://static.mensup.fr/images_tv/logo.png
+#EXTINF:-1 tvg-id="MEN1.kazer.org" tvg-name="MenUpTv" tvg-logo="menuptv.gif" group-title="Group 301",MenUpTv
 http://videos.mensup.fr/mensuptv/live/01.m3u8
-#EXTINF:0,Oui Tv
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/3/33/Oui_FM_2014_logo.png/240px-Oui_FM_2014_logo.png
+#EXTINF:-1 tvg-id="OUI1.kazer.org" tvg-name="Oui tv" tvg-logo="ouitv.gif" group-title="Group 302",Oui Tv
 http://rtmp.infomaniak.ch/livecast/ouitv/playlist.m3u8
-#EXTINF:0,PTC
-http://media.rtc.be/vod/mp4:166597.mp4/hasbahca.m3u8
-#EXTINF:0,Rouge Tv
-#ICON:http://upload.wikimedia.org/wikipedia/fr/2/28/RougeTV_new.gif
+#EXTINF:-1 tvg-id="ROUG1.kazer.org" tvg-name="Rouge Tv" tvg-logo="rougetv.gif" group-title="Group 303",Rouge Tv
 http://rtmp.infomaniak.ch/livecast/rougetv/playlist.m3u8
-!#EXTINF:0,RTC
-!http://media.webtvlive.eu/rtc/smil:live.smil/playlist.m3u8
-#EXTINF:0,Equipe21
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/4/4f/Logo_L%27%C3%89quipe_21.svg/320px-Logo_L%27%C3%89quipe_21.svg.png
+#EXTINF:-1 tvg-id="LEQ1.kazer.org" tvg-name="Equipe 21" tvg-logo="equipe21.gif" group-title="Group 145",Equipe21
 http://chkg.tdf-cdn.com/5687/index.m3u8
-#EXTINF:0,Discovery
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/4/4a/Discovery_Channel_logo.svg/320px-Discovery_Channel_logo.svg.png
+#EXTINF:-1 tvg-id="DIS1.kazer.org" tvg-name="Discovery" tvg-logo="discovery.gif" group-title="Group 84",Discovery
 http://discovery-hls.live.numericable.tv/live/hls/discovery/ipad.m3u8
-!#EXTINF:0,Djing
-!http://cdn.djing.com/tv/live.m3u8
-#EXTINF:0,Dorcel
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/a/a6/Dorcel_TV_Logo.svg/320px-Dorcel_TV_Logo.svg.png
+#EXTINF:-1 tvg-id="DOR1.kazer.org" tvg-name="Dorcel" tvg-logo="dorcel.gif" group-title="Group 213",Dorcel
 http://dt3zwsgl95oj4.cloudfront.net/live2/dorceltv.smil/manifest.m3u8
-#EXTINF:0,XXL
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/f/fc/XXL_AB_logo.svg/320px-XXL_AB_logo.svg.png
+#EXTINF:-1 tvg-id="XXL1.kazer.org" tvg-name="XXL" tvg-logo="xxl.gif" group-title="Group 214",XXL
 http://dt3zwsgl95oj4.cloudfront.net/live2/xxl.smil/manifest.m3u8
-#EXTINF:0,I24
-#ICON:http://upload.wikimedia.org/wikipedia/commons/f/fb/I24_official_logo.png
+#EXTINF:-1 tvg-id="I241.kazer.org" tvg-name="I24" tvg-logo="i24.gif" group-title="Group 112",I24
 http://bcoveliveios-i.akamaihd.net/hls/live/215102/master_french/412/master.m3u8
-#EXTINF:0,Weo
-#ICON:http://upload.wikimedia.org/wikipedia/fr/8/83/Logo_Weo.jpg
+#EXTINF:-1 tvg-id="WEO1.kazer.org" tvg-name="Weo" tvg-logo="weo.gif" group-title="Group 304",Weo
 rtmp://str81.creacast.com:80/weo/high
-#EXTINF:0,EuroSport
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/c/cb/Eurosport_logo_2011.svg/320px-Eurosport_logo_2011.svg.png
+#EXTINF:-1 tvg-id="EUR3.kazer.org" tvg-name="EuroSport" tvg-logo="eurosport.gif" group-title="Group 121",EuroSport
 http://eurosport-hls.live.numericable.tv/live/hls/eurosport/ipad.m3u8
-#EXTINF:0,EuroSport2
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/7/7b/Eurosport_2_2011.svg/320px-Eurosport_2_2011.svg.png
+#EXTINF:-1 tvg-id="EUR4.kazer.org" tvg-name="EuroSport 2" tvg-logo="eurosport2.gif" group-title="Group 125",EuroSport2
 http://eurosport2-hls.live.numericable.tv/live/hls/eurosport2/ipad.m3u8
-#EXTINF:0,Kombat Sport
-#ICON:http://kombatsport.lu/wp-content/themes/esplanade/images/logo.png
+#EXTINF:-1 tvg-id="KOM1.kazer.org" tvg-name="Kombat Sport" tvg-logo="kombat.gif" group-title="Group 128",Kombat Sport
 http://kombat-hls.live.numericable.tv/live/hls/kombat/ipad.m3u8
-#EXTINF:0,BeinSport 1
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/b/b3/BEINSPORTS_1%281%29.jpg/320px-BEINSPORTS_1%281%29.jpg
+#EXTINF:-1 tvg-id="BEI1.kazer.org" tvg-name="BeinSport" tvg-logo="beinsport.gif" group-title="Group 138",BeinSport
 http://beinsport1-hls.live.numericable.tv/live/hls/beinsport1/ipad.m3u8
-#EXTINF:0,BeinSport 2
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/d/d5/BEINSPORTS_2.jpg/320px-BEINSPORTS_2.jpg
+#EXTINF:-1 tvg-id="BEI2.kazer.org" tvg-name="BeinSport 2" tvg-logo="beinsport2.gif" group-title="Group 139",BeinSport 2
 http://beinsport2-hls.live.numericable.tv/live/hls/beinsport2/ipad.m3u8
-#EXTINF:0,MCM
-#ICON:http://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/MCM_logo.svg/320px-MCM_logo.svg.png
+#EXTINF:-1 tvg-id="MCM1.kazer.org" tvg-name="MCM" tvg-logo="mcm.gif" group-title="Group 176",MCM
 http://mcm-hls.live.numericable.tv/live/hls/mcm/ipad.m3u8
-#EXTINF:0,MTV
-#ICON:http://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/MTV_Logo_2010.svg/320px-MTV_Logo_2010.svg.png
+#EXTINF:-1 tvg-id="MTV1.kazer.org" tvg-name="MTV" tvg-logo="mtv.gif" group-title="Group 180",MTV
 http://mtv-hls.live.numericable.tv/live/hls/mtv/ipad.m3u8
-#EXTINF:0,MTV Idol
-#ICON:http://upload.wikimedia.org/wikipedia/fr/7/7c/MTV_Idol_France.png
+#EXTINF:-1 tvg-id="MTV5.kazer.org" tvg-name="MTV Idol" tvg-logo="mtvidol.gif" group-title="Group 172",MTV Idol
 http://mtvidol-hls.live.numericable.tv/live/hls/mtvidol/ipad.m3u8
-#EXTINF:0,MTV Pulse
-#ICON:http://upload.wikimedia.org/wikipedia/fr/8/88/MTV_Pulse_France.png
+#EXTINF:-1 tvg-id="MTV6.kazer.org" tvg-name="MTV Pulse" tvg-logo="mtvpulse.gif" group-title="Group 171",MTV Pulse
 http://mtvpulse-hls.live.numericable.tv/live/hls/mtvpulse/ipad.m3u8
-#EXTINF:0,MTV Base
-#ICON:http://upload.wikimedia.org/wikipedia/fr/9/9d/MTV_Base.png
+#EXTINF:-1 tvg-id="MTV3.kazer.org" tvg-name="MTV Base" tvg-logo="mtvbase.gif" group-title="Group 170",MTV Base
 http://mtvbase-hls.live.numericable.tv/live/hls/mtvbase/ipad.m3u8
