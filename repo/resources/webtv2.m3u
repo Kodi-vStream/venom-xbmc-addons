@@ -1,9 +1,7 @@
 #EXTM3U
-#EXTINF:0,TF1
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/6/6f/TF1_2013.png/320px-TF1_2013.png
+#EXTINF:-1 tvg-id="C1.telerama.fr" tvg-name="TF1" tvg-logo="tf1.gif" group-title="Group 1",TF1
 http://tf1-hls.live.numericable.tv/live/hls/tf1/ipad.m3u8
-#EXTINF:0,TF1 (1)
-#ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/6/6f/TF1_2013.png/320px-TF1_2013.png
+#EXTINF:-1 tvg-id="C1.telerama.fr" tvg-name="TF1 (1)" tvg-logo="tf1.gif" group-title="Group 1",TF1 (1)
 http://se-2.se.tf1-hls.live.numericable.tv/live/hls/tf1/ipad.m3u8
 #EXTINF:0,France 2
 #ICON:http://upload.wikimedia.org/wikipedia/fr/thumb/e/e8/France_2_logo_antenne_%282008%29.png/153px-France_2_logo_antenne_%282008%29.png
