@@ -17,8 +17,6 @@ SITE_NAME = 'Seriefr.com'
 SITE_DESC = 'Série en Streaming HD - Vk.Com - Netu.tv - ExaShare - YouWatch'
 
 URL_MAIN = 'http://www.seriefr.com/'
-MOVIE_NEWS = ''
-MOVIE_VIEWS = ''
 #MOVIE_GENRES = True
 SERIE_SERIES = 'http://www.seriefr.com/index.html'
 #SERIE_VFS = 'http://full-stream.net/seriestv/vf/'

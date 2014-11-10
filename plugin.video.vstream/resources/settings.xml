@@ -8,10 +8,11 @@
         <setting id="meta-view" type="bool" label="Recherche les Métadonnées (ralenti l'Addon)" default="false"/>
         <setting label="Paramètres des Métadonnées" type="action" action="Addon.OpenSettings(script.module.metahandler)" enable ="true" />
         <setting id="home-view" type="bool" label="Afficher l'Accueil par Catégories" default="true"/>
+        <setting id="param_timeout" label="30027" type="number" default="1000"/>
 
         <setting label="Changelog" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/about.py, changelog)"/>
         <setting label="Information" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/about.py, about)"/>
-    </category>-->
+    </category>
 
     <category label="30022">-->
         <setting label="30022" type="lsep"/>
@@ -133,6 +134,7 @@
         <setting id="hoster_duckload_password" type="text" label="30036" default="" option="hidden"/>
     <!--</category> -->
     <category label="30025">-->
+        <setting label="30025" type="lsep"/>
         <setting id="home_cherches" type="bool" label="Recherche" default="true"/>
         <setting id="color_cherches" type="select" label="Couleur Recherche" values="None|ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="None" visible="eq(-1,true)"/>
         
@@ -157,6 +159,19 @@
         <setting id="home_videos" type="bool" label="Vidéos" default="true"/>
         <setting id="color_videos" type="select" label="Couleur Vidéos" values="None|ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="None" visible="eq(-1,true)"/>
 
-    </category>-->
+    </category>
+
+    <category label="30026">-->
+        <setting label="30026" type="lsep"/>
+        <setting label="(1) Activer TV Direct" type="action" action="ActivateWindow(settings)" enable ="true" />
+        <setting label="(2) Activer l'addon  PVR IPTV simple client" type="action" action="ActivateWindow(addonbrowser)" enable ="true" />
+        <setting label="(3) Modifier Paramètres PVR" type="action" action="Addon.OpenSettings(pvr.iptvsimple)" enable ="true" />
+        <setting label="30028" type="lsep"/>
+        <setting id="m3u" type="text" label="URL de la playlist M3U"  default="https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/webtv2.m3u"/>
+        <setting id="xmltv" type="text" label="URL du fichier XMLTV" default="http://kazer.org/tvguide.xml?u=rgyamjgsph9gx"/>
+        <setting id="icon" type="text" label="Dossier icône" default="special://userdata/addon_data/plugin.video.vstream/resources/art/tv"/>
+        <setting type="sep" visible="true" />
+        <setting id="pvr-view" type="bool" label="Active le racourcis Tv direct" default="false"/>
+    </category>
    
 </settings>

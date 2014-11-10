@@ -4,6 +4,18 @@
 - Question & Support: Twitter @lordvenom57
 ================================================================================
 ================================================================================
+- Version 0.2.1 - 01.11.2014
+================================================================================
+    - Add param timeout
+    - Add Logo tv
+    - Modif player (affiche l'erreur Fichier endommage ou illisible)
+    - Supprimer toute source inutile
+    - Supprimer logger inutile
+    - Ajout source tv
+    - Ajout function pour activer IPTV et GuideTV
+    - Modif fichier tv
+    - Suppr serieFr des films
+================================================================================
 - Version 0.2.0 - 26.10.2014
 ================================================================================
     - Add Source seriefr.com

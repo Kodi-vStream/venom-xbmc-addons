@@ -13,6 +13,9 @@
         <string id="30023">Plugins Préférences</string>
         <string id="30024">Hote</string>
         <string id="30025">Accueil</string>
+        <string id="30026">IPTV et GuideTV</string>
+        <string id="30027">Délai d'attente du lecteur (ms)</string>
+        <string id="30028">Paramètre à modifier dans l'addon PVR</string>
 
          <!-- premium begin by 30031 - 30075 -->
         <string id="30031">Megavideo Premium Account</string>

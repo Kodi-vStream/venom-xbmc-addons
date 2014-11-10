@@ -1,5 +1,4 @@
 from resources.lib.config import cConfig
-import logger
 
 class cPremiumHandler:
 
@@ -9,10 +8,10 @@ class cPremiumHandler:
     def isPremiumModeAvailable(self):
         bIsPremium = cConfig().getSetting('hoster_' + str(self.__sHosterIdentifier) + '_premium')        
         if (bIsPremium == 'true'):
-            logger.info('usa premiumaccount for hoster: ' + str(self.__sHosterIdentifier))
+            cConfig().log("usa premiumaccount for hoster " +  str(self.__sHosterIdentifier))
             return True
 
-        logger.info('us freeaccount for hoster: ' + str(self.__sHosterIdentifier))
+        cConfig().log("us freeaccount for hoster: " + str(self.__sHosterIdentifier))
         return False
 
     def getUsername(self):

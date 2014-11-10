@@ -3,7 +3,6 @@
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
 import urllib
-import logger
 from resources.lib.config import cConfig
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -336,7 +335,6 @@ class cGui:
         return sItemUrl
 
     def showKeyBoard(self, sDefaultText=''):
-        logger.info('showKeyboard')
         keyboard = xbmc.Keyboard(sDefaultText)
         keyboard.doModal()
         if (keyboard.isConfirmed()):

@@ -1,5 +1,4 @@
 from resources.lib.config import cConfig
-import logger
 
 import sys
 import os
@@ -40,12 +39,12 @@ class cPluginHandler:
             sPluginSettingsName = 'plugin_' + sName
             return sSiteName, sPluginSettingsName, sSiteDesc
         except Exception, e:
-            logger.error("can't import plugin: " + str(sName))            
+            cConfig().log("Cant import plugin " + str(sName))            
             return False, False
 
     def getRootFolder(self):        
         sRootFolder = cConfig().getAddonPath()
-        logger.info('root folder: ' + sRootFolder)
+        cConfig().log("Root Folder " + sRootFolder)
         return sRootFolder
         
     def getRootArt(self):
@@ -65,13 +64,13 @@ class cPluginHandler:
 
         # xbox hack        
         sFolder = sFolder.replace('\\', '/')
-        logger.info('sites folder: ' + sFolder)
+        cConfig().log("Sites Folder " + sFolder)
         
         aFileNames = self.__getFileNamesFromFolder(sFolder)
 
         aPlugins = []
         for sFileName in aFileNames:
-            logger.info('load plugin: '+ str(sFileName))
+            cConfig().log("Load Plugin " + str(sFileName))
 
             # wir versuchen das plugin zu importieren
             aPlugin = self.__importPlugin(sFileName)

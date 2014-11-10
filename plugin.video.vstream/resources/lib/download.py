@@ -5,7 +5,6 @@ import xbmc
 import xbmcgui
 import xbmcvfs
 import string
-import logger
 
 class cDownload:
         
@@ -36,12 +35,13 @@ class cDownload:
                 sDownloadPath = xbmc.translatePath(sPath +  '%s' % (self.__sTitle, ))
 
                 try:
-                    logger.info('download file: ' + str(sUrl))
+                    cConfig().log("Telechargement " + str(sUrl))
                     self.__createProcessDialog()
                     self.__download(urllib2.urlopen(sUrl), sDownloadPath)   
                 except:
                     #print_exc()
                     cConfig().showInfo('Telechargement impossible', self.__sTitle)
+                    cConfig().log("Telechargement impossible")
                     pass
                     
                 self.__oDialog.close()

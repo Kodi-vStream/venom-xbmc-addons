@@ -2,7 +2,6 @@ from resources.lib.util import cUtil
 from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.requestHandler import cRequestHandler
-import logger
 
 class cJDownloaderHandler:
 
@@ -21,7 +20,7 @@ class cJDownloaderHandler:
         
 
     def __checkConfig(self):
-        logger.info('check JD Addon setings')
+        cConfig().log("Check JD Addon settings")
         oConfig = cConfig()
         bEnabled = oConfig.getSetting('jd_enabled')
         if (bEnabled == 'true'):
@@ -60,7 +59,7 @@ class cJDownloaderHandler:
         bLinkGrabber = self.__getLinkGrabber()
 
         sLinkForJd = self.__createJDUrl(sFileUrl, sHost, sPort, bAutomaticDownload, bLinkGrabber)
-        logger.info('JD Link: ' + str(sLinkForJd))
+        cConfig().log("JD Link " + str(sLinkForJd))
                 
         oRequestHandler = cRequestHandler(sLinkForJd)
         oRequestHandler.request();
@@ -79,7 +78,7 @@ class cJDownloaderHandler:
         return sUrl
 
     def __checkConnection(self):
-        logger.info('check JD Connection')
+        cConfig().log("check JD Connection")
         sHost = self.__getHost()
         sPort = self.__getPort()
 

@@ -26,7 +26,6 @@ class main:
     def __init__(self):
         self.parseUrl()
 
-
     def parseUrl(self):
 	    oInputParameterHandler = cInputParameterHandler()
 

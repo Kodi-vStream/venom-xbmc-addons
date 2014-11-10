@@ -12,25 +12,31 @@ from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
 from resources.lib.config import cConfig
 import re, urllib2, urllib, os
+import xbmc, xbmcgui
 
 SITE_IDENTIFIER = 'freebox'
 SITE_NAME = 'Télévision Direct / Stream'
-SITE_DESC = 'Regarder la télévision freebox | Uniquement pour les abonnés free'
+SITE_DESC = 'Regarder la télévision'
 
 URL_MAIN = 'http://mafreebox.freebox.fr/freeboxtv/playlist.m3u'
 URL_FREE = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/freetv.m3u'
 URL_ORANGE = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/orangetv.m3u'
 URL_SFR = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/sfrtv.m3u'
-URL_WEB = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/webtv.m3u'
+URL_WEB = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/webtv2.m3u'
 
+icon = 'tv.png'        
+sRootArt = cConfig().getRootArt()
 
 class track():
-    def __init__(self, length, title, path):
+    def __init__(self, length, title, path, icon):
         self.length = length
         self.title = title
         self.path = path
+        self.icon = icon
+
 
 def load():
+    linktv = cConfig().getSetting('pvr-view')
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -52,6 +58,12 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_WEB)
     oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Tv du web', 'tv.png', oOutputParameterHandler)
+
+    if (linktv != 'false'):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+            oGui.addDir(SITE_IDENTIFIER, 'openwindows', 'Tv direct', 'tv.png', oOutputParameterHandler)
+
 
     oGui.setEndOfDirectory()
 
@@ -84,12 +96,10 @@ def showWeb():
     playlist = parseWebM3U(sUrl)
 
     for track in playlist:
-           
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', str(track.path))
         oOutputParameterHandler.addParameter('siteTitle', str(track.title))
-        oGui.addDir(SITE_IDENTIFIER, 'play', track.title, 'tv.png', oOutputParameterHandler)
-    
+        oGui.addMisc(SITE_IDENTIFIER, 'play', track.title, 'tv.png' , sRootArt+'/tv/'+track.icon, '', oOutputParameterHandler)    
   
     oGui.setEndOfDirectory()
 
@@ -100,22 +110,28 @@ def parseWebM3U(infile):
     inf = urllib.urlopen(infile)
 
     line = inf.readline()
+
     if not line.startswith('#EXTM3U'):
        return
 
     playlist=[]
-    song=track(None,None,None)
+    song=track(None,None,None,None)
 
     for line in inf:
         line=line.strip()
         if line.startswith('#EXTINF:'):
             length,title=line.split('#EXTINF:')[1].split(',',1)
-            song=track(length,title,None)
+            try:
+                licon = line.split('#EXTINF:')[1].partition('tvg-logo=')[2]
+                icon = licon.split('"')[1]
+            except:
+                icon = "tv.png"
+            song=track(length,title,None,icon)
         elif (len(line) != 0):
             if not line.startswith('!'):
                 song.path=line
                 playlist.append(song)
-                song=track(None,None,None)
+                song=track(None,None,None,None)
 
     inf.close()
 
@@ -129,18 +145,18 @@ def parseM3U(infile):
        return
 
     playlist=[]
-    song=track(None,None,None)
+    song=track(None,None,None,None)
 
     for line in inf:
         line=line.strip()
         if line.startswith('#EXTINF:'):
             length,title=line.split('#EXTINF:')[1].split(',',1)
-            song=track(length,title,None)
+            song=track(length,title,None,None)
         elif (len(line) != 0):
             if not line.startswith('!'):
                 song.path=line
                 playlist.append(song)
-                song=track(None,None,None)
+                song=track(None,None,None,None)
 
     inf.close()
 
@@ -165,4 +181,8 @@ def play():
     return
         
     oGui.setEndOfDirectory()
+
+def openwindows():
+    xbmc.executebuiltin( "ActivateWindow(%d, return)" % ( 10601, ) )
+    return
     

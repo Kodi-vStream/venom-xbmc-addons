@@ -11,7 +11,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.player import cPlayer
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
-import logger
 
 class cHosterGui:
 
@@ -83,8 +82,6 @@ class cHosterGui:
             return cHosterHandler().getHoster('novamov')
         if ('divxstage' in sHosterUrl):
             return cHosterHandler().getHoster('divxstage')
-        if ('filestage' in sHosterUrl):
-            return cHosterHandler().getHoster('filestage')
         if ('vidxden' in sHosterUrl):
             return cHosterHandler().getHoster('vidxden')
         if ('vidbux' in sHosterUrl):
@@ -217,7 +214,7 @@ class cHosterGui:
         if (bGetRedirectUrl == 'True'):            
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
-        logger.info('call play: ' + sMediaUrl)
+        cConfig().log("Hoster - play " + sMediaUrl)
 
         oHoster = cHosterHandler().getHoster(sHosterIdentifier)
         oHoster.setFileName(sFileName)
@@ -264,7 +261,7 @@ class cHosterGui:
         if (bGetRedirectUrl == 'True'):
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
-        logger.info('call play: ' + sMediaUrl)
+        cConfig().log("Hoster - play " + sMediaUrl)
         oHoster = cHosterHandler().getHoster(sHosterIdentifier)
         oHoster.setFileName(sFileName)
 
@@ -285,7 +282,7 @@ class cHosterGui:
             return
 
         #except:
-        #    logger.fatal('could not load plugin: ' + sHosterFileName)
+        # cConfig().log("could not load plugin " + sHosterFileName)
 
         oGui.setEndOfDirectory()
 
@@ -301,7 +298,7 @@ class cHosterGui:
         if (bGetRedirectUrl == 'True'):
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
-        logger.info('call download: ' + sMediaUrl)
+        cConfig().log("Telechargement " + sMediaUrl)
 
         oHoster = cHosterHandler().getHoster(sHosterIdentifier)
         oHoster.setFileName(sFileName)
@@ -315,7 +312,7 @@ class cHosterGui:
             return
 
         #except:
-        #    logger.fatal('could not load plugin: ' + sHosterFileName)
+        # cConfig().log("Telechargement " + sHosterFileName)
 
         oGui.setEndOfDirectory()
 
@@ -332,11 +329,11 @@ class cHosterGui:
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
         oHoster = cHosterHandler().getHoster(sHosterIdentifier)
-	oHoster.setFileName(sFileName)
+        oHoster.setFileName(sFileName)
         oHoster.setUrl(sMediaUrl)
         sMediaUrl = oHoster.getUrl()
 
-        logger.info('call send to JDownloader: ' + sMediaUrl)
+        cConfig().log("Telechargement jdownloader " + sMediaUrl)
 
         cJDownloaderHandler().sendToJDownloader(sMediaUrl)
 
