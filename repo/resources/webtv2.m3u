@@ -1,145 +1,145 @@
 #EXTM3U
-#EXTINF:-1 tvg-id="TF11.kazer.org" tvg-name="TF1" tvg-logo="tf1.gif" group-title="Group 1",TF1
+#EXTINF:-1 tvg-id="TF11.kazer.org" tvg-name="TF1" tvg-logo="tf1.png" group-title="Group 1",TF1
 http://tf1-hls.live.numericable.tv/live/hls/tf1/ipad.m3u8
-#EXTINF:-1 tvg-id="TF11.kazer.org" tvg-name="TF1 (1)" tvg-logo="tf1.gif" group-title="Group 1",TF1 (1)
+#EXTINF:-1 tvg-id="TF11.kazer.org" tvg-name="TF1 (1)" tvg-logo="tf1.png" group-title="Group 1",TF1 (1)
 http://se-2.se.tf1-hls.live.numericable.tv/live/hls/tf1/ipad.m3u8
-#EXTINF:-1 tvg-id="FRA2.kazer.org" tvg-name="France 2" tvg-logo="france2.gif" group-title="Group 2",France 2
+#EXTINF:-1 tvg-id="FRA2.kazer.org" tvg-name="France 2" tvg-logo="france2.png" group-title="Group 2",France 2
 http://live.francetv.fr/simulcast/France_2/hls_v1/index.m3u8
-#EXTINF:-1 tvg-id="FRA3.kazer.org" tvg-name="France 3" tvg-logo="france3.gif" group-title="Group 3",France 3
+#EXTINF:-1 tvg-id="FRA3.kazer.org" tvg-name="France 3" tvg-logo="france3.png" group-title="Group 3",France 3
 http://live.francetv.fr/simulcast/France_3/hls_v1/index.m3u8
-#EXTINF:-1 tvg-id="FRA4.kazer.org" tvg-name="France 4" tvg-logo="france4.gif" group-title="Group 4",France 4
+#EXTINF:-1 tvg-id="FRA4.kazer.org" tvg-name="France 4" tvg-logo="france4.png" group-title="Group 4",France 4
 http://live.francetv.fr/simulcast/France_4/hls_v1/index.m3u8
-#EXTINF:-1 tvg-id="FRA5.kazer.org" tvg-name="France 5" tvg-logo="france5.gif" group-title="Group 5",France 5
+#EXTINF:-1 tvg-id="FRA5.kazer.org" tvg-name="France 5" tvg-logo="france5.png" group-title="Group 5",France 5
 http://live.francetv.fr/simulcast/France_5/hls_v1/index.m3u8
-#EXTINF:-1 tvg-id="PAR1.kazer.org" tvg-name="Paris Premiere" tvg-logo="parispremiere.gif" group-title="Group 13",Paris Premiere
+#EXTINF:-1 tvg-id="PAR1.kazer.org" tvg-name="Paris Premiere" tvg-logo="parispremiere.png" group-title="Group 13",Paris Premiere
 http://parispremiere-hls.live.numericable.tv/live/hls/parispremiere/ipad.m3u8
-#EXTINF:-1 tvg-id="ART1.kazer.org" tvg-name="Arte" tvg-logo="arte.gif" group-title="Group 14",Arte
+#EXTINF:-1 tvg-id="ART1.kazer.org" tvg-name="Arte" tvg-logo="arte.png" group-title="Group 14",Arte
 http://frlive.artestras.cshls.lldns.net/artestras/contrib/frlive/frlive_925.m3u8
-#EXTINF:-1 tvg-id="M61.kazer.org" tvg-name="M6" tvg-logo="m6.gif" group-title="Group 6",M6
+#EXTINF:-1 tvg-id="M61.kazer.org" tvg-name="M6" tvg-logo="m6.png" group-title="Group 6",M6
 https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/m6_hls_aes/m6_hls_aes_856.m3u8
-#EXTINF:-1 tvg-id="DIR1.kazer.org" tvg-name="D8" tvg-logo="d8.gif" group-title="Group 8",D8
+#EXTINF:-1 tvg-id="DIR1.kazer.org" tvg-name="D8" tvg-logo="d8.png" group-title="Group 8",D8
 http://hls-live-m1-l3.canal-plus.com/live/hls/d8-clair-v3-sd-andr7/and-sd-clair/index.m3u8
-#EXTINF:-1 tvg-id="DIR1.kazer.org" tvg-name="D8 (1)" tvg-logo="d8.gif" group-title="Group 8",D8 (1)
+#EXTINF:-1 tvg-id="DIR1.kazer.org" tvg-name="D8 (1)" tvg-logo="d8.png" group-title="Group 8",D8 (1)
 http://se-2.se.direct8-hls.live.numericable.tv/live/hls/direct8/ipad.m3u8
-#EXTINF:-1 tvg-id="W91.kazer.org" tvg-name="W9" tvg-logo="w9.gif" group-title="Group 9",W9
+#EXTINF:-1 tvg-id="W91.kazer.org" tvg-name="W9" tvg-logo="w9.png" group-title="Group 9",W9
 http://w9-hls.live.numericable.tv/live/hls/w9/ipad.m3u8
-#EXTINF:-1 tvg-id="W91.kazer.org" tvg-name="W9 (1)" tvg-logo="w9.gif" group-title="Group 9",W9 (1)
+#EXTINF:-1 tvg-id="W91.kazer.org" tvg-name="W9 (1)" tvg-logo="w9.png" group-title="Group 9",W9 (1)
 https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/w9_hls_aes/w9_hls_aes_856.m3u8
-#EXTINF:-1 tvg-id="TMC1.kazer.org" tvg-name="TMC" tvg-logo="tmc.gif" group-title="Group 10",TMC
+#EXTINF:-1 tvg-id="TMC1.kazer.org" tvg-name="TMC" tvg-logo="tmc.png" group-title="Group 10",TMC
 http://tmc-hls.live.numericable.tv/live/hls/tmc/ipad.m3u8
-#EXTINF:-1 tvg-id="NT11.kazer.org" tvg-name="NT1" tvg-logo="nt1.gif" group-title="Group 11",NT1
+#EXTINF:-1 tvg-id="NT11.kazer.org" tvg-name="NT1" tvg-logo="nt1.png" group-title="Group 11",NT1
 http://nt1-hls.live.numericable.tv/live/hls/nt1/ipad.m3u8
-#EXTINF:-1 tvg-id="NRJ1.kazer.org" tvg-name="NRJ12" tvg-logo="nrj12.gif" group-title="Group 12",NRJ 12
+#EXTINF:-1 tvg-id="NRJ1.kazer.org" tvg-name="NRJ12" tvg-logo="nrj12.png" group-title="Group 12",NRJ 12
 http://nrj-apple-live.adaptive.level3.net/apple/nrj/nrj/nrj12hi.m3u8
-#EXTINF:-1 tvg-id="NRJ1.kazer.org" tvg-name="NRJ12 (1)" tvg-logo="nrj12.gif" group-title="Group 12",NRJ 12 (1)
+#EXTINF:-1 tvg-id="NRJ1.kazer.org" tvg-name="NRJ12 (1)" tvg-logo="nrj12.png" group-title="Group 12",NRJ 12 (1)
 http://se-2.se.nrj12-hls.live.numericable.tv/live/hls/nrj12/ipad.m3u8
-#EXTINF:-1 tvg-id="EUR2.kazer.org" tvg-name="D17" tvg-logo="d17.gif" group-title="Group 17",D17
+#EXTINF:-1 tvg-id="EUR2.kazer.org" tvg-name="D17" tvg-logo="d17.png" group-title="Group 17",D17
 http://hls-live-m1-l3.canal-plus.com/live/hls/d17-clair-v3-sd-andr7/and-sd-clair/index.m3u8
-#EXTINF:-1 tvg-id="EUR2.kazer.org" tvg-name="D17 (1)" tvg-logo="d17.gif" group-title="Group 17",D17 (1)
+#EXTINF:-1 tvg-id="EUR2.kazer.org" tvg-name="D17 (1)" tvg-logo="d17.png" group-title="Group 17",D17 (1)
 http://se-2.se.directstar-hls.live.numericable.tv/live/hls/directstar/ipad.m3u8
-#EXTINF:-1 tvg-id="TVA1.kazer.org" tvg-name="TEVA" tvg-logo="teva.gif" group-title="Group 27",TEVA
+#EXTINF:-1 tvg-id="TVA1.kazer.org" tvg-name="TEVA" tvg-logo="teva.png" group-title="Group 27",TEVA
 http://teva-hls.live.numericable.tv/live/hls/teva/ipad.m3u8
-#EXTINF:-1 tvg-id="TF61.kazer.org" tvg-name="TF6" tvg-logo="tf6.gif" group-title="Group 44",TF6
+#EXTINF:-1 tvg-id="TF61.kazer.org" tvg-name="TF6" tvg-logo="tf6.png" group-title="Group 44",TF6
 http://tf6-hls.live.numericable.tv/live/hls/tf6/ipad.m3u8
-#EXTINF:-1 tvg-id="TF61.kazer.org" tvg-name="TF6 (1)" tvg-logo="tf6.gif" group-title="Group 44",TF6 (1)
+#EXTINF:-1 tvg-id="TF61.kazer.org" tvg-name="TF6 (1)" tvg-logo="tf6.png" group-title="Group 44",TF6 (1)
 http://se-2.se.tf6-hls.live.numericable.tv/live/hls/tf6/ipad.m3u8
-#EXTINF:-1 tvg-id="RTL2.kazer.org" tvg-name="RTL9" tvg-logo="rtl9.gif" group-title="Group 28",RTL9
+#EXTINF:-1 tvg-id="RTL2.kazer.org" tvg-name="RTL9" tvg-logo="rtl9.png" group-title="Group 28",RTL9
 http://rtl9-hls.live.numericable.tv/live/hls/rtl9/ipad.m3u8
-#EXTINF:-1 tvg-id="RTL2.kazer.org" tvg-name="RTL9 (1)" tvg-logo="rtl9.gif" group-title="Group 28",RTL9 (1)
+#EXTINF:-1 tvg-id="RTL2.kazer.org" tvg-name="RTL9 (1)" tvg-logo="rtl9.png" group-title="Group 28",RTL9 (1)
 http://se-2.se.rtl9-hls.live.numericable.tv/live/hls/rtl9/ipad.m3u8
-#EXTINF:-1 tvg-id="AB11.kazer.org" tvg-name="AB1" tvg-logo="ab1.gif" group-title="Group 39",AB1
+#EXTINF:-1 tvg-id="AB11.kazer.org" tvg-name="AB1" tvg-logo="ab1.png" group-title="Group 39",AB1
 http://ab1-hls.live.numericable.tv/live/hls/ab1/ipad.m3u8
-#EXTINF:-1 tvg-id="AB11.kazer.org" tvg-name="AB1" tvg-logo="ab1.gif" group-title="Group 39",AB1 (1)
+#EXTINF:-1 tvg-id="AB11.kazer.org" tvg-name="AB1" tvg-logo="ab1.png" group-title="Group 39",AB1 (1)
 http://se-2.se.ab1-hls.live.numericable.tv/live/hls/ab1/ipad.m3u8
-#EXTINF:-1 tvg-id="CO11.kazer.org" tvg-name="Comedie+" tvg-logo="comedie.gif" group-title="Group 42",Comédie +
+#EXTINF:-1 tvg-id="CO11.kazer.org" tvg-name="Comedie+" tvg-logo="comedie.png" group-title="Group 42",Comédie +
 http://se-2.se.comedie-hls.live.numericable.tv/live/hls/comedie/ipad.m3u8
-#EXTINF:-1 tvg-id="FIL1.kazer.org" tvg-name="June" tvg-logo="june.gif" group-title="Group 46",June
+#EXTINF:-1 tvg-id="FIL1.kazer.org" tvg-name="June" tvg-logo="june.png" group-title="Group 46",June
 http://june-hls.live.numericable.tv/live/hls/june/ipad.m3u8
-#EXTINF:-1 tvg-id="HIS1.kazer.org" tvg-name="Histoire" tvg-logo="histoire.gif" group-title="Group 90",Histoire
+#EXTINF:-1 tvg-id="HIS1.kazer.org" tvg-name="Histoire" tvg-logo="histoire.png" group-title="Group 90",Histoire
 http://histoire-hls.live.numericable.tv/live/hls/histoire/ipad.m3u8
-#EXTINF:-1 tvg-id="6TER.kazer.org" tvg-name="6TER" tvg-logo="6ter.gif" group-title="Group 22",6Ter
+#EXTINF:-1 tvg-id="6TER.kazer.org" tvg-name="6TER" tvg-logo="6ter.png" group-title="Group 22",6Ter
 https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/six_ter_hls_aes/six_ter_hls_aes_856.m3u8
-#EXTINF:-1 tvg-id="NU23.kazer.org" tvg-name="Numéro 23" tvg-logo="n23.gif" group-title="Group 23",Numéro 23
+#EXTINF:-1 tvg-id="NU23.kazer.org" tvg-name="Numéro 23" tvg-logo="n23.png" group-title="Group 23",Numéro 23
 http://stream-l3-4.vty.dmcdn.net/17/dm/1/x13p3qi/live.isml/live.m3u8
-#EXTINF:-1 tvg-id="FRA1.kazer.org" tvg-name="France O" tvg-logo="franceo.gif" group-title="Group 65",France O
+#EXTINF:-1 tvg-id="FRA1.kazer.org" tvg-name="France O" tvg-logo="franceo.png" group-title="Group 65",France O
 http://live.francetv.fr/simulcast/France_O/hls_v1/index.m3u8
-#EXTINF:-1 tvg-id="ITL1.kazer.org" tvg-name="I Télé" tvg-logo="itele.gif" group-title="Group 102",I Télé
+#EXTINF:-1 tvg-id="ITL1.kazer.org" tvg-name="I Télé" tvg-logo="itele.png" group-title="Group 102",I Télé
 http://hls-live-m2-l3.canal-plus.com/live/hls/itele-clair-v3-sd-andr7/and-sd-clair/index.m3u8
-#EXTINF:-1 tvg-id="BFM1.kazer.org" tvg-name="BFM TV" tvg-logo="bfm.gif" group-title="Group 103",BFM TV
+#EXTINF:-1 tvg-id="BFM1.kazer.org" tvg-name="BFM TV" tvg-logo="bfm.png" group-title="Group 103",BFM TV
 http://bfmlive2-i.akamaihd.net/hls/live/214427/bfmtv/04.m3u8
-#EXTINF:-1 tvg-id="EQU1.kazer.org" tvg-name="Equipedia" tvg-logo="equidia.gif" group-title="Group 129",Equidia
+#EXTINF:-1 tvg-id="EQU1.kazer.org" tvg-name="Equipedia" tvg-logo="equidia.png" group-title="Group 129",Equidia
 http://equidialive-hls.live.numericable.tv/live/hls/equidialive/ipad.m3u8
-#EXTINF:-1 tvg-id="MEZ1.kazer.org" tvg-name="Mezzo" tvg-logo="mezzo.gif" group-title="Group 189",Mezzo
+#EXTINF:-1 tvg-id="MEZ1.kazer.org" tvg-name="Mezzo" tvg-logo="mezzo.png" group-title="Group 189",Mezzo
 http://mezzolive-hls.live.numericable.tv/live/hls/mezzolive/ipad.m3u8
-#EXTINF:-1 tvg-id="SRI1.kazer.org" tvg-name="Série Club" tvg-logo="serieclub.gif" group-title="Group 39",Série Club
+#EXTINF:-1 tvg-id="SRI1.kazer.org" tvg-name="Série Club" tvg-logo="serieclub.png" group-title="Group 39",Série Club
 http://serieclub-hls.live.numericable.tv/live/hls/serieclub/ipad.m3u8
-#EXTINF:-1 tvg-id="SRI1.kazer.org" tvg-name="Série Club (1)" tvg-logo="serieclub.gif" group-title="Group 39",Série Club (1)
+#EXTINF:-1 tvg-id="SRI1.kazer.org" tvg-name="Série Club (1)" tvg-logo="serieclub.png" group-title="Group 39",Série Club (1)
 http://se-2.se.serieclub-hls.live.numericable.tv/live/hls/serieclub/ipad.m3u8
-#EXTINF:-1 tvg-id="EUR6.kazer.org" tvg-name="EuroNews" tvg-logo="euronews.gif" group-title="Group 104",EuroNews
+#EXTINF:-1 tvg-id="EUR6.kazer.org" tvg-name="EuroNews" tvg-logo="euronews.png" group-title="Group 104",EuroNews
 http://hd1.lsops.net/live/euronews_fr_340/.m3u8
-#EXTINF:-1 tvg-id="FRA16.kazer.org" tvg-name="France 24" tvg-logo="france24.gif" group-title="Group 105",France 24
+#EXTINF:-1 tvg-id="FRA16.kazer.org" tvg-name="France 24" tvg-logo="france24.png" group-title="Group 105",France 24
 http://tv.flux.france24.com/4684/02.m3u8
-#EXTINF:-1 tvg-id="LAC1.kazer.org" tvg-name="LCP" tvg-logo="lcp.gif" group-title="Group 313",LCP
+#EXTINF:-1 tvg-id="LAC1.kazer.org" tvg-name="LCP" tvg-logo="lcp.png" group-title="Group 313",LCP
 http://vipwowza.yacast.net/lcplive/_definst_/mp4:lcplive_HVGA/playlist.m3u8
-#EXTINF:-1 tvg-id="KTO1.kazer.org" tvg-name="KTO" tvg-logo="kto.gif" group-title="Group 113",KTO
+#EXTINF:-1 tvg-id="KTO1.kazer.org" tvg-name="KTO" tvg-logo="kto.png" group-title="Group 113",KTO
 http://mobile.ktotv.com/live/KTO_Layer1.m3u8
-#EXTINF:-1 tvg-id="PARA1.kazer.org" tvg-name="Paramount" tvg-logo="paramount.gif" group-title="Group 27",Paramount
+#EXTINF:-1 tvg-id="PARA1.kazer.org" tvg-name="Paramount" tvg-logo="paramount.png" group-title="Group 27",Paramount
 http://paramount-hls.live.numericable.tv/live/hls/paramount/ipad.m3u8
-#EXTINF:-1 tvg-id="BFM2.kazer.org" tvg-name="BFM Business" tvg-logo="bfmbus.gif" group-title="Group 107",BFM Business
+#EXTINF:-1 tvg-id="BFM2.kazer.org" tvg-name="BFM Business" tvg-logo="bfmbus.png" group-title="Group 107",BFM Business
 http://bfmlive-i.akamaihd.net/hls/live/214272/bfmbusiness/01.m3u8
-#EXTINF:-1 tvg-id="GAM1.kazer.org" tvg-name="Game One" tvg-logo="gameone.gif" group-title="Group 51",Game One
+#EXTINF:-1 tvg-id="GAM1.kazer.org" tvg-name="Game One" tvg-logo="gameone.png" group-title="Group 51",Game One
 http://gameone-hls.live.numericable.tv/live/hls/gameone/ipad.m3u8
-#EXTINF:-1 tvg-id="GUL1.kazer.org" tvg-name="Gulli" tvg-logo="gulli.gif" group-title="Group 165",Gulli
+#EXTINF:-1 tvg-id="GUL1.kazer.org" tvg-name="Gulli" tvg-logo="gulli.png" group-title="Group 165",Gulli
 http://vipwowza.yacast.net/gulli_live/_definst_/mp4:gulli_850/playlist.m3u8
-#EXTINF:-1 tvg-id="BOO1.kazer.org" tvg-name="Boomerang" tvg-logo="boomerang.gif" group-title="Group 155",Boomerang
+#EXTINF:-1 tvg-id="BOO1.kazer.org" tvg-name="Boomerang" tvg-logo="boomerang.png" group-title="Group 155",Boomerang
 http://boomerang-hls.live.numericable.tv/live/hls/boomerang/ipad.m3u8
-#EXTINF:-1 tvg-id="ZOU1.kazer.org" tvg-name="Zouzous" tvg-logo="zouzous.gif" group-title="Group 205",Zouzous
+#EXTINF:-1 tvg-id="ZOU1.kazer.org" tvg-name="Zouzous" tvg-logo="zouzous.png" group-title="Group 205",Zouzous
 http://medias2.francetv.fr/playlists/zouzous/zouzous_tablettes.m3u8
-#EXTINF:-1 tvg-id="DIS3.kazer.org" tvg-name="Disney Channel" tvg-logo="disneychannel.gif" group-title="Group 158",Disney Channel
+#EXTINF:-1 tvg-id="DIS3.kazer.org" tvg-name="Disney Channel" tvg-logo="disneychannel.png" group-title="Group 158",Disney Channel
 http://disneychannel-hls.live.numericable.tv/live/hls/disneychannel/ipad.m3u8
-#EXTINF:-1 tvg-id="DIS3.kazer.org" tvg-name="Disney Channel (1)" tvg-logo="disneychannel.gif" group-title="Group 158",Disney Channel (1)
+#EXTINF:-1 tvg-id="DIS3.kazer.org" tvg-name="Disney Channel (1)" tvg-logo="disneychannel.png" group-title="Group 158",Disney Channel (1)
 http://se-2.se.disneychannel-hls.live.numericable.tv/live/hls/disneychannel/ipad.m3u8
-#EXTINF:-1 tvg-id="IDF1.kazer.org" tvg-name="IDF1" tvg-logo="idf1.gif" group-title="Group 32",IDF1
+#EXTINF:-1 tvg-id="IDF1.kazer.org" tvg-name="IDF1" tvg-logo="idf1.png" group-title="Group 32",IDF1
 http://stream7.idf1.yacast.net/iphone/idf1/live01/idf1_live01hd.m3u8
-#EXTINF:-1 tvg-id="RMC2.kazer.org" tvg-name="RMC Découverte" tvg-logo="rmcdecouverte.gif" group-title="Group 98",RMC Découverte
+#EXTINF:-1 tvg-id="RMC2.kazer.org" tvg-name="RMC Découverte" tvg-logo="rmcdecouverte.png" group-title="Group 98",RMC Découverte
 rtmp://vipwowza.yacast.net/rmc_decouverte_rtmp//live
-#EXTINF:-1 tvg-id="LATE1.kazer.org" tvg-name="LaTélé" tvg-logo="latele.gif" group-title="Group 300",LaTélé
+#EXTINF:-1 tvg-id="LATE1.kazer.org" tvg-name="LaTélé" tvg-logo="latele.png" group-title="Group 300",LaTélé
 http://rtmp.infomaniak.ch/livecast/latele/playlist.m3u8
-#EXTINF:-1 tvg-id="MEN1.kazer.org" tvg-name="MenUpTv" tvg-logo="menuptv.gif" group-title="Group 301",MenUpTv
+#EXTINF:-1 tvg-id="MEN1.kazer.org" tvg-name="MenUpTv" tvg-logo="menuptv.png" group-title="Group 301",MenUpTv
 http://videos.mensup.fr/mensuptv/live/01.m3u8
-#EXTINF:-1 tvg-id="OUI1.kazer.org" tvg-name="Oui tv" tvg-logo="ouitv.gif" group-title="Group 302",Oui Tv
+#EXTINF:-1 tvg-id="OUI1.kazer.org" tvg-name="Oui tv" tvg-logo="ouitv.png" group-title="Group 302",Oui Tv
 http://rtmp.infomaniak.ch/livecast/ouitv/playlist.m3u8
-#EXTINF:-1 tvg-id="ROUG1.kazer.org" tvg-name="Rouge Tv" tvg-logo="rougetv.gif" group-title="Group 303",Rouge Tv
+#EXTINF:-1 tvg-id="ROUG1.kazer.org" tvg-name="Rouge Tv" tvg-logo="rougetv.png" group-title="Group 303",Rouge Tv
 http://rtmp.infomaniak.ch/livecast/rougetv/playlist.m3u8
-#EXTINF:-1 tvg-id="LEQ1.kazer.org" tvg-name="Equipe 21" tvg-logo="equipe21.gif" group-title="Group 145",Equipe21
+#EXTINF:-1 tvg-id="LEQ1.kazer.org" tvg-name="Equipe 21" tvg-logo="equipe21.png" group-title="Group 145",Equipe21
 http://chkg.tdf-cdn.com/5687/index.m3u8
-#EXTINF:-1 tvg-id="DIS1.kazer.org" tvg-name="Discovery" tvg-logo="discovery.gif" group-title="Group 84",Discovery
+#EXTINF:-1 tvg-id="DIS1.kazer.org" tvg-name="Discovery" tvg-logo="discovery.png" group-title="Group 84",Discovery
 http://discovery-hls.live.numericable.tv/live/hls/discovery/ipad.m3u8
-#EXTINF:-1 tvg-id="DOR1.kazer.org" tvg-name="Dorcel" tvg-logo="dorcel.gif" group-title="Group 213",Dorcel
+#EXTINF:-1 tvg-id="DOR1.kazer.org" tvg-name="Dorcel" tvg-logo="dorcel.png" group-title="Group 213",Dorcel
 http://dt3zwsgl95oj4.cloudfront.net/live2/dorceltv.smil/manifest.m3u8
-#EXTINF:-1 tvg-id="XXL1.kazer.org" tvg-name="XXL" tvg-logo="xxl.gif" group-title="Group 214",XXL
+#EXTINF:-1 tvg-id="XXL1.kazer.org" tvg-name="XXL" tvg-logo="xxl.png" group-title="Group 214",XXL
 http://dt3zwsgl95oj4.cloudfront.net/live2/xxl.smil/manifest.m3u8
-#EXTINF:-1 tvg-id="I241.kazer.org" tvg-name="I24" tvg-logo="i24.gif" group-title="Group 112",I24
+#EXTINF:-1 tvg-id="I241.kazer.org" tvg-name="I24" tvg-logo="i24.png" group-title="Group 112",I24
 http://bcoveliveios-i.akamaihd.net/hls/live/215102/master_french/412/master.m3u8
-#EXTINF:-1 tvg-id="WEO1.kazer.org" tvg-name="Weo" tvg-logo="weo.gif" group-title="Group 304",Weo
+#EXTINF:-1 tvg-id="WEO1.kazer.org" tvg-name="Weo" tvg-logo="weo.png" group-title="Group 304",Weo
 rtmp://str81.creacast.com:80/weo/high
-#EXTINF:-1 tvg-id="EUR3.kazer.org" tvg-name="EuroSport" tvg-logo="eurosport.gif" group-title="Group 121",EuroSport
+#EXTINF:-1 tvg-id="EUR3.kazer.org" tvg-name="EuroSport" tvg-logo="eurosport.png" group-title="Group 121",EuroSport
 http://eurosport-hls.live.numericable.tv/live/hls/eurosport/ipad.m3u8
-#EXTINF:-1 tvg-id="EUR4.kazer.org" tvg-name="EuroSport 2" tvg-logo="eurosport2.gif" group-title="Group 125",EuroSport2
+#EXTINF:-1 tvg-id="EUR4.kazer.org" tvg-name="EuroSport 2" tvg-logo="eurosport2.png" group-title="Group 125",EuroSport2
 http://eurosport2-hls.live.numericable.tv/live/hls/eurosport2/ipad.m3u8
-#EXTINF:-1 tvg-id="KOM1.kazer.org" tvg-name="Kombat Sport" tvg-logo="kombat.gif" group-title="Group 128",Kombat Sport
+#EXTINF:-1 tvg-id="KOM1.kazer.org" tvg-name="Kombat Sport" tvg-logo="kombat.png" group-title="Group 128",Kombat Sport
 http://kombat-hls.live.numericable.tv/live/hls/kombat/ipad.m3u8
-#EXTINF:-1 tvg-id="BEI1.kazer.org" tvg-name="BeinSport" tvg-logo="beinsport.gif" group-title="Group 138",BeinSport
+#EXTINF:-1 tvg-id="BEI1.kazer.org" tvg-name="BeinSport 1" tvg-logo="beinsport1.png" group-title="Group 138",BeinSport 1
 http://beinsport1-hls.live.numericable.tv/live/hls/beinsport1/ipad.m3u8
-#EXTINF:-1 tvg-id="BEI2.kazer.org" tvg-name="BeinSport 2" tvg-logo="beinsport2.gif" group-title="Group 139",BeinSport 2
+#EXTINF:-1 tvg-id="BEI2.kazer.org" tvg-name="BeinSport 2" tvg-logo="beinsport2.png" group-title="Group 139",BeinSport 2
 http://beinsport2-hls.live.numericable.tv/live/hls/beinsport2/ipad.m3u8
-#EXTINF:-1 tvg-id="MCM1.kazer.org" tvg-name="MCM" tvg-logo="mcm.gif" group-title="Group 176",MCM
+#EXTINF:-1 tvg-id="MCM1.kazer.org" tvg-name="MCM" tvg-logo="mcm.png" group-title="Group 176",MCM
 http://mcm-hls.live.numericable.tv/live/hls/mcm/ipad.m3u8
-#EXTINF:-1 tvg-id="MTV1.kazer.org" tvg-name="MTV" tvg-logo="mtv.gif" group-title="Group 180",MTV
+#EXTINF:-1 tvg-id="MTV1.kazer.org" tvg-name="MTV" tvg-logo="mtv.png" group-title="Group 180",MTV
 http://mtv-hls.live.numericable.tv/live/hls/mtv/ipad.m3u8
-#EXTINF:-1 tvg-id="MTV5.kazer.org" tvg-name="MTV Idol" tvg-logo="mtvidol.gif" group-title="Group 172",MTV Idol
+#EXTINF:-1 tvg-id="MTV5.kazer.org" tvg-name="MTV Idol" tvg-logo="mtvidol.png" group-title="Group 172",MTV Idol
 http://mtvidol-hls.live.numericable.tv/live/hls/mtvidol/ipad.m3u8
-#EXTINF:-1 tvg-id="MTV6.kazer.org" tvg-name="MTV Pulse" tvg-logo="mtvpulse.gif" group-title="Group 171",MTV Pulse
+#EXTINF:-1 tvg-id="MTV6.kazer.org" tvg-name="MTV Pulse" tvg-logo="mtvpulse.png" group-title="Group 171",MTV Pulse
 http://mtvpulse-hls.live.numericable.tv/live/hls/mtvpulse/ipad.m3u8
-#EXTINF:-1 tvg-id="MTV3.kazer.org" tvg-name="MTV Base" tvg-logo="mtvbase.gif" group-title="Group 170",MTV Base
+#EXTINF:-1 tvg-id="MTV3.kazer.org" tvg-name="MTV Base" tvg-logo="mtvbase.png" group-title="Group 170",MTV Base
 http://mtvbase-hls.live.numericable.tv/live/hls/mtvbase/ipad.m3u8
