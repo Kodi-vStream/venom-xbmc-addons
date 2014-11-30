@@ -9,9 +9,12 @@
         <setting label="Paramètres des Métadonnées" type="action" action="Addon.OpenSettings(script.module.metahandler)" enable ="true" />
         <setting id="home-view" type="bool" label="Afficher l'Accueil par Catégories" default="true"/>
         <setting id="param_timeout" label="30027" type="number" default="1000"/>
+        <setting id="history-view" type="bool" label="Activer l'historique de recherche" default="true"/>
 
         <setting label="Changelog" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/about.py, changelog)"/>
-        <setting label="Information" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/about.py, about)"/>
+        <setting label="Information" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/about.py, about)"/>	
+		
+		<setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/clear.py, xbmc)"/>
     </category>
 
     <category label="30022">-->
@@ -31,6 +34,7 @@
         <setting id="plugin_reportagestv_com" type="bool" label="ReportagesTV" default="true"/>
         <setting id="plugin_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr" default="true"/>
         <setting id="plugin_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com" default="true"/>
+		<setting id="plugin_lestream_net" type="bool" label="LeStream.net" default="true"/>
     </category>
 
 <!-- 1 film 2 serie 3 anime 4 doc -->
@@ -113,6 +117,11 @@
         <setting id="search2_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com" default="false" visible="eq(-58,Recherche_2)"/>
         <setting id="search3_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com" default="false" visible="eq(-59,Recherche_3)"/>
         <setting id="search4_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com" default="false" visible="eq(-60,Recherche_4)"/>
+		
+		<setting id="search1_lestream_net" type="bool" label="leStream.net" default="false" visible="eq(-61,Recherche_1)"/>
+        <setting id="search2_lestream_net" type="bool" label="leStream.net" default="false" visible="eq(-62,Recherche_2)"/>
+        <setting id="search3_lestream_net" type="bool" label="leStream.net" default="false" visible="eq(-63,Recherche_3)"/>
+        <setting id="search4_lestream_net" type="bool" label="leStream.net" default="false" visible="eq(-64,Recherche_4)"/>
     </category>
     <!-- <category label="30023">-->
     <!--   <setting label="30023" type="lsep"/>

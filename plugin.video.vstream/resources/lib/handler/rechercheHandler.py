@@ -35,9 +35,9 @@ class cRechercheHandler:
         try:
             exec "import " + sName
             exec "sSearch = " + sName + ".URL_SEARCH"
-            exec "sFunction = " + sName + ".FUNCTION_SEARCH"
+            #exec "sFunction = " + sName + ".FUNCTION_SEARCH"
             sPluginSettingsName = sLabel+'_' + sName
-            return sSearch, sPluginSettingsName, sFunction
+            return sSearch[0], sPluginSettingsName, sSearch[1]
         except Exception, e:
             cConfig().log("cant import plugin: " + str(sName))            
             return False, False
@@ -60,7 +60,7 @@ class cRechercheHandler:
         oConfig = cConfig()
 
         sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'sites')
+        sFolder = os.path.join(sFolder, 'resources/sites')
 
         # xbox hack        
         sFolder = sFolder.replace('\\', '/')

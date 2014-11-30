@@ -29,6 +29,8 @@ class cHosterGui:
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
+        oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+        
         oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
         oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
         oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
@@ -210,6 +212,7 @@ class cHosterGui:
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
         sFileName = oInputParameterHandler.getValue('sFileName')
+        sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
         if (bGetRedirectUrl == 'True'):            
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
@@ -232,6 +235,7 @@ class cHosterGui:
                 oGuiElement.setSiteName(self.SITE_NAME)
                 oGuiElement.setMediaUrl(aLink[1])
                 oGuiElement.setTitle(oHoster.getFileName())
+                oGuiElement.setThumbnail(sThumbnail)
 
                 oPlayer = cPlayer()
                 oPlayer.clearPlayList()

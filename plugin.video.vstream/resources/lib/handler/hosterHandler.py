@@ -17,6 +17,6 @@ class cHosterHandler:
         return False, ''
 
     def getHoster(self, sHosterFileName):
-        exec "from " + sHosterFileName + " import cHoster"
+        exec "from resources.hosters." + sHosterFileName + " import cHoster"
         return cHoster()
     

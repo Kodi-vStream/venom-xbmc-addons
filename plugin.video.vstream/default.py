@@ -7,9 +7,9 @@ sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 
 sys.path.append (sLibrary)
 sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources', 'lib', 'handler'))
 sys.path.append (sLibrary)
-sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'sites'))
+sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources','sites'))
 sys.path.append (sLibrary)
-sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'hosters'))
+sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources','hosters'))
 sys.path.append (sLibrary)
 
 from resources.lib.statistic import cStatistic

@@ -1,5 +1,7 @@
 import urllib
 import urllib2
+from urllib2 import HTTPError, URLError
+from resources.lib.config import cConfig
 
 
 class cRequestHandler:
@@ -72,15 +74,19 @@ class cRequestHandler:
                 for sHeaderKey, sHeaderValue in aHeader.items():
                     oRequest.add_header(sHeaderKey, sHeaderValue)
 
-	try:
-		oResponse = urllib2.urlopen(oRequest)               
-	except:
-		for aHeader in self.__aHeaderEntries:
-                    for sHeaderKey, sHeaderValue in aHeader.items():
-                        oRequest.add_header(sHeaderKey, sHeaderValue)
-		oResponse = urllib2.urlopen(oRequest)
+    	try:
+    		oResponse = urllib2.urlopen(oRequest)               
+    	#except:
+    	#	for aHeader in self.__aHeaderEntries:
+        #                for sHeaderKey, sHeaderValue in aHeader.items():
+        #                    oRequest.add_header(sHeaderKey, sHeaderValue)
+    	#	oResponse = urllib2.urlopen(oRequest)
+        except HTTPError, e:
+            cConfig().error(e.code)
+            return ''
 
-	sContent = oResponse.read()
+        sContent = oResponse.read()
+        
         if (self.__bRemoveNewLines == True):
             sContent = sContent.replace("\n","")
             sContent = sContent.replace("\r\t","")
@@ -92,7 +98,7 @@ class cRequestHandler:
         self.__sRealUrl = oResponse.geturl()
         
         oResponse.close()
-	return sContent
+        return sContent
 
     def getHeaderLocationUrl(self):        
         opened = urllib.urlopen(self.__sUrl)

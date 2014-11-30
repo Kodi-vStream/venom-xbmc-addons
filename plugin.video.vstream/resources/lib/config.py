@@ -30,9 +30,9 @@ class cConfig():
             self.__oPath = self.__oSettings.getAddonInfo("path")
             self.__oName = self.__oSettings.getAddonInfo("name")
             self.__oCache = xbmc.translatePath(self.__oSettings.getAddonInfo("profile"))
-            self.__sRootArt = os.path.join(self.__oPath,'resources/art/')
-            self.__sIcon = os.path.join(self.__oPath,'resources/art/icon.png')
-            self.__sFanart = os.path.join(self.__oPath,'resources/art/fanart.jpg')
+            self.__sRootArt = os.path.join(self.__oPath, 'resources' , 'art', '')
+            self.__sIcon = os.path.join(self.__oPath,'resources', 'art','icon.png')
+            self.__sFanart = os.path.join(self.__oPath,'resources','art','fanart.jpg')
             self.__sFileFav = os.path.join(self.__oCache,'favourite.db')
 
 
@@ -141,7 +141,7 @@ class cConfig():
 
 
     def error(self, e):
-        xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % ('Vstream Erreur', (str(e)), '10000', self.__sIcon))
+        xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % ('Vstream', ('Erreur: '+str(e)), '10000', self.__sIcon))
         xbmc.log('\t[PLUGIN] Vstream Erreur: '+str(e))
 
     def log(self, e):

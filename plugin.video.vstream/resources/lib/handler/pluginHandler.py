@@ -60,7 +60,7 @@ class cPluginHandler:
         oConfig = cConfig()
 
         sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'sites')
+        sFolder = os.path.join(sFolder, 'resources/sites')
 
         # xbox hack        
         sFolder = sFolder.replace('\\', '/')

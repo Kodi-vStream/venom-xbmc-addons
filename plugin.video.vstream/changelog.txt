@@ -4,6 +4,19 @@
 - Question & Support: Twitter @lordvenom57
 ================================================================================
 ================================================================================
+- Version 0.2.2 - 30.11.2014
+================================================================================
+    - Change all folder (tous dans resources)
+    - Add Logo in screen
+    - Modif player (affiche l'erreur 404)
+    - Add leStream source
+    - Modif recherche (affiche les sources)
+    - Add historique de recherche
+	- Optimise les Imports
+	- Add option clear cache
+	- Modif Images
+	- Fix images
+================================================================================
 - Version 0.2.1 - 01.11.2014
 ================================================================================
     - Add param timeout
