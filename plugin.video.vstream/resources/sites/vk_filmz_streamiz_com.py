@@ -154,6 +154,7 @@ def showMovies(sSearch = ''):
     sPattern = '<img class="tubeposter" src="([^<]+)" alt=".+?" title=".+?" />.+?<h2 class="mtitle"><a href="([^<]+)">([^<]+)</a></h2>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -170,9 +171,9 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
 
-            if '/series/' in sUrl:
+            if '/series/' in sUrl or '/series/' in aEntry[1]:
                 oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle,'', aEntry[0], '', oOutputParameterHandler)
-            elif '/mangas/' in sUrl:
+            elif '/mangas/' in sUrl or '/mangas/' in aEntry[1]:
                 oGui.addTV(SITE_IDENTIFIER, 'mangasHosters', sTitle,'', aEntry[0], '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], '', oOutputParameterHandler)

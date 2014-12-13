@@ -88,3 +88,6 @@ http://bcoveliveios-i.akamaihd.net/hls/live/215102/master_french/412/master.m3u8
 
 #EXTINF:-1 tvg-id="WEO1.kazer.org" tvg-name="Weo" tvg-logo="weo.png" group-title="Group 304",Weo
 rtmp://str81.creacast.com:80/weo/high
+
+#EXTINF:-1 tvg-id="EUR3.kazer.org" tvg-name="Eurosport" tvg-logo="eurosport.png" group-title="Group 3",Eurosport
+http://esioslive6-i.akamaihd.net/hls/live/202892/AL_P_ESP1_FR_FRA/playlist.m3u8

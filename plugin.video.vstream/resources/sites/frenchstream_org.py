@@ -125,7 +125,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[1]))
-            if '/tv-series' in sUrl:
+            if '/tv-series' in sUrl or '/tv-series' in aEntry[0]:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle,'', aEntry[1], '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', aEntry[1], '', oOutputParameterHandler)           
