@@ -38,6 +38,7 @@ class cHoster(iHoster):
         sPattern = "v=([^<]+)"
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
+
         if (aResult[0] == True):
             return aResult[1][0]
 
@@ -66,10 +67,13 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, sUrl):
-        self.__sUrl = str(self.__modifyUrl(sUrl))
-        self.__sUrl = self.__sUrl.replace('http://www.nowvideo.sx/video/', '')
-        self.__sUrl = self.__sUrl.replace('http://embed.nowvideo.sx/', '')
-        self.__sUrl = 'http://embed.nowvideo.sx/embed.php?v=' + str(self.__sUrl)
+        self.__sUrl = str(sUrl)
+        
+        sPattern =  'http://(?:www.|embed.)nowvideo.(?:eu|sx|ch)/(?:video/|embed.php\?.*?v=)([0-9a-z]+)'
+         
+        oParser = cParser()
+        aResult = oParser.parse(sUrl, sPattern)        
+        self.__sUrl = 'http://embed.nowvideo.sx/embed.php?v=' + str(aResult[1][0])
 
     def checkUrl(self, sUrl):
         return True

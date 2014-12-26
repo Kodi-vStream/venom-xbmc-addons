@@ -44,11 +44,14 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, sUrl):
-        if 'embed' not in sUrl:
-            self.__sUrl = str(self.__getIdFromUrl(sUrl))
-            self.__sUrl = 'http://exashare.com/embed-'+str(self.__sUrl)+'.html'
-        else:
-            self.__sUrl = sUrl
+        self.__sUrl = str(sUrl)
+        
+        sPattern =  'http://(?:www.|embed.)exashare.(?:com)/(?:video/|embed\-)?([0-9a-z]+)'
+         
+        oParser = cParser()
+        aResult = oParser.parse(sUrl, sPattern)
+        self.__sUrl = 'http://exashare.com/embed-'+str(aResult[1][0])+'.html'
+
 
     def checkUrl(self, sUrl):
         return True

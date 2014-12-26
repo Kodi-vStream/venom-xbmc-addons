@@ -28,13 +28,14 @@ class cGui:
         oGuiElement.setDescription(sDesc)
         
         self.__createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+        self.__createContexMenuinfo(oGuiElement, oOutputParameterHandler)
         self.__createContexMenuWriteFav(oGuiElement, oOutputParameterHandler)
         
         #oInputParameterHandler = cInputParameterHandler()
         #sUrl = oInputParameterHandler.getValue('siteUrl')
         #print oGuiElement.getMediaUrl()
 
-        #context
+        #context fav
         oContext = cContextElement()
         oContext.setFile('cFav')
         oContext.setSiteName('cFav')
@@ -64,6 +65,7 @@ class cGui:
         oGuiElement.setDescription(sDesc)
         
         self.__createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+        self.__createContexMenuinfo(oGuiElement, oOutputParameterHandler)
         self.__createContexMenuWriteFav(oGuiElement, oOutputParameterHandler)
 
         #context
@@ -170,6 +172,22 @@ class cGui:
         oContext.setSiteName(oGuiElement.getSiteName())
         oContext.setFunction('setWatched')
         oContext.setTitle('[COLOR azure]Marquer vu/Non vu[/COLOR]')
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
+        oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
+      
+        oContext.setOutputParameterHandler(oOutputParameterHandler)
+
+        oGuiElement.addContextItem(oContext)
+        
+        
+    def __createContexMenuinfo(self, oGuiElement, oOutputParameterHandler= ''):
+        oContext = cContextElement()
+        oContext.setFile('cGui')
+        oContext.setSiteName(oGuiElement.getSiteName())
+        oContext.setFunction('viewinfo')
+        oContext.setTitle('[COLOR azure]Information[/COLOR]')
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
@@ -320,6 +338,15 @@ class cGui:
         #oGuiElement.setSiteName(sId)
         oGuiElement.setWatched(sId, sTitle)
         xbmc.executebuiltin( 'Container.Refresh' )
+        
+    def viewinfo(self):
+        oGuiElement = cGuiElement()
+        oInputParameterHandler = cInputParameterHandler()
+
+        sTitle = oInputParameterHandler.getValue('sTitle')
+        sId = oInputParameterHandler.getValue('sId')
+
+        xbmc.executebuiltin( "Action(Info)")
 
     def __createItemUrl(self, oGuiElement, oOutputParameterHandler=''):
         if (oOutputParameterHandler == ''):

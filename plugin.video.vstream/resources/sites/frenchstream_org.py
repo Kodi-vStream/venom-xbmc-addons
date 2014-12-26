@@ -81,7 +81,8 @@ def showGenre():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
  
-    sPattern = '<li><a title=".+?" href="([^<]+)">(.+?)</a> <span class="mctagmap_count">(.+?)</span>'
+    sPattern = '<li><atitle=".+?" href="([^<]+)">(.+?)</a> <spanclass="mctagmap_count">(.+?)</span>'
+    
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -107,7 +108,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
-    sPattern = 'class="moviefilm">.?<a href="([^<]+)">.+?<img src="(.+?)" alt="(.+?)".+?>.+?<small>(.+?)</small>'
+    sPattern = '<div.*?class="moviefilm"><a.*?href="([^<]+)">.+?<img.*?src="([^<]+)" alt="(.+?)".+?>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -120,15 +121,15 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
             
-            sTitle = aEntry[2]+' - [COLOR azure]'+aEntry[3]+'[/COLOR]'
+            #sTitle = aEntry[2]+' - [COLOR azure]'+aEntry[3]+'[/COLOR]'
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[1]))
             if '/tv-series' in sUrl or '/tv-series' in aEntry[0]:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle,'', aEntry[1], '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', aEntry[2],'', aEntry[1], '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', aEntry[1], '', oOutputParameterHandler)           
+                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', aEntry[2], '', aEntry[1], '', oOutputParameterHandler)           
     
         cConfig().finishDialog(dialog)
 
@@ -152,7 +153,8 @@ def showSeries():
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('<strong>Téléchargement VOSTFR','').replace('<strong>Téléchargement VF','').replace('<strong>Téléchargement','')
  
-    sPattern = '<a href="([^<]+)"><span>(.+?)</span></a>'
+    sPattern = '<ahref="([^<]+)"><span>(.+?)</span></a>'
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -176,7 +178,7 @@ def showSeries():
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class="page larger" href="(.+?)">'
+    sPattern = '<aclass="page larger" href="(.+?)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -196,7 +198,7 @@ def showLinks():
     sHtmlContent = oRequestHandler.request();
     #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/plugins/like.php','').replace('<iframe src="http://www.facebook.com/plugins/likebox.php','')
                
-    sPattern = '<a href="([^<]+)"><span>(.+?)</span></a>'
+    sPattern = '<ahref="([^<]+)"><span>(.+?)</span></a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -209,7 +211,7 @@ def showLinks():
             
             sHoster = cHosterGui().checkHoster(aEntry[1].lower())
             if (sHoster != False):
-                sTitle = sMovieTitle+' - '+aEntry[1]
+                sTitle = sMovieTitle+' - [COLOR azure]'+aEntry[1]+'[/COLOR]'
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
@@ -229,12 +231,13 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/plugins/like.php','').replace('<iframe src="http://www.facebook.com/plugins/likebox.php','')
+    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/plugins/like.php','').replace('<iframe src="http://www.facebook.com/plugins/likebox.php','')
                
         
-    sPattern = '<p><!--baslik:.+?--><br />.*?<iframe.+?src="(.+?)"'
+    sPattern = '<[\iframe|IFRAME].+?src="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -253,65 +256,4 @@ def showHosters():
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
-
-# #testt
-# def getSource(sUrl = '', sTitle = ''):
-#     if not sUrl: return
-#     else:
-#         sources = []
-#         #sTitle = urllib.unquote(sTitle)
-#         sUrl = sUrl+sTitle
-#         oRequestHandler = cRequestHandler(sUrl)
-#         sHtmlContent = oRequestHandler.request();
-#         sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
-#         sPattern = 'class="moviefilm">.?<a href="([^<]+)">.+?<img src=".+?" alt="(.+?)".+?>.+?<small>(.+?)</small>'
-        
-#         oParser = cParser()
-#         aResult = oParser.parse(sHtmlContent, sPattern)
-#         sTitle = urllib.unquote(sTitle)
-#         if (aResult[0] == True):
-#             for aEntry in aResult[1]:
-#                 if re.search('('+cleantitle(sTitle)+')(\s|$)',cleantitle(aEntry[1]), re.IGNORECASE):
-#                     sources.append({'source': SITE_IDENTIFIER, 'url': aEntry[0], 'title': aEntry[1], 'vu': aEntry[2]})
-#             return sources
-#         else: return False, False
-
-# def getLink(sUrl = ''):
-#     if not sUrl: return
-#     else:
-#         links = []
-#         sUrl = sUrl+'/100/'
-#         oRequestHandler = cRequestHandler(sUrl)
-#         sHtmlContent = oRequestHandler.request();
-#         sPattern = '<a href="([^<]+)"><span>.+?</span></a>'
-        
-#         oParser = cParser()
-#         aResult = oParser.parse(sHtmlContent, sPattern)
-#         if (aResult[0] == True):
-#             for aEntry in aResult[1]:
-#                 links.append({'source': SITE_IDENTIFIER, 'url': aEntry})
-#             return links
-#         else: return False, False
-
-# def getHost(sUrl = ''):
-#     if not sUrl: return
-#     else:
-#         hosts = []
-#         oRequestHandler = cRequestHandler(sUrl)
-#         sHtmlContent = oRequestHandler.request();
-
-#         sPattern = '<p><!--baslik:.+?--><br />.*?<iframe.+?src="(.+?)"'
-        
-#         oParser = cParser()
-#         aResult = oParser.parse(sHtmlContent, sPattern)
-#         if (aResult[0] == True):
-#             for aEntry in aResult[1]:
-#                 hosts.append({'source': SITE_IDENTIFIER, 'url': aEntry})
-#             return hosts
-#         else: return
-
-# def cleantitle(title):
-#         title = re.sub('\n|([[].+?[]])|([(].+?[)])|\s(vs|v[.])\s|(:|;|-|"|,|\'|\.|\?)', '', title).lower()
-#         title = re.sub('\s{2,}', ' ', title)
-#         return title
     

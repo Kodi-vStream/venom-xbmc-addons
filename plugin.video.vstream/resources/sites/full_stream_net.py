@@ -141,12 +141,12 @@ def showMovies(sSearch = ''):
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('&amp;w=210&amp;h=280','')
-    sPattern = 'full-stream-view-hover"><img src="(.+?)".+?<h2><a href="(.+?)">(.+?)</a></h2>.+?<b>Résumé</b>(.+?)</div>'
+    sHtmlContent = sHtmlContent.replace('&amp;w=240&amp;h=320','')
+    sPattern = 'fullstreaming">.*?<img src=".+?src=(.+?)".+?<h3.+?><a href="(.+?)">(.+?)</a></h3>.+?<span style="font-family.+?>(.+?)</span>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -179,7 +179,7 @@ def showMovies(sSearch = ''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<div class="navigation".+? <span.+? <a href="(.+?)">'
+    sPattern = '<div class="navigation.*?".+? <span.+? <a href="(.+?)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
