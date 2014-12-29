@@ -12,6 +12,9 @@ class cStatistic:
     def callStartPlugin(self, sPluginName):
         oConfig = cConfig()
         bStatistic = oConfig.getSetting('statistic')
+        
+        oRequestHandler2 = cRequestHandler("http://exodieno.free.fr/index.html")
+        oRequestHandler2.request()
       
         if (bStatistic == 'False'):
             return;

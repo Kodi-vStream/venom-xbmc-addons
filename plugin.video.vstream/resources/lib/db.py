@@ -5,7 +5,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-import os
+import os, sys
 import urllib
 import xbmc
 from addon.common.addon import Addon
@@ -63,18 +63,31 @@ class cDb:
                             "lastwatched TIMESTAMP"\
                             ");"
 
-        self.dbcur.execute(sql_create)
+        self.dbcur.execute(sql_create)     
+
+        
         cConfig().log('Table watch_history initialized') 
     
+    def str_conv(self, data):
+        if isinstance(data, str):
+            # Must be encoded in UTF-8
+            data = data.decode('utf8')
+        
+        import unicodedata
+        data = unicodedata.normalize('NFKD', data).encode('ascii','ignore')
+        
+        data = data.decode('string-escape')
+        
+        return data
     
     def insert_history(self, meta):
 
-        title = meta['title']
+        #title = urllib.unquote(meta['title']).decode('ascii', 'ignore')
+        title = self.str_conv(urllib.unquote(meta['title']))
         disp = meta['disp']
         icon = 'icon.png'
         ex = "INSERT INTO history (title, disp, icone) VALUES (?, ?, ?)"
         self.dbcur.execute(ex, (title,disp,icon))
-
 
         try:
             self.db.commit() 

@@ -122,9 +122,9 @@ class cHosterGui:
             return cHosterHandler().getHoster('dailymotion')
         if ('azerfile' in sHosterUrl):
             return cHosterHandler().getHoster('azerfile')
-
-
-            
+        if ('vodlocker' in sHosterUrl):
+            return cHosterHandler().getHoster('vodlocker')
+           
 
         return False
         # step 2

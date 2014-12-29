@@ -187,7 +187,7 @@ class cHome:
 
     def movieNets(self):
         self.__callpluging('MOVIE_NETS', '[COLOR '+color_videos+']Vidéo du Net[/COLOR]', 'buzz.png')
-
+        
     def showSearch(self):
 
         if (cConfig().getSetting("history-view") == 'true'):
@@ -227,6 +227,7 @@ class cHome:
 
             row = cDb().get_history()
             for match in row:
+                
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'http://venom')      
                 oOutputParameterHandler.addParameter('searchtext', match[1])
@@ -282,6 +283,7 @@ class cHome:
         aPlugins = oHandler.getAvailablePlugins(sDisp)
         if not sSearchText:
             sSearchText = oGui.showKeyBoard()
+            sSearchText = urllib.quote(sSearchText)
         if (sSearchText != False):
             if (sReadDB != 'False'):
                 meta = {}      
