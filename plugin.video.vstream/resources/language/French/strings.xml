@@ -41,11 +41,11 @@
 
 
         <!-- Pluginnames begin by 30201 - 30299 -->
-        <!--<string id="30201">Kino.to</string>
-        <string id="30202">Souhtpark.de</string>
-        <string id="30203">Myp2p.eu</string>
-        <string id="30204">G-Stream.in</string>
-        <string id="30205">NBA.de</string>
+        <string id="30201">Ajouter à la playlist</string>
+        <string id="30202">Télécharger</string>
+        <string id="30203">Marque-lire</string>
+        <string id="30204">Aucune information</string>
+        <!--<string id="30205">NBA.de</string>
         <string id="30206">Bundesliga.de</string>
         <string id="30207">MTV.de</string>
         <string id="30208">Kino.de</string>

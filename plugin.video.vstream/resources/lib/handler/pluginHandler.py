@@ -33,7 +33,7 @@ class cPluginHandler:
 
     def __importPlugin(self, sName):
         try:
-            exec "import " + sName
+            exec "from resources.sites import " + sName
             exec "sSiteName = " + sName + ".SITE_NAME"
             exec "sSiteDesc = " + sName + ".SITE_DESC"
             sPluginSettingsName = 'plugin_' + sName

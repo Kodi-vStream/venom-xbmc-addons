@@ -41,12 +41,13 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sFav', 'play')
         oOutputParameterHandler.addParameter('sCat', '4')
         
+        
         #context playlit menu
         oContext = cContextElement()
         oContext.setFile('cHosterGui')
         oContext.setSiteName(self.SITE_NAME)
         oContext.setFunction('addToPlaylist')
-        oContext.setTitle('Ajouter à la playlist')
+        oContext.setTitle(cConfig().getLocalizedString(30201))
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
         
@@ -55,7 +56,7 @@ class cHosterGui:
         oContext.setFile('cHosterGui')
         oContext.setSiteName(self.SITE_NAME)
         oContext.setFunction('download')
-        oContext.setTitle('Télécharger')
+        oContext.setTitle(cConfig().getLocalizedString(30202))
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
 
@@ -64,7 +65,7 @@ class cHosterGui:
         oContext.setFile('cFav')
         oContext.setSiteName('cFav')
         oContext.setFunction('writeFavourites')
-        oContext.setTitle('[COLOR teal]Marque-lire[/COLOR]')
+        oContext.setTitle('[COLOR teal]'+cConfig().getLocalizedString(30203)+'[/COLOR]')
 
         #oOutputParameterHandler = cOutputParameterHandler()
         #oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
@@ -289,6 +290,7 @@ class cHosterGui:
         # cConfig().log("could not load plugin " + sHosterFileName)
 
         oGui.setEndOfDirectory()
+        
 
     def download(self):
         oGui = cGui()

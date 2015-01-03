@@ -10,6 +10,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
+import urllib
 import re
 
 SITE_IDENTIFIER = 'full_streaming_org'
@@ -27,7 +28,7 @@ SERIE_SERIES = ('http://full-streaming.org/series/', 'showMovies')
 SERIE_VFS = ('http://full-streaming.org/series-fr/', 'showMovies')
 SERIE_VOSTFRS = ('http://full-streaming.org/series-vostfr/', 'showMovies')
 
-URL_SEARCH = ('http://full-streaming.org/xfsearch/', 'showMovies')
+URL_SEARCH = ('http://full-streaming.biz/index.php?do=xfsearch&xf=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -81,10 +82,11 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = 'http://full-streaming.org/xfsearch/'+sSearchText  
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return  
+        sUrl = "http://full-streaming.biz/index.php?do=xfsearch&xf="+sSearchText
+        #sUrl = 'http://full-streaming.org/xfsearch/'+urllib.quote(sSearchText)  
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return  
     
 def showGenre():
     oGui = cGui()
@@ -161,6 +163,11 @@ def showMovies(sSearch = ''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    print aResult
+    
+    if (aResult[0] == False):
+        oGui.addNone(SITE_IDENTIFIER)
+        return False
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -191,6 +198,7 @@ def showMovies(sSearch = ''):
 
     if not sSearch:
         oGui.setEndOfDirectory()
+        
 
 
 def __checkForNextPage(sHtmlContent):

@@ -19,7 +19,7 @@ SITE_DESC = 'docspot.fr + 3000 Documentaires et reportages en Streaming gratuit 
 URL_MAIN = 'http://www.docspot.fr/'
 DOC_DOCS = ('http://www.docspot.fr/?cat=0', 'showMovies')
 
-URL_SEARCH = ('http://www.docspot.fr/?s=', 'showMovies')
+URL_SEARCH = ('http://www.docspot.fr/search/', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -33,17 +33,6 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', DOC_DOCS[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_DOCS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.docspot.fr/?cat=0&orderby=views')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires Les plus vues', 'doc.png', oOutputParameterHandler)
-    
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.docspot.fr/?cat=0&orderby=comments')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires Les plus commentés', 'doc.png', oOutputParameterHandler)
-    
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.docspot.fr/?cat=0&orderby=likes')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires Les mieux notés', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://frenchstream.org/les-plus-vues')
@@ -55,7 +44,7 @@ def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = 'http://www.docspot.fr/?s='+sSearchText  
+            sUrl = 'http://www.docspot.fr/search/'+sSearchText  
             showMovies(sUrl)
             oGui.setEndOfDirectory()
             return  
@@ -67,22 +56,28 @@ def showGenres():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ["90° enquêtes","http://www.docspot.fr/?cat=15"] )
-    liste.append( ["Arte","http://www.docspot.fr/?cat=2"] )
-    liste.append( ["C'est pas sorcier","http://www.docspot.fr/?cat=3"] )
-    liste.append( ["Education","http://www.docspot.fr/?cat=4"] )
-    liste.append( ["Faites entrer l'accusé","http://www.docspot.fr/?cat=14"] )
-    liste.append( ["Histoire","http://www.docspot.fr/?cat=7"] )
-    liste.append( ["L'hombre d'un doute","http://www.docspot.fr/?cat=42"] )
-    liste.append( ["L'univers et ses mystères","http://www.docspot.fr/?cat=44"] )
-    liste.append( ["Nature & Animaux","http://www.docspot.fr/?cat=8"] )
-    liste.append( ["Politique & Société","http://www.docspot.fr/?cat=12"] )
-    liste.append( ["Question à la Une","http://www.docspot.fr/?cat=17"] )
-    liste.append( ["Reportages","http://www.docspot.fr/?cat=9"] )
-    liste.append( ["Sciences","http://www.docspot.fr/?cat=11"] )
-    liste.append( ["Sciences Humaines","http://www.docspot.fr/?cat=13"] )
-    liste.append( ["Technologies","http://www.docspot.fr/?cat=1"] )
-    liste.append( ["Univers","http://www.docspot.fr/?cat=5"] )
+    liste.append( ["Arte","http://www.docspot.fr/search/documentaire+arte"] )
+    liste.append( ["National - Geographic","http://www.docspot.fr/search/documentaire+national+geographic"] )
+    liste.append( ["Archéologie","http://www.docspot.fr/search/documentaire+arch%C3%A9ologie"] )
+    liste.append( ["Astronomie","http://www.docspot.fr/search/documentaire+astronomie"] )
+    liste.append( ["Animaux","http://www.docspot.fr/search/reportage+animaux"] )
+    liste.append( ["Climat","http://www.docspot.fr/search/documentaire+climat"] )
+    liste.append( ["Découverte","http://www.docspot.fr/search/documentaire+d%C3%A9couverte"] )
+    liste.append( ["Démographie","http://www.docspot.fr/search/documentaire+d%C3%A9mographie"] )
+    liste.append( ["Economie","http://www.docspot.fr/search/documentaire+%C3%A9conomie"] )
+    liste.append( ["Education","http://www.docspot.fr/search/documentaire+education"] )
+    liste.append( ["Enquete","http://www.docspot.fr/search/reportage+enquete"] )
+    liste.append( ["Géopolitique","http://www.docspot.fr/search/documentaire+geopolitique"] )
+    liste.append( ["Guerre","http://www.docspot.fr/search/documentaire+guerre"] )
+    liste.append( ["Histoire","http://www.docspot.fr/search/documentaire+histoire"] )
+    liste.append( ["Paranormal","http://www.docspot.fr/search/documentaire+paranormal"] )
+    liste.append( ["Reportage","http://www.docspot.fr/search/reportage"] )
+    
+    liste.append( ["Santé","http://www.docspot.fr/search/documentaire+sant%C3%A9"] )
+    liste.append( ["Science","http://www.docspot.fr/search/documentaire+science"] )
+    liste.append( ["Technologie","http://www.docspot.fr/search/documentaire+technologie+science"] )
+    liste.append( ["Sport","http://www.docspot.fr/search/documentaire+sport"] )
+    liste.append( ["Societe","http://www.docspot.fr/search/documentaire+societe"] )
     
                 
     for sTitle,sUrl in liste:
@@ -105,7 +100,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
-    sPattern = '<a class="clip-link" data-id=".+?" title="([^<]+)" href="([^<]+)">.+?<img src="(.+?)" alt=".+?" />'
+    sPattern = "<div class='mediathumb'>.*?<a href='([^<]+)' title='([^<]+)'>.*?<img src='([^<]+)' alt='(.+?)'>.*?</a>"
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -118,10 +113,10 @@ def showMovies(sSearch = ''):
                 break
             
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[3]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[0], '', aEntry[2], '', oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[3], '', aEntry[2], aEntry[1], oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
             
@@ -136,10 +131,11 @@ def showMovies(sSearch = ''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = "<a href='(.+?)' class='page larger'>.+?</a>"
+    sPattern = "<li class='next'><a href='(.+?)' class='next'>.+?</a></li>"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        print aResult[1][0]
         return aResult[1][0]
 
     return False

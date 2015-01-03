@@ -1,16 +1,16 @@
 from resources.lib.config import cConfig
 
 
-sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources', 'lib'))
-sys.path.append (sLibrary)
-sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources', 'lib', 'gui'))
-sys.path.append (sLibrary)
-sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources', 'lib', 'handler'))
-sys.path.append (sLibrary)
-sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources','sites'))
-sys.path.append (sLibrary)
-sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources','hosters'))
-sys.path.append (sLibrary)
+# sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources', 'lib'))
+# sys.path.append (sLibrary)
+# sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources', 'lib', 'gui'))
+# sys.path.append (sLibrary)
+# sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources', 'lib', 'handler'))
+# sys.path.append (sLibrary)
+# sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources','sites'))
+# sys.path.append (sLibrary)
+# sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources','hosters'))
+# sys.path.append (sLibrary)
 
 from resources.lib.statistic import cStatistic
 from resources.lib.gui.hoster import cHosterGui
@@ -56,7 +56,7 @@ class main:
 	            #return
 
 	        #try:
-	        exec "import " + sSiteName + " as plugin"
+	        exec "from resources.sites import " + sSiteName + " as plugin"
 	        exec "plugin."+ sFunction +"()"
 	        #except:
 	        #    cConfig().log('could not load site: ' + sSiteName )

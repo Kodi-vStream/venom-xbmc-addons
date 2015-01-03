@@ -33,7 +33,7 @@ class cRechercheHandler:
 
     def __importPlugin(self, sName, sLabel):
         try:
-            exec "import " + sName
+            exec "from resources.sites import " + sName
             exec "sSearch = " + sName + ".URL_SEARCH"
             #exec "sFunction = " + sName + ".FUNCTION_SEARCH"
             sPluginSettingsName = sLabel+'_' + sName

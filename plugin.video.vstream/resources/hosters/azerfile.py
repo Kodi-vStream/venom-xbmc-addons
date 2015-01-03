@@ -50,8 +50,15 @@ class cHoster(iHoster):
 
         return ''
 
-    def setUrl(self, sUrl):
+    def setUrl(self, sUrl):        
         self.__sUrl = str(sUrl)
+        
+        sPattern =  'http://(?:www.|embed.|)azerfile.(?:com)/(?:video/|embed\-|)?([0-9a-z]+)'
+         
+        oParser = cParser()
+        aResult = oParser.parse(sUrl, sPattern)
+        self.__sUrl = 'http://azerfile.com/'+str(aResult[1][0])
+
 
     def checkUrl(self, sUrl):
         return True
@@ -67,10 +74,9 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
         
         
-        sPattern = 'provider/mp4/.+?/([^<]+)/like/';
+        sPattern = 'file=([^<]+)&image';
         
         oParser = cParser()
-        sHtmlContent=sHtmlContent.replace('|','/')
         aResult = oParser.parse(sHtmlContent, sPattern)
 
 
@@ -79,8 +85,8 @@ class cHoster(iHoster):
 
             liste = file.split('/')
 
-            api_call = ('http://azerfile.com:%s/d/%s/video.mp4') % (liste[-1], liste[-2])
-            #print api_call
+            #api_call = ('http://azerfile.com:%s/d/%s/video.mp4') % (liste[-1], liste[-2])
+            api_call = aResult[1][0]
             return True, api_call
             
         return False, False

@@ -297,7 +297,7 @@ class cHome:
                         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
                         oGui.addDir(SITE_IDENTIFIER, 'showSearch', '[COLOR olive]'+ aPlugin[1] +'[/COLOR]', 'search.png', oOutputParameterHandler)
                     
-                        exec "import "+aPlugin[1]+" as search"
+                        exec "from resources.sites import "+aPlugin[1]+" as search"
                         sUrl = aPlugin[0]+sSearchText
                         searchUrl = "search.%s('%s')" % (aPlugin[2], sUrl)
                         exec searchUrl

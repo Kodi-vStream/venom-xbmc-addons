@@ -33,7 +33,7 @@ class cSiteHandler:
 
     def __importPlugin(self, sName, sLabel):
         try:
-            exec "import "+sName
+            exec "from resources.sites import "+sName
             exec "sSearch = "+sName+"."+sLabel
             exec "sSiteName = "+sName+".SITE_NAME"
             sPluginSettingsName = sName

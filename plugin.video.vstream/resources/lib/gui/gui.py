@@ -141,7 +141,18 @@ class cGui:
         
         oOutputParameterHandler.addParameter('sFav', sFunction)
         
-        self.addFolder(oGuiElement, oOutputParameterHandler)       
+        self.addFolder(oGuiElement, oOutputParameterHandler)    
+
+    def addNone(self, sId): 
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(sId)
+        oGuiElement.setFunction('load')
+        oGuiElement.setTitle('[COLOR= red]'+cConfig().getLocalizedString(30204)+'[/COLOR]')
+        oGuiElement.setIcon('none.png')
+        oGuiElement.setMeta(0)
+        
+        self.addFolder(oGuiElement, '') 
+
     
     def addFolder(self, oGuiElement, oOutputParameterHandler=''):
         sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)

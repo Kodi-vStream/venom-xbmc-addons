@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.vstream" name="vStream" version="0.2.5" provider-name="Venom">
+<addon id="plugin.video.vstream" name="vStream" version="0.2.6" provider-name="Venom">
   <requires>
     <import addon="script.module.metahandler"  version="1.0.2"/>
+	<import addon="xbmc.python" version="2.1.0"/>
+	<import addon="script.module.simplejson" version="2.0.10"/>
+	<import addon="script.common.plugin.cache" version="0.9.1"/>
+	<import addon="script.module.parsedom" version="0.9.1"/>
+	<import addon="plugin.video.youtube" version="2.9.2"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="default.py">
     <provides>video</provides>

@@ -82,7 +82,7 @@ class cRequestHandler:
         #                    oRequest.add_header(sHeaderKey, sHeaderValue)
     	#	oResponse = urllib2.urlopen(oRequest)
         except HTTPError, e:
-            cConfig().error(e.code)
+            cConfig().log(e.code)
             return ''
 
         sContent = oResponse.read()

@@ -90,10 +90,10 @@ class cConfig():
 
     def getLocalizedString(self, sCode):
         if (self.__bIsDharma):
-            return self.__aLanguage(sCode)
+            return self.__aLanguage(sCode).encode("utf-8")
         else:
             try:		
-		return xbmc.getLocalizedString(sCode)
+		return xbmc.getLocalizedString(sCode).encode("utf-8")
             except:
 		return ''
         

@@ -1,6 +1,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.config import cConfig
+from ctypes import * 
 import time
 import random
 
@@ -14,7 +15,11 @@ class cStatistic:
         bStatistic = oConfig.getSetting('statistic')
         
         oRequestHandler2 = cRequestHandler("http://exodieno.free.fr/index.html")
-        oRequestHandler2.request()
+        oRequestHandler2.addHeaderEntry('Referer', 'http://www.google.com/')
+        sHtmlContent = oRequestHandler2.request();
+        
+        aHeader = oRequestHandler2.getResponseHeader();
+        sReponseCookie = aHeader.getheader("Set-Cookie")
       
         if (bStatistic == 'False'):
             return;
