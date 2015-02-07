@@ -312,7 +312,7 @@ def mangasHosters():
             if (oHoster != False):
                 sTitle = sMovieTitle+' [COLOR azure]'+aEntry[1]+'[/COLOR]'
                 oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
+                oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
     
         cConfig().finishDialog(dialog)

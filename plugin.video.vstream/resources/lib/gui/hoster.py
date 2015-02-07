@@ -9,8 +9,10 @@ from resources.lib.gui.contextElement import cContextElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.player import cPlayer
+from resources.lib.db import cDb
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
+import xbmc
 
 class cHosterGui:
 
@@ -19,13 +21,27 @@ class cHosterGui:
     # step 1 - bGetRedirectUrl in ein extra optionsObject verpacken
     def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl = False):
         
+        oInputParameterHandler = cInputParameterHandler()
+        aParams = oInputParameterHandler.getAllParameter()
+        
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)
         #oGuiElement.setFunction('showHosterMenu')
         oGuiElement.setFunction('play')
         oGuiElement.setTitle(oHoster.getDisplayName())
-        oGuiElement.setThumbnail(sThumbnail)
+        # oGuiElement.setThumbnail(sThumbnail)
+        # if (oInputParameterHandler.exist('sMeta')):
+            # sMeta = oInputParameterHandler.getValue('sMeta')
+            # oGuiElement.setMeta(int(sMeta))
+            
+        oGuiElement.setFileName(oHoster.getFileName())
+        oGuiElement.getInfoLabel()
+        #oGuiElement.setThumbnail(xbmc.getInfoLabel('ListItem.Art(thumb)'))
+                
+            
+        #oGuiElement.setMeta(1)
         oGuiElement.setIcon('host.png')
+        
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
@@ -35,12 +51,24 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
         oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
 
-        oOutputParameterHandler.addParameter('sTitle', oHoster.getFileName())
+        oOutputParameterHandler.addParameter('sTitle', oHoster.getDisplayName())
         oOutputParameterHandler.addParameter('sId', 'cHosterGui')
         oOutputParameterHandler.addParameter('siteUrl', sMediaUrl)
         oOutputParameterHandler.addParameter('sFav', 'play')
         oOutputParameterHandler.addParameter('sCat', '4')
         
+        #context read and noread
+        oContext = cContextElement()
+        oContext.setFile('cGui')
+        oContext.setSiteName('cGui')
+        oContext.setFunction('setWatched')
+        oContext.setTitle('[COLOR azure]Marquer vu/Non vu[/COLOR]')
+
+        #oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
+        #oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
+      
+        oContext.setOutputParameterHandler(oOutputParameterHandler)
+        oGuiElement.addContextItem(oContext)
         
         #context playlit menu
         oContext = cContextElement()
@@ -76,7 +104,7 @@ class cHosterGui:
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
         
-        oGui.addFolder(oGuiElement, oOutputParameterHandler)
+        oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
 
     def checkHoster(self, sHosterUrl): 
     
@@ -225,23 +253,27 @@ class cHosterGui:
 
         sHosterName = oHoster.getDisplayName()
         cConfig().showInfo(sHosterName, 'Resolve')
-
+        
         try:
         
             oHoster.setUrl(sMediaUrl)
             aLink = oHoster.getMediaLink()
 
             if (aLink[0] == True):
+
                 oGuiElement = cGuiElement()
                 oGuiElement.setSiteName(self.SITE_NAME)
                 oGuiElement.setMediaUrl(aLink[1])
                 oGuiElement.setTitle(oHoster.getFileName())
-                oGuiElement.setThumbnail(sThumbnail)
-
+                #oGuiElement.setThumbnail(sThumbnail)
+                oGuiElement.getInfoLabel()
+                #oGuiElement.setThumbnail(xbmc.getInfoLabel('ListItem.Art(thumb)'))
                 oPlayer = cPlayer()
                 oPlayer.clearPlayList()
                 oPlayer.addItemToPlaylist(oGuiElement)
                 oPlayer.startPlayer()
+                #oPlayer.clearPlayList()
+                #xbmc.Player().play(aLink[1], oGuiElement)
                 return
             else:
                 cConfig().showInfo(sHosterName, 'Fichier introuvable')

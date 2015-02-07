@@ -2,15 +2,16 @@
 #Venom.
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
-import urllib
+
 from resources.lib.config import cConfig
+from resources.lib.db import cDb
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 import xbmc
 import xbmcgui
 import xbmcplugin
-
+import urllib
 class cGui:
 
     SITE_NAME = 'cGui'
@@ -27,6 +28,11 @@ class cGui:
         oGuiElement.setMeta(1)
         oGuiElement.setDescription(sDesc)
         
+        if oOutputParameterHandler.getValue('sMovieTitle'):
+            sTitle = oOutputParameterHandler.getValue('sMovieTitle')
+            oGuiElement.setFileName(sTitle)
+        
+        
         self.__createContexMenuWatch(oGuiElement, oOutputParameterHandler)
         self.__createContexMenuinfo(oGuiElement, oOutputParameterHandler)
         self.__createContexMenuWriteFav(oGuiElement, oOutputParameterHandler)
@@ -34,6 +40,7 @@ class cGui:
         #oInputParameterHandler = cInputParameterHandler()
         #sUrl = oInputParameterHandler.getValue('siteUrl')
         #print oGuiElement.getMediaUrl()
+        
 
         #context fav
         oContext = cContextElement()
@@ -64,6 +71,10 @@ class cGui:
         oGuiElement.setMeta(2)
         oGuiElement.setDescription(sDesc)
         
+        if oOutputParameterHandler.getValue('sMovieTitle'):
+            sTitle = oOutputParameterHandler.getValue('sMovieTitle')
+            oGuiElement.setFileName(sTitle)
+        
         self.__createContexMenuWatch(oGuiElement, oOutputParameterHandler)
         self.__createContexMenuinfo(oGuiElement, oOutputParameterHandler)
         self.__createContexMenuWriteFav(oGuiElement, oOutputParameterHandler)
@@ -92,8 +103,10 @@ class cGui:
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon(sIcon)
-        oGuiElement.setThumbnail(sThumbnail)
+        #oGuiElement.setThumbnail(sThumbnail)
         oGuiElement.setMeta(0)
+        oGuiElement.getInfoLabel()
+        
         oGuiElement.setDescription(sDesc)
         
         self.__createContexMenuWatch(oGuiElement, oOutputParameterHandler)
@@ -154,22 +167,32 @@ class cGui:
         self.addFolder(oGuiElement, '') 
 
     
-    def addFolder(self, oGuiElement, oOutputParameterHandler=''):
-        sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)
+    def addFolder(self, oGuiElement, oOutputParameterHandler='', isFolder=True):
+        
         oListItem = self.createListItem(oGuiElement)
         
+        # if oGuiElement.getMeta():
+            # oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
+        
+        
+        sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)
+
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
        
-        
         sPluginHandle = cPluginHandler().getPluginHandle();
 
-        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, True)
+        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=isFolder)        
+        
 
     def createListItem(self, oGuiElement):
         #oPath = cPluginHandler().getRootArt()
         oListItem = xbmcgui.ListItem(oGuiElement.getTitle(), oGuiElement.getTitleSecond(), oGuiElement.getIcon())
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
         oListItem.setThumbnailImage(oGuiElement.getThumbnail())
+        
+        #oListItem.setProperty("Fanart_Image", oGuiElement.getFanart())
+        #oListItem.setProperty("IsPlayable", "true")
+        #oListItem.setProperty("Video", "true")
 
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey in aProperties.keys():
@@ -184,9 +207,9 @@ class cGui:
         oContext.setFunction('setWatched')
         oContext.setTitle('[COLOR azure]Marquer vu/Non vu[/COLOR]')
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
-        oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
+        #oOutputParameterHandler = cOutputParameterHandler()
+        #oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
+        #oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
       
         oContext.setOutputParameterHandler(oOutputParameterHandler)
 
@@ -262,8 +285,8 @@ class cGui:
                 sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)                
                 aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.RunPlugin(%s)" % (sTest,),)]
 
-            oListItem.addContextMenuItems(aContextMenus)
-            #oListItem.addContextMenuItems(aContextMenus, True)
+            #oListItem.addContextMenuItems(aContextMenus)
+            oListItem.addContextMenuItems(aContextMenus, True)
 
         oContextItem = cContextElement()
         oContextItem.setFile('cFav')
@@ -281,6 +304,7 @@ class cGui:
                 oOutputParameterHandler.addParameter('sHosterIdentifier', 'youtube')
                 oOutputParameterHandler.addParameter('sMediaUrl', oGuiElement.getTrailerUrl())
                 oOutputParameterHandler.addParameter('sFileName', oGuiElement.getTitle())
+                oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
                 oContextItem = cContextElement()
                 oContextItem.setFile('cHosterGui')
                 oContextItem.setSiteName('cHosterGui')
@@ -339,15 +363,19 @@ class cGui:
         xbmc.executebuiltin("Container.Refresh")
     
     def setWatched(self):
-        oGuiElement = cGuiElement()
         oInputParameterHandler = cInputParameterHandler()
+        
+        aParams = oInputParameterHandler.getAllParameter()
 
-        sTitle = oInputParameterHandler.getValue('sTitle')
-        sId = oInputParameterHandler.getValue('sId')
-
-        #oGuiElement.setTitle(sTitle)
-        #oGuiElement.setSiteName(sId)
-        oGuiElement.setWatched(sId, sTitle)
+        meta = {}      
+        meta['title'] = aParams['sTitle']
+        meta['site'] = aParams['sId']
+        
+        row = cDb().get_watched(meta)
+        if row:
+            cDb().del_watched(meta)
+        else:
+            cDb().insert_watched(meta)
         xbmc.executebuiltin( 'Container.Refresh' )
         
     def viewinfo(self):
@@ -362,14 +390,17 @@ class cGui:
     def __createItemUrl(self, oGuiElement, oOutputParameterHandler=''):
         if (oOutputParameterHandler == ''):
             oOutputParameterHandler = cOutputParameterHandler()
-                    
+            
         sParams = oOutputParameterHandler.getParameterAsUri()
+        
         sPluginPath = cPluginHandler().getPluginPath();
 
         if (len(oGuiElement.getFunction()) == 0):
             sItemUrl = '%s?site=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), urllib.quote_plus(oGuiElement.getTitle()), sParams)
         else:
             sItemUrl = '%s?site=%s&function=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), oGuiElement.getFunction(), urllib.quote_plus(oGuiElement.getTitle()), sParams)
+            
+        #print sItemUrl
         return sItemUrl
 
     def showKeyBoard(self, sDefaultText=''):

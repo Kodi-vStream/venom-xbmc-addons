@@ -294,8 +294,8 @@ def showEpisode():
             else:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
-                oGui.addDir(SITE_IDENTIFIER, 'showHosters', sMovieTitle+' - '+aEntry[2], 'films.png', oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sMovieTitle+' - '+aEntry[2], 'films.png','', '', oOutputParameterHandler)
        
     
         cConfig().finishDialog(dialog)

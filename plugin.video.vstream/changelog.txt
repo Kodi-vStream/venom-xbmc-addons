@@ -3,9 +3,19 @@
 - Question & Support: https://github.com/LordVenom/venom-xbmc-addons/issues
 - Question & Support: Twitter @lordvenom57
 ================================================================================
+ATTENTION pour la version 0.2.7 merci de supprimer le fichier userdata\addon_data\plugin.video.vstream\vstream.db
 ================================================================================
-   -------------- Bonne année --------------
+- Version 0.2.7 - 06.02.2015
 ================================================================================
+    - Option marquer lus pour une source
+	- Option auto marque lu
+	- Retourne l'url d'erreur dans le log
+	- Suppression des metas inutile
+	- Marque lu passe en DB
+	- Suppression d'apelle variable inutile
+	- optimisation de la recherche meta
+	- Ajout de meta
+	- Ajout Recherche Visuelles
 ================================================================================
 - Version 0.2.6 - 03.01.2015
 ================================================================================

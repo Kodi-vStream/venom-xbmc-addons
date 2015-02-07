@@ -1,8 +1,8 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.config import cConfig
-from resources.lib.gui.gui import cGui
-from resources.lib.gui.hoster import cHosterGui
+#from resources.lib.gui.gui import cGui
+#from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 import os, sys
@@ -53,20 +53,20 @@ class cDb:
         sql_create2 = "DROP TABLE history"
         
         ''' Create table '''
-        sql_create = "CREATE TABLE IF NOT EXISTS history ("\
-                            "addon_id integer PRIMARY KEY AUTOINCREMENT,"\
-                            "title TEXT,"\
-                            "disp TEXT,"\
-                            "icone TEXT,"\
-                            "isfolder TEXT,"\
-                            "level TEXT,"\
-                            "lastwatched TIMESTAMP"\
-                            ");"
+        sql_create = "CREATE TABLE IF NOT EXISTS history ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""disp TEXT, ""icone TEXT, ""isfolder TEXT, ""level TEXT, ""lastwatched TIMESTAMP "");"
+        
+        self.dbcur.execute(sql_create)
+        
+        sql_create = "CREATE TABLE IF NOT EXISTS resume ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""hoster TEXT, ""point TEXT, ""UNIQUE(title, hoster)"");"
+        
+        self.dbcur.execute(sql_create)
 
-        self.dbcur.execute(sql_create)     
+        sql_create = "CREATE TABLE IF NOT EXISTS watched ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""site TEXT, ""UNIQUE(title, site)"");"
+        
+        self.dbcur.execute(sql_create)         
 
         
-        cConfig().log('Table watch_history initialized') 
+        cConfig().log('Table initialized') 
     
     def str_conv(self, data):
         if isinstance(data, str):
@@ -77,7 +77,6 @@ class cDb:
         data = unicodedata.normalize('NFKD', data).encode('ascii','ignore')
         
         data = data.decode('string-escape')
-        
         return data
     
     def insert_history(self, meta):
@@ -91,12 +90,47 @@ class cDb:
 
         try:
             self.db.commit() 
-            cConfig().log('SQL INSERT Successfully') 
+            cConfig().log('SQL INSERT history Successfully') 
         except Exception, e:
             #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
             cConfig().log('SQL ERROR INSERT') 
             pass
-        self.db.close() 
+        self.db.close()
+
+    def insert_resume(self, meta):
+        title = self.str_conv(meta['title'])
+        hoster = meta['hoster']
+        point = meta['point']
+        ex = "DELETE FROM resume WHERE title = '%s' AND hoster = '%s'" % (title, hoster)
+        self.dbcur.execute(ex)
+        ex = "INSERT INTO resume (title, hoster, point) VALUES (?, ?, ?)"
+        self.dbcur.execute(ex, (title,hoster,point))
+
+        try:
+            self.db.commit() 
+            cConfig().log('SQL INSERT resume Successfully') 
+        except Exception, e:
+            #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
+            cConfig().log('SQL ERROR INSERT') 
+            pass
+        self.db.close()  
+
+    def insert_watched(self, meta):
+
+        #title = urllib.unquote(meta['title']).decode('ascii', 'ignore')
+        title = self.str_conv(meta['title'])
+        site = meta['site']
+        ex = "INSERT INTO watched (title, site) VALUES (?, ?)"
+        self.dbcur.execute(ex, (title,site))
+
+        try:
+            self.db.commit() 
+            cConfig().log('SQL INSERT watched Successfully') 
+        except Exception, e:
+            #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
+            cConfig().log('SQL ERROR INSERT') 
+            pass
+        self.db.close()        
 
 
     def get_history(self):
@@ -111,7 +145,42 @@ class cDb:
         except Exception, e:
             cConfig().log('SQL ERROR EXECUTE') 
             return None
-        self.dbcur.close()   
+        self.dbcur.close()
+
+    def get_resume(self, meta):
+        title = self.str_conv(meta['title'])
+
+        sql_select = "SELECT * FROM resume WHERE title = '%s' AND hoster = '%s'" % (title, meta['hoster'] )
+
+        try:    
+            self.dbcur.execute(sql_select)
+            #matchedrow = self.dbcur.fetchone()
+            matchedrow = self.dbcur.fetchall()
+            return matchedrow        
+        except Exception, e:
+            cConfig().log('SQL ERROR EXECUTE') 
+            return None
+        self.dbcur.close()
+
+    def get_watched(self, meta):
+        count = 0
+        title = self.str_conv(meta['title'])
+        sql_select = "SELECT * FROM watched WHERE title = '%s' AND site = '%s'" % (title, meta['site'] )
+
+        try:    
+            self.dbcur.execute(sql_select)
+            #matchedrow = self.dbcur.fetchone()
+            matchedrow = self.dbcur.fetchall()
+
+            if matchedrow:
+                count = 1
+            else:
+                count = 0    
+            return count        
+        except Exception, e:
+            cConfig().log('SQL ERROR EXECUTE') 
+            return None
+        self.dbcur.close()          
 
     def del_history(self):
 
@@ -127,10 +196,20 @@ class cDb:
             cConfig().log('SQL ERROR DELETE') 
             return False, False
         self.dbcur.close()  
+       
+    def del_watched(self, meta):
+        title = self.str_conv(meta['title'])
+        sql_select = "DELETE FROM watched WHERE title = '%s' AND site = '%s'" % (title, meta['site'] )
 
-    
-   
-     
+        try:    
+            self.dbcur.execute(sql_select)
+            self.db.commit()
+            return False, False
+        except Exception, e:
+            cConfig().log('SQL ERROR EXECUTE') 
+            return False, False
+        self.dbcur.close() 
+
     def getFavourites(self):
         oGui = cGui()
 

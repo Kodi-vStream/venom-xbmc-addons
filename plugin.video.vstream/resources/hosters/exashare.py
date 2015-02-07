@@ -46,7 +46,7 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
         
-        sPattern =  'http://(?:www.|embed.)exashare.(?:com)/(?:video/|embed\-)?([0-9a-z]+)'
+        sPattern =  'http://(?:www.|embed.|)exashare.(?:com)/(?:video/|embed\-)?([0-9a-z]+)'
          
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
@@ -60,6 +60,7 @@ class cHoster(iHoster):
         return self.__sUrl
 
     def getMediaLink(self):
+        
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
@@ -67,6 +68,9 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
+        aHeader = oRequest.getResponseHeader();
+        sReponseCookie = aHeader.getheader("Set-Cookie")
+     
         sPattern = 'file: "([^"]+)"';
         
         oParser = cParser()

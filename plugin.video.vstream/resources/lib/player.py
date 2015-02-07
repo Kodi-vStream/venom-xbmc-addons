@@ -2,37 +2,24 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
+from resources.lib.db import cDb
+
+
 import xbmc
 import time
 
-class runplayer(xbmc.Player):
+class cPlayer(xbmc.Player):
+    
     def __init__(self, *args):
         xbmc.Player.__init__(self)
         self.loadingStarting = time.time()
-
-    def onPlayBackStarted(self):
-        #xbmc commence a jouer un fichier
-        cConfig().showInfo('vStream', 'Demarrer')
-
-    def onPlayBackPaused(self):
-        #utilisateur fait une pause un fichier de jeu.
-        cConfig().showInfo('vStream', 'Pause')
-
-    def onPlayBackResumed(self):
-        #utilisateur reprend un fichier en pause .
-        cConfig().showInfo('vStream', 'Pause')
-
-    def onPlayBackEnded( self ):
-        #xbmc arrete de jouer un fichier .
-        cConfig().showInfo('vStream', 'Fichier endommage ou illisible')
-
-    def onPlayBackStopped( self ):
-        #utilisateur arrete xbmc lecture d'un fichier .
-        cConfig().showInfo('vStream', 'Stop')
-
-
-class cPlayer():
-    
+        
+        oInputParameterHandler = cInputParameterHandler()
+        
+        self.sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
+        self.sTitle = oInputParameterHandler.getValue('sTitle')
+        self.sSite = oInputParameterHandler.getValue('site')
+        
     def clearPlayList(self):
         oPlaylist = self.__getPlayList()
         oPlaylist.clear()
@@ -41,13 +28,14 @@ class cPlayer():
         return xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
 
     def addItemToPlaylist(self, oGuiElement):
+        print "passe"
         oGui = cGui()
         oListItem =  oGui.createListItem(oGuiElement)
         self.__addItemToPlaylist(oGuiElement, oListItem)
 	
     def __addItemToPlaylist(self, oGuiElement, oListItem):    
-	   oPlaylist = self.__getPlayList()	
-	   oPlaylist.add(oGuiElement.getMediaUrl(), oListItem )
+        oPlaylist = self.__getPlayList()	
+        oPlaylist.add(oGuiElement.getMediaUrl(), oListItem )
 
     def startPlayer(self):
         sPlayerType = self.__getPlayerType()
@@ -56,19 +44,21 @@ class cPlayer():
         xbmcPlayer.play(oPlayList)
         timer = int(cConfig().getSetting('param_timeout'))
         xbmc.sleep(timer)
-        try:
+        # try:
             
-            if xbmcPlayer.getPlayingFile(): 
-                cConfig().log("Start Player " + xbmcPlayer.getPlayingFile())
+            # if xbmcPlayer.getPlayingFile(): 
+                # cConfig().log("Start Player " + xbmcPlayer.getPlayingFile())
                 
-        except:
-            cConfig().showInfo('vStream', 'Timeout')
-            cConfig().log("Start Player Impossible")
+        # except:
+            # cConfig().showInfo('vStream', 'Start Player Impossible')
+            # cConfig().log("Start Player Impossible")
 
-        #player = runplayer()
-        #while not xbmc.abortRequested:
-        #    xbmc.sleep(500)
-        #del player
+        while not xbmc.abortRequested:
+            try: 
+                self.currentTime = self.getTime()
+                self.totalTime = self.getTotalTime()
+            except: break
+            xbmc.sleep(1000)
 
         # dirty, but is works 
         if (cConfig().isDharma() == False):
@@ -82,6 +72,55 @@ class cPlayer():
             oGui.addFolder(oGuiElement)
             oGui.setEndOfDirectory()
 
+    def onPlayBackEnded( self ):
+        try:
+            self.__setWatched()
+        except: pass
+        try:
+            self.__setResume()
+        except: pass
+        xbmc.executebuiltin( 'Container.Refresh' )
+
+    def onPlayBackStopped( self ):
+        try:
+            self.__setWatched()
+        except: pass
+        try:
+            self.__setResume()
+        except: pass
+        xbmc.executebuiltin( 'Container.Refresh' )
+        
+    def onPlayBackStarted(self):       
+        meta = {}      
+        meta['title'] = self.sTitle
+        meta['hoster'] = self.sHosterIdentifier
+        try:
+            data = cDb().get_resume(meta)
+            if not data == '':
+                seekTime = float(data[0][3])
+                self.seekTime(seekTime)
+        except:
+            pass
+                
+    def __setResume(self):
+        meta = {}      
+        meta['title'] = self.sTitle
+        meta['hoster'] = self.sHosterIdentifier
+        meta['point'] = str(self.currentTime)
+        try:
+            cDb().insert_resume(meta)
+        except:
+            pass
+            
+    def __setWatched(self):
+        meta = {}      
+        meta['title'] = self.sTitle
+        meta['site'] = self.sSite
+        try:
+            cDb().insert_watched(meta)
+        except:
+            pass
+        
     def __getPlayerType(self):
         oConfig = cConfig()
         sPlayerType = oConfig.getSetting('playerType')

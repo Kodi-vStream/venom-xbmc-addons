@@ -70,19 +70,19 @@ class cRequestHandler:
         else:
             oRequest = urllib2.Request(self.__sUrl)
 
-        for aHeader in self.__aHeaderEntries:                
+        for aHeader in self.__aHeaderEntries:
                 for sHeaderKey, sHeaderValue in aHeader.items():
                     oRequest.add_header(sHeaderKey, sHeaderValue)
 
     	try:
-    		oResponse = urllib2.urlopen(oRequest)               
+    		oResponse = urllib2.urlopen(oRequest, timeout=30)               
     	#except:
     	#	for aHeader in self.__aHeaderEntries:
         #                for sHeaderKey, sHeaderValue in aHeader.items():
         #                    oRequest.add_header(sHeaderKey, sHeaderValue)
     	#	oResponse = urllib2.urlopen(oRequest)
-        except HTTPError, e:
-            cConfig().log(e.code)
+        except:
+            cConfig().error("%s,%s" % (cConfig().getLocalizedString(30205), self.__sUrl))
             return ''
 
         sContent = oResponse.read()

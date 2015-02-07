@@ -17,20 +17,24 @@ class cAbout:
         #self.__sFunctionName = ''
 
     def get_remote_md5_sum(self, url, max_file_size=100*1024*1024):
-        remote = urllib2.urlopen(url)
-        hash = hashlib.md5()
-     
-        total_read = 0
-        while True:
-            data = remote.read(4096)
-            total_read += 4096
-     
-            if not data or total_read > max_file_size:
-                break
-     
-            hash.update(data)
-     
-        return hash.hexdigest()
+        try:
+            remote = urllib2.urlopen(url)
+            hash = hashlib.md5()
+         
+            total_read = 0
+            while True:
+                data = remote.read(4096)
+                total_read += 4096
+         
+                if not data or total_read > max_file_size:
+                    break
+         
+                hash.update(data)
+         
+            return hash.hexdigest()
+        except:            
+            cConfig().error("%s,%s" % (cConfig().getLocalizedString(30205), url))
+            return False
       
 
     def main(self, env):
@@ -39,10 +43,13 @@ class cAbout:
         
 
         if (env == 'changelog'):
-            oRequest =  urllib2.Request(sUrl)
-            oResponse = urllib2.urlopen(oRequest)
-            sContent = oResponse.read()
-            self.TextBoxes('vStream Changelog', sContent)
+            try:
+                oRequest =  urllib2.Request(sUrl)
+                oResponse = urllib2.urlopen(oRequest)
+                sContent = oResponse.read()
+                self.TextBoxes('vStream Changelog', sContent)
+            except:            
+                cConfig().error("%s,%s" % (cConfig().getLocalizedString(30205), sUrl))
             return
 
         if (env == 'about'):
@@ -58,11 +65,14 @@ class cAbout:
 
 
             if (stats_out != stats_in):
-                oRequest =  urllib2.Request(sUrl)
-                oResponse = urllib2.urlopen(oRequest)
-                sContent = oResponse.read()
-                self.TextBoxes('Changelog', sContent)
-                cConfig().setSetting('date_update', str(stats_in))
+                try:
+                    oRequest =  urllib2.Request(sUrl)
+                    oResponse = urllib2.urlopen(oRequest)
+                    sContent = oResponse.read()
+                    self.TextBoxes('Changelog', sContent)
+                    cConfig().setSetting('date_update', str(stats_in))
+                except:            
+                    cConfig().error("%s,%s" % (cConfig().getLocalizedString(30205), sUrl))
                 return
         return
 

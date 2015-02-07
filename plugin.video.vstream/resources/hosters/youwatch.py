@@ -65,7 +65,13 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
-    def __getMediaLinkForGuest(self):        
+    def __getMediaLinkForGuest(self): 
+        
+        #import urlresolver
+        #host = urlresolver.HostedMediaFile(self.__sUrl)
+        #if host: resolver = urlresolver.resolve(self.__sUrl)
+        #api_call = resolver
+                    
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
@@ -79,6 +85,9 @@ class cHoster(iHoster):
         if (aResult[0] == True):
             api_call = ('http://%s.youwatch.org:%s/%s/video.mp4') % (aResult[1][0][2], aResult[1][0][1], aResult[1][0][0])
             return True, api_call
+        else:
+            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
+            return False, False
             
         return False, False
         

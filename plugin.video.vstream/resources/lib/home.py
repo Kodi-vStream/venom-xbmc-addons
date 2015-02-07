@@ -32,8 +32,13 @@ class cHome:
         if (cConfig().getSetting('home_cherches') == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'showSearch', '[COLOR '+color_cherches+']Recherche[/COLOR]', 'search.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showSearch', '[COLOR '+color_cherches+']Recherches[/COLOR]', 'search.png', oOutputParameterHandler)
         
+        if (cConfig().getSetting('home_cherchev') == 'true'):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+            oGui.addDir('themoviedb_org', 'load', '[COLOR '+color_cherches+']Recherches visuelles (bêta)[/COLOR]', 'tv.png', oOutputParameterHandler)
+            
         if (cConfig().getSetting('home_tvs') == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')

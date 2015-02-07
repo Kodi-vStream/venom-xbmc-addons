@@ -180,9 +180,9 @@ def saisonHosters():
             sUrl = URL_MAIN+aEntry[0]
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addMisc(SITE_IDENTIFIER, 'epHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler) 
+            oGui.addTV(SITE_IDENTIFIER, 'epHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler) 
 
         cConfig().finishDialog(dialog)    
 
@@ -215,9 +215,9 @@ def epHosters():
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN+aEntry[0]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[1], '', sThumbnail, '', oOutputParameterHandler) 
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', aEntry[1], '', sThumbnail, '', oOutputParameterHandler) 
 
         cConfig().finishDialog(dialog)    
 

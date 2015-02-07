@@ -261,7 +261,7 @@ def serieHosters():
             if (oHoster != False):
                 sTitle = aEntry[1]
                 oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
+                oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
         cConfig().finishDialog(dialog)    

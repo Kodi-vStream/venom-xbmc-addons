@@ -145,6 +145,7 @@ def showMovies(sSearch = ''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('[Streaming]', '').replace('[Telecharger]', '')
@@ -166,6 +167,9 @@ def showMovies(sSearch = ''):
 
             sTitle=re.sub('(.*)(\[.*\])','\\1 [COLOR azure]\\2[/COLOR]', str(aEntry[2]))
             sMovieTitle=re.sub('(\[.*\])','', str(aEntry[2]))
+            
+            #oGuiElement = cGuiElement()
+            #oGuiElement.setFileName(sMovieTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
@@ -220,9 +224,10 @@ def showSeries():
                 oGui.addMisc(SITE_IDENTIFIER, 'showSeries', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'series.png', sThumbnail, '', oOutputParameterHandler)
             else:
                 sTitle = sMovieTitle+' - '+aEntry[1]
+                
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
+                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
 

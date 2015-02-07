@@ -466,10 +466,10 @@ def showSerieHosters():
                    
         
             if (oHoster != False):
-                sMovieTitle=re.sub(r'\[.*\]',r'',sMovieTitle)
-                sTitle = str(sMovieTitle) + ' - ' + str(aEntry[2])
+                sTitle=re.sub(r'\[.*\]',r'',sMovieTitle)
+                sTitle = str(sTitle) + ' - ' + str(aEntry[2])
                 oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
+                oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
 
         cConfig().finishDialog(dialog)

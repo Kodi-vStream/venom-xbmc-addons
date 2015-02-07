@@ -12,3 +12,12 @@ class cOutputParameterHandler:
             if len(self.__aParams) > 0:
                     return urllib.urlencode(self.__aParams)
             return 'params=0'
+    
+    def getValue(self, sParamName):
+            if (self.exist(sParamName)):
+                    sParamValue = self.__aParams[sParamName]                    
+                    return urllib.unquote_plus(sParamValue)
+            return False
+            
+    def exist(self, sParamName):
+            return self.__aParams.has_key(sParamName)
