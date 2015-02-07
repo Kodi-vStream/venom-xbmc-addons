@@ -15,9 +15,9 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="fr">vStream</summary>
-    <description lang="fr">vstream et un module de streaming français, trouver tous vos films, séries et mangas.Vstream et basé sur Xstream merci a Murphy</description>
+    <description lang="fr">vStream et un module de streaming français, trouver tous vos films, séries et mangas.Vstream et basé sur Xstream merci a Murphy</description>
     <summary lang="en">vStream</summary>
-    <description lang="en">vstream module and a french streaming, find all your movies, TV shows and mangas.Vstream and based on a thank you Xstream Murphy</description>
+    <description lang="en">vStream module and a french streaming, find all your movies, TV shows and mangas.Vstream and based on a thank you Xstream Murphy</description>
     <platform>all</platform>
   </extension>
 </addon>
