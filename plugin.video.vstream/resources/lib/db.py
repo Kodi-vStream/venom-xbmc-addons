@@ -8,9 +8,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 import os, sys
 import urllib
 import xbmc
-from addon.common.addon import Addon
-
-addon = Addon('plugin.video.vstream')
 
 
 SITE_IDENTIFIER = 'cDb'
