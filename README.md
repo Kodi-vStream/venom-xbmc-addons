@@ -43,4 +43,10 @@ Pour créer un nouvelle source utiliser le fichier avec commentaire pour vous ai
 [Fichier avec commentaire](https://github.com/LordVenom/venom-xbmc-addons/blob/master/ajouter_une_source.py)
 
 
+Faire un Don!
+----------
+
+[![PayPayl donate button](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KQZ5AUFYJW64 "Donner pour ce projet en utilisant Paypal")
+
+
 Bon Film ++
