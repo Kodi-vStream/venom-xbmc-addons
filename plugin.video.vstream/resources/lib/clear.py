@@ -22,11 +22,11 @@ class cClear:
             dialog = xbmcgui.Dialog()
             if dialog.yesno('vStream', 'Êtes-vous sûr ?','','','Non', 'Oui'):
                 
-                cached_path = os.path.join(cConfig().getSettingCache(),'Cache')
-                cookie_file = os.path.join(cConfig().getSettingCache(),'Cookies')
-                self.ClearDir(xbmc.translatePath(cached_path),True)
-                self.ClearDir(xbmc.translatePath(cookie_file),True)
-                xbmc.executebuiltin("XBMC.Notification(Clear XBMC Cache,Successful,5000,"")")
+                cached_fav = cConfig().getFileFav()
+                cached_DB = cConfig().getFileDB()
+                self.ClearDir2(xbmc.translatePath(cached_fav),True)
+                self.ClearDir2(xbmc.translatePath(cached_DB),True)
+                xbmc.executebuiltin("XBMC.Notification(Clear Addon Cache,Successful,5000,"")")
             return
 
         if (env == 'xbmc'):
@@ -50,5 +50,10 @@ class cClear:
             else:
                 try:os.unlink(file_path)
                 except Exception, e: print str(e)
+                    
+    def ClearDir2(self, dir, clearNested = False):
+
+            try:os.unlink(dir)
+            except Exception, e: print str(e)
 
 cClear()

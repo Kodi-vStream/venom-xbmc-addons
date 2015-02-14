@@ -27,7 +27,7 @@ SERIE_VOSTFRS = ('http://full-stream.net/seriestv/vostfr/', 'showMovies')
 ANIM_VFS = ('http://full-stream.net/mangas/mangas-vf/', 'showMovies')
 ANIM_VOSTFRS = ('http://full-stream.net/mangas/mangas-vostfr/', 'showMovies')
 
-URL_SEARCH = ('http://full-stream.net/xfsearch/', 'showMovies')
+URL_SEARCH = ('http://full-stream.net/index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -78,7 +78,7 @@ def showSearch():
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
             #sSearchText = cUtil().urlEncode(sSearchText)
-            sUrl = 'http://full-stream.net/xfsearch/'+sSearchText+'/'  
+            sUrl = 'http://full-stream.net/index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&story='+sSearchText  
             showMovies(sUrl)
             oGui.setEndOfDirectory()
             return  
@@ -142,7 +142,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('&amp;w=240&amp;h=320','')
-    sPattern = 'fullstreaming">.*?<img src=".+?src=(.+?)".+?<h3.+?><a href="(.+?)">(.+?)</a></h3>.+?<span style="font-family.+?>(.+?)</span>'
+    sPattern = 'fullstreaming">.*?<img src=".+?src=(.+?)".+?<h3.+?><a href="(.+?)">(.+?)</a></h3>(?:.+?<span style="font-family.+?>(.+?)</span>|)'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)

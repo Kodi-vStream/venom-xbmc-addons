@@ -23,6 +23,8 @@ URL_FREE = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master
 URL_ORANGE = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/orangetv.m3u'
 URL_SFR = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/sfrtv.m3u'
 URL_WEB = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/webtv2.m3u'
+URL_BG = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/bouygues.m3u'
+
 
 icon = 'tv.png'        
 sRootArt = cConfig().getRootArt()
@@ -54,6 +56,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_ORANGE)
     oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Orange TV', 'tv.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_BG)
+    oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Bouygues TV', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_WEB)

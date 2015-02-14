@@ -26,7 +26,7 @@ class cDb:
 
     def __init__(self):
 
-        DB = os.path.join(cConfig().getSettingCache(), 'vstream.db')
+        DB = cConfig().getFileDB()
 
         try:
             self.db = sqlite.connect(DB)
@@ -96,12 +96,13 @@ class cDb:
 
     def insert_resume(self, meta):
         title = self.str_conv(meta['title'])
-        hoster = meta['hoster']
+        site = urllib.quote_plus(meta['site'])
+        #hoster = meta['hoster']
         point = meta['point']
-        ex = "DELETE FROM resume WHERE title = '%s' AND hoster = '%s'" % (title, hoster)
+        ex = "DELETE FROM resume WHERE hoster = '%s'" % (site)
         self.dbcur.execute(ex)
         ex = "INSERT INTO resume (title, hoster, point) VALUES (?, ?, ?)"
-        self.dbcur.execute(ex, (title,hoster,point))
+        self.dbcur.execute(ex, (title,site,point))
 
         try:
             self.db.commit() 
@@ -114,12 +115,10 @@ class cDb:
 
     def insert_watched(self, meta):
 
-        #title = urllib.unquote(meta['title']).decode('ascii', 'ignore')
         title = self.str_conv(meta['title'])
-        site = meta['site']
+        site = urllib.quote_plus(meta['site'])
         ex = "INSERT INTO watched (title, site) VALUES (?, ?)"
         self.dbcur.execute(ex, (title,site))
-
         try:
             self.db.commit() 
             cConfig().log('SQL INSERT watched Successfully') 
@@ -146,8 +145,9 @@ class cDb:
 
     def get_resume(self, meta):
         title = self.str_conv(meta['title'])
+        site = urllib.quote_plus(meta['site'])
 
-        sql_select = "SELECT * FROM resume WHERE title = '%s' AND hoster = '%s'" % (title, meta['hoster'] )
+        sql_select = "SELECT * FROM resume WHERE hoster = '%s'" % (site)
 
         try:    
             self.dbcur.execute(sql_select)
@@ -159,10 +159,10 @@ class cDb:
             return None
         self.dbcur.close()
 
-    def get_watched(self, meta):
+    def get_watched(self, meta):        
         count = 0
-        title = self.str_conv(meta['title'])
-        sql_select = "SELECT * FROM watched WHERE title = '%s' AND site = '%s'" % (title, meta['site'] )
+        site = urllib.quote_plus(meta['site'])
+        sql_select = "SELECT * FROM watched WHERE site = '%s'" % (site)
 
         try:    
             self.dbcur.execute(sql_select)
@@ -195,8 +195,8 @@ class cDb:
         self.dbcur.close()  
        
     def del_watched(self, meta):
-        title = self.str_conv(meta['title'])
-        sql_select = "DELETE FROM watched WHERE title = '%s' AND site = '%s'" % (title, meta['site'] )
+        site = urllib.quote_plus(meta['site'])
+        sql_select = "DELETE FROM watched WHERE site = '%s'" % (site)
 
         try:    
             self.dbcur.execute(sql_select)

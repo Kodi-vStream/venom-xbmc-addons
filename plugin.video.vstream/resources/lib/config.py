@@ -34,6 +34,7 @@ class cConfig():
             self.__sIcon = os.path.join(self.__oPath,'resources', 'art','icon.png')
             self.__sFanart = os.path.join(self.__oPath,'resources','art','fanart.jpg')
             self.__sFileFav = os.path.join(self.__oCache,'favourite.db')
+            self.__sFileDB = os.path.join(self.__oCache,'vstream.db')
 
 
     def isDharma(self):
@@ -56,6 +57,9 @@ class cConfig():
     
     def getFileFav(self):
         return self.__sFileFav
+    
+    def getFileDB(self):
+        return self.__sFileDB
 
     def getFileIcon(self):
         return self.__sIcon
@@ -80,6 +84,18 @@ class cConfig():
                 return xbmcplugin.getSetting(sName)
             except:
 		return ''
+        
+    def html_decode(self, s):
+        htmlCodes = [
+        ["'", "&#39;"],
+        ["'", "&#039;"],
+        ["<", "&lt;"],
+        [">", "&gt;"],
+        [" ", "&quot;"],
+        ]
+        for code in htmlCodes:
+            s = s.replace(code[1], code[0])
+        return s
 
     def setSetting(self, sName, sValue):
         if (self.__bIsDharma):

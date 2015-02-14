@@ -126,8 +126,6 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    print aResult
-
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -177,6 +175,7 @@ def saisonHosters():
                 break
 
             sTitle = sMovieTitle+'[COLOR azure]'+aEntry[1]+'[/COLOR]'
+            
             sUrl = URL_MAIN+aEntry[0]
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
@@ -215,7 +214,8 @@ def epHosters():
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN+aEntry[0]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+            
+            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', aEntry[1], '', sThumbnail, '', oOutputParameterHandler) 
 

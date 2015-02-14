@@ -53,38 +53,32 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', API_URL+'/movie/top_rated')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films les mieux notés', 'films.png', oOutputParameterHandler)
    
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', API_URL+'/genre/movie/list')
-    # oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', API_URL+'/genre/movie/list')
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'genres.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', API_URL+'/tv/popular')
-    # oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries Populaires', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', API_URL+'/tv/popular')
+    oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries Populaires', 'films.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', API_URL+'/tv/on_the_air')
-    # oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries a la tv', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', API_URL+'/tv/on_the_air')
+    oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries a la tv', 'films.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', API_URL+'/tv/top_rated')
-    # oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries les mieux notés', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', API_URL+'/tv/top_rated')
+    oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries les mieux notés', 'films.png', oOutputParameterHandler)
 
     # oOutputParameterHandler = cOutputParameterHandler()
     # oOutputParameterHandler.addParameter('siteUrl', API_URL+'/genre/tv/list')
-    # oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Séries Genres', 'genres.png', oOutputParameterHandler)
+    # oGui.addDir(SITE_IDENTIFIER, 'showGenre2', 'Séries Genres', 'genres.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', API_URL+'/person/popular')
+    oGui.addDir(SITE_IDENTIFIER, 'showActors', 'Acteurs Populaires', 'films.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
-
-    
-def showSearch():
-    oGui = cGui()
-
-    sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
-            sUrl = 'http://www.fullmoviz.org/?s='+sSearchText
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return  
+ 
     
  
 def showGenre():
@@ -100,16 +94,15 @@ def showGenre():
     sHtmlContent = oRequestHandler.request(); 
     result = json.loads(sHtmlContent)       
 
- 
     total = len(sHtmlContent)
     if (total > 0):
         for i in result['genres']:
             sId, sTitle = i['id'], i['name']
 
             sTitle = sTitle.encode("utf-8")
-
+            sUrl = API_URL+'/genre/'+str(sId)+'/movies'
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'none')
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', str(sTitle), 'genres.png', oOutputParameterHandler)
            
     oGui.setEndOfDirectory()
@@ -138,10 +131,6 @@ def showMovies():
     if (total > 0):
         for i in result['results']:
             sId, sTitle, sOtitle, sThumbnail, sFanart = i['id'], i['title'], i['original_title'], i['poster_path'], i['backdrop_path']
-            #sTitle = aEntry[2].decode('latin-1').encode("utf-8")
-            #sThumbnail = 'http:'+str(aEntry[2])
-            #sUrl = URL_MAIN+str(aEntry[1])
-            #print ['results']['title']
             if sThumbnail:
                 sThumbnail = POSTER_URL+sThumbnail
             else: sThumbnail = ''
@@ -152,7 +141,8 @@ def showMovies():
             oOutputParameterHandler.addParameter('siteUrl', str('none'))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('disp', 'search1')
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))            
+            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))          
+            
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
             
         if (iPage > 0):
@@ -163,10 +153,11 @@ def showMovies():
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page '+str(iNextPage)+' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
-def showSeries(sSearch=''):
+    
+    
+def showSeries():
     oGui = cGui()
-
+ 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -177,29 +168,28 @@ def showSeries(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addParameters('api_key', API_KEY)
     oRequestHandler.addParameters('language', 'fr')
+    oRequestHandler.addParameters('page', iPage)
+
     sHtmlContent = oRequestHandler.request();
     result = json.loads(sHtmlContent)
     
     total = len(sHtmlContent)
-    sPattern = '<div class="loop-thumb"><a href="([^<]+)"><img width=".+?" height=".+?" src="([^<]+)" class="attachment-loop wp-post-image" alt="(.+?)" /></a>'
-    #oParser = cParser()
-    #aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (total > 0):
         for i in result['results']:
-            sId, sTitle, sThumbnail, sFanart = i['id'], i['name'], i['poster_path'], i['backdrop_path']
-            #sTitle = aEntry[2].decode('latin-1').encode("utf-8")
-            #sThumbnail = 'http:'+str(aEntry[2])
-            #sUrl = URL_MAIN+str(aEntry[1])
-            #print ['results']['title']
+            sId, sTitle, sOtitle, sThumbnail, sFanart = i['id'], i['name'], i['original_name'], i['poster_path'], i['backdrop_path']
             if sThumbnail:
                 sThumbnail = POSTER_URL+sThumbnail
             else: sThumbnail = ''
+
             sTitle = sTitle.encode("utf-8")
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str('none'))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))            
+            oOutputParameterHandler.addParameter('disp', 'search1')
+            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))          
+            
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
             
         if (iPage > 0):
@@ -209,8 +199,69 @@ def showSeries(sSearch=''):
             oOutputParameterHandler.addParameter('page', iNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page '+str(iNextPage)+' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-    if not sSearch:
-        oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
+
+def showActors():
+    oGui = cGui()
+ 
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    iPage = 1
+    if (oInputParameterHandler.exist('page')):
+        iPage = oInputParameterHandler.getValue('page')
+   
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addParameters('api_key', API_KEY)
+    oRequestHandler.addParameters('language', 'fr')
+    oRequestHandler.addParameters('page', iPage)
+
+    sHtmlContent = oRequestHandler.request();
+    result = json.loads(sHtmlContent)
+    
+    total = len(sHtmlContent)
+
+    if (total > 0):
+        for i in result['results']:
+            print i['name']
+            sName, sThumbnail = i['name'], i['profile_path']
+            
+            if sThumbnail:
+                sThumbnail = POSTER_URL+sThumbnail
+            else: sThumbnail = ''
+                    
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))    
+            oGui.addMisc(SITE_IDENTIFIER, 'showActors', '[COLOR red]'+str(sName)+'[/COLOR]', '', sThumbnail, '', oOutputParameterHandler)
+            
+            for i in i['known_for']:
+
+                sId, sTitle, sOtitle, sThumbnail, sFanart = i['id'], i['title'], i['original_title'], i['poster_path'], i['backdrop_path']
+                
+                if sThumbnail:
+                    sThumbnail = POSTER_URL+sThumbnail
+                else: sThumbnail = ''
+
+                sTitle = sTitle.encode("utf-8")
+
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', str('none'))
+                oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
+                oOutputParameterHandler.addParameter('disp', 'search1')
+                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))          
+                
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+            
+        if (iPage > 0):
+            iNextPage = int(iPage) + 1
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('page', iNextPage)
+            oGui.addDir(SITE_IDENTIFIER, 'showActors', '[COLOR teal]Page '+str(iNextPage)+' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     sPattern = "<span class='page-numbers current'>.+?</span><a class='page-numbers' href='([^<]+)'>.+?</a>"
@@ -256,41 +307,3 @@ def showHosters():
                 pass
                 
     oGui.setEndOfDirectory()
-
-    
-
-    
-def __callsearch(liste):
-    sources = []
-    for sSiteName, sUrl, sTitle in liste:
-        try:
-
-            exec "import "+sSiteName+" as search"
-            searchUrl = "search.getSource('%s', '%s')" % (sUrl, sTitle)
-            exec("sources += %s") % (searchUrl)
-            
-        except:       
-            pass
-    return sources
-
-def __calllink(sources):
-    links = []
-    for i in range(len(sources)):
-        try:
-            exec "import "+sources[i]['source']+" as link"
-            linkUrl = "link.getLink('%s')" % (sources[i]['url'])
-            exec("links += %s") % (linkUrl)
-        except:       
-            pass
-    return links
-
-def __callhost(links):
-    hosts = []
-    for i in links:
-        try:       
-            exec "import "+i['source']+" as host"
-            hostUrl = "host.getHost('%s')" % (i['url'])
-            exec("hosts += %s") % (hostUrl)
-        except:       
-            pass
-    return hosts

@@ -180,6 +180,9 @@ def showHosters():
     sPattern = '<iframe.+?src="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    print aResult
+    
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             

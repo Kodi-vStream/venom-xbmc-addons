@@ -135,8 +135,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('nowvideo')
         if ('vk.com' in sHosterUrl):
             return cHosterHandler().getHoster('vk')
-        if ('videomega' in sHosterUrl):
-            return cHosterHandler().getHoster('videomega')
+        #if ('videomega' in sHosterUrl):
+        #    return cHosterHandler().getHoster('videomega')
         if ('vidto' in sHosterUrl):
             return cHosterHandler().getHoster('vidto')
         if ('vidzi' in sHosterUrl):
@@ -153,6 +153,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('azerfile')
         if ('vodlocker' in sHosterUrl):
             return cHosterHandler().getHoster('vodlocker')
+        if ('mystream' in sHosterUrl):
+            return cHosterHandler().getHoster('mystream')
            
 
         return False

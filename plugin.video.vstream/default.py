@@ -21,6 +21,7 @@ from resources.lib.home import cHome
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 
 class main:
     def __init__(self):
@@ -76,13 +77,18 @@ class main:
 		    oGui.updateDirectory()
 	        else:
 	            for aPlugin in aPlugins:
-	                oGuiElement = cGuiElement()
-	                oGuiElement.setTitle(aPlugin[0])
-	                oGuiElement.setSiteName(aPlugin[1])
-	                oGuiElement.setDescription(aPlugin[2])
-	                oGuiElement.setFunction(sFunction)
-	                oGuiElement.setIcon("icon.png")
-	                oGui.addFolder(oGuiElement)
+                    
+	                # oGuiElement = cGuiElement()
+	                # oGuiElement.setTitle(aPlugin[0])
+	                # oGuiElement.setSiteName(aPlugin[1])
+	                # oGuiElement.setDescription(aPlugin[2])
+	                # oGuiElement.setFunction(sFunction)
+	                # oGuiElement.setIcon("icon.png")
+	                # oGui.addFolder(oGuiElement)
+                    
+                        oOutputParameterHandler = cOutputParameterHandler()
+                        oOutputParameterHandler.addParameter('siteUrl', 'test')
+                        oGui.addDir(aPlugin[1], sFunction, aPlugin[0], 'icon.png', oOutputParameterHandler)
 
 	        oGui.setEndOfDirectory()
 	

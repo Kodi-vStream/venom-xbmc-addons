@@ -15,10 +15,12 @@ class cPlayer(xbmc.Player):
         self.loadingStarting = time.time()
         
         oInputParameterHandler = cInputParameterHandler()
+        #aParams = oInputParameterHandler.getAllParameter()
         
         self.sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         self.sTitle = oInputParameterHandler.getValue('sTitle')
-        self.sSite = oInputParameterHandler.getValue('site')
+        #self.sSite = oInputParameterHandler.getValue('site')
+        self.sSite = oInputParameterHandler.getValue('siteUrl')
         
     def clearPlayList(self):
         oPlaylist = self.__getPlayList()
@@ -28,7 +30,6 @@ class cPlayer(xbmc.Player):
         return xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
 
     def addItemToPlaylist(self, oGuiElement):
-        print "passe"
         oGui = cGui()
         oListItem =  oGui.createListItem(oGuiElement)
         self.__addItemToPlaylist(oGuiElement, oListItem)
@@ -93,7 +94,8 @@ class cPlayer(xbmc.Player):
     def onPlayBackStarted(self):       
         meta = {}      
         meta['title'] = self.sTitle
-        meta['hoster'] = self.sHosterIdentifier
+        #meta['hoster'] = self.sHosterIdentifier
+        meta['site'] = self.sSite
         try:
             data = cDb().get_resume(meta)
             if not data == '':
@@ -105,7 +107,8 @@ class cPlayer(xbmc.Player):
     def __setResume(self):
         meta = {}      
         meta['title'] = self.sTitle
-        meta['hoster'] = self.sHosterIdentifier
+        #meta['hoster'] = self.sHosterIdentifier
+        meta['site'] = self.sSite
         meta['point'] = str(self.currentTime)
         try:
             cDb().insert_resume(meta)
@@ -116,6 +119,7 @@ class cPlayer(xbmc.Player):
         meta = {}      
         meta['title'] = self.sTitle
         meta['site'] = self.sSite
+        
         try:
             cDb().insert_watched(meta)
         except:

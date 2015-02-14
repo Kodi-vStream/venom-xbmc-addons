@@ -18,6 +18,7 @@ class cGuiElement:
         self.__sTrailerUrl = ''
         self.__sMetaAddon = cConfig().getSetting('meta-view')
         self.__sMediaUrl = ''
+        self.__sSiteUrl = ''
         self.__sTitle = ''
         self.__sTitleSecond = ''
         self.__sFileName = ''
@@ -65,6 +66,12 @@ class cGuiElement:
 
     def getMediaUrl(self):
         return self.__sMediaUrl
+        
+    def setSiteUrl(self, sSiteUrl):
+        self.__sSiteUrl = sSiteUrl
+
+    def getSiteUrl(self):
+        return self.__sSiteUrl
 
     def setSiteName(self, sSiteName):
         self.__sSiteName = sSiteName
@@ -141,9 +148,10 @@ class cGuiElement:
         return count
         
     def getWatched(self):
-        meta = {}      
+        meta = {}
         meta['title'] = urllib.quote_plus(self.getTitle())
-        meta['site'] = self.getSiteName()
+        meta['site'] = self.getSiteUrl()
+
         data = cDb().get_watched(meta)
         return data   
     

@@ -12,8 +12,8 @@
         <setting id="history-view" type="bool" label="Activer l'historique de recherche" default="true"/>
 
         <setting label="Changelog" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/about.py, changelog)"/>
-        <setting label="Information" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/about.py, about)"/>	
-		
+        
+		<setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/clear.py, addon)"/>	
 		<setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/clear.py, xbmc)"/>
     </category>
 

@@ -31,16 +31,10 @@ class cGui:
         if oOutputParameterHandler.getValue('sMovieTitle'):
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
             oGuiElement.setFileName(sTitle)
-        
-        
+            
         self.__createContexMenuWatch(oGuiElement, oOutputParameterHandler)
         self.__createContexMenuinfo(oGuiElement, oOutputParameterHandler)
         self.__createContexMenuWriteFav(oGuiElement, oOutputParameterHandler)
-        
-        #oInputParameterHandler = cInputParameterHandler()
-        #sUrl = oInputParameterHandler.getValue('siteUrl')
-        #print oGuiElement.getMediaUrl()
-        
 
         #context fav
         oContext = cContextElement()
@@ -75,6 +69,7 @@ class cGui:
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
             oGuiElement.setFileName(sTitle)
         
+        
         self.__createContexMenuWatch(oGuiElement, oOutputParameterHandler)
         self.__createContexMenuinfo(oGuiElement, oOutputParameterHandler)
         self.__createContexMenuWriteFav(oGuiElement, oOutputParameterHandler)
@@ -103,7 +98,7 @@ class cGui:
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon(sIcon)
-        #oGuiElement.setThumbnail(sThumbnail)
+        oGuiElement.setThumbnail(sThumbnail)
         oGuiElement.setMeta(0)
         oGuiElement.getInfoLabel()
         
@@ -169,6 +164,10 @@ class cGui:
     
     def addFolder(self, oGuiElement, oOutputParameterHandler='', isFolder=True):
         
+        if oOutputParameterHandler.getValue('siteUrl'):
+            sSiteUrl = oOutputParameterHandler.getValue('siteUrl')
+            oGuiElement.setSiteUrl(sSiteUrl)
+            
         oListItem = self.createListItem(oGuiElement)
         
         # if oGuiElement.getMeta():
@@ -365,12 +364,14 @@ class cGui:
     def setWatched(self):
         oInputParameterHandler = cInputParameterHandler()
         
-        aParams = oInputParameterHandler.getAllParameter()
+        #aParams = oInputParameterHandler.getAllParameter()
+        sSite = oInputParameterHandler.getValue('siteUrl')
+        sTitle = oInputParameterHandler.getValue('sTitle')
 
         meta = {}      
-        meta['title'] = aParams['sTitle']
-        meta['site'] = aParams['sId']
-        
+        meta['title'] = sTitle
+        meta['site'] = sSite
+
         row = cDb().get_watched(meta)
         if row:
             cDb().del_watched(meta)

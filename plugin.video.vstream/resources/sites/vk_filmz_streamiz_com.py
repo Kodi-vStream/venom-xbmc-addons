@@ -18,11 +18,13 @@ SITE_DESC = 'films en streaming, vk streaming, youwatch, vimple , streaming hd ,
 
 URL_MAIN = 'http://vk-filmz-streamiz.com'
 
-MOVIE_NEWS = ('http://vk-filmz-streamiz.com/lastmovies/', 'showMovies')
+MOVIE_NEWS = ('http://vk-filmz-streamiz.com/films', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 SERIE_SERIES = ('http://vk-filmz-streamiz.com/series/', 'showMovies')
 SERIE_VFS = ('http://vk-filmz-streamiz.com/series/version-francaise', 'showMovies')
 SERIE_VOSTFRS = ('http://vk-filmz-streamiz.com/series/vostfr', 'showMovies')
+
+ANIM_VFS = ('http://vk-filmz-streamiz.com/mangas/mangas-vf/', 'showMovies')
 ANIM_VOSTFRS = ('http://vk-filmz-streamiz.com/mangas/mangas-vostfr/', 'showMovies')
 
 URL_SEARCH = ('http://vk-filmz-streamiz.com/?do=search&subaction=search&story=', 'showMovies')
@@ -58,6 +60,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series VOSTFR', 'series.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés VF', 'animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
@@ -151,7 +157,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     #sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
-    sPattern = '<img class="tubeposter" src="([^<]+)" alt=".+?" title=".+?" />.+?<h2 class="mtitle"><a href="([^<]+)">([^<]+)</a></h2>'
+    sPattern = '<img class="tubeposter" src="([^<]+)" alt=".+?" title=".+?"/>.+?<h2 class="mtitle"><a href="([^<]+)">([^<]+)</a></h2>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 

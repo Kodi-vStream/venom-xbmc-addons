@@ -3,6 +3,24 @@
 - Question & Support: https://github.com/LordVenom/venom-xbmc-addons/issues
 - Question & Support: Twitter @lordvenom57
 ================================================================================
+                      Merci aux généreux donateurs
+- mor17.
+================================================================================
+- Version 0.2.8 - 14.02.2015
+================================================================================
+    - Add remove cache addon
+	- Bug Affichage basic
+	- Add Acteur popular
+	- Add recherche serie visuelle
+	- bug vk_filmz_streaming_com
+	- bug recherche full_stream_net
+	- bug resume
+	- bug marquer lu
+	- bug seriefr
+	- Add Tv bouygues
+    - del hote videomega
+	- Add hote mystream
+================================================================================
 ATTENTION pour la version 0.2.7 merci de supprimer le fichier userdata\addon_data\plugin.video.vstream\vstream.db
 ================================================================================
 - Version 0.2.7 - 07.02.2015
