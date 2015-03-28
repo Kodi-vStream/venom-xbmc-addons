@@ -1,12 +1,14 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.config import cConfig
+from resources.lib.db import cDb
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 import os
 import urllib
+import xbmc
 
 SITE_IDENTIFIER = 'cFav'
 SITE_NAME = 'Fav'
@@ -20,25 +22,22 @@ class cFav:
       
 
     def delFavourites(self):
-    
+        
         oInputParameterHandler = cInputParameterHandler()
+        siteUrl = oInputParameterHandler.getValue('siteUrl')
+
+        meta = {}      
+        meta['title'] = xbmc.getInfoLabel('ListItem.title')
+        meta['siteurl'] = siteUrl
+        try:
+            cDb().del_favorite(meta)
+        except:
+            pass
+        
         #sTitle = oInputParameterHandler.getValue('sTitle')
-        sId = oInputParameterHandler.getValue('sId')
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+        #sId = oInputParameterHandler.getValue('sId')
+        #sUrl = oInputParameterHandler.getValue('siteUrl')
         #sFav = oInputParameterHandler.getValue('sFav')
-        
-        sUrl = urllib.quote_plus(sUrl)
-        #print vars(oInputParameterHandler)
-        
-        fav_db = self.__sFile
-        
-        if os.path.exists(fav_db):
-            watched = eval(open(fav_db).read() )
-            watched[sUrl] = watched.get(sUrl) or []
-            del watched[sUrl]
-        file(fav_db, "w").write("%r" % watched)
-        cConfig().showInfo('Supprimer', sId)
-        cConfig().update()
         return
     
    
@@ -54,13 +53,13 @@ class cFav:
         oOutputParameterHandler.addParameter('sCat', '2')
         oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Séries', 'tv.png', oOutputParameterHandler)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sCat', '3')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Pages', 'news.png', oOutputParameterHandler)
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('sCat', '3')
+        # oGui.addDir(SITE_IDENTIFIER, 'getFav()', 'Pages', 'news.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '4')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Lires', 'views.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Sources', 'views.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '5')
@@ -70,93 +69,63 @@ class cFav:
 
     def getFav(self):
         oGui = cGui()
-        fav_db = self.__sFile
 
         oInputParameterHandler = cInputParameterHandler()
+
+        #aParams = oInputParameterHandler.getAllParameter()
+
         if (oInputParameterHandler.exist('sCat')):
             sCat = oInputParameterHandler.getValue('sCat')
         else:
             sCat = '5'
+        
+        try:
+            row = cDb().get_favorite()
 
-        if os.path.exists(fav_db): 
-            watched = eval( open(fav_db).read() )
+            for data in row:
 
-            items = []
-            item = []
-            for result in watched:
+                title = data[1]
+                siteurl = urllib.unquote_plus(data[2])
+                site = data[3]
+                function = data[4]
+                cat = data[5]
+                thumbnail = data[6]
+                fanart = data[7]
 
-                sUrl = result
-                sFunction =  watched[result][0]
-                sId = watched[result][1]
-                try:
-                    sTitle = watched[result][2]
-                except:
-                    sTitle = sId+' - '+urllib.unquote_plus(sUrl)
-
-                try:
-                    sCategorie = watched[result][3]
-                except:
-                    sCategorie = '5'
-
-                items.append([sId, sFunction, sUrl])
-                item.append(result)
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('siteUrl', siteurl)
+                oOutputParameterHandler.addParameter('sMovieTitle', title)
                 oOutputParameterHandler.addParameter('sThumbnail', 'False')
                 
-                if (sFunction == 'play'):
-                    oHoster = cHosterGui().checkHoster(sUrl)
+                if (function == 'play'):
+                    oHoster = cHosterGui().checkHoster(siteurl)
                     oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
                     oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
-                    oOutputParameterHandler.addParameter('sMediaUrl', sUrl)
+                    oOutputParameterHandler.addParameter('sMediaUrl', siteurl)
 
-                if (sCategorie == sCat):
-                    oGui.addFav(sId, sFunction, sTitle, 'mark.png', sUrl, oOutputParameterHandler)
+                if (cat == sCat):
+                    oGui.addFav(site, function, title, "mark.png", thumbnail, fanart, oOutputParameterHandler)
                
             
             oGui.setEndOfDirectory()
-        else: return
-        return items
-
-
-    def writeFavourites(self):
-
+        except: pass
+        return
+        
+    def setFavorite(self):
         oInputParameterHandler = cInputParameterHandler()
-        sTitle = oInputParameterHandler.getValue('sTitle')
-        sId = oInputParameterHandler.getValue('sId')
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-        sFav = oInputParameterHandler.getValue('sFav')
+        #aParams = oInputParameterHandler.getAllParameter()
+        
+        meta = {}
+        meta['siteurl'] = oInputParameterHandler.getValue('siteUrl')
+        meta['site'] = oInputParameterHandler.getValue('sId')
+        meta['fav'] = oInputParameterHandler.getValue('sFav')
+        meta['cat'] = oInputParameterHandler.getValue('sCat')
+        
+        meta['title'] = xbmc.getInfoLabel('ListItem.title')
+        meta['icon'] = xbmc.getInfoLabel('ListItem.Art(thumb)')
+        meta['fanart'] =  xbmc.getInfoLabel('ListItem.Art(fanart)')
 
-        if (oInputParameterHandler.exist('sCat')):
-            sCat = oInputParameterHandler.getValue('sCat')
-        else:
-            sCat = '5'
-
-        print sCat
-        sUrl = urllib.quote_plus(sUrl)
-        fav_db = self.__sFile
-        watched = {}
-        if not os.path.exists(fav_db):
-            file(fav_db, "w").write("%r" % watched) 
-            
-        if os.path.exists(fav_db):
-            watched = eval(open(fav_db).read() )
-            watched[sUrl] = watched.get(sUrl) or []
-            
-            #add to watched
-            if not watched[sUrl]:
-                #list = [sFav, sUrl];
-                watched[sUrl].append(sFav)
-                watched[sUrl].append(sId)
-                watched[sUrl].append(sTitle)
-                watched[sUrl].append(sCat)
-            else:
-                watched[sUrl][0] = sFav
-                watched[sUrl][1] = sId
-                watched[sUrl][2] = sTitle
-                watched[sUrl][3] = sCat
-
-        file(fav_db, "w").write("%r" % watched)
-        cConfig().showInfo('Marque-Page', sTitle)
-        #fav_db.close()
+        try:
+            cDb().insert_favorite(meta)
+        except:
+            pass

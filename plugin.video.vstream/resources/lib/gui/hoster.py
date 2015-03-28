@@ -92,14 +92,14 @@ class cHosterGui:
         oContext = cContextElement()
         oContext.setFile('cFav')
         oContext.setSiteName('cFav')
-        oContext.setFunction('writeFavourites')
+        oContext.setFunction('setFavorite')
         oContext.setTitle('[COLOR teal]'+cConfig().getLocalizedString(30203)+'[/COLOR]')
 
         #oOutputParameterHandler = cOutputParameterHandler()
         #oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
-        #oOutputParameterHandler.addParameter('sId', 'cHosterGui')
         #oOutputParameterHandler.addParameter('siteUrl', sMediaUrl)
         #oOutputParameterHandler.addParameter('sFav', 'play')
+        #oOutputParameterHandler.addParameter('sId', 'cHosterGui')
       
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
@@ -155,6 +155,17 @@ class cHosterGui:
             return cHosterHandler().getHoster('vodlocker')
         if ('mystream' in sHosterUrl):
             return cHosterHandler().getHoster('mystream')
+        if ('speedvid' in sHosterUrl):
+            return cHosterHandler().getHoster('speedvid')
+        if ('axavid' in sHosterUrl):
+            return cHosterHandler().getHoster('axavid') 
+        if ('netu' in sHosterUrl):
+            return cHosterHandler().getHoster('netu')
+        if ('hqq' in sHosterUrl):
+            return cHosterHandler().getHoster('netu')
+        if ('mail.ru' in sHosterUrl):
+            return cHosterHandler().getHoster('mailru')          
+            
            
 
         return False

@@ -24,7 +24,7 @@
         <setting id="plugin_dpstreaming_org" type="bool" label="Dpstreaming" default="true"/>
         <setting id="plugin_frenchstream_org" type="bool" label="FrenchStream" default="true"/>
         <setting id="plugin_vos_animes_com" type="bool" label="Vos Animes" default="true"/>
-        <setting id="plugin_full_stream_net" type="bool" label="Full Stream" default="true"/>
+        <setting id="plugin_full_stream_me" type="bool" label="Full Stream" default="true"/>
         <!-- <setting id="plugin_full_streaming_org" type="bool" label="Full Streaming" default="true"/> -->
         <setting id="plugin_docspot_fr" type="bool" label="DocSpot" default="true"/>
         <setting id="plugin_notre_ecole_net" type="bool" label="Notre Ecole" default="true"/>
@@ -72,10 +72,10 @@
         <setting id="search3_vos_animes_com" type="bool" label="Vos Animes (Animés)" default="true" visible="eq(-23,Recherche_3)"/>
         <setting id="search4_vos_animes_com" type="bool" label="Vos Animes (Animés)" default="false" visible="eq(-24,Recherche_4)"/>
         
-        <setting id="search1_full_stream_net" type="bool" label="Full Stream (Films, Séries)" default="false" visible="eq(-25,Recherche_1)"/>
-        <setting id="search2_full_stream_net" type="bool" label="Full Stream (Films, Séries)" default="false" visible="eq(-26,Recherche_2)"/>
-        <setting id="search3_full_stream_net" type="bool" label="Full Stream (Films, Séries)" default="false" visible="eq(-27,Recherche_3)"/>
-        <setting id="search4_full_stream_net" type="bool" label="Full Stream (Films, Séries)" default="false" visible="eq(-28,Recherche_4)"/>
+        <setting id="search1_full_stream_me" type="bool" label="Full Stream (Films, Séries)" default="false" visible="eq(-25,Recherche_1)"/>
+        <setting id="search2_full_stream_me" type="bool" label="Full Stream (Films, Séries)" default="false" visible="eq(-26,Recherche_2)"/>
+        <setting id="search3_full_stream_me" type="bool" label="Full Stream (Films, Séries)" default="false" visible="eq(-27,Recherche_3)"/>
+        <setting id="search4_full_stream_me" type="bool" label="Full Stream (Films, Séries)" default="false" visible="eq(-28,Recherche_4)"/>
 
         <setting id="search1_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="false" visible="eq(-29,Recherche_1)"/>
         <setting id="search2_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="false" visible="eq(-30,Recherche_2)"/>

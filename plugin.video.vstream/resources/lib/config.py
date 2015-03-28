@@ -7,6 +7,7 @@ import xbmcgui
 class cConfig():
 
     COUNT = 0
+    ERROR = []
 
 
     def __check(self):
@@ -159,7 +160,22 @@ class cConfig():
     def error(self, e):
         xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % ('Vstream', ('Erreur: '+str(e)), '10000', self.__sIcon))
         xbmc.log('\t[PLUGIN] Vstream Erreur: '+str(e))
+        cConfig().ERROR.append(e)
 
     def log(self, e):
         xbmc.log('\t[PLUGIN] Vstream: '+str(e))
+    
+    def openerror(self):
+        xbmc.executebuiltin( "ActivateWindow(10147)" )
+        self.win = xbmcgui.Window(10147)
+        xbmc.sleep( 500 )
+        value = ''
+        for text in cConfig().ERROR:
+            text = text.replace(',', '\n')
+            value += '\n'+text+'\n'
+        
+        self.win.getControl(1).setLabel("vStream popup Erreur")
+        self.win.getControl(5).setText(str(value))
+        
+        
         

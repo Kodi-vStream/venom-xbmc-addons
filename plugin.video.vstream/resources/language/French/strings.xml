@@ -16,6 +16,7 @@
         <string id="30026">IPTV et GuideTV</string>
         <string id="30027">Délai d'attente du lecteur (ms)</string>
         <string id="30028">Paramètre à modifier dans l'addon PVR</string>
+		<string id="30029">Activer popup erreur</string>
 
          <!-- premium begin by 30031 - 30075 -->
         <string id="30031">Megavideo Premium Account</string>
@@ -43,9 +44,14 @@
         <!-- Pluginnames begin by 30201 - 30299 -->
         <string id="30201">Ajouter à la playlist</string>
         <string id="30202">Télécharger</string>
-        <string id="30203">Marque-lire</string>
+        <string id="30203">Marque-Source</string>
         <string id="30204">Aucune information</string>
 		<string id="30205">Connection Impossible</string>
+		<string id="30206">Marque-Film</string>
+		<string id="30207">Marque-Série</string>
+		<string id="30208">Marque-Diver</string>
+		<string id="30209">Supprimer Marque-page</string>
+		<string id="30210">Voir Marque-page</string>
         <!--<string id="30205">NBA.de</string>
         <string id="30206">Bundesliga.de</string>
         <string id="30207">MTV.de</string>

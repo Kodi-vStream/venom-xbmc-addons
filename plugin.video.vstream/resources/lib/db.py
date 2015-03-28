@@ -60,6 +60,10 @@ class cDb:
 
         sql_create = "CREATE TABLE IF NOT EXISTS watched ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""site TEXT, ""UNIQUE(title, site)"");"
         
+        self.dbcur.execute(sql_create)
+
+        sql_create = "CREATE TABLE IF NOT EXISTS favorite ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""siteurl TEXT, ""site TEXT, ""fav TEXT, ""cat TEXT, ""icon TEXT, ""fanart TEXT, ""UNIQUE(title, site)"");"
+        
         self.dbcur.execute(sql_create)         
 
         
@@ -126,12 +130,45 @@ class cDb:
             #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
             cConfig().log('SQL ERROR INSERT') 
             pass
+        self.db.close()
+
+
+    def insert_favorite(self, meta):
+
+        title = self.str_conv(meta['title'])
+        siteurl = urllib.quote_plus(meta['siteurl'])        
+        
+        ex = "INSERT INTO favorite (title, siteurl, site, fav, cat, icon, fanart) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        self.dbcur.execute(ex, (title,siteurl, meta['site'],meta['fav'],meta['cat'],meta['icon'],meta['fanart']))
+
+        try:
+            self.db.commit() 
+            cConfig().log('SQL INSERT favorite Successfully') 
+            cConfig().showInfo(meta['title'], 'Enregistré avec succés')
+        except Exception, e:
+            #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
+            cConfig().log('SQL ERROR INSERT') 
+            pass
         self.db.close()        
 
 
     def get_history(self):
     
         sql_select = "SELECT * FROM history"
+
+        try:    
+            self.dbcur.execute(sql_select)
+            #matchedrow = self.dbcur.fetchone()
+            matchedrow = self.dbcur.fetchall()
+            return matchedrow        
+        except Exception, e:
+            cConfig().log('SQL ERROR EXECUTE') 
+            return None
+        self.dbcur.close()
+        
+    def get_favorite(self):
+    
+        sql_select = "SELECT * FROM favorite"
 
         try:    
             self.dbcur.execute(sql_select)
@@ -206,31 +243,22 @@ class cDb:
             cConfig().log('SQL ERROR EXECUTE') 
             return False, False
         self.dbcur.close() 
-
-    def getFavourites(self):
-        oGui = cGui()
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sCat', '1')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Films', 'search.png', oOutputParameterHandler)
         
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sCat', '2')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Séries', 'tv.png', oOutputParameterHandler)
+    def del_favorite(self, meta):
+        siteUrl = urllib.quote_plus(meta['siteurl'])
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sCat', '3')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Pages', 'news.png', oOutputParameterHandler)
+        sql_select = "DELETE FROM favorite WHERE siteurl = '%s'" % (siteUrl)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sCat', '4')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Lires', 'views.png', oOutputParameterHandler)
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sCat', '5')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Divers', 'views.png', oOutputParameterHandler)
-        
-        oGui.setEndOfDirectory()
+        try:    
+            self.dbcur.execute(sql_select)
+            self.db.commit()
+            cConfig().showInfo('vStream', 'Favoris supprimer')
+            cConfig().update()
+            return False, False
+        except Exception, e:
+            cConfig().log('SQL ERROR EXECUTE') 
+            return False, False
+        self.dbcur.close() 
 
     def getFav(self):
         oGui = cGui()

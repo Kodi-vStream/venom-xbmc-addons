@@ -34,20 +34,20 @@ class cGui:
             
         self.__createContexMenuWatch(oGuiElement, oOutputParameterHandler)
         self.__createContexMenuinfo(oGuiElement, oOutputParameterHandler)
-        self.__createContexMenuWriteFav(oGuiElement, oOutputParameterHandler)
 
         #context fav
         oContext = cContextElement()
+        #sAction = 'setFavorite("%s", "%s", "%s")' % (1, sFunction, sId)                
         oContext.setFile('cFav')
         oContext.setSiteName('cFav')
-        oContext.setFunction('writeFavourites')
-        oContext.setTitle('[COLOR teal]Marque-film[/COLOR]')
+        oContext.setFunction('setFavorite')
+        #oContext.setTitle('[COLOR teal]Marque-film[/COLOR]')
+        oContext.setTitle('[COLOR teal]'+cConfig().getLocalizedString(30206)+'[/COLOR]')
 
-        oOutputParameterHandler.addParameter('sTitle', sLabel)
+        #oOutputParameterHandler.addParameter('sTitle', sLabel)
         oOutputParameterHandler.addParameter('sId', sId)
         oOutputParameterHandler.addParameter('sFav', sFunction)
         oOutputParameterHandler.addParameter('sCat', 1)
-      
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
 
@@ -72,16 +72,16 @@ class cGui:
         
         self.__createContexMenuWatch(oGuiElement, oOutputParameterHandler)
         self.__createContexMenuinfo(oGuiElement, oOutputParameterHandler)
-        self.__createContexMenuWriteFav(oGuiElement, oOutputParameterHandler)
 
         #context
         oContext = cContextElement()
         oContext.setFile('cFav')
         oContext.setSiteName('cFav')
-        oContext.setFunction('writeFavourites')
-        oContext.setTitle('[COLOR teal]Marque-série[/COLOR]')
+        oContext.setFunction('setFavorite')
+        #oContext.setTitle('[COLOR teal]Marque-série[/COLOR]')
+        oContext.setTitle('[COLOR teal]'+cConfig().getLocalizedString(30207)+'[/COLOR]')
 
-        oOutputParameterHandler.addParameter('sTitle', sLabel)
+        #oOutputParameterHandler.addParameter('sTitle', sLabel)
         oOutputParameterHandler.addParameter('sId', sId)
         oOutputParameterHandler.addParameter('sFav', sFunction)
         oOutputParameterHandler.addParameter('sCat', 2)
@@ -105,16 +105,16 @@ class cGui:
         oGuiElement.setDescription(sDesc)
         
         self.__createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-        self.__createContexMenuWriteFav(oGuiElement, oOutputParameterHandler)
 
         #context
         oContext = cContextElement()
         oContext.setFile('cFav')
         oContext.setSiteName('cFav')
-        oContext.setFunction('writeFavourites')
-        oContext.setTitle('[COLOR teal]Marque-diver[/COLOR]')
+        oContext.setFunction('setFavorite')
+        #oContext.setTitle('[COLOR teal]Marque-diver[/COLOR]')
+        oContext.setTitle('[COLOR teal]'+cConfig().getLocalizedString(30208)+'[/COLOR]')
 
-        oOutputParameterHandler.addParameter('sTitle', sLabel)
+        #oOutputParameterHandler.addParameter('sTitle', sLabel)
         oOutputParameterHandler.addParameter('sId', sId)
         oOutputParameterHandler.addParameter('sFav', sFunction)
         oOutputParameterHandler.addParameter('sCat', 5)
@@ -124,15 +124,16 @@ class cGui:
         
         self.addFolder(oGuiElement, oOutputParameterHandler)
         
-    def addFav(self, sId, sFunction, sLabel, sIcon, sUrl, oOutputParameterHandler = ''):
+    def addFav(self, sId, sFunction, sLabel, sIcon, sThumbnail, fanart, oOutputParameterHandler = ''):
         cGui.CONTENT = "files"
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon(sIcon)
-        oGuiElement.setMediaUrl(sUrl)
         oGuiElement.setMeta(0)
+        oGuiElement.setThumbnail(sThumbnail)
+        oGuiElement.setFanart(fanart)
         
         self.__createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
         
@@ -237,40 +238,12 @@ class cGui:
         oContext.setFile('cFav')
         oContext.setSiteName('cFav')
         oContext.setFunction('delFavourites')
-        oContext.setTitle('[COLOR red]Supprimer Marque-page[/COLOR]')
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
-        oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
-        oOutputParameterHandler.addParameter('siteUrl', oGuiElement.getMediaUrl())
-      
-        oContext.setOutputParameterHandler(oOutputParameterHandler)
-
-        oGuiElement.addContextItem(oContext)           
-    
-    def __createContexMenuWriteFav(self, oGuiElement, oOutputParameterHandler= ''):
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-        sFav = oInputParameterHandler.getValue('sFav')
-        
-        oContext = cContextElement()
-        oContext.setFile('cFav')
-        oContext.setSiteName('cFav')
-        oContext.setFunction('writeFavourites')
-        oContext.setTitle('[COLOR teal]Marque-page[/COLOR]')
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getSiteName())
-        oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oOutputParameterHandler.addParameter('sFav', sFav)
-        oOutputParameterHandler.addParameter('sCat', 3)
+        #oContext.setTitle('[COLOR red]Supprimer Marque-page[/COLOR]')
+        oContext.setTitle('[COLOR red]'+cConfig().getLocalizedString(30209)+'[/COLOR]')
       
         oContext.setOutputParameterHandler(oOutputParameterHandler)
 
         oGuiElement.addContextItem(oContext)
-
-        return
     
     
     def __createContextMenu(self, oGuiElement, oListItem):
@@ -290,7 +263,8 @@ class cGui:
         oContextItem = cContextElement()
         oContextItem.setFile('cFav')
         oContextItem.setSiteName('cFav')
-        oContextItem.setTitle('[COLOR teal]Voir Marque-page[/COLOR]')
+        #oContextItem.setTitle('[COLOR teal]Voir Marque-page[/COLOR]')
+        oContextItem.setTitle('[COLOR teal]'+cConfig().getLocalizedString(30210)+'[/COLOR]')
         oContextItem.setFunction('getFavourites')
         oOutputParameterHandler = oContextItem.getOutputParameterHandler()
         sParams = oOutputParameterHandler.getParameterAsUri()
@@ -378,6 +352,7 @@ class cGui:
         else:
             cDb().insert_watched(meta)
         xbmc.executebuiltin( 'Container.Refresh' )
+        
         
     def viewinfo(self):
         oGuiElement = cGuiElement()

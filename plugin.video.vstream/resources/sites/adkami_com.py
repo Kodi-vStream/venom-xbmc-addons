@@ -274,31 +274,50 @@ def showEpisode():
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
- 
-    sPattern = '<li style.+?>(.+?)</li>|<li title=""><a href="([^<]+)">([^<]+)</a></li>'
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-            
-            if aEntry[0]:
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'films.png', oOutputParameterHandler)
-            else:
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sMovieTitle+' - '+aEntry[2], 'films.png','', '', oOutputParameterHandler)
-       
     
+    oParser = cParser()
+    sPattern = 'line-height:200px;font-size:26px;text-align:center;">L.anime est licencié<.p>'
+    
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    if (aResult[0] == True):
+        dialog = cConfig().createDialog(SITE_NAME)
+        cConfig().updateDialog(dialog, 1)
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+        oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+        oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]'+'Animé licencié'+'[/COLOR]', 'films.png', oOutputParameterHandler)
+        
         cConfig().finishDialog(dialog)
+    
+    else:
+        
+        #sPattern = '<li style.+?>(.+?)</li>|<li title=""><a href="([^<]+)">([^<]+)</a></li>'
+        sPattern = '<li style.+?>(.+?)<.li>|<li title=".*?"><a href="([^<]+)">([^<]+)<.a><.li>'
+        
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            total = len(aResult[1])
+            dialog = cConfig().createDialog(SITE_NAME)
+            for aEntry in aResult[1]:
+                cConfig().updateDialog(dialog, total)
+                if dialog.iscanceled():
+                    break
+                
+                if aEntry[0]:
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+                    oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+                    oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'films.png', oOutputParameterHandler)
+                else:
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
+                    oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+                    oGui.addTV(SITE_IDENTIFIER, 'showHosters', sMovieTitle+' - '+aEntry[2], 'films.png','', '', oOutputParameterHandler)
+           
+        
+            cConfig().finishDialog(dialog)
 
 
     oGui.setEndOfDirectory()
@@ -313,10 +332,10 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
 
-
     sPattern = '</div><iframe.+?src="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
