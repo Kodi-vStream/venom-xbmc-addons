@@ -42,6 +42,10 @@ Pour créer un nouvelle source utiliser le fichier avec commentaire pour vous ai
 
 [Fichier avec commentaire](https://github.com/LordVenom/venom-xbmc-addons/blob/master/ajouter_une_source.py)
 
+Pour participer directement au projet
+
+[github bêta](https://github.com/LordVenom/venom-xbmc-addons-beta)
+
 
 Faire un Don!
 ----------
