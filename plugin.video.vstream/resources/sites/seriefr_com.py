@@ -10,7 +10,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re
+import urllib2,urllib,re
 
 SITE_IDENTIFIER = 'seriefr_com'
 SITE_NAME = 'Seriefr.com'
@@ -19,24 +19,28 @@ SITE_DESC = 'Série en Streaming HD - Vk.Com - Netu.tv - ExaShare - YouWatch'
 URL_MAIN = 'http://www.seriefr.com/'
 #MOVIE_GENRES = True
 SERIE_SERIES = ('http://www.seriefr.com/index.html', 'showMovies')
-#SERIE_VFS = 'http://full-stream.net/seriestv/vf/'
+SERIE_VFS = ('http://www.seriefr.com/index.html', 'showMovies')
 #SERIE_VOSTFRS = 'http://full-stream.net/seriestv/vostfr/'
 #ANIM_VFS = 'http://full-stream.net/mangas/mangas-vf/'
 #ANIM_VOSTFRS = 'http://full-stream.net/mangas/mangas-vostfr/'
 
-#URL_SEARCH = 'http://www.seriefr.com/xfsearch/'
-#FUNCTION_SEARCH = 'showMovies'
+URL_SEARCH = ('', 'showMovies')
+FUNCTION_SEARCH = 'showMovies'
 
 def load():
     oGui = cGui()
     
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    #oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries VF', 'series.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
 
@@ -46,30 +50,53 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            #sSearchText = cUtil().urlEncode(sSearchText)
-            sUrl = 'http://www.seriefr.com/xfsearch/'+sSearchText+'/'  
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return  
+        showMovies(str(sSearchText))
+        oGui.setEndOfDirectory()
+        return  
     
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    
     if sSearch:
-      sUrl = sSearch
+        #on redecode la recherhce codé il y a meme pas une seconde par l'addon
+        sSearch = urllib2.unquote(sSearch)
+        
+        query_args = { 'serie': str(sSearch) }
+        data = urllib.urlencode(query_args)
+        headers = {'User-Agent' : 'Mozilla 5.10'}
+        url = 'http://www.seriefr.com/serie.html'
+        request = urllib2.Request(url,data,headers)
+
+        try: 
+            reponse = urllib2.urlopen(request)
+        except URLError, e:
+            print e.read()
+            print e.reason
+
+        html = reponse.read()
+        html = html.replace('\n', '')
+
+        sHtmlContent = html
+        
+        sPattern = '<h1><a href="(.+?)">(.+?)<.a><.h1><.div><div class="infos"> <div class="image"><a href=".+?"><img src="(.+?)" title=.+?><.a><.div><div class="desc" >(.+?)<.div>'
+        
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
    
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('streaming','')
-
-    sPattern = 'full-stream-view-hover"><img src="(.+?)" alt="(.+?)".+?<h2><a href="(.+?)">.+?</a></h2>.+?class="short-insider">(.+?)</div>'
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request();
+        
+        sHtmlContent = sHtmlContent.replace('streaming','')
+    
+        sPattern = 'full-stream-view-hover"><img src="(.+?)" alt="(.+?)".+?<h2><a href="(.+?)">.+?</a></h2>.+?class="short-insider">(.+?)</div>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
+    
+    #print aResult
+    
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -77,13 +104,24 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
+                
+            if sSearch:
+                sTitle = str(aEntry[1])
+                sUrl = str(URL_MAIN+aEntry[0])
+                sThumb = str(URL_MAIN+aEntry[2])
+                sCom = aEntry[3]
+            else:
+                sTitle = str(aEntry[1])
+                sUrl = str(URL_MAIN+aEntry[2])
+                sThumb = str(URL_MAIN+aEntry[0])
+                sCom = aEntry[3]   
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN+aEntry[2]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sThumbnail', str(URL_MAIN+aEntry[0]))
-            
-            oGui.addTV(SITE_IDENTIFIER, 'saisonHosters', aEntry[1], '', URL_MAIN+aEntry[0], aEntry[3], oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+
+            oGui.addTV(SITE_IDENTIFIER, 'saisonHosters', sTitle, '', sThumb, sCom, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -119,11 +157,15 @@ def showHosters():
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/plugins/likebox.php','')
 
-    
-
-    sPattern = '<iframe src=."(.+?)."'
-
     oParser = cParser()
+    
+    sPattern = '"liens en Version Francaise"(.+?)class="VOST"'
+    aResult = re.findall(sPattern,sHtmlContent)
+    List_VF = aResult[0]
+    
+    #sPattern = '<iframe src=."(.+?)."'
+    sPattern = '\("#(link[0-9]+)"\).+?<iframe src=."(.+?)."'
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -134,15 +176,21 @@ def showHosters():
             if dialog.iscanceled():
                 break
 
-            sHosterUrl = str(aEntry)
-            oHoster = cHosterGui().checkHoster(sHosterUrl)                   
+            sHosterUrl = str(aEntry[1])
+            oHoster = cHosterGui().checkHoster(sHosterUrl)            
         
             if (oHoster != False):         
                 try:
                     oHoster.setHD(sHosterUrl)
                 except: pass
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
+                
+                if aEntry[0] in List_VF:
+                    sTitle = '[COLOR teal][VF] [/COLOR]' + sMovieTitle
+                else:
+                    sTitle = '[COLOR teal][VOSTFR] [/COLOR]' + sMovieTitle
+                    
+                oHoster.setDisplayName(sTitle)
+                oHoster.setFileName(sTitle)
 
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
 
@@ -222,3 +270,4 @@ def epHosters():
         cConfig().finishDialog(dialog)    
 
     oGui.setEndOfDirectory()
+    

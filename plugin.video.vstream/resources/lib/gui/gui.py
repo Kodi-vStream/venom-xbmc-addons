@@ -336,11 +336,12 @@ class cGui:
         xbmc.executebuiltin("Container.Refresh")
     
     def setWatched(self):
-        oInputParameterHandler = cInputParameterHandler()
-        
+        oInputParameterHandler = cInputParameterHandler()        
         #aParams = oInputParameterHandler.getAllParameter()
+        #print aParams
+        
         sSite = oInputParameterHandler.getValue('siteUrl')
-        sTitle = oInputParameterHandler.getValue('sTitle')
+        sTitle = xbmc.getInfoLabel('ListItem.label')
 
         meta = {}      
         meta['title'] = sTitle

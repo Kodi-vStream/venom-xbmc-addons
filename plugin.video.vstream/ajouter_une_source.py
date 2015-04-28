@@ -32,7 +32,6 @@ SERIE_VOSTFRS = 'http://url' # serie Vostfr
 ANIM_ANIMS = 'http://url' #anim nouveautés
 ANIM_VFS = 'http://url' #anime VF
 ANIM_VOSTFRS = 'http://url' #anim VOSTFR
-ANIM_MOVIES = 'http://url' #anim film
 
 DOC_DOCS = 'http://url/' #Documentaire
 SPORT_SPORTS = 'http://url' #sport

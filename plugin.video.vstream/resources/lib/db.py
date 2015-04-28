@@ -32,7 +32,7 @@ class cDb:
             self.db = sqlite.connect(DB)
             self.dbcur = self.db.cursor()
 
-            self._create_tables()
+            #self._create_tables()
         except:
             return False
         
@@ -120,6 +120,7 @@ class cDb:
     def insert_watched(self, meta):
 
         title = self.str_conv(meta['title'])
+        print meta['title']
         site = urllib.quote_plus(meta['site'])
         ex = "INSERT INTO watched (title, site) VALUES (?, ?)"
         self.dbcur.execute(ex, (title,site))

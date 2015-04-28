@@ -18,23 +18,29 @@
     </category>
 
     <category label="30022">-->
-        <setting label="30022" type="lsep"/>
-        <setting id="plugin_streamzer_net" type="bool" label="Streamzer" default="true"/> 
-        <setting id="plugin_adkami_com" type="bool" label="Adkami" default="true"/>
-        <setting id="plugin_dpstreaming_org" type="bool" label="Dpstreaming" default="true"/>
-        <setting id="plugin_frenchstream_org" type="bool" label="FrenchStream" default="true"/>
-        <setting id="plugin_vos_animes_com" type="bool" label="Vos Animes" default="true"/>
-        <setting id="plugin_full_stream_me" type="bool" label="Full Stream" default="true"/>
-        <!-- <setting id="plugin_full_streaming_org" type="bool" label="Full Streaming" default="true"/> -->
-        <setting id="plugin_docspot_fr" type="bool" label="DocSpot" default="true"/>
-        <setting id="plugin_notre_ecole_net" type="bool" label="Notre Ecole" default="true"/>
-        <setting id="plugin_freebox" type="bool" label="Freebox" default="true"/>
-        <setting id="plugin_fifostream_me" type="bool" label="Fifostream" default="true"/>
-        <setting id="plugin_fullmoviz_org" type="bool" label="FullMoviz" default="true"/>
-        <setting id="plugin_reportagestv_com" type="bool" label="ReportagesTV" default="true"/>
-        <setting id="plugin_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr" default="true"/>
-        <setting id="plugin_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com" default="true"/>
+		<setting label="30022" type="lsep"/>
+		<setting id="plugin_adkami_com" type="bool" label="Adkami" default="true"/>
+		<setting id="plugin_docspot_fr" type="bool" label="DocSpot" default="true"/>
+		<setting id="plugin_dpstreaming_org" type="bool" label="Dpstreaming" default="true"/>
+		<setting id="plugin_fadoz_com" type="bool" label="Fadoz.com" default="true"/>
+		<setting id="plugin_fifostream_me" type="bool" label="Fifostream" default="true"/>
+		<setting id="plugin_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr" default="true"/>
+		<setting id="plugin_freebox" type="bool" label="Freebox" default="true"/><setting id="plugin_frenchstream_org" type="bool" label="FrenchStream" default="true"/>
+		<setting id="plugin_full_stream_me" type="bool" label="Full Stream" default="true"/>
+		<setting id="plugin_fullmoviz_org" type="bool" label="FullMoviz" default="true"/>
 		<setting id="plugin_lestream_net" type="bool" label="LeStream.net" default="true"/>
+		<setting id="plugin_notre_ecole_net" type="bool" label="Notre Ecole" default="true"/>
+		<setting id="plugin_poypi_com" type="bool" label="Poypi.com" default="true"/>
+		<setting id="plugin_regarder_films" type="bool" label="Regarder.films" default="true"/>
+		<setting id="plugin_reportagestv_com" type="bool" label="ReportagesTV" default="true"/>
+		<setting id="plugin_seriefr_com" type="bool" label="Seriefr.com" default="true"/>
+		<setting id="plugin_streaming_series_org" type="bool" label="StreamingSeries.org" default="true"/>
+		<setting id="plugin_streamingfilms_fr" type="bool" label="StreamingFilms.fr" default="true"/>
+		<setting id="plugin_streamzer_net" type="bool" label="Streamzer" default="true"/>
+		<setting id="plugin_streamzzz_com" type="bool" label="streamzzz.com" default="true"/>
+		<setting id="plugin_vanoz_com" type="bool" label="Vanoz.com" default="true"/>
+		<setting id="plugin_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com" default="true"/>
+		<setting id="plugin_voirfilms_org" type="bool" label="Voirfilms.org" default="true"/> 		
     </category>
 
 <!-- 1 film 2 serie 3 anime 4 doc -->
@@ -46,77 +52,113 @@
         <setting id="search2_label" type="text" label="30501" default="Séries" visible="eq(-2,Recherche_2)"/>
         <setting id="search3_label" type="text" label="30501" default="Animes" visible="eq(-3,Recherche_3)"/>
         <setting id="search4_label" type="text" label="30501" default="Documentaires" visible="eq(-4,Recherche_4)"/>
+		
+		<setting id="search1_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="false" visible="eq(-5,Recherche_1)"/>
+        <setting id="search2_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="false" visible="eq(-6,Recherche_2)"/>
+        <setting id="search3_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="true" visible="eq(-7,Recherche_3)"/>
+        <setting id="search4_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="false" visible="eq(-8,Recherche_4)"/>
 
-        <setting id="search1_streamzer_net" type="bool" label="Streamzer (Films, Séries, Documentaires)" default="true" visible="eq(-5,Recherche_1)"/>
-        <setting id="search2_streamzer_net" type="bool" label="Streamzer (Films, Séries, Documentaires)" default="true" visible="eq(-6,Recherche_2)"/>
-        <setting id="search3_streamzer_net" type="bool" label="Streamzer (Films, Séries, Documentaires)" default="false" visible="eq(-7,Recherche_3)"/>
-        <setting id="search4_streamzer_net" type="bool" label="Streamzer (Film, Séries, Documentaires)" default="false" visible="eq(-8,Recherche_4)"/> 
-
-        <setting id="search1_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="false" visible="eq(-9,Recherche_1)"/>
-        <setting id="search2_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="false" visible="eq(-10,Recherche_2)"/>
-        <setting id="search3_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="true" visible="eq(-11,Recherche_3)"/>
-        <setting id="search4_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="false" visible="eq(-12,Recherche_4)"/>
-
-        <setting id="search1_dpstreaming_org" type="bool" label="Dpstreaming (Films, Séries)" default="true" visible="eq(-13,Recherche_1)"/>
+		<setting id="search1_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="false" visible="eq(-9,Recherche_1)"/>
+        <setting id="search2_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="false" visible="eq(-10,Recherche_2)"/>
+        <setting id="search3_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="false" visible="eq(-11,Recherche_3)"/>
+        <setting id="search4_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="true" visible="eq(-12,Recherche_4)"/>
+		
+		<setting id="search1_dpstreaming_org" type="bool" label="Dpstreaming (Films, Séries)" default="true" visible="eq(-13,Recherche_1)"/>
         <setting id="search2_dpstreaming_org" type="bool" label="Dpstreaming (Films, Séries)" default="false" visible="eq(-14,Recherche_2)"/>
         <setting id="search3_dpstreaming_org" type="bool" label="Dpstreaming (Films, Séries)" default="false" visible="eq(-15,Recherche_3)"/>
         <setting id="search4_dpstreaming_org" type="bool" label="Dpstreaming (Films, Séries)" default="false" visible="eq(-16,Recherche_4)"/>
-
-        <setting id="search1_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="true" visible="eq(-17,Recherche_1)"/>
-        <setting id="search2_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="false" visible="eq(-18,Recherche_2)"/>
-        <setting id="search3_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="false" visible="eq(-19,Recherche_3)"/>
-        <setting id="search4_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="false" visible="eq(-20,Recherche_4)"/>
-
-        <setting id="search1_vos_animes_com" type="bool" label="Vos Animes (Animés)" default="false" visible="eq(-21,Recherche_1)"/>
-        <setting id="search2_vos_animes_com" type="bool" label="Vos Animes (Animés)" default="false" visible="eq(-22,Recherche_2)"/>
-        <setting id="search3_vos_animes_com" type="bool" label="Vos Animes (Animés)" default="true" visible="eq(-23,Recherche_3)"/>
-        <setting id="search4_vos_animes_com" type="bool" label="Vos Animes (Animés)" default="false" visible="eq(-24,Recherche_4)"/>
-        
-        <setting id="search1_full_stream_me" type="bool" label="Full Stream (Films, Séries)" default="false" visible="eq(-25,Recherche_1)"/>
-        <setting id="search2_full_stream_me" type="bool" label="Full Stream (Films, Séries)" default="false" visible="eq(-26,Recherche_2)"/>
-        <setting id="search3_full_stream_me" type="bool" label="Full Stream (Films, Séries)" default="false" visible="eq(-27,Recherche_3)"/>
-        <setting id="search4_full_stream_me" type="bool" label="Full Stream (Films, Séries)" default="false" visible="eq(-28,Recherche_4)"/>
-
-        <setting id="search1_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="false" visible="eq(-29,Recherche_1)"/>
-        <setting id="search2_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="false" visible="eq(-30,Recherche_2)"/>
-        <setting id="search3_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="false" visible="eq(-31,Recherche_3)"/>
-        <setting id="search4_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="true" visible="eq(-32,Recherche_4)"/>
-
-        <setting id="search1_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="false" visible="eq(-33,Recherche_1)"/>
-        <setting id="search2_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="false" visible="eq(-34,Recherche_2)"/>
-        <setting id="search3_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="false" visible="eq(-35,Recherche_3)"/>
-        <setting id="search4_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="true" visible="eq(-36,Recherche_4)"/>
-
-
-        <setting id="search1_fifostream_me" type="bool" label="Fifostream (Films)" default="false" visible="eq(-37,Recherche_1)"/>
-        <setting id="search2_fifostream_me" type="bool" label="Fifostream (Films)" default="false" visible="eq(-38,Recherche_2)"/>
-        <setting id="search3_fifostream_me" type="bool" label="Fifostream (Films)" default="false" visible="eq(-39,Recherche_3)"/>
-        <setting id="search4_fifostream_me" type="bool" label="Fifostream (Films)" default="false" visible="eq(-40,Recherche_4)"/>
-
-        <setting id="search1_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="true" visible="eq(-41,Recherche_1)"/>
-        <setting id="search2_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="false" visible="eq(-42,Recherche_2)"/>
-        <setting id="search3_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="false" visible="eq(-43,Recherche_3)"/>
-        <setting id="search4_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="false" visible="eq(-44,Recherche_4)"/>
-
-        <setting id="search1_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="false" visible="eq(-45,Recherche_1)"/>
-        <setting id="search2_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="false" visible="eq(-46,Recherche_2)"/>
-        <setting id="search3_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="false" visible="eq(-47,Recherche_3)"/>
-        <setting id="search4_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="true" visible="eq(-48,Recherche_4)"/>
-
-        <setting id="search1_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="false" visible="eq(-49,Recherche_1)"/>
-        <setting id="search2_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="false" visible="eq(-50,Recherche_2)"/>
-        <setting id="search3_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="false" visible="eq(-51,Recherche_3)"/>
-        <setting id="search4_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="false" visible="eq(-52,Recherche_4)"/>
-
-        <setting id="search1_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com (Film, Série, Animés)" default="false" visible="eq(-53,Recherche_1)"/>
-        <setting id="search2_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com (Film, Série, Animés)" default="false" visible="eq(-54,Recherche_2)"/>
-        <setting id="search3_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com (Film, Série, Animés)" default="false" visible="eq(-55,Recherche_3)"/>
-        <setting id="search4_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com (Film, Série, Animés)" default="false" visible="eq(-56,Recherche_4)"/>
 		
-		<setting id="search1_lestream_net" type="bool" label="leStream.net (Film)" default="false" visible="eq(-57,Recherche_1)"/>
-        <setting id="search2_lestream_net" type="bool" label="leStream.net (Film)" default="false" visible="eq(-58,Recherche_2)"/>
-        <setting id="search3_lestream_net" type="bool" label="leStream.net (Film)" default="false" visible="eq(-59,Recherche_3)"/>
-        <setting id="search4_lestream_net" type="bool" label="leStream.net (Film)" default="false" visible="eq(-60,Recherche_4)"/>
+		<setting id="search1_fifostream_me" type="bool" label="Fifostream (Films)" default="true" visible="eq(-17,Recherche_1)"/>
+        <setting id="search2_fifostream_me" type="bool" label="Fifostream (Films)" default="false" visible="eq(-18,Recherche_2)"/>
+        <setting id="search3_fifostream_me" type="bool" label="Fifostream (Films)" default="false" visible="eq(-19,Recherche_3)"/>
+        <setting id="search4_fifostream_me" type="bool" label="Fifostream (Films)" default="false" visible="eq(-20,Recherche_4)"/>
+		
+		<setting id="search1_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="true" visible="eq(-21,Recherche_1)"/>
+        <setting id="search2_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="false" visible="eq(-22,Recherche_2)"/>
+        <setting id="search3_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="false" visible="eq(-23,Recherche_3)"/>
+        <setting id="search4_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="false" visible="eq(-24,Recherche_4)"/>
+		
+		<setting id="search1_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="true" visible="eq(-25,Recherche_1)"/>
+        <setting id="search2_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="false" visible="eq(-26,Recherche_2)"/>
+        <setting id="search3_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="false" visible="eq(-27,Recherche_3)"/>
+        <setting id="search4_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="false" visible="eq(-28,Recherche_4)"/>
+		
+		<setting id="search1_full_stream_me" type="bool" label="Full Stream (Films, Séries) (recherche lente)" default="false" visible="eq(-29,Recherche_1)"/>
+        <setting id="search2_full_stream_me" type="bool" label="Full Stream (Films, Séries) (recherche lente)" default="false" visible="eq(-30,Recherche_2)"/>
+        <setting id="search3_full_stream_me" type="bool" label="Full Stream (Films, Séries) (recherche lente)" default="false" visible="eq(-31,Recherche_3)"/>
+        <setting id="search4_full_stream_me" type="bool" label="Full Stream (Films, Séries) (recherche lente)" default="false" visible="eq(-32,Recherche_4)"/>
+		
+		<setting id="search1_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="true" visible="eq(-33,Recherche_1)"/>
+        <setting id="search2_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="false" visible="eq(-34,Recherche_2)"/>
+        <setting id="search3_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="false" visible="eq(-35,Recherche_3)"/>
+        <setting id="search4_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="false" visible="eq(-36,Recherche_4)"/>
+		
+		<setting id="search1_lestream_net" type="bool" label="leStream.net (Films)" default="false" visible="eq(-37,Recherche_1)"/>
+        <setting id="search2_lestream_net" type="bool" label="leStream.net (Films)" default="false" visible="eq(-38,Recherche_2)"/>
+        <setting id="search3_lestream_net" type="bool" label="leStream.net (Films)" default="false" visible="eq(-39,Recherche_3)"/>
+        <setting id="search4_lestream_net" type="bool" label="leStream.net (Films)" default="false" visible="eq(-40,Recherche_4)"/>
+		
+		<setting id="search1_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="false" visible="eq(-41,Recherche_1)"/>
+        <setting id="search2_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="false" visible="eq(-42,Recherche_2)"/>
+        <setting id="search3_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="false" visible="eq(-43,Recherche_3)"/>
+        <setting id="search4_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="true" visible="eq(-44,Recherche_4)"/>
+		
+		<setting id="search1_regarder_films" type="bool" label="Regarder.films (Séries)" default="false" visible="eq(-45,Recherche_1)"/>
+        <setting id="search2_regarder_films" type="bool" label="Regarder.films (Séries)" default="false" visible="eq(-46,Recherche_2)"/>
+        <setting id="search3_regarder_films" type="bool" label="Regarder.films (Séries)" default="false" visible="eq(-47,Recherche_3)"/>
+        <setting id="search4_regarder_films" type="bool" label="Regarder.films (Séries)" default="true" visible="eq(-48,Recherche_4)"/>
+		
+		<setting id="search1_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="false" visible="eq(-49,Recherche_1)"/>
+        <setting id="search2_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="false" visible="eq(-50,Recherche_2)"/>
+        <setting id="search3_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="false" visible="eq(-51,Recherche_3)"/>
+        <setting id="search4_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="true" visible="eq(-52,Recherche_4)"/>
+		
+		<setting id="search1_seriefr_com" type="bool" label="Seriefr.com (Séries)" default="false" visible="eq(-53,Recherche_1)"/>
+        <setting id="search2_seriefr_com" type="bool" label="Seriefr.com (Séries)" default="true" visible="eq(-54,Recherche_2)"/>
+        <setting id="search3_seriefr_com" type="bool" label="Seriefr.com (Séries)" default="false" visible="eq(-55,Recherche_3)"/>
+        <setting id="search4_seriefr_com" type="bool" label="Seriefr.com (Séries)" default="true" visible="eq(-56,Recherche_4)"/>
+		
+        <setting id="search1_streamzer_net" type="bool" label="Streamzer (Films, Séries, Documentaires)" default="true" visible="eq(-57,Recherche_1)"/>
+        <setting id="search2_streamzer_net" type="bool" label="Streamzer (Films, Séries, Documentaires)" default="true" visible="eq(-58,Recherche_2)"/>
+        <setting id="search3_streamzer_net" type="bool" label="Streamzer (Films, Séries, Documentaires)" default="false" visible="eq(-59,Recherche_3)"/>
+        <setting id="search4_streamzer_net" type="bool" label="Streamzer (Film, Séries, Documentaires)" default="false" visible="eq(-60,Recherche_4)"/>
+
+        <setting id="search1_vanoz_com" type="bool" label="Vanoz (Films, Documentaires)" default="true" visible="eq(-61,Recherche_1)"/>
+        <setting id="search2_vanoz_com" type="bool" label="Vanoz (Films, Documentaires)" default="false" visible="eq(-62,Recherche_2)"/>
+        <setting id="search3_vanoz_com" type="bool" label="Vanoz (Films, Documentaires)" default="false" visible="eq(-63,Recherche_3)"/>
+        <setting id="search4_vanoz_com" type="bool" label="Vanoz (Film, Documentaires)" default="true" visible="eq(-64,Recherche_4)"/>		  
+
+        <setting id="search1_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com (Film, Série, Animés)" default="false" visible="eq(-65,Recherche_1)"/>
+        <setting id="search2_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com (Film, Série, Animés)" default="false" visible="eq(-66,Recherche_2)"/>
+        <setting id="search3_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com (Film, Série, Animés)" default="false" visible="eq(-67,Recherche_3)"/>
+        <setting id="search4_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com (Film, Série, Animés)" default="false" visible="eq(-68,Recherche_4)"/>
+		
+		<setting id="search1_fadoz_com" type="bool" label="Fadoz.com (Films)" default="true" visible="eq(-69,Recherche_1)"/>
+        <setting id="search2_fadoz_com" type="bool" label="Fadoz.com (Films)" default="false" visible="eq(-70,Recherche_2)"/>
+        <setting id="search3_fadoz_com" type="bool" label="Fadoz.com (Films)" default="false" visible="eq(-71,Recherche_3)"/>
+        <setting id="search4_fadoz_com" type="bool" label="Fadoz.com (Films)" default="false" visible="eq(-72,Recherche_4)"/>
+		
+		<setting id="search1_poypi_com" type="bool" label="Poypi.com (Films)" default="false" visible="eq(-73,Recherche_1)"/>
+        <setting id="search2_poypi_com" type="bool" label="Poypi.com (Films)" default="false" visible="eq(-74,Recherche_2)"/>
+        <setting id="search3_poypi_com" type="bool" label="Poypi.com (Films)" default="false" visible="eq(-75,Recherche_3)"/>
+        <setting id="search4_poypi_com" type="bool" label="Poypi.com (Films)" default="false" visible="eq(-76,Recherche_4)"/>
+		
+		<setting id="search1_streaming_series_org" type="bool" label="StreamingSeries.org (Séries)" default="false" visible="eq(-77,Recherche_1)"/>
+        <setting id="search2_streaming_series_org" type="bool" label="StreamingSeries.org (Séries)" default="false" visible="eq(-78,Recherche_2)"/>
+        <setting id="search3_streaming_series_org" type="bool" label="StreamingSeries.org (Séries)" default="false" visible="eq(-79,Recherche_3)"/>
+        <setting id="search4_streaming_series_org" type="bool" label="StreamingSeries.org (Séries)" default="false" visible="eq(-80,Recherche_4)"/>
+		
+		<setting id="search1_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="false" visible="eq(-81,Recherche_1)"/>
+        <setting id="search2_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="false" visible="eq(-82,Recherche_2)"/>
+        <setting id="search3_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="false" visible="eq(-83,Recherche_3)"/>
+        <setting id="search4_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="false" visible="eq(-84,Recherche_4)"/>
+		
+		<setting id="search1_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="false" visible="eq(-85,Recherche_1)"/>
+        <setting id="search2_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="false" visible="eq(-86,Recherche_2)"/>
+        <setting id="search3_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="false" visible="eq(-87,Recherche_3)"/>
+        <setting id="search4_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="false" visible="eq(-88,Recherche_4)"/>
+		
+
     </category>
     <!-- <category label="30023">-->
     <!--   <setting label="30023" type="lsep"/>

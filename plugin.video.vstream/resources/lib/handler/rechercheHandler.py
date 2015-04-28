@@ -32,15 +32,25 @@ class cRechercheHandler:
         return aNameList
 
     def __importPlugin(self, sName, sLabel):
-        try:
-            exec "from resources.sites import " + sName
-            exec "sSearch = " + sName + ".URL_SEARCH"
-            #exec "sFunction = " + sName + ".FUNCTION_SEARCH"
-            sPluginSettingsName = sLabel+'_' + sName
-            return sSearch[0], sPluginSettingsName, sSearch[1]
-        except Exception, e:
-            cConfig().log("cant import plugin: " + str(sName))            
+        oConfig = cConfig()
+        sPluginSettingsName = sLabel+'_' +sName
+        bPlugin = oConfig.getSetting(sPluginSettingsName)
+
+        if (bPlugin == 'true'):    
+            try:
+                cConfig().log("Load Plugin: " + str(sName))
+                exec "from resources.sites import " + sName
+                exec "sSearch = " + sName + ".URL_SEARCH"
+                #exec "sFunction = " + sName + ".FUNCTION_SEARCH"
+                #sPluginSettingsName = sLabel+'_' + sName
+                return sSearch[0], sPluginSettingsName, sSearch[1]
+            except Exception, e:
+                cConfig().log("cant import plugin: " + str(sName))            
+                return False, False
+        else:
+            #cConfig().log("cant import plugin: " + str(sName))            
             return False, False
+            
 
     def getRootFolder(self):        
         sRootFolder = cConfig().getAddonPath()
@@ -70,9 +80,7 @@ class cRechercheHandler:
 
         aPlugins = []
         for sFileName in aFileNames:
-            cConfig().log("Load Plugin: " + str(sFileName))
-
-            # wir versuchen das plugin zu importieren
+                
             aPlugin = self.__importPlugin(sFileName, sLabel)
             if (aPlugin[0] != False):
                 sSiteName = aPlugin[0]

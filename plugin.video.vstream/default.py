@@ -23,10 +23,12 @@ from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.config import cConfig
+from resources.lib.db import cDb
 
 class main:
     def __init__(self):
         self.parseUrl()
+        cDb()._create_tables()
 
     def parseUrl(self):
 	    oInputParameterHandler = cInputParameterHandler()

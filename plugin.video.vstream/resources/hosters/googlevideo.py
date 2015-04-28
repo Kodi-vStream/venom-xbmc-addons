@@ -1,0 +1,140 @@
+from resources.hosters.hoster import iHoster
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.parser import cParser
+from resources.lib.gui.gui import cGui
+import urllib, urllib2,re
+import cookielib
+#import json
+#import simplejson
+import xbmcgui
+
+
+
+
+class cHoster(iHoster):
+
+    def __init__(self):
+        self.__sDisplayName = 'GoogleVideo'
+	self.__sFileName = self.__sDisplayName
+
+    def getDisplayName(self):
+        return  self.__sDisplayName
+
+    def setDisplayName(self, sDisplayName):
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+
+    def setFileName(self, sFileName):
+	self.__sFileName = sFileName
+
+    def getFileName(self):
+	return self.__sFileName
+    
+    def setUrl(self, sUrl):
+        self.__sUrl = sUrl
+    
+    def get_host_and_id(self, url):
+        sPattern = 'http[s]*://(.*?(?:\.googlevideo|picasaweb\.google)\.com)/(.*?(?:videoplayback\?|\?authkey).+)'
+        r = re.search(sPattern, url)
+        if r: return r.groups()
+        else: return False
+        
+    def __modifyUrl(self, sUrl):
+        return
+
+
+    def getPluginIdentifier(self):
+        return 'googlevideo'
+
+    def isDownloadable(self):
+        return True
+
+    def isJDownloaderable(self):
+        return True
+
+    def getPattern(self):
+        return '';
+
+    def checkUrl(self, sUrl):
+        return True
+
+    def getUrl(self, host, media_id):
+        return 'https://%s/%s' % (host, media_id)
+
+    def getMediaLink(self):
+        return self.__getMediaLinkForGuest()
+
+    def __getMediaLinkForGuest(self):
+        
+        #r = self.get_host_and_id(self.__sUrl)
+        #web_url = self.getUrl(r[0],r[1])
+        web_url = self.__sUrl
+        r = ('x','x')
+        
+        headers = {'Referer': web_url}
+        
+        stream_url = ''
+        vid_sel = web_url
+        
+        
+        try:
+            if 'picasaweb.' in r[0]:
+                vid_sel = ''
+                vid_id = re.search('.*?#(.+?)$', web_url)
+                if vid_id:
+                    vid_id = vid_id.group(1)
+                    
+                    request = urllib2.Request(web_url,None,headers)
+                    try: 
+                        reponse = urllib2.urlopen(request)
+                    except URLError, e:
+                        print e.read()
+                        print e.reason
+      
+                    resp = reponse.read()
+                    
+                    #fh = open('c:\\test.txt', "w")
+                    #fh.write(resp)
+                    #fh.close()
+                    
+                    html = re.search('\["shared_group_' + re.escape(vid_id) + '"\](.+?),"ccOverride":"false"}', resp, re.DOTALL)
+                    
+                    if html:
+                        vid_list = []
+                        url_list = []
+                        best = 0
+                        quality = 0
+                        
+                        videos = re.compile(',{"url":"(https://redirector\.googlevideo\.com/.+?)","height":([0-9]+?),"width":([0-9]+?),"type":"video/.+?"}').findall(html.group(1))
+                        
+                        if not videos:
+                            videos = re.compile(',{"url":"(https://lh3\.googleusercontent\.com/.+?)","height":([0-9]+?),"width":([0-9]+?),"type":"video/.+?"}').findall(html.group(1))
+                        
+                        if videos:
+                            if len(videos) > 1:
+                                for index, video in enumerate(videos):
+                                    if int(video[1]) > quality: best = index
+                                    quality = int(video[1])
+                                    vid_list.extend(['GoogleVideo - %sp' % quality])
+                                    url_list.extend([video[0]])
+                            if len(videos) == 1: vid_sel = videos[0][0]
+                            else:
+                                result = xbmcgui.Dialog().select('Choose a link', vid_list)
+                                if result != -1: vid_sel = url_list[result]
+                                else: return self.unresolvable(0, 'No link selected')
+            
+            if vid_sel:
+                if 'googleusercontent' in vid_sel: stream_url = urllib2.urlopen(vid_sel).geturl()
+                elif 'redirector.' in vid_sel: stream_url = urllib2.urlopen(vid_sel).geturl()
+                elif 'google' in vid_sel: stream_url = vid_sel
+                    
+
+        except urllib2.URLError, e:
+            common.addon.log_error(self.name + ': got http error %d fetching %s' % (e.reason, web_url))
+            return self.unresolvable(code=3, msg=e)
+
+        api_call = stream_url
+
+        if not (api_call == False):
+            return True, api_call          
+            
+        return False, False

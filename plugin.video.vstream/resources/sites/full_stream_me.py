@@ -26,6 +26,7 @@ MOVIE_GENRES = (True, 'showGenre')
 SERIE_SERIES = ('http://full-stream.me/seriestv/', 'showMovies')
 SERIE_VFS = ('http://full-stream.me/seriestv/vf/', 'showMovies')
 SERIE_VOSTFRS = ('http://full-stream.me/seriestv/vostfr/', 'showMovies')
+ANIM_ANIMS = ('http://full-stream.me/mangas/','showMovies')
 ANIM_VFS = ('http://full-stream.me/mangas/mangas-vf/', 'showMovies')
 ANIM_VOSTFRS = ('http://full-stream.me/mangas/mangas-vostfr/', 'showMovies')
 
@@ -87,11 +88,11 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            #sSearchText = cUtil().urlEncode(sSearchText)
-            sUrl = 'http://full-stream.me/index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&story='+sSearchText  
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return  
+        #sSearchText = cUtil().urlEncode(sSearchText)
+        sUrl = 'http://full-stream.me/index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&story='+sSearchText  
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return  
     
     
 def getPremiumUser():
@@ -120,7 +121,7 @@ def showGenre():
     liste.append( ['Action','http://full-stream.me/films-en-vk-streaming/action/'] )
     liste.append( ['Aventure','http://full-stream.me/films-en-vk-streaming/aventure/'] )
     liste.append( ['Animation','http://full-stream.me/films-en-vk-streaming/animation/'] )
-    liste.append( ['Walt Disny','http://full-stream.me/film/Walt+Disney/'] )
+    liste.append( ['Walt Disney','http://full-stream.me/film/Walt+Disney/'] )
     liste.append( ['Arts Martiaux','http://full-stream.me/films-en-vk-streaming/arts-martiaux/'] )
     liste.append( ['Biopic','http://full-stream.me/films-en-vk-streaming/biopic/'] )
     liste.append( ['Comedie','http://full-stream.me/films-en-vk-streaming/comedie/'] )
@@ -159,18 +160,22 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
       sUrl = sSearch
+      sPattern = 'fullstreaming">.*?<img src="(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a><\/h3>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*Regarder<\/a>'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
+        #sPattern = 'fullstreaming">.*?<img src="(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a><\/h3>.+?(?:.+?<a href=".quality.+?">(.+?)<\/a><.div>)(?:.+?<span style="font-family.+?>(.+?)<\/span>)'
+        
+        sPattern = 'fullstreaming">.*?<img src=".+?src=(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a><\/h3>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*Regarder<\/a>(?:.+?<span style="font-family.+?>(.+?)</span>|)'
    
+    #recuperation de la page
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('&amp;w=240&amp;h=320','')
-    sPattern = 'fullstreaming">.*?<img src=".+?src=(.+?)".+?<h3.+?><a href="(.+?)">(.+?)</a></h3>(?:.+?<span style="font-family.+?>(.+?)</span>|)'
-    
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
+    #print aResult
+   
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -178,17 +183,28 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
+                
+            sThumb = str(aEntry[0]).replace('&w=240&;h=320','')
+            sTitle = aEntry[2]
+            if aEntry[3] : sTitle = sTitle + ' (' + aEntry[3] + ')'
+            
+            # if not 'http' in sThumb:
+                # sThumb = URL_MAIN + sThumb
+            if sSearch:
+                sCom = ''
+            else:
+                sCom = aEntry[4]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
             if '/seriestv/' in sUrl  or 'saison' in aEntry[1]:
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', aEntry[2], '', aEntry[0], aEntry[3], oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb,sCom, oOutputParameterHandler)
             elif '/mangas/' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', aEntry[2], '', aEntry[0], aEntry[3], oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, sCom, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[2], '', aEntry[0], aEntry[3], oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sCom, oOutputParameterHandler)
         
         cConfig().finishDialog(dialog)
 
@@ -291,3 +307,4 @@ def serieHosters():
         cConfig().finishDialog(dialog)    
 
     oGui.setEndOfDirectory()
+    

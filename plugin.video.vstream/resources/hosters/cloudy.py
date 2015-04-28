@@ -56,7 +56,7 @@ class cHoster(iHoster):
     def __getKey(self):
         oRequestHandler = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequestHandler.request()
-        sPattern = 'flashvars.filekey="(.+?)";'
+        sPattern = 'key: "(.+?)";'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):

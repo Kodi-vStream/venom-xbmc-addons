@@ -91,10 +91,6 @@ class cHome:
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
             oGui.addDir(SITE_IDENTIFIER, 'animVostfrs', '[COLOR '+color_anims+']Animes VOSTFR[/COLOR]', 'animes.png', oOutputParameterHandler)
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'animMovies', '[COLOR '+color_anims+']Animes Films[/COLOR]', 'animes.png', oOutputParameterHandler)
-
         if (cConfig().getSetting('home_docs') == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
