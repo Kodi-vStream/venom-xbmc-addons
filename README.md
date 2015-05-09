@@ -23,6 +23,7 @@ Tutoriel!
 ----------
 
 [Video d'installation : Merci à Cédric](http://tvwebdream.com/tutoriel-xbmc-vstream-filmsseriesdocumentaireschaines-tv-en-streaming-xbmc/)
+
 [Video de présentation : Merci à Atlas web](https://www.youtube.com/watch?v=43Nq2pxkAH4)
 
 Quoi de neuf!
