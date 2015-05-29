@@ -26,6 +26,9 @@ Tutoriel!
 
 [Video de présentation : Merci à Atlas web](https://www.youtube.com/watch?v=43Nq2pxkAH4)
 
+[Video de d'installation : Merci à Patulacci marcel](https://www.youtube.com/watch?v=XeACz8uMoxQ)
+
+
 Quoi de neuf!
 ----------
 
