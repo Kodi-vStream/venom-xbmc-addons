@@ -10,10 +10,70 @@
 - Sylvain L.
 - Daniel L.
 =============================================================================
-- Version 0.3.0 - 28.04.2015
-=============================================================================
-=============================================================================
 - Merci au contributeur de la bêta. TmpName/FreeFighter77/mino60
+=============================================================================
+=============================================================================
+- Version 0.3.1 - 29.05.2015
+=============================================================================
+- @LordVenom / Merge pull request #43 from mino60/patch-11 …
+- @LordVenom / remove fadoz
+- @LordVenom / Update archive_org.py 
+- @LordVenom / Merge pull request #42 from mino60/patch-10 …
+- @mino60 / Update archive_org.py
+- @LordVenom / anotation 
+- @LordVenom / bug
+- @TmpName / Update frenchstream_org.py
+- @TmpName / Create GKDecrypter.py
+- @TmpName / Update googlevideo.py
+- @TmpName / Update poypi_com.py
+- @LordVenom / videobuzzy
+- @TmpName / Update hoster.py
+- @TmpName / Create ok_ru.py
+- @TmpName / Update full_stream_me.py
+- @TmpName / Update frenchstream_org.py
+- @TmpName / Update videomega.py
+- @TmpName / Update hoster.py
+- @TmpName / Update mangacity_org.py
+- @TmpName / Update lien_direct.py
+- @TmpName / Update hoster.py
+- @TmpName / Update videomega.py
+- @TmpName / Update full_stream_me.py
+- @TmpName / Update adkami_com.py
+- @TmpName / Update netu.py
+- @TmpName / Merge pull request #37 from mino60/patch-8
+- @mino60 / create Archive.org
+- @TmpName / Update easywatch.py
+- @FreeFighter77 / Update hoster.py
+- @FreeFighter77 / Create easywatch.py
+- @FreeFighter77 / Update full_stream_me.py
+- @TmpName / Update dpstream_net_serie.py
+- @LordVenom / update gui
+- @TmpName / Update hoster.py
+- @TmpName / Update lien_direct.py
+- @TmpName / Update mangacity_org.py
+- @FreeFighter77 / Update streamzzz_com.py
+- @TmpName / Update hoster.py
+- @TmpName / Create pixsil.py
+- @TmpName / Update mangacity_org.py
+- @LordVenom / gitignore
+- @LordVenom / Merge branch 'master' of https://github.com/LordVenom/venom-xbmc-addo… …
+- @LordVenom / add mangacity
+- @TmpName / Update download.py
+- @TmpName / Update full_stream_me.py 
+- @LordVenom / update streaming_serie
+- @LordVenom / update img
+- @TmpName / Update streaminto.py
+- @TmpName / Update dpstreaming_org.py
+- @LordVenom / update string
+- @TmpName / Update full_stream_me.py
+- @TmpName / Update streaming_series_org.py
+- @TmpName / Update streamingfilms_fr.py
+- @TmpName / Update full_stream_me.py 
+- @TmpName / Update dpstreaming_org.py 
+- @FreeFighter77 / Update full_stream_me.py
+- @TmpName / Update themoviedb_org.py …
+=============================================================================
+- Version 0.3.0 - 28.04.2015
 =============================================================================
     - Bug marquer vu
 	- Bug site manquant

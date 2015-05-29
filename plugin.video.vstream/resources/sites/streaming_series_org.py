@@ -18,7 +18,12 @@ SITE_DESC = 'Film en streaming, regarder film en direct, streaming vf regarder f
 
 URL_MAIN = 'http://streaming-series.org/'
 
-SERIE_NEWS = ('http://streaming-series.org/', 'showMovies')
+#SERIE_SERIES = 'http://url' # serie nouveautés #30106
+#SERIE_VFS = 'http://url' # serie VF #30107
+#SERIE_VOSTFRS = 'http://url' # serie Vostfr #30108
+
+
+SERIE_SERIES = ('http://streaming-series.org/', 'showMovies')
 SERIE_VIEWS = ('http://streaming-series.org/lesplusvues/', 'showMovies')
 SERIE_COMMENTS = ('http://streaming-series.org/lespluscommentees/', 'showMovies')
 SERIE_NOTES = ('http://streaming-series.org/lesmieuxnotees/', 'showMovies')
@@ -34,7 +39,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSerieSearch', 'Recherche Séries', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries Nouveautés', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -205,24 +210,13 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','')
-
+    sHtmlContent = sHtmlContent.replace('\r','')
 
     sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    #if (aResult[0] == True):
-    if aResult:
-       sThumb = aResult[0][1]
-       
-       sHtmlContent = sHtmlContent.replace('\r','')
-   
-       #sPattern = '>>>>> histoire <<<< :(.|\r|)+center;">\r+(.+?)\r+<.p>'
-       #sPattern = '<p>(.+?) <strong><.strong>(?:.+?)<.p>'
-       sPattern = '<.div>(?:.+?)<p>(?:.+?)</p>'
-       aResult = re.findall(sPattern, sHtmlContent)
-    if aResult:
-        sComm = unescape(aResult[0])
+    if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:

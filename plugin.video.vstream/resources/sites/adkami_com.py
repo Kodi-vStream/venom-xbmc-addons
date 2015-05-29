@@ -294,7 +294,7 @@ def showEpisode():
     else:
         
         #sPattern = '<li style.+?>(.+?)</li>|<li title=""><a href="([^<]+)">([^<]+)</a></li>'
-        sPattern = '<li style.+?>(.+?)<.li>|<li title=".*?"><a href="([^<]+)">([^<]+)<.a><.li>'
+        sPattern = '<li style.+?>(.+?)<.li>|<li title="[^>]*?"><a href="(http:\/\/www.adkami.com.+?)".*?>([^<]+)<.a><.li>'
         
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
@@ -329,12 +329,16 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
+    #print sUrl
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
 
     sPattern = '</div><iframe.+?src="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    #print aResult
     
     if (aResult[0] == True):
         total = len(aResult[1])

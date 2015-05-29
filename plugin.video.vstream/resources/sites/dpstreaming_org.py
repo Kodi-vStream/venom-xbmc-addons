@@ -282,13 +282,17 @@ def showMovies(sSearch = ''):
                 break
 
             sTitle = unicode(aEntry[2], 'utf-8')#converti en unicode
+            sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
             sTitle = unescape(str(sTitle))
             sTitle = sTitle.encode( "utf-8")
             
+            sMovieTitle=re.sub('(\[.*\])','', sTitle)
+            
             sTitle=re.sub('(.*)(\[.*\])','\\1 [COLOR azure]\\2[/COLOR]', sTitle)
-            sMovieTitle=re.sub('(\[.*\])','', str(aEntry[2]))
+            
+ 
             sCom = unicode(aEntry[3], 'utf-8')#converti en unicode
-            #sCom = unicodedata.normalize('NFD', sCom).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
+            sCom = unicodedata.normalize('NFD', sCom).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
             sCom = unescape(sCom)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -335,7 +339,7 @@ def showSeries():
     sHtmlContent = sHtmlContent.replace('<iframe src="http://ads.affbuzzads.com','')
     sHtmlContent = sHtmlContent.replace('<iframe src="//ads.ad-center.com','')
  
-    sPattern = '<span style="color: #33cccc;"><strong>([^<]+)|>(Episode[^<]{2,12})<(?!\/a>)(.+?)(?:<.p|<br|<.div)'
+    #sPattern = '<span style="color: #33cccc;"><strong>([^<]+)|>(Episode[^<]{2,12})<(?!\/a>)(.+?)(?:<.p|<br|<.div)'
     sPattern = '<span style="color: #33cccc;"><strong>([^<]+)|>(Episode[^<]{2,12})<(?!\/a>)(.{0,10}a href="http.+?)(?:<.p|<br|<.div)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -411,7 +415,7 @@ def showHosters():
                 break
 
             sHosterUrl = str(aEntry)
-            print sHosterUrl
+
             #oHoster = __checkHoster(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
         
@@ -434,8 +438,6 @@ def serieHosters():
     oParser = cParser()
     
     liste = False
-    
-    print sUrl
     
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
@@ -488,7 +490,7 @@ def serieHosters():
             if liste:
                 sTitle = sTitle + ' (' + str(index) + ') '
                 index = index + 1
-            print aEntry
+            #print aEntry
             sHosterUrl = str(aEntry)
             #oHoster = __checkHoster(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)

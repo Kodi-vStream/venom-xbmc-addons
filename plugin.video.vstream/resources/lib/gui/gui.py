@@ -42,7 +42,7 @@ class cGui:
         oContext.setSiteName('cFav')
         oContext.setFunction('setFavorite')
         #oContext.setTitle('[COLOR teal]Marque-film[/COLOR]')
-        oContext.setTitle('[COLOR teal]'+cConfig().getLocalizedString(30206)+'[/COLOR]')
+        oContext.setTitle('[COLOR teal]'+cConfig().getlanguage(30206)+'[/COLOR]')
 
         #oOutputParameterHandler.addParameter('sTitle', sLabel)
         oOutputParameterHandler.addParameter('sId', sId)
@@ -79,7 +79,7 @@ class cGui:
         oContext.setSiteName('cFav')
         oContext.setFunction('setFavorite')
         #oContext.setTitle('[COLOR teal]Marque-série[/COLOR]')
-        oContext.setTitle('[COLOR teal]'+cConfig().getLocalizedString(30207)+'[/COLOR]')
+        oContext.setTitle('[COLOR teal]'+cConfig().getlanguage(30207)+'[/COLOR]')
 
         #oOutputParameterHandler.addParameter('sTitle', sLabel)
         oOutputParameterHandler.addParameter('sId', sId)
@@ -100,7 +100,7 @@ class cGui:
         oGuiElement.setIcon(sIcon)
         oGuiElement.setThumbnail(sThumbnail)
         oGuiElement.setMeta(0)
-        oGuiElement.getInfoLabel()
+        #oGuiElement.getInfoLabel()
         
         oGuiElement.setDescription(sDesc)
         
@@ -112,7 +112,7 @@ class cGui:
         oContext.setSiteName('cFav')
         oContext.setFunction('setFavorite')
         #oContext.setTitle('[COLOR teal]Marque-diver[/COLOR]')
-        oContext.setTitle('[COLOR teal]'+cConfig().getLocalizedString(30208)+'[/COLOR]')
+        oContext.setTitle('[COLOR teal]'+cConfig().getlanguage(30208)+'[/COLOR]')
 
         #oOutputParameterHandler.addParameter('sTitle', sLabel)
         oOutputParameterHandler.addParameter('sId', sId)
@@ -156,7 +156,7 @@ class cGui:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction('load')
-        oGuiElement.setTitle('[COLOR= red]'+cConfig().getLocalizedString(30204)+'[/COLOR]')
+        oGuiElement.setTitle('[COLOR= red]'+cConfig().getlanguage(30204)+'[/COLOR]')
         oGuiElement.setIcon('none.png')
         oGuiElement.setMeta(0)
         
@@ -239,7 +239,7 @@ class cGui:
         oContext.setSiteName('cFav')
         oContext.setFunction('delFavourites')
         #oContext.setTitle('[COLOR red]Supprimer Marque-page[/COLOR]')
-        oContext.setTitle('[COLOR red]'+cConfig().getLocalizedString(30209)+'[/COLOR]')
+        oContext.setTitle('[COLOR red]'+cConfig().getlanguage(30209)+'[/COLOR]')
       
         oContext.setOutputParameterHandler(oOutputParameterHandler)
 
@@ -264,7 +264,7 @@ class cGui:
         oContextItem.setFile('cFav')
         oContextItem.setSiteName('cFav')
         #oContextItem.setTitle('[COLOR teal]Voir Marque-page[/COLOR]')
-        oContextItem.setTitle('[COLOR teal]'+cConfig().getLocalizedString(30210)+'[/COLOR]')
+        oContextItem.setTitle('[COLOR teal]'+cConfig().getlanguage(30210)+'[/COLOR]')
         oContextItem.setFunction('getFavourites')
         oOutputParameterHandler = oContextItem.getOutputParameterHandler()
         sParams = oOutputParameterHandler.getParameterAsUri()
@@ -402,7 +402,7 @@ class cGui:
 	else:
             iSeconds = iSeconds * 1000
         
-        xbmc.executebuiltin("Notification(%s,%s,%s)" % (cConfig().getLocalizedString(30308), (cConfig().getLocalizedString(30309) % str(sTitle)), iSeconds))
+        xbmc.executebuiltin("Notification(%s,%s,%s)" % (cConfig().getlanguage(30308), (cConfig().getlanguage(30309) % str(sTitle)), iSeconds))
 
     def showError(self, sTitle, sDescription, iSeconds=0):
         if (cConfig().isDharma() == False):

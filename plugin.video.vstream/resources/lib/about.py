@@ -33,7 +33,7 @@ class cAbout:
          
             return hash.hexdigest()
         except:            
-            cConfig().error("%s,%s" % (cConfig().getLocalizedString(30205), url))
+            cConfig().error("%s,%s" % (cConfig().getlanguage(30205), url))
             return False
       
 
@@ -49,7 +49,7 @@ class cAbout:
                 sContent = oResponse.read()
                 self.TextBoxes('vStream Changelog', sContent)
             except:            
-                cConfig().error("%s,%s" % (cConfig().getLocalizedString(30205), sUrl))
+                cConfig().error("%s,%s" % (cConfig().getlanguage(30205), sUrl))
             return
 
         if (env == 'about'):
@@ -72,7 +72,7 @@ class cAbout:
                     self.TextBoxes('Changelog', sContent)
                     cConfig().setSetting('date_update', str(stats_in))
                 except:            
-                    cConfig().error("%s,%s" % (cConfig().getLocalizedString(30205), sUrl))
+                    cConfig().error("%s,%s" % (cConfig().getlanguage(30205), sUrl))
                 return
         return
 

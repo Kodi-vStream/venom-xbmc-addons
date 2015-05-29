@@ -207,7 +207,7 @@ def serieHosters():
     #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src="http://www.facebook.com/plugins/likebox.php','')
                
         
-    sPattern = 'iframe.*?src="(.+?)"|</param><embed src="(.+?)"'
+    sPattern = 'iframe.*?src="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
      

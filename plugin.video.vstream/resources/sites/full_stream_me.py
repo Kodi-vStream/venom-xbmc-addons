@@ -14,7 +14,7 @@ import re
 
 SITE_IDENTIFIER = 'full_stream_me'
 SITE_NAME = 'Full-Stream.me'
-SITE_DESC = 'Film et Série en Streaming HD - Vk.Com - Netu.tv - ExaShare - YouWatch'
+SITE_DESC = 'Film Serie et Anime en Streaming HD - Vk.Com - Netu.tv - ExaShare - YouWatch'
 
 URL_MAIN = 'http://full-stream.me'
 
@@ -82,6 +82,12 @@ def load():
             
     oGui.setEndOfDirectory()
 
+def DecoTitle(string):
+    #pr les tag
+    string = re.sub('(.*)([\[\(].{1,7}[\)\]])','\\1[COLOR coral]\\2[/COLOR]', str(string))
+    #pr les saisons
+    string = re.sub('(?i)(.*)(saison [0-9]+)','\\1[COLOR coral]\\2[/COLOR]', str(string))
+    return string
  
 def showSearch():
     oGui = cGui()
@@ -158,19 +164,32 @@ def showGenre():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    
+    oInputParameterHandler = cInputParameterHandler()
+    
     if sSearch:
-      sUrl = sSearch
-      sPattern = 'fullstreaming">.*?<img src="(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a><\/h3>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*Regarder<\/a>'
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-        #sPattern = 'fullstreaming">.*?<img src="(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a><\/h3>.+?(?:.+?<a href=".quality.+?">(.+?)<\/a><.div>)(?:.+?<span style="font-family.+?>(.+?)<\/span>)'
+        sUrl = sSearch
         
-        sPattern = 'fullstreaming">.*?<img src=".+?src=(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a><\/h3>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*Regarder<\/a>(?:.+?<span style="font-family.+?>(.+?)</span>|)'
-   
+        sDisp = oInputParameterHandler.getValue('disp')
+       
+        if (sDisp == 'search3'):#anime
+            sUrl = sUrl + '&catlist[]=36'
+        elif (sDisp == 'search2'):#serie
+            sUrl = sUrl + '&catlist[]=2'
+        elif (sDisp == 'search1'):#film
+            sUrl = sUrl + '&catlist[]=1'    
+        else:#tout le reste
+            sUrl = sUrl
+        
+        #sPattern = 'fullstreaming">.*?<img src="(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a><\/h3>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*Regarder<\/a>'
+        sPattern = 'fullstreaming">.*?<img src=".+?src=(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*<span style="font-family:.+?>(.+?)<\/span>'
+    else:
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+        sPattern = 'fullstreaming">.*?<img src=".+?src=(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*<span style="font-family:.+?>(.+?)<\/span>'
+
     #recuperation de la page
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -184,27 +203,33 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
                 
-            sThumb = str(aEntry[0]).replace('&w=240&;h=320','')
+            sThumb = str(aEntry[0]).replace('&w=210&h=280','')
             sTitle = aEntry[2]
-            if aEntry[3] : sTitle = sTitle + ' (' + aEntry[3] + ')'
+            if aEntry[3] :
+                sTitle = sTitle + ' (' + aEntry[3] + ')'
+            sTitle = sTitle.replace('Haute-qualité','HQ')
+                
+            sDisplayTitle = DecoTitle(sTitle)
             
             # if not 'http' in sThumb:
                 # sThumb = URL_MAIN + sThumb
-            if sSearch:
-                sCom = ''
-            else:
-                sCom = aEntry[4]
+
+            #if sSearch:
+            #    sCom = ''
+            #else:
+            sCom = aEntry[4]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-            if '/seriestv/' in sUrl  or 'saison' in aEntry[1]:
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb,sCom, oOutputParameterHandler)
-            elif '/mangas/' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, sCom, oOutputParameterHandler)
+
+            if '/seriestv/' in aEntry[1]  or 'saison' in aEntry[1]:
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb,sCom, oOutputParameterHandler)
+            elif '/mangas/' in aEntry[1]:
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, sCom, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sCom, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sCom, oOutputParameterHandler)
         
         cConfig().finishDialog(dialog)
 
@@ -234,17 +259,19 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
+    
+    # oRequestHandler = cRequestHandler(sUrl)
+    # oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+    # oRequestHandler.addParameters('login_name', 'vstream')
+    # oRequestHandler.addParameters('login_password', 'vstream')
+    # oRequestHandler.addParameters('Submit', '')
+    # oRequestHandler.addParameters('login', 'submit')
+    # sHtmlContent = oRequestHandler.request();
+    
     oRequestHandler = cRequestHandler(sUrl)
-    oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-    oRequestHandler.addParameters('login_name', 'vstream')
-    oRequestHandler.addParameters('login_password', 'vstream')
-    oRequestHandler.addParameters('Submit', '')
-    oRequestHandler.addParameters('login', 'submit')
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
 
-
-    sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]'
+    sPattern = '<a href="([^<]+)" target="filmPlayer" class="ilink sinactive"><img alt="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -256,8 +283,9 @@ def showHosters():
             if dialog.iscanceled():
                 break
 
-            sHosterUrl = str(aEntry)
-            oHoster = cHosterGui().checkHoster(sHosterUrl)                   
+            sHosterUrl = str(aEntry[0])
+            oHoster = cHosterGui().checkHoster(aEntry[1].lower())                   
+            oHoster = cHosterGui().checkHoster(aEntry[0].lower())                   
         
             if (oHoster != False):         
                 try:
@@ -307,4 +335,5 @@ def serieHosters():
         cConfig().finishDialog(dialog)    
 
     oGui.setEndOfDirectory()
+    
     

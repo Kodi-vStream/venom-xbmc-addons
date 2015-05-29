@@ -12,8 +12,9 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import json, urllib
+import json, urllib, unicodedata, re
 import xbmcgui
+import xbmc
 
 SITE_IDENTIFIER = 'themoviedb_org'
 SITE_NAME = 'TheMovieDB (beta)'
@@ -154,6 +155,10 @@ def showMovies():
 
     oGui.setEndOfDirectory()
     
+    #test pr chnagement mode
+    xbmc.executebuiltin('Container.SetViewMode(500)')
+    #bmcgui.ListItem.select(1)
+    
     
 def showSeries():
     oGui = cGui()
@@ -187,7 +192,7 @@ def showSeries():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str('none'))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('disp', 'search1')
+            oOutputParameterHandler.addParameter('disp', 'search2')
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))          
             
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
@@ -200,6 +205,9 @@ def showSeries():
             oGui.addDir(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page '+str(iNextPage)+' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+    
+    #test pr chnagement mode
+    xbmc.executebuiltin('Container.SetViewMode(500)')
 
 def showActors():
     oGui = cGui()
@@ -248,7 +256,7 @@ def showActors():
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str('none'))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-                oOutputParameterHandler.addParameter('disp', 'search1')
+                oOutputParameterHandler.addParameter('disp', '')
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))          
                 
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
@@ -287,8 +295,22 @@ def showHosters():
     
     disp = ['search1','search2','search3','search4']
     
-    ret = dialog2.select('Select Recherche',dialog_select)
-     
+    if (sDisp == ''):
+        ret = dialog2.select('Select Recherche',dialog_select)
+    else:
+        ret = disp.index(sDisp)
+    
+    #nettoyage du nom pr la recherche
+    #print 'avant ' + sMovieTitle
+    sMovieTitle = unicode(sMovieTitle, 'utf-8')#converti en unicode pour aider aux convertions
+    sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
+    sMovieTitle = sMovieTitle.encode("utf-8").lower() #on repasse en utf-8
+    sMovieTitle = re.sub(r'[^(\w| )]', ' ', sMovieTitle) #vire les caracteres a la con qui peuvent trainer
+    sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)',' ', sMovieTitle) #vire les articles
+    sMovieTitle = re.sub('\(.+?\)',' ', sMovieTitle) #vire les parentheses
+    sMovieTitle = re.sub(' +',' ',sMovieTitle) #vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
+    #print 'apres ' + sMovieTitle
+    
     if ret > -1:
         
         oHandler = cRechercheHandler()
@@ -307,3 +329,4 @@ def showHosters():
                 pass
                 
     oGui.setEndOfDirectory()
+

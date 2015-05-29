@@ -209,24 +209,13 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','')
-
+    sHtmlContent = sHtmlContent.replace('\r','')
 
     sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    #if (aResult[0] == True):
-    if aResult:
-       sThumb = aResult[0][1]
-       
-       sHtmlContent = sHtmlContent.replace('\r','')
-   
-       #sPattern = '>>>>> histoire <<<< :(.|\r|)+center;">\r+(.+?)\r+<.p>'
-       #sPattern = '<p>(.+?) <strong><.strong>(?:.+?)<.p>'
-       sPattern = '<.div>(?:.+?)<p>(?:.+?)</p>'
-       aResult = re.findall(sPattern, sHtmlContent)
-    if aResult:
-        sComm = unescape(aResult[0])
+    if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:

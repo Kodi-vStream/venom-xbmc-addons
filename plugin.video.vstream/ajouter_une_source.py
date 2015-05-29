@@ -19,23 +19,23 @@ SITE_DESC = 'films en streaming, vk streaming, youwatch, vimple , streaming hd ,
 URL_MAIN = 'http://full-streaming.org/' # url de votre source
 
 #definis les url pour les catégories principale ceci et automatique si la deffition et présente elle seras afficher.
-MOVIE_NEWS = 'htt://url' # films nouveautés
-MOVIE_VIEWS = 'http://url' # films + plus
-MOVIE_COMMENTS = 'http://url' # films + commentés
-MOVIE_NOTES = 'http://url' # films mieux notés
-MOVIE_GENRES = True # ou http://url
+MOVIE_NEWS = 'htt://url' # films nouveautés #30101
+MOVIE_VIEWS = 'http://url' # films + vues #30102
+MOVIE_COMMENTS = 'http://url' # films + commentés #30103
+MOVIE_NOTES = 'http://url' # films mieux notés #30104
+MOVIE_GENRES = True # ou http://url #30105
 
-SERIE_SERIES = 'http://url' # serie nouveautés
-SERIE_VFS = 'http://url' # serie VF
-SERIE_VOSTFRS = 'http://url' # serie Vostfr
+SERIE_SERIES = 'http://url' # serie nouveautés #30106
+SERIE_VFS = 'http://url' # serie VF #30107
+SERIE_VOSTFRS = 'http://url' # serie Vostfr #30108
 
-ANIM_ANIMS = 'http://url' #anim nouveautés
-ANIM_VFS = 'http://url' #anime VF
-ANIM_VOSTFRS = 'http://url' #anim VOSTFR
+ANIM_ANIMS = 'http://url' #anim nouveautés #30109
+ANIM_VFS = 'http://url' #anime VF #30110
+ANIM_VOSTFRS = 'http://url' #anim VOSTFR #30111
 
-DOC_DOCS = 'http://url/' #Documentaire
-SPORT_SPORTS = 'http://url' #sport
-MOVIE_NETS = 'http://url' #video du net
+DOC_DOCS = 'http://url/' #Documentaire #30112
+SPORT_SPORTS = 'http://url' #sport #30113
+MOVIE_NETS = 'http://url' #video du net #30114
 
 def load(): #function charger automatiquement par l'addon l'index de votre navigation.
     oGui = cGui() #ouvre l'affichage

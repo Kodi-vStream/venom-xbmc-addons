@@ -3,7 +3,9 @@ from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.lib.util import cUtil
 from resources.hosters.hoster import iHoster
-import xbmcgui
+import xbmcgui,xbmc
+import urllib2
+import re
 
 class cHoster(iHoster):
 
@@ -57,30 +59,76 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-
-        oRequest = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequest.request()
         
-        sPattern =  'unescape.+?"(.+?)"'
-              
+        headers = {'Host' : 'videomega.tv',
+                   'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0',
+                   #'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                   #'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+                   #'Accept-Encoding' : 'gzip, deflate',
+                   'Referer' : self.__sUrl
+                   }
+        
+        url = self.__sUrl
+        request = urllib2.Request(url,None,headers)
+        
+        #print url
+      
+        try: 
+            reponse = urllib2.urlopen(request)
+        except URLError, e:
+            print e.read()
+            print e.reason
+        
+        sHtmlContent = reponse.read()
+        
+        api_call = False
+        
+        #si on passe pr le hash code
+        if 'validatehash.php?hashkey=' in url:
+            if 'ref=' in sHtmlContent:
+                a = re.compile('.*?ref="(.+?)".*').findall(sHtmlContent)[0]
+                url = 'http://videomega.tv/cdn.php?ref=' + a
+                
+                request = urllib2.Request(url,None,headers)
+             
+                try: 
+                    reponse = urllib2.urlopen(request)
+                except URLError, e:
+                    print e.read()
+                    print e.reason
+             
+                sHtmlContent = reponse.read()
+                
+        #Premier test, lien ok
+        sPattern =  '<source src="([^"]+)" type="video[^"]*"\/>'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-
-        if (aResult[0] == True):
-            decoder = cUtil().urlDecode(aResult[1][0])
-            
-            sPattern =  'file: "(.+?)"'
-            oParser = cParser()
-            aResult = oParser.parse(decoder, sPattern)
-            if (aResult[0] == True):
-                cGui().showInfo(self.__sDisplayName, 'Streaming', 5)
-                return True, aResult[1][0]
-            else:
-                cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
-                return False, False
-
-        else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
-            return False, False
         
+        if (aResult[0] == True):
+            api_call = aResult[1][0]
+            
+        #Deuxieme test, lien code
+        if not api_call:
+            #troisieme test
+            sPattern =  'unescape.+?"(.+?)"'
+            oParser = cParser()
+            aResult = oParser.parse(sHtmlContent, sPattern)
+
+            if (aResult[0] == True):
+                decoder = cUtil().urlDecode(aResult[1][0])
+                
+                sPattern =  'file: "(.+?)"'
+                oParser = cParser()
+                aResult = oParser.parse(decoder, sPattern)
+                
+                if (aResult[0] == True):
+                    api_call = aResult[1][0]
+                 
+
+        #print 'url : ' + api_call
+
+        if (api_call):
+            xbmc.sleep(6000)
+            return True, api_call
+            
         return False, False

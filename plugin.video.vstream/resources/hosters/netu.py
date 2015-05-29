@@ -54,10 +54,10 @@ def _decode(data):
 
 def _decode2(file_url):
     def K12K(a, typ='b'):
-        codec_a = ["G", "L", "M", "N", "Z", "o", "I", "t", "V", "y", "x", "p", "R", "m", "z", "u", "D", "7", "W", "v",
-                   "Q", "n", "e", "0", "b", "="]
-        codec_b = ["2", "6", "i", "k", "8", "X", "J", "B", "a", "s", "d", "H", "w", "f", "T", "3", "l", "c", "5", "Y",
-                   "g", "1", "4", "9", "U", "A"]
+        codec_a = ["G", "L", "M", "N", "Z", "o", "I", "t", "V", "y", "x", "p", "R", "m", "z", "u",
+                   "D", "7", "W", "v", "Q", "n", "e", "0", "b", "="]
+        codec_b = ["2", "6", "i", "k", "8", "X", "J", "B", "a", "s", "d", "H", "w", "f", "T", "3",
+                   "l", "c", "5", "Y", "g", "1", "4", "9", "U", "A"]
         if 'd' == typ:
             tmp = codec_a
             codec_a = codec_b
@@ -117,10 +117,10 @@ class cHoster(iHoster):
     
     def setUrl(self, sUrl):
         self.__sUrl = sUrl.replace('http://hqq.tv/watch_video.php?v=','http://hqq.tv/player/embed_player.php?vid=')
-
+        self.__sUrl = sUrl.replace('http://netu.tv/watch_video.php?v=','http://hqq.tv/player/embed_player.php?vid=')
     
     def __getIdFromUrl(self):
-        sPattern = 'http:..hqq.tv.player.embed_player.php\?vid=(.{12})'
+        sPattern = 'http:..hqq.tv.player.embed_player.php\?vid=([0-9]+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
         if (aResult[0] == True):
@@ -149,7 +149,7 @@ class cHoster(iHoster):
         return 'netu'
 
     def isDownloadable(self):
-        return True
+        return False
 
     def isJDownloaderable(self):
         return True
@@ -174,14 +174,14 @@ class cHoster(iHoster):
         self.__sUrl = 'http://hqq.tv/player/embed_player.php?vid=' + id + '&autoplay=no'
 
         UA = 'Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0'
-        UA = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us)'
+        #UA = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us)'
         headers = {'User-Agent': UA ,
+                   'Host' : 'hqq.tv',
+                   #'Referer': 'http://full-stream.me/movies/films-en-streaming/9699-diversion.html',
                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                    'Content-Type': 'text/html; charset=utf-8'}
         
         player_url = self.__sUrl
-        
-        print player_url
         
         req = urllib2.Request(player_url, None, headers)
         try:
@@ -197,14 +197,13 @@ class cHoster(iHoster):
         b64dec = b64enc and base64.decodestring(b64enc.group(1))
         enc = b64dec and re.search("\'([^']+)\'", b64dec).group(1)
         if enc:
-            data = re.compile('<input name="([^"]+?)" [^>]+? value="([^"]+?)">').findall(_decode(enc))
+            data = re.findall('<input name="([^"]+?)" [^>]+? value="([^"]+?)">', _decode(enc))
             post_data = {}
             for idx in range(len(data)):
                 post_data[data[idx][0]] = data[idx][1]
 
             postdata = urllib.urlencode(post_data)
-            print postdata
-            print player_url
+            
             req = urllib2.Request(player_url,postdata,headers)
             try:
                 response = urllib2.urlopen(req)
@@ -214,78 +213,63 @@ class cHoster(iHoster):
                 
             data = response.read()
             response.close()
-            
-            #fh = open('c:\\test.txt', "w")
-            #h.write(data)
-            #fh.close()
-                       
+                          
             b64enc = re.search('base64([^\"]+)', data, re.DOTALL)
             b64dec = b64enc and base64.decodestring(b64enc.group(1))
             enc = b64dec and re.search("\'([^']+)\'", b64dec).group(1)
+            
+            #fh = open('c:\\enco.txt', "w")
+            #fh.write(_decode(enc))
+            #fh.close()
 
             if enc:
-                data = re.compile('<input name="([^"]+?)" [^>]+? value="([^"]*)">').findall(_decode(enc))
+                data = re.findall('<input name="([^"]+?)" [^>]+? value="([^"]*)">', _decode(enc))
                 post_data = {}
                 for idx in range(len(data)):
                     post_data[data[idx][0]] = data[idx][1]
+                    
+                #post_data['http_referer'] = 'http%3A%2F%2Ffull-stream.me%2Fmovies%2Ffilms-en-streaming%2F9699-diversion.html'
                               
                 req = urllib2.Request("http://hqq.tv/sec/player/embed_player.php?" + urllib.urlencode(post_data),None,headers)
                 response = urllib2.urlopen(req)
                 data = response.read()
                 response.close()
-
+                
+                #fh = open('c:\\test1.txt', "w")
+                #fh.write(data)
+                #fh.close()
+                
                 data = urllib.unquote(data)
+
                 vid_server = re.search(r'var\s*vid_server\s*=\s*"([^"]*?)"', data)
                 vid_link = re.search(r'var\s*vid_link\s*=\s*"([^"]*?)"', data)
                 at = re.search(r'var\s*at\s*=\s*"([^"]*?)"', data)
+
                 if vid_server and vid_link and at:
                     #get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '0\\'}
                     get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '1/'}
-                    
-                    print 'pp'
                     
                     req = urllib2.Request("http://hqq.tv/player/get_md5.php?" + urllib.urlencode(get_data),None,headers)
                     response = urllib2.urlopen(req)
                     data = response.read()
                     response.close()
                     
-                    #fh = open('c:\\test.txt', "w")
-                    #fh.write(data)
-                    #fh.close()
-                    
                     file_url = re.search(r'"file"\s*:\s*"([^"]*?)"', data)
                     if file_url:
                         #return [{'url': _decode2(file_url.group(1).replace('\\', '')), 'quality': '???'}]
                         list_url = _decode2(file_url.group(1).replace('\\', '')) + '='
-                        
-        #print list_url
-        
-        #normallmeent on a une liste de lien en
-        #EXTM3U
-        #EXT-X-MEDIA-SEQUENCE:0
-        #EXT-X-ALLOW-CACHE:NO
-        #EXT-X-VERSION:2
-        #EXT-X-TARGETDURATION:20
-        #EXTINF:20,
-        #1397939972cecbe.mp4Frag1Num0.ts
-        #EXTINF:20,
-        #1397939972cecbe.mp4Frag1Num1.ts
-        
         
         api_call = list_url
         #api_call = list_url.replace('?socket=','.mp4Frag1Num0.ts')
         
         #use a fake headers
         Header = 'User-Agent=Mozilla/5.0 (iPhone; CPU iPhone OS 5_0_1 like Mac OS X)'
-        #Header = urllib.urlencode(Header)
         api_call = api_call + '|' + Header
         
-        print api_call
-        #api_call = api_call.split('|')[0]
-
-        #time.sleep(1)
+        #print api_call
         
         if not (api_call == False):
             return True, api_call          
             
         return False, False
+ 

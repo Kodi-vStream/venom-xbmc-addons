@@ -13,6 +13,10 @@ from resources.lib.util import cUtil
 import urllib2,urllib,re
 import xbmcgui
 import unicodedata,htmlentitydefs
+
+import resources.lib.GKDecrypter
+from resources.lib.GKDecrypter import decryptKey
+from resources.lib.GKDecrypter import GKDecrypter
  
  
 SITE_IDENTIFIER = 'poypi_com'
@@ -27,7 +31,7 @@ URL_MAIN = 'http://www.poypi.com/rgc/'
 SEARCHPATTERN = '<fieldset><div><a href="\/rgc\/(.+?)">(.+?)<\/a><\/div><\/fieldset>'
 NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/rgc\/(.+?)">(.+?)<\/a><\/span>'
 NEXTPAGEPATTERN = '<span class="pagenav">[0-9]+<.span><.li><li><a title=".+?" href="\/rgc\/(.+?)" class="pagenav">'
-FRAMEPATTERN = '<iframe src="\/rgc\/(.+?)" width='
+FRAMEPATTERN = '<object tabindex="0" name="mediaplayer".+?proxy\.link=(.+?)&autostart=true'
 # #pour zopap
 # URL_MAIN = 'http://www.zopap.com/paq/'
 # SEARCHPATTERN = '<fieldset><div><a href="\/paq\/(.+?)">(.+?)<\/a><\/div><\/fieldset>'
@@ -213,22 +217,12 @@ def showHosters():
     sThumb = aResult[1][0][0]
     sComm = unescape(aResult[1][0][1])
  
-    #sPattern = 'proxy.link=(.+?)&autostart=true'
-    #aResult = oParser.parse(sHtmlContent, sPattern)
- 
     sHtmlContent = sHtmlContent.replace('\r','')
    
-    sPattern = 'class="jwts_tabbertab" title="(.+?)">.+?' + FRAMEPATTERN
+    sPattern = FRAMEPATTERN
     aResult = oParser.parse(sHtmlContent, sPattern)
- 
-    #Si il n'a pas de selection de qualitee
-    if (aResult[0] == False):
-        sPattern = FRAMEPATTERN
-        aResult = oParser.parse(sHtmlContent, sPattern)
- 
-        if (aResult[0] == True):
-            print aResult[1][0]
-            aResult[1][0] = ('???',aResult[1][0])
+            
+    #print aResult
  
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -239,9 +233,8 @@ def showHosters():
             if dialog.iscanceled():
                 break
            
-            sLink = str(URL_MAIN) + urllib.unquote(aEntry[1]).decode('utf8')
-           
-            Squality = str(aEntry[0])
+            sLink = aEntry
+            Squality = '???'
            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sLink)
@@ -259,33 +252,38 @@ def showHostersLink():
    
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')  
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    
+    #Decodage du lien
+    if 'poy*' in sUrl:
+        EncodedLink = sUrl.replace('poy*','')
+        Key = "ZgJ4yYMx4aiH2Nh8fpHh"
+        x = GKDecrypter(192,128)
+        sUrl = x.decrypt(EncodedLink, Key, "ECB").split('\0')[0]
    
     #recuperation urls
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+    #oRequestHandler = cRequestHandler(sUrl)
+    #sHtmlContent = oRequestHandler.request()
    
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
    
-    url = re.findall('"file":"(.+?)", "label":"(.+?)",', sHtmlContent)
-   
-    #dialogue final
-   
-    if (url):
-        for aEntry in url:
+    #url = re.findall('<iframe src="(.+?)"', sHtmlContent)
+    
+
+    if (sUrl):
  
-            sTitle = '[COLOR teal][' + str(aEntry[1]) + '][/COLOR] ' + sMovieTitle
-            sUrl = aEntry[0]
- 
-            sHosterUrl = str(sUrl)
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-           
-            if (oHoster != False):
-                oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+        sTitle = sMovieTitle
+        sUrl = sUrl
+
+        sHosterUrl = str(sUrl)
+        oHoster = cHosterGui().checkHoster(sHosterUrl)
+       
+        if (oHoster != False):
+            oHoster.setDisplayName(sTitle)
+            oHoster.setFileName(sTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
            
         oGui.setEndOfDirectory()
       

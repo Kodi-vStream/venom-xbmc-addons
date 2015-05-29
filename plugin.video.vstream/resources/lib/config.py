@@ -105,7 +105,7 @@ class cConfig():
             return xbmcplugin.setSetting(sName, sValue)
         return
 
-    def getLocalizedString(self, sCode):
+    def getlanguage(self, sCode):
         if (self.__bIsDharma):
             return self.__aLanguage(sCode).encode("utf-8")
         else:

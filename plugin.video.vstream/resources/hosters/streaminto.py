@@ -115,6 +115,8 @@ class cHoster(iHoster):
         rr = re.search(file, html)
         if r:
             api_call = r.group(1).replace(':1935','') + ' swfUrl=http://streamin.to/player/player.swf live=false swfVfy=1 playpath=' + rr.group(1).replace('.flv','')
+        else:
+            api_call = rr.group(1)
             
         if (api_call):
             return True, api_call

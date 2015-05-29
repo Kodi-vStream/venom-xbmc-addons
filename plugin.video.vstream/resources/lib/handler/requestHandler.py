@@ -82,7 +82,7 @@ class cRequestHandler:
         #                    oRequest.add_header(sHeaderKey, sHeaderValue)
     	#	oResponse = urllib2.urlopen(oRequest)
         except:
-            cConfig().error("%s,%s" % (cConfig().getLocalizedString(30205), self.__sUrl))
+            cConfig().error("%s,%s" % (cConfig().getlanguage(30205), self.__sUrl))
             return ''
 
         sContent = oResponse.read()

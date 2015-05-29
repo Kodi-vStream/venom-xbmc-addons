@@ -34,11 +34,15 @@
         <string id="30075">sende nur an LinkGrabber</string>
 
         <string id="30076">Recherche</string>
-        <string id="30077">Recherche personnalisée</string>
+        <string id="30077">Recherche 1</string>
         <string id="30078">Recherche personnalisée 1</string>
         <string id="30079">Recherche personnalisée 2</string>
         <string id="30080">Recherche personnalisée 3</string>
         <string id="30081">Recherche personnalisée 4</string>
+		<string id="30088">Recherche visuelle</string>
+		<string id="30089">Recherche 2</string>
+		<string id="30090">Recherche 3</string>
+		<string id="30091">Recherche 4</string>
 
 
         <!-- Pluginnames begin by 30201 - 30299 -->
@@ -52,21 +56,25 @@
 		<string id="30208">Marque-Diver</string>
 		<string id="30209">Supprimer Marque-page</string>
 		<string id="30210">Voir Marque-page</string>
-        <!--<string id="30205">NBA.de</string>
-        <string id="30206">Bundesliga.de</string>
-        <string id="30207">MTV.de</string>
-        <string id="30208">Kino.de</string>
-        <string id="30209">Bild.de</string>
-        <string id="30210">MovieMaze.de</string>
-        <string id="30211">Shoutcast.com</string>
-        <string id="30212">Movie2k.com</string>
-        <string id="30213">Simpsons.to</string>
-        <string id="30214">Iload.to</string>
-        <string id="30215">Br-Online.de</string>
-        <string id="30216">Anime-stream24.com</string>
-        <string id="30217">RadioTime.com</string> -->
+		
+        <!-- catégorie -->
+        <string id="30101">Films nouveautés</string>
+        <string id="30102">Films Les plus Vues</string>
+        <string id="30103">Films Les plus Commentés</string>
+        <string id="30104">Films Les mieux Notés</string>
+        <string id="30105">Films Genres</string>
+        <string id="30106">Séries Nouveautés</string>
+        <string id="30107">Séries VF</string>
+        <string id="30108">Séries VOSTFR</string>
+        <string id="30109">Animés nouveautés</string>
+        <string id="30110">Animés VF</string>
+        <string id="30111">Animé VOSTFR</string>
+        <string id="30112">Documentaire</string>
+		<string id="30113">Sport</string>
+		<string id="30114">Vidéo du net</string>
+		<string id="30115">Télévision</string>
+		<string id="30116">Toutes les sources</string>
+		
 
-
-        <string id="30402">Laender</string>
 </strings>
 

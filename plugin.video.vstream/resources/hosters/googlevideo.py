@@ -15,7 +15,7 @@ class cHoster(iHoster):
 
     def __init__(self):
         self.__sDisplayName = 'GoogleVideo'
-	self.__sFileName = self.__sDisplayName
+        self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
         return  self.__sDisplayName
@@ -24,10 +24,10 @@ class cHoster(iHoster):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
 
     def setFileName(self, sFileName):
-	self.__sFileName = sFileName
+        self.__sFileName = sFileName
 
     def getFileName(self):
-	return self.__sFileName
+        return self.__sFileName
     
     def setUrl(self, sUrl):
         self.__sUrl = sUrl
@@ -65,16 +65,16 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         
-        #r = self.get_host_and_id(self.__sUrl)
-        #web_url = self.getUrl(r[0],r[1])
-        web_url = self.__sUrl
-        r = ('x','x')
+        r = self.get_host_and_id(self.__sUrl)
+        web_url = self.getUrl(r[0],r[1])
+        
+        #web_url = self.__sUrl
+        #r = ('x','x')
         
         headers = {'Referer': web_url}
         
         stream_url = ''
         vid_sel = web_url
-        
         
         try:
             if 'picasaweb.' in r[0]:
@@ -129,9 +129,8 @@ class cHoster(iHoster):
                     
 
         except urllib2.URLError, e:
-            common.addon.log_error(self.name + ': got http error %d fetching %s' % (e.reason, web_url))
-            return self.unresolvable(code=3, msg=e)
-
+            stream_url = False
+            
         api_call = stream_url
 
         if not (api_call == False):

@@ -36,7 +36,8 @@ class cSiteHandler:
             exec "from resources.sites import "+sName
             exec "sSearch = "+sName+"."+sLabel
             exec "sSiteName = "+sName+".SITE_NAME"
-            sPluginSettingsName = sName
+            #sPluginSettingsName = sName
+            sPluginSettingsName = 'plugin_' + sName
             return sSearch[0], sPluginSettingsName, sSearch[1], sSiteName
         except Exception, e:
             cConfig().log("cant import plugin: " + str(sName))            

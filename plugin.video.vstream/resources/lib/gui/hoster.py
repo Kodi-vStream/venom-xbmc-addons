@@ -75,7 +75,7 @@ class cHosterGui:
         oContext.setFile('cHosterGui')
         oContext.setSiteName(self.SITE_NAME)
         oContext.setFunction('addToPlaylist')
-        oContext.setTitle(cConfig().getLocalizedString(30201))
+        oContext.setTitle(cConfig().getlanguage(30201))
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
         
@@ -84,7 +84,7 @@ class cHosterGui:
         oContext.setFile('cHosterGui')
         oContext.setSiteName(self.SITE_NAME)
         oContext.setFunction('download')
-        oContext.setTitle(cConfig().getLocalizedString(30202))
+        oContext.setTitle(cConfig().getlanguage(30202))
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
 
@@ -93,7 +93,7 @@ class cHosterGui:
         oContext.setFile('cFav')
         oContext.setSiteName('cFav')
         oContext.setFunction('setFavorite')
-        oContext.setTitle('[COLOR teal]'+cConfig().getLocalizedString(30203)+'[/COLOR]')
+        oContext.setTitle('[COLOR teal]'+cConfig().getlanguage(30203)+'[/COLOR]')
 
         #oOutputParameterHandler = cOutputParameterHandler()
         #oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
@@ -107,7 +107,6 @@ class cHosterGui:
         oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
 
     def checkHoster(self, sHosterUrl): 
-    
     
         if ('novamov' in sHosterUrl):
             return cHosterHandler().getHoster('novamov')
@@ -139,15 +138,15 @@ class cHosterGui:
             return cHosterHandler().getHoster('vk')
         if ('vkcom' in sHosterUrl):
             return cHosterHandler().getHoster('vk')   
-        #if ('videomega' in sHosterUrl):
-        #    return cHosterHandler().getHoster('videomega')
+        if ('videomega' in sHosterUrl):
+            return cHosterHandler().getHoster('videomega')
         if ('vidto' in sHosterUrl):
             return cHosterHandler().getHoster('vidto')
         if ('vidzi' in sHosterUrl):
             return cHosterHandler().getHoster('vidzi')
         if ('cloudy' in sHosterUrl):
             return cHosterHandler().getHoster('cloudy')
-        if ('filetrip' in sHosterUrl):
+        if ('http://filetrip' in sHosterUrl):
             return cHosterHandler().getHoster('filetrip')
         if ('uptostream' in sHosterUrl):
             return cHosterHandler().getHoster('uptostream')
@@ -161,9 +160,9 @@ class cHosterGui:
             return cHosterHandler().getHoster('mystream')
         if ('streamingentiercom/videophp?type=speed' in sHosterUrl):
             return cHosterHandler().getHoster('speedvideo')
-        if ('http://speedvideo.net/embed' in sHosterUrl):
+        if ('speedvideo' in sHosterUrl):
             return cHosterHandler().getHoster('speedvideo')
-        if ('http://www.speedvid.net/embed' in sHosterUrl):
+        if ('speedvid' in sHosterUrl):
             return cHosterHandler().getHoster('speedvid')
         if ('axavid' in sHosterUrl):
             return cHosterHandler().getHoster('axavid') 
@@ -194,7 +193,17 @@ class cHosterGui:
         if ('vodlocker' in sHosterUrl):
             return cHosterHandler().getHoster('vodlocker')
         if ('flashx' in sHosterUrl):
-            return cHosterHandler().getHoster('flashx') 
+            return cHosterHandler().getHoster('flashx')
+        if ('easywatch' in sHosterUrl):
+            return cHosterHandler().getHoster('easywatch')
+        if ('ok.ru' in sHosterUrl):
+            return cHosterHandler().getHoster('ok_ru')
+        if ('odnoklassniki' in sHosterUrl):
+            return cHosterHandler().getHoster('ok_ru')  
+
+        #Si aucun hebergeur connu on teste les liens directs
+        if (sHosterUrl[-4:] in '.mp4.avi.flv'):
+            return cHosterHandler().getHoster('lien_direct')   
 
         return False
         # step 2

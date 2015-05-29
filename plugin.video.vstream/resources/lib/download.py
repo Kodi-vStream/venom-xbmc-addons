@@ -5,6 +5,7 @@ import xbmc
 import xbmcgui
 import xbmcvfs
 import string
+import re
 
 class cDownload:
         
@@ -14,9 +15,11 @@ class cDownload:
         self.__oDialog = oDialog
 
     def __createDownloadFilename(self, sTitle):
+        sTitle = re.sub(' +',' ',sTitle) #Vire double espace
         valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
         filename = ''.join(c for c in sTitle if c in valid_chars)
-        filename = filename.replace(' ','_')
+        filename = filename.replace(' .','.')
+        #filename = filename.replace(' ','_') #pas besoin de ca, enfin pr moi en tout cas
         return filename
 
     def download(self, sUrl, sTitle):
@@ -28,10 +31,15 @@ class cDownload:
         self.__sTitle = oGui.showKeyBoard(self.__sTitle)
         if (self.__sTitle != False and len(self.__sTitle) > 0):
 
+            #chemin de sauvegarde
+            sPath2 = cConfig().getSetting('Download_Folder')
+
             dialog = xbmcgui.Dialog()
-            sPath = dialog.browse(3, 'Downloadfolder', 'files', '')
+            sPath = dialog.browse(3, 'Downloadfolder', 'files', '', False, False , sPath2)
             
-            if (sPath != ''):                
+            if (sPath != ''):
+                cConfig().setSetting('Download_Folder',sPath)
+                
                 sDownloadPath = xbmc.translatePath(sPath +  '%s' % (self.__sTitle, ))
 
                 try:
@@ -67,15 +75,28 @@ class cDownload:
         f.close()
             
 
-    def __createTitle(self, sUrl, sTitle):        
-        aTitle = sTitle.rsplit('.')        
+    def __createTitle(self, sUrl, sTitle):
+        sTitle = re.sub('[\(\[].+?[\)\]]',' ', sTitle)
+        
+        
+        aTitle = sTitle.rsplit('.')
+        #Si deja extension
         if (len(aTitle) > 1):
             return sTitle
         
-        aUrl = sUrl.rsplit('.')        
-        if (len(aUrl) > 1):
-            sSuffix = aUrl[-1]
-            sTitle = sTitle + '.' + sSuffix
+        #recherche d'une extension
+        print sUrl
+        sUrl = sUrl.lower()
+        m = re.search('(flv|avi|mp4|mpg|mpeg)', sUrl)
+        if m:
+            sTitle = sTitle + '.' + m.group(0)
+        else:
+            sTitle = sTitle + '.flv' #Si quedale on en prend une au pif
+            
+        #aUrl = sUrl.rsplit('.')
+        #if (len(aUrl) > 1):
+        #    sSuffix = aUrl[-1]
+        #    sTitle = sTitle + '.' + sSuffix
             
         return sTitle
 
@@ -94,5 +115,3 @@ class cDownload:
             return '%.*f %s' % (2, 0, 'MB')
         
         return '%.*f %s' % (2, iBytes/(1024*1024.0) , 'MB')
-
-

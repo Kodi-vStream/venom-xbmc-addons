@@ -510,16 +510,22 @@ def showLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    sUrl = sUrl+'/100/'
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+
+    oRequestHandler = cRequestHandler(sUrl + '/100/')#Modification de l'adresse pr afficher tout les liens
+    sHtmlContent = oRequestHandler.request()
+    
     #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/plugins/like.php','').replace('<iframe src="http://www.facebook.com/plugins/likebox.php','')
-               
-    sPattern = '<ahref="([^<]+)"><span>(.+?)</span></a>'
+    
+    a = sUrl.replace('/','\/')
+    sPattern = '<a href="(' + a + '.*?)"><span>(.+?)<\/span><\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    #print aResult
+    
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -550,12 +556,15 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src="http://www.facebook.com/plugins/likebox.php','')
-               
+    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src="http://www.facebook.com/','')
+    sHtmlContent = sHtmlContent.replace('http://videomega.tv/validateemb.php','')
+    sHtmlContent = sHtmlContent.replace('src="http://frenchstream.org/','')
         
-    sPattern = 'iframe.*?src="(.+?)"'
+    sPattern = '(?:(?:<script type="text\/javascript")|(?:<ifram[^<>]+?)) src=[\'"](http:[^\'"]+?)[\'"]'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    #print aResult
      
     if (aResult[0] == True):
         total = len(aResult[1])
