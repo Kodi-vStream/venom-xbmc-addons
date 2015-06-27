@@ -35,43 +35,43 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés VF', 'animes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés VF', 'animesvf.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés VOSTFR', 'animes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés VOSTFR', 'animesvostfr.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('type2', 0)
     oOutputParameterHandler.addParameter('title', 'Animés')
-    oGui.addDir(SITE_IDENTIFIER, 'showLang', 'Animés A-Z', 'az.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showLang', 'Animés A-Z', 'animesaz.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('type2', 0)
     oOutputParameterHandler.addParameter('title', 'Animés')
-    oGui.addDir(SITE_IDENTIFIER, 'showLanggenre', 'Animés Genre', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showLanggenre', 'Animés Genre', 'animesgenres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries VF', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries VF', 'seriesvf.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries VOSTFR', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries VOSTFR', 'seriesvostfr.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('type2', 1)
     oOutputParameterHandler.addParameter('title', 'Séries')
-    oGui.addDir(SITE_IDENTIFIER, 'showLang', 'Séries A-Z', 'az.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showLang', 'Séries A-Z', 'seriesaz.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('type2', 1)
     oOutputParameterHandler.addParameter('title', 'Séries')
-    oGui.addDir(SITE_IDENTIFIER, 'showLanggenre', 'Séries Genre', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showLanggenre', 'Séries Genre', 'seriesgenres.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
 
@@ -259,7 +259,10 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisode', aEntry[1], 'animes.png', '', '', oOutputParameterHandler)
+            if 'type2=1' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', aEntry[1], 'series.png', '', '', oOutputParameterHandler)
+            else:
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', aEntry[1], 'animes.png', '', '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)   
 
@@ -287,7 +290,7 @@ def showEpisode():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
         oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-        oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]'+'Animé licencié'+'[/COLOR]', 'films.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]'+'Animé licencié'+'[/COLOR]', 'host.png', oOutputParameterHandler)
         
         cConfig().finishDialog(dialog)
     

@@ -20,13 +20,15 @@
     <category label="30022">-->
 		<setting label="30022" type="lsep"/>
 		<setting id="plugin_adkami_com" type="bool" label="Adkami" default="true"/>
+		<setting id="plugin_archive_org" type="bool" label="Archive.org" default="true"/>
 		<setting id="plugin_docspot_fr" type="bool" label="DocSpot" default="true"/>
 		<setting id="plugin_dpstreaming_org" type="bool" label="Dpstreaming (lent)" default="true"/>
-		<setting id="plugin_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (lent)" default="true"/>
-		<setting id="plugin_freebox" type="bool" label="Freebox" default="true"/><setting id="plugin_frenchstream_org" type="bool" label="FrenchStream (Lent)" default="true"/>
+		<setting id="plugin_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr" default="true"/>
+		<setting id="plugin_frenchstream_org" type="bool" label="FrenchStream (Lent)" default="true"/>
 		<setting id="plugin_full_stream_me" type="bool" label="Full Stream" default="true"/>
 		<setting id="plugin_fullmoviz_org" type="bool" label="FullMoviz" default="true"/>
 		<setting id="plugin_lestream_net" type="bool" label="LeStream.net" default="true"/>
+		<setting id="plugin_mangacity_org" type="bool" label="Mangacity.org" default="true"/>
 		<setting id="plugin_notre_ecole_net" type="bool" label="Notre Ecole" default="true"/>
 		<setting id="plugin_poypi_com" type="bool" label="Poypi.com" default="true"/>
 		<setting id="plugin_regarder_films" type="bool" label="Regarder.films" default="true"/>
@@ -36,12 +38,12 @@
 		<setting id="plugin_streamingfilms_fr" type="bool" label="StreamingFilms.fr" default="true"/>
 		<setting id="plugin_streamzer_net" type="bool" label="Streamzer" default="true"/>
 		<setting id="plugin_streamzzz_com" type="bool" label="streamzzz.com" default="true"/>
-		<setting id="plugin_vanoz_com" type="bool" label="Vanoz.com" default="true"/>
-		<setting id="plugin_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com" default="true"/>
-		<setting id="plugin_voirfilms_org" type="bool" label="Voirfilms.org" default="true"/>
-		<setting id="plugin_mangacity_org" type="bool" label="Mangacity.org" default="true"/>
-		<setting id="plugin_archive_org" type="bool" label="Archive.org" default="true"/>
 		<setting id="plugin_videobuzzy_com" type="bool" label="Videobuzzy.com" default="true"/> 
+		<setting id="plugin_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com" default="true"/>		
+		<setting id="plugin_vkstreamingfilm_biz" type="bool" label="vkstreamingfilm.biz" default="true"/>
+		<setting id="plugin_voirfilms_org" type="bool" label="Voirfilms.org" default="true"/>
+
+
     </category>
 
 <!-- Recherche_1 | search1_-->
@@ -71,7 +73,7 @@
 		<setting id="search1_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="false"/>
 		<setting id="search1_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="false"/>
 		<setting id="search1_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="false"/>
-		
+		<setting id="search1_vkstreamingfilm_biz" type="bool" label="vkstreamingfilm.biz (Films)" default="false"/>
     </category>
 	
 	<!-- Recherche_2 | search2_-->
@@ -101,6 +103,7 @@
 		<setting id="search2_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="false"/>
 		<setting id="search2_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="false"/>
 		<setting id="search2_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="false"/>
+		<setting id="search2_vkstreamingfilm_biz" type="bool" label="vkstreamingfilm.biz (Films)" default="false"/>
 		
     </category>
 	
@@ -131,6 +134,7 @@
 		<setting id="search3_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="false"/>
 		<setting id="search3_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="false"/>
 		<setting id="search3_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="true"/>
+		<setting id="search3_vkstreamingfilm_biz" type="bool" label="vkstreamingfilm.biz (Films)" default="false"/>
 		
     </category>
 	
@@ -161,28 +165,10 @@
 		<setting id="search4_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="false"/>
 		<setting id="search4_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="false"/>
 		<setting id="search4_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="false"/>
+		<setting id="search4_vkstreamingfilm_biz" type="bool" label="vkstreamingfilm.biz (Films)" default="false"/>
 		
     </category>
 	
-    <!-- <category label="30023">-->
-    <!--   <setting label="30023" type="lsep"/>
-        <setting id="jd_enabled" type="bool" label="30071" default="false"/>
-        <setting id="jd_host" type="text" label="30072" default="127.0.0.1"/>
-        <setting id="jd_port" type="text" label="30073" default="10025"/>
-        <setting id="jd_automatic_start" type="bool" label="30074" default="true"/>
-        <setting id="jd_grabber" type="bool" label="30075" default="false"/>
-        <setting type="sep" />
-    <!--</category>
-    <category label="30024">-->
-    <!--    <setting label="30024" type="lsep"/>
-        <setting id="hoster_megavideo_premium" type="bool" label="30031" default="false"/>
-        <setting id="hoster_megavideo_username" type="text" label="30032" default=""/>
-        <setting id="hoster_megavideo_password" type="text" label="30033" default="" option="hidden"/>
-        <setting type="sep" />
-        <setting id="hoster_duckload_premium" type="bool" label="30034" default="false"/>
-        <setting id="hoster_duckload_username" type="text" label="30035" default=""/>
-        <setting id="hoster_duckload_password" type="text" label="30036" default="" option="hidden"/>
-    <!--</category> -->
     <category label="30025">-->
         <setting label="30025" type="lsep"/>
         <setting id="home_cherches" type="bool" label="Recherches" default="true"/>

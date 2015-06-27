@@ -4,9 +4,7 @@ from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 import urllib, urllib2
 import cookielib
-import json
 #import urlresolver
-import simplejson
 import re
 import base64
 import time
@@ -118,9 +116,10 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self.__sUrl = sUrl.replace('http://hqq.tv/watch_video.php?v=','http://hqq.tv/player/embed_player.php?vid=')
         self.__sUrl = sUrl.replace('http://netu.tv/watch_video.php?v=','http://hqq.tv/player/embed_player.php?vid=')
+        self.__sUrl = sUrl.replace('http://waaw.tv/watch_video.php?v=','http://hqq.tv/player/embed_player.php?vid=')
     
     def __getIdFromUrl(self):
-        sPattern = 'http:..hqq.tv.player.embed_player.php\?vid=([0-9]+)'
+        sPattern = 'http:..hqq.tv.player.embed_player.php\?vid=([0-9A-Z]+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
         if (aResult[0] == True):
@@ -217,10 +216,6 @@ class cHoster(iHoster):
             b64enc = re.search('base64([^\"]+)', data, re.DOTALL)
             b64dec = b64enc and base64.decodestring(b64enc.group(1))
             enc = b64dec and re.search("\'([^']+)\'", b64dec).group(1)
-            
-            #fh = open('c:\\enco.txt', "w")
-            #fh.write(_decode(enc))
-            #fh.close()
 
             if enc:
                 data = re.findall('<input name="([^"]+?)" [^>]+? value="([^"]*)">', _decode(enc))

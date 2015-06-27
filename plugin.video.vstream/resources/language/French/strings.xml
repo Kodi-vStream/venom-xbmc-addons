@@ -3,7 +3,6 @@
         <!-- general begin by 30000 - 30050 -->
         <string id="30000">Logging</string>
         <string id="30001">Videoplayer</string>
-        <string id="30002">anonyme Statistiken (wertet nur Plugin Start aus)</string>
         <string id="30500">Séléctionner</string>
         <string id="30501">Nom</string>
 
@@ -16,22 +15,6 @@
         <string id="30026">IPTV et GuideTV</string>
         <string id="30027">Délai d'attente du lecteur (ms)</string>
         <string id="30028">Paramètre à modifier dans l'addon PVR</string>
-		<string id="30029">Activer popup erreur</string>
-
-         <!-- premium begin by 30031 - 30075 -->
-        <string id="30031">Megavideo Premium Account</string>
-        <string id="30032">Megavideo Username</string>
-        <string id="30033">Megavideo Password</string>
-
-        <string id="30034">Duckload Premium Account</string>
-        <string id="30035">Duckload Username</string>
-        <string id="30036">Duckload Password</string>
-
-        <string id="30071">JDownloader an/aus</string>
-        <string id="30072">Host</string>
-        <string id="30073">Port</string>
-        <string id="30074">Download automatsch starten</string>
-        <string id="30075">sende nur an LinkGrabber</string>
 
         <string id="30076">Recherche</string>
         <string id="30077">Recherche 1</string>
@@ -74,6 +57,10 @@
 		<string id="30114">Vidéo du net</string>
 		<string id="30115">Télévision</string>
 		<string id="30116">Toutes les sources</string>
+		<!--version 3.0.2 -->
+		<string id="30120">Films</string>
+		<string id="30121">Séries</string>
+		<string id="30122">Animés</string>
 		
 
 </strings>

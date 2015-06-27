@@ -45,51 +45,21 @@ class cHome:
             oGui.addDir('freebox', 'load', '[COLOR '+color_tvs+']'+cConfig().getlanguage(30115)+'[/COLOR]', 'tv.png', oOutputParameterHandler)
 
         if (cConfig().getSetting('home_films') == 'true'):
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'movieNews', '[COLOR '+color_films+']'+cConfig().getlanguage(30101)+'[/COLOR]', 'news.png', oOutputParameterHandler)
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'movieViews', '[COLOR '+color_films+']'+cConfig().getlanguage(30102)+'[/COLOR]', 'views.png', oOutputParameterHandler)
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'movieComments', '[COLOR '+color_films+']'+cConfig().getlanguage(30103)+'[/COLOR]', 'comments.png', oOutputParameterHandler)
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'movieNotes', '[COLOR '+color_films+']'+cConfig().getlanguage(30104)+'[/COLOR]', 'notes.png', oOutputParameterHandler)
-           
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'movieGenres', '[COLOR '+color_films+']'+cConfig().getlanguage(30105)+'[/COLOR]', 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR '+color_films+']'+cConfig().getlanguage(30120)+'[/COLOR]', 'films.png', oOutputParameterHandler)
+            
 
         if (cConfig().getSetting('home_series') == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'serieSeries', '[COLOR '+color_series+']'+cConfig().getlanguage(30106)+'[/COLOR]', 'series.png', oOutputParameterHandler)
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'serieVfs', '[COLOR '+color_series+']'+cConfig().getlanguage(30107)+'[/COLOR]', 'seriesvf.png', oOutputParameterHandler)
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'serieVostfrs', '[COLOR '+color_series+']'+cConfig().getlanguage(30108)+'[/COLOR]', 'seriesvostfr.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showSeries', '[COLOR '+color_series+']'+cConfig().getlanguage(30121)+'[/COLOR]', 'series.png', oOutputParameterHandler)
 
         if (cConfig().getSetting('home_anims') == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'animAnims', '[COLOR '+color_anims+']'+cConfig().getlanguage(30109)+'[/COLOR]', 'animes.png', oOutputParameterHandler)
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'animVfs', '[COLOR '+color_anims+']'+cConfig().getlanguage(30110)+'[/COLOR]', 'animesvf.png', oOutputParameterHandler)
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'animVostfrs', '[COLOR '+color_anims+']'+cConfig().getlanguage(30111)+'[/COLOR]', 'animesvostfr.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showAnimes', '[COLOR '+color_anims+']'+cConfig().getlanguage(30122)+'[/COLOR]', 'animes.png', oOutputParameterHandler)
 
         if (cConfig().getSetting('home_docs') == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -130,6 +100,65 @@ class cHome:
         oGui.addDir('chaine_tv', 'load', '[COLOR '+color_tvs+']Tv du net[/COLOR]', 'tv.png', oOutputParameterHandler)
         
         oGui.setEndOfDirectory()
+        
+    def showMovies(self):
+        oGui = cGui()
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'movieNews', '[COLOR '+color_films+']'+cConfig().getlanguage(30101)+'[/COLOR]', 'news.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'movieViews', '[COLOR '+color_films+']'+cConfig().getlanguage(30102)+'[/COLOR]', 'views.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'movieComments', '[COLOR '+color_films+']'+cConfig().getlanguage(30103)+'[/COLOR]', 'comments.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'movieNotes', '[COLOR '+color_films+']'+cConfig().getlanguage(30104)+'[/COLOR]', 'notes.png', oOutputParameterHandler)
+       
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'movieGenres', '[COLOR '+color_films+']'+cConfig().getlanguage(30105)+'[/COLOR]', 'genres.png', oOutputParameterHandler)
+        
+        oGui.setEndOfDirectory()
+        
+    def showSeries(self):
+        oGui = cGui()
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'serieSeries', '[COLOR '+color_series+']'+cConfig().getlanguage(30106)+'[/COLOR]', 'series.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'serieVfs', '[COLOR '+color_series+']'+cConfig().getlanguage(30107)+'[/COLOR]', 'seriesvf.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'serieVostfrs', '[COLOR '+color_series+']'+cConfig().getlanguage(30108)+'[/COLOR]', 'seriesvostfr.png', oOutputParameterHandler)
+        
+        oGui.setEndOfDirectory()
+        
+    def showAnimes(self):
+        oGui = cGui()
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'animAnims', '[COLOR '+color_anims+']'+cConfig().getlanguage(30109)+'[/COLOR]', 'animes.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'animVfs', '[COLOR '+color_anims+']'+cConfig().getlanguage(30110)+'[/COLOR]', 'animesvf.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'animVostfrs', '[COLOR '+color_anims+']'+cConfig().getlanguage(30111)+'[/COLOR]', 'animesvostfr.png', oOutputParameterHandler)
+        
+        oGui.setEndOfDirectory()
 
     def showSources(self):
         oGui = cGui()
@@ -139,55 +168,55 @@ class cHome:
         for aPlugin in aPlugins:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(aPlugin[1], 'load', aPlugin[0], 'tv.png', oOutputParameterHandler)
+            oGui.addDir(aPlugin[1], 'load', aPlugin[0], 'host.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
 
     def movieNews(self):
-        self.__callpluging('MOVIE_NEWS', '[COLOR '+color_films+']Films Nouveautés[/COLOR]', 'news.png')
+        self.__callpluging('MOVIE_NEWS', '[COLOR '+color_films+']'+cConfig().getlanguage(30101)+'[/COLOR]', 'news.png')
 
     def movieViews(self):
-        self.__callpluging('MOVIE_VIEWS', '[COLOR '+color_films+']Films Les Plus Vus[/COLOR]', 'views.png')
+        self.__callpluging('MOVIE_VIEWS', '[COLOR '+color_films+']'+cConfig().getlanguage(30102)+'[/COLOR]', 'views.png')
 
     def movieComments(self):
-        self.__callpluging('MOVIE_COMMENTS', '[COLOR '+color_films+']Films Les Plus Commentés[/COLOR]', 'comments.png')
+        self.__callpluging('MOVIE_COMMENTS', '[COLOR '+color_films+']'+cConfig().getlanguage(30103)+'[/COLOR]', 'comments.png')
 
     def movieNotes(self):
-        self.__callpluging('MOVIE_NOTES', '[COLOR '+color_films+']Films Les Mieux Notés[/COLOR]', 'notes.png')
+        self.__callpluging('MOVIE_NOTES', '[COLOR '+color_films+']'+cConfig().getlanguage(30104)+'[/COLOR]', 'notes.png')
 
     def movieGenres(self):
-        self.__callpluging('MOVIE_GENRES', '[COLOR '+color_films+']Films Par Genres[/COLOR]', 'genres.png')
+        self.__callpluging('MOVIE_GENRES', '[COLOR '+color_films+']'+cConfig().getlanguage(30105)+'[/COLOR]', 'genres.png')
 
     def serieSeries(self):
-        self.__callpluging('SERIE_SERIES', '[COLOR '+color_series+']Séries Nouveautés[/COLOR]', 'series.png')
+        self.__callpluging('SERIE_SERIES', '[COLOR '+color_series+']'+cConfig().getlanguage(30106)+'[/COLOR]', 'series.png')
 
     def serieVfs(self):
-        self.__callpluging('SERIE_VFS', '[COLOR '+color_series+']Séries VF[/COLOR]', 'series.png')
+        self.__callpluging('SERIE_VFS', '[COLOR '+color_series+']'+cConfig().getlanguage(30107)+'[/COLOR]', 'series.png')
 
     def serieVostfrs(self):
-        self.__callpluging('SERIE_VOSTFRS', '[COLOR '+color_series+']Séries VOSTFR[/COLOR]', 'series.png')
+        self.__callpluging('SERIE_VOSTFRS', '[COLOR '+color_series+']'+cConfig().getlanguage(30108)+'[/COLOR]', 'series.png')
 
     def animAnims(self):
-        self.__callpluging('ANIM_ANIMS', '[COLOR '+color_anims+']Animes Nouveautés[/COLOR]', 'animes.png')
+        self.__callpluging('ANIM_ANIMS', '[COLOR '+color_anims+']'+cConfig().getlanguage(30109)+'[/COLOR]', 'animes.png')
 
     def animVfs(self):
-        self.__callpluging('ANIM_VFS', '[COLOR '+color_anims+']Animes VF[/COLOR]', 'animes.png')
+        self.__callpluging('ANIM_VFS', '[COLOR '+color_anims+']'+cConfig().getlanguage(30110)+'[/COLOR]', 'animes.png')
 
     def animVostfrs(self):
-        self.__callpluging('ANIM_VOSTFRS', '[COLOR '+color_anims+']Animes VOSTFR[/COLOR]', 'animes.png')
+        self.__callpluging('ANIM_VOSTFRS', '[COLOR '+color_anims+']'+cConfig().getlanguage(30111)+'[/COLOR]', 'animes.png')
 
     def animMovies(self):
         self.__callpluging('ANIM_MOVIES', '[COLOR '+color_anims+']Animes OAVS/Films[/COLOR]', 'animes.png')
 
     def docDocs(self):
-        self.__callpluging('DOC_DOCS', '[COLOR '+color_docs+']Documentaires[/COLOR]', 'doc.png')
+        self.__callpluging('DOC_DOCS', '[COLOR '+color_docs+']'+cConfig().getlanguage(30112)+'[/COLOR]', 'doc.png')
 
     def sportSports(self):
-        self.__callpluging('SPORT_SPORTS', '[COLOR '+color_sports+']Sport[/COLOR]', 'sport.png')
+        self.__callpluging('SPORT_SPORTS', '[COLOR '+color_sports+']'+cConfig().getlanguage(30113)+'[/COLOR]', 'sport.png')
 
     def movieNets(self):
-        self.__callpluging('MOVIE_NETS', '[COLOR '+color_videos+']Vidéo du Net[/COLOR]', 'buzz.png')
+        self.__callpluging('MOVIE_NETS', '[COLOR '+color_videos+']'+cConfig().getlanguage(30114)+'[/COLOR]', 'buzz.png')
         
     def showSearch(self):
 

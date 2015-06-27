@@ -31,7 +31,7 @@ URL_MAIN = 'http://www.poypi.com/rgc/'
 SEARCHPATTERN = '<fieldset><div><a href="\/rgc\/(.+?)">(.+?)<\/a><\/div><\/fieldset>'
 NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/rgc\/(.+?)">(.+?)<\/a><\/span>'
 NEXTPAGEPATTERN = '<span class="pagenav">[0-9]+<.span><.li><li><a title=".+?" href="\/rgc\/(.+?)" class="pagenav">'
-FRAMEPATTERN = '<object tabindex="0" name="mediaplayer".+?proxy\.link=(.+?)&autostart=true'
+FRAMEPATTERN = '<object tabindex="0" name="mediaplayer".+?proxy\.link=(.+?)&autostart='
 # #pour zopap
 # URL_MAIN = 'http://www.zopap.com/paq/'
 # SEARCHPATTERN = '<fieldset><div><a href="\/paq\/(.+?)">(.+?)<\/a><\/div><\/fieldset>'
@@ -270,7 +270,6 @@ def showHostersLink():
     #fh.close()
    
     #url = re.findall('<iframe src="(.+?)"', sHtmlContent)
-    
 
     if (sUrl):
  

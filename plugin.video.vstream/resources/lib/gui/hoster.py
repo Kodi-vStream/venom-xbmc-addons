@@ -170,6 +170,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('netu')
         if ('hqq' in sHosterUrl):
             return cHosterHandler().getHoster('netu')
+        if ('waaw' in sHosterUrl):
+            return cHosterHandler().getHoster('netu')
         if ('mail.ru' in sHosterUrl):
             return cHosterHandler().getHoster('mailru')
         if ('videoraj' in sHosterUrl):
@@ -199,10 +201,12 @@ class cHosterGui:
         if ('ok.ru' in sHosterUrl):
             return cHosterHandler().getHoster('ok_ru')
         if ('odnoklassniki' in sHosterUrl):
-            return cHosterHandler().getHoster('ok_ru')  
+            return cHosterHandler().getHoster('ok_ru')
+        if ('vimeo.com' in sHosterUrl):
+            return cHosterHandler().getHoster('vimeo')
 
         #Si aucun hebergeur connu on teste les liens directs
-        if (sHosterUrl[-4:] in '.mp4.avi.flv'):
+        if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8'):
             return cHosterHandler().getHoster('lien_direct')   
 
         return False

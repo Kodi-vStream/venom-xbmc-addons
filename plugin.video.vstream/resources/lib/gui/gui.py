@@ -27,6 +27,7 @@ class cGui:
         oGuiElement.setThumbnail(sThumbnail)
         oGuiElement.setMeta(1)
         oGuiElement.setDescription(sDesc)
+        oGuiElement.setMovieFanart()
         
         if oOutputParameterHandler.getValue('sMovieTitle'):
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
@@ -64,6 +65,7 @@ class cGui:
         oGuiElement.setThumbnail(sThumbnail)
         oGuiElement.setMeta(2)
         oGuiElement.setDescription(sDesc)
+        oGuiElement.setTvFanart()
         
         if oOutputParameterHandler.getValue('sMovieTitle'):
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
@@ -100,6 +102,7 @@ class cGui:
         oGuiElement.setIcon(sIcon)
         oGuiElement.setThumbnail(sThumbnail)
         oGuiElement.setMeta(0)
+        oGuiElement.setDirFanart(sIcon)
         #oGuiElement.getInfoLabel()
         
         oGuiElement.setDescription(sDesc)
@@ -141,12 +144,19 @@ class cGui:
     
     
     def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler = ''):
+        
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon(sIcon)
         oGuiElement.setMeta(0)
+
+        oGuiElement.setDirFanart(sIcon)
+            
+        # if oOutputParameterHandler.getValue('sFanart'):
+            # sFanart = oOutputParameterHandler.getValue('sFanart')
+            # oGuiElement.setFanart(sFanart)
         
         oOutputParameterHandler.addParameter('sFav', sFunction)
         
@@ -160,7 +170,33 @@ class cGui:
         oGuiElement.setIcon('none.png')
         oGuiElement.setMeta(0)
         
-        self.addFolder(oGuiElement, '') 
+        self.addFolder(oGuiElement, '')
+
+    def addMovieDB(self, sId, sFunction, sLabel, sIcon, sThumbnail, sFanart, oOutputParameterHandler = ''):
+        
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(sId)
+        oGuiElement.setFunction(sFunction)
+        oGuiElement.setTitle(sLabel)
+        oGuiElement.setIcon(sIcon)
+        oGuiElement.setMeta(0)
+        oGuiElement.setThumbnail(sThumbnail)
+        oGuiElement.setFanart(sFanart)
+        
+        self.addFolder(oGuiElement, oOutputParameterHandler)
+
+    def addDirectTV(self, sId, sFunction, sLabel, sIcon, sThumbnail, oOutputParameterHandler = ''):
+        
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(sId)
+        oGuiElement.setFunction(sFunction)
+        oGuiElement.setTitle(sLabel)
+        oGuiElement.setIcon(sIcon)
+        oGuiElement.setMeta(0)
+        oGuiElement.setThumbnail(sThumbnail)
+        oGuiElement.setDirectTvFanart()
+        
+        self.addFolder(oGuiElement, oOutputParameterHandler)          
 
     
     def addFolder(self, oGuiElement, oOutputParameterHandler='', isFolder=True):

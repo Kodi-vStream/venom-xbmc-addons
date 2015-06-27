@@ -220,7 +220,7 @@ def showMovies(sSearch = ''):
     
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-    
+        #sHtmlContent = DecryptMangacity(sHtmlContent)    
     #print sUrl
     
     ##Partie a reactiver en cas de bug
@@ -233,7 +233,7 @@ def showMovies(sSearch = ''):
     #    fh.close()
     #except:
     #    pass
-    ##Elle va creer un fichier debug.txt dans le repertoire du pluggin a me refaire passer merci
+    #Elle va creer un fichier debug.txt dans le repertoire du pluggin a me refaire passer merci
 
     sPattern = 'background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=\'(.+?)\' class=\'button'
     
@@ -256,15 +256,16 @@ def showMovies(sSearch = ''):
             sTitle = unicode(sTitle,'iso-8859-1')
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
             sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
-            sTitle = sTitle.replace('[Streaming] - ','')
+            
             sTitle = DecoTitle(sTitle)
+            sTitle = unescape(sTitle)
+            sTitle = sTitle.replace('[Streaming] - ','')
             
             sPicture = aEntry[0]
             #sPicture = sPicture.encode('ascii', 'ignore').decode('ascii')
             #sPicture = sPicture.replace('[Streaming] - ','')
             sPicture = str(URL_MAIN) + str(sPicture)
             #print sPicture
-            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN) + str(aEntry[2]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
@@ -322,10 +323,15 @@ def showEpisode():
     #print sUrl
     
     #On fait 2 passage pr accelerer le parsing regex
-    sPattern = '<div class="&#105;&#110;&#110;&#101;&#114;">(.+?)<footer id="footer">'
+    # sPattern = '<div class="&#105;&#110;&#110;&#101;&#114;">(.+?)<footer id="footer">'
+    # aResult = oParser.parse(sHtmlContent, sPattern)
+
+    # sPattern = '<img src="(.+?).+? alt="&#101;&#112;&#105;&#115;&#111;&#100;&#101;&#115;".+?<a href="(.+?)" title="(.+?)"'
+    # aResult = oParser.parse(aResult[1][0], sPattern)
+    
+    sPattern = '<a href=\'.+?\' class=\'button lignt\' title=".+?"><headline11>(.+?)</headline11></a>|<a href="([^<]+)" title="([^<]+)" alt=".+?" style="text-decoration:none;">'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    sPattern = '<img src="(.+?).+? alt="&#101;&#112;&#105;&#115;&#111;&#100;&#101;&#115;".+?<a href="(.+?)" title="(.+?)"'
-    aResult = oParser.parse(aResult[1][0], sPattern)
+   
     
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -340,11 +346,17 @@ def showEpisode():
             sTitle = DecoTitle(sTitle)
             sUrl2 = URL_MAIN + str(unescape(aEntry[1]))
             
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sThumb, '', oOutputParameterHandler)
+            if aEntry[0]:
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+                oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'animes.png', oOutputParameterHandler)
+            
+            else: 
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sThumb, '', oOutputParameterHandler)
         cConfig().finishDialog(dialog)
 
 
@@ -365,11 +377,12 @@ def showHosters():
     sHtmlContent = sHtmlContent.replace("<iframe src='cache_vote.php",'')
     
 
-    sPattern = '<iframe[^<>]+?src=[\'"]([^<>]+?)[\'"][^<]+?<\/iframe>|<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);<\/script>'
+    #sPattern = '<iframe[^<>]+?src=[\'"]([^<>]+?)[\'"][^<]+?<\/iframe>|<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);<\/script>'
+    sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]|<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);<\/script>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    #print aResult
+    print aResult
     
     if (aResult[0] == True):
         total = len(aResult[1])

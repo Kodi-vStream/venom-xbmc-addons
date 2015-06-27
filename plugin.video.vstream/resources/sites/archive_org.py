@@ -113,11 +113,13 @@ def showWeb():
     playlist = parseWebM3U(sUrl)
 
     for track in playlist:
+        
+        sTitle = cUtil().DecoTitle(track.title)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', str(track.path))
         oOutputParameterHandler.addParameter('siteTitle', str(track.title))
         oOutputParameterHandler.addParameter('sThumbnail', str(track.cover))
-        oGui.addMisc(SITE_IDENTIFIER, 'play', track.title, 'film.jpg' , track.cover, '', oOutputParameterHandler)    
+        oGui.addMisc(SITE_IDENTIFIER, 'play', sTitle, 'film.jpg' , track.cover, '', oOutputParameterHandler)    
   
     oGui.setEndOfDirectory()
 

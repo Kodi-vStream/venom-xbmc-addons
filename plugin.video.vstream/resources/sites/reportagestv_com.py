@@ -93,7 +93,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'')
-    sPattern = '<img width=".+?" height=".+?" src="([^<]+)" class="attachment-loop wp-post-image" alt=".+?" />.+?<h3 class="loop-title"><a href="([^<]+)" rel="bookmark">([^<]+)</a></h3>.+?<div class="mh-excerpt">(.+?)<a'
+    sPattern = '<img src="([^<]+)" class="attachment.+?<h3 class="loop-title"><a href="([^<]+)" rel="bookmark">([^<]+)</a></h3>.+?<div class="mh-excerpt">(.+?)</a>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -124,7 +124,7 @@ def showMovies(sSearch = ''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = "<span class='page-numbers current'>.+?</span><a class='page-numbers' href='(.+?)'>.+?</a>"
+    sPattern = "<span class='page-numbers current'>.+?</span> <a class='page-numbers' href='(.+?)'>.+?</a>"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -153,7 +153,8 @@ def showHosters():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-            
+
+            aEntry= aEntry.replace('//', 'http://')
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):

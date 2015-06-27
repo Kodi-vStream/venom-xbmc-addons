@@ -4,12 +4,14 @@ from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.lib.config import cConfig
 import cookielib
-import json
 #import simplejson
 import urllib2,urllib,re
 #from t0mm0.common.net import Net
 import unicodedata
 import xbmcgui
+
+try:    import json
+except: import simplejson as json
 
 class cHoster(iHoster):
 

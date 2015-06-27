@@ -10,7 +10,10 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import json, urllib
+import urllib
+
+try:    import json
+except: import simplejson as json
 
 SITE_IDENTIFIER = 'themoviedb_org'
 SITE_NAME = 'TheMovieDB (beta)'

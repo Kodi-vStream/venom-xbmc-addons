@@ -444,7 +444,7 @@ def showSerieHosters():
     sPattern = "<span style='font-size:11px; color:#333333;'><b>(.+?)</b></span>|<a href='([^<]+)' target='player'>(.+?)</td>"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    print aResult
+    #print aResult
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)

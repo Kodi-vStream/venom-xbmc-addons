@@ -18,7 +18,7 @@ SITE_DESC = 'Film en streaming, regarder film en direct, streaming vf regarder f
 
 URL_MAIN = 'http://frenchstream.org/'
 
-MOVIE_NEWS = ('http://frenchstream.org/', 'showMovies')
+MOVIE_NEWS = ('http://frenchstream.org/films/', 'showMovies')
 MOVIE_VIEWS = ('http://frenchstream.org/les-plus-vues/', 'showMovies')
 MOVIE_COMMENTS = ('http://frenchstream.org/les-plus-commentes/', 'showMovies')
 MOVIE_NOTES = ('http://frenchstream.org/les-mieux-notes/', 'showMovies')
@@ -316,6 +316,7 @@ def showQlt():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
+    liste.append( ['1080p','http://frenchstream.org/qualites/1080p/'] )   
     liste.append( ['720p','http://frenchstream.org/qualites/720p/'] )
     liste.append( ['BDRip','http://frenchstream.org/qualites/BDRip/'] )
     liste.append( ['BRRip','http://frenchstream.org/qualites/BRRip/'] )
@@ -497,7 +498,7 @@ def showSeries():
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<aclass="page larger" href="(.+?)">'
+    sPattern = '<a class="page larger" href="(.+?)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -520,11 +521,24 @@ def showLinks():
     #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/plugins/like.php','').replace('<iframe src="http://www.facebook.com/plugins/likebox.php','')
     
     a = sUrl.replace('/','\/')
-    sPattern = '<a href="(' + a + '.*?)"><span>(.+?)<\/span><\/a>'
     oParser = cParser()
+    
+    #quelques infos en plus
+    annee = ""
+    qualite = ""
+    comm = ""
+    sPattern = '<div class="konuozet">(.+?)<\/div>.+?<span>Ann..es<\/span>: <a href="[^<>]+?">([0-9]{4})<\/a>.+?<span>Qualit..s<\/span>: <a href="[^<>]+?">(.+?)<\/a>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        annee = aResult[1][0][1]
+        qualite = aResult[1][0][2]
+        comm = aResult[1][0][0].replace('<p>','')
+    
+    #Recuperation des liens
+    sPattern = '<a href="(' + a + '.*?)"><span>(.+?)<\/span><\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-    #print aResult
+    #print aResult    
     
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -536,12 +550,12 @@ def showLinks():
             
             sHoster = cHosterGui().checkHoster(aEntry[1].lower())
             if (sHoster != False):
-                sTitle = sMovieTitle+' - [COLOR azure]'+aEntry[1]+'[/COLOR]'
+                sTitle = sMovieTitle + ' (' + annee + ') [COLOR coral]['+ qualite + '][/COLOR] - [COLOR azure]'+aEntry[1]+'[/COLOR]'
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)             
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, comm, oOutputParameterHandler)             
     
         cConfig().finishDialog(dialog)
 

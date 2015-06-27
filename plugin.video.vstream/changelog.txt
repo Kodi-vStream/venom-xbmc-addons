@@ -13,6 +13,45 @@
 - Merci au contributeur de la bêta. TmpName/FreeFighter77/mino60
 =============================================================================
 =============================================================================
+- Version 0.3.2 - 27.06.2015
+=============================================================================
+@TmpName Update hoster.py
+@TmpName Create vimeo.py 
+@LordVenom Bug Fav & libretv
+@LordVenom libretv.me
+@LordVenom string & design
+@LordVenom full-stream.me
+@LordVenom Gui et moviedb
+@LordVenom Merge pull request #51 from mino60/patch-15 …
+@mino60 Update vkstreamingfilm.biz
+@TmpName Update googlevideo.py
+@TmpName Merge pull request #49 from mino60/patch-14 …
+@mino60 new source vkstreamingfilm_biz.py
+@TmpName Update googlevideo.py
+@TmpName Update util.py
+@TmpName Update googlevideo.py
+@TmpName Update poypi_com.py
+@TmpName Update voirfilms_org.py
+@TmpName Update hoster.py
+@TmpName Update netu.py
+@TmpName Update netu.py
+@LordVenom correction bug
+@LordVenom correction import et bug
+@LordVenom change background
+@TmpName Merge pull request #47 from mino60/patch-13
+@mino60 update frenchstream
+@LordVenom recherche visuel
+@LordVenom Merge pull request #46 from mino60/patch-12
+@mino60 update frenchstream
+@LordVenom movieDb acteur
+@LordVenom frenchstream
+@LordVenom change home
+@TmpName Update frenchstream_org.py
+@TmpName Update frenchstream_org.py …
+@LordVenom bug description
+@TmpName Update strings.xml
+@TmpName Update strings.xml …
+=============================================================================
 - Version 0.3.1 - 29.05.2015
 =============================================================================
 - @LordVenom / Merge pull request #43 from mino60/patch-11 …

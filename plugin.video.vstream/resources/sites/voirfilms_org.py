@@ -16,13 +16,15 @@ import urllib2,urllib,re
  
 SITE_IDENTIFIER = 'voirfilms_org' #identifant nom de votre fichier remplacer les espaces et les . par _ aucun caractere speciale
 SITE_NAME = 'VoirFilms.org' # nom que xbmc affiche
-SITE_DESC = 'Films en streaming' #description courte de votre source
+SITE_DESC = 'Films et serie en streaming' #description courte de votre source
  
 URL_MAIN = 'http://www.voirfilms.org/' # url de votre source
 
 MOVIE_NEWS = ('http://www.voirfilms.org/', 'showMovies')
-MOVIE_ALLMOVIES = ('http://www.voirfilms.org/lesfilms1', 'showMovies')
+MOVIE_ALLMOVIES = ('http://www.voirfilms.org/lesfilmstreamings', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
+
+SERIE_SERIES = ('http://www.voirfilms.org/series/', 'showMovies')
   
 URL_SEARCH = ('', 'showMovies')
 #FUNCTION_SEARCH = 'showMovies'
@@ -66,6 +68,10 @@ def load(): #function charger automatiquement par l'addon l'index de votre navig
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films par Genres', 'genres.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -172,7 +178,6 @@ def showMovies(sSearch = ''):
     oGui = cGui() #ouvre l'affichage
    
     if sSearch:
-        #print 'ok'
         #on redecode la recherhce codé il y a meme pas une seconde par l'addon
         sSearch = urllib2.unquote(sSearch)
  
@@ -193,7 +198,8 @@ def showMovies(sSearch = ''):
      
         sHtmlContent = reponse.read()
 
-        sPattern = '<div class="imagefilm">.+?<a href="(.+?)" title="(.+?)">.+?<img src="(.+?)"'
+        #sPattern = '<div class="imagefilm">.+?<a href="(.+?)" title="(.+?)">.+?<img src="(.+?)"'
+        sPattern = '<div class="imagefilm">.+?<img src="(.+?)".+?<a href="([^<>]+?)".+?titreunfilm" style="width:145px;"> *(.+?) *<\/div>'
  
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -202,13 +208,10 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
         
-        sPattern = '<div class="imagefilm"> *<a href="(.+?)" title="(.+?)".+?<img src="(.+?)"'
+        #sPattern = '<div class="imagefilm"> *<a href="(.+?)" title="(.+?)".+?<img src="(.+?)" alt="(.+?)"'
+        sPattern = '<div class="imagefilm">.+?<img src="(.+?)".+?<a href="([^<>]+?)".+?titreunfilm" style="width:145px;">(.+?)<\/div>'
     
-    sHtmlContent = sHtmlContent.replace('\n','')    
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
+    sHtmlContent = sHtmlContent.replace('\n','')
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -224,10 +227,11 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
            
-            sTitle = unescape(aEntry[1])
-            sTitle = sTitle.replace('film ','')
-            sTitle = sTitle.replace(' streaming','')
-            sPicture = str(aEntry[2])
+            sTitle = unescape(aEntry[2])
+            #sTitle = sTitle.replace('Film ','')
+            #sTitle = sTitle.replace(' Streaming',' ')
+            #sTitle = sTitle.replace(' vk',' ')
+            sPicture = str(aEntry[0])
             if not 'http' in sPicture:
                 sPicture = str(URL_MAIN) + sPicture
            
@@ -236,11 +240,14 @@ def showMovies(sSearch = ''):
             #sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
            
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', sPicture) #sortis du poster
  
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, sPicture, sPicture, '', oOutputParameterHandler)
+            if '/serie/' in aEntry[1] :
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, sPicture, sPicture, '', oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, sPicture, sPicture, '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
            
@@ -276,11 +283,19 @@ def showHosters():
  
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
- 
-    #sPattern = 'submit\(\)"><span>([^<]+)<.span><.a>.+?name="levideo" value="(.+?)" type="hidden">'
-    sPattern = 'uppercase;">(.+?)<\/span><span class="selected".+?name="levideo" value="(.+?)" type="hidden">'
+    
+    if '-episode-' in sUrl:
+        sPattern = '(?:<span style="width:55px;" class="(.+?)L"><\/span> +)*<\/div><span class="gras" style="text-transform: uppercase;">(.+?)<\/span><span class="selected".+?name="levideo" value="(.+?)" type="hidden">'
+    else:
+        sPattern = 'uppercase;">(.+?)<\/span><span class="selected".+?name="levideo" value="(.+?)" type="hidden">'
+    
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent.replace('\n',''))
+    #fh.close()
+
     #print aResult
    
     if (aResult[0] == True):
@@ -290,19 +305,69 @@ def showHosters():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-           
+                
+            if '-episode-' in sUrl:
+                sTitle = '[COLOR teal][' + str(aEntry[1]) + '][/COLOR] ' + sMovieTitle
+                sData = str(aEntry[2])
+                if aEntry[0]:
+                    sTitle = sTitle + ' [' + aEntry[0] + ']'
+            else:
+                sTitle = '[COLOR teal][' + str(aEntry[0]) + '][/COLOR] ' + sMovieTitle
+                sData = str(aEntry[1])
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('data', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('data', sData)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail) #sortis du poster
  
-            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', '[COLOR teal][' + str(aEntry[0]) + '][/COLOR] ' + sMovieTitle, sThumbnail, sThumbnail, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sTitle , sThumbnail, sThumbnail, '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
        
     oGui.setEndOfDirectory()
+
+def serieHosters():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
     
+    if '-saison-' in sUrl:
+        sPattern = '<li class="description132"><a class="n_episode2" title=".+?" href="(.+?)">(.+?)<\/a><\/li>'
+    else:
+        sPattern = '<div class="unepetitesaisons"> +<a href="(.+?)" title="(.+?)"> +<div class="saisonimage">'
+    
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+                
+            sTitle = str(aEntry[1])
+           
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl',str(URL_MAIN) + str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail) #sortis du poster
+ 
+            if '-episode-' in aEntry[0]:
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, sThumbnail, sThumbnail, '', oOutputParameterHandler)
+            else:
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, sThumbnail, sThumbnail, '', oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)    
+
+    oGui.setEndOfDirectory()
     
 def showHostersLink():
     oGui = cGui()
@@ -323,7 +388,7 @@ def showHostersLink():
         url = sUrl + '#plateformes'
     else:
         url = sUrl
-        
+    
     request = urllib2.Request(url,data,headers)
           
     try: 
@@ -333,13 +398,18 @@ def showHostersLink():
         print e.reason
           
     sHtmlContent = reponse.read()
-    
-    # fh = open('c:\\test.txt', "w")
-    # fh.write(sHtmlContent)
-    # fh.close()
+    sHtmlContent = sHtmlContent.replace('\n','')
+     
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
 
-    sPattern = '<div id="playerslist">\n<div class=".+?"><iframe src="([^<]+)".+?<\/iframe>'
+    sPattern = '<a target="_blank" href="(.+?)" style="color:#1a8db8;font-size:16px;">Lien direct vers le lecteur<\/a>'
     aResult = re.findall(sPattern, sHtmlContent)
+    
+    if len(aResult) == 0:
+        sPattern = '<div id="playerslist"><div class=".+?<iframe src="([^<]+?)".+?<\/iframe>'
+        aResult = re.findall(sPattern, sHtmlContent)
     
     if len(aResult) > 0 :
         aResult = aResult[0]
@@ -352,7 +422,7 @@ def showHostersLink():
         aResult = aResult.replace('http://www.streamingentier.com/vk.php?code=','')
         
         sHosterUrl = str(aResult)
-        print sHosterUrl
+        #print sHosterUrl
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         
         if (oHoster != False):

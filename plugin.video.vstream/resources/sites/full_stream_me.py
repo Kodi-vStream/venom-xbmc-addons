@@ -310,7 +310,7 @@ def serieHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
 
-    sPattern = '<a href="([^<]+)" title="([^<]+)" target="seriePlayer" class="ilink sinactive">'
+    sPattern = '<a href="([^<]+)" title="([^<]+)" target="seriePlayer".+?>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)

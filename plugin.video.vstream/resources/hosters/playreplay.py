@@ -3,8 +3,10 @@ from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 import urllib, urllib2,re
-import json
 import xbmcgui
+
+try:    import json
+except: import simplejson as json
 
 class cHoster(iHoster):
 
