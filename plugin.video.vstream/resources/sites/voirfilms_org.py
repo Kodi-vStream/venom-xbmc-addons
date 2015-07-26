@@ -285,9 +285,11 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
     
     if '-episode-' in sUrl:
-        sPattern = '(?:<span style="width:55px;" class="(.+?)L"><\/span> +)*<\/div><span class="gras" style="text-transform: uppercase;">(.+?)<\/span><span class="selected".+?name="levideo" value="(.+?)" type="hidden">'
+        #sPattern = '(?:<span style="width:55px;" class="(.+?)L"><\/span> +)*<\/div><span class="gras" style="text-transform: uppercase;">(.+?)<\/span><span class="selected".+?name="levideo" value="(.+?)" type="hidden">'
+        sPattern = '(?:<span style="width:55px;" class="(.+?)L"><\/span>)*<\/div> *<span class="gras"><[^<>]+?>([^<>]+?)<\/span> *<span class="selected".+?name="levideo" value="(.+?)" type="hidden">'
     else:
-        sPattern = 'uppercase;">(.+?)<\/span><span class="selected".+?name="levideo" value="(.+?)" type="hidden">'
+        #sPattern = 'uppercase;">(.+?)<\/span><span class="selected".+?name="levideo" value="(.+?)" type="hidden">'
+        sPattern = '<span class="gras"><[^<>]+?>([^<>]+?)<\/span> *<span class="selected".+?name="levideo" value="(.+?)" type="hidden">'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -354,9 +356,12 @@ def serieHosters():
                 break
                 
             sTitle = str(aEntry[1])
+            sUrl = str(aEntry[0])
+            if 'http://www.voirfilms.org' not in sUrl:
+                sUrl = str(URL_MAIN) + sUrl
            
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl',str(URL_MAIN) + str(aEntry[0]))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail) #sortis du poster
  
