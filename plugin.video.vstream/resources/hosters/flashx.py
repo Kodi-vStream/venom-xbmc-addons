@@ -40,7 +40,7 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
+        return ''
         
     def __getIdFromUrl(self, sUrl):
         sPattern = "http://((?:www.|play.)?flashx.tv)/(?:embed-)?([0-9a-zA-Z/-]+)(?:.html)?"
@@ -67,13 +67,12 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        print 'debut'
+
         sId = self.__getIdFromUrl(self.__sUrl)
         web_url = self.__getUrl(sId)
         
-        print web_url
-        
-        headers = {'Referer': web_url}
+        #headers = {'Referer': web_url}
+        headers = {'Host' : 'flashx.tv'}
         smil = ''
         api_call = ''
         
@@ -89,12 +88,14 @@ class cHoster(iHoster):
         
         swfurl = 'http://static.flashx.tv/player6/jwplayer.flash.swf'
         r = re.search('"(http://.+?\.smil)"', html)
+        
         if r:
             smil = r.group(1)
         else:
-            r = re.search('\|smil\|(.+?)\|sources\|', html)
-            if r: smil = 'http://flashx.tv/' + r.group(1) + '.smil'
-                
+            r = re.search('\|smil\|+(.+?)\|sources\|', html)
+            if r:
+                smil = 'http://flashx.tv/' + r.group(1) + '.smil'
+
         if smil:
 
             request = urllib2.Request(smil,None,headers)

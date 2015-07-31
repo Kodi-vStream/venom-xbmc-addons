@@ -431,7 +431,6 @@ def showMovies(sSearch = ''):
     
     if (aResult[0] == False):
         oGui.addNone(SITE_IDENTIFIER)
-        return False
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -473,7 +472,7 @@ def showSeries():
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('<strong>Téléchargement VOSTFR','').replace('<strong>Téléchargement VF','').replace('<strong>Téléchargement','')
  
-    sPattern = '<ahref="([^<]+)"><span>(.+?)</span></a>'
+    sPattern = '<a *href="([^<]+)"><span>(.+?)</span></a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)

@@ -29,7 +29,7 @@ class cParser:
         sPattern = "\d+"
         aMatches = re.findall(sPattern, sValue)
         if (len(aMatches) > 0):
-            return int(aMatches[0])
+            return aMatches[0]
         return 0
 
 

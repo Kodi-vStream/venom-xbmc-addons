@@ -27,6 +27,9 @@ MOVIE_VIEWS = ('http://dpstreaming.org/category/films-en-exclus/', 'showMovies')
 SERIE_SERIES = ('http://dpstreaming.org/category/series-tv/', 'showMovies')
 ANIM_ANIMS = ('http://dpstreaming.org/category/mangas/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
+REPLAYTV_REPLAYTV = ('http://dpstreaming.org/category/emissions-tv/', 'showMovies')
+SPORT_SPORTS = ('http://dpstreaming.org/category/sport/', 'showMovies')
+DOC_DOCS = ('http://dpstreaming.org/category/films/documentaire/', 'showMovies')
 
 URL_SEARCH = ('http://dpstreaming.org/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -174,6 +177,10 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Mangas', 'animes.png', oOutputParameterHandler)
     
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Replay tv', 'tv.png', oOutputParameterHandler)
+    
             
     oGui.setEndOfDirectory()
  
@@ -271,7 +278,6 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == False):
         oGui.addNone(SITE_IDENTIFIER)
-        return False
         
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -314,7 +320,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -400,12 +406,13 @@ def showHosters():
     sHtmlContent = sHtmlContent.replace('<iframe src="http://ads.affbuzzads.com','')
     sHtmlContent = sHtmlContent.replace('<iframe src="//ads.ad-center.com','')
 
-    sPattern = '<iframe src="([^<]+)" frameborder'
+    sPattern = '<a.+? (:?data-blogger-es="")>.+?</a>|<iframe src="([^<]+)" frameborder'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-    #print aResult
-    
+    if (aResult[1][0][0] == 'data-blogger-es=""'):
+        showSeries()
+                
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)

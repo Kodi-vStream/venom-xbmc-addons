@@ -45,6 +45,12 @@ class cFav:
     def getFavourites(self):
         oGui = cGui()
 
+        row = cDb().get_countfavorite()
+        sTitle = '[COLOR khaki]Vous avez %s marque page[/COLOR]' % (str(row))
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://')
+        oGui.addText(SITE_IDENTIFIER, sTitle, oOutputParameterHandler)
+        
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '1')
         oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Films', 'search.png', oOutputParameterHandler)
@@ -64,6 +70,10 @@ class cFav:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '5')
         oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Divers', 'views.png', oOutputParameterHandler)
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sCat', '6')
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'TV', 'views.png', oOutputParameterHandler)
         
         oGui.setEndOfDirectory()
 

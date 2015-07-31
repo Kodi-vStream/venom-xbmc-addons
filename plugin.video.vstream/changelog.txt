@@ -9,9 +9,110 @@
 - Stéphane G.
 - Sylvain L.
 - Daniel L.
+- Jean Charles A.
 =============================================================================
-- Merci au contributeur de la bêta. TmpName/FreeFighter77/mino60
+- Merci au contributeur de la bêta. TmpName/FreeFighter77/mino60/zombiB
 =============================================================================
+=============================================================================
+- Merci à http://libretv.me/ pour le partage de leurs sources.
+=============================================================================
+=============================================================================
+- Version 0.3.3 - 31.07.2015
+=============================================================================
+Commits on Jul 30, 2015 
+- @LordVenom / poypi 
+Commits on Jul 26, 2015 
+- @FreeFighter77 / Update poypi_com.py 
+- @FreeFighter77 / Update full_stream_me.py 
+- @TmpName / Update voirfilms_org.py 
+- @LordVenom / bug dpstreaming 
+Commits on Jul 25, 2015 
+- @LordVenom / parser 
+- @LordVenom / goto page 
+- @LordVenom / bug sThumbnail 
+Commits on Jul 24, 2015 
+- @TmpName / Update film_streaming_co.py
+- @TmpName / Update gui.py 
+- @LordVenom / retour site 
+Commits on Jul 23, 2015 
+- @TmpName / Update film_streaming_co.py 
+- @TmpName / Update gui.py 
+Commits on Jul 22, 2015 
+- @TmpName / Update film_streaming_co.py
+- @TmpName / Update gui.py 
+- @FreeFighter77 / Update enquetedereportages_com.py
+Commits on Jul 21, 2015 
+- @TmpName / Update film_streaming_co.py
+- @LordVenom / goto page
+Commits on Jul 20, 2015 
+- @TmpName / Update film_streaming_co.py
+- @TmpName / Update film_streaming_co.py
+- @FreeFighter77 / Update tntv_rattrapage.py
+- @LordVenom / Go page 
+Commits on Jul 19, 2015 
+- @LordVenom / film_streaming_co
+- @TmpName / Update enquetedereportages_com.py
+- @TmpName / Update buzzmonclick_com.py 
+- @LordVenom / film_streaming-co
+- @LordVenom / film_streaming.co 
+Commits on Jul 18, 2015 
+- @TmpName / Update full_streamvk_com.py 
+Commits on Jul 17, 2015 
+- @LordVenom / epg et bug
+Commits on Jul 16, 2015 
+- @TmpName / Update full_streamvk_com.py
+Commits on Jul 15, 2015 
+- @LordVenom / Merge pull request #60 from zombiB/patch-3
+- @LordVenom / Merge pull request #61 from zombiB/patch-4 
+- @zombiB / Create buzzmonclick_com.py 
+- @zombiB / Create enquetedereportages_com.py 
+Commits on Jul 14, 2015 
+- @LordVenom / epg
+- @TmpName / Update hoster.py 
+- @TmpName / Create openload.py
+- @TmpName / Create vidme.py
+- @TmpName / Update flashx.py
+Commits on Jul 12, 2015 
+- @TmpName / Merge pull request #58 from zombiB/patch-2
+- @TmpName / Merge pull request #57 from zombiB/patch-1 … 
+- @zombiB / ajout de la categorie documentaire 
+- @zombiB / ajout de section replay tv , doc et sports 
+- @LordVenom / epg
+Commits on Jul 11, 2015 
+- @TmpName / Update flashx.py
+- @TmpName / Update hoster.py
+- @TmpName / Update resolver.py 
+- @TmpName / Update docspot_fr.py 
+- @TmpName / Update home.py 
+- @TmpName / Update tntv_rattrapage.py 
+- @TmpName / Update tv_streaming_ch.py
+- @LordVenom / popup epg
+Commits on Jul 10, 2015 
+- @TmpName / Update tv_streaming_ch.py
+- @TmpName / Update tv_streaming_ch.py 
+- @TmpName / Update db.py
+- @TmpName / Create tv_streaming_ch.py
+- @LordVenom / resolver
+Commits on Jul 4, 2015 
+- @LordVenom / recherche visuel et meta
+Commits on Jul 2, 2015 
+- @LordVenom / Marque page & context menu
+Commits on Jun 30, 2015 
+- @LordVenom / tv replay
+- @TmpName / Update filetrip.py
+- @LordVenom / Merge pull request #53 from mino60/patch-17
+Commits on Jun 29, 2015 
+- @TmpName / Update tntv_rattrapage.py
+- @TmpName / Create tntv_rattrapage.py 
+- @TmpName / Update frenchstream_org.py
+Commits on Jun 28, 2015 
+- @mino60 / Create full-streamv.com
+- @TmpName / Update freebox.py
+- @TmpName / Update freebox.py
+Commits on Jun 27, 2015 
+- @TmpName / Update default.py
+- @TmpName / Update gui.py
+- @LordVenom / bug addnone 
 =============================================================================
 - Version 0.3.2 - 27.06.2015
 =============================================================================

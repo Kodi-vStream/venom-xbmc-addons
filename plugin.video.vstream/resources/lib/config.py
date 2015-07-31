@@ -177,5 +177,32 @@ class cConfig():
         self.win.getControl(1).setLabel("vStream popup Erreur")
         self.win.getControl(5).setText(str(value))
         
+    def TextBoxes(self, heading, anounce):
+        class TextBox():
+            # constants
+            WINDOW = 10147
+            CONTROL_LABEL = 1
+            CONTROL_TEXTBOX = 5
+
+            def __init__( self, *args, **kwargs):
+                # activate the text viewer window
+                xbmc.executebuiltin( "ActivateWindow(%d)" % ( self.WINDOW, ) )
+                # get window
+                self.win = xbmcgui.Window( self.WINDOW )
+                # give window time to initialize
+                xbmc.sleep( 500 )
+                self.setControls()
+
+            def setControls( self ):
+                # set heading
+                self.win.getControl( self.CONTROL_LABEL ).setLabel(heading)
+                try:
+                    f = open(anounce)
+                    text = f.read()
+                except: text=anounce
+                self.win.getControl( self.CONTROL_TEXTBOX ).setText(text)
+                return
+        TextBox()
+        
         
         

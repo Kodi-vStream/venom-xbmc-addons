@@ -67,10 +67,13 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace('http://filetrip.net/', '')
-        self.__sUrl = self.__sUrl.replace('embed?', '')
-        self.__sUrl = 'http://filetrip.net/embed?' + str(self.__sUrl)
-
+            
+    def Reformat(url):
+        url = url.replace('http://filetrip.net/', '')
+        url = url.replace('embed?', '')
+        url = 'http://filetrip.net/embed?' + str(url)
+        return url
+            
     def checkUrl(self, sUrl):
         return True
 
@@ -82,6 +85,13 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         cGui().showInfo('Resolve', self.__sDisplayName, 5)
+        
+        #lien deja decode
+        if self.__sUrl[-4] == '.':
+            return True,self.__sUrl
+        
+        #Sinon on decode
+        self.__sUrl = self.Reformat(self.__sUrl)
         
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()

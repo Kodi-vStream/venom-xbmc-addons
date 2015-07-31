@@ -207,7 +207,7 @@ def showSeries():
             oOutputParameterHandler.addParameter('disp', 'search2')
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))          
             
-            oGui.addMovieDB(SITE_IDENTIFIER, 'showHosters', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
+            oGui.addTVDB(SITE_IDENTIFIER, 'showHosters', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
             
         if (iPage > 0):
             iNextPage = int(iPage) + 1

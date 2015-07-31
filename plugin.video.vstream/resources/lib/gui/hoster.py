@@ -29,13 +29,14 @@ class cHosterGui:
         #oGuiElement.setFunction('showHosterMenu')
         oGuiElement.setFunction('play')
         oGuiElement.setTitle(oHoster.getDisplayName())
-        # oGuiElement.setThumbnail(sThumbnail)
+        #oGuiElement.setThumbnail(sThumbnail)
         # if (oInputParameterHandler.exist('sMeta')):
             # sMeta = oInputParameterHandler.getValue('sMeta')
             # oGuiElement.setMeta(int(sMeta))
             
         oGuiElement.setFileName(oHoster.getFileName())
         oGuiElement.getInfoLabel()
+        oGuiElement.setCat(4)
         #oGuiElement.setThumbnail(xbmc.getInfoLabel('ListItem.Art(thumb)'))
                 
             
@@ -45,7 +46,7 @@ class cHosterGui:
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
-        oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+        #oOutputParameterHandler.addParameter('sThumbnail', oGuiElement.getThumbnail())
         
         oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
         oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
@@ -54,21 +55,10 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sTitle', oHoster.getDisplayName())
         oOutputParameterHandler.addParameter('sId', 'cHosterGui')
         oOutputParameterHandler.addParameter('siteUrl', sMediaUrl)
-        oOutputParameterHandler.addParameter('sFav', 'play')
-        oOutputParameterHandler.addParameter('sCat', '4')
+        #oOutputParameterHandler.addParameter('sFav', 'play')
+        #oOutputParameterHandler.addParameter('sCat', '4')
         
-        #context read and noread
-        oContext = cContextElement()
-        oContext.setFile('cGui')
-        oContext.setSiteName('cGui')
-        oContext.setFunction('setWatched')
-        oContext.setTitle('[COLOR azure]Marquer vu/Non vu[/COLOR]')
-
-        #oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
-        #oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
-      
-        oContext.setOutputParameterHandler(oOutputParameterHandler)
-        oGuiElement.addContextItem(oContext)
+        oGui.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
         
         #context playlit menu
         oContext = cContextElement()
@@ -87,27 +77,18 @@ class cHosterGui:
         oContext.setTitle(cConfig().getlanguage(30202))
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
-
-        #context FAV menu
-        oContext = cContextElement()
-        oContext.setFile('cFav')
-        oContext.setSiteName('cFav')
-        oContext.setFunction('setFavorite')
-        oContext.setTitle('[COLOR teal]'+cConfig().getlanguage(30203)+'[/COLOR]')
-
-        #oOutputParameterHandler = cOutputParameterHandler()
-        #oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
-        #oOutputParameterHandler.addParameter('siteUrl', sMediaUrl)
-        #oOutputParameterHandler.addParameter('sFav', 'play')
-        #oOutputParameterHandler.addParameter('sId', 'cHosterGui')
-      
-        oContext.setOutputParameterHandler(oOutputParameterHandler)
-        oGuiElement.addContextItem(oContext)
         
-        oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
+        #context FAV menu
+        oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+        
 
-    def checkHoster(self, sHosterUrl): 
-    
+        #bug
+        #oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
+         
+        oGui.addFolder(oGuiElement, oOutputParameterHandler)
+
+    def checkHoster(self, sHosterUrl):
+
         if ('novamov' in sHosterUrl):
             return cHosterHandler().getHoster('novamov')
         if ('divxstage' in sHosterUrl):
@@ -204,12 +185,26 @@ class cHosterGui:
             return cHosterHandler().getHoster('ok_ru')
         if ('vimeo.com' in sHosterUrl):
             return cHosterHandler().getHoster('vimeo')
+        if ('openload' in sHosterUrl):
+            return cHosterHandler().getHoster('openload')
+        if ('vid.me' in sHosterUrl):
+            return cHosterHandler().getHoster('vidme')
 
         #Si aucun hebergeur connu on teste les liens directs
         if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8'):
-            return cHosterHandler().getHoster('lien_direct')   
+            return cHosterHandler().getHoster('lien_direct')
+            
+        #module resolver HS
+        #try:
+        #    import urlresolver
+        #    host = urlresolver.HostedMediaFile(sHosterUrl)
+        #    if host:
+        #        return cHosterHandler().getHoster('resolver')
+        #except:
+        #    pass
 
         return False
+        
         # step 2
     def showHosterMenu(self):
         oGui = cGui()
@@ -295,7 +290,7 @@ class cHosterGui:
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
         sFileName = oInputParameterHandler.getValue('sFileName')
-        sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+        #sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
         if (bGetRedirectUrl == 'True'):            
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)

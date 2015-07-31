@@ -203,7 +203,7 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
                 
-            sThumb = str(aEntry[0]).replace('&w=210&h=280','')
+            sThumb = str(aEntry[0]).replace('&w=220&h=301','')
             sTitle = aEntry[2]
             if aEntry[3] :
                 sTitle = sTitle + ' (' + aEntry[3] + ')'

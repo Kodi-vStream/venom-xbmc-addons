@@ -84,7 +84,7 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
             
-            sTitle = aEntry[1].decode('latin-1').encode("utf-8")
+            sTitle = aEntry[1]
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))

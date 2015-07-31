@@ -39,6 +39,10 @@ class main:
 	        cConfig().log('call load methode')
 	        sFunction = "load"
 
+            
+	    if (sFunction=='DoNothing'):
+	        return
+
 	    if (oInputParameterHandler.exist('site')):
 	        sSiteName = oInputParameterHandler.getValue('site')
 	        cConfig().log('load site ' + sSiteName + ' and call function ' + sFunction)

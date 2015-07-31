@@ -35,8 +35,11 @@ class cRechercheHandler:
         oConfig = cConfig()
         sPluginSettingsName = sLabel+'_' +sName
         bPlugin = oConfig.getSetting(sPluginSettingsName)
+        
+        OnPlugins = oConfig.getSetting('plugin_' + sName)
+        
 
-        if (bPlugin == 'true'):    
+        if (bPlugin == 'true') and (OnPlugins == 'true'):    
             try:
                 cConfig().log("Load Plugin: " + str(sName))
                 exec "from resources.sites import " + sName

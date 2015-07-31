@@ -12,7 +12,7 @@ class cGuiElement:
 
     def __init__(self):
         self.__sRootArt = cConfig().getRootArt()
-        self.__sType = 'video'
+        self.__sType = 'Video'
         self.__sMeta = 0
         self.__sPlaycount = 0
         self.__sTrailerUrl = ''
@@ -42,6 +42,7 @@ class cGuiElement:
         self.__aProperties = {}
         self.__aContextElements = []
         self.__sSiteName = ''
+        self.__sCat = ''
         cGuiElement.COUNT += 1
         
     #def __len__(self): return self.__sCount
@@ -54,6 +55,12 @@ class cGuiElement:
 
     def getType(self):
         return self.__sType
+        
+    def setCat(self, sCat):
+        self.__sCat = sCat
+
+    def getCat(self):
+        return self.__sCat
      
     def setMetaAddon(self, sMetaAddon):
         self.__sMetaAddon = sMetaAddon
@@ -177,23 +184,6 @@ class cGuiElement:
 
     def addItemValues(self, sItemKey, mItemValue):
         self.__aItemValues[sItemKey] = mItemValue
-    
-    def getWatched45(self):
-        watched = {}
-        count = 0
-        watched_db = os.path.join( cConfig().getSettingCache(), "watched.db" )
-        try: 
-            if os.path.exists( watched_db ):
-                watched = eval( open(watched_db).read() )
-                sTitle = self.getTitle()
-                sId = self.getSiteName()
-                if sTitle in watched.get(sId):
-                    count = 1
-                else:
-                    count = 0           
-        except:
-            return
-        return count
         
     def getWatched(self):
         meta = {}
@@ -286,8 +276,11 @@ class cGuiElement:
         
         return
     def getMetadonne(self):
-        from metahandler import metahandlers
-        grab = metahandlers.MetaData(preparezip=False)
+        try:
+            from metahandler import metahandlers
+            grab = metahandlers.MetaData(preparezip=False)
+        except :
+            return
         #sTitle = self.__sTitle.decode('latin-1').encode("utf-8")
         #sTitle=re.sub(r'\[.*\]|\(.*\)',r'',str(self.__sFileName))
         #sTitle=sTitle.replace('VF','').replace('VOSTFR','').replace('FR','')

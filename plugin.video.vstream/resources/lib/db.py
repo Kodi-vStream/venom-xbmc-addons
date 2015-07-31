@@ -180,6 +180,20 @@ class cDb:
             cConfig().log('SQL ERROR EXECUTE') 
             return None
         self.dbcur.close()
+        
+    def get_countfavorite(self):
+    
+        sql_select = "SELECT COUNT(*) FROM favorite"
+
+        try:    
+            self.dbcur.execute(sql_select)
+            #matchedrow = self.dbcur.fetchone() 
+            matchedrow = self.dbcur.fetchone()
+            return matchedrow[0]      
+        except Exception, e:
+            cConfig().log('SQL ERROR EXECUTE') 
+            return None
+        self.dbcur.close()
 
     def get_resume(self, meta):
         title = self.str_conv(meta['title'])
@@ -224,7 +238,7 @@ class cDb:
         try:    
             self.dbcur.execute(sql_delete)
             self.db.commit()
-            cConfig().showInfo('vStream', 'Historique supprimer')
+            cConfig().showInfo('vStream', 'Historique supprime')
             cConfig().update()
             return False, False       
         except Exception, e:

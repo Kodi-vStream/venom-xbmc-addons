@@ -164,7 +164,11 @@ def showHosters():
             if dialog.iscanceled():
                 break
             
-            sHosterUrl = str(aEntry)
+            url = str(aEntry)
+            if url.startswith('//'):
+                url = 'http:' + url
+            
+            sHosterUrl = url
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)

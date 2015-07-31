@@ -241,7 +241,6 @@ def showMovies(sSearch = ''):
     print aResult
     if (aResult[0] == False):
         oGui.addNone(SITE_IDENTIFIER)
-        return False
 
     if (aResult[0] == True):
         total = len(aResult[1])

@@ -35,7 +35,7 @@ FRAMEPATTERN = '<object tabindex="0" name="mediaplayer".+?proxy\.link=(.+?)&auto
 # #pour zopap
 # URL_MAIN = 'http://www.zopap.com/paq/'
 # SEARCHPATTERN = '<fieldset><div><a href="\/paq\/(.+?)">(.+?)<\/a><\/div><\/fieldset>'
-# NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/paq\/(.+?)">(.+?)<\/a><\/span>'
+# NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/rgc\/(.+?)">(.+?)(?:<font color="#6da9c9"><i>.+?</i></font>|)<\/a><\/span>'
 # NEXTPAGEPATTERN = '<span class="pagenav">[0-9]+<.span><.li><li><a title=".+?" href="\/paq\/(.+?)" class="pagenav">'
 # FRAMEPATTERN = '<iframe src="\/paq\/(.+?)" width='
 # #pour zaloux
@@ -48,7 +48,10 @@ FRAMEPATTERN = '<object tabindex="0" name="mediaplayer".+?proxy\.link=(.+?)&auto
  
 #pour l'addon
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
-MOVIE_GENRES = (True, 'showGenre') 
+MOVIE_GENRES = (True, 'showGenre')
+
+DOC_DOCS = (URL_MAIN + 'index.php?option=com_content&view=category&id=26', 'showMovies')
+
 URL_SEARCH = (URL_MAIN + 'index.php?ordering=&searchphrase=all&Itemid=1&option=com_search&searchword=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
@@ -89,6 +92,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'genres.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', DOC_DOCS[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_DOCS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
            
     oGui.setEndOfDirectory()
  
@@ -163,6 +170,7 @@ def showMovies(sSearch = ''):
                 break
            
             sTitle2 = aEntry[1]
+            sTitle2 = aEntry[1].replace('<font color="#6da9c9"><i>HD</i></font>', '[COLOR coral]HD[/COLOR]')
             sUrl2 = aEntry[0]
            
             #not found better way

@@ -22,6 +22,7 @@ color_tvs = cConfig().getSetting('color_tvs')
 color_sports = cConfig().getSetting('color_sports')
 color_docs = cConfig().getSetting('color_docs')
 color_videos = cConfig().getSetting('color_videos')
+color_replaytvs = cConfig().getSetting('color_replaytvs')
 
 class cHome:
       
@@ -43,14 +44,17 @@ class cHome:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
             oGui.addDir('freebox', 'load', '[COLOR '+color_tvs+']'+cConfig().getlanguage(30115)+'[/COLOR]', 'tv.png', oOutputParameterHandler)
+        
+        if (cConfig().getSetting('home_replaytvs') == 'true'):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+            oGui.addDir(SITE_IDENTIFIER, 'showReplay', '[COLOR '+color_replaytvs+']'+cConfig().getlanguage(30117)+'[/COLOR]', 'tv.png', oOutputParameterHandler)
 
         if (cConfig().getSetting('home_films') == 'true'):
-            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR '+color_films+']'+cConfig().getlanguage(30120)+'[/COLOR]', 'films.png', oOutputParameterHandler)
             
-
         if (cConfig().getSetting('home_series') == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -217,6 +221,9 @@ class cHome:
 
     def movieNets(self):
         self.__callpluging('MOVIE_NETS', '[COLOR '+color_videos+']'+cConfig().getlanguage(30114)+'[/COLOR]', 'buzz.png')
+        
+    def showReplay(self):
+        self.__callpluging('REPLAYTV_REPLAYTV', '[COLOR '+color_replaytvs+']'+cConfig().getlanguage(30117)+'[/COLOR]', 'tv.png')
         
     def showSearch(self):
 
