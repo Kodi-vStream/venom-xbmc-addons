@@ -20,7 +20,7 @@ SITE_NAME = '[COLOR orange]Archive.org[/COLOR]'
 SITE_DESC = 'Film en streaming'
  
 
-URL_MAIN = 'http://www.archive.org' # url de votre source
+URL_MAIN = 'http://www.archive.org'
 URL_FILMS = 'https://ia601408.us.archive.org/30/items/urllist_201412/fadoz.txt'
 URL_HD1080 = 'https://ia601408.us.archive.org/30/items/urllist_201412/cinema.txt' 
 MOVIE_GENRES = (True, 'showGenre')
@@ -28,6 +28,8 @@ MOVIE_NEWS = ('https://ia601408.us.archive.org/30/items/urllist_201412/fadoz.txt
 
 cover = 'film.jpg'       
 #sRootfilm = cConfig().getRootfilm()
+
+#Test update
 
 class track():
     def __init__(self, length, title, path, cover):
