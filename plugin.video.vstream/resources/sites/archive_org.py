@@ -29,8 +29,6 @@ MOVIE_NEWS = ('https://ia601408.us.archive.org/30/items/urllist_201412/fadoz.txt
 cover = 'film.jpg'       
 #sRootfilm = cConfig().getRootfilm()
 
-#Test update
-
 class track():
     def __init__(self, length, title, path, cover):
         self.length = length
