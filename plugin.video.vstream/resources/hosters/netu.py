@@ -114,14 +114,15 @@ class cHoster(iHoster):
 	return self.__sFileName
     
     def setUrl(self, sUrl):
-        self.__sUrl = sUrl.replace('http://hqq.tv/watch_video.php?v=','http://hqq.tv/player/embed_player.php?vid=')
-        self.__sUrl = sUrl.replace('http://netu.tv/watch_video.php?v=','http://hqq.tv/player/embed_player.php?vid=')
-        self.__sUrl = sUrl.replace('http://waaw.tv/watch_video.php?v=','http://hqq.tv/player/embed_player.php?vid=')
+        self.__sUrl = sUrl.replace('http://netu.tv/','http://hqq.tv/')
+        self.__sUrl = self.__sUrl.replace('http://waaw.tv/','http://hqq.tv/')
+        self.__sUrl = self.__sUrl.replace('http://hqq.tv/watch_video.php?v=','http://hqq.tv/player/embed_player.php?vid=')       
     
     def __getIdFromUrl(self):
         sPattern = 'http:..hqq.tv.player.embed_player.php\?vid=([0-9A-Z]+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
+        
         if (aResult[0] == True):
             return aResult[1][0]
         return ''
@@ -170,13 +171,14 @@ class cHoster(iHoster):
         api_call = ''
     
         id = self.__getIdFromUrl()
+        
         self.__sUrl = 'http://hqq.tv/player/embed_player.php?vid=' + id + '&autoplay=no'
 
-        UA = 'Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0'
+        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
         #UA = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us)'
         headers = {'User-Agent': UA ,
                    'Host' : 'hqq.tv',
-                   #'Referer': 'http://full-stream.me/movies/films-en-streaming/9699-diversion.html',
+                   #'Referer': 'http://www.voirfilms.org/batman-unlimited-monstrueuse-pagaille.htm',
                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                    'Content-Type': 'text/html; charset=utf-8'}
         
@@ -212,47 +214,71 @@ class cHoster(iHoster):
                 
             data = response.read()
             response.close()
-                          
+            
+            #fh = open('c:\\netu.txt', "w")
+            #fh.write(data)
+            #fh.close()
+            
             b64enc = re.search('base64([^\"]+)', data, re.DOTALL)
             b64dec = b64enc and base64.decodestring(b64enc.group(1))
             enc = b64dec and re.search("\'([^']+)\'", b64dec).group(1)
 
             if enc:
                 data = re.findall('<input name="([^"]+?)" [^>]+? value="([^"]*)">', _decode(enc))
+
                 post_data = {}
                 for idx in range(len(data)):
                     post_data[data[idx][0]] = data[idx][1]
                     
+                #correction de bug
+                #if post_data['vid'] == '':
+                #    post_data['vid'] = 'pmpmp'#str(id)
+
+                    
                 #post_data['http_referer'] = 'http%3A%2F%2Ffull-stream.me%2Fmovies%2Ffilms-en-streaming%2F9699-diversion.html'
-                              
+                
                 req = urllib2.Request("http://hqq.tv/sec/player/embed_player.php?" + urllib.urlencode(post_data),None,headers)
+                
                 response = urllib2.urlopen(req)
                 data = response.read()
                 response.close()
                 
-                #fh = open('c:\\test1.txt', "w")
+                data = urllib.unquote(data)
+                
+                #fh = open('c:\\netu.txt', "w")
                 #fh.write(data)
                 #fh.close()
-                
-                data = urllib.unquote(data)
 
                 vid_server = re.search(r'var\s*vid_server\s*=\s*"([^"]*?)"', data)
                 vid_link = re.search(r'var\s*vid_link\s*=\s*"([^"]*?)"', data)
                 at = re.search(r'var\s*at\s*=\s*"([^"]*?)"', data)
 
                 if vid_server and vid_link and at:
-                    #get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '0\\'}
-                    get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '1/'}
+
+                    #get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '1/'}
+                    get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '1/','b':'1'} #,'iss':'MzEuMzguMjUyLjc='
                     
                     req = urllib2.Request("http://hqq.tv/player/get_md5.php?" + urllib.urlencode(get_data),None,headers)
-                    response = urllib2.urlopen(req)
+                    try:
+                        response = urllib2.urlopen(req)
+                    except urllib2.URLError, e:
+                        print e.read()
+                        print e.reason
+                        
                     data = response.read()
                     response.close()
                     
+                    #fh = open('c:\\netu.txt', "w")
+                    #fh.write(data)
+                    #fh.close()
+                    
                     file_url = re.search(r'"file"\s*:\s*"([^"]*?)"', data)
+                   
                     if file_url:
                         #return [{'url': _decode2(file_url.group(1).replace('\\', '')), 'quality': '???'}]
                         list_url = _decode2(file_url.group(1).replace('\\', '')) + '='
+                        
+                    #print list_url
         
         api_call = list_url
         #api_call = list_url.replace('?socket=','.mp4Frag1Num0.ts')

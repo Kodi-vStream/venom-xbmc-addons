@@ -17,6 +17,78 @@
 - Merci à http://libretv.me/ pour le partage de leurs sources.
 =============================================================================
 =============================================================================
+- Version 0.3.4 - 29.08.2015
+=============================================================================
+Commits on Aug 28, 2015
+- @LordVenom / divers bug
+Commits on Aug 27, 2015
+- @TmpName / Update ok_ru.py  
+- @LordVenom / Player
+Commits on Aug 26, 2015
+- @TmpName / Update full_streamvk_com.py 
+- @LordVenom / news player 
+Commits on Aug 25, 2015
+- @TmpName / Update film_streaming_co.py
+- @LordVenom / Merge pull request #69 from mino60/patch-25  
+- @mino60 / Update full_streamvk_com  
+Commits on Aug 24, 2015
+- @TmpName / Update full_stream_me.py
+- @TmpName / Update hoster.py  
+- @TmpName / Create allvid.py  
+- @LordVenom / player 
+- @LordVenom / marquer lus/non lus 
+Commits on Aug 23, 2015
+- @TmpName / Update flashx.py
+- @LordVenom / config modif  
+- @TmpName / Update tv_streaming_ch.py  
+- @LordVenom / letwatch  
+- @TmpName / Update tv_streaming_ch.py
+- @TmpName / Update mangacity_org.py  
+- @TmpName / Update mangacity_org.py  
+Commits on Aug 22, 2015
+- @TmpName / Update ok_ru.py 
+- @TmpName / Update netu.py 
+Commits on Aug 21, 2015
+- @LordVenom / remove archive
+- @TmpName / Update libre_stream_org.py 
+- @TmpName / Update hoster.py 
+- @TmpName / Create easyvid.py  
+- @TmpName / Create libre_stream_org.py  
+- @TmpName / Delete vk_filmz_streamiz_com.py  
+- @TmpName / Update freebox.py  
+Commits on Aug 15, 2015
+- @LordVenom / bug dpstreaming.org  
+Commits on Aug 14, 2015
+- @TmpName / Update youwatch.py 
+Commits on Aug 12, 2015
+- @LordVenom / bug de python
+Commits on Aug 10, 2015
+- @TmpName / Update poypi_com.py  
+- @LordVenom / 48h
+Commits on Aug 9, 2015
+- @FreeFighter77 / Update poypi_com.py  
+- @LordVenom / update auto 
+Commits on Aug 6, 2015
+- @TmpName / Update netu.py  
+- @TmpName / Update hoster.py 
+- @TmpName / Create watching.py 
+- @TmpName / Update voirfilms_org.py …  
+Commits on Aug 5, 2015
+- @TmpName / Update voirfilms_org.py
+- @TmpName / Create zstream.py  
+Commits on Aug 4, 2015
+- @TmpName / Update openload.py 
+Commits on Aug 3, 2015
+- @LordVenom / update & setting 
+Commits on Aug 2, 2015
+- @LordVenom / mise a jour auto 
+Commits on Aug 1, 2015
+- @TmpName / Update full_stream_me.py 
+- @TmpName / Update tv_streaming_ch.py 
+Commits on Jul 31, 2015
+- @TmpName / Update filmstreamingz_fr.py 
+- @FreeFighter77 / Update poypi_com.py
+=============================================================================
 - Version 0.3.3 - 31.07.2015
 =============================================================================
 Commits on Jul 30, 2015 

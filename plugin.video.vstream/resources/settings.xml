@@ -10,21 +10,19 @@
         <setting id="home-view" type="bool" label="Afficher l'Accueil par Catégories" default="true"/>
         <setting id="param_timeout" label="30027" type="number" default="1000"/>
         <setting id="history-view" type="bool" label="Activer l'historique de recherche" default="true"/>
+		
+        <setting label="Changelog" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/about.py, changelog)"/>  
 
-        <setting label="Changelog" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/about.py, changelog)"/>
-        
-		<setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/clear.py, addon)"/>	
-		<setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/clear.py, xbmc)"/>
     </category>
 
     <category label="30022">-->
 		<setting label="30022" type="lsep"/>
 		<setting id="plugin_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="true"/>
-		<setting id="plugin_archive_org" type="bool" label="Archive.org (Films)" default="true"/>
 		<setting id="plugin_buzzmonclick_com" type="bool" label="Buzzmonclick (Replay TV, Documentaires)" default="true"/>
 		<setting id="plugin_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="true"/>
 		<setting id="plugin_dpstreaming_org" type="bool" label="Dpstreaming (Films, Séries)" default="true"/>
 		<setting id="plugin_enquetedereportages_com" type="bool" label="Enquete de Reportages (Replay TV)" default="true"/>
+		<setting id="plugin_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="true"/>
 		<setting id="plugin_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="false"/>
 		<setting id="plugin_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="true"/>
 		<setting id="plugin_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="true"/>
@@ -32,6 +30,7 @@
 		<setting id="plugin_full_streamvk_com" type="bool" label="Full Streamvk.com (Films)" default="false"/>
 		<setting id="plugin_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="true"/>
 		<setting id="plugin_lestream_net" type="bool" label="leStream.net (Films)" default="true"/>
+		<setting id="plugin_libre_stream_org" type="bool" label="Libre-stream.org (Films, séries)" default="true"/>
 		<setting id="plugin_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="true"/>
 		<setting id="plugin_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="true"/>
 		<setting id="plugin_poypi_com" type="bool" label="Poypi.com (Films)" default="true"/>
@@ -63,6 +62,7 @@
 		<setting id="search1_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="false"/>
 		<setting id="search1_dpstreaming_org" type="bool" label="Dpstreaming (Films, Séries)" default="true"/>
 		<setting id="search1_enquetedereportages_com" type="bool" label="Enquete de Reportages (Replay TV)" default="false"/>
+		<setting id="search1_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="true"/>
 		<setting id="search1_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="false"/>
 		<setting id="search1_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="true"/>
 		<setting id="search1_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="true"/>
@@ -70,6 +70,7 @@
 		<setting id="search1_full_streamvk_com" type="bool" label="Full Streamvk.com (Films)" default="false"/>
 		<setting id="search1_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="true"/>
 		<setting id="search1_lestream_net" type="bool" label="leStream.net (Films)" default="false"/>
+		<setting id="search1_libre_stream_org" type="bool" label="Libre-stream.org (Films, séries)" default="true"/>		
 		<setting id="search1_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="false"/>
 		<setting id="search1_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="false"/>
 		<setting id="search1_poypi_com" type="bool" label="Poypi.com (Films)" default="true"/>
@@ -97,6 +98,7 @@
 		<setting id="search2_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="false"/>
 		<setting id="search2_dpstreaming_org" type="bool" label="Dpstreaming (Films, Séries)" default="true"/>
 		<setting id="search2_enquetedereportages_com" type="bool" label="Enquete de Reportages (Replay TV)" default="false"/>
+		<setting id="search2_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="false"/>
 		<setting id="search2_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="false"/>
 		<setting id="search2_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="false"/>
 		<setting id="search2_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="true"/>
@@ -104,6 +106,7 @@
 		<setting id="search2_full_streamvk_com" type="bool" label="Full Streamvk.com (Films)" default="false"/>
 		<setting id="search2_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="false"/>
 		<setting id="search2_lestream_net" type="bool" label="leStream.net (Films)" default="false"/>
+		<setting id="search2_libre_stream_org" type="bool" label="Libre-stream.org (Films, séries)" default="true"/>
 		<setting id="search2_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="false"/>
 		<setting id="search2_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="false"/>
 		<setting id="search2_poypi_com" type="bool" label="Poypi.com (Films)" default="false"/>
@@ -132,6 +135,7 @@
 		<setting id="search3_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="false"/>
 		<setting id="search3_dpstreaming_org" type="bool" label="Dpstreaming (Films, Séries)" default="false"/>
 		<setting id="search3_enquetedereportages_com" type="bool" label="Enquete de Reportages (Replay TV)" default="false"/>
+		<setting id="search3_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="false"/>
 		<setting id="search3_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="false"/>
 		<setting id="search3_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="false"/>
 		<setting id="search3_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="false"/>
@@ -139,6 +143,7 @@
 		<setting id="search3_full_streamvk_com" type="bool" label="Full Streamvk.com (Films)" default="false"/>
 		<setting id="search3_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="false"/>
 		<setting id="search3_lestream_net" type="bool" label="leStream.net (Films)" default="false"/>
+		<setting id="search3_libre_stream_org" type="bool" label="Libre-stream.org (Films, séries)" default="false"/>
 		<setting id="search3_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="true"/>
 		<setting id="search3_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="false"/>
 		<setting id="search3_poypi_com" type="bool" label="Poypi.com (Films)" default="false"/>
@@ -167,6 +172,7 @@
 		<setting id="search4_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="true"/>
 		<setting id="search4_dpstreaming_org" type="bool" label="Dpstreaming (Films, Séries)" default="false"/>
 		<setting id="search4_enquetedereportages_com" type="bool" label="Enquete de Reportages (Replay TV)" default="false"/>
+		<setting id="search4_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="false"/>
 		<setting id="search4_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="false"/>
 		<setting id="search4_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="false"/>
 		<setting id="search4_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="false"/>
@@ -174,6 +180,7 @@
 		<setting id="search4_full_streamvk_com" type="bool" label="Full Streamvk.com (Films)" default="false"/>
 		<setting id="search4_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="false"/>
 		<setting id="search4_lestream_net" type="bool" label="leStream.net (Films)" default="false"/>
+		<setting id="search4_libre_stream_org" type="bool" label="Libre-stream.org (Films, séries)" default="false"/>
 		<setting id="search4_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="false"/>
 		<setting id="search4_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="true"/>
 		<setting id="search4_poypi_com" type="bool" label="Poypi.com (Films)" default="false"/>
@@ -223,6 +230,14 @@
         <setting id="color_videos" type="select" label="Couleur Vidéos" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
 
     </category>
+	
+	<category label="30127">
+        <setting label="30127" type="lsep"/>
+		<setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/clear.py, addon)"/>	
+		<setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/clear.py, xbmc)"/>
+		<setting label="30125" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/about.py, update)"/>
+		
+    </category> 
 
     <!--<category label="30026">
         <setting label="30026" type="lsep"/>

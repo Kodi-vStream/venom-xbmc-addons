@@ -32,7 +32,7 @@ FUNCTION_SEARCH = 'resultSearch'
    
 def load():
     oGui = cGui()
-   
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
@@ -263,6 +263,7 @@ def showHosters():
         oHoster = cHosterGui().checkHoster(sHosterUrl)
        
         if (oHoster != False):
+            sHosterUrl = sHosterUrl + '|Referer='+ sUrl
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(SITE_IDENTIFIER)
             oGuiElement.setTitle(sMovieTitle)

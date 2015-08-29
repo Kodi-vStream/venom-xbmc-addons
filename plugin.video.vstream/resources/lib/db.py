@@ -138,9 +138,12 @@ class cDb:
 
         title = self.str_conv(meta['title'])
         siteurl = urllib.quote_plus(meta['siteurl'])        
-        
+        sIcon = self.str_conv(meta['icon'])
+
         ex = "INSERT INTO favorite (title, siteurl, site, fav, cat, icon, fanart) VALUES (?, ?, ?, ?, ?, ?, ?)"
-        self.dbcur.execute(ex, (title,siteurl, meta['site'],meta['fav'],meta['cat'],meta['icon'],meta['fanart']))
+        self.dbcur.execute(ex, (title,siteurl, meta['site'],meta['fav'],meta['cat'],sIcon,meta['fanart']))
+        
+        
 
         try:
             self.db.commit() 
@@ -205,6 +208,7 @@ class cDb:
             self.dbcur.execute(sql_select)
             #matchedrow = self.dbcur.fetchone()
             matchedrow = self.dbcur.fetchall()
+            #cConfig().log(matchedrow)
             return matchedrow        
         except Exception, e:
             cConfig().log('SQL ERROR EXECUTE') 
@@ -274,6 +278,21 @@ class cDb:
             cConfig().log('SQL ERROR EXECUTE') 
             return False, False
         self.dbcur.close() 
+        
+    def del_resume(self, meta):
+        site = urllib.quote_plus(meta['site'])
+
+        sql_select = "DELETE FROM resume WHERE hoster = '%s'" % (site)
+
+        try:    
+            self.dbcur.execute(sql_select)
+            self.db.commit()
+            #cConfig().showInfo('vStream', 'Resume supprimer')
+            return False, False
+        except Exception, e:
+            cConfig().log('SQL ERROR EXECUTE') 
+            return False, False
+        self.dbcur.close()
 
     def getFav(self):
         oGui = cGui()

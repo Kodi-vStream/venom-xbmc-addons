@@ -87,6 +87,11 @@ class cHome:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir(SITE_IDENTIFIER, 'showSources', cConfig().getlanguage(30116), 'host.png', oOutputParameterHandler)
+        
+        if (cConfig().getSetting('home_update') == 'true'):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+            oGui.addDir('cGui', 'openSettings', '[COLOR green]Mise a jour disponible[/COLOR]', 'buzz.png', oOutputParameterHandler)
 
 
         

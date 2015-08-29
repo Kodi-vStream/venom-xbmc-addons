@@ -43,6 +43,9 @@ class cConfig():
 
     def getPluginId(self):
         return 'plugin.video.vstream'
+        
+    def getAddonId(self):
+        return self.__oId
     
     def getSettingCache(self):
         return self.__oCache
@@ -124,6 +127,16 @@ class cConfig():
 
         return False
 
+    def createDialogOK(self, label):
+        oDialog = xbmcgui.Dialog()
+        oDialog.ok('vStream', label)  
+        return oDialog
+        
+    def createDialogYesNo(self, label):
+        oDialog = xbmcgui.Dialog()
+        qst = oDialog.yesno("vStream", label)
+        return qst
+        
     def createDialog(self, sSite):
         oDialog = xbmcgui.DialogProgress()
         oDialog.create(sSite)  

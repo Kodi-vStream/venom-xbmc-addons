@@ -100,7 +100,7 @@ class cGui():
         
         self.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
         
-        self.addFolder(oGuiElement, oOutputParameterHandler)     
+        self.addFolder(oGuiElement, oOutputParameterHandler, False)     
     
     
     def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler = ''):
@@ -228,7 +228,7 @@ class cGui():
        
         sPluginHandle = cPluginHandler().getPluginHandle();
 
-        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=isFolder)        
+        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=isFolder)      
         
 
     def createListItem(self, oGuiElement):        
@@ -237,9 +237,10 @@ class cGui():
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
         oListItem.setThumbnailImage(oGuiElement.getThumbnail())
         
-        #oListItem.setProperty("Fanart_Image", oGuiElement.getFanart())
-        #oListItem.setProperty("IsPlayable", "true")
-        #oListItem.setProperty("Video", "true")
+        #modif le 26/08
+        oListItem.setProperty("IsPlayable", "true")
+        oListItem.setProperty("Video", "true")
+        #
 
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey in aProperties.keys():
@@ -515,6 +516,7 @@ class cGui():
         row = cDb().get_watched(meta)
         if row:
             cDb().del_watched(meta)
+            cDb().del_resume(meta)
         else:
             cDb().insert_watched(meta)
         xbmc.executebuiltin( 'Container.Refresh' )

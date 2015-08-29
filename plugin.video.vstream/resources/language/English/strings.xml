@@ -80,4 +80,9 @@
 		<string id="30121">Tvshow</string>
 		<string id="30122">Animes</string>
 		
+				<!--version 3.0.4 -->
+		<string id="30125">Research Update (source only)</string>
+		<string id="30126">Beta Tester (not recommended)</string>
+		<string id="30127">Tool</string>
+		
 </strings>

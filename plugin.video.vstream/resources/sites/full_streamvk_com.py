@@ -92,7 +92,7 @@ def showGenre():
 def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
-        #on redecode la recherhce codé il y a meme pas une seconde par l'addon
+        #on redecode la recherhce code il y a meme pas une seconde par l'addon
         sSearch = urllib2.unquote(sSearch)
        
         query_args = { 'do' : 'search' , 'subaction' : 'search' , 'story' : str(sSearch) , 'x' : '0', 'y' : '0'}
@@ -136,7 +136,7 @@ def showMovies(sSearch=''):
             #sUrl = URL_MAIN+str(aEntry[1])
            
             sThumbnail = str(aEntry[0])
-            if not 'full-streamvk' in sThumbnail:
+            if not sThumbnail.startswith('http'):
                   sThumbnail = 'http://www.full-streamvk.com' + sThumbnail
             #print sThumbnail
  
@@ -163,8 +163,9 @@ def showMovies(sSearch=''):
         oGui.setEndOfDirectory() 
                 
 def __checkForNextPage(sHtmlContent):
-    sPattern = 'href="([^<>]+?)">([Suivant >>])<\/a>'
-    sPattern = '<a class="btn btn-default" href="(.+?)">[Suivant >>]<\/a>'
+    #sPattern = 'href="([^<>]+?)">([Suivant >>])<\/a>'
+    #sPattern = '<a class="btn btn-default" href="(.+?)">[Suivant >>]<\/a>'
+    sPattern = '<div class="nextprev">.+?<a href="([^<>]+?)"><span class="pnext">Suivant<\/span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
  

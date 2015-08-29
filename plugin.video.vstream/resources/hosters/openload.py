@@ -64,12 +64,19 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        sPattern = 'urce type="video[^"<>]+?" src="(.+?)">'
-        
         oParser = cParser()
+        sPattern = 'urce type="video[^"<>]+?" src="([^<>"]+?)">'
         aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        #1 er essais
         if (aResult[0] == True):
             api_call = aResult[1][0]
+        else:
+            #second essais
+            sPattern = 'script>\$\("video source"\)\.attr\("src", "(.+?)"\);'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                api_call = aResult[1][0]
         
         #print api_call
         

@@ -2,6 +2,40 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
+import urllib, urllib2, re
+
+#pris a urlresolver
+class Base36:
+    def __init__(self,ls=False):
+        self.ls = False
+        if ls :
+            self.ls = ls
+    
+    def base36encode(self,number, alphabet='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'):
+        """Converts an integer to a base36 string."""
+        if not isinstance(number, (int, long)):
+            raise TypeError('number must be an integer')
+        base36 = ''
+        sign = ''
+        if number < 0:
+            sign = '-'
+            number = -number
+        if 0 <= number < len(alphabet):
+            return sign + alphabet[number]
+        while number != 0:
+            number, i = divmod(number, len(alphabet))
+            base36 = alphabet[i] + base36
+        return sign + base36
+     
+    def base36decode(self,number):
+        return int(number, 36)
+    
+    def param36decode(self,match_object) :
+        if self.ls :
+            param = int(match_object.group(0), 36)
+            return str(self.ls[param])
+        else :
+            return False
 
 class cHoster(iHoster):
 
@@ -64,6 +98,10 @@ class cHoster(iHoster):
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
+        
+    #fonction speciale pour decrytptage venant de urlresolver
+    def exec_javascript(self,lsParam) :
+        return re.sub('[a-zA-Z0-9]+',Base36(lsParam[3]).param36decode,str(lsParam[0]))
 
     def __getMediaLinkForGuest(self): 
         
@@ -75,16 +113,43 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        
-        sPattern = 'mp4/video/([^<]+)/([^<]+)/([^<]+)/setup';
-        
         oParser = cParser()
-        sHtmlContent=sHtmlContent.replace('|','/')
+        
+        #1 er test en cas de fausse page
+        sPattern ='<iframe[^<>]+? src="(.+?)" [^<>]+?> <\/iframe>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-
         if (aResult[0] == True):
-            api_call = ('http://%s.youwatch.org:%s/%s/video.mp4') % (aResult[1][0][2], aResult[1][0][1], aResult[1][0][0])
-            return True, api_call
+            
+            UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
+            headers = {'User-Agent': UA ,
+            #'Host' : 'i93.whies.info',
+            'Referer': aResult[1][0]}
+            #'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            #'Content-Type': 'text/html; charset=utf-8'}
+            
+            req = urllib2.Request(aResult[1][0],None,headers)
+            try:
+                response = urllib2.urlopen(req)
+            except urllib2.URLError, e:
+                print e.read()
+                print e.reason
+            
+            sHtmlContent = response.read()
+            response.close()
+              
+        #2 eme test, le vrai
+        html = sHtmlContent.decode('utf-8')
+        jscript = re.findall("""function\(p,a,c,k,e,d\).*return p\}(.*)\)""", html)
+
+        if (jscript):
+            lsParam = eval(jscript[0].encode('utf-8'))
+            flashvars = self.exec_javascript(lsParam)
+            r = re.findall('file:"(.*)",provider', flashvars)
+            if r:
+                return True, r[0]
+            else:
+                cGui().showInfo(self.__sDisplayName, 'File not found or removed' , 5)
+
         else:
             cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
             return False, False

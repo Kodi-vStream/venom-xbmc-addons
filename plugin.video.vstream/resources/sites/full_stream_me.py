@@ -82,13 +82,6 @@ def load():
             
     oGui.setEndOfDirectory()
 
-def DecoTitle(string):
-    #pr les tag
-    string = re.sub('(.*)([\[\(].{1,7}[\)\]])','\\1[COLOR coral]\\2[/COLOR]', str(string))
-    #pr les saisons
-    string = re.sub('(?i)(.*)(saison [0-9]+)','\\1[COLOR coral]\\2[/COLOR]', str(string))
-    return string
- 
 def showSearch():
     oGui = cGui()
 
@@ -209,7 +202,7 @@ def showMovies(sSearch = ''):
                 sTitle = sTitle + ' (' + aEntry[3] + ')'
             sTitle = sTitle.replace('Haute-qualité','HQ')
                 
-            sDisplayTitle = DecoTitle(sTitle)
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
             
             # if not 'http' in sThumb:
                 # sThumb = URL_MAIN + sThumb
@@ -221,12 +214,14 @@ def showMovies(sSearch = ''):
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sMovieTitle', sDisplayTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+            
+            print sUrl
 
-            if '/seriestv/' in aEntry[1]  or 'saison' in aEntry[1]:
+            if '/seriestv/' in sUrl or 'saison' in aEntry[1]:
                 oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb,sCom, oOutputParameterHandler)
-            elif '/mangas/' in aEntry[1]:
+            elif '/mangas/' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, sCom, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sCom, oOutputParameterHandler)
@@ -308,11 +303,12 @@ def serieHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-
-    sPattern = '<a href="([^<]+)" title="([^<]+)" target="seriePlayer".+?>'
+    sHtmlContent = oRequestHandler.request()
     
     oParser = cParser()
+
+    #1 er mode de presentation
+    sPattern = '<a href="([^<]+)" title="([^<]+)" target="seriePlayer".+?>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -325,15 +321,78 @@ def serieHosters():
 
             sHosterUrl = str(aEntry[0])
             oHoster = cHosterGui().checkHoster(sHosterUrl)
+            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
         
             if (oHoster != False):
                 sTitle = aEntry[1]
-                oHoster.setDisplayName(sTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
-        cConfig().finishDialog(dialog)    
+        cConfig().finishDialog(dialog)
+    #dexieme mode    
+    else:
+        sEpisode = oInputParameterHandler.getValue('sEpisode')
+        
+        if not sEpisode:
 
+            sPattern = '<div id="episode([0-9]+)" class="fullsfeature">'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+
+            if (aResult[0] == True):
+                total = len(aResult[1])
+                dialog = cConfig().createDialog(SITE_NAME)
+                for aEntry in aResult[1]:
+                    cConfig().updateDialog(dialog, total)
+                    if dialog.iscanceled():
+                        break
+                        
+                    sTitle = sMovieTitle + ' Episode ' + str(aEntry[0])
+                    sDisplayTitle = cUtil().DecoTitle(sTitle)
+
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('sEpisode', str(aEntry[0]))
+                    oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                    oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+                    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                    
+                    oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumbnail,'', oOutputParameterHandler)
+
+                cConfig().finishDialog(dialog)
+        else:
+
+            sPattern = '<div id="episode' + str(sEpisode) + '".+?<ul class="btnss">(.+?)<\/ul>'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+
+            if (aResult[0] == True):
+                sPattern = '<div id="episode' + str(sEpisode) + '".+?<ul class="btnss">(.+?)<\/ul>'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                if (aResult[0] == True):
+                    chain = aResult[1][0]
+                    
+                    sPattern = '<li><a href="(.+?)" target="seriePlayer" class="fsctab">'
+                    aResult = oParser.parse(chain, sPattern)
+                    
+                    total = len(aResult[1])
+                    dialog = cConfig().createDialog(SITE_NAME)
+                    for aEntry in aResult[1]:
+                        cConfig().updateDialog(dialog, total)
+                        if dialog.iscanceled():
+                            break
+                            
+                        sHosterUrl = str(aEntry)
+                        oHoster = cHosterGui().checkHoster(sHosterUrl)
+                        sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                    
+                        if (oHoster != False):
+                            sTitle = aEntry[1]
+                            oHoster.setDisplayName(sDisplayTitle)
+                            oHoster.setFileName(sMovieTitle)
+                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+
+                    cConfig().finishDialog(dialog)
+
+    #fin des modes        
     oGui.setEndOfDirectory()
     
     

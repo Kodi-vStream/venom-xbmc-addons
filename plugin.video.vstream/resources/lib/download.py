@@ -64,6 +64,7 @@ class cDownload:
         chunk = 16 * 1024
         #f = open(fpath, "w")
         f = xbmcvfs.File(fpath, 'w')
+
         iCount = 0        
         while 1:
             iCount = iCount +1

@@ -1,11 +1,13 @@
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
 from resources.lib.db import cDb
 
 
-import xbmc
+import xbmc, xbmcgui, xbmcplugin, sys
+import xbmcaddon,xbmcvfs
 import time
 
 class cPlayer(xbmc.Player):
@@ -37,6 +39,21 @@ class cPlayer(xbmc.Player):
     def __addItemToPlaylist(self, oGuiElement, oListItem):    
         oPlaylist = self.__getPlayList()	
         oPlaylist.add(oGuiElement.getMediaUrl(), oListItem )
+        
+    def run(self, oGuiElement, sTitle, sUrl):
+        sPluginHandle = cPluginHandler().getPluginHandle();
+        meta = oGuiElement.getInfoLabel()
+        #meta = {'label': sTitle, 'title': sTitle}
+        item = xbmcgui.ListItem(path=sUrl, iconImage="DefaultVideo.png")
+        item.setInfo( type="Video", infoLabels= meta )
+        xbmcplugin.setResolvedUrl(sPluginHandle, True, item)
+        
+        while not xbmc.abortRequested:
+            try: 
+               self.currentTime = self.getTime()
+               self.totalTime = self.getTotalTime()
+            except: break
+            xbmc.sleep(1000)
 
     def startPlayer(self):
         sPlayerType = self.__getPlayerType()
@@ -44,20 +61,12 @@ class cPlayer(xbmc.Player):
         oPlayList = self.__getPlayList()
         xbmcPlayer.play(oPlayList)
         timer = int(cConfig().getSetting('param_timeout'))
-        xbmc.sleep(timer)
-        # try:
-            
-            # if xbmcPlayer.getPlayingFile(): 
-                # cConfig().log("Start Player " + xbmcPlayer.getPlayingFile())
-                
-        # except:
-            # cConfig().showInfo('vStream', 'Start Player Impossible')
-            # cConfig().log("Start Player Impossible")
+        xbmc.sleep(timer)            
 
         while not xbmc.abortRequested:
             try: 
-                self.currentTime = self.getTime()
-                self.totalTime = self.getTotalTime()
+               self.currentTime = self.getTime()
+               self.totalTime = self.getTotalTime()
             except: break
             xbmc.sleep(1000)
 
@@ -99,8 +108,14 @@ class cPlayer(xbmc.Player):
         try:
             data = cDb().get_resume(meta)
             if not data == '':
-                seekTime = float(data[0][3])
-                self.seekTime(seekTime)
+                time = float(data[0][3]) / 60
+                label = '%s %.2f minutes' % ('reprendre:', time)     
+                oDialog = cConfig().createDialogYesNo(label)
+                if (oDialog == 1):
+                    seekTime = float(data[0][3])
+                    self.seekTime(seekTime)
+                else: 
+                    pass
         except:
             pass
                 

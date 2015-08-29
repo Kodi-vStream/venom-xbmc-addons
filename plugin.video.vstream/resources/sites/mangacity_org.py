@@ -344,7 +344,9 @@ def showEpisode():
         
             sTitle = unescape(aEntry[2])
             sTitle = DecoTitle(sTitle)
-            sUrl2 = URL_MAIN + str(unescape(aEntry[1]))
+            sUrl2 = str(unescape(aEntry[1]))
+            if URL_MAIN not in sUrl2:
+                sUrl2 = URL_MAIN + sUrl2
             
             if aEntry[0]:
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -382,7 +384,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    print aResult
+    #print aResult
     
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -407,7 +409,7 @@ def showHosters():
                 if not (sHosterUrl[:4] == 'http'):
                     final = ''
                     
-                    sPattern = '[src|SRC]=(?:\'|")(http:.+?)(?:\'|")'
+                    sPattern = '[src|SRC]=(?:\'|")(https*:.+?)(?:\'|")'
                     aResult = re.findall(sPattern,sHosterUrl)
                     if aResult:
                         final = aResult[0]
@@ -438,6 +440,8 @@ def showHosters():
             
             #oHoster = __checkHoster(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
+            
+            print sHosterUrl
             
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)

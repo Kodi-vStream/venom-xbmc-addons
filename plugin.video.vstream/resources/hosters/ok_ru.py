@@ -2,8 +2,10 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import re,urllib2
+import re,urllib2, urllib
 import xbmcgui
+import time
+import random
 
 class cHoster(iHoster):
 
@@ -69,11 +71,27 @@ class cHoster(iHoster):
         sHost = v[0]
         web_url = 'http://' + sHost + '/dk?cmd=videoPlayerMetadata&mid=' + sId
         
+        #bidouille en plus
+        #a = int(time.time())
+        #b = random.random()
+        #web_url = web_url + '&rnd=' + str(a) + str(b)
+        
         #print web_url
         
-        oRequest = cRequestHandler(web_url)
-        sHtmlContent = oRequest.request()
+        HEADERS = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        }
+
         
+        #oRequest = cRequestHandler(web_url)
+        #sHtmlContent = oRequest.request()
+
+        req = urllib2.Request(web_url, headers=HEADERS)
+        response = urllib2.urlopen(req)
+        sHtmlContent = response.read()
+        response.close()
+            
         sHtmlContent = sHtmlContent.decode('unicode-escape')
         sHtmlContent = sHtmlContent.encode("utf-8")
         
@@ -103,9 +121,17 @@ class cHoster(iHoster):
                 if (ret > -1):
                     api_call = url[ret]
                     
+        
+        #time.sleep( 5 )        
+        
         #print api_call
-
+        
         if (api_call):
-            return True, api_call
+            api_call = '%s|User-Agent=%s&Accept=%s' % (api_call, HEADERS['User-Agent'], HEADERS['Accept'])
+            return True,api_call
             
         return False, False
+
+        
+#http://www.tubeoffline.com/download-Odnoklassniki-videos.php#.Vc4giJf-QZQ
+

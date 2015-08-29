@@ -1,5 +1,10 @@
 #-*- coding: utf-8 -*-
 #Venom.
+
+#Cloudflare protection
+#https://raw.githubusercontent.com/daniel-lundin/dreamfilm-xbmc/master/cloudflare.py
+#https://gist.github.com/Rainbowed/8917670
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -10,7 +15,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.config import cConfig
-import re, urllib
+import re, urllib, urllib2
 
 SITE_IDENTIFIER = 'tv_streaming_ch'
 SITE_NAME = 'Tv-streaming.ch'
@@ -154,9 +159,27 @@ def showMovies(sSearch = ''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
    
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    #sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
+    #print sUrl
+     
+    #oRequestHandler = cRequestHandler(sUrl)
+    #sHtmlContent = oRequestHandler.request()
+
+    headers = {'User-Agent' : 'Mozilla 5.10'}
+    request = urllib2.Request(sUrl,None,headers)
+      
+    try: 
+        reponse = urllib2.urlopen(request)
+    except urllib2.HTTPError, e:
+        print e.read()
+        print e.reason
+      
+    sHtmlContent = reponse.read()
+    reponse.close()
+    
+    #fh = open('c:\\test.txt', "w")
+    ##fh.write(sHtmlContent)
+    #fh.close()
+    
     sPattern = '<div.*?class="moviefilm"><a.*?href="([^<]+)">.+?<img.*?src="([^<]+)" alt="(.+?)".+?>'
     
     oParser = cParser()
@@ -200,10 +223,18 @@ def showSeries():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    sUrl = sUrl+'/100/'
+    if sUrl.endswith('/'):
+        sUrl = sUrl+'100/'
+    else:
+        sUrl = sUrl+'/100/'
+        
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
     #sHtmlContent = sHtmlContent.replace('<strong>Téléchargement VOSTFR','').replace('<strong>Téléchargement VF','').replace('<strong>Téléchargement','')
+ 
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
  
     sPattern = '<a *href="([^<]+)"><span>.+?<font class="">(.+?)<\/font><\/font>'
 
@@ -234,7 +265,7 @@ def showSeries():
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class="nextpostslink" rel="next" href="(http:\/\/tv-streaming\.ch.+?)">»<\/a>'
+    sPattern = '<a class="nextpostslink" rel="next" href="(http:\/\/tv-streaming\.ch.+?)">(?:»|&raquo;)<\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):

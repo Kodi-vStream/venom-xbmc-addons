@@ -23,29 +23,14 @@ SITE_IDENTIFIER = 'poypi_com'
 SITE_NAME = 'Poypi.com'
 SITE_DESC = 'Film en streaming'
  
-#pour tous
 ACCEUILPATTERN  = ''#non utilisé
-FILMPATTERN = '<div class="article-content"><p style="text-align: center;"><img src="(.+?)" border.+?histoire.+?center;">(.+?)<\/p>'
-#pour Poypi
+FILMPATTERN = '<div class="article-content"><p style="text-align: center;"><img src="(.+?)" border.+?<p style="text-align: left;">([^<>]+?)<\/p>'
 URL_MAIN = 'http://www.poypi.com/rgc/'
 SEARCHPATTERN = '<fieldset><div><a href="\/rgc\/(.+?)">(.+?)<\/a><\/div><\/fieldset>'
-NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/rgc\/(.+?)">(.+?)<\/a><\/span>'
+NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/rgc\/(.+?)">(.+?)<(?:font|\/a)'
 NEXTPAGEPATTERN = '<span class="pagenav">[0-9]+<.span><.li><li><a title=".+?" href="\/rgc\/(.+?)" class="pagenav">'
 FRAMEPATTERN = '<object tabindex="0" name="mediaplayer".+?proxy\.link=(.+?)&autostart='
-# #pour zopap
-# URL_MAIN = 'http://www.zopap.com/paq/'
-# SEARCHPATTERN = '<fieldset><div><a href="\/paq\/(.+?)">(.+?)<\/a><\/div><\/fieldset>'
-# NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/rgc\/(.+?)">(.+?)(?:<font color="#6da9c9"><i>.+?</i></font>|)<\/a><\/span>'
-# NEXTPAGEPATTERN = '<span class="pagenav">[0-9]+<.span><.li><li><a title=".+?" href="\/paq\/(.+?)" class="pagenav">'
-# FRAMEPATTERN = '<iframe src="\/paq\/(.+?)" width='
-# #pour zaloux
-# URL_MAIN = 'http://www.zaloux.com/glpl/'
-# SEARCHPATTERN = '<fieldset><div><a href="\/glpl\/(.+?)">(.+?)<\/a><\/div><\/fieldset>'
-# NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/glpl\/(.+?)">(.+?)<\/a><\/span>'
-# NEXTPAGEPATTERN = '<span class="pagenav">[0-9]+<.span><.li><li><a title=".+?" href="\/glpl\/(.+?)" class="pagenav">'  
-# FRAMEPATTERN = '<iframe src="\/glpl\/(.+?)" width='
- 
- 
+
 #pour l'addon
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
@@ -176,6 +161,8 @@ def showMovies(sSearch = ''):
             #not found better way
             #sTitle = unicode(sTitle, errors='replace')
             #sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
+            
+            #sTitle2 = cUtil().DecoTitle(sTitle2)
            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN) + str(sUrl2))

@@ -97,23 +97,44 @@ def showGenre():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-   
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
  
-    sPattern = '<li><atitle=".+?" href="([^<]+)">(.+?)</a> <spanclass="mctagmap_count">(.+?)</span>'
-    
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-
-            sTitle = aEntry[1]+' - '+aEntry[2]
-            
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-           
+    liste = []
+    liste.append( ['Action','http://frenchstream.org/genre/action'] )
+    liste.append( ['Animation','http://frenchstream.org/genre/animation'] )
+    liste.append( ['Aventure','http://frenchstream.org/genre/aventure'] )
+    liste.append( ['Biographie','http://frenchstream.org/genre/biographie'] )
+    liste.append( ['Biopic','http://frenchstream.org/genre/biopic'] )
+    liste.append( ['Comédie','http://frenchstream.org/genre/comedie'] )
+    liste.append( ['Comédie Dramatique','http://frenchstream.org/genre/comedie-dramatique'] )
+    liste.append( ['Comédie Musicale','http://frenchstream.org/genre/comedie-musicale'] )
+    liste.append( ['Crime','http://frenchstream.org/genre/crime'] )
+    liste.append( ['Documentaire','http://frenchstream.org/genre/documentaire'] )
+    liste.append( ['Drame','http://frenchstream.org/genre/drame'] )
+    liste.append( ['Epouvante Horreur','http://frenchstream.org/genre/epouvante-horreur'] )
+    liste.append( ['Espionage','http://frenchstream.org/genre/espionnage'] )  
+    liste.append( ['Famille','http://frenchstream.org/genre/famille'] )
+    liste.append( ['Fantastique','http://frenchstream.org/genre/fantastique'] )
+    liste.append( ['Guerre','http://frenchstream.org/genre/guerre'] )
+    liste.append( ['Histoire','http://frenchstream.org/genre/histoire'] )
+    liste.append( ['Horreur','http://frenchstream.org/genre/horreur'] )
+    liste.append( ['Judiciaire','http://frenchstream.org/genre/judiciaire'] )
+    liste.append( ['Médical','http://frenchstream.org/genre/medical'] )
+    liste.append( ['Musical','http://frenchstream.org/genre/musical'] )
+    liste.append( ['Mystère','http://frenchstream.org/genre/mystere'] )
+    liste.append( ['Policier','http://frenchstream.org/genre/policier'] )
+    liste.append( ['Romance','http://frenchstream.org/genre/romance'] )
+    liste.append( ['Sciense Fiction','http://frenchstream.org/genre/science-fiction'] )
+    liste.append( ['Sport Event','http://frenchstream.org/genre/sport-event'] )
+    liste.append( ['Thriller','http://frenchstream.org/genre/thriller'] )
+    liste.append( ['Thriller Psychologique','http://frenchstream.org/genre/thriller-psychologique'] ) 
+    liste.append( ['Western','http://frenchstream.org/genre/western'] )
+               
+    for sTitle,sUrl in liste:
+       
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+       
     oGui.setEndOfDirectory()
         
 def showPys():

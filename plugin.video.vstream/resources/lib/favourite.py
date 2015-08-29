@@ -3,6 +3,7 @@
 from resources.lib.config import cConfig
 from resources.lib.db import cDb
 from resources.lib.gui.gui import cGui
+from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
@@ -114,7 +115,24 @@ class cFav:
                     oOutputParameterHandler.addParameter('sMediaUrl', siteurl)
 
                 if (cat == sCat):
-                    oGui.addFav(site, function, title, "mark.png", thumbnail, fanart, oOutputParameterHandler)
+                    oGuiElement = cGuiElement()
+        
+                    oGuiElement.setSiteName(site)
+                    oGuiElement.setFunction(function)
+                    oGuiElement.setTitle(title)
+                    oGuiElement.setIcon("mark.png")
+                    oGuiElement.setMeta(0)
+                    oGuiElement.setThumbnail(thumbnail)
+                    oGuiElement.setFanart(fanart)
+                    
+                    oGui.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
+                    
+                    if (function == 'play'):
+                        oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
+                    else:
+                        oGui.addFolder(oGuiElement, oOutputParameterHandler)
+                        
+                    #oGui.addFav(site, function, title, "mark.png", thumbnail, fanart, oOutputParameterHandler)
                
             
             oGui.setEndOfDirectory()
@@ -134,7 +152,6 @@ class cFav:
         meta['title'] = xbmc.getInfoLabel('ListItem.title')
         meta['icon'] = xbmc.getInfoLabel('ListItem.Art(thumb)')
         meta['fanart'] =  xbmc.getInfoLabel('ListItem.Art(fanart)')
-
         try:
             cDb().insert_favorite(meta)
         except:

@@ -5,6 +5,8 @@ from resources.hosters.hoster import iHoster
 import re,urllib2
 import xbmcgui
 
+#meme code que vodlocker
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -61,7 +63,7 @@ class cHoster(iHoster):
         urlhash = re.search('([a-zA-Z0-9]+)(?:-+[0-9]+[xX]+[0-9]+)', media_id)
         if urlhash:
             media_id = urlhash.group(1)
-        return 'http://flashx.tv/embed-%s.html' % media_id
+        return 'http://www.flashx.tv/player-%s.html' % media_id
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
@@ -69,22 +71,35 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
 
         sId = self.__getIdFromUrl(self.__sUrl)
-        web_url = self.__getUrl(sId)
+        #web_url = self.__getUrl(sId)
         
-        #headers = {'Referer': web_url}
-        headers = {'Host' : 'flashx.tv'}
+        web_url = 'http://www.flashx.tv/player-%s.html' % sId
+
+        headers = {
+        'Host' : 'www.flashx.tv',
+        'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
+        'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+        'Referer':'http://embed.flashx.tv/embed.php?c=b03lgzlufx06&w=710&h=360',
+        }
+        
         smil = ''
         api_call = ''
-        
+
         request = urllib2.Request(web_url,None,headers)
       
-        try: 
+        try:
             reponse = urllib2.urlopen(request)
         except URLError, e:
             print e.read()
             print e.reason
-      
+            
+
         html = reponse.read()
+          
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(html)
+        #fh.close()
         
         swfurl = 'http://static.flashx.tv/player6/jwplayer.flash.swf'
         r = re.search('"(http://.+?\.smil)"', html)

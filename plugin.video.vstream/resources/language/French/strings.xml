@@ -62,7 +62,12 @@
 		<string id="30120">Films</string>
 		<string id="30121">Séries</string>
 		<string id="30122">Animés</string>
-		
+		<!--version 3.0.4 -->
+		<string id="30125">Recherche mise à jour (Sources Uniquement)</string>
+		<string id="30126">Bêta testeur (Non recommandé)</string>
+		<string id="30127">Outil</string>
+		<string id="30128">Clear Cache Addon</string>
+		<string id="30129">Clear Cache Addon</string>
 
 </strings>
 

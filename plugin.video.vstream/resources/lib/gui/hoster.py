@@ -83,9 +83,9 @@ class cHosterGui:
         
 
         #bug
-        #oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
+        oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
          
-        oGui.addFolder(oGuiElement, oOutputParameterHandler)
+        #oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     def checkHoster(self, sHosterUrl):
 
@@ -189,6 +189,16 @@ class cHosterGui:
             return cHosterHandler().getHoster('openload')
         if ('vid.me' in sHosterUrl):
             return cHosterHandler().getHoster('vidme')
+        if ('zstream' in sHosterUrl):
+            return cHosterHandler().getHoster('zstream')
+        if ('watching' in sHosterUrl):
+            return cHosterHandler().getHoster('watching')
+        if ('letwatch' in sHosterUrl):
+            return cHosterHandler().getHoster('letwatch')
+        if ('easyvid' in sHosterUrl):
+            return cHosterHandler().getHoster('easyvid')
+        if ('allvid' in sHosterUrl):
+            return cHosterHandler().getHoster('allvid')     
 
         #Si aucun hebergeur connu on teste les liens directs
         if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8'):
@@ -309,20 +319,25 @@ class cHosterGui:
             aLink = oHoster.getMediaLink()
 
             if (aLink[0] == True):
-
                 oGuiElement = cGuiElement()
                 oGuiElement.setSiteName(self.SITE_NAME)
                 oGuiElement.setMediaUrl(aLink[1])
                 oGuiElement.setTitle(oHoster.getFileName())
-                #oGuiElement.setThumbnail(sThumbnail)
                 oGuiElement.getInfoLabel()
-                #oGuiElement.setThumbnail(xbmc.getInfoLabel('ListItem.Art(thumb)'))
+                
                 oPlayer = cPlayer()
-                oPlayer.clearPlayList()
-                oPlayer.addItemToPlaylist(oGuiElement)
-                oPlayer.startPlayer()
-                #oPlayer.clearPlayList()
-                #xbmc.Player().play(aLink[1], oGuiElement)
+                oPlayer.run(oGuiElement, oHoster.getFileName(), aLink[1])
+                
+                # oGuiElement = cGuiElement()
+                # oGuiElement.setSiteName(self.SITE_NAME)
+                # oGuiElement.setMediaUrl(aLink[1])
+                # oGuiElement.setTitle(oHoster.getFileName())
+                # oGuiElement.getInfoLabel()
+                
+                # oPlayer = cPlayer()
+                # oPlayer.clearPlayList()
+                # oPlayer.addItemToPlaylist(oGuiElement)
+                # oPlayer.startPlayer()
                 return
             else:
                 cConfig().showInfo(sHosterName, 'Fichier introuvable')

@@ -239,7 +239,8 @@ class cGuiElement:
         
     def getInfoLabel(self):
         meta = {
-        'title': xbmc.getInfoLabel('ListItem.title'), 
+        'title': xbmc.getInfoLabel('ListItem.title'),
+        'label': xbmc.getInfoLabel('ListItem.title'),         
         'originaltitle': xbmc.getInfoLabel('ListItem.originaltitle'), 
         'year': xbmc.getInfoLabel('ListItem.year'), 
         'genre': xbmc.getInfoLabel('ListItem.genre'), 

@@ -158,14 +158,17 @@ def showLibretv():
         oOutputParameterHandler.addParameter('sThumbnail', 'none')
         
         #garbage
-        if 'http://touski' in track.path or '1.2.3.4' in track.path or '0.0.0.0' in track.path:
+        if 'http://touski' in track.path or re.search('[0-9]\.[0-9]\.[0-9].[0-9]', track.path):
             oGui.addText(SITE_IDENTIFIER, sTitle, oOutputParameterHandler)
         #real stream
         elif 'rtmp' in track.path or 'm3u8' in track.path:
             oGui.addDirectTV(SITE_IDENTIFIER, 'play', sTitle, sthumb, sthumb, oOutputParameterHandler)
         #folder
-        else : 
-            oGui.addDirectTV(SITE_IDENTIFIER, 'showLibretv', sTitle, sthumb, sthumb, oOutputParameterHandler)    
+        elif '.m3u' in track.path : 
+            oGui.addDirectTV(SITE_IDENTIFIER, 'showLibretv', sTitle, sthumb, sthumb, oOutputParameterHandler)  
+        #unknow link, loaded as normal stream
+        else:
+            oGui.addDirectTV(SITE_IDENTIFIER, 'play', sTitle, sthumb, sthumb, oOutputParameterHandler)
   
     oGui.setEndOfDirectory()
 
