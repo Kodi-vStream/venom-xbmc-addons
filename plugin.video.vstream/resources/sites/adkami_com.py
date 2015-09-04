@@ -278,6 +278,20 @@ def showEpisode():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     
+    sThumb = ''
+    sComm = '' 
+    
+    #info anime
+    try:
+        oParser = cParser()
+        sPattern = '<img src="([^<]+)" alt="[^<]+" id="image_manga".+?/>.+?<th.+?><p>(.+?)</p></th>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            sThumb = aResult[1][0][0]
+            sComm = aResult[1][0][1]
+    except:
+        pass
+    
     oParser = cParser()
     sPattern = 'line-height:200px;font-size:26px;text-align:center;">L.anime est licencié<.p>'
     
@@ -317,7 +331,7 @@ def showEpisode():
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
                     oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                    oGui.addTV(SITE_IDENTIFIER, 'showHosters', sMovieTitle+' - '+aEntry[2], 'films.png','', '', oOutputParameterHandler)
+                    oGui.addTV(SITE_IDENTIFIER, 'showHosters', sMovieTitle+' - '+aEntry[2], 'films.png',sThumb, sComm, oOutputParameterHandler)
            
         
             cConfig().finishDialog(dialog)
