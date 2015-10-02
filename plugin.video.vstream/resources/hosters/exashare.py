@@ -46,11 +46,10 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
         
-        sPattern =  'http://(?:www.|embed.|)exashare.(?:com)/(?:video/|embed\-)?([0-9a-z]+)'
-         
-        oParser = cParser()
-        aResult = oParser.parse(sUrl, sPattern)
-        self.__sUrl = 'http://exashare.com/embed-'+str(aResult[1][0])+'.html'
+        #sPattern =  'http://(?:www.|embed.|)exashare.(?:com)/(?:video/|embed\-)?([0-9a-z]+)'
+        #oParser = cParser()
+        #aResult = oParser.parse(sUrl, sPattern)
+        #self.__sUrl = 'http://exashare.com/embed-'+str(aResult[1][0])+'.html'
 
 
     def checkUrl(self, sUrl):
@@ -68,17 +67,32 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        aHeader = oRequest.getResponseHeader();
-        sReponseCookie = aHeader.getheader("Set-Cookie")
+        aHeader = oRequest.getResponseHeader()
+        #sReponseCookie = aHeader.getheader("Set-Cookie")
      
-        sPattern = 'file: "([^"]+)"';
-        
         oParser = cParser()
+     
+        sPattern = 'file: "([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-
+        
+        if not (aResult[0] == True):
+            sPattern = '<iframe[^<>]+?src="(.+?)"[^<>]+?><\/iframe>'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            
+            if (aResult[0] == True):
+                url = aResult[1][0]
+                
+                oRequest = cRequestHandler(url)
+                oRequest.addHeaderEntry('Referer',url)
+                #oRequest.addHeaderEntry('Host','dowed.info')
+                sHtmlContent = oRequest.request()
+                
+                sPattern = 'file: "([^"]+)"'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                
         if (aResult[0] == True):
             api_call = aResult[1][0]
-            return True, api_call          
+            return True, api_call       
             
         return False, False
         

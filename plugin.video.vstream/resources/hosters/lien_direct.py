@@ -72,8 +72,10 @@ class cHoster(iHoster):
         #Special pour mangacity
         if 'pixsil' in api_call:
             api_call = api_call + '|Referer=http://www.mangacity.org/jwplayer/player.swf'
-        
-        #print api_call
+            
+        #Special pour hd-stream.ws
+        if 'hd-stream.ws' in api_call:            
+            api_call = api_call + '|Referer=http://www.hd-stream.ws/blabla.php'
 
         if (api_call):
             return True, api_call

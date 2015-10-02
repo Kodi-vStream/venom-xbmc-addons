@@ -30,6 +30,8 @@ SEARCHPATTERN = '<fieldset><div><a href="\/rgc\/(.+?)">(.+?)<\/a><\/div><\/field
 NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/rgc\/(.+?)">(.+?)<(?:font|\/a)'
 NEXTPAGEPATTERN = '<span class="pagenav">[0-9]+<.span><.li><li><a title=".+?" href="\/rgc\/(.+?)" class="pagenav">'
 FRAMEPATTERN = '<object tabindex="0" name="mediaplayer".+?proxy\.link=(.+?)&autostart='
+#FRAMEPATTERN2 = '<iframe width="100%" height="350" src="(.+?)" frameborder="0" scrolling="no" allowfullscreen><\/iframe>'
+FRAMEPATTERN2 = '>(?:([^<>]+?)<\/a><\/h2>)*<iframe[^<>]+?src="(.+?)"[^<>]+?><\/iframe>'
 
 #pour l'addon
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -216,6 +218,10 @@ def showHosters():
    
     sPattern = FRAMEPATTERN
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    if not (aResult[0] == True):
+        sPattern = FRAMEPATTERN2
+        aResult = oParser.parse(sHtmlContent, sPattern)
             
     #print aResult
  
@@ -227,9 +233,14 @@ def showHosters():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-           
-            sLink = aEntry
+
             Squality = '???'
+            if len(aEntry[1]) < 2:
+                sLink = aEntry
+            else:
+                sLink = aEntry[1]
+                if aEntry[0]:
+                    Squality = aEntry[0]
            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sLink)
@@ -246,24 +257,33 @@ def showHostersLink():
     oGui = cGui()
    
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrllink = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     
+    sUrl = ''
+    
     #Decodage du lien
-    if 'poy*' in sUrl:
-        EncodedLink = sUrl.replace('poy*','')
+    if 'poy*' in sUrllink:
+        EncodedLink = sUrllink.replace('poy*','')
         Key = "ZgJ4yYMx4aiH2Nh8fpHh"
         x = GKDecrypter(192,128)
         sUrl = x.decrypt(EncodedLink, Key, "ECB").split('\0')[0]
+    else:
+        #recuperation urls
+        oRequestHandler = cRequestHandler(sUrllink)
+        sHtmlContent = oRequestHandler.request()
    
-    #recuperation urls
-    #oRequestHandler = cRequestHandler(sUrl)
-    #sHtmlContent = oRequestHandler.request()
-   
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-   
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+
+        oParser = cParser()
+        sPattern = 'proxy.link=(.+?)&'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        if (aResult[0] == True):
+            sUrl = aResult[1][0]
+
     #url = re.findall('<iframe src="(.+?)"', sHtmlContent)
 
     if (sUrl):

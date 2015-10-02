@@ -1,73 +1,85 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-        <!-- general begin by 30000 - 30050 -->
-        <string id="30000">Logging</string>
-        <string id="30001">Videoplayer</string>
-        <string id="30500">Séléctionner</string>
-        <string id="30501">Nom</string>
+    <!-- general begin by 30000 - 30050 -->
+    <string id="30000">Logging</string>
+    <string id="30001">Videoplayer</string>
+    <string id="30500">Séléctionner</string>
+    <string id="30501">Nom</string>
 
-        <!-- settingtabs begin by 30021 - 30030 -->
-        <string id="30021">Général</string>
-        <string id="30022">Plugins on/off</string>
-        <string id="30023">Plugins Préférences</string>
-        <string id="30024">Hote</string>
-        <string id="30025">Accueil</string>
-        <string id="30026">IPTV et GuideTV</string>
-        <string id="30027">Délai d'attente du lecteur (ms)</string>
-        <string id="30028">Paramètre à modifier dans l'addon PVR</string>
+    <!-- settingtabs begin by 30021 - 30030 -->
+    <string id="30021">Général</string>
+    <string id="30022">Plugins on/off</string>
+    <string id="30023">Plugins Préférences</string>
+    <string id="30024">Hote</string>
+    <string id="30025">Accueil</string>
+    <string id="30026">IPTV et GuideTV</string>
+    <string id="30027">Délai d'attente du lecteur (ms)</string>
+    <string id="30028">Paramètre à modifier dans l'addon PVR</string>
 
-        <string id="30076">Recherche</string>
-        <string id="30077">Recherche 1</string>
-        <string id="30078">Recherche personnalisée 1</string>
-        <string id="30079">Recherche personnalisée 2</string>
-        <string id="30080">Recherche personnalisée 3</string>
-        <string id="30081">Recherche personnalisée 4</string>
-		<string id="30088">Recherche visuelle</string>
-		<string id="30089">Recherche 2</string>
-		<string id="30090">Recherche 3</string>
-		<string id="30091">Recherche 4</string>
+    <string id="30076">Recherche</string>
+    <string id="30077">Recherche 1</string>
+    <string id="30078">Recherche personnalisée 1</string>
+    <string id="30079">Recherche personnalisée 2</string>
+    <string id="30080">Recherche personnalisée 3</string>
+    <string id="30081">Recherche personnalisée 4</string>
+    <string id="30088">Recherche visuelle</string>
+    <string id="30089">Recherche 2</string>
+    <string id="30090">Recherche 3</string>
+    <string id="30091">Recherche 4</string>
 
 
-        <!-- Pluginnames begin by 30201 - 30299 -->
-        <string id="30201">Ajouter à la playlist</string>
-        <string id="30202">Télécharger</string>
-        <string id="30203">Marque-Source</string>
-        <string id="30204">Aucune information</string>
-		<string id="30205">Connection Impossible</string>
-		<string id="30206">Marque-Film</string>
-		<string id="30207">Marque-Série</string>
-		<string id="30208">Marque-Diver</string>
-		<string id="30209">Supprimer Marque-page</string>
-		<string id="30210">Voir Marque-page</string>
-		
-        <!-- catégorie -->
-        <string id="30101">Films nouveautés</string>
-        <string id="30102">Films Les plus Vues</string>
-        <string id="30103">Films Les plus Commentés</string>
-        <string id="30104">Films Les mieux Notés</string>
-        <string id="30105">Films Genres</string>
-        <string id="30106">Séries Nouveautés</string>
-        <string id="30107">Séries VF</string>
-        <string id="30108">Séries VOSTFR</string>
-        <string id="30109">Animés nouveautés</string>
-        <string id="30110">Animés VF</string>
-        <string id="30111">Animé VOSTFR</string>
-        <string id="30112">Documentaire</string>
-		<string id="30113">Sport</string>
-		<string id="30114">Vidéo du net</string>
-		<string id="30115">Télévision</string>
-		<string id="30116">Toutes les sources</string>
-		<string id="30117">Télévision Replay</string>
-		<!--version 3.0.2 -->
-		<string id="30120">Films</string>
-		<string id="30121">Séries</string>
-		<string id="30122">Animés</string>
-		<!--version 3.0.4 -->
-		<string id="30125">Recherche mise à jour (Sources Uniquement)</string>
-		<string id="30126">Bêta testeur (Non recommandé)</string>
-		<string id="30127">Outil</string>
-		<string id="30128">Clear Cache Addon</string>
-		<string id="30129">Clear Cache Addon</string>
+    <!-- Pluginnames begin by 30201 - 30299 -->
+    <string id="30201">Ajouter à la playlist</string>
+    <string id="30202">Télécharger</string>
+    <string id="30203">Marque-Source</string>
+    <string id="30204">Aucune information</string>
+    <string id="30205">Connection Impossible</string>
+    <string id="30206">Marque-Film</string>
+    <string id="30207">Marque-Série</string>
+    <string id="30208">Marque-Diver</string>
+    <string id="30209">Supprimer Marque-page</string>
+    <string id="30210">Voir Marque-page</string>
+    
+    <!-- catégorie -->
+    <string id="30101">Films Nouveautés</string>
+    <string id="30102">Films Les plus Vues</string>
+    <string id="30103">Films Les plus Commentés</string>
+    <string id="30104">Films Les mieux Notés</string>
+    <string id="30105">Films Genres</string>
+    <string id="30106">Séries Nouveautés</string>
+    <string id="30107">Séries VF</string>
+    <string id="30108">Séries VOSTFR</string>
+    <string id="30109">Animés Nouveautés</string>
+    <string id="30110">Animés VF</string>
+    <string id="30111">Animé VOSTFR</string>
+    <string id="30112">Documentaire</string>
+    <string id="30113">Sport</string>
+    <string id="30114">Vidéo du net</string>
+    <string id="30115">Télévision</string>
+    <string id="30116">Toutes les sources</string>
+    <string id="30117">Télévision Replay</string>
+    <!--version 3.0.2 -->
+    <string id="30120">Films</string>
+    <string id="30121">Séries</string>
+    <string id="30122">Animés</string>
+    <!--version 3.0.4 -->
+    <string id="30125">Recherche mise à jour (Sources Uniquement)</string>
+    <string id="30126">Bêta testeur (Non recommandé)</string>
+    <string id="30127">Outil</string>
+    <string id="30128">Clear Cache Addon</string>
+    <string id="30129">Clear Cache Addon</string>
+    <!--version 3.0.5 -->
+    <string id="30130">Listes</string>
+    <string id="30131">Animés Genres</string>
+    <string id="30132">Séries Genres</string>    
+    <string id="30133">Télévision Replay Nouveautés</string>
+    <string id="30134">Films VF</string>    
+    <string id="30135">Films VOSTFR</string>
+    <string id="30136">Télévision Replay Genre</string>
+	<string id="30137">Télévision Replay Sources</string>
+	<string id="30138">Films Sources</string>
+	<string id="30139">Séries Sources</string>
+	<string id="30140">Animés Sources</string>
 
 </strings>
 

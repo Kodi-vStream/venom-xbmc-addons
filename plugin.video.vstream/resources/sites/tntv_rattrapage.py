@@ -18,7 +18,7 @@ SITE_DESC = 'Replay TV'
 
 URL_MAIN = 'http://tntv-rattrapage.overblog.com'
 
-SERIE_SERIES = ('http://tntv-rattrapage.overblog.com/', 'showMovies')
+REPLAYTV_NEWS = ('http://tntv-rattrapage.overblog.com/', 'showMovies')
 
 REPLAYTV_REPLAYTV = ('xyz', 'showGenre')
 
@@ -34,8 +34,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Nouvelle Emission', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Nouvelle Emission', 'series.png', oOutputParameterHandler)
     
 
     oOutputParameterHandler = cOutputParameterHandler()

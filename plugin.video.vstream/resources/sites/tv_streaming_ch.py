@@ -23,12 +23,15 @@ SITE_DESC = 'Film/Serie/Documentaire/Anime en streaming'
 
 URL_MAIN = 'http://tv-streaming.ch'
 
+MOVIE_MOVIE = ('http://tv-streaming.ch/category/films/', 'showMovies')
 MOVIE_NEWS = ('http://tv-streaming.ch/category/films/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 
 SERIE_SERIES = ('http://tv-streaming.ch/category/series-tv/', 'showMovies')
+SERIE_NEWS = ('http://tv-streaming.ch/category/series-tv/', 'showMovies')
 SERIE_VFS = ('http://tv-streaming.ch/category/series-tv/serie-vf/', 'showMovies')
 SERIE_VOSTFRS = ('http://tv-streaming.ch/category/series-tv/serie-vostfr/', 'showMovies')
+
 
 ANIM_VFS = ('http://tv-streaming.ch/category/manga-vf/', 'showMovies')
 ANIM_VOSTFRS = ('http://tv-streaming.ch/category/manga-vf/manga-vostfr/', 'showMovies')
@@ -96,7 +99,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0]+sSearchText  
+        sUrl = URL_SEARCH[0] + urllib.quote(sSearchText)
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return  

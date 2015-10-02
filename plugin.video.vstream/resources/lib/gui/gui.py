@@ -37,8 +37,11 @@ class cGui():
             oGuiElement.setFileName(sTitle)
             
         self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+        self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
         self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
+        
         self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+        
 
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
@@ -102,7 +105,7 @@ class cGui():
         
         self.addFolder(oGuiElement, oOutputParameterHandler, False)     
     
-    
+        
     def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler = ''):
         
         oGuiElement = cGuiElement()
@@ -113,6 +116,10 @@ class cGui():
         oGuiElement.setMeta(0)
 
         oGuiElement.setDirFanart(sIcon)
+        
+        #oGuiElement.setFanart(self.sFanart)
+        
+        
             
         # if oOutputParameterHandler.getValue('sFanart'):
             # sFanart = oOutputParameterHandler.getValue('sFanart')
@@ -319,6 +326,20 @@ class cGui():
         oContext.setOutputParameterHandler(oOutputParameterHandler)
 
         oGuiElement.addContextItem(oContext)
+    
+    def createContexMenuSimil(self, oGuiElement, oOutputParameterHandler= ''):
+        oContext = cContextElement()
+        oContext.setFile('cGui')
+        oContext.setSiteName(oGuiElement.getSiteName())
+        oContext.setFunction('viewsimil')
+        oContext.setTitle('[COLOR azure]Recherche Similaire[/COLOR]')
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getFileName())
+      
+        oContext.setOutputParameterHandler(oOutputParameterHandler)
+
+        oGuiElement.addContextItem(oContext)
 
 
     def createContexMenuDelFav(self, oGuiElement, oOutputParameterHandler= ''):
@@ -458,6 +479,22 @@ class cGui():
         
         sTest = '%s?site=%s' % (sPluginPath, sId)
         xbmc.executebuiltin('XBMC.Container.Update(%s, replace)' % sTest )
+        
+    def viewsimil(self):
+        sPluginPath = cPluginHandler().getPluginPath();
+        oInputParameterHandler = cInputParameterHandler()        
+        sTitle = oInputParameterHandler.getValue('sTitle')
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('searchtext', sTitle)
+        oOutputParameterHandler.addParameter('disp', 'search1')
+        oOutputParameterHandler.addParameter('readdb', 'False')
+         
+        sParams = oOutputParameterHandler.getParameterAsUri()               
+        sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, 'cHome', 'searchMovie', sParams)
+        xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest )
+        return False
+        
      
     def selectpage(self):
         sPluginPath = cPluginHandler().getPluginPath();

@@ -17,7 +17,7 @@ SITE_NAME = 'Docspot.fr'
 SITE_DESC = 'docspot.fr + 3000 Documentaires et reportages en Streaming gratuit !'
 
 URL_MAIN = 'http://www.docspot.fr/'
-DOC_DOCS = ('http://www.docspot.fr/?cat=0', 'showMovies')
+DOC_DOCS = ('http://www.docspot.fr/?cat=0', 'showGenres')
 
 URL_SEARCH = ('http://www.docspot.fr/search/', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -56,30 +56,13 @@ def showGenres():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ["Arte","http://www.docspot.fr/search/documentaire+arte"] )
-    liste.append( ["National - Geographic","http://www.docspot.fr/search/documentaire+national+geographic"] )
-    liste.append( ["Archéologie","http://www.docspot.fr/search/documentaire+arch%C3%A9ologie"] )
-    liste.append( ["Astronomie","http://www.docspot.fr/search/documentaire+astronomie"] )
-    liste.append( ["Animaux","http://www.docspot.fr/search/reportage+animaux"] )
-    liste.append( ["Climat","http://www.docspot.fr/search/documentaire+climat"] )
-    liste.append( ["Découverte","http://www.docspot.fr/search/documentaire+d%C3%A9couverte"] )
-    liste.append( ["Démographie","http://www.docspot.fr/search/documentaire+d%C3%A9mographie"] )
-    liste.append( ["Economie","http://www.docspot.fr/search/documentaire+%C3%A9conomie"] )
-    liste.append( ["Education","http://www.docspot.fr/search/documentaire+education"] )
-    liste.append( ["Enquete","http://www.docspot.fr/search/reportage+enquete"] )
-    liste.append( ["Géopolitique","http://www.docspot.fr/search/documentaire+geopolitique"] )
-    liste.append( ["Guerre","http://www.docspot.fr/search/documentaire+guerre"] )
-    liste.append( ["Histoire","http://www.docspot.fr/search/documentaire+histoire"] )
-    liste.append( ["Paranormal","http://www.docspot.fr/search/documentaire+paranormal"] )
-    liste.append( ["Reportage","http://www.docspot.fr/search/reportage"] )
+    liste.append( ["Nouveaux-2015","http://www.docspot.fr/search/documentaire+2015"] )
+    liste.append( ["Documentaires","http://www.docspot.fr/"] )
+    liste.append( ["Météo de la semaine","http://www.docspot.fr/watch/W24bVp2dh74"] )
+    liste.append( ["Bandes annonces cinéma","http://www.docspot.fr/search/bande+annonce+vf"] )
+    liste.append( ["Revues de livres","http://www.docspot.fr/search/point+lecture"] )
     
-    liste.append( ["Santé","http://www.docspot.fr/search/documentaire+sant%C3%A9"] )
-    liste.append( ["Science","http://www.docspot.fr/search/documentaire+science"] )
-    liste.append( ["Technologie","http://www.docspot.fr/search/documentaire+technologie+science"] )
-    liste.append( ["Sport","http://www.docspot.fr/search/documentaire+sport"] )
-    liste.append( ["Societe","http://www.docspot.fr/search/documentaire+societe"] )
-    
-                
+	            
     for sTitle,sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()

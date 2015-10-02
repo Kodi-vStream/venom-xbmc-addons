@@ -19,6 +19,7 @@ SITE_DESC = 'Films HD en streaming' #description courte de votre source
 URL_MAIN = 'http://xn--official-film-illimit-v5b.fr/' # url de votre source
 
 MOVIE_NEWS = ('http://xn--official-film-illimit-v5b.fr/film-de-a-a-z/', 'showMovies')
+MOVIE_MOVIE = (True, 'showAlpha')
 MOVIE_GENRES = (True, 'showGenre')
 
 #SERIE_SERIES = ('http://official-film-illimité.fr/serie-tv/', 'showMovies')
@@ -31,6 +32,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films A-Z', 'news.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -86,6 +91,34 @@ def showGenre():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()
+    
+def showAlpha():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    
+    dialog = cConfig().createDialog(SITE_NAME)
+
+    for i in range(0,27) :
+        cConfig().updateDialog(dialog, 27)
+        if dialog.iscanceled():
+            break
+        
+        sTitle = chr(64+i)
+        sUrl = 'http://xn--official-film-illimit-v5b.fr/film-de-a-a-z/lettre-' + chr(96+i) + '/'
+        
+        if sTitle == '@':
+            sTitle= '[0-9]'
+            sUrl = 'http://xn--official-film-illimit-v5b.fr/film-de-a-a-z/0-9/'
+
+            
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oGui.addTV(SITE_IDENTIFIER, 'showMovies','[COLOR teal] Lettre [COLOR red]'+ sTitle +'[/COLOR][/COLOR]','', '', '', oOutputParameterHandler)
+        
+    cConfig().finishDialog(dialog)
+    
+    oGui.setEndOfDirectory()
  
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -94,10 +127,9 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
- 
     
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
     
 
     sPattern = '<div class="item"><a href="([^<]+)">.+?<img src="(.+?)" alt="(.+?)" />.+?<span class="calidad2">(.+?)</span>'

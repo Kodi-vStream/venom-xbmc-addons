@@ -23,16 +23,15 @@
 		<setting id="plugin_dpstreaming_org" type="bool" label="Dpstreaming (Films, Séries)" default="true"/>
 		<setting id="plugin_enquetedereportages_com" type="bool" label="Enquete de Reportages (Replay TV)" default="true"/>
 		<setting id="plugin_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="true"/>
-		<setting id="plugin_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="false"/>
+		<setting id="plugin_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="true"/>
 		<setting id="plugin_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="true"/>
 		<setting id="plugin_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="true"/>
 		<setting id="plugin_full_stream_me" type="bool" label="Full Stream (Films, Séries)" default="true"/>
-		<setting id="plugin_full_streamvk_com" type="bool" label="Full Streamvk.com (Films)" default="false"/>
+		<setting id="plugin_full_streamvk_com" type="bool" label="Full Streamvk.com (Films)" default="true"/>
 		<setting id="plugin_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="true"/>
 		<setting id="plugin_lestream_net" type="bool" label="leStream.net (Films)" default="true"/>
 		<setting id="plugin_libre_stream_org" type="bool" label="Libre-stream.org (Films, séries)" default="true"/>
 		<setting id="plugin_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="true"/>
-		<setting id="plugin_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="true"/>
 		<setting id="plugin_poypi_com" type="bool" label="Poypi.com (Films)" default="true"/>
 		<setting id="plugin_regarder_films" type="bool" label="Regarder.films (Séries)" default="true"/>
 		<setting id="plugin_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="true"/>
@@ -72,7 +71,6 @@
 		<setting id="search1_lestream_net" type="bool" label="leStream.net (Films)" default="false"/>
 		<setting id="search1_libre_stream_org" type="bool" label="Libre-stream.org (Films, séries)" default="true"/>		
 		<setting id="search1_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="false"/>
-		<setting id="search1_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="false"/>
 		<setting id="search1_poypi_com" type="bool" label="Poypi.com (Films)" default="true"/>
 		<setting id="search1_regarder_films" type="bool" label="Regarder.films (Séries)" default="false"/>
 		<setting id="search1_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="false"/>
@@ -108,7 +106,6 @@
 		<setting id="search2_lestream_net" type="bool" label="leStream.net (Films)" default="false"/>
 		<setting id="search2_libre_stream_org" type="bool" label="Libre-stream.org (Films, séries)" default="true"/>
 		<setting id="search2_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="false"/>
-		<setting id="search2_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="false"/>
 		<setting id="search2_poypi_com" type="bool" label="Poypi.com (Films)" default="false"/>
 		<setting id="search2_regarder_films" type="bool" label="Regarder.films (Séries)" default="false"/>
 		<setting id="search2_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="false"/>
@@ -145,7 +142,6 @@
 		<setting id="search3_lestream_net" type="bool" label="leStream.net (Films)" default="false"/>
 		<setting id="search3_libre_stream_org" type="bool" label="Libre-stream.org (Films, séries)" default="false"/>
 		<setting id="search3_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="true"/>
-		<setting id="search3_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="false"/>
 		<setting id="search3_poypi_com" type="bool" label="Poypi.com (Films)" default="false"/>
 		<setting id="search3_regarder_films" type="bool" label="Regarder.films (Séries)" default="false"/>
 		<setting id="search3_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="false"/>
@@ -182,7 +178,6 @@
 		<setting id="search4_lestream_net" type="bool" label="leStream.net (Films)" default="false"/>
 		<setting id="search4_libre_stream_org" type="bool" label="Libre-stream.org (Films, séries)" default="false"/>
 		<setting id="search4_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="false"/>
-		<setting id="search4_notre_ecole_net" type="bool" label="Notre Ecole (Documentaires)" default="true"/>
 		<setting id="search4_poypi_com" type="bool" label="Poypi.com (Films)" default="false"/>
 		<setting id="search4_regarder_films" type="bool" label="Regarder.films (Séries)" default="false"/>
 		<setting id="search4_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="true"/>
@@ -201,33 +196,52 @@
     <category label="30025">-->
         <setting label="30025" type="lsep"/>
         <setting id="home_cherches" type="bool" label="Recherches" default="true"/>
-        <setting id="color_cherches" type="select" label="Couleur Recherche" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+        <setting id="color_cherches" type="select" label="Recherches: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+		<setting label="Recherches: Image" type="image" id="images_cherches" default="special://home/addons/plugin.video.vstream/resources/art/search_fanart.jpg"/>
 		
 		<setting id="home_cherchev" type="bool" label="Recherches Visuelles" default="true"/>
+		<setting id="color_cherchev" type="select" label="Recherches Visuelles: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+		<setting label="Recherches visuelles: Image" type="image" id="images_cherchev" default="special://home/addons/plugin.video.vstream/resources/art/vsearch_fanart.jpg"/>
         
-        <setting id="home_tvs" type="bool" label="Télévision" default="true"/>
-        <setting id="color_tvs" type="select" label="Couleur Télévision" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+        <setting id="home_tvs" type="bool" label="Télévisions" default="true"/>
+        <setting id="color_tvs" type="select" label="Télévisions: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+		<setting label="Télévisions: Image" type="image" id="images_tvs" default="special://home/addons/plugin.video.vstream/resources/art/tv_fanart.jpg"/>
 		
-		<setting id="home_replaytvs" type="bool" label="Télévision Replay" default="true"/>
-        <setting id="color_replaytvs" type="select" label="Couleur Télévision Replay" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+		<setting id="home_replaytvs" type="bool" label="Télévisions Replays" default="true"/>
+        <setting id="color_replaytvs" type="select" label="Télévisions Replays: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+		<setting label="Télévisions Replays: Image" type="image" id="images_replaytvs" default="special://home/addons/plugin.video.vstream/resources/art/replay_fanart.jpg"/>
 
         <setting id="home_films" type="bool" label="Films" default="true"/>
-        <setting id="color_films" type="select" label="Couleur Films" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+        <setting id="color_films" type="select" label="Films: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+		<setting label="Films: Image" type="image" id="images_films" default="special://home/addons/plugin.video.vstream/resources/art/films_fanart.jpg"/>
 
         <setting id="home_series" type="bool" label="Séries" default="true"/>
-        <setting id="color_series" type="select" label="Couleur Séries" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+        <setting id="color_series" type="select" label="Séries: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+		<setting label="Séries: Image" type="image" id="images_series" default="special://home/addons/plugin.video.vstream/resources/art/series_fanart.jpg"/>
 
         <setting id="home_anims" type="bool" label="Animes" default="true"/>
-        <setting id="color_anims" type="select" label="Couleur Animes" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+        <setting id="color_anims" type="select" label="Animes: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+		<setting label="Animes: Image" type="image" id="images_anims" default="special://home/addons/plugin.video.vstream/resources/art/animes_fanart.jpg"/>
 
         <setting id="home_docs" type="bool" label="Documentaires" default="true"/>
-        <setting id="color_docs" type="select" label="Couleur Documentaires" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+        <setting id="color_docs" type="select" label="Documentaires: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+		<setting label="Documentaires: Images" type="image" id="images_docs" default="special://home/addons/plugin.video.vstream/resources/art/doc_fanart.jpg"/>
 
         <setting id="home_sports" type="bool" label="Sports" default="true"/>
-        <setting id="color_sports" type="select" label="Couleur Sports" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+        <setting id="color_sports" type="select" label="Sports: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+		<setting label="Sports: Image" type="image" id="images_sports" default="special://home/addons/plugin.video.vstream/resources/art/sport_fanart.jpg"/>
 
         <setting id="home_videos" type="bool" label="Vidéos" default="true"/>
-        <setting id="color_videos" type="select" label="Couleur Vidéos" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+        <setting id="color_videos" type="select" label="Vidéos: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+		<setting label="Vidéos: Image" type="image" id="images_videos" default="special://home/addons/plugin.video.vstream/resources/art/buzz_fanart.jpg"/>
+		
+		<setting visible="false" label="Images Fav" type="image" id="images_marks" default="special://home/addons/plugin.video.vstream/resources/art/mark_fanart.jpg"/>
+		
+		<setting visible="false" label="Images sources" type="image" id="images_hosts" default="special://home/addons/plugin.video.vstream/resources/art/host_fanart.jpg"/>
+		
+		<setting visible="false" label="Images update" type="image" id="images_updates" default="special://home/addons/plugin.video.vstream/resources/art/update_fanart.jpg"/>
+		
+		
 
     </category>
 	

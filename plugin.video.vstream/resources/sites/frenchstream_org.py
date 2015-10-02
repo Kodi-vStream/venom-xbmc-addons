@@ -18,12 +18,15 @@ SITE_DESC = 'Film en streaming, regarder film en direct, streaming vf regarder f
 
 URL_MAIN = 'http://frenchstream.org/'
 
+MOVIE_MOVIE = ('http://frenchstream.org/films/', 'showMovies')
 MOVIE_NEWS = ('http://frenchstream.org/films/', 'showMovies')
 MOVIE_VIEWS = ('http://frenchstream.org/les-plus-vues/', 'showMovies')
 MOVIE_COMMENTS = ('http://frenchstream.org/les-plus-commentes/', 'showMovies')
 MOVIE_NOTES = ('http://frenchstream.org/les-mieux-notes/', 'showMovies')
 MOVIE_GENRES = ('http://frenchstream.org/films-par-genre/', 'showGenre')
+
 SERIE_SERIES = ('http://frenchstream.org/tv-series/', 'showMovies')
+SERIE_NEWS = ('http://frenchstream.org/tv-series/', 'showMovies')
 
 URL_SEARCH = ('http://frenchstream.org/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'

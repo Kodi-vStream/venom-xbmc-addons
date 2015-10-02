@@ -54,11 +54,11 @@ class cFav:
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '1')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Films', 'search.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Films', 'mark.png', oOutputParameterHandler)
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '2')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Séries', 'tv.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Séries', 'mark.png', oOutputParameterHandler)
 
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('sCat', '3')
@@ -66,15 +66,15 @@ class cFav:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '4')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Sources', 'views.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Sources', 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '5')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Divers', 'views.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Divers', 'mark.png', oOutputParameterHandler)
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '6')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'TV', 'views.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'TV', 'mark.png', oOutputParameterHandler)
         
         oGui.setEndOfDirectory()
 

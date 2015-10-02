@@ -18,6 +18,7 @@ SITE_DESC = 'Films complets en streaming et en Français sur Fullmoviz. Liste de
 
 URL_MAIN = 'http://www.fullmoviz.org/'
 
+MOVIE_MOVIE = ('http://www.fullmoviz.org/?p=movies&orderby=name', 'showMovies')
 MOVIE_NEWS = ('http://www.fullmoviz.org/?p=movies&orderby=date', 'showMovies')
 MOVIE_COMMENTS = ('http://www.fullmoviz.org/?p=movies&orderby=comment_count', 'showMovies')
 MOVIE_GENRES = ('http://www.fullmoviz.org/', 'showGenre')

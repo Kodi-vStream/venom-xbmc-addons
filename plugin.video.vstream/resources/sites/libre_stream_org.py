@@ -24,9 +24,6 @@ MOVIE_GENRES = (True, 'showGenre')
 SERIE_VFS = ('http://libre-stream.org/series/version-francaise', 'showMovies')
 SERIE_VOSTFRS = ('http://libre-stream.org/series/vostfr', 'showMovies')
 
-#ANIM_VFS = ('http://vk-filmz-streamiz.com/mangas/mangas-vf/', 'showMovies')
-#ANIM_VOSTFRS = ('http://vk-filmz-streamiz.com/mangas/mangas-vostfr/', 'showMovies')
-
 URL_SEARCH = ('http://libre-stream.org/?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
@@ -56,16 +53,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series VOSTFR', 'series.png', oOutputParameterHandler)
-    
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
-    #oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés VF', 'animes.png', oOutputParameterHandler)
-
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Animes VOSTFR', 'animes.png', oOutputParameterHandler)
-    
-            
+             
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -176,10 +164,8 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
 
-            if '/series/' in sUrl or '/series/' in aEntry[1]:
+            if '/series/' in sUrl or '-saison-' in aEntry[2]:
                 oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle,'', aEntry[0], '', oOutputParameterHandler)
-            elif '/mangas/' in sUrl or '/mangas/' in aEntry[1]:
-                oGui.addTV(SITE_IDENTIFIER, 'mangasHosters', sTitle,'', aEntry[0], '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], '', oOutputParameterHandler)
            
@@ -246,42 +232,6 @@ def showHosters():
     oGui.setEndOfDirectory()
     
 def seriesHosters():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-               
-    oParser = cParser()          
-    sPattern = '<div class="e-number">.+?<iframe src="(.+?)".+?class="episode-id">(.+?)<'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-            
-            sTitle = sMovieTitle + ' ' + str(aEntry[1])
-            sTitle = cUtil().DecoTitle(sTitle)
-            
-            sHosterUrl = str(aEntry[0])
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
-    
-        cConfig().finishDialog(dialog)
-                
-    oGui.setEndOfDirectory()
-
-def mangasHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')

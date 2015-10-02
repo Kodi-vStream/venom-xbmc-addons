@@ -18,6 +18,7 @@ SITE_DESC = 'Film en streaming, regarder film en direct, streaming vf regarder f
 
 URL_MAIN = 'http://streamingfilms.fr/'
 
+MOVIE_MOVIE = ('http://streamingfilms.fr/', 'showMovies')
 MOVIE_NEWS = ('http://streamingfilms.fr/', 'showMovies')
 MOVIE_VIEWS = ('http://streamingfilms.fr/plus-vus/', 'showMovies')
 MOVIE_COMMENTS = ('http://streamingfilms.fr/les-plus-commentes/', 'showMovies')

@@ -2,7 +2,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import xbmcgui
+import xbmcgui, urllib2 , re
 
 class cHoster(iHoster):
 
@@ -97,61 +97,91 @@ class cHoster(iHoster):
         url=[]
         qua=[]
         
-        oRequest = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequest.request()
+        #oRequest = cRequestHandler(self.__sUrl)
+        #sHtmlContent = oRequest.request()
+        
+        request = urllib2.Request(self.__sUrl)
+        request.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:22.0) Gecko/20100101 Firefox/22.0')
+        request.add_header('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        request.add_header('Cookie', "ff=off") #supprime le filtre parental
+          
+        try: 
+            reponse = urllib2.urlopen(request)
+        except urllib2.HTTPError, e:
+            print e.read()
+            print e.reason
+            
+        sHtmlContent = reponse.read()
+        reponse.close()
+
+        sHtmlContent=sHtmlContent.replace("\/","\\")
+        
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+        
+        #print self.__sUrl
+        
+        oParser = cParser()
         
         sPattern =  '"live_rtsp_url":"(.+?)"'    
-        oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             url.append(aResult[1][0])
             qua.append('live')
 
-
         sPattern =  '"stream_h264_hd1080_url":"(.+?)"'    
-        oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             url.append(aResult[1][0])
             qua.append('1080p')
 
         sPattern =  '"stream_h264_hd_url":"(.+?)"'    
-        oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             url.append(aResult[1][0])
             qua.append('720p')
-
-        
+   
         sPattern =  '"stream_h264_hq_url":"(.+?)"'         
-        oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             url.append(aResult[1][0])
             qua.append('high')
-
-                
+               
         sPattern =  '"stream_h264_url":"(.+?)"'           
-        oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             url.append(aResult[1][0])
             qua.append('low')
 
         sPattern =  '"stream_h264_ld_url":"(.+?)"'           
-        oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             url.append(aResult[1][0])
             qua.append('low 2')
 
-        #print aResult
+        aResult = re.findall(r'{"type":"application\\x-mpegURL","url":"(.+?)"}', sHtmlContent)
+        if (aResult):
+            url.append(aResult[0])
+            qua.append('Live')
+
+        #pattern plus generaliste
+        aResult = re.findall(r'"([0-9]+)":\[{"type":"video\\mp4","url":"(.+?)"}]', sHtmlContent)
+        if (aResult):
+            for aEntry in aResult:
+                url.append(aEntry[1])
+                qua.append(str(aEntry[0]) + 'p')
+
+ 
         if (url):
             cConfig().showInfo(self.__sDisplayName, 'Streaming')
              
             dialog2 = xbmcgui.Dialog()
             ret = dialog2.select('Select Quality',qua)
-            return True, url[ret]
+            if (ret > -1):
+                return True, url[ret]
+            else:
+                return False, False
         else:
             cConfig().showInfo(self.__sDisplayName, 'Fichier introuvable')
             return False, False

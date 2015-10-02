@@ -12,7 +12,7 @@
 
 """Unpacker for Dean Edward's p.a.c.k.e.r"""
 
-import re
+import re,urllib2
 import string
 
 PRIORITY = 1
@@ -43,19 +43,51 @@ class cPacker():
         source = re.sub(r'\b\w+\b', lookup, payload)
         return self._replacestrings(source)
 
-    def _filterargs(self, source):
-        """Juice from a source file the four args needed by decoder."""
-        juicers = [ (r"}\('(.*)', *(\d+), *(\d+), *'(.*)'\.split\('\|'\), *(\d+), *(.*)\)\)"),
-                    (r"}\('(.*)', *(\d+), *(\d+), *'(.*)'\.split\('\|'\)"),
-                  ]
-        for juicer in juicers:
-            args = re.search(juicer, source, re.DOTALL)
+    def _cleanstr(self, str):
+        str = str.strip()
+        if str.find("function") == 0:
+            pattern = (r"=\"([^\"]+).*}\s*\((\d+)\)")
+            args = re.search(pattern, str, re.DOTALL)
             if args:
                 a = args.groups()
-                try:
-                    return a[0], a[3].split('|'), int(a[1]), int(a[2])
-                except ValueError:
-                    raise self.UnpackingError('Corrupted p.a.c.k.e.r. data.')
+                def openload_re(match):
+                    c = match.group(0)
+                    b = ord(c) + int(a[1])
+                    return chr(ord(c) if (90 if c <= "Z" else 122) >= b else b - 26)
+
+                str = re.sub(r"[a-zA-Z]", openload_re, a[0]);
+                str = urllib2.unquote(str)
+
+        elif str.find("decodeURIComponent") == 0:
+            str = re.sub(r"(^decodeURIComponent\s*\(\s*('|\"))|(('|\")\s*\)$)", "", str);
+            str = urllib2.unquote(str)
+        elif str.find("\"") == 0:
+            str = re.sub(r"(^\")|(\"$)|(\".*?\")", "", str);
+        elif str.find("'") == 0:
+            str = re.sub(r"(^')|('$)|('.*?')", "", str);
+
+        return str
+
+    def _filterargs(self, source):
+        """Juice from a source file the four args needed by decoder."""
+
+        juicer = (r"}\s*\(\s*(.*?)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\((.*?)\).split\((.*?)\)")
+        args = re.search(juicer, source, re.DOTALL)
+        if args:
+            a = args.groups()
+            try:
+                return self._cleanstr(a[0]), self._cleanstr(a[3]).split(self._cleanstr(a[4])), int(a[1]), int(a[2])
+            except ValueError:
+                raise self.UnpackingError('Corrupted p.a.c.k.e.r. data.')
+
+        juicer = (r"}\('(.*)', *(\d+), *(\d+), *'(.*)'\.split\('(.*?)'\)")
+        args = re.search(juicer, source, re.DOTALL)
+        if args:
+            a = args.groups()
+            try:
+                return a[0], a[3].split(a[4]), int(a[1]), int(a[2])
+            except ValueError:
+                raise self.UnpackingError('Corrupted p.a.c.k.e.r. data.')
 
         # could not find a satisfying regex
         raise self.UnpackingError('Could not make sense of p.a.c.k.e.r data (unexpected code structure)')

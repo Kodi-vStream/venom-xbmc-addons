@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 from resources.lib.config import cConfig
 
 import sys
@@ -19,14 +20,18 @@ class cPluginHandler:
 
     def __getFileNamesFromFolder(self, sFolder):
         aNameList = []
-        items = os.listdir(sFolder)
+        #items = os.listdir(sFolder)
+        items = os.listdir(unicode(sFolder, 'utf-8'))
+
         for sItemName in items:
-            sFilePath = os.path.join(sFolder, sItemName)
+            #sFilePath = os.path.join(sFolder, sItemName)
+            sFilePath = os.path.join(unicode(sFolder, 'utf-8'), sItemName)
             # xbox hack
             sFilePath = sFilePath.replace('\\', '/')
             
             if (os.path.isdir(sFilePath) == False):
-                if (str(sFilePath.lower()).endswith('py')):
+                #if (str(sFilePath.lower()).endswith('py')):
+                if (sFilePath.lower().endswith('py')):
                     sItemName = sItemName.replace('.py', '')
                     aNameList.append(sItemName)
         return aNameList

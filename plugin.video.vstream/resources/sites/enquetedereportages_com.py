@@ -22,7 +22,7 @@ URL_MAIN = 'http://enquetedereportages.com/'
 
 REPLAYTV_REPLAYTV = ('http://enquetedereportages.com/', 'showMovies')
  
-#REPLAYTV_REPLAYTV = ('xyz', 'showGenre')
+REPLAYTV_GENRES = (True, 'showGenre')
 
 URL_SEARCH = ('http://enquetedereportages.com/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -91,11 +91,13 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
    
-    sPattern = '<a href="([^<]+)" title="([^<]+)" >.+?<img width=".+?" height=".+?" src="(.+?)"'
+    #sPattern = '<a href="([^<]+)" title="([^<]+)" >.+?<img width=".+?" height=".+?" src="(.+?)"'
+    sPattern = '<a href="([^<>"]+?)" title="([^"]+?)"><img [^<>]+?src="([^<>"]+?)" class="attachment-featured wp-post-image"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-	
-	
+    
+    #print aResult
+		
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -108,6 +110,9 @@ def showMovies(sSearch = ''):
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
             #sTitle = unescape(str(sTitle))
             sTitle = sTitle.encode( "utf-8")
+            
+            sTitle = re.sub('([0-9]+/[0-9]+/[0-9]+)','[COLOR teal]\\1[/COLOR]', str(sTitle))
+            #sTitle = cUtil().DecoTitle(sTitle)
            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
@@ -115,8 +120,6 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
             sTitle = sTitle.replace('http://enquetedereportages.com/','')
 			 
-           
-            print aEntry[1]
            
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[2], aEntry[0], oOutputParameterHandler)
  
@@ -134,7 +137,7 @@ def showMovies(sSearch = ''):
  
  
 def __checkForNextPage(sHtmlContent):
-    sPattern = 'div class="nav-previous">.+?href="(.+?)"'
+    sPattern = '<a class="next page-numbers" href="(.+?)">Next <span class="meta-nav-next">'
 	
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)

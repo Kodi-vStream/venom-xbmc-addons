@@ -23,6 +23,8 @@ ANIM_VOSTFRS = ('http://www.adkami.com/video?recherche=&version=2&type2=0', 'sho
 SERIE_VFS = ('http://www.adkami.com/video?recherche=&version=1&type2=1', 'showMovies')
 SERIE_VOSTFRS = ('http://www.adkami.com/video?recherche=&version=2&type2=1', 'showMovies')
 
+ANIM_ANIMS = ('http://www.adkami.com/video?recherche=&version=0&type2=0', 'showMovies')
+
 URL_SEARCH = ('http://www.adkami.com/video?recherche=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
@@ -32,6 +34,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])

@@ -1,38 +1,18 @@
 #-*- coding: utf-8 -*-
 #Venom.
-from resources.lib.gui.hoster import cHosterGui #system de recherche pour l'hote
-from resources.lib.handler.hosterHandler import cHosterHandler #system de recherche pour l'hote
-from resources.lib.gui.gui import cGui #system d'affichage pour xbmc
-from resources.lib.gui.guiElement import cGuiElement #system d'affichage pour xbmc
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler #entrer des parametres
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler #sortis des parametres
-from resources.lib.handler.requestHandler import cRequestHandler #requete url
-from resources.lib.config import cConfig #config
-from resources.lib.parser import cParser #recherche de code
-#from resources.lib.util import cUtil
+from resources.lib.gui.hoster import cHosterGui
+from resources.lib.handler.hosterHandler import cHosterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.guiElement import cGuiElement
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.config import cConfig
+from resources.lib.parser import cParser
+from resources.lib.util import cUtil
 import urllib2,urllib,re
-import unicodedata,htmlentitydefs
+import unicodedata
 
-def unescape(text):
-    def fixup(m):
-        text = m.group(0)
-        if text[:2] == "&#":
-            # character reference
-            try:
-                if text[:3] == "&#x":
-                    return unichr(int(text[3:-1], 16))
-                else:
-                    return unichr(int(text[2:-1]))
-            except ValueError:
-                pass
-        else:
-            # named entity
-            try:
-                text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
-            except KeyError:
-                pass
-        return text # leave as is
-    return re.sub("&#?\w+;", fixup, text)
 
 def DecryptMangacity(chain):
     oParser = cParser()
@@ -67,9 +47,12 @@ SITE_DESC = 'Anime en streaming'
 
 URL_MAIN = 'http://www.mangacity.org/'
 
-ANIM_LIST = ('http://www.mangacity.org/animes.php?liste=SHOWALPHA', 'ShowAlpha')
+ANIM_ANIMS = ('http://www.mangacity.org/animes.php?liste=SHOWALPHA', 'ShowAlpha')
 ANIM_GENRES = (True, 'showGenre')
-ANIM_ANIMS = ('http://www.mangacity.org/nouveautees.php', 'showMovies')
+ANIM_NEWS = ('http://www.mangacity.org/nouveautees.php', 'showMovies')
+
+ANIM_VFS = ('http://www.mangacity.org/listing_vf.php', 'ShowAlpha2')
+ANIM_VOSTFRS = ('http://www.mangacity.org/listing_vostfr.php', 'ShowAlpha2')
 
 URL_SEARCH = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -87,12 +70,20 @@ def load(): #function charger automatiquement par l'addon l'index de votre navig
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animes Nouveaute', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_LIST[1], 'Liste Animes', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIM[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIM[1], 'Liste Animes', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Anime Genres', 'genres.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animes VF', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Anime VOSTFR', 'films.png', oOutputParameterHandler)   
             
     oGui.setEndOfDirectory() #ferme l'affichage
 
@@ -137,9 +128,8 @@ def showGenre(): #affiche les genres
             if dialog.iscanceled():
                 break
             
-            sGenre = unescape(aEntry[1])
-            Link = unescape(aEntry[0])
-            #print sGenre
+            sGenre = cUtil().unescape(aEntry[1])
+            Link = cUtil().unescape(aEntry[0])
             
             #sGenre = unicode(sGenre,'iso-8859-1')
             #sGenre = sGenre.encode('ascii', 'ignore').decode('ascii')
@@ -153,17 +143,42 @@ def showGenre(): #affiche les genres
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
+    
+def ShowAlpha2():
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    sUrl2 = 'http://www.mangacity.org/animes.php?liste=SHOWALPHA'
+    
+    sType = 'VF'
+    if 'vostfr' in sUrl:
+        sType = 'VOSTFR'
 
-def ShowAlpha():
+    oRequestHandler = cRequestHandler(sUrl2)
+    sHtmlContent = oRequestHandler.request()
+    
+    oParser = cParser()
+    sPattern = '<a href=\'(listing_(?:vf|vostfr)\.php\?affichage=[^<>"]+?)\' class=\'button black pastel light\' alt="Voir la liste des animes en ' + sType + '"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    if (aResult[0] == True):
+        ShowAlpha( str(URL_MAIN) + aResult[1][0])
+
+
+
+def ShowAlpha(url = None):
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = 'http://www.mangacity.org/animes.php?liste=SHOWALPHA'
+    if (url == None):
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+    else :
+        sUrl = url
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
-    sPattern = "<a href='(.+?)' class='button light'><headline6><font color='black'>([A-Z#])<\/font><\/headline6><\/a>"
+
+    sPattern = "<a href='([^<>]+?)' class='button (?:red )*light'><headline6>(?:<font color='black'>)*([A-Z#])(?:<\/font>)*<\/headline6><\/a>"
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -258,7 +273,7 @@ def showMovies(sSearch = ''):
             sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
             
             sTitle = DecoTitle(sTitle)
-            sTitle = unescape(sTitle)
+            sTitle = cUtil().unescape(sTitle)
             sTitle = sTitle.replace('[Streaming] - ','')
             
             sPicture = aEntry[0]
@@ -342,9 +357,9 @@ def showEpisode():
                 break
                 
         
-            sTitle = unescape(aEntry[2])
+            sTitle = cUtil().unescape(aEntry[2])
             sTitle = DecoTitle(sTitle)
-            sUrl2 = str(unescape(aEntry[1]))
+            sUrl2 = str(cUtil().unescape(aEntry[1]))
             if URL_MAIN not in sUrl2:
                 sUrl2 = URL_MAIN + sUrl2
             
@@ -397,7 +412,7 @@ def showHosters():
             
             if aEntry[0]:#adresse directe  
                 if re.match(".+?&#[0-9]+;", aEntry[0]):#directe mais codé html
-                    sHosterUrl = unescape(aEntry[0])
+                    sHosterUrl = cUtil().unescape(aEntry[0])
                 else:#directe en clair
                     sHosterUrl = str(aEntry[0])
             else:#adresse cryptee
@@ -422,7 +437,9 @@ def showHosters():
                     sPattern = "'file': '(.+?)',"
                     aResult = oParser.parse(sHosterUrl, sPattern)
                     if aResult[0] == True:
-                        final = URL_MAIN + aResult[1][0]
+                        final = aResult[1][0]
+                        if not final.startswith( 'http' ):
+                            final = URL_MAIN + final
                         
                     sHosterUrl = final
             
@@ -441,7 +458,7 @@ def showHosters():
             #oHoster = __checkHoster(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             
-            print sHosterUrl
+            #print sHosterUrl
             
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)

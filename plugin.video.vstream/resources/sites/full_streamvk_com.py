@@ -20,6 +20,7 @@ SITE_DESC = 'Film Serie et Anime en Streaming HD - Vk.Com - Netu.tv - ExaShare -
 URL_MAIN = 'http://full-streamvk.com'
  
 MOVIE_NEWS = ('http://full-streamvk.com/films-streamingvk-vf/', 'showMovies')
+MOVIE_MOVIE = ('http://full-streamvk.com/films-streamingvk-vf/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
  
 URL_SEARCH = ('', 'showMovies')

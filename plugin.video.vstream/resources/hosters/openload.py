@@ -1,9 +1,12 @@
+#coding: utf-8
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
+from resources.lib.jjdecode import JJDecoder
 from resources.hosters.hoster import iHoster
+from resources.lib.packer import cPacker
+from resources.lib.aadecode import AADecoder
 import re,urllib2
-import xbmcgui
 
 class cHoster(iHoster):
 
@@ -58,28 +61,41 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-
-        api_call =''
         
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        oParser = cParser()
-        sPattern = 'urce type="video[^"<>]+?" src="([^<>"]+?)">'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
         
-        #1 er essais
+        #Debut des tests de decodage
+        oParser = cParser()
+        string = ''
+       
+        #"aaencode - Encode any JavaScript program to Japanese style emoticons (^_^)"
+        sPattern = "<video(?:.|\s)*?<script\s[^>]*?>((?:.|\s)*?)<\/script"
+        aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            api_call = aResult[1][0]
-        else:
-            #second essais
-            sPattern = 'script>\$\("video source"\)\.attr\("src", "(.+?)"\);'
+            string = AADecoder(aResult[1][0]).decode()
+                
+        if not (string): 
+            #Dean Edwards Packer
+            sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
+                sUnpacked = cPacker().unpack(aResult[1][0])
+                string = JJDecoder(sUnpacked).decode()
+        
+        
+        if (string):
+            sContent = string.replace('\\','')
+
+            sPattern = 'src=\s*?"(.*?)\?'
+            aResult = oParser.parse(sContent, sPattern)
+            if (aResult[0] == True):
                 api_call = aResult[1][0]
-        
-        #print api_call
-        
+
         if (api_call):
             return True, api_call
             

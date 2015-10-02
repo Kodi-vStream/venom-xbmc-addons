@@ -20,8 +20,8 @@ SITE_DESC = 'Le seul site de streaming en HD 720p 100% Gratuit'
 URL_MAIN = 'http://www.film-streaming.co/'
  
 MOVIE_NEWS = ('http://www.film-streaming.co/index.php', 'showMovies')
-MOVIE_FILMS = ('http://www.film-streaming.co/films.php', 'showMovies')
-MOVIE_TOP = ('http://www.film-streaming.co/top.php', 'showMovies')
+MOVIE_MOVIE = ('http://www.film-streaming.co/films.php', 'showMovies')
+MOVIE_VIEWS = ('http://www.film-streaming.co/top.php', 'showMovies')
  
  
 MOVIE_GENRES = (True, 'showGenre')
@@ -42,11 +42,11 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Top Films', 'top.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Fimls les plus vus', 'top.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_FILMS[0])
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Tout Les Films', 'films.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
@@ -203,33 +203,21 @@ def showMovies(sSearch = ''):
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage[1] + str(int(sNextPage[0]) + 1))
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next ' + sNextPage[0] + '/' + sNextPage[2] + '>>> [/COLOR]', 'next.png', oOutputParameterHandler)
-        
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrlbase', sNextPage[1])
-            oOutputParameterHandler.addParameter('MaxPage', sNextPage[2])
-            oGui.addDir(SITE_IDENTIFIER, 'showPage', '[COLOR teal]Choisir Page >>> [/COLOR]', 'next.png', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]' , oOutputParameterHandler)
  
     oGui.setEndOfDirectory()
          
 def __checkForNextPage(sHtmlContent):
-    #sPattern = '<(?:strong class="current"|span class="btn btn-default active")>([0-9]+) *<.+?<span class="btn btn-default">\.\.\. *<a class="btn btn-default" href="([^<>"]+?=)[0-9]+">([0-9]+)<\/a>'
-    sPattern = '<(?:strong class="current"|span class="btn btn-default active")>([0-9]+) *<.+?class="btn btn-default" href="([^<>"]+?=)[0-9]+".*?>([0-9]+)<(?!.+?>[0-9]+<.+?)(.+?)<\/td>'
-    
-    #fh = open('c://test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
- 
+    #sPattern = '<(?:strong class="current"|span class="btn btn-default active")>([0-9]+) *<.+?class="btn btn-default" href="([^<>"]+?=)[0-9]+".*?>([0-9]+)<(?!.+?>[0-9]+<.+?)(.+?)<\/td>'
+    sPattern = '<strong class="current">.+?</strong>.+?<a class="btn btn-default" href="(.+?)">'
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if (aResult[0] == True):
-        #aResult[1][0][0] num current page
-        #aResult[1][0][1] url vierge url.php?page=
-        #aResult[1][0][2] num derniere page
-        
-        return aResult[1][0][0], URL_MAIN + aResult[1][0][1], aResult[1][0][2] 
+        sUrl = URL_MAIN+aResult[1][0]     
+        return sUrl 
  
     return False
  

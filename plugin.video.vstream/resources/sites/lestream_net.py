@@ -16,10 +16,13 @@ SITE_DESC = 'films en streaming, vk streaming, youwatch, vimple , streaming hd ,
 
 URL_MAIN = 'http://www.lestream.net/'
 
-MOVIE_NEWS = ('http://www.lestream.net/films', 'showMovies') 
+MOVIE_NEWS = ('http://www.lestream.net/films', 'showMovies')
+MOVIE_MOVIE = ('http://www.lestream.net/films', 'showMovies') 
 MOVIE_VIEWS = ('http://www.lestream.net/films-populaires/', 'showMovies')
-MOVIE_GENRES = True 
+MOVIE_GENRES = True
+
 SERIE_SERIES = ('http://www.lestream.net/serie-tv', 'showMovies')
+SERIE_NEWS = ('http://www.lestream.net/serie-tv', 'showMovies')
 
 URL_SEARCH = ('http://www.lestream.net/index.php?menu=searchmov&query=','showMovies')
 FUNCTION_SEARCH = 'showMovies'

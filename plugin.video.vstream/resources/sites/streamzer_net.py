@@ -16,11 +16,20 @@ SITE_NAME = 'Streamzer.net'
 SITE_DESC = 'Regarder des films et series en streaming illimite avec Youwatch, VK streaming. Streamzer le streaming sans limite avec Youwatch et VK stream.'
 
 URL_MAIN = 'http://www.streamzer.net/'
+
+MOVIE_MOVIE = ('http://www.streamzer.net/index.php?file=Films&op=classe&secid=&orderby=news&p=1#stream', 'showMovies')
 MOVIE_NEWS = ('http://www.streamzer.net/index.php?file=Films&op=classe&secid=&orderby=news&p=1#stream', 'showMovies')
 MOVIE_GENRES = ('http://www.streamzer.net/index.php?file=Films&op=classe&secid=&orderby=news&p=1#stream', 'showGenre')
+MOVIE_VIEWS = ('http://www.streamzer.net/films-streaming-populaires#stream', 'showMovies')
+MOVIE_NOTES = ('http://www.streamzer.net/meilleurs-films-streaming#stream', 'showMovies')
+
 SERIE_SERIES = ('http://www.streamzer.net/index.php?file=Series&op=classe&secid=&orderby=news&p=1#stream', 'showMovies')
+SERIE_NEWS = ('http://www.streamzer.net/index.php?file=Series&op=classe&secid=&orderby=news&p=1#stream', 'showMovies')
+
 DOC_DOCS = ('http://www.streamzer.net/index.php?file=Docus&op=classe&secid=&orderby=news&p=1#stream', 'showMovies')
+
 SPORT_SPORTS = ('http://www.streamzer.net/index.php?file=Replay&op=classe&secid=&orderby=news&p=1#stream', 'showReplay')
+
 MOVIE_NETS = ('http://www.streamzer.net/index.php?file=Videos&op=classe&secid=&orderby=news&p=1#stream', 'showReplay')
 
 URL_SEARCH = ('http://www.streamzer.net/index.php?file=Search&op=mod_search&main=', 'resultSearch')

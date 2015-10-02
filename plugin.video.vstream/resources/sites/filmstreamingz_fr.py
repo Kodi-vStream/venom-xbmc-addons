@@ -9,6 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
+from resources.lib.util import cUtil
 
 
 SITE_IDENTIFIER = 'filmstreamingz_fr'
@@ -18,12 +19,15 @@ SITE_DESC = 'Film Streaming & Serie Streaming: Regardez films et series de quali
 URL_MAIN = 'http://filmstreamingz.fr/'
 URL_MAIN2 = 'http://seriestreaming.org/'
 
+MOVIE_MOVIE = ('http://filmstreamingz.fr/', 'showMovies')
 MOVIE_NEWS = ('http://filmstreamingz.fr/', 'showMovies')
 MOVIE_VIEWS = ('http://filmstreamingz.fr/les-plus-vus/', 'showMovies')
 MOVIE_COMMENTS = ('http://filmstreamingz.fr/les-plus-commentes-2/', 'showMovies')
 MOVIE_NOTES = ('http://filmstreamingz.fr/les-mieux-notes-2/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
+
 SERIE_SERIES = ('http://seriestreaming.org/', 'showMovies')
+SERIE_NEWS = ('http://seriestreaming.org/', 'showMovies')
 
 URL_SEARCH = ('http://filmstreamingz.fr/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -83,10 +87,10 @@ def showMoviesSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = 'http://filmstreamingz.fr/?s='+sSearchText
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return
+        sUrl = 'http://filmstreamingz.fr/?s='+sSearchText
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return
     
 
 def showSeriesSearch():
@@ -94,10 +98,10 @@ def showSeriesSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = 'http://seriestreaming.org/?s='+sSearchText
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return
+        sUrl = 'http://seriestreaming.org/?s='+sSearchText
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return
     
 
 
@@ -140,10 +144,16 @@ def showGenre():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    
     if sSearch:
-      sUrl = sSearch
+        sUrl = sSearch
+      
+        sDisp = oInputParameterHandler.getValue('disp')
+        if (sDisp == 'search2'):#serie
+            sUrl = sUrl.replace(URL_MAIN,URL_MAIN2)
+      
     else:
-        oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -164,12 +174,15 @@ def showMovies(sSearch = ''):
 
             sSmall = aEntry[3].replace('<span class="likeThis">', '').replace('</span>', '')
             sTitle = aEntry[2]+' - [COLOR azure]'+sSmall+'[/COLOR]'
+            
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
             if 'series' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', aEntry[0], '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], '', oOutputParameterHandler)
 
@@ -207,11 +220,14 @@ def showSeries():
                 break
             
             sTitle = sMovieTitle+' - '+aEntry[1]
+            
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 

@@ -135,8 +135,11 @@ class cGuiElement:
         return self.__sThumbnail
     
     def setFanart(self, sFanart):
-        if sFanart != '':
+        if (sFanart != ''):
             self.__sFanart = sFanart
+        else:
+            self.__sFanart = self.__sRootArt+'fanart.jpg'
+            
             
     def setMovieFanart(self):
             self.__sFanart = self.__sFanart_films
@@ -148,28 +151,44 @@ class cGuiElement:
             self.__sFanart = self.__sFanart_tv
         
     def setDirFanart(self, sIcon):
-        if (sIcon == 'search.png') | (sIcon == 'searchtmdb.png'):
-            self.__sFanart = self.__sFanart_search
+        if (sIcon == 'search.png'):
+            self.__sFanart = cConfig().getSetting('images_cherches')
+            
+        elif (sIcon == 'searchtmdb.png'):
+            self.__sFanart = cConfig().getSetting('images_cherchev')
+            
         elif sIcon == 'tv.png':
-            self.__sFanart = self.__sFanart_tv
-        elif (sIcon == 'films.png') |(sIcon == 'genres.png') | (sIcon == 'news.png') | (sIcon == 'az.png') | (sIcon == 'notes.png') | (sIcon == 'comments.png'):
-            self.__sFanart = self.__sFanart_films
-        elif (sIcon == 'series.png') |(sIcon == 'seriesvf.png') | (sIcon == 'seriesvostfr.png') | (sIcon == 'seriesaz.png') | (sIcon == 'seriesgenres.png'):
-            self.__sFanart = self.__sFanart_series
-        elif (sIcon == 'animes.png') |(sIcon == 'animesvf.png') | (sIcon == 'animesvostfr.png') | (sIcon == 'animesaz.png') | (sIcon == 'animesgenres.png'):
-            self.__sFanart = self.__sFanart_animes
+            self.__sFanart = cConfig().getSetting('images_tvs')
+        elif ('replay' in sIcon):
+            self.__sFanart = cConfig().getSetting('images_replaytvs')
+            
+        elif ('films' in sIcon):
+            self.__sFanart = cConfig().getSetting('images_films')
+            
+        elif ('series' in sIcon):
+            self.__sFanart = cConfig().getSetting('images_series')
+            
+        elif ('animes' in sIcon):
+            self.__sFanart = cConfig().getSetting('images_anims')
+            
         elif sIcon == 'doc.png':
-            self.__sFanart = self.__sFanart_doc
+            self.__sFanart = cConfig().getSetting('images_docs')
+            
         elif sIcon == 'sport.png':
-            self.__sFanart = self.__sFanart_sport
+            self.__sFanart = cConfig().getSetting('images_sports')
+            
         elif sIcon == 'buzz.png':
-            self.__sFanart = self.__sFanart_buzz
+            self.__sFanart = cConfig().getSetting('images_videos')
+            
         elif sIcon == 'mark.png':
-            self.__sFanart = self.__sFanart_mark
+            self.__sFanart = cConfig().getSetting('images_marks')
+            
         elif sIcon == 'host.png':
-            self.__sFanart = self.__sFanart_host
+            self.__sFanart = cConfig().getSetting('images_hosts')
+            
         elif xbmc.getInfoLabel('ListItem.Art(fanart)') != '':
             self.__sFanart = xbmc.getInfoLabel('ListItem.Art(fanart)')
+            
         else :
             self.__sFanart = self.__sFanart
 

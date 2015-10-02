@@ -1,88 +1,99 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-        <!-- general begin by 30000 - 30050 -->
-        <string id="30000">Logging</string>
-        <string id="30001">Videoplayer</string>
-        <string id="30002">anonyme Statistiken (wertet nur Plugin Start aus)</string>
-        <string id="30500">Select</string>
-        <string id="30501">Name</string>
+    <!-- general begin by 30000 - 30050 -->
+    <string id="30000">Logging</string>
+    <string id="30001">Videoplayer</string>
+    <string id="30002">anonyme Statistiken (wertet nur Plugin Start aus)</string>
+    <string id="30500">Select</string>
+    <string id="30501">Name</string>
 
-        <!-- settingtabs begin by 30021 - 30030 -->
-        <string id="30021">General</string>
-        <string id="30022">Plugins on/off</string>
-        <string id="30023">Plugins Préférences</string>
-        <string id="30024">Host</string>
-        <string id="30025">Home</string>
-        <string id="30026">IPTV and TV Guid</string>
-        <string id="30027">Waiting time for player (ms)</string>
-        <string id="30028">PVR addon setting</string>
-	<string id="30029">Enable error popup</string>
+    <!-- settingtabs begin by 30021 - 30030 -->
+    <string id="30021">General</string>
+    <string id="30022">Plugins on/off</string>
+    <string id="30023">Plugins Préférences</string>
+    <string id="30024">Host</string>
+    <string id="30025">Home</string>
+    <string id="30026">IPTV and TV Guid</string>
+    <string id="30027">Waiting time for player (ms)</string>
+    <string id="30028">PVR addon setting</string>
+    <string id="30029">Enable error popup</string>
 
-         <!-- premium begin by 30031 - 30075 -->
-        <string id="30031">Megavideo Premium Account</string>
-        <string id="30032">Megavideo Username</string>
-        <string id="30033">Megavideo Password</string>
+     <!-- premium begin by 30031 - 30075 -->
+    <string id="30031">Megavideo Premium Account</string>
+    <string id="30032">Megavideo Username</string>
+    <string id="30033">Megavideo Password</string>
 
-        <string id="30034">Duckload Premium Account</string>
-        <string id="30035">Duckload Username</string>
-        <string id="30036">Duckload Password</string>
+    <string id="30034">Duckload Premium Account</string>
+    <string id="30035">Duckload Username</string>
+    <string id="30036">Duckload Password</string>
 
-        <string id="30071">JDownloader an/aus</string>
-        <string id="30072">Host</string>
-        <string id="30073">Port</string>
-        <string id="30074">Download automatsch starten</string>
-        <string id="30075">sende nur an LinkGrabber</string>
+    <string id="30071">JDownloader an/aus</string>
+    <string id="30072">Host</string>
+    <string id="30073">Port</string>
+    <string id="30074">Download automatsch starten</string>
+    <string id="30075">sende nur an LinkGrabber</string>
 
-        <string id="30076">Search</string>
-        <string id="30077">Search 1</string>
-        <string id="30078">Custom search 1</string>
-        <string id="30079">Custom search 2</string>
-        <string id="30080">Custom search 3</string>
-        <string id="30081">Custom search 4</string>
-	<string id="30088">Visual Search</string>
-	<string id="30089">Search 2</string>
-	<string id="30090">Search 3</string>
-	<string id="30091">Search 4</string>
+    <string id="30076">Search</string>
+    <string id="30077">Search 1</string>
+    <string id="30078">Custom search 1</string>
+    <string id="30079">Custom search 2</string>
+    <string id="30080">Custom search 3</string>
+    <string id="30081">Custom search 4</string>
+    <string id="30088">Visual Search</string>
+    <string id="30089">Search 2</string>
+    <string id="30090">Search 3</string>
+    <string id="30091">Search 4</string>
 
 
-        <!-- Pluginnames begin by 30201 - 30299 -->
-        <string id="30201">Add to playlist</string>
-        <string id="30202">Download</string>
-        <string id="30203">Mark source</string>
-        <string id="30204">No informations</string>
-	<string id="30205">Connection Failed</string>
-	<string id="30206">Mark movie</string>
-	<string id="30207">Mark Serie</string>
-	<string id="30208">Mark diverses</string>
-	<string id="30209">Delete Bookmark</string>
-	<string id="30210">Display Bookmark</string>
-		
-        <!-- catégorie -->
-        <string id="30101">Movies - News</string>
-        <string id="30102">Movies - Most seeing</string>
-        <string id="30103">Movies - Most commented</string>
-        <string id="30104">Movies - Top rated</string>
-        <string id="30105">Movies - Genre</string>
-        <string id="30106">Series - News</string>
-        <string id="30107">Series - VF</string>
-        <string id="30108">Series - VOSTFR</string>
-        <string id="30109">Animes - News</string>
-        <string id="30110">Animes - VF</string>
-        <string id="30111">Animes - VOSTFR</string>
-        <string id="30112">documentary</string>
-	<string id="30113">Sport</string>
-	<string id="30114">Web Video</string>
-	<string id="30115">Television</string>
-	<string id="30116">All the sources</string>
-	<string id="30117">Television Replay</string>
-			<!--version 3.0.2 -->
-		<string id="30120">Movies</string>
-		<string id="30121">Tvshow</string>
-		<string id="30122">Animes</string>
-		
-				<!--version 3.0.4 -->
-		<string id="30125">Research Update (source only)</string>
-		<string id="30126">Beta Tester (not recommended)</string>
-		<string id="30127">Tool</string>
-		
+    <!-- Pluginnames begin by 30201 - 30299 -->
+    <string id="30201">Add to playlist</string>
+    <string id="30202">Download</string>
+    <string id="30203">Mark source</string>
+    <string id="30204">No informations</string>
+    <string id="30205">Connection Failed</string>
+    <string id="30206">Mark movie</string>
+    <string id="30207">Mark Serie</string>
+    <string id="30208">Mark diverses</string>
+    <string id="30209">Delete Bookmark</string>
+    <string id="30210">Display Bookmark</string>
+        
+    <!-- catégorie -->
+    <string id="30101">Movies News</string>
+    <string id="30102">Movies Most seeing</string>
+    <string id="30103">Movies Most commented</string>
+    <string id="30104">Movies Top rated</string>
+    <string id="30105">Movies Genre</string>
+    <string id="30106">Series News</string>
+    <string id="30107">Series VF</string>
+    <string id="30108">Series VOSTFR</string>
+    <string id="30109">Animes News</string>
+    <string id="30110">Animes VF</string>
+    <string id="30111">Animes VOSTFR</string>
+    <string id="30112">documentary</string>
+    <string id="30113">Sport</string>
+    <string id="30114">Web Video</string>
+    <string id="30115">Television</string>
+    <string id="30116">All the sources</string>
+    <string id="30117">Television Replay</string>
+    <!--version 3.0.2 -->
+    <string id="30120">Movies</string>
+    <string id="30121">Tvshow</string>
+    <string id="30122">Animes</string>
+    <!--version 3.0.4 -->
+    <string id="30125">Research Update (source only)</string>
+    <string id="30126">Beta Tester (not recommended)</string>
+    <string id="30127">Tool</string>
+    <!--version 3.0.5 -->
+    <string id="30130">Lists</string>
+    <string id="30131">Animes Genres</string>
+    <string id="30132">Series Genres</string>    
+    <string id="30133">Television Replay News</string>
+    <string id="30134">Movies VF</string>    
+    <string id="30135">Movies VOSTFR</string>
+	<string id="30136">Television Replay Genre</string>
+	<string id="30137">Television Replay Sources</string>
+	<string id="30138">Movies Sources</string>
+	<string id="30139">Series Sources</string>
+	<string id="30140">Animes Sources</string>
+        
 </strings>

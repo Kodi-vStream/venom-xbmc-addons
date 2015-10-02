@@ -2,6 +2,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
+from resources.lib.packer import cPacker
 import re,xbmcgui
 
 class cHoster(iHoster):
@@ -67,12 +68,20 @@ class cHoster(iHoster):
         #fh.close()
         
         oParser = cParser()
+        
+        #test pour voir si code
+        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            sHtmlContent = cPacker().unpack(aResult[1][0])
+        
         sPattern = 'file:"([^"]+\.mp4)"(?:,label:"([^"]+)")*'
         aResult = oParser.parse(sHtmlContent, sPattern)
         
         api_call = False
 
         if (aResult[0] == True):
+            
             #initialisation des tableaux
             url=[]
             qua=[]

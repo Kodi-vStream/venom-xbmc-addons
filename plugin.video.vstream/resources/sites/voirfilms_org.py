@@ -12,19 +12,22 @@ from resources.lib.parser import cParser #recherche de code
 from resources.lib.util import cUtil
 import urllib2,urllib,re
  
-#Si vous créer une source et la déposer dans le dossier sites elle seras directement visible sous xbmc
  
-SITE_IDENTIFIER = 'voirfilms_org' #identifant nom de votre fichier remplacer les espaces et les . par _ aucun caractere speciale
-SITE_NAME = 'VoirFilms.org' # nom que xbmc affiche
-SITE_DESC = 'Films et serie en streaming' #description courte de votre source
+SITE_IDENTIFIER = 'voirfilms_org'
+SITE_NAME = 'VoirFilms.org'
+SITE_DESC = 'Films et serie en streaming'
  
-URL_MAIN = 'http://www.voirfilms.org/' # url de votre source
+URL_MAIN = 'http://www.voirfilms.org/'
 
 MOVIE_NEWS = ('http://www.voirfilms.org/', 'showMovies')
-MOVIE_ALLMOVIES = ('http://www.voirfilms.org/lesfilms1', 'showMovies')
+MOVIE_MOVIE = ('http://www.voirfilms.org/lesfilms1', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 
 SERIE_SERIES = ('http://www.voirfilms.org/series/page-1', 'showMovies')
+SERIE_NEWS = ('http://www.voirfilms.org/series/page-1', 'showMovies')
+  
+ANIM_ANIMS = ('http://www.voirfilms.org/animes/page-1', 'showMovies')
+ANIM_NEWS = ('http://www.voirfilms.org/animes/page-1', 'showMovies')
   
 URL_SEARCH = ('', 'showMovies')
 #FUNCTION_SEARCH = 'showMovies'
@@ -62,8 +65,8 @@ def load(): #function charger automatiquement par l'addon l'index de votre navig
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautés', 'news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ALLMOVIES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ALLMOVIES[1], 'Tout les films', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Tout les films', 'films.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -212,7 +215,7 @@ def showMovies(sSearch = ''):
         sPattern = '<div class="imagefilm">.+?<img src="(.+?)".+?<a href="([^<>]+?)".+?titreunfilm" style="width:145px;">(.+?)<\/div>'
     
     sHtmlContent = sHtmlContent.replace('\n','')
-
+    
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
    
@@ -228,9 +231,6 @@ def showMovies(sSearch = ''):
                 break
            
             sTitle = unescape(aEntry[2])
-            #sTitle = sTitle.replace('Film ','')
-            #sTitle = sTitle.replace(' Streaming',' ')
-            #sTitle = sTitle.replace(' vk',' ')
             sPicture = str(aEntry[0])
             if not 'http' in sPicture:
                 sPicture = str(URL_MAIN) + sPicture
@@ -244,7 +244,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', sPicture) #sortis du poster
  
-            if '/serie/' in aEntry[1] :
+            if '/serie/' in aEntry[1] or '/animes/' in aEntry[1]:
                 oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, sPicture, sPicture, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, sPicture, sPicture, '', oOutputParameterHandler)
@@ -284,12 +284,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    if '-episode-' in sUrl:
-        #sPattern = '(?:<span style="width:55px;" class="(.+?)L"><\/span> +)*<\/div><span class="gras" style="text-transform: uppercase;">(.+?)<\/span><span class="selected".+?name="levideo" value="(.+?)" type="hidden">'
-        sPattern = '(?:<span style="width:55px;" class="(.+?)L"><\/span>)*<\/div> *<span class="gras"><[^<>]+?>([^<>]+?)<\/span> *<span class="selected".+?name="levideo" value="(.+?)" type="hidden">'
-    else:
-        #sPattern = 'uppercase;">(.+?)<\/span><span class="selected".+?name="levideo" value="(.+?)" type="hidden">'
-        sPattern = '<span class="gras"><[^<>]+?>([^<>]+?)<\/span> *<span class="selected".+?name="levideo" value="(.+?)" type="hidden">'
+    sPattern = '<a href="([^<>"]+?)" target="filmPlayer".+?class="([a-zA-Z]+)L"><\/span><\/div><span class="gras">.+?>(.+?)<\/span>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -308,26 +303,21 @@ def showHosters():
             if dialog.iscanceled():
                 break
                 
-            if '-episode-' in sUrl:
-                sTitle = '[COLOR teal][' + str(aEntry[1]) + '][/COLOR] ' + sMovieTitle
-                sData = str(aEntry[2])
-                if aEntry[0]:
-                    sTitle = sTitle + ' [' + aEntry[0] + ']'
-            else:
-                sTitle = '[COLOR teal][' + str(aEntry[0]) + '][/COLOR] ' + sMovieTitle
-                sData = str(aEntry[1])
+            sTitle = '[COLOR teal](' + str(aEntry[1]) + ') ' + str(aEntry[2]) + '[/COLOR] ' + sMovieTitle
             
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('data', sData)
+            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail) #sortis du poster
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
  
             oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sTitle , sThumbnail, sThumbnail, '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
        
     oGui.setEndOfDirectory()
+    
+    
+    
 
 def serieHosters():
     oGui = cGui()
@@ -376,70 +366,22 @@ def serieHosters():
     
 def showHostersLink():
     oGui = cGui()
-    
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sData = oInputParameterHandler.getValue('data')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
-    headers = {'User-Agent' : 'Mozilla 5.10'}
-    data = None
     
-    if not sData =='' :
-        query_args = { 'levideo' : str(sData)}
-        data = urllib.urlencode(query_args)
-        
-        url = sUrl + '#plateformes'
-    else:
-        url = sUrl
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
     
-    request = urllib2.Request(url,data,headers)
-          
-    try: 
-        reponse = urllib2.urlopen(request)
-    except urllib2.URLError, e:
-        print e.read()
-        print e.reason
-          
-    sHtmlContent = reponse.read()
-    sHtmlContent = sHtmlContent.replace('\n','')
-     
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-
-    sPattern = '<a target="_blank" href="(.+?)" style="color:#1a8db8;font-size:16px;">Lien direct vers le lecteur<\/a>'
-    aResult = re.findall(sPattern, sHtmlContent)
-    
-    if len(aResult) == 0:
-        sPattern = '<div id="playerslist"><div class=".+?<iframe src="([^<]+?)".+?<\/iframe>'
-        aResult = re.findall(sPattern, sHtmlContent)
-    
-    if len(aResult) > 0 :
-        aResult = aResult[0]
-        total = 1
-        dialog = cConfig().createDialog(SITE_NAME)
-
-        cConfig().updateDialog(dialog, total)
-
-        #convertion pour vk
-        aResult = aResult.replace('http://www.streamingentier.com/vk.php?code=','')
-        
-        #correction en cas de bug
-        if not aResult.startswith('http'):
-            aResult = 'http:' + aResult
-        
-        sHosterUrl = str(aResult)
-        #print sHosterUrl
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
-        
-        if (oHoster != False):
-            oHoster.setDisplayName(sMovieTitle)
-            oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-
-        cConfig().finishDialog(dialog) 
-
-    oGui.setEndOfDirectory()   
+    #print sUrl
+   
+    sHosterUrl = sUrl
+    oHoster = cHosterGui().checkHoster(sHosterUrl)
+    if (oHoster != False):
+        oHoster.setDisplayName(sMovieTitle)
+        oHoster.setFileName(sMovieTitle)
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+                
+    oGui.setEndOfDirectory()
     

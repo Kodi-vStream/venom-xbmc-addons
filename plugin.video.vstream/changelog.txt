@@ -17,6 +17,116 @@
 - Merci à http://libretv.me/ pour le partage de leurs sources.
 =============================================================================
 =============================================================================
+- Version 0.3.5 - 02.10.2015
+=============================================================================
+Commits on Oct 1, 2015
+- @LordVenom / update menu 
+Commits on Sep 30, 2015
+- @TmpName / Update full_stream_me.py  
+- @TmpName / Update enquetedereportages_com.py  
+- @TmpName / Update strings.xml  
+- @TmpName / Update strings.xml  
+- @TmpName / Update home.py  
+- @TmpName / Update tntv_rattrapage.py  
+- @TmpName / Update strings.xml 
+- @TmpName / Update strings.xml 
+- @TmpName / Update home.py 
+- @TmpName / Create dpstreaming_org.py 
+- @TmpName / Delete dpstreaming_org.py 
+- @TmpName / Update lien_direct.py  
+Commits on Sep 29, 2015
+- @TmpName / Update voirfilms_org.py 
+- @TmpName / Update vkstreamingfilm_biz.py  
+- @TmpName / Update streamzer_net.py 
+- @TmpName / Update streamingk_com.py  
+- @TmpName / Update streamingfilms_fr.py  
+- @TmpName / Update lestream_net.py 
+- @TmpName / Update full_streamvk_com.py  
+- @TmpName / Update fullmoviz_org.py 
+- @TmpName / Update frenchstream_org.py 
+- @TmpName / Update film_illimit_fr.py  
+- @TmpName / Update film_illimit_fr.py 
+- @TmpName / Update films_ws.py  
+- @TmpName / Update strings.xml  
+- @TmpName / Update strings.xml  
+- @TmpName / Update home.py  
+- @TmpName / Update home.py  
+- @TmpName / Update filmstreamingz_fr.py 
+- @TmpName / Update film_streaming_co.py 
+Commits on Sep 28, 2015
+- @TmpName / Update film_streaming_co.py  
+- @TmpName / Update tv_streaming_ch.py  
+- @TmpName / Update mangacity_org.py  
+- @TmpName / Update mangacity_org.py
+Commits on Sep 28, 2015
+- @TmpName / Update full_stream_me.py  
+- @TmpName / Update home.py  
+- @TmpName / Update home.py 
+- @TmpName / Update strings.xml  
+- @TmpName / Update strings.xml  
+Commits on Sep 27, 2015
+- @TmpName / Update util.py  
+- @TmpName / Update mangacity_org.py  
+Commits on Sep 25, 2015
+- @TmpName / Create dl_deprotect.py  
+- @TmpName / Update streamingk_com.py  
+- @TmpName / Update streamingk_com.py  
+- @TmpName / Create streamingk_com.py  
+Commits on Sep 24, 2015
+- @TmpName / Update libre_stream_org.py  
+- @TmpName / Update full_stream_me.py  
+Commits on Sep 23, 2015
+- @LordVenom / update recherche similaire  
+- @LordVenom / add recherche similaire 
+- @LordVenom / remove notre ecole 
+Commits on Sep 22, 2015
+- @TmpName / Create filepup.py 
+- @TmpName / Update hoster.py 
+- @TmpName / Update aadecode.py 
+- @TmpName / Update dpstreaming_org.py  
+- @TmpName / Update voirfilms_org.py 
+Commits on Sep 21, 2015
+- @TmpName / Update dpstreaming_org.py 
+- @LordVenom / update animes  
+Commits on Sep 19, 2015
+- @TmpName / Update zstream.py  
+- @TmpName / Update allvid.py  
+- @TmpName / Update openload.py 
+- @TmpName / Create aadecode.py 
+Commits on Sep 18, 2015
+- @LordVenom / update skin  
+- @TmpName / Update packer.py … 
+Commits on Sep 17, 2015
+- @TmpName / Merge pull request #71 from zombiB/patch-5  
+- @TmpName / Update dailymotion.py 
+- @TmpName / Update tv_streaming_ch.py  
+- @zombiB / Update docspot_fr.py  
+Commits on Sep 14, 2015
+- @LordVenom / update packer 
+- @LordVenom / Revert "update packer"
+Commits on Sep 14, 2015
+- @LordVenom / update packer  
+- @LordVenom / update openload 
+Commits on Sep 8, 2015
+- @LordVenom / openload  
+Commits on Sep 6, 2015
+- @TmpName / Update openload.py  
+Commits on Sep 4, 2015
+- @TmpName / Update exashare.py 
+- @TmpName / Update googlevideo.py 
+- @TmpName / Update poypi_com.py 
+- @TmpName / Create amazon.py  
+- @TmpName / Update hoster.py  
+- @LordVenom / update adkami  
+Commits on Sep 3, 2015
+- @LordVenom / update googlevideo  
+Commits on Sep 2, 2015
+- @LordVenom / film streaming  
+Commits on Sep 1, 2015
+- @LordVenom / bug accent  
+Commits on Aug 31, 2015
+- @LordVenom / bug accent folder
+=============================================================================
 - Version 0.3.4 - 29.08.2015
 =============================================================================
 Commits on Aug 28, 2015
