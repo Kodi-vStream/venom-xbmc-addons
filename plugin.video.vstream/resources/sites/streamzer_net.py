@@ -9,6 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
+from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'streamzer_net'
@@ -34,6 +35,7 @@ MOVIE_NETS = ('http://www.streamzer.net/index.php?file=Videos&op=classe&secid=&o
 
 URL_SEARCH = ('http://www.streamzer.net/index.php?file=Search&op=mod_search&main=', 'resultSearch')
 FUNCTION_SEARCH = 'resultSearch'
+
 
 def load():
     oGui = cGui()
@@ -366,7 +368,7 @@ def showHosters():
             if dialog.iscanceled():
                 break
 
-            sHosterUrl = str(aEntry[1])
+            sHosterUrl = cUtil().unescape(str(aEntry[1]))
             #oHoster = __checkHoster(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             
@@ -384,6 +386,9 @@ def showHosters():
                     sTitle = str(sMovieTitle)+' - '+str(aEntry[2])+' - '+str(aEntry[3])
                 else:
                     sTitle = str(sMovieTitle) + ' - ' + str(aEntry[3])
+                
+                sTitle = sTitle.decode('latin-1').encode("utf-8")
+                    
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
