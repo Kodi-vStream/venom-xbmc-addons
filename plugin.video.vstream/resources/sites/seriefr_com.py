@@ -17,9 +17,10 @@ SITE_NAME = 'Seriefr.com'
 SITE_DESC = 'Série en Streaming HD - Vk.Com - Netu.tv - ExaShare - YouWatch'
 
 URL_MAIN = 'http://www.seriefr.com/'
-#MOVIE_GENRES = True
-SERIE_SERIES = ('http://www.seriefr.com/index.html', 'showMovies')
-SERIE_VFS = ('http://www.seriefr.com/index.html', 'showMovies')
+
+SERIE_SERIES = ('http://www.seriefr.com/liste.html', 'AlphaSearch')
+SERIE_NEWS = ('http://www.seriefr.com/index.html', 'showMovies')
+
 #SERIE_VOSTFRS = 'http://full-stream.net/seriestv/vostfr/'
 #ANIM_VFS = 'http://full-stream.net/mangas/mangas-vf/'
 #ANIM_VOSTFRS = 'http://full-stream.net/mangas/mangas-vostfr/'
@@ -36,11 +37,11 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries Liste complete', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries VF', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries Nouveautees', 'series.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
 
@@ -52,7 +53,70 @@ def showSearch():
     if (sSearchText != False):
         showMovies(str(sSearchText))
         oGui.setEndOfDirectory()
-        return  
+        return
+        
+def AlphaSearch():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    dialog = cConfig().createDialog(SITE_NAME)
+    
+    for i in range(0,27) :
+        cConfig().updateDialog(dialog, 36)
+        if dialog.iscanceled():
+            break
+        
+        if (i < 1):
+            sTitle = '1'
+        else:
+            sTitle = chr(64+i)
+            
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://www.seriefr.com/liste-' + sTitle.lower() + '.html')
+        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', '[COLOR teal] Lettre [COLOR red]'+ sTitle +'[/COLOR][/COLOR]', 'genres.png', oOutputParameterHandler)
+        
+    cConfig().finishDialog(dialog)
+    
+    oGui.setEndOfDirectory()
+        
+def AlphaDisplay():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    oParser = cParser()
+    sPattern = '<a href="([^<>"]+?)" style="display:block">([^<>"]+?)<\/a>.+?<img src="([^<>"]+?)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    #print aResult
+   
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+                
+            sTitle = aEntry[1]
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            
+            sThumb = URL_MAIN + aEntry[2]
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + aEntry[0])
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+            oGui.addTV(SITE_IDENTIFIER, 'saisonHosters', sDisplayTitle, sThumb, sThumb,'', oOutputParameterHandler)
+        
+        cConfig().finishDialog(dialog)
+        
+        oGui.setEndOfDirectory()
+
     
 
 def showMovies(sSearch = ''):
@@ -185,11 +249,13 @@ def showHosters():
                 except: pass
                 
                 if aEntry[0] in List_VF:
-                    sTitle = '[COLOR teal][VF] [/COLOR]' + sMovieTitle
+                    sTitle = '[VF]' + sMovieTitle
                 else:
-                    sTitle = '[COLOR teal][VOSTFR] [/COLOR]' + sMovieTitle
-                    
-                oHoster.setDisplayName(sTitle)
+                    sTitle = '[VOSTFR]' + sMovieTitle
+                
+                sDisplayTitle = cUtil().DecoTitle(sTitle)
+                
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sTitle)
 
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
@@ -222,14 +288,16 @@ def saisonHosters():
             if dialog.iscanceled():
                 break
 
-            sTitle = sMovieTitle+'[COLOR azure]'+aEntry[1]+'[/COLOR]'
+            #sTitle = sMovieTitle+'[COLOR azure]'+aEntry[1]+'[/COLOR]'
+            sTitle = sMovieTitle + aEntry[1]
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
             
             sUrl = URL_MAIN+aEntry[0]
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addTV(SITE_IDENTIFIER, 'epHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler) 
+            oGui.addTV(SITE_IDENTIFIER, 'epHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler) 
 
         cConfig().finishDialog(dialog)    
 
@@ -259,13 +327,15 @@ def epHosters():
             if dialog.iscanceled():
                 break
 
-            
+            sTitle = aEntry[1]
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+           
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN+aEntry[0]))
             
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', aEntry[1], '', sThumbnail, '', oOutputParameterHandler) 
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler) 
 
         cConfig().finishDialog(dialog)    
 
