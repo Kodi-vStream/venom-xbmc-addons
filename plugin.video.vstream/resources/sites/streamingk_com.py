@@ -11,9 +11,6 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re,xbmcgui,unicodedata
-#import htmlentitydefs
-
-
 from resources.lib.dl_deprotect import DecryptDlProtect
 
 
@@ -133,8 +130,6 @@ def showMovies(sSearch = ''):
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
-    
-    #sHtmlContent = sHtmlContent.replace('//ad.advertstream.com/', '').replace('http://www.adcash.com/', '').replace('http://regie.espace-plus.net/', '')
     
     #Magouille pour virer les 3 ligne en trop en cas de recherche
     if sSearch:
@@ -258,28 +253,32 @@ def showHosters(sLoop = False):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','')
+    sHtmlContent = sHtmlContent.replace("src='https://ad.a-ads.com",'')
 
     oParser = cParser()
 
     #1 er version
     sPattern = '<iframe[^<>]+?src=[\'|"](http.+?)[\'|"]'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    aResult1 = re.findall( sPattern, sHtmlContent)
     
-    #bidoullle qui suffira pour le moment pour la seconde version
-    if (aResult[0] == False):
-        sPattern = '<a class="large button .+?" href="(.+?)" target="vid">'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+    #seconde version
+    sPattern = '<a class="large button .+?" href="(.+?)" target="vid">'
+    aResult2 = re.findall( sPattern, sHtmlContent)
+    
+    #fusion des resultats
+    aResult = []
+    aResult = aResult1 + aResult2
         
     #Si il y a rien a afficher c'est peut etre une serie
-    if (aResult[0] == False) and (sLoop == False):
+    if (len(aResult) == 0) and (sLoop == False):
         #oGui.setEndOfDirectory()
         showSeries(True)
         return        
         
-    if (aResult[0] == True):
-        total = len(aResult[1])
+    if (len(aResult) > 0):
+        total = len(aResult)
         dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
+        for aEntry in aResult:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
