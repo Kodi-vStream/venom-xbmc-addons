@@ -109,7 +109,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[2], '', aEntry[0], aEntry[3], oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showLinks', aEntry[2], '', aEntry[0], aEntry[3], oOutputParameterHandler)
         
         cConfig().finishDialog(dialog)
             
@@ -131,6 +131,35 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
+    
+    
+def showLinks():
+    oGui = cGui()
+    
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+   
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request();
+    #sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'')
+    sPattern = '<div class="entry clearfix">(.+?)<p style="text-align: center;">.+?<a href="(.+?)">.+?<input type="button".+?</div>'
+    
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+
+        for aEntry in aResult[1]:
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sMovieTitle, '', sThumbnail, aEntry[0], oOutputParameterHandler)
+        
+
+    oGui.setEndOfDirectory()
     
 
 def showHosters():
