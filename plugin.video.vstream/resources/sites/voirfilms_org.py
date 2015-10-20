@@ -293,7 +293,7 @@ def showHosters():
     #fh.write(sHtmlContent.replace('\n',''))
     #fh.close()
 
-    #print aResult
+    print aResult
    
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -304,7 +304,8 @@ def showHosters():
                 break
                 
             sTitle = '[COLOR teal](' + str(aEntry[1]) + ') ' + str(aEntry[2]) + '[/COLOR] ' + sMovieTitle
-            
+            sUrl = aEntry[0].replace('https://', '//').replace('http://', '//').replace('//', 'http://')
+            print sUrl
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
