@@ -203,6 +203,10 @@ class cHosterGui:
             return cHosterHandler().getHoster('amazon')
         if ('filepup' in sHosterUrl):
             return cHosterHandler().getHoster('filepup')
+        if ('v-vids' in sHosterUrl):
+            return cHosterHandler().getHoster('v_vids')
+        if ('vid.ag' in sHosterUrl):
+            return cHosterHandler().getHoster('vid_ag')
 
         #Si aucun hebergeur connu on teste les liens directs
         if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8'):
@@ -344,11 +348,13 @@ class cHosterGui:
                 # oPlayer.startPlayer()
                 return
             else:
-                cConfig().showInfo(sHosterName, 'Fichier introuvable')
+                #cConfig().showInfo(sHosterName, 'Fichier introuvable')
+                cConfig().error("Fichier introuvable ")
                 return
 
         except:
-            cConfig().showInfo(sHosterName, 'Fichier introuvable')
+            #cConfig().showInfo(sHosterName, 'Fichier introuvable')
+            cConfig().error("Fichier introuvable ")
             return
 
         oGui.setEndOfDirectory()

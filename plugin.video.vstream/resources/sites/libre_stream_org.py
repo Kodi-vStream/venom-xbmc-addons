@@ -18,9 +18,12 @@ SITE_DESC = 'films en streaming, vk streaming, youwatch, vimple , streaming hd ,
 
 URL_MAIN = 'http://libre-stream.org/'
 
+MOVIE_MOVIE = ('http://libre-stream.org/films/', 'showMovies')
 MOVIE_NEWS = ('http://libre-stream.org/films/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 
+SERIE_SERIE = ('http://libre-stream.org/liste-des-series/', 'AlphaSearch')
+SERIE_NEWS = ('http://libre-stream.org/lastseries/', 'showMovies')
 SERIE_VFS = ('http://libre-stream.org/series/version-francaise', 'showMovies')
 SERIE_VOSTFRS = ('http://libre-stream.org/series/vostfr', 'showMovies')
 
@@ -53,6 +56,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series VOSTFR', 'series.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIE[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIE[1], 'Series Liste Complete', 'series.png', oOutputParameterHandler)    
              
     oGui.setEndOfDirectory()
 
@@ -126,6 +133,64 @@ def showQlt():
        
     oGui.setEndOfDirectory()
 
+def AlphaSearch():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    dialog = cConfig().createDialog(SITE_NAME)
+    
+    for i in range(0,36) :
+        cConfig().updateDialog(dialog, 36)
+        if dialog.iscanceled():
+            break
+        
+        if (i < 10):
+            sTitle = chr(48+i)
+        else:
+            sTitle = chr(65+i-10)
+            
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + sTitle.lower() + '.html' )
+        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', '[COLOR teal] Lettre [COLOR red]'+ sTitle +'[/COLOR][/COLOR]', 'genres.png', oOutputParameterHandler)
+        
+    cConfig().finishDialog(dialog)
+    
+    oGui.setEndOfDirectory()
+        
+def AlphaDisplay():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    oParser = cParser()
+    sPattern = '<a href="([^<>"]+?)">([^<>"]+?)<\/a><br\/>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    #print aResult
+   
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+                
+            sTitle = aEntry[1]
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sDisplayTitle, '', '','', oOutputParameterHandler)
+        
+        cConfig().finishDialog(dialog)
+        
+        oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):
     oGui = cGui()

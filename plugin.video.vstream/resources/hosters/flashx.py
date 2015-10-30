@@ -4,6 +4,7 @@ from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 import re,urllib2
 import xbmcgui
+from resources.lib.packer import cPacker
 
 #meme code que vodlocker
 
@@ -60,10 +61,7 @@ class cHoster(iHoster):
         return True
 
     def __getUrl(self, media_id):
-        urlhash = re.search('([a-zA-Z0-9]+)(?:-+[0-9]+[xX]+[0-9]+)', media_id)
-        if urlhash:
-            media_id = urlhash.group(1)
-        return 'http://www.flashx.tv/player-%s.html' % media_id
+        return ''
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
@@ -71,21 +69,18 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
 
         sId = self.__getIdFromUrl(self.__sUrl)
-        #web_url = self.__getUrl(sId)
+        web_url = 'http://www.flashx.tv/fxplay-%s.html' % sId
         
-        web_url = 'http://www.flashx.tv/player-%s.html' % sId
+        sId = re.sub(r'-.+', '', sId)
 
         headers = {
         'Host' : 'www.flashx.tv',
         'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
         'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-        'Referer':'http://embed.flashx.tv/embed.php?c=b03lgzlufx06&w=710&h=360',
+        'Referer':'http://embed.flashx.tv/embed.php?c=' + sId,
         }
-        
-        smil = ''
-        api_call = ''
-
+              
         request = urllib2.Request(web_url,None,headers)
       
         try:
@@ -95,66 +90,47 @@ class cHoster(iHoster):
             print e.reason
             
 
-        html = reponse.read()
-          
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(html)
-        #fh.close()
+        sHtmlContent = reponse.read()
         
-        swfurl = 'http://static.flashx.tv/player6/jwplayer.flash.swf'
-        r = re.search('"(http://.+?\.smil)"', html)
+        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+
+        aResult = re.findall(sPattern,sHtmlContent)
+        #aResult = oParser.parse(sHtmlContent, sPattern)
         
-        if r:
-            smil = r.group(1)
-        else:
-            r = re.search('\|smil\|+(.+?)\|sources\|', html)
-            if r:
-                smil = 'http://flashx.tv/' + r.group(1) + '.smil'
-
-        if smil:
-
-            request = urllib2.Request(smil,None,headers)
-      
-            try: 
-                reponse = urllib2.urlopen(request)
-            except URLError, e:
-                print e.read()
-                print e.reason
+        if not (aResult):
+            return False, False
             
-            html = reponse.read()
+        sUnpacked = cPacker().unpack(aResult[0])
             
-            r = re.search('<meta base="(rtmp://.*?flashx\.tv:[0-9]+/)(.+/)".*/>', html, re.DOTALL)
-            if r:
-                rtmp = r.group(1)
-                app = r.group(2)
-                sources = re.compile('<video src="(.+?)" height="(.+?)" system-bitrate="(.+?)" width="(.+?)".*/>').findall(html)
-                vid_list = []
-                url_list = []
-                best = 0
-                quality = 0
-                if sources:
-                    #print sources
-                    #return
-                    if len(sources) > 1:
-                        for index, video in enumerate(sources):
-                            if int(video[1]) > quality: best = index
-                            quality = int(video[1])
-                            vid_list.extend(['FlashX - %sp' % quality])
-                            url_list.extend([video[0]])
-                if len(sources) == 1:
-                    vid_sel = sources[0][0]
-                else:
-                    result = xbmcgui.Dialog().select('Choose a link', vid_list)
-                    if result != -1: vid_sel = url_list[result]
-                    else: return self.unresolvable(code=0, msg='No link selected')
+        oParser = cParser()
+        sPattern = '{file:"(.+?)",label:"(.+?)"}'
+        aResult = oParser.parse(sUnpacked, sPattern)
+        
+        #print aResult
 
-                if vid_sel:
-                    api_call = '%s app=%s playpath=%s swfUrl=%s pageUrl=%s swfVfy=true' % (rtmp, app, vid_sel, swfurl, web_url)
+        api_call = ''
+        
+        if (aResult[0] == True):
+            #initialisation des tableaux
+            url=[]
+            qua=[]
+        
+            #Replissage des tableaux
+            for i in aResult[1]:
+                url.append(str(i[0]))
+                qua.append(str(i[1]))
+                
+            #Si au moins 1 url
+            if (url):
+            #Afichage du tableau
+                dialog2 = xbmcgui.Dialog()
+                ret = dialog2.select('Select Quality',qua)
+                if (ret > -1):
+                    api_call = url[ret]
 
-
+        #print api_call
+        
         if (api_call):
             return True, api_call
             
         return False, False
-        
-        

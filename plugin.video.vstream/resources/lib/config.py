@@ -173,7 +173,7 @@ class cConfig():
     def error(self, e):
         xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % ('Vstream', ('Erreur: '+str(e)), '10000', self.__sIcon))
         xbmc.log('\t[PLUGIN] Vstream Erreur: '+str(e))
-        cConfig().ERROR.append(e)
+        #cConfig().ERROR.append(e)
 
     def log(self, e):
         xbmc.log('\t[PLUGIN] Vstream: '+str(e))

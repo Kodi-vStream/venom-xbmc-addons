@@ -19,8 +19,8 @@
 		<setting label="30022" type="lsep"/>
 		<setting id="plugin_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="true"/>
 		<setting id="plugin_buzzmonclick_com" type="bool" label="Buzzmonclick (Replay TV, Documentaires)" default="true"/>
+		<setting id="plugin_cinemay_com" type="bool" label="Cinemay (Films, Séries)" default="true"/>
 		<setting id="plugin_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="true"/>
-		<setting id="plugin_dpstreaming_org" type="bool" label="Dpstreaming (Films, Séries)" default="true"/>
 		<setting id="plugin_enquetedereportages_com" type="bool" label="Enquete de Reportages (Replay TV)" default="true"/>
 		<setting id="plugin_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="true"/>
 		<setting id="plugin_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="true"/>
@@ -38,12 +38,12 @@
 		<setting id="plugin_seriefr_com" type="bool" label="Seriefr.com (Séries)" default="true"/>
 		<setting id="plugin_streaming_series_org" type="bool" label="StreamingSeries.org (Séries)" default="true"/>
 		<setting id="plugin_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="true"/>
+		<setting id="plugin_streamingk_com" type="bool" label="StreamingK.com (Films, Séries, Animes)" default="true"/>
 		<setting id="plugin_streamzer_net" type="bool" label="Streamzer (Films, Séries, Documentaires)" default="true"/>
 		<setting id="plugin_streamzzz_com" type="bool" label="streamzzz.com (Séries)" default="true"/>
 		<setting id="plugin_tntv_rattrapage" type="bool" label="TNTV Rattrapage (TV Replay, Séries)" default="true"/>
 		<setting id="plugin_tv_streaming_ch" type="bool" label="TV Streaming.ch (TV Replay, Films, Séries, Animes, Documentaires)" default="true"/>
-		<setting id="plugin_videobuzzy_com" type="bool" label="Videobuzzy.com (Vidéo du Net)" default="true"/> 
-		<setting id="plugin_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com (Film, Série, Animés)" default="true"/>		
+		<setting id="plugin_videobuzzy_com" type="bool" label="Videobuzzy.com (Vidéo du Net)" default="true"/>		
 		<setting id="plugin_vkstreamingfilm_biz" type="bool" label="vkstreamingfilm.biz (Films)" default="true"/>
 		<setting id="plugin_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="true"/>
 
@@ -58,8 +58,8 @@
 		
 		<setting id="search1_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="false"/>
 		<setting id="search1_buzzmonclick_com" type="bool" label="Buzzmonclick (Replay TV, Documentaires)" default="false"/>
+		<setting id="search1_cinemay_com" type="bool" label="Cinemay (Films, Séries)" default="false"/>
 		<setting id="search1_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="false"/>
-		<setting id="search1_dpstreaming_org" type="bool" label="Dpstreaming (Films, Séries)" default="true"/>
 		<setting id="search1_enquetedereportages_com" type="bool" label="Enquete de Reportages (Replay TV)" default="false"/>
 		<setting id="search1_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="true"/>
 		<setting id="search1_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="false"/>
@@ -77,10 +77,10 @@
 		<setting id="search1_seriefr_com" type="bool" label="Seriefr.com (Séries)" default="false"/>
 		<setting id="search1_streaming_series_org" type="bool" label="StreamingSeries.org (Séries)" default="false"/>
 		<setting id="search1_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="false"/>
+		<setting id="search1_streamingk_com" type="bool" label="StreamingK.com (Films, Séries, Animes)" default="true"/>
 		<setting id="search1_streamzer_net" type="bool" label="Streamzer (Films, Séries, Documentaires)" default="true"/>
 		<setting id="search1_tntv_rattrapage" type="bool" label="TNTV Rattrapage (TV Replay, Séries)" default="false"/>
 		<setting id="search1_tv_streaming_ch" type="bool" label="TV Streaming.ch (TV Replay, Films, Séries, Animes, Documentaires)" default="true"/>			
-		<setting id="search1_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com (Film, Série, Animés)" default="false"/>
 		<setting id="search1_vkstreamingfilm_biz" type="bool" label="vkstreamingfilm.biz (Films)" default="false"/>
 		<setting id="search1_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="false"/>
     </category>
@@ -93,8 +93,8 @@
 		
 		<setting id="search2_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="true"/>
 		<setting id="search2_buzzmonclick_com" type="bool" label="Buzzmonclick (Replay TV, Documentaires)" default="false"/>
+		<setting id="search2_cinemay_com" type="bool" label="Cinemay (Films, Séries)" default="false"/>
 		<setting id="search2_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="false"/>
-		<setting id="search2_dpstreaming_org" type="bool" label="Dpstreaming (Films, Séries)" default="true"/>
 		<setting id="search2_enquetedereportages_com" type="bool" label="Enquete de Reportages (Replay TV)" default="false"/>
 		<setting id="search2_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="false"/>
 		<setting id="search2_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="false"/>
@@ -112,10 +112,10 @@
 		<setting id="search2_seriefr_com" type="bool" label="Seriefr.com (Séries)" default="true"/>
 		<setting id="search2_streaming_series_org" type="bool" label="StreamingSeries.org (Séries)" default="true"/>
 		<setting id="search2_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="false"/>
+		<setting id="search2_streamingk_com" type="bool" label="StreamingK.com (Films, Séries, Animes)" default="true"/>
 		<setting id="search2_streamzer_net" type="bool" label="Streamzer (Films, Séries, Documentaires)" default="true"/> 
 		<setting id="search2_tntv_rattrapage" type="bool" label="TNTV Rattrapage (TV Replay, Séries)" default="true"/>
 		<setting id="search2_tv_streaming_ch" type="bool" label="TV Streaming.ch (TV Replay, Films, Séries, Animes, Documentaires)" default="true"/>		
-		<setting id="search2_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com (Film, Série, Animés)" default="false"/>
 		<setting id="search2_vkstreamingfilm_biz" type="bool" label="vkstreamingfilm.biz (Films)" default="false"/>
 		<setting id="search2_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="false"/>
 		
@@ -129,8 +129,8 @@
 		
 		<setting id="search3_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="true"/>
 		<setting id="search3_buzzmonclick_com" type="bool" label="Buzzmonclick (Replay TV, Documentaires)" default="false"/>
+		<setting id="search3_cinemay_com" type="bool" label="Cinemay (Films, Séries)" default="false"/>
 		<setting id="search3_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="false"/>
-		<setting id="search3_dpstreaming_org" type="bool" label="Dpstreaming (Films, Séries)" default="false"/>
 		<setting id="search3_enquetedereportages_com" type="bool" label="Enquete de Reportages (Replay TV)" default="false"/>
 		<setting id="search3_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="false"/>
 		<setting id="search3_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="false"/>
@@ -148,10 +148,10 @@
 		<setting id="search3_seriefr_com" type="bool" label="Seriefr.com (Séries)" default="false"/>
 		<setting id="search3_streaming_series_org" type="bool" label="StreamingSeries.org (Séries)" default="false"/>
 		<setting id="search3_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="false"/>
+		<setting id="search3_streamingk_com" type="bool" label="StreamingK.com (Films, Séries, Animes)" default="true"/>
 		<setting id="search3_streamzer_net" type="bool" label="Streamzer (Films, Séries, Documentaires)" default="false"/>
 		<setting id="search3_tntv_rattrapage" type="bool" label="TNTV Rattrapage (TV Replay, Séries)" default="false"/>
 		<setting id="search3_tv_streaming_ch" type="bool" label="TV Streaming.ch (TV Replay, Films, Séries, Animes, Documentaires)" default="true"/>		
-		<setting id="search3_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com (Film, Série, Animés)" default="true"/>
 		<setting id="search3_vkstreamingfilm_biz" type="bool" label="vkstreamingfilm.biz (Films)" default="false"/>
 		<setting id="search3_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="false"/>
 		
@@ -165,8 +165,8 @@
 		
 		<setting id="search4_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="false"/>
 		<setting id="search4_buzzmonclick_com" type="bool" label="Buzzmonclick (Replay TV, Documentaires)" default="true"/>
+		<setting id="search4_cinemay_com" type="bool" label="Cinemay (Films, Séries)" default="false"/>
 		<setting id="search4_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="true"/>
-		<setting id="search4_dpstreaming_org" type="bool" label="Dpstreaming (Films, Séries)" default="false"/>
 		<setting id="search4_enquetedereportages_com" type="bool" label="Enquete de Reportages (Replay TV)" default="false"/>
 		<setting id="search4_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="false"/>
 		<setting id="search4_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="false"/>
@@ -184,10 +184,10 @@
 		<setting id="search4_seriefr_com" type="bool" label="Seriefr.com (Séries)" default="false"/>
 		<setting id="search4_streaming_series_org" type="bool" label="StreamingSeries.org (Séries)" default="false"/>
 		<setting id="search4_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="false"/>
+		<setting id="search4_streamingk_com" type="bool" label="StreamingK.com (Films, Séries, Animes)" default="false"/>
 		<setting id="search4_streamzer_net" type="bool" label="Streamzer (Films, Séries, Documentaires)" default="true"/>
 		<setting id="search4_tntv_rattrapage" type="bool" label="TNTV Rattrapage (TV Replay, Séries)" default="false"/>
-		<setting id="search4_tv_streaming_ch" type="bool" label="TV Streaming.ch (TV Replay, Films, Séries, Animes, Documentaires)" default="true"/>		
-		<setting id="search4_vk_filmz_streamiz_com" type="bool" label="Vk-Filmz-Streamiz.com (Film, Série, Animés)" default="false"/>
+		<setting id="search4_tv_streaming_ch" type="bool" label="TV Streaming.ch (TV Replay, Films, Séries, Animes, Documentaires)" default="true"/>
 		<setting id="search4_vkstreamingfilm_biz" type="bool" label="vkstreamingfilm.biz (Films)" default="false"/>
 		<setting id="search4_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="false"/>
 		

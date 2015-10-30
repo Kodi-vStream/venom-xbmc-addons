@@ -296,21 +296,32 @@ class cGuiElement:
         
         return
     def getMetadonne(self):
-        try:
-            from metahandler import metahandlers
-            grab = metahandlers.MetaData(preparezip=False)
-        except :
-            return
+        # try:
+            # from metahandler import metahandlers
+            # grab = metahandlers.MetaData(preparezip=False)
+        # except :
+            # return
+            
         #sTitle = self.__sTitle.decode('latin-1').encode("utf-8")
         #sTitle=re.sub(r'\[.*\]|\(.*\)',r'',str(self.__sFileName))
         #sTitle=sTitle.replace('VF','').replace('VOSTFR','').replace('FR','')
 
         if self.getMeta() == 1:
-            meta = grab.get_meta('movie',self.__sFileName)
+            try:
+                from metahandler import metahandlers
+                grab = metahandlers.MetaData(preparezip=False)
+                meta = grab.get_meta('movie',self.__sFileName)
+            except:
+                return
         elif self.getMeta() == 2:
+            try:
+                from metahandler import metahandlers
+                grab = metahandlers.MetaData(preparezip=False)
             #sTitle=re.sub(r'[0-9]+?',r'',str(sTitle))
             #sTitle=sTitle.replace('-','').replace('Saison','').replace('saison','').replace('Season','').replace('Episode','').replace('episode','')
-            meta = grab.get_meta('tvshow',self.__sFileName)
+                meta = grab.get_meta('tvshow',self.__sFileName)
+            except:
+                return
         else:
             return
         del meta['playcount']

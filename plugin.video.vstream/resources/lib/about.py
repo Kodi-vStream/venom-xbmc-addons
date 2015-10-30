@@ -107,7 +107,8 @@ class cAbout:
 
         if (env == 'update'):            
             self.__checkupdate('true')
-            return  xbmc.executebuiltin("SendClick(10)")
+            return
+            #return  xbmc.executebuiltin("SendClick(10)")
 
         else :
             #service
@@ -201,7 +202,7 @@ class cAbout:
                 ItemName = aPlugin[2]
                 PlugWeb = self.get_remote_md5_sum(WebUrl)
                 PlugRoot = self.get_root_md5_sum(RootUrl)
-                if (PlugWeb != PlugRoot):
+                if (PlugWeb != PlugRoot) and (PlugWeb):
                     try:
                         self.__download(WebUrl, RootUrl)
                         sContent += "[COLOR green]"+ItemName+"[/COLOR] \n"

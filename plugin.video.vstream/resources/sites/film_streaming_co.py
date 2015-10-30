@@ -12,22 +12,24 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
 import re,urllib2,urllib
- 
+
+#copie du site http://www.hd-stream.in 
 SITE_IDENTIFIER = 'film_streaming_co'
 SITE_NAME = 'Film-streaming.co'
 SITE_DESC = 'Le seul site de streaming en HD 720p 100% Gratuit'
 
-URL_MAIN = 'http://www.film-streaming.co/'
+#URL_MAIN = 'http://www.film-streaming.co/'
+URL_MAIN = 'http://www.streaming-club.com/'
  
-MOVIE_NEWS = ('http://www.film-streaming.co/index.php', 'showMovies')
-MOVIE_MOVIE = ('http://www.film-streaming.co/films.php', 'showMovies')
-MOVIE_VIEWS = ('http://www.film-streaming.co/top.php', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'index.php', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'films.php', 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'top.php', 'showMovies')
  
  
 MOVIE_GENRES = (True, 'showGenre')
  
  
-URL_SEARCH = ('http://www.film-streaming.co/search.php?movie=', 'resultSearch')
+URL_SEARCH = (URL_MAIN + 'search.php?movie=', 'resultSearch')
 FUNCTION_SEARCH = 'resultSearch'
    
 def load():
@@ -43,7 +45,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Fimls les plus vus', 'top.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films les plus vus', 'top.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
@@ -62,7 +64,7 @@ def showSearch():
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sSearchText = cUtil().urlEncode(sSearchText)
-        sUrl = 'http://www.film-streaming.co/search.php?movie='+sSearchText 
+        sUrl = URL_MAIN + 'search.php?movie='+sSearchText 
         resultSearch(sUrl)
         oGui.setEndOfDirectory()
         return 
@@ -96,27 +98,27 @@ def showGenre():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['Animation','http://www.film-streaming.co/genre.php?g=Animation'] )    
-    liste.append( ['Action','http://www.film-streaming.co/genre.php?g=Action'] )
-    liste.append( ['Arts Martiaux','http://www.film-streaming.co/genre.php?g=Arts%20Martiaux'] )
-    liste.append( ['Aventure','http://www.film-streaming.co/genre.php?g=Aventure'] )
-    liste.append( ['Biopic','http://www.film-streaming.co/genre.php?g=Biopic'] )
-    liste.append( ['Comedie','http://www.film-streaming.co/genre.php?g=Com%C3%A9die'] )
-    liste.append( ['Comedie Dramatique','http://www.film-streaming.co/genre.php?g=Com%C3%A9die%20dramatique'] )
-    liste.append( ['Documentaire','http://www.film-streaming.co/genre.php?g=Documentaire'] )
-    liste.append( ['Drame','http://www.film-streaming.co/genre.php?g=Drame'] )
-    liste.append( ['Epouvante Horreur','http://www.film-streaming.co/genre.php?g=Epouvante-horreur'] )
-    liste.append( ['Espionage','http://www.film-streaming.co/genre.php?g=Espionnage'] )  
-    liste.append( ['Fantastique','http://www.film-streaming.co/genre.php?g=Fantastique'] )
-    liste.append( ['Famille','http://www.film-streaming.co/genre.php?g=Famille'] )
-    liste.append( ['Guerre','http://www.film-streaming.co/genre.php?g=Guerre'] )
-    liste.append( ['Historique','http://www.film-streaming.co/genre.php?g=Historique'] )
-    liste.append( ['Musical','http://www.film-streaming.co/genre.php?g=Musical'] )
-    liste.append( ['Policier','http://www.film-streaming.co/genre.php?g=Policier'] )
-    liste.append( ['Romance','http://www.film-streaming.co/genre.php?g=Romance'] )
-    liste.append( ['Sciense Fiction','http://www.film-streaming.co/genre.php?g=Science%20fiction'] )
-    liste.append( ['Thriller','http://www.film-streaming.co/genre.php?g=Thriller'] )
-    liste.append( ['Western','http://www.film-streaming.co/genre.php?g=Western'] )
+    liste.append( ['Animation',URL_MAIN + 'genre.php?g=Animation'] )    
+    liste.append( ['Action',URL_MAIN + 'genre.php?g=Action'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'genre.php?g=Arts%20Martiaux'] )
+    liste.append( ['Aventure',URL_MAIN + 'genre.php?g=Aventure'] )
+    liste.append( ['Biopic',URL_MAIN + 'genre.php?g=Biopic'] )
+    liste.append( ['Comedie',URL_MAIN + 'genre.php?g=Com%C3%A9die'] )
+    liste.append( ['Comedie Dramatique',URL_MAIN + 'genre.php?g=Com%C3%A9die%20dramatique'] )
+    liste.append( ['Documentaire',URL_MAIN + 'genre.php?g=Documentaire'] )
+    liste.append( ['Drame',URL_MAIN + 'genre.php?g=Drame'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'genre.php?g=Epouvante-horreur'] )
+    liste.append( ['Espionage',URL_MAIN + 'genre.php?g=Espionnage'] )  
+    liste.append( ['Fantastique',URL_MAIN + 'genre.php?g=Fantastique'] )
+    liste.append( ['Famille',URL_MAIN + 'genre.php?g=Famille'] )
+    liste.append( ['Guerre',URL_MAIN + 'genre.php?g=Guerre'] )
+    liste.append( ['Historique',URL_MAIN + 'genre.php?g=Historique'] )
+    liste.append( ['Musical',URL_MAIN + 'genre.php?g=Musical'] )
+    liste.append( ['Policier',URL_MAIN + 'genre.php?g=Policier'] )
+    liste.append( ['Romance',URL_MAIN + 'genre.php?g=Romance'] )
+    liste.append( ['Sciense Fiction',URL_MAIN + 'genre.php?g=Science%20fiction'] )
+    liste.append( ['Thriller',URL_MAIN + 'genre.php?g=Thriller'] )
+    liste.append( ['Western',URL_MAIN + 'genre.php?g=Western'] )
                
     for sTitle,sUrl in liste:
        
@@ -251,7 +253,7 @@ def showHosters():
         oHoster = cHosterGui().checkHoster(sHosterUrl)
        
         if (oHoster != False):
-            sHosterUrl = sHosterUrl + '|Referer='+ sUrl
+            sHosterUrl = sHosterUrl + '|Referer='+ sUrl.replace(URL_MAIN,'http://www.hd-stream.in/')
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(SITE_IDENTIFIER)
             oGuiElement.setTitle(sMovieTitle)

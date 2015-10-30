@@ -68,6 +68,8 @@ class cHoster(iHoster):
         
         web_url = self.getUrl(r[0],r[1])
         
+        print web_url
+        
         headers = {'Referer': web_url}
         
         stream_url = ''
@@ -98,7 +100,7 @@ class cHoster(iHoster):
                     html = re.search('\["shared_group_' + re.escape(vid_id) + '"\](.+?),"ccOverride":"false"}', resp, re.DOTALL)
                 else:
                     #Methode brute en test
-                    html = re.search('\["shared_group_[0-9]+"\](.+?),"ccOverride":"false"}', resp, re.DOTALL)
+                    html = re.search('(?:,|\[)"shared_group_[0-9]+"\](.+?),"ccOverride":"false"}', resp, re.DOTALL)
                     
                 if html:
                     vid_list = []
@@ -106,16 +108,16 @@ class cHoster(iHoster):
                     best = 0
                     quality = 0
                     
-                    videos = re.compile(',{"url":"(https://redirector\.googlevideo\.com/.+?)","height":([0-9]+?),"width":([0-9]+?),"type":"video/.+?"}').findall(html.group(1))
+                    videos = re.compile(',{"url":"(https:\/\/redirector\.googlevideo\.com\/[^<>"]+?)","height":([0-9]+?),"width":([0-9]+?),"type":"video\/.+?"}').findall(html.group(1))
                     
                     if not videos:
-                        videos = re.compile(',{"url":"(https://lh3\.googleusercontent\.com/.+?)","height":([0-9]+?),"width":([0-9]+?),"type":"video/.+?"}').findall(html.group(1))
+                        videos = re.compile(',{"url":"(https:\/\/lh3\.googleusercontent\.com\/[^<>"]+?)","height":([0-9]+?),"width":([0-9]+?),"type":"video\/.+?"}').findall(html.group(1))
                     
                     if videos:
                         if len(videos) > 1:
                             for index, video in enumerate(videos):
                                 if int(video[1]) > quality: best = index
-                                quality = int(video[1])
+                                quality = int(video[2])
                                 vid_list.extend(['GoogleVideo - %sp' % quality])
                                 url_list.extend([video[0]])
                         if len(videos) == 1: vid_sel = videos[0][0]
