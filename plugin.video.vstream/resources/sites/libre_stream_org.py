@@ -271,7 +271,7 @@ def showHosters():
     sHtmlContent = sHtmlContent.replace('http://creative.rev2pub.com','')
                
         
-    sPattern = '<iframe.+?src="(.+?)"'
+    sPattern = '<iframe.+?src=[\'"]([^<>\'"]+?)[\'"]'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
