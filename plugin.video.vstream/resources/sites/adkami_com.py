@@ -80,7 +80,6 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showLanggenre', 'Séries Genre', 'seriesgenres.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
-
   
 def showSearch():
     oGui = cGui()

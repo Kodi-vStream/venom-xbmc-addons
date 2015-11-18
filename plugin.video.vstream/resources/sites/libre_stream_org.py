@@ -23,7 +23,7 @@ MOVIE_NEWS = ('http://libre-stream.org/films/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 
 SERIE_SERIE = ('http://libre-stream.org/liste-des-series/', 'AlphaSearch')
-SERIE_NEWS = ('http://libre-stream.org/lastseries/', 'showMovies')
+SERIE_NEWS = ('http://libre-stream.com/series/', 'showMovies')
 SERIE_VFS = ('http://libre-stream.org/series/version-francaise', 'showMovies')
 SERIE_VOSTFRS = ('http://libre-stream.org/series/vostfr', 'showMovies')
 
@@ -50,12 +50,16 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showQlt', 'Films Qualités', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries Nouveautés', 'series.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series VF', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries VF', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series VOSTFR', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries VOSTFR', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIE[0])
