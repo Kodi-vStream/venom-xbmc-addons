@@ -187,7 +187,7 @@ def showMovies(sSearch = ''):
     ##fh.write(sHtmlContent)
     #fh.close()
     
-    sPattern = '<div.*?class="moviefilm"><a.*?href="([^<]+)">.*?<img.*?src="([^<]+)" alt="(.+?)".+?>'
+    sPattern = '<div.*?class="moviefilm"> *<a.*?href="([^<]+)">.*?<img.*?src="([^<]+)" alt="(.+?)".+?>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
