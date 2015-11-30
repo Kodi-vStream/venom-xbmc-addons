@@ -14,7 +14,7 @@ from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'fullmoviz_org'
 SITE_NAME = 'FullMoviz.org'
-SITE_DESC = 'Films complets en streaming et en Français sur Fullmoviz. Liste de sorties cinéma streaming. Top streaming FR.'
+SITE_DESC = 'Films complets en streaming et en Français sur Fullmoviz'
 
 URL_MAIN = 'http://www.fullmoviz.org/'
 
@@ -103,13 +103,11 @@ def showMovies(sSearch=''):
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('&#039;', '\'')
+    sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#46;', '')
     
-    sPattern = '<div class="loop-thumb"><a href="([^<]+)"><img width=".+?" height=".+?" src="([^<]+)" class="attachment-loop wp-post-image" alt="(.+?)" /></a>'
+    sPattern = '<div class="post-thumbnail"><a href="([^<]+)" title="(.+?)"><img width=".+?" height=".+?" src="(.+?)".+?>.+?<div class="entry excerpt"><p>(.+?)</p></div>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
-    #print aResult
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -119,15 +117,15 @@ def showMovies(sSearch=''):
             if dialog.iscanceled():
                 break
 
-            #sTitle = aEntry[2].decode('latin-1').encode("utf-8")
+            sTitle = aEntry[1].replace('Film Complet en Streaming', '')
             #sThumbnail = 'http:'+str(aEntry[2])
             #sUrl = URL_MAIN+str(aEntry[1])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[1]))            
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[2], '', aEntry[1], '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
+            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))            
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[2], aEntry[3], oOutputParameterHandler)
          
         cConfig().finishDialog(dialog)
 
@@ -135,14 +133,14 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]' , oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = "<span class='page-numbers current'>.+?</span><a class='page-numbers' href='([^<]+)'>.+?</a>"
+    sPattern = '<li class="next right"><a href="(.+?)".+?</a></li>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern) 
     if (aResult[0] == True):
