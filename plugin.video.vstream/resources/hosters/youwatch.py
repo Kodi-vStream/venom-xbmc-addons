@@ -1,6 +1,8 @@
+#-*- coding: utf8 -*-
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
+from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
 import urllib, urllib2, re
 
@@ -77,6 +79,7 @@ class cHoster(iHoster):
     def __getIdFromUrl(self, sUrl):
         sPattern = "http://youwatch.org/([^<]+)"
         oParser = cParser()
+
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
             return aResult[1][0]
@@ -87,6 +90,8 @@ class cHoster(iHoster):
         if 'embed' not in sUrl:
             self.__sUrl = str(self.__getIdFromUrl(sUrl))
             self.__sUrl = 'http://youwatch.org/embed-'+str(self.__sUrl)+'.html'
+            if not re.match('[0-9]+x[0-9]+.html',self.__sUrl,re.IGNORECASE):
+                 self.__sUrl =  self.__sUrl.replace('.html','-640x360.html')
         else:
             self.__sUrl = sUrl
 
@@ -109,6 +114,8 @@ class cHoster(iHoster):
         #host = urlresolver.HostedMediaFile(self.__sUrl)
         #if host: resolver = urlresolver.resolve(self.__sUrl)
         #api_call = resolver
+        
+        #print self.__sUrl
                     
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
@@ -116,10 +123,9 @@ class cHoster(iHoster):
         oParser = cParser()
         
         #1 er test en cas de fausse page
-        sPattern ='<iframe[^<>]+? src="(.+?)" [^<>]+?> <\/iframe>'
+        sPattern ='<iframe[^<>]+?src="(.+?)" [^<>]+?> *<\/iframe>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            
             UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
             headers = {'User-Agent': UA ,
             #'Host' : 'i93.whies.info',
@@ -130,6 +136,7 @@ class cHoster(iHoster):
             req = urllib2.Request(aResult[1][0],None,headers)
             try:
                 response = urllib2.urlopen(req)
+                
             except urllib2.URLError, e:
                 print e.read()
                 print e.reason
@@ -140,20 +147,27 @@ class cHoster(iHoster):
         #2 eme test, le vrai
         html = sHtmlContent.decode('utf-8')
         jscript = re.findall("""function\(p,a,c,k,e,d\).*return p\}(.*)\)""", html)
+        
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
 
         if (jscript):
+
             lsParam = eval(jscript[0].encode('utf-8'))
             flashvars = self.exec_javascript(lsParam)
             r = re.findall('file:"(.*)",provider', flashvars)
             if r:
                 return True, r[0]
-            else:
-                cGui().showInfo(self.__sDisplayName, 'File not found or removed' , 5)
 
-        else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
-            return False, False
-            
+        #3 eme test
+        sPattern ='\[{file:"(.+?)",label:"(.+?)"}\]'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            return True , aResult[1][0][0]
+        
+        cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
+        
         return False, False
         
         

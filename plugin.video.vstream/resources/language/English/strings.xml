@@ -3,7 +3,6 @@
     <!-- general begin by 30000 - 30050 -->
     <string id="30000">Logging</string>
     <string id="30001">Videoplayer</string>
-    <string id="30002">anonyme Statistiken (wertet nur Plugin Start aus)</string>
     <string id="30500">Select</string>
     <string id="30501">Name</string>
 
@@ -83,6 +82,8 @@
     <string id="30125">Research Update (source only)</string>
     <string id="30126">Beta Tester (not recommended)</string>
     <string id="30127">Tool</string>
+    <string id="30128">Clear Cache Addon</string>
+    <string id="30129">Clear Cache Addon</string>
     <!--version 3.0.5 -->
     <string id="30130">Lists</string>
     <string id="30131">Animes Genres</string>
@@ -90,10 +91,12 @@
     <string id="30133">Television Replay News</string>
     <string id="30134">Movies VF</string>    
     <string id="30135">Movies VOSTFR</string>
-	<string id="30136">Television Replay Genre</string>
-	<string id="30137">Television Replay Sources</string>
-	<string id="30138">Movies Sources</string>
-	<string id="30139">Series Sources</string>
-	<string id="30140">Animes Sources</string>
+    <string id="30136">Télévision Replay Genre</string>
+    <string id="30137">Télévision Replay Sources</string>
+    <string id="30138">Films Sources</string>
+    <string id="30139">Séries Sources</string>
+    <string id="30140">Animés Sources</string>
+    
+    <string id="30145">Download folder</string>
         
 </strings>

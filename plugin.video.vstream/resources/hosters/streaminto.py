@@ -37,28 +37,13 @@ class cHoster(iHoster):
         return ''
         
     def __modifyUrl(self, sUrl):
-        api = ('http://rutube.ru/api/play/trackinfo/%s/?format=json') % (self.__getIdFromUrl())
-
-        oRequest = cRequestHandler(api)
-        sHtmlContent = oRequest.request()
-        sHtmlContent = sHtmlContent.replace('\\', '').replace('//', '')
-        
-        sPattern = 'src="(.+?)"'
-        
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            self.__sUrl = 'http://' + aResult[1][0]
-            return self.__sUrl
-            
         return
-
 
     def getPluginIdentifier(self):
         return 'streaminto'
 
     def isDownloadable(self):
-        return True
+        return False
 
     def isJDownloaderable(self):
         return True

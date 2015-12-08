@@ -34,6 +34,8 @@ ANIM_NEWS = ('http://streamingk.com/category/mangas/', 'showMovies')
 
 REPLAYTV_REPLAYTV = ('http://streamingk.com/category/emissions-tv/', 'showMovies')
 
+SPORT_SPORTS = ('http://streamingk.com/category/sport/', 'showMovies')
+
 URL_SEARCH = ('http://streamingk.com/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
@@ -65,6 +67,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Emissions TV', 'series.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Sport', 'series.png', oOutputParameterHandler)   
 
     oGui.setEndOfDirectory()
 
@@ -161,7 +167,9 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
-            if 'series' in sUrl or re.match('.+?saison [0-9]+',sTitle,re.IGNORECASE):
+            if 'sa-filmographie-streaming' in aEntry[1]:
+                pass
+            elif 'series' in sUrl or re.match('.+?saison [0-9]+',sTitle,re.IGNORECASE):
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
@@ -265,9 +273,13 @@ def showHosters(sLoop = False):
     sPattern = '<a class="large button .+?" href="(.+?)" target="vid">'
     aResult2 = re.findall( sPattern, sHtmlContent)
     
+    #3eme version
+    sPattern = '<a href="([^<>"]+?)" target="_blank">Regarder<\/a>'
+    aResult3 = re.findall( sPattern, sHtmlContent)
+    
     #fusion des resultats
     aResult = []
-    aResult = aResult1 + aResult2
+    aResult = aResult1 + aResult2 + aResult3
         
     #Si il y a rien a afficher c'est peut etre une serie
     if (len(aResult) == 0) and (sLoop == False):

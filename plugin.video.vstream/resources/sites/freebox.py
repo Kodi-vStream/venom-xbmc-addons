@@ -25,7 +25,7 @@ URL_SFR = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/
 URL_WEB = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/webtv2.m3u'
 URL_BG = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/bouygues.m3u'
 
-URL_LIBRETV = 'http://kodi.libretv.me/Libretv.m3u'
+URL_LIBRETV = 'http://libretv.me/Liste-m3u/token_Tj1CRNSd/add_item.dat'
 
 #URL_LIBRETV = 'http://libretv.me/Liste-m3u/Liste-anonymes/(PB)Redeneobux(USA).m3u'
 
@@ -76,12 +76,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_LIBRETV)
-    oGui.addDir(SITE_IDENTIFIER, 'showLibretv', 'Libretv.me', 'tv.png', oOutputParameterHandler)
-
-    if (linktv != 'false'):
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'openwindows', 'Tv direct', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Libretv.me', 'tv.png', oOutputParameterHandler)
 
 
     oGui.setEndOfDirectory()
@@ -122,6 +117,38 @@ def showWeb():
         oGui.addDirectTV(SITE_IDENTIFIER, 'play', track.title, 'tv.png' , sRootArt+'/tv/'+track.icon, oOutputParameterHandler)    
   
     oGui.setEndOfDirectory()
+  
+def showLibre():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    oParser = cParser()
+    sPattern = '<url>(.+?)</url><title>(.+?)</title><order>.+?</order><icon>(.+?)</icon>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+                
+            sTitle = aEntry[1]
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oGui.addDirectTV(SITE_IDENTIFIER, 'showLibretv', sDisplayTitle, 'tv.png' , '', oOutputParameterHandler)    
+        
+        cConfig().finishDialog(dialog)
+        
+        oGui.setEndOfDirectory()
     
 def showLibretv():
     oGui = cGui()

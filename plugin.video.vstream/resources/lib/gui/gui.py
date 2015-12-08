@@ -14,6 +14,36 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 import urllib
+import unicodedata,re
+
+def CleanName(str):
+    
+    #vire accent et '\'
+    try:
+        str = unicode(str, 'utf-8')#converti en unicode pour aider aux convertions
+    except:
+        pass
+    str = unicodedata.normalize('NFD', str).encode('ascii', 'ignore').decode("unicode_escape")
+    str = str.encode("utf-8") #on repasse en utf-8
+    
+    #vire tag
+    str = re.sub('[\(\[].+?[\)\]]','', str)
+    #vire caractere special
+    str = re.sub("[^a-zA-Z0-9 ]", "",str)
+    #tout en minuscule
+    str = str.lower()
+    #vire espace double
+    str = re.sub(' +',' ',str)
+
+    #vire espace a la fin
+    if str.endswith(' '):
+        str = str[:-1]
+        
+
+    return str
+
+
+
 class cGui():
 
     SITE_NAME = 'cGui'
@@ -35,14 +65,6 @@ class cGui():
         if oOutputParameterHandler.getValue('sMovieTitle'):
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
             oGuiElement.setFileName(sTitle)
-            
-        self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-        self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
-        self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
-        
-        self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
-        
-
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
         
@@ -64,10 +86,6 @@ class cGui():
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
             oGuiElement.setFileName(sTitle)
         
-        
-        self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-        self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
-        self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
         
         self.addFolder(oGuiElement, oOutputParameterHandler)
         
@@ -178,9 +196,13 @@ class cGui():
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon(sIcon)
-        oGuiElement.setMeta(0)
+        oGuiElement.setMeta(1)
         oGuiElement.setThumbnail(sThumbnail)
         oGuiElement.setFanart(sFanart)
+        
+        if oOutputParameterHandler.getValue('sMovieTitle'):
+            sTitle = oOutputParameterHandler.getValue('sMovieTitle')
+            oGuiElement.setFileName(sTitle)
         
         self.addFolder(oGuiElement, oOutputParameterHandler)
         
@@ -192,9 +214,13 @@ class cGui():
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon(sIcon)
-        oGuiElement.setMeta(0)
+        oGuiElement.setMeta(2)
         oGuiElement.setThumbnail(sThumbnail)
         oGuiElement.setFanart(sFanart)
+        
+        if oOutputParameterHandler.getValue('sMovieTitle'):
+            sTitle = oOutputParameterHandler.getValue('sMovieTitle')
+            oGuiElement.setFileName(sTitle)
         
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
@@ -230,6 +256,17 @@ class cGui():
         
         
         sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)
+        
+        #new context prend en charge les metas
+        if cGui.CONTENT == "movies":
+            self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+            self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
+            self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
+            self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+        elif cGui.CONTENT == "tvshows":
+            self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+            self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
+            self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
        
@@ -311,6 +348,51 @@ class cGui():
 
         oGuiElement.addContextItem(oContext)
         
+    def createContexMenuDownload(self, oGuiElement, oOutputParameterHandler= '', status = '0'):
+
+        if status == '0':
+            oContext = cContextElement()
+            oContext.setFile('cDownload')
+            oContext.setSiteName('cDownload')
+            oContext.setFunction('StartDownloadOneFile')
+            oContext.setTitle('Demarrer ce telechargement')
+            oContext.setOutputParameterHandler(oOutputParameterHandler)
+            oGuiElement.addContextItem(oContext)
+        
+        if status == '0' or status == '2':
+            oContext = cContextElement()
+            oContext.setFile('cDownload')
+            oContext.setSiteName('cDownload')
+            oContext.setFunction('delDownload')
+            oContext.setTitle('Supprimer de la liste')
+            oContext.setOutputParameterHandler(oOutputParameterHandler)
+            oGuiElement.addContextItem(oContext)
+            
+            oContext = cContextElement()
+            oContext.setFile('cDownload')
+            oContext.setSiteName('cDownload')
+            oContext.setFunction('DelFile')
+            oContext.setTitle('[COLOR=red]Supprimer definitivement[/COLOR]')
+            oContext.setOutputParameterHandler(oOutputParameterHandler)
+            oGuiElement.addContextItem(oContext)  
+            
+        if status == '1':
+            oContext = cContextElement()
+            oContext.setFile('cDownload')
+            oContext.setSiteName('cDownload')
+            oContext.setFunction('StopDownloadList')
+            oContext.setTitle('Arreter le telechargement')
+            oContext.setOutputParameterHandler(oOutputParameterHandler)
+            oGuiElement.addContextItem(oContext)
+            
+        if status == '2':
+            oContext = cContextElement()
+            oContext.setFile('cDownload')
+            oContext.setSiteName('cDownload')
+            oContext.setFunction('ReadDownload')
+            oContext.setTitle('Lire')
+            oContext.setOutputParameterHandler(oOutputParameterHandler)
+            oGuiElement.addContextItem(oContext)            
         
     def createContexMenuinfo(self, oGuiElement, oOutputParameterHandler= ''):
         oContext = cContextElement()
@@ -321,11 +403,15 @@ class cGui():
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
+        oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
+        oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
       
         oContext.setOutputParameterHandler(oOutputParameterHandler)
 
         oGuiElement.addContextItem(oContext)
+        
+
     
     def createContexMenuSimil(self, oGuiElement, oOutputParameterHandler= ''):
         oContext = cContextElement()
@@ -560,13 +646,36 @@ class cGui():
         
         
     def viewinfo(self):
+ 
         oGuiElement = cGuiElement()
         oInputParameterHandler = cInputParameterHandler()
 
         sTitle = oInputParameterHandler.getValue('sTitle')
         sId = oInputParameterHandler.getValue('sId')
+        sFileName = oInputParameterHandler.getValue('sFileName')
+        sYear = oInputParameterHandler.getValue('sYear')
+        sMeta = oInputParameterHandler.getValue('sMeta')
+ 
+        #1 film #2serie
+        sCleanTitle = CleanName(sTitle)
+        
+        #on vire saison et episode
+        sCleanTitle = re.sub('(?i).pisode [0-9]+', '',sCleanTitle)
+        sCleanTitle = re.sub('(?i)saison [0-9]+', '',sCleanTitle)
+        sCleanTitle = re.sub('(?i)S[0-9]+E[0-9]+', '',sCleanTitle)
+        
+        ui = cConfig().WindowsBoxes(sCleanTitle, sMeta,sYear)      
+        
+        
+    # def viewinfo2(self):
+ 
+        # oInputParameterHandler = cInputParameterHandler()
 
-        xbmc.executebuiltin( "Action(Info)")
+        # sTitle = oInputParameterHandler.getValue('sTitle')
+        # sId = oInputParameterHandler.getValue('sId')
+        # sFileName = oInputParameterHandler.getValue('sFileName')          
+        
+        # xbmc.executebuiltin("Action(Info)")
         
     def direct_epg(self):
         oGuiElement = cGuiElement()

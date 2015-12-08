@@ -32,7 +32,7 @@ def load():
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Sries Nouveautés', 'series.png',oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Series Nouveautees', 'series.png',oOutputParameterHandler)
    
    
     #oOutputParameterHandler = cOutputParameterHandler()
@@ -51,15 +51,16 @@ def showSearch():
  
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = 'http://www.regarder-film-gratuit.com/?s='+sSearchText  
-            showSeries(sUrl)
-            oGui.setEndOfDirectory()
-            return 
+        sUrl = URL_SEARCH[0] + sSearchText  
+        showSeries(sUrl)
+        oGui.setEndOfDirectory()
+        return 
  
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-      sUrl = sSearch
+        showSeries()
+        return
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -129,6 +130,7 @@ def showSeries(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
  
+    #print sUrl
  
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -138,20 +140,12 @@ def showSeries(sSearch = ''):
             if dialog.iscanceled():
                 break
  
-            #if aEntry[0]:
-                #oOutputParameterHandler = cOutputParameterHandler()
-                #oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                #oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                #oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                #oGui.addMisc(SITE_IDENTIFIER, 'showSeries', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'series.png', sThumbnail, '', oOutputParameterHandler)
-            else:
-                #sTitle = aEntry[1]
-               
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-                #oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', aEntry[1], '', '', '', oOutputParameterHandler)
+                if 'Information' not in aEntry[1]:
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+                    oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
+                    #oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                    oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', aEntry[1], '', '', '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
  
@@ -182,10 +176,10 @@ def serieHosters():
  
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src="http://www.facebook.com/plugins/likebox.php','')
-               
+    
+    #print sUrl
        
-    sPattern = 'iframe.*?src="(.+?)"'
+    sPattern = '<p><a href="([^"<>]+?)" target="_blank"><br\/>\s*<img src="http:\/\/www\.regarder-film-gratuit\.com'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
      

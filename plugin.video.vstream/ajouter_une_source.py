@@ -1,66 +1,78 @@
 #-*- coding: utf-8 -*-
 #Venom.
-from resources.lib.gui.hoster import cHosterGui #system de recherche pour l'hote
-from resources.lib.handler.hosterHandler import cHosterHandler #system de recherche pour l'hote
-from resources.lib.gui.gui import cGui #system d'affichage pour xbmc
-from resources.lib.gui.guiElement import cGuiElement #system d'affichage pour xbmc
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler #entrer des parametres
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler #sortis des parametres
+from resources.lib.gui.hoster import cHosterGui #systeme de recherche pour l'hote
+from resources.lib.handler.hosterHandler import cHosterHandler #systeme de recherche pour l'hote
+from resources.lib.gui.gui import cGui #systeme d'affichage pour xbmc
+from resources.lib.gui.guiElement import cGuiElement #systeme d'affichage pour xbmc
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler #entree des parametres
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler #sortie des parametres
 from resources.lib.handler.requestHandler import cRequestHandler #requete url
 from resources.lib.config import cConfig #config
 from resources.lib.parser import cParser #recherche de code
+#from resources.lib.util import cUtil #outils pouvant etre utiles
 
-#Si vous créer une source et la déposer dans le dossier sites elle seras directement visible sous xbmc
+#Si vous créez une source et la deposez dans le dossier "sites" elle sera directement visible sous xbmc
 
-SITE_IDENTIFIER = 'full_streaming_org' #identifant nom de votre fichier remplacer les espaces et les . par _ aucun caractere speciale
+SITE_IDENTIFIER = 'full_streaming_org' #identifant (nom de votre fichier) remplacez les espaces et les . par _ AUCUN CARACTERE SPECIAL
 SITE_NAME = 'Full-Streaming.org' # nom que xbmc affiche
 SITE_DESC = 'films en streaming, vk streaming, youwatch, vimple , streaming hd , streaming 720p , streaming sans limite' #description courte de votre source
 
 URL_MAIN = 'http://full-streaming.org/' # url de votre source
 
-#definis les url pour les catégories principale ceci et automatique si la deffition et présente elle seras afficher.
-MOVIE_NEWS = 'htt://url' # films nouveautés #30101
-MOVIE_VIEWS = 'http://url' # films + vues #30102
-MOVIE_COMMENTS = 'http://url' # films + commentés #30103
-MOVIE_NOTES = 'http://url' # films mieux notés #30104
-MOVIE_GENRES = True # ou http://url #30105
+#definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle seras affichee.
+URL_SEARCH = ('http://www.fullmoviz.org/?s=', 'showMovies')
+FUNCTION_SEARCH = 'showMovies'
 
-SERIE_SERIES = 'http://url' # serie nouveautés #30106
-SERIE_VFS = 'http://url' # serie VF #30107
-SERIE_VOSTFRS = 'http://url' # serie Vostfr #30108
+MOVIE_NEWS = ('http://url', 'showMovies') # films nouveautés
+MOVIE_MOVIE = ('http://url', 'showMovies') # films vrac
+MOVIE_VIEWS = ('http://url', 'showMovies') # films + plus
+MOVIE_COMMENTS = ('http://url', 'showMovies') # films + commentés
+MOVIE_NOTES = ('http://url', 'showMovies') # films mieux notés
+MOVIE_GENRES = (True, 'showGenre')
+MOVIE_VF = ('http://url', 'showMovies') # films VF
+MOVIE_VOSTFR = ('http://url', 'showMovies') # films VOSTFR
 
-ANIM_ANIMS = 'http://url' #anim nouveautés #30109
-ANIM_VFS = 'http://url' #anime VF #30110
-ANIM_VOSTFRS = 'http://url' #anim VOSTFR #30111
+SERIE_NEWS = ('http://url', 'showSeries') # serie nouveautés
+SERIE_SERIES = ('http://url', 'showSeries') # serie vrac
+SERIE_VFS = ('http://url', 'showSeries') # serie VF
+SERIE_VOSTFRS = ('http://url', 'showSeries') # serie Vostfr
+SERIE_GENRE = (True, 'showGenre')
 
-DOC_DOCS = 'http://url/' #Documentaire #30112
-SPORT_SPORTS = 'http://url' #sport #30113
-MOVIE_NETS = 'http://url' #video du net #30114
+ANIM_NEWS = ('http://url', 'showAnimes') #anime nouveautés
+ANIM_ANIMS = ('http://url', 'showAnimes') #anime vrac
+ANIM_VFS = ('http://url', 'showAnimes') #anime VF
+ANIM_VOSTFRS = ('http://url', 'showAnimes') #anime VOSTFR
+ANIM_MOVIES = ('http://url', 'showAnimes') #anime film
+ANIM_GENRES = (True, 'showGenre') #anime genre
 
-def load(): #function charger automatiquement par l'addon l'index de votre navigation.
+DOC_DOCS = ('http://url', 'showOthers') #Documentaire
+SPORT_SPORTS = ('http://url', 'showOthers') #sport
+MOVIE_NETS = ('http://url', 'showOthers') #video du net
+REPLAYTV_REPLAYTV = ('http://url', 'showOthers') #Replay
+
+def load(): #fonction chargee automatiquement par l'addon l'index de votre navigation.
     oGui = cGui() #ouvre l'affichage
 
     oOutputParameterHandler = cOutputParameterHandler() #apelle la function pour sortir un parametre
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') # sortis du parametres siteUrl oublier pas la Majuscule
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') # sortie du parametres siteUrl n'oubliez pas la Majuscule
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler) 
-    #Ajoute lien dossier (identifant, function a attendre, nom, icon, parametre de sortis)
-    #Puisque nous ne voulont pas atteindre une url on peux mettre ceux qu'on veut dans le parametre siteUrl
+    #Ajoute lien dossier (identifant, function a attendre, nom, icon, parametre de sortie)
+    #Puisque nous ne voulons pas atteindre une url on peut mettre ce qu'on veut dans le parametre siteUrl
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS)
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'news.png', oOutputParameterHandler)
-    #ici la function showMovies a besoin d'une url ici le racourcis MOVIE_NEWS
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautés', 'news.png', oOutputParameterHandler)
+    #ici la function showMovies a besoin d'une url ici le racourci MOVIE_NEWS
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genre', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films Genre', 'genres.png', oOutputParameterHandler)
     #showGenre n'a pas besoin d'une url pour cette methode 
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES)
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series', 'series.png', oOutputParameterHandler)
-    
-            
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Series', 'series.png', oOutputParameterHandler)
+              
     oGui.setEndOfDirectory() #ferme l'affichage
 
 def showSearch(): #function de recherche
@@ -68,16 +80,16 @@ def showSearch(): #function de recherche
 
     sSearchText = oGui.showKeyBoard() #apelle le clavier xbmx
     if (sSearchText != False):
-            sUrl = 'http://full-streaming.org/xfsearch/'+sSearchText  #modifier l'url de recherche
-            showMovies(sUrl) #apelle la function qui pouras lire la page de resulta
-            oGui.setEndOfDirectory()
-            return  
+        sUrl = URL_SEARCH[0] + sSearchText  #modifi l'url de recherche
+        showMovies(sUrl) #apelle la function qui pouras lire la page de resultats
+        oGui.setEndOfDirectory()
+        return  
     
     
 def showGenre(): #affiche les genres
     oGui = cGui()
  
-    #juste a entrer c'est caterorie et les lien qui vont bien
+    #juste a entrer les caterories et les liens qui vont bien
     liste = []
     liste.append( ['Action','http://full-streaming.org/action/'] )
     liste.append( ['Animation','http://full-streaming.org/animation/'] )
@@ -109,7 +121,7 @@ def showGenre(): #affiche les genres
     for sTitle,sUrl in liste:#boucle
         
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)#sortis de l'url en parametre
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)#sortie de l'url en parametre
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
         #ajouter un dossier vers la function showMovies avec le titre de chaque categorie.
        
@@ -118,70 +130,74 @@ def showGenre(): #affiche les genres
 
 def showMovies(sSearch = ''):
     oGui = cGui() #ouvre l'affichage
-    if sSearch:#si une url et envoyer directement garce a la function showSearch
+    if sSearch:#si une url et envoyer directement grace a la function showSearch
       sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl') # recupere l'url sortis en parametre
+        sUrl = oInputParameterHandler.getValue('siteUrl') # recupere l'url sortie en parametre
    
     oRequestHandler = cRequestHandler(sUrl) # envoye une requete a l'url
-    sHtmlContent = oRequestHandler.request(); #requete aussi
+    sHtmlContent = oRequestHandler.request() #requete aussi
+    
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
     #la function replace et pratique pour supprimer un code du resultat
+    
     sPattern = 'class="movie movie-block"><img src="([^<]+)" alt=".+?" title="([^<]+)"/>.+?<h2 onclick="window.location.href=\'([^<]+)\'">.+?<div style="color:#F29000">.+?<div.+?>(.+?)</div>'
     #pour faire simple recherche ce bout de code dans le code source de l'url
     #- ([^<]+) je veut cette partie de code mais y a une suite
     #- .+? je ne veut pas cette partis et peux importe ceux qu'elle contient
     #- (.+?) je veut cette partis et c'est la fin
+    
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     # le plus simple et de faire un print aResult 
     # dans le fichier log d'xbmc vous pourez voir un array de ce que recupere le script
     # et modifier sPattern si besoin
     print aResult #Commenter ou supprimer cette ligne une foix fini
+    
     if (aResult[0] == True):
-        total = len(aResult[1]) #dialog
-        dialog = cConfig().createDialog(SITE_NAME) #dialog
+        total = len(aResult[1])
+        #dialog barre de progression
+        dialog = cConfig().createDialog(SITE_NAME)
+        
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total) #dialog
-            if dialog.iscanceled():
-                break
+            cConfig().updateDialog(dialog, total) #dialog update
+            
             #L'array affiche vos info dans l'orde de sPattern en commencant a 0
             sTitle = aEntry[1]
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2])) #sortis de l'url
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1])) #sortis du titre
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0])) #sortis du poster
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2])) #sortie de l'url
+            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1])) #sortie du titre
+            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0])) #sortie du poster
 
             if '/series' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle,'', aEntry[0], aEntry[3], oOutputParameterHandler)
-                #addTV pour sortir les serie tv (identifiant, function, titre, icon, poster, description, sortis parametre)
+                #addTV pour sortir les series tv (identifiant, function, titre, icon, poster, description, sortie parametre)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
-                #addMovies pour sortir les films (identifiant, function, titre, icon, poster, description, sortis parametre)
+                #addMovies pour sortir les films (identifiant, function, titre, icon, poster, description, sortie parametre)
                 
-            #il existe aussis addMisc(identifiant, function, titre, icon, poster, description, sortis parametre)
+            #il existe aussis addMisc(identifiant, function, titre, icon, poster, description, sortie parametre)
             #la difference et pour les metadonner serie, films ou sans
-        cConfig().finishDialog(dialog)#dialog
+            
+        cConfig().finishDialog(dialog)# fin du dialog
            
         sNextPage = __checkForNextPage(sHtmlContent)#cherche la page suivante
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
-            #Ajoute une entrer pour le lien Next | pas de addMisc pas de poster et de description inutile donc
+            #Ajoute une entree pour le lien Next | pas de addMisc pas de poster et de description inutile donc
 
     if not sSearch:
         oGui.setEndOfDirectory() #ferme l'affichage
 
 
 def __checkForNextPage(sHtmlContent): #cherche la page suivante
-    sPattern = '<div class="navigation".+? <span.+? <a href="(.+?)">'
-    # .+? je ne veut pas cette partis et peux importe ceux qu'elle contient
-    #- (.+?) je veut cette partis et c'est la fin
     oParser = cParser()
+    sPattern = '<div class="navigation".+? <span.+? <a href="(.+?)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    print aResult #affiche le result dans le log naviguer un peux sur votre source pour voir si tous ce passe bien
+    print aResult #affiche le result dans le log
     if (aResult[0] == True):
         return aResult[1][0]
 
@@ -190,7 +206,7 @@ def __checkForNextPage(sHtmlContent): #cherche la page suivante
 
 def showHosters():# recherche et affiche les hotes
     oGui = cGui() #ouvre l'affichage
-    oInputParameterHandler = cInputParameterHandler() #apelle l'entre de paramettre
+    oInputParameterHandler = cInputParameterHandler() #apelle l'entree de paramettre
     sUrl = oInputParameterHandler.getValue('siteUrl')  # apelle siteUrl
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle') #apelle le titre
     sThumbnail = oInputParameterHandler.getValue('sThumbnail') # apelle le poster
@@ -200,11 +216,12 @@ def showHosters():# recherche et affiche les hotes
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','')
     #supprimer a l'aide de replace toute les entrer qui corresponde a votre recherche mais ne doivent pas etre pris en compte      
 
+    oParser = cParser()
     sPattern = '<iframe.+?src="(.+?)"'
     #ici nous cherchont toute les sources iframe
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #penser a faire un print aResult pour verifier 
+    #penser a faire un print aResult pour verifier
+    
     #si un lien ne s'affiche pas peux etre que l'hote n'est pas supporte par l'addon
     if (aResult[0] == True):
         for aEntry in aResult[1]:

@@ -27,7 +27,8 @@ ACCEUILPATTERN  = ''#non utilisé
 FILMPATTERN = '<div class="article-content"><p style="text-align: center;"><img src="(.+?)" border.+?<p style="text-align: left;">([^<>]+?)<\/p>'
 URL_MAIN = 'http://www.poypi.com/rgc/'
 SEARCHPATTERN = '<fieldset><div><a href="\/rgc\/(.+?)">(.+?)<\/a><\/div><\/fieldset>'
-NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/rgc\/(.+?)">(.+?)<(?:font|\/a)'
+#NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/rgc\/(.+?)">(.+?)<(?:font|\/a)'
+NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/rgc\/(.+?)">(.+?)<\/a>'
 NEXTPAGEPATTERN = '<span class="pagenav">[0-9]+<.span><.li><li><a title=".+?" href="\/rgc\/(.+?)" class="pagenav">'
 FRAMEPATTERN = '<object tabindex="0" name="mediaplayer".+?proxy\.link=(.+?)&autostart='
 #FRAMEPATTERN2 = '<iframe width="100%" height="350" src="(.+?)" frameborder="0" scrolling="no" allowfullscreen><\/iframe>'
@@ -157,7 +158,7 @@ def showMovies(sSearch = ''):
                 break
            
             sTitle2 = aEntry[1]
-            sTitle2 = aEntry[1].replace('<font color="#6da9c9"><i>HD</i></font>', '[COLOR coral]HD[/COLOR]')
+            sTitle2 = aEntry[1].replace('<font color="#979797"><i>HD</i></font>', '[COLOR coral]HD[/COLOR]')
             sUrl2 = aEntry[0]
            
             #not found better way

@@ -51,22 +51,23 @@ class cDb:
         
         ''' Create table '''
         sql_create = "CREATE TABLE IF NOT EXISTS history ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""disp TEXT, ""icone TEXT, ""isfolder TEXT, ""level TEXT, ""lastwatched TIMESTAMP "");"
-        
         self.dbcur.execute(sql_create)
         
         sql_create = "CREATE TABLE IF NOT EXISTS resume ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""hoster TEXT, ""point TEXT, ""UNIQUE(title, hoster)"");"
-        
         self.dbcur.execute(sql_create)
 
         sql_create = "CREATE TABLE IF NOT EXISTS watched ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""site TEXT, ""UNIQUE(title, site)"");"
-        
         self.dbcur.execute(sql_create)
 
         sql_create = "CREATE TABLE IF NOT EXISTS favorite ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""siteurl TEXT, ""site TEXT, ""fav TEXT, ""cat TEXT, ""icon TEXT, ""fanart TEXT, ""UNIQUE(title, site)"");"
-        
         self.dbcur.execute(sql_create)         
 
+        #sql_create = "DROP TABLE download"
+        #self.dbcur.execute(sql_create)
         
+        sql_create = "CREATE TABLE IF NOT EXISTS download ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""url TEXT, ""path TEXT, ""cat TEXT, ""icon TEXT, ""size TEXT,""totalsize TEXT, ""status TEXT, ""UNIQUE(title, path)"");"
+        self.dbcur.execute(sql_create) 
+
         cConfig().log('Table initialized') 
     
     def str_conv(self, data):
@@ -271,7 +272,7 @@ class cDb:
         try:    
             self.dbcur.execute(sql_select)
             self.db.commit()
-            cConfig().showInfo('vStream', 'Favoris supprimer')
+            cConfig().showInfo('vStream', 'Favoris supprimé')
             cConfig().update()
             return False, False
         except Exception, e:
@@ -385,3 +386,90 @@ class cDb:
         file(fav_db, "w").write("%r" % watched)
         cConfig().showInfo('Marque-Page', sTitle)
         #fav_db.close()
+
+    def insert_download(self, meta):
+
+        title = self.str_conv(meta['title'])
+        url = urllib.quote_plus(meta['url'])        
+        sIcon = self.str_conv(meta['icon'])
+        sPath = self.str_conv(meta['path'])
+
+        ex = "INSERT INTO download (title, url, path, cat, icon, size, totalsize, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+        self.dbcur.execute(ex, (title,url, sPath,meta['cat'],sIcon, '', '', 0))
+
+        try:
+            self.db.commit() 
+            cConfig().log('SQL INSERT download Successfully') 
+            cConfig().showInfo(meta['title'], 'Enregistré avec succés')
+        except Exception, e:
+            #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
+            cConfig().log('SQL ERROR INSERT') 
+            pass
+        self.db.close()
+        
+    def get_Download(self, meta = ''):
+    
+        if meta == '':
+            sql_select = "SELECT * FROM download"
+        else:
+            url = urllib.quote_plus(meta['url'])
+            sql_select = "SELECT * FROM download WHERE url = '%s' AND status = '0'" % (url)
+            
+        try:    
+            self.dbcur.execute(sql_select)
+            matchedrow = self.dbcur.fetchall()
+            return matchedrow        
+        except Exception, e:
+            cConfig().log('SQL ERROR EXECUTE') 
+            return None
+        self.dbcur.close()
+        
+        
+    def del_download(self, meta):
+
+        if len(meta['url']) > 1:
+            url = urllib.quote_plus(meta['url'])
+            sql_select = "DELETE FROM download WHERE url = '%s'" % (url)
+        elif len(meta['path']) > 1:
+            path = meta['path']
+            sql_select = "DELETE FROM download WHERE path = '%s'" % (path)
+        else:
+            return
+        
+        try:    
+            self.dbcur.execute(sql_select)
+            self.db.commit()
+            return False, False
+        except Exception, e:
+            cConfig().log('SQL ERROR EXECUTE') 
+            return False, False
+        self.dbcur.close()
+        
+    def Cancel_download(self):
+        sql_select = "UPDATE download SET status = '0' WHERE status = '1'"
+        try:    
+            self.dbcur.execute(sql_select)
+            self.db.commit()
+            return False, False
+        except Exception, e:
+            cConfig().log('SQL ERROR EXECUTE') 
+            return False, False
+        self.dbcur.close()   
+        
+    def update_download(self, meta):
+    
+        path = meta['path']
+        size = meta['size']
+        totalsize = meta['totalsize']
+        status = meta['status']
+
+        sql_select = "UPDATE download set size = '%s', totalsize = '%s', status= '%s' WHERE path = '%s'" % (size, totalsize, status, path)
+
+        try:    
+            self.dbcur.execute(sql_select)
+            self.db.commit()
+            return False, False
+        except Exception, e:
+            cConfig().log('SQL ERROR EXECUTE') 
+            return False, False
+        self.dbcur.close()    

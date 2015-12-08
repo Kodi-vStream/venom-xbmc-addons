@@ -90,11 +90,19 @@ class cHoster(iHoster):
         
         if (string):
             sContent = string.replace('\\','')
+            
+            api_call = ''
 
             sPattern = 'src=\s*?"(.*?)\?'
             aResult = oParser.parse(sContent, sPattern)
             if (aResult[0] == True):
                 api_call = aResult[1][0]
+                
+            if not api_call:
+                sPattern = 'window\.vr="(.+?)"'
+                aResult = oParser.parse(sContent, sPattern)
+                if (aResult[0] == True):
+                    api_call = aResult[1][0]
 
         if (api_call):
             return True, api_call

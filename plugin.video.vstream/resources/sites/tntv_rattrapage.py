@@ -22,7 +22,8 @@ REPLAYTV_NEWS = ('http://tntv-rattrapage.overblog.com/', 'showMovies')
 
 REPLAYTV_REPLAYTV = ('xyz', 'showGenre')
 
-URL_SEARCH = 'http://tntv-rattrapage.overblog.com/search/'
+URL_SEARCH = ('http://tntv-rattrapage.overblog.com/search/','showMovies')
+
 
 #FUNCTION_SEARCH = 'showMovies'
 
@@ -37,7 +38,6 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Nouvelle Emission', 'series.png', oOutputParameterHandler)
     
-
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'xyz')
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Emission par Categorie', 'genres.png', oOutputParameterHandler)
@@ -51,7 +51,7 @@ def showSearch():
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         #sSearchText = cUtil().urlEncode(sSearchText)
-        sUrl = URL_SEARCH + sSearchText+'/'
+        sUrl = URL_SEARCH[0] + sSearchText+'/'
  
         showMovies(sUrl)
         oGui.setEndOfDirectory()

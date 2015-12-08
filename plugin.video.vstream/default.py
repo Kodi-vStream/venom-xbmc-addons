@@ -16,6 +16,7 @@ from resources.lib.statistic import cStatistic
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.favourite import cFav
+from resources.lib.download import cDownload
 from resources.lib.about import cAbout
 from resources.lib.home import cHome
 from resources.lib.gui.gui import cGui
@@ -53,10 +54,13 @@ class main:
 	        
 	        if (isGui(sSiteName, sFunction) == True):
 	            return
-	            
+            
 	        if (isFav(sSiteName, sFunction) == True):
 	            return
-
+                
+	        if (isDl(sSiteName, sFunction) == True):
+	            return
+            
 	        if (isHome(sSiteName, sFunction) == True):
 	            return
 
@@ -118,6 +122,13 @@ def isFav(sSiteName, sFunction):
     if (sSiteName == 'cFav'):
         oFav = cFav()
         exec "oFav."+ sFunction +"()"
+        return True
+    return False
+
+def isDl(sSiteName, sFunction):
+    if (sSiteName == 'cDownload'):
+        oDownload = cDownload()
+        exec "oDownload."+ sFunction +"()"
         return True
     return False
 

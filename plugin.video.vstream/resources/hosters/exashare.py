@@ -67,7 +67,7 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        aHeader = oRequest.getResponseHeader()
+        #aHeader = oRequest.getResponseHeader()
         #sReponseCookie = aHeader.getheader("Set-Cookie")
      
         oParser = cParser()

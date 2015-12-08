@@ -89,8 +89,12 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, DOC_DOCS[1], 'Documentaires', 'animesvostfr.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir(SITE_IDENTIFIER, 'ReplayTV' ,'Replay TV', 'animesvf.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1] ,'Replay TV', 'replay.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1] ,'Sport', 'sport.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
 
@@ -168,21 +172,11 @@ def showMovies(sSearch = ''):
    
     #print sUrl
      
-    #oRequestHandler = cRequestHandler(sUrl)
-    #sHtmlContent = oRequestHandler.request()
-
-    headers = {'User-Agent' : 'Mozilla 5.10'}
-    request = urllib2.Request(sUrl,None,headers)
+    sHtmlContent = ''
       
-    try: 
-        reponse = urllib2.urlopen(request)
-    except urllib2.HTTPError, e:
-        print e.read()
-        print e.reason
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
       
-    sHtmlContent = reponse.read()
-    reponse.close()
-    
     #fh = open('c:\\test.txt', "w")
     ##fh.write(sHtmlContent)
     #fh.close()
@@ -208,7 +202,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[1]))
-            if '/films/' in sUrl:
+            if '/films/' in aEntry[0]:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[2], '', aEntry[1], '', oOutputParameterHandler) 
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', cUtil().DecoTitle(aEntry[2]),'', aEntry[1], '', oOutputParameterHandler)         
@@ -224,7 +218,7 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-def showSeries():
+def showSeries(sLoop = False):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -249,6 +243,12 @@ def showSeries():
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     #print aResult
+
+    #astuce en cas d'episode unique
+    if (aResult[0] == False) and (sLoop == False):
+        showHosters(True)
+        return
+    
     
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -258,7 +258,11 @@ def showSeries():
             if dialog.iscanceled():
                 break
 
-            sTitle = sMovieTitle+' - '+aEntry[1]
+            episode = ''
+            if aEntry[1]:
+                episode = ' - ' + aEntry[1]
+                
+            sTitle = sMovieTitle + episode
             sTitle = cUtil().DecoTitle(sTitle)
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
@@ -280,54 +284,7 @@ def __checkForNextPage(sHtmlContent):
 
     return False
     
-  
-def showLinks():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    
-    sHtmlContent = sHtmlContent.replace('facebook','<>')
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-    
-    #Recuperation des liens
-    sPattern = '<iframe src="(http[^]+?)" [^<>]+?><\/iframe>'
-    oParser = cParser()
-    #aResult = oParser.parse(sHtmlContent, sPattern)
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    #print aResult    
-    
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-            
-            sHoster = cHosterGui().checkHoster(aEntry[1].lower())
-            if (sHoster != False):
-                sTitle = sMovieTitle + aEntry[1]
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, comm, oOutputParameterHandler)             
-    
-        cConfig().finishDialog(dialog)
-
-    oGui.setEndOfDirectory()  
-
-def showHosters():
+def showHosters(sLoop = False):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')

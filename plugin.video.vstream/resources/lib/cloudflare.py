@@ -1,10 +1,9 @@
 #-*- coding: utf-8 -*-
 #
-from resources.lib.config import cConfig
-from resources.lib.gui.gui import cGui
 import re,os
 import urllib2,urllib
 import xbmc
+import xbmcaddon
 
 #Cookie path
 #C:\Users\BRIX\AppData\Roaming\Kodi\userdata\addon_data\plugin.video.vstream\
@@ -28,7 +27,8 @@ import xbmc
 #Heavy method
 # sHtmlContent = CloudflareBypass().GetHtml(sUrl)
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
+PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
+UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
 def parseInt(chain):
     
@@ -44,7 +44,19 @@ def parseInt(chain):
     
     return eval(chain)
     
+def CheckIfActive(head):
+        #if 'Checking your browser before accessing' in htmlcontent:
+        if ( "URL=/cdn-cgi/" in head.get("Refresh", "") and head.get("Server", "") == "cloudflare-nginx" ):
+            return True
+        return False
     
+def showInfo(sTitle, sDescription, iSeconds=0):
+    if (iSeconds == 0):
+            iSeconds = 1000
+    else:
+            iSeconds = iSeconds * 1000
+    xbmc.executebuiltin("Notification(%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds))
+
 class NoRedirection(urllib2.HTTPErrorProcessor):    
     def http_response(self, request, response):
         return response
@@ -55,12 +67,11 @@ class CloudflareBypass(object):
         self.state = False
                        
     def DeleteCookie(self,Domain):
-        PathCache = cConfig().getSettingCache()
+        print 'Effacement cookies'
         file = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
         os.remove(os.path.join(PathCache,file))
         
     def SaveCookie(self,Domain,data):
-        PathCache = cConfig().getSettingCache()
         Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
 
         #save it
@@ -70,7 +81,6 @@ class CloudflareBypass(object):
         file.close()
         
     def Readcookie(self,Domain):
-        PathCache = cConfig().getSettingCache()
         Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
         
         try:
@@ -91,15 +101,6 @@ class CloudflareBypass(object):
             return ''
             
         return '|' + urllib.urlencode({'User-Agent':UA,'Cookie': cook })
-
-
-  
-    def check(self,head):
-        #if 'Checking your browser before accessing' in htmlcontent:
-        if ( "URL=/cdn-cgi/" in head.get("Refresh", "") and head.get("Server", "") == "cloudflare-nginx" ):
-            self.state = True
-            return True
-        return False
     
     def SetHeader(self):
         head=[]
@@ -147,7 +148,7 @@ class CloudflareBypass(object):
             response = opener.open(url)
             htmlcontent = response.read()
             head = response.headers
-            if not self.check(head):
+            if not CheckIfActive(head):
                 # ok no more protection
                 response.close()
                 return htmlcontent
@@ -180,7 +181,7 @@ class CloudflareBypass(object):
             
             #if no protection
             head = response.headers
-            if not self.check(head):
+            if not CheckIfActive(head):
                 return htmlcontent
             
             print "Page protegée, tout a charger"
@@ -200,7 +201,7 @@ class CloudflareBypass(object):
         rep = self.GetResponse(htmlcontent)
 
         #Temporisation
-        cGui().showInfo("Information", 'Decodage protection CloudFlare' , 5)
+        showInfo("Information", 'Decodage protection CloudFlare' , 5)
         xbmc.sleep(4000)
         
         NewUrl = self.hostComplet + '/cdn-cgi/l/chk_jschl?jschl_vc='+ urllib.quote_plus(hash) +'&pass=' + urllib.quote_plus(passe) + '&jschl_answer=' + rep
@@ -225,7 +226,7 @@ class CloudflareBypass(object):
             
             if not c1 or not c2:
                 print "Probleme protection Cloudflare : Decodage rate"
-                cGui().showInfo("Erreur", 'Probleme protection CloudFlare' , 5)
+                showInfo("Erreur", 'Probleme protection CloudFlare' , 5)
                 response.close()
                 return ''
                 
@@ -233,7 +234,7 @@ class CloudflareBypass(object):
 
         else:
             print "Probleme protection Cloudflare : Cookies manquants"
-            cGui().showInfo("Erreur", 'Probleme protection CloudFlare' , 5)
+            showInfo("Erreur", 'Probleme protection CloudFlare' , 5)
             response.close()
             return ''
         
@@ -253,7 +254,7 @@ class CloudflareBypass(object):
         response = opener.open(url)
         htmlcontent = response.read()
         head = response.headers
-        if self.check(head):
+        if CheckIfActive(head):
             #Arf new cookie not working
             print "New cookie not working"
             #self.DeleteCookie(self.host.replace('.','_'))

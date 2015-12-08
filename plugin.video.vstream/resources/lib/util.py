@@ -42,6 +42,10 @@ class cUtil:
         return oDialog
         
     def DecoTitle(self, string):
+
+        #on vire ancienne deco en cas de bug
+        string = re.sub('\[\/*COLOR.*?\]','',string)
+        
         #pr les tag
         string = re.sub('([\[\(](?![0-9]{4}).{1,7}[\)\]])',' [COLOR coral]\\1[/COLOR] ', str(string))
         #pr les episodes
@@ -57,11 +61,14 @@ class cUtil:
                 string = string.replace(m.group(1),'')
                 SXEX = 'S' + "%02d" % int(m.group(2)) + SXEX
             
-            string = re.sub(' +',' ',string)
+            #string = re.sub(' +',' ',string)
             string = string + ' [COLOR coral] ' + SXEX + '[/COLOR] '
         
         else:
             string = re.sub('(?i)(.*)(saison [0-9]+)','\\1 [COLOR coral]\\2[/COLOR] ', str(string))
+            
+        #vire doubles espaces
+        string = re.sub(' +',' ',string)
             
         return string
 

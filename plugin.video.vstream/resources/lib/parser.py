@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 import re
 
 class cParser:
@@ -13,7 +14,7 @@ class cParser:
         return sString.replace('\\/','/').replace('&amp;','&').replace('\xc9','E').replace('&#8211;', '-').replace('&#038;', '&').replace('&rsquo;','\'').replace('\r','').replace('\n','').replace('\t','').replace('&#039;',"'")
 
     def parse(self, sHtmlContent, sPattern, iMinFoundValue = 1):
-        sHtmlContent = self.__replaceSpecialCharacters(sHtmlContent)
+        sHtmlContent = self.__replaceSpecialCharacters(str(sHtmlContent))
         aMatches = re.compile(sPattern, re.IGNORECASE).findall(sHtmlContent)
         if (len(aMatches) >= iMinFoundValue):                
             return True, aMatches

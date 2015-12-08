@@ -3,6 +3,7 @@ from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.lib.util import cUtil
 from resources.hosters.hoster import iHoster
+from resources.lib.packer import cPacker
 import xbmcgui,xbmc
 import urllib2
 import re
@@ -60,8 +61,9 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         
+        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0'
         headers = {'Host' : 'videomega.tv',
-                   'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0',
+                   'User-Agent' : UA,
                    #'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                    #'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
                    #'Accept-Encoding' : 'gzip, deflate',
@@ -98,37 +100,48 @@ class cHoster(iHoster):
                     print e.reason
              
                 sHtmlContent = reponse.read()
-                
-        #Premier test, lien ok
-        sPattern =  '<source src="([^"]+)" type="video[^"]*"\/>'
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        if (aResult[0] == True):
-            api_call = aResult[1][0]
-            
-        #Deuxieme test, lien code
-        if not api_call:
-            #troisieme test
-            sPattern =  'unescape.+?"(.+?)"'
-            oParser = cParser()
-            aResult = oParser.parse(sHtmlContent, sPattern)
 
+        oParser = cParser()
+            
+        #Premier test, lien code unescape
+        sPattern =  'unescape.+?"(.+?)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+
+        if (aResult[0] == True):
+            decoder = cUtil().urlDecode(aResult[1][0])
+            
+            sPattern =  'file: "(.+?)"'
+            aResult = oParser.parse(decoder, sPattern)
+            
             if (aResult[0] == True):
-                decoder = cUtil().urlDecode(aResult[1][0])
+                api_call = aResult[1][0]
                 
-                sPattern =  'file: "(.+?)"'
-                oParser = cParser()
-                aResult = oParser.parse(decoder, sPattern)
+        #Dexieme test Dean Edwards Packer
+        if not api_call:
+            sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                sUnpacked = cPacker().unpack(aResult[1][0])
                 
+                sPattern =  '\("src", *"(.+?)"\);'
+                aResult = oParser.parse(sUnpacked, sPattern)
+
                 if (aResult[0] == True):
                     api_call = aResult[1][0]
-                 
+                    
+        #Troisieme test, lien non code
+        if not api_call:
+            sPattern =  '<source src="([^"]+)" type="video[^"]*"\/>'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            
+            if (aResult[0] == True):
+                api_call = aResult[1][0]
 
         #print 'url : ' + api_call
 
         if (api_call):
-            xbmc.sleep(6000)
+            api_call = api_call + '|User-Agent=' + UA
+            #xbmc.sleep(6000)
             return True, api_call
             
         return False, False

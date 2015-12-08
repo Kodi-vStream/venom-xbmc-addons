@@ -1,10 +1,17 @@
 #-*- coding: utf-8 -*-
 from resources.lib.config import cConfig
+from resources.lib.gui.gui import cGui
 
 import sys
 import os
+import urllib
+import xbmcgui
 
 class cRechercheHandler:
+    
+    def __init__(self):
+        self.__sText = ""
+        self.__sDisp = ""
 
     def getPluginHandle(self):
         try:
@@ -17,6 +24,32 @@ class cRechercheHandler:
             return sys.argv[0]
         except:
             return ''
+            
+    def setText(self, sText):
+        self.__sText = sText
+
+    def getText(self):
+        if not self.__sText:
+            oGui = cGui()
+            sSearchText = oGui.showKeyBoard()
+            self.__sText = urllib.quote(sSearchText)
+        return self.__sText
+        
+
+    def setDisp(self, sDisp):
+        self.__sDisp = sDisp
+
+    def getDisp(self):
+        if not self.__sDisp:
+            disp = ['search1','search2','search3','search4']
+            dialog2 = xbmcgui.Dialog()
+            dialog_select = [cConfig().getSetting('search1_label'), cConfig().getSetting('search2_label'), cConfig().getSetting('search3_label'), cConfig().getSetting('search4_label')]
+
+            ret = dialog2.select('Select Recherche',dialog_select)
+    
+            if ret > -1:
+                self.__sDisp = disp[ret]
+        return self.__sDisp
 
     def __getFileNamesFromFolder(self, sFolder):
         aNameList = []
@@ -36,7 +69,7 @@ class cRechercheHandler:
                     aNameList.append(sItemName)
         return aNameList
 
-    def __importPlugin(self, sName, sLabel):
+    def __importPlugin(self, sName, sLabel, sText):
         oConfig = cConfig()
         sPluginSettingsName = sLabel+'_' +sName
         bPlugin = oConfig.getSetting(sPluginSettingsName)
@@ -46,12 +79,18 @@ class cRechercheHandler:
 
         if (bPlugin == 'true') and (OnPlugins == 'true'):    
             try:
-                cConfig().log("Load Plugin: " + str(sName))
+                oGui = cGui()
+                oGui.addText(sName,'[COLOR olive]'+sName+'[/COLOR]')
+                cConfig().log("Load Recherche: " + str(sName))
                 exec "from resources.sites import " + sName
                 exec "sSearch = " + sName + ".URL_SEARCH"
                 #exec "sFunction = " + sName + ".FUNCTION_SEARCH"
                 #sPluginSettingsName = sLabel+'_' + sName
-                return sSearch[0], sPluginSettingsName, sSearch[1]
+                sUrl = sSearch[0]+sText
+                
+                searchUrl = "%s.%s('%s')" % (sName, sSearch[1], sUrl)
+                exec searchUrl   
+                return True
             except Exception, e:
                 cConfig().log("cant import plugin: " + str(sName))            
                 return False, False
@@ -74,9 +113,12 @@ class cRechercheHandler:
         sFolder = sFolder.replace('\\', '/')
         return sFolder
 
-    def getAvailablePlugins(self, sLabel):
+    def getAvailablePlugins(self):
         oConfig = cConfig()
-
+        sText = self.getText()
+        if not sText:
+            return False
+        sLabel = self.getDisp()
         sFolder =  self.getRootFolder()
         sFolder = os.path.join(sFolder, 'resources/sites')
 
@@ -89,23 +131,9 @@ class cRechercheHandler:
         aPlugins = []
         for sFileName in aFileNames:
                 
-            aPlugin = self.__importPlugin(sFileName, sLabel)
-            if (aPlugin[0] != False):
-                sSiteName = aPlugin[0]
-                sPluginSettingsName = aPlugin[1]
-                sSiteDesc = aPlugin[2]
+            aPlugin = self.__importPlugin(sFileName, sLabel, sText)
 
-                # existieren zu diesem plugin die an/aus settings
-                bPlugin = oConfig.getSetting(sPluginSettingsName)
-                if (bPlugin != ''):
-                    # settings gefunden
-                    if (bPlugin == 'true'):
-                        aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName, sSiteDesc))
-                else:
-                   # settings nicht gefunden, also schalten wir es trotzdem sichtbar
-                   aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName, sSiteDesc))
-
-        return aPlugins
+        return True
 
     def __createAvailablePluginsItem(self, sPluginName, sPluginIdentifier, sPluginDesc):
         aPluginEntry = []

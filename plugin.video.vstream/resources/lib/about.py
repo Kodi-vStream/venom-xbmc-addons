@@ -122,7 +122,7 @@ class cAbout:
                 #time_service = time_service - datetime.timedelta(hours=50)
                 if (time_now - time_service > time_sleep):
                     self.__checkversion()
-                    self.__checkupdate('false')                    
+                    self.__checkupdate('false')
                     #Function update auto
             else:
                 cConfig().setSetting('service_time', str(datetime.datetime.now()))
@@ -159,33 +159,27 @@ class cAbout:
                 
     def __checkupdate(self, download):
             service_time = cConfig().getSetting('service_time')
-            if (service_time != ''):          
-                try:
-                    sUrl = 'https://api.github.com/repos/LordVenom/venom-xbmc-addons/commits/master'
-                    oRequestHandler = cRequestHandler(sUrl)
-                    sHtmlContent = oRequestHandler.request(); 
-                    result = json.loads(sHtmlContent)
-                    
-                    time_service = self.__strptime(service_time, "%Y-%m-%d %H:%M:%S.%f")
-                    #pour test
-                    #time_service = time_service - datetime.timedelta(hours=50)
-                    
-                    time_source = self.__strptime(result['commit']['committer']['date'], "%Y-%m-%dT%H:%M:%SZ")
-                    
-                    if (time_source > time_service):
-                        if (download == 'true'):
-                            self.__checkdownload()
-                        cConfig().setSetting('home_update', str('true'))
-                    else:
-                        if (download == 'true'):
-                            cConfig().showInfo('vStream', 'Fichier a jour')
-                            
-                        cConfig().setSetting('home_update', str('false'))
-                                
-                    return
-                except:
-                    cConfig().setSetting('service_time', str(datetime.datetime.now()))
-                    return
+            service_md5 = cConfig().getSetting('service_md5')         
+            try:
+                #sUrl = 'https://api.github.com/repos/LordVenom/venom-xbmc-addons/commits/master'
+                sUrl = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/updates.xml.md5'
+                oRequestHandler = cRequestHandler(sUrl)
+                sHtmlContent = oRequestHandler.request();
+                if not service_md5:
+                    cConfig().setSetting('service_md5', sHtmlContent)
+                    service_md5 = sHtmlContent
+                
+                if (service_md5 != sHtmlContent):
+                    if (download == 'true'):
+                        self.__checkdownload()
+                    cConfig().setSetting('home_update', str('true'))
+                else:
+                    if (download == 'true'):
+                        cConfig().showInfo('vStream', 'Fichier a jour')
+                        
+                    cConfig().setSetting('home_update', str('false'))
+            except:
+                return
             return
     
     def __checkdownload(self):

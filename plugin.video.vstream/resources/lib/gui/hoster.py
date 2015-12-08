@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.handler.jdownloaderHandler import cJDownloaderHandler
-from resources.lib.download import cDownload
+#import resources.lib.download import cDownload
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
@@ -69,14 +69,15 @@ class cHosterGui:
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
         
-        #context download menu
-        oContext = cContextElement()
-        oContext.setFile('cHosterGui')
-        oContext.setSiteName(self.SITE_NAME)
-        oContext.setFunction('download')
-        oContext.setTitle(cConfig().getlanguage(30202))
-        oContext.setOutputParameterHandler(oOutputParameterHandler)
-        oGuiElement.addContextItem(oContext)
+        if (oHoster.isDownloadable() == True):
+            #Beta context download menu
+            oContext = cContextElement()
+            oContext.setFile('cDownload')
+            oContext.setSiteName('cDownload')
+            oContext.setFunction('AddtoDownloadList')
+            oContext.setTitle(cConfig().getlanguage(30202))
+            oContext.setOutputParameterHandler(oOutputParameterHandler)
+            oGuiElement.addContextItem(oContext)
         
         #context FAV menu
         oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
@@ -231,16 +232,16 @@ class cHosterGui:
         sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
-	sFileName = oInputParameterHandler.getValue('sFileName')
+        sFileName = oInputParameterHandler.getValue('sFileName')
 
         oHoster = cHosterHandler().getHoster(sHosterIdentifier)
-	oHoster.setFileName(sFileName)
+        oHoster.setFileName(sFileName)
 
         # play
         self.__showPlayMenu(oGui, sMediaUrl, oHoster, bGetRedirectUrl)
 
-	# playlist
-	self.__showPlaylistMenu(oGui, sMediaUrl, oHoster, bGetRedirectUrl)
+        # playlist
+        self.__showPlaylistMenu(oGui, sMediaUrl, oHoster, bGetRedirectUrl)
 
         # download
         if (oHoster.isDownloadable() == True):
@@ -248,7 +249,7 @@ class cHosterGui:
 
         # JD
         if (oHoster.isJDownloaderable() == True):
-            self.__showJDMenu(oGui, sMediaUrl, oHoster, bGetRedirectUrl)	
+            self.__showJDMenu(oGui, sMediaUrl, oHoster, bGetRedirectUrl)    
 
         oGui.setEndOfDirectory()
 
@@ -261,7 +262,7 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
         oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
         oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
-	oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
+        oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     def __showDownloadMenu(self, oGui, sMediaUrl, oHoster, bGetRedirectUrl):
@@ -273,7 +274,7 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
         oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
         oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
-	oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
+        oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     def __showJDMenu(self, oGui, sMediaUrl, oHoster, bGetRedirectUrl):
@@ -285,7 +286,7 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
         oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
         oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
-	oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
+        oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     def __showPlaylistMenu(self, oGui, sMediaUrl, oHoster, bGetRedirectUrl):
@@ -297,7 +298,7 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
         oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
         oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
-	oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
+        oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     def play(self):
@@ -385,7 +386,7 @@ class cHosterGui:
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(self.SITE_NAME)
             oGuiElement.setMediaUrl(aLink[1])
-	    oGuiElement.setTitle(oHoster.getFileName())
+            oGuiElement.setTitle(oHoster.getFileName())
 
             oPlayer = cPlayer()
             oPlayer.addItemToPlaylist(oGuiElement)
@@ -398,35 +399,35 @@ class cHosterGui:
         oGui.setEndOfDirectory()
         
 
-    def download(self):
-        oGui = cGui()
-        oInputParameterHandler = cInputParameterHandler()
+    # def download(self):
+        # oGui = cGui()
+        # oInputParameterHandler = cInputParameterHandler()
 
-        sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
-        sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
-        bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
-        sFileName = oInputParameterHandler.getValue('sFileName')
+        # sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
+        # sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
+        # bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
+        # sFileName = oInputParameterHandler.getValue('sFileName')
 
-        if (bGetRedirectUrl == 'True'):
-            sMediaUrl = self.__getRedirectUrl(sMediaUrl)
+        # if (bGetRedirectUrl == 'True'):
+            # sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
-        cConfig().log("Telechargement " + sMediaUrl)
+        # cConfig().log("Telechargement " + sMediaUrl)
 
-        oHoster = cHosterHandler().getHoster(sHosterIdentifier)
-        oHoster.setFileName(sFileName)
+        # oHoster = cHosterHandler().getHoster(sHosterIdentifier)
+        # oHoster.setFileName(sFileName)
 
-        #try:
-        oHoster.setUrl(sMediaUrl)
-        aLink = oHoster.getMediaLink()
-        if (aLink[0] == True):
-            oDownload = cDownload()
-            oDownload.download(aLink[1], oHoster.getFileName())
-            return
+        # #try:
+        # oHoster.setUrl(sMediaUrl)
+        # aLink = oHoster.getMediaLink()
+        # if (aLink[0] == True):
+            # oDownload = cDownload()
+            # oDownload.download(aLink[1], oHoster.getFileName())
+            # return
 
-        #except:
-        # cConfig().log("Telechargement " + sHosterFileName)
+        # #except:
+        # # cConfig().log("Telechargement " + sHosterFileName)
 
-        oGui.setEndOfDirectory()
+        # oGui.setEndOfDirectory()
 
     def sendToJDownbloader(self):
         oGui = cGui()
@@ -435,7 +436,7 @@ class cHosterGui:
         sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
-	sFileName = oInputParameterHandler.getValue('sFileName')
+        sFileName = oInputParameterHandler.getValue('sFileName')
 
         if (bGetRedirectUrl == 'True'):
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
@@ -455,3 +456,7 @@ class cHosterGui:
         oRequest = cRequestHandler(sUrl)
         oRequest.request()
         return oRequest.getRealUrl()
+
+        
+
+       

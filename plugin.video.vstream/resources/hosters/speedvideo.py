@@ -34,7 +34,7 @@ class cHoster(iHoster):
         return self.__sHD
 
     def isDownloadable(self):
-        return True
+        return False
 
     def isJDownloaderable(self):
         return True

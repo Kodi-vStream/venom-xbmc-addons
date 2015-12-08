@@ -3,6 +3,9 @@ import urllib2
 from urllib2 import HTTPError, URLError
 from resources.lib.config import cConfig
 
+from resources.lib import cloudflare
+
+
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
@@ -74,18 +77,31 @@ class cRequestHandler:
                 for sHeaderKey, sHeaderValue in aHeader.items():
                     oRequest.add_header(sHeaderKey, sHeaderValue)
 
-    	try:
-    		oResponse = urllib2.urlopen(oRequest, timeout=30)               
-    	#except:
-    	#	for aHeader in self.__aHeaderEntries:
-        #                for sHeaderKey, sHeaderValue in aHeader.items():
-        #                    oRequest.add_header(sHeaderKey, sHeaderValue)
-    	#	oResponse = urllib2.urlopen(oRequest)
-        except:
-            cConfig().error("%s,%s" % (cConfig().getlanguage(30205), self.__sUrl))
-            return ''
+        sContent = ''
+        try:
+            oResponse = urllib2.urlopen(oRequest, timeout=30)
+            sContent = oResponse.read()
+            
+            self.__sResponseHeader = oResponse.info()
+            self.__sRealUrl = oResponse.geturl()
+        
+            oResponse.close()
+            
+        except urllib2.HTTPError, e:
+            if e.code == 503:
+                if cloudflare.CheckIfActive(e.headers):
+                    cookies = e.headers['Set-Cookie']
+                    cookies = cookies.split(';')[0]
+                    print 'Page protegee par cloudflare'
+                    from resources.lib.cloudflare import CloudflareBypass
+                    sContent = CloudflareBypass().GetHtml(self.__sUrl,e.read(),cookies)
+                    
+                    self.__sResponseHeader = ''
+                    self.__sRealUrl = ''
 
-        sContent = oResponse.read()
+            if not  sContent:
+                cConfig().error("%s,%s" % (cConfig().getlanguage(30205), self.__sUrl))
+                return ''
         
         if (self.__bRemoveNewLines == True):
             sContent = sContent.replace("\n","")
@@ -94,10 +110,6 @@ class cRequestHandler:
         if (self.__bRemoveBreakLines == True):
             sContent = sContent.replace("&nbsp;","")
 
-        self.__sResponseHeader = oResponse.info()
-        self.__sRealUrl = oResponse.geturl()
-        
-        oResponse.close()
         return sContent
 
     def getHeaderLocationUrl(self):        

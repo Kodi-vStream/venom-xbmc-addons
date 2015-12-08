@@ -10,11 +10,12 @@ from resources.lib.handler.requestHandler import cRequestHandler #requete url
 from resources.lib.config import cConfig #config
 from resources.lib.parser import cParser #recherche de code
 from resources.lib.util import cUtil
+import re
  
  
 SITE_IDENTIFIER = 'film_illimit_fr' #identifant nom de votre fichier remplacer les espaces et les . par _ aucun caractere speciale
 SITE_NAME = 'Film Illimit' # nom que xbmc affiche
-SITE_DESC = 'Films HD en streaming' #description courte de votre source
+SITE_DESC = 'Films/Series HD en streaming' #description courte de votre source
  
 URL_MAIN = 'http://xn--official-film-illimit-v5b.fr/' # url de votre source
 
@@ -147,17 +148,24 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total) #dialog
             if dialog.iscanceled():
                 break
-           
-            sTitle = aEntry[2]+ ' [COLOR coral] '+aEntry[3]+'[/COLOR]'
+                
+            sName = aEntry[2].replace(' en Streaming HD','')
+            sName = sName.replace(' Streaming HD','')
+            
+            sTitle = sName + ' [COLOR coral] '+aEntry[3]+'[/COLOR]'
             sUrl = aEntry[0].replace('http://official-film-illimité.fr', 'http://xn--official-film-illimit-v5b.fr')
             sThumbnail = aEntry[1].replace('http://official-film-illimité.fr', 'http://xn--official-film-illimit-v5b.fr')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail)) #sortis du poster
- 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sMovieTitle', sName)
+            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            
+            if re.match('.+?saison [0-9]+',sTitle,re.IGNORECASE):
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumbnail,'', oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
+            
  
         cConfig().finishDialog(dialog)
            
@@ -209,5 +217,41 @@ def showHosters():
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
        
-    oGui.setEndOfDirectory()  
+    oGui.setEndOfDirectory()
+    
+def serieHosters():
+    oGui = cGui()
+   
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+ 
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    sHtmlContent = sHtmlContent.replace('<iframe width="420" height="315" src="https://www.youtube.com/', '')
+    sPattern = '<div class="su-tabs-pane su-clearfix"><iframe src="(.+?)"[^<>]+?><\/iframe><\/div>'
+    
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+   
+    if (aResult[0] == True):
+        i = 1
+        for aEntry in aResult[1]:
+                
+            sHosterUrl = str(aEntry)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            
+            sTitle = sMovieTitle + 'episode ' + str(i)
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            
+            i = i + 1
+ 
+            if (oHoster != False):
+                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setFileName(sTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+       
+    oGui.setEndOfDirectory()
+    
     

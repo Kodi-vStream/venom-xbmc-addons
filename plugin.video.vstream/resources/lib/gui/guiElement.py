@@ -17,6 +17,7 @@ class cGuiElement:
         self.__sPlaycount = 0
         self.__sTrailerUrl = ''
         self.__sMetaAddon = cConfig().getSetting('meta-view')
+        self.__sTmdb = ''
         self.__sMediaUrl = ''
         self.__sSiteUrl = ''
         self.__sTitle = ''
@@ -37,6 +38,7 @@ class cGuiElement:
         self.__sFanart_buzz = self.__sRootArt+'buzz_fanart.jpg'
         self.__sFanart_mark = self.__sRootArt+'mark_fanart.jpg'
         self.__sFanart_host = self.__sRootArt+'host_fanart.jpg'
+        self.__sFanart_download = self.__sRootArt+'download_fanart.jpg'
         
         self.__aItemValues = {}
         self.__aProperties = {}
@@ -55,6 +57,12 @@ class cGuiElement:
 
     def getType(self):
         return self.__sType
+        
+    def setTmdb(self, sTmdb):
+        self.__sTmdb = sTmdb
+
+    def getTmdb(self):
+        return self.__sTmdb
         
     def setCat(self, sCat):
         self.__sCat = sCat
@@ -185,6 +193,9 @@ class cGuiElement:
             
         elif sIcon == 'host.png':
             self.__sFanart = cConfig().getSetting('images_hosts')
+         
+        elif sIcon == 'download.png':
+            self.__sFanart = cConfig().getSetting('images_downloads')
             
         elif xbmc.getInfoLabel('ListItem.Art(fanart)') != '':
             self.__sFanart = xbmc.getInfoLabel('ListItem.Art(fanart)')
@@ -325,13 +336,15 @@ class cGuiElement:
         else:
             return
         del meta['playcount']
-               
+        
         if meta['title']:
             meta['title'] = self.getTitle()
             
         for key, value in meta.items():
             self.addItemValues(key, value)
          
+        if meta['imdb_id']:
+            self.__sImdb = meta['imdb_id']           
         if meta['backdrop_url']:
             self.addItemProperties('fanart_image', meta['backdrop_url'])
             self.__sFanart = meta['backdrop_url']
