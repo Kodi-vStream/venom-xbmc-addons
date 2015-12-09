@@ -13,21 +13,21 @@ from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'libre_stream_org'
-SITE_NAME = 'Libre-stream.org'
+SITE_NAME = 'Libre-stream.com'
 SITE_DESC = 'films en streaming, vk streaming, youwatch, vimple , streaming hd , streaming 720p , streaming sans limite'
 
-URL_MAIN = 'http://libre-stream.org/'
+URL_MAIN = 'http://libre-stream.com/'
 
-MOVIE_MOVIE = ('http://libre-stream.org/films/', 'showMovies')
-MOVIE_NEWS = ('http://libre-stream.org/films/', 'showMovies')
+MOVIE_MOVIE = ('http://libre-stream.com/films/', 'showMovies')
+MOVIE_NEWS = ('http://libre-stream.com/films/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 
-SERIE_SERIE = ('http://libre-stream.org/liste-des-series/', 'AlphaSearch')
+SERIE_SERIE = ('http://libre-stream.com/liste-des-series/', 'AlphaSearch')
 SERIE_NEWS = ('http://libre-stream.com/series/', 'showMovies')
-SERIE_VFS = ('http://libre-stream.org/series/version-francaise', 'showMovies')
-SERIE_VOSTFRS = ('http://libre-stream.org/series/vostfr', 'showMovies')
+SERIE_VFS = ('http://libre-stream.com/series/version-francaise/', 'showMovies')
+SERIE_VOSTFRS = ('http://libre-stream.com/series/vostfr', 'showMovies')
 
-URL_SEARCH = ('http://libre-stream.org/?q=', 'showMovies')
+URL_SEARCH = ('http://libre-stream.com/?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -83,30 +83,30 @@ def showGenre():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['Action','http://libre-stream.org/films/action/'] )
-    liste.append( ['Animation','http://libre-stream.org/films/animation'] )
-    liste.append( ['Arts Martiaux','http://libre-stream.org/films/arts-martiaux'] )
-    liste.append( ['Aventure','http://libre-stream.org/films/aventure'] )
-    liste.append( ['Biopic','http://libre-stream.org/films/biopic'] )
-    liste.append( ['Comedie','http://libre-stream.org/films/comedie'] )
-    liste.append( ['Comedie Dramatique','http://libre-stream.org/films/comedie-dramatique'] )
-    liste.append( ['Comedie Musicale','http://libre-stream.org/films/comedie-musicale'] )
-    liste.append( ['Disney','http://libre-stream.org/films/disney'] )
-    liste.append( ['Divers','http://libre-stream.org/films/divers'] )    
-    liste.append( ['Documentaire','http://libre-stream.org/films/documentaire'] )
-    liste.append( ['Drame','http://libre-stream.org/films/drame'] )
-    liste.append( ['Epouvante Horreur','http://libre-stream.org/films/horreur'] ) 
-    liste.append( ['Espionnage','http://libre-stream.org/films/espionnage'] )
-    liste.append( ['Famille','http://libre-stream.org/film/famille'] )
-    liste.append( ['Fantastique','http://libre-stream.org/film/fantastique'] )  
-    liste.append( ['Guerre','http://libre-stream.org/film/guerre'] )
-    liste.append( ['Historique','http://libre-stream.org/film/historique'] )
-    liste.append( ['Musical','http://libre-stream.org/film/musical'] )
-    liste.append( ['Policier','http://libre-stream.org/film/policier'] )
-    liste.append( ['Romance','http://libre-stream.org/film/romance'] )
-    liste.append( ['Science Fiction','http://libre-stream.org/film/science-fiction'] )
-    liste.append( ['Spectacle','http://libre-stream.org/film/spectacles'] )
-    liste.append( ['Thriller','http://libre-stream.org/film/triller'] )
+    liste.append( ['Action','http://libre-stream.com/films/action/'] )
+    liste.append( ['Animation','http://libre-stream.com/films/animation'] )
+    liste.append( ['Arts Martiaux','http://libre-stream.com/films/arts-martiaux'] )
+    liste.append( ['Aventure','http://libre-stream.com/films/aventure'] )
+    liste.append( ['Biopic','http://libre-stream.com/films/biopic'] )
+    liste.append( ['Comedie','http://libre-stream.com/films/comedie'] )
+    liste.append( ['Comedie Dramatique','http://libre-stream.com/films/comedie-dramatique'] )
+    liste.append( ['Comedie Musicale','http://libre-stream.com/films/comedie-musicale'] )
+    liste.append( ['Disney','http://libre-stream.com/films/disney'] )
+    liste.append( ['Divers','http://libre-stream.com/films/divers'] )    
+    liste.append( ['Documentaire','http://libre-stream.com/films/documentaire'] )
+    liste.append( ['Drame','http://libre-stream.com/films/drame'] )
+    liste.append( ['Epouvante Horreur','http://libre-stream.com/films/horreur'] ) 
+    liste.append( ['Espionnage','http://libre-stream.com/films/espionnage'] )
+    liste.append( ['Famille','http://libre-stream.com/film/famille'] )
+    liste.append( ['Fantastique','http://libre-stream.com/film/fantastique'] )  
+    liste.append( ['Guerre','http://libre-stream.com/film/guerre'] )
+    liste.append( ['Historique','http://libre-stream.com/film/historique'] )
+    liste.append( ['Musical','http://libre-stream.com/film/musical'] )
+    liste.append( ['Policier','http://libre-stream.com/film/policier'] )
+    liste.append( ['Romance','http://libre-stream.com/film/romance'] )
+    liste.append( ['Science Fiction','http://libre-stream.com/film/science-fiction'] )
+    liste.append( ['Spectacle','http://libre-stream.com/film/spectacles'] )
+    liste.append( ['Thriller','http://libre-stream.com/film/triller'] )
                 
     for sTitle,sUrl in liste:
         
@@ -122,12 +122,12 @@ def showQlt():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['HD','http://libre-stream.org/films-hd/'] )
-    liste.append( ['DvdRip','http://libre-stream.org/quality/dvdrip/'] )
-    liste.append( ['BdRip','http://libre-stream.org/quality/bdrip/'] )
-    liste.append( ['R5','http://libre-stream.org/quality/R5/'] )
-    liste.append( ['Cam Rip','http://libre-stream.org/quality/camrip/'] )
-    liste.append( ['TS','http://libre-stream.org/quality/ts/'] )
+    liste.append( ['HD','http://libre-stream.com/films-hd/'] )
+    liste.append( ['DvdRip','http://libre-stream.com/quality/dvdrip/'] )
+    liste.append( ['BdRip','http://libre-stream.com/quality/bdrip/'] )
+    liste.append( ['R5','http://libre-stream.com/quality/R5/'] )
+    liste.append( ['Cam Rip','http://libre-stream.com/quality/camrip/'] )
+    liste.append( ['TS','http://libre-stream.com/quality/ts/'] )
                 
     for sTitle,sUrl in liste:
         

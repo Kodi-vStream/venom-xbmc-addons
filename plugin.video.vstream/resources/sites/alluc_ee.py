@@ -69,7 +69,8 @@ def showMovies(sSearch = ''):
         return
 
     sPattern1 = '<img.+?src="\/(thumbnail\/.+?)" *\/>'
-    sPattern2 = 'class="forstar.+?>(.+?)<\/a>.+?<a title="(.+?)" href="/(.+?)" class="source" >.+?<img  src=".+?" title="(.+?)"'
+    #sPattern2 = 'class="forstar.+?>(.+?)<\/a>.+?<a title="(.+?)" href="/(.+?)" class="source" >.+?<img  src=".+?" title="(.+?)"'
+    sPattern2 = 'class="forstar.+?>(.+?)<\/a>.+?<a title="(.+?)" href="/(.+?)".+?>.+?<img  src=".+?" title="(.+?)"'
     #sPattern = '(?:' + sPattern1 + ').+?'+ sPattern2
     
     for aEntry in aResult[1]:
