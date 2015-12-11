@@ -26,7 +26,8 @@ SITE_DESC = 'Film en streaming'
 ACCEUILPATTERN  = ''#non utilisé
 FILMPATTERN = '<div class="article-content"><p style="text-align: center;"><img src="(.+?)" border.+?<p style="text-align: left;">([^<>]+?)<\/p>'
 URL_MAIN = 'http://www.poypi.com/rgc/'
-SEARCHPATTERN = '<fieldset><div><a href="\/rgc\/(.+?)">(.+?)<\/a><\/div><\/fieldset>'
+#SEARCHPATTERN = '<fieldset><div><a href="\/rgc\/(.+?)">(.+?)<\/a><\/div><\/fieldset>'
+SEARCHPATTERN = '<fieldset> *<div> *<b><a *href="\/rgc\/(.+?)" *>(.+?)<\/a><\/b>'
 #NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/rgc\/(.+?)">(.+?)<(?:font|\/a)'
 NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/rgc\/(.+?)">(.+?)<\/a>'
 NEXTPAGEPATTERN = '<span class="pagenav">[0-9]+<.span><.li><li><a title=".+?" href="\/rgc\/(.+?)" class="pagenav">'
@@ -158,7 +159,7 @@ def showMovies(sSearch = ''):
                 break
            
             sTitle2 = aEntry[1]
-            sTitle2 = aEntry[1].replace('<font color="#979797"><i>HD</i></font>', '[COLOR coral]HD[/COLOR]')
+            sTitle2 = re.sub('<font color="#[0-9]{6}" *><i>HD<\/i><\/font>', '[COLOR coral]HD[/COLOR]',sTitle2)
             sUrl2 = aEntry[0]
            
             #not found better way
