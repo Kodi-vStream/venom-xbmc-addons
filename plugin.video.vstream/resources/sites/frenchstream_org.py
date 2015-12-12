@@ -13,24 +13,26 @@ from resources.lib.config import cConfig
 import re, urllib
 
 SITE_IDENTIFIER = 'frenchstream_org'
-SITE_NAME = 'FrenchStream.org'
-SITE_DESC = 'Film en streaming, regarder film en direct, streaming vf regarder film gratuitement sur Frenchstream.org'
+SITE_NAME = 'FrenchStream.com'
+SITE_DESC = 'Films/Series/Animes en streaming'
 
-URL_MAIN = 'http://frenchstream.org/'
+#URL_MAIN = URL_MAIN + ''
+URL_MAIN = 'http://frenchstream1.com/'
 
-MOVIE_MOVIE = ('http://frenchstream.org/films/', 'showMovies')
-MOVIE_NEWS = ('http://frenchstream.org/films/', 'showMovies')
-MOVIE_VIEWS = ('http://frenchstream.org/les-plus-vues/', 'showMovies')
-MOVIE_COMMENTS = ('http://frenchstream.org/les-plus-commentes/', 'showMovies')
-MOVIE_NOTES = ('http://frenchstream.org/les-mieux-notes/', 'showMovies')
-MOVIE_GENRES = ('http://frenchstream.org/films-par-genre/', 'showGenre')
 
-#SERIE_SERIES = ('http://frenchstream.org/tv-series/', 'showMovies')
-#SERIE_NEWS = ('http://frenchstream.org/tv-series/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
+#MOVIE_VIEWS = (URL_MAIN + 'les-plus-vues/', 'showMovies')
+#MOVIE_COMMENTS = (URL_MAIN + 'les-plus-commentes/', 'showMovies')
+#MOVIE_NOTES = (URL_MAIN + 'les-mieux-notes/', 'showMovies')
+MOVIE_GENRES = (URL_MAIN + 'films-par-genre/', 'showGenre')
 
-ANIM_ANIMS = ('http://frenchstream1.com/mangas-anime', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'series/', 'showMovies')
+#SERIE_NEWS = (URL_MAIN + 'tv-series/', 'showMovies')
 
-URL_SEARCH = ('http://frenchstream.org/?s=', 'showMovies')
+ANIM_ANIMS = (URL_MAIN +'/animes', 'showMovies')
+
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -44,17 +46,17 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'news.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus Vues', 'films.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
+    #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus Vues', 'films.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus Commentés', 'films.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
+    #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus Commentés', 'films.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les mieux Notés', 'films.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
+    #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les mieux Notés', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -76,9 +78,13 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oGui.addDir(SITE_IDENTIFIER, 'showLag', 'Films Langues', 'films.png', oOutputParameterHandler)
         
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+    #oGui.addDir(SITE_IDENTIFIER, 'showPlt', 'Films Plateforme', 'films.png', oOutputParameterHandler)
+    
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showPlt', 'Films Plateforme', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Series', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
@@ -92,10 +98,10 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = 'http://frenchstream.org/?s='+sSearchText  
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return  
+        sUrl = URL_MAIN + '?s='+sSearchText  
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return  
     
     
 def showGenre():
@@ -104,35 +110,35 @@ def showGenre():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['Action','http://frenchstream.org/genre/action'] )
-    liste.append( ['Animation','http://frenchstream.org/genre/animation'] )
-    liste.append( ['Aventure','http://frenchstream.org/genre/aventure'] )
-    liste.append( ['Biographie','http://frenchstream.org/genre/biographie'] )
-    liste.append( ['Biopic','http://frenchstream.org/genre/biopic'] )
-    liste.append( ['Comédie','http://frenchstream.org/genre/comedie'] )
-    liste.append( ['Comédie Dramatique','http://frenchstream.org/genre/comedie-dramatique'] )
-    liste.append( ['Comédie Musicale','http://frenchstream.org/genre/comedie-musicale'] )
-    liste.append( ['Crime','http://frenchstream.org/genre/crime'] )
-    liste.append( ['Documentaire','http://frenchstream.org/genre/documentaire'] )
-    liste.append( ['Drame','http://frenchstream.org/genre/drame'] )
-    liste.append( ['Epouvante Horreur','http://frenchstream.org/genre/epouvante-horreur'] )
-    liste.append( ['Espionage','http://frenchstream.org/genre/espionnage'] )  
-    liste.append( ['Famille','http://frenchstream.org/genre/famille'] )
-    liste.append( ['Fantastique','http://frenchstream.org/genre/fantastique'] )
-    liste.append( ['Guerre','http://frenchstream.org/genre/guerre'] )
-    liste.append( ['Histoire','http://frenchstream.org/genre/histoire'] )
-    liste.append( ['Horreur','http://frenchstream.org/genre/horreur'] )
-    liste.append( ['Judiciaire','http://frenchstream.org/genre/judiciaire'] )
-    liste.append( ['Médical','http://frenchstream.org/genre/medical'] )
-    liste.append( ['Musical','http://frenchstream.org/genre/musical'] )
-    liste.append( ['Mystère','http://frenchstream.org/genre/mystere'] )
-    liste.append( ['Policier','http://frenchstream.org/genre/policier'] )
-    liste.append( ['Romance','http://frenchstream.org/genre/romance'] )
-    liste.append( ['Sciense Fiction','http://frenchstream.org/genre/science-fiction'] )
-    liste.append( ['Sport Event','http://frenchstream.org/genre/sport-event'] )
-    liste.append( ['Thriller','http://frenchstream.org/genre/thriller'] )
-    liste.append( ['Thriller Psychologique','http://frenchstream.org/genre/thriller-psychologique'] ) 
-    liste.append( ['Western','http://frenchstream.org/genre/western'] )
+    liste.append( ['Action',URL_MAIN + 'films-genre/action'] )
+    liste.append( ['Animation',URL_MAIN + 'films-genre/animation'] )
+    liste.append( ['Aventure',URL_MAIN + 'films-genre/aventure'] )
+    liste.append( ['Biographie',URL_MAIN + 'films-genre/biographie'] )
+    liste.append( ['Biopic',URL_MAIN + 'films-genre/biopic'] )
+    liste.append( ['Comédie',URL_MAIN + 'films-genre/comedie'] )
+    liste.append( ['Comédie Dramatique',URL_MAIN + 'films-genre/comedie-dramatique'] )
+    liste.append( ['Comédie Musicale',URL_MAIN + 'films-genre/comedie-musicale'] )
+    liste.append( ['Crime',URL_MAIN + 'films-genre/crime'] )
+    liste.append( ['Documentaire',URL_MAIN + 'films-genre/documentaire'] )
+    liste.append( ['Drame',URL_MAIN + 'films-genre/drame'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'films-genre/epouvante-horreur'] )
+    liste.append( ['Espionage',URL_MAIN + 'films-genre/espionnage'] )  
+    liste.append( ['Famille',URL_MAIN + 'films-genre/famille'] )
+    liste.append( ['Fantastique',URL_MAIN + 'films-genre/fantastique'] )
+    liste.append( ['Guerre',URL_MAIN + 'films-genre/guerre'] )
+    liste.append( ['Histoire',URL_MAIN + 'films-genre/histoire'] )
+    liste.append( ['Horreur',URL_MAIN + 'films-genre/horreur'] )
+    liste.append( ['Judiciaire',URL_MAIN + 'films-genre/judiciaire'] )
+    liste.append( ['Médical',URL_MAIN + 'films-genre/medical'] )
+    liste.append( ['Musical',URL_MAIN + 'films-genre/musical'] )
+    liste.append( ['Mystère',URL_MAIN + 'films-genre/mystere'] )
+    liste.append( ['Policier',URL_MAIN + 'films-genre/policier'] )
+    liste.append( ['Romance',URL_MAIN + 'films-genre/romance'] )
+    liste.append( ['Sciense Fiction',URL_MAIN + 'films-genre/science-fiction'] )
+    liste.append( ['Sport Event',URL_MAIN + 'films-genre/sport-event'] )
+    liste.append( ['Thriller',URL_MAIN + 'films-genre/thriller'] )
+    liste.append( ['Thriller Psychologique',URL_MAIN + 'films-genre/thriller-psychologique'] ) 
+    liste.append( ['Western',URL_MAIN + 'films-genre/western'] )
                
     for sTitle,sUrl in liste:
        
@@ -148,97 +154,97 @@ def showPys():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['Afghanistan','http://frenchstream.org/pays/afghanistan/'] )
-    liste.append( ['Afrique du Sud','http://frenchstream.org/pays/afrique-du-sud/'] )
-    liste.append( ['Algérie','http://frenchstream.org/pays/algerie/'] )
-    liste.append( ['Allemangne','http://frenchstream.org/pays/allemangne/'] )
-    liste.append( ['Angleterre','http://frenchstream.org/pays/angleterre/'] ) 
-    liste.append( ['Argentine','http://frenchstream.org/pays/argentine/'] )
-    liste.append( ['Australie','http://frenchstream.org/pays/australie/'] )
-    liste.append( ['Autriche','http://frenchstream.org/pays/autriche/'] )
-    liste.append( ['Belgique','http://frenchstream.org/pays/belgique/'] )
-    liste.append( ['Brésil','http://frenchstream.org/pays/bresil/'] )
-    liste.append( ['Britanique','http://frenchstream.org/pays/britannique/'] )
-    liste.append( ['Bulgarie','http://frenchstream.org/pays/bulgarie/'] )
-    liste.append( ['Cambodgien','http://frenchstream.org/pays/cambodgien/'] )
-    liste.append( ['Cameroun','http://frenchstream.org/pays/cameroun/'] )
-    liste.append( ['Canada','http://frenchstream.org/pays/canada/'] )
-    liste.append( ['Chelie','http://frenchstream.org/pays/chelie/'] )
-    liste.append( ['Chine','http://frenchstream.org/pays/chine/'] )
-    liste.append( ['colombie','http://frenchstream.org/pays/colombie/'] )
-    liste.append( ['Corée','http://frenchstream.org/pays/coree/'] )
-    liste.append( ['Corée du sud','http://frenchstream.org/pays/coree-du-sud/'] )
-    liste.append( ['Croitie','http://frenchstream.org/pays/croitie/'] )
-    liste.append( ['Cuba','http://frenchstream.org/pays/cuba/'] )
-    liste.append( ['Danemark','http://frenchstream.org/pays/danemark/'] )
-    liste.append( ['Emarats arabes unis','http://frenchstream.org/pays/emarats-arabes-unis/'] )
-    liste.append( ['Espagne','http://frenchstream.org/pays/espagne/'] )
-    liste.append( ['Etats-Unis','http://frenchstream.org/pays/etats-unis/'] )
-    liste.append( ['Finlande','http://frenchstream.org/pays/finlande/'] )
-    liste.append( ['France','http://frenchstream.org/pays/france/'] )
-    liste.append( ['Grec','http://frenchstream.org/pays/grec/'] )
-    liste.append( ['Haiti','http://frenchstream.org/pays/haiti/'] )
-    liste.append( ['Hollande','http://frenchstream.org/pays/hollande/'] )
-    liste.append( ['Hong kong','http://frenchstream.org/pays/hong-kong/'] )
-    liste.append( ['Hongrie','http://frenchstream.org/pays/hongrie/'] )
-    liste.append( ['Inde','http://frenchstream.org/pays/inde/'] )
-    liste.append( ['Indonésie','http://frenchstream.org/pays/indonesie/'] )
-    liste.append( ['Iran','http://frenchstream.org/pays/iran/'] )
-    liste.append( ['Irlande','http://frenchstream.org/pays/irlande/'] )
-    liste.append( ['Islande','http://frenchstream.org/pays/islande/'] )
-    liste.append( ['Israel','http://frenchstream.org/pays/israel/'] )
-    liste.append( ['Italie','http://frenchstream.org/pays/italie/'] )
-    liste.append( ['Japon','http://frenchstream.org/pays/japon/'] )
-    liste.append( ['Kasakh','http://frenchstream.org/pays/kasakh/'] )
-    liste.append( ['Kenya','http://frenchstream.org/pays/kenya/'] )
-    liste.append( ['Koweit','http://frenchstream.org/pays/koweit/'] )
-    liste.append( ['Liechtenstein','http://frenchstream.org/pays/liechtenstein/'] )
-    liste.append( ['Lituanie','http://frenchstream.org/pays/lituanie/'] )
-    liste.append( ['Lexembourg','http://frenchstream.org/pays/lexembourg/'] )
-    liste.append( ['Malaisie','http://frenchstream.org/pays/malaisie/'] )
-    liste.append( ['Mali','http://frenchstream.org/pays/mali/'] )
-    liste.append( ['Maroc','http://frenchstream.org/pays/maroc/'] )
-    liste.append( ['Mexique','http://frenchstream.org/pays/mexique/'] )
-    liste.append( ['Monaco','http://frenchstream.org/pays/monaco/'] )
-    liste.append( ['Népalais','http://frenchstream.org/pays/nepalais/'] )
-    liste.append( ['Nigeria','http://frenchstream.org/pays/nigeria/'] )
-    liste.append( ['NorvÃ¨ge','http://frenchstream.org/pays/norvege/'] )
-    liste.append( ['Nouvelle-Zélande','http://frenchstream.org/pays/nouvelle-zelande/'] )
-    liste.append( ['Palestine','http://frenchstream.org/pays/palestine/'] )
-    liste.append( ['Panama','http://frenchstream.org/pays/panama/'] )
-    liste.append( ['Paraguay','http://frenchstream.org/pays/paraguay/'] )
-    liste.append( ['Pays-Bas','http://frenchstream.org/pays/pays-bas/'] )
-    liste.append( ['Perou','http://frenchstream.org/pays/perou/'] )
-    liste.append( ['Philippin','http://frenchstream.org/pays/philippin/'] )
-    liste.append( ['Philippines','http://frenchstream.org/pays/philippines/'] )
-    liste.append( ['Polongne','http://frenchstream.org/pays/polongne/'] )
-    liste.append( ['Porto Rico','http://frenchstream.org/pays/porto-rico/'] )
-    liste.append( ['Portugal','http://frenchstream.org/pays/portugal/'] )
-    liste.append( ['Quatar','http://frenchstream.org/pays/quatar/'] )
-    liste.append( ['Québec','http://frenchstream.org/pays/quebec/'] )
-    liste.append( ['République tchÃ¨que','http://frenchstream.org/pays/republique-tcheque/'] )
-    liste.append( ['Reunion','http://frenchstream.org/pays/reunion/'] )
-    liste.append( ['Roumanie','http://frenchstream.org/pays/roumanie/'] )
-    liste.append( ['Russie','http://frenchstream.org/pays/russie/'] )
-    liste.append( ['Saoudien','http://frenchstream.org/pays/saoudien/'] )
-    liste.append( ['Sénégal','http://frenchstream.org/pays/senegale/'] )
-    liste.append( ['Serbie','http://frenchstream.org/pays/serbie/'] )
-    liste.append( ['Singapour','http://frenchstream.org/pays/serbie/'] )
-    liste.append( ['Slovene','http://frenchstream.org/pays/serbie/'] )
-    liste.append( ['Sud-Créen','http://frenchstream.org/pays/sud-coreen/'] )
-    liste.append( ['SuÃ¨de','http://frenchstream.org/pays/suede/'] )
-    liste.append( ['Suisse','http://frenchstream.org/pays/suisse/'] )
-    liste.append( ['Taiwan','http://frenchstream.org/pays/taiwan/'] )
-    liste.append( ['Tchad','http://frenchstream.org/pays/tchad/'] )
-    liste.append( ['Tchécoslovaquie','http://frenchstream.org/pays/tchecoslovaquie/'] )
-    liste.append( ['TchÃ¨que','http://frenchstream.org/pays/tcheque/'] )
-    liste.append( ['Thailand','http://frenchstream.org/pays/thailand/'] )
-    liste.append( ['Tunisie','http://frenchstream.org/pays/tunisie/'] )
-    liste.append( ['Turquie','http://frenchstream.org/pays/turquie/'] )
-    liste.append( ['Ukraine','http://frenchstream.org/pays/ukraine/'] )
-    liste.append( ['Uruguay','http://frenchstream.org/pays/uruguay/'] )
-    liste.append( ['Vietnam','http://frenchstream.org/pays/vietnam/'] )
-    liste.append( ['Yougoslavie','http://frenchstream.org/pays/yougoslavie/'] )  
+    liste.append( ['Afghanistan',URL_MAIN + 'films-pays/afghanistan/'] )
+    liste.append( ['Afrique du Sud',URL_MAIN + 'films-pays/afrique-du-sud/'] )
+    liste.append( ['Algérie',URL_MAIN + 'films-pays/algerie/'] )
+    liste.append( ['Allemangne',URL_MAIN + 'films-pays/allemangne/'] )
+    liste.append( ['Angleterre',URL_MAIN + 'films-pays/angleterre/'] ) 
+    liste.append( ['Argentine',URL_MAIN + 'films-pays/argentine/'] )
+    liste.append( ['Australie',URL_MAIN + 'films-pays/australie/'] )
+    liste.append( ['Autriche',URL_MAIN + 'films-pays/autriche/'] )
+    liste.append( ['Belgique',URL_MAIN + 'films-pays/belgique/'] )
+    liste.append( ['Brésil',URL_MAIN + 'films-pays/bresil/'] )
+    liste.append( ['Britanique',URL_MAIN + 'films-pays/britannique/'] )
+    liste.append( ['Bulgarie',URL_MAIN + 'films-pays/bulgarie/'] )
+    liste.append( ['Cambodgien',URL_MAIN + 'films-pays/cambodgien/'] )
+    liste.append( ['Cameroun',URL_MAIN + 'films-pays/cameroun/'] )
+    liste.append( ['Canada',URL_MAIN + 'films-pays/canada/'] )
+    liste.append( ['Chelie',URL_MAIN + 'films-pays/chelie/'] )
+    liste.append( ['Chine',URL_MAIN + 'films-pays/chine/'] )
+    liste.append( ['colombie',URL_MAIN + 'films-pays/colombie/'] )
+    liste.append( ['Corée',URL_MAIN + 'films-pays/coree/'] )
+    liste.append( ['Corée du sud',URL_MAIN + 'films-pays/coree-du-sud/'] )
+    liste.append( ['Croitie',URL_MAIN + 'films-pays/croitie/'] )
+    liste.append( ['Cuba',URL_MAIN + 'films-pays/cuba/'] )
+    liste.append( ['Danemark',URL_MAIN + 'films-pays/danemark/'] )
+    liste.append( ['Emarats arabes unis',URL_MAIN + 'films-pays/emarats-arabes-unis/'] )
+    liste.append( ['Espagne',URL_MAIN + 'films-pays/espagne/'] )
+    liste.append( ['Etats-Unis',URL_MAIN + 'films-pays/etats-unis/'] )
+    liste.append( ['Finlande',URL_MAIN + 'films-pays/finlande/'] )
+    liste.append( ['France',URL_MAIN + 'films-pays/france/'] )
+    liste.append( ['Grec',URL_MAIN + 'films-pays/grec/'] )
+    liste.append( ['Haiti',URL_MAIN + 'films-pays/haiti/'] )
+    liste.append( ['Hollande',URL_MAIN + 'films-pays/hollande/'] )
+    liste.append( ['Hong kong',URL_MAIN + 'films-pays/hong-kong/'] )
+    liste.append( ['Hongrie',URL_MAIN + 'films-pays/hongrie/'] )
+    liste.append( ['Inde',URL_MAIN + 'films-pays/inde/'] )
+    liste.append( ['Indonésie',URL_MAIN + 'films-pays/indonesie/'] )
+    liste.append( ['Iran',URL_MAIN + 'films-pays/iran/'] )
+    liste.append( ['Irlande',URL_MAIN + 'films-pays/irlande/'] )
+    liste.append( ['Islande',URL_MAIN + 'films-pays/islande/'] )
+    liste.append( ['Israel',URL_MAIN + 'films-pays/israel/'] )
+    liste.append( ['Italie',URL_MAIN + 'films-pays/italie/'] )
+    liste.append( ['Japon',URL_MAIN + 'films-pays/japon/'] )
+    liste.append( ['Kasakh',URL_MAIN + 'films-pays/kasakh/'] )
+    liste.append( ['Kenya',URL_MAIN + 'films-pays/kenya/'] )
+    liste.append( ['Koweit',URL_MAIN + 'films-pays/koweit/'] )
+    liste.append( ['Liechtenstein',URL_MAIN + 'films-pays/liechtenstein/'] )
+    liste.append( ['Lituanie',URL_MAIN + 'films-pays/lituanie/'] )
+    liste.append( ['Lexembourg',URL_MAIN + 'films-pays/lexembourg/'] )
+    liste.append( ['Malaisie',URL_MAIN + 'films-pays/malaisie/'] )
+    liste.append( ['Mali',URL_MAIN + 'films-pays/mali/'] )
+    liste.append( ['Maroc',URL_MAIN + 'films-pays/maroc/'] )
+    liste.append( ['Mexique',URL_MAIN + 'films-pays/mexique/'] )
+    liste.append( ['Monaco',URL_MAIN + 'films-pays/monaco/'] )
+    liste.append( ['Népalais',URL_MAIN + 'films-pays/nepalais/'] )
+    liste.append( ['Nigeria',URL_MAIN + 'films-pays/nigeria/'] )
+    liste.append( ['NorvÃ¨ge',URL_MAIN + 'films-pays/norvege/'] )
+    liste.append( ['Nouvelle-Zélande',URL_MAIN + 'films-pays/nouvelle-zelande/'] )
+    liste.append( ['Palestine',URL_MAIN + 'films-pays/palestine/'] )
+    liste.append( ['Panama',URL_MAIN + 'films-pays/panama/'] )
+    liste.append( ['Paraguay',URL_MAIN + 'films-pays/paraguay/'] )
+    liste.append( ['Pays-Bas',URL_MAIN + 'films-pays/pays-bas/'] )
+    liste.append( ['Perou',URL_MAIN + 'films-pays/perou/'] )
+    liste.append( ['Philippin',URL_MAIN + 'films-pays/philippin/'] )
+    liste.append( ['Philippines',URL_MAIN + 'films-pays/philippines/'] )
+    liste.append( ['Polongne',URL_MAIN + 'films-pays/polongne/'] )
+    liste.append( ['Porto Rico',URL_MAIN + 'films-pays/porto-rico/'] )
+    liste.append( ['Portugal',URL_MAIN + 'films-pays/portugal/'] )
+    liste.append( ['Quatar',URL_MAIN + 'films-pays/quatar/'] )
+    liste.append( ['Québec',URL_MAIN + 'films-pays/quebec/'] )
+    liste.append( ['République tchÃ¨que',URL_MAIN + 'films-pays/republique-tcheque/'] )
+    liste.append( ['Reunion',URL_MAIN + 'films-pays/reunion/'] )
+    liste.append( ['Roumanie',URL_MAIN + 'films-pays/roumanie/'] )
+    liste.append( ['Russie',URL_MAIN + 'films-pays/russie/'] )
+    liste.append( ['Saoudien',URL_MAIN + 'films-pays/saoudien/'] )
+    liste.append( ['Sénégal',URL_MAIN + 'films-pays/senegale/'] )
+    liste.append( ['Serbie',URL_MAIN + 'films-pays/serbie/'] )
+    liste.append( ['Singapour',URL_MAIN + 'films-pays/serbie/'] )
+    liste.append( ['Slovene',URL_MAIN + 'films-pays/serbie/'] )
+    liste.append( ['Sud-Créen',URL_MAIN + 'films-pays/sud-coreen/'] )
+    liste.append( ['SuÃ¨de',URL_MAIN + 'films-pays/suede/'] )
+    liste.append( ['Suisse',URL_MAIN + 'films-pays/suisse/'] )
+    liste.append( ['Taiwan',URL_MAIN + 'films-pays/taiwan/'] )
+    liste.append( ['Tchad',URL_MAIN + 'films-pays/tchad/'] )
+    liste.append( ['Tchécoslovaquie',URL_MAIN + 'films-pays/tchecoslovaquie/'] )
+    liste.append( ['TchÃ¨que',URL_MAIN + 'films-pays/tcheque/'] )
+    liste.append( ['Thailand',URL_MAIN + 'films-pays/thailand/'] )
+    liste.append( ['Tunisie',URL_MAIN + 'films-pays/tunisie/'] )
+    liste.append( ['Turquie',URL_MAIN + 'films-pays/turquie/'] )
+    liste.append( ['Ukraine',URL_MAIN + 'films-pays/ukraine/'] )
+    liste.append( ['Uruguay',URL_MAIN + 'films-pays/uruguay/'] )
+    liste.append( ['Vietnam',URL_MAIN + 'films-pays/vietnam/'] )
+    liste.append( ['Yougoslavie',URL_MAIN + 'films-pays/yougoslavie/'] )  
      
     
     for sTitle,sUrl in liste:
@@ -255,77 +261,77 @@ def showAne():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['1925','http://frenchstream.org/annees/1925/'] )
-    liste.append( ['1931','http://frenchstream.org/annees/1931/'] )
-    liste.append( ['1933','http://frenchstream.org/annees/1933/'] )
-    liste.append( ['1936','http://frenchstream.org/annees/1936/'] )
-    liste.append( ['1937','http://frenchstream.org/annees/1937/'] )
-    liste.append( ['1940','http://frenchstream.org/annees/1940/'] )
-    liste.append( ['1945','http://frenchstream.org/annees/1945/'] )
-    liste.append( ['1950','http://frenchstream.org/annees/1950/'] )
-    liste.append( ['1951','http://frenchstream.org/annees/1951/'] )
-    liste.append( ['1952','http://frenchstream.org/annees/1952/'] )
-    liste.append( ['1953','http://frenchstream.org/annees/1953/'] )
-    liste.append( ['1954','http://frenchstream.org/annees/1954/'] )
-    liste.append( ['1955','http://frenchstream.org/annees/1955/'] )
-    liste.append( ['1956','http://frenchstream.org/annees/1956/'] )
-    liste.append( ['1957','http://frenchstream.org/annees/1957/'] )
-    liste.append( ['1959','http://frenchstream.org/annees/1959/'] )
-    liste.append( ['1960','http://frenchstream.org/annees/1960/'] )
-    liste.append( ['1961','http://frenchstream.org/annees/1961/'] )
-    liste.append( ['1962','http://frenchstream.org/annees/1962/'] )
-    liste.append( ['1963','http://frenchstream.org/annees/1963/'] )
-    liste.append( ['1964','http://frenchstream.org/annees/1964/'] )
-    liste.append( ['1966','http://frenchstream.org/annees/1966/'] )
-    liste.append( ['1967','http://frenchstream.org/annees/1967/'] )
-    liste.append( ['1968','http://frenchstream.org/annees/1968/'] )
-    liste.append( ['1969','http://frenchstream.org/annees/1969/'] )
-    liste.append( ['1970','http://frenchstream.org/annees/1970/'] )
-    liste.append( ['1971','http://frenchstream.org/annees/1971/'] )
-    liste.append( ['1972','http://frenchstream.org/annees/1972/'] )
-    liste.append( ['1973','http://frenchstream.org/annees/1973/'] )
-    liste.append( ['1974','http://frenchstream.org/annees/1974/'] )
-    liste.append( ['1975','http://frenchstream.org/annees/1975/'] )
-    liste.append( ['1976','http://frenchstream.org/annees/1976/'] )
-    liste.append( ['1977','http://frenchstream.org/annees/1977/'] )
-    liste.append( ['1978','http://frenchstream.org/annees/1978/'] )
-    liste.append( ['1979','http://frenchstream.org/annees/1979/'] )
-    liste.append( ['1980','http://frenchstream.org/annees/1980/'] )
-    liste.append( ['1981','http://frenchstream.org/annees/1981/'] )
-    liste.append( ['1982','http://frenchstream.org/annees/1982/'] )
-    liste.append( ['1983','http://frenchstream.org/annees/1983/'] )
-    liste.append( ['1984','http://frenchstream.org/annees/1984/'] )
-    liste.append( ['1985','http://frenchstream.org/annees/1985/'] )
-    liste.append( ['1986','http://frenchstream.org/annees/1986/'] )
-    liste.append( ['1987','http://frenchstream.org/annees/1987/'] )
-    liste.append( ['1988','http://frenchstream.org/annees/1988/'] )
-    liste.append( ['1989','http://frenchstream.org/annees/1989/'] )
-    liste.append( ['1990','http://frenchstream.org/annees/1990/'] )
-    liste.append( ['1991','http://frenchstream.org/annees/1991/'] )
-    liste.append( ['1992','http://frenchstream.org/annees/1992/'] )
-    liste.append( ['1993','http://frenchstream.org/annees/1993/'] )
-    liste.append( ['1994','http://frenchstream.org/annees/1994/'] )
-    liste.append( ['1995','http://frenchstream.org/annees/1995/'] )
-    liste.append( ['1996','http://frenchstream.org/annees/1996/'] )
-    liste.append( ['1997','http://frenchstream.org/annees/1997/'] )
-    liste.append( ['1998','http://frenchstream.org/annees/1998/'] )
-    liste.append( ['1999','http://frenchstream.org/annees/1999/'] )
-    liste.append( ['2000','http://frenchstream.org/annees/2000/'] )
-    liste.append( ['2001','http://frenchstream.org/annees/2001/'] )
-    liste.append( ['2002','http://frenchstream.org/annees/2002/'] )
-    liste.append( ['2003','http://frenchstream.org/annees/2003/'] )
-    liste.append( ['2004','http://frenchstream.org/annees/2004/'] )
-    liste.append( ['2005','http://frenchstream.org/annees/2005/'] )
-    liste.append( ['2006','http://frenchstream.org/annees/2006/'] )
-    liste.append( ['2007','http://frenchstream.org/annees/2007/'] )
-    liste.append( ['2008','http://frenchstream.org/annees/2008/'] )
-    liste.append( ['2009','http://frenchstream.org/annees/2009/'] )
-    liste.append( ['2010','http://frenchstream.org/annees/2010/'] )
-    liste.append( ['2011','http://frenchstream.org/annees/2011/'] )
-    liste.append( ['2012','http://frenchstream.org/annees/2012/'] )
-    liste.append( ['2013','http://frenchstream.org/annees/2013/'] )
-    liste.append( ['2014','http://frenchstream.org/annees/2014/'] )
-    liste.append( ['2015','http://frenchstream.org/annees/2015/'] )
+    liste.append( ['1925',URL_MAIN + 'films-annees/1925/'] )
+    liste.append( ['1931',URL_MAIN + 'films-annees/1931/'] )
+    liste.append( ['1933',URL_MAIN + 'films-annees/1933/'] )
+    liste.append( ['1936',URL_MAIN + 'films-annees/1936/'] )
+    liste.append( ['1937',URL_MAIN + 'films-annees/1937/'] )
+    liste.append( ['1940',URL_MAIN + 'films-annees/1940/'] )
+    liste.append( ['1945',URL_MAIN + 'films-annees/1945/'] )
+    liste.append( ['1950',URL_MAIN + 'films-annees/1950/'] )
+    liste.append( ['1951',URL_MAIN + 'films-annees/1951/'] )
+    liste.append( ['1952',URL_MAIN + 'films-annees/1952/'] )
+    liste.append( ['1953',URL_MAIN + 'films-annees/1953/'] )
+    liste.append( ['1954',URL_MAIN + 'films-annees/1954/'] )
+    liste.append( ['1955',URL_MAIN + 'films-annees/1955/'] )
+    liste.append( ['1956',URL_MAIN + 'films-annees/1956/'] )
+    liste.append( ['1957',URL_MAIN + 'films-annees/1957/'] )
+    liste.append( ['1959',URL_MAIN + 'films-annees/1959/'] )
+    liste.append( ['1960',URL_MAIN + 'films-annees/1960/'] )
+    liste.append( ['1961',URL_MAIN + 'films-annees/1961/'] )
+    liste.append( ['1962',URL_MAIN + 'films-annees/1962/'] )
+    liste.append( ['1963',URL_MAIN + 'films-annees/1963/'] )
+    liste.append( ['1964',URL_MAIN + 'films-annees/1964/'] )
+    liste.append( ['1966',URL_MAIN + 'films-annees/1966/'] )
+    liste.append( ['1967',URL_MAIN + 'films-annees/1967/'] )
+    liste.append( ['1968',URL_MAIN + 'films-annees/1968/'] )
+    liste.append( ['1969',URL_MAIN + 'films-annees/1969/'] )
+    liste.append( ['1970',URL_MAIN + 'films-annees/1970/'] )
+    liste.append( ['1971',URL_MAIN + 'films-annees/1971/'] )
+    liste.append( ['1972',URL_MAIN + 'films-annees/1972/'] )
+    liste.append( ['1973',URL_MAIN + 'films-annees/1973/'] )
+    liste.append( ['1974',URL_MAIN + 'films-annees/1974/'] )
+    liste.append( ['1975',URL_MAIN + 'films-annees/1975/'] )
+    liste.append( ['1976',URL_MAIN + 'films-annees/1976/'] )
+    liste.append( ['1977',URL_MAIN + 'films-annees/1977/'] )
+    liste.append( ['1978',URL_MAIN + 'films-annees/1978/'] )
+    liste.append( ['1979',URL_MAIN + 'films-annees/1979/'] )
+    liste.append( ['1980',URL_MAIN + 'films-annees/1980/'] )
+    liste.append( ['1981',URL_MAIN + 'films-annees/1981/'] )
+    liste.append( ['1982',URL_MAIN + 'films-annees/1982/'] )
+    liste.append( ['1983',URL_MAIN + 'films-annees/1983/'] )
+    liste.append( ['1984',URL_MAIN + 'films-annees/1984/'] )
+    liste.append( ['1985',URL_MAIN + 'films-annees/1985/'] )
+    liste.append( ['1986',URL_MAIN + 'films-annees/1986/'] )
+    liste.append( ['1987',URL_MAIN + 'films-annees/1987/'] )
+    liste.append( ['1988',URL_MAIN + 'films-annees/1988/'] )
+    liste.append( ['1989',URL_MAIN + 'films-annees/1989/'] )
+    liste.append( ['1990',URL_MAIN + 'films-annees/1990/'] )
+    liste.append( ['1991',URL_MAIN + 'films-annees/1991/'] )
+    liste.append( ['1992',URL_MAIN + 'films-annees/1992/'] )
+    liste.append( ['1993',URL_MAIN + 'films-annees/1993/'] )
+    liste.append( ['1994',URL_MAIN + 'films-annees/1994/'] )
+    liste.append( ['1995',URL_MAIN + 'films-annees/1995/'] )
+    liste.append( ['1996',URL_MAIN + 'films-annees/1996/'] )
+    liste.append( ['1997',URL_MAIN + 'films-annees/1997/'] )
+    liste.append( ['1998',URL_MAIN + 'films-annees/1998/'] )
+    liste.append( ['1999',URL_MAIN + 'films-annees/1999/'] )
+    liste.append( ['2000',URL_MAIN + 'films-annees/2000/'] )
+    liste.append( ['2001',URL_MAIN + 'films-annees/2001/'] )
+    liste.append( ['2002',URL_MAIN + 'films-annees/2002/'] )
+    liste.append( ['2003',URL_MAIN + 'films-annees/2003/'] )
+    liste.append( ['2004',URL_MAIN + 'films-annees/2004/'] )
+    liste.append( ['2005',URL_MAIN + 'films-annees/2005/'] )
+    liste.append( ['2006',URL_MAIN + 'films-annees/2006/'] )
+    liste.append( ['2007',URL_MAIN + 'films-annees/2007/'] )
+    liste.append( ['2008',URL_MAIN + 'films-annees/2008/'] )
+    liste.append( ['2009',URL_MAIN + 'films-annees/2009/'] )
+    liste.append( ['2010',URL_MAIN + 'films-annees/2010/'] )
+    liste.append( ['2011',URL_MAIN + 'films-annees/2011/'] )
+    liste.append( ['2012',URL_MAIN + 'films-annees/2012/'] )
+    liste.append( ['2013',URL_MAIN + 'films-annees/2013/'] )
+    liste.append( ['2014',URL_MAIN + 'films-annees/2014/'] )
+    liste.append( ['2015',URL_MAIN + 'films-annees/2015/'] )
  
     
     for sTitle,sUrl in liste:
@@ -342,23 +348,23 @@ def showQlt():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['1080p','http://frenchstream.org/qualites/1080p/'] )   
-    liste.append( ['720p','http://frenchstream.org/qualites/720p/'] )
-    liste.append( ['BDRip','http://frenchstream.org/qualites/BDRip/'] )
-    liste.append( ['BRRip','http://frenchstream.org/qualites/BRRip/'] )
-    liste.append( ['CAMRip','http://frenchstream.org/qualites/CAMRip/'] )
-    liste.append( ['DVDRip','http://frenchstream.org/qualites/DVDRip/'] )
-    liste.append( ['DVDSCR','http://frenchstream.org/qualites/DVDSCR/'] )
-    liste.append( ['HDRip','http://frenchstream.org/qualites/HDRip/'] )
-    liste.append( ['HDTV','http://frenchstream.org/qualites/HDTV/'] )
-    liste.append( ['PDTV','http://frenchstream.org/qualites/PDTV/'] )
-    liste.append( ['R6','http://frenchstream.org/qualites/R6/'] )
-    liste.append( ['TS MD','http://frenchstream.org/qualites/ts-md/'] )
-    liste.append( ['TVRip','http://frenchstream.org/qualites/TVRip/'] )
-    liste.append( ['VHSRip','http://frenchstream.org/qualites/VHSRip/'] )
-    liste.append( ['VOBRIP','http://frenchstream.org/qualites/VOBRIP/'] )
-    liste.append( ['WEB-DL','http://frenchstream.org/qualites/web-dl/'] )
-    liste.append( ['WEBRIP','http://frenchstream.org/qualites/WEBRIP/'] )
+    liste.append( ['1080p',URL_MAIN + 'qualites/1080p/'] )   
+    liste.append( ['720p',URL_MAIN + 'qualites/720p/'] )
+    liste.append( ['BDRip',URL_MAIN + 'qualites/BDRip/'] )
+    liste.append( ['BRRip',URL_MAIN + 'qualites/BRRip/'] )
+    liste.append( ['CAMRip',URL_MAIN + 'qualites/CAMRip/'] )
+    liste.append( ['DVDRip',URL_MAIN + 'qualites/DVDRip/'] )
+    liste.append( ['DVDSCR',URL_MAIN + 'qualites/DVDSCR/'] )
+    liste.append( ['HDRip',URL_MAIN + 'qualites/HDRip/'] )
+    liste.append( ['HDTV',URL_MAIN + 'qualites/HDTV/'] )
+    liste.append( ['PDTV',URL_MAIN + 'qualites/PDTV/'] )
+    liste.append( ['R6',URL_MAIN + 'qualites/R6/'] )
+    liste.append( ['TS MD',URL_MAIN + 'qualites/ts-md/'] )
+    liste.append( ['TVRip',URL_MAIN + 'qualites/TVRip/'] )
+    liste.append( ['VHSRip',URL_MAIN + 'qualites/VHSRip/'] )
+    liste.append( ['VOBRIP',URL_MAIN + 'qualites/VOBRIP/'] )
+    liste.append( ['WEB-DL',URL_MAIN + 'qualites/web-dl/'] )
+    liste.append( ['WEBRIP',URL_MAIN + 'qualites/WEBRIP/'] )
     
     for sTitle,sUrl in liste:
         
@@ -374,9 +380,9 @@ def showLag():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['FRENCH','http://frenchstream.org/langues/french/'] )
-    liste.append( ['VO','http://frenchstream.org/langues/vo/'] )
-    liste.append( ['VOSTFR','http://frenchstream.org/langues/vostfr/'] ) 
+    liste.append( ['FRENCH',URL_MAIN + 'langues/french/'] )
+    liste.append( ['VO',URL_MAIN + 'langues/vo/'] )
+    liste.append( ['VOSTFR',URL_MAIN + 'langues/vostfr/'] ) 
     
     for sTitle,sUrl in liste:
         
@@ -392,43 +398,43 @@ def showPlt():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['Cloudy.ec','http://frenchstream.org/plateformes/cloudy/'] )
-    liste.append( ['DivxStage','http://frenchstream.org/plateformes/divxstage/'] )
-    liste.append( ['Easywatch','http://frenchstream.org/langues/easywatch/'] )
-    liste.append( ['Exashare','http://frenchstream.org/plateformes/exashare/'] )
-    liste.append( ['FastVideo','http://frenchstream.org/plateformes/fastvideo/'] )
-    liste.append( ['Firedrive','http://frenchstream.org/plateformes/firedrive/'] )
-    liste.append( ['GigaUpload','http://frenchstream.org/plateformes/gigaupload/'] )
-    liste.append( ['MadVID','http://frenchstream.org/plateformes/madvid/'] )
-    liste.append( ['MailRu','http://frenchstream.org/plateformes/mailru/'] )
-    liste.append( ['MixtureVideo','http://frenchstream.org/plateformes/mixturevideo/'] )
-    liste.append( ['Moevideo','http://frenchstream.org/plateformes/moevideo/'] )
-    liste.append( ['MovShare','http://frenchstream.org/plateformes/movshare/'] )
-    liste.append( ['MyStream.la','http://frenchstream.org/plateformes/myStream-la/'] )
-    liste.append( ['Netu','http://frenchstream.org/plateformes/netu/'] )
-    liste.append( ['NovaMov','http://frenchstream.org/plateformes/novamov/'] )
-    liste.append( ['NowVideo','http://frenchstream.org/plateformes/nowvideo/'] )
-    liste.append( ['OneVideo','http://frenchstream.org/plateformes/onevideo/'] )
-    liste.append( ['Purevideo','http://frenchstream.org/plateformes/purevideo/'] )
-    liste.append( ['Putlocker','http://frenchstream.org/plateformes/putlocker/'] )
-    liste.append( ['RapidVideo','http://frenchstream.org/plateformes/rapidvideo/'] )
-    liste.append( ['SockShare','http://frenchstream.org/plateformes/sockshare/'] )
-    liste.append( ['SpeedVideo','http://frenchstream.org/plateformes/speedvideo/'] )
-    liste.append( ['TurboVid','http://frenchstream.org/plateformes/turbovid/'] )
-    liste.append( ['UploadBB','http://frenchstream.org/plateformes/uploadbb/'] )
-    liste.append( ['UploadHero','http://frenchstream.org/plateformes/uploadhero/'] )
-    liste.append( ['UptoStream','http://frenchstream.org/plateformes/uptostream/'] )
-    liste.append( ['VideoHut','http://frenchstream.org/plateformes/videohut/'] )
-    liste.append( ['VideoMega','http://frenchstream.org/plateformes/videomega/'] )
-    liste.append( ['VideoRaj','http://frenchstream.org/plateformes/videoraj/'] )
-    liste.append( ['VideoWeed','http://frenchstream.org/plateformes/videoweed/'] )
-    liste.append( ['Vidto','http://frenchstream.org/plateformes/vidto/'] )
-    liste.append( ['VidZi.tv','http://frenchstream.org/plateformes/vidzi-tv/'] )
-    liste.append( ['Vimple','http://frenchstream.org/plateformes/vimple/'] )
-    liste.append( ['VK Player','http://frenchstream.org/plateformes/vk-player/'] )
-    liste.append( ['Vodlocker','http://frenchstream.org/plateformes/vodlocker/'] )
-    liste.append( ['Watching.to','http://frenchstream.org/plateformes/watching-to/'] )
-    liste.append( ['Youwatch','http://frenchstream.org/plateformes/youwatch/'] ) 
+    liste.append( ['Cloudy.ec',URL_MAIN + 'plateformes/cloudy/'] )
+    liste.append( ['DivxStage',URL_MAIN + 'plateformes/divxstage/'] )
+    liste.append( ['Easywatch',URL_MAIN + 'langues/easywatch/'] )
+    liste.append( ['Exashare',URL_MAIN + 'plateformes/exashare/'] )
+    liste.append( ['FastVideo',URL_MAIN + 'plateformes/fastvideo/'] )
+    liste.append( ['Firedrive',URL_MAIN + 'plateformes/firedrive/'] )
+    liste.append( ['GigaUpload',URL_MAIN + 'plateformes/gigaupload/'] )
+    liste.append( ['MadVID',URL_MAIN + 'plateformes/madvid/'] )
+    liste.append( ['MailRu',URL_MAIN + 'plateformes/mailru/'] )
+    liste.append( ['MixtureVideo',URL_MAIN + 'plateformes/mixturevideo/'] )
+    liste.append( ['Moevideo',URL_MAIN + 'plateformes/moevideo/'] )
+    liste.append( ['MovShare',URL_MAIN + 'plateformes/movshare/'] )
+    liste.append( ['MyStream.la',URL_MAIN + 'plateformes/myStream-la/'] )
+    liste.append( ['Netu',URL_MAIN + 'plateformes/netu/'] )
+    liste.append( ['NovaMov',URL_MAIN + 'plateformes/novamov/'] )
+    liste.append( ['NowVideo',URL_MAIN + 'plateformes/nowvideo/'] )
+    liste.append( ['OneVideo',URL_MAIN + 'plateformes/onevideo/'] )
+    liste.append( ['Purevideo',URL_MAIN + 'plateformes/purevideo/'] )
+    liste.append( ['Putlocker',URL_MAIN + 'plateformes/putlocker/'] )
+    liste.append( ['RapidVideo',URL_MAIN + 'plateformes/rapidvideo/'] )
+    liste.append( ['SockShare',URL_MAIN + 'plateformes/sockshare/'] )
+    liste.append( ['SpeedVideo',URL_MAIN + 'plateformes/speedvideo/'] )
+    liste.append( ['TurboVid',URL_MAIN + 'plateformes/turbovid/'] )
+    liste.append( ['UploadBB',URL_MAIN + 'plateformes/uploadbb/'] )
+    liste.append( ['UploadHero',URL_MAIN + 'plateformes/uploadhero/'] )
+    liste.append( ['UptoStream',URL_MAIN + 'plateformes/uptostream/'] )
+    liste.append( ['VideoHut',URL_MAIN + 'plateformes/videohut/'] )
+    liste.append( ['VideoMega',URL_MAIN + 'plateformes/videomega/'] )
+    liste.append( ['VideoRaj',URL_MAIN + 'plateformes/videoraj/'] )
+    liste.append( ['VideoWeed',URL_MAIN + 'plateformes/videoweed/'] )
+    liste.append( ['Vidto',URL_MAIN + 'plateformes/vidto/'] )
+    liste.append( ['VidZi.tv',URL_MAIN + 'plateformes/vidzi-tv/'] )
+    liste.append( ['Vimple',URL_MAIN + 'plateformes/vimple/'] )
+    liste.append( ['VK Player',URL_MAIN + 'plateformes/vk-player/'] )
+    liste.append( ['Vodlocker',URL_MAIN + 'plateformes/vodlocker/'] )
+    liste.append( ['Watching.to',URL_MAIN + 'plateformes/watching-to/'] )
+    liste.append( ['Youwatch',URL_MAIN + 'plateformes/youwatch/'] ) 
     
     for sTitle,sUrl in liste:
         
@@ -441,23 +447,45 @@ def showPlt():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+            
     if sSearch:
-      sUrl = sSearch
+        sUrl = sSearch
+        
+        sDisp = oInputParameterHandler.getValue('disp')
+       
+        if (sDisp == 'search3'):#anime
+            sUrl = sUrl + '&catlist[]=36'
+        elif (sDisp == 'search2'):#serie
+            sUrl = sUrl + '&catlist[]=2'
+        elif (sDisp == 'search1'):#film
+            sUrl = sUrl + '&catlist[]=43'   
+        else:#tout le reste
+            sUrl = sUrl
     else:
-        oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
    
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
-    sPattern = '<div.*?class="moviefilm"><a.*?href="([^<]+)">.+?<img.*?src="([^<]+)" alt="(.+?)".+?>'
-    
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    if (aResult[0] == False):
-        oGui.addNone(SITE_IDENTIFIER)
+    sHtmlContent = oRequestHandler.request()
 
+    #Regex trop lourd donc on fractionne
+    aResult=[(False)]
+    oParser = cParser()
+    sPattern = '(<li data-hover="details" data-title=".+?<\/li>)'
+    aResult2 = oParser.parse(sHtmlContent, sPattern)
+    
+    if (aResult2[0] == False):
+        oGui.addNone(SITE_IDENTIFIER)
+    if (aResult2[0] == True):
+        list = []
+        sPattern = '<li data-hover="details" data-title="(.+?)" data-ozet="(.*?)" data-tur.+?<a href="(.+?)">.+?<img src="(.+?)" class="film-list-thumb".+?<div class="film-list-quality"><span>([0-9]{3}p)*<\/span>'
+        for aEntry in aResult2[1]:
+            aResult3 = oParser.parse(aEntry, sPattern)
+            if (aResult3[0] == True):
+                list = list + aResult3[1]
+            
+        aResult = [(True),list]
+    
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -466,17 +494,30 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
             
-            #sTitle = aEntry[2]+' - [COLOR azure]'+aEntry[3]+'[/COLOR]'
+            sTitle = aEntry[0]
+            if aEntry[4]:
+                sTitle = '[' + aEntry[4]  + '] ' + sTitle
+            sCom = aEntry[1]
+            sUrl2 = aEntry[2]
+            sThumb = aEntry[3]
+            
+            sCom = cUtil().removeHtmlTags(sCom)
+            
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[1]))
-            if '/tv-series' in sUrl or '/tv-series' in aEntry[0]:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', aEntry[2],'', aEntry[1], '', oOutputParameterHandler)
-            elif '/mangas-anime' in sUrl or '/mangas-anime' in aEntry[0]:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', aEntry[2],'', aEntry[1], '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+            
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            
+            if '/series/' in sUrl2:
+                oGui.addTV(SITE_IDENTIFIER, 'showMovies', sDisplayTitle,'', sThumb, sCom, oOutputParameterHandler)
+            elif '/animes/' in sUrl2:
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle,'', sThumb, sCom, oOutputParameterHandler)
+            elif '/series-saison/' in sUrl2:
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle,'', sThumb, sCom, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', aEntry[2], '', aEntry[1], '', oOutputParameterHandler)           
+                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sCom, oOutputParameterHandler)           
     
         cConfig().finishDialog(dialog)
 
@@ -493,17 +534,19 @@ def showSeries():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    sUrl = sUrl+'/100/'
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('<strong>Téléchargement VOSTFR','').replace('<strong>Téléchargement VF','').replace('<strong>Téléchargement','')
- 
-    sPattern = '<a *href="([^<]+)"><span>(.+?)</span></a>'
 
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    
     oParser = cParser()
+    sPattern = '<li><a href="([^<>"]+?)" (?:class="active")*><i class="fa fa-film"><\/i>(.+?)<span><\/span><\/a><\/li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    #print aResult    
+    
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -511,21 +554,24 @@ def showSeries():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-
-            sTitle = sMovieTitle+' - '+aEntry[1]
+            
+            sTitle = sMovieTitle
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            sDisplayTitle = sDisplayTitle + '[COLOR teal] >> ' + aEntry[1] +' [/COLOR]'
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)            
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)             
     
         cConfig().finishDialog(dialog)
 
-    oGui.setEndOfDirectory()
-
-
+    oGui.setEndOfDirectory()  
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class="page larger" href="(.+?)">'
+    
+    sPattern = '<a class="next page-numbers" href="(.+?)">Suivant &raquo;</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -542,27 +588,11 @@ def showLinks():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
-    oRequestHandler = cRequestHandler(sUrl + '/100/')#Modification de l'adresse pr afficher tout les liens
+    oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/plugins/like.php','').replace('<iframe src="http://www.facebook.com/plugins/likebox.php','')
-    
-    a = sUrl.replace('/','\/')
     oParser = cParser()
-    
-    #quelques infos en plus
-    annee = ""
-    qualite = ""
-    comm = ""
-    sPattern = '<div class="konuozet">(.+?)<\/div>.+?<span>Ann..es<\/span>: <a href="[^<>]+?">([0-9]{4})<\/a>.+?<span>Qualit..s<\/span>: <a href="[^<>]+?">(.+?)<\/a>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if aResult[0]:
-        annee = aResult[1][0][1]
-        qualite = aResult[1][0][2]
-        comm = aResult[1][0][0].replace('<p>','')
-    
-    #Recuperation des liens
-    sPattern = '<a href="(' + a + '.*?)"><span>(.+?)<\/span><\/a>'
+    sPattern = '<li><a href="([^<>"]+?)" (?:class="active")*><i class="fa fa-film"><\/i>(.+?)<span><\/span><\/a><\/li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     #print aResult    
@@ -575,14 +605,16 @@ def showLinks():
             if dialog.iscanceled():
                 break
             
-            sHoster = cHosterGui().checkHoster(aEntry[1].lower())
-            if (sHoster != False):
-                sTitle = sMovieTitle + ' (' + annee + ') [COLOR coral]['+ qualite + '][/COLOR] - [COLOR azure]'+aEntry[1]+'[/COLOR]'
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, comm, oOutputParameterHandler)             
+            sTitle = sMovieTitle
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            sDisplayTitle = sDisplayTitle + '[COLOR teal] >> ' + aEntry[1] +' [/COLOR]'
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)             
     
         cConfig().finishDialog(dialog)
 
@@ -596,10 +628,10 @@ def showHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src="http://www.facebook.com/','')
-    sHtmlContent = sHtmlContent.replace('http://videomega.tv/validateemb.php','')
-    sHtmlContent = sHtmlContent.replace('src="http://frenchstream.org/','')
+    sHtmlContent = oRequestHandler.request()
+    #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src="http://www.facebook.com/','')
+    #sHtmlContent = sHtmlContent.replace('http://videomega.tv/validateemb.php','')
+    #sHtmlContent = sHtmlContent.replace('src="http://frenchstream.org/','')
         
     sPattern = '(?:(?:<script type="text\/javascript")|(?:<ifram[^<>]+?)) src=[\'"](http:[^\'"]+?)[\'"]'
     oParser = cParser()
@@ -618,9 +650,47 @@ def showHosters():
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
+    
+        cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()
+    
+def showEpisode():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close() 
+ 
+    sPattern = '<li><a href="([^<>]+?.html)">([^<>]+?)<\/a><\/li>'
+
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
+            sTitle = sMovieTitle+' - '+aEntry[1]
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
+            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumbnail, '', oOutputParameterHandler)            
     
         cConfig().finishDialog(dialog)
 
