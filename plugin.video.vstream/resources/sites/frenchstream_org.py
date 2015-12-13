@@ -455,11 +455,11 @@ def showMovies(sSearch = ''):
         sDisp = oInputParameterHandler.getValue('disp')
        
         if (sDisp == 'search3'):#anime
-            sUrl = sUrl + '&catlist[]=36'
+            sUrl = sUrl + '&cat_id=45477'
         elif (sDisp == 'search2'):#serie
-            sUrl = sUrl + '&catlist[]=2'
+            sUrl = sUrl + '&cat_id=16989'
         elif (sDisp == 'search1'):#film
-            sUrl = sUrl + '&catlist[]=43'   
+            sUrl = sUrl + '&cat_id=1'   
         else:#tout le reste
             sUrl = sUrl
     else:
@@ -637,7 +637,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-    #print aResult
+    print aResult
      
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -673,7 +673,7 @@ def showEpisode():
     #fh.write(sHtmlContent)
     #fh.close() 
  
-    sPattern = '<li><a href="([^<>]+?.html)">([^<>]+?)<\/a><\/li>'
+    sPattern = '<li style="[^<>]+?"><a href="([^<>"]+?)">(.+?)<\/a><\/li>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -685,12 +685,14 @@ def showEpisode():
             if dialog.iscanceled():
                 break
 
-            sTitle = sMovieTitle+' - '+aEntry[1]
+            sTitle = sMovieTitle+' - ' + aEntry[1]
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumbnail, '', oOutputParameterHandler)            
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)            
     
         cConfig().finishDialog(dialog)
 
