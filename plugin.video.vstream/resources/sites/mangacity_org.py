@@ -35,24 +35,20 @@ def DecryptMangacity(chain):
         
     return d
     
-def DecoTitle(string):
-    string = re.sub('(.*)([\[\(].{1,7}[\)\]])','\\1[COLOR coral]\\2[/COLOR]', str(string))
-    return string
-
 #------------------------------------------------------------------------------------    
     
 SITE_IDENTIFIER = 'mangacity_org'
 SITE_NAME = 'MangaCity.org'
 SITE_DESC = 'Anime en streaming'
 
-URL_MAIN = 'http://www.mangacity.org/'
+URL_MAIN = 'http://www.mangacity.co/'
 
-ANIM_ANIMS = ('http://www.mangacity.org/animes.php?liste=SHOWALPHA', 'ShowAlpha')
+ANIM_ANIMS = (URL_MAIN + 'animes.php?liste=SHOWALPHA', 'ShowAlpha')
 ANIM_GENRES = (True, 'showGenre')
-ANIM_NEWS = ('http://www.mangacity.org/nouveautees.php', 'showMovies')
+ANIM_NEWS = (URL_MAIN + 'nouveautees.php', 'showMovies')
 
-ANIM_VFS = ('http://www.mangacity.org/listing_vf.php', 'ShowAlpha2')
-ANIM_VOSTFRS = ('http://www.mangacity.org/listing_vostfr.php', 'ShowAlpha2')
+ANIM_VFS = (URL_MAIN + 'listing_vf.php', 'ShowAlpha2')
+ANIM_VOSTFRS = (URL_MAIN + 'listing_vostfr.php', 'ShowAlpha2')
 
 URL_SEARCH = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -102,7 +98,7 @@ def showGenre(): #affiche les genres
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = 'http://www.mangacity.org/animes.php?liste=SHOWALPHA'
+    sUrl = URL_MAIN + 'animes.php?liste=SHOWALPHA'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -148,7 +144,7 @@ def ShowAlpha2():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     
-    sUrl2 = 'http://www.mangacity.org/animes.php?liste=SHOWALPHA'
+    sUrl2 = URL_MAIN + 'animes.php?liste=SHOWALPHA'
     
     sType = 'VF'
     if 'vostfr' in sUrl:
@@ -213,15 +209,15 @@ def showMovies(sSearch = ''):
         #query_args = { 's': str(sSearch) }
         #data = urllib.urlencode(query_args)
         #headers = {'User-Agent' : 'Mozilla 5.10', 'Referer' : 'http://www.mangacity.org'}
-        #url = 'http://www.mangacity.org/result.php'
+        #url = URL_MAIN + 'result.php'
         #request = urllib2.Request(url,data,headers)
         #reponse = urllib2.urlopen(request)
         
         sSearch = urllib2.unquote(sSearch)
-        sSearch = urllib.quote_plus(sSearch)
+        sSearch = urllib.quote_plus(sSearch).upper()
 
-        url = 'http://www.mangacity.org/resultat.php?string=' + sSearch
-        headers = {'User-Agent' : 'Mozilla 5.10', 'Referer' : 'http://www.mangacity.org'}
+        url = URL_MAIN + 'resultat.php?string=' + sSearch
+        headers = {'User-Agent' : 'Mozilla 5.10', 'Referer' : URL_MAIN}
         request = urllib2.Request(url,None,headers)
         reponse = urllib2.urlopen(request)
         
@@ -272,9 +268,10 @@ def showMovies(sSearch = ''):
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
             sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
             
-            sTitle = DecoTitle(sTitle)
             sTitle = cUtil().unescape(sTitle)
             sTitle = sTitle.replace('[Streaming] - ','')
+            
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
             
             sPicture = aEntry[0]
             #sPicture = sPicture.encode('ascii', 'ignore').decode('ascii')
@@ -286,7 +283,10 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', sPicture)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showEpisode', sTitle, sPicture, sPicture, '', oOutputParameterHandler)
+            if '?manga=' in aEntry[2]:
+                oGui.addMovie(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, sPicture, sPicture, '', oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sPicture, sPicture, '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
         
@@ -356,10 +356,16 @@ def showEpisode():
             if dialog.iscanceled():
                 break
                 
-        
-            sTitle = cUtil().unescape(aEntry[2])
-            sTitle = DecoTitle(sTitle)
+            sTitle = unicode(aEntry[2],'iso-8859-1')
+            sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
+            sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
+            
+            sTitle = cUtil().unescape(sTitle)
+            
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            
             sUrl2 = str(cUtil().unescape(aEntry[1]))
+            
             if URL_MAIN not in sUrl2:
                 sUrl2 = URL_MAIN + sUrl2
             
@@ -373,7 +379,7 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sThumb, '', oOutputParameterHandler)
         cConfig().finishDialog(dialog)
 
 
@@ -399,7 +405,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    #print aResult
+    print aResult
     
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -440,6 +446,10 @@ def showHosters():
                         final = aResult[1][0]
                         if not final.startswith( 'http' ):
                             final = URL_MAIN + final
+                            
+                    #nouveau codage
+                    if ';&#' in final:
+                        final = cUtil().unescape(final)
                         
                     sHosterUrl = final
             
@@ -461,7 +471,8 @@ def showHosters():
             #print sHosterUrl
             
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
