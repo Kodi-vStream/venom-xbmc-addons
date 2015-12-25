@@ -1,14 +1,14 @@
 #-*- coding: utf-8 -*-
 #Venom.
-from resources.lib.gui.hoster import cHosterGui #system de recherche pour l'hote
-from resources.lib.handler.hosterHandler import cHosterHandler #system de recherche pour l'hote
-from resources.lib.gui.gui import cGui #system d'affichage pour xbmc
-from resources.lib.gui.guiElement import cGuiElement #system d'affichage pour xbmc
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler #entrer des parametres
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler #sortis des parametres
-from resources.lib.handler.requestHandler import cRequestHandler #requete url
-from resources.lib.config import cConfig #config
-from resources.lib.parser import cParser #recherche de code
+from resources.lib.gui.hoster import cHosterGui
+from resources.lib.handler.hosterHandler import cHosterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.guiElement import cGuiElement
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.config import cConfig
+from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import urllib2,urllib,re
  
@@ -19,45 +19,24 @@ SITE_DESC = 'Films et serie en streaming'
  
 URL_MAIN = 'http://www.voirfilms.org/'
 
-MOVIE_NEWS = ('http://www.voirfilms.org/', 'showMovies')
-MOVIE_MOVIE = ('http://www.voirfilms.org/lesfilms1', 'showMovies')
+MOVIE_NEWS = ('http://www.voirfilms.org/film-en-streaming', 'showMovies')
+MOVIE_MOVIE = ('http://', 'showAlpha')
 MOVIE_GENRES = (True, 'showGenre')
 
-SERIE_SERIES = ('http://www.voirfilms.org/series/page-1', 'showMovies')
+SERIE_SERIES = ('http://www.voirfilms.org/series/alphabet/', 'AlphaSearch')
 SERIE_NEWS = ('http://www.voirfilms.org/series/page-1', 'showMovies')
   
-ANIM_ANIMS = ('http://www.voirfilms.org/animes/page-1', 'showMovies')
+ANIM_ANIMS = ('http://www.voirfilms.org/animes/alphabet/', 'AlphaSearch')
 ANIM_NEWS = ('http://www.voirfilms.org/animes/page-1', 'showMovies')
   
 URL_SEARCH = ('', 'showMovies')
 #FUNCTION_SEARCH = 'showMovies'
  
-def unescape(text):
-    def fixup(m):
-        text = m.group(0)
-        if text[:2] == "&#":
-            # character reference
-            try:
-                if text[:3] == "&#x":
-                    return unichr(int(text[3:-1], 16))
-                else:
-                    return unichr(int(text[2:-1]))
-            except ValueError:
-                pass
-        else:
-            # named entity
-            try:
-                text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
-            except KeyError:
-                pass
-        return text # leave as is
-    return re.sub("&#?\w+;", fixup, text)
+def load():
+    oGui = cGui()
  
-def load(): #function charger automatiquement par l'addon l'index de votre navigation.
-    oGui = cGui() #ouvre l'affichage
- 
-    oOutputParameterHandler = cOutputParameterHandler() #apelle la function pour sortir un parametre
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') # sortis du parametres siteUrl oublier pas la Majuscule
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
@@ -73,14 +52,22 @@ def load(): #function charger automatiquement par l'addon l'index de votre navig
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films par Genres', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries nouveaute', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showAlpha', 'Films par Alphabet', 'genre.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries liste complete', 'series.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animes Nouveaute', 'series.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animes Liste complete', 'series.png', oOutputParameterHandler)
            
-    oGui.setEndOfDirectory() #ferme l'affichage
+    oGui.setEndOfDirectory()
  
 def showSearch():
     oGui = cGui()
@@ -89,13 +76,35 @@ def showSearch():
     if (sSearchText != False):
         showMovies(sSearchText)
         oGui.setEndOfDirectory()
-        return  
+        return
+        
+def AlphaSearch():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    dialog = cConfig().createDialog(SITE_NAME)
+    
+    for i in range(0,27) :
+        cConfig().updateDialog(dialog, 36)
+        
+        if (i > 0):
+            sTitle = chr(64+i)
+        else:
+            sTitle = '09'
             
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + sTitle.upper() )
+        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] Lettre [COLOR red]'+ sTitle +'[/COLOR][/COLOR]', 'genres.png', oOutputParameterHandler)
+        
+    cConfig().finishDialog(dialog)
+    
+    oGui.setEndOfDirectory()           
    
-def showGenre(): #affiche les genres
+def showGenre():
     oGui = cGui()
  
-    #juste a entrer c'est caterorie et les lien qui vont bien
     liste = []
     liste.append( ['Action','http://www.voirfilms.org/action_1'] )
     liste.append( ['Animation','http://www.voirfilms.org/animation_1'] )
@@ -120,18 +129,17 @@ def showGenre(): #affiche les genres
     liste.append( ['Western','http://www.voirfilms.org/western_1'] )
     liste.append( ['Divers','http://www.voirfilms.org/non-classe_1'] )
                
-    for sTitle,sUrl in liste:#boucle
+    for sTitle,sUrl in liste:
        
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)#sortis de l'url en parametre
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()
     
-def showAlpha(): #affiche les genres
+def showAlpha():
     oGui = cGui()
  
-    #juste a entrer c'est caterorie et les lien qui vont bien
     liste = []
     liste.append( ['0','http://www.voirfilms.org/alphabet/0/1'] )
     liste.append( ['1','http://www.voirfilms.org/alphabet/1/1'] )
@@ -169,16 +177,16 @@ def showAlpha(): #affiche les genres
     liste.append( ['Y','http://www.voirfilms.org/alphabet/y/1'] )
     liste.append( ['Z','http://www.voirfilms.org/alphabet/z/1'] )
                
-    for sTitle,sUrl in liste:#boucle
+    for sTitle,sUrl in liste:
        
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)#sortis de l'url en parametre
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'films.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()
  
 def showMovies(sSearch = ''):
-    oGui = cGui() #ouvre l'affichage
+    oGui = cGui()
    
     if sSearch:
         #on redecode la recherhce codé il y a meme pas une seconde par l'addon
@@ -226,25 +234,31 @@ def showMovies(sSearch = ''):
         dialog = cConfig().createDialog(SITE_NAME)
        
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total) #dialog
+            cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
            
-            sTitle = unescape(aEntry[2])
+            sTitle = cUtil().unescape(aEntry[2])
             sPicture = str(aEntry[0])
             if not 'http' in sPicture:
                 sPicture = str(URL_MAIN) + sPicture
+                
+            sUrl = str(aEntry[1])
+            if not 'http' in sUrl:
+                sUrl = str(URL_MAIN) + sUrl
            
             #not found better way
             #sTitle = unicode(sTitle, errors='replace')
             #sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
            
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', sPicture) #sortis du poster
  
-            if '/serie/' in aEntry[1] or '/animes/' in aEntry[1]:
+            if '/serie/' in aEntry[1]:
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, sPicture, sPicture, '', oOutputParameterHandler)
+            elif '/anime/' in aEntry[1]:
                 oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, sPicture, sPicture, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, sPicture, sPicture, '', oOutputParameterHandler)
@@ -260,9 +274,9 @@ def showMovies(sSearch = ''):
                 #Ajoute une entrer pour le lien Next | pas de addMisc pas de poster et de description inutile donc
  
     if not sSearch:
-        oGui.setEndOfDirectory() #ferme l'affichage
+        oGui.setEndOfDirectory()
    
-def __checkForNextPage(sUrl): #cherche la page suivante
+def __checkForNextPage(sUrl):
     sPattern = 'http:..www.voirfilms.org(.+?)([0-9]+)'
     oParser = cParser()
     aResult = oParser.parse(sUrl, sPattern)
@@ -284,7 +298,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    sPattern = '<a href="([^<>"]+?)" target="filmPlayer".+?class="([a-zA-Z]+)L"><\/span><\/div><span class="gras">.+?>(.+?)<\/span>'
+    sPattern = '<a href="([^<>"]+?)" target="filmPlayer".+?class="([a-zA-Z]+)L"><\/span> *<\/div><span class="gras">.+?>(.+?)<\/span>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -303,21 +317,21 @@ def showHosters():
             if dialog.iscanceled():
                 break
                 
-            sTitle = '[COLOR teal](' + str(aEntry[1]) + ') ' + str(aEntry[2]) + '[/COLOR] ' + sMovieTitle
+            sTitle = '(' + str(aEntry[1]) + ') [' + str(aEntry[2]) + '] ' + sMovieTitle
             sUrl = aEntry[0].replace('https://', 'http://')
             #print sUrl
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
  
-            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sTitle , sThumbnail, sThumbnail, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle , sThumbnail, sThumbnail, '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
        
-    oGui.setEndOfDirectory()
-    
-    
+    oGui.setEndOfDirectory()   
     
 
 def serieHosters():
@@ -330,9 +344,10 @@ def serieHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    if '-saison-' in sUrl:
+    if '-saison-' in sUrl or '/anime/' in sUrl:
         sPattern = '<li class="description132"><a class="n_episode2" title=".+?" href="(.+?)">(.+?)<\/a><\/li>'
     else:
+        sMovieTitle = ''
         sPattern = '<div class="unepetitesaisons"> +<a href="(.+?)" title="(.+?)"> +<div class="saisonimage">'
     
     oParser = cParser()
@@ -346,20 +361,25 @@ def serieHosters():
             if dialog.iscanceled():
                 break
                 
-            sTitle = str(aEntry[1])
+            sEp = str(aEntry[1])
+            sEp = re.sub('<span>(.+?)<\/span>','Episode \\1', str(sEp))
+                
+            sTitle = sMovieTitle + sEp
             sUrl = str(aEntry[0])
             if 'http://www.voirfilms.org' not in sUrl:
                 sUrl = str(URL_MAIN) + sUrl
            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail) #sortis du poster
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
  
-            if '-episode-' in aEntry[0]:
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, sThumbnail, sThumbnail, '', oOutputParameterHandler)
+            if '-episode-' in aEntry[0] or '/anime/' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumbnail, sThumbnail, '', oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, sThumbnail, sThumbnail, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, sThumbnail, sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)    
 
@@ -378,7 +398,8 @@ def showHostersLink():
     sHosterUrl = sUrl
     oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
-        oHoster.setDisplayName(sMovieTitle)
+        sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+        oHoster.setDisplayName(sDisplayTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
                 
