@@ -18,16 +18,11 @@ SITE_DESC = 'Streaming series'
 
 URL_MAIN = 'http://streamzzz.com/'
 
-#MOVIE_NEWS = ('http://www.telecharger-films.ws/telecharger-films-gratuit/', 'showMovies')
-
 SERIE_SERIES = ('http://streamzzz.com/', 'showMovies')
 #SERIE_VFS = ('http://www.telecharger-films.ws/telecharger-serie/series-fr/', 'showMovies')
 #SERIE_VOSTFRS = ('http://www.telecharger-films.ws/telecharger-serie/sries-vostfr/', 'showMovies')
 
 #MOVIE_GENRES = (True, 'showGenre')
-
-#URL_SEARCH = ('http://www.telecharger-films.ws/index.php?do=search&subaction=search&story=', 'showMovies')
-#FUNCTION_SEARCH = 'showMovies'
 
 def load():
     oGui = cGui()
@@ -46,7 +41,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries Nouveautés', 'series.png',oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries liste complete', 'series.png',oOutputParameterHandler)
     
     
     #oOutputParameterHandler = cOutputParameterHandler()
@@ -60,15 +55,6 @@ def load():
             
     oGui.setEndOfDirectory()
  
-def showSearch():
-    oGui = cGui()
-
-    sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
-            #sUrl = 'http://www.telecharger-films.ws/index.php?do=search&subaction=search&story='+sSearchText  
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return  
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -101,17 +87,11 @@ def showMovies(sSearch = ''):
             
             sTitle=re.sub('(.*)(\[.*\])','\\1 [COLOR azure]\\2[/COLOR]', str(aEntry[1]))
             sMovieTitle=re.sub('(\[.*\])','', str(aEntry[1]))
-            
-            
-            
-            
-            #oGuiElement = cGuiElement()
-            #oGuiElement.setFileName(sMovieTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-            #oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
+
             if '/series-tv/' in sUrl or 'saison' in aEntry[0]:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, 'tv.png', '', '', oOutputParameterHandler)
             else:
@@ -119,13 +99,6 @@ def showMovies(sSearch = ''):
         
         cConfig().finishDialog(dialog)
 
-        #sNextPage = __checkForNextPage(sHtmlContent)
-        #if (sNextPage != False):
-            #oOutputParameterHandler = cOutputParameterHandler()
-            #oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            #oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
-
-    #if not sSearch:
         oGui.setEndOfDirectory()
 
 def showSeries(sSearch = ''):
@@ -137,11 +110,9 @@ def showSeries(sSearch = ''):
       oInputParameterHandler = cInputParameterHandler()
       sUrl = oInputParameterHandler.getValue('siteUrl')
       sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-      #sThumbnail = oInputParameterHandler.getValue('sThumbnail')
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    #sHtmlContent = sHtmlContent.replace('<strong>Téléchargement VOSTFR','').replace('<strong>Téléchargement VF','').replace('<strong>Téléchargement','')
  
     sPattern = '<li><a href="(http:..streamzzz.com\/page[^<]+)" title=".+?">([^<]+)<.a><.li>'
     oParser = cParser()
@@ -156,20 +127,15 @@ def showSeries(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            #if aEntry[0]:
-                #oOutputParameterHandler = cOutputParameterHandler()
-                #oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                #oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                #oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                #oGui.addMisc(SITE_IDENTIFIER, 'showSeries', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'series.png', sThumbnail, '', oOutputParameterHandler)
-            else:
-                #sTitle = aEntry[1]
-                
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-                #oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', aEntry[1], 'tv.png', '', '', oOutputParameterHandler)
+            sTitle = str(aEntry[1])
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle )
+            
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            
+            oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, 'tv.png', '', '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -199,16 +165,23 @@ def serieHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src="http://www.facebook.com/plugins/likebox.php','')
-               
-        
-    sPattern = 'iframe.*?src="(.+?)"'
+    sHtmlContent = oRequestHandler.request()
+    
     oParser = cParser()
+    
+    #recuperation thumb
+    sThumbnail = ''
+    sPattern = 'style="cursor: default; float: left; margin: 0px 10px 10px 0px;" unselectable="on" src="([^<>"]+?)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        sThumbnail = aResult[1][0]
+        
+    sPattern = '<a href="([^<>"]+?)" target="_blank"><img'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    #print aResult
      
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -221,7 +194,8 @@ def serieHosters():
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
     
