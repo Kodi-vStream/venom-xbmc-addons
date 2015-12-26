@@ -10,7 +10,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re, urllib
+import re
  
 SITE_IDENTIFIER = 'regarder_films'
 SITE_NAME = 'regarder.films'
@@ -21,7 +21,7 @@ URL_MAIN = 'http://www.regarder-film-gratuit.com/'
 SERIE_SERIES = ('http://www.regarder-film-gratuit.com/', 'showMovies')
  
 URL_SEARCH = ('http://www.regarder-film-gratuit.com/?s=', 'showSeries')
-#FUNCTION_SEARCH = 'showMovies'
+FUNCTION_SEARCH = 'showSeries'
  
 def load():
     oGui = cGui()
@@ -85,28 +85,19 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
            
-            sTitle=re.sub('(.*)(\[.*\])','\\1 [COLOR azure]\\2[/COLOR]', str(aEntry[1]))
-            sMovieTitle=re.sub('(\[.*\])','', str(aEntry[1]))
-           
-            #oGuiElement = cGuiElement()
-            #oGuiElement.setFileName(sMovieTitle)
+            sTitle = str(aEntry[1])
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
  
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
             if '/series-tv/' in sUrl or 'saison' in aEntry[0]:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, 'tv.png', '', '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, 'tv.png', '', '', oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, 'tv.png', '', '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, 'tv.png', '', '', oOutputParameterHandler)
        
         cConfig().finishDialog(dialog)
- 
-        #sNextPage = __checkForNextPage(sHtmlContent)
-        #if (sNextPage != False):
-            #oOutputParameterHandler = cOutputParameterHandler()
-            #oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            #oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
  
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -130,7 +121,7 @@ def showSeries(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
  
-    #print sUrl
+    #print aResult
  
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -139,13 +130,17 @@ def showSeries(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
- 
-                if 'Information' not in aEntry[1]:
-                    oOutputParameterHandler = cOutputParameterHandler()
-                    oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-                    oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-                    #oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                    oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', aEntry[1], '', '', '', oOutputParameterHandler)
+                
+            sTitle = aEntry[1]
+            sUrl = str(aEntry[0])
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+
+            if 'Information' not in sTitle and '/liste-de-series/' not in sUrl:
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+
+                oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', '', '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
  
@@ -172,15 +167,26 @@ def serieHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
  
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
     
-    #print sUrl
+    oParser = cParser()
+    
+    #recuperation thumb
+    sThumbnail = ''
+    sPattern = '<p><img src="([^<>"]+?)" alt=".+?" class="aligncenter size-full wp-image-[0-9]+"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]:
+        sThumbnail = aResult[1][0]
+        
+    #print aResult
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
        
     sPattern = '<p><a href="([^"<>]+?)" target="_blank"><br\/>\s*<img src="http:\/\/www\.regarder-film-gratuit\.com'
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
      
     if (aResult[0] == True):
@@ -195,7 +201,8 @@ def serieHosters():
             oHoster = cHosterGui().checkHoster(sHosterUrl)
            
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)        
    
