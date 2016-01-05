@@ -135,8 +135,12 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     #sHtmlContent = SucurieBypass().GetHtml(sUrl)
     
-    sPattern = '<div class="item"><a href="([^<]+)">.+?<img src="(.+?)" alt="(.+?)" />.+?<span class="calidad2">(.+?)</span>'
-    #sPattern = '<div class="item">.*<a href="([^<]+)">.+?<img src="(.+?)" alt="(.+?)" \/>.+?<span class="calidad2">(.+?)<\/span>'
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
+    
+    sPattern = '<div class="item"> <a href="([^<]+)">.+?<img src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">(.+?)<\/span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
    
@@ -160,19 +164,23 @@ def showMovies(sSearch = ''):
             except:
                 pass
             
-            sTitle = sName + ' [COLOR coral] ' + aEntry[3] + '[/COLOR]'
-            sUrl = aEntry[0].replace('http://official-film-illimité.fr', 'http://xn--official-film-illimit-v5b.fr')
-            sThumbnail = aEntry[1].replace('http://official-film-illimité.fr', 'http://xn--official-film-illimit-v5b.fr')
+            sTitle = sName + ' [' + aEntry[3] + ']'
+            sUrl = aEntry[0]
+            sThumbnail = aEntry[1]
+            
+            if sThumbnail.startswith('//'):
+                sThumbnail = 'http:' + sThumbnail
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
             oOutputParameterHandler.addParameter('sMovieTitle', sName)
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
             
             if re.match('.+?saison [0-9]+',sTitle,re.IGNORECASE):
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumbnail,'', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumbnail,'', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
             
  
         cConfig().finishDialog(dialog)
@@ -192,7 +200,6 @@ def __checkForNextPage(sHtmlContent): #cherche la page suivante
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        next = aResult[1][0].replace('http://official-film-illimité.fr', 'http://xn--official-film-illimit-v5b.fr')
         return next
  
     return False
@@ -209,15 +216,13 @@ def showHosters():
     sHtmlContent = oRequestHandler.request() 
     #sHtmlContent = SucurieBypass().GetHtml(sUrl)
     
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-    
     sHtmlContent = sHtmlContent.replace('<iframe width="420" height="315" src="https://www.youtube.com/', '')
-    sPattern = '<iframe.+?src="(.+?)"'
+    sPattern = '<iframe.+?src="(http.+?)"'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    #print aResult
    
     if (aResult[0] == True):
 
@@ -227,7 +232,8 @@ def showHosters():
             oHoster = cHosterGui().checkHoster(sHosterUrl)
  
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
        
@@ -246,7 +252,7 @@ def serieHosters():
     #sHtmlContent = SucurieBypass().GetHtml(sUrl)
 
     sHtmlContent = sHtmlContent.replace('<iframe width="420" height="315" src="https://www.youtube.com/', '')
-    sPattern = '<div class="su-tabs-pane su-clearfix"><iframe src="(.+?)"[^<>]+?><\/iframe><\/div>'
+    sPattern = '<div class="su-tabs-pane su-clearfix"><iframe.+?src="(http.+?)"[^<>]+?><\/iframe><\/div>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
