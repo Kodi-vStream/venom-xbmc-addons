@@ -216,15 +216,17 @@ def showHosters():
             
             if aEntry[1]:
                 if 'VOSTFR' in aEntry[1]:
-                    sMovieTitle = sTitle + ' [VOSTFR]'
+                    sMovieTitle = '[VOSTFR] ' + sTitle
                 else:
-                    sMovieTitle = sTitle + ' [VF]'
+                    sMovieTitle =  '[VF] ' + sTitle
         
             if (oHoster != False):         
                 try:
                     oHoster.setHD(sHosterUrl)
                 except: pass
-                oHoster.setDisplayName(sMovieTitle)
+                    
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
 
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
@@ -238,6 +240,7 @@ def ShowSaisons():
     
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     
     sHtmlContent = CloudflareBypass().GetHtml(sUrl)
    
@@ -254,13 +257,14 @@ def ShowSaisons():
             if dialog.iscanceled():
                 break
            
-            sTitle = 'Saison ' + aEntry[1]
+            sTitle = sMovieTitle + ' Saison ' + aEntry[1]
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
  
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', '', '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', '', '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
            
@@ -271,16 +275,16 @@ def showEpisode():
     
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     sHtmlContent = CloudflareBypass().GetHtml(sUrl)
     
-    sHtmlContent = sHtmlContent.replace('\n','')
-    
-    #return
+    #sHtmlContent = sHtmlContent.replace('\n','')
+    sHtmlContent = sHtmlContent.replace("'",'"')
    
     oParser = cParser()
     #sPattern = "<a class='various' data-fancybox-type='iframe' href='(.+?)' > *(.+?)<\/a>\t*<\/h3>\t*(.+?)<br>"
-    sPattern = ";\" src=\"(.+?)\" class=\"img-responsive\">.+?<a class='various' data-fancybox-type='iframe' href='(.+?)' *> *(.+?)<\/a>\t*<\/h3>\t*(.+?)<br>"
+    sPattern = ';" src="(.+?)" class="img-responsive">.+?<a class="various" data-fancybox-type="iframe" href="(.+?)" *> *(.+?)<\/a>\t*<\/h3>\t*(.+?)<br>'
     aResult = oParser.parse(sHtmlContent, sPattern)
    
     #print aResult
@@ -297,21 +301,20 @@ def showEpisode():
             if dialog.iscanceled():
                 break
            
-            sTitle = aEntry[2]
+            sTitle = sMovieTitle + ' ' + aEntry[2]
             sThumb = aEntry[0]
             if URL_MAIN in sThumb:
                 sThumb = sThumb + SpecHead        
             sCom = aEntry[3]
-            
-            
-            #sDisplayTitle = cUtil().DecoTitle(sTitle)
+                        
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
  
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sCom, oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sCom, oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
            
