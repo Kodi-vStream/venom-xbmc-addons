@@ -13,11 +13,11 @@ from resources.lib.config import cConfig
 import re, urllib
 
 SITE_IDENTIFIER = 'frenchstream_org'
-SITE_NAME = 'FrenchStream.com'
+SITE_NAME = 'FrenchStream'
 SITE_DESC = 'Films/Series/Animes en streaming'
 
 #URL_MAIN = URL_MAIN + ''
-URL_MAIN = 'http://frenchstream1.com/'
+URL_MAIN = 'http://frenchstream.tv/'
 
 
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
@@ -25,9 +25,10 @@ MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 #MOVIE_VIEWS = (URL_MAIN + 'les-plus-vues/', 'showMovies')
 #MOVIE_COMMENTS = (URL_MAIN + 'les-plus-commentes/', 'showMovies')
 #MOVIE_NOTES = (URL_MAIN + 'les-mieux-notes/', 'showMovies')
-MOVIE_GENRES = (URL_MAIN + 'films-par-genre/', 'showGenre')
+MOVIE_GENRES = (URL_MAIN + 'films-genre/', 'showGenre')
 
 SERIE_SERIES = (URL_MAIN + 'series/', 'showMovies')
+SERIE_GENRES = (URL_MAIN + 'genre-series/', 'showGenre')
 #SERIE_NEWS = (URL_MAIN + 'tv-series/', 'showMovies')
 
 ANIM_ANIMS = (URL_MAIN +'/animes', 'showMovies')
@@ -60,7 +61,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films Genres', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -87,6 +88,10 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Series', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Series Genres', 'genres.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animes', 'series.png', oOutputParameterHandler)
     
@@ -110,35 +115,35 @@ def showGenre():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['Action',URL_MAIN + 'films-genre/action'] )
-    liste.append( ['Animation',URL_MAIN + 'films-genre/animation'] )
-    liste.append( ['Aventure',URL_MAIN + 'films-genre/aventure'] )
-    liste.append( ['Biographie',URL_MAIN + 'films-genre/biographie'] )
-    liste.append( ['Biopic',URL_MAIN + 'films-genre/biopic'] )
-    liste.append( ['Comédie',URL_MAIN + 'films-genre/comedie'] )
-    liste.append( ['Comédie Dramatique',URL_MAIN + 'films-genre/comedie-dramatique'] )
-    liste.append( ['Comédie Musicale',URL_MAIN + 'films-genre/comedie-musicale'] )
-    liste.append( ['Crime',URL_MAIN + 'films-genre/crime'] )
-    liste.append( ['Documentaire',URL_MAIN + 'films-genre/documentaire'] )
-    liste.append( ['Drame',URL_MAIN + 'films-genre/drame'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'films-genre/epouvante-horreur'] )
-    liste.append( ['Espionage',URL_MAIN + 'films-genre/espionnage'] )  
-    liste.append( ['Famille',URL_MAIN + 'films-genre/famille'] )
-    liste.append( ['Fantastique',URL_MAIN + 'films-genre/fantastique'] )
-    liste.append( ['Guerre',URL_MAIN + 'films-genre/guerre'] )
-    liste.append( ['Histoire',URL_MAIN + 'films-genre/histoire'] )
-    liste.append( ['Horreur',URL_MAIN + 'films-genre/horreur'] )
-    liste.append( ['Judiciaire',URL_MAIN + 'films-genre/judiciaire'] )
-    liste.append( ['Médical',URL_MAIN + 'films-genre/medical'] )
-    liste.append( ['Musical',URL_MAIN + 'films-genre/musical'] )
-    liste.append( ['Mystère',URL_MAIN + 'films-genre/mystere'] )
-    liste.append( ['Policier',URL_MAIN + 'films-genre/policier'] )
-    liste.append( ['Romance',URL_MAIN + 'films-genre/romance'] )
-    liste.append( ['Sciense Fiction',URL_MAIN + 'films-genre/science-fiction'] )
-    liste.append( ['Sport Event',URL_MAIN + 'films-genre/sport-event'] )
-    liste.append( ['Thriller',URL_MAIN + 'films-genre/thriller'] )
-    liste.append( ['Thriller Psychologique',URL_MAIN + 'films-genre/thriller-psychologique'] ) 
-    liste.append( ['Western',URL_MAIN + 'films-genre/western'] )
+    liste.append( ['Action',sUrl + 'action'] )
+    liste.append( ['Animation',sUrl + 'animation'] )
+    liste.append( ['Aventure',sUrl + 'aventure'] )
+    #liste.append( ['Biographie',sUrl + 'biographie'] )
+    liste.append( ['Biopic',sUrl + 'biopic'] )
+    liste.append( ['Comédie',sUrl + 'comedie'] )
+    liste.append( ['Comédie Dramatique',sUrl + 'comedie-dramatique'] )
+    liste.append( ['Comédie Musicale',sUrl + 'comedie-musicale'] )
+    #liste.append( ['Crime',sUrl + 'crime'] )
+    liste.append( ['Documentaire',sUrl + 'documentaire'] )
+    liste.append( ['Drame',sUrl + 'drame'] )
+    liste.append( ['Epouvante Horreur',sUrl + 'epouvante-horreur'] )
+    liste.append( ['Espionage',sUrl + 'espionnage'] )  
+    liste.append( ['Famille',sUrl + 'famille'] )
+    liste.append( ['Fantastique',sUrl + 'fantastique'] )
+    liste.append( ['Guerre',sUrl + 'guerre'] )
+    liste.append( ['Histoire',sUrl + 'histoire'] )
+    #liste.append( ['Horreur',sUrl + 'horreur'] )
+    #liste.append( ['Judiciaire',sUrl + 'judiciaire'] )
+    #liste.append( ['Médical',sUrl + 'medical'] )
+    liste.append( ['Musical',sUrl + 'musical'] )
+    #liste.append( ['Mystère',sUrl + 'mystere'] )
+    liste.append( ['Policier',sUrl + 'policier'] )
+    liste.append( ['Romance',sUrl + 'romance'] )
+    liste.append( ['Sciense Fiction',sUrl + 'science-fiction'] )
+    liste.append( ['Sport Event',sUrl + 'sport-event'] )
+    liste.append( ['Thriller',sUrl + 'thriller'] )
+    #liste.append( ['Thriller Psychologique',sUrl + 'thriller-psychologique'] ) 
+    liste.append( ['Western',sUrl + 'western'] )
                
     for sTitle,sUrl in liste:
        
@@ -471,14 +476,14 @@ def showMovies(sSearch = ''):
     #Regex trop lourd donc on fractionne
     aResult=[(False)]
     oParser = cParser()
-    sPattern = '(<li data-hover="details" data-title=".+?<\/li>)'
+    sPattern = '(<li (?:class="budur" )*data-hover="details" data-title=".+?<\/li>)'
     aResult2 = oParser.parse(sHtmlContent, sPattern)
     
     if (aResult2[0] == False):
         oGui.addNone(SITE_IDENTIFIER)
     if (aResult2[0] == True):
         list = []
-        sPattern = '<li data-hover="details" data-title="(.+?)" data-ozet="(.*?)" data-tur.+?<a href="(.+?)">.+?<img src="(.+?)" class="film-list-thumb".+?<div class="film-list-quality"><span>([0-9]{3}p)*<\/span>'
+        sPattern = '<li (?:class="budur" )*data-hover="details" data-title="(.+?)" data-ozet="(.*?)" data-tur.+?<a href="(.+?)">.+?<img src="(.+?)" class="film-list-thumb".+?<div class="film-list-quality"><span>([0-9]{3}p)*<\/span>'
         for aEntry in aResult2[1]:
             aResult3 = oParser.parse(aEntry, sPattern)
             if (aResult3[0] == True):
@@ -587,16 +592,17 @@ def showLinks():
     
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
+    
     oRequestHandler = cRequestHandler(sUrl)
+
     sHtmlContent = oRequestHandler.request()
+    sHtmlContent = sHtmlContent.replace('</i> Untitled<span>', '')
     
     oParser = cParser()
     sPattern = '<li><a href="([^<>"]+?)" (?:class="active")*><i class="fa fa-film"><\/i>(.+?)<span><\/span><\/a><\/li>'
+    #sPattern='<div id="burayaclass".+?onclick="getirframe\(\'(.+?)\',\'(.+?)\'\)".+?<div class="col-md-4.+?<p>(.+?)</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    #print aResult    
-    
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -610,19 +616,95 @@ def showLinks():
             sDisplayTitle = sDisplayTitle + '[COLOR teal] >> ' + aEntry[1] +' [/COLOR]'
             
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('siteUrl',  aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)             
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters2', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)             
     
         cConfig().finishDialog(dialog)
+        
+    else:
+        
+        sPattern='<div id="burayaclass".+?onclick="getirframe\(\'(.+?)\',\'(.+?)\'\)".+?<div class="col-md-4.+?<p>(.+?)</p>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        if (aResult[0] == True):
+            total = len(aResult[1])
+            dialog = cConfig().createDialog(SITE_NAME)
+            for aEntry in aResult[1]:
+                cConfig().updateDialog(dialog, total)
+                if dialog.iscanceled():
+                    break
+                
+                sTitle = sMovieTitle
+                sDisplayTitle = cUtil().DecoTitle(sTitle)
+                sDisplayTitle = sDisplayTitle + '[COLOR teal] >> ' +  aEntry[2] +' [/COLOR]'
+                
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', 'http://')
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+                oOutputParameterHandler.addParameter('sParam', aEntry[0])
+                oOutputParameterHandler.addParameter('sBunuid', aEntry[1])
+                
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)             
+        
+            cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()  
 
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
+    #sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sParam = oInputParameterHandler.getValue('sParam')
+    sBunuid = oInputParameterHandler.getValue('sBunuid')
+
+    sUrl = 'http://frenchstream.tv/wp-content/plugins/host-x-files/islem.php'
+    oRequestHandler = cRequestHandler(sUrl)
+    
+    oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+    oRequestHandler.addParameters('islem', 'framegetir')
+    oRequestHandler.addParameters('param', sParam)
+    oRequestHandler.addParameters('bunuid', sBunuid)
+    sHtmlContent = oRequestHandler.request()
+    #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src="http://www.facebook.com/','')
+    #sHtmlContent = sHtmlContent.replace('http://videomega.tv/validateemb.php','')
+    #sHtmlContent = sHtmlContent.replace('src="http://frenchstream.org/','')
+    
+    sPattern = '(?:(?:<script type="text\/javascript")|(?:<ifram[^<>]+?)) src=[\'"](https*:[^\'"]+?)[\'"]'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    
+     
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+            
+            sHosterUrl = str(aEntry)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
+    
+        cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()
+    
+def showHosters2():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
@@ -632,12 +714,12 @@ def showHosters():
     #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src="http://www.facebook.com/','')
     #sHtmlContent = sHtmlContent.replace('http://videomega.tv/validateemb.php','')
     #sHtmlContent = sHtmlContent.replace('src="http://frenchstream.org/','')
-        
+    
     sPattern = '(?:(?:<script type="text\/javascript")|(?:<ifram[^<>]+?)) src=[\'"](https*:[^\'"]+?)[\'"]'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-    print aResult
+    
      
     if (aResult[0] == True):
         total = len(aResult[1])
