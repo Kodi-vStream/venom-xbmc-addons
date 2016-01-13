@@ -18,8 +18,11 @@ SITE_NAME = 'buzzmonclick.com'
 SITE_DESC = 'Film Streaming & Serie Streaming: Regardez films et series de qualité entièrement gratuit. Tout les meilleurs streaming en illimité.'
  
 URL_MAIN = 'http://buzzmonclick.com/category/replay-tv/'
- 
-REPLAYTV_REPLAYTV = ('http://buzzmonclick.com/category/replay-tv/', 'showMovies')
+
+REPLAYTV_NEWS = ('http://buzzmonclick.com/category/replay-tv/', 'showMovies')
+
+REPLAYTV_REPLAYTV = ('http://', 'load')
+#REPLAYTV_REPLAYTV = ('http://buzzmonclick.com/category/replay-tv/', 'showMovies')
 DOC_DOCS = ('http://buzzmonclick.com/category/replay-tv/documentaires/', 'showMovies')
 
  
@@ -32,21 +35,39 @@ def load():
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Films Recherche', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
  
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Replay TV', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Replay TV', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_DOCS[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_DOCS[1], 'Documentaires', 'films.png', oOutputParameterHandler)
- 
+    
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', 'http://buzzmonclick.com/category/replay-tv/divertissement/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Divertissement', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://buzzmonclick.com/category/replay-tv/infos-magazine/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Info/Magazines', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://buzzmonclick.com/category/replay-tv/series-tv/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://buzzmonclick.com/category/replay-tv/tele-realite/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Télé-Réalité', 'films.png', oOutputParameterHandler)
+    
+ 
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+    # oGui.addDir(SITE_IDENTIFI#ER, 'showGenre', 'Films Genres', 'genres.png', oOutputParameterHandler)
  
     oGui.setEndOfDirectory()
+    
  
 def showMoviesSearch():
     oGui = cGui()
@@ -108,7 +129,7 @@ def showMovies(sSearch = ''):
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
             #sTitle = unescape(str(sTitle))
             sTitle = sTitle.encode( "utf-8")
-            print sTitle
+            #print sTitle
             
             #mise en page
             sTitle = re.sub('(?:,)* (?:Replay |Video )*du ([0-9]+ [a-zA-z]+ [0-9]+)',' (\\1)', str(sTitle))
@@ -123,8 +144,9 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
            
             #print str(sTitle)
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
            
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[2], aEntry[2], oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', aEntry[2], aEntry[2], oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
  
@@ -181,7 +203,8 @@ def showHosters():
             oHoster = cHosterGui().checkHoster(sHosterUrl)
  
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
  
