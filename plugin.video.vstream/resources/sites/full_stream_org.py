@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 #Venom.
+#15/01/2016
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -20,9 +21,9 @@ URL_MAIN = 'http://full-stream.org/'
 
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
-MOVIE_NOTES = (URL_MAIN + 'films-en-streaming/', 'showMovies')
-MOVIE_VIEWS = (URL_MAIN + 'index.php?do=les-plus-vues/', 'showMovies')
-MOVIE_COMMENTS = (URL_MAIN + 'index.php?do=les-plus-commentes/', 'showMovies')
+MOVIE_NOTES = ('http://full-stream.org/movie/rating/', 'showMovies')
+MOVIE_VIEWS = ('http://full-stream.org/movie/news_read/', 'showMovies')
+MOVIE_COMMENTS = ('http://full-stream.org/movie/comm_num/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 
 SERIE_SERIES = (URL_MAIN + 'liste-des-series/', 'AlphaSearch')
@@ -35,7 +36,7 @@ ANIM_NEWS = (URL_MAIN + 'mangas/','showMovies')
 ANIM_VFS = (URL_MAIN + 'mangas/mangas-vf/', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'mangas/mangas-vostfr/', 'showMovies')
 
-URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&titleonly=3&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -105,7 +106,7 @@ def showSearch():
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         #sSearchText = cUtil().urlEncode(sSearchText)
-        sUrl = URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&story='+sSearchText  
+        sUrl = URL_SEARCH[0] + sSearchText  
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return  
@@ -133,35 +134,34 @@ def showGenre():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['HD/HQ',URL_MAIN + 'films-en-vk-streaming/haute-qualite/'] )
-    liste.append( ['Action',URL_MAIN + 'films-en-vk-streaming/action/'] )
-    liste.append( ['Aventure',URL_MAIN + 'films-en-vk-streaming/aventure/'] )
-    liste.append( ['Animation',URL_MAIN + 'films-en-vk-streaming/animation/'] )
+    liste.append( ['HD/HQ',URL_MAIN + 'quality/Haute-qualit%C3%A9/'] )
+    liste.append( ['Action',URL_MAIN + 'action/'] )
+    liste.append( ['Aventure',URL_MAIN + 'aventure/'] )
+    liste.append( ['Animation',URL_MAIN + 'animation/'] )
     liste.append( ['Walt Disney',URL_MAIN + 'film/Walt+Disney/'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'films-en-vk-streaming/arts-martiaux/'] )
-    liste.append( ['Biopic',URL_MAIN + 'films-en-vk-streaming/biopic/'] )
-    liste.append( ['Comedie',URL_MAIN + 'films-en-vk-streaming/comedie/'] )
-    liste.append( ['Comedie Dramatique',URL_MAIN + 'films-en-vk-streaming/comedie-dramatique/'] )
-    liste.append( ['Comedie Musicale',URL_MAIN + 'films-en-vk-streaming/comedie-musicale/'] )
-    liste.append( ['Drame',URL_MAIN + 'films-en-vk-streaming/drame/'] )
-    liste.append( ['Documentaire',URL_MAIN + 'films-en-vk-streaming/documentaire/'] ) 
-    liste.append( ['Horreur',URL_MAIN + 'films-en-vk-streaming/horreur/'] )
-    liste.append( ['Fantastique',URL_MAIN + 'films-en-vk-streaming/fantastique/'] )
-    liste.append( ['Guerre',URL_MAIN + 'films-en-vk-streaming/guerre/'] )
-    liste.append( ['Policier',URL_MAIN + 'films-en-vk-streaming/policier/'] )
-    liste.append( ['Romance',URL_MAIN + 'films-en-vk-streaming/romance/'] )
-    liste.append( ['Science fiction',URL_MAIN + 'films-en-vk-streaming/science-fiction/'] )
-    liste.append( ['Spectacles Scetchs',URL_MAIN + 'films-en-vk-streaming/spectacles/'] )
-    liste.append( ['Thriller',URL_MAIN + 'films-en-vk-streaming/thriller/'] )
-    liste.append( ['Western',URL_MAIN + 'xfsearch/vkplayer/'] )
-    liste.append( ['Sur VK-Streaming',URL_MAIN + 'films-en-vk-streaming/western/'] )
-    liste.append( ['Sur YouTube',URL_MAIN + 'xfsearch/Youtube/'] )
-    liste.append( ['Sur Dailymotion',URL_MAIN + 'xfsearch/Dailymotion/'] )
-    liste.append( ['Sur YouWatch',URL_MAIN + 'xfsearch/YouWatch/'] )
-    liste.append( ['Sur Exachare',URL_MAIN + 'films-en-vk-streaming/western/'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'arts-martiaux/'] )
+    liste.append( ['Biopic',URL_MAIN + 'biopic/'] )
+    liste.append( ['Comedie',URL_MAIN + 'comedie/'] )
+    liste.append( ['Comedie Dramatique',URL_MAIN + 'comedie-dramatique/'] )
+    liste.append( ['Comedie Musicale',URL_MAIN + 'comedie-musicale/'] )
+    liste.append( ['Drame',URL_MAIN + 'drame/'] )
+    liste.append( ['Documentaire',URL_MAIN + 'documentaire/'] ) 
+    liste.append( ['Horreur',URL_MAIN + 'horreur/'] )
+    liste.append( ['Famille',URL_MAIN + 'famille/'] )
+    liste.append( ['Fantastique',URL_MAIN + 'fantastique/'] )
+    liste.append( ['Guerre',URL_MAIN + 'guerre/'] )
+    liste.append( ['Spectacles Scetchs',URL_MAIN + 'spectacles/'] )
+    liste.append( ['Policier',URL_MAIN + 'policier/'] )
+    liste.append( ['Historique',URL_MAIN + 'historique/'] )
+    liste.append( ['Musical',URL_MAIN + 'musical/'] )
+    liste.append( ['Romance',URL_MAIN + 'romance/'] )
+    liste.append( ['Science-Fiction',URL_MAIN + 'science-fiction/'] )
+    liste.append( ['Thriller',URL_MAIN + 'thriller/'] )
+    liste.append( ['Western',URL_MAIN + 'western/'] )
+    
     liste.append( ['En VOSTFR',URL_MAIN + 'xfsearch/VOSTFR/'] )
     liste.append( ['En VFSTF',URL_MAIN + 'xfsearch/VFSTF/'] )
-    liste.append( ['Derniers ajouts',URL_MAIN + 'lastnews/'] )
+    #liste.append( ['Derniers ajouts',URL_MAIN + 'lastnews/'] )
                
     for sTitle,sUrl in liste:
         
@@ -238,6 +238,8 @@ def showMovies(sSearch = ''):
     
     oInputParameterHandler = cInputParameterHandler()
     
+    dlenewssortby = False
+    
     if sSearch:
         sUrl = sSearch
         
@@ -253,18 +255,57 @@ def showMovies(sSearch = ''):
             sUrl = sUrl
         
         #sPattern = 'fullstreaming">.*?<img src="(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a><\/h3>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*Regarder<\/a>'
-        sPattern = 'fullstreaming">.*?<img src=".+?src=(.+?)(?:&.+?)*".+?<h3.+?><a href="(.+?)">(.+?)<\/a>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*<span style="font-family:.+?>(.+?)<\/span>'
+        sPattern = 'fullstreaming">.*?<img src="(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*<span style="font-family:.+?>(.+?)<\/span>'
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = 'fullstreaming">.*?<img src=".+?src=(.+?)(?:&.+?)*".+?<h3.+?><a href="(.+?)">(.+?)<\/a>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*<span style="font-family:.+?>(.+?)<\/span>'
+        sPattern = 'fullstreaming">.*?<img src="(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*<span style="font-family:.+?>(.+?)<\/span>'
    
-    #recuperation de la page
-    oRequestHandler = cRequestHandler(sUrl)
+    #recuperation des tris
+    
+    #les plus noter dlenewssortby=rating&dledirection=desc&set_new_sort=dle_sort_cat&set_direction_sort=dle_direction_cat
+    # les plus vue dlenewssortby=news_read&dledirection=desc&set_new_sort=dle_sort_cat&set_direction_sort=dle_direction_cat
+    
+    #les plus commenter dlenewssortby=comm_num&dledirection=desc&set_new_sort=dle_sort_main&set_direction_sort=dle_direction_main
+    
+    if ("rating" in sUrl or "news_read" in sUrl or "comm_num" in sUrl):
+    
+        oRequestHandler = cRequestHandler('http://full-stream.org/movie')
+        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)        
+        
+        oRequestHandler.addParameters('dledirection', 'desc')
+        oRequestHandler.addParameters('set_new_sort', 'dle_sort_cat')
+        oRequestHandler.addParameters('set_direction_sort', 'dle_direction_cat')
+        
+        
+        if ("rating" in sUrl):
+            dlenewssortby = "rating"
+        elif ("news_read" in sUrl):
+            dlenewssortby = "news_read"
+        elif ("comm_num" in sUrl):        
+            dlenewssortby = "comm_num"
+            
+        oRequestHandler.addParameters('dlenewssortby', dlenewssortby)
+
+    
+    else :
+        oRequestHandler = cRequestHandler(sUrl)
+        
+    
+    if oInputParameterHandler.getValue('dlenewssortby'):
+    
+        dlenewssortby = oInputParameterHandler.getValue('dlenewssortby')
+        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+        oRequestHandler.addParameters('dlenewssortby', dlenewssortby)
+        oRequestHandler.addParameters('dledirection', 'desc')
+        oRequestHandler.addParameters('set_new_sort', 'dle_sort_cat')
+        oRequestHandler.addParameters('set_direction_sort', 'dle_direction_cat')
+    
+        
+        
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
    
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -282,8 +323,8 @@ def showMovies(sSearch = ''):
                 
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
-            # if not 'http' in sThumb:
-                # sThumb = URL_MAIN + sThumb
+            if not 'http' in sThumb:
+                sThumb = 'http://full-stream.org'+ sThumb
 
             #if sSearch:
             #    sCom = ''
@@ -308,6 +349,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            oOutputParameterHandler.addParameter('dlenewssortby', dlenewssortby)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     if not sSearch:
@@ -342,9 +384,11 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a href="([^<]+)" target="filmPlayer" class="ilink sinactive"><img alt="(.+?)"'
+    #sPattern = '<a href="([^<]+)" target="filmPlayer" class="ilink sinactive"><img alt="(.+?)"'
+    sPattern = '<i class="fa fa-play-circle-o"></i>([^<]+)</div>|<a href="([^<>"]+)" title="([^<]+)" target="seriePlayer".+?>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -353,10 +397,16 @@ def showHosters():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
+                
+            if aEntry[0]:
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'host.png', oOutputParameterHandler)
 
-            sHosterUrl = str(aEntry[0])
-            oHoster = cHosterGui().checkHoster(aEntry[1].lower())                   
-            oHoster = cHosterGui().checkHoster(aEntry[0].lower())                   
+            sHosterUrl = str(aEntry[1])
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
         
             if (oHoster != False):         
                 try:
