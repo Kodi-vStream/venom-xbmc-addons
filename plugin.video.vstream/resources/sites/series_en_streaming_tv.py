@@ -32,10 +32,12 @@ def CleanTitle(title):
     title = cUtil().unescape(title)
     title = cUtil().removeHtmlTags(title)
     try:
-        title = unicode(title, 'utf-8')
+        #title = unicode(title, 'utf-8')
+        title = unicode(title, 'iso-8859-1')
     except:
         pass
     title = unicodedata.normalize('NFD', title).encode('ascii', 'ignore')
+    
     return title.encode( "utf-8")
 
 def load():
