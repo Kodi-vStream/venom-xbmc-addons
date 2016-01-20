@@ -133,13 +133,12 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     #sHtmlContent = SucurieBypass().GetHtml(sUrl)
-    
-    
+
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
     
-    sPattern = '<div class="item">.+?<a href="([^<]+)">.+?<img src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">(.+?)<\/span>'
+    sPattern = '<div class="item"><a href="([^<]+)">.+?<img src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">(.+?)<\/span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
    
