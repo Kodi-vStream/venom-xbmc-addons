@@ -225,6 +225,7 @@ def __checkForNextPage(sHtmlContent):
  
 def showHosters():
    
+    oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -254,19 +255,20 @@ def showHosters():
        
         if (oHoster != False):
             sHosterUrl = sHosterUrl + '|Referer='+ sUrl.replace(URL_MAIN,'http://www.hd-stream.in/')
-            oGuiElement = cGuiElement()
-            oGuiElement.setSiteName(SITE_IDENTIFIER)
-            oGuiElement.setTitle(sMovieTitle)
-            oGuiElement.setMediaUrl(sHosterUrl)
-            oGuiElement.setThumbnail(sThumbnail)
+            # oGuiElement = cGuiElement()
+            # oGuiElement.setSiteName(SITE_IDENTIFIER)
+            # oGuiElement.setTitle(sMovieTitle)
+            # oGuiElement.setMediaUrl(sHosterUrl)
+            # oGuiElement.setThumbnail(sThumbnail)
 
-            oPlayer = cPlayer()
-            oPlayer.clearPlayList()
-            oPlayer.addItemToPlaylist(oGuiElement)
-            oPlayer.startPlayer()
+            # oPlayer = cPlayer()
+            # oPlayer.clearPlayList()
+            # oPlayer.addItemToPlaylist(oGuiElement)
+            # oPlayer.startPlayer()
             
-            #oHoster.setDisplayName(sMovieTitle)
-            #oHoster.setFileName(sMovieTitle)
-            #cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+            
              
-        #cConfig().finishDialog(dialog)
+        oGui.setEndOfDirectory()

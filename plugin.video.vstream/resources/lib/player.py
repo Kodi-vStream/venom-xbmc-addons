@@ -42,8 +42,8 @@ class cPlayer(xbmc.Player):
         
     def run(self, oGuiElement, sTitle, sUrl):
         sPluginHandle = cPluginHandler().getPluginHandle();
-        meta = oGuiElement.getInfoLabel()
-        #meta = {'label': sTitle, 'title': sTitle}
+        #meta = oGuiElement.getInfoLabel()
+        meta = {'label': sTitle, 'title': sTitle}
         item = xbmcgui.ListItem(path=sUrl, iconImage="DefaultVideo.png")
         item.setInfo( type="Video", infoLabels= meta )
         xbmcplugin.setResolvedUrl(sPluginHandle, True, item)

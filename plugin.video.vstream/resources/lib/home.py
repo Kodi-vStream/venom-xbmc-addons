@@ -79,7 +79,7 @@ class cHome:
         if (cConfig().getSetting('home_videos') == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'movieNets', '[COLOR '+color_videos+']'+cConfig().getlanguage(30114)+'[/COLOR]', 'buzz.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showNets', '[COLOR '+color_videos+']'+cConfig().getlanguage(30114)+'[/COLOR]', 'buzz.png', oOutputParameterHandler)
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -87,7 +87,11 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('cDownload', 'getDownload', 'Download beta', 'download.png', oOutputParameterHandler)        
+        oGui.addDir('cDownload', 'getDownload', '[COLOR teal]Téléchargement[/COLOR]', 'download.png', oOutputParameterHandler)
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir('cLibrary', 'getLibrary', 'Librairie beta', 'download.png', oOutputParameterHandler)   
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -100,6 +104,26 @@ class cHome:
 
 
         
+        oGui.setEndOfDirectory()
+        
+    def showNets(self):
+        oGui = cGui()
+         
+        # Affiche les Nouveautés Vidéos
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'netsNews', '[COLOR '+color_videos+']Vidéos Nouveautés[/COLOR]', 'news.png', oOutputParameterHandler)
+         
+        # Affiche les Genres Vidéos
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'netsGenres', '[COLOR '+color_videos+']Vidéos Genres[/COLOR]', 'genres.png', oOutputParameterHandler)
+         
+        # Affiche les Sources Vidéos
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'movieNets', '[COLOR '+color_videos+']Vidéos Sources[/COLOR]', 'host.png', oOutputParameterHandler)
+         
         oGui.setEndOfDirectory()
     
     def showTV(self):
@@ -296,6 +320,14 @@ class cHome:
 
     def movieNets(self):
         self.__callpluging('MOVIE_NETS', '[COLOR '+color_videos+']'+cConfig().getlanguage(30114)+'[/COLOR]', 'buzz.png')
+
+    # Récupère la variable globale NETS_NEWS dans /plugin.video.vstream/resources/sites/source.py
+    def netsNews(self):
+        self.__callpluging('NETS_NEWS', '[COLOR '+color_videos+']Vidéos Nouveautés[/COLOR]', 'news.png')
+      
+    # Récupère la variable globale NETS_GENRES dans /plugin.video.vstream/resources/sites/source.py
+    def  netsGenres(self):
+        self.__callpluging('NETS_GENRES', '[COLOR '+color_videos+']Vidéos Genres[/COLOR]', 'genres.png')
         
     def replayReplay(self):
         self.__callpluging('REPLAYTV_REPLAYTV', '[COLOR '+color_replaytvs+']'+cConfig().getlanguage(30137)+'[/COLOR]', 'replay_host.png')

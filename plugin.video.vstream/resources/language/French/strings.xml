@@ -8,7 +8,7 @@
 
     <!-- settingtabs begin by 30021 - 30030 -->
     <string id="30021">Général</string>
-    <string id="30022">Plugins on/off</string>
+    <string id="30022">Plugins on/off (1/3)</string>
     <string id="30023">Plugins Préférences</string>
     <string id="30024">Hote</string>
     <string id="30025">Accueil</string>
@@ -76,12 +76,23 @@
     <string id="30134">Films VF</string>    
     <string id="30135">Films VOSTFR</string>
     <string id="30136">Télévision Replay Genre</string>
-	<string id="30137">Télévision Replay Sources</string>
-	<string id="30138">Films Sources</string>
-	<string id="30139">Séries Sources</string>
-	<string id="30140">Animés Sources</string>
-	
-	<string id="30145">Dossier de Téléchagements</string>
+    <string id="30137">Télévision Replay Sources</string>
+    <string id="30138">Films Sources</string>
+    <string id="30139">Séries Sources</string>
+    <string id="30140">Animés Sources</string>
+    
+    <string id="30145">Dossier de Téléchagements</string>
+    
+    <string id="30146">Afficher/Masquer les paramètres de recherche</string>
+    <string id="30147">Plugins on/off (2/3)</string>
+    
+    <!--Librairie -->
+    <string id="30300">Librairie</string>
+    <string id="30301">A configurer dans kodi si vous voulez qu'ils soient importes</string>
+    <string id="30302">Mise a jour a chaque ajout</string>
+    <!--version 0.3.8 -->
+    <string id="30303">Activer/Désactiver</string>
+    <string id="30148">Plugins on/off (3/3)</string>
 
 </strings>
 

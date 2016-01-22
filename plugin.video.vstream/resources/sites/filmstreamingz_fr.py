@@ -11,25 +11,24 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
-
 SITE_IDENTIFIER = 'filmstreamingz_fr'
-SITE_NAME = 'FilmStreamingz.fr'
-SITE_DESC = 'Film Streaming & Serie Streaming: Regardez films et series de qualité entièrement gratuit. Tout les meilleurs streaming en illimité.'
+SITE_NAME = 'Filmstreaming.cc et Streamingserie.tv'
+SITE_DESC = 'Film Streaming & Serie Streaming'
 
-URL_MAIN = 'http://filmstreamingz.fr/'
-URL_MAIN2 = 'http://seriestreaming.org/'
+URL_MAIN = 'http://filmstreaming.cc/'
+URL_MAIN2 = 'http://streamingserie.tv/'
 
-MOVIE_MOVIE = ('http://filmstreamingz.fr/', 'showMovies')
-MOVIE_NEWS = ('http://filmstreamingz.fr/', 'showMovies')
-MOVIE_VIEWS = ('http://filmstreamingz.fr/les-plus-vus/', 'showMovies')
-MOVIE_COMMENTS = ('http://filmstreamingz.fr/les-plus-commentes-2/', 'showMovies')
-MOVIE_NOTES = ('http://filmstreamingz.fr/les-mieux-notes-2/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN, 'showMovies')
+MOVIE_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'les-plus-vus/', 'showMovies')
+MOVIE_COMMENTS = (URL_MAIN + 'les-plus-commentes-2/', 'showMovies')
+MOVIE_NOTES = (URL_MAIN + 'les-mieux-notes-2/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 
-SERIE_SERIES = ('http://seriestreaming.org/', 'showMovies')
-SERIE_NEWS = ('http://seriestreaming.org/', 'showMovies')
+SERIE_SERIES = (URL_MAIN2, 'showMovies')
+SERIE_NEWS = (URL_MAIN2, 'showMovies')
 
-URL_SEARCH = ('http://filmstreamingz.fr/?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load(): 
@@ -68,15 +67,15 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Series Nouveautés', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://seriestreaming.org/les-plus-vues/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN2 + 'les-plus-vues/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series Les Plus Vues', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://seriestreaming.org/les-plus-commentees/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN2 + 'les-plus-commentees/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series Les Plus Commentés', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://seriestreaming.org/les-mieux-notees/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN2 + 'les-mieux-notees/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series Les Mieux Notées', 'series.png', oOutputParameterHandler)
 
 
@@ -87,7 +86,7 @@ def showMoviesSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = 'http://filmstreamingz.fr/?s='+sSearchText
+        sUrl = URL_MAIN + '?s='+sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -98,7 +97,7 @@ def showSeriesSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = 'http://seriestreaming.org/?s='+sSearchText
+        sUrl = URL_MAIN2 + '?s='+sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -112,27 +111,27 @@ def showGenre():
 
     liste = []
 
-    liste.append( ['Action','http://filmstreamingz.fr/category/action/'] )
-    liste.append( ['Afro','http://filmstreamingz.fr/category/afro/'] )
-    liste.append( ['Animation','http://filmstreamingz.fr/category/animation/'] )
-    liste.append( ['Arts Martiaux','http://filmstreamingz.fr/category/arts-martiaux/'] )
-    liste.append( ['Aventure','http://filmstreamingz.fr/category/aventure/'] )
-    liste.append( ['Comedie','http://filmstreamingz.fr/category/comedie/'] )
-    liste.append( ['Documentaire','http://filmstreamingz.fr/category/documentaire/'] )
-    liste.append( ['Drame','http://filmstreamingz.fr/category/drame/'] )
-    liste.append( ['Espionnage','http://filmstreamingz.fr/category/espionnage/'] )
-    liste.append( ['Famille','http://filmstreamingz.fr/category/famille/'] )
-    liste.append( ['Fantastique','http://filmstreamingz.fr/category/fantastique/'] )
-    liste.append( ['Guerre','http://filmstreamingz.fr/category/guerre/'] )
-    liste.append( ['Historique','http://filmstreamingz.fr/category/historique/'] )
-    liste.append( ['Epouvante-Horreur','http://filmstreamingz.fr/category/horreur/'] )
-    liste.append( ['Musical','http://filmstreamingz.fr/category/musical/'] )
-    liste.append( ['Policier','http://filmstreamingz.fr/category/policier/'] )
-    liste.append( ['Romance','http://filmstreamingz.fr/category/romance/'] )
-    liste.append( ['Science-Fiction','http://filmstreamingz.fr/category/science-fiction/'] )
-    liste.append( ['Spectacle','http://filmstreamingz.fr/category/spectacle/'] )
-    liste.append( ['Thriller','http://filmstreamingz.fr/category/thriller/'] )
-    liste.append( ['Western','http://filmstreamingz.fr/category/western/'] )
+    liste.append( ['Action',URL_MAIN + 'category/action/'] )
+    liste.append( ['Afro',URL_MAIN + 'category/afro/'] )
+    liste.append( ['Animation',URL_MAIN + 'category/animation/'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'category/arts-martiaux/'] )
+    liste.append( ['Aventure',URL_MAIN + 'category/aventure/'] )
+    liste.append( ['Comedie',URL_MAIN + 'category/comedie/'] )
+    liste.append( ['Documentaire',URL_MAIN + 'category/documentaire/'] )
+    liste.append( ['Drame',URL_MAIN + 'category/drame/'] )
+    liste.append( ['Espionnage',URL_MAIN + 'category/espionnage/'] )
+    liste.append( ['Famille',URL_MAIN + 'category/famille/'] )
+    liste.append( ['Fantastique',URL_MAIN + 'category/fantastique/'] )
+    liste.append( ['Guerre',URL_MAIN + 'category/guerre/'] )
+    liste.append( ['Historique',URL_MAIN + 'category/historique/'] )
+    liste.append( ['Epouvante-Horreur',URL_MAIN + 'category/horreur/'] )
+    liste.append( ['Musical',URL_MAIN + 'category/musical/'] )
+    liste.append( ['Policier',URL_MAIN + 'category/policier/'] )
+    liste.append( ['Romance',URL_MAIN + 'category/romance/'] )
+    liste.append( ['Science-Fiction',URL_MAIN + 'category/science-fiction/'] )
+    liste.append( ['Spectacle',URL_MAIN + 'category/spectacle/'] )
+    liste.append( ['Thriller',URL_MAIN + 'category/thriller/'] )
+    liste.append( ['Western',URL_MAIN + 'category/western/'] )
 
     for sTitle,sUrl in liste:
 
@@ -152,10 +151,12 @@ def showMovies(sSearch = ''):
         sDisp = oInputParameterHandler.getValue('disp')
         if (sDisp == 'search2'):#serie
             sUrl = sUrl.replace(URL_MAIN,URL_MAIN2)
+            
+        sUrl = sUrl.replace('%20','+')
       
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
-
+        
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('//ad.advertstream.com/', '').replace('http://www.adcash.com/', '').replace('http://regie.espace-plus.net/', '')
@@ -181,7 +182,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
-            if 'series' in sUrl:
+            if URL_MAIN2 in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], '', oOutputParameterHandler)
@@ -276,7 +277,8 @@ def showHosters():
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 

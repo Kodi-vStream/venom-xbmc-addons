@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.handler.jdownloaderHandler import cJDownloaderHandler
-#import resources.lib.download import cDownload
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
@@ -21,8 +20,8 @@ class cHosterGui:
     # step 1 - bGetRedirectUrl in ein extra optionsObject verpacken
     def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl = False):
         
-        oInputParameterHandler = cInputParameterHandler()
-        aParams = oInputParameterHandler.getAllParameter()
+        #oInputParameterHandler = cInputParameterHandler()
+        #aParams = oInputParameterHandler.getAllParameter()
         
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)
@@ -38,16 +37,16 @@ class cHosterGui:
         oGuiElement.getInfoLabel()
         oGuiElement.setCat(4)
         #oGuiElement.setThumbnail(xbmc.getInfoLabel('ListItem.Art(thumb)'))
-                
+        if sThumbnail:
+            oGuiElement.setThumbnail(sThumbnail)
             
         #oGuiElement.setMeta(1)
         oGuiElement.setIcon('host.png')
-        
-        
+               
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
         #oOutputParameterHandler.addParameter('sThumbnail', oGuiElement.getThumbnail())
-        
+
         oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
         oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
         oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
@@ -82,13 +81,19 @@ class cHosterGui:
         #context FAV menu
         oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
         
-
+        #context Library menu
+        oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cLibrary','cLibrary','setLibrary','[COLOR teal]Ajouter a la librairie[/COLOR]')
+      
         #bug
         oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
          
         #oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     def checkHoster(self, sHosterUrl):
+    
+            #securiter
+        if (not sHosterUrl):
+            return False
 
         if ('novamov' in sHosterUrl):
             return cHosterHandler().getHoster('novamov')
@@ -208,6 +213,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('v_vids')
         if ('vid.ag' in sHosterUrl):
             return cHosterHandler().getHoster('vid_ag')
+        if ('wat.tv' in sHosterUrl):
+            return cHosterHandler().getHoster('wat_tv')
 
         #Si aucun hebergeur connu on teste les liens directs
         if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8'):
@@ -225,81 +232,83 @@ class cHosterGui:
         return False
         
         # step 2
-    def showHosterMenu(self):
-        oGui = cGui()
-        oInputParameterHandler = cInputParameterHandler()
+        
+        
+    # def showHosterMenu(self):
+        # oGui = cGui()
+        # oInputParameterHandler = cInputParameterHandler()
 
-        sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
-        sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
-        bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
-        sFileName = oInputParameterHandler.getValue('sFileName')
+        # sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
+        # sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
+        # bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
+        # sFileName = oInputParameterHandler.getValue('sFileName')
 
-        oHoster = cHosterHandler().getHoster(sHosterIdentifier)
-        oHoster.setFileName(sFileName)
+        # oHoster = cHosterHandler().getHoster(sHosterIdentifier)
+        # oHoster.setFileName(sFileName)
 
-        # play
-        self.__showPlayMenu(oGui, sMediaUrl, oHoster, bGetRedirectUrl)
+        # # play
+        # self.__showPlayMenu(oGui, sMediaUrl, oHoster, bGetRedirectUrl)
 
-        # playlist
-        self.__showPlaylistMenu(oGui, sMediaUrl, oHoster, bGetRedirectUrl)
+        # # playlist
+        # self.__showPlaylistMenu(oGui, sMediaUrl, oHoster, bGetRedirectUrl)
 
-        # download
-        if (oHoster.isDownloadable() == True):
-            self.__showDownloadMenu(oGui, sMediaUrl, oHoster, bGetRedirectUrl)        
+        # # download
+        # if (oHoster.isDownloadable() == True):
+            # self.__showDownloadMenu(oGui, sMediaUrl, oHoster, bGetRedirectUrl)        
 
-        # JD
-        if (oHoster.isJDownloaderable() == True):
-            self.__showJDMenu(oGui, sMediaUrl, oHoster, bGetRedirectUrl)    
+        # # JD
+        # if (oHoster.isJDownloaderable() == True):
+            # self.__showJDMenu(oGui, sMediaUrl, oHoster, bGetRedirectUrl)    
 
-        oGui.setEndOfDirectory()
+        # oGui.setEndOfDirectory()
 
-    def __showPlayMenu(self, oGui, sMediaUrl, oHoster, bGetRedirectUrl):
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(self.SITE_NAME)
-        oGuiElement.setFunction('play')
-        oGuiElement.setTitle('play')
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
-        oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
-        oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
-        oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
-        oGui.addFolder(oGuiElement, oOutputParameterHandler)
+    # def __showPlayMenu(self, oGui, sMediaUrl, oHoster, bGetRedirectUrl):
+        # oGuiElement = cGuiElement()
+        # oGuiElement.setSiteName(self.SITE_NAME)
+        # oGuiElement.setFunction('play')
+        # oGuiElement.setTitle('play')
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
+        # oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
+        # oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
+        # oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
+        # oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-    def __showDownloadMenu(self, oGui, sMediaUrl, oHoster, bGetRedirectUrl):
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(self.SITE_NAME)
-        oGuiElement.setFunction('download')
-        oGuiElement.setTitle('download ueber XBMC')
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
-        oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
-        oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
-        oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
-        oGui.addFolder(oGuiElement, oOutputParameterHandler)
+    # def __showDownloadMenu(self, oGui, sMediaUrl, oHoster, bGetRedirectUrl):
+        # oGuiElement = cGuiElement()
+        # oGuiElement.setSiteName(self.SITE_NAME)
+        # oGuiElement.setFunction('download')
+        # oGuiElement.setTitle('download ueber XBMC')
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
+        # oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
+        # oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
+        # oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
+        # oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-    def __showJDMenu(self, oGui, sMediaUrl, oHoster, bGetRedirectUrl):
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(self.SITE_NAME)        
-        oGuiElement.setTitle('an JDownloader senden')
-        oGuiElement.setFunction('sendToJDownbloader')
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
-        oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
-        oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
-        oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
-        oGui.addFolder(oGuiElement, oOutputParameterHandler)
+    # def __showJDMenu(self, oGui, sMediaUrl, oHoster, bGetRedirectUrl):
+        # oGuiElement = cGuiElement()
+        # oGuiElement.setSiteName(self.SITE_NAME)        
+        # oGuiElement.setTitle('an JDownloader senden')
+        # oGuiElement.setFunction('sendToJDownbloader')
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
+        # oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
+        # oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
+        # oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
+        # oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-    def __showPlaylistMenu(self, oGui, sMediaUrl, oHoster, bGetRedirectUrl):
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(self.SITE_NAME)
-        oGuiElement.setFunction('addToPlaylist')
-        oGuiElement.setTitle('add to playlist')
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
-        oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
-        oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
-        oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
-        oGui.addFolder(oGuiElement, oOutputParameterHandler)
+    # def __showPlaylistMenu(self, oGui, sMediaUrl, oHoster, bGetRedirectUrl):
+        # oGuiElement = cGuiElement()
+        # oGuiElement.setSiteName(self.SITE_NAME)
+        # oGuiElement.setFunction('addToPlaylist')
+        # oGuiElement.setTitle('add to playlist')
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('sMediaUrl', sMediaUrl)
+        # oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
+        # oOutputParameterHandler.addParameter('bGetRedirectUrl', bGetRedirectUrl)
+        # oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
+        # oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     def play(self):
         oGui = cGui()

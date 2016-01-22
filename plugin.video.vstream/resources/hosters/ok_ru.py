@@ -79,7 +79,7 @@ class cHoster(iHoster):
         #print web_url
         
         HEADERS = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:42.0) Gecko/20100101 Firefox/42.0',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         }
 
@@ -128,6 +128,7 @@ class cHoster(iHoster):
         
         if (api_call):
             api_call = '%s|User-Agent=%s&Accept=%s' % (api_call, HEADERS['User-Agent'], HEADERS['Accept'])
+            api_call = api_call + '&Referer=' + self.__sUrl + '&Origin=http://ok.ru'
             return True,api_call
             
         return False, False

@@ -1,7 +1,7 @@
 =============================================================================
 - Version & Repository: https://github.com/LordVenom/venom-xbmc-addons/releases
 - Question & Support: https://github.com/LordVenom/venom-xbmc-addons/issues
-- Question & Support: Twitter @lordvenom57
+- Suivez les mises a jour en direct : Twitter @lordvenom57
 =============================================================================
                       Merci aux généreux donateurs
 - Mor17.
@@ -11,11 +11,158 @@
 - Daniel L.
 - Jean Charles A.
 =============================================================================
-- Merci au contributeur de la bêta. TmpName/FreeFighter77/mino60/zombiB
+- Merci au contributeur de la bêta. FreeFighter77/mino60/zombiB/chataigne73 
 =============================================================================
 =============================================================================
 - Merci à http://libretv.me/ pour le partage de leurs sources.
 =============================================================================
+=============================================================================
+- Version 0.3.8 - 22.01.2016
+=============================================================================
+Commits on Jan 22, 2016
+- @LordVenom / update about
+- @TmpName / Update library.py  
+Commits on Jan 21, 2016
+- @TmpName / Update film_illimit_fr.py
+- @LordVenom / modif pour subtitle 
+Commits on Jan 20, 2016
+- @TmpName / Update full_streamvk_net.py
+- @TmpName / Update film_illimit_fr.py 
+- @TmpName / Update mystream.py  
+- @TmpName / Update settings.xml
+Commits on Jan 19, 2016
+- @LordVenom / update setting 
+Commits on Jan 18, 2016
+- @TmpName / Create filmsvostfr_org.py 
+- @TmpName / Update film_illimit_fr.py 
+Commits on Jan 16, 2016
+- @TmpName / Update util.py 
+- @TmpName / Delete poypi_com.py
+- @TmpName / Create poypi_com.py
+- @TmpName / Update googlevideo.py  
+Commits on Jan 15, 2016
+- @TmpName / Create kepliz_com.py
+- @TmpName / Update settings.xml
+- @TmpName / update gui 
+- @LordVenom / update full_stream
+- @LordVenom / update hoster
+- @LordVenom / update full stream
+- @LordVenom / update buzzmonclick  
+Commits on Jan 12, 2016
+- @TmpName / Update filmstreamingz_fr.py  
+- @TmpName / Update libertyland_tv.py 
+- @TmpName / Update settings.xml 
+- @TmpName / Delete streamingfilms_fr.py 
+- @TmpName / Update filmstreamingz_fr.py
+Commits on Jan 11, 2016
+- @LordVenom / update enquete
+- @LordVenom / update 
+Commits on Jan 9, 2016
+- @LordVenom / update frenchstream et vidzi
+Commits on Jan 8, 2016
+- @TmpName / Update series_en_streaming_tv.py 
+- @TmpName / Update streaming_series_org.py 
+- @TmpName / Update streaming_series_org.py
+- @LordVenom / update film streaming
+Commits on Jan 7, 2016
+- @LordVenom / update library
+Commits on Jan 6, 2016
+- @TmpName / Update fadoz_com.py 
+Commits on Jan 5, 2016
+- @TmpName / Update film_illimit_fr.py 
+Commits on Jan 4, 2016
+- @TmpName / Update spion_com.py
+- @TmpName / Update home.py 
+- @TmpName / Create spion_com.py  
+- @TmpName / Update youtube.py
+Commits on Jan 2, 2016
+- @TmpName / Update download.py 
+- @TmpName / Create libertyland_tv.py 
+- @TmpName / Delete libertyland_tv.py  
+- @TmpName / Create libertyland_tv.py   
+- @TmpName / Create sokrostream_biz.py
+- @TmpName / Update util.py 
+- @TmpName / Update film_illimit_fr.py 
+- @TmpName / Update gui.py 
+Commits on Jan 1, 2016
+- @TmpName / Update openload.py  
+Commits on Dec 31, 2015
+- @TmpName / Update film_illimit_fr.py
+Commits on Dec 28, 2015
+- @TmpName / Update streamingk_com.py 
+- @TmpName / Update download.py 
+- @TmpName / Update favourite.py
+Commits on Dec 27, 2015
+- @TmpName / Update download.py 
+Commits on Dec 26, 2015
+- @TmpName / Update util.py 
+- @TmpName / Update frenchstream_org.py
+- @TmpName / Update hoster.py
+- @TmpName / Update regarder_films.py
+Commits on Dec 26, 2015
+- @TmpName / Update allvid.py  
+- @TmpName / Update exashare.py 
+- @TmpName / Update streamzzz_com.py 
+Commits on Dec 25, 2015
+- @TmpName / Update home.py  
+- @TmpName / Update library.py  
+- @TmpName / Update gui.py
+- @TmpName / Update hoster.py  
+- @TmpName / Update voirfilms_org.py 
+- @TmpName / Update util.py  
+- @TmpName / Update libre_stream_org.py 
+- @TmpName / Update streamingk_com.py 
+- @TmpName / Update full_stream_org.py
+Commits on Dec 24, 2015
+- @TmpName / Update gui.py 
+- @TmpName / Update library.py 
+- @TmpName / Update util.py 
+- @TmpName / Update util.py 
+- @TmpName / Create library.py 
+- @TmpName / Update default.py  
+- @TmpName / Update settings.xml 
+- @TmpName / Update settings.xml 
+- @TmpName / Update strings.xml 
+- @TmpName / Update strings.xml  
+- @TmpName / Update strings.xml
+Commits on Dec 23, 2015
+- @TmpName / Update util.py  
+- @TmpName / Update mangacity_org.py  
+- @TmpName / Update mangacity_org.py  
+- @TmpName / Update hoster.py  
+- @TmpName / Create wat_tv.py 
+Commits on Dec 20, 2015
+- @TmpName / Update buzzmonclick_com.py 
+- @TmpName / Update adkami_com.py  
+- @TmpName / Update adkami_com.py 
+Commits on Dec 18, 2015
+- @TmpName / Update youtube.py 
+Commits on Dec 13, 2015
+- @TmpName / Update freebox.py  
+- @TmpName / Update frenchstream_org.py
+- @LordVenom / update settings
+Commits on Dec 13, 2015
+- @LordVenom / update about  
+Commits on Dec 12, 2015
+- @TmpName / Update about.py  
+- @TmpName / Update frenchstream_org.py 
+- @TmpName / Update ok_ru.py 
+- @TmpName / Update film_illimit_fr.py 
+- @TmpName / Update frenchstream_org.py
+Commits on Dec 11, 2015
+- @TmpName / Merge pull request #89 from zombiB/patch-7  
+- @TmpName / Update mangacity_org.py
+- @TmpName / Update poypi_com.py  
+- @zombiB / Update enquetedereportages_com.py 
+Commits on Dec 10, 2015
+- @TmpName / Update film_illimit_fr.py 
+- @TmpName / Update film_illimit_fr.py
+- @TmpName / Create sucuri.py 
+- @TmpName / Update film_illimit_fr.py  
+Commits on Dec 9, 2015
+- @LordVenom / update alluc and libre stream
+Commits on Dec 8, 2015
+- @LordVenom / update poypi
 =============================================================================
 - Version 0.3.7 - 09.12.2015
 =============================================================================

@@ -19,7 +19,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'#[COLOR khaki]'+self.__sHD+'[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -86,8 +86,7 @@ class cHoster(iHoster):
             if (aResult[0] == True):
                 sUnpacked = cPacker().unpack(aResult[1][0])
                 string = JJDecoder(sUnpacked).decode()
-        
-        
+
         if (string):
             sContent = string.replace('\\','')
             
@@ -99,7 +98,7 @@ class cHoster(iHoster):
                 api_call = aResult[1][0]
                 
             if not api_call:
-                sPattern = 'window\.vr="(.+?)"'
+                sPattern = 'window\.vr *="(.+?)"'
                 aResult = oParser.parse(sContent, sPattern)
                 if (aResult[0] == True):
                     api_call = aResult[1][0]

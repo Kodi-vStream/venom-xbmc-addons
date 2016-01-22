@@ -10,7 +10,14 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.lib.util import cUtil
-import string
+import re
+
+
+#Ce site a des probleme en http/1.1 >> incomplete read error
+import httplib
+httplib.HTTPConnection._http_vsn = 10
+httplib.HTTPConnection._http_vsn_str = 'HTTP/1.0'
+
 
 SITE_IDENTIFIER = 'adkami_com'
 SITE_NAME = 'Adkami.com'
@@ -81,16 +88,15 @@ def load():
             
     oGui.setEndOfDirectory()
 
-  
 def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = 'http://www.adkami.com/video?recherche='+sSearchText
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return  
+        sUrl = 'http://www.adkami.com/video?recherche='+sSearchText
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return  
     
     
 def showLang():
@@ -216,7 +222,7 @@ def showMoviesAZ():
     sAZ = oInputParameterHandler.getValue('AZ')
    
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
     sPattern = '<li><a href="([^<]+)">.+?<span class="bold">(.+?)</span></p>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -250,7 +256,7 @@ def showMovies(sSearch = ''):
         sUrl = oInputParameterHandler.getValue('siteUrl')
    
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
     sPattern = '<li><a href="([^<]+)">.+?<span class="bold">(.+?)</span></p>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -282,7 +288,7 @@ def showEpisode():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
    
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
     
     sThumb = ''
     sComm = '' 
@@ -334,10 +340,14 @@ def showEpisode():
                     oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                     oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'films.png', oOutputParameterHandler)
                 else:
+                    sTitle = sMovieTitle+' - '+aEntry[2]
+                    sTitle = re.sub(' vf',' [VF]',sTitle,re.IGNORECASE)
+                    sTitle = re.sub(' vostfr',' [VOSTFR]',sTitle,re.IGNORECASE)
+                    sDisplayTitle = cUtil().DecoTitle(sTitle)
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
-                    oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                    oGui.addTV(SITE_IDENTIFIER, 'showHosters', sMovieTitle+' - '+aEntry[2], 'films.png',sThumb, sComm, oOutputParameterHandler)
+                    oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                    oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle , 'films.png',sThumb, sComm, oOutputParameterHandler)
            
         
             cConfig().finishDialog(dialog)
@@ -355,7 +365,7 @@ def showHosters():
     #print sUrl
     
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
 
     sPattern = '</div><iframe.+?src="(.+?)"'
     oParser = cParser()
@@ -375,7 +385,8 @@ def showHosters():
             oHoster = cHosterGui().checkHoster(sHosterUrl)
         
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')         
     

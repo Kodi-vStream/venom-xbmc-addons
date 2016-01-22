@@ -110,14 +110,13 @@ def showMovies(sSearch=''):
             print e.reason
      
         sHtmlContent = reponse.read()
-        sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)" class="img-poster border-2 shadow-dark7" width="151" height="215" />.+?<a href="(http:\/\/full-streamvk.+?)" title'
+        sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)" class="img-poster border-2 shadow-dark7" width="151" height="215" />.+?<a href="(http:\/\/full-streamvk[^><"]+?)"'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)".*?<a href="(http:\/\/full-streamvk.+?)" title'
-        #sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)".*?<a href="(http://www.full-streamvk.*?)" title'
+        sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)".*?<a href="(http:\/\/full-streamvk[^><"]+?)"'
        
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '')
     

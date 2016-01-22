@@ -18,16 +18,16 @@ SITE_DESC = 'films en streaming, vk streaming, youwatch, vimple , streaming hd ,
 
 URL_MAIN = 'http://libre-stream.com/'
 
-MOVIE_MOVIE = ('http://libre-stream.com/films/', 'showMovies')
-MOVIE_NEWS = ('http://libre-stream.com/films/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 
-SERIE_SERIE = ('http://libre-stream.com/liste-des-series/', 'AlphaSearch')
-SERIE_NEWS = ('http://libre-stream.com/series/', 'showMovies')
-SERIE_VFS = ('http://libre-stream.com/series/version-francaise/', 'showMovies')
-SERIE_VOSTFRS = ('http://libre-stream.com/series/vostfr', 'showMovies')
+SERIE_SERIE = (URL_MAIN + 'liste-des-series/', 'AlphaSearch')
+SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
+SERIE_VFS = (URL_MAIN + 'series/version-francaise/', 'showMovies')
+SERIE_VOSTFRS = (URL_MAIN + 'series/vostfr', 'showMovies')
 
-URL_SEARCH = ('http://libre-stream.com/?q=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -72,7 +72,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] +sSearchText  
+        sUrl = URL_SEARCH[0] + sSearchText  
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return  
@@ -83,30 +83,30 @@ def showGenre():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['Action','http://libre-stream.com/films/action/'] )
-    liste.append( ['Animation','http://libre-stream.com/films/animation'] )
-    liste.append( ['Arts Martiaux','http://libre-stream.com/films/arts-martiaux'] )
-    liste.append( ['Aventure','http://libre-stream.com/films/aventure'] )
-    liste.append( ['Biopic','http://libre-stream.com/films/biopic'] )
-    liste.append( ['Comedie','http://libre-stream.com/films/comedie'] )
-    liste.append( ['Comedie Dramatique','http://libre-stream.com/films/comedie-dramatique'] )
-    liste.append( ['Comedie Musicale','http://libre-stream.com/films/comedie-musicale'] )
-    liste.append( ['Disney','http://libre-stream.com/films/disney'] )
-    liste.append( ['Divers','http://libre-stream.com/films/divers'] )    
-    liste.append( ['Documentaire','http://libre-stream.com/films/documentaire'] )
-    liste.append( ['Drame','http://libre-stream.com/films/drame'] )
-    liste.append( ['Epouvante Horreur','http://libre-stream.com/films/horreur'] ) 
-    liste.append( ['Espionnage','http://libre-stream.com/films/espionnage'] )
-    liste.append( ['Famille','http://libre-stream.com/film/famille'] )
-    liste.append( ['Fantastique','http://libre-stream.com/film/fantastique'] )  
-    liste.append( ['Guerre','http://libre-stream.com/film/guerre'] )
-    liste.append( ['Historique','http://libre-stream.com/film/historique'] )
-    liste.append( ['Musical','http://libre-stream.com/film/musical'] )
-    liste.append( ['Policier','http://libre-stream.com/film/policier'] )
-    liste.append( ['Romance','http://libre-stream.com/film/romance'] )
-    liste.append( ['Science Fiction','http://libre-stream.com/film/science-fiction'] )
-    liste.append( ['Spectacle','http://libre-stream.com/film/spectacles'] )
-    liste.append( ['Thriller','http://libre-stream.com/film/triller'] )
+    liste.append( ['Action',URL_MAIN + 'films/action/'] )
+    liste.append( ['Animation',URL_MAIN + 'films/animation'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'films/arts-martiaux'] )
+    liste.append( ['Aventure',URL_MAIN + 'films/aventure'] )
+    liste.append( ['Biopic',URL_MAIN + 'films/biopic'] )
+    liste.append( ['Comedie',URL_MAIN + 'films/comedie'] )
+    liste.append( ['Comedie Dramatique',URL_MAIN + 'films/comedie-dramatique'] )
+    liste.append( ['Comedie Musicale',URL_MAIN + 'films/comedie-musicale'] )
+    liste.append( ['Disney',URL_MAIN + 'films/disney'] )
+    liste.append( ['Divers',URL_MAIN + 'films/divers'] )    
+    liste.append( ['Documentaire',URL_MAIN + 'films/documentaire'] )
+    liste.append( ['Drame',URL_MAIN + 'films/drame'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'films/horreur'] ) 
+    liste.append( ['Espionnage',URL_MAIN + 'films/espionnage'] )
+    liste.append( ['Famille',URL_MAIN + 'film/famille'] )
+    liste.append( ['Fantastique',URL_MAIN + 'film/fantastique'] )  
+    liste.append( ['Guerre',URL_MAIN + 'film/guerre'] )
+    liste.append( ['Historique',URL_MAIN + 'film/historique'] )
+    liste.append( ['Musical',URL_MAIN + 'film/musical'] )
+    liste.append( ['Policier',URL_MAIN + 'film/policier'] )
+    liste.append( ['Romance',URL_MAIN + 'film/romance'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'film/science-fiction'] )
+    liste.append( ['Spectacle',URL_MAIN + 'film/spectacles'] )
+    liste.append( ['Thriller',URL_MAIN + 'film/triller'] )
                 
     for sTitle,sUrl in liste:
         
@@ -122,12 +122,12 @@ def showQlt():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['HD','http://libre-stream.com/films-hd/'] )
-    liste.append( ['DvdRip','http://libre-stream.com/quality/dvdrip/'] )
-    liste.append( ['BdRip','http://libre-stream.com/quality/bdrip/'] )
-    liste.append( ['R5','http://libre-stream.com/quality/R5/'] )
-    liste.append( ['Cam Rip','http://libre-stream.com/quality/camrip/'] )
-    liste.append( ['TS','http://libre-stream.com/quality/ts/'] )
+    liste.append( ['HD',URL_MAIN + 'films-hd/'] )
+    liste.append( ['DvdRip',URL_MAIN + 'quality/dvdrip/'] )
+    liste.append( ['BdRip',URL_MAIN + 'quality/bdrip/'] )
+    liste.append( ['R5',URL_MAIN + 'quality/R5/'] )
+    liste.append( ['Cam Rip',URL_MAIN + 'quality/camrip/'] )
+    liste.append( ['TS',URL_MAIN + 'quality/ts/'] )
                 
     for sTitle,sUrl in liste:
         
@@ -223,10 +223,17 @@ def showMovies(sSearch = ''):
                 break
             
             sMovieTitle = str(aEntry[1])
+                
+            #Si recherche et trop de resultat, on nettoye
+            #if sSearch and total > 4:
+            #    if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH[0],''),sMovieTitle) == 0:
+            #        continue
+
             if '/films/' in sUrl:
                 sMovieTitle = sMovieTitle + ' [' + str(aEntry[3]) + ']'
                 
             sTitle = cUtil().DecoTitle(sMovieTitle)
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
@@ -234,9 +241,9 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
 
             if '/series/' in sUrl or '-saison-' in aEntry[2]:
-                oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle,'', aEntry[0], '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sDisplayTitle,'', aEntry[0], '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
            
     
         cConfig().finishDialog(dialog)
@@ -279,7 +286,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-    sMovieTitle = cUtil().DecoTitle(sMovieTitle)
+    sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -292,7 +299,7 @@ def showHosters():
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
     
@@ -323,12 +330,12 @@ def seriesHosters():
                 break
             
             sTitle = sMovieTitle + ' ' + str(aEntry[1])
-            sTitle = cUtil().DecoTitle(sTitle)
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
             
             sHosterUrl = str(aEntry[0])
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                oHoster.setDisplayName(sTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
     

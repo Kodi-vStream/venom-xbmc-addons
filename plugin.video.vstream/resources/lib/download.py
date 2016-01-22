@@ -58,19 +58,16 @@ class cDownloadProgressBar(threading.Thread):
         self.oUrlHandler = None
         self.file = None
         self.__oDialog = None
-        
-            
+   
         #queue = self.Memorise.get("SimpleDownloaderQueue")
         #if self.Memorise.lock("SimpleDownloaderQueueLock"):
-        #self.Memorise.set("SimpleDownloaderQueue", repr(items))
-        
+        #self.Memorise.set("SimpleDownloaderQueue", repr(items))       
         
     def createProcessDialog(self):
         self.__oDialog = xbmcgui.DialogProgressBG()
         self.__oDialog.create('Download')            
         #xbmc.sleep(1000)
-        return self.__oDialog
-        
+        return self.__oDialog        
         
     def _StartDownload(self): 
 
@@ -112,10 +109,9 @@ class cDownloadProgressBar(threading.Thread):
             #    self.processIsCanceled = True
             if xbmcgui.Window(10101).getProperty('arret') == '1':
                 self.processIsCanceled = True    
-                
-                
+                                
             #petite pause, ca ralentit le download mais evite de bouffer 100/100 ressources
-            xbmc.sleep(200)
+            xbmc.sleep(300)
         
         self.oUrlHandler.close()
         self.file.close()
@@ -134,7 +130,7 @@ class cDownloadProgressBar(threading.Thread):
             try:
                 cDb().update_download(meta)
                 cConfig().showInfo('Téléchargements Termine', self.__sTitle)
-                #cConfig().update()
+                self.RefreshDownloadList()
             except:
                 pass
         else:
@@ -142,16 +138,16 @@ class cDownloadProgressBar(threading.Thread):
             try:
                 cDb().update_download(meta)
                 cConfig().showInfo('Téléchargements Arrete', self.__sTitle)
-                #cConfig().update()
+                self.RefreshDownloadList()
             except:
                 pass
             return
             
         #ok tout est bon on contiinu ou pas ?
         if Memorise.get('SimpleDownloaderQueue') == '1':
-            test.cDownload()
-            data = test.GetNextFile()
-            test.StartDownload(data)
+            tmp = cDownload()
+            data = tmp.GetNextFile()
+            tmp.StartDownload(data)
 
 
     def __updatedb(self, TotDown, iTotalSize):
@@ -167,6 +163,7 @@ class cDownloadProgressBar(threading.Thread):
             try:
                 cDb().update_download(meta)
                 #cConfig().update()
+                self.RefreshDownloadList()
             except:
                 pass
         
@@ -226,11 +223,10 @@ class cDownloadProgressBar(threading.Thread):
                 
         return
         
-    def StopAllBeta(self):
-        
-        self.processIsCanceled = True
-           
-        return    
+    def RefreshDownloadList(self):
+        #print xbmc.getInfoLabel('Container.FolderPath')
+        if 'function=getDownload' in xbmc.getInfoLabel('Container.FolderPath'):
+            cConfig().update()  
      
         
 class cDownload:  
@@ -323,10 +319,10 @@ class cDownload:
 
         
     def getDownload(self):
-        
+
         oGui = cGui()
-        sPluginHandle = cPluginHandler().getPluginHandle();
-        sPluginPath = cPluginHandler().getPluginPath();
+        sPluginHandle = cPluginHandler().getPluginHandle()
+        sPluginPath = cPluginHandler().getPluginPath()
         sItemUrl = '%s?site=%s&function=%s&title=%s' % (sPluginPath, SITE_IDENTIFIER, 'StartDownloadList', 'tittle')
         meta = {'title': 'Demarrer la liste'}
         item = xbmcgui.ListItem('Demarrer la liste', iconImage=cConfig().getRootArt()+'download.png')
@@ -353,7 +349,7 @@ class cDownload:
         if not meta:
             meta = self.GetOnefile()
 
-        self.StartDownload(meta)
+        self.StartDownload(meta) 
         
     def ReadDownload(self):
         oInputParameterHandler = cInputParameterHandler()
@@ -416,8 +412,7 @@ class cDownload:
         return row[0]
         
         
-    def StartDownload(self,data):
-        
+    def StartDownload(self,data):     
         if not (data):
             return
         
@@ -430,7 +425,6 @@ class cDownload:
         self.download(url,title,path)
                 
     def StartDownloadList(self):
-
         Memorise.set('SimpleDownloaderQueue', '1')
         data = self.GetNextFile()
         self.StartDownload(data)
@@ -463,8 +457,8 @@ class cDownload:
         return
 
     def getDownloadList(self):
-        oGui = cGui()
 
+        oGui = cGui()
         oInputParameterHandler = cInputParameterHandler()        
 
         row = cDb().get_Download()

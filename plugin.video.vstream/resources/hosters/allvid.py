@@ -69,6 +69,13 @@ class cHoster(iHoster):
         
         oParser = cParser()
         
+        #lien indirect
+        sPattern = '<iframe class="embed-responsive-item" src="(http:\/\/allvid\.ch\/embed-.+?)"><\/iframe>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            oRequest = cRequestHandler(aResult[1][0])
+            sHtmlContent = oRequest.request()
+        
         #test pour voir si code
         sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)

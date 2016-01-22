@@ -14,7 +14,6 @@ import re,xbmcgui,unicodedata
 from resources.lib.dl_deprotect import DecryptDlProtect
 
 
-
 SITE_IDENTIFIER = 'streamingk_com'
 SITE_NAME = 'Streamingk.com'
 SITE_DESC = 'Film Streaming & Serie Streaming: Regardez films et series de qualité entièrement gratuit. Tout les meilleurs streaming en illimité.'
@@ -167,7 +166,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
-            if 'sa-filmographie-streaming' in aEntry[1]:
+            if '-filmographie-streaming' in aEntry[1]:
                 pass
             elif 'series' in sUrl or re.match('.+?saison [0-9]+',sTitle,re.IGNORECASE):
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
@@ -299,7 +298,8 @@ def showHosters(sLoop = False):
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
@@ -377,7 +377,8 @@ def serieHosters():
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
-                oHoster.setDisplayName(sTitle)
+                sDisplayTitle = cUtil().DecoTitle(sTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 

@@ -65,10 +65,12 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
 
         r = self.get_host_and_id(self.__sUrl)
+        #si lien deja decode
+        if (r == False):
+            if 'https://lh3.googleusercontent.com' in self.__sUrl:
+                return True, self.__sUrl 
         
         web_url = self.getUrl(r[0],r[1])
-        
-        print web_url
         
         headers = {'Referer': web_url}
         

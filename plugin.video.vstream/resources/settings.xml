@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
 
-    <category label="30021">-->
+    <category label="30021">
         <setting label="30021" type="lsep"/>
         <!-- <setting id="debug" type="bool" label="30000" default="false"/> -->
         <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2"/>
@@ -10,253 +10,357 @@
         <setting id="home-view" type="bool" label="Afficher l'Accueil par Catégories" default="true"/>
         <setting id="param_timeout" label="30027" type="number" default="1000"/>
         <setting id="history-view" type="bool" label="Activer l'historique de recherche" default="true"/>
-		
+        
         <setting label="Changelog" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/about.py, changelog)"/>  
 
     </category>
 
-    <category label="30022">-->
-		<setting label="30022" type="lsep"/>
-		<setting id="plugin_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="true"/>
-		<setting id="plugin_buzzmonclick_com" type="bool" label="Buzzmonclick (Replay TV, Documentaires)" default="true"/>
-		<setting id="plugin_cinemay_com" type="bool" label="Cinemay (Films, Séries)" default="true"/>
-		<setting id="plugin_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="true"/>
-		<setting id="plugin_enquetedereportages_com" type="bool" label="Enquete de Reportages (Replay TV)" default="true"/>
-		<setting id="plugin_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="true"/>
-		<setting id="plugin_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="true"/>
-		<setting id="plugin_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="true"/>
-		<setting id="plugin_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="true"/>
-		<setting id="plugin_full_stream_org" type="bool" label="Full Stream (Films, Séries)" default="true"/>
-		<setting id="plugin_full_streamvk_com" type="bool" label="Full Streamvk.com (Films)" default="true"/>
-		<setting id="plugin_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="true"/>
+    <!-- search1_ = Films | search2_ = séries | search3_ = anime | search4_ = Documentaire-->
 
-		<setting id="plugin_libre_stream_org" type="bool" label="Libre-stream.org (Films, séries)" default="true"/>
-		<setting id="plugin_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="true"/>
-		<setting id="plugin_poypi_com" type="bool" label="Poypi.com (Films)" default="true"/>
-		<setting id="plugin_regarder_films" type="bool" label="Regarder.films (Séries)" default="true"/>
-		<setting id="plugin_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="true"/>
-		<setting id="plugin_seriefr_com" type="bool" label="Seriefr.com (Séries)" default="true"/>
-		<setting id="plugin_series_en_streaming_tv" type="bool" label="Series En Streaming.tv (Séries)" default="true"/>
-		<setting id="plugin_streaming_series_org" type="bool" label="StreamingSeries.org (Séries)" default="true"/>
-		<setting id="plugin_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="true"/>
-		<setting id="plugin_streamingk_com" type="bool" label="StreamingK.com (Films, Séries, Animes)" default="true"/>
-		<setting id="plugin_streamzer_net" type="bool" label="Streamzer (Films, Séries, Documentaires)" default="true"/>
-		<setting id="plugin_streamzzz_com" type="bool" label="streamzzz.com (Séries)" default="true"/>
-		<setting id="plugin_tntv_rattrapage" type="bool" label="TNTV Rattrapage (TV Replay, Séries)" default="true"/>
-		<setting id="plugin_tv_streaming_ch" type="bool" label="TV Streaming.ch (TV Replay, Films, Séries, Animes, Documentaires)" default="true"/>
-		<setting id="plugin_videobuzzy_com" type="bool" label="Videobuzzy.com (Vidéo du Net)" default="true"/>		
-		<setting id="plugin_vkstreamingfilm_biz" type="bool" label="vkstreamingfilm.biz (Films)" default="true"/>
-		<setting id="plugin_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="true"/>
+    <category label="30022">
+        
+        <setting label="Adkami (Séries, Animés)" type="lsep"/>
+        <setting id="plugin_adkami_com" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_adkami_com" type="bool" label="30077" default="false" />
+        <setting id="search2_adkami_com" type="bool" label="30089" default="false" />
+        <setting id="search3_adkami_com" type="bool" label="30090" default="false"/>
+        <setting id="search4_adkami_com" type="bool" label="30091" default="false" />
+        
+        <setting label="Buzzmonclick (Replay TV, Documentaires)" type="lsep"/>
+        <setting id="plugin_buzzmonclick_com" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_buzzmonclick_com" type="bool" label="30077" default="false"/>
+        <setting id="search2_buzzmonclick_com" type="bool" label="30089" default="false"/>
+        <setting id="search3_buzzmonclick_com" type="bool" label="30090" default="false"/>
+        <setting id="search4_buzzmonclick_com" type="bool" label="30091" default="true"/>
+        
+        <setting label="Cinemay (Films, Séries)" type="lsep"/>
+        <setting id="plugin_cinemay_com" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_cinemay_com" type="bool" label="30077" default="false"/>
+        <setting id="search2_cinemay_com" type="bool" label="30089" default="false"/>
+        <setting id="search3_cinemay_com" type="bool" label="30090" default="false"/>
+        <setting id="search4_cinemay_com" type="bool" label="30091" default="true" />
+        
+        <setting label="DocSpot (Documentaires)" type="lsep"/>
+        <setting id="plugin_docspot_fr" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_docspot_fr" type="bool" label="30077" default="false"/>
+        <setting id="search2_docspot_fr" type="bool" label="30089" default="false"/>
+        <setting id="search3_docspot_fr" type="bool" label="30090" default="false"/>
+        <setting id="search4_docspot_fr" type="bool" label="30091" default="true"/>
+        
+        <setting label="Enquete de Reportages (Replay TV)" type="lsep"/>
+        <setting id="plugin_enquetedereportages_com" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_enquetedereportages_com" type="bool" label="30077" default="false"/>
+        <setting id="search2_enquetedereportages_com" type="bool" label="30089" default="false"/>
+        <setting id="search3_enquetedereportages_com" type="bool" label="30090" default="false"/>
+        <setting id="search4_enquetedereportages_com" type="bool" label="30091" default="true"/>
+        
+        <setting label="Film Illimit (Films)" type="lsep"/>
+        <setting id="plugin_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_film_illimit_fr" type="bool" label="30077" default="true"/>
+        <setting id="search2_film_illimit_fr" type="bool" label="30089" default="false"/>
+        <setting id="search3_film_illimit_fr" type="bool" label="30090" default="false"/>
+        <setting id="search4_film_illimit_fr" type="bool" label="30091" default="false"/>
+        
+        <setting label="Film Streaming.co (Films)" type="lsep"/>
+        <setting id="plugin_film_streaming_co" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_film_streaming_co" type="bool" label="30077" default="true"/>
+        <setting id="search2_film_streaming_co" type="bool" label="30089" default="false"/>
+        <setting id="search3_film_streaming_co" type="bool" label="30090" default="false"/>
+        <setting id="search4_film_streaming_co" type="bool" label="30091" default="false"/>
+        
+        <setting label="Filmstreaming.cc et Streamingserie.tv (Films, series)" type="lsep"/>
+        <setting id="plugin_filmstreamingz_fr" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_filmstreamingz_fr" type="bool" label="30077" default="true"/>
+        <setting id="search2_filmstreamingz_fr" type="bool" label="30089" default="false"/>
+        <setting id="search3_filmstreamingz_fr" type="bool" label="30090" default="false"/>
+        <setting id="search4_filmstreamingz_fr" type="bool" label="30091" default="false"/>
+        
+        <setting label="FrenchStream (Films, Séries)" type="lsep"/>
+        <setting id="plugin_frenchstream_org" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_frenchstream_org" type="bool" label="30077" default="true"/>
+        <setting id="search2_frenchstream_org" type="bool" label="30089" default="true"/>
+        <setting id="search3_frenchstream_org" type="bool" label="30090" default="false"/>
+        <setting id="search4_frenchstream_org" type="bool" label="30091" default="false"/>
+        
+        <setting label="Full Stream (Films, Séries)" type="lsep"/>
+        <setting id="plugin_full_stream_org" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_full_stream_org" type="bool" label="30077" default="false"/>
+        <setting id="search2_full_stream_org" type="bool" label="30089" default="false"/>
+        <setting id="search3_full_stream_org" type="bool" label="30090" default="false"/>
+        <setting id="search4_full_stream_org" type="bool" label="30091" default="false"/>
+        
+        
+    </category>
+    
+    <category label="30147">
+    
+        <setting label="Full Streamvk.com (Films)" type="lsep"/>
+        <setting id="plugin_full_streamvk_com" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_full_streamvk_com" type="bool" label="30077" default="false"/>
+        <setting id="search2_full_streamvk_com" type="bool" label="30089" default="false"/>
+        <setting id="search3_full_streamvk_com" type="bool" label="30090" default="false"/>
+        <setting id="search4_full_streamvk_com" type="bool" label="30091" default="false"/>
+        
+        <setting label="FullMoviz (Films)" type="lsep"/>
+        <setting id="plugin_fullmoviz_org" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_fullmoviz_org" type="bool" label="30077" default="true"/>
+        <setting id="search2_fullmoviz_org" type="bool" label="30089" default="false"/>
+        <setting id="search3_fullmoviz_org" type="bool" label="30090" default="false"/>
+        <setting id="search4_fullmoviz_org" type="bool" label="30091" default="false"/>
+        
+        <setting label="Libertyland.tv (Films, séries, Manga)" type="lsep"/>
+        <setting id="plugin_libertyland_tv" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_libertyland_tv" type="bool" label="30077" default="true"/>
+        <setting id="search2_libertyland_tv" type="bool" label="30089" default="true"/>
+        <setting id="search3_libertyland_tv" type="bool" label="30090" default="true"/>
+        <setting id="search4_libertyland_tv" type="bool" label="30091" default="false"/>
+        
+        <setting label="Libre-stream.org (Films, séries)" type="lsep"/>
+        <setting id="plugin_libre_stream_org" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_libre_stream_org" type="bool" label="30077" default="true"/>
+        <setting id="search2_libre_stream_org" type="bool" label="30089" default="true"/>
+        <setting id="search3_libre_stream_org" type="bool" label="30090" default="false"/>
+        <setting id="search4_libre_stream_org" type="bool" label="30091" default="false"/>
+        
+        <setting label="Mangacity.org (Animes)" type="lsep"/>
+        <setting id="plugin_mangacity_org" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_mangacity_org" type="bool" label="30077" default="false"/>
+        <setting id="search2_mangacity_org" type="bool" label="30089" default="false"/>
+        <setting id="search3_mangacity_org" type="bool" label="30090" default="true"/>
+        <setting id="search4_mangacity_org" type="bool" label="30091" default="false"/>
+        
+        <setting label="Kepliz.com (Films)" type="lsep"/>
+        <setting id="plugin_kepliz_com" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_kepliz_com" type="bool" label="30077" default="true"/>
+        <setting id="search2_kepliz_com" type="bool" label="30089" default="false"/>
+        <setting id="search3_kepliz_com" type="bool" label="30090" default="false"/>
+        <setting id="search4_kepliz_com" type="bool" label="30091" default="false"/>
+        
+        <setting label="Regarder.films (Séries)" type="lsep"/>
+        <setting id="plugin_regarder_films" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_regarder_films" type="bool" label="30077" default="false"/>
+        <setting id="search2_regarder_films" type="bool" label="30089" default="true"/>
+        <setting id="search3_regarder_films" type="bool" label="30090" default="false"/>
+        <setting id="search4_regarder_films" type="bool" label="30091" default="false"/>
 
+        <setting label="ReportagesTV (Documentaires)" type="lsep"/>
+        <setting id="plugin_reportagestv_com" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_reportagestv_com" type="bool" label="30077" default="false"/>
+        <setting id="search2_reportagestv_com" type="bool" label="30089" default="false"/>
+        <setting id="search3_reportagestv_com" type="bool" label="30090" default="false"/>
+        <setting id="search4_reportagestv_com" type="bool" label="30091" default="true"/>
+        
+        <setting label="Seriefr.com (Séries)" type="lsep"/>
+        <setting id="plugin_seriefr_com" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_seriefr_com" type="bool" label="30077" default="false"/>
+        <setting id="search2_seriefr_com" type="bool" label="30089" default="true"/>
+        <setting id="search3_seriefr_com" type="bool" label="30090" default="false"/>
+        <setting id="search4_seriefr_com" type="bool" label="30091" default="false"/>
+        
+        <setting label="Series En Streaming.tv (Séries)" type="lsep"/>
+        <setting id="plugin_series_en_streaming_tv" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_series_en_streaming_tv" type="bool" label="30077" default="false"/>
+        <setting id="search2_series_en_streaming_tv" type="bool" label="30089" default="true"/>
+        <setting id="search3_series_en_streaming_tv" type="bool" label="30090" default="false"/>
+        <setting id="search4_series_en_streaming_tv" type="bool" label="30091" default="false"/>
+        
+    </category>
+    
+    <category label="30148">
+        
+        <setting label="sokrostream.biz (Films, Séries)" type="lsep"/>
+        <setting id="plugin_sokrostream_biz" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_sokrostream_biz" type="bool" label="30077" default="true"/>
+        <setting id="search2_sokrostream_biz" type="bool" label="30089" default="true"/>
+        <setting id="search3_sokrostream_biz" type="bool" label="30090" default="false"/>
+        <setting id="search4_sokrostream_biz" type="bool" label="30091" default="false"/>
+        
+        <setting label="Spion.com (Video du net)" type="lsep"/>
+        <setting id="plugin_spion_com" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_spion_com" type="bool" label="30077" default="false"/>
+        <setting id="search2_spion_com" type="bool" label="30089" default="false"/>
+        <setting id="search3_spion_com" type="bool" label="30090" default="false"/>
+        <setting id="search4_spion_com" type="bool" label="30091" default="false"/>
+        
+        <setting label="StreamingSeries.org (Séries)" type="lsep"/>
+        <setting id="plugin_streaming_series_org" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_streaming_series_org" type="bool" label="30077" default="false"/>
+        <setting id="search2_streaming_series_org" type="bool" label="30089" default="true"/>
+        <setting id="search3_streaming_series_org" type="bool" label="30090" default="false"/>
+        <setting id="search4_streaming_series_org" type="bool" label="30091" default="false"/>
+        
+        <setting label="StreamingK.com (Films, Séries, Animes)" type="lsep"/>
+        <setting id="plugin_streamingk_com" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_streamingk_com" type="bool" label="30077" default="true"/>
+        <setting id="search2_streamingk_com" type="bool" label="30089" default="true"/>
+        <setting id="search3_streamingk_com" type="bool" label="30090" default="true"/>
+        <setting id="search4_streamingk_com" type="bool" label="30091" default="false"/>
+        
+        <setting label="FilmVOSTFR.com (Films, Séries, Animes)" type="lsep"/>
+        <setting id="plugin_filmsvostfr_org" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_filmsvostfr_org" type="bool" label="30077" default="true"/>
+        <setting id="search2_filmsvostfr_org" type="bool" label="30089" default="true"/>
+        <setting id="search3_filmsvostfr_org" type="bool" label="30090" default="true"/>
+        <setting id="search4_filmsvostfr_org" type="bool" label="30091" default="false"/>
+        
+        <setting label="Streamzer (Films, Séries, Documentaires)" type="lsep"/>
+        <setting id="plugin_streamzer_net" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_streamzer_net" type="bool" label="30077" default="true"/>
+        <setting id="search2_streamzer_net" type="bool" label="30089" default="true"/>
+        <setting id="search3_streamzer_net" type="bool" label="30090" default="false"/>
+        <setting id="search4_streamzer_net" type="bool" label="30091" default="true"/>
+        
+        <setting label="streamzzz.com (Séries)" type="lsep"/>
+        <setting id="plugin_streamzzz_com" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_streamzzz_com" type="bool" label="30077" default="false"/>
+        <setting id="search2_streamzzz_com" type="bool" label="30089" default="true"/>
+        <setting id="search3_streamzzz_com" type="bool" label="30090" default="false"/>
+        <setting id="search4_streamzzz_com" type="bool" label="30091" default="false"/>
+        
+        <setting label="TNTV Rattrapage (TV Replay, Séries)" type="lsep"/>
+        <setting id="plugin_tntv_rattrapage" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_tntv_rattrapage" type="bool" label="30077" default="false"/>
+        <setting id="search2_tntv_rattrapage" type="bool" label="30089" default="true"/>
+        <setting id="search3_tntv_rattrapage" type="bool" label="30090" default="false"/>
+        <setting id="search4_tntv_rattrapage" type="bool" label="30091" default="false"/>
+        
+        <setting label="TV Streaming.ch (TV Replay, Films, Séries, Animes, Documentaires)" type="lsep"/>
+        <setting id="plugin_tv_streaming_ch" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_tv_streaming_ch" type="bool" label="30077" default="true"/>
+        <setting id="search2_tv_streaming_ch" type="bool" label="30089" default="true"/>
+        <setting id="search3_tv_streaming_ch" type="bool" label="30090" default="true"/>
+        <setting id="search4_tv_streaming_ch" type="bool" label="30091" default="true"/>
+        
+        <setting label="Videobuzzy.com (Vidéo du Net)" type="lsep"/>
+        <setting id="plugin_videobuzzy_com" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_videobuzzy_com" type="bool" label="30077" default="false"/>
+        <setting id="search2_videobuzzy_com" type="bool" label="30089" default="false"/>
+        <setting id="search3_videobuzzy_com" type="bool" label="30090" default="false"/>
+        <setting id="search4_videobuzzy_com" type="bool" label="30091" default="false"/>
+        
+        <setting label="vkstreamingfilm.biz (Films)" type="lsep"/>
+        <setting id="plugin_vkstreamingfilm_biz" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_vkstreamingfilm_biz" type="bool" label="30077" default="false"/>
+        <setting id="search2_vkstreamingfilm_biz" type="bool" label="30089" default="false"/>
+        <setting id="search3_vkstreamingfilm_biz" type="bool" label="30090" default="false"/>
+        <setting id="search4_vkstreamingfilm_biz" type="bool" label="30091" default="false"/>
+        
+        <setting label="Voirfilms.org (Films)" type="lsep"/>
+        <setting id="plugin_voirfilms_org" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_voirfilms_org" type="bool" label="30077" default="false"/>
+        <setting id="search2_voirfilms_org" type="bool" label="30089" default="false"/>
+        <setting id="search3_voirfilms_org" type="bool" label="30090" default="false"/>
+        <setting id="search4_voirfilms_org" type="bool" label="30091" default="false"/>
 
     </category>
 
-<!-- Recherche_1 | search1_ | par defaut Films-->
-    <category label="30077">-->
-        <setting label="30078" type="lsep" />
-
-        <setting id="search1_label" type="text" label="30501" default="Films"/>
-		
-		<setting id="search1_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="false"/>
-		<setting id="search1_buzzmonclick_com" type="bool" label="Buzzmonclick (Replay TV, Documentaires)" default="false"/>
-		<setting id="search1_cinemay_com" type="bool" label="Cinemay (Films, Séries)" default="false"/>
-		<setting id="search1_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="false"/>
-		<setting id="search1_enquetedereportages_com" type="bool" label="Enquete de Reportages (Replay TV)" default="false"/>
-		<setting id="search1_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="true"/>
-		<setting id="search1_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="false"/>
-		<setting id="search1_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="true"/>
-		<setting id="search1_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="true"/>
-		<setting id="search1_full_stream_org" type="bool" label="Full Stream (Films, Séries)" default="false"/>
-		<setting id="search1_full_streamvk_com" type="bool" label="Full Streamvk.com (Films)" default="false"/>
-		<setting id="search1_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="true"/>
-		<setting id="search1_libre_stream_org" type="bool" label="Libre-stream.org (Films, séries)" default="true"/>		
-		<setting id="search1_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="false"/>
-		<setting id="search1_poypi_com" type="bool" label="Poypi.com (Films)" default="true"/>
-		<setting id="search1_regarder_films" type="bool" label="Regarder.films (Séries)" default="false"/>
-		<setting id="search1_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="false"/>
-		<setting id="search1_seriefr_com" type="bool" label="Seriefr.com (Séries)" default="false"/>
-		<setting id="search1_series_en_streaming_tv" type="bool" label="Series En Streaming.tv (Séries)" default="false"/>
-		<setting id="search1_streaming_series_org" type="bool" label="StreamingSeries.org (Séries)" default="false"/>
-		<setting id="search1_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="false"/>
-		<setting id="search1_streamingk_com" type="bool" label="StreamingK.com (Films, Séries, Animes)" default="true"/>
-		<setting id="search1_streamzer_net" type="bool" label="Streamzer (Films, Séries, Documentaires)" default="true"/>
-		<setting id="search1_tntv_rattrapage" type="bool" label="TNTV Rattrapage (TV Replay, Séries)" default="false"/>
-		<setting id="search1_tv_streaming_ch" type="bool" label="TV Streaming.ch (TV Replay, Films, Séries, Animes, Documentaires)" default="true"/>			
-		<setting id="search1_vkstreamingfilm_biz" type="bool" label="vkstreamingfilm.biz (Films)" default="false"/>
-		<setting id="search1_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="false"/>
-    </category>
-	
-	<!-- Recherche_2 | search2_ | séries-->
-    <category label="30089">-->
-        <setting label="30079" type="lsep" />
-
-        <setting id="search2_label" type="text" label="30501" default="Séries" />
-		
-		<setting id="search2_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="true"/>
-		<setting id="search2_buzzmonclick_com" type="bool" label="Buzzmonclick (Replay TV, Documentaires)" default="false"/>
-		<setting id="search2_cinemay_com" type="bool" label="Cinemay (Films, Séries)" default="false"/>
-		<setting id="search2_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="false"/>
-		<setting id="search2_enquetedereportages_com" type="bool" label="Enquete de Reportages (Replay TV)" default="false"/>
-		<setting id="search2_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="false"/>
-		<setting id="search2_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="false"/>
-		<setting id="search2_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="false"/>
-		<setting id="search2_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="true"/>
-		<setting id="search2_full_stream_org" type="bool" label="Full Stream (Films, Séries)" default="false"/>
-		<setting id="search2_full_streamvk_com" type="bool" label="Full Streamvk.com (Films)" default="false"/>
-		<setting id="search2_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="false"/>
-		<setting id="search2_libre_stream_org" type="bool" label="Libre-stream.org (Films, séries)" default="true"/>
-		<setting id="search2_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="false"/>
-		<setting id="search2_poypi_com" type="bool" label="Poypi.com (Films)" default="false"/>
-		<setting id="search2_regarder_films" type="bool" label="Regarder.films (Séries)" default="false"/>
-		<setting id="search2_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="false"/>
-		<setting id="search2_seriefr_com" type="bool" label="Seriefr.com (Séries)" default="true"/>
-		<setting id="search2_series_en_streaming_tv" type="bool" label="Series En Streaming.tv (Séries)" default="true"/>
-		<setting id="search2_streaming_series_org" type="bool" label="StreamingSeries.org (Séries)" default="true"/>
-		<setting id="search2_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="false"/>
-		<setting id="search2_streamingk_com" type="bool" label="StreamingK.com (Films, Séries, Animes)" default="true"/>
-		<setting id="search2_streamzer_net" type="bool" label="Streamzer (Films, Séries, Documentaires)" default="true"/> 
-		<setting id="search2_tntv_rattrapage" type="bool" label="TNTV Rattrapage (TV Replay, Séries)" default="true"/>
-		<setting id="search2_tv_streaming_ch" type="bool" label="TV Streaming.ch (TV Replay, Films, Séries, Animes, Documentaires)" default="true"/>		
-		<setting id="search2_vkstreamingfilm_biz" type="bool" label="vkstreamingfilm.biz (Films)" default="false"/>
-		<setting id="search2_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="false"/>
-		
-    </category>
-	
-	<!-- Recherche_3 | search3_ | anime-->
-    <category label="30090">-->
-        <setting label="30080" type="lsep" />
-
-        <setting id="search3_label" type="text" label="30501" default="Animes" />
-		
-		<setting id="search3_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="true"/>
-		<setting id="search3_buzzmonclick_com" type="bool" label="Buzzmonclick (Replay TV, Documentaires)" default="false"/>
-		<setting id="search3_cinemay_com" type="bool" label="Cinemay (Films, Séries)" default="false"/>
-		<setting id="search3_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="false"/>
-		<setting id="search3_enquetedereportages_com" type="bool" label="Enquete de Reportages (Replay TV)" default="false"/>
-		<setting id="search3_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="false"/>
-		<setting id="search3_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="false"/>
-		<setting id="search3_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="false"/>
-		<setting id="search3_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="false"/>
-		<setting id="search3_full_stream_org" type="bool" label="Full Stream (Films, Séries)" default="false"/>
-		<setting id="search3_full_streamvk_com" type="bool" label="Full Streamvk.com (Films)" default="false"/>
-		<setting id="search3_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="false"/>
-		<setting id="search3_libre_stream_org" type="bool" label="Libre-stream.org (Films, séries)" default="false"/>
-		<setting id="search3_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="true"/>
-		<setting id="search3_poypi_com" type="bool" label="Poypi.com (Films)" default="false"/>
-		<setting id="search3_regarder_films" type="bool" label="Regarder.films (Séries)" default="false"/>
-		<setting id="search3_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="false"/>
-		<setting id="search3_seriefr_com" type="bool" label="Seriefr.com (Séries)" default="false"/>
-		<setting id="search3_series_en_streaming_tv" type="bool" label="Series En Streaming.tv (Séries)" default="false"/>
-		<setting id="search3_streaming_series_org" type="bool" label="StreamingSeries.org (Séries)" default="false"/>
-		<setting id="search3_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="false"/>
-		<setting id="search3_streamingk_com" type="bool" label="StreamingK.com (Films, Séries, Animes)" default="true"/>
-		<setting id="search3_streamzer_net" type="bool" label="Streamzer (Films, Séries, Documentaires)" default="false"/>
-		<setting id="search3_tntv_rattrapage" type="bool" label="TNTV Rattrapage (TV Replay, Séries)" default="false"/>
-		<setting id="search3_tv_streaming_ch" type="bool" label="TV Streaming.ch (TV Replay, Films, Séries, Animes, Documentaires)" default="true"/>		
-		<setting id="search3_vkstreamingfilm_biz" type="bool" label="vkstreamingfilm.biz (Films)" default="false"/>
-		<setting id="search3_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="false"/>
-		
-    </category>
-	
-	<!-- Recherche_4 | search4_ | Documentaire-->
-    <category label="30091">-->
-        <setting label="30081" type="lsep" />
-
-        <setting id="search4_label" type="text" label="30501" default="Documentaires" />
-		
-		<setting id="search4_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="false"/>
-		<setting id="search4_buzzmonclick_com" type="bool" label="Buzzmonclick (Replay TV, Documentaires)" default="true"/>
-		<setting id="search4_cinemay_com" type="bool" label="Cinemay (Films, Séries)" default="false"/>
-		<setting id="search4_docspot_fr" type="bool" label="DocSpot (Documentaires)" default="true"/>
-		<setting id="search4_enquetedereportages_com" type="bool" label="Enquete de Reportages (Replay TV)" default="false"/>
-		<setting id="search4_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="false"/>
-		<setting id="search4_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="false"/>
-		<setting id="search4_filmstreamingz_fr" type="bool" label="FilmStreamingz.fr (Films)" default="false"/>
-		<setting id="search4_frenchstream_org" type="bool" label="FrenchStream (Films, Séries)" default="false"/>
-		<setting id="search4_full_stream_org" type="bool" label="Full Stream (Films, Séries)" default="false"/>
-		<setting id="search4_full_streamvk_com" type="bool" label="Full Streamvk.com (Films)" default="false"/>
-		<setting id="search4_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="false"/>
-		<setting id="search4_libre_stream_org" type="bool" label="Libre-stream.org (Films, séries)" default="false"/>
-		<setting id="search4_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="false"/>
-		<setting id="search4_poypi_com" type="bool" label="Poypi.com (Films)" default="false"/>
-		<setting id="search4_regarder_films" type="bool" label="Regarder.films (Séries)" default="false"/>
-		<setting id="search4_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="true"/>
-		<setting id="search4_seriefr_com" type="bool" label="Seriefr.com (Séries)" default="false"/>
-		<setting id="search4_series_en_streaming_tv" type="bool" label="Series En Streaming.tv (Séries)" default="false"/>
-		<setting id="search4_streaming_series_org" type="bool" label="StreamingSeries.org (Séries)" default="false"/>
-		<setting id="search4_streamingfilms_fr" type="bool" label="StreamingFilms.fr (Films)" default="false"/>
-		<setting id="search4_streamingk_com" type="bool" label="StreamingK.com (Films, Séries, Animes)" default="false"/>
-		<setting id="search4_streamzer_net" type="bool" label="Streamzer (Films, Séries, Documentaires)" default="true"/>
-		<setting id="search4_tntv_rattrapage" type="bool" label="TNTV Rattrapage (TV Replay, Séries)" default="false"/>
-		<setting id="search4_tv_streaming_ch" type="bool" label="TV Streaming.ch (TV Replay, Films, Séries, Animes, Documentaires)" default="true"/>
-		<setting id="search4_vkstreamingfilm_biz" type="bool" label="vkstreamingfilm.biz (Films)" default="false"/>
-		<setting id="search4_voirfilms_org" type="bool" label="Voirfilms.org (Films)" default="false"/>
-		
-    </category>
-	
-    <category label="30025">-->
+    <category label="30025">
         <setting label="30025" type="lsep"/>
         <setting id="home_cherches" type="bool" label="Recherches" default="true"/>
+        <setting id="search1_label" type="text" label="30078" default="Films"/>
+        <setting id="search2_label" type="text" label="30079" default="Séries" />
+        <setting id="search3_label" type="text" label="30080" default="Animes" />
+        <setting id="search4_label" type="text" label="30081" default="Documentaires" />
         <setting id="color_cherches" type="select" label="Recherches: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
-		<setting label="Recherches: Image" type="image" id="images_cherches" default="special://home/addons/plugin.video.vstream/resources/art/search_fanart.jpg"/>
-		
-		<setting id="home_cherchev" type="bool" label="Recherches Visuelles" default="true"/>
-		<setting id="color_cherchev" type="select" label="Recherches Visuelles: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
-		<setting label="Recherches visuelles: Image" type="image" id="images_cherchev" default="special://home/addons/plugin.video.vstream/resources/art/vsearch_fanart.jpg"/>
+        <setting label="Recherches: Image" type="image" id="images_cherches" default="special://home/addons/plugin.video.vstream/resources/art/search_fanart.jpg"/>
+        
+        <setting id="home_cherchev" type="bool" label="Recherches Visuelles" default="true"/>
+        <setting id="color_cherchev" type="select" label="Recherches Visuelles: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
+        <setting label="Recherches visuelles: Image" type="image" id="images_cherchev" default="special://home/addons/plugin.video.vstream/resources/art/vsearch_fanart.jpg"/>
         
         <setting id="home_tvs" type="bool" label="Télévisions" default="true"/>
         <setting id="color_tvs" type="select" label="Télévisions: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
-		<setting label="Télévisions: Image" type="image" id="images_tvs" default="special://home/addons/plugin.video.vstream/resources/art/tv_fanart.jpg"/>
-		
-		<setting id="home_replaytvs" type="bool" label="Télévisions Replays" default="true"/>
+        <setting label="Télévisions: Image" type="image" id="images_tvs" default="special://home/addons/plugin.video.vstream/resources/art/tv_fanart.jpg"/>
+        
+        <setting id="home_replaytvs" type="bool" label="Télévisions Replays" default="true"/>
         <setting id="color_replaytvs" type="select" label="Télévisions Replays: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
-		<setting label="Télévisions Replays: Image" type="image" id="images_replaytvs" default="special://home/addons/plugin.video.vstream/resources/art/replay_fanart.jpg"/>
+        <setting label="Télévisions Replays: Image" type="image" id="images_replaytvs" default="special://home/addons/plugin.video.vstream/resources/art/replay_fanart.jpg"/>
 
         <setting id="home_films" type="bool" label="Films" default="true"/>
         <setting id="color_films" type="select" label="Films: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
-		<setting label="Films: Image" type="image" id="images_films" default="special://home/addons/plugin.video.vstream/resources/art/films_fanart.jpg"/>
+        <setting label="Films: Image" type="image" id="images_films" default="special://home/addons/plugin.video.vstream/resources/art/films_fanart.jpg"/>
 
         <setting id="home_series" type="bool" label="Séries" default="true"/>
         <setting id="color_series" type="select" label="Séries: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
-		<setting label="Séries: Image" type="image" id="images_series" default="special://home/addons/plugin.video.vstream/resources/art/series_fanart.jpg"/>
+        <setting label="Séries: Image" type="image" id="images_series" default="special://home/addons/plugin.video.vstream/resources/art/series_fanart.jpg"/>
 
         <setting id="home_anims" type="bool" label="Animes" default="true"/>
         <setting id="color_anims" type="select" label="Animes: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
-		<setting label="Animes: Image" type="image" id="images_anims" default="special://home/addons/plugin.video.vstream/resources/art/animes_fanart.jpg"/>
+        <setting label="Animes: Image" type="image" id="images_anims" default="special://home/addons/plugin.video.vstream/resources/art/animes_fanart.jpg"/>
 
         <setting id="home_docs" type="bool" label="Documentaires" default="true"/>
         <setting id="color_docs" type="select" label="Documentaires: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
-		<setting label="Documentaires: Images" type="image" id="images_docs" default="special://home/addons/plugin.video.vstream/resources/art/doc_fanart.jpg"/>
+        <setting label="Documentaires: Images" type="image" id="images_docs" default="special://home/addons/plugin.video.vstream/resources/art/doc_fanart.jpg"/>
 
         <setting id="home_sports" type="bool" label="Sports" default="true"/>
         <setting id="color_sports" type="select" label="Sports: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
-		<setting label="Sports: Image" type="image" id="images_sports" default="special://home/addons/plugin.video.vstream/resources/art/sport_fanart.jpg"/>
+        <setting label="Sports: Image" type="image" id="images_sports" default="special://home/addons/plugin.video.vstream/resources/art/sport_fanart.jpg"/>
 
         <setting id="home_videos" type="bool" label="Vidéos" default="true"/>
         <setting id="color_videos" type="select" label="Vidéos: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
-		<setting label="Vidéos: Image" type="image" id="images_videos" default="special://home/addons/plugin.video.vstream/resources/art/buzz_fanart.jpg"/>
-		
-		<setting visible="false" label="Images Fav" type="image" id="images_marks" default="special://home/addons/plugin.video.vstream/resources/art/mark_fanart.jpg"/>
-		
-		<setting visible="false" label="Images sources" type="image" id="images_hosts" default="special://home/addons/plugin.video.vstream/resources/art/host_fanart.jpg"/>
-		
-		<setting visible="false" label="Images update" type="image" id="images_updates" default="special://home/addons/plugin.video.vstream/resources/art/update_fanart.jpg"/>
-		
-		<setting visible="false" label="Images download" type="image" id="images_downloads" default="special://home/addons/plugin.video.vstream/resources/art/download_fanart.jpg"/>
-		
-		<setting visible="false" label="recherche alluc" id="search10_alluc_ee" type="bool" default="true"/>
-		<setting visible="false" id="plugin_alluc_ee" type="bool" label="active alluc" default="true"/>
+        <setting label="Vidéos: Image" type="image" id="images_videos" default="special://home/addons/plugin.video.vstream/resources/art/buzz_fanart.jpg"/>
+        
+        <setting visible="false" label="Images Fav" type="image" id="images_marks" default="special://home/addons/plugin.video.vstream/resources/art/mark_fanart.jpg"/>
+        
+        <setting visible="false" label="Images sources" type="image" id="images_hosts" default="special://home/addons/plugin.video.vstream/resources/art/host_fanart.jpg"/>
+        
+        <setting visible="false" label="Images update" type="image" id="images_updates" default="special://home/addons/plugin.video.vstream/resources/art/update_fanart.jpg"/>
+        
+        <setting visible="false" label="Images download" type="image" id="images_downloads" default="special://home/addons/plugin.video.vstream/resources/art/download_fanart.jpg"/>
+        
+        <setting visible="false" label="recherche alluc" id="search10_alluc_ee" type="bool" default="true"/>
+        <setting visible="false" id="plugin_alluc_ee" type="bool" label="active alluc" default="true"/>
 
     </category>
-	
-	<category label="30127">
+    
+    <category label="30127">
         <setting label="30127" type="lsep"/>
-		<setting id="download_folder" type="folder" label="30145" default=""/>
-		<setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/clear.py, addon)"/>	
-		<setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/clear.py, xbmc)"/>
-		<setting label="30125" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/about.py, update)"/>
-		
-    </category> 
+        <setting id="download_folder" type="folder" label="30145" default=""/>
+        <setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/clear.py, addon)"/>    
+        <setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/clear.py, xbmc)"/>
+        <setting label="30125" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/about.py, update)"/>
+        
+    </category>
+    
+    <category label="30300">
+        <setting id="Library_folder_Movies" type="folder" label="Fims" default="special://userdata/addon_data/plugin.video.vstream/Films" />
+        <setting id="Library_folder_TVs" type="folder" label="Series" default="special://userdata/addon_data/plugin.video.vstream/Series" />
+        <setting type="lsep" label="30301" />
+        <setting type="sep" />
+        <setting id="update_auto" type="bool" label="30302" default="true" />
+    </category>
 
     <!--<category label="30026">
         <setting label="30026" type="lsep"/>
@@ -270,6 +374,6 @@
         <setting type="sep" visible="true" />
         <setting id="pvr-view" type="bool" label="Active le racourcis Tv direct" default="false"/>
     </category> 
-	-->
+    -->
    
 </settings>

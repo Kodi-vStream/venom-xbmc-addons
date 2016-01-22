@@ -8,7 +8,7 @@
 
     <!-- settingtabs begin by 30021 - 30030 -->
     <string id="30021">General</string>
-    <string id="30022">Plugins on/off</string>
+    <string id="30022">Plugins on/off (1/3)</string>
     <string id="30023">Plugins Préférences</string>
     <string id="30024">Host</string>
     <string id="30025">Home</string>
@@ -16,21 +16,6 @@
     <string id="30027">Waiting time for player (ms)</string>
     <string id="30028">PVR addon setting</string>
     <string id="30029">Enable error popup</string>
-
-     <!-- premium begin by 30031 - 30075 -->
-    <string id="30031">Megavideo Premium Account</string>
-    <string id="30032">Megavideo Username</string>
-    <string id="30033">Megavideo Password</string>
-
-    <string id="30034">Duckload Premium Account</string>
-    <string id="30035">Duckload Username</string>
-    <string id="30036">Duckload Password</string>
-
-    <string id="30071">JDownloader an/aus</string>
-    <string id="30072">Host</string>
-    <string id="30073">Port</string>
-    <string id="30074">Download automatsch starten</string>
-    <string id="30075">sende nur an LinkGrabber</string>
 
     <string id="30076">Search</string>
     <string id="30077">Search 1</string>
@@ -98,5 +83,16 @@
     <string id="30140">Animés Sources</string>
     
     <string id="30145">Download folder</string>
+    <string id="30146">Show / Hide search settings</string>
+    <string id="30147">Plugins on/off (2/3)</string>
+    
+    <!--Librairie -->
+    <string id="30300">Library</string>
+    <string id="30301">To configure in kodi if you want them to be imported</string>
+    <string id="30302">Auto updatet</string>
+    
+        <!--version 0.3.8 -->
+    <string id="30303">Enable/Disable</string>
+    <string id="30148">Plugins on/off (3/3)</string>
         
 </strings>

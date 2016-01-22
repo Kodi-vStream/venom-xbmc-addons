@@ -102,11 +102,14 @@ class cFav:
                 cat = data[5]
                 thumbnail = data[6]
                 fanart = data[7]
+                
+                if thumbnail == '':
+                    thumbnail = 'False'
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', siteurl)
                 oOutputParameterHandler.addParameter('sMovieTitle', title)
-                oOutputParameterHandler.addParameter('sThumbnail', 'False')
+                oOutputParameterHandler.addParameter('sThumbnail', thumbnail)
                 
                 if (function == 'play'):
                     oHoster = cHosterGui().checkHoster(siteurl)
@@ -142,6 +145,7 @@ class cFav:
     def setFavorite(self):
         oInputParameterHandler = cInputParameterHandler()
         #aParams = oInputParameterHandler.getAllParameter()
+        #print oInputParameterHandler.getAllParameter()
         
         meta = {}
         meta['siteurl'] = oInputParameterHandler.getValue('siteUrl')

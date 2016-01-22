@@ -45,34 +45,16 @@ class cHoster(iHoster):
         return ''
         
     def __modifyUrl(self, sUrl):
-        if (sUrl.startswith('http://')):
-            oRequestHandler = cRequestHandler(sUrl)
-            oRequestHandler.request()
-            sRealUrl = oRequestHandler.getRealUrl()
-            self.__sUrl = sRealUrl
-            return self.__getIdFromUrl()
-
         return sUrl;
         
     def __getKey(self):
-        oRequestHandler = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequestHandler.request()
-        sPattern = 'fkzd="(.+?)";'
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            aResult = aResult[1][0].replace('.','%2E')
-            return aResult
-
         return ''
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        
-        sPattern =  '(?:http://|//)(?:www.|embed.|)mystream.(?:la|com)/(?:video/|external/)([0-9a-z]+)'
-         
+        sPattern =  '(?:http:\/\/|\/\/)(?:www.|embed.|)mystream.(?:la|com)\/(?:video\/|external\/|embed-)([0-9a-zA-Z]+)'
         oParser = cParser()
-        aResult = oParser.parse(sUrl, sPattern)        
+        aResult = oParser.parse(sUrl, sPattern)
         self.__sUrl = 'http://www.mystream.la/external/' + str(aResult[1][0])
 
     def checkUrl(self, sUrl):
@@ -85,15 +67,16 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
+
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
-        sPattern =  "file: '(.+?)',"
+
+        sPattern =  'file: *[\'"](.+?)["\'],'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-
+        
         if (aResult[0] == True):
             return True, aResult[1][0]
         
         return False, False
+        

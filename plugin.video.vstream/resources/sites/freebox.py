@@ -76,7 +76,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_LIBRETV)
-    oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Libretv.me', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showLibreMenu', 'Libretv.me', 'tv.png', oOutputParameterHandler)
 
 
     oGui.setEndOfDirectory()
@@ -117,17 +117,43 @@ def showWeb():
         oGui.addDirectTV(SITE_IDENTIFIER, 'play', track.title, 'tv.png' , sRootArt+'/tv/'+track.icon, oOutputParameterHandler)    
   
     oGui.setEndOfDirectory()
-  
+
+def showLibreMenu():
+    oGui = cGui()
+    
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    oOutputParameterHandler.addParameter('sOrder', '2')
+    oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Aujourd\'hui', 'tv.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    oOutputParameterHandler.addParameter('sOrder', '1')
+    oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Ce mois-ci', 'tv.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    oOutputParameterHandler.addParameter('sOrder', '0')
+    oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Anterieur', 'tv.png', oOutputParameterHandler)
+
+
+    oGui.setEndOfDirectory()
+
+    
 def showLibre():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    sOrder = oInputParameterHandler.getValue('sOrder')
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<url>(.+?)</url><title>(.+?)</title><order>.+?</order><icon>(.+?)</icon>'
+    sPattern = '<url>([^<>]+?)</url><title>([^<>]+?)</title><order>' + sOrder + '</order><icon>(.+?)</icon>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if (aResult[0] == True):
@@ -139,6 +165,10 @@ def showLibre():
                 break
                 
             sTitle = aEntry[1]
+            sDate = aEntry[2]
+            sDate = '[' + sDate.split('/')[1] + '/' + sDate.split('/')[0] +'] '
+            sTitle = sDate + sTitle
+            
             sDisplayTitle = cUtil().DecoTitle(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
