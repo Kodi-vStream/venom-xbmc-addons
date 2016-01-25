@@ -18,8 +18,12 @@ SITE_DESC = 'Film en Streaming HD'
  
 URL_MAIN = 'http://vkstreamingfilm.biz'
 
-MOVIE_MOVIE = ('http://www.vkstreamingfilm.biz/films/', 'showMovies') 
-MOVIE_NEWS = ('http://www.vkstreamingfilm.biz/films/', 'showMovies')
+#MOVIE_MOVIE = ('http://www.vkstreamingfilm.biz/films/', 'showMovies') 
+#MOVIE_NEWS = ('http://www.vkstreamingfilm.biz/films/', 'showMovies')
+MOVIE_MOVIE = ('http://www.vkstreamingfilm.biz/', 'showMovies') 
+MOVIE_NEWS = ('http://www.vkstreamingfilm.biz/', 'showMovies')
+
+
 MOVIE_GENRES = (True, 'showGenre')
  
 URL_SEARCH = ('', 'showMovies')
