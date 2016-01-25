@@ -325,6 +325,11 @@ def showMovies(sSearch = ''):
             
             if not 'http' in sThumb:
                 sThumb = 'http://full-stream.org'+ sThumb
+                
+            #Bon petit modif pr corriger nom, apparement le regex a tendance a chnager
+            if sThumb.startswith('/IMG/full-stream.php?'):
+                sThumb = sThumb.replace('/IMG/full-stream.php?src=','')
+                sThumb = sThumb.split('&')[0]
 
             #if sSearch:
             #    sCom = ''
