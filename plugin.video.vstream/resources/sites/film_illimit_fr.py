@@ -12,7 +12,7 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re
 
-#from resources.lib.sucuri import SucurieBypass
+from resources.lib.sucuri import SucurieBypass
  
 SITE_IDENTIFIER = 'film_illimit_fr'
 SITE_NAME = 'Film illimite'
@@ -130,9 +130,9 @@ def showMovies(sSearch = ''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
     
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    #sHtmlContent = SucurieBypass().GetHtml(sUrl)
+    #oRequestHandler = cRequestHandler(sUrl)
+    #sHtmlContent = oRequestHandler.request()
+    sHtmlContent = SucurieBypass().GetHtml(sUrl)
 
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
@@ -210,9 +210,9 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request() 
-    #sHtmlContent = SucurieBypass().GetHtml(sUrl)
+    #oRequestHandler = cRequestHandler(sUrl)
+    #sHtmlContent = oRequestHandler.request() 
+    sHtmlContent = SucurieBypass().GetHtml(sUrl)
     
     sHtmlContent = sHtmlContent.replace('<iframe width="420" height="315" src="https://www.youtube.com/', '')
     sPattern = '<iframe.+?src="(http.+?)"'
@@ -245,9 +245,9 @@ def serieHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    #sHtmlContent = SucurieBypass().GetHtml(sUrl)
+    #oRequestHandler = cRequestHandler(sUrl)
+    #sHtmlContent = oRequestHandler.request()
+    sHtmlContent = SucurieBypass().GetHtml(sUrl)
 
     sHtmlContent = sHtmlContent.replace('<iframe width="420" height="315" src="https://www.youtube.com/', '')
     sPattern = '<div class="su-tabs-pane su-clearfix"><iframe.+?src="(http.+?)"[^<>]+?><\/iframe><\/div>'
