@@ -19,7 +19,7 @@ SITE_DESC = 'replay tv'
  
 URL_MAIN = 'http://enquetedereportages.com/'
 
-DOC_DOCS =('http://enquetedereportages.com/blog/category/documentaire/', 'showMovies')
+DOC_DOCS =('http://enquetedereportages.com/category/documentaire/', 'showMovies')
 
 #REPLAYTV_REPLAYTV = ('http://enquetedereportages.com/', 'showMovies')
 
@@ -46,7 +46,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, DOC_DOCS[1], 'Documentaires', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://enquetedereportages.com/blog/category/reportage/')
+    oOutputParameterHandler.addParameter('siteUrl', 'http://enquetedereportages.com/category/reportage/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Reportages', 'films.png', oOutputParameterHandler)
  
     # oOutputParameterHandler = cOutputParameterHandler()
@@ -59,11 +59,11 @@ def ReplayTV():
     oGui = cGui()
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://enquetedereportages.com/blog/category/documentaire/')
+    oOutputParameterHandler.addParameter('siteUrl', 'http://enquetedereportages.com/category/documentaire/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://enquetedereportages.com/blog/category/reportage/')
+    oOutputParameterHandler.addParameter('siteUrl', 'http://enquetedereportages.com/category/reportage/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Reportages', 'tv.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()  
@@ -115,9 +115,9 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
    
-    #sPattern = '<a href="([^<>"]+?)" title="([^"]+?)"><img [^<>]+?src="([^<>"]+?)" class="attachment-featured wp-post-image"'
     #sPattern = '<h1 class="genpost-entry-title"><a href="(.+?)" rel="bookmark">(.+?)</a></h1><div class="genpost-entry-meta"> '
-    sPattern = '<figure class="genpost-featured-image"><a href="(.+?)" title="(.+?)"><img.+?src="(.+?)".+?</a></figure>'
+    #sPattern = '<figure class="genpost-featured-image"><a href="(.+?)" title="(.+?)"><img.+?src="(.+?)".+?</a></figure>'
+    sPattern = '<article class="pexcerpt.+?"><a href="(.+?)" title="(.+?)".+?<img.+?src="(.+?)".+?/></div>.+?<div class="post-content image-caption-format-1">(.+?)</div>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -145,7 +145,7 @@ def showMovies(sSearch = ''):
             sTitle = sTitle.replace('http://enquetedereportages.com/','')
 			 
            
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[2], '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[2], aEntry[3], oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
  
@@ -161,7 +161,8 @@ def showMovies(sSearch = ''):
  
  
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class="next page-numbers" href="(.+?)">Next <span class="meta-nav-next">'
+    #sPattern = '<a class="next page-numbers" href="(.+?)">Next <span class="meta-nav-next">'
+    sPattern = "<li class='current'>.+?<a.+?href='(.+?)' class='inactive'>"
 	
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
