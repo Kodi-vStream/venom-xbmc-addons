@@ -11,21 +11,19 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import urllib2,urllib,re
-#import xbmcgui
 import unicodedata,htmlentitydefs
  
 SITE_IDENTIFIER = 'kepliz_com'
 SITE_NAME = 'Kepliz.com'
 SITE_DESC = 'Film en streaming'
+URL_HOST = 'http://www.kepliz.com/'
  
-ACCEUILPATTERN  = ''#non utilisé
+URL_MAIN = 'URL_MAIN'
 FILMPATTERN = '<div class="article-content"><p style="text-align: center;"><img src="(.+?)" border.+?<p style="text-align: left;">([^<>]+?)<\/p>'
-URL_MAIN = 'http://www.kepliz.com/gthy44bv8gf7h8dfs04vf54fsd87/'
-SEARCHPATTERN = '<fieldset> *<div> *<b><a *href="\/gthy44bv8gf7h8dfs04vf54fsd87\/(.+?)" *>(.+?)<\/a><\/b>'
-NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/gthy44bv8gf7h8dfs04vf54fsd87\/(.+?)">(.+?)<\/a>'
-NEXTPAGEPATTERN = '<span class="pagenav">[0-9]+<.span><.li><li><a title=".+?" href="\/gthy44bv8gf7h8dfs04vf54fsd87\/(.+?)" class="pagenav">'
+SEARCHPATTERN = '<fieldset> *<div> *<b><a *href="\/[0-9a-zA-Z]+\/(.+?)" *>(.+?)<\/a><\/b>'
+NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/(.+?)">(.+?)<\/a>'
+NEXTPAGEPATTERN = '<span class="pagenav">[0-9]+<.span><.li><li><a title=".+?" href="\/[0-9a-zA-Z]+\/(.+?)" class="pagenav">'
 FRAMEPATTERN = 'KEPLIZpluginsphp\("player1",{link:"(.+?)"}\);'
-POSTURL = URL_MAIN + 'plugins/ty4h5fdgdf8df021f578cv1v5g4fsdg8d7/plugins/KEPLIZpluginsphp.php'
 HOSTPATTERN = '"link":"([^"]+?)","label":"([^"]+?)"'
 
 #pour l'addon
@@ -37,35 +35,12 @@ DOC_DOCS = (URL_MAIN + 'index.php?option=com_content&view=category&id=26', 'show
 URL_SEARCH = (URL_MAIN + 'index.php?ordering=&searchphrase=all&Itemid=1&option=com_search&searchword=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
- 
-def unescape(text):
-    def fixup(m):
-        text = m.group(0)
-        if text[:2] == "&#":
-            # character reference
-            try:
-                if text[:3] == "&#x":
-                    return unichr(int(text[3:-1], 16))
-                else:
-                    return unichr(int(text[2:-1]))
-            except ValueError:
-                pass
-        else:
-            # named entity
-            try:
-                text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
-            except KeyError:
-                pass
-        return text # leave as is
-    return re.sub("&#?\w+;", fixup, text)
- 
- 
 def load():
     oGui = cGui()
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, FUNCTION_SEARCH, 'Recherche', 'search.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -73,7 +48,7 @@ def load():
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films Genres', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_DOCS[0])
@@ -127,20 +102,29 @@ def showMovies(sSearch = ''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         sPattern = NORMALPATTERN
-        # if (sUrl == URL_MAIN) :
-            # sPattern = NORMALPATTERN
-        # else:
-            # sPattern = NORMALPATTERN
-   
-    #print sUrl
-   
+
+    oParser = cParser() 
+        
+    #L'url change tres souvent donc faut la retrouver
+    req = urllib2.Request(URL_HOST)
+    response = urllib2.urlopen(req)
+    data = response.read()
+    response.close()
+    sMainUrl = ''
+    aResult = oParser.parse(data, 'window\.location\.href="([0-9a-zA-Z]+)";')
+    if aResult[0]:
+        #memorisation pour la suite
+        sMainUrl = URL_HOST + aResult[1][0] + '/'
+        #correction de l'url
+        sUrl = sUrl.replace('URL_MAIN', sMainUrl )
+    else:
+        #Si ca marche pas, pas la peine de continuer
+        return
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
    
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-   
-    #print aResult
    
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -162,8 +146,9 @@ def showMovies(sSearch = ''):
             sDisplayTitle = cUtil().DecoTitle(sTitle2)
            
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN) + str(sUrl2))
+            oOutputParameterHandler.addParameter('siteUrl', sMainUrl + str(sUrl2))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle2))
+            oOutputParameterHandler.addParameter('sMainUrl', sMainUrl)
  
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
  
@@ -172,7 +157,7 @@ def showMovies(sSearch = ''):
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            oOutputParameterHandler.addParameter('siteUrl', sMainUrl + sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
  
     if not sSearch:
@@ -183,7 +168,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return str(URL_MAIN) + aResult[1][0]
+        return aResult[1][0]
  
     return False
  
@@ -195,42 +180,45 @@ def showHosters():
    
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMainUrl = oInputParameterHandler.getValue('sMainUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
    
     oParser = cParser()
+    
+    #Recuperation info film, com et image
     sPattern = FILMPATTERN
     aResult = oParser.parse(sHtmlContent, sPattern)
-       
     sThumb = aResult[1][0][0]
-    sComm = unescape(aResult[1][0][1])
+    sComm = cUtil().unescape(aResult[1][0][1])
  
+    #Recuperation info lien du stream.
+    sLink = None
+    sPostUrl = None
     sHtmlContent = sHtmlContent.replace('\r','')
-   
     sPattern = FRAMEPATTERN
     aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0]):
+        sLink = aResult[1][0]
+    sPattern = '\/plugins\/([0-9a-zA-Z]+)\/plugins\/KEPLIZpluginsphp.js"><\/script>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0]):
+        sPostUrl = sMainUrl + 'plugins/' + aResult[1][0] + '/plugins/KEPLIZpluginsphp.php'
  
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-       
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
+    if ((sLink) and (sPostUrl)):
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sLink', aResult[1][0])
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            
-            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-            
-            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle, sThumb, sThumb, sComm, oOutputParameterHandler)
- 
-       
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sLink', sLink)
+        oOutputParameterHandler.addParameter('sPostUrl', sPostUrl)
+        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+        
+        sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+        
+        oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle, sThumb, sThumb, sComm, oOutputParameterHandler)
+     
     oGui.setEndOfDirectory()
    
 def showHostersLink():
@@ -239,6 +227,7 @@ def showHostersLink():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sLink = oInputParameterHandler.getValue('sLink')
+    sPostUrl = oInputParameterHandler.getValue('sPostUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     
     UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
@@ -252,7 +241,7 @@ def showHostersLink():
     
     post_data = {'link' : sLink}
     
-    req = urllib2.Request(POSTURL , urllib.urlencode(post_data), headers)
+    req = urllib2.Request(sPostUrl , urllib.urlencode(post_data), headers)
     
     response = urllib2.urlopen(req)
     data = response.read()
