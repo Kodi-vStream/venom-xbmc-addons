@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 #Venom.
+#rajout fonction pour listage Film Nouveauté par Kodigoal
+
 from resources.lib.gui.hoster import cHosterGui 
 from resources.lib.handler.hosterHandler import cHosterHandler 
 from resources.lib.gui.gui import cGui 
@@ -11,7 +13,7 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser 
 from resources.lib.util import cUtil
 
-
+import re,unicodedata
 
 SITE_IDENTIFIER = 'cinemay_com' 
 SITE_NAME = 'Cinemay.com' 
@@ -19,6 +21,7 @@ SITE_DESC = 'films et series en streaming'
 
 URL_MAIN = 'http://cinemay.com' 
 
+MOVIE_NEWS = ('http://www.cinemay.com/', 'showMoviesNews')
 
 MOVIE_MOVIE = ('http://www.cinemay.com/films/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
@@ -35,17 +38,22 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler) 
     
+    #rajout listage film nouveauté   
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautés', 'news.png', oOutputParameterHandler)
+  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films', 'news.png', oOutputParameterHandler)
-        
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'news.png', oOutputParameterHandler)
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'genres.png', oOutputParameterHandler) 
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films Genres', 'genres.png', oOutputParameterHandler) 
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
     
             
     oGui.setEndOfDirectory() 
@@ -55,16 +63,15 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = 'http://cinemay.com/?s='+sSearchText  
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return  
+        sUrl = 'http://cinemay.com/?s='+sSearchText  
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return  
     
        
 def showGenre():
     oGui = cGui()
  
-
     liste = []
     liste.append( ['Action','http://www.cinemay.com/action/'] )
     liste.append( ['Animation','http://www.cinemay.com/animation/'] )
@@ -101,7 +108,55 @@ def showGenre():
        
     oGui.setEndOfDirectory() 
 
+def showMoviesNews():
+    oGui = cGui()
 
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+   
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request();
+     
+    oParser = cParser()
+    #Decoupage pour cibler la partie Film ajouté    
+    sPattern = '<h1>Dernier Films Ajouté</h1>(.+?)</body>'
+   
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    #regex pour listage films sur la partie decoupée  
+    sHtmlContent = aResult
+    
+    sPattern = '<img class="imgpic" src="(.+?)".+?/>.+?<h3.+?><a href="(.+?)"  title=".+?">.+?<strong>(.+?)</strong></a>.+?</h3>.+?<div class="infob">.+?<p>(.+?)</p>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+      
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+                
+            #encode/decode pour affichage des accents
+            sTitle = unicode(aEntry[2].replace('streaming','').replace('Streaming',''), 'utf-8')
+            
+            sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode("unicode_escape")
+            sTitle = sTitle.encode("latin-1")
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
+            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
+            if '/serie/' in sUrl or '/serie/' in aEntry[0]:
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle,'', aEntry[0], aEntry[3], oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+            
+    oGui.setEndOfDirectory()
+
+    
+    
 def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:

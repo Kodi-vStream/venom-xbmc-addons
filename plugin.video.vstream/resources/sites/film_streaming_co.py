@@ -18,8 +18,8 @@ SITE_IDENTIFIER = 'film_streaming_co'
 SITE_NAME = 'Film-streaming.co'
 SITE_DESC = 'Le seul site de streaming en HD 720p 100% Gratuit'
 
-#URL_MAIN = 'http://www.film-streaming.co/'
-URL_MAIN = 'http://www.streaming-club.com/'
+URL_MAIN = 'http://www.film-streaming.co/'
+#URL_MAIN = 'http://www.streaming-club.com/'
  
 MOVIE_NEWS = (URL_MAIN + 'index.php', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films.php', 'showMovies')
@@ -177,6 +177,10 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
 
     sPattern = '<td.+?class="over_modul">.+?<a href="(.+?)"><img src="(.+?)" border="0" alt="(.+?)\sstreaming".+?</a>'     
 
@@ -211,8 +215,8 @@ def showMovies(sSearch = ''):
     oGui.setEndOfDirectory()
          
 def __checkForNextPage(sHtmlContent):
-    #sPattern = '<(?:strong class="current"|span class="btn btn-default active")>([0-9]+) *<.+?class="btn btn-default" href="([^<>"]+?=)[0-9]+".*?>([0-9]+)<(?!.+?>[0-9]+<.+?)(.+?)<\/td>'
-    sPattern = '<strong class="current">.+?</strong>.+?<a class="btn btn-default" href="(.+?)">'
+    #sPattern = '<strong class="current">.+?</strong>.+?<a class="btn btn-default" href="(.+?)">'
+    sPattern = '<a class="btn btn-default" href="([^<>"]+?)">\[Suivant >>\]<\/a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
