@@ -103,7 +103,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
+        sUrl = URL_SEARCH[0] + urllib.quote(sSearchText)
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return  
@@ -162,9 +162,6 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
       sUrl = sSearch
-      #correction
-      sUrl = sUrl.replace(URL_SEARCH[0],'')
-      sUrl = URL_SEARCH[0] + urllib.quote(sUrl)
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -196,6 +193,11 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
+                
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH[0],''),aEntry[2]) == 0:
+                    continue
             
             #sTitle = aEntry[2]+' - [COLOR azure]'+aEntry[3]+'[/COLOR]'
             oOutputParameterHandler = cOutputParameterHandler()
