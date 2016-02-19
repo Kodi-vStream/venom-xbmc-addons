@@ -152,7 +152,7 @@ def showAlpha():
     liste.append( ['8','http://www.voirfilms.org/alphabet/8/1'] )
     liste.append( ['9','http://www.voirfilms.org/alphabet/9/1'] )
     liste.append( ['A','http://www.voirfilms.org/alphabet/a/1'] )
-    liste.append( ['B','http://www.voirfilms.org/alphabet/b/1'] )  
+    liste.append( ['B','http://www.voirfilms.org/alphabet/b/1'] )
     liste.append( ['C','http://www.voirfilms.org/alphabet/c/1'] )
     liste.append( ['D','http://www.voirfilms.org/alphabet/d/1'] )
     liste.append( ['E','http://www.voirfilms.org/alphabet/e/1'] )
@@ -224,6 +224,10 @@ def showMovies(sSearch = ''):
     
     sHtmlContent = sHtmlContent.replace('\n','')
     
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
+    
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
    
@@ -266,7 +270,7 @@ def showMovies(sSearch = ''):
         cConfig().finishDialog(dialog)
            
         if not sSearch:
-            sNextPage = __checkForNextPage(sUrl)#cherche la page suivante
+            sNextPage = __checkForNextPage(sHtmlContent)#cherche la page suivante
             if (sNextPage != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
@@ -276,14 +280,12 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
    
-def __checkForNextPage(sUrl):
-    sPattern = 'http:..www.voirfilms.org(.+?)([0-9]+)'
+def __checkForNextPage(sHtmlContent):
+    sPattern = "<a href='([^'<>]+?)' rel='nofollow'>suiv »</a>"
     oParser = cParser()
-    aResult = oParser.parse(sUrl, sPattern)
+    aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        nbre = int(aResult[1][0][1])
-        nbre = nbre + 1
-        return 'http://www.voirfilms.org' + aResult[1][0][0] + str(nbre)
+        return URL_MAIN + aResult[1][0][0]
  
     return False
  
