@@ -15,7 +15,7 @@ Demo!
 Installer!
 ----------
 
-Installer le zip du repository (pour avoir les mises à jour automatique) ou installer la dernieres version.
+Installer le zip du repository (pour avoir les mises à jour automatique) ou installer la dernière version.
 
 [Voir toutes les Versions](https://github.com/LordVenom/venom-xbmc-addons/releases)
 
