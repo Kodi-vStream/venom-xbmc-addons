@@ -285,7 +285,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return URL_MAIN + aResult[1][0][0]
+        return URL_MAIN + aResult[1][0]
  
     return False
  
