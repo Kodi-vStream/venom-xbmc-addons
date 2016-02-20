@@ -21,8 +21,8 @@ URL_MAIN = 'http://www.spi0n.com/'
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
-MOVIE_NETS = (URL_MAIN, 'showMovies')
-NETS_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_NETS = (URL_MAIN + 'page/1/', 'showMovies')
+NETS_NEWS = (URL_MAIN + 'page/1/', 'showMovies')
 NETS_GENRES = (True, 'showGenre')
  
 # True : Contenu Censuré | False : Contenu Non Censuré
@@ -62,31 +62,31 @@ def showGenre():
     oGui = cGui()
   
     liste = []
-    liste.append( ['Actualite', URL_MAIN + 'actualite/'] )
-    liste.append( ['Animaux', URL_MAIN + 'animaux/'] )
-    liste.append( ['Art', URL_MAIN + 'art-technique/'] )
-    liste.append( ['Danse', URL_MAIN + 'danse/'] )
-    liste.append( ['Experience', URL_MAIN + 'experiences/'] )
-    liste.append( ['Fake', URL_MAIN + 'fake-trucage/'] )
-    liste.append( ['Guerre', URL_MAIN + 'guerre-militaire/'] )
-    liste.append( ['Humour', URL_MAIN + 'humour-comedie/'] )
-    liste.append( ['Internet', URL_MAIN + 'siteweb-internet/'] )
-    liste.append( ['Jeux Video', URL_MAIN + 'jeuxvideo-consoles/'] )
-    liste.append( ['Musique', URL_MAIN + 'musique/'] ) 
-    liste.append( ['Non Classe', URL_MAIN + 'non-classe'] )
-    liste.append( ['Owned', URL_MAIN + 'owned/'] )
-    liste.append( ['Pub', URL_MAIN + 'publicite-marque/'] )
-    liste.append( ['Santé', URL_MAIN + 'sante-corps/'] )  
-    liste.append( ['Sport', URL_MAIN + 'sport/'] )
-    liste.append( ['Technologie', URL_MAIN + 'technologie-innovations/'] )
-    liste.append( ['Transport', URL_MAIN + 'auto-transport/'] )
-    liste.append( ['TV & Cinema', URL_MAIN + 'tv-cinema/'] )
-    liste.append( ['WTF?!', URL_MAIN + 'wtf/'] )
-    liste.append( ['Zapping', URL_MAIN + 'zapping-web/'] )
+    liste.append( ['Actualite', URL_MAIN + 'category/actualite/page/1/'] )
+    liste.append( ['Animaux', URL_MAIN + 'category/animaux/page/1/'] )
+    liste.append( ['Art', URL_MAIN + 'category/art-technique/page/1/'] )
+    liste.append( ['Danse', URL_MAIN + 'category/danse/page/1/'] )
+    liste.append( ['Experience', URL_MAIN + 'category/experiences/'] )
+    liste.append( ['Fake', URL_MAIN + 'category/fake-trucage/page/1/'] )
+    liste.append( ['Guerre', URL_MAIN + 'category/guerre-militaire/page/1/'] )
+    liste.append( ['Humour', URL_MAIN + 'category/humour-comedie/page/1/'] )
+    liste.append( ['Internet', URL_MAIN + 'category/siteweb-internet/page/1/'] )
+    liste.append( ['Jeux Video', URL_MAIN + 'category/jeuxvideo-consoles/page/1/'] )
+    liste.append( ['Musique', URL_MAIN + 'category/musique/page/1/'] ) 
+    liste.append( ['Non Classe', URL_MAIN + 'category/non-classe/page/1/'] )
+    liste.append( ['Owned', URL_MAIN + 'category/owned/page/1/'] )
+    liste.append( ['Pub', URL_MAIN + 'category/publicite-marque/page/1/'] )
+    liste.append( ['Santé', URL_MAIN + 'category/sante-corps/page/1/'] )  
+    liste.append( ['Sport', URL_MAIN + 'category/sport/page/1/'] )
+    liste.append( ['Technologie', URL_MAIN + 'category/technologie-innovations/page/1/'] )
+    liste.append( ['Transport', URL_MAIN + 'category/auto-transport/'] )
+    liste.append( ['TV & Cinema', URL_MAIN + 'category/tv-cinema/page/1/'] )
+    liste.append( ['WTF?!', URL_MAIN + 'category/wtf/page/1/'] )
+    liste.append( ['Zapping', URL_MAIN + 'category/zapping-web/page/1/'] )
                  
     if SPION_CENSURE == False:
-        liste.append( ['NSFW (+18)', URL_MAIN + 'notsafeforwork/'] )
-        liste.append( ['Trash (+18)', URL_MAIN + 'trash-gore/'] )          
+        liste.append( ['NSFW (+18)', URL_MAIN + 'category/notsafeforwork/page/1/'] )
+        liste.append( ['Trash (+18)', URL_MAIN + 'category/trash-gore/page/1/'] )          
                  
     for sTitle,sUrl in liste:
          
@@ -109,13 +109,9 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
      
-    sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '')\
-                               .replace('</span>', '')
+    sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '')
      
-    sPattern = '<span class="image_shadow_container fl"><a href="([^<]+)" title="([^<]+)"><img src="(.+?)"'
-    #- ([^<]+) je veux cette partie de code mais y a une suite
-    #- .+? je ne veux pas cette partie et peu importe ce qu'elle contient
-    #- (.+?) je veux cette partie et c'est la fin
+    sPattern = 'class="post clearfix">.+?<img src="([^<>"]+?)".+?<a href="([^<>"]+?)" rel="bookmark" title="([^"<>]+?)">'
      
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -127,20 +123,19 @@ def showMovies(sSearch = ''):
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
              
-            sUrl    = str(aEntry[0]) 
-            sTitle  = str(aEntry[1])
-            sPoster = str(aEntry[2])
+            sUrlp    = str(aEntry[1]) 
+            sTitle  = str(aEntry[2])
+            sPoster = str(aEntry[0])
              
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl) 
+            oOutputParameterHandler.addParameter('siteUrl', sUrlp) 
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle) 
             oOutputParameterHandler.addParameter('sThumbnail', sPoster)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sPoster,
-                          '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sPoster,'', oOutputParameterHandler)
              
         cConfig().finishDialog(dialog)
             
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage = __checkForNextPage(sUrl)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
@@ -151,17 +146,17 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory() 
  
  
-def __checkForNextPage(sHtmlContent):
+def __checkForNextPage(sUrl):
     oParser = cParser()
-    sPattern = '<div class="yellow fl"><a href="([^<]+)">.+?</a></div>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-     
-    if aResult[0] == False:
-        sPattern = '<span class="current">.+?href="(.+?)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+    sPattern = 'page\/([0-9]+)\/'
+    aResult = oParser.parse(sUrl, sPattern)
+    
+    print sUrl
+    print aResult
  
     if (aResult[0] == True):
-        return aResult[1][0]
+        page = int(aResult[1][0]) + 1
+        return URL_MAIN + 'page/' + str(page) + '/'
  
     return False
      
