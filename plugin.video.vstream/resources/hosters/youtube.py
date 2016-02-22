@@ -54,6 +54,7 @@ class cHoster(iHoster):
             self.__sUrl = self.__sUrl.replace('www.youtube.com', '')
             self.__sUrl = self.__sUrl.replace('www.youtube-nocookie.com', '')
             self.__sUrl = self.__sUrl.replace('/embed/', '')
+            self.__sUrl = self.__sUrl.replace('/watch?v=', '')
             self.__sUrl = str(self.__sUrl)
         else:
             self.__sUrl = sUrl            
