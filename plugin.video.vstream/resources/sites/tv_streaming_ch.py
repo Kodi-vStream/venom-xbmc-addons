@@ -302,7 +302,7 @@ def showHosters(sLoop = False):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-    print aResult
+    #print aResult
      
     if (aResult[0] == True):
         total = len(aResult[1])

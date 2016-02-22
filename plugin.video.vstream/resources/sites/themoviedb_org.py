@@ -503,7 +503,7 @@ def showHosters():
     sExtraTitle = ''
     #si c'est une serie
     if sSeason and sEpisode:
-        sExtraTitle = ' S' + "%02d" % int(sEpisode) + 'E' + "%02d" % int(sEpisode)
+        sExtraTitle = ' S' + "%02d" % int(sSeason) + 'E' + "%02d" % int(sEpisode)
         
     dialog3 = xbmcgui.Dialog()
     ret = dialog3.select('Selectionner un Moteur de Recherche',['Vstream (Fiable mais plus complexe)','Alluc (Simple mais resultats non garantis)'])

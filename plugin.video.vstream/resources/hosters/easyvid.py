@@ -66,15 +66,33 @@ class cHoster(iHoster):
             sUnpacked = cPacker().unpack(aResult[0])
             sHtmlContent = sUnpacked
 
-        sPattern = 'file: *"([^{}<>]+?\.mp4)"}'
-        
         oParser = cParser()
-        #sHtmlContent=sHtmlContent.replace('|','/')
+        #sPattern = 'file: *"([^{}<>]+?\.mp4)"}'
+        sPattern = '{file:"(.+?)",label:"(.+?)"}'
         aResult = oParser.parse(sHtmlContent, sPattern)
-
-
+        
+        api_call = ''
+        
         if (aResult[0] == True):
-            api_call = aResult[1][0]
+            #initialisation des tableaux
+            url=[]
+            qua=[]
+        
+            #Replissage des tableaux
+            for i in aResult[1]:
+                url.append(str(i[0]))
+                qua.append(str(i[1]))
+                
+            #Si au moins 1 url
+            if (url):
+            #Afichage du tableau
+                dialog2 = xbmcgui.Dialog()
+                ret = dialog2.select('Select Quality',qua)
+                if (ret > -1):
+                    api_call = url[ret]
+
+
+        if (api_call):
             return True, api_call
             
         return False, False

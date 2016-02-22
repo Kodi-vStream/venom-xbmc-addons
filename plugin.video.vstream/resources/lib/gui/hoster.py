@@ -11,6 +11,7 @@ from resources.lib.player import cPlayer
 from resources.lib.db import cDb
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
+from resources.lib.util import cUtil
 import xbmc
 
 class cHosterGui:
@@ -89,6 +90,25 @@ class cHosterGui:
          
         #oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
+    def plusHoster(self, oGui):               
+
+        oInputParameterHandler = cInputParameterHandler()
+        #aParams = oInputParameterHandler.getAllParameter()
+        
+        sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+        
+        #formatage pour recheche serie
+        sMovieTitle = cUtil().FormatSerie(sMovieTitle)
+        #nettoyage pour la recherhce
+        sMovieTitle = cUtil().CleanName(sMovieTitle)
+        
+        sUrl = "http://www.alluc.ee/stream/lang%3Afr+"+sMovieTitle
+        oOutputParameterHandler = cOutputParameterHandler()
+
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir('alluc_ee', 'showMovies', 'Plus', 'search.png', oOutputParameterHandler)
+        
+        
     def checkHoster(self, sHosterUrl):
     
             #securiter
@@ -215,6 +235,10 @@ class cHosterGui:
             return cHosterHandler().getHoster('vid_ag')
         if ('wat.tv' in sHosterUrl):
             return cHosterHandler().getHoster('wat_tv')
+        if ('thevid' in sHosterUrl):
+            return cHosterHandler().getHoster('thevid')
+        if ('nosvideo' in sHosterUrl):
+            return cHosterHandler().getHoster('nosvideo')
 
         #Si aucun hebergeur connu on teste les liens directs
         if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8'):

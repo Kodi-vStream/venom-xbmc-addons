@@ -119,7 +119,7 @@ class cHoster(iHoster):
                 #oRequest.addHeaderEntry('Host','dowed.info')
                 sHtmlContent = oRequest.request()
                 
-                sPattern = 'file: "([^"]+)"'
+                sPattern = 'file: *"([^"]+)"'
                 aResult = oParser.parse(sHtmlContent, sPattern)
                 
         if (aResult[0] == True):

@@ -146,10 +146,8 @@ def showMoviesNews():
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
-            if '/serie/' in sUrl or '/serie/' in aEntry[0]:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle,'', aEntry[0], aEntry[3], oOutputParameterHandler)
-            else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
+
+            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
             

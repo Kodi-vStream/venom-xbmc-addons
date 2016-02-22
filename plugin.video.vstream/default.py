@@ -15,7 +15,6 @@ from resources.lib.config import cConfig
 from resources.lib.statistic import cStatistic
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.guiElement import cGuiElement
-from resources.lib.about import cAbout
 from resources.lib.home import cHome
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.pluginHandler import cPluginHandler
@@ -83,10 +82,18 @@ class main:
             #except:
             #    cConfig().log('could not load site: ' + sSiteName )
         else:
-
+        
+            try:
+                from resources.lib.about import cAbout
+                cAbout().getUpdate()
+                #exec "from resources.lib.about import cAbout as plugin"
+                #exec "plugin.getUpdate()"
+            except:
+                pass
+            
             if (cConfig().getSetting("home-view") == 'true'):
                 oHome = cHome()
-                #cAbout()
+                
                 exec "oHome."+ sFunction +"()"
                 return
 

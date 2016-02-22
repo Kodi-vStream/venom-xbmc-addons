@@ -3,11 +3,13 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 import urllib, urllib2
-import cookielib
-#import urlresolver
+
 import re
 import base64
-import time
+
+try:    import json
+except: import simplejson as json
+
 
 def _decode(data):
     def O1l(string):
@@ -165,6 +167,16 @@ class cHoster(iHoster):
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
+        
+    def GetIP(self):
+        req = urllib2.Request('http://hqq.tv/player/ip.php?type=json')
+        response = urllib2.urlopen(req)  
+        data = response.read()
+        response.close()
+        result = json.loads(data)
+        ip =  result[u'ip']
+        ip = urllib.quote(ip)
+        return ip
 
     def __getMediaLinkForGuest(self):
     
@@ -178,7 +190,7 @@ class cHoster(iHoster):
         #UA = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us)'
         headers = {'User-Agent': UA ,
                    'Host' : 'hqq.tv',
-                   #'Referer': 'http://www.voirfilms.org/batman-unlimited-monstrueuse-pagaille.htm',
+                   #'Referer': 'http://hqq.tv/',
                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                    'Content-Type': 'text/html; charset=utf-8'}
         
@@ -192,7 +204,7 @@ class cHoster(iHoster):
             print e.reason
             
         data = response.read()
-        response.close()
+        response.close()        
         
         b64enc = re.search('base64([^\"]+)', data, re.DOTALL)
         b64dec = b64enc and base64.decodestring(b64enc.group(1))
@@ -215,14 +227,10 @@ class cHoster(iHoster):
             data = response.read()
             response.close()
             
-            #fh = open('c:\\netu.txt', "w")
-            #fh.write(data)
-            #fh.close()
-            
             b64enc = re.search('base64([^\"]+)', data, re.DOTALL)
             b64dec = b64enc and base64.decodestring(b64enc.group(1))
             enc = b64dec and re.search("\'([^']+)\'", b64dec).group(1)
-
+            
             if enc:
                 data = re.findall('<input name="([^"]+?)" [^>]+? value="([^"]*)">', _decode(enc))
 
@@ -242,7 +250,7 @@ class cHoster(iHoster):
                 response = urllib2.urlopen(req)
                 data = response.read()
                 response.close()
-                
+
                 data = urllib.unquote(data)
                 
                 #fh = open('c:\\netu.txt', "w")
@@ -256,7 +264,7 @@ class cHoster(iHoster):
                 if vid_server and vid_link and at:
 
                     #get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '1/'}
-                    get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '1/','b':'1'} #,'iss':'MzEuMzguMjUyLjc='
+                    get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '0/','b':'1','vid':id} #,'iss':'MzEuMzguMjUyLjc='
                     
                     req = urllib2.Request("http://hqq.tv/player/get_md5.php?" + urllib.urlencode(get_data),None,headers)
                     try:
@@ -268,14 +276,9 @@ class cHoster(iHoster):
                     data = response.read()
                     response.close()
                     
-                    #fh = open('c:\\netu.txt', "w")
-                    #fh.write(data)
-                    #fh.close()
-                    
                     file_url = re.search(r'"file"\s*:\s*"([^"]*?)"', data)
                    
                     if file_url:
-                        #return [{'url': _decode2(file_url.group(1).replace('\\', '')), 'quality': '???'}]
                         list_url = _decode2(file_url.group(1).replace('\\', '')) + '='
                         
                     #print list_url

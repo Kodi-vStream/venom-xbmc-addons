@@ -135,7 +135,7 @@ def showSeries(sSearch = ''):
             sUrl = str(aEntry[0])
             sDisplayTitle = cUtil().DecoTitle(sTitle)
 
-            if 'Information' not in sTitle and '/liste-de-series/' not in sUrl:
+            if ('Information' not in sTitle) and ('/liste-de-series/' not in sUrl) and ('/versions-francaises/' not in sUrl):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)

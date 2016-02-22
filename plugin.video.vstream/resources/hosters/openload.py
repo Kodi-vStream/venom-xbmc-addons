@@ -78,6 +78,7 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             string = AADecoder(aResult[1][0]).decode()
+            print string
                 
         if not (string): 
             #Dean Edwards Packer
@@ -98,7 +99,7 @@ class cHoster(iHoster):
                 api_call = aResult[1][0]
                 
             if not api_call:
-                sPattern = 'window\.vr *="(.+?)"'
+                sPattern = 'window\.vr *=["\'](.+?)["\']'
                 aResult = oParser.parse(sContent, sPattern)
                 if (aResult[0] == True):
                     api_call = aResult[1][0]

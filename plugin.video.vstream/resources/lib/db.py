@@ -424,7 +424,19 @@ class cDb:
             return None
         self.dbcur.close()
         
+    def clean_download(self):
+
+        sql_select = "DELETE FROM download WHERE status = '2'"
         
+        try:    
+            self.dbcur.execute(sql_select)
+            self.db.commit()
+            return False, False
+        except Exception, e:
+            cConfig().log('SQL ERROR EXECUTE') 
+            return False, False
+        self.dbcur.close()
+
     def del_download(self, meta):
 
         if len(meta['url']) > 1:

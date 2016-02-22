@@ -1,22 +1,22 @@
 #-*- coding: utf-8 -*-
-from resources.lib.gui.hoster import cHosterGui
 from resources.lib.config import cConfig
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.hosterHandler import cHosterHandler
+#from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.player import cPlayer
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.db import cDb
-#from traceback import print_exc
+from resources.lib.util import cUtil
+
+
 import urllib2,urllib
 import xbmcplugin, xbmc
 import xbmcgui
 import xbmcvfs
-import string
 import re
-import threading,os,sys
+import threading
 
 try:
     import StorageServer
@@ -39,6 +39,20 @@ SITE_IDENTIFIER = 'cDownload'
 #GetProperty('arret') = '0' => Telechargement en cours
 #GetProperty('arret') = '1' => Arret demandé
 #GetProperty('arret') = '' =>  Jamais eu de telechargement
+
+
+#Create queue objects
+class _Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(_Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+class Singleton(_Singleton('SingletonMeta', (object,), {})): pass
+ #to use it
+ #class cDownloadProgressBar(Singleton):
+
 
 class cDownloadProgressBar(threading.Thread):
     def __init__(self, *args, **kwargs):
@@ -117,7 +131,8 @@ class cDownloadProgressBar(threading.Thread):
         self.file.close()
         self.__oDialog.close()
         
-        self.StopAll()
+        #On autorise le prochain DL
+        Memorise.unlock("VstreamDownloaderLock")
         
         #if download finish
         meta = {}      
@@ -130,6 +145,7 @@ class cDownloadProgressBar(threading.Thread):
             try:
                 cDb().update_download(meta)
                 cConfig().showInfo('Téléchargements Termine', self.__sTitle)
+                print 'Téléchargements Termine : %s' % self.__sTitle
                 self.RefreshDownloadList()
             except:
                 pass
@@ -138,6 +154,7 @@ class cDownloadProgressBar(threading.Thread):
             try:
                 cDb().update_download(meta)
                 cConfig().showInfo('Téléchargements Arrete', self.__sTitle)
+                print 'Téléchargements Arrete : %s' % self.__sTitle
                 self.RefreshDownloadList()
             except:
                 pass
@@ -145,6 +162,7 @@ class cDownloadProgressBar(threading.Thread):
             
         #ok tout est bon on contiinu ou pas ?
         if Memorise.get('SimpleDownloaderQueue') == '1':
+            print 'Download suivant'
             tmp = cDownload()
             data = tmp.GetNextFile()
             tmp.StartDownload(data)
@@ -187,7 +205,7 @@ class cDownloadProgressBar(threading.Thread):
             headers = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36' }
             url = self.__sUrl.split('|')[0]
             req = urllib2.Request(url, None, headers)
-            self.oUrlHandler = urllib2.urlopen(req)
+            self.oUrlHandler = urllib2.urlopen(req,timeout=30)
             #self.__instance = repr(self)
             self.file = xbmcvfs.File(self.__fPath, 'w')
         except:
@@ -198,6 +216,7 @@ class cDownloadProgressBar(threading.Thread):
         
         if not Memorise.lock("VstreamDownloaderLock"):
             cConfig().showInfo('Telechargements deja demarrés', 'Download error')
+            #self.oUrlHandler.close()
             return
         
         self._StartDownload()
@@ -231,11 +250,11 @@ class cDownloadProgressBar(threading.Thread):
         
 class cDownload:  
     def __init__(self):
-        self.PBTread = ''
+        pass
 
     def __createDownloadFilename(self, sTitle):
         sTitle = re.sub(' +',' ',sTitle) #Vire double espace
-        valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
+        valid_chars = "-_.() abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         filename = ''.join(c for c in sTitle if c in valid_chars)
         filename = filename.replace(' .','.')
         if filename.startswith(' '):
@@ -265,6 +284,7 @@ class cDownload:
         self.__sTitle = sTitle
         
         #resolve url
+        from resources.lib.gui.hoster import cHosterGui
         oHoster = cHosterGui().checkHoster(sDBUrl)
         oHoster.setUrl(sDBUrl)
         aLink = oHoster.getMediaLink()
@@ -286,8 +306,7 @@ class cDownload:
             cConfig().log("Telechargement " + str(sUrl))
             
             #background download task
-            self.PBTread = cDownloadProgressBar(title = self.__sTitle , url = sUrl , Dpath = sDownloadPath )
-            self.PBTread.start()
+            cDownloadProgressBar(title = self.__sTitle , url = sUrl , Dpath = sDownloadPath ).start()
 
             cConfig().log("Telechargement ok")
 
@@ -299,7 +318,10 @@ class cDownload:
             
 
     def __createTitle(self, sUrl, sTitle):
-        sTitle = re.sub('[\(\[].+?[\)\]]',' ', sTitle)
+        
+        #sTitle = re.sub('[\(\[].+?[\)\]]',' ', sTitle)
+        sTitle = cUtil().FormatSerie(sTitle)
+        sTitle = cUtil().CleanName(sTitle)
                
         aTitle = sTitle.rsplit('.')
         #Si deja extension
@@ -328,9 +350,11 @@ class cDownload:
         item = xbmcgui.ListItem('Demarrer la liste', iconImage=cConfig().getRootArt()+'download.png')
         item.setProperty("Fanart_Image", cConfig().getSetting('images_downloads'))
         
-        item.setInfo(type="Video", infoLabels = meta)
-        #item.setProperty("Video", "true")
+        #item.setInfo(type="Video", infoLabels = meta)
+        
+        #item.setProperty("Video", "false")
         #item.setProperty("IsPlayable", "false")
+
         xbmcplugin.addDirectoryItem(sPluginHandle,sItemUrl,item,isFolder=False)
         
         oOutputParameterHandler = cOutputParameterHandler()
@@ -338,9 +362,22 @@ class cDownload:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oGui.addDir(SITE_IDENTIFIER, 'getDownloadList', 'Liste de Téléchargement', 'download.png', oOutputParameterHandler)
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oGui.addDir(SITE_IDENTIFIER, 'CleanDownloadList', 'Nettoyer la liste (Fichiers finis)', 'download.png', oOutputParameterHandler)
           
         oGui.setEndOfDirectory()   
     
+    def CleanDownloadList(self):
+        
+        try:
+            cDb().clean_download()
+            cConfig().showInfo('vStream', 'Liste mise a jour')
+            #cConfig().update()
+        except:
+            pass
+
+        return
     
     def dummy(self):
         return
@@ -425,6 +462,7 @@ class cDownload:
         self.download(url,title,path)
                 
     def StartDownloadList(self):
+        cConfig().showInfo('Information', 'Demarrage de la liste complete')
         Memorise.set('SimpleDownloaderQueue', '1')
         data = self.GetNextFile()
         self.StartDownload(data)
@@ -455,11 +493,11 @@ class cDownload:
         cConfig().update()
   
         return
-
+   
     def getDownloadList(self):
-
+    
         oGui = cGui()
-        oInputParameterHandler = cInputParameterHandler()        
+        oInputParameterHandler = cInputParameterHandler()
 
         row = cDb().get_Download()
         

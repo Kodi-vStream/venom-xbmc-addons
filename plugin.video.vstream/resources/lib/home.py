@@ -100,12 +100,20 @@ class cHome:
         if (cConfig().getSetting('home_update') == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir('cGui', 'openSettings', '[COLOR green]Mise a jour disponible[/COLOR]', 'update.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showUpdate', '[COLOR green]Mise a jour disponible[/COLOR]', 'update.png', oOutputParameterHandler)
 
 
         
         oGui.setEndOfDirectory()
         
+    def showUpdate(self):
+        try:
+            from resources.lib.about import cAbout
+            cAbout().checkdownload()
+        except:
+            pass
+        return
+    
     def showNets(self):
         oGui = cGui()
          

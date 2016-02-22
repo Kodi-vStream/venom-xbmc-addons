@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 #Venom.
-#15/01/2016
+#15/02/2016
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -335,6 +335,12 @@ def showMovies(sSearch = ''):
             #    sCom = ''
             #else:
             sCom = aEntry[4]
+            
+            
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH[0],''),aEntry[2]) == 0:
+                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
@@ -465,12 +471,13 @@ def serieHosters():
             elif aEntry[1]:
                 sHosterUrl = str(aEntry[1])
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                sDisplayTitle = re.sub(' en (VOSTFR|VF)','',aEntry[2])
-                sDisplayTitle = cUtil().DecoTitle(sDisplayTitle)
+                sMovieTitle2 = aEntry[2]
+                sMovieTitle2 = re.sub(' en (VOSTFR|VF)','',sMovieTitle2)
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle2)
         
                 if (oHoster != False):
                     oHoster.setDisplayName(sDisplayTitle)
-                    oHoster.setFileName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle2)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
             elif aEntry[3]:
@@ -483,15 +490,15 @@ def serieHosters():
 
                         if (aResult2[0] == True):
                             for aEntry2 in aResult2[1]:
-                                sDisplayTitle = str(sMovieTitle) + ' '+  str(aEntry[3])
-                                sDisplayTitle = cUtil().DecoTitle(sDisplayTitle)
+                                sMovieTitle2 = str(sMovieTitle) + ' '+  str(aEntry[3])
+                                sDisplayTitle = cUtil().DecoTitle(sMovieTitle2)
                                 
                                 sHosterUrl = aEntry2
                                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                         
                                 if (oHoster != False):
                                     oHoster.setDisplayName(sDisplayTitle)
-                                    oHoster.setFileName(sMovieTitle)
+                                    oHoster.setFileName(sMovieTitle2)
                                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)              
 
         cConfig().finishDialog(dialog)

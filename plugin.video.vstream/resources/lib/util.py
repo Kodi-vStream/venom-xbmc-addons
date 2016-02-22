@@ -116,7 +116,8 @@ class cUtil:
         annee = ''
         m = re.search('(\([0-9]{4}\))', str)
         if m:
-            annee = m.group(0)
+            annee = str(m.group(0))
+            str = str.replace(annee,'')
        
         #vire tag
         str = re.sub('[\(\[].+?[\)\]]','', str)

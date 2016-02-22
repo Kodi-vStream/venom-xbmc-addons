@@ -15,8 +15,6 @@
 import re,urllib2
 import string
 
-PRIORITY = 1
-
 class cPacker():
     def detect(self, source):
         """Detects whether `source` is P.A.C.K.E.R. coded."""
@@ -28,9 +26,8 @@ class cPacker():
 
         if count != len(symtab):
             raise self.UnpackingError('Malformed p.a.c.k.e.r. symtab.')
-
+        
         try:
-            
             unbase = Unbaser(radix)
         except TypeError:
             raise self.UnpackingError('Unknown p.a.c.k.e.r. encoding.')
@@ -117,13 +114,10 @@ class cPacker():
 class Unbaser(object):
     """Functor for a given base. Will efficiently convert
     strings to natural numbers."""
-    ALPHABET  = {
-        36 : '0123456789abcdefghijklmnopqrstuvwxyz',
-        52 : '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP',
-        54 : '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQR',
-        62 : '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-        95 : (' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-              '[\]^_`abcdefghijklmnopqrstuvwxyz{|}~')
+    ALPHABET = {
+        62: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+        95: (' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+             '[\]^_`abcdefghijklmnopqrstuvwxyz{|}~')
     }
 
     def __init__(self, base):
@@ -134,10 +128,13 @@ class Unbaser(object):
         if 2 <= base <= 36:
             self.unbase = lambda string: int(string, base)
         else:
+            if base < 62:
+                self.ALPHABET[base] = self.ALPHABET[62][0:base]
+            elif 62 < base < 95:
+                self.ALPHABET[base] = self.ALPHABET[95][0:base]
             # Build conversion dictionary cache
             try:
-                self.dictionary = dict((cipher, index) for
-                    index, cipher in enumerate(self.ALPHABET[base]))
+                self.dictionary = dict((cipher, index) for index, cipher in enumerate(self.ALPHABET[base]))
             except KeyError:
                 raise TypeError('Unsupported base encoding.')
 

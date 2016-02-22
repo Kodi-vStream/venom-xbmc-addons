@@ -675,7 +675,7 @@ class cGui():
             sCleanTitle = re.sub('(?i)S[0-9]+E[0-9]+', '',sCleanTitle)
             sCleanTitle = re.sub('(?i)[S|E][0-9]+', '',sCleanTitle)
         
-        ui = cConfig().WindowsBoxes(sCleanTitle, sMeta,sYear)      
+        ui = cConfig().WindowsBoxes(sCleanTitle, sMeta,sYear)
     
         
         
@@ -711,6 +711,11 @@ class cGui():
             oOutputParameterHandler = cOutputParameterHandler()
             
         sParams = oOutputParameterHandler.getParameterAsUri()
+        
+        #cree une id unique
+        # if oGuiElement.getSiteUrl():
+            # print  str(hash(oGuiElement.getSiteUrl()))
+            
         
         sPluginPath = cPluginHandler().getPluginPath();
 

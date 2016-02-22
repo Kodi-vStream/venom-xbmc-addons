@@ -67,20 +67,22 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+        
+        HOST = 'www.flashx.pw'
 
         sId = self.__getIdFromUrl(self.__sUrl)
-        web_url = 'http://www.flashx.tv/fxplay-%s.html' % sId
+        web_url = 'http://' + HOST + '/fxplay-%s.html' % sId
         
         sId = re.sub(r'-.+', '', sId)
 
         headers = {
-        'Host' : 'www.flashx.tv',
+        'Host' : HOST,
         'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
         'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
         'Referer':'http://embed.flashx.tv/embed.php?c=' + sId,
         }
-              
+        
         request = urllib2.Request(web_url,None,headers)
       
         try:
@@ -89,24 +91,20 @@ class cHoster(iHoster):
             print e.read()
             print e.reason
             
-
         sHtmlContent = reponse.read()
-        
-        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
 
+        #Lien code ??
+        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
         aResult = re.findall(sPattern,sHtmlContent)
         #aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        if not (aResult):
-            return False, False
-            
-        sUnpacked = cPacker().unpack(aResult[0])
-            
+        if (aResult):
+            sUnpacked = cPacker().unpack(aResult[0])
+            sHtmlContent = sUnpacked
+
+        #decodage classique
         oParser = cParser()
         sPattern = '{file:"(.+?)",label:"(.+?)"}'
-        aResult = oParser.parse(sUnpacked, sPattern)
-        
-        #print aResult
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
         api_call = ''
         

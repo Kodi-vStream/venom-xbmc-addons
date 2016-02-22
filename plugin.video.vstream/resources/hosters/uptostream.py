@@ -68,6 +68,7 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
         self.__sUrl = self.__sUrl.replace('http://uptostream.com/', '')
+        self.__sUrl = self.__sUrl.replace('https://uptostream.com/', '')
         self.__sUrl = self.__sUrl.replace('iframe/', '')
         self.__sUrl = 'http://uptostream.com/iframe/' + str(self.__sUrl)
 
@@ -89,8 +90,11 @@ class cHoster(iHoster):
         sPattern =  "<source src='(.+?)'"
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
+        
         if (aResult[0] == True):
             stream_url = urllib.unquote(aResult[1][0])
+            if not stream_url.startswith('http'):
+                stream_url = 'http:' + stream_url
             return True, stream_url
         else:
             cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)

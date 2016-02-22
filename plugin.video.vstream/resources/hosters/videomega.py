@@ -8,6 +8,7 @@ import xbmcgui,xbmc
 import urllib2
 import re
 
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -114,6 +115,7 @@ class cHoster(iHoster):
             aResult = oParser.parse(decoder, sPattern)
             
             if (aResult[0] == True):
+                print 'code unescape'
                 api_call = aResult[1][0]
                 
         #Dexieme test Dean Edwards Packer
@@ -121,27 +123,29 @@ class cHoster(iHoster):
             sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
+                print 'code Dean Edwards Packer'
                 sUnpacked = cPacker().unpack(aResult[1][0])
-                
-                sPattern =  '\("src", *"(.+?)"\);'
+                                
+                sPattern =  '\("src", *"([^\)"<>]+?)"\)'
                 aResult = oParser.parse(sUnpacked, sPattern)
 
                 if (aResult[0] == True):
                     api_call = aResult[1][0]
-                    
+      
         #Troisieme test, lien non code
         if not api_call:
             sPattern =  '<source src="([^"]+)" type="video[^"]*"\/>'
             aResult = oParser.parse(sHtmlContent, sPattern)
             
             if (aResult[0] == True):
+                print 'non code'
                 api_call = aResult[1][0]
 
         #print 'url : ' + api_call
 
         if (api_call):
-            api_call = api_call + '|User-Agent=' + UA
-            #xbmc.sleep(6000)
+            api_call = api_call + '|User-Agent=' + UA + '&Referer=' + self.__sUrl
+            xbmc.sleep(6000)
             return True, api_call
             
         return False, False

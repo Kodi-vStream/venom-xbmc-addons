@@ -186,13 +186,17 @@ def showHosters():
                     '/.kodi/addons/plugin.video.vstream/resources/sites/spion_com.py'\
                     '[/COLOR]'
             oGui.addDir(SITE_IDENTIFIER, '', txt, '', cOutputParameterHandler())
+    
+    if (aResult[0] == False):
+        sPattern = '<div class="video_tabs"><a href="([^<>"]+?)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
              
     if (aResult[0] == True):
         for aEntry in aResult[1]:
              
             sHosterUrl = str(aEntry)
             # Certains URL "dailymotion" sont écrits : //www.dailymotion.com
-            if sHosterUrl[:4] != 'http:':                
+            if sHosterUrl[:4] != 'http':
                 sHosterUrl = 'http:' + sHosterUrl     
                  
             oHoster = cHosterGui().checkHoster(sHosterUrl)
