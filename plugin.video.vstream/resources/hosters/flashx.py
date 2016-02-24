@@ -71,7 +71,8 @@ class cHoster(iHoster):
         HOST = 'www.flashx.pw'
 
         sId = self.__getIdFromUrl(self.__sUrl)
-        web_url = 'http://' + HOST + '/fxplay-%s.html' % sId
+        #web_url = 'http://' + HOST + '/fxplay-%s.html' % sId
+        web_url = 'http://' + HOST + '/fxplaynew-%s.html' % sId
         
         sId = re.sub(r'-.+', '', sId)
 
