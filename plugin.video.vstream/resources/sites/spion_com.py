@@ -171,8 +171,8 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl) 
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','')\
-                               .replace('<iframe src=\'http://creative.rev2pub.com','') 
- 
+                               .replace('<iframe src=\'http://creative.rev2pub.com','')\ 
+                               .replace('dai.ly','www.dailymotion/video')
     oParser = cParser()
     sPattern = '<p style=".+?"><iframe.+?src="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
