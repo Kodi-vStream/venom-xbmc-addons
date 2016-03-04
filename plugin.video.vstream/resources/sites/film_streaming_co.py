@@ -13,21 +13,20 @@ from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
 import re,urllib2,urllib
 
-#copie du site http://www.hd-stream.in 
+#copie du site http://www.film-streaming.co/
+#copie du site http://www.streaming-club.com
+
 SITE_IDENTIFIER = 'film_streaming_co'
 SITE_NAME = 'Film-streaming.co'
 SITE_DESC = 'Le seul site de streaming en HD 720p 100% Gratuit'
 
-URL_MAIN = 'http://www.film-streaming.co/'
-#URL_MAIN = 'http://www.streaming-club.com/'
+URL_MAIN = 'http://www.hd-stream.in/'
  
 MOVIE_NEWS = (URL_MAIN + 'index.php', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films.php', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'top.php', 'showMovies')
  
- 
 MOVIE_GENRES = (True, 'showGenre')
- 
  
 URL_SEARCH = (URL_MAIN + 'search.php?movie=', 'resultSearch')
 FUNCTION_SEARCH = 'resultSearch'
@@ -64,7 +63,7 @@ def showSearch():
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sSearchText = cUtil().urlEncode(sSearchText)
-        sUrl = URL_MAIN + 'search.php?movie='+sSearchText 
+        sUrl = URL_SEARCH[0] + sSearchText 
         resultSearch(sUrl)
         oGui.setEndOfDirectory()
         return 
@@ -128,17 +127,14 @@ def showGenre():
        
     oGui.setEndOfDirectory()
     
-def resultSearch(sSearch = ''):
+def resultSearch(sSearch):
     oGui = cGui()  
-    if sSearch:
-      sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    sUrl = sSearch
    
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    sPattern = '<td class="wrapper_pic_td"><img src="(.+?)" border="0" alt="(.+?)\sStreaming".+?></td>.+?<span class="std">(.+?)</span>'
+    sHtmlContent = oRequestHandler.request()
+    sPattern = '<img src="images\/Movie\.png" [^<>]+?><span style="vertical-align:middle;">(.+?)<\/span>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -151,25 +147,24 @@ def resultSearch(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            sThumbnail = URL_MAIN+str(aEntry[0])
+            sThumbnail = ''
+            sTitle = aEntry
+            sTitle = sTitle.replace('- Film Complet','')
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[1], 'films.png', sThumbnail, aEntry[2], oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
+            #oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
         
         cConfig().finishDialog(dialog)
-        
-    if not sSearch:       
-        oGui.setEndOfDirectory() 
-        
-        
-        
+      
+
 def showMovies(sSearch = ''):
     oGui = cGui()
     
     if sSearch:
-      sUrl = sSearch
+        sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -182,7 +177,8 @@ def showMovies(sSearch = ''):
     #fh.write(sHtmlContent)
     #fh.close()
 
-    sPattern = '<td.+?class="over_modul">.+?<a href="(.+?)"><img src="(.+?)" border="0" alt="(.+?)\sstreaming".+?</a>'     
+    #sPattern = '<td.+?class="over_modul">.+?<a href="(.+?)"><img src="(.+?)" border="0" alt="(.+?)\sstreaming".+?</a>'
+    sPattern = 'div class="view view-third"><img src="([^"<>]+?)".+?<a href="([^<>"]+?)" style="color:#FFFFFF"><div class="mask"><h2>(.+?)<\/h2><p>(.+?)<\/p>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -195,14 +191,15 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
            
-            sThumbnail = URL_MAIN+str(aEntry[1])
-            siteUrl = URL_MAIN+str(aEntry[0])
+            sThumbnail = URL_MAIN+str(aEntry[0])
+            siteUrl = URL_MAIN+str(aEntry[1])
+            sCom = str(aEntry[3])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)            
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[2], 'films.png', sThumbnail, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[2], 'films.png', sThumbnail, sCom, oOutputParameterHandler)
            
         cConfig().finishDialog(dialog)
  
@@ -215,8 +212,9 @@ def showMovies(sSearch = ''):
     oGui.setEndOfDirectory()
          
 def __checkForNextPage(sHtmlContent):
-    #sPattern = '<strong class="current">.+?</strong>.+?<a class="btn btn-default" href="(.+?)">'
-    sPattern = '<a class="btn btn-default" href="([^<>"]+?)">\[Suivant >>\]<\/a>'
+    
+    #sPattern = '<a class="btn btn-default" href="([^<>"]+?)">\[Suivant >>\]<\/a>'
+    sPattern = '<a +href="([^<>"]+)"> Page Suivante >><\/a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
