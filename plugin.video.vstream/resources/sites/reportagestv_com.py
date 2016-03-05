@@ -93,7 +93,9 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'')
-    sPattern = '<img src="([^<]+)" class="attachment.+?<h3 class="loop-title"><a href="([^<]+)" rel="bookmark">([^<]+)</a></h3>.+?<div class="mh-excerpt">(.+?)</a>'
+    #sPattern = '<img src="([^<]+)" class="attachment.+?<h3 class="loop-title"><a href="([^<]+)" rel="bookmark">([^<]+)</a></h3>.+?<div class="mh-excerpt">(.+?)</a>'
+    
+    sPattern = '<img src="([^<]+)" class="attachment.+?<h3 class="entry-title mh-loop-title">.+?<a href="([^<]+)" rel="bookmark">([^<]+)</a></h3>.+?<div class="mh-excerpt">(.+?)</a>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -109,7 +111,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
-            oGui.addMisc(SITE_IDENTIFIER, 'showLinks', aEntry[2], '', aEntry[0], aEntry[3], oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[2], '', aEntry[0], aEntry[3], oOutputParameterHandler)
         
         cConfig().finishDialog(dialog)
             
@@ -127,6 +129,16 @@ def __checkForNextPage(sHtmlContent):
     sPattern = "<span class='page-numbers current'>.+?</span> <a class='page-numbers' href='(.+?)'>.+?</a>"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        return aResult[1][0]
+
+    return False
+    
+def __checkForRealUrl(sHtmlContent):
+    sPattern = '<p style="text-align: center;">.+?<a href="(.+?)".+?<input type="button".+?</a>'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         return aResult[1][0]
 
@@ -170,11 +182,19 @@ def showHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();        
+    sHtmlContent = oRequestHandler.request(); 
+
+    sRealUrl = __checkForRealUrl(sHtmlContent)
+
+    if (sRealUrl != False):
+        oRequestHandler = cRequestHandler(sRealUrl)
+        sHtmlContent = oRequestHandler.request(); 
         
     sPattern = '<iframe.+?src="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+        
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
