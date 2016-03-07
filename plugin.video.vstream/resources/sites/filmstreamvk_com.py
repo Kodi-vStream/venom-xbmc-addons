@@ -35,7 +35,7 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -62,10 +62,13 @@ def load():
 
 def showMoviesSearch():
     oGui = cGui()
+    
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_MAIN + '?s='+sSearchText
+        sUrl = sUrl + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -182,18 +185,31 @@ def showLinks():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    sUrl = sUrl + '/100/'
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<a href="([^<]+)"><span>(.+?)</span></a>'
+    
     oParser = cParser()
+    ListeUrl = []
+    #recuperation du hoster de base
+    sPattern = '<div class="keremiya_part"> <span>(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        ListeUrl = [(sUrl,aResult[1][0])]
+    
+    #Recuperation des suivants
+    sPattern = '<a href="([^<]+)"><span>(.+?)</span></a>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    ListeUrl = ListeUrl + aResult[1]
+    
+    #si quedale on tente le tout pour le tout
+    if (aResult[0] == False):
+        showHosters()
 
     if (aResult[0] == True):
-        total = len(aResult[1])
+        total = len(ListeUrl)
         dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
+        for aEntry in ListeUrl:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
@@ -252,14 +268,56 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showHostersSerie', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
 
+def showHostersSerie():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','')
+
+    sPattern = 'onclick="lecteur_serie\([0-9]+,\'([^<>]+?)\'\);">'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    #si quedale on tente le tout pour le tout
+    if (aResult[0] == False):
+        showHosters()
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
+            sHosterUrl = str(aEntry)
+
+            #oHoster = __checkHoster(sHosterUrl)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+
+            if (oHoster != False):
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+
+        cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()
 
 def showHosters():
+
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
