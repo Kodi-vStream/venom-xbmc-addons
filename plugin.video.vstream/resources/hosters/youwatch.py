@@ -50,7 +50,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -74,7 +74,7 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
+        return ''
         
     def __getIdFromUrl(self, sUrl):
         sPattern = "http://youwatch.org/([^<]+)"
@@ -109,11 +109,6 @@ class cHoster(iHoster):
         return re.sub('[a-zA-Z0-9]+',Base36(lsParam[3]).param36decode,str(lsParam[0]))
 
     def __getMediaLinkForGuest(self): 
-        
-        #import urlresolver
-        #host = urlresolver.HostedMediaFile(self.__sUrl)
-        #if host: resolver = urlresolver.resolve(self.__sUrl)
-        #api_call = resolver
         
         #print self.__sUrl
                     
@@ -164,7 +159,7 @@ class cHoster(iHoster):
         sPattern ='\[{file:"(.+?)",label:"(.+?)"}\]'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            return True , aResult[1][0][0]
+            return True , aResult[1][0][0] + '|Referer=' + self.__sUrl
         
         cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
         
