@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 #Venom.
-#15/02/2016
+#11/03/2016
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -14,16 +14,16 @@ from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'full_stream_org'
-SITE_NAME = 'Full-Stream.org'
+SITE_NAME = 'Full-Stream'
 SITE_DESC = 'Film Serie et Anime en Streaming HD - Vk.Com - Netu.tv - ExaShare - YouWatch'
 
-URL_MAIN = 'http://full-stream.org/'
+URL_MAIN = 'http://full-stream.nu/'
 
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
-MOVIE_NOTES = ('http://full-stream.org/movie/rating/', 'showMovies')
-MOVIE_VIEWS = ('http://full-stream.org/movie/news_read/', 'showMovies')
-MOVIE_COMMENTS = ('http://full-stream.org/movie/comm_num/', 'showMovies')
+MOVIE_NOTES = (URL_MAIN + 'movie/rating/', 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'movie/news_read/', 'showMovies')
+MOVIE_COMMENTS = (URL_MAIN + 'movie/comm_num/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 
 SERIE_SERIES = (URL_MAIN + 'liste-des-series/', 'AlphaSearch')
@@ -269,7 +269,7 @@ def showMovies(sSearch = ''):
     
     if ("rating" in sUrl or "news_read" in sUrl or "comm_num" in sUrl):
     
-        oRequestHandler = cRequestHandler('http://full-stream.org/movie')
+        oRequestHandler = cRequestHandler(URL_MAIN + 'movie')
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)        
         
         oRequestHandler.addParameters('dledirection', 'desc')
