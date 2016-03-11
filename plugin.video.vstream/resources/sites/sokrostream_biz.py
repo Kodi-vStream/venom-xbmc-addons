@@ -447,7 +447,7 @@ def showLinks():
     oParser = cParser()
     
     #get post vars
-    sPattern = '<div class="num_link">Lien.+?png">([^<]+).+?<input name="([^<]+)" value="(.+?)"'
+    sPattern = '<div class="num_link">Lien.+?\/([vostfr]+)\.png">([^<]+).+?<input name="([^<]+)" value="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print 'post vars: ',aResult      
     
@@ -459,19 +459,19 @@ def showLinks():
             if dialog.iscanceled():
                 break
             
-            sHoster = cHosterGui().checkHoster(aEntry[0].lower())
+            sLang = '[' + aEntry[0].upper() + ']'
+            sHost = aEntry[1]
+            sHost = sHost.replace('Telecharger sur ','')
+                
+            sDisplayTitle = cUtil().DecoTitle(sLang + sMovieTitle)
+            sTitle = sDisplayTitle +  ' - [COLOR skyblue]' + sHost +'[/COLOR]'
             
-            if (sHoster != False):
-                
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-                sTitle = sDisplayTitle +  ' - [COLOR skyblue]' + sHoster.getDisplayName()+'[/COLOR]'
-                
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('sUrl', sUrl)
-                oOutputParameterHandler.addParameter('sPOST', str(aEntry[1]+'='+aEntry[2]))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)             
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('sUrl', sUrl)
+            oOutputParameterHandler.addParameter('sPOST', str(aEntry[2]+'='+aEntry[3]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)             
     
         cConfig().finishDialog(dialog)
 
@@ -507,6 +507,12 @@ def showHosters():
     oParser = cParser()
     sPattern = '<iframe width=.+? height=.+? src=(.+?) webkitallowfullscreen'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    #si rien recherche des lien uptobox
+    if (aResult[0] == False):
+        sPattern = '<a href="([^<>"]+?)" target="Télécharger">'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+    
     #print aResult
     	
     if (aResult[0] == True):
