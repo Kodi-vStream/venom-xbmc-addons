@@ -716,9 +716,9 @@ def showHosters():
     postdata = 'islem=framegetir&param=' + sParam + '&bunuid=' + sBunuid
     sHtmlContent = GetHtmlViaDns(sUrl,postdata)
     
-    fh = open('c:\\test.txt', "w")
-    fh.write(sHtmlContent)
-    fh.close()
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
     
     sPattern = '(?:(?:<script type="text\/javascript")|(?:<ifram[^<>]+?)) src=[\'"](https*:[^\'"]+?)[\'"]'
     oParser = cParser()
