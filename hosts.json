@@ -210,16 +210,16 @@
   {
     "name": "flashx.py",
     "path": "plugin.video.vstream/resources/hosters/flashx.py",
-    "sha": "07ec10278d0df1ecc6bcf94855b6a3a750c00051",
-    "size": 3790,
+    "sha": "0a820b2916d155517e2925026ab4d936f56b7462",
+    "size": 5136,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/flashx.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/flashx.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/07ec10278d0df1ecc6bcf94855b6a3a750c00051",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/0a820b2916d155517e2925026ab4d936f56b7462",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/flashx.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/flashx.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/07ec10278d0df1ecc6bcf94855b6a3a750c00051",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/0a820b2916d155517e2925026ab4d936f56b7462",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/flashx.py"
     }
   },
