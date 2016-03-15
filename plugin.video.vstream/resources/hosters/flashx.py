@@ -68,13 +68,15 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         
-        HOST = 'www.flashx.pw'
+        HOST = 'www.flashx.cc'
 
         sId = self.__getIdFromUrl(self.__sUrl)
         #web_url = 'http://' + HOST + '/fxplay-%s.html' % sId
         web_url = 'http://' + HOST + '/fxplaynew-%s.html' % sId
         
         sId = re.sub(r'-.+', '', sId)
+        
+        #print web_url
 
         headers = {
         'Host' : HOST,
@@ -82,16 +84,45 @@ class cHoster(iHoster):
         'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
         'Referer':'http://embed.flashx.tv/embed.php?c=' + sId,
+        #'Accept-Encoding':'gzip, deflate'
         }
         
         request = urllib2.Request(web_url,None,headers)
       
+        redirection_target = ''
+        
         try:
             reponse = urllib2.urlopen(request)
-        except URLError, e:
+        except urllib2.URLError, e:
+            print e.code
+            #print e.headers
             print e.read()
-            print e.reason
+            if (e.code == 301) or  (e.code == 302):
+                redirection_target = e.headers['Location']
+         
+        if (redirection_target):
+            #get new hoster
+            oParser = cParser()
+            sPattern = 'http:\/\/(.+?)\/'
+            aResult = oParser.parse(redirection_target, sPattern)
+            HOST = aResult[1][0]
+
+            headers2 = {
+            'Host' : HOST,
+            'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
+            'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+            'Referer':'http://embed.flashx.tv/embed.php?c=' + sId,
+            #'Accept-Encoding':'gzip, deflate'
+            }
             
+            request2 = urllib2.Request(redirection_target,None,headers2)
+            try:
+                reponse = urllib2.urlopen(request2)
+            except urllib2.URLError, e:
+                print e.code
+                print e.headers
+                
         sHtmlContent = reponse.read()
 
         #Lien code ??
@@ -99,9 +130,14 @@ class cHoster(iHoster):
         aResult = re.findall(sPattern,sHtmlContent)
         #aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult):
+            print "lien code"
             sUnpacked = cPacker().unpack(aResult[0])
             sHtmlContent = sUnpacked
-
+            
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()    
+  
         #decodage classique
         oParser = cParser()
         sPattern = '{file:"(.+?)",label:"(.+?)"}'
