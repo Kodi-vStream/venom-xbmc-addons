@@ -130,16 +130,16 @@
   {
     "name": "easyvid.py",
     "path": "plugin.video.vstream/resources/hosters/easyvid.py",
-    "sha": "09c7600dc40ad679238199dd4c8c382f56a11fac",
-    "size": 2611,
+    "sha": "29fdff034993db27ef6fd67b9da8f4c2f5d05c2e",
+    "size": 2663,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/easyvid.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/easyvid.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/09c7600dc40ad679238199dd4c8c382f56a11fac",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/29fdff034993db27ef6fd67b9da8f4c2f5d05c2e",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/easyvid.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/easyvid.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/09c7600dc40ad679238199dd4c8c382f56a11fac",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/29fdff034993db27ef6fd67b9da8f4c2f5d05c2e",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/easyvid.py"
     }
   },
