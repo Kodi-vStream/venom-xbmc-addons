@@ -3,7 +3,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
 from resources.hosters.hoster import iHoster
-import xbmcgui, re, time
+import xbmcgui, re
 
 class cHoster(iHoster):
 
@@ -41,7 +41,7 @@ class cHoster(iHoster):
     def __modifyUrl(self, sUrl):
         return '';
 
-    def setUrl(self, sUrl):       
+    def setUrl(self, sUrl):
         self.__sUrl = sUrl
 
     def checkUrl(self, sUrl):
@@ -58,15 +58,17 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        #Dean Edwards Packer
-        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
-        aResult = re.findall(sPattern,sHtmlContent)
-        #aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult):
-            sUnpacked = cPacker().unpack(aResult[0])
-            sHtmlContent = sUnpacked
-
         oParser = cParser()
+        
+        if (False):
+            #Dean Edwards Packer
+            sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+            aResult = re.findall(sPattern,sHtmlContent)
+            #aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult):
+                sUnpacked = cPacker().unpack(aResult[0])
+                sHtmlContent = sUnpacked
+        
         #sPattern = 'file: *"([^{}<>]+?\.mp4)"}'
         sPattern = '{file:"(.+?)",label:"(.+?)"}'
         aResult = oParser.parse(sHtmlContent, sPattern)
