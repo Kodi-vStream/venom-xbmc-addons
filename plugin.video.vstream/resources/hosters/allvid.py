@@ -58,7 +58,7 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        #print self.__sUrl
+        print self.__sUrl
         
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
@@ -70,7 +70,7 @@ class cHoster(iHoster):
         oParser = cParser()
         
         #lien indirect
-        sPattern = '<iframe class="embed-responsive-item" src="(http:\/\/allvid\.ch\/embed-.+?)"><\/iframe>'
+        sPattern = '<iframe[^<>]+src="(http:\/\/allvid\.ch\/embed-.+?)"[^<>]+><\/iframe>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             oRequest = cRequestHandler(aResult[1][0])
