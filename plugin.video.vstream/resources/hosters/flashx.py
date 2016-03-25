@@ -68,15 +68,15 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         
-        HOST = 'www.flashx.cc'
-
+        HOST = 'www.flashx.host'
+ 
         sId = self.__getIdFromUrl(self.__sUrl)
         #web_url = 'http://' + HOST + '/fxplay-%s.html' % sId
         web_url = 'http://' + HOST + '/fxplaynew-%s.html' % sId
         
         sId = re.sub(r'-.+', '', sId)
         
-        #print web_url
+        print web_url
 
         headers = {
         'Host' : HOST,
@@ -94,11 +94,12 @@ class cHoster(iHoster):
         try:
             reponse = urllib2.urlopen(request)
         except urllib2.URLError, e:
-            print e.code
+            #print e.code
             #print e.headers
-            print e.read()
+            #print e.read()
             if (e.code == 301) or  (e.code == 302):
                 redirection_target = e.headers['Location']
+                print redirection_target
          
         if (redirection_target):
             #get new hoster
