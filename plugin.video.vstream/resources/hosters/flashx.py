@@ -6,6 +6,8 @@ import re,urllib2
 import xbmcgui
 from resources.lib.packer import cPacker
 
+import xbmc
+
 #meme code que vodlocker
 
 class cHoster(iHoster):
@@ -53,6 +55,14 @@ class cHoster(iHoster):
             return aResult[1][0][1]
 
         return ''
+        
+    def GetHost(self,sUrl):
+        oParser = cParser()
+        sPattern = 'http:\/\/(.+?)\/'
+        aResult = oParser.parse(sUrl, sPattern)
+        if aResult[0]:
+            return aResult[1][0]
+        return ''
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
@@ -68,18 +78,21 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         
-        HOST = 'www.flashx.host'
+        #on recupere le host atuel
+        HOST = self.GetHost(self.__sUrl)
  
+        #on recupere l'ID
         sId = self.__getIdFromUrl(self.__sUrl)
+        
+        #on recompose l'url
         #web_url = 'http://' + HOST + '/fxplay-%s.html' % sId
         web_url = 'http://' + HOST + '/fxplaynew-%s.html' % sId
         
+        #on ne garde que les chiffres
         sId = re.sub(r'-.+', '', sId)
-        
-        print web_url
 
         headers = {
-        'Host' : HOST,
+        #'Host' : HOST,
         'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
         'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
@@ -87,51 +100,48 @@ class cHoster(iHoster):
         #'Accept-Encoding':'gzip, deflate'
         }
         
-        request = urllib2.Request(web_url,None,headers)
-      
-        redirection_target = ''
-        
-        try:
-            reponse = urllib2.urlopen(request)
-        except urllib2.URLError, e:
-            #print e.code
-            #print e.headers
-            #print e.read()
-            if (e.code == 301) or  (e.code == 302):
-                redirection_target = e.headers['Location']
-                print redirection_target
-         
-        if (redirection_target):
-            #get new hoster
-            oParser = cParser()
-            sPattern = 'http:\/\/(.+?)\/'
-            aResult = oParser.parse(redirection_target, sPattern)
-            HOST = aResult[1][0]
-
-            headers2 = {
-            'Host' : HOST,
-            'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
-            'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-            'Referer':'http://embed.flashx.tv/embed.php?c=' + sId,
-            #'Accept-Encoding':'gzip, deflate'
-            }
+        MaxRedirection = 3
+        while MaxRedirection > 0:
             
-            request2 = urllib2.Request(redirection_target,None,headers2)
+            #generation headers
+            headers2 = headers
+            headers2['Host'] = self.GetHost(web_url)
+            
+            xbmc.log(web_url)
+            request = urllib2.Request(web_url,None,headers)
+      
+            redirection_target = ''
+        
             try:
-                reponse = urllib2.urlopen(request2)
+                #ok ca a enfin marche
+                reponse = urllib2.urlopen(request)
+                sHtmlContent = reponse.read()
+                reponse.close()
+                break
             except urllib2.URLError, e:
-                print e.code
-                print e.headers
+                #print e.code
+                #print e.headers
+                #print e.read()
+                if (e.code == 301) or  (e.code == 302):
+                    redirection_target = e.headers['Location']
+         
+            #pas de redirection on annulle
+            if not (redirection_target):
+                return False, False
                 
-        sHtmlContent = reponse.read()
+            web_url = redirection_target
+            
+            MaxRedirection = MaxRedirection - 1
 
+            
+        oParser = cParser()   
+            
         #Lien code ??
         sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
         aResult = re.findall(sPattern,sHtmlContent)
         #aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult):
-            print "lien code"
+            xbmc.log( "lien code")
             sUnpacked = cPacker().unpack(aResult[0])
             sHtmlContent = sUnpacked
             
@@ -140,7 +150,6 @@ class cHoster(iHoster):
         #fh.close()    
   
         #decodage classique
-        oParser = cParser()
         sPattern = '{file:"(.+?)",label:"(.+?)"}'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
