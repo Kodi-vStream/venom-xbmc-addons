@@ -2,7 +2,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-import urllib
+import urllib,xbmcgui
 
 class cHoster(iHoster):
 
@@ -87,12 +87,27 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        sPattern =  "<source src='(.+?)'"
+        #sPattern =  "<source src='(.+?)'"
+        sPattern =  "<source src='([^<>']+?\/0)' type='[^'><]+?' data-res='([0-9]+p)'"
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         
         if (aResult[0] == True):
-            stream_url = urllib.unquote(aResult[1][0])
+            url=[]
+            qua=[]
+            
+            for aEntry in aResult[1]:
+                url.append(aEntry[0])
+                qua.append(aEntry[1])
+             
+            dialog2 = xbmcgui.Dialog()
+            ret = dialog2.select('Select Quality',qua)
+            if (ret > -1):
+                stream_url = url[ret]
+            else:
+                return False, False
+            
+            stream_url = urllib.unquote(stream_url)
             if not stream_url.startswith('http'):
                 stream_url = 'http:' + stream_url
             return True, stream_url

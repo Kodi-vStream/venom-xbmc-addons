@@ -13,6 +13,7 @@ from resources.lib.util import cUtil
 import re,xbmcgui,unicodedata
 from resources.lib.dl_deprotect import DecryptDlProtect
 
+#clone de dpstreaming.tv
 
 SITE_IDENTIFIER = 'streamingk_com'
 SITE_NAME = 'Streamingk.com'
@@ -131,7 +132,8 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+    #Meilleure resolution sthumbnail
+    sHtmlContent = sHtmlContent.replace('119x125','125x160')
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()

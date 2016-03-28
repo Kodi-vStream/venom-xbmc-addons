@@ -11,78 +11,12 @@
 - Daniel L.
 - Jean Charles A.
 =============================================================================
-- Merci au contributeur de la bêta. FreeFighter77/mino60/zombiB/chataigne73 
+- Merci au contributeur de la bêta. FreeFighter77/mino60/zombiB/chataigne73/Kodigoal
 =============================================================================
 =============================================================================
 - Merci à http://libretv.me/ pour le partage de leurs sources.
 =============================================================================
 =============================================================================
-- Version 0.3.9 - 22.02.2016
+- Version 0.3.9 - 28.03.2016
 =============================================================================
-Commits on Feb 21, 2016
-- @TmpName / Update spion_com.py  
-Commits on Feb 20, 2016
-- @TmpName / Update streaming_series_xyz.py 
-- @TmpName / Create streaming_series_xyz.py
-- @TmpName / Update videomega.py 
-- @TmpName / Update exashare.py  
-- @TmpName / Update spion_com.py
-- @TmpName / Update voirfilms_org.py 
-Commits on Feb 19, 2016
-- @TmpName / Update download.py 
-- @TmpName / Update videomega.py 
-- @TmpName / Update packer.py  
-- @TmpName / Update hoster.py  
-- @TmpName / Create nosvideo.py  
-- @TmpName / Update voirfilms_org.py  
-Commits on Feb 18, 2016
-- @TmpName / Update hoster.py 
-- @TmpName / Create thevid.py  
-Commits on Feb 16, 2016
-- @LordVenom  / update gui
-Commits on Feb 15, 2016
-- @TmpName / Update download.py
-- @TmpName / Update download.py
-- @TmpName / Update db.py 
-- @TmpName / Update full_stream_org.py
-- @TmpName / Update uptostream.py  
-Commits on Feb 14, 2016
-- @TmpName / Update aadecode.py
-- @TmpName / Update openload.py 
-Commits on Feb 11, 2016
-- @TmpName / Update tv_streaming_ch.py  
-- @TmpName / Update tv_streaming_ch.py
-Commits on Feb 8, 2016
-- @TmpName / Update about.py
-Commits on Feb 7, 2016
-- @LordVenom / bug info
-- @LordVenom / update auto
-Commits on Feb 6, 2016
-- @LordVenom / update auto
-Commits on Feb 3, 2016
-- @TmpName / filmstreamvk_com.py
-- @TmpName / Update netu.py  
-- @TmpName / Update regarder_films.py
-- @LordVenom / update auto
-Commits on Feb 1, 2016
-- @LordVenom / update auto
-Commits on Jan 30, 2016
-- @TmpName / Update film_streaming_co.py
-Commits on Jan 29, 2016
-- @TmpName / Update kepliz_com.py
-- @TmpName / Update hoster.py
-- @TmpName / Update util.py
-- @TmpName / Update easyvid.py
-- @TmpName / Update cinemay_com.py
-Commits on Jan 28, 2016
-- @TmpName / Update kepliz_com.py
-- @TmpName / Update cinemay_com.py
-- @Lord Venom / update enquete
-Commits on Jan 27, 2016
-- @Lord Venom / update hoster
-- @TmpName / Update flashx.py
-- @TmpName / Update film_illimit_fr.py
-Commits on Jan 25, 2016
-- @TmpName / Update full_stream_org.py
-- @TmpNameUpdate vkstreamingfilm_biz.py
-- @LordVenom / update moviedb
+https://github.com/LordVenom/venom-xbmc-addons-beta/commits/master

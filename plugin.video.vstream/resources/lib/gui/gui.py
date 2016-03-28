@@ -393,7 +393,8 @@ class cGui():
             # oContext.setTitle('Lire')
             # oContext.setOutputParameterHandler(oOutputParameterHandler)
             # oGuiElement.addContextItem(oContext)
-            self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','ReadDownload','Lire')            
+            self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','ReadDownload','Lire')
+            self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','ResetDownload','Reset')
         
     def createContexMenuinfo(self, oGuiElement, oOutputParameterHandler= ''):
         oContext = cContextElement()

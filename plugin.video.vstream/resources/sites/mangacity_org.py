@@ -233,20 +233,9 @@ def showMovies(sSearch = ''):
         sHtmlContent = oRequestHandler.request()
         #sHtmlContent = DecryptMangacity(sHtmlContent)    
     #print sUrl
-    
-    ##Partie a reactiver en cas de bug
-    #fichier = __file__
-    #m = re.search(r"(.+?)\\([^\\]+?)\.py", fichier )
-    #path =  m.group(1)
-    #try:
-    #    fh = open(path + '\\debug.txt', "w")
-    #    fh.write(sHtmlContent)
-    #    fh.close()
-    #except:
-    #    pass
-    #Elle va creer un fichier debug.txt dans le repertoire du pluggin a me refaire passer merci
 
-    sPattern = 'background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=\'(.+?)\' class=\'button'
+    #sPattern = 'background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=\'(.+?)\' class=\'button'
+    sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=\'(.+?)\' class=\'button'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -313,10 +302,6 @@ def __checkForNextPage(sHtmlContent,sUrl):
     if (aResult[0] == False):
         sPattern = "<.table><center><center><a href='(.+?)' class='button light' title='Voir la page 1'>"
         aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
     
     if (aResult[0] == True):
         return str(URL_MAIN) + str(aResult[1][0])
@@ -399,13 +384,16 @@ def showHosters():
     sHtmlContent = sHtmlContent.replace('<iframe src="http://www.promoliens.net','')
     sHtmlContent = sHtmlContent.replace("<iframe src='cache_vote.php",'')
     
-
-    #sPattern = '<iframe[^<>]+?src=[\'"]([^<>]+?)[\'"][^<]+?<\/iframe>|<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);<\/script>'
     sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]|<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);<\/script>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    print aResult
+    #print sUrl
+    #print aResult
+
+    #fh = open('c:\\manga.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
     
     if (aResult[0] == True):
         total = len(aResult[1])

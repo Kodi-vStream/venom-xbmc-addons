@@ -20,7 +20,7 @@ try:    import json
 except: import simplejson as json
 
 SITE_IDENTIFIER = 'themoviedb_org'
-SITE_NAME = 'TheMovieDB (beta)'
+SITE_NAME = '[COLOR orange]TheMovieDB[/COLOR]'
 SITE_DESC = 'Base de données video.'
 
 #doc de l'api http://docs.themoviedb.apiary.io/

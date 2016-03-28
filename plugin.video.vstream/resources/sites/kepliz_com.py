@@ -29,6 +29,7 @@ HOSTPATTERN = '"link":"([^"]+?)","label":"([^"]+?)"'
 #pour l'addon
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
+MOVIE_HD = (URL_MAIN, 'showMovies')
 
 DOC_DOCS = (URL_MAIN + 'index.php?option=com_content&view=category&id=26', 'showMovies')
 

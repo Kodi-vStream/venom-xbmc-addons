@@ -226,7 +226,7 @@ class cConfig():
         if num == "1":
             try:
                 from metahandler import metahandlers
-                grab = metahandlers.MetaData(preparezip=False)
+                grab = metahandlers.MetaData(preparezip=False, tmdb_api_key='92ab39516970ab9d86396866456ec9b6')
                 meta = grab.get_meta('movie',sFileName)
             except:         
                 xbmc.executebuiltin("Action(Info)")
@@ -234,7 +234,7 @@ class cConfig():
         elif num == "2":
             try:
                 from metahandler import metahandlers
-                grab = metahandlers.MetaData(preparezip=False)
+                grab = metahandlers.MetaData(preparezip=False, tmdb_api_key='92ab39516970ab9d86396866456ec9b6')
                 meta = grab.get_meta('tvshow',sFileName)
             except:
                 xbmc.executebuiltin("Action(Info)")

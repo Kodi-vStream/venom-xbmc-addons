@@ -320,14 +320,14 @@ class cGuiElement:
         if self.getMeta() == 1:
             try:
                 from metahandler import metahandlers
-                grab = metahandlers.MetaData(preparezip=False)
+                grab = metahandlers.MetaData(preparezip=False,  tmdb_api_key='92ab39516970ab9d86396866456ec9b6')
                 meta = grab.get_meta('movie',self.__sFileName)
             except:
                 return
         elif self.getMeta() == 2:
             try:
                 from metahandler import metahandlers
-                grab = metahandlers.MetaData(preparezip=False)
+                grab = metahandlers.MetaData(preparezip=False, tmdb_api_key='92ab39516970ab9d86396866456ec9b6')
             #sTitle=re.sub(r'[0-9]+?',r'',str(sTitle))
             #sTitle=sTitle.replace('-','').replace('Saison','').replace('saison','').replace('Season','').replace('Episode','').replace('episode','')
                 meta = grab.get_meta('tvshow',self.__sFileName)

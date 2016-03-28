@@ -10,12 +10,11 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.db import cDb
 from resources.lib.util import cUtil
 
-
 import urllib2,urllib
 import xbmcplugin, xbmc
 import xbmcgui
 import xbmcvfs
-import re
+import re,sys
 import threading
 
 try:
@@ -41,31 +40,22 @@ SITE_IDENTIFIER = 'cDownload'
 #GetProperty('arret') = '' =>  Jamais eu de telechargement
 
 
-#Create queue objects
-class _Singleton(type):
-    _instances = {}
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(_Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
-
-class Singleton(_Singleton('SingletonMeta', (object,), {})): pass
- #to use it
- #class cDownloadProgressBar(Singleton):
-
-
 class cDownloadProgressBar(threading.Thread):
     def __init__(self, *args, **kwargs):
-
+    
         self.__sTitle = ''
         self.__sUrl = ''
         self.__fPath = ''
+        self.__bFastMode = False
     
         if (kwargs):
             self.__sTitle = kwargs['title']
             self.__sUrl = kwargs['url']
             self.__fPath = kwargs['Dpath']
-        
+            if'FastMode' in kwargs:
+                print 'Telechargement en mode Turbo'
+                self.__bFastMode = True
+                
         threading.Thread.__init__(self)
         
         self.processIsCanceled = False
@@ -73,15 +63,14 @@ class cDownloadProgressBar(threading.Thread):
         self.file = None
         self.__oDialog = None
    
-        #queue = self.Memorise.get("SimpleDownloaderQueue")
-        #if self.Memorise.lock("SimpleDownloaderQueueLock"):
-        #self.Memorise.set("SimpleDownloaderQueue", repr(items))       
+        #self.currentThread = threading.Thread(target=self.run)
+        #self.currentThread.start()
         
     def createProcessDialog(self):
         self.__oDialog = xbmcgui.DialogProgressBG()
         self.__oDialog.create('Download')            
         #xbmc.sleep(1000)
-        return self.__oDialog        
+        return self.__oDialog                
         
     def _StartDownload(self): 
 
@@ -103,7 +92,6 @@ class cDownloadProgressBar(threading.Thread):
             iTotalSize = int(headers["Content-Length"])
         
         chunk = 16 * 1024
-        
         TotDown = 0
         
         #mise a jour pour info taille
@@ -113,7 +101,10 @@ class cDownloadProgressBar(threading.Thread):
         while not (self.processIsCanceled or diag.isFinished()):
             
             data = self.oUrlHandler.read(chunk)
-            if not data: break
+            if not data:
+                print 'DL err'
+                break
+                
             self.file.write(data)
             TotDown = TotDown + data.__len__()
             self.__updatedb(TotDown,iTotalSize)
@@ -125,7 +116,8 @@ class cDownloadProgressBar(threading.Thread):
                 self.processIsCanceled = True    
                                 
             #petite pause, ca ralentit le download mais evite de bouffer 100/100 ressources
-            xbmc.sleep(300)
+            if not (self.__bFastMode):
+                xbmc.sleep(300)     
         
         self.oUrlHandler.close()
         self.file.close()
@@ -201,10 +193,20 @@ class cDownloadProgressBar(threading.Thread):
     def run(self):
         
         try:
-            #1 seul header a l'air necessaire pour le moment
-            headers = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36' }
+            #Recuperation url simple
             url = self.__sUrl.split('|')[0]
+            
+            #Recuperation des headers du lien
+            try:
+                headers = dict([item.split('=') for item in (self.__sUrl.split('|')[1]).split('&')])
+            except:
+                headers = {}
+            #Rajout du user-agent si abscent
+            if not ('User-Agent' in headers):
+                headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
+            
             req = urllib2.Request(url, None, headers)
+
             self.oUrlHandler = urllib2.urlopen(req,timeout=30)
             #self.__instance = repr(self)
             self.file = xbmcvfs.File(self.__fPath, 'w')
@@ -274,12 +276,13 @@ class cDownload:
         if not Memorise.get('VstreamDownloaderLock'):
             return False
         return True
-   
-    def download(self, sDBUrl, sTitle,sDownloadPath):
+        
+ 
+    def download(self, sDBUrl, sTitle,sDownloadPath,FastMode = False):
         
         if self.isDownloading():
             cConfig().showInfo('Telechargements deja demarrés', 'Erreur')
-            return
+            return False
 
         self.__sTitle = sTitle
         
@@ -290,31 +293,38 @@ class cDownload:
         aLink = oHoster.getMediaLink()
 
         #aLink = (True,'https://github.com/LordVenom/venom-xbmc-addons-beta/blob/master/plugin.video.vstream/Thumbs.db?raw=true')
-
+        
         if (aLink[0] == True):
             sUrl = aLink[1]
         else:
+            print 'Lien non resolvable'
             cConfig().showInfo('Lien non resolvable', sTitle)
-            return
+            return False
             
         if not sUrl.startswith('http') or sUrl.endswith('.m3u8'):
             cConfig().showInfo('Format non supporte', sTitle)
-            print sUrl
-            return           
+            return False
         
         try:
             cConfig().log("Telechargement " + str(sUrl))
             
             #background download task
-            cDownloadProgressBar(title = self.__sTitle , url = sUrl , Dpath = sDownloadPath ).start()
+            if FastMode:
+                cDownloadProgressBar(title = self.__sTitle , url = sUrl , Dpath = sDownloadPath , FastMode = True ).start()
+            else:
+                cDownloadProgressBar(title = self.__sTitle , url = sUrl , Dpath = sDownloadPath ).start()
 
             cConfig().log("Telechargement ok")
+            cConfig().log(sDownloadPath)
+            
 
         except:
             #print_exc()
             cConfig().showInfo('Telechargement impossible', sTitle)
             cConfig().log("Telechargement impossible")
-            pass
+            return False
+            
+        return True
             
 
     def __createTitle(self, sUrl, sTitle):
@@ -387,7 +397,23 @@ class cDownload:
             meta = self.GetOnefile()
 
         self.StartDownload(meta) 
+    
+    
+    def ResetDownload(self):
+        oInputParameterHandler = cInputParameterHandler()
+        url = oInputParameterHandler.getValue('sUrl')
+        meta = {}
+        meta['url'] = url
         
+        try:
+            cDb().reset_download(meta)
+            cConfig().showInfo('vStream', 'Liste mise a jour')
+            cConfig().update()
+        except:
+            pass
+
+        return
+    
     def ReadDownload(self):
         oInputParameterHandler = cInputParameterHandler()
         path = oInputParameterHandler.getValue('sPath')
@@ -402,8 +428,12 @@ class cDownload:
         oPlayer = cPlayer()
         #oPlayer.clearPlayList()
         #oPlayer.addItemToPlaylist(oGuiElement)
-        oPlayer.run(oGuiElement, sTitle, path)
-        #oPlayer.startPlayer()
+        if not (sys.argv[ 1 ] == '-1'):
+            oPlayer.run(oGuiElement, sTitle, path)
+        else:
+            oPlayer.clearPlayList()
+            oPlayer.addItemToPlaylist(oGuiElement)
+            oPlayer.startPlayer()
         
     def DelFile(self):
         oInputParameterHandler = cInputParameterHandler()
@@ -458,7 +488,7 @@ class cDownload:
         path = data[3]
         thumbnail = data[4]
         status = data[8]
-                            
+
         self.download(url,title,path)
                 
     def StartDownloadList(self):
@@ -495,6 +525,11 @@ class cDownload:
         return
    
     def getDownloadList(self):
+        
+        #from resources.lib.downloadplay import download_and_play
+        ##download_and_play('https://a-2.1fichier.com/c2290838997?inline','test.avi','D:\Temporaire')
+        #download_and_play('https://1fichier.com/?56eplh6nth','test.avi','D:\Temporaire')
+        #return
     
         oGui = cGui()
         oInputParameterHandler = cInputParameterHandler()
@@ -596,10 +631,10 @@ class cDownload:
             
             if (sPath != ''):
                 cConfig().setSetting('download_folder',sPath)
-                
                 sDownloadPath = xbmc.translatePath(sPath +  '%s' % (sTitle, ))
+
                 if xbmcvfs.exists(sDownloadPath):
-                    cConfig().showInfo('Téléchargement en double', sTitle)
+                    cConfig().showInfo('Nom deja utilise', sTitle)
                     return self.AddDownload(meta)
                 else:
                     xbmcvfs.File(sDownloadPath, 'w')
@@ -608,18 +643,17 @@ class cDownload:
                     cConfig().log("Rajout en liste de telechargement " + str(sUrl))
                     meta['title'] = sTitle
                     meta['path'] = sDownloadPath
+                    
                     cDb().insert_download(meta)
                     
-                    #telechargement direct ou pas ?
-                    if not self.isDownloading(): 
-                        row = cDb().get_Download(meta)
-                        if row:
-                            self.StartDownloadOneFile(row[0])
+                    return True
+
                 except:
                     #print_exc()
                     cConfig().showInfo('Telechargement impossible', sTitle)
                     cConfig().log("Telechargement impossible")
-                    pass
+                    
+        return False
   
   
     def AddtoDownloadList(self):
@@ -642,6 +676,74 @@ class cDownload:
         meta['title'] = sFileName
         meta['icon'] = xbmc.getInfoLabel('ListItem.Art(thumb)')
     
-        self.AddDownload(meta)
+        if (self.AddDownload(meta)):
+            #telechargement direct ou pas ?
+            if not self.isDownloading(): 
+                row = cDb().get_Download(meta)
+                if row:
+                    self.StartDownloadOneFile(row[0])
             
-        return   
+        return
+
+    def AddtoDownloadListandview(self):
+
+        oInputParameterHandler = cInputParameterHandler()
+        
+        sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
+        sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
+        sFileName = oInputParameterHandler.getValue('sFileName')
+
+        cConfig().log("Telechargement " + sMediaUrl)
+
+        meta = {}
+        meta['url'] = sMediaUrl
+        meta['cat'] = oInputParameterHandler.getValue('sCat')
+        meta['title'] = sFileName
+        meta['icon'] = xbmc.getInfoLabel('ListItem.Art(thumb)')
+    
+        if (self.AddDownload(meta)):
+            #Si pas de telechargement en cours on lance le notre
+            if not self.isDownloading():
+                row = cDb().get_Download(meta)
+                if row:
+
+                    title = row[0][1]
+                    url = urllib.unquote_plus(row[0][2])
+                    path = row[0][3]
+                    thumbnail = row[0][4]
+                    status = row[0][8]
+                    if (self.download(url,title,path,True) == True): #Download in fastmode
+                        
+                        #ok on attend un peu, et on lance le stream
+                        tempo = 100
+                        dialog = cConfig().createDialog('Creation buffer')
+           
+                        while (tempo > 0):
+                            #if canceled do nothing
+                            if dialog.iscanceled():
+                                return
+                                
+                            cConfig().updateDialog(dialog, 100)
+                            tempo = tempo - 1
+                            xbmc.sleep(500)
+                            
+                        cConfig().finishDialog(dialog)
+
+                        oGuiElement = cGuiElement()
+                        oGuiElement.setSiteName(SITE_IDENTIFIER)
+                        oGuiElement.setMediaUrl(path)
+                        oGuiElement.setTitle(title)
+                        #oGuiElement.getInfoLabel()
+                        
+                        oPlayer = cPlayer()
+
+                        if not (sys.argv[ 1 ] == '-1'):
+                            oPlayer.run(oGuiElement, title, path)
+                        else:
+                            oPlayer.clearPlayList()
+                            oPlayer.addItemToPlaylist(oGuiElement)
+                            oPlayer.startPlayer()
+            
+                    else:
+                        cConfig().showInfo('Echec du telechargement', 'Erreur')
+        return

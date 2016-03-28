@@ -59,6 +59,7 @@
     <string id="30115">Television</string>
     <string id="30116">All the sources</string>
     <string id="30117">Television Replay</string>
+    <string id="30160">Movies HD</string>
     <!--version 3.0.2 -->
     <string id="30120">Movies</string>
     <string id="30121">Tvshow</string>
@@ -91,8 +92,14 @@
     <string id="30301">To configure in kodi if you want them to be imported</string>
     <string id="30302">Auto updatet</string>
     
-        <!--version 0.3.8 -->
+    <!--version 0.3.8 -->
     <string id="30303">Enable/Disable</string>
     <string id="30148">Plugins on/off (3/3)</string>
+    
+    <!--Premium -->
+    <string id="30400">Premium/Login</string>
+    <string id="30401">Username</string>
+    <string id="30402">Password</string>
+    <string id="30403">Activate</string>
         
 </strings>

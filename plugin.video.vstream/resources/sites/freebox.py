@@ -15,7 +15,7 @@ import re, urllib2, urllib, os, time, unicodedata
 import xbmc, xbmcgui
 
 SITE_IDENTIFIER = 'freebox'
-SITE_NAME = 'Télévision Direct / Stream'
+SITE_NAME = '[COLOR orange]Télévision Direct / Stream[/COLOR]'
 SITE_DESC = 'Regarder la télévision'
 
 URL_MAIN = 'http://mafreebox.freebox.fr/freeboxtv/playlist.m3u'

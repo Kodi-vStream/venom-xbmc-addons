@@ -69,8 +69,8 @@ class cHosterGui:
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
         
+        #Download menu
         if (oHoster.isDownloadable() == True):
-            #Beta context download menu
             oContext = cContextElement()
             oContext.setFile('cDownload')
             oContext.setSiteName('cDownload')
@@ -78,6 +78,16 @@ class cHosterGui:
             oContext.setTitle(cConfig().getlanguage(30202))
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)
+            
+        if (oHoster.isDownloadable() == True):
+            #Beta context download and view menu
+            oContext = cContextElement()
+            oContext.setFile('cDownload')
+            oContext.setSiteName('cDownload')
+            oContext.setFunction('AddtoDownloadListandview')
+            oContext.setTitle('DL et Visualiser')
+            oContext.setOutputParameterHandler(oOutputParameterHandler)
+            oGuiElement.addContextItem(oContext)           
         
         #context FAV menu
         oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
@@ -111,7 +121,7 @@ class cHosterGui:
         
     def checkHoster(self, sHosterUrl):
     
-            #securiter
+        #securitee
         if (not sHosterUrl):
             return False
 
@@ -132,7 +142,9 @@ class cHosterGui:
         if ('turbovid' in sHosterUrl):
             return cHosterHandler().getHoster('turbovid')
         if ('youtube' in sHosterUrl):
-            return cHosterHandler().getHoster('youtube')   
+            return cHosterHandler().getHoster('youtube')
+        if ('youtu.be' in sHosterUrl):
+            return cHosterHandler().getHoster('youtube')
         if ('rutube' in sHosterUrl):
             return cHosterHandler().getHoster('rutube')
         if ('exashare' in sHosterUrl):
@@ -159,6 +171,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('uptostream')
         if ('dailymotion' in sHosterUrl):
             return cHosterHandler().getHoster('dailymotion')
+        if ('dai.ly' in sHosterUrl):
+            return cHosterHandler().getHoster('dailymotion')           
         if ('azerfile' in sHosterUrl):
             return cHosterHandler().getHoster('azerfile')
         if ('vodlocker' in sHosterUrl):
@@ -239,6 +253,20 @@ class cHosterGui:
             return cHosterHandler().getHoster('thevid')
         if ('nosvideo' in sHosterUrl):
             return cHosterHandler().getHoster('nosvideo')
+        if ('vimple.ru' in sHosterUrl):
+            return cHosterHandler().getHoster('vimple')
+        if ('allmyvideos.net' in sHosterUrl):
+            return cHosterHandler().getHoster('allmyvideos')
+        if ('idowatch' in sHosterUrl):
+            return cHosterHandler().getHoster('idowatch')
+
+        #Lien telechargeable a convertir en stream
+        if ('1fichier' in sHosterUrl):
+            return cHosterHandler().getHoster('onefichier')
+        if ('uptobox' in sHosterUrl):
+            return cHosterHandler().getHoster('uptobox')
+        if ('uplea.com' in sHosterUrl):
+            return cHosterHandler().getHoster('uplea')            
 
         #Si aucun hebergeur connu on teste les liens directs
         if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8'):

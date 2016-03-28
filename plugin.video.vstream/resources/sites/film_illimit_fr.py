@@ -22,6 +22,7 @@ SITE_DESC = 'Films HD en streaming'
 URL_MAIN = 'http://official-film-illimite.net/'
 
 MOVIE_NEWS = (URL_MAIN + 'film-de-a-a-z/', 'showMovies')
+MOVIE_HD = (URL_MAIN + '720p1080p/', 'showMovies')
 MOVIE_MOVIE = (True, 'showAlpha')
 MOVIE_GENRES = (True, 'showGenre')
 
@@ -43,6 +44,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautés', 'news.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD', 'news.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -214,7 +219,9 @@ def showHosters():
     #sHtmlContent = oRequestHandler.request() 
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
     
-    sHtmlContent = sHtmlContent.replace('<iframe width="420" height="315" src="https://www.youtube.com/', '')
+    #Vire les bandes annonces
+    sHtmlContent = sHtmlContent.replace('src="https://www.youtube.com/', '')
+    
     sPattern = '<iframe.+?src="(http.+?)"'
     
     oParser = cParser()

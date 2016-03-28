@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 #
-# Djeman
-#
+# author : Djeman
+# Updated by Shani-08 (https://github.com/Shani-08/ShaniXBMCWork2)
 
 import re
 
@@ -45,15 +45,17 @@ class AADecoder(object):
         str_char = ""
         while enc_char != '':
             found = False
-            for i in range(len(self.b)):
-
-                if enc_char.find(self.b[i]) == 0:
-                    str_char += self.base_repr(i, radix)
-                    enc_char = enc_char[len(self.b[i]):]
-                    found = True
-                    break
+            #for i in range(len(self.b)):
+            #    if enc_char.find(self.b[i]) == 0:
+            #        str_char += self.base_repr(i, radix)
+            #        enc_char = enc_char[len(self.b[i]):]
+            #        found = True
+            #        break
 
             if not found:
+                for i in range(len(self.b)):             
+                    enc_char=enc_char.replace(self.b[i], str(i))
+                
                 startpos=0
                 findClose=True
                 balance=1
@@ -99,7 +101,7 @@ class AADecoder(object):
               
     def decode_digit(self, enc_int, radix):
 
-        enc_int=enc_int.replace('(ﾟΘﾟ)','1').replace('(ﾟｰﾟ)','4').replace('(c^_^o)','0').replace('(o^_^o)','3')  
+        #enc_int=enc_int.replace('(ﾟΘﾟ)','1').replace('(ﾟｰﾟ)','4').replace('(c^_^o)','0').replace('(o^_^o)','3')  
 
         rr = '(\(.+?\)\))\+'
         rerr=enc_int.split('))+')
@@ -163,6 +165,7 @@ class AADecoder(object):
         return self.base_repr(value, radix)
 
     def decode(self):
+
         self.encoded_str = re.sub('^\s+|\s+$', '', self.encoded_str)
 
         # get data

@@ -386,13 +386,17 @@ class cDb:
         file(fav_db, "w").write("%r" % watched)
         cConfig().showInfo('Marque-Page', sTitle)
         #fav_db.close()
-
+    
+    #***********************************
+    #   Download fonctions
+    #***********************************
+    
     def insert_download(self, meta):
 
         title = self.str_conv(meta['title'])
         url = urllib.quote_plus(meta['url'])        
         sIcon = self.str_conv(meta['icon'])
-        sPath = self.str_conv(meta['path'])
+        sPath = meta['path']
 
         ex = "INSERT INTO download (title, url, path, cat, icon, size, totalsize, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
         self.dbcur.execute(ex, (title,url, sPath,meta['cat'],sIcon, '', '', 0))
@@ -436,7 +440,21 @@ class cDb:
             cConfig().log('SQL ERROR EXECUTE') 
             return False, False
         self.dbcur.close()
+ 
+    def reset_download(self, meta):
 
+        url = urllib.quote_plus(meta['url'])
+        sql_select = "UPDATE download SET status = '0' WHERE status = '2' AND url = '%s'" % (url)
+        
+        try:    
+            self.dbcur.execute(sql_select)
+            self.db.commit()
+            return False, False
+        except Exception, e:
+            cConfig().log('SQL ERROR EXECUTE') 
+            return False, False
+        self.dbcur.close()     
+        
     def del_download(self, meta):
 
         if len(meta['url']) > 1:

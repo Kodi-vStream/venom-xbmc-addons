@@ -25,6 +25,7 @@ MOVIE_NOTES = (URL_MAIN + 'movie/rating/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'movie/news_read/', 'showMovies')
 MOVIE_COMMENTS = (URL_MAIN + 'movie/comm_num/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
+MOVIE_HD = (URL_MAIN + 'quality/Haute-qualité/', 'showMovies')
 
 SERIE_SERIES = (URL_MAIN + 'liste-des-series/', 'AlphaSearch')
 SERIE_NEWS = (URL_MAIN + 'seriestv/', 'showMovies')
@@ -49,6 +50,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'news.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films HD', 'news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
