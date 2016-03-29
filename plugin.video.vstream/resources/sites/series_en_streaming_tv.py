@@ -199,7 +199,8 @@ def showHosters():
 
     sHtmlContent = CloudflareBypass().GetHtml(sUrl)
 
-    sPattern = "<a target='playerFrame' href='([^<>]+?)'>(?:<img src='([^<>]+?)'><\/a>)*"
+    #sPattern = "<a target='playerFrame' href='([^<>]+?)'>(?:<img src='([^<>]+?)'><\/a>)*"
+    sPattern = "href='([^<>]+?)'.+?>(?:<img src='([^<>]+?)'><\/a>)*"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
