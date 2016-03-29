@@ -152,7 +152,7 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request();
         
-        sHtmlContent = sHtmlContent.replace('streaming','')
+        #sHtmlContent = sHtmlContent.replace('streaming','')
     
         sPattern = 'full-stream-view-hover"><img src="(.+?)" alt="(.+?)".+?<h2><a href="(.+?)">.+?</a></h2>.+?class="short-insider">(.+?)</div>'
     
@@ -178,7 +178,9 @@ def showMovies(sSearch = ''):
                 sTitle = str(aEntry[1])
                 sUrl = str(URL_MAIN+aEntry[2])
                 sThumb = str(URL_MAIN+aEntry[0])
-                sCom = aEntry[3]   
+                sCom = aEntry[3]
+            
+            sTitle = sTitle.replace('streaming','')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -218,7 +220,7 @@ def showHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/plugins/likebox.php','')
 
     oParser = cParser()
@@ -312,7 +314,7 @@ def epHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('streaming','')
+    #sHtmlContent = sHtmlContent.replace('streaming','')
 
     sPattern = '<a href="([^<]+)" title="([^<]+)" class="tilink sinactive"><i class="fa fa-youtube-play"></i>.+?</a>'
     
@@ -327,13 +329,13 @@ def epHosters():
             if dialog.iscanceled():
                 break
 
-            sTitle = aEntry[1]
+            sTitle = aEntry[1].replace('streaming','')
             sDisplayTitle = cUtil().DecoTitle(sTitle)
            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN+aEntry[0]))
             
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler) 
 
