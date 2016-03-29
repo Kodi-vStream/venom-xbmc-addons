@@ -29,6 +29,7 @@ URL_MAIN = 'http://www.zone-telechargement.com/'
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'films-gratuit.html?q=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'telecharger-series.html?q=', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?q=', 'showMovies')
 
 FUNCTION_SEARCH = 'showMovies'
 
@@ -127,22 +128,18 @@ def load():
 
 def showSearchMovies(): 
     oGui = cGui()
-    #print 'ZT:showSearch'
     sSearchText = oGui.showKeyBoard() 
     if (sSearchText != False):
         sUrl = URL_SEARCH_MOVIES[0] + sSearchText +'&tab=all&orderby_by=popular&orderby_order=desc&displaychangeto=thumb'
-        #print sUrl
         showMovies(sUrl) 
         oGui.setEndOfDirectory()
         return  
     
 def showSearchSeries(): 
     oGui = cGui()
-    #print 'ZT:showSearch'
     sSearchText = oGui.showKeyBoard() 
     if (sSearchText != False):
         sUrl = URL_SEARCH_SERIES[0] + sSearchText +'&tab=all&orderby_by=popular&orderby_order=desc&displaychangeto=thumb'
-        #print sUrl
         showMovies(sUrl) 
         oGui.setEndOfDirectory()
         return  
@@ -190,32 +187,18 @@ def showMovies(sSearch = ''):
     oGui = cGui() 
     if sSearch:
       sUrl = sSearch
-      #print "ZT:showmovies:venant de search"
-      #print sUrl
+
     else:
-        #print "ZT:showmovies"
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl') 
         
-    print sUrl
+    #print sUrl
     
     oRequestHandler = cRequestHandler(sUrl) 
     sHtmlContent = oRequestHandler.request()
     
-    # if 'series' in sUrl or 'documentaires' in sUrl or 'emissions' in sUrl or 'spectacles' in sUrl or 'animes-' in sUrl or 'genre' in sUrl:
-        # #sPattern = '<div style="height:[0-9]{3}px;"><a title="" href="([^<>"]+?)" ><img class=.+?src="([^<]+)" width="[0-9]{3}" height="[0-9]{3}" border="0" .+?<div class="cover_infos_global toh"><div class="cover_infos_title"><a title="" href=".+?" >(.+?)<'
-        # sPattern = '<div style="height:[0-9]{3}px;"><a title="" href="([^"]+).+?><img class=.+?src="([^<"]+)".+?<div class="cover_infos_global toh"><div class="cover_infos_title[^>]+><a title="" href=".+?>(.+?)<'
-    # else:
-        # #sPattern = '<div style="height:[0-9]{3}px;"><a title="" href="([^"]+?)"[^>]+?><img class="[^"]+?" data-newsid="[^"]+?" src="([^<]+)" width="[0-9]{3}" height="[0-9]{3}" border="0"[^"]+?"Note spectateurs" style="[^"]+?"><img src="[^"]+?" border="0">[^<]+?</div><div style=""><div class="cover_infos_global toh"><div class="cover_infos_title"><a title="" href="[^"]+?"[^>]+?>([^<]+?) <span class="detail_release size_11">'
-        # sPattern = '<div style="height:[0-9]{3}px;"><a title="" href="([^"]+?)"[^>]+?><img class="[^"]+?" data-newsid="[^"]+?" src="([^<"]+)".+?<div class="cover_infos_global toh"><div class="cover_infos_title"><a title="" href="[^"]+?[^>]+?>([^<]+?) <span class="detail_release size_11">'
-    
     sPattern = '<div style="height:[0-9]{3}px;"><a title="" href="([^"]+)[^>]+?><img class="[^"]+?" data-newsid="[^"]+?" src="([^<"]+)".+?<a title="" href[^>]+?>([^<]+?)<'
-    
-    #pour faire simple recherche ce bout de code dans le code source de l'url
-    #- ([^<]+) je veut cette partie de code mais y a une suite
-    #- .+? je ne veut pas cette partis et peux importe ceux qu'elle contient
-    #- (.+?) je veut cette partis et c'est la fin
-    
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -226,11 +209,11 @@ def showMovies(sSearch = ''):
         for aEntry in aResult[1]:
 
             sTitle = str(aEntry[2])
-            sUrl = aEntry[0]
+            sUrl2 = aEntry[0]
             sFanart =aEntry[1]
             sThumbnail=aEntry[1]
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(sUrl)) 
+            oOutputParameterHandler.addParameter('siteUrl', str(sUrl2)) 
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle)) 
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
@@ -244,9 +227,10 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-    #test pr chnagement mode
-    xbmc.executebuiltin('Container.SetViewMode(500)')
-    #bmcgui.ListItem.select(1)  
+    #tPassage en mode vignette sauf en cas de recherche globale
+    if 'index.php?q=' not in sUrl:
+        xbmc.executebuiltin('Container.SetViewMode(500)')
+    
      
     if not sSearch:
         oGui.setEndOfDirectory()
