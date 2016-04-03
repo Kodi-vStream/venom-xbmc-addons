@@ -12,6 +12,7 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import urllib2,urllib,re
 import unicodedata
+#import xbmc
 
 
 def DecryptMangacity(chain):
@@ -34,6 +35,63 @@ def DecryptMangacity(chain):
         d = d.replace('%3B', ';')
         
     return d
+
+def ICDecode(html):
+    import math
+    
+    sPattern = 'language=javascript>c="([^"]+)";eval\(unescape\("([^"]+)"\)\);x\("([^"]+)"\);'
+    aResult = re.findall(sPattern,html)
+    
+    if not aResult:
+        return ''
+    
+    c = aResult[0][0]
+    a = aResult[0][1]
+    x = aResult[0][2]
+    
+    #premier decodage
+    d = ''
+    i = 0
+    while i < len(c):
+        if (i%3==0):
+            d = d + "%"
+        else:
+            d = d + c[i];
+        i = i + 1
+    
+    c = urllib.unquote(d)
+    #Recuperation du tableau
+    aResult = re.findall('t=Array\(([0-9,]+)\);',c)
+    if not aResult:
+        return ''
+    t = aResult[0].split(',')
+    
+    l = len(x)
+    b = 1024
+    i = j = r = p = 0
+    s = 0
+    w = 0
+
+    j = math.ceil(float(l) / b)
+    while j > 0:
+        r = ''
+        i = min(l, b)
+        while i > 0:
+            w |= int(t[ord(x[p]) - 48]) << s
+            p = p + 1
+            if (s):
+                r = r + chr(165 ^ w & 255)
+                w >>= 8
+                s = s - 2
+            else:
+                s = 6
+
+            i = i - 1
+            l = l - 1
+
+        j = j - 1
+        
+    return str(r)
     
 #------------------------------------------------------------------------------------    
     
@@ -54,11 +112,11 @@ URL_SEARCH = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
-def load(): #function charger automatiquement par l'addon l'index de votre navigation.
-    oGui = cGui() #ouvre l'affichage
+def load():
+    oGui = cGui()
 
-    oOutputParameterHandler = cOutputParameterHandler() #apelle la function pour sortir un parametre
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') # sortis du parametres siteUrl oublier pas la Majuscule
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -134,7 +192,7 @@ def showGenre(): #affiche les genres
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN) + Link)
-            oGui.addMovie(SITE_IDENTIFIER, 'showMovies', sGenre, '', '', '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showMovies', sGenre, '', '', '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
 
@@ -194,7 +252,7 @@ def ShowAlpha(url = None):
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN) + Link)
-            oGui.addMovie(SITE_IDENTIFIER, 'showMovies', 'Lettre - [B][COLOR red]' + sLetter + '[/COLOR][/B]', '', '', '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showMovies', 'Lettre - [B][COLOR red]' + sLetter + '[/COLOR][/B]', '', '', '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
 
@@ -273,9 +331,9 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', sPicture)
 
             if '?manga=' in aEntry[2]:
-                oGui.addMovie(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, sPicture, sPicture, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, sPicture, sPicture, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sPicture, sPicture, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sPicture, sPicture, '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
         
@@ -287,13 +345,11 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
-            #Ajoute une entrer pour le lien Next | pas de addMisc pas de poster et de description inutile donc
 
     if not sSearch:
-        oGui.setEndOfDirectory() #ferme l'affichage
+        oGui.setEndOfDirectory()
     
 def __checkForNextPage(sHtmlContent,sUrl):
-    #test si un lien est deja dans l'url
     oParser = cParser()
     
     sPattern ='class=.button red light. title=.Voir la page.+?<a href=.(.+?)(?:\'|") class=.button light.'
@@ -329,10 +385,9 @@ def showEpisode():
     # sPattern = '<img src="(.+?).+? alt="&#101;&#112;&#105;&#115;&#111;&#100;&#101;&#115;".+?<a href="(.+?)" title="(.+?)"'
     # aResult = oParser.parse(aResult[1][0], sPattern)
     
-    sPattern = '<a href=\'.+?\' class=\'button lignt\' title=".+?"><headline11>(.+?)</headline11></a>|<a href="([^<]+)" title="([^<]+)" alt=".+?" style="text-decoration:none;">'
+    sPattern = '<a href=\'.+?\' class=\'button light\' [^>]+"><headline11>(.+?)<\/headline11><\/a>|<a href="([^<]+)" title="([^<]+)" alt=".+?" style="text-decoration:none;">'
     aResult = oParser.parse(sHtmlContent, sPattern)
    
-    
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -364,7 +419,7 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sThumb, '', oOutputParameterHandler)
         cConfig().finishDialog(dialog)
 
 
@@ -412,11 +467,23 @@ def showHosters():
             else:#adresse cryptee
                 sHosterUrl = DecryptMangacity(aEntry[2])
                 sHosterUrl = sHosterUrl.replace('\\','')
-                #print 'Decrypte :' + sHosterUrl
-                
+                #xbmc.log( 'Decrypte :' + sHosterUrl)
+
                 #Dans le cas ou l'adresse n'est pas directe
                 if not (sHosterUrl[:4] == 'http'):
                     final = ''
+                    
+                    #Passe par lien .asx ??
+                    sPattern = 'SRC="([0-9a-zA-Z_-]+\.asx)"'
+                    aResult = oParser.parse(sHosterUrl, sPattern)
+                    if aResult[0] == True:
+                        #on telecharge la page
+                        oRequestHandler = cRequestHandler(URL_MAIN + aResult[1][0] )
+                        oRequestHandler.addHeaderEntry('Referer',sUrl)
+                        sHtmlContent = oRequestHandler.request()
+                        #Et on remplace le code
+                        sHosterUrl = ICDecode(sHtmlContent)
+                    
                     
                     sPattern = '[src|SRC]=(?:\'|")(https*:.+?)(?:\'|")'
                     aResult = re.findall(sPattern,sHosterUrl)
@@ -456,7 +523,7 @@ def showHosters():
             #oHoster = __checkHoster(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             
-            #print sHosterUrl
+            #xbmc.log(sHosterUrl)
             
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
