@@ -50,7 +50,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        
+    
     oGui = cGui()
    
     oRequestHandler = cRequestHandler(sUrl)
@@ -58,10 +58,14 @@ def showMovies(sSearch = ''):
     
     sHtmlContent = sHtmlContent.replace('<div class="ifabh clickable" onclick="window.location','')
     
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
+    
     oParser = cParser()
     
     #first scan to optimise
-    sPattern = 'onclick="window.location.+?(?:<div class="clickable"|<div class="pagination">)'
+    sPattern = 'onclick="window\.location(.+?)(?:<div class="clickable|<br\/>)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -70,7 +74,7 @@ def showMovies(sSearch = ''):
 
     sPattern1 = '<img.+?src="\/(thumbnail\/.+?)" *\/>'
     #sPattern2 = 'class="forstar.+?>(.+?)<\/a>.+?<a title="(.+?)" href="/(.+?)" class="source" >.+?<img  src=".+?" title="(.+?)"'
-    sPattern2 = 'class="forstar.+?>(.+?)<\/a>.+?<a title="(.+?)" href="/(.+?)".+?>.+?<img  src=".+?" title="(.+?)"'
+    sPattern2 = 'class="forstar.+?>(.+?)<\/a>.+?<a title="(.+?)" href="/(.+?)".+?>.+?<img *src=".+?" title="(.+?)"'
     #sPattern = '(?:' + sPattern1 + ').+?'+ sPattern2
     
     for aEntry in aResult[1]:
@@ -203,4 +207,3 @@ def showHosters():
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
             
     oGui.setEndOfDirectory()
-    
