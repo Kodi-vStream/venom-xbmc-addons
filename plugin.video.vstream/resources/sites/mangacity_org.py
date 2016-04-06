@@ -12,7 +12,7 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import urllib2,urllib,re
 import unicodedata
-#import xbmc
+import xbmc
 
 
 def DecryptMangacity(chain):
@@ -38,7 +38,7 @@ def DecryptMangacity(chain):
 
 def ICDecode(html):
     import math
-    
+
     sPattern = 'language=javascript>c="([^"]+)";eval\(unescape\("([^"]+)"\)\);x\("([^"]+)"\);'
     aResult = re.findall(sPattern,html)
     
@@ -73,8 +73,9 @@ def ICDecode(html):
     w = 0
 
     j = math.ceil(float(l) / b)
+    r = ''
     while j > 0:
-        r = ''
+        
         i = min(l, b)
         while i > 0:
             w |= int(t[ord(x[p]) - 48]) << s
@@ -90,7 +91,7 @@ def ICDecode(html):
             l = l - 1
 
         j = j - 1
-        
+
     return str(r)
     
 #------------------------------------------------------------------------------------    
@@ -424,7 +425,36 @@ def showEpisode():
 
 
     oGui.setEndOfDirectory()
-      
+
+
+def ExtractLink(html):
+    final = ''
+    
+    oParser = cParser()
+    
+    sPattern = '(?i)src=(?:\'|")(.+?)(?:\'|")'
+    aResult = re.findall(sPattern,html)
+    if aResult:
+        final = aResult[0]
+        
+    sPattern = 'encodeURI\("(.+?)"\)'
+    aResult = re.findall(sPattern,html)
+    if aResult:
+        final = aResult[0]
+        
+    sPattern = "'file': '(.+?)',"
+    aResult = oParser.parse(html, sPattern)
+    if aResult[0] == True:
+        final = aResult[1][0]
+            
+    #nouveau codage
+    if ';&#' in final:
+        final = cUtil().unescape(final)
+        
+    if (not final.startswith( 'http' )) and (len(final) > 2) :
+        final = URL_MAIN + final
+        
+    return final
     
 def showHosters():
     oGui = cGui()
@@ -457,56 +487,72 @@ def showHosters():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-            
-            
-            if aEntry[0]:#adresse directe  
+
+            #si url cryptee mangacity algo
+            if not aEntry[0]:
+                sHosterUrl = DecryptMangacity(aEntry[2])
+                sHosterUrl = sHosterUrl.replace('\\','')
+                xbmc.log( 'Decrypte :' + sHosterUrl)
+            #adresse directe  
+            else:
                 if re.match(".+?&#[0-9]+;", aEntry[0]):#directe mais codé html
                     sHosterUrl = cUtil().unescape(aEntry[0])
                 else:#directe en clair
                     sHosterUrl = str(aEntry[0])
-            else:#adresse cryptee
-                sHosterUrl = DecryptMangacity(aEntry[2])
-                sHosterUrl = sHosterUrl.replace('\\','')
-                #xbmc.log( 'Decrypte :' + sHosterUrl)
+                #Ces liens sont tjours des liens
+                if (not sHosterUrl.startswith( 'http' )) and (len(sHosterUrl) > 2) :
+                    sHosterUrl = URL_MAIN + sHosterUrl
+                    
+            #Dans le cas ou l'adresse n'est pas directe,on cherche a l 'extraire
+            if not (sHosterUrl[:4] == 'http'):
+                sHosterUrl = ExtractLink(sHosterUrl)
 
-                #Dans le cas ou l'adresse n'est pas directe
-                if not (sHosterUrl[:4] == 'http'):
-                    final = ''
-                    
-                    #Passe par lien .asx ??
-                    sPattern = 'SRC="([0-9a-zA-Z_-]+\.asx)"'
-                    aResult = oParser.parse(sHosterUrl, sPattern)
-                    if aResult[0] == True:
-                        #on telecharge la page
-                        oRequestHandler = cRequestHandler(URL_MAIN + aResult[1][0] )
-                        oRequestHandler.addHeaderEntry('Referer',sUrl)
-                        sHtmlContent = oRequestHandler.request()
-                        #Et on remplace le code
-                        sHosterUrl = ICDecode(sHtmlContent)
-                    
-                    
-                    sPattern = '[src|SRC]=(?:\'|")(https*:.+?)(?:\'|")'
-                    aResult = re.findall(sPattern,sHosterUrl)
-                    if aResult:
-                        final = aResult[0]
-                        
-                    sPattern = 'encodeURI\("(.+?)"\)'
-                    aResult = re.findall(sPattern,sHosterUrl)
-                    if aResult:
-                        final = aResult[0]
-                        
-                    sPattern = "'file': '(.+?)',"
-                    aResult = oParser.parse(sHosterUrl, sPattern)
-                    if aResult[0] == True:
-                        final = aResult[1][0]
-                        if not final.startswith( 'http' ):
-                            final = URL_MAIN + final
-                            
-                    #nouveau codage
-                    if ';&#' in final:
-                        final = cUtil().unescape(final)
-                        
-                    sHosterUrl = final
+            #xbmc.log( 'brut :' + str(sHosterUrl)) 
+
+            #si openload code
+            if 'openload2.php' in sHosterUrl:
+                #on telecharge la page
+                
+                oRequestHandler = cRequestHandler(sHosterUrl )
+                oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0')
+                sHtmlContent = oRequestHandler.request()
+                #Et on remplace le code
+                sHtmlContent = ICDecode(sHtmlContent)
+                sHosterUrl = ExtractLink(sHtmlContent)
+                
+            #Passe par lien .asx ??
+            sPattern = '(http:\/\/www.mangacity.co\/[0-9a-zA-Z_-]+\.asx)'
+            aResult = oParser.parse(sHosterUrl, sPattern)
+            if aResult[0] :
+                xbmc.log( 'Nouveau codage :' + str(sHosterUrl)) 
+                #on telecharge la page
+                oRequestHandler = cRequestHandler(sHosterUrl )
+                oRequestHandler.addHeaderEntry('Referer',sUrl)
+                sHtmlContent = oRequestHandler.request()
+                
+                #Et on remplace le code
+                html = ICDecode(sHtmlContent)
+                sHosterUrl = ExtractLink(html)
+                
+            #Passe par lien .vxm ??
+            sPattern = 'http:\/\/www.mangacity.co\/([0-9a-zA-Z_-]+)\.vxm'
+            aResult = oParser.parse(sHosterUrl, sPattern)
+            if aResult[0] :
+                sHosterUrl = 'http://embed.nowvideo.sx/embed.php?v=' + aResult[1][0]
+            
+            #redirection tinyurl
+            if 'tinyurl' in sHosterUrl:
+                #Lien deja connu ?
+                if 'http://tinyurl.com/jxblgl5' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/jxblgl5/','http://streamin.to/')
+                #On va chercher le vrai lien
+                else:
+                    request = urllib2.Request(sHosterUrl)
+                    reponse = urllib2.urlopen(request,timeout = 5)
+                    UrlRedirect = reponse.geturl()
+                    if not(UrlRedirect == sHosterUrl):
+                        sHosterUrl = UrlRedirect
+                    reponse.close()
             
             #test pr liens raccourcis
             if 'http://goo.gl' in sHosterUrl:
@@ -518,13 +564,11 @@ def showHosters():
                 except:
                     pass
                     
-            #print 'Adresse :' + sHosterUrl
+            #xbmc.log( 'fini :' + str(sHosterUrl)) 
             
             #oHoster = __checkHoster(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            
-            #xbmc.log(sHosterUrl)
-            
+
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
                 oHoster.setDisplayName(sDisplayTitle)
