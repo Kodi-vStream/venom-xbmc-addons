@@ -24,8 +24,6 @@ Installer le zip du repository (pour avoir les mises à jour automatique) ou ins
 Tutoriel!
 ----------
 
-[Video d'installation : Merci à Cédric](http://tvwebdream.com/tutoriel-xbmc-vstream-filmsseriesdocumentaireschaines-tv-en-streaming-xbmc/)
-
 [Video de présentation : Merci à Atlas web](https://www.youtube.com/watch?v=43Nq2pxkAH4)
 
 [Video de d'installation : Merci à Patulacci marcel](https://www.youtube.com/watch?v=XeACz8uMoxQ)
