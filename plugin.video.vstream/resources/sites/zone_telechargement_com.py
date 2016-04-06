@@ -452,10 +452,6 @@ def showHosters():# recherche et affiche les hotes
     #Si ca ressemble aux lien premiums on vire les liens non premium
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent:
         sHtmlContent = CutNonPremiumlinks(sHtmlContent)
-        
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
     
     oParser = cParser()
     
@@ -513,17 +509,20 @@ def showSeriesHosters():# recherche et affiche les hotes
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
+    
     #Fonction pour recuperer uniquement les liens
     sHtmlContent = Cutlink(sHtmlContent)
-    #Si ca ressemble aux lien premiums on vire les liens non premium
+    #Pour les series on fait l'inverse des films on vire les liens premiums
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent:
-        sHtmlContent = CutNonPremiumlinks(sHtmlContent)
+        sHtmlContent = CutPremiumlinks(sHtmlContent)
    
     oParser = cParser()
     
     sPattern = '<a href="([^"]+?)" target="_blank">([^<]+)<\/a>|<span style="color:#.{6}">([^<]+)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
     
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -612,7 +611,6 @@ def Display_protected_link():
     oGui.setEndOfDirectory()
     
 def Cutlink(sHtmlContent):
-    print "ZT:Cutlink"
     oParser = cParser()
     sPattern = '<img src="http:\/\/www\.zone-telechargement\.com\/prez\/style\/v1\/liens\.png"(.+?)<div class="divinnews"'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -623,7 +621,6 @@ def Cutlink(sHtmlContent):
     return ''
     
 def CutNonPremiumlinks(sHtmlContent):
-    print "ZT:CutNonPremiumlinks"
     oParser = cParser()
     sPattern = '(?i)Liens* Premium(.+?)Publié le '
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -633,6 +630,17 @@ def CutNonPremiumlinks(sHtmlContent):
 
     #Si ca marche pas on renvois le code complet
     return sHtmlContent
+    
+def CutPremiumlinks(sHtmlContent):
+    oParser = cParser()
+    sPattern = '(?i)^(.+?)premium'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    #print aResult
+    if (aResult[0]):
+        return aResult[1][0]
+
+    #Si ca marche pas on renvois le code complet
+    return sHtmlContent    
 
 def ShowBA():
     oInputParameterHandler = cInputParameterHandler()
