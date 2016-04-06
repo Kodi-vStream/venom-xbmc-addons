@@ -86,7 +86,8 @@ class cHoster(iHoster):
         
         #on recompose l'url
         #web_url = 'http://' + HOST + '/fxplay-%s.html' % sId
-        web_url = 'http://' + HOST + '/fxplaynew-%s.html' % sId
+        #web_url = 'http://' + HOST + '/fxplaynew-%s.html' % sId
+        web_url = 'http://' + HOST + '/playthis-' + sId + '.html'
         
         #on ne garde que les chiffres
         sId = re.sub(r'-.+', '', sId)
@@ -133,7 +134,10 @@ class cHoster(iHoster):
             
             MaxRedirection = MaxRedirection - 1
 
-            
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()  
+  
         oParser = cParser()   
             
         #Lien code ??
@@ -143,11 +147,7 @@ class cHoster(iHoster):
         if (aResult):
             xbmc.log( "lien code")
             sUnpacked = cPacker().unpack(aResult[0])
-            sHtmlContent = sUnpacked
-            
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()    
+            sHtmlContent = sUnpacked  
   
         #decodage classique
         sPattern = '{file:"(.+?)",label:"(.+?)"}'
