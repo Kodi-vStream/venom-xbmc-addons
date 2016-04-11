@@ -91,6 +91,3 @@ rtmp://str81.creacast.com:80/weo/high
 
 #EXTINF:-1 tvg-id="EUR3.kazer.org" tvg-name="Eurosport" tvg-logo="eurosport.png" group-title="Group 3",Eurosport
 http://esioslive6-i.akamaihd.net/hls/live/202892/AL_P_ESP1_FR_FRA/playlist.m3u8
-
-#EXTINF:-1,FR-BEINSPORT1HD
-http://iptv333.mine.nu:8000/live/COBRA/COBRA/1145.ts
