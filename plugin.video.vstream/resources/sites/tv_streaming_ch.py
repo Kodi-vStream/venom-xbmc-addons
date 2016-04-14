@@ -21,28 +21,29 @@ SITE_IDENTIFIER = 'tv_streaming_ch'
 SITE_NAME = 'Tv-streaming.ch'
 SITE_DESC = 'Film/Serie/Documentaire/Anime en streaming'
 
-URL_MAIN = 'http://tv-streaming.ch'
+#URL_MAIN = 'http://tv-streaming.ch'
+URL_MAIN = 'http://www.la-tele-du-web.tv'
 
-MOVIE_MOVIE = ('http://tv-streaming.ch/category/films/', 'showMovies')
-MOVIE_NEWS = ('http://tv-streaming.ch/category/films/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + '/category/films/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + '/category/films/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 
-SERIE_SERIES = ('http://tv-streaming.ch/category/series-tv/', 'showMovies')
-SERIE_NEWS = ('http://tv-streaming.ch/category/series-tv/', 'showMovies')
-SERIE_VFS = ('http://tv-streaming.ch/category/series-tv/serie-vf/', 'showMovies')
-SERIE_VOSTFRS = ('http://tv-streaming.ch/category/series-tv/serie-vostfr/', 'showMovies')
+SERIE_SERIES = (URL_MAIN + '/category/series-tv/', 'showMovies')
+SERIE_NEWS = (URL_MAIN + '/category/series-tv/', 'showMovies')
+SERIE_VFS = (URL_MAIN + '/category/series-tv/serie-vf/', 'showMovies')
+SERIE_VOSTFRS = (URL_MAIN + '/category/series-tv/serie-vostfr/', 'showMovies')
 
 
-ANIM_VFS = ('http://tv-streaming.ch/category/manga-vf/', 'showMovies')
-ANIM_VOSTFRS = ('http://tv-streaming.ch/category/manga-vf/manga-vostfr/', 'showMovies')
+ANIM_VFS = (URL_MAIN + '/category/manga-vf/', 'showMovies')
+ANIM_VOSTFRS = (URL_MAIN + '/category/manga-vf/manga-vostfr/', 'showMovies')
 
-DOC_DOCS = ('http://tv-streaming.ch/category/television/documentaire/', 'showMovies')
+DOC_DOCS = (URL_MAIN + '/category/television/documentaire/', 'showMovies')
 
-SPORT_SPORTS = ('http://tv-streaming.ch/category/sport/', 'showMovies')
+SPORT_SPORTS = (URL_MAIN + '/category/sport/', 'showMovies')
 
 REPLAYTV_REPLAYTV = ('http://', 'ReplayTV')
 
-URL_SEARCH = ('http://tv-streaming.ch/?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -81,7 +82,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés VOSTFR', 'animesvostfr.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://tv-streaming.ch/category/dessin-anime/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/dessin-anime/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies' ,'Dessins animes', 'animesvf.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -112,19 +113,19 @@ def ReplayTV():
     oGui = cGui()
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://tv-streaming.ch/category/television/tv-realite/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/television/tv-realite/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'TV realite', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://tv-streaming.ch/category/television/spectacles/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/television/spectacles/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Spectacle', 'tv.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://tv-streaming.ch/category/television/emission-tv/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/television/emission-tv/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Emission TV', 'tv.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://tv-streaming.ch/category/television/documentaire/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/television/documentaire/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaire', 'tv.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()        
@@ -135,20 +136,20 @@ def showGenre():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['Action','http://tv-streaming.ch/category/films/action-streaming/'] )
-    liste.append( ['Animation','http://tv-streaming.ch/category/films/animation-streaming/'] )
-    liste.append( ['Arts Martiaux','http://tv-streaming.ch/category/films/arts-martiaux/'] )
-    liste.append( ['Aventure','http://tv-streaming.ch/category/films/aventure-streaming/'] )
-    liste.append( ['Comedie','http://tv-streaming.ch/category/films/comedie-streaming/'] )
-    liste.append( ['Drame','http://tv-streaming.ch/category/films/drame-streaming/'] )
-    liste.append( ['Espionnage','http://tv-streaming.ch/category/films/espionnage-streaming/'] )   
-    liste.append( ['Fantastique','http://tv-streaming.ch/category/films/fantastique/'] )
-    liste.append( ['Guerre','http://tv-streaming.ch/category/films/guerre-streaming/'] )
-    liste.append( ['Historique','http://tv-streaming.ch/category/films/historique-streaming/'] )
-    liste.append( ['Horreur','http://tv-streaming.ch/category/films/epouvante-horreur/'] )
-    liste.append( ['Musical','http://tv-streaming.ch/category/films/musical/'] )
-    liste.append( ['Policier','http://tv-streaming.ch/category/films/policier/'] )
-    liste.append( ['Thriller','http://tv-streaming.ch/category/films/thriller/'] )
+    liste.append( ['Action',URL_MAIN + '/category/films/action-streaming/'] )
+    liste.append( ['Animation',URL_MAIN + '/category/films/animation-streaming/'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + '/category/films/arts-martiaux/'] )
+    liste.append( ['Aventure',URL_MAIN + '/category/films/aventure-streaming/'] )
+    liste.append( ['Comedie',URL_MAIN + '/category/films/comedie-streaming/'] )
+    liste.append( ['Drame',URL_MAIN + '/category/films/drame-streaming/'] )
+    liste.append( ['Espionnage',URL_MAIN + '/category/films/espionnage-streaming/'] )   
+    liste.append( ['Fantastique',URL_MAIN + '/category/films/fantastique/'] )
+    liste.append( ['Guerre',URL_MAIN + '/category/films/guerre-streaming/'] )
+    liste.append( ['Historique',URL_MAIN + '/category/films/historique-streaming/'] )
+    liste.append( ['Horreur',URL_MAIN + '/category/films/epouvante-horreur/'] )
+    liste.append( ['Musical',URL_MAIN + '/category/films/musical/'] )
+    liste.append( ['Policier',URL_MAIN + '/category/films/policier/'] )
+    liste.append( ['Thriller',URL_MAIN + '/category/films/thriller/'] )
                 
     for sTitle,sUrl in liste:
         
