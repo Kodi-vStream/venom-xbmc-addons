@@ -66,42 +66,25 @@ class cHoster(iHoster):
         web_url = self.getUrl(sId)
 
         api_call =''
-        
-        
+
         oRequest = cRequestHandler(web_url)
         html = oRequest.request()
 
-        # ouais je sais mais c'est pour pas oublier
-        if (False):
-            post_url = web_url
-
-            # get post vars
-            form_values = {}
-            for i in re.finditer('<input.*?name="(.*?)".*?value="(.*?)">', html):
-                form_values[i.group(1)] = i.group(2)
-
-            xbmc.sleep(5000)
-
-            data = urllib.urlencode(form_values) 
-            request = urllib2.Request(post_url,data,None)
-
-            try: 
-                reponse = urllib2.urlopen(request)
-            except URLError, e:
-                print e.read()
-                print e.reason
-
-            html = reponse.read()
-
         # get stream url
-        pattern = 'streamer:\s*"([^"]+)",'
-        file = 'file:\s*"([^"]+)",'
-        r = re.search(pattern, html)
-        rr = re.search(file, html)
-        if r:
-            api_call = r.group(1).replace(':1935','') + ' swfUrl=http://streamin.to/player/player.swf live=false swfVfy=1 playpath=' + rr.group(1).replace('.flv','')
-        else:
-            api_call = rr.group(1)
+        try:
+            api_call = re.compile("file\s*:\s*[\'|\"](http.+?)[\'|\"]").findall(html)[0]
+            r = urllib2.Request(stream_url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'})
+            r = urllib2.urlopen(r, timeout=15).headers['Content-Length']
+        except:
+            pass
+
+        if api_call == '':
+            try:
+                streamer = re.search('streamer:\s*"([^"]+)",', html).group(1).replace(':1935', '')
+                playpath = re.search('file:\s*"([^"]+)",', html).group(1).replace('.flv', '')
+                api_call = streamer + ' playpath=' + playpath
+            except:
+                pass
             
         if (api_call):
             return True, api_call
