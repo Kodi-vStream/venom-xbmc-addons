@@ -190,25 +190,29 @@ class cHoster(iHoster):
         #UA = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us)'
         headers = {'User-Agent': UA ,
                    'Host' : 'hqq.tv',
-                   #'Referer': 'http://hqq.tv/',
+                   'Referer': 'http://hqq.tv/',
                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                    'Content-Type': 'text/html; charset=utf-8'}
         
         player_url = self.__sUrl
         
+        #import xbmc
+
         req = urllib2.Request(player_url, None, headers)
         try:
             response = urllib2.urlopen(req)
+            data = response.read()
+            response.close()
         except urllib2.URLError, e:
-            print e.read()
-            print e.reason
-            
-        data = response.read()
-        response.close()        
+            #xbmc.log( e.read())
+            #xbmc.log(e.reason)
+            data = e.read()
         
         b64enc = re.search('base64([^\"]+)', data, re.DOTALL)
         b64dec = b64enc and base64.decodestring(b64enc.group(1))
         enc = b64dec and re.search("\'([^']+)\'", b64dec).group(1)
+   
+        
         if enc:
             data = re.findall('<input name="([^"]+?)" [^>]+? value="([^"]+?)">', _decode(enc))
             post_data = {}
@@ -220,12 +224,12 @@ class cHoster(iHoster):
             req = urllib2.Request(player_url,postdata,headers)
             try:
                 response = urllib2.urlopen(req)
+                data = response.read()
+                response.close()
             except urllib2.URLError, e:
-                print e.read()
-                print e.reason
-                
-            data = response.read()
-            response.close()
+                #xbmc.log( e.read())
+                #xbmc.log(e.reason)
+                data = e.read()
             
             b64enc = re.search('base64([^\"]+)', data, re.DOTALL)
             b64dec = b64enc and base64.decodestring(b64enc.group(1))
@@ -247,9 +251,14 @@ class cHoster(iHoster):
                 
                 req = urllib2.Request("http://hqq.tv/sec/player/embed_player.php?" + urllib.urlencode(post_data),None,headers)
                 
-                response = urllib2.urlopen(req)
-                data = response.read()
-                response.close()
+                try:
+                    response = urllib2.urlopen(req)
+                    data = response.read()
+                    response.close()
+                except urllib2.URLError, e:
+                    #xbmc.log( e.read())
+                    #xbmc.log(e.reason)
+                    data = e.read()
 
                 data = urllib.unquote(data)
                 
