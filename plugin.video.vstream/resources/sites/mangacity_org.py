@@ -162,10 +162,6 @@ def showGenre(): #affiche les genres
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    # fh = open('c://test.txt', "w")
-    # fh.write(sHtmlContent)
-    # fh.close()
-    
     #sPattern = '<a href="((?:categorie\.php\?watch=)|(?:&#99;&#97;&#116;&#101;&#103;&#111;&#114;&#105;&#101;&#46;&#112;&#104;&#112;&#63;&#119;&#97;&#116;&#99;&#104;&#61;).+?)" onmouseover=.+?decoration:none;">(.+?)<\/a>'
     
     sPattern = '<a href="(.+?)" onmouseover="this.style.color.+?>(.+?)</a>'
@@ -524,15 +520,19 @@ def showHosters():
             sPattern = '(http:\/\/www.mangacity.co\/[0-9a-zA-Z_-]+\.asx)'
             aResult = oParser.parse(sHosterUrl, sPattern)
             if aResult[0] :
-                xbmc.log( 'Nouveau codage :' + str(sHosterUrl)) 
+                xbmc.log( 'Lien Aasx :' + str(sHosterUrl)) 
                 #on telecharge la page
                 oRequestHandler = cRequestHandler(sHosterUrl )
                 oRequestHandler.addHeaderEntry('Referer',sUrl)
                 sHtmlContent = oRequestHandler.request()
                 
-                #Et on remplace le code
-                html = ICDecode(sHtmlContent)
-                sHosterUrl = ExtractLink(html)
+                #Si c'est une redirection, on passe juste le vrai lien
+                if ('mangacity' not in oRequestHandler.getRealUrl().split('/')[2]):
+                    sHosterUrl = oRequestHandler.getRealUrl()
+                else:
+                    #Sinon on remplace le code
+                    html = ICDecode(sHtmlContent)
+                    sHosterUrl = ExtractLink(html)
                 
             #Passe par lien .vxm ??
             sPattern = 'http:\/\/www.mangacity.co\/([0-9a-zA-Z_-]+)\.vxm'
