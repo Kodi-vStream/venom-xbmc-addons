@@ -14,7 +14,7 @@ import urllib2,urllib,re
 import unicodedata,htmlentitydefs
  
 SITE_IDENTIFIER = 'kepliz_com'
-SITE_NAME = 'Kepliz.com'
+SITE_NAME = 'Kepliz'
 SITE_DESC = 'Film en streaming'
 URL_HOST = 'http://www.kepliz.com/'
  
@@ -24,6 +24,7 @@ SEARCHPATTERN = '<fieldset> *<div> *<b><a *href="\/[0-9a-zA-Z]+\/(.+?)" *>(.+?)<
 NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/(.+?)">(.+?)<\/a>'
 NEXTPAGEPATTERN = '<span class="pagenav">[0-9]+<.span><.li><li><a title=".+?" href="\/[0-9a-zA-Z]+\/(.+?)" class="pagenav">'
 FRAMEPATTERN = 'KEPLIZpluginsphp\("player1",{link:"(.+?)"}\);'
+FRAMEPATTERN2 = '<iframe src="\/([^<>"]+\/player\.php\?id=.+?)"'
 HOSTPATTERN = '"link":"([^"]+?)","label":"([^"]+?)"'
 
 #pour l'addon
@@ -199,27 +200,45 @@ def showHosters():
     sLink = None
     sPostUrl = None
     sHtmlContent = sHtmlContent.replace('\r','')
+    
+    #Format classique
     sPattern = FRAMEPATTERN
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0]):
         sLink = aResult[1][0]
-    sPattern = '\/plugins\/([0-9a-zA-Z]+)\/plugins\/KEPLIZpluginsphp.js"><\/script>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0]):
-        sPostUrl = sMainUrl + 'plugins/' + aResult[1][0] + '/plugins/KEPLIZpluginsphp.php'
- 
-    if ((sLink) and (sPostUrl)):
+        sPattern = '\/plugins\/([0-9a-zA-Z]+)\/plugins\/KEPLIZpluginsphp.js"><\/script>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0]):
+            sPostUrl = sMainUrl + 'plugins/' + aResult[1][0] + '/plugins/KEPLIZpluginsphp.php'
+            
+        if ((sLink) and (sPostUrl)):
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oOutputParameterHandler.addParameter('sLink', sLink)
-        oOutputParameterHandler.addParameter('sPostUrl', sPostUrl)
-        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-        
-        sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-        
-        oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle, sThumb, sThumb, sComm, oOutputParameterHandler)
-     
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sLink', sLink)
+            oOutputParameterHandler.addParameter('sPostUrl', sPostUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            
+            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+            
+            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle, sThumb, sThumb, sComm, oOutputParameterHandler)
+            
+    #Fomat rare
+    if not sLink:
+        sPattern = FRAMEPATTERN2
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0]):
+            sLink = URL_HOST + aResult[1][0]
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sLink', sLink)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            
+            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+            
+            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink2', sDisplayTitle, sThumb, sThumb, sComm, oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
    
 def showHostersLink():
@@ -239,7 +258,7 @@ def showHostersLink():
                'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
                'Accept-Encoding' : 'gzip, deflate',
                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
-    
+               
     post_data = {'link' : sLink}
     
     req = urllib2.Request(sPostUrl , urllib.urlencode(post_data), headers)
@@ -267,6 +286,71 @@ def showHostersLink():
             sTitle = sMovieTitle.replace(' [HD]','')
             sTitle = '[' + Squality + '] ' + sTitle
            
+            sHosterUrl = str(sLink)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+           
+            if (oHoster != False):
+                sDisplayTitle = cUtil().DecoTitle(sTitle)
+                
+                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setFileName(sTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+            cConfig().finishDialog(dialog)
+       
+    oGui.setEndOfDirectory()
+
+def showHostersLink2():
+    oGui = cGui()
+   
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sLink = oInputParameterHandler.getValue('sLink')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    
+    UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'
+    headers = {'User-Agent': UA ,
+               'Host' : 'kepliz.com',
+               'Referer': sLink,
+               'Accept': 'video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5',
+               'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+               'Range' : 'bytes=0-'
+               #'Accept-Encoding' : 'gzip, deflate',
+               #'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+               } 
+               
+    req = urllib2.Request(sLink)
+    response = urllib2.urlopen(req)
+    data = response.read()
+    response.close()
+    
+    oParser = cParser()
+    sPattern = '"file":"(.+?)","type":"mp4","label":"(.+?)"'
+    aResult = oParser.parse(data, sPattern)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+       
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
+
+            sLink = aEntry[0].replace('\/','/')
+            Squality = aEntry[1]
+            sTitle = sMovieTitle.replace(' [HD]','')
+            sTitle = '[' + Squality + '] ' + sTitle
+            
+            #decodage des liens          
+            req = urllib2.Request(sLink,None,headers)
+            try:
+                response = urllib2.urlopen(req)
+                #data = response.read()
+                response.close()
+            except urllib2.URLError, e:
+                sLink = e.geturl()
+            
             sHosterUrl = str(sLink)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
            
