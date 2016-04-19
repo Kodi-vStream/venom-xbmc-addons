@@ -13,22 +13,22 @@ from resources.lib.config import cConfig
 import re, urllib
 
 SITE_IDENTIFIER = 'streaming_series_org'
-SITE_NAME = 'StreamingSeries.org'
+SITE_NAME = 'StreamingSeries'
 SITE_DESC = 'Film en streaming, regarder film en direct, streaming vf regarder film gratuitement sur Frenchstream.org'
 
-URL_MAIN = 'http://streaming-series.org/'
+URL_MAIN = 'http://streaming-series.tv/'
 
 #SERIE_SERIES = 'http://url' # serie nouveautés #30106
 #SERIE_VFS = 'http://url' # serie VF #30107
 #SERIE_VOSTFRS = 'http://url' # serie Vostfr #30108
 
 
-SERIE_SERIES = ('http://streaming-series.org/', 'showMovies')
-SERIE_VIEWS = ('http://streaming-series.org/lesplusvues/', 'showMovies')
-SERIE_COMMENTS = ('http://streaming-series.org/lespluscommentees/', 'showMovies')
-SERIE_NOTES = ('http://streaming-series.org/lesmieuxnotees/', 'showMovies')
+SERIE_SERIES = (URL_MAIN, 'showMovies')
+SERIE_VIEWS = (URL_MAIN + 'lesplusvues/', 'showMovies')
+SERIE_COMMENTS = (URL_MAIN + 'lespluscommentees/', 'showMovies')
+SERIE_NOTES = (URL_MAIN + 'lesmieuxnotees/', 'showMovies')
 
-URL_SEARCH = ('http://streaming-series.org/?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -63,7 +63,7 @@ def showSerieSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = 'http://streaming-series.org/?s='+sSearchText  
+            sUrl = URL_MAIN + '?s='+sSearchText  
             showMovies(sUrl)
             oGui.setEndOfDirectory()
             return
@@ -139,9 +139,11 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
             if 'series' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', aEntry[0], '', oOutputParameterHandler)
+                sDisplayTitle = cUtil().DecoTitle(sTitle)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], '', oOutputParameterHandler)
+                sDisplayTitle = cUtil().DecoTitle(sTitle)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -181,7 +183,8 @@ def showSeries():
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -230,39 +233,8 @@ def showHosters():
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-
-        cConfig().finishDialog(dialog)
-
-    oGui.setEndOfDirectory()
-
-
-def serieHosters():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
-    sPattern = 'href="([^<]+)" target="_blank">.+?</a>'
-    oParser = cParser()
-    aResult = oParser.parse(sUrl, sPattern)
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-
-            sHosterUrl = str(aEntry)
-            #oHoster = __checkHoster(sHosterUrl)
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
