@@ -105,7 +105,7 @@ def showMovies(sSearch=''):
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#46;', '')
     
-    sPattern = '<div class="post-thumbnail"><a href="([^<]+)" title="(.+?)"><img width=".+?" height=".+?" src="(.+?)".+?>.+?<div class="entry excerpt"><p>(.+?)</p></div>'
+    sPattern = '<div class="post-thumbnail"><a href="([^<]+)" title="(.+?)"><img width=".+?" height=".+?" src="(.+?)".+?>.+?<div class="entry excerpt entry-summary"><p>(.+?)</p></div>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
