@@ -14,6 +14,8 @@ from resources.lib.config import cConfig
 import re, urllib, urllib2
 from urllib2 import URLError
 
+import xbmc
+
 SITE_IDENTIFIER = 'sokrostream_biz'
 SITE_NAME = 'Sokrostream'
 SITE_DESC = 'Film en streaming, regarder film en direct, streaming vf regarder film gratuitement sur SokroStream.com'
@@ -442,7 +444,6 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','').replace('&nbsp;','').replace('nbsp;','')
 
     oParser = cParser()
     
@@ -501,24 +502,26 @@ def showHosters():
         print e.read()
         print e.reason
         
-
-    #sHtmlContent = sHtmlContent.replace(' webkitallowfullscreen="','').replace('src="http://www.pubdirecte.com/','').replace('src="http://sokrostream.biz/','').replace('src="http://sokrostream.com/','').replace('<iframe src="//www.facebook.com/','')
-
+    #fh = open('c:\\test1.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
+    
     oParser = cParser()
-    sPattern = '<iframe width=.+? height=.+? src=(.+?) webkitallowfullscreen'
+    
+    #Recherche du bon fichier
+    sPattern = '<iframe.+?src=([^ ]+) |<script[^<>]+src="([^<>" ]+hash[^"]+)"><\/script>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    #si rien recherche des lien uptobox
-    if (aResult[0] == False):
-        sPattern = '<a href="([^<>"]+?)" target="Télécharger">'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     #print aResult
     	
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             
-            sHosterUrl = str(aEntry)
+            if aEntry[0]:
+                sHosterUrl = str(aEntry[0])
+            else:
+                sHosterUrl = str(aEntry[1])               
+                
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
@@ -541,10 +544,6 @@ def showEpisode(): #cherche les episode de series
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','')
-          
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close() 
  
     sPattern = '<div class="moviefilm2"><div class="movief2"><a href="([^<]+)" class="listefile">(.+?)<\/a><\/div><\/div>'
     
