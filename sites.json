@@ -434,16 +434,16 @@
   {
     "name": "sokrostream_biz.py",
     "path": "plugin.video.vstream/resources/sites/sokrostream_biz.py",
-    "sha": "d1abb37c193b6d5ba9b2ce6f0e2e1d92f8ae9cfd",
-    "size": 26538,
+    "sha": "94faad42c3ddedd448ad3c5403a8b90dc2f06b1e",
+    "size": 26088,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/sokrostream_biz.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/sokrostream_biz.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/d1abb37c193b6d5ba9b2ce6f0e2e1d92f8ae9cfd",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/94faad42c3ddedd448ad3c5403a8b90dc2f06b1e",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/sokrostream_biz.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/sokrostream_biz.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/d1abb37c193b6d5ba9b2ce6f0e2e1d92f8ae9cfd",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/94faad42c3ddedd448ad3c5403a8b90dc2f06b1e",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/sokrostream_biz.py"
     }
   },
