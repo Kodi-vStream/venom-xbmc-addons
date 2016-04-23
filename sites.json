@@ -258,16 +258,16 @@
   {
     "name": "fullmoviz_org.py",
     "path": "plugin.video.vstream/resources/sites/fullmoviz_org.py",
-    "sha": "48d932bbe8855a9d26c5bb82962c5333649e8a6d",
-    "size": 7728,
+    "sha": "de6500be2bef6e0344652f3949a38937ea4ce624",
+    "size": 7742,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/fullmoviz_org.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/fullmoviz_org.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/48d932bbe8855a9d26c5bb82962c5333649e8a6d",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/de6500be2bef6e0344652f3949a38937ea4ce624",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/fullmoviz_org.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/fullmoviz_org.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/48d932bbe8855a9d26c5bb82962c5333649e8a6d",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/de6500be2bef6e0344652f3949a38937ea4ce624",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/fullmoviz_org.py"
     }
   },
