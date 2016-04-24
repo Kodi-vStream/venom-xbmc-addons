@@ -14,7 +14,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
-import urllib, unicodedata, re, time
+import urllib, re
 import xbmcgui
 import xbmc
 
@@ -38,6 +38,8 @@ MOVIE_NEWS = (URL_MAIN + 'films-gratuit.html', 'showMovies') # films nouveautés
 MOVIE_EXCLUS = (URL_MAIN + 'exclus.html', 'showMovies') # exclus (films populaires)
 MOVIE_VIEWS = (URL_MAIN + 'films-gratuit.html?tab=all&orderby_by=popular&orderby_order=desc', 'showMovies') # films + vus
 MOVIE_NOTES = (URL_MAIN + 'films-gratuit.html?tab=all&orderby_by=rating&orderby_order=desc', 'showMovies') # films mieux notés
+MOVIE_3D = (URL_MAIN + 'films-bluray-3d.html?periodlist[]=2010&periodlist[]=2000&periodlist[]=1990&hf=1', 'showMovies') # films en 3D
+
 MOVIE_GENRES = (True, 'showGenre')
 #MOVIE_VF = (URL_MAIN + 'langues/french', 'showMovies') # films VF
 MOVIE_VOSTFR = (URL_MAIN + 'langues/vostfr', 'showMovies') # films VOSTFR
@@ -77,7 +79,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', BLURAY_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, BLURAY_NEWS[1], 'Derniers Blu-rays ajoutes', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, BLURAY_NEWS[1], 'Derniers Blu-rays ajoutes', 'news.png', oOutputParameterHandler)  
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
@@ -86,6 +88,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les mieux notes', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_3D[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_3D[1], 'Films 3D', 'news.png', oOutputParameterHandler)  
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANIME[0])
