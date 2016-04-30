@@ -142,12 +142,15 @@ def showMoviesNews():
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode("unicode_escape")
             sTitle = sTitle.encode("latin-1")
             
+            sCom = aEntry[3]
+            sCom = sCom.decode("unicode_escape").encode("latin-1")
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, aEntry[0], aEntry[0], sCom, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
             
@@ -179,14 +182,19 @@ def showMovies(sSearch=''):
                 break
 
             sTitle = aEntry[2].replace('streaming','').replace('Streaming','')
+            
+            sCom = aEntry[3]
+            #sCom = sCom.decode("utf-8", "ignore")
+            sCom = sCom.decode("unicode_escape").encode("latin-1")
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
             if '/serie/' in sUrl or '/serie/' in aEntry[0]:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle,'', aEntry[0], aEntry[3], oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, aEntry[0], aEntry[0], sCom , oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, aEntry[0], aEntry[0], sCom, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
             

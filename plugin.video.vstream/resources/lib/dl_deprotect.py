@@ -7,6 +7,8 @@ import urllib2,urllib,re
 
 import xbmc,xbmcgui
 
+import xbmc
+
 import xbmcaddon,os
 PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
 
@@ -123,7 +125,7 @@ def get_response(img,cookie):
 def DecryptDlProtect(url):
 
     if not (url): return ''
-    
+
     headers = {
     'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0',
     'Referer' : url ,
@@ -182,14 +184,61 @@ def DecryptDlProtect(url):
     #print cookies
 
     reponse.close()
-      
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
     
-    #test si captcha demande
-    if '<td align=center> Please enter the characters from the picture to see the links </td>' in sHtmlContent:
-        print 'captcha'
+    #Quel captcha est utilise ?
+    #Google re captcha ?
+    r = re.search('data-sitekey="([^"]+)', sHtmlContent)
+    if r:
+        import cookielib
+        import recaptcha
+        cookieJar = cookielib.LWPCookieJar()
+        recaptcha.performCaptcha(url,cookieJar)
+        return ''
+    #captcha classique
+    elif '<td align=center> Please enter the characters from the picture to see the links </td>' in sHtmlContent:
+        return ClassicCaptcha(sHtmlContent,cookies,url,headers)
+    
+    #Pas de cpatcha, juste le boutton.
+    if 'Please click on continue to see' in sHtmlContent:
+        
+        key = re.findall('input name="key" value="(.+?)"',sHtmlContent)
+    
+        #Ce parametre ne sert pas encore pour le moment
+        mstime = int(round(time() * 1000))
+        b64time = "_" + base64.urlsafe_b64encode(str(mstime)).replace("=", "%3D")
+        
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+              
+        #tempo necessaire
+        cGui().showInfo("Patientez", 'Decodage en cours' , 2)
+        xbmc.sleep(1000)
+        
+        query_args = ( ('submitform' , '' ) , ( 'key' , key[0] ) , ('i' , b64time ), ( 'submitform' , 'Continue')  )
+        data = urllib.urlencode(query_args)
+        
+        #rajout des cookies
+        headers.update({'Cookie': cookies})
+
+        request = urllib2.Request(url,data,headers)
+
+        try: 
+            reponse = urllib2.urlopen(request)
+        except urllib2.URLError, e:
+            print e.read()
+            print e.reason
+            
+        sHtmlContent = reponse.read()
+        
+        reponse.close()
+    
+        return sHtmlContent
+        
+    return ''
+ 
+def ClassicCaptcha(sHtmlContent,cookies,url,headers):
+
         s = re.findall('<img id="captcha" alt="Security code" src="([^<>"]+?)"',sHtmlContent)
         
         if 'http://www.dl-protect.com' in s[0]:
@@ -229,43 +278,5 @@ def DecryptDlProtect(url):
         reponse.close()
         
         return sHtmlContent
-    
 
-    if 'Please click on continue to see' in sHtmlContent:
         
-        key = re.findall('input name="key" value="(.+?)"',sHtmlContent)
-    
-        #Ce parametre ne sert pas encore pour le moment
-        mstime = int(round(time() * 1000))
-        b64time = "_" + base64.urlsafe_b64encode(str(mstime)).replace("=", "%3D")
-        
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
-              
-        #tempo necessaire
-        cGui().showInfo("Patientez", 'Decodage en cours' , 2)
-        xbmc.sleep(1000)
-        
-        query_args = ( ('submitform' , '' ) , ( 'key' , key[0] ) , ('i' , b64time ), ( 'submitform' , 'Continue')  )
-        data = urllib.urlencode(query_args)
-        
-        #rajout des cookies
-        headers.update({'Cookie': cookies})
-
-        request = urllib2.Request(url,data,headers)
-
-        try: 
-            reponse = urllib2.urlopen(request)
-        except urllib2.URLError, e:
-            print e.read()
-            print e.reason
-            
-        sHtmlContent = reponse.read()
-        
-        reponse.close()
-    
-        return sHtmlContent
-        
-    return ''
- 

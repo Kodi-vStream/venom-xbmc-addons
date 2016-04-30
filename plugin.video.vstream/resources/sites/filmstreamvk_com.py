@@ -25,7 +25,7 @@ MOVIE_VIEWS = (URL_MAIN + 'les-plus-vues-films', 'showMovies')
 SERIE_SERIES = (URL_MAIN + 'serie', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'serie', 'showMovies')
 
-ANIM_ANIMS = (URL_MAIN + '/manga', 'showMovies')
+ANIM_ANIMS = ('http://', 'load')
 ANIM_NEWS = (URL_MAIN + '/manga', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
@@ -150,7 +150,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
             
-            if '/serie/' in aEntry[1]:
+            if '/serie/' in aEntry[1] or '/manga/' in aEntry[1]:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', aEntry[0], '', oOutputParameterHandler)

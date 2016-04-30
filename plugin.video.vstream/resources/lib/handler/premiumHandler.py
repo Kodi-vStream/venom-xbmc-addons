@@ -86,6 +86,10 @@ class cPremiumHandler:
             post_data['lt'] = 'on'
             post_data['purge'] = 'on'
             post_data['valider'] = 'Send'
+        elif 'uploaded' in self.__sHosterIdentifier:
+            url = 'http://uploaded.net/io/login'
+            post_data['id'] = self.getUsername()
+            post_data['pw'] = self.getPassword()    
             
         #si aucun de trouve on retourne
         else:
@@ -137,6 +141,12 @@ class cPremiumHandler:
             else:
                 cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
                 return False
+        elif 'uploaded' in self.__sHosterIdentifier:
+            if sHtmlContent == '':
+                self.isLogin = True
+            else:
+                cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
+                return False     
         else:
             return False
         

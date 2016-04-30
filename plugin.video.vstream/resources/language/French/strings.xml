@@ -41,24 +41,20 @@
     <string id="30210">Voir Marque-page</string>
     
     <!-- catégorie -->
-    <string id="30101">Films Nouveautés</string>
-    <string id="30102">Films Les plus Vues</string>
-    <string id="30103">Films Les plus Commentés</string>
-    <string id="30104">Films Les mieux Notés</string>
-    <string id="30105">Films Genres</string>
-    <string id="30106">Séries Nouveautés</string>
-    <string id="30107">Séries VF</string>
-    <string id="30108">Séries VOSTFR</string>
-    <string id="30109">Animés Nouveautés</string>
-    <string id="30110">Animés VF</string>
-    <string id="30111">Animé VOSTFR</string>
+    <string id="30101">Nouveautés</string>
+    <string id="30102">Les plus Vues</string>
+    <string id="30103">Les plus Commentés</string>
+    <string id="30104">Les mieux Notés</string>
+    <string id="30105">Genres</string>
+    <string id="30107">VF</string>
+    <string id="30108">VOSTFR</string>
     <string id="30112">Documentaire</string>
     <string id="30113">Sport</string>
     <string id="30114">Vidéo du net</string>
     <string id="30115">Télévision</string>
     <string id="30116">Toutes les sources</string>
     <string id="30117">Télévision Replay</string>
-    <string id="30160">Films HD</string>    
+    <string id="30160">Qualité HD</string>    
     <!--version 3.0.2 -->
     <string id="30120">Films</string>
     <string id="30121">Séries</string>
@@ -71,16 +67,9 @@
     <string id="30129">Clear Cache Addon</string>
     <!--version 3.0.5 -->
     <string id="30130">Listes</string>
-    <string id="30131">Animés Genres</string>
-    <string id="30132">Séries Genres</string>    
-    <string id="30133">Télévision Replay Nouveautés</string>
-    <string id="30134">Films VF</string>    
-    <string id="30135">Films VOSTFR</string>
-    <string id="30136">Télévision Replay Genre</string>
-    <string id="30137">Télévision Replay Sources</string>
-    <string id="30138">Films Sources</string>
-    <string id="30139">Séries Sources</string>
-    <string id="30140">Animés Sources</string>
+    <string id="30134">VF</string>    
+    <string id="30135">VOSTFR</string>
+    <string id="30138">Sources</string>
     
     <string id="30145">Dossier de Téléchagements</string>
     

@@ -207,3 +207,4 @@ def showHosters():
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
             
     oGui.setEndOfDirectory()
+    

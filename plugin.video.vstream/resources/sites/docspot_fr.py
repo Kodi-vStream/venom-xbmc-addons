@@ -17,7 +17,9 @@ SITE_NAME = 'Docspot.fr'
 SITE_DESC = 'docspot.fr + 3000 Documentaires et reportages en Streaming gratuit !'
 
 URL_MAIN = 'http://www.docspot.fr/'
-DOC_DOCS = ('http://www.docspot.fr/?cat=0', 'showGenres')
+DOC_NEWS = ('http://www.docspot.fr/', 'showMovies')
+DOC_GENRES = ('http://www.docspot.fr/?cat=0', 'showGenres')
+DOC_DOCS = ('http://', 'load')
 
 URL_SEARCH = ('http://www.docspot.fr/search/', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -30,8 +32,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', DOC_DOCS[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_DOCS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
     
     
     oOutputParameterHandler = cOutputParameterHandler()

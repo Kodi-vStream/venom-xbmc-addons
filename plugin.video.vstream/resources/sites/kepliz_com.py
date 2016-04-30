@@ -32,7 +32,9 @@ MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 MOVIE_HD = (URL_MAIN, 'showMovies')
 
-DOC_DOCS = (URL_MAIN + 'index.php?option=com_content&view=category&id=26', 'showMovies')
+
+DOC_NEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=26', 'showMovies')
+DOC_DOCS = ('http://', 'load')
 
 URL_SEARCH = (URL_MAIN + 'index.php?ordering=&searchphrase=all&Itemid=1&option=com_search&searchword=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -53,8 +55,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films Genres', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', DOC_DOCS[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_DOCS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
            
     oGui.setEndOfDirectory()
  
@@ -73,6 +75,7 @@ def showGenre():
     oGui = cGui()
 
     liste = []
+    liste.append( ['A l affiche',URL_MAIN + 'index.php?option=com_content&view=category&id=29'] )
     liste.append( ['Action',URL_MAIN + 'index.php?option=com_content&view=category&id=1'] )
     liste.append( ['Aventure',URL_MAIN + 'index.php?option=com_content&view=category&id=4'] )
     liste.append( ['Comedie',URL_MAIN + 'index.php?option=com_content&view=category&id=6'] )

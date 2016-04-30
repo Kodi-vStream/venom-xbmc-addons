@@ -205,10 +205,11 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[1]))
+            sDisplayTitle = cUtil().DecoTitle(aEntry[2])
             if '/films/' in aEntry[0]:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[2], '', aEntry[1], '', oOutputParameterHandler) 
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', cUtil().DecoTitle(aEntry[2]),'', aEntry[1], '', oOutputParameterHandler)         
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries',sDisplayTitle ,'', aEntry[1], '', oOutputParameterHandler)         
     
         cConfig().finishDialog(dialog)
 
@@ -266,12 +267,13 @@ def showSeries(sLoop = False):
                 episode = ' - ' + aEntry[1]
                 
             sTitle = sMovieTitle + episode
-            sTitle = cUtil().DecoTitle(sTitle)
+
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)            
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)            
     
         cConfig().finishDialog(dialog)
 
@@ -316,7 +318,8 @@ def showHosters(sLoop = False):
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
     

@@ -80,22 +80,25 @@ class cRechercheHandler:
         if (bPlugin == 'true') and (OnPlugins == 'true'):    
             try:
                 oGui = cGui()
-                oGui.addText(sName,'[COLOR olive]'+sName+'[/COLOR]')
-                cConfig().log("Load Recherche: " + str(sName))
+                
                 exec "from resources.sites import " + sName
+                exec "sDisplayname = " + sName + ".SITE_NAME"
                 exec "sSearch = " + sName + ".URL_SEARCH"
+                
+                cConfig().log("Load Recherche: " + str(sName))
+                
+                oGui.addText(sName,'[COLOR olive]'+sDisplayname+'[/COLOR]')
                 #exec "sFunction = " + sName + ".FUNCTION_SEARCH"
                 #sPluginSettingsName = sLabel+'_' + sName
                 sUrl = sSearch[0]+sText
-                
                 searchUrl = "%s.%s('%s')" % (sName, sSearch[1], sUrl)
-                exec searchUrl   
+                exec searchUrl
+                
                 return True
             except Exception, e:
                 cConfig().log("cant import plugin: " + str(sName))            
                 return False, False
-        else:
-            #cConfig().log("cant import plugin: " + str(sName))            
+        else:    
             return False, False
             
 
@@ -119,6 +122,9 @@ class cRechercheHandler:
         if not sText:
             return False
         sLabel = self.getDisp()
+        if not sLabel:
+            return
+        
         sFolder =  self.getRootFolder()
         sFolder = os.path.join(sFolder, 'resources/sites')
 

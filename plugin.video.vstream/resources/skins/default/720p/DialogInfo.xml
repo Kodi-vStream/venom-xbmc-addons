@@ -863,7 +863,7 @@
 					<label>[COLOR=blue]$LOCALIZE[206][/COLOR]$INFO[Container(401).CurrentPage, ( $LOCALIZE[31024] ]$INFO[Container(401).NumPages,/, )]</label>
 					<visible>Control.IsVisible(50)</visible>
 				</control>
-				<control type="spincontrol" id="61">
+				<!--<control type="spincontrol" id="61">
 					<description>Next page button</description>
 					<left>120r</left>
 					<top>485</top>
@@ -875,7 +875,7 @@
 					<onup>49</onup>
 					<textcolor>-</textcolor>
 					<showonepage>true</showonepage>
-				</control>
+				</control>-->
 				<control type="textbox" id="400">
 					<description>Description Value for Movies</description>
 					<left>210</left>
@@ -887,7 +887,7 @@
 					<textcolor>white</textcolor>
 					<pagecontrol>61</pagecontrol>
 					<label>$INFO[Window(Home).Property(ListItem.Plot)]</label>
-					<autoscroll time="3000" delay="4000" repeat="5000">!Control.HasFocus(61) + Skin.HasSetting(AutoScroll)</autoscroll>
+					<autoscroll time="3000" delay="4000" repeat="5000">!Control.HasFocus(61)</autoscroll>
 					<visible>!Control.IsVisible(50)</visible>
 				</control>
 				<control type="textbox" id="401">
@@ -901,7 +901,7 @@
 					<textcolor>white</textcolor>
 					<pagecontrol>61</pagecontrol>
 					<label>$INFO[Window(Home).Property(ListItem.cast)]</label>
-					<autoscroll time="3000" delay="4000" repeat="5000">!Control.HasFocus(61) + Skin.HasSetting(AutoScroll)</autoscroll>
+					<autoscroll time="3000" delay="4000" repeat="5000">!Control.HasFocus(61)</autoscroll>
 					<visible>Control.IsVisible(50)</visible>
 				</control>
 				<control type="panel" id="50">
@@ -946,7 +946,7 @@
 					<left>210</left>
 					<top>660</top>
 					<width>1030</width>
-					<height>40</height>
+					<height>80</height>
 					<itemgap>2</itemgap>
 					<align>center</align>
 					<orientation>horizontal</orientation>
@@ -966,12 +966,16 @@
 					<control type="button" id="5">
 						<description>Cast/Review</description>
 						<include>ButtonInfoDialogsCommonValues</include>
+                        <height>40</height>
+                        <width>240</width>
 						<label>206</label>
 						<visible>!Control.IsVisible(50)</visible>
 					</control>
 					<control type="button" id="20">
 						<description>Cast/Review</description>
 						<include>ButtonInfoDialogsCommonValues</include>
+                        <height>40</height>
+                        <width>240</width>
 						<label>207</label>
 						<visible>Control.IsVisible(50)</visible>
 					</control>
@@ -988,6 +992,8 @@
 					<control type="button" id="11">
 						<description>Play Trailer</description>
 						<include>ButtonInfoDialogsCommonValues</include>
+                        <height>40</height>
+                        <width>240</width>
 						<label>20410</label>
 						<onclick>PlayMedia($INFO[Window(Home).Property(ListItem.Trailer)])</onclick>
 						<visible>!IsEmpty(Window(Home).Property(ListItem.Trailer)) + !Skin.HasSetting(WindowedTrailer)</visible>
@@ -995,6 +1001,8 @@
 					<control type="button" id="15">
 						<description>Play Trailer Windowed</description>
 						<include>ButtonInfoDialogsCommonValues</include>
+                        <height>40</height>
+                        <width>240</width>
 						<label>20410</label>
 						<onclick>PlayMedia($INFO[Window(Home).Property(ListItem.Trailer)],1)</onclick>
 						<visible>!IsEmpty(Window(Home).Property(ListItem.Trailer)) + Skin.HasSetting(WindowedTrailer)</visible>
@@ -1002,6 +1010,8 @@
 					<control type="button" id="100">
 						<description>Fetch TvTunes stuff</description>
 						<include>ButtonInfoDialogsCommonValues</include>
+                        <height>40</height>
+                        <width>240</width>
 						<label>31127</label>
 						<onclick>RunScript(script.tvtunes,mode=solo)</onclick>
 						<visible>Skin.HasSetting(ActivateTvTunes) + System.HasAddon(script.tvtunes) + [Container.Content(TVShows) | Container.Content(movies) | Container.Content(musicvideos)] + IsEmpty(Window(movieinformation).Property("TvTunes_HideVideoInfoButton"))</visible>

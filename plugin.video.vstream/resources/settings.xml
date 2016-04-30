@@ -6,12 +6,12 @@
         <!-- <setting id="debug" type="bool" label="30000" default="false"/> -->
         <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2"/>
         <setting id="meta-view" type="bool" label="Recherche les Métadonnées (ralenti l'Addon)" default="false"/>
-        <setting label="Paramètres des Métadonnées" type="action" action="Addon.OpenSettings(script.module.metahandler)" enable ="true" />
+        <setting label="Paramètres des Métadonnées" type="action" option="close" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, metahandler)" />
         <setting id="home-view" type="bool" label="Afficher l'Accueil par Catégories" default="true"/>
         <setting id="param_timeout" label="30027" type="number" default="1000"/>
         <setting id="history-view" type="bool" label="Activer l'historique de recherche" default="true"/>
         
-        <setting label="Changelog" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/about.py, changelog)"/>  
+        <setting label="Changelog" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, changelog)"/>  
 
     </category>
 
@@ -388,8 +388,8 @@
     <category label="30127">
         <setting label="30127" type="lsep"/>
         <setting id="download_folder" type="folder" label="30145" default=""/>
-        <setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/clear.py, addon)"/>    
-        <setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/clear.py, xbmc)"/>
+        <setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>    
+        <setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, xbmc)"/>
         
     </category>
     
@@ -411,6 +411,24 @@
         <setting id="hoster_onefichier_premium" type="bool" label="30403" default="false"/>
         <setting id="hoster_onefichier_username" type="text" label="30401" default=""/>
         <setting id="hoster_onefichier_password" type="text" label="30402" default="" option="hidden"/>
+        <setting type="sep" />
+        <setting label="Uploaded" type="lsep"/>
+        <setting id="hoster_uploaded_premium" type="bool" label="30403" default="false"/>
+        <setting id="hoster_uploaded_username" type="text" label="30401" default=""/>
+        <setting id="hoster_uploaded_password" type="text" label="30402" default="" option="hidden"/>
+        <setting type="sep" />
+        <setting type="sep"/>
+        <setting type="sep"/>
+        <setting label="Utiliser UrlResolver vous permettra d'utiliser Les debrideurs" type="lsep"/>
+        <setting type="sep"/>
+        <setting type="sep"/>
+        <setting label="ATTENTION: Vstream ne gere pas cette partie, pensez a le desactiver si les" type="lsep"/>
+        <setting label="videos ne marchent plus" type="lsep"/>
+        <setting label="A moins d'avoir un debrideur, cocher cette case vous apportera plus de" type="lsep"/>
+        <setting label="problemes que d'avantages" type="lsep"/>
+        <setting id="UserUrlResolver" type="bool" label="Passer par UrlResolver" default="false"/>
+        <setting label="Configurer UrlResolver" type="action" option="close" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, urlresolver)" />
+        <setting type="sep"/>
     </category>
 
     <!--<category label="30026">

@@ -217,7 +217,7 @@ class cConfig():
                 return
         TextBox()
         
-    def WindowsBoxes(self, sFileName, num,year = ''):
+    def WindowsBoxes(self, sTitle, sFileName, num,year = ''):
         
         if self.getSetting('meta-view') == 'true':
             xbmc.executebuiltin("Action(Info)")
@@ -266,6 +266,7 @@ class cConfig():
                 self.getControl(50).setVisible(False)
                 #title
                 #self.getControl(1).setLabel(meta['title'])
+                meta['title'] = sTitle
                 
                 self.getControl(49).setVisible(True)
                 #self.getControl(2).setImage(meta['cover_url'])

@@ -27,7 +27,9 @@ MOVIE_NOTES = ('http://www.streamzer.net/meilleurs-films-streaming#stream', 'sho
 SERIE_SERIES = ('http://www.streamzer.net/index.php?file=Series&op=classe&secid=&orderby=news&p=1#stream', 'showMovies')
 SERIE_NEWS = ('http://www.streamzer.net/index.php?file=Series&op=classe&secid=&orderby=news&p=1#stream', 'showMovies')
 
-DOC_DOCS = ('http://www.streamzer.net/index.php?file=Docus&op=classe&secid=&orderby=news&p=1#stream', 'showMovies')
+DOC_NEWS = ('http://www.streamzer.net/index.php?file=Docus&op=classe&secid=&orderby=news&p=1#stream', 'showMovies')
+DOC_GENRES = ('http://www.streamzer.net/index.php?file=Docus&op=classe&secid=&orderby=news&p=1#stream', 'docuGenre')
+DOC_DOCS = ('http://', 'load')
 
 SPORT_SPORTS = ('http://www.streamzer.net/index.php?file=Replay&op=classe&secid=&orderby=news&p=1#stream', 'showReplay')
 
@@ -61,11 +63,11 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Series Genre', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', DOC_DOCS[0])
+    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.streamzer.net/index.php?file=Docus&op=classe&secid=&orderby=news&p=1#stream')
+    oOutputParameterHandler.addParameter('siteUrl', DOC_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, 'docuGenre', 'Documentaires Genre', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()

@@ -42,24 +42,20 @@
     <string id="30210">Display Bookmark</string>
         
     <!-- catégorie -->
-    <string id="30101">Movies News</string>
-    <string id="30102">Movies Most seeing</string>
-    <string id="30103">Movies Most commented</string>
-    <string id="30104">Movies Top rated</string>
-    <string id="30105">Movies Genre</string>
-    <string id="30106">Series News</string>
-    <string id="30107">Series VF</string>
-    <string id="30108">Series VOSTFR</string>
-    <string id="30109">Animes News</string>
-    <string id="30110">Animes VF</string>
-    <string id="30111">Animes VOSTFR</string>
+    <string id="30101">News</string>
+    <string id="30102">Most seeing</string>
+    <string id="30103">Most commented</string>
+    <string id="30104">Top rated</string>
+    <string id="30105">Genre</string>
+    <string id="30107">VF</string>
+    <string id="30108">VOSTFR</string>
     <string id="30112">documentary</string>
     <string id="30113">Sport</string>
     <string id="30114">Web Video</string>
     <string id="30115">Television</string>
     <string id="30116">All the sources</string>
     <string id="30117">Television Replay</string>
-    <string id="30160">Movies HD</string>
+    <string id="30160">Quality HD</string>
     <!--version 3.0.2 -->
     <string id="30120">Movies</string>
     <string id="30121">Tvshow</string>
@@ -72,16 +68,9 @@
     <string id="30129">Clear Cache Addon</string>
     <!--version 3.0.5 -->
     <string id="30130">Lists</string>
-    <string id="30131">Animes Genres</string>
-    <string id="30132">Series Genres</string>    
-    <string id="30133">Television Replay News</string>
     <string id="30134">Movies VF</string>    
     <string id="30135">Movies VOSTFR</string>
-    <string id="30136">Télévision Replay Genre</string>
-    <string id="30137">Télévision Replay Sources</string>
-    <string id="30138">Films Sources</string>
-    <string id="30139">Séries Sources</string>
-    <string id="30140">Animés Sources</string>
+    <string id="30138">Sources</string>
     
     <string id="30145">Download folder</string>
     <string id="30146">Show / Hide search settings</string>

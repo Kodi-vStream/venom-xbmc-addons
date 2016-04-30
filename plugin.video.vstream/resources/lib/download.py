@@ -16,6 +16,7 @@ import xbmcgui
 import xbmcvfs
 import re,sys
 import threading
+import xbmc
 
 try:
     import StorageServer
@@ -195,24 +196,25 @@ class cDownloadProgressBar(threading.Thread):
         try:
             #Recuperation url simple
             url = self.__sUrl.split('|')[0]
-            
             #Recuperation des headers du lien
-            try:
-                headers = dict([item.split('=') for item in (self.__sUrl.split('|')[1]).split('&')])
-            except:
-                headers = {}
+            headers = {}
+            if len (self.__sUrl.split('|')) > 1:
+                u = self.__sUrl.split('|')[1].split('&')
+                for i in u:
+                    headers[i.split('=')[0]] = i.replace(i.split('=')[0] + '=','')        
+
             #Rajout du user-agent si abscent
             if not ('User-Agent' in headers):
                 headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
-            
-            req = urllib2.Request(url, None, headers)
 
+            req = urllib2.Request(url, None, headers)
+            
             self.oUrlHandler = urllib2.urlopen(req,timeout=30)
             #self.__instance = repr(self)
             self.file = xbmcvfs.File(self.__fPath, 'w')
         except:
-            print 'download error'
-            print self.__sUrl
+            xbmc.log('download error')
+            xbmc.log(self.__sUrl)
             cConfig().showInfo('Erreur initialisation', 'Download error')
             return
         
@@ -291,7 +293,6 @@ class cDownload:
         oHoster = cHosterGui().checkHoster(sDBUrl)
         oHoster.setUrl(sDBUrl)
         aLink = oHoster.getMediaLink()
-
         #aLink = (True,'https://github.com/LordVenom/venom-xbmc-addons-beta/blob/master/plugin.video.vstream/Thumbs.db?raw=true')
         
         if (aLink[0] == True):
@@ -301,7 +302,7 @@ class cDownload:
             cConfig().showInfo('Lien non resolvable', sTitle)
             return False
             
-        if not sUrl.startswith('http') or sUrl.endswith('.m3u8'):
+        if (not sUrl.startswith('http')) or sUrl.split('|')[0].endswith('.m3u8') :
             cConfig().showInfo('Format non supporte', sTitle)
             return False
         

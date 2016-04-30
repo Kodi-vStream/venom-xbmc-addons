@@ -103,40 +103,40 @@ class cUtil:
         return re.sub("&#?\w+;", fixup, text)
             
             
-    def CleanName(self,str):
+    def CleanName(self,name):
         #vire accent et '\'
         try:
-            str = unicode(str, 'utf-8')#converti en unicode pour aider aux convertions
+            name = unicode(name, 'utf-8')#converti en unicode pour aider aux convertions
         except:
             pass
-        str = unicodedata.normalize('NFD', str).encode('ascii', 'ignore').decode("unicode_escape")
-        str = str.encode("utf-8") #on repasse en utf-8
+        name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode("unicode_escape")
+        name = name.encode("utf-8") #on repasse en utf-8
         
         #on cherche l'annee
         annee = ''
-        m = re.search('(\([0-9]{4}\))', str)
+        m = re.search('(\([0-9]{4}\))', name)
         if m:
             annee = str(m.group(0))
-            str = str.replace(annee,'')
+            name = name.replace(annee,'')
        
         #vire tag
-        str = re.sub('[\(\[].+?[\)\]]','', str)
+        name = re.sub('[\(\[].+?[\)\]]','', name)
         #vire caractere special
-        str = re.sub("[^a-zA-Z0-9 ]", "",str)
+        name = re.sub("[^a-zA-Z0-9 ]", "",name)
         #tout en minuscule
-        str = str.lower()
+        name = name.lower()
         #vire espace double
-        str = re.sub(' +',' ',str)
+        name = re.sub(' +',' ',name)
      
         #vire espace a la fin
-        if str.endswith(' '):
-            str = str[:-1]
+        if name.endswith(' '):
+            name = name[:-1]
            
         #on remet l'annee
         if annee:
-            str = str + ' ' + annee
+            name = name + ' ' + annee
            
-        return str
+        return name
         
     def FormatSerie(self,string):
         #convertion unicode

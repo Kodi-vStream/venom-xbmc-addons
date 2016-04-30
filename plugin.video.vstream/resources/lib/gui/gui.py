@@ -260,12 +260,13 @@ class cGui():
         #new context prend en charge les metas
         if cGui.CONTENT == "movies":
             self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-            #self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
+            self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
             self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
             self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
 
         elif cGui.CONTENT == "tvshows":
             self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+            self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
             self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
             self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
 
@@ -423,7 +424,7 @@ class cGui():
         oContext.setTitle('[COLOR azure]Recherche Similaire[/COLOR]')
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getFileName())
+        oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
       
         oContext.setOutputParameterHandler(oOutputParameterHandler)
 
@@ -577,11 +578,17 @@ class cGui():
     def viewsimil(self):
         sPluginPath = cPluginHandler().getPluginPath();
         oInputParameterHandler = cInputParameterHandler()        
-        sTitle = oInputParameterHandler.getValue('sTitle')
+        sFileName = oInputParameterHandler.getValue('sFileName')
         
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('searchtext', sTitle)
-        oOutputParameterHandler.addParameter('disp', 'search1')
+        oOutputParameterHandler.addParameter('searchtext', sFileName)
+        
+        #ne fonctionne pas
+        # if cGui.CONTENT == "movies":
+            # oOutputParameterHandler.addParameter('disp', 'search1')
+        # elif cGui.CONTENT == "tvshows":
+            # oOutputParameterHandler.addParameter('disp', 'search2')
+        
         oOutputParameterHandler.addParameter('readdb', 'False')
          
         sParams = oOutputParameterHandler.getParameterAsUri()               
@@ -667,7 +674,7 @@ class cGui():
         sMeta = oInputParameterHandler.getValue('sMeta')
  
         #sMeta = 1 >> film sMeta = 2 >> serie
-        sCleanTitle = CleanName(sTitle)
+        sCleanTitle = CleanName(sFileName)
         
         #on vire saison et episode
         if (True):#sMeta == 2:
@@ -676,10 +683,8 @@ class cGui():
             sCleanTitle = re.sub('(?i)S[0-9]+E[0-9]+', '',sCleanTitle)
             sCleanTitle = re.sub('(?i)[S|E][0-9]+', '',sCleanTitle)
         
-        ui = cConfig().WindowsBoxes(sCleanTitle, sMeta,sYear)
+        ui = cConfig().WindowsBoxes(sTitle,sCleanTitle, sMeta,sYear)
     
-        
-        
     # def viewinfo2(self):
  
         # oInputParameterHandler = cInputParameterHandler()

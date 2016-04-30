@@ -92,6 +92,8 @@ class cHoster(iHoster):
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         
+        stream_url = ''
+        
         if (aResult[0] == True):
             url=[]
             qua=[]
@@ -99,17 +101,27 @@ class cHoster(iHoster):
             for aEntry in aResult[1]:
                 url.append(aEntry[0])
                 qua.append(aEntry[1])
-             
-            dialog2 = xbmcgui.Dialog()
-            ret = dialog2.select('Select Quality',qua)
-            if (ret > -1):
-                stream_url = url[ret]
+                
+            #Si une seule url
+            if len(url) == 1:
+                stream_url = url[0]
+            #si plus de une
+            elif len(url) > 1:
+                #Afichage du tableau
+                dialog2 = xbmcgui.Dialog()
+                ret = dialog2.select('Select Quality',qua)
+                if (ret > -1):
+                    stream_url = url[ret]
+                else:
+                    return False, False
             else:
                 return False, False
             
             stream_url = urllib.unquote(stream_url)
+            
             if not stream_url.startswith('http'):
                 stream_url = 'http:' + stream_url
+                
             return True, stream_url
         else:
             cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)

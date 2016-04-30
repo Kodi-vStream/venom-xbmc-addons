@@ -16,11 +16,7 @@ SITE_IDENTIFIER = 'about'
 SITE_NAME = 'About'
 
 
-class cAbout:
-
-    def __init__(self):
-        self.main(sys.argv[1])
-        #self.__sFunctionName = ''            
+class cAbout:       
             
     def size(self, filepath):
         file=open(filepath)
@@ -48,22 +44,6 @@ class cAbout:
 
         return
       
-
-    def main(self, env):
-        
-        if (env == 'changelog'):
-            try:
-                sUrl = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/changelog.txt'
-                oRequest =  urllib2.Request(sUrl)
-                oResponse = urllib2.urlopen(oRequest)
-                sContent = oResponse.read()
-                self.TextBoxes('vStream Changelog', sContent)
-            except:            
-                cConfig().error("%s,%s" % (cConfig().getlanguage(30205), sUrl))
-            return
-                
-        return
-     
     #bug python
     def __strptime(self, date, format):
         try:
@@ -238,5 +218,3 @@ class cAbout:
                 self.win.getControl( self.CONTROL_TEXTBOX ).setText(text)
                 return
         TextBox()
-
-cAbout()

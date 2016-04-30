@@ -16,18 +16,34 @@ SITE_DESC = 'Reportages TV - Replay des reportages télé français en streaming
 
 URL_MAIN = 'http://www.reportagestv.com/'
 
-DOC_DOCS = ('http://www.reportagestv.com/', 'showMovies')
+DOC_NEWS = ('http://www.reportagestv.com/', 'showMovies')
+DOC_DOCS = ('http://', 'load')
+DOC_GENRES = (True, 'showGenre')
 
 URL_SEARCH = ('http://www.reportagestv.com/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
+
 def load():
-   
     oGui = cGui()
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Nouveautés', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', DOC_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_GENRES[1], 'Genres', 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showGenre():
+   
+    oGui = cGui()
  
     liste = []
     liste.append( ["Reportage","http://www.reportagestv.com/"] )

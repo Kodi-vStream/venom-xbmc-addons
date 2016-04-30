@@ -124,7 +124,22 @@ class cHosterGui:
         #securitee
         if (not sHosterUrl):
             return False
+            
+        #Petit nettoyage
+        sHosterUrl = sHosterUrl.split('|')[0]
+            
+        #L'user a active l'url resolver ?
+        if cConfig().getSetting('UserUrlResolver') == 'true':
+            import urlresolver
+            hmf = urlresolver.HostedMediaFile(url=sHosterUrl)
+            if hmf.valid_url():
+                tmp = cHosterHandler().getHoster('resolver')
+                RH = sHosterUrl.split('/')[2]
+                RH = RH.replace('www.','')
+                tmp.setRealHost( RH[:3].upper() )
+                return tmp
 
+        #Gestion classique
         if ('novamov' in sHosterUrl):
             return cHosterHandler().getHoster('novamov')
         if ('divxstage' in sHosterUrl):
@@ -259,6 +274,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('allmyvideos')
         if ('idowatch' in sHosterUrl):
             return cHosterHandler().getHoster('idowatch')
+        if ('wstream.' in sHosterUrl):
+            return cHosterHandler().getHoster('wstream')
 
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHosterUrl):
@@ -267,7 +284,9 @@ class cHosterGui:
             return cHosterHandler().getHoster('uptobox')
         if ('uplea.com' in sHosterUrl):
             return cHosterHandler().getHoster('uplea')            
-
+        if ('uploaded' in sHosterUrl or 'ul.to' in sHosterUrl):
+            return cHosterHandler().getHoster('uploaded')
+            
         #Si aucun hebergeur connu on teste les liens directs
         if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8'):
             return cHosterHandler().getHoster('lien_direct')
@@ -382,6 +401,9 @@ class cHosterGui:
 
         sHosterName = oHoster.getDisplayName()
         cConfig().showInfo(sHosterName, 'Resolve')
+        
+        #oHoster.setUrl(sMediaUrl)
+        #aLink = oHoster.getMediaLink()
         
         try:
         

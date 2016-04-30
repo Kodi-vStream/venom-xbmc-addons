@@ -19,13 +19,20 @@ SITE_DESC = 'replay tv'
  
 URL_MAIN = 'http://enquetedereportages.com/'
 
-DOC_DOCS =('http://enquetedereportages.com/category/documentaire/', 'showMovies')
+DOC_NEWS = ('http://enquetedereportages.com', 'showMovies')
+DOC_GENRES = ('http://', 'DocGenre')
+
+
+
+DOC_DOCS =('http://', 'load')
 
 #REPLAYTV_REPLAYTV = ('http://enquetedereportages.com/', 'showMovies')
 
-REPLAYTV_REPLAYTV = ('http://', 'ReplayTV')
+REPLAYTV_NEWS = ('http://enquetedereportages.com', 'showMovies')
+
+REPLAYTV_REPLAYTV = ('http://', 'load')
  
-#REPLAYTV_GENRES = (True, 'showGenre')
+REPLAYTV_GENRES = (True, 'ReplayTV')
 
 URL_SEARCH = ('http://enquetedereportages.com/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -36,18 +43,18 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
- 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Replay TV', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', DOC_DOCS[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_DOCS[1], 'Documentaires', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Nouveautés', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://enquetedereportages.com/category/reportage/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Reportages', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', 'http://')
+    oGui.addDir(SITE_IDENTIFIER, 'DocGenre', 'Documentaire Genres', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://')
+    oGui.addDir(SITE_IDENTIFIER, 'ReplayTV', 'Replay Genres', 'films.png', oOutputParameterHandler)
  
     # oOutputParameterHandler = cOutputParameterHandler()
     # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -55,7 +62,7 @@ def load():
  
     oGui.setEndOfDirectory()
     
-def ReplayTV():
+def DocGenre():
     oGui = cGui()
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -67,6 +74,42 @@ def ReplayTV():
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Reportages', 'tv.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()  
+    
+def ReplayTV():
+
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+ 
+    liste = []
+	
+    liste.append( ['Discovery','http://enquetedereportages.com/category/discovery-channel/'] )
+    liste.append( ['Emission','http://enquetedereportages.com/category/emission/'] )    
+    liste.append( ['France2','http://enquetedereportages.com/category/france-2/'] )
+    liste.append( ['France3','http://enquetedereportages.com/category/france-3/'] )
+    
+    liste.append( ['France4','http://enquetedereportages.com/category/france-4/'] )
+    liste.append( ['FranceO','http://enquetedereportages.com/category/france-o/'] )    
+    liste.append( ['M6','http://enquetedereportages.com/category/m6/'] )
+    liste.append( ['NRJ12','http://enquetedereportages.com/category/nrj12/'] )
+    liste.append( ['NT1','http://enquetedereportages.com/category/nt1/'] )
+    
+    liste.append( ['RMC','http://enquetedereportages.com/category/rmc-decouvertes/'] )
+    liste.append( ['SportMeca','http://enquetedereportages.com/category/sports-meca/'] )    
+    liste.append( ['TF1','http://enquetedereportages.com/category/tf1/'] )
+    liste.append( ['TMC','http://enquetedereportages.com/category/tmc/'] )
+    liste.append( ['W9','http://enquetedereportages.com/category/w9/'] )
+    liste.append( ['Autre','http://enquetedereportages.com/category/uncategorized/'] )
+    
+    
+ 
+    for sTitle,sUrl in liste:
+ 
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+ 
+    oGui.setEndOfDirectory()
  
 def showMoviesSearch():
     oGui = cGui()
@@ -87,13 +130,19 @@ def showGenre():
  
     liste = []
 	
-    liste.append( ['Nouveau','http://enquetedereportages.com/'] )
-    liste.append( ['Envoye special','http://enquetedereportages.com/category/envoye-special/'] )
-    liste.append( ['66 minutes','http://enquetedereportages.com/category/66-minutes/'] )
-    liste.append( ['Sept a Huit','http://enquetedereportages.com/category/sept-a-huit/'] )
-    liste.append( ['Arte','http://enquetedereportages.com/category/arte/'] )
+    liste.append( ['Infrarouge','http://enquetedereportages.com/category/documentaire/infrarouge/'] )
+    liste.append( ['Arte','http://enquetedereportages.com/category/documentaire/arte/'] )    
+    liste.append( ['France4','http://enquetedereportages.com/category/documentaire/france-4-documentaire/'] )
     liste.append( ['France5','http://enquetedereportages.com/category/france-5/'] )
-    liste.append( ['Capital','http://enquetedereportages.com/category/capital/'] )
+    
+    liste.append( ['13eme-rue','http://enquetedereportages.com/category/reportage/13eme-rue/'] )
+    liste.append( ['23eme','http://enquetedereportages.com/category/reportage/23eme/'] )    
+    liste.append( ['6ter','http://enquetedereportages.com/category/reportage/6ter/'] )
+    liste.append( ['Canal+','http://enquetedereportages.com/category/reportage/canal/'] )
+    liste.append( ['D8','http://enquetedereportages.com/category/reportage/d8/'] )
+    
+    
+    
    
  
     for sTitle,sUrl in liste:
@@ -162,7 +211,8 @@ def showMovies(sSearch = ''):
  
 def __checkForNextPage(sHtmlContent):
     #sPattern = '<a class="next page-numbers" href="(.+?)">Next <span class="meta-nav-next">'
-    sPattern = "<li class='current'>.+?<a.+?href='(.+?)' class='inactive'>"
+    #sPattern = "<li class='current'>.+?<a.+?href='(.+?)' class='inactive'>"
+    sPattern = "class='page-numbers current'>.+?<a class='page-numbers' href='(.+?)'>"
 	
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)

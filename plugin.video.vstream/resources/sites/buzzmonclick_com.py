@@ -23,7 +23,8 @@ REPLAYTV_NEWS = ('http://buzzmonclick.com/category/replay-tv/', 'showMovies')
 
 REPLAYTV_REPLAYTV = ('http://', 'load')
 #REPLAYTV_REPLAYTV = ('http://buzzmonclick.com/category/replay-tv/', 'showMovies')
-DOC_DOCS = ('http://buzzmonclick.com/category/replay-tv/documentaires/', 'showMovies')
+DOC_NEWS = ('http://buzzmonclick.com/category/replay-tv/documentaires/', 'showMovies')
+DOC_DOCS = ('http://', 'load')
 
  
  
