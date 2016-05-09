@@ -91,6 +91,7 @@ class cHoster(iHoster):
         #Si premium
         self.oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
         if (self.oPremiumHandler.isPremiumModeAvailable()):
+            self.stream = False
             return self.__getMediaLinkByPremiumUser()
         
         #sinon
