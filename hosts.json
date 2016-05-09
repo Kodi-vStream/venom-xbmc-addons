@@ -226,16 +226,16 @@
   {
     "name": "flashx.py",
     "path": "plugin.video.vstream/resources/hosters/flashx.py",
-    "sha": "465814c2c20de250b42b173c056fcff0d4f5c8cd",
-    "size": 5236,
+    "sha": "c0a19d9e27990c9a605212bf6449170791838e07",
+    "size": 5336,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/flashx.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/flashx.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/465814c2c20de250b42b173c056fcff0d4f5c8cd",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/c0a19d9e27990c9a605212bf6449170791838e07",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/flashx.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/flashx.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/465814c2c20de250b42b173c056fcff0d4f5c8cd",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/c0a19d9e27990c9a605212bf6449170791838e07",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/flashx.py"
     }
   },
@@ -322,16 +322,16 @@
   {
     "name": "lien_direct.py",
     "path": "plugin.video.vstream/resources/hosters/lien_direct.py",
-    "sha": "7496b849cf592fe6e57815d8f400c41fa8af8466",
-    "size": 2139,
+    "sha": "66e3a0dc8a090f1311a5c55a2eb619c56d24cc8a",
+    "size": 2353,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/lien_direct.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/lien_direct.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/7496b849cf592fe6e57815d8f400c41fa8af8466",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/66e3a0dc8a090f1311a5c55a2eb619c56d24cc8a",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/lien_direct.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/lien_direct.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/7496b849cf592fe6e57815d8f400c41fa8af8466",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/66e3a0dc8a090f1311a5c55a2eb619c56d24cc8a",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/lien_direct.py"
     }
   },
@@ -658,48 +658,64 @@
   {
     "name": "uplea.py",
     "path": "plugin.video.vstream/resources/hosters/uplea.py",
-    "sha": "346982983ede1c2ee51404c536eddbbf71dfa317",
-    "size": 4472,
+    "sha": "f9d1f3d94963255a83ad633194ae49cf01b13997",
+    "size": 4513,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/uplea.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/uplea.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/346982983ede1c2ee51404c536eddbbf71dfa317",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/f9d1f3d94963255a83ad633194ae49cf01b13997",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/uplea.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/uplea.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/346982983ede1c2ee51404c536eddbbf71dfa317",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/f9d1f3d94963255a83ad633194ae49cf01b13997",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/uplea.py"
+    }
+  },
+  {
+    "name": "uploaded.py",
+    "path": "plugin.video.vstream/resources/hosters/uploaded.py",
+    "sha": "9df3473e8143dd34862119abf38c2a5e938a5051",
+    "size": 2281,
+    "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/uploaded.py?ref=master",
+    "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/uploaded.py",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/9df3473e8143dd34862119abf38c2a5e938a5051",
+    "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/uploaded.py",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/uploaded.py?ref=master",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/9df3473e8143dd34862119abf38c2a5e938a5051",
+      "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/uploaded.py"
     }
   },
   {
     "name": "uptobox.py",
     "path": "plugin.video.vstream/resources/hosters/uptobox.py",
-    "sha": "798641c0ede86094e36acafa25c1e6a9d363ac10",
-    "size": 6577,
+    "sha": "c23d557688cda459c496debe6c21653353669dd1",
+    "size": 6652,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/uptobox.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/uptobox.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/798641c0ede86094e36acafa25c1e6a9d363ac10",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/c23d557688cda459c496debe6c21653353669dd1",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/uptobox.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/uptobox.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/798641c0ede86094e36acafa25c1e6a9d363ac10",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/c23d557688cda459c496debe6c21653353669dd1",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/uptobox.py"
     }
   },
   {
     "name": "uptostream.py",
     "path": "plugin.video.vstream/resources/hosters/uptostream.py",
-    "sha": "8fbb61d0ce62a137e0c81e46e5264c4785b9c020",
-    "size": 3599,
+    "sha": "36136b5b481ec08b7d60baae63e93b78a87a58f1",
+    "size": 3935,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/uptostream.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/uptostream.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/8fbb61d0ce62a137e0c81e46e5264c4785b9c020",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/36136b5b481ec08b7d60baae63e93b78a87a58f1",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/uptostream.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/uptostream.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/8fbb61d0ce62a137e0c81e46e5264c4785b9c020",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/36136b5b481ec08b7d60baae63e93b78a87a58f1",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/uptostream.py"
     }
   },
@@ -957,6 +973,22 @@
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/watching.py?ref=master",
       "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/d3e4aeb483b8a5f754830966f17194280636a875",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/watching.py"
+    }
+  },
+  {
+    "name": "wstream.py",
+    "path": "plugin.video.vstream/resources/hosters/wstream.py",
+    "sha": "93f52ca71f5596c2a9187891adff0b3627caf8f9",
+    "size": 2962,
+    "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/wstream.py?ref=master",
+    "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/wstream.py",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/93f52ca71f5596c2a9187891adff0b3627caf8f9",
+    "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/wstream.py",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/wstream.py?ref=master",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/93f52ca71f5596c2a9187891adff0b3627caf8f9",
+      "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/wstream.py"
     }
   },
   {
