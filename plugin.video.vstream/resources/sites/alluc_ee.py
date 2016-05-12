@@ -10,6 +10,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 import re
+import xbmc
     
 SITE_IDENTIFIER = 'alluc_ee'
 SITE_NAME = '[COLOR orange]Alluc.ee[/COLOR]'
@@ -39,7 +40,26 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return  
+
+def Decrypt(string,key):
+    import base64
+    import math
     
+    #xbmc.log(string)
+    #xbmc.log(key)
+    
+    s = base64.b64decode(string)
+    i = 0
+    sResult = ''
+    while i < len(s):
+        sChar = s[i:i+1]
+        sKeyChar = key[int(i%len(key)):int(i%len(key)+1)]
+        sChar = int(math.floor(ord(sChar) - ord(sKeyChar)))
+        sChar = chr(sChar)
+        sResult = sResult + sChar
+        i = i +1
+ 
+    return sResult
 
 def showMovies(sSearch = ''):
     
@@ -57,10 +77,6 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     
     sHtmlContent = sHtmlContent.replace('<div class="ifabh clickable" onclick="window.location','')
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
     
     oParser = cParser()
     
@@ -165,24 +181,25 @@ def showHosters():
      
     oParser = cParser()
     
-    sPattern = '<iframe.+?src="(.+?)".+?<\/iframe>'
+    sPattern = '\/(www\.alluc\.ee\/embed\/[a-zA-Z0-9%-_]+?)\?alt='
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-    if (aResult[0] == True) and aResult[1][0].startswith('/'):
-        sUrl = URL_MAIN + aResult[1][0][1:]
+    if (aResult[0] == True):
+        sUrl = 'http://' + aResult[1][0]
 
         oRequestHandler = cRequestHandler(sUrl)
-        sHtmlContent = oRequestHandler.request()           
+        sHtmlContent = oRequestHandler.request()
+
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()        
                           
-        sPattern = '<a href="([^<>"]+?)" rel="nofollow" target="_blank">Click to Open The Full Video<\/a>'
-        
+        sPattern = "decrypt\('(.+?)', *'(.+?)'\)"
         aResult = oParser.parse(sHtmlContent, sPattern)
         
         if (aResult[0] == True):
-            sUrl = aResult[1][0]
             
-            oRequestHandler = cRequestHandler(sUrl)
-            sHtmlContent = oRequestHandler.request()
+            sHtmlContent = Decrypt(aResult[1][0][0],aResult[1][0][1])
             
             sPattern = '<iframe.+?src="(.+?)".+?<\/iframe>'
             aResult = oParser.parse(sHtmlContent, sPattern)
@@ -190,7 +207,6 @@ def showHosters():
         else:
             return
             
-        
     
     if (aResult[0] == True):
             
