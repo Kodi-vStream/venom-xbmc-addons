@@ -34,16 +34,16 @@
   {
     "name": "alluc_ee.py",
     "path": "plugin.video.vstream/resources/sites/alluc_ee.py",
-    "sha": "fe16c148a336643d0a51f37ecbfb16d7e1c0a675",
-    "size": 7220,
+    "sha": "ada41531ed59c9c9d42925f5a85edb3a035ced6f",
+    "size": 7502,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/alluc_ee.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/alluc_ee.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/fe16c148a336643d0a51f37ecbfb16d7e1c0a675",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/ada41531ed59c9c9d42925f5a85edb3a035ced6f",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/alluc_ee.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/alluc_ee.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/fe16c148a336643d0a51f37ecbfb16d7e1c0a675",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/ada41531ed59c9c9d42925f5a85edb3a035ced6f",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/alluc_ee.py"
     }
   },
