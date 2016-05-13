@@ -1,9 +1,12 @@
+#-*- coding: utf-8 -*-
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
+
 import re,urllib2
 import xbmcgui
+
 from resources.lib.packer import cPacker
 
 import xbmc
@@ -132,11 +135,7 @@ class cHoster(iHoster):
                 
             web_url = redirection_target
             
-            MaxRedirection = MaxRedirection - 1
-
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()  
+            MaxRedirection = MaxRedirection - 1 
   
         oParser = cParser()   
             
@@ -149,8 +148,12 @@ class cHoster(iHoster):
             sUnpacked = cPacker().unpack(aResult[0])
             sHtmlContent = sUnpacked  
   
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close() 
+  
         #decodage classique
-        sPattern = '{file:"(.+?)",label:"(.+?)"}'
+        sPattern = '{file:"([^",]+)",label:"([^"<>,]+)"}'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         api_call = ''
