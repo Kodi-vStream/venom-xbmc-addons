@@ -441,16 +441,23 @@ def showLinks():
     
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    #import xbmc
+    #xbmc.log(sUrl)       
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
 
     oParser = cParser()
     
     #get post vars
-    sPattern = '<div class="num_link">Lien.+?\/([vostfr]+)\.png">([^<]+).+?<input name="([^<]+)" value="(.+?)"'
+    #sPattern = '<div class="num_link">Lien.+?\/([vostfr]+)\.png">([^<]+).+?<input name="([^<]+)" value="(.+?)"'
+    sPattern = '<div class="num_link">Lien.+?\.png">([^<>]+)<.+?\/([vostfr]+)\.png">.+?<input name="([^<]+)" value="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print 'post vars: ',aResult      
+    #xbmc.log(str(aResult))    
     
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -460,8 +467,8 @@ def showLinks():
             if dialog.iscanceled():
                 break
             
-            sLang = '[' + aEntry[0].upper() + ']'
-            sHost = aEntry[1]
+            sLang = '[' + aEntry[1].upper() + ']'
+            sHost = aEntry[0]
             sHost = sHost.replace('Telecharger sur ','')
                 
             sDisplayTitle = cUtil().DecoTitle(sLang + sMovieTitle)
@@ -501,10 +508,6 @@ def showHosters():
     except URLError, e:
         print e.read()
         print e.reason
-        
-    #fh = open('c:\\test1.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
     
     oParser = cParser()
     
