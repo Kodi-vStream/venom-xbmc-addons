@@ -86,15 +86,6 @@ class cHoster(iHoster):
 
     def getMediaLink(self):
         
-        cGui().showInfo('Resolve', self.__sDisplayName, 5)
-        
-        #Si premium
-        self.oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
-        if (self.oPremiumHandler.isPremiumModeAvailable()):
-            self.stream = False
-            return self.__getMediaLinkByPremiumUser()
-        
-        #sinon
         dialog3 = xbmcgui.Dialog()
         ret = dialog3.select('Choissisez votre mode de fonctionnement',['Passer en Streaming (via Uptostream)','Rester en direct (via Uptobox)'])
 
@@ -104,6 +95,14 @@ class cHoster(iHoster):
         #mode stream
         else:
             self.__sUrl = self.__sUrl.replace('http://uptobox.com/','http://uptostream.com/iframe/')
+        
+        cGui().showInfo('Resolve', self.__sDisplayName, 5)
+        
+        #Si premium
+        self.oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
+        if (self.oPremiumHandler.isPremiumModeAvailable()):
+            #self.stream = False
+            return self.__getMediaLinkByPremiumUser()
 
         return self.__getMediaLinkForGuest()
 
