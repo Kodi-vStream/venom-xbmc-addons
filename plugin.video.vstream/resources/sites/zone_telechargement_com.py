@@ -23,7 +23,7 @@ from resources.lib.dl_deprotect import DecryptDlProtect
 
 SITE_IDENTIFIER = 'zone_telechargement_com' 
 SITE_NAME = '[COLOR violet]Zone-telechargement[/COLOR]' 
-SITE_DESC = '' 
+SITE_DESC = 'Fichier en DDL, HD' 
 
 URL_MAIN = 'http://www.zone-telechargement.com/'
 
@@ -40,7 +40,7 @@ MOVIE_VIEWS = (URL_MAIN + 'films-gratuit.html?tab=all&orderby_by=popular&orderby
 MOVIE_NOTES = (URL_MAIN + 'films-gratuit.html?tab=all&orderby_by=rating&orderby_order=desc', 'showMovies') # films mieux notés
 MOVIE_3D = (URL_MAIN + 'films-bluray-3d.html?periodlist[]=2010&periodlist[]=2000&periodlist[]=1990&hf=1', 'showMovies') # films en 3D
 MOVIE_HDLIGHT = (URL_MAIN + 'x265-x264-hdlight.html', 'showMovies') # films en x265 et x264
-MOVIE_4K = (URL_MAIN + 'films-gratuit.html?q=4k&orderby_by=popular', 'showMovies')# films en 4K 
+#MOVIE_4K = (URL_MAIN + 'films-gratuit.html?q=4k&orderby_by=popular', 'showMovies')# films en 4K 
 
 MOVIE_GENRES = (True, 'showGenre')
 #MOVIE_VF = (URL_MAIN + 'langues/french', 'showMovies') # films VF
@@ -57,7 +57,7 @@ ANIM_VOSTFRS = (URL_MAIN + 'animes-vostfr.html', 'showMovies')
 BLURAY_NEWS = (URL_MAIN + 'films-bluray-hd.html', 'showMovies') # derniers Blu-Rays
 
 DOCU_NEWS = (URL_MAIN + 'documentaires-gratuit.html', 'showMovies') # derniers docu
-DOCU_4K = (URL_MAIN + 'documentaires-gratuit.html?q=4k&orderby_by=popular', 'showMovies') # docu en 4K
+#DOCU_4K = (URL_MAIN + 'documentaires-gratuit.html?q=4k&orderby_by=popular', 'showMovies') # docu en 4K
 
 TV_NEWS = (URL_MAIN + 'emissions-tv.html', 'showMovies') # dernieres emissions tv
 SPECT_NEWS = (URL_MAIN + 'spectacles.html', 'showMovies') # dernieres spectacles
@@ -65,7 +65,7 @@ CONCERT_NEWS = (URL_MAIN + 'concerts.html', 'showMovies') # dernieres concerts
 SPORT_NEWS = (URL_MAIN + 'sport.html', 'showMovies') # dernieres du sports      
 AUTOFORM_VID = (URL_MAIN + 'autoformations-videos.html?tab=all&orderby_by=date&orderby_order=desc', 'showMovies')       
 MUSIC_HD = (URL_MAIN + 'musiques-mp3-gratuite.html?q=HD&orderby_by=popular', 'showMovies') # dernieres Musiques HD      
-MUSIC_4K = (URL_MAIN + 'musiques-mp3-gratuite.html?q=4k&orderby_by=popular', 'showMovies')  # Musiques en 4K
+#MUSIC_4K = (URL_MAIN + 'musiques-mp3-gratuite.html?q=4k&orderby_by=popular', 'showMovies')  # Musiques en 4K
 
 
 def load():
@@ -103,9 +103,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_3D[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_3D[1], 'Films 3D', 'news.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_4K[0])        
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_4K[1], 'Films 4K', 'news.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_4K[0])        
+    #oGui.addDir(SITE_IDENTIFIER, MOVIE_4K[1], 'Films 4K', 'news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HDLIGHT[0])
@@ -139,9 +139,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', DOCU_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Deniers Documentaires', 'films.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()     
-    oOutputParameterHandler.addParameter('siteUrl', DOCU_4K[0])     
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires en 4K', 'films.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()     
+    #oOutputParameterHandler.addParameter('siteUrl', DOCU_4K[0])     
+    #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires en 4K', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', TV_NEWS[0])
@@ -167,9 +167,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MUSIC_HD[0])        
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Musiques en HD', 'films.png', oOutputParameterHandler)      
             
-    oOutputParameterHandler = cOutputParameterHandler()     
-    oOutputParameterHandler.addParameter('siteUrl', MUSIC_4K[0])        
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Musiques en 4K', 'films.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()     
+    #oOutputParameterHandler.addParameter('siteUrl', MUSIC_4K[0])        
+    #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Musiques en 4K', 'films.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory() 
 
@@ -316,6 +316,7 @@ def showLinks():
     
 def showMoviesLinks(sHtmlContent):
     xbmc.log('mode film')
+    
     oGui = cGui()
     
     oInputParameterHandler = cInputParameterHandler()
@@ -367,7 +368,7 @@ def showMoviesLinks(sHtmlContent):
     sTitle = sMovieTitle +  ' - [COLOR skyblue]' + sQual +'[/COLOR]'
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('sUrl', sUrl)
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
     oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
     oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sCom, oOutputParameterHandler)
@@ -386,7 +387,7 @@ def showMoviesLinks(sHtmlContent):
 
             sTitle = sMovieTitle +  ' - [COLOR skyblue]' + aEntry[0]+'[/COLOR]'
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('sUrl', aEntry[1])
+            oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sCom, oOutputParameterHandler)             
@@ -431,7 +432,7 @@ def showSeriesLinks(sHtmlContent):
     sDisplayTitle = cUtil().DecoTitle(sMovieTitle) +  ' - [COLOR skyblue]' + sQual + '[/COLOR]'
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('sUrl', sUrl)
+    oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
     oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
     oGui.addMovie(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
@@ -451,7 +452,7 @@ def showSeriesLinks(sHtmlContent):
             
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle) +  ' - [COLOR skyblue]' + aEntry[0]+'[/COLOR]'
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('sUrl', aEntry[1])
+            oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oGui.addMovie(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
@@ -484,7 +485,7 @@ def showHosters():# recherche et affiche les hotes
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler() #apelle l'entree de paramettre
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sUrl = oInputParameterHandler.getValue('sUrl')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumbnail=oInputParameterHandler.getValue('sThumbnail')
     
     xbmc.log( sUrl )
@@ -497,11 +498,7 @@ def showHosters():# recherche et affiche les hotes
     
     #Si ca ressemble aux lien premiums on vire les liens non premium
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent:
-        sHtmlContent = CutNonPremiumlinks(sHtmlContent)
-        
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()   
+        sHtmlContent = CutNonPremiumlinks(sHtmlContent)  
     
     oParser = cParser()
     
@@ -539,7 +536,7 @@ def showHosters():# recherche et affiche les hotes
             else:
                 sTitle = '[COLOR skyblue]' + aEntry[0]+ '[/COLOR] ' + sMovieTitle
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('sUrl', aEntry[1])
+                oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumbnail, '', oOutputParameterHandler)
@@ -553,7 +550,7 @@ def showSeriesHosters():# recherche et affiche les hotes
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler() #apelle l'entree de paramettre
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sUrl = oInputParameterHandler.getValue('sUrl')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumbnail=oInputParameterHandler.getValue('sThumbnail')
     
     oRequestHandler = cRequestHandler(sUrl)
@@ -601,7 +598,7 @@ def showSeriesHosters():# recherche et affiche les hotes
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
                 
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('sUrl', aEntry[0])
+                oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
@@ -615,24 +612,23 @@ def Display_protected_link():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sUrl = oInputParameterHandler.getValue('sUrl')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumbnail=oInputParameterHandler.getValue('sThumbnail')
 
     oParser = cParser()
-    
-    import xbmc
-    xbmc.log(sUrl)
+
+    #xbmc.log(sUrl)
     
     #Est ce un lien dl-protect ?
     if 'dl-protect' in sUrl:
-        sHtmlContent = DecryptDlProtect(sUrl)
+        sHtmlContent = DecryptDlProtect(sUrl) 
         
         if sHtmlContent:
             sPattern_dlprotect = '><a href="(.+?)" target="_blank">'
             aResult_dlprotect = oParser.parse(sHtmlContent, sPattern_dlprotect)
             
         else:
-            oDialog = cConfig().createDialogOK('Desole, probleme de captcha.\n Veuillez un rentrer au un directement sur le site, le temps de reparer')
+            oDialog = cConfig().createDialogOK('Desole, probleme de captcha.\n Veuillez en rentrer un directement sur le site, le temps de reparer')
             aResult_dlprotect = (False, False)
             
     #Si lien normal       
@@ -673,6 +669,13 @@ def Cutlink(sHtmlContent):
     #print aResult
     if (aResult[0]):
         return aResult[1][0]
+    #ok c'est une page battarde, dernier essais
+    else:
+        sPattern = '<div  class="maincont">(.+?)<div class="divinnews"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        #print aResult
+        if (aResult[0]):
+            return aResult[1][0]
     
     return ''
     
