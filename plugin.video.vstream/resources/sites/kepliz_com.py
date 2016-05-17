@@ -24,7 +24,7 @@ SEARCHPATTERN = '<fieldset> *<div> *<b><a *href="\/[0-9a-zA-Z]+\/(.+?)" *>(.+?)<
 NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/(.+?)">(.+?)<\/a>'
 NEXTPAGEPATTERN = '<span class="pagenav">[0-9]+<.span><.li><li><a title=".+?" href="\/[0-9a-zA-Z]+\/(.+?)" class="pagenav">'
 FRAMEPATTERN = 'KEPLIZpluginsphp\("player1",{link:"(.+?)"}\);'
-FRAMEPATTERN2 = '<iframe src="\/([^<>"]+\/player\.php\?id=.+?)"'
+FRAMEPATTERN2 = '<iframe src="*\/([^<>"]+\/player\.php\?id=.+?)"'
 HOSTPATTERN = '"link":"([^"]+?)","label":"([^"]+?)"'
 
 #pour l'addon
@@ -203,6 +203,10 @@ def showHosters():
     sLink = None
     sPostUrl = None
     sHtmlContent = sHtmlContent.replace('\r','')
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
     
     #Format classique
     sPattern = FRAMEPATTERN
