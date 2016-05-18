@@ -269,9 +269,10 @@ def showMovies(sSearch = ''):
         #reponse = urllib2.urlopen(request)
         
         sSearch = urllib2.unquote(sSearch)
-        sSearch = urllib.quote_plus(sSearch).upper()
+        sSearch = urllib.quote_plus(sSearch).upper() #passe en majuscule et remplace espace par +
 
-        url = URL_MAIN + 'resultat.php?string=' + sSearch
+        url = URL_MAIN + 'resultat+' + sSearch + '.html'
+
         headers = {'User-Agent' : 'Mozilla 5.10', 'Referer' : URL_MAIN}
         request = urllib2.Request(url,None,headers)
         reponse = urllib2.urlopen(request)
@@ -288,6 +289,10 @@ def showMovies(sSearch = ''):
         sHtmlContent = oRequestHandler.request()
         #sHtmlContent = DecryptMangacity(sHtmlContent)    
     #print sUrl
+    
+    #fh = open('c:\\manga.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
 
     #sPattern = 'background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=\'(.+?)\' class=\'button'
     sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=\'(.+?)\' class=\'button'
@@ -469,13 +474,6 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    #print sUrl
-    #print aResult
-
-    #fh = open('c:\\manga.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-    
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
