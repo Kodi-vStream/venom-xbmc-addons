@@ -180,13 +180,7 @@ def showMovies(sSearch = ''):
 
     if '/mangas' in sUrl:
         sPattern = '<h2 class="heading"><a href="([^<>"]+?)">([^<]+)<\/a>.+?<img class="img-responsive" src="(.+?)" alt='
-        
-    #xbmc.log(sUrl)
-    #fh = open('c:\\test.txt', "w")
-    #sHtmlContent = sHtmlContent.replace('\n','').replace('\t','')
-    #fh.write(sHtmlContent)
-    #fh.close()
-        
+  
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -287,6 +281,7 @@ def showLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     sPlayer = ''
+    listdoublon = []
     
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -306,6 +301,12 @@ def showLinks():
                 sTitle = ' (' + sLang + '/' + aEntry[3] + ')' + ' - [COLOR skyblue]' + sPlayer +'[/COLOR] ' + sMovieTitle
                 #sDisplayTitle = cUtil().DecoTitle(sTitle)
                 
+                #test de doublon
+                if sUrlLink not in listdoublon:
+                    listdoublon.append(sUrlLink)
+                else:
+                    continue
+                
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('sUrl', sUrlLink)
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
@@ -324,11 +325,14 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
+    #import xbmc
+    #xbmc.log(sUrl)
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
     oParser = cParser()
-    sPattern = '<iframe.+?src="(.+?)"'
+    sPattern = '<(?:iframe|embed).+?src="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     	
     if (aResult[0] == True):
@@ -337,6 +341,9 @@ def showHosters():
             sHosterUrl = str(aEntry)
             if sHosterUrl.startswith('//'):
                 sHosterUrl = 'http:' + sHosterUrl
+            
+            #import xbmc
+            #xbmc.log(sHosterUrl)
             
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
@@ -415,6 +422,10 @@ def seriesLinks():
     else:
         sHtmlContent =  aResult[1][0]
     
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
+    
     sPattern = 'data-fancybox-type="ajax" href="(.+?)" class="fancybox fancybox\.iframe">.+?Regarder sur:<\/span> <b>(.+?)<\/b> *<\/a> *<\/p> *<\/td><td data-title="Langue" class="[^"]+">(.+?)<\/td> *<td data-title="Qualité" class="separateur[^"]+">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -425,6 +436,9 @@ def seriesLinks():
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
+        
+        listdoublon = []
+        
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
@@ -434,6 +448,11 @@ def seriesLinks():
             if not URL_MAIN in sUrlLink:
                 sUrlLink = URL_MAIN + sUrlLink
             
+            #test de doublon
+            if sUrlLink not in listdoublon:
+                listdoublon.append(sUrlLink)
+            else:
+                continue
 
             if len(aEntry) > 3:
                 sLang = aEntry[2].replace('French','VF')
