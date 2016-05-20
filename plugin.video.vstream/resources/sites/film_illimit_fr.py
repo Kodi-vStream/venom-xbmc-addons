@@ -138,12 +138,8 @@ def showMovies(sSearch = ''):
     #oRequestHandler = cRequestHandler(sUrl)
     #sHtmlContent = oRequestHandler.request()
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
-
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
     
-    sPattern = '<div class="item"> *<a href="([^<]+)">.+?<img src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">(.+?)<\/span>'
+    sPattern = 'class="item"> *<a href="([^<]+)">.+?<img src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">(.+?)<\/span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
    
@@ -222,7 +218,11 @@ def showHosters():
     #Vire les bandes annonces
     sHtmlContent = sHtmlContent.replace('src="https://www.youtube.com/', '')
     
-    sPattern = '<iframe.+?src="(http.+?)"'
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
+    
+    sPattern = '<iframe[^<>]+?src="(http.+?)"'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
