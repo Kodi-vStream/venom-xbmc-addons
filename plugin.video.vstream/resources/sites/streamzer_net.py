@@ -33,7 +33,11 @@ DOC_DOCS = ('http://', 'load')
 
 SPORT_SPORTS = ('http://www.streamzer.net/index.php?file=Replay&op=classe&secid=&orderby=news&p=1#stream', 'showReplay')
 
-MOVIE_NETS = ('http://www.streamzer.net/index.php?file=Videos&op=classe&secid=&orderby=news&p=1#stream', 'showReplay')
+MOVIE_NETS = ('http://', 'load')
+
+NETS_NEWS = ('http://www.streamzer.net/index.php?file=Videos&op=classe&secid=&orderby=news&p=1#stream', 'showReplay')
+
+NETS_GENRES = ('http://www.streamzer.net/index.php?file=Videos&op=classe&secid=&orderby=news&p=1#stream', 'buzzGenre')
 
 URL_SEARCH = ('http://www.streamzer.net/index.php?file=Search&op=mod_search&main=', 'resultSearch')
 FUNCTION_SEARCH = 'resultSearch'
@@ -80,7 +84,7 @@ def load():
     
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NETS[0])
+    oOutputParameterHandler.addParameter('siteUrl', NETS_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showReplay', 'Buzz', 'buzz.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()

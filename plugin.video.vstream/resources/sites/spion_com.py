@@ -21,7 +21,7 @@ URL_MAIN = 'http://www.spi0n.com/'
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
-MOVIE_NETS = (URL_MAIN + 'page/1/', 'showMovies')
+MOVIE_NETS = ('http://', 'load')
 NETS_NEWS = (URL_MAIN + 'page/1/', 'showMovies')
 NETS_GENRES = (True, 'showGenre')
  

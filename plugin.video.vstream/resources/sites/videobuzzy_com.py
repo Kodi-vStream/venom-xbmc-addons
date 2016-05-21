@@ -18,6 +18,10 @@ URL_MAIN = 'http://www.videobuzzy.com/'
 
 MOVIE_NETS = ('http://www.videobuzzy.com/top-video.php', 'showMovies')
 
+MOVIE_NETS = ('http://', 'load')
+NETS_NEWS =  ('http://www.videobuzzy.com/top-video.php', 'showMovies')
+NETS_GENRES = (True, 'load')
+
 #URL_SEARCH = ('http://www.notre-ecole.net/?s=', 'showMovies')
 #FUNCTION_SEARCH = 'showMovies'
     
