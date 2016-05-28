@@ -501,7 +501,7 @@ def showMovies(sSearch = ''):
     oInputParameterHandler = cInputParameterHandler()
             
     if sSearch:
-        sUrl = sSearch
+        sUrl = sSearch.replace(' ','+')
         
         sDisp = oInputParameterHandler.getValue('disp')
        
@@ -515,7 +515,7 @@ def showMovies(sSearch = ''):
             sUrl = sUrl
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        
+    
     sHtmlContent = GetHtmlViaDns(sUrl)
     #oRequestHandler = cRequestHandler(sUrl)
     #sHtmlContent = oRequestHandler.request()
