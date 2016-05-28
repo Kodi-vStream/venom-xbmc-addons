@@ -1,8 +1,6 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.config import cConfig
-#from resources.lib.gui.gui import cGui
-#from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 import os, sys
@@ -70,15 +68,16 @@ class cDb:
 
         cConfig().log('Table initialized') 
     
+    #Ne pas utiliser cette fonction pour les chemins
     def str_conv(self, data):
         if isinstance(data, str):
             # Must be encoded in UTF-8
             data = data.decode('utf8')
-        
+            
         import unicodedata
         data = unicodedata.normalize('NFKD', data).encode('ascii','ignore')
+        data = data.decode('string-escape') #ATTENTION : provoque des bugs pour les chemins a cause du caractere '/'
         
-        data = data.decode('string-escape')
         return data
     
     def insert_history(self, meta):
@@ -134,29 +133,6 @@ class cDb:
             pass
         self.db.close()
 
-
-    def insert_favorite(self, meta):
-
-        title = self.str_conv(meta['title'])
-        siteurl = urllib.quote_plus(meta['siteurl'])        
-        sIcon = self.str_conv(meta['icon'])
-
-        ex = "INSERT INTO favorite (title, siteurl, site, fav, cat, icon, fanart) VALUES (?, ?, ?, ?, ?, ?, ?)"
-        self.dbcur.execute(ex, (title,siteurl, meta['site'],meta['fav'],meta['cat'],sIcon,meta['fanart']))
-        
-        
-
-        try:
-            self.db.commit() 
-            cConfig().log('SQL INSERT favorite Successfully') 
-            cConfig().showInfo(meta['title'], 'Enregistré avec succés')
-        except Exception, e:
-            #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
-            cConfig().log('SQL ERROR INSERT') 
-            pass
-        self.db.close()        
-
-
     def get_history(self):
     
         sql_select = "SELECT * FROM history"
@@ -166,34 +142,6 @@ class cDb:
             #matchedrow = self.dbcur.fetchone()
             matchedrow = self.dbcur.fetchall()
             return matchedrow        
-        except Exception, e:
-            cConfig().log('SQL ERROR EXECUTE') 
-            return None
-        self.dbcur.close()
-        
-    def get_favorite(self):
-    
-        sql_select = "SELECT * FROM favorite"
-
-        try:    
-            self.dbcur.execute(sql_select)
-            #matchedrow = self.dbcur.fetchone()
-            matchedrow = self.dbcur.fetchall()
-            return matchedrow        
-        except Exception, e:
-            cConfig().log('SQL ERROR EXECUTE') 
-            return None
-        self.dbcur.close()
-        
-    def get_countfavorite(self):
-    
-        sql_select = "SELECT COUNT(*) FROM favorite"
-
-        try:    
-            self.dbcur.execute(sql_select)
-            #matchedrow = self.dbcur.fetchone() 
-            matchedrow = self.dbcur.fetchone()
-            return matchedrow[0]      
         except Exception, e:
             cConfig().log('SQL ERROR EXECUTE') 
             return None
@@ -264,22 +212,6 @@ class cDb:
             return False, False
         self.dbcur.close() 
         
-    def del_favorite(self, meta):
-        siteUrl = urllib.quote_plus(meta['siteurl'])
-
-        sql_select = "DELETE FROM favorite WHERE siteurl = '%s'" % (siteUrl)
-
-        try:    
-            self.dbcur.execute(sql_select)
-            self.db.commit()
-            cConfig().showInfo('vStream', 'Favoris supprimé')
-            cConfig().update()
-            return False, False
-        except Exception, e:
-            cConfig().log('SQL ERROR EXECUTE') 
-            return False, False
-        self.dbcur.close() 
-        
     def del_resume(self, meta):
         site = urllib.quote_plus(meta['site'])
 
@@ -295,6 +227,62 @@ class cDb:
             return False, False
         self.dbcur.close()
 
+        
+        
+    #***********************************
+    #   Favoris fonctions
+    #***********************************
+    
+    def insert_favorite(self, meta):
+
+        title = self.str_conv(meta['title'])
+        siteurl = urllib.quote_plus(meta['siteurl'])      
+        sIcon = meta['icon']
+
+        ex = "INSERT INTO favorite (title, siteurl, site, fav, cat, icon, fanart) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        self.dbcur.execute(ex, (title,siteurl, meta['site'],meta['fav'],meta['cat'],sIcon,meta['fanart']))
+        
+        try:
+            self.db.commit() 
+            cConfig().log('SQL INSERT favorite Successfully') 
+            cConfig().showInfo(meta['title'], 'Enregistré avec succés')
+        except Exception, e:
+            #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
+            cConfig().log('SQL ERROR INSERT') 
+            pass
+        self.db.close()
+        
+    def get_favorite(self):
+    
+        sql_select = "SELECT * FROM favorite"
+
+        try:    
+            self.dbcur.execute(sql_select)
+            #matchedrow = self.dbcur.fetchone()
+            matchedrow = self.dbcur.fetchall()
+            return matchedrow        
+        except Exception, e:
+            cConfig().log('SQL ERROR EXECUTE') 
+            return None
+        self.dbcur.close()
+
+    def del_favorite(self, meta):
+        siteUrl = urllib.quote_plus(meta['siteurl'])
+        title = self.str_conv(meta['title'])
+
+        sql_select = "DELETE FROM favorite WHERE siteurl = '%s' AND title = '%s'" % (siteUrl,title)
+
+        try:    
+            self.dbcur.execute(sql_select)
+            self.db.commit()
+            cConfig().showInfo('vStream', 'Favoris supprimé')
+            cConfig().update()
+            return False, False
+        except Exception, e:
+            cConfig().log('SQL ERROR EXECUTE') 
+            return False, False
+        self.dbcur.close() 
+        
     def getFav(self):
         oGui = cGui()
         fav_db = self.__sFile
@@ -395,7 +383,7 @@ class cDb:
 
         title = self.str_conv(meta['title'])
         url = urllib.quote_plus(meta['url'])        
-        sIcon = self.str_conv(meta['icon'])
+        sIcon = meta['icon']
         sPath = meta['path']
 
         ex = "INSERT INTO download (title, url, path, cat, icon, size, totalsize, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"

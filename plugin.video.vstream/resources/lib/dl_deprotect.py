@@ -163,10 +163,20 @@ def DecryptDlProtect(url):
         
     sHtmlContent = reponse.read()
     
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
+        
     #site out ?
     if 'A technical problem occurred' in sHtmlContent:
         print 'Dl-protect HS'
         cGui().showInfo("Erreur", 'Site Dl-Protect HS' , 5)
+        return ''
+        
+    #lien HS ?
+    if 'the link you are looking for is not found' in sHtmlContent:
+        print 'lien Dl-protect HS'
+        cGui().showInfo("Erreur", 'Lien non disponible' , 5)
         return ''
     
     #Recuperatioen et traitement cookies ???
@@ -206,10 +216,6 @@ def DecryptDlProtect(url):
         #Ce parametre ne sert pas encore pour le moment
         mstime = int(round(time() * 1000))
         b64time = "_" + base64.urlsafe_b64encode(str(mstime)).replace("=", "%3D")
-        
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
               
         #tempo necessaire
         cGui().showInfo("Patientez", 'Decodage en cours' , 2)
@@ -276,6 +282,10 @@ def ClassicCaptcha(sHtmlContent,cookies,url,headers):
             
         sHtmlContent = reponse.read()
         reponse.close()
+        
+        if '<td align=center> Please enter the characters from the picture to see the links </td>' in sHtmlContent:
+            cGui().showInfo("Erreur", 'Mauvais Captcha' , 5)
+            return 'rate'
         
         return sHtmlContent
 

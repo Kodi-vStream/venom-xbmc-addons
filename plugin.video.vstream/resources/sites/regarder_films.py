@@ -13,7 +13,7 @@ from resources.lib.util import cUtil
 import re
  
 SITE_IDENTIFIER = 'regarder_films'
-SITE_NAME = 'regarder.films'
+SITE_NAME = 'Regarder-films-gratuit'
 SITE_DESC = 'Streaming ou Telechargement films series mangas gratuitement et sans limite. Des films en exclusivite en qualite DVD a regarder ou telecharger'
  
 URL_MAIN = 'http://www.regarder-film-gratuit.com/'
@@ -130,6 +130,11 @@ def showSeries(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
+                
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),aEntry[1]) == 0:
+                    continue                
                 
             sTitle = aEntry[1]
             sUrl = str(aEntry[0])

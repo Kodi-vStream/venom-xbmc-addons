@@ -249,7 +249,7 @@ def showSeries(sSearch=''):
     oRequestHandler.addParameters('language', 'fr')
     oRequestHandler.addParameters('page', iPage)
 
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
     result = json.loads(sHtmlContent)
     
     total = len(sHtmlContent)
@@ -268,8 +268,10 @@ def showSeries(sSearch=''):
 
             sTitle = sTitle.encode("utf-8")
 
+            sUrl = API_URL + '/tv/' + str(sId)
+            
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str('none'))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oOutputParameterHandler.addParameter('sId', str(sId))
@@ -292,12 +294,17 @@ def showSeries(sSearch=''):
 def showSeriesSaison():
     
     oInputParameterHandler = cInputParameterHandler()
-    #sUrl = oInputParameterHandler.getValue('siteUrl')
-    sId = oInputParameterHandler.getValue('sId')
+    
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sFanart = oInputParameterHandler.getValue('sFanart')
     
-    sUrl = API_URL+'/tv/' + sId
+    sId = oInputParameterHandler.getValue('sId')
+    if sId == False:
+        sId = sUrl.split('/')[-1]
+    
+    if sFanart == False:
+        sFanart = ''
     
     oGui = cGui()
    
@@ -320,9 +327,11 @@ def showSeriesSaison():
             else: sThumbnail = '' 
 
             sTitle = 'Saison ' + str(SSeasonNum) + ' (' + str(sNbreEp) + ')'
+            
+            sUrl = API_URL+'/tv/' + sId + '/season/' + str(SSeasonNum)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str('none'))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oOutputParameterHandler.addParameter('sId', sId)
@@ -341,14 +350,17 @@ def showSeriesSaison():
 def showSeriesEpisode():
     
     oInputParameterHandler = cInputParameterHandler()
-    #sUrl = oInputParameterHandler.getValue('siteUrl')
-    sId = oInputParameterHandler.getValue('sId')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sSeason = oInputParameterHandler.getValue('sSeason')
     sFanart = oInputParameterHandler.getValue('sFanart')
     
+    sSeason = oInputParameterHandler.getValue('sSeason')
+    #sId = oInputParameterHandler.getValue('sId')
+    if sSeason == False:
+        sSeason = sUrl.split('/')[-1]
     
-    sUrl = API_URL+'/tv/' + sId + '/season/' + sSeason
+    if sFanart == False:
+        sFanart = ''
     
     oGui = cGui()
    
@@ -376,14 +388,16 @@ def showSeriesEpisode():
             else: sThumbnail = ''
 
             sTitle = '[COLOR coral]S' + sSeason + 'E' + str(sEpNumber) + '[/COLOR] - ' + sName
+            
+            sExtraTitle = ' S' + "%02d" % int(sSeason) + 'E' + "%02d" % int(sEpNumber)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str('none'))
+            oOutputParameterHandler.addParameter('siteUrl', sMovieTitle+ '|' + sExtraTitle) #Pour compatibilite Favoris
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('disp', 'search2')
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oOutputParameterHandler.addParameter('sSeason', sSeason)
-            oOutputParameterHandler.addParameter('sEpisode', str(sEpNumber))
+            #oOutputParameterHandler.addParameter('sSeason', sSeason)
+            #oOutputParameterHandler.addParameter('sEpisode', str(sEpNumber))
             
             oGui.addTVDB(SITE_IDENTIFIER, 'showHosters', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
             
@@ -482,11 +496,15 @@ def __checkForNextPage(sHtmlContent):
 def showHosters():
 
     oInputParameterHandler = cInputParameterHandler()
-    #sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    sSeason = oInputParameterHandler.getValue('sSeason')
-    sEpisode = oInputParameterHandler.getValue('sEpisode')
+    
+    sExtraTitle = ''
+    #si c'est une serie
+    if sUrl != 'none':
+        sExtraTitle = sUrl.split('|')[1]
+        sMovieTitle = sUrl.split('|')[0]
       
     #nettoyage du nom pr la recherche
     #print 'avant ' + sMovieTitle
@@ -499,12 +517,7 @@ def showHosters():
     sMovieTitle = re.sub('\(.+?\)',' ', sMovieTitle) #vire les parentheses
     sMovieTitle = re.sub(' +',' ',sMovieTitle) #vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
     #print 'apres ' + sMovieTitle
-    
-    sExtraTitle = ''
-    #si c'est une serie
-    if sSeason and sEpisode:
-        sExtraTitle = ' S' + "%02d" % int(sSeason) + 'E' + "%02d" % int(sEpisode)
-        
+
     dialog3 = xbmcgui.Dialog()
     ret = dialog3.select('Selectionner un Moteur de Recherche',['Vstream (Fiable mais plus complexe)','Alluc (Simple mais resultats non garantis)'])
 
@@ -512,8 +525,6 @@ def showHosters():
         VstreamSearch(sMovieTitle)
     elif ret == 1:
         AllucSearch(sMovieTitle + sExtraTitle)
-        
-        
 
 
 def VstreamSearch(sMovieTitle):
@@ -524,6 +535,11 @@ def VstreamSearch(sMovieTitle):
     
     #Type de recherche
     sDisp = oInputParameterHandler.getValue('disp')
+
+    if not(sDisp):
+        sDisp = 'search1'
+        if sUrl != 'none':
+            sDisp = 'search2'
     
     oHandler = cRechercheHandler()
     oHandler.setText(sMovieTitle)

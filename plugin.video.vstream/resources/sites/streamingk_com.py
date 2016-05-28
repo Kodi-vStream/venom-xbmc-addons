@@ -34,7 +34,7 @@ ANIM_NEWS = ('http://streamingk.com/category/mangas/', 'showMovies')
 
 REPLAYTV_REPLAYTV = ('http://streamingk.com/category/emissions-tv/', 'showMovies')
 
-SPORT_SPORTS = ('http://streamingk.com/category/sport/', 'showMovies')
+#SPORT_SPORTS = ('http://streamingk.com/category/sport/', 'showMovies')
 
 URL_SEARCH = ('http://streamingk.com/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -68,9 +68,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Emissions TV', 'series.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Sport', 'series.png', oOutputParameterHandler)   
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
+    # oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Sport', 'series.png', oOutputParameterHandler)   
 
     oGui.setEndOfDirectory()
 

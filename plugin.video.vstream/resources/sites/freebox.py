@@ -96,7 +96,7 @@ def showBox():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', str(track.path))
         oOutputParameterHandler.addParameter('sMovieTitle', str(track.title))
-        oGui.addDir(SITE_IDENTIFIER, 'play', track.title, 'tv.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'play__', track.title, 'tv.png', oOutputParameterHandler)
     
   
     oGui.setEndOfDirectory()
@@ -114,7 +114,7 @@ def showWeb():
         oOutputParameterHandler.addParameter('siteUrl', str(track.path))
         oOutputParameterHandler.addParameter('sMovieTitle', str(track.title))
         oOutputParameterHandler.addParameter('sThumbnail', str(sRootArt+'/tv/'+track.icon))
-        oGui.addDirectTV(SITE_IDENTIFIER, 'play', track.title, 'tv.png' , sRootArt+'/tv/'+track.icon, oOutputParameterHandler)    
+        oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt+'/tv/'+track.icon, oOutputParameterHandler)    
   
     oGui.setEndOfDirectory()
 
@@ -219,13 +219,13 @@ def showLibretv():
             oGui.addText(SITE_IDENTIFIER, sTitle, oOutputParameterHandler)
         #real stream
         elif 'rtmp' in track.path or 'm3u8' in track.path:
-            oGui.addDirectTV(SITE_IDENTIFIER, 'play', sTitle, sthumb, sthumb, oOutputParameterHandler)
+            oGui.addDirectTV(SITE_IDENTIFIER, 'play__', sTitle, sthumb, sthumb, oOutputParameterHandler)
         #folder
         elif '.m3u' in track.path : 
             oGui.addDirectTV(SITE_IDENTIFIER, 'showLibretv', sTitle, sthumb, sthumb, oOutputParameterHandler)  
         #unknow link, loaded as normal stream
         else:
-            oGui.addDirectTV(SITE_IDENTIFIER, 'play', sTitle, sthumb, sthumb, oOutputParameterHandler)
+            oGui.addDirectTV(SITE_IDENTIFIER, 'play__', sTitle, sthumb, sthumb, oOutputParameterHandler)
   
     oGui.setEndOfDirectory()
 
@@ -347,7 +347,7 @@ def parseLibretvM3U(infile):
     return playlist
     
     
-def play():
+def play__():
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()

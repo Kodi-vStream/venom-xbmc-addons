@@ -13,7 +13,7 @@ from resources.lib.config import cConfig
 import re, urllib
 
 SITE_IDENTIFIER = 'streaming_series_org'
-SITE_NAME = 'StreamingSeries'
+SITE_NAME = 'Streaming-Series'
 SITE_DESC = 'Film en streaming, regarder film en direct, streaming vf regarder film gratuitement sur Frenchstream.org'
 
 URL_MAIN = 'http://streaming-series.tv/'
@@ -111,7 +111,7 @@ def showGenre():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-      sUrl = sSearch
+        sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -131,6 +131,11 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
+                
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),aEntry[2]) == 0:
+                    continue
 
             sSmall = aEntry[3].replace('<span class="likeThis">', '').replace('</span>', '')
             sTitle = aEntry[2]+' - [COLOR azure]'+sSmall+'[/COLOR]'

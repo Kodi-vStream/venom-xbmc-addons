@@ -9,6 +9,9 @@ import unicodedata
 class cUtil:
     
     def CheckOccurence(self,str1,str2):
+        
+        Ignoreliste = ['du', 'la', 'le', 'les', 'de', 'un', 'une' ]
+        
         str1 = str1.replace('+',' ').replace('%20',' ')
         str1 = str1.lower()
         str2 = str2.lower()
@@ -22,9 +25,12 @@ class cUtil:
             pass
         str1 = unicodedata.normalize('NFKD', str1).encode('ASCII', 'ignore')
         str2 = unicodedata.normalize('NFKD', str2).encode('ASCII', 'ignore')
+        
+        #xbmc.log(str1 + ' ---- ' + str2) 
+        
         i = 0
         for part in str1.split(' '):
-            if part in str2:
+            if (part in str2) and (part not in Ignoreliste):
                 i = i + 1
         return i
 
@@ -101,8 +107,8 @@ class cUtil:
                     pass
             return text # leave as is
         return re.sub("&#?\w+;", fixup, text)
-            
-            
+           
+           
     def CleanName(self,name):
         #vire accent et '\'
         try:
@@ -167,4 +173,3 @@ class cUtil:
         
         #reconvertion utf-8
         return string.encode('utf-8')
- 

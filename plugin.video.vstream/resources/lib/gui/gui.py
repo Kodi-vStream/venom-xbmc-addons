@@ -16,7 +16,6 @@ import xbmcgui
 import xbmcplugin
 import urllib
 import unicodedata,re
-import xbmc
 
 def CleanName(str):
     
@@ -200,6 +199,7 @@ class cGui():
         oGuiElement.setMeta(1)
         oGuiElement.setThumbnail(sThumbnail)
         oGuiElement.setFanart(sFanart)
+        oGuiElement.setCat(7)
         
         if oOutputParameterHandler.getValue('sMovieTitle'):
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
@@ -218,6 +218,7 @@ class cGui():
         oGuiElement.setMeta(2)
         oGuiElement.setThumbnail(sThumbnail)
         oGuiElement.setFanart(sFanart)
+        oGuiElement.setCat(7)
         
         if oOutputParameterHandler.getValue('sMovieTitle'):
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
@@ -295,13 +296,6 @@ class cGui():
         return oListItem
 
     def createContexMenuWatch(self, oGuiElement, oOutputParameterHandler= ''):
-        # oContext = cContextElement()
-        # oContext.setFile('cGui')
-        # oContext.setSiteName(oGuiElement.getSiteName())
-        # oContext.setFunction('setWatched')
-        # oContext.setTitle('[COLOR azure]Marquer vu/Non vu[/COLOR]')
-        # oContext.setOutputParameterHandler(oOutputParameterHandler)
-        # oGuiElement.addContextItem(oContext)
         self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'setWatched','[COLOR azure]Marquer vu/Non vu[/COLOR]')
         
     def createContexMenuPageSelect(self, oGuiElement, oOutputParameterHandler):
@@ -332,103 +326,50 @@ class cGui():
         
         
     def createContexMenuFav(self, oGuiElement, oOutputParameterHandler= ''):
-        oContext = cContextElement()     
-        oContext.setFile('cFav')
-        oContext.setSiteName('cFav')
-        oContext.setFunction('setFavorite')
-        oContext.setTitle('[COLOR teal]Marque-Page[/COLOR]')
-        
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
         oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
-        oContext.setOutputParameterHandler(oOutputParameterHandler)
-
-        oGuiElement.addContextItem(oContext)  
+        
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','setFavorite','[COLOR teal]Marque-Page[/COLOR]')
         
     def createContexMenuDownload(self, oGuiElement, oOutputParameterHandler= '', status = '0'):
 
         if status == '0':
-            # oContext = cContextElement()
-            # oContext.setFile('cDownload')
-            # oContext.setSiteName('cDownload')
-            # oContext.setFunction('StartDownloadOneFile')
-            # oContext.setTitle('Demarrer ce telechargement')
-            # oContext.setOutputParameterHandler(oOutputParameterHandler)
-            # oGuiElement.addContextItem(oContext)
             self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','StartDownloadOneFile','Demarrer ce telechargement')
         
         if status == '0' or status == '2':
-            # oContext = cContextElement()
-            # oContext.setFile('cDownload')
-            # oContext.setSiteName('cDownload')
-            # oContext.setFunction('delDownload')
-            # oContext.setTitle('Supprimer de la liste')
-            # oContext.setOutputParameterHandler(oOutputParameterHandler)
-            # oGuiElement.addContextItem(oContext)
             self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','delDownload','Supprimer de la liste')
-            
-            # oContext = cContextElement()
-            # oContext.setFile('cDownload')
-            # oContext.setSiteName('cDownload')
-            # oContext.setFunction('DelFile')
-            # oContext.setTitle('[COLOR=red]Supprimer definitivement[/COLOR]')
-            # oContext.setOutputParameterHandler(oOutputParameterHandler)
-            # oGuiElement.addContextItem(oContext)
             self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','DelFile','[COLOR=red]Supprimer definitivement[/COLOR]')
             
         if status == '1':
-            # oContext = cContextElement()
-            # oContext.setFile('cDownload')
-            # oContext.setSiteName('cDownload')
-            # oContext.setFunction('StopDownloadList')
-            # oContext.setTitle('Arreter le telechargement')
-            # oContext.setOutputParameterHandler(oOutputParameterHandler)
-            # oGuiElement.addContextItem(oContext)
             self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','StopDownloadList','Arreter le telechargement')
             
         if status == '2':
-            # oContext = cContextElement()
-            # oContext.setFile('cDownload')
-            # oContext.setSiteName('cDownload')
-            # oContext.setFunction('ReadDownload')
-            # oContext.setTitle('Lire')
-            # oContext.setOutputParameterHandler(oOutputParameterHandler)
-            # oGuiElement.addContextItem(oContext)
             self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','ReadDownload','Lire')
             self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','ResetDownload','Reset')
-        
+ 
+ 
     def createContexMenuinfo(self, oGuiElement, oOutputParameterHandler= ''):
-        oContext = cContextElement()
-        oContext.setFile('cGui')
-        oContext.setSiteName(oGuiElement.getSiteName())
-        oContext.setFunction('viewinfo')
-        oContext.setTitle('[COLOR azure]Information[/COLOR]')
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
+        
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewBA','[COLOR azure]Bande annonce[/COLOR]')
+        
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
-      
-        oContext.setOutputParameterHandler(oOutputParameterHandler)
-
-        oGuiElement.addContextItem(oContext)
+        
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewinfo','[COLOR azure]Information[/COLOR]')
         
 
     
     def createContexMenuSimil(self, oGuiElement, oOutputParameterHandler= ''):
-        oContext = cContextElement()
-        oContext.setFile('cGui')
-        oContext.setSiteName(oGuiElement.getSiteName())
-        oContext.setFunction('viewsimil')
-        oContext.setTitle('[COLOR azure]Recherche Similaire[/COLOR]')
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
       
-        oContext.setOutputParameterHandler(oOutputParameterHandler)
-
-        oGuiElement.addContextItem(oContext)
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewsimil','[COLOR azure]Recherche Similaire[/COLOR]')
         
     def CreateSimpleMenu(self,oGuiElement,oOutputParameterHandler,file,name,function,title):
         oContext = cContextElement()     
@@ -442,13 +383,6 @@ class cGui():
         oGuiElement.addContextItem(oContext)
         
     def createContexMenuDelFav(self, oGuiElement, oOutputParameterHandler= ''):
-        #oContext = cContextElement()
-        #oContext.setFile('cFav')
-        #oContext.setSiteName('cFav')
-        #oContext.setFunction('delFavourites')
-        #oContext.setTitle('[COLOR red]'+cConfig().getlanguage(30209)+'[/COLOR]')      
-        #oContext.setOutputParameterHandler(oOutputParameterHandler)
-        #oGuiElement.addContextItem(oContext)
         self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','delFavourites','[COLOR red]'+cConfig().getlanguage(30209)+'[/COLOR]')
         
     def createContexMenuEpg(self, oGuiElement, oOutputParameterHandler= ''):
@@ -502,24 +436,25 @@ class cGui():
         oListItem.addContextMenuItems(aContextMenus)
         
         #Menu speciaux si metadata
-        if  oGuiElement.getTrailerUrl(): 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('sHosterIdentifier', 'youtube')
-            oOutputParameterHandler.addParameter('sMediaUrl', oGuiElement.getTrailerUrl())
-            oOutputParameterHandler.addParameter('sFileName', oGuiElement.getTitle())
-            oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
-            oContextItem = cContextElement()
-            oContextItem.setFile('cHosterGui')
-            oContextItem.setSiteName('cHosterGui')
-            oContextItem.setTitle('[COLOR azure]Bande Annonce[/COLOR]')
-            oContextItem.setFunction('play')
-            oContextItem.setOutputParameterHandler(oOutputParameterHandler)
+        #supprimer depuis la recherche interne de bande annonce
+        # if  oGuiElement.getTrailerUrl(): 
+            # oOutputParameterHandler = cOutputParameterHandler()
+            # oOutputParameterHandler.addParameter('sHosterIdentifier', 'youtube')
+            # oOutputParameterHandler.addParameter('sMediaUrl', oGuiElement.getTrailerUrl())
+            # oOutputParameterHandler.addParameter('sFileName', oGuiElement.getTitle())
+            # oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
+            # oContextItem = cContextElement()
+            # oContextItem.setFile('cHosterGui')
+            # oContextItem.setSiteName('cHosterGui')
+            # oContextItem.setTitle('[COLOR azure]Bande Annonce[/COLOR]')
+            # oContextItem.setFunction('play')
+            # oContextItem.setOutputParameterHandler(oOutputParameterHandler)
             
-            oOutputParameterHandler = oContextItem.getOutputParameterHandler()
-            sParams = oOutputParameterHandler.getParameterAsUri()
-            sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-            aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.RunPlugin(%s)" % (sTest,),)]
-            oListItem.addContextMenuItems(aContextMenus)
+            # oOutputParameterHandler = oContextItem.getOutputParameterHandler()
+            # sParams = oOutputParameterHandler.getParameterAsUri()
+            # sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
+            # aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.RunPlugin(%s)" % (sTest,),)]
+            # oListItem.addContextMenuItems(aContextMenus)
         
         return oListItem
         
@@ -659,8 +594,20 @@ class cGui():
             cDb().del_resume(meta)
         else:
             cDb().insert_watched(meta)
+            
         xbmc.executebuiltin( 'Container.Refresh' )
         
+    def viewBA(self):
+        oGuiElement = cGuiElement()
+        oInputParameterHandler = cInputParameterHandler()
+
+        sFileName = oInputParameterHandler.getValue('sFileName')
+        
+        from resources.lib.ba import cShowBA
+        cBA = cShowBA()
+        cBA.SetSearch(sFileName)
+        cBA.SearchBA()
+
         
     def viewinfo(self):
  
@@ -684,17 +631,7 @@ class cGui():
             sCleanTitle = re.sub('(?i)[S|E][0-9]+', '',sCleanTitle)
         
         ui = cConfig().WindowsBoxes(sTitle,sCleanTitle, sMeta,sYear)
-    
-    # def viewinfo2(self):
- 
-        # oInputParameterHandler = cInputParameterHandler()
-
-        # sTitle = oInputParameterHandler.getValue('sTitle')
-        # sId = oInputParameterHandler.getValue('sId')
-        # sFileName = oInputParameterHandler.getValue('sFileName')          
-        
-        # xbmc.executebuiltin("Action(Info)")
-        
+       
     def direct_epg(self):
         oGuiElement = cGuiElement()
         oInputParameterHandler = cInputParameterHandler()
@@ -703,14 +640,12 @@ class cGui():
         sTitle = oInputParameterHandler.getValue('sMovieTitle')
         sCom = cePg().get_epg(sTitle,'direct')
         
-        
     def soir_epg(self):
         oGuiElement = cGuiElement()
         oInputParameterHandler = cInputParameterHandler()
 
         sTitle = oInputParameterHandler.getValue('sMovieTitle')
         sCom = cePg().get_epg(sTitle,'soir')
-
 
     def __createItemUrl(self, oGuiElement, oOutputParameterHandler=''):
         if (oOutputParameterHandler == ''):
@@ -760,20 +695,20 @@ class cGui():
         if (cConfig().isDharma() == False):
             return
 
-	if (iSeconds == 0):
+        if (iSeconds == 0):
             iSeconds = 1000
-	else:
+        else:
             iSeconds = iSeconds * 1000
-        
+            
         xbmc.executebuiltin("Notification(%s,%s,%s)" % (cConfig().getlanguage(30308), (cConfig().getlanguage(30309) % str(sTitle)), iSeconds))
 
     def showError(self, sTitle, sDescription, iSeconds=0):
         if (cConfig().isDharma() == False):
             return
 
-	if (iSeconds == 0):
+        if (iSeconds == 0):
             iSeconds = 1000
-	else:
+        else:
             iSeconds = iSeconds * 1000
 
         xbmc.executebuiltin("Notification(%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds))
@@ -782,9 +717,9 @@ class cGui():
         if (cConfig().isDharma() == False):
             return
 
-	if (iSeconds == 0):
+        if (iSeconds == 0):
             iSeconds = 1000
-	else:
+        else:
             iSeconds = iSeconds * 1000
 
         xbmc.executebuiltin("Notification(%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds))

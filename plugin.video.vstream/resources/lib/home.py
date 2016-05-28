@@ -177,7 +177,7 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'movieHD', '[COLOR '+color_films+']'+cConfig().getlanguage(30160)+'[/COLOR]', 'films_genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'movieHD', '[COLOR '+color_films+']'+cConfig().getlanguage(30160)+'[/COLOR]', 'films_hd.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -294,7 +294,7 @@ class cHome:
         self.__callpluging('MOVIE_VIEWS', color_films, 'films_views.png')
 
     def movieHD(self):
-        self.__callpluging('MOVIE_HD', color_films, 'films_views.png')
+        self.__callpluging('MOVIE_HD', color_films, 'films_hd.png')
 
     def movieComments(self):
         self.__callpluging('MOVIE_COMMENTS', color_films, 'films_comments.png')

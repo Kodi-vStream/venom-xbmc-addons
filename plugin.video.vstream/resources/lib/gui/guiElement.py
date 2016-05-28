@@ -336,6 +336,7 @@ class cGuiElement:
         else:
             return
         del meta['playcount']
+        del meta['trailer']
         
         if meta['title']:
             meta['title'] = self.getTitle()
@@ -344,13 +345,13 @@ class cGuiElement:
             self.addItemValues(key, value)
          
         if meta['imdb_id']:
-            self.__sImdb = meta['imdb_id']           
+            self.__sImdb = meta['imdb_id']         
         if meta['backdrop_url']:
             self.addItemProperties('fanart_image', meta['backdrop_url'])
             self.__sFanart = meta['backdrop_url']
-        if meta['trailer_url']:
-            meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
-            self.__sTrailerUrl = meta['trailer']
+        # if meta['trailer_url']:
+            # meta['trailer'] = meta['trailer'].replace(u'\u200e', '').replace(u'\u200f', '')
+            # self.__sTrailerUrl = meta['trailer']
         if meta['cover_url']:
             self.__sThumbnail = meta['cover_url']
         return

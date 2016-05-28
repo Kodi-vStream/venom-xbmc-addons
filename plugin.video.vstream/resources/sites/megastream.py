@@ -32,24 +32,24 @@ ANIM_ANIMS = (URL_MAIN +'fonctions/infinite_scroll.php?count_tiles_mangas=0&tout
 ANIM_HD = (URL_MAIN +'fonctions/infinite_scroll.php?count_tiles_mangas=0&tout_les_genres=none&onlyHD=none', 'showMovies')
 ANIM_GENRES = (URL_MAIN +'fonctions/infinite_scroll.php?count_tiles_mangas=0&genres[]=', 'showGenreAnime')
  
-URL_SEARCH = ('http://mega-stream.fr/fonctions/recherche.php', 'resultSearch')
+URL_SEARCH = ('', 'resultSearch')
 FUNCTION_SEARCH = 'resultSearch'
    
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
+    oOutputParameterHandler.addParameter('siteUrl', 'http://mega-stream.fr/fonctions/recherche.php')
     oOutputParameterHandler.addParameter('disp', 'search1')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de Film', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
+    oOutputParameterHandler.addParameter('siteUrl', 'http://mega-stream.fr/fonctions/recherche.php')
     oOutputParameterHandler.addParameter('disp', 'search2')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de Serie', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
+    oOutputParameterHandler.addParameter('siteUrl', 'http://mega-stream.fr/fonctions/recherche.php')
     oOutputParameterHandler.addParameter('disp', 'search3')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d Animes', 'search.png', oOutputParameterHandler)
     
@@ -261,8 +261,11 @@ def showGenreAnime():
 def resultSearch(sSearch):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+        
+    sUrl = "http://mega-stream.fr/fonctions/recherche.php"
     sDisp = oInputParameterHandler.getValue('disp')
+    
+    #oInputParameterHandler.getAllParameter()
 
     post_data = {'searchValue' : sSearch,
                 'smallSearch': 'false' }
