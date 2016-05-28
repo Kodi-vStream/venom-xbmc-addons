@@ -157,6 +157,7 @@ def showMovies(sSearch = ''):
                 
             sName = aEntry[2].replace(' en Streaming HD','')
             sName = sName.replace(' Streaming HD','')
+            sName = sName.decode('utf8')
             sName = cUtil().unescape(sName)
             try:
                 sName = sName.encode("utf-8")
