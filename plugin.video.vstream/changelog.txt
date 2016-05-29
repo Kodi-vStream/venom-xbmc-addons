@@ -24,4 +24,4 @@ https://github.com/LordVenom/venom-xbmc-addons-beta/commits/master
 
 - Amelioration de la gestion des favoris.
 - Rajout de la possibilitee de passer par script.extendedinfo pour avoir les infos.
-- Rajout d'un lien pour avoir les bandes annonces.
+- Rajout d'un lien pour avoir les bandes annonces en menu contextuel.
