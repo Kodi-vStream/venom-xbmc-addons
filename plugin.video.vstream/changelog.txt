@@ -11,7 +11,8 @@
 - Daniel L.
 - Jean Charles A.
 =============================================================================
-- Merci au contributeur de la bêta. FreeFighter77/mino60/zombiB/chataigne73/Kodigoal
+- Merci au contributeur de la bêta. FreeFighter77/mino60/zombiB/chataigne73
+  Kodigoal, Arzaz 
 =============================================================================
 =============================================================================
 - Merci à http://libretv.me/ pour le partage de leurs sources.
@@ -20,3 +21,7 @@
 - Version 0.4.2 - 28.05.2016
 =============================================================================
 https://github.com/LordVenom/venom-xbmc-addons-beta/commits/master
+
+- Amelioration de la gestion des favoris.
+- Rajout de la possibilitee de passer par script.extendedinfo pour avoir les infos.
+- Rajout d'un lien pour avoir les bandes annonces.
