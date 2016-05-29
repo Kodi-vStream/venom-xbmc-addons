@@ -12,7 +12,7 @@
 - Jean Charles A.
 =============================================================================
 - Merci au contributeur de la bêta. FreeFighter77/mino60/zombiB/chataigne73
-  Kodigoal, Arzaz 
+  Kodigoal/Arzaz 
 =============================================================================
 =============================================================================
 - Merci à http://libretv.me/ pour le partage de leurs sources.
