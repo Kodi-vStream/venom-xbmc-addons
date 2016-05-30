@@ -182,7 +182,10 @@ def showMovies(sSearch = ''):
         cConfig().finishDialog(dialog)
            
         if not sSearch:
-            sNextPage = __checkForNextPage(sHtmlContent)
+            if '/serie-' in sUrl or  '/anime-' in sUrl:
+                sNextPage = __checkForNextPage2(sHtmlContent)
+            else:
+                sNextPage = __checkForNextPage(sHtmlContent)
             if (sNextPage != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
@@ -197,6 +200,16 @@ def __checkForNextPage(sHtmlContent):
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return URL_MAIN + aResult[1][0]
+ 
+    return False
+    
+def __checkForNextPage2(sHtmlContent):
+    sPattern = "<span class=\"courante\">.+?<a href='(.+?)' rel='nofollow'>"
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    print aResult
+    if (aResult[0] == True):
+        return aResult[1][0]
  
     return False
  
