@@ -207,7 +207,6 @@ def __checkForNextPage2(sHtmlContent):
     sPattern = "<span class=\"courante\">.+?<a href='(.+?)' rel='nofollow'>"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    print aResult
     if (aResult[0] == True):
         return aResult[1][0]
  
