@@ -1,8 +1,13 @@
+#-*- coding: utf-8 -*-
+#From Anonymous author modified by Tmpname
+
 from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 import urllib, urllib2
+
+import xbmc
 
 import re
 import base64
@@ -265,32 +270,41 @@ class cHoster(iHoster):
                 #fh = open('c:\\netu.txt', "w")
                 #fh.write(data)
                 #fh.close()
-
-                vid_server = re.search(r'var\s*vid_server\s*=\s*"([^"]*?)"', data)
-                vid_link = re.search(r'var\s*vid_link\s*=\s*"([^"]*?)"', data)
+                
                 at = re.search(r'var\s*at\s*=\s*"([^"]*?)"', data)
-
+                
+                l = re.search(r'link_1: ([a-zA-Z]+), server_1: ([a-zA-Z]+)', data)
+                
+                vid_server = re.search(r'var ' + l.group(1) + ' = "([^"]+)"', data).group(1)
+                vid_link = re.search(r'var ' + l.group(2) + ' = "([^"]+)"', data).group(1)
+                
                 if vid_server and vid_link and at:
 
-                    #get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '1/'}
-                    get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '0/','b':'1','vid':id} #,'iss':'MzEuMzguMjUyLjc='
+                    #get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '0/','b':'1','vid':id} #,'iss':'MzEuMz'
+                    get_data = {'server_1': vid_server, 'link_1': vid_link, 'at': at.group(1), 'adb': '0/','b':'1','vid':id}
                     
                     req = urllib2.Request("http://hqq.tv/player/get_md5.php?" + urllib.urlencode(get_data),None,headers)
                     try:
                         response = urllib2.urlopen(req)
                     except urllib2.URLError, e:
-                        print e.read()
-                        print e.reason
+                        xbmc.log(str(e.read()))
+                        xbmc.log(str(e.reason))
                         
                     data = response.read()
                     response.close()
                     
+                    #fh = open('c:\\netu2.txt', "w")
+                    #fh.write(data)
+                    #fh.close()
+                    
                     file_url = re.search(r'"file"\s*:\s*"([^"]*?)"', data)
                    
                     if file_url:
-                        list_url = _decode2(file_url.group(1).replace('\\', '')) + '='
+                        list_url = _decode2(file_url.group(1).replace('\\', ''))
                         
-                    #print list_url
+                    #Now faut tout remettre dans l'ordre
+                    url = re.search(r'(^.+)secip(.+?\/)(http.+$)', list_url)
+                    list_url = url.group(3) + '/secip' + url.group(2) + url.group(1)
         
         api_call = list_url
         #api_call = list_url.replace('?socket=','.mp4Frag1Num0.ts')
@@ -306,3 +320,4 @@ class cHoster(iHoster):
             
         return False, False
  
+#/secip/0/ZIgDe0NqPHXXXXXXCvkDQ/MzEuMzguMjUyLjc=/1465009200/hls-vod-s7/flv/api/files/videos/2016/05/29/146451822732e7d.mp4Frag4Num4   nd4f35.vkcache.com
