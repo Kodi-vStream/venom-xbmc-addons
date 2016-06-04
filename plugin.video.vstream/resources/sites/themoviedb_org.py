@@ -268,10 +268,10 @@ def showSeries(sSearch=''):
 
             sTitle = sTitle.encode("utf-8")
 
-            sUrl = API_URL + '/tv/' + str(sId)
+            sSiteUrl = API_URL + '/tv/' + str(sId)
             
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('siteUrl', sSiteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oOutputParameterHandler.addParameter('sId', str(sId))
@@ -465,9 +465,9 @@ def showActors():
                 #sTitle = sTitle.encode("utf-8")
 
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+                oOutputParameterHandler.addParameter('siteUrl', 'none')
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-                oOutputParameterHandler.addParameter('disp', 'none')
+                oOutputParameterHandler.addParameter('disp', 'search1')
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 
                 oGui.addMovieDB(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sFanart, oOutputParameterHandler)
