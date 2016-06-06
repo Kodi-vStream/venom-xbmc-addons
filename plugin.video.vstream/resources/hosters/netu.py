@@ -319,5 +319,3 @@ class cHoster(iHoster):
             return True, api_call          
             
         return False, False
- 
-#/secip/0/ZIgDe0NqPHXXXXXXCvkDQ/MzEuMzguMjUyLjc=/1465009200/hls-vod-s7/flv/api/files/videos/2016/05/29/146451822732e7d.mp4Frag4Num4   nd4f35.vkcache.com
