@@ -386,16 +386,16 @@
   {
     "name": "netu.py",
     "path": "plugin.video.vstream/resources/hosters/netu.py",
-    "sha": "585977d07f0ecf19f7ceb22b938fd54baac14b63",
-    "size": 11287,
+    "sha": "764c5c0ae42b6861f52465e392c8aadd8f9539f8",
+    "size": 11132,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/netu.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/netu.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/585977d07f0ecf19f7ceb22b938fd54baac14b63",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/764c5c0ae42b6861f52465e392c8aadd8f9539f8",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/netu.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/netu.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/585977d07f0ecf19f7ceb22b938fd54baac14b63",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/764c5c0ae42b6861f52465e392c8aadd8f9539f8",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/netu.py"
     }
   },
