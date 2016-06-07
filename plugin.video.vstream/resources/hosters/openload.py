@@ -8,6 +8,7 @@ from resources.lib.packer import cPacker
 from resources.lib.aadecode import AADecoder
 import re,urllib2
 
+#Merci a cmos pour son code
 #Convert from decimal to any base number
 #http://code.activestate.com/recipes/65212-convert-from-decimal-to-any-base-number/
 def base10toN(num, n):
@@ -72,6 +73,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
+        self.__sUrl = self.__sUrl.replace('/embed/', '/f/')
 
     def checkUrl(self, sUrl):
         return True
@@ -96,8 +98,10 @@ class cHoster(iHoster):
         string = ''
        
         #"aaencode - Encode any JavaScript program to Japanese style emoticons (^_^)"
-        sPattern = "<video(?:.|\s)*?<script\s[^>]*?>((?:.|\s)*?)<\/script"
+        sPattern = '<script type="text/javascript">(ﾟωﾟ.+?)</script>'
+        #sPattern = "<video(?:.|\s)*?<script\s[^>]*?>((?:.|\s)*?)<\/script"
         aResult = oParser.parse(sHtmlContent, sPattern)
+        
         if (aResult[0] == True):
             string = AADecoder(aResult[1][0]).decode()
             #print string
