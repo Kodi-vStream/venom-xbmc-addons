@@ -8,6 +8,8 @@ from resources.lib.packer import cPacker
 from resources.lib.aadecode import AADecoder
 import re,urllib2
 
+import xbmc
+
 #Merci a cmos pour son code
 #Convert from decimal to any base number
 #http://code.activestate.com/recipes/65212-convert-from-decimal-to-any-base-number/
@@ -73,7 +75,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace('/embed/', '/f/')
+        #self.__sUrl = self.__sUrl.replace('/embed/', '/f/')
 
     def checkUrl(self, sUrl):
         return True
@@ -98,32 +100,44 @@ class cHoster(iHoster):
         string = ''
        
         #"aaencode - Encode any JavaScript program to Japanese style emoticons (^_^)"
-        sPattern = '<script type="text/javascript">(ﾟωﾟ.+?)</script>'
+        sPattern = '<script type="text\/javascript">(ﾟωﾟ.+?)<\/script>'
         #sPattern = "<video(?:.|\s)*?<script\s[^>]*?>((?:.|\s)*?)<\/script"
         aResult = oParser.parse(sHtmlContent, sPattern)
         
-        if (aResult[0] == True):
-            string = AADecoder(aResult[1][0]).decode()
-            #print string
-            if 'toString' in string:
-                base = int(re.findall('toString\(a\+([0-9]+)\)',string)[0])
-                table = re.findall('(\([0-9][^)]+\))',string)
+        #ok on a maintenant 4 liens
+        vid = 'XXXXXX'
+        string2 = []
+        for aEntry in aResult[1]:
+            s = AADecoder(aEntry).decode()
+            string2.append(s)
+            
+            if 'toString' not in s:
+                sPattern = '{type:vt,src:([a-zA-Z0-9]+)}'
+                aResult = oParser.parse(s, sPattern)
+                if aResult[0]:
+                    vid = aResult[1][0]
+        
+        for string3 in string2:
+
+            if ('toString' in string3) and (vid in string3):
+                base = int(re.findall('toString\(a\+([0-9]+)\)',string3)[0])
+                table = re.findall('(\([0-9][^)]+\))',string3)
                 
                 for str1 in table:
                     val = re.findall('([0-9]+),([0-9]+)',str1)
                     base2 = base + int(val[0][0])
                     str2 = base10toN(int(val[0][1]), base2)
-                    string = string.replace(str1, str2)
+                    string3 = string3.replace(str1, str2)
                 
                 #nettoyage
-                string = string.replace('+', '')
-                string = string.replace('"', '')
-                string = string.replace('', '')
+                string3 = string3.replace('+', '')
+                string3 = string3.replace('"', '')
+                string3 = string3.replace('', '')
 
                 #bidouille pour pas avoir a tout recoder
-                url = re.findall('(http[^<>}]+)',string)[0]
+                url = re.findall('(http[^<>}]+)',string3)[0]
                 string = 'src="' + url + '?mime=true"'
-                
+ 
         if not (string): 
             #Dean Edwards Packer
             sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
