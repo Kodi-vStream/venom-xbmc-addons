@@ -42,9 +42,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Replay TV', 'films.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', DOC_DOCS[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_DOCS[1], 'Documentaires', 'films.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', DOC_DOCS[0])
+    # oGui.addDir(SITE_IDENTIFIER, DOC_DOCS[1], 'Documentaires', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://buzzmonclick.com/category/replay-tv/divertissement/')
@@ -114,9 +114,11 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
    
-    sPattern = 'data-id="[0-9]+" title="([^<]+)" href="([^<]+)"><span class="clip"><img src="([^<]+)" alt="'
+    #sPattern = 'data-id="[0-9]+" title="([^<]+)" href="([^<]+)"><span class="clip"><img src="([^<]+)" alt="'
+    sPattern = 'class="post-thumbnail">.*?<a href="([^"]+)" title="([^"]+)".*?<img.*?src="([^"]+)".*?<div class="entry">.*?<p>([^>]+)</p>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
    
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -126,28 +128,32 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
  
-            sTitle = unicode(aEntry[0], 'utf-8')#converti en unicode
+            sTitle = unicode(aEntry[1], 'utf-8')#converti en unicode
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
             #sTitle = unescape(str(sTitle))
             sTitle = sTitle.encode( "utf-8")
             #print sTitle
             
             #mise en page
+            sTitle = sTitle.replace('Permalien pour', '')
             sTitle = re.sub('(?:,)* (?:Replay |Video )*du ([0-9]+ [a-zA-z]+ [0-9]+)',' (\\1)', str(sTitle))
             sTitle = re.sub(', (?:Replay|Video)$','', str(sTitle))
+            
             
             #couleur
             #sTitle = cUtil().DecoTitle(sTitle)
            
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
            
             #print str(sTitle)
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-           
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', aEntry[2], aEntry[2], oOutputParameterHandler)
+            if "/series-tv/" in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', aEntry[2], aEntry[3], oOutputParameterHandler)
+            else:
+                oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'doc.png', aEntry[2], aEntry[3], oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
  
@@ -163,7 +169,8 @@ def showMovies(sSearch = ''):
  
  
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<span class=\'current\'>.+?</span><a class="page larger" href="(.+?)">'
+    #sPattern = '<span class=\'current\'>.+?</span><a class="page larger" href="(.+?)">'
+    sPattern = '<span class="current">.+?</span><a href="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
  
