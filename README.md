@@ -1,19 +1,17 @@
 Venom-Addons-Vstream-XBMC
 =================
 
-### Sommaire
+Sommaire: **[A Propos](#a-propos)** | **[Image](#image)** | **[Installer!](#installer)** | **[Video](#video)** | **[Quoi de neuf](#quoi-de-neuf)** | **[Contribuer](#contribuer)** | **[Faire un Don](#faire-un-don)** 
 
-**[A Propos](#a-propos)** | **[Image](#image)** | **[Installer!](#installer)** | **[Video](#video)** | **[Quoi de neuf](#quoi-de-neuf)** | **[Contribuer](#contribuer)** | **[Faire un Don](#faire-un-don)** 
-
-###A Propos!
+## A Propos!
 
 Vstream est un addon pour xbmc qui vous permet de visionner en streaming un grand nombre de source video (comme la télévision, les films, les series, les mangas, les documentaires, ect..) il vous est même possible de télécharger certaine source, de les mettre en favoris ou de voir la bande annonce. Le tout depuis XBMC et 100% français.
 
-##Image!
+## Image!
 
 [![Vstream Images](http://img4.hostingpics.net/pics/128778Sanstitre1.jpg)](http://img4.hostingpics.net/pics/128778Sanstitre1.jpg)
 
-###Installer!
+## Installer!
 
 Installer le zip du repository (pour avoir les mises à jour automatique) ou installer la dernière version.
 
@@ -21,7 +19,7 @@ Installer le zip du repository (pour avoir les mises à jour automatique) ou ins
 
 [Voir toutes les Versions](https://github.com/LordVenom/venom-xbmc-addons/releases)
 
-###Video!
+## Video!
 
 ######Video de présentation : Merci à Atlas
 
@@ -36,12 +34,12 @@ Installer le zip du repository (pour avoir les mises à jour automatique) ou ins
 [![Video d'installation](http://img.youtube.com/vi/XeACz8uMoxQ/0.jpg)](http://www.youtube.com/watch?v=XeACz8uMoxQ)
 
 
-###Quoi de neuf!
+## Quoi de neuf!
 
 [Voir le changelog](https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/changelog.txt)
 
 
-###Contribuer!
+## Contribuer!
 
 Pour me proposer de nouvelles sources ou me rapporter un bug utiliser
 
@@ -50,8 +48,6 @@ Pour me proposer de nouvelles sources ou me rapporter un bug utiliser
 [Twitter @LordVenom57](https://twitter.com/LordVenom57)
 
 [Google+ LordVenom57](https://plus.google.com/+LordVenom57/posts)
-
-
 
 
 Pour créer un nouvelle source utiliser le fichier avec commentaire pour vous aider.
