@@ -1,16 +1,22 @@
 Venom-Addons-Vstream-XBMC
 =================
 
-C'est quoi!
+### Table of Contents
+**[C'est quoi](#about)**  
+**[Usage Instructions](#Image!)**  
+**[Troubleshooting](#troubleshooting)**  
+**[Compatibility](#compatibility)**  
+
+
+##C'est quoi!
 ----------
 
 Vstream est un addon pour xbmc qui vous permet de visionner en streaming un grand nombre de source video (comme la télévision, les films, les series, les mangas, les documentaires, ect..) il vous est même possible de télécharger certaine source, de les mettre en favoris ou de voir la bande annonce. Le tout depuis XBMC et 100% français.
 
-Demo!
+##Image!
 ----------
 
 [![Vstream Images](http://img4.hostingpics.net/pics/128778Sanstitre1.jpg)](http://img4.hostingpics.net/pics/128778Sanstitre1.jpg)
-
 
 Installer!
 ----------
@@ -21,14 +27,20 @@ Installer le zip du repository (pour avoir les mises à jour automatique) ou ins
 
 [Voir toutes les Versions](https://github.com/LordVenom/venom-xbmc-addons/releases)
 
-Tutoriel!
+Video!
 ----------
 
-[Video de présentation : Merci à Atlas web](https://www.youtube.com/watch?v=43Nq2pxkAH4)
+######Video de présentation : Merci à Atlas
 
-[Video de présentation2 : Merci à Atlas web](https://www.youtube.com/watch?v=reZ1ZKH41VE)
+[![Video de présentation](http://img.youtube.com/vi/43Nq2pxkAH4/0.jpg)](http://www.youtube.com/watch?v=43Nq2pxkAH4)
 
-[Video de d'installation : Merci à Patulacci marcel](https://www.youtube.com/watch?v=XeACz8uMoxQ)
+######[Video de présentation2 : Merci à Atlas
+
+[![Video de présentation2](http://img.youtube.com/vi/reZ1ZKH41VE/0.jpg)](http://www.youtube.com/watch?v=reZ1ZKH41VE)
+
+######Video d'installation : Merci à Patulacci
+
+[![Video d'installation](http://img.youtube.com/vi/XeACz8uMoxQ/0.jpg)](http://www.youtube.com/watch?v=XeACz8uMoxQ)
 
 
 Quoi de neuf!
