@@ -65,5 +65,7 @@ Faire un Don!
 
 [![PayPayl donate button](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KQZ5AUFYJW64 "Donner pour ce projet en utilisant Paypal")
 
+[![Beerpay](https://beerpay.io/LordVenom/venom-xbmc-addons/badge.svg?style=beer)](https://beerpay.io/LordVenom/venom-xbmc-addons)
+
 
 Bon Film ++
