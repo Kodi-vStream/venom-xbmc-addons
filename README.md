@@ -2,14 +2,13 @@ Venom-Addons-Vstream-XBMC
 =================
 
 ### Sommaire
-**[A Propos](#propos)**  
-**[Image](#Image)**  
-**[Installer](#Installer)**  
-**[Video](#Video)**  
-**[Quoi de neuf](#neuf)**  
-**[Video](#Video)**
-**[Contribuer](#Contribuer)**  
-**[Faire un Don](#Don)** 
+**[A Propos](#a-propos)**  
+**[Image](#image)**  
+**[Installer!](#installer)**  
+**[Video](#video)**  
+**[Quoi de neuf](#quoi-de-neuf)**
+**[Contribuer](#contribuer)**  
+**[Faire un Don](#faire-un-don)** 
 
 
 
@@ -73,7 +72,7 @@ Pour participer directement au projet
 [github bêta](https://github.com/LordVenom/venom-xbmc-addons-beta)
 
 
-###Faire un Don!
+## Faire un Don!
 
 [![PayPayl donate button](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NG5VVH8BMNLBJ "Donner pour ce projet en utilisant Paypal")
 
