@@ -16,17 +16,14 @@ Venom-Addons-Vstream-XBMC
 
 
 ###A Propos!
-----------
 
 Vstream est un addon pour xbmc qui vous permet de visionner en streaming un grand nombre de source video (comme la télévision, les films, les series, les mangas, les documentaires, ect..) il vous est même possible de télécharger certaine source, de les mettre en favoris ou de voir la bande annonce. Le tout depuis XBMC et 100% français.
 
 ##Image!
-----------
 
 [![Vstream Images](http://img4.hostingpics.net/pics/128778Sanstitre1.jpg)](http://img4.hostingpics.net/pics/128778Sanstitre1.jpg)
 
-Installer!
-----------
+###Installer!
 
 Installer le zip du repository (pour avoir les mises à jour automatique) ou installer la dernière version.
 
@@ -34,8 +31,7 @@ Installer le zip du repository (pour avoir les mises à jour automatique) ou ins
 
 [Voir toutes les Versions](https://github.com/LordVenom/venom-xbmc-addons/releases)
 
-Video!
-----------
+###Video!
 
 ######Video de présentation : Merci à Atlas
 
@@ -50,14 +46,12 @@ Video!
 [![Video d'installation](http://img.youtube.com/vi/XeACz8uMoxQ/0.jpg)](http://www.youtube.com/watch?v=XeACz8uMoxQ)
 
 
-Quoi de neuf!
-----------
+###Quoi de neuf!
 
 [Voir le changelog](https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/changelog.txt)
 
 
-Contribuer!
-----------
+###Contribuer!
 
 Pour me proposer de nouvelles sources ou me rapporter un bug utiliser
 
@@ -79,8 +73,7 @@ Pour participer directement au projet
 [github bêta](https://github.com/LordVenom/venom-xbmc-addons-beta)
 
 
-Faire un Don!
-----------
+###Faire un Don!
 
 [![PayPayl donate button](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NG5VVH8BMNLBJ "Donner pour ce projet en utilisant Paypal")
 
