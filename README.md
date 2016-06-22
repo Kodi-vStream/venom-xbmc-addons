@@ -3,7 +3,7 @@ Venom-Addons-Vstream-XBMC
 
 ### Table of Contents
 **[C'est quoi](#about)**  
-**[Usage Instructions](#Image!)**  
+**[Image](#image)**  
 **[Troubleshooting](#troubleshooting)**  
 **[Compatibility](#compatibility)**  
 
