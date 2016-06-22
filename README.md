@@ -1,14 +1,14 @@
 Venom-Addons-Vstream-XBMC
 =================
 
-### Table of Contents
-**[C'est quoi](#about)**  
+### Sommaire
+**[Propos](#about)**  
 **[Image](#image)**  
 **[Troubleshooting](#troubleshooting)**  
 **[Compatibility](#compatibility)**  
 
 
-##C'est quoi!
+###A Propos!
 ----------
 
 Vstream est un addon pour xbmc qui vous permet de visionner en streaming un grand nombre de source video (comme la télévision, les films, les series, les mangas, les documentaires, ect..) il vous est même possible de télécharger certaine source, de les mettre en favoris ou de voir la bande annonce. Le tout depuis XBMC et 100% français.
