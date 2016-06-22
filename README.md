@@ -2,17 +2,8 @@ Venom-Addons-Vstream-XBMC
 =================
 
 ### Sommaire
-**[A Propos](#a-propos)**  
-**[Image](#image)**  
-**[Installer!](#installer)**  
-**[Video](#video)**  
-**[Quoi de neuf](#quoi-de-neuf)**
-**[Contribuer](#contribuer)**  
-**[Faire un Don](#faire-un-don)** 
 
-
-
-
+**[A Propos](#a-propos)** | **[Image](#image)** | **[Installer!](#installer)** | **[Video](#video)** | **[Quoi de neuf](#quoi-de-neuf)** | **[Contribuer](#contribuer)** | **[Faire un Don](#faire-un-don)** 
 
 ###A Propos!
 
