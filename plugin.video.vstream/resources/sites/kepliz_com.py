@@ -12,18 +12,19 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import urllib2,urllib,re
 import unicodedata,htmlentitydefs
- 
+
+#Je garde le nom kepliz pour pas perturber
 SITE_IDENTIFIER = 'kepliz_com'
 SITE_NAME = 'Kepliz'
 SITE_DESC = 'Film en streaming'
-URL_HOST = 'http://www.kepliz.com/'
+URL_HOST = 'http://www.grudal.com/'
  
 URL_MAIN = 'URL_MAIN'
 FILMPATTERN = '<div class="article-content"><p style="text-align: center;"><img src="(.+?)" border.+?<p style="text-align: left;">([^<>]+?)<\/p>'
 SEARCHPATTERN = '<fieldset> *<div> *<b><a *href="\/[0-9a-zA-Z]+\/(.+?)" *>(.+?)<\/a><\/b>'
 NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/(.+?)">(.+?)<\/a>'
 NEXTPAGEPATTERN = '<span class="pagenav">[0-9]+<.span><.li><li><a title=".+?" href="\/[0-9a-zA-Z]+\/(.+?)" class="pagenav">'
-FRAMEPATTERN = 'KEPLIZpluginsphp\("player1",{link:"(.+?)"}\);'
+FRAMEPATTERN = 'GRUDALpluginsphp\("player1",{link:"(.+?)"}\);'
 FRAMEPATTERN2 = '<iframe src="*\/([^<>"]+\/player\.php\?id=.+?)"'
 HOSTPATTERN = '"link":"([^"]+?)","label":"([^"]+?)"'
 
@@ -213,10 +214,10 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0]):
         sLink = aResult[1][0]
-        sPattern = '\/plugins\/([0-9a-zA-Z]+)\/plugins\/KEPLIZpluginsphp.js"><\/script>'
+        sPattern = '\/plugins\/([0-9a-zA-Z]+)\/plugins\/GRUDALpluginsphp.js"><\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0]):
-            sPostUrl = sMainUrl + 'plugins/' + aResult[1][0] + '/plugins/KEPLIZpluginsphp.php'
+            sPostUrl = sMainUrl + 'plugins/' + aResult[1][0] + '/plugins/GRUDALpluginsphp.php'
             
         if ((sLink) and (sPostUrl)):
 
@@ -259,7 +260,7 @@ def showHostersLink():
     
     UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
     headers = {'User-Agent': UA ,
-               'Host' : 'kepliz.com',
+               'Host' : 'grudal.com',
                'Referer': sUrl,
                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
@@ -316,7 +317,7 @@ def showHostersLink2():
     
     UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'
     headers = {'User-Agent': UA ,
-               'Host' : 'kepliz.com',
+               'Host' : 'grudal.com',
                'Referer': sLink,
                'Accept': 'video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5',
                'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',

@@ -101,22 +101,29 @@ class cHoster(iHoster):
        
         #"aaencode - Encode any JavaScript program to Japanese style emoticons (^_^)"
         sPattern = '<script type="text\/javascript">(ﾟωﾟ.+?)<\/script>'
-        #sPattern = "<video(?:.|\s)*?<script\s[^>]*?>((?:.|\s)*?)<\/script"
+        #sPattern = "<video(?:.|\s)*?<script\s[^>]*?>.+?<\/script>\s<script\s[^>]*?>((?:.|\s)*?)<\/"
+        
         aResult = oParser.parse(sHtmlContent, sPattern)
+        xbmc.log(str(aResult))
         
         #ok on a maintenant 4 liens
         vid = 'XXXXXX'
         string2 = []
         for aEntry in aResult[1]:
             s = AADecoder(aEntry).decode()
+            #xbmc.log(s)
             string2.append(s)
             
-            if 'toString' not in s:
-                sPattern = '{type:vt,src:([a-zA-Z0-9]+)}'
-                aResult = oParser.parse(s, sPattern)
-                if aResult[0]:
-                    vid = aResult[1][0]
+            #if 'toString' not in s:
+            #    sPattern = '{type:vt,src:([a-zA-Z0-9]+)}'
+            #    aResult = oParser.parse(s, sPattern)
+            #    if aResult[0]:
+            #        vid = aResult[1][0]
         
+        c = re.search('>welikekodi_ya_rly = ([0-9- ]+);<', sHtmlContent).group(1)
+        cc = str(eval(c))
+        vid = '[' + cc + ']'
+
         for string3 in string2:
 
             if ('toString' in string3) and (vid in string3):
