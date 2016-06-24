@@ -61,7 +61,11 @@ Pour participer directement au projet
 
 ## Faire un Don!
 
-[![PayPayl donate button](https://img.shields.io/badge/paypal-donate-yellow.svg)](http://paypal.me/vstream)
+[![PayPayl](https://img.shields.io/badge/Paypal-Me-yellow.svg)](http://paypal.me/vstream)
+
+
+[![PayPayl](https://img.shields.io/badge/Paypal-CB-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NG5VVH8BMNLBJ)
+
 
 [![Beerpay](https://beerpay.io/LordVenom/venom-xbmc-addons/badge.svg?style=beer)](https://beerpay.io/LordVenom/venom-xbmc-addons)
 
