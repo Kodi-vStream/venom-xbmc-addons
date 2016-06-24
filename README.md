@@ -61,7 +61,7 @@ Pour participer directement au projet
 
 ## Faire un Don!
 
-[![PayPayl donate button](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NG5VVH8BMNLBJ "Donner pour ce projet en utilisant Paypal")
+[![PayPayl donate button](https://img.shields.io/badge/paypal-donate-yellow.svg)](paypal.me/vstream)
 
 [![Beerpay](https://beerpay.io/LordVenom/venom-xbmc-addons/badge.svg?style=beer)](https://beerpay.io/LordVenom/venom-xbmc-addons)
 
