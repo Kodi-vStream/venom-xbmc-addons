@@ -3,14 +3,17 @@
 - Question & Support: https://github.com/LordVenom/venom-xbmc-addons/issues
 - Suivez les mises a jour en direct : Twitter @lordvenom57
 =============================================================================
-            Les petits ruisseaux font les grandes rivières. Votre participation, quelle qu'elle soit, compte.
-=============================================================================          - Proposer de nouvelles sources ou me rapporter un bug.
+Les petits ruisseaux font les grandes rivières. Votre participation, quelle qu'elle soit, compte.
+=============================================================================
+- Proposer de nouvelles sources ou me rapporter un bug.
 
 [Issues Github] https://github.com/LordVenom/venom-xbmc-addons/issues
+
 
 - Créer un nouvelle source utiliser le fichier avec commentaire pour vous aidez.
 
 [Fichier avec commentaire] https://github.com/LordVenom/venom-xbmc-addons/blob/master/ajouter_une_source.py
+
 
 - Participer directement au projet
 
