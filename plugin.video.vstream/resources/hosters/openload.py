@@ -104,7 +104,7 @@ class cHoster(iHoster):
         #sPattern = "<video(?:.|\s)*?<script\s[^>]*?>.+?<\/script>\s<script\s[^>]*?>((?:.|\s)*?)<\/"
         
         aResult = oParser.parse(sHtmlContent, sPattern)
-        xbmc.log(str(aResult))
+        #xbmc.log(str(aResult))
         
         #ok on a maintenant 4 liens
         vid = 'XXXXXX'
@@ -114,19 +114,21 @@ class cHoster(iHoster):
             #xbmc.log(s)
             string2.append(s)
             
-            #if 'toString' not in s:
-            #    sPattern = '{type:vt,src:([a-zA-Z0-9]+)}'
-            #    aResult = oParser.parse(s, sPattern)
-            #    if aResult[0]:
-            #        vid = aResult[1][0]
+            if 'welikekodi_ya_rly' in s:
+                c0 = re.search('welikekodi_ya_rly = ([^<>;"]+);', s)
+                if c0:
+                    c = c0.group(1)
+                    c = c.replace('Math.round','int')
+                    #xbmc.log('calcul : ' + c )
+                    cc = str(eval(c))
+                    vid = '[' + cc + ']'
+                    #xbmc.log('resultat : ' + vid )
         
-        c = re.search('>welikekodi_ya_rly = ([0-9- ]+);<', sHtmlContent).group(1)
-        cc = str(eval(c))
-        vid = '[' + cc + ']'
-
         for string3 in string2:
-
             if ('toString' in string3) and (vid in string3):
+                
+                #xbmc.log(string3)
+                
                 base = int(re.findall('toString\(a\+([0-9]+)\)',string3)[0])
                 table = re.findall('(\([0-9][^)]+\))',string3)
                 
@@ -173,6 +175,17 @@ class cHoster(iHoster):
                     api_call = aResult[1][0]
 
         if (api_call):
+            
+            if 'openload.co/stream' in api_call:
+                UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
+                headers = {'User-Agent': UA }
+                          
+                req = urllib2.Request(api_call,None,headers)
+                res = urllib2.urlopen(req)
+                finalurl = res.geturl()
+                #xbmc.log(finalurl)
+                api_call = finalurl
+
             return True, api_call
             
         return False, False
