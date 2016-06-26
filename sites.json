@@ -194,16 +194,16 @@
   {
     "name": "freebox.py",
     "path": "plugin.video.vstream/resources/sites/freebox.py",
-    "sha": "d829355a83f36a0fa9675bec601003cbfb0ab625",
-    "size": 13937,
+    "sha": "1a1154896ede57c47c237b4ac99dbc377a5ee26a",
+    "size": 13563,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/freebox.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/freebox.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/d829355a83f36a0fa9675bec601003cbfb0ab625",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/1a1154896ede57c47c237b4ac99dbc377a5ee26a",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/freebox.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/freebox.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/d829355a83f36a0fa9675bec601003cbfb0ab625",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/1a1154896ede57c47c237b4ac99dbc377a5ee26a",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/freebox.py"
     }
   },
