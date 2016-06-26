@@ -19,11 +19,8 @@ SITE_NAME = '[COLOR orange]Télévision Direct / Stream[/COLOR]'
 SITE_DESC = 'Regarder la télévision'
 
 URL_MAIN = 'http://mafreebox.freebox.fr/freeboxtv/playlist.m3u'
-URL_FREE = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/freetv.m3u'
-URL_ORANGE = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/orangetv.m3u'
-URL_SFR = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/sfrtv.m3u'
+URL_FREE = 'https://annuel.framapad.org/p/vstream/export/txt'
 URL_WEB = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/webtv2.m3u'
-URL_BG = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/repo/resources/bouygues.m3u'
 
 URL_LIBRETV = 'http://libretv.me/Liste-m3u/token_Tj1CRNSd/add_item.dat'
 
@@ -48,23 +45,23 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'load', '[COLOR khaki]Pour lire les chaînes BOX vous devez être chez l\'Opérateur (Si des chaînes ne fonctionnent pas, vous n\'avez peux être pas le bouquet nécessaire[/COLOR]', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'load', '[COLOR khaki]Pour Modifier ou  Ajouter des chaînes à FramaPad https://annuel.framapad.org/p/vstream [/COLOR]', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_FREE)
-    oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Free TV', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'FramaPad', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_SFR)
-    oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Sfr TV', 'tv.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', URL_SFR)
+    # oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Sfr TV', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_ORANGE)
-    oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Orange TV', 'tv.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', URL_ORANGE)
+    # oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Orange TV', 'tv.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_BG)
-    oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Bouygues TV', 'tv.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', URL_BG)
+    # oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Bouygues TV', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_WEB)
@@ -108,6 +105,7 @@ def showWeb():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     playlist = parseWebM3U(sUrl)
+    
 
     for track in playlist:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -253,6 +251,7 @@ def parseWebM3U(infile):
             except:
                 icon = "tv.png"
             song=track(length,title,None,icon)
+            xbmc.log(str(icon))
         elif (len(line) != 0):
             if not line.startswith('!'):
                 song.path=line
@@ -260,7 +259,7 @@ def parseWebM3U(infile):
                 song=track(None,None,None,None)
 
     inf.close()
-
+    
     return playlist
 
 def parseM3U(infile):
