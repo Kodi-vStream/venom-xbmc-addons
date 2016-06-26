@@ -1,0 +1,31 @@
+#EXTM3U
+#EXTINF:0,2 - France 2
+http://wm.live.tv-radio.com/bouygues/all/channel1.wmv
+#EXTINF:0,3 - France 3
+http://wm.live.tv-radio.com/bouygues/all/channel2.wmv
+#EXTINF:0,5 - France 5
+http://wm.live.tv-radio.com/bouygues/all/channel4.wmv
+#EXTINF:0,8 - D8
+http://wm.live.tv-radio.com/bouygues/all/channel16.wmv
+#EXTINF:0,13 - LCP/Public Sénat
+http://wm.live.tv-radio.com/bouygues/all/channel6.wmv
+#EXTINF:0,14 - France 4
+http://wm.live.tv-radio.com/bouygues/all/channel3.wmv
+#EXTINF:0,15 - BFM TV
+http://wm.live.tv-radio.com/bouygues/all/channel10.wmv
+#EXTINF:0,17 - D17
+http://wm.live.tv-radio.com/bouygues/all/channel9.wmv
+#EXTINF:0,18 - Gulli
+http://wm.live.tv-radio.com/bouygues/all/channel14.wmv
+#EXTINF:0,19 - France Ô
+http://wm.live.tv-radio.com/bouygues/all/channel5.wmv
+#EXTINF:0,26 - Bbox Actu TV
+http://wm.live.tv-radio.com/bouygues/all/channel11.wmv
+#EXTINF:0,165 - i24 News
+http://wm.live.tv-radio.com/bouygues/all/channel12.wmv
+#EXTINF:0,223 - KTO
+http://wm.live.tv-radio.com/bouygues/all/channel8.wmv
+#EXTINF:0,442 - TV8 Mont-Blanc
+http://wm.live.tv-radio.com/bouygues/all/channel7.wmv
+#EXTINF:0,603 - 2M Maroc
+http://wm.live.tv-radio.com/bouygues/all/channel15.wmv
