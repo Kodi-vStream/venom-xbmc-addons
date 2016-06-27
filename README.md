@@ -23,7 +23,7 @@ Installer le zip du repository (pour avoir les mises à jour automatique) ou ins
 
 ######Video de présentation : Merci à Atlas
 
-[![Video de présentation](http://img.youtube.com/vi/43Nq2pxkAH4/0.jpg)](http://www.youtube.com/watch?v=43Nq2pxkAH4)
+[![Video de présentation](http://img.youtube.com/vi/LHV24CWg2hs/0.jpg)](https://www.youtube.com/watch?v=LHV24CWg2hs)
 
 ######[Video de présentation2 : Merci à Atlas
 
