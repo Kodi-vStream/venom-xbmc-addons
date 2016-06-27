@@ -251,7 +251,6 @@ def parseWebM3U(infile):
             except:
                 icon = "tv.png"
             song=track(length,title,None,icon)
-            xbmc.log(str(icon))
         elif (len(line) != 0):
             if not line.startswith('!'):
                 song.path=line
