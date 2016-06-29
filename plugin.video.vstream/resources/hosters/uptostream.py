@@ -87,9 +87,8 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        #sPattern =  "<source src='(.+?)'"
-        sPattern =  "<source src='([^<>']+?\/0)' type='[^'><]+?' data-res='([0-9]+p)'"
         oParser = cParser()
+        sPattern =  "<source src='([^<>']+)' type='[^'><]+?' data-res='([0-9]+p)'"
         aResult = oParser.parse(sHtmlContent, sPattern)
         
         stream_url = ''
