@@ -179,7 +179,7 @@ class cHoster(iHoster):
     def GetMedialinkStreaming(self,sHtmlContent):
         
         oParser = cParser()
-        sPattern =  "<source src='([^<>']+?\/0)' type='[^'><]+?' data-res='([0-9]+p)'"
+        sPattern =  "<source src='([^<>']+)' type='[^'><]+?' data-res='([0-9]+p)'"
         aResult = oParser.parse(sHtmlContent, sPattern)
         
         if (aResult[0] == True):
