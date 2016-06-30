@@ -77,74 +77,56 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     
     sHtmlContent = sHtmlContent.replace('<div class="ifabh clickable" onclick="window.location','')
-    
-    oParser = cParser()
-    
+
     #first scan to optimise
-    sPattern = 'onclick="window\.location(.+?)(?:<div class="clickable|<br\/>)'
+    #sPattern = 'onclick="window\.location(.+?)(?:<div class="clickable|<br\/>)'
+    sPattern = '<div class="search-result-thumbnail">.*?<img.+?src="//.+?/(thumbnail/[^"]+)".+?class="forstar.+?>([^<]+)</a>.+?<a title="(.+?)".+?href="/([^"]+)".+?<img.+?title="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-    if (aResult[0] == False):
-        return
-
-    sPattern1 = '<img.+?src="\/(thumbnail\/.+?)" *\/>'
-    #sPattern2 = 'class="forstar.+?>(.+?)<\/a>.+?<a title="(.+?)" href="/(.+?)" class="source" >.+?<img  src=".+?" title="(.+?)"'
-    sPattern2 = 'class="forstar.+?>(.+?)<\/a>.+?<a title="(.+?)" href="/(.+?)".+?>.+?<img *src=".+?" title="(.+?)"'
-    #sPattern = '(?:' + sPattern1 + ').+?'+ sPattern2
-    
-    for aEntry in aResult[1]:
         
-        #ici je sais pas, pas moyen de faire tourner le regex
-        if 'src="/thumbnail/' in aEntry:
-            sPattern = '(?:' + sPattern1 + ').+?'+ sPattern2
-        else:
-            sPattern = '(.)' + sPattern2
-                
-        aResult2 = oParser.parse(aEntry, sPattern)
-        
-        if (aResult2[0] == True):
-            total = len(aResult2[1])
-            dialog = cConfig().createDialog(SITE_NAME)
-            for aEntry in aResult2[1]:
-                cConfig().updateDialog(dialog, total)
-                if dialog.iscanceled():
-                    break
-                
-                sthumb = aEntry[0]
-                sHost = aEntry[1]
-                sCom = aEntry[2]
-                sUrl = aEntry[3]
-                sFlag = aEntry[4]
-                
-                if len(sthumb) < 2:
-                    sthumb = 'put1debug'
-                else:
-                    sthumb = URL_MAIN + sthumb
-                
-                sTitle = re.sub('l\/(.+?)\/.+$','\\1',sUrl)
-                
-                sUrl = URL_MAIN + sUrl
-                
-                sLang = 'FR'              
-                if 'vostfr' in sCom or 'vostfr' in sUrl:
-                    sLang = 'VOSTFR'
-                    
-                sQual = 'SD'
-                if 'HD' in sCom or 'HD' in sUrl:
-                    sQual = 'HD'                                
-                
-                sDisplaytitle = '[COLOR coral]' + sHost + '[/COLOR] ' + '[B](' + sLang + '/' + sQual + ')[/B] ' + sTitle
-                
-                #ne pas l'afficher si host special
-                if sHost not in 'freakshare.com':
-                    oOutputParameterHandler = cOutputParameterHandler()
-                    oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                    oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-                    oOutputParameterHandler.addParameter('sThumbnail', str(sthumb))
-                    oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplaytitle, '', sthumb,'', oOutputParameterHandler)
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
-            cConfig().finishDialog(dialog)
+            sthumb = aEntry[0]
+            sHost = aEntry[1]
+            sCom = aEntry[2]
+            sUrl = aEntry[3]
+            sFlag = aEntry[4]
+            
+            # if len(sthumb) < 2:
+                # sthumb = 'put1debug'
+            # else:
+            sthumb = URL_MAIN + sthumb
+
+            sTitle = re.sub('l\/(.+?)\/.+$','\\1',sUrl)
+            
+            sUrl = URL_MAIN + sUrl
+            
+            sLang = 'FR'              
+            if 'vostfr' in sCom or 'vostfr' in sUrl:
+                sLang = 'VOSTFR'
+                
+            sQual = 'SD'
+            if 'HD' in sCom or 'HD' in sUrl:
+                sQual = 'HD'                                
+            
+            sDisplaytitle = '[COLOR coral]' + sHost + '[/COLOR] ' + '[B](' + sLang + '/' + sQual + ')[/B] ' + sTitle
+            
+            #ne pas l'afficher si host special
+            if sHost not in 'freakshare.com':
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+                oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
+                oOutputParameterHandler.addParameter('sThumbnail', str(sthumb))
+                oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplaytitle, '', sthumb,'', oOutputParameterHandler)
+        
+        cConfig().finishDialog(dialog)
             
     sNextPage = __checkForNextPage(sHtmlContent)
     if (sNextPage != False):
@@ -166,13 +148,13 @@ def __checkForNextPage(sHtmlContent):
         return URL_MAIN+aResult[1][0]
 
     return False
-    
 
 def showHosters():
     oGui = cGui()
     
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
@@ -197,12 +179,15 @@ def showHosters():
         sPattern = "decrypt\('(.+?)', *'(.+?)'\)"
         aResult = oParser.parse(sHtmlContent, sPattern)
         
+        
         if (aResult[0] == True):
             
             sHtmlContent = Decrypt(aResult[1][0][0],aResult[1][0][1])
             
-            sPattern = '<iframe.+?src="(.+?)".+?<\/iframe>'
+            sPattern = '<iframe.+?src=["|\'](.+?)["|\'].+?<\/iframe>'
+            
             aResult = oParser.parse(sHtmlContent, sPattern)
+            
             
         else:
             return
