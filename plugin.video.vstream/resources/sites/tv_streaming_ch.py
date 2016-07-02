@@ -37,7 +37,8 @@ SERIE_VOSTFRS = (URL_MAIN + '/category/series-tv/serie-vostfr/', 'showMovies')
 ANIM_VFS = (URL_MAIN + '/category/manga-vf/', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + '/category/manga-vf/manga-vostfr/', 'showMovies')
 
-DOC_DOCS = (URL_MAIN + '/category/television/documentaire/', 'showMovies')
+DOC_NEWS = (URL_MAIN + '/category/television/documentaire/', 'showMovies')
+DOC_DOCS = ('http://', 'load')
 
 SPORT_SPORTS = (URL_MAIN + '/category/sport/', 'showMovies')
 
@@ -55,39 +56,39 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'films_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'films_genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series Nouveautés', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series Nouveautés', 'series_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series VF', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series VF', 'series_vf.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series VOSTFR', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series VOSTFR', 'series_vostfr.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés VF', 'animesvf.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés VF', 'animes_vf.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés VOSTFR', 'animesvostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés VOSTFR', 'animes_vostfr.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/dessin-anime/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies' ,'Dessins animes', 'animesvf.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies' ,'Dessins animes', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', DOC_DOCS[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_DOCS[1], 'Documentaires', 'animesvostfr.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
@@ -208,8 +209,10 @@ def showMovies(sSearch = ''):
             sDisplayTitle = cUtil().DecoTitle(aEntry[2])
             if '/films/' in aEntry[0]:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[2], '', aEntry[1], '', oOutputParameterHandler) 
+            elif '/series-tv/' in aEntry[0] or '/manga/' in aEntry[0] or '/dessin-anime/' in aEntry[0]:
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries',sDisplayTitle ,'', aEntry[1], '', oOutputParameterHandler) 
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries',sDisplayTitle ,'', aEntry[1], '', oOutputParameterHandler)         
+                oGui.addMisc(SITE_IDENTIFIER, 'showSeries',sDisplayTitle ,'', aEntry[1], '', oOutputParameterHandler)                 
     
         cConfig().finishDialog(dialog)
 

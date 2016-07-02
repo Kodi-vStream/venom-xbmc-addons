@@ -150,7 +150,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
             
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', aEntry[2], aEntry[3], oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'doc.png',  aEntry[2],  aEntry[3], oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 

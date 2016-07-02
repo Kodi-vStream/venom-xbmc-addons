@@ -196,6 +196,12 @@ class cGuiElement:
          
         elif sIcon == 'download.png':
             self.__sFanart = cConfig().getSetting('images_downloads')
+        
+        elif sIcon == 'update.png':
+            self.__sFanart = cConfig().getSetting('images_updates')
+            
+        elif sIcon == 'library.png':
+            self.__sFanart = cConfig().getSetting('images_librarys')
             
         elif xbmc.getInfoLabel('ListItem.Art(fanart)') != '':
             self.__sFanart = xbmc.getInfoLabel('ListItem.Art(fanart)')

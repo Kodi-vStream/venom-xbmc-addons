@@ -101,7 +101,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[3]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[3], '', aEntry[2], aEntry[1], oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[3], 'doc.png', aEntry[2], aEntry[1], oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
             
@@ -120,7 +120,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        print aResult[1][0]
+        #print aResult[1][0]
         return aResult[1][0]
 
     return False

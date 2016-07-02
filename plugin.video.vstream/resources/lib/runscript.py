@@ -36,6 +36,18 @@ class cClear:
             except:            
                 cConfig().error("%s,%s" % (cConfig().getlanguage(30205), sUrl))
             return
+            
+        elif (env == 'soutient'):
+            try:
+                sUrl = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/soutient.txt'
+                oRequest =  urllib2.Request(sUrl)
+                oResponse = urllib2.urlopen(oRequest)
+                sContent = oResponse.read()
+                from about import cAbout
+                cAbout().TextBoxes('vStream Soutient', sContent)
+            except:            
+                cConfig().error("%s,%s" % (cConfig().getlanguage(30205), sUrl))
+            return
 
         elif (env == 'addon'):
             dialog = xbmcgui.Dialog()

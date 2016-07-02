@@ -49,7 +49,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_FREE)
-    oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'FramaPad', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'FramaPad (Bêta)', 'tv.png', oOutputParameterHandler)
 
     # oOutputParameterHandler = cOutputParameterHandler()
     # oOutputParameterHandler.addParameter('siteUrl', URL_SFR)
@@ -69,11 +69,11 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'load', '[COLOR khaki]Tu veux voir ta chaîne sur Libretv.me alors partage ta chaîne![/COLOR]', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'load', '[COLOR khaki]Tu veux voir ta chaîne sur Libretv.me alors partage ta chaîne![/COLOR]', 'libretv.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_LIBRETV)
-    oGui.addDir(SITE_IDENTIFIER, 'showLibreMenu', 'Libretv.me', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showLibreMenu', 'Libretv.me', 'libretv.png', oOutputParameterHandler)
 
 
     oGui.setEndOfDirectory()
@@ -125,17 +125,17 @@ def showLibreMenu():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oOutputParameterHandler.addParameter('sOrder', '2')
-    oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Aujourd\'hui', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Aujourd\'hui', 'libretv.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oOutputParameterHandler.addParameter('sOrder', '1')
-    oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Ce mois-ci', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Ce mois-ci', 'libretv.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oOutputParameterHandler.addParameter('sOrder', '0')
-    oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Anterieur', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Anterieur', 'libretv.png', oOutputParameterHandler)
 
 
     oGui.setEndOfDirectory()
@@ -172,7 +172,7 @@ def showLibre():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oGui.addDirectTV(SITE_IDENTIFIER, 'showLibretv', sDisplayTitle, 'tv.png' , '', oOutputParameterHandler)    
+            oGui.addDirectTV(SITE_IDENTIFIER, 'showLibretv', sDisplayTitle, 'libretv.png' , '', oOutputParameterHandler)    
         
         cConfig().finishDialog(dialog)
         
@@ -210,7 +210,7 @@ def showLibretv():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', str(track.path))
         oOutputParameterHandler.addParameter('sMovieTitle', str(track.title))
-        oOutputParameterHandler.addParameter('sThumbnail', 'none')
+        oOutputParameterHandler.addParameter('sThumbnail', sthumb)
         
         #garbage
         if 'http://touski' in track.path or re.search('[0-9]\.[0-9]\.[0-9].[0-9]', track.path):
@@ -363,6 +363,9 @@ def play__():
     oPlayer = cPlayer()
     oPlayer.clearPlayList()
     oPlayer.addItemToPlaylist(oGuiElement)
+    #tout repetter
+    xbmc.executebuiltin("xbmc.playercontrol(RepeatAll)")
+    
     oPlayer.startPlayer()
     return
         

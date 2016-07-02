@@ -194,7 +194,7 @@ def showMovies(sSearch = ''):
             sTitle = sTitle.replace('http://enquetedereportages.com/','')
 			 
            
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[2], aEntry[3], oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', aEntry[2], aEntry[3], oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
  

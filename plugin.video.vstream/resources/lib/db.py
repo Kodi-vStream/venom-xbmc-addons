@@ -238,16 +238,17 @@ class cDb:
         title = self.str_conv(meta['title'])
         siteurl = urllib.quote_plus(meta['siteurl'])      
         sIcon = meta['icon']
-
-        ex = "INSERT INTO favorite (title, siteurl, site, fav, cat, icon, fanart) VALUES (?, ?, ?, ?, ?, ?, ?)"
-        self.dbcur.execute(ex, (title,siteurl, meta['site'],meta['fav'],meta['cat'],sIcon,meta['fanart']))
         
         try:
+            ex = "INSERT INTO favorite (title, siteurl, site, fav, cat, icon, fanart) VALUES (?, ?, ?, ?, ?, ?, ?)"
+            self.dbcur.execute(ex, (title,siteurl, meta['site'],meta['fav'],meta['cat'],sIcon,meta['fanart']))
+            
             self.db.commit() 
             cConfig().log('SQL INSERT favorite Successfully') 
             cConfig().showInfo(meta['title'], 'Enregistré avec succés')
         except Exception, e:
-            #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
+            if 'UNIQUE constraint failed' in e.message:
+                cConfig().showInfo(meta['title'], 'Marque-page deja present')
             cConfig().log('SQL ERROR INSERT') 
             pass
         self.db.close()
@@ -269,6 +270,7 @@ class cDb:
     def del_favorite(self, meta):
         siteUrl = urllib.quote_plus(meta['siteurl'])
         title = self.str_conv(meta['title'])
+        title = title.replace("'", r"''")       
 
         sql_select = "DELETE FROM favorite WHERE siteurl = '%s' AND title = '%s'" % (siteUrl,title)
 

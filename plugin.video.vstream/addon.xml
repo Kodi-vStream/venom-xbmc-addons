@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.vstream" name="vStream" version="0.4.2" provider-name="Venom,TmpName">
+<addon id="plugin.video.vstream" name="vStream" version="0.4.3" provider-name="Venom,TmpName">
   <requires>
 	<import addon="script.module.metahandler" version="1.0.2"/>
 	<import addon="xbmc.python" version="2.1.0"/>

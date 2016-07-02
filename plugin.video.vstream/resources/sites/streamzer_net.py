@@ -286,6 +286,8 @@ def showMovies():
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
             if '/series/' in aEntry[1]:
                 oGui.addTV(SITE_IDENTIFIER, 'showSerieHosters', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
+            elif '/documentaires/' in aEntry[1]:
+                oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png',  aEntry[0],  aEntry[3], oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
         

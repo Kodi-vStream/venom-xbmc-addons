@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'full_streamvk_net'
 SITE_NAME = 'Full-streamvk.net'
 SITE_DESC = 'Film Serie et Anime en Streaming HD - Vk.Com - Netu.tv - ExaShare - YouWatch'
  
-URL_MAIN = 'http://full-streamvk.net'
+URL_MAIN = 'http://full-streamvk.com'
  
 MOVIE_NEWS = (URL_MAIN + '/films-streamingvk-vf/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + '/films-streamingvk-vf/', 'showMovies')
@@ -36,11 +36,11 @@ def load():
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautees', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'news.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genre', 'icon.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films par Genres', 'icon.png', oOutputParameterHandler)
            
     oGui.setEndOfDirectory()
  
@@ -100,7 +100,7 @@ def showMovies(sSearch=''):
        
         data = urllib.urlencode(query_args)
         headers = {'User-Agent' : 'Mozilla 5.10'}
-        url = 'http://www.full-streamvk.net/index.php?do=search=' + sSearch
+        url = 'http://www.full-streamvk.com/index.php?do=search=' + sSearch
         request = urllib2.Request(url,data,headers)
      
         try:
@@ -143,6 +143,7 @@ def showMovies(sSearch=''):
             #print sThumbnail
  
             oOutputParameterHandler = cOutputParameterHandler()
+
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)            
@@ -183,7 +184,7 @@ def showHosters():
     #sHtmlContent = sHtmlContent.replace('src="http://full-streamvk.com/','')
  
  
-    sPattern = '<div class="fstory-video-block" id=".+?">.+?<iframe.+?src=[\'|"](.+?)[\'|"]'
+    sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]'
     oParser = cParser()
     #print aResult
     aResult = oParser.parse(sHtmlContent, sPattern)

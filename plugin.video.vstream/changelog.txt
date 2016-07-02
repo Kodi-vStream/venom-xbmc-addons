@@ -13,6 +13,65 @@ Merci au contributeur de la bêta.
 - Merci à http://libretv.me/ pour le partage de leurs sources.
 =============================================================================
 =============================================================================
-- Version 0.4.2 - 28.05.2016
+- Version 0.4.3 - 02.07.2016
 =============================================================================
-https://github.com/LordVenom/venom-xbmc-addons-beta/commits/master
+
+2016-06-30 12:13:48 -- @Lord Venom -- Update sites.json
+
+2016-06-30 12:12:49 -- @Lord Venom -- update alluc
+
+2016-06-30 11:16:59 -- @TmpName -- Update hosts.json
+
+2016-06-30 11:16:29 -- @TmpName -- Update uptobox.py
+
+2016-06-29 20:43:03 -- @TmpName -- Update hosts.json
+
+2016-06-29 20:41:55 -- @TmpName -- Update uptostream.py
+
+2016-06-27 15:07:34 -- @Lord Venom -- Update README.md
+
+2016-06-27 04:52:03 -- @Lord Venom -- update
+
+2016-06-26 13:20:44 -- @Lord Venom -- remove tv
+
+2016-06-26 12:26:06 -- @TmpName -- Update openload.py
+
+2016-06-26 12:04:51 -- @Lord Venom -- update -- Mise a jour section TV
+
+2016-06-26 11:28:51 -- @Lord Venom -- Update webtv.m3u
+
+2016-06-25 07:33:40 -- @Lord Venom -- ajout de soutient txt
+
+2016-06-23 07:49:41 -- @Lord Venom -- mise ajour changelog
+
+2016-06-20 17:28:00 -- @TmpName -- Update kepliz_com.py
+
+2016-06-11 17:15:32 -- @TmpName -- Update openload.py
+
+2016-06-10 09:08:02 -- @Lord Venom -- update buzzmonclick -- Correction de code
+
+2016-06-09 19:51:08 -- @TmpName -- Update openload.py
+
+2016-06-07 12:45:32 -- @Lord Venom -- update openload -- correction openload
+
+2016-06-06 15:06:29 -- @TmpName -- Update netu.py
+
+2016-06-06 11:59:35 -- @Lord Venom -- update voirfilm -- correction next page
+
+2016-06-04 16:02:28 -- @Lord Venom -- update movieDB -- Correction next page & recherche Acteur
+
+2016-06-03 20:54:51 -- @TmpName -- Update netu.py
+
+2016-05-31 11:56:18 -- @Lord Venom -- update film_illimit -- Corection next page
+
+2016-05-30 10:35:09 -- @Lord Venom -- update filmsvostfr -- oupps le print
+
+2016-05-30 10:29:39 -- @Lord Venom -- update filmsvostfr -- Correction next page serie & manga
+
+2016-05-29 07:51:28 -- @Lord Venom -- Mise a jour du zip
+
+2016-05-28 21:30:54 -- @TmpName -- Update frenchstream_org.py
+
+2016-05-28 21:27:04 -- @TmpName -- Update themoviedb_org.py
+
+2016-05-28 21:02:03 -- @TmpName -- Update streamcomplet.py

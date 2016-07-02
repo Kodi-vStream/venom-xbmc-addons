@@ -307,7 +307,10 @@ def showLinks():
     #On peut utiliser l'url redirigée ou cette astuce en test
     
     if 'infos_film.png' in sHtmlContent:
-        showMoviesLinks(sHtmlContent)
+        if 'épisode par épisode' in sHtmlContent:
+            showSeriesLinks(sHtmlContent)
+        else:
+            showMoviesLinks(sHtmlContent)
     else:
         showSeriesLinks(sHtmlContent)
     

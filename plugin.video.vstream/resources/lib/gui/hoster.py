@@ -242,6 +242,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('vimeo')
         if ('openload' in sHosterUrl):
             return cHosterHandler().getHoster('openload')
+        if ('thevideo.me' in sHosterUrl):
+            return cHosterHandler().getHoster('thevideo_me')    
         if ('vid.me' in sHosterUrl):
             return cHosterHandler().getHoster('vidme')
         if ('zstream' in sHosterUrl):
@@ -283,7 +285,7 @@ class cHosterGui:
         if ('drive.google.com' in sHosterUrl):
             return cHosterHandler().getHoster('googledrive')
         if ('docs.google.com' in sHosterUrl):
-            return cHosterHandler().getHoster('googledrive')             
+            return cHosterHandler().getHoster('googledrive')          
 
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHosterUrl):

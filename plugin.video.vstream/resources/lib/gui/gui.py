@@ -104,7 +104,13 @@ class cGui():
         
         oGuiElement.setDescription(sDesc)
         
+        if oOutputParameterHandler.getValue('sMovieTitle'):
+            sTitle = oOutputParameterHandler.getValue('sMovieTitle')
+            oGuiElement.setFileName(sTitle)
+        
         self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+        self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
+        self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
         
         self.addFolder(oGuiElement, oOutputParameterHandler)
         
@@ -262,14 +268,18 @@ class cGui():
         if cGui.CONTENT == "movies":
             self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
             self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
+            self.createContexMenuba(oGuiElement, oOutputParameterHandler)
             self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
             self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
 
         elif cGui.CONTENT == "tvshows":
             self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
             self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
+            self.createContexMenuba(oGuiElement, oOutputParameterHandler)
             self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
             self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+
+            
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
        
@@ -354,14 +364,18 @@ class cGui():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
-        
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewBA','[COLOR azure]Bande annonce[/COLOR]')
-        
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
         
         self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewinfo','[COLOR azure]Information[/COLOR]')
         
+    def createContexMenuba(self, oGuiElement, oOutputParameterHandler= ''):
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
+        oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
+        
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewBA','[COLOR azure]Bande annonce[/COLOR]')        
 
     
     def createContexMenuSimil(self, oGuiElement, oOutputParameterHandler= ''):
@@ -496,6 +510,16 @@ class cGui():
         xbmcplugin.setContent(iHandler, cGui.CONTENT)
         xbmcplugin.addSortMethod(iHandler, xbmcplugin.SORT_METHOD_NONE)
         xbmcplugin.endOfDirectory(iHandler, True)
+        #reglage vue
+        #50 = liste / 51 grande liste / 500 icone / 501 gallerie / 508 fanart / 
+        if (cConfig().getSetting("active-view") == 'true'):
+            if cGui.CONTENT == "movies":
+                #xbmc.executebuiltin('Container.SetViewMode(507)')
+                xbmc.executebuiltin('Container.SetViewMode(%s)' % cConfig().getSetting('movie-view'))
+            elif cGui.CONTENT == "tvshows":
+                xbmc.executebuiltin('Container.SetViewMode(%s)' % cConfig().getSetting('serie-view'))           
+            elif cGui.CONTENT == "files":
+                xbmc.executebuiltin('Container.SetViewMode(%s)' % cConfig().getSetting('default-view'))
 
     def updateDirectory(self):
         xbmc.executebuiltin("Container.Refresh")

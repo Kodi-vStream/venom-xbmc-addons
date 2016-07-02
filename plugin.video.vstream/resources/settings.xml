@@ -2,18 +2,24 @@
 <settings>
 
     <category label="30021">
-        <setting label="30021" type="lsep"/>
-        <!-- <setting id="debug" type="bool" label="30000" default="false"/> -->
-        <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2"/>
+        <setting label="30030" type="lsep"/>
+        <setting id="playerPlay" type="enum" values="XbmcPlayer|XbmcPlugin (recommandé)" label="30029" default="1"/>
+        <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2" enable="eq(-1,0)"/>
+         
+        <setting id="param_timeout" label="30027" type="number" default="1000"/>
+        
+        <setting label="30031" type="lsep"/>
         <setting id="meta-view" type="bool" label="Recherche les Métadonnées (ralenti l'Addon)" default="false"/>
         <setting label="Paramètres des Métadonnées" type="action" option="close" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, metahandler)" />
         <setting id="extendedinfo-view" type="bool" label="Utiliser extendedinfo" default="false"/>
-        <setting id="home-view" type="bool" label="Afficher l'Accueil par Catégories" default="true"/>
-        <setting id="param_timeout" label="30027" type="number" default="1000"/>
-        <setting id="history-view" type="bool" label="Activer l'historique de recherche" default="true"/>
-        
-        <setting label="Changelog" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, changelog)"/>  
 
+        <setting label="30032" type="lsep"/>
+        <setting id="home-view" type="bool" label="Afficher l'Accueil par Catégories" default="true"/>
+        <setting id="active-view" type="bool" label="30408" default="false"/>
+        <setting id="default-view" type="number" label="30406" default="50" enable="eq(-1,true)"/>
+        <setting id="accueil-view" type="number" label="30407" default="500" enable="eq(-2,true)"/>
+        <setting id="movie-view" type="number" label="30404" default="500" enable="eq(-3,true)"/>
+        <setting id="serie-view" type="number" label="30405" default="500" enable="eq(-4,true)"/>       
     </category>
 
     <!-- search1_ = Films | search2_ = séries | search3_ = anime | search4_ = Documentaire-->
@@ -421,16 +427,23 @@
         
         <setting visible="false" label="Images download" type="image" id="images_downloads" default="special://home/addons/plugin.video.vstream/resources/art/download_fanart.jpg"/>
         
+        <setting visible="false" label="Images library" type="image" id="images_librarys" default="special://home/addons/plugin.video.vstream/resources/art/library_fanart.jpg"/>
+        
         <setting visible="false" label="recherche alluc" id="search10_alluc_ee" type="bool" default="true"/>
         <setting visible="false" id="plugin_alluc_ee" type="bool" label="active alluc" default="true"/>
 
     </category>
     
     <category label="30127">
-        <setting label="30127" type="lsep"/>
+        <setting label="30033" type="lsep"/>
         <setting id="download_folder" type="folder" label="30145" default=""/>
+        <setting id="history-view" type="bool" label="Activer l'historique de recherche" default="true"/>
         <setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>    
         <setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, xbmc)"/>
+        
+        <setting label="30034" type="lsep"/>
+        <setting label="30036" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, changelog)"/>
+        <setting label="30035" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, soutient)"/> 
         
     </category>
     

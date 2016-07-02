@@ -135,10 +135,21 @@ class cRechercheHandler:
         aFileNames = self.__getFileNamesFromFolder(sFolder)
 
         aPlugins = []
+        
+        total = len(aFileNames)  
+        dialog = cConfig().createDialog("vStream")
+        xbmcgui.Window(10101).setProperty('search', 'true')
+        
         for sFileName in aFileNames:
+        
+            cConfig().updateDialogSearch(dialog, total, sFileName)               
+            if dialog.iscanceled():
+                break
                 
             aPlugin = self.__importPlugin(sFileName, sLabel, sText)
 
+        xbmcgui.Window(10101).setProperty('search', 'false')
+        cConfig().finishDialog(dialog) 
         return True
 
     def __createAvailablePluginsItem(self, sPluginName, sPluginIdentifier, sPluginDesc):

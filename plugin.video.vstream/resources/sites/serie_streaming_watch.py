@@ -20,6 +20,7 @@ SITE_DESC = 'Serie et Anime en Streaming'
 
 #meme fichiers que http://dpstreaming.watch
 URL_MAIN = 'http://serie-streaming.watch/'
+
  
 SERIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')

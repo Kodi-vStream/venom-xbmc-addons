@@ -424,7 +424,7 @@ def showActors():
     oRequestHandler.addParameters('language', 'fr')
     oRequestHandler.addParameters('page', iPage)
 
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
     result = json.loads(sHtmlContent)
     
     total = len(sHtmlContent)
@@ -444,7 +444,8 @@ def showActors():
             
             sName = sName.encode('utf-8')
             
-            oGui.addMovieDB(SITE_IDENTIFIER, 'showActors', '[COLOR red]'+str(sName)+'[/COLOR]', '', sThumbnail, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('siteUrl',API_URL + '/person/' + str(i['id']) + '/movie_credits')
+            oGui.addMovieDB(SITE_IDENTIFIER, 'showFilmActor', '[COLOR red]'+str(sName)+'[/COLOR]', '', sThumbnail, '', oOutputParameterHandler)
 
             for e in i['known_for']:
                 try:                     
@@ -482,6 +483,60 @@ def showActors():
 
     oGui.setEndOfDirectory()
 
+def showFilmActor():
+    oGui = cGui()
+    
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    iPage = 1
+    if (oInputParameterHandler.exist('page')):
+        iPage = oInputParameterHandler.getValue('page')
+   
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addParameters('api_key', API_KEY)
+    oRequestHandler.addParameters('language', 'fr')
+    oRequestHandler.addParameters('page', iPage)
+
+    sHtmlContent = oRequestHandler.request()
+    result = json.loads(sHtmlContent)
+    
+    total = len(sHtmlContent)
+
+    if (total > 0):
+        for i in result['cast']:
+            #print i['name']
+
+            try:                     
+                sTitle = unicodedata.normalize('NFKD', i['title']).encode('ascii','ignore')
+                
+            except: sTitle = "Aucune information"
+                                           
+            try:
+                sThumbnail = POSTER_URL+i['poster_path']
+            except: 
+                sThumbnail = ''
+
+            #sTitle = sTitle.encode("utf-8")
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'none')
+            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
+            oOutputParameterHandler.addParameter('disp', 'search1')
+            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            
+            oGui.addMovieDB(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+                
+            
+        if (iPage > 0):
+            iNextPage = int(iPage) + 1
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('page', iNextPage)
+            oGui.addDir(SITE_IDENTIFIER, 'showFilmActor', '[COLOR teal]Page '+str(iNextPage)+' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+    
 
 def __checkForNextPage(sHtmlContent):
     sPattern = "<span class='page-numbers current'>.+?</span><a class='page-numbers' href='([^<]+)'>.+?</a>"
