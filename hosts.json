@@ -640,6 +640,22 @@
     }
   },
   {
+    "name": "thevideo_me.py",
+    "path": "plugin.video.vstream/resources/hosters/thevideo_me.py",
+    "sha": "3563a86c995a200c2f4d0a409064a950d6f5d992",
+    "size": 2735,
+    "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/thevideo_me.py?ref=master",
+    "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/thevideo_me.py",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/3563a86c995a200c2f4d0a409064a950d6f5d992",
+    "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/thevideo_me.py",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/thevideo_me.py?ref=master",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/3563a86c995a200c2f4d0a409064a950d6f5d992",
+      "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/thevideo_me.py"
+    }
+  },
+  {
     "name": "turbovid.py",
     "path": "plugin.video.vstream/resources/hosters/turbovid.py",
     "sha": "6103b8abaf35324a603aba7481f9ac9468264265",
