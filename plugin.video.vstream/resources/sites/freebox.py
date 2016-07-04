@@ -364,7 +364,7 @@ def play__():
     oPlayer.clearPlayList()
     oPlayer.addItemToPlaylist(oGuiElement)
     #tout repetter
-    xbmc.executebuiltin("xbmc.playercontrol(RepeatAll)")
+    #xbmc.executebuiltin("xbmc.playercontrol(RepeatAll)")
     
     oPlayer.startPlayer()
     return
