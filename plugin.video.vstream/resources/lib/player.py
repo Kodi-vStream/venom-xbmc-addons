@@ -49,12 +49,14 @@ class cPlayer(xbmc.Player):
         item = xbmcgui.ListItem(path=sUrl, iconImage="DefaultVideo.png",  thumbnailImage=self.sThumbnail)
         
         item.setInfo( type="Video", infoLabels= meta )
-        
-        sPlayerType = self.__getPlayerType()
-        xbmcPlayer = xbmc.Player(sPlayerType)
-        
-        if (cConfig().getSetting("playerPlay") == '0'):
+                    
+        if (cConfig().getSetting("playerPlay") == '0'):   
+                            
+            sPlayerType = self.__getPlayerType()
+            xbmcPlayer = xbmc.Player(sPlayerType)
             xbmcPlayer.play( sUrl, item )
+            xbmcplugin.endOfDirectory(sPluginHandle, True, False, False) 
+            
         else:
             xbmcplugin.setResolvedUrl(sPluginHandle, True, item)
         
@@ -145,15 +147,17 @@ class cPlayer(xbmc.Player):
     def __getPlayerType(self):
         oConfig = cConfig()
         sPlayerType = oConfig.getSetting('playerType')
+        
+        try:
+            if (sPlayerType == '0'):
+                cConfig().log("playertype from config: auto")
+                return xbmc.PLAYER_CORE_AUTO
 
-        if (sPlayerType == '0'):
-            cConfig().log("playertype from config: auto")
-            return xbmc.PLAYER_CORE_AUTO
+            if (sPlayerType == '1'):
+                cConfig().log("playertype from config: mplayer")
+                return xbmc.PLAYER_CORE_MPLAYER
 
-        if (sPlayerType == '1'):
-            cConfig().log("playertype from config: mplayer")
-            return xbmc.PLAYER_CORE_MPLAYER
-
-        if (sPlayerType == '2'):
-            cConfig().log("playertype from config: dvdplayer")
-            return xbmc.PLAYER_CORE_DVDPLAYER
+            if (sPlayerType == '2'):
+                cConfig().log("playertype from config: dvdplayer")
+                return xbmc.PLAYER_CORE_DVDPLAYER
+        except: return False
