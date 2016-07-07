@@ -16,13 +16,16 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.config import cConfig
 import re, urllib, urllib2
+import xbmc
 
 SITE_IDENTIFIER = 'tv_streaming_ch'
 SITE_NAME = 'Tv-streaming.ch'
 SITE_DESC = 'Film/Serie/Documentaire/Anime en streaming'
 
 #URL_MAIN = 'http://tv-streaming.ch'
-URL_MAIN = 'http://www.la-tele-du-web.tv'
+#clone de http://streaming-serie.co
+#URL_MAIN = 'http://www.la-tele-du-web.tv'
+URL_MAIN = 'http://www.tv-streaming-serie.xyz/'
 
 MOVIE_MOVIE = (URL_MAIN + '/category/films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + '/category/films/', 'showMovies')
@@ -169,7 +172,7 @@ def showMovies(sSearch = ''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
    
-    #print sUrl
+    #xbmc.log(sUrl)
      
     sHtmlContent = ''
       
@@ -177,7 +180,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
       
     #fh = open('c:\\test.txt', "w")
-    ##fh.write(sHtmlContent)
+    #fh.write(sHtmlContent)
     #fh.close()
     
     sPattern = '<div.*?class="moviefilm"> *<a.*?href="([^<]+)">.*?<img.*?src="([^<]+)" alt="(.+?)".+?>'
