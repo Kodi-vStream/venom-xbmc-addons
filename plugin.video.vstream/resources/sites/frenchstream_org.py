@@ -28,6 +28,7 @@ MOVIE_HD = (URL_MAIN + 'films-hd/', 'showMovies')
 #MOVIE_VIEWS = (URL_MAIN + 'les-plus-vues/', 'showMovies')
 #MOVIE_COMMENTS = (URL_MAIN + 'les-plus-commentes/', 'showMovies')
 #MOVIE_NOTES = (URL_MAIN + 'les-mieux-notes/', 'showMovies')
+MOVIE_OSC = (URL_MAIN + 'mots-clefs/oscars-2016/', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films-genre/', 'showGenre')
 
 SERIE_SERIES = (URL_MAIN + 'series/', 'showMovies')
@@ -92,6 +93,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD', 'news.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_OSC[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_OSC[1], 'Films OSCARS 2016', 'news.png',   oOutputParameterHandler)
     
     #oOutputParameterHandler = cOutputParameterHandler()
     #oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
@@ -383,6 +388,7 @@ def showAne():
     liste.append( ['2013',URL_MAIN + 'films-annees/2013/'] )
     liste.append( ['2014',URL_MAIN + 'films-annees/2014/'] )
     liste.append( ['2015',URL_MAIN + 'films-annees/2015/'] )
+    liste.append( ['2016',URL_MAIN + 'films-annees/2016/'] )
  
     
     for sTitle,sUrl in liste:
