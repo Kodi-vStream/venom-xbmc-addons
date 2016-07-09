@@ -105,7 +105,7 @@ def showGenre():
     liste.append( ['Comedie Dramatique','http://www.libertyland.tv/films/genre/comedie-dramatique.html'] )
     liste.append( ['Comedie Musicale','http://www.libertyland.tv/films/genre/comedie-musicale.html'] )
     liste.append( ['Drame','http://www.libertyland.tv/films/genre/drame.html'] )
-    liste.append( ['Epouvante Horreur','http://www.libertyland.tv/films/genre/epouvante-horreur.html'] ) 
+    liste.append( ['Epouvante Horreur','http://www.libertyland.tv/films/genre/horreur.html'] ) 
     liste.append( ['Espionnage','http://www.libertyland.tv/films/genre/espionnage.html'] )
     liste.append( ['Famille','http://www.libertyland.tv/films/genre/famille.html'] )
     liste.append( ['Fantastique','http://www.libertyland.tv/films/genre/fantastique.html'] )  
@@ -255,6 +255,8 @@ def ReformatUrl(link):
     if '-telecharger-' in link:
         f = link.split('/')[-1]
         return '/'.join(link.split('/')[:-1])+ '/streaming/' + f.replace('-telecharger','')
+    if ('/v2/' in link) and ('/streaming/' in link):
+        return link.replace('/v2/','/')   
     if '/v2/' in link:
         return link.replace('/v2/','/streaming/')   
     return link
