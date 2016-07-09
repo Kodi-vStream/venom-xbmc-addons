@@ -15,7 +15,7 @@ import re,urllib2,urllib
 
 SITE_IDENTIFIER = 'megastream'
 SITE_NAME = 'Mega-stream'
-SITE_DESC = ''
+SITE_DESC = 'Films, Series, Animes HD'
 
 URL_MAIN = 'http://mega-stream.fr/'
 
@@ -603,7 +603,9 @@ def Getlink():
             oHoster = cHosterGui().checkHoster(sHosterUrl)
  
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                
+                oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
        
