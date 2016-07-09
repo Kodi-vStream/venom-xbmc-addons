@@ -106,13 +106,16 @@ def showWeb():
 
     playlist = parseWebM3U(sUrl)
     
-
     for track in playlist:
+        sThumb = track.icon
+        if not sThumb:
+            sThumb = 'tv.png'
+        
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', str(track.path))
         oOutputParameterHandler.addParameter('sMovieTitle', str(track.title))
-        oOutputParameterHandler.addParameter('sThumbnail', str(sRootArt+'/tv/'+track.icon))
-        oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt+'/tv/'+track.icon, oOutputParameterHandler)    
+        oOutputParameterHandler.addParameter('sThumbnail', str(sRootArt + '/tv/' + sThumb))
+        oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt+'/tv/'+sThumb, oOutputParameterHandler)    
   
     oGui.setEndOfDirectory()
 
@@ -252,7 +255,7 @@ def parseWebM3U(infile):
                 icon = "tv.png"
             song=track(length,title,None,icon)
         elif (len(line) != 0):
-            if not line.startswith('!'):
+            if not (line.startswith('!') or line.startswith('#')):
                 song.path=line
                 playlist.append(song)
                 song=track(None,None,None,None)
