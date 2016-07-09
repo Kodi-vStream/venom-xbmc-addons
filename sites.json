@@ -194,32 +194,32 @@
   {
     "name": "freebox.py",
     "path": "plugin.video.vstream/resources/sites/freebox.py",
-    "sha": "f869998a78f1610d2bd9604d752f9c787ed368ff",
-    "size": 13651,
+    "sha": "c21ab9dc5dfca1406af1c836b8864edebb52f4b1",
+    "size": 13762,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/freebox.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/freebox.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/f869998a78f1610d2bd9604d752f9c787ed368ff",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/c21ab9dc5dfca1406af1c836b8864edebb52f4b1",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/freebox.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/freebox.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/f869998a78f1610d2bd9604d752f9c787ed368ff",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/c21ab9dc5dfca1406af1c836b8864edebb52f4b1",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/freebox.py"
     }
   },
   {
     "name": "frenchstream_org.py",
     "path": "plugin.video.vstream/resources/sites/frenchstream_org.py",
-    "sha": "cd6f28852ec90675188108d7a4b8e71f3c9e2c21",
-    "size": 38097,
+    "sha": "581bfbda5f65512a33a8f21bcc32576ef742ad4f",
+    "size": 38457,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/frenchstream_org.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/frenchstream_org.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/cd6f28852ec90675188108d7a4b8e71f3c9e2c21",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/581bfbda5f65512a33a8f21bcc32576ef742ad4f",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/frenchstream_org.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/frenchstream_org.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/cd6f28852ec90675188108d7a4b8e71f3c9e2c21",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/581bfbda5f65512a33a8f21bcc32576ef742ad4f",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/frenchstream_org.py"
     }
   },
@@ -322,16 +322,16 @@
   {
     "name": "libertyland_tv.py",
     "path": "plugin.video.vstream/resources/sites/libertyland_tv.py",
-    "sha": "10c378d5ff3a0d614cd7740a6a02367ac14f3153",
-    "size": 20897,
+    "sha": "ec016f1e14429d7860997d6c9589781116fcf67b",
+    "size": 20983,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/libertyland_tv.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/libertyland_tv.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/10c378d5ff3a0d614cd7740a6a02367ac14f3153",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/ec016f1e14429d7860997d6c9589781116fcf67b",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/libertyland_tv.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/libertyland_tv.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/10c378d5ff3a0d614cd7740a6a02367ac14f3153",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/ec016f1e14429d7860997d6c9589781116fcf67b",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/libertyland_tv.py"
     }
   },
@@ -386,16 +386,16 @@
   {
     "name": "megastream.py",
     "path": "plugin.video.vstream/resources/sites/megastream.py",
-    "sha": "a3f1997f66dbc5d782ead6f7bb90a03670b0fdde",
-    "size": 26593,
+    "sha": "76bf8f27b5abf66fbb8a47d8551f772da0fcbafd",
+    "size": 26699,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/megastream.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/megastream.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/a3f1997f66dbc5d782ead6f7bb90a03670b0fdde",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/76bf8f27b5abf66fbb8a47d8551f772da0fcbafd",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/megastream.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/megastream.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/a3f1997f66dbc5d782ead6f7bb90a03670b0fdde",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/76bf8f27b5abf66fbb8a47d8551f772da0fcbafd",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/megastream.py"
     }
   },
