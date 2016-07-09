@@ -434,16 +434,16 @@
   {
     "name": "nowvideo.py",
     "path": "plugin.video.vstream/resources/hosters/nowvideo.py",
-    "sha": "9672e4457188f4c74fdd24e0c154a3b27c3f6c1f",
-    "size": 2903,
+    "sha": "4cfadc510a8724db2271aca09492890ae3db328b",
+    "size": 2904,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/nowvideo.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/nowvideo.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/9672e4457188f4c74fdd24e0c154a3b27c3f6c1f",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/4cfadc510a8724db2271aca09492890ae3db328b",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/nowvideo.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/nowvideo.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/9672e4457188f4c74fdd24e0c154a3b27c3f6c1f",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/4cfadc510a8724db2271aca09492890ae3db328b",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/nowvideo.py"
     }
   },
