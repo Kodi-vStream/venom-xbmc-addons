@@ -37,7 +37,7 @@ MOVIE_HD = (URL_MAIN, 'showMovies')
 DOC_NEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=26', 'showMovies')
 DOC_DOCS = ('http://', 'load')
 
-URL_SEARCH = (URL_MAIN + 'index.php?ordering=&searchphrase=all&Itemid=1&option=com_search&searchword=', 'showMovies')
+URL_SEARCH = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
 def load():
@@ -66,8 +66,7 @@ def showSearch():
  
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_MAIN + 'index.php?ordering=&searchphrase=all&Itemid=1&option=com_search&searchword=' + sSearchText
-        showMovies(sUrl)
+        showMovies(sSearchText)
         oGui.setEndOfDirectory()
         return  
    
@@ -102,7 +101,9 @@ def showMovies(sSearch = ''):
     oGui = cGui()
  
     if sSearch :
-        sUrl = sSearch
+        #limite de caratere sinon bug de la recherche
+        sSearch = sSearch[:20]
+        sUrl = URL_MAIN + 'index.php?ordering=&searchphrase=all&Itemid=1&option=com_search&searchword=' + sSearch
         sPattern = SEARCHPATTERN
     else :
         oInputParameterHandler = cInputParameterHandler()
