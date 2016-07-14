@@ -172,7 +172,7 @@ class cHoster(iHoster):
             aResult = oParser.parse(sHtmlContent, sPattern)
             
             if (aResult[0]):
-                return aResult[1][0]
+                return urllib.quote(aResult[1][0], safe=":/")
         
         return False
 
