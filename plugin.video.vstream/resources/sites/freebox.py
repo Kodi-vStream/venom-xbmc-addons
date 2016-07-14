@@ -106,16 +106,22 @@ def showWeb():
 
     playlist = parseWebM3U(sUrl)
     
-    for track in playlist:
-        sThumb = track.icon
-        if not sThumb:
-            sThumb = 'tv.png'
-        
+    if not playlist:
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', str(track.path))
-        oOutputParameterHandler.addParameter('sMovieTitle', str(track.title))
-        oOutputParameterHandler.addParameter('sThumbnail', str(sRootArt + '/tv/' + sThumb))
-        oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt+'/tv/'+sThumb, oOutputParameterHandler)    
+        oOutputParameterHandler.addParameter('siteUrl', 'http://')
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red] Probleme de lecture avec la playlist[/COLOR] ", oOutputParameterHandler)
+        
+    else:
+        for track in playlist:
+            sThumb = track.icon
+            if not sThumb:
+                sThumb = 'tv.png'
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', str(track.path))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(track.title))
+            oOutputParameterHandler.addParameter('sThumbnail', str(sRootArt + '/tv/' + sThumb))
+            oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt+'/tv/'+sThumb, oOutputParameterHandler)    
   
     oGui.setEndOfDirectory()
 
