@@ -21,9 +21,9 @@ SITE_DESC = 'Films HD en streaming'
 #URL_MAIN = 'http://xn--official-film-illimit-v5b.fr/'
 URL_MAIN = 'http://official-film-illimite.net/'
 
-MOVIE_NEWS = (URL_MAIN + 'film-de-a-a-z/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_HD = (URL_MAIN + '720p1080p/', 'showMovies')
-MOVIE_MOVIE = (True, 'showAlpha')
+#MOVIE_MOVIE = (True, 'showAlpha')
 MOVIE_GENRES = (True, 'showGenre')
 
 SERIE_NEWS = (URL_MAIN + 'serie-tv/', 'showMovies')
@@ -37,9 +37,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films A-Z', 'news.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    #oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films A-Z', 'news.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
