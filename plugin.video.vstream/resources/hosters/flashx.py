@@ -151,15 +151,47 @@ class cHoster(iHoster):
         
         if not sHtmlContent:
             return False,False
-
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close() 
             
-        #Lien code ??
+        #A t on le lien code directement?
         sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
         aResult = re.findall(sPattern,sHtmlContent)
-        #aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        if not aResult:
+            xbmc.log("page bloquee")
+
+            #On recupere la bonne url
+            sGoodUrl = web_url
+
+            #on recupere la page de refresh
+            sPattern = 'reload the page! <a href="([^"]+)">!! <b>'
+            aResult = re.findall(sPattern,sHtmlContent)
+            if not aResult:
+                return False,False
+            sRefresh = aResult[0]
+            
+            #on recupere le script de debloquage
+            sPattern = 'type="text\/javascript" src="([^"]+checkembed[^"]+)"><\/script>'
+            aResult = re.findall(sPattern,sHtmlContent)
+            if not aResult:
+                return False,False
+            
+            #on debloque la page (en test ca a l'air inutile)
+            #sHtmlContent = self.GetRedirectHtml(aResult[0],sId)
+            
+            #on rafraichi la page
+            sHtmlContent = self.GetRedirectHtml(sRefresh,sId)
+            
+            #et on re-recupere la page
+            sHtmlContent = self.GetRedirectHtml(sGoodUrl,sId)
+            
+            #fh = open('c:\\test.txt', "w")
+            #fh.write(sHtmlContent)
+            #fh.close() 
+                
+            #et on recherche le lien code
+            sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+            aResult = re.findall(sPattern,sHtmlContent)
+        
         if (aResult):
             xbmc.log( "lien code")
             sUnpacked = cPacker().unpack(aResult[0])
