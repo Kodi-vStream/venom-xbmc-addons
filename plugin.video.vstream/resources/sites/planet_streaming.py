@@ -149,8 +149,9 @@ def showMovies(sSearch = ''):
     
     oParser = cParser()  
     
-    sPattern = '<div class="fullstream fullstreaming">\s*<img src="([^><"]+)"[^<>]+alt="([^"<>]+)".+?<h3 class="mov-title"><a href="([^><"]+)">.+?<strong>Version<\/strong>(.+?)<hr'
-
+    #sPattern = '<div class="fullstream fullstreaming">\s*<img src="([^><"]+)"[^<>]+alt="([^"<>]+)".+?<h3 class="mov-title"><a href="([^><"]+)">.+?<strong>Version<\/strong>(.+?)<hr'
+    sPattern = '<div class="fullstream fullstreaming">\s*<img src="([^><"]+)"[^<>]+alt="([^"<>]+)".+?<h3 class="mov-title"><a href="([^><"]+)">.+?<strong>(?:Qualité|Version)<\/strong>(.+?)<hr'
+    
     aResult = oParser.parse(sHtmlContent, sPattern)
    
     if (aResult[0] == True):
