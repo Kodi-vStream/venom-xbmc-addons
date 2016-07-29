@@ -20,7 +20,7 @@ SITE_DESC = 'Film de 1900 jusqu à 2016, contient du HD'
 
 URL_MAIN = 'http://www.planet-streaming.com/'
  
-MOVIE_NEWS = (URL_MAIN + 'regarder-film/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'regarder-film/', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'xfsearch/hd/', 'showMovies')
  
@@ -150,7 +150,7 @@ def showMovies(sSearch = ''):
     oParser = cParser()  
     
     #sPattern = '<div class="fullstream fullstreaming">\s*<img src="([^><"]+)"[^<>]+alt="([^"<>]+)".+?<h3 class="mov-title"><a href="([^><"]+)">.+?<strong>Version<\/strong>(.+?)<hr'
-    sPattern = '<div class="fullstream fullstreaming">\s*<img src="([^><"]+)"[^<>]+alt="([^"<>]+)".+?<h3 class="mov-title"><a href="([^><"]+)">.+?<strong>(?:Qualité|Version)<\/strong>(.+?)<hr'
+    sPattern = '<div class="fullstream fullstreaming">\s*<img src="([^><"]+)"[^<>]+alt="([^"<>]+)".+?<h3 class="mov-title"><a href="([^><"]+)">.+?<strong>(?:Qualité|Version)(.+?)<\/*strong>'
     
     aResult = oParser.parse(sHtmlContent, sPattern)
    
