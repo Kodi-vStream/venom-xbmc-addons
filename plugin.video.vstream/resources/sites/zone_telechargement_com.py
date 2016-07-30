@@ -513,7 +513,7 @@ def showHosters():# recherche et affiche les hotes
     sHtmlContent = Cutlink(sHtmlContent)    
     
     #Si ca ressemble aux lien premiums on vire les liens non premium
-    if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent:
+    if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent or 'premium' in sHtmlContent:
         sHtmlContent = CutNonPremiumlinks(sHtmlContent)  
     
     oParser = cParser()
