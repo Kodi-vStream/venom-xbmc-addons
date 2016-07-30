@@ -13,65 +13,71 @@ Merci au contributeur de la bêta.
 - Merci à http://libretv.me/ pour le partage de leurs sources.
 =============================================================================
 =============================================================================
-- Version 0.4.3 - 02.07.2016
+- Version 0.4.4 -30.07.2016
 =============================================================================
 
-2016-06-30 12:13:48 -- @Lord Venom -- Update sites.json
+2016-07-29 15:10:35 -- @TmpName -- Update planet_streaming.py
 
-2016-06-30 12:12:49 -- @Lord Venom -- update alluc
+2016-07-27 16:46:49 -- @mino60 -- Update topimdb.py
 
-2016-06-30 11:16:59 -- @TmpName -- Update hosts.json
+2016-07-26 20:25:14 -- @TmpName -- Update openload.py
 
-2016-06-30 11:16:29 -- @TmpName -- Update uptobox.py
+2016-07-26 20:07:35 -- @TmpName -- Update hoster.py
 
-2016-06-29 20:43:03 -- @TmpName -- Update hosts.json
+2016-07-25 22:23:25 -- @mino60 -- Add files via upload
 
-2016-06-29 20:41:55 -- @TmpName -- Update uptostream.py
+2016-07-25 21:39:45 -- @mino60 -- Ctreat topimdb.py
 
-2016-06-27 15:07:34 -- @Lord Venom -- Update README.md
+2016-07-20 08:42:38 -- @TmpName -- Update flashx.py
 
-2016-06-27 04:52:03 -- @Lord Venom -- update
+2016-07-20 08:35:10 -- @TmpName -- Update planet_streaming.py
 
-2016-06-26 13:20:44 -- @Lord Venom -- remove tv
+2016-07-19 11:36:03 -- @TmpName -- Update flashx.py
 
-2016-06-26 12:26:06 -- @TmpName -- Update openload.py
+2016-07-14 19:20:32 -- @chataigne73 -- Update zone_telechargement_com.py -- ajout recherche de spectacle
 
-2016-06-26 12:04:51 -- @Lord Venom -- update -- Mise a jour section TV
+2016-07-14 16:52:01 -- @TmpName -- Update freebox.py
 
-2016-06-26 11:28:51 -- @Lord Venom -- Update webtv.m3u
+2016-07-14 14:17:56 -- @TmpName -- Update film_illimit_fr.py
 
-2016-06-25 07:33:40 -- @Lord Venom -- ajout de soutient txt
+2016-07-13 17:59:56 -- @chataigne73 -- Update uptobox.py -- prise en charge caracte?res spe?ciaux dans les noms de fichiers uptobox
 
-2016-06-23 07:49:41 -- @Lord Venom -- mise ajour changelog
+2016-07-13 15:00:54 -- @TmpName -- Create exdown_com.py
 
-2016-06-20 17:28:00 -- @TmpName -- Update kepliz_com.py
+2016-07-12 14:48:09 -- @mino60 -- Update frenchstream_org.py
 
-2016-06-11 17:15:32 -- @TmpName -- Update openload.py
+2016-07-12 06:49:14 -- @Lord Venom -- update bug icon -- Modification bug icon par Djeman
 
-2016-06-10 09:08:02 -- @Lord Venom -- update buzzmonclick -- Correction de code
+2016-07-11 22:55:56 -- @mino60 -- Update frenchstream_org.py -- changement showAne
 
-2016-06-09 19:51:08 -- @TmpName -- Update openload.py
+2016-07-11 09:19:31 -- @Lord Venom -- update the movie db -- modification encodage recherche
 
-2016-06-07 12:45:32 -- @Lord Venom -- update openload -- correction openload
+2016-07-11 09:14:35 -- @Lord Venom -- update Kepliz -- limite recherche
 
-2016-06-06 15:06:29 -- @TmpName -- Update netu.py
+2016-07-10 17:22:18 -- @TmpName -- Create mareplaytv.py
 
-2016-06-06 11:59:35 -- @Lord Venom -- update voirfilm -- correction next page
+2016-07-10 17:21:27 -- @TmpName -- Delete mareplaytv.py -- MAJ
 
-2016-06-04 16:02:28 -- @Lord Venom -- update movieDB -- Correction next page & recherche Acteur
+2016-07-09 12:30:36 -- @TmpName -- Update megastream.py
 
-2016-06-03 20:54:51 -- @TmpName -- Update netu.py
+2016-07-09 12:27:29 -- @TmpName -- Update libertyland_tv.py
 
-2016-05-31 11:56:18 -- @Lord Venom -- update film_illimit -- Corection next page
+2016-07-09 12:05:25 -- @TmpName -- Update nowvideo.py
 
-2016-05-30 10:35:09 -- @Lord Venom -- update filmsvostfr -- oupps le print
+2016-07-09 11:32:23 -- @TmpName -- Update freebox.py
 
-2016-05-30 10:29:39 -- @Lord Venom -- update filmsvostfr -- Correction next page serie & manga
+2016-07-08 21:07:45 -- @mino60 -- Update frenchstream_org
 
-2016-05-29 07:51:28 -- @Lord Venom -- Mise a jour du zip
+2016-07-08 18:16:38 -- @TmpName -- Update frenchstream_org.py
 
-2016-05-28 21:30:54 -- @TmpName -- Update frenchstream_org.py
+2016-07-08 17:38:42 -- @TmpName -- Update frenchstream_org.py
 
-2016-05-28 21:27:04 -- @TmpName -- Update themoviedb_org.py
+2016-07-08 08:16:00 -- @Lord Venom -- update player -- del refresh inutile
 
-2016-05-28 21:02:03 -- @TmpName -- Update streamcomplet.py
+2016-07-07 17:57:49 -- @TmpName -- Update mareplaytv.py
+
+2016-07-07 17:46:30 -- @TmpName -- Create mareplaytv.py
+
+2016-07-07 16:15:32 -- @TmpName -- Update tv_streaming_ch.py
+
+2016-07-04 09:00:43 -- @Lord Venom -- update player

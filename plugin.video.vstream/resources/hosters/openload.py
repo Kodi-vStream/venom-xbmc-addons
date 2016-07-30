@@ -138,13 +138,20 @@ class cHoster(iHoster):
                     str2 = base10toN(int(val[0][1]), base2)
                     string3 = string3.replace(str1, str2)
                 
+                #xbmc.log(string3)
+                
                 #nettoyage
                 string3 = string3.replace('+', '')
                 string3 = string3.replace('"', '')
                 string3 = string3.replace('', '')
 
                 #bidouille pour pas avoir a tout recoder
-                url = re.findall('(http[^<>}]+)',string3)[0]
+                q = re.findall('(http[^<>}]+)',string3)
+                if not q:
+                    q = re.findall('return (\/\/[^<>}]+)',string3)
+                    url = 'http:' + q[0]
+                else:
+                    url = q[0]
                 string = 'src="' + url + '?mime=true"'
  
         if not (string): 

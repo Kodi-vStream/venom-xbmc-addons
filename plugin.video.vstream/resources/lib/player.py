@@ -93,7 +93,7 @@ class cPlayer(xbmc.Player):
         try:
             self.__setResume()
         except: pass
-        xbmc.executebuiltin( 'Container.Refresh' )
+        #xbmc.executebuiltin( 'Container.Refresh' )
 
     def onPlayBackStopped( self ):
         try:
@@ -102,7 +102,7 @@ class cPlayer(xbmc.Player):
         try:
             self.__setResume()
         except: pass
-        xbmc.executebuiltin( 'Container.Refresh' )
+        #xbmc.executebuiltin( 'Container.Refresh' )
         
     def onPlayBackStarted(self):       
         meta = {}      
