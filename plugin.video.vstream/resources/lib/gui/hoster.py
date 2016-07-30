@@ -242,6 +242,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('vimeo')
         if ('openload' in sHosterUrl):
             return cHosterHandler().getHoster('openload')
+        if ('oload.co' in sHosterUrl):
+            return cHosterHandler().getHoster('openload')
         if ('thevideo.me' in sHosterUrl):
             return cHosterHandler().getHoster('thevideo_me')    
         if ('vid.me' in sHosterUrl):

@@ -563,27 +563,44 @@ def showHosters():
       
     #nettoyage du nom pr la recherche
     #print 'avant ' + sMovieTitle
-    sMovieTitle = unicode(sMovieTitle, 'utf-8')#converti en unicode pour aider aux convertions
-    sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
-    sMovieTitle = sMovieTitle.encode("utf-8").lower() #on repasse en utf-8
     
-    sMovieTitle = re.sub('\(.+?\)',' ', sMovieTitle) #vire les tags entre parentheses
+    #modif teste
+    s2 = urllib.quote(sMovieTitle)
+    s2 = s2.replace('%3A','')
+    s2 = s2.replace('%20%20','%20')
+    
+
+    #ancien decodage
+    #sMovieTitle = unicode(sMovieTitle, 'utf-8')#converti en unicode pour aider aux convertions
+    #sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'replace').decode("unicode_escape")#vire accent et '\'
+    #sMovieTitle = sMovieTitle.encode("utf-8").lower() #on repasse en utf-8
+    
+    #sMovieTitle = urllib.quote(sMovieTitle)
+    
+    #sMovieTitle = re.sub('\(.+?\)',' ', sMovieTitle) #vire les tags entre parentheses
     
     #modif venom si le titre comporte un - il doit le chercher
-    sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle) #vire les caracteres a la con qui peuvent trainer
+    #sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle) #vire les caracteres a la con qui peuvent trainer
     
-    sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)',' ', sMovieTitle) #vire les articles
+    #sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)',' ', sMovieTitle) #vire les articles
 
-    sMovieTitle = re.sub(' +',' ',sMovieTitle) #vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
+    #sMovieTitle = re.sub(' +',' ',sMovieTitle) #vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
     #print 'apres ' + sMovieTitle
 
     dialog3 = xbmcgui.Dialog()
     ret = dialog3.select('Selectionner un Moteur de Recherche',['Vstream (Fiable mais plus complexe)','Alluc (Simple mais resultats non garantis)'])
 
     if ret == 0:
-        VstreamSearch(sMovieTitle)
+        #VstreamSearch(sMovieTitle)
+        #modif test préfére les accent coder
+        VstreamSearch(s2)
     elif ret == 1:
-        AllucSearch(sMovieTitle + sExtraTitle)
+        #AllucSearch(sMovieTitle + sExtraTitle)
+        #modif test préfére les accent supprimer é = e
+       
+        s2 = s2.replace('%C3%A9','e').replace('%C3%A0','a')
+        
+        AllucSearch(s2 + sExtraTitle)
 
 
 def VstreamSearch(sMovieTitle):
@@ -611,7 +628,8 @@ def AllucSearch(sMovieTitle):
     oGui = cGui()
     
     exec "from resources.sites import alluc_ee as search"
-    sUrl = 'http://www.alluc.ee/stream/lang%3Afr+' + sMovieTitle 
+    sUrl = 'http://www.alluc.ee/stream/lang%3Afr+' + sMovieTitle
+    xbmc.log(str(sUrl))
     searchUrl = "search.%s('%s')" % ('showMovies', sUrl)
     exec searchUrl
     

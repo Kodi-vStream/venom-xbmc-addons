@@ -128,12 +128,12 @@
         <setting id="search4_full_stream_org" type="bool" label="30091" default="false"/>
     
         <setting label="Full Streamvk.com (Films)" type="lsep"/>
-        <setting id="plugin_full_streamvk_com" type="bool" label="30303" default="true"/>
+        <setting id="plugin_full_streamvk_net" type="bool" label="30303" default="true"/>
         <setting type="sep"/>
-        <setting id="search1_full_streamvk_com" type="bool" label="30077" default="false"/>
-        <setting id="search2_full_streamvk_com" type="bool" label="30089" default="false"/>
-        <setting id="search3_full_streamvk_com" type="bool" label="30090" default="false"/>
-        <setting id="search4_full_streamvk_com" type="bool" label="30091" default="false"/>
+        <setting id="search1_full_streamvk_net" type="bool" label="30077" default="false"/>
+        <setting id="search2_full_streamvk_net" type="bool" label="30089" default="false"/>
+        <setting id="search3_full_streamvk_net" type="bool" label="30090" default="false"/>
+        <setting id="search4_full_streamvk_net" type="bool" label="30091" default="false"/>
         
         <setting label="FullMoviz (Films)" type="lsep"/>
         <setting id="plugin_fullmoviz_org" type="bool" label="30303" default="true"/>
@@ -190,6 +190,14 @@
         <setting id="search2_mangacity_org" type="bool" label="30089" default="false"/>
         <setting id="search3_mangacity_org" type="bool" label="30090" default="true"/>
         <setting id="search4_mangacity_org" type="bool" label="30091" default="false"/>
+        
+        <setting label="MareplayTV (Replay)" type="lsep"/>
+        <setting id="plugin_mareplaytv" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
+        <setting id="search1_mareplaytv" type="bool" label="30077" default="false"/>
+        <setting id="search2_mareplaytv" type="bool" label="30089" default="false"/>
+        <setting id="search3_mareplaytv" type="bool" label="30090" default="false"/>
+        <setting id="search4_mareplaytv" type="bool" label="30091" default="false"/>
         
         <setting label="Mega-stream.fr (Films, Séries, Animés)" type="lsep"/>
         <setting id="plugin_megastream" type="bool" label="30303" default="true"/>

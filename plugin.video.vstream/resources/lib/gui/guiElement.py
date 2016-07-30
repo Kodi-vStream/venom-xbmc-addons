@@ -216,7 +216,8 @@ class cGuiElement:
         self.__sIcon = sIcon
 
     def getIcon(self):
-        return self.__sRootArt+self.__sIcon
+        #return self.__sRootArt+self.__sIcon
+        return os.path.join(unicode(self.__sRootArt, 'utf-8'), self.__sIcon)
 
     def addItemValues(self, sItemKey, mItemValue):
         self.__aItemValues[sItemKey] = mItemValue
