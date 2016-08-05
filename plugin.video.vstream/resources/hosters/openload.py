@@ -101,7 +101,7 @@ class cHoster(iHoster):
         
         #recuperation cle
         cle = ''
-        oRequest = cRequestHandler("https://openload.co/assets/js/obfuscator/numbers.js")
+        oRequest = cRequestHandler("https://openload.co/assets/js/obfuscator/n.js")
         oRequest.addHeaderEntry('Referer',self.__sUrl)
         oRequest.addHeaderEntry('User-Agent',UA)
         sHtmlContent = oRequest.request()
