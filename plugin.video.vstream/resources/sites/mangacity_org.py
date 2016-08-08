@@ -272,8 +272,10 @@ def showMovies(sSearch = ''):
         sSearch = urllib.quote_plus(sSearch).upper() #passe en majuscule et remplace espace par +
 
         url = URL_MAIN + 'resultat+' + sSearch + '.html'
+        #xbmc.log(url)
 
-        headers = {'User-Agent' : 'Mozilla 5.10', 'Referer' : URL_MAIN}
+        headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0',
+        'Referer' : URL_MAIN}
         request = urllib2.Request(url,None,headers)
         reponse = urllib2.urlopen(request)
         
@@ -287,21 +289,16 @@ def showMovies(sSearch = ''):
     
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        #sHtmlContent = DecryptMangacity(sHtmlContent)    
-    #print sUrl
-    
-    #fh = open('c:\\manga.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
+        #sHtmlContent = DecryptMangacity(sHtmlContent)
 
     #sPattern = 'background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=\'(.+?)\' class=\'button'
-    sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=\'(.+?)\' class=\'button'
+    sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=\'*(.+?)\'* class=\'button'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     #aResult = re.findall(sPattern, sHtmlContent)
-    #print aResult
-    
+    #xbmc.log(str(aResult))
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -376,9 +373,13 @@ def showEpisode():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
+    #fh = open('c:\\manga.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
+    
     oParser = cParser()
     
-    #print sUrl
+    #xbmc.log(sUrl)
     
     #On fait 2 passage pr accelerer le parsing regex
     # sPattern = '<div class="&#105;&#110;&#110;&#101;&#114;">(.+?)<footer id="footer">'
@@ -387,8 +388,9 @@ def showEpisode():
     # sPattern = '<img src="(.+?).+? alt="&#101;&#112;&#105;&#115;&#111;&#100;&#101;&#115;".+?<a href="(.+?)" title="(.+?)"'
     # aResult = oParser.parse(aResult[1][0], sPattern)
     
-    sPattern = '<a href=\'.+?\' class=\'button light\' [^>]+"><headline11>(.+?)<\/headline11><\/a>|<a href="([^<]+)" title="([^<]+)" alt=".+?" style="text-decoration:none;">'
+    sPattern = 'class=\'button light\' [^>]+"><headline11>(.+?)<\/headline11><\/a>|<a href="*([^"]+)"* title="([^"]+)"[^>]+style="*text-decoration:none;"*>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    #xbmc.log(str(aResult))
    
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -543,9 +545,14 @@ def showHosters():
                 #Lien deja connu ?
                 if 'http://tinyurl.com/jxblgl5' in sHosterUrl:
                     sHosterUrl = sHosterUrl.replace('http://tinyurl.com/jxblgl5/','http://streamin.to/')
+                elif 'http://tinyurl.com/hll3jvd' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/hll3jvd','https://openload.co/')
                 #On va chercher le vrai lien
                 else:
-                    request = urllib2.Request(sHosterUrl)
+                    xbmc.log(sHosterUrl)
+                    headers9 = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0',
+                        'Referer' : URL_MAIN}
+                    request = urllib2.Request(sHosterUrl,None,headers9)
                     reponse = urllib2.urlopen(request,timeout = 5)
                     UrlRedirect = reponse.geturl()
                     if not(UrlRedirect == sHosterUrl):
