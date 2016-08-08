@@ -129,10 +129,13 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    # sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
 
-    sPattern = '<h2><a href="([^<]+)" rel="bookmark" title="[^"]+">([^<]+)<\/a>.+?" src="([^<]+)" \/>.+?<\/p><p style[^<>]+>(.+?)<\/p>'
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
 
+    #sPattern = '<h2><a href="([^<]+)" rel="bookmark" title="[^"]+">([^<]+)<\/a>.+?" src="([^<]+)" \/>.+?<\/p><p style[^<>]+>(.+?)<\/p>'
+    sPattern = 'class="attachment-medium aligncenter" src="([^<]+)" \/><div class="data"><h2 class="entry-title" ><a href="([^<]+)"  rel="bookmark" title=".+?">([^<]+)<\/a><\/h2><p class="entry-meta"><p>(.+?)<\/p>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -143,14 +146,18 @@ def showMovies(sSearch = ''):
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
 
-            sTitle = aEntry[1]
+            sTitle = aEntry[2]
+            sUrl = aEntry[1]
+            sThumb = aEntry[0]
+            sCom = aEntry[3]
+            
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb )
             
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'doc.png',  aEntry[2],  aEntry[3], oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'doc.png',  sThumb,  sCom, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -166,7 +173,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<li class="first_last_page"><a href=".+?">.+?</a></li><li><a href="(.+?)"'
+    sPattern = '<link rel="next" href="(.+?)" />'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return aResult[1][0]
@@ -182,8 +189,7 @@ def showHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    # sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','')
+    sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
     sPattern = '<span class="15"><a href="(.+?)"'
