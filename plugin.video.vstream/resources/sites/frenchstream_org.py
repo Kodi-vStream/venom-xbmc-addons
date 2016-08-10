@@ -51,7 +51,8 @@ import socket
 
 def MyResolver(host):
     if host == 'frenchstream.tv':
-        return '154.46.33.11'
+        #return '154.46.33.11'
+        return 'frenchstream.tv'
     else:
         return host
 
