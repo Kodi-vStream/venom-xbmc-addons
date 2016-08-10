@@ -46,34 +46,33 @@ FUNCTION_SEARCH = 'showMovies'
 #-------------------------------------------------
 #Partie speciale pour contourner le DNS ban
 
-import httplib
-import socket
+#import httplib
+#import socket
 
-def MyResolver(host):
-    if host == 'frenchstream.tv':
-        #return '154.46.33.11'
-        return 'frenchstream.tv'
-    else:
-        return host
-
-class MyHTTPConnection(httplib.HTTPConnection):
-    def connect(self):
-        self.sock = socket.create_connection((MyResolver(self.host),self.port),self.timeout)
-
-class MyHTTPHandler(urllib2.HTTPHandler):
-    def http_open(self,req):
-        return self.do_open(MyHTTPConnection,req)
-        
-def GetHtmlViaDns(url,postdata = None):
-    opener = urllib2.build_opener(MyHTTPHandler)
-    opener.addheaders = [('User-agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')]
-    urllib2.install_opener(opener)
-
-    f = urllib2.urlopen(url,postdata)
-    sHtmlContent = f.read()
-    f.close()
-    
-    return sHtmlContent
+#def MyResolver(host):
+#    if host == 'frenchstream.tv':
+#        return '154.46.33.11'
+#    else:
+#        return host
+#
+#class MyHTTPConnection(httplib.HTTPConnection):
+#    def connect(self):
+#        self.sock = socket.create_connection((MyResolver(self.host),self.port),self.timeout)
+#
+#class MyHTTPHandler(urllib2.HTTPHandler):
+#    def http_open(self,req):
+#        return self.do_open(MyHTTPConnection,req)
+#        
+#def GetHtmlViaDns(url,postdata = None):
+#    opener = urllib2.build_opener(MyHTTPHandler)
+#    opener.addheaders = [('User-agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')]
+#    urllib2.install_opener(opener)
+#
+#    f = urllib2.urlopen(url,postdata)
+#    sHtmlContent = f.read()
+#    f.close()
+#    
+#    return sHtmlContent
         
 #---------------------------------------------------
 
@@ -522,9 +521,9 @@ def showMovies(sSearch = ''):
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
     
-    sHtmlContent = GetHtmlViaDns(sUrl)
-    #oRequestHandler = cRequestHandler(sUrl)
-    #sHtmlContent = oRequestHandler.request()
+    #sHtmlContent = GetHtmlViaDns(sUrl)
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
 
     #Regex trop lourd donc on fractionne
     aResult=[(False)]
@@ -596,9 +595,9 @@ def showSeries():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
-    sHtmlContent = GetHtmlViaDns(sUrl)
-    #oRequestHandler = cRequestHandler(sUrl)
-    #sHtmlContent = oRequestHandler.request()
+    #sHtmlContent = GetHtmlViaDns(sUrl)
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
     
     oParser = cParser()
     sPattern = '<li><a href="([^<>"]+?)" (?:class="active")*><i class="fa fa-film"><\/i>(.+?)<span><\/span><\/a><\/li>'
@@ -647,9 +646,9 @@ def showLinks():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
-    sHtmlContent = GetHtmlViaDns(sUrl)
-    #oRequestHandler = cRequestHandler(sUrl)
-    #sHtmlContent = oRequestHandler.request()
+    #sHtmlContent = GetHtmlViaDns(sUrl)
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
     
     sHtmlContent = sHtmlContent.replace('</i> Untitled<span>', '')
     
@@ -720,13 +719,19 @@ def showHosters():
 
     sUrl = 'http://frenchstream.tv/wp-content/plugins/host-x-files/islem.php'
     postdata = 'islem=framegetir&param=' + sParam + '&bunuid=' + sBunuid
-    sHtmlContent = GetHtmlViaDns(sUrl,postdata)
+    
+    #sHtmlContent = GetHtmlViaDns(sUrl,postdata)
+    headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0' }
+    request = urllib2.Request(sUrl,postdata,headers)
+    reponse = urllib2.urlopen(request)
+    sHtmlContent = reponse.read()
+    reponse.close()
     
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
     
-    sPattern = '(?:(?:<script type="text\/javascript")|(?:<ifram[^<>]+?)) src=[\'"](https*:[^\'"]+?)[\'"]'
+    sPattern = '(?:(?:<script type="text\/javascript")|(?:<ifram[^<>]+?)) src=[\'"]([^\'"]+?)[\'"]'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -740,7 +745,10 @@ def showHosters():
             if dialog.iscanceled():
                 break
             
-            sHosterUrl = str(aEntry)
+            sHosterUrl =  str(aEntry)
+            if sHosterUrl.startswith('//'):
+                sHosterUrl = 'http:' + sHosterUrl
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
@@ -760,9 +768,9 @@ def showHosters2():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
-    sHtmlContent = GetHtmlViaDns(sUrl)
-    #oRequestHandler = cRequestHandler(sUrl)
-    #sHtmlContent = oRequestHandler.request()
+    #sHtmlContent = GetHtmlViaDns(sUrl)
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
     
     #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src="http://www.facebook.com/','')
     #sHtmlContent = sHtmlContent.replace('http://videomega.tv/validateemb.php','')
@@ -801,9 +809,9 @@ def showEpisode():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
-    sHtmlContent = GetHtmlViaDns(sUrl)
-    #oRequestHandler = cRequestHandler(sUrl)
-    #sHtmlContent = oRequestHandler.request()
+    #sHtmlContent = GetHtmlViaDns(sUrl)
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
     
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
