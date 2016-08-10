@@ -210,16 +210,16 @@
   {
     "name": "frenchstream_org.py",
     "path": "plugin.video.vstream/resources/sites/frenchstream_org.py",
-    "sha": "8ec89e808ab7ae00de4d2f9a51011800b25a274f",
-    "size": 38549,
+    "sha": "d4636cf2ca640f9a7d155fd1640d5ac5a6127d56",
+    "size": 38884,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/frenchstream_org.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/frenchstream_org.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/8ec89e808ab7ae00de4d2f9a51011800b25a274f",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/d4636cf2ca640f9a7d155fd1640d5ac5a6127d56",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/frenchstream_org.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/frenchstream_org.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/8ec89e808ab7ae00de4d2f9a51011800b25a274f",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/d4636cf2ca640f9a7d155fd1640d5ac5a6127d56",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/frenchstream_org.py"
     }
   },
