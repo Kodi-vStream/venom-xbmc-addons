@@ -162,8 +162,6 @@ def showGenre(): #affiche les genres
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    #sPattern = '<a href="((?:categorie\.php\?watch=)|(?:&#99;&#97;&#116;&#101;&#103;&#111;&#114;&#105;&#101;&#46;&#112;&#104;&#112;&#63;&#119;&#97;&#116;&#99;&#104;&#61;).+?)" onmouseover=.+?decoration:none;">(.+?)<\/a>'
-    
     sPattern = '<a href="(.+?)" onmouseover="this.style.color.+?>(.+?)</a>'
     
     oParser = cParser()
@@ -546,7 +544,7 @@ def showHosters():
                 if 'http://tinyurl.com/jxblgl5' in sHosterUrl:
                     sHosterUrl = sHosterUrl.replace('http://tinyurl.com/jxblgl5/','http://streamin.to/')
                 elif 'http://tinyurl.com/hll3jvd' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/hll3jvd','https://openload.co/')
+                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/hll3jvd/','https://openload.co/')
                 #On va chercher le vrai lien
                 else:
                     xbmc.log(sHosterUrl)
