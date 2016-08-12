@@ -113,7 +113,7 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
+        self.__sUrl = 'http://' + self.GetHost(sUrl) + '/embed.php?c=' + self.__getIdFromUrl(sUrl)
 
     def checkUrl(self, sUrl):
         return True
@@ -123,7 +123,7 @@ class cHoster(iHoster):
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
-
+        
     def __getMediaLinkForGuest(self):
         
         oParser = cParser()
