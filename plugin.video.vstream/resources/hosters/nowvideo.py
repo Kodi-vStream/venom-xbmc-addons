@@ -4,6 +4,8 @@ from resources.lib.gui.gui import cGui
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 
+import xbmc,re
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -55,15 +57,6 @@ class cHoster(iHoster):
         return sUrl;
         
     def __getKey(self):
-        oRequestHandler = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequestHandler.request()
-        sPattern = 'fkzd="(.+?)";'
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            aResult = aResult[1][0].replace('.','%2E')
-            return aResult
-
         return ''
 
     def setUrl(self, sUrl):
@@ -85,17 +78,31 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
- 
-        api_call = ('http://www.nowvideo.sx/api/player.api.php?key=%s&file=%s') % (self.__getKey(), self.__getIdFromUrl())
         
-        oRequest = cRequestHandler(api_call)
+        #xbmc.log(self.__sUrl)
+        
+        oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        sPattern =  'url=(.+?)&title'
         oParser = cParser()
+        sPattern =  '<script type="text\/javascript" src="([^"]+)"><\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult):
+            url1 = 'http://embed.nowvideo.sx' + aResult[1][0]
+            
+            oRequest = cRequestHandler(url1)
+            sHtmlContent2 = oRequest.request()
+            #a continuer quand ca va bloquer
+            
+        
+        sPattern =  '<source src="([^"]+)" type=\'video\/mp4\'>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        #xbmc.log(str(aResult))
 
         if (aResult[0] == True):
-            return True, aResult[1][0]
+            api_call = aResult[1][0]
+            #xbmc.log(api_call)
+            return True, api_call
         
         return False, False
