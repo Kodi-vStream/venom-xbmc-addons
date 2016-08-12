@@ -161,6 +161,9 @@ def showGenre(): #affiche les genres
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+
+    if 'HTML/JavaScript Encoder' in sHtmlContent:
+        sHtmlContent = ICDecode(sHtmlContent)
     
     sPattern = '<a href="(.+?)" onmouseover="this.style.color.+?>(.+?)</a>'
     
@@ -206,6 +209,9 @@ def ShowAlpha2():
     oRequestHandler = cRequestHandler(sUrl2)
     sHtmlContent = oRequestHandler.request()
     
+    if 'HTML/JavaScript Encoder' in sHtmlContent:
+        sHtmlContent = ICDecode(sHtmlContent)
+    
     oParser = cParser()
     sPattern = '<a href=\'(listing_(?:vf|vostfr)\.php\?affichage=[^<>"]+?)\' class=\'button black pastel light\' alt="Voir la liste des animes en ' + sType + '"'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -226,6 +232,9 @@ def ShowAlpha(url = None):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    if 'HTML/JavaScript Encoder' in sHtmlContent:
+        sHtmlContent = ICDecode(sHtmlContent)
 
     sPattern = "<a href='([^<>]+?)' class='button (?:red )*light'><headline6>(?:<font color='black'>)*([A-Z#])(?:<\/font>)*<\/headline6><\/a>"
     
@@ -288,14 +297,20 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
         #sHtmlContent = DecryptMangacity(sHtmlContent)
+    
+    if 'HTML/JavaScript Encoder' in sHtmlContent:
+        sHtmlContent = ICDecode(sHtmlContent)
 
-    #sPattern = 'background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=\'(.+?)\' class=\'button'
-    sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=\'*(.+?)\'* class=\'button'
+    #fh = open('c:\\manga.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
+        
+    sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=\'*(.+?)\'* class=.button'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     #aResult = re.findall(sPattern, sHtmlContent)
-    #xbmc.log(str(aResult))
+    xbmc.log(str(aResult))
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -370,6 +385,9 @@ def showEpisode():
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    if 'HTML/JavaScript Encoder' in sHtmlContent:
+        sHtmlContent = ICDecode(sHtmlContent)
     
     #fh = open('c:\\manga.txt', "w")
     #fh.write(sHtmlContent)
@@ -467,6 +485,10 @@ def showHosters():
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    if 'HTML/JavaScript Encoder' in sHtmlContent:
+        sHtmlContent = ICDecode(sHtmlContent)
+    
     sHtmlContent = sHtmlContent.replace('<iframe src="http://www.promoliens.net','')
     sHtmlContent = sHtmlContent.replace("<iframe src='cache_vote.php",'')
     
