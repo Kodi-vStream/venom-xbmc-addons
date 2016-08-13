@@ -35,30 +35,37 @@ URL_SEARCH = (URL_MAIN + 'index.php?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 #MOVIE_NEWS = (URL_MAIN + 'films/dvdrip-bdrip/?showby=month', 'showMovies') # films nouveautés
-MOVIE_NEWS = (URL_MAIN + 'films-gratuit.html', 'showMovies') # films nouveautés
+MOVIE_MOVIE = (URL_MAIN + 'films-gratuit.html', 'showMovies') # films
+MOVIE_NEWS = (URL_MAIN + 'films-gratuit.html?tab=all&orderby_by=date&orderby_order=desc', 'showMovies') # films nouveautés
 MOVIE_EXCLUS = (URL_MAIN + 'exclus.html', 'showMovies') # exclus (films populaires)
 MOVIE_VIEWS = (URL_MAIN + 'films-gratuit.html?tab=all&orderby_by=popular&orderby_order=desc', 'showMovies') # films + vus
 MOVIE_NOTES = (URL_MAIN + 'films-gratuit.html?tab=all&orderby_by=rating&orderby_order=desc', 'showMovies') # films mieux notés
 MOVIE_3D = (URL_MAIN + 'films-bluray-3d.html?periodlist[]=2010&periodlist[]=2000&periodlist[]=1990&hf=1', 'showMovies') # films en 3D
+MOVIE_HD = (URL_MAIN + 'films-bluray-hd.html?periodlist[]=2010&periodlist[]=2000&periodlist[]=1990&hf=1', 'showMovies') # films en HD
 MOVIE_HDLIGHT = (URL_MAIN + 'x265-x264-hdlight.html', 'showMovies') # films en x265 et x264
 #MOVIE_4K = (URL_MAIN + 'films-gratuit.html?q=4k&orderby_by=popular', 'showMovies')# films en 4K 
 
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (True, 'showGenreMovies')
 #MOVIE_VF = (URL_MAIN + 'langues/french', 'showMovies') # films VF
 MOVIE_VOSTFR = (URL_MAIN + 'langues/vostfr', 'showMovies') # films VOSTFR
 MOVIE_ANIME = (URL_MAIN + 'dessins-animes.html', 'showMovies') # dessins animes
 
-SERIE_VF = (URL_MAIN + 'series-vf.html', 'showMovies') # serie VF
-SERIE_VOSTFR = (URL_MAIN + 'series-vostfr.html', 'showMovies') # serie VOSTFR
-#SERIE_GENRE = (True, 'showGenre')
+SERIE_SERIES = (URL_MAIN + 'telecharger-series.html', 'showMovies') # series
+SERIE_NEWS = (URL_MAIN + 'series-vf.html?orderby_by=date&orderby_order=desc&tv=all', 'showMovies') # serie VF
+SERIE_VFS = (URL_MAIN + 'series-vf.html', 'showMovies') # serie VF
+SERIE_VOSTFRS = (URL_MAIN + 'series-vostfr.html', 'showMovies') # serie VOSTFR
+SERIE_GENRES = (True, 'showGenreSeries')
 
 ANIM_VFS = (URL_MAIN + 'animes-vf.html', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'animes-vostfr.html', 'showMovies')
 
 BLURAY_NEWS = (URL_MAIN + 'films-bluray-hd.html', 'showMovies') # derniers Blu-Rays
 
-DOCU_NEWS = (URL_MAIN + 'documentaires-gratuit.html', 'showMovies') # derniers docu
+DOC_DOCS = (URL_MAIN + 'documentaires-gratuit.html', 'showMovies') # docs
+DOC_NEWS = (URL_MAIN + 'documentaires-gratuit.html?tab=all&orderby_by=date&orderby_order=desc', 'showMovies') # derniers docu
 #DOCU_4K = (URL_MAIN + 'documentaires-gratuit.html?q=4k&orderby_by=popular', 'showMovies') # docu en 4K
+
+SPORT_SPORTS = (URL_MAIN + 'sport.html', 'showMovies') # sports
 
 TV_NEWS = (URL_MAIN + 'emissions-tv.html', 'showMovies') # dernieres emissions tv
 SPECT_NEWS = (URL_MAIN + 'spectacles.html', 'showMovies') # dernieres spectacles
@@ -205,34 +212,40 @@ def showSearchShows():
         oGui.setEndOfDirectory()
         return      
     
-def showGenre(): 
+def showGenreMovies(): 
+    showGenre("films-gratuit.html")
+
+def showGenreSeries(): 
+    showGenre("telecharger-series.html")
+
+def showGenre(basePath): 
     oGui = cGui()
     
     liste = []
-    liste.append( ['Action',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=1'] )
-    liste.append( ['Animation',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=2'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=3'] )
-    liste.append( ['Aventure',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=4'] )
-    liste.append( ['Biopic',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=5'] )
-    liste.append( ['Comedie Dramatique',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=7'] )
-    liste.append( ['Comedie Musicale',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=8'] )
-    liste.append( ['Comedie',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=9'] )
-    liste.append( ['Divers',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=10'] )
-    liste.append( ['Documentaires',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=11'] )
-    liste.append( ['Drame',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=12'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=13'] ) 
-    liste.append( ['Espionnage',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=14'] )
-    liste.append( ['Famille',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=15'] )
-    liste.append( ['Fantastique',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=16'] )  
-    liste.append( ['Guerre',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=17'] )
-    liste.append( ['Historique',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=18'] )
-    liste.append( ['Musical',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=19'] )
-    liste.append( ['Peplum',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=6'] )
-    liste.append( ['Policier',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=20'] )
-    liste.append( ['Romance',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=21'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=22'] )
-    liste.append( ['Thriller',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=23'] )
-    liste.append( ['Western',URL_MAIN + 'films-dvdrip-bdrip.html?genrelist[]=24'] )
+    liste.append( ['Action',URL_MAIN + basePath + '?genrelist[]=1'] )
+    liste.append( ['Animation',URL_MAIN +  basePath + 'genrelist[]=2'] )
+    liste.append( ['Arts Martiaux',URL_MAIN +  basePath + 'genrelist[]=3'] )
+    liste.append( ['Aventure',URL_MAIN +  basePath + 'genrelist[]=4'] )
+    liste.append( ['Biopic',URL_MAIN +  basePath + 'genrelist[]=5'] )
+    liste.append( ['Comedie Dramatique',URL_MAIN +  basePath + 'genrelist[]=7'] )
+    liste.append( ['Comedie Musicale',URL_MAIN +  basePath + 'genrelist[]=8'] )
+    liste.append( ['Comedie',URL_MAIN +  basePath + 'genrelist[]=9'] )
+    liste.append( ['Divers',URL_MAIN +  basePath + 'genrelist[]=10'] )
+    liste.append( ['Documentaires',URL_MAIN +  basePath + 'genrelist[]=11'] )
+    liste.append( ['Drame',URL_MAIN +  basePath + 'genrelist[]=12'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN +  basePath + 'genrelist[]=13'] ) 
+    liste.append( ['Espionnage',URL_MAIN +  basePath + 'genrelist[]=14'] )
+    liste.append( ['Famille',URL_MAIN +  basePath + 'genrelist[]=15'] )
+    liste.append( ['Fantastique',URL_MAIN +  basePath + 'genrelist[]=16'] )  
+    liste.append( ['Guerre',URL_MAIN +  basePath + 'genrelist[]=17'] )
+    liste.append( ['Historique',URL_MAIN +  basePath + 'genrelist[]=18'] )
+    liste.append( ['Musical',URL_MAIN +  basePath + 'genrelist[]=19'] )
+    liste.append( ['Peplum',URL_MAIN +  basePath + 'genrelist[]=6'] )
+    liste.append( ['Policier',URL_MAIN +  basePath + 'genrelist[]=20'] )
+    liste.append( ['Romance',URL_MAIN +  basePath + 'genrelist[]=21'] )
+    liste.append( ['Science Fiction',URL_MAIN +  basePath + 'genrelist[]=22'] )
+    liste.append( ['Thriller',URL_MAIN +  basePath + 'genrelist[]=23'] )
+    liste.append( ['Western',URL_MAIN +  basePath + 'genrelist[]=24'] )
                 
     for sTitle,sUrl in liste:
         
