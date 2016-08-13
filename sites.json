@@ -738,16 +738,16 @@
   {
     "name": "zone_telechargement_com.py",
     "path": "plugin.video.vstream/resources/sites/zone_telechargement_com.py",
-    "sha": "b6b7d995998e855e7075889b434df9706be41a52",
-    "size": 33969,
+    "sha": "62c82bfacbb62e44392342466f6f98adf7eb9dd1",
+    "size": 34451,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/zone_telechargement_com.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/zone_telechargement_com.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/b6b7d995998e855e7075889b434df9706be41a52",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/62c82bfacbb62e44392342466f6f98adf7eb9dd1",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/zone_telechargement_com.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/zone_telechargement_com.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/b6b7d995998e855e7075889b434df9706be41a52",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/62c82bfacbb62e44392342466f6f98adf7eb9dd1",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/zone_telechargement_com.py"
     }
   }
