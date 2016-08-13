@@ -290,7 +290,8 @@ def showMovies(sSearch = ''):
 
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
-            oGui.addMisc(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, 'films.png', sThumbnail, sFanart, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, sFanart, sThumbnail, sFanart, oOutputParameterHandler)
+            
 
         sNextPage = __checkForNextPage(sHtmlContent)#cherche la page suivante
         if (sNextPage != False):
