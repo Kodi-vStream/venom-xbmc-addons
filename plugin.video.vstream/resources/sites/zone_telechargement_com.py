@@ -30,6 +30,8 @@ URL_MAIN = 'http://www.zone-telechargement.com/'
 URL_SEARCH_MOVIES = (URL_MAIN + 'films-gratuit.html?q=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'telecharger-series.html?q=', 'showMovies')
 URL_SEARCH_SHOWS = (URL_MAIN + 'spectacles.html?q=', 'showMovies')
+URL_SEARCH_ANIMS = (URL_MAIN + 'animes.html?q=', 'showMovies')
+
 URL_SEARCH = (URL_MAIN + 'index.php?q=', 'showMovies')
 
 FUNCTION_SEARCH = 'showMovies'
@@ -89,7 +91,11 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler() 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchShows', 'Recherche de spectacles', 'search.png', oOutputParameterHandler) 
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchShows', 'Recherche de spectacles', 'search.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler() 
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchAnimes', 'Recherche d\'animes', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_EXCLUS[0])
@@ -192,7 +198,7 @@ def showSearchMovies():
         sUrl = URL_SEARCH_MOVIES[0] + sSearchText +'&tab=all&orderby_by=popular&orderby_order=desc&displaychangeto=thumb'
         showMovies(sUrl) 
         oGui.setEndOfDirectory()
-        return  
+        return
     
 def showSearchSeries(): 
     oGui = cGui()
@@ -201,7 +207,7 @@ def showSearchSeries():
         sUrl = URL_SEARCH_SERIES[0] + sSearchText +'&tab=all&orderby_by=popular&orderby_order=desc&displaychangeto=thumb'
         showMovies(sUrl) 
         oGui.setEndOfDirectory()
-        return  
+        return
 
 def showSearchShows(): 
     oGui = cGui()
@@ -210,7 +216,16 @@ def showSearchShows():
         sUrl = URL_SEARCH_SHOWS[0] + sSearchText +'&tab=all&orderby_by=popular&orderby_order=desc&displaychangeto=thumb'
         showMovies(sUrl) 
         oGui.setEndOfDirectory()
-        return      
+        return
+        
+def showSearchAnimes(): 
+    oGui = cGui()
+    sSearchText = oGui.showKeyBoard() 
+    if (sSearchText != False):
+        sUrl = URL_SEARCH_ANIMS[0] + sSearchText +'&tab=all&orderby_by=popular&orderby_order=desc&displaychangeto=thumb'
+        showMovies(sUrl) 
+        oGui.setEndOfDirectory()
+        return        
     
 def showGenreMovies(): 
     showGenre("films-gratuit.html")
@@ -223,29 +238,29 @@ def showGenre(basePath):
     
     liste = []
     liste.append( ['Action',URL_MAIN + basePath + '?genrelist[]=1'] )
-    liste.append( ['Animation',URL_MAIN +  basePath + 'genrelist[]=2'] )
-    liste.append( ['Arts Martiaux',URL_MAIN +  basePath + 'genrelist[]=3'] )
-    liste.append( ['Aventure',URL_MAIN +  basePath + 'genrelist[]=4'] )
-    liste.append( ['Biopic',URL_MAIN +  basePath + 'genrelist[]=5'] )
-    liste.append( ['Comedie Dramatique',URL_MAIN +  basePath + 'genrelist[]=7'] )
-    liste.append( ['Comedie Musicale',URL_MAIN +  basePath + 'genrelist[]=8'] )
-    liste.append( ['Comedie',URL_MAIN +  basePath + 'genrelist[]=9'] )
-    liste.append( ['Divers',URL_MAIN +  basePath + 'genrelist[]=10'] )
-    liste.append( ['Documentaires',URL_MAIN +  basePath + 'genrelist[]=11'] )
-    liste.append( ['Drame',URL_MAIN +  basePath + 'genrelist[]=12'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN +  basePath + 'genrelist[]=13'] ) 
-    liste.append( ['Espionnage',URL_MAIN +  basePath + 'genrelist[]=14'] )
-    liste.append( ['Famille',URL_MAIN +  basePath + 'genrelist[]=15'] )
-    liste.append( ['Fantastique',URL_MAIN +  basePath + 'genrelist[]=16'] )  
-    liste.append( ['Guerre',URL_MAIN +  basePath + 'genrelist[]=17'] )
-    liste.append( ['Historique',URL_MAIN +  basePath + 'genrelist[]=18'] )
-    liste.append( ['Musical',URL_MAIN +  basePath + 'genrelist[]=19'] )
-    liste.append( ['Peplum',URL_MAIN +  basePath + 'genrelist[]=6'] )
-    liste.append( ['Policier',URL_MAIN +  basePath + 'genrelist[]=20'] )
-    liste.append( ['Romance',URL_MAIN +  basePath + 'genrelist[]=21'] )
-    liste.append( ['Science Fiction',URL_MAIN +  basePath + 'genrelist[]=22'] )
-    liste.append( ['Thriller',URL_MAIN +  basePath + 'genrelist[]=23'] )
-    liste.append( ['Western',URL_MAIN +  basePath + 'genrelist[]=24'] )
+    liste.append( ['Animation',URL_MAIN +  basePath + '?genrelist[]=2'] )
+    liste.append( ['Arts Martiaux',URL_MAIN +  basePath + '?genrelist[]=3'] )
+    liste.append( ['Aventure',URL_MAIN +  basePath + '?genrelist[]=4'] )
+    liste.append( ['Biopic',URL_MAIN +  basePath + '?genrelist[]=5'] )
+    liste.append( ['Comedie Dramatique',URL_MAIN +  basePath + '?genrelist[]=7'] )
+    liste.append( ['Comedie Musicale',URL_MAIN +  basePath + '?genrelist[]=8'] )
+    liste.append( ['Comedie',URL_MAIN +  basePath + '?genrelist[]=9'] )
+    liste.append( ['Divers',URL_MAIN +  basePath + '?genrelist[]=10'] )
+    liste.append( ['Documentaires',URL_MAIN +  basePath + '?genrelist[]=11'] )
+    liste.append( ['Drame',URL_MAIN +  basePath + '?genrelist[]=12'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN +  basePath + '?genrelist[]=13'] ) 
+    liste.append( ['Espionnage',URL_MAIN +  basePath + '?genrelist[]=14'] )
+    liste.append( ['Famille',URL_MAIN +  basePath + '?genrelist[]=15'] )
+    liste.append( ['Fantastique',URL_MAIN +  basePath + '?genrelist[]=16'] )  
+    liste.append( ['Guerre',URL_MAIN +  basePath + '?genrelist[]=17'] )
+    liste.append( ['Historique',URL_MAIN +  basePath + '?genrelist[]=18'] )
+    liste.append( ['Musical',URL_MAIN +  basePath + '?genrelist[]=19'] )
+    liste.append( ['Peplum',URL_MAIN +  basePath + '?genrelist[]=6'] )
+    liste.append( ['Policier',URL_MAIN +  basePath + '?genrelist[]=20'] )
+    liste.append( ['Romance',URL_MAIN +  basePath + '?genrelist[]=21'] )
+    liste.append( ['Science Fiction',URL_MAIN +  basePath + '?genrelist[]=22'] )
+    liste.append( ['Thriller',URL_MAIN +  basePath + '?genrelist[]=23'] )
+    liste.append( ['Western',URL_MAIN +  basePath + '?genrelist[]=24'] )
                 
     for sTitle,sUrl in liste:
         
