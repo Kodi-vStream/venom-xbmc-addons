@@ -17,9 +17,9 @@ SITE_IDENTIFIER = 'libertyland_tv'
 SITE_NAME = 'Libertyland'
 SITE_DESC = 'Les films et series recentes en streaming et en telechargement'
 
-URL_MAIN = 'http://www.libertyland.tv/'
+URL_MAIN = 'http://www.libertyland.co/'
 
-URL_SEARCH = ('http://www.libertyland.tv/v2/recherche/', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'v2/recherche/', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'films/nouveautes/', 'showMovies') # films nouveautés
@@ -135,27 +135,25 @@ def showMovies(sSearch = ''):
     
     if sSearch:
         
-        sPOST = ''
-        sUrl2 = URL_SEARCH[0]
+        scategorie = ''
         sUrl = ''
         
         sDisp = oInputParameterHandler.getValue('disp')
        
         if (sDisp == 'search3'):#anime
-            sPOST = 'categorie=mangas'
+            scategorie = 'mangas'
             sUrl = '/mangas/'
         elif (sDisp == 'search2'):#serie
-            sPOST = 'categorie=series'
-            sUrl = '/series/'
+            scategorie = 'series'
         elif (sDisp == 'search1'):#film
-            sPOST = 'categorie=films'
+            scategorie = 'films'
         else:#tout le reste
-            sPOST = 'categorie=films'
+            scategorie = 'films'
         
-        sPOST = sPOST + '&mot_search=' + sSearch.replace(URL_SEARCH[0],'')    
+        sPOST = 'categorie=' + scategorie + '&mot_search=' + sSearch.replace(URL_SEARCH[0],'')    
         #sPOST = urllib.urllib.quote_plus(sPOST)
         
-        request = urllib2.Request(sUrl2,sPOST)
+        request = urllib2.Request(URL_SEARCH[0],sPOST)
         request.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:22.0) Gecko/20100101 Firefox/22.0')
         request.add_header('Content-Type', 'application/x-www-form-urlencoded')
         
@@ -176,10 +174,10 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
         
-        sPattern = '<h2 class="heading"><a href="[^<>"]+?">([^<]+)<\/a>.+?<img class="img-responsive" src="([^<]+)" alt.+?(?:<font color="#00CC00">(.+?)<\/font>.+?)*<div class="divstreaming"><a href="([^<>"]+?)">'
+        sPattern = '<h2 class="heading"> *<a href="[^<>"]+?">([^<]+)<\/a>.+?<img class="img-responsive" *src="([^<]+)" *alt.+?(?:<font color="#00CC00">(.+?)<\/font>.+?)*<div class="divstreaming"> *<a href="([^<>"]+?)">'
 
     if '/mangas' in sUrl:
-        sPattern = '<h2 class="heading"><a href="([^<>"]+?)">([^<]+)<\/a>.+?<img class="img-responsive" src="(.+?)" alt='
+        sPattern = '<h2 class="heading"> *<a href="([^<>"]+?)">([^<]+)<\/a>.+?<img class="img-responsive" *src="(.+?)" *alt='  
   
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -276,10 +274,14 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()    
+    
     oParser = cParser()
     
     #sPattern = 'src="http:\/\/www\.libertyland\.tv\/v2\/hebergeur\/[^<>]+?"> ([^<>]+?) <font style=\'color:#f00\'>(.+?)<\/font><\/h4>.+?data-fancybox-type="ajax" href="(.+?)" class="fancybox fancybox\.iframe">'
-    sPattern = 'src="http:\/\/www\.libertyland\.tv\/v2\/hebergeur\/[^>]+"> ([^<]+) <|data-fancybox-type="ajax" href="(.+?)" class="fancybox fancybox\.iframe">.+?<td data-title="Langue" class="separateur[^"]+">(.+?)<\/td><td data-title="Qualité" class="separateur[^"]+">(.+?)<\/td>'
+    sPattern = 'src="http:\/\/libertyland\.co\/v2\/hebergeur\/[^>]+"> ([^<]+) <|data-fancybox-type="ajax" href="(.+?)" class="fancybox fancybox\.iframe">.+?<td data-title="Langue" class="separateur[^"]+">(.+?)<\/td> *<td data-title="Qualité" class="separateur[^"]+">(.+?)<\/td>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     sPlayer = ''
@@ -296,7 +298,11 @@ def showLinks():
             if aEntry[0]:
                 sPlayer = aEntry[0]
             else:
-                sUrlLink = URL_MAIN+aEntry[1]
+                
+                sUrlLink = aEntry[1]
+                if not sUrlLink.startswith('http'):
+                    sUrlLink = URL_MAIN + sUrlLink
+                    
                 sLang = aEntry[2].replace('French','VF')
                 sLang = cUtil().removeHtmlTags(sLang)
                 
