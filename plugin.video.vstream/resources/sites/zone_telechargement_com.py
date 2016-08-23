@@ -669,8 +669,12 @@ def Display_protected_link():
         sHtmlContent = DecryptDlProtect(sUrl) 
         
         if sHtmlContent:
-            sPattern_dlprotect = '><a href="(.+?)" target="_blank">'
-            aResult_dlprotect = oParser.parse(sHtmlContent, sPattern_dlprotect)
+            #Si redirection
+            if sHtmlContent.startswith('http'):
+                aResult_dlprotect = (True, [sHtmlContent])
+            else:
+                sPattern_dlprotect = '><a href="(.+?)" target="_blank">'
+                aResult_dlprotect = oParser.parse(sHtmlContent, sPattern_dlprotect)
             
         else:
             oDialog = cConfig().createDialogOK('Desole, probleme de captcha.\n Veuillez en rentrer un directement sur le site, le temps de reparer')
