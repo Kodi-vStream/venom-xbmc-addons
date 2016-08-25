@@ -67,7 +67,7 @@ class cHoster(iHoster):
             headers2 = headers
             headers2['Host'] = self.GetHost(web_url)
             
-            xbmc.log(web_url)
+            xbmc.log('Test sur : ' + web_url)
             request = urllib2.Request(web_url,None,headers)
       
             redirection_target = ''
@@ -84,6 +84,7 @@ class cHoster(iHoster):
                 #print e.read()
                 if (e.code == 301) or  (e.code == 302):
                     redirection_target = e.headers['Location']
+                    #xbmc.log('Redirection : ' + web_url)
          
             #pas de redirection on annulle
             if not (redirection_target):
@@ -96,7 +97,7 @@ class cHoster(iHoster):
         return sHtmlContent       
 
     def __getIdFromUrl(self, sUrl):
-        sPattern = "http://((?:www.|play.)?flashx.tv)/(?:embed-)?([0-9a-zA-Z/-]+)(?:.html)?"
+        sPattern = "http://((?:www.|play.)?flashx.tv)/(?:embed-)?([0-9a-zA-Z]+)(?:.html)?"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -140,6 +141,7 @@ class cHoster(iHoster):
         #on cherche la vraie url
         #web_url = 'http://' + HOST + '/playit-' + sId + '.html'
         sHtmlContent = self.GetRedirectHtml(self.__sUrl,sId)
+        
         sPattern = 'href="(http:\/\/www\.flashx[^"]+)'
         aResult = re.findall(sPattern,sHtmlContent)
         if aResult:
@@ -150,7 +152,7 @@ class cHoster(iHoster):
         sHtmlContent = self.GetRedirectHtml(web_url,sId)
         
         if not sHtmlContent:
-            return False,False
+            return False,False 
             
         #A t on le lien code directement?
         sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
@@ -195,7 +197,9 @@ class cHoster(iHoster):
         if (aResult):
             xbmc.log( "lien code")
             sUnpacked = cPacker().unpack(aResult[0])
-            sHtmlContent = sUnpacked  
+            sHtmlContent = sUnpacked
+            
+            #xbmc.log(sHtmlContent)
   
         #decodage classique
         sPattern = '{file:"([^",]+)",label:"([^"<>,]+)"}'
