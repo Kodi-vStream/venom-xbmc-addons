@@ -106,7 +106,8 @@ class cHoster(iHoster):
                 v = ((v + 14) % 94) + 33
             url = url + chr(v)
         
-
+        #temporary fix from https://gitlab.com/iptvplayer-for-e2
+        url = url[:-1] + chr(ord(url[-1]) + 2)
         
         api_call = "https://openload.co/stream/" + url + "?mime=true"
         
