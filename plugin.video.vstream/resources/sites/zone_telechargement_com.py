@@ -14,12 +14,11 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
-import urllib, re
+import urllib, re,urllib2
 import xbmcgui
 import xbmc
 
 from resources.lib.dl_deprotect import DecryptDlProtect
-
 
 SITE_IDENTIFIER = 'zone_telechargement_com' 
 SITE_NAME = '[COLOR violet]Zone-telechargement[/COLOR]' 
@@ -533,24 +532,31 @@ def showHosters():# recherche et affiche les hotes
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumbnail=oInputParameterHandler.getValue('sThumbnail')
     
-    xbmc.log( sUrl )
+    xbmc.log(sUrl)
 
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0')
+    oRequestHandler.addHeaderEntry('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
     sHtmlContent = oRequestHandler.request()
 
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent.replace('\n',''))
+    #fh.close()
+    
     #Fonction pour recuperer uniquement les liens
-    sHtmlContent = Cutlink(sHtmlContent)    
+    sHtmlContent = Cutlink(sHtmlContent)
     
     #Si ca ressemble aux lien premiums on vire les liens non premium
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent:
-        sHtmlContent = CutNonPremiumlinks(sHtmlContent)  
+        sHtmlContent = CutNonPremiumlinks(sHtmlContent)
     
     oParser = cParser()
     
     sPattern = '<span style="color:#.{6}">([^>]+?)<\/span>(?:.(?!color))+?<a href="([^<>"]+?)" target="_blank">Télécharger<\/a>|>\[(Liens Premium) \]<|<span style="color:#FF0000">([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-    #print aResult
+    #xbmc.log(str(aResult))
         
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -713,7 +719,7 @@ def Display_protected_link():
     
 def Cutlink(sHtmlContent):
     oParser = cParser()
-    sPattern = '<img src="https*:\/\/www\.zone-telechargement\.com\/prez\/style\/v1\/liens\.png"(.+?)<div class="divinnews"'
+    sPattern = '<img src="https*:\/\/www\.zone-telechargement\.com\/prez\/style\/v1\/liens\.png"(.+?)<div class="divinnews'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):
