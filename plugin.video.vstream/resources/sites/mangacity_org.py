@@ -563,10 +563,16 @@ def showHosters():
             #redirection tinyurl
             if 'tinyurl' in sHosterUrl:
                 #Lien deja connu ?
+                if 'http://tinyurl.com/h7c9sr7' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/h7c9sr7/','http://vidspot.net/')
                 if 'http://tinyurl.com/jxblgl5' in sHosterUrl:
                     sHosterUrl = sHosterUrl.replace('http://tinyurl.com/jxblgl5/','http://streamin.to/')
-                elif 'http://tinyurl.com/hll3jvd' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/hll3jvd/','https://openload.co/')
+                if 'http://tinyurl.com/q44uiep' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/q44uiep/','https://openload.co/')
+                if 'http://tinyurl.com/jp3fg5x' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/jp3fg5x/','http://vidwatch.me/')
+                elif 'http://tinyurl.com/lr6ytvj' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/lr6ytvj/','http://allmyvideo.net/')
                 #On va chercher le vrai lien
                 else:
                     xbmc.log(sHosterUrl)
