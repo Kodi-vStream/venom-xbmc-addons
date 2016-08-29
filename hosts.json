@@ -866,16 +866,16 @@
   {
     "name": "vidme.py",
     "path": "plugin.video.vstream/resources/hosters/vidme.py",
-    "sha": "f5f63f961b2c4848c22b493648c358b6a44a1fb7",
-    "size": 1948,
+    "sha": "eb06402291e6ec67da12e448c63972b2836bb1cd",
+    "size": 1952,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/vidme.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/vidme.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/f5f63f961b2c4848c22b493648c358b6a44a1fb7",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/eb06402291e6ec67da12e448c63972b2836bb1cd",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/vidme.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/vidme.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/f5f63f961b2c4848c22b493648c358b6a44a1fb7",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/eb06402291e6ec67da12e448c63972b2836bb1cd",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/vidme.py"
     }
   },
