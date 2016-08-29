@@ -354,16 +354,16 @@
   {
     "name": "mangacity_org.py",
     "path": "plugin.video.vstream/resources/sites/mangacity_org.py",
-    "sha": "6892e91f7803269f449787d7e54d16e9ad7710e3",
-    "size": 21971,
+    "sha": "0c7ba3c2c997ad2a3dd0e6834bad5f149a789822",
+    "size": 22475,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/mangacity_org.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/mangacity_org.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/6892e91f7803269f449787d7e54d16e9ad7710e3",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/0c7ba3c2c997ad2a3dd0e6834bad5f149a789822",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/mangacity_org.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/mangacity_org.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/6892e91f7803269f449787d7e54d16e9ad7710e3",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/0c7ba3c2c997ad2a3dd0e6834bad5f149a789822",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/mangacity_org.py"
     }
   },
