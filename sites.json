@@ -370,16 +370,16 @@
   {
     "name": "mareplaytv.py",
     "path": "plugin.video.vstream/resources/sites/mareplaytv.py",
-    "sha": "b2749845fcf8f2ed88f9d90b70579706dcf8a529",
-    "size": 7212,
+    "sha": "df802f6520253e95d301117a0b32f59980cac2bb",
+    "size": 7217,
     "url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/mareplaytv.py?ref=master",
     "html_url": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/mareplaytv.py",
-    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/b2749845fcf8f2ed88f9d90b70579706dcf8a529",
+    "git_url": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/df802f6520253e95d301117a0b32f59980cac2bb",
     "download_url": "https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/mareplaytv.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/mareplaytv.py?ref=master",
-      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/b2749845fcf8f2ed88f9d90b70579706dcf8a529",
+      "git": "https://api.github.com/repos/LordVenom/venom-xbmc-addons/git/blobs/df802f6520253e95d301117a0b32f59980cac2bb",
       "html": "https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/mareplaytv.py"
     }
   },
