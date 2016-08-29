@@ -572,7 +572,7 @@ def showHosters():
                 if 'http://tinyurl.com/jp3fg5x' in sHosterUrl:
                     sHosterUrl = sHosterUrl.replace('http://tinyurl.com/jp3fg5x/','http://vidwatch.me/')
                 elif 'http://tinyurl.com/lr6ytvj' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/lr6ytvj/','http://allmyvideo.net/')
+                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/lr6ytvj/','http://allvideo.net/')
                 #On va chercher le vrai lien
                 else:
                     xbmc.log(sHosterUrl)
