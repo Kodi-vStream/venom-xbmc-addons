@@ -102,7 +102,7 @@ def showMovies(sSearch = ''):
     if not (sUrl == URL_MAIN):
         sPattern = '<div class="item-img">.+?<img.+?src="([^"]+)".+?<h3><a href="([^"]+)\/">([^<>]+)<'
     else:
-        sPattern = '<div class="item-img"><a href="([^"]+)" title="([^"]+)"><img.+?src="([^"]+)"'
+        sPattern = '<div class="item-img"> *<a href="([^"]+)" title="([^"]+)"><img.+?src="([^"]+)"'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -169,10 +169,10 @@ def showHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<iframe.+?src="([^"]+)"'
+    sPattern = '<iframe.+?src="(http[^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
