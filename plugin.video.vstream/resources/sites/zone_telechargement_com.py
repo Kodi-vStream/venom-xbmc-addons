@@ -295,8 +295,11 @@ def showMovies(sSearch = ''):
 
             sTitle = str(aEntry[2])
             sUrl2 = aEntry[0]
-            #sFanart =aEntry[1]
+            sFanart =aEntry[1]
             sThumbnail=aEntry[1]
+            
+            sFanart = urllib.quote(sFanart)
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl2)) 
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle)) 
@@ -304,7 +307,7 @@ def showMovies(sSearch = ''):
 
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
-            oGui.addMisc(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, sFanart, sThumbnail, sFanart, oOutputParameterHandler)
             
 
         sNextPage = __checkForNextPage(sHtmlContent)#cherche la page suivante
