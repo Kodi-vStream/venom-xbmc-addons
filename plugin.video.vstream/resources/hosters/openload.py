@@ -8,6 +8,7 @@ from resources.lib.packer import cPacker
 from resources.lib.gui.gui import cGui
 from resources.lib.util import cUtil
 
+from resources.lib.aadecode import AADecoder
 
 import re,urllib2, base64, math
 
@@ -88,6 +89,22 @@ class cHoster(iHoster):
         #fh.write(sHtmlContent)
         #fh.close()
         
+        #"aaencode - Encode any JavaScript program to Japanese style emoticons (^_^)"
+        sPattern = '<script type="text\/javascript">(ﾟωﾟ.+?)<\/script>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        if not (aResult[0]):
+            return False,False
+            
+        s = AADecoder(aResult[1][0]).decode()
+        
+        sPattern = '\(tmp\.slice\(-1\)\.charCodeAt\(0\) \+ ([0-9]+)\)'
+        aResult = oParser.parse(s, sPattern)
+        
+        val = 2
+        if (aResult[0]):
+            val = int(aResult[1][0])
+
         sPattern = '<span id="hiddenurl">(.+?)<\/span>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         
@@ -106,8 +123,7 @@ class cHoster(iHoster):
                 v = ((v + 14) % 94) + 33
             url = url + chr(v)
         
-        #temporary fix from https://gitlab.com/iptvplayer-for-e2
-        url = url[:-1] + chr(ord(url[-1]) + 1)
+        url = url[:-1] + chr(ord(url[-1]) + val)
         
         api_call = "https://openload.co/stream/" + url + "?mime=true"
         
