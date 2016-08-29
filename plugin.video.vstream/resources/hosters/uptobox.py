@@ -152,7 +152,7 @@ class cHoster(iHoster):
             return False
 
         oParser = cParser()
-        sPattern =  '<form\sname\s*=[\'"]F1[\'"].+?>(.+?)<br\s*\/*>'
+        sPattern =  '(?s)<form\sname\s*=[\'"]F1[\'"].+?>(.+?)<center>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         
         if (aResult[0]):
