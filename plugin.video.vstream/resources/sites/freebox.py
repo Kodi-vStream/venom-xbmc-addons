@@ -11,6 +11,7 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
 from resources.lib.config import cConfig
+
 import re, urllib2, urllib, os, time, unicodedata
 import xbmc, xbmcgui
 
@@ -362,6 +363,12 @@ def play__():
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
+    #sUrl = '[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_2%2Fhds%2Findex.m3u8&callback=_jsonp_loader_callback_request_2'
+    #Special url
+    if '[REGEX]' in sUrl:
+        sUrl = GetRealUrl(sUrl)
+        sUrl = sUrl + '|User-Agent=Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
+    
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName(SITE_IDENTIFIER)
     oGuiElement.setTitle(sTitle)
@@ -379,6 +386,27 @@ def play__():
     return
         
     oGui.setEndOfDirectory()
+    
+def GetRealUrl(url):
+    oParser = cParser()
+    sPattern = '\[REGEX\](.+?)\[URL\](.+$)'
+    aResult = oParser.parse(url, sPattern)
+    
+    if (aResult):
+        reg = aResult[1][0][0]
+        url2 = aResult[1][0][1]
+        oRequestHandler = cRequestHandler(url2)
+        sHtmlContent = oRequestHandler.request()
+        
+        aResult = oParser.parse(sHtmlContent, reg)
+        if (aResult):
+            url = aResult[1][0]
+            
+            oRequestHandler = cRequestHandler(url)
+            sHtmlContent = oRequestHandler.request()
+        
+    return url
+    
 
 def openwindows():
     xbmc.executebuiltin( "ActivateWindow(%d, return)" % ( 10601, ) )

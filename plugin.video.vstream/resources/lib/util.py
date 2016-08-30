@@ -145,11 +145,15 @@ class cUtil:
         return name
         
     def FormatSerie(self,string):
+        
+        #vire doubles espaces
+        string = re.sub(' +',' ',string)
+        
         #convertion unicode
         string = string.decode("utf-8")
         
         SXEX = ''
-        m = re.search( r'(?i)(\wpisode ([0-9]+))',string,re.UNICODE)
+        m = re.search( ur'(?i)(\wpisode ([0-9]+))(?:$| [^a\u00E0])',string,re.UNICODE)
         if m:
             #ok y a des episodes
             string = string.replace(m.group(1),'')
@@ -173,3 +177,17 @@ class cUtil:
         
         #reconvertion utf-8
         return string.encode('utf-8')
+        
+    def EvalJSString(self,s):
+        s = s.replace(' ','')
+        try:
+            s = s.replace('!+[]','1').replace('!![]','1').replace('[]','0')
+            s = re.sub(r'(\([^()]+)\+\[\]\)','(\\1)*10)',s)  # si le bloc fini par +[] >> *10
+            s = re.sub(r'\[([^\]]+)\]','str(\\1)',s)
+            # s = s.replace('[','(').replace(']',')')
+            if s[0]=='+':
+                s = s[1:]
+            val = int(eval(s))
+            return val
+        except:
+            return 0
