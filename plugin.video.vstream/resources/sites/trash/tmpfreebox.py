@@ -363,11 +363,41 @@ def play__():
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
-    #sUrl = '[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_2%2Fhds%2Findex.m3u8&callback=_jsonp_loader_callback_request_2'
+    #http://hdfauthftv-a.akamaihd.net/esi/TA?url=http://live.francetv.fr/simulcast/France_3/hls_v1/index.m3u8
+    #sUrl = '[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_2%2Fhds%2Fmanifest.f4m&callback=_jsonp_loader_callback_request_2'
+
+    sUrl = '[REGEX](.+$)[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?url=http://live.francetv.fr/simulcast/France_3/hls_v1/index.m3u8'
+
     #Special url
     if '[REGEX]' in sUrl:
         sUrl = GetRealUrl(sUrl)
-        sUrl = sUrl + '|User-Agent=Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
+        xbmc.log("Url : " + sUrl)
+        
+        c = ""
+        oParser = cParser()
+        sPattern = '\?(.+$)'
+        aResult = oParser.parse(sUrl, sPattern)
+        if (aResult):
+            c = aResult[1][0]
+            
+        xbmc.log('Cookie : ' + c )
+        #sUrl = sUrl + '|User-Agent=Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
+        #sUrl = sUrl + '|Cookie=' + c
+        #sUrl = sUrl + '|Cookie=' + urllib.quote(c)
+        
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0')
+        oRequestHandler.addHeaderEntry('Cookie',c)
+        sHtmlContent = oRequestHandler.request()
+        
+        oParser = cParser()
+        sPattern = '(France.+?m3u8)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+    
+        if (aResult):
+            sUrl = 'http://live.francetv.fr/simulcast/France_3/hls_v1/' + aResult[1][0] + '|Cookie=' + urllib.quote(c) + '&User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'
+     
+    xbmc.log(sUrl)
     
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName(SITE_IDENTIFIER)

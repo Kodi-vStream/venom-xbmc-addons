@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-#From chataigne73
+#From Patoche2025
 
 from resources.lib.config import cConfig
 from resources.lib.gui.hoster import cHosterGui
@@ -14,67 +14,59 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
-import urllib, re,urllib2
+import urllib, re
 import xbmcgui
 import xbmc
 
 from resources.lib.dl_deprotect import DecryptDlProtect
 
-SITE_IDENTIFIER = 'zone_telechargement_com' 
-SITE_NAME = '[COLOR violet]Zone-telechargement[/COLOR]' 
+
+SITE_IDENTIFIER = 'exdown_com' 
+SITE_NAME = '[COLOR violet]Extreme Download[/COLOR]' 
 SITE_DESC = 'Fichier en DDL, HD' 
 
-URL_MAIN = 'http://www.zone-telechargement.com/'
+URL_MAIN = 'http://www.exdown.net/'
 
-URL_SEARCH_MOVIES = (URL_MAIN + 'films-gratuit.html?q=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'telecharger-series.html?q=', 'showMovies')
-URL_SEARCH_SHOWS = (URL_MAIN + 'spectacles.html?q=', 'showMovies')
-URL_SEARCH_ANIMS = (URL_MAIN + 'animes.html?q=', 'showMovies')
-
-URL_SEARCH = (URL_MAIN + 'index.php?q=', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?do=', 'showMovies')
 
 FUNCTION_SEARCH = 'showMovies'
 
-#MOVIE_NEWS = (URL_MAIN + 'films/dvdrip-bdrip/?showby=month', 'showMovies') # films nouveautés
-MOVIE_MOVIE = (URL_MAIN + 'films-gratuit.html', 'showMovies') # films
-MOVIE_NEWS = (URL_MAIN + 'films-gratuit.html?tab=all&orderby_by=date&orderby_order=desc', 'showMovies') # films nouveautés
-MOVIE_EXCLUS = (URL_MAIN + 'exclus.html', 'showMovies') # exclus (films populaires)
-MOVIE_VIEWS = (URL_MAIN + 'films-gratuit.html?tab=all&orderby_by=popular&orderby_order=desc', 'showMovies') # films + vus
-MOVIE_NOTES = (URL_MAIN + 'films-gratuit.html?tab=all&orderby_by=rating&orderby_order=desc', 'showMovies') # films mieux notés
-MOVIE_3D = (URL_MAIN + 'films-bluray-3d.html?periodlist[]=2010&periodlist[]=2000&periodlist[]=1990&hf=1', 'showMovies') # films en 3D
-MOVIE_HD = (URL_MAIN + 'films-bluray-hd.html?periodlist[]=2010&periodlist[]=2000&periodlist[]=1990&hf=1', 'showMovies') # films en HD
-MOVIE_HDLIGHT = (URL_MAIN + 'x265-x264-hdlight.html', 'showMovies') # films en x265 et x264
-#MOVIE_4K = (URL_MAIN + 'films-gratuit.html?q=4k&orderby_by=popular', 'showMovies')# films en 4K 
+MOVIE_BDRIPSD = (URL_MAIN + 'films-sd/dvdrip', 'showMovies') # films BDRIP_DVDRIP
+MOVIE_VOSTFRSD = (URL_MAIN + 'films-sd/dvdrip-vostfr', 'showMovies') # films VOSTFR
+MOVIE_DVDSCR = (URL_MAIN + 'films-sd/dvdscr-r5', 'showMovies') # films DVDSCR
+MOVIE_TSCAM = (URL_MAIN + 'films-sd/ts-cam', 'showMovies') # films TS/CAM
+MOVIE_FILMOGRAPHIE = (URL_MAIN + 'films-sd/filmographie', 'showMovies') # filmographie
 
-MOVIE_GENRES = (True, 'showGenreMovies')
+MOVIE_BDRIPHD = (URL_MAIN + 'films-hd/bdrip-720p', 'showMovies') # films BDRIP 720P
+MOVIE_BLURAY720P = (URL_MAIN + 'films-hd/bluray-720p', 'showMovies') # films BluRay 720P
+MOVIE_BLURAY1080P = (URL_MAIN + 'films-hd/bluray-1080p', 'showMovies') # films BluRay 1080P
+MOVIE_BLURAYVOSTFR = (URL_MAIN + 'films-hd/bluray-vostfr', 'showMovies') # films BluRay VOSTFR
+MOVIE_BLURAY3D = (URL_MAIN + 'films-hd/bluray-vostfr', 'showMovies') # films BluRay 3D
+
+MOVIE_CLASSIQUESD = (URL_MAIN + 'films-hd/films-classique/classiques-sd', 'showMovies') # films Classique SD
+MOVIE_CLASSIQUEHD = (URL_MAIN + 'films-hd/films-classique/classiques-hd', 'showMovies') # films Classique HD
+
+MOVIE_GENRES = (True, 'showGenre')
 #MOVIE_VF = (URL_MAIN + 'langues/french', 'showMovies') # films VF
-MOVIE_VOSTFR = (URL_MAIN + 'langues/vostfr', 'showMovies') # films VOSTFR
-MOVIE_ANIME = (URL_MAIN + 'dessins-animes.html', 'showMovies') # dessins animes
+#MOVIE_VOSTFR = (URL_MAIN + 'langues/vostfr', 'showMovies') # films VOSTFR
+#MOVIE_ANIME = (URL_MAIN + 'dessins-animes.html', 'showMovies') # dessins animes
 
-SERIE_SERIES = (URL_MAIN + 'telecharger-series.html', 'showMovies') # series
-SERIE_NEWS = (URL_MAIN + 'series-vf.html?orderby_by=date&orderby_order=desc&tv=all', 'showMovies') # serie VF
-SERIE_VFS = (URL_MAIN + 'series-vf.html', 'showMovies') # serie VF
-SERIE_VOSTFRS = (URL_MAIN + 'series-vostfr.html', 'showMovies') # serie VOSTFR
-SERIE_GENRES = (True, 'showGenreSeries')
+SERIE_SDVF = (URL_MAIN + 'series/vf', 'showMovies') # serie SD VF
+SERIE_SDVOSTFR = (URL_MAIN + 'series/vostfr', 'showMovies') # serie SD VOSTFR
+SERIE_PACKSD = (URL_MAIN + 'series-vostfr.html', 'showMovies') # serie PACK SERIES SD
 
-ANIM_VFS = (URL_MAIN + 'animes-vf.html', 'showMovies')
-ANIM_VOSTFRS = (URL_MAIN + 'animes-vostfr.html', 'showMovies')
+SERIE_HDVF = (URL_MAIN + 'series-hd/hd-series-vf', 'showMovies') # serie HD VF
+SERIE_HDVOSTFR = (URL_MAIN + 'series-hd/hd-series-vostfr', 'showMovies') # serie HD VOSTFR
+SERIE_PACKHD = (URL_MAIN + 'series-hd/pack-series-hd', 'showMovies') # serie PACK SERIES HD
 
-BLURAY_NEWS = (URL_MAIN + 'films-bluray-hd.html', 'showMovies') # derniers Blu-Rays
+#SERIE_GENRE = (True, 'showGenre')
 
-DOC_DOCS = (URL_MAIN + 'documentaires-gratuit.html', 'showMovies') # docs
-DOC_NEWS = (URL_MAIN + 'documentaires-gratuit.html?tab=all&orderby_by=date&orderby_order=desc', 'showMovies') # derniers docu
-#DOCU_4K = (URL_MAIN + 'documentaires-gratuit.html?q=4k&orderby_by=popular', 'showMovies') # docu en 4K
+ANIM_FILMS = (URL_MAIN + 'mangas/manga-films', 'showMovies') # FILMS MANGAS
+ANIM_VF = (URL_MAIN + 'mangas/series-vf', 'showMovies') # ANIMES VF
+ANIM_VOSTFR = (URL_MAIN + 'mangas/series-vostfr', 'showMovies') # ANIMES VOSTFR
 
-SPORT_SPORTS = (URL_MAIN + 'sport.html', 'showMovies') # sports
 
-TV_NEWS = (URL_MAIN + 'emissions-tv.html', 'showMovies') # dernieres emissions tv
-SPECT_NEWS = (URL_MAIN + 'spectacles.html', 'showMovies') # dernieres spectacles
-CONCERT_NEWS = (URL_MAIN + 'concerts.html', 'showMovies') # dernieres concerts      
-SPORT_NEWS = (URL_MAIN + 'sport.html', 'showMovies') # dernieres du sports      
-AUTOFORM_VID = (URL_MAIN + 'autoformations-videos.html?tab=all&orderby_by=date&orderby_order=desc', 'showMovies')       
-MUSIC_HD = (URL_MAIN + 'musiques-mp3-gratuite.html?q=HD&orderby_by=popular', 'showMovies') # dernieres Musiques HD      
-#MUSIC_4K = (URL_MAIN + 'musiques-mp3-gratuite.html?q=4k&orderby_by=popular', 'showMovies')  # Musiques en 4K
+BLURAY_NEWS = (URL_MAIN + 'films-hd/full-bluray', 'showMovies') # derniers Blu-Rays
 
 
 def load():
@@ -82,111 +74,79 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler() 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchMovies', 'Recherche de films', 'search.png', oOutputParameterHandler) 
-    
-    oOutputParameterHandler = cOutputParameterHandler() 
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchSeries', 'Recherche de series', 'search.png', oOutputParameterHandler)
-    
-    oOutputParameterHandler = cOutputParameterHandler() 
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchShows', 'Recherche de spectacles', 'search.png', oOutputParameterHandler)
-    
-    oOutputParameterHandler = cOutputParameterHandler() 
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchAnimes', 'Recherche d\'animes', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchMovies', 'Recherche de films ou series', 'search.png', oOutputParameterHandler) 
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_EXCLUS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_EXCLUS[1], 'Exclus (Films populaires)', 'news.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_BDRIPSD[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_BDRIPSD[1], 'films BDRIP_DVDRIP', 'news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Derniers Films ajoutes', 'news.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VOSTFRSD[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFRSD[1], 'films VOSTFR', 'news.png', oOutputParameterHandler)
     
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_BDRIPHD[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_BDRIPHD[1], 'films BDRIP 720P', 'news.png', oOutputParameterHandler)  
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_BLURAY720P[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_BLURAY720P[1], 'films BluRay 720P', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_BLURAY1080P[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_BLURAY1080P[1], 'films BluRay 1080P', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_BLURAYVOSTFR[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_BLURAYVOSTFR[1], 'films BluRay VOSTFR', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_BLURAY3D[0])        
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_BLURAY3D[0], 'films BluRay 3D', 'films.png', oOutputParameterHandler)
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', BLURAY_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, BLURAY_NEWS[1], 'Derniers Blu-rays ajoutes', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, 'BLURAY_NEWS[1]', 'derniers Blu-Rays', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus vus', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_FILMS[0])
+    oGui.addDir(SITE_IDENTIFIER, 'ANIM_FILMS[1]', 'Film MANGAS', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les mieux notes', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VF[0])
+    oGui.addDir(SITE_IDENTIFIER, 'ANIM_VF[1]', 'ANIMES VF', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_3D[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_3D[1], 'Films 3D', 'news.png', oOutputParameterHandler)
-    
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_4K[0])        
-    #oGui.addDir(SITE_IDENTIFIER, MOVIE_4K[1], 'Films 4K', 'news.png', oOutputParameterHandler)
-    
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_HDLIGHT[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_HDLIGHT[1], 'Films x265/x264', 'news.png', oOutputParameterHandler)
-    
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANIME[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Dessins Animes', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFR[0])
+    oGui.addDir(SITE_IDENTIFIER, 'ANIM_VOSTFR[1]', 'ANIMES VOSTFR', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films Genre', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Dernieres Séries VF ajoutees', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SDVF[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VF[1], 'serie SD VF', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Dernieres Series VOSTFR ajoutées', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SDVOSTFR[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFR[1], 'serie SD VOSTFR', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animes VF', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_PACKSD[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_PACKSD[1], 'serie PACK SERIES SD', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animes VOSTFR', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_HDVF[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_HDVF[1], 'serie HD VF', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Deniers Documentaires', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_HDVOSTFR[0])
+    oGui.addDir(SITE_IDENTIFIER, 'SERIE_HDVOSTFR[1]', 'serie HD VOSTFR', 'films.png', oOutputParameterHandler)
     
-    #oOutputParameterHandler = cOutputParameterHandler()     
-    #oOutputParameterHandler.addParameter('siteUrl', DOCU_4K[0])     
-    #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires en 4K', 'films.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', TV_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Dernieres Emissions TV', 'films.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SPECT_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Derniers Spectacles', 'films.png', oOutputParameterHandler)
-
     oOutputParameterHandler = cOutputParameterHandler()     
-    oOutputParameterHandler.addParameter('siteUrl', CONCERT_NEWS[0])        
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Derniers Concerts', 'films.png', oOutputParameterHandler)       
-                
-    oOutputParameterHandler = cOutputParameterHandler()     
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_NEWS[0])      
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Derniers du Sports', 'films.png', oOutputParameterHandler)      
-            
-    oOutputParameterHandler = cOutputParameterHandler()     
-    oOutputParameterHandler.addParameter('siteUrl', AUTOFORM_VID[0])        
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Autoformation Video', 'films.png', oOutputParameterHandler)     
-            
-    oOutputParameterHandler = cOutputParameterHandler()     
-    oOutputParameterHandler.addParameter('siteUrl', MUSIC_HD[0])        
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Musiques en HD', 'films.png', oOutputParameterHandler)      
-            
-    #oOutputParameterHandler = cOutputParameterHandler()     
-    #oOutputParameterHandler.addParameter('siteUrl', MUSIC_4K[0])        
-    #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Musiques en 4K', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_PACKHD[0])     
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'serie PACK SERIES HD', 'films.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory() 
 
@@ -197,7 +157,7 @@ def showSearchMovies():
         sUrl = URL_SEARCH_MOVIES[0] + sSearchText +'&tab=all&orderby_by=popular&orderby_order=desc&displaychangeto=thumb'
         showMovies(sUrl) 
         oGui.setEndOfDirectory()
-        return
+        return  
     
 def showSearchSeries(): 
     oGui = cGui()
@@ -206,60 +166,33 @@ def showSearchSeries():
         sUrl = URL_SEARCH_SERIES[0] + sSearchText +'&tab=all&orderby_by=popular&orderby_order=desc&displaychangeto=thumb'
         showMovies(sUrl) 
         oGui.setEndOfDirectory()
-        return
-
-def showSearchShows(): 
-    oGui = cGui()
-    sSearchText = oGui.showKeyBoard() 
-    if (sSearchText != False):
-        sUrl = URL_SEARCH_SHOWS[0] + sSearchText +'&tab=all&orderby_by=popular&orderby_order=desc&displaychangeto=thumb'
-        showMovies(sUrl) 
-        oGui.setEndOfDirectory()
-        return
-        
-def showSearchAnimes(): 
-    oGui = cGui()
-    sSearchText = oGui.showKeyBoard() 
-    if (sSearchText != False):
-        sUrl = URL_SEARCH_ANIMS[0] + sSearchText +'&tab=all&orderby_by=popular&orderby_order=desc&displaychangeto=thumb'
-        showMovies(sUrl) 
-        oGui.setEndOfDirectory()
-        return        
+        return  
     
-def showGenreMovies(): 
-    showGenre("films-gratuit.html")
-
-def showGenreSeries(): 
-    showGenre("telecharger-series.html")
-
-def showGenre(basePath): 
+    
+def showGenre(): 
     oGui = cGui()
     
     liste = []
-    liste.append( ['Action',URL_MAIN + basePath + '?genrelist[]=1'] )
-    liste.append( ['Animation',URL_MAIN +  basePath + '?genrelist[]=2'] )
-    liste.append( ['Arts Martiaux',URL_MAIN +  basePath + '?genrelist[]=3'] )
-    liste.append( ['Aventure',URL_MAIN +  basePath + '?genrelist[]=4'] )
-    liste.append( ['Biopic',URL_MAIN +  basePath + '?genrelist[]=5'] )
-    liste.append( ['Comedie Dramatique',URL_MAIN +  basePath + '?genrelist[]=7'] )
-    liste.append( ['Comedie Musicale',URL_MAIN +  basePath + '?genrelist[]=8'] )
-    liste.append( ['Comedie',URL_MAIN +  basePath + '?genrelist[]=9'] )
-    liste.append( ['Divers',URL_MAIN +  basePath + '?genrelist[]=10'] )
-    liste.append( ['Documentaires',URL_MAIN +  basePath + '?genrelist[]=11'] )
-    liste.append( ['Drame',URL_MAIN +  basePath + '?genrelist[]=12'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN +  basePath + '?genrelist[]=13'] ) 
-    liste.append( ['Espionnage',URL_MAIN +  basePath + '?genrelist[]=14'] )
-    liste.append( ['Famille',URL_MAIN +  basePath + '?genrelist[]=15'] )
-    liste.append( ['Fantastique',URL_MAIN +  basePath + '?genrelist[]=16'] )  
-    liste.append( ['Guerre',URL_MAIN +  basePath + '?genrelist[]=17'] )
-    liste.append( ['Historique',URL_MAIN +  basePath + '?genrelist[]=18'] )
-    liste.append( ['Musical',URL_MAIN +  basePath + '?genrelist[]=19'] )
-    liste.append( ['Peplum',URL_MAIN +  basePath + '?genrelist[]=6'] )
-    liste.append( ['Policier',URL_MAIN +  basePath + '?genrelist[]=20'] )
-    liste.append( ['Romance',URL_MAIN +  basePath + '?genrelist[]=21'] )
-    liste.append( ['Science Fiction',URL_MAIN +  basePath + '?genrelist[]=22'] )
-    liste.append( ['Thriller',URL_MAIN +  basePath + '?genrelist[]=23'] )
-    liste.append( ['Western',URL_MAIN +  basePath + '?genrelist[]=24'] )
+    liste.append( ['Action',URL_MAIN + 'tags/Action'] )
+    liste.append( ['Animation',URL_MAIN + 'tags/Animation'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'tags/Arts+Martiaux'] )
+    liste.append( ['Biopic',URL_MAIN + 'tags/Biopic'] )
+    liste.append( ['Comedie',URL_MAIN + 'tags/Comédie'] )
+    liste.append( ['Comedie Dramatique',URL_MAIN + 'tags/Comédie+dramatique'] )
+    liste.append( ['Comedie Musicale',URL_MAIN + 'tags/Comédie+musicale'] )
+    liste.append( ['Drame',URL_MAIN + 'tags/Drame'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'tags/Epouvante-horreur'] ) 
+    liste.append( ['Espionnage',URL_MAIN + 'tags/Espionnage'] )
+    liste.append( ['Famille',URL_MAIN + 'tags/Famille'] )
+    liste.append( ['Fantastique',URL_MAIN + 'tags/Fantastique'] )  
+    liste.append( ['Guerre',URL_MAIN + 'tags/Guerre'] )
+    liste.append( ['Historique',URL_MAIN + 'tags/Historique'] )
+    liste.append( ['Musical',URL_MAIN + 'tags/Musical'] )
+    liste.append( ['Policier',URL_MAIN + 'tags/Policier'] )
+    liste.append( ['Romance',URL_MAIN + 'tags/Romance'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'tags/Science+fiction'] )
+    liste.append( ['Thriller',URL_MAIN + 'tags/Thriller'] )
+    liste.append( ['Western',URL_MAIN + 'tags/Western'] )
                 
     for sTitle,sUrl in liste:
         
@@ -295,7 +228,7 @@ def showMovies(sSearch = ''):
 
             sTitle = str(aEntry[2])
             sUrl2 = aEntry[0]
-            #sFanart =aEntry[1]
+            sFanart =aEntry[1]
             sThumbnail=aEntry[1]
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl2)) 
@@ -304,8 +237,7 @@ def showMovies(sSearch = ''):
 
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
-            oGui.addMisc(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
-            
+            oGui.addMisc(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, 'films.png', sThumbnail, sFanart, oOutputParameterHandler)
 
         sNextPage = __checkForNextPage(sHtmlContent)#cherche la page suivante
         if (sNextPage != False):
@@ -345,10 +277,10 @@ def showLinks():
     sHtmlContent = oRequestHandler.request()
     
     #Bon ici, grosse bataille, c'est un film ou une serie ?
-    #On peut utiliser l'url redirigée ou cette astuce en test
+    #On peut utiliser l'url redirigÃ©e ou cette astuce en test
     
     if 'infos_film.png' in sHtmlContent:
-        if 'épisode par épisode' in sHtmlContent:
+        if 'Ã©pisode par Ã©pisode' in sHtmlContent:
             showSeriesLinks(sHtmlContent)
         else:
             showMoviesLinks(sHtmlContent)
@@ -387,7 +319,7 @@ def showMoviesLinks(sHtmlContent):
     if (sNote):
         oGui.addText(SITE_IDENTIFIER,'Note : ' + str(sNote))
 
-    sPattern = '(http:\/\/www\.zone-telechargement\.com\/engine\/ba\.php\?id=[0-9]+)'
+    sPattern = '(http:\/\/www\.exdown\.net\/engine\/ba\.php\?id=[0-9]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0]):
         sBA = aResult[1][0]
@@ -398,10 +330,10 @@ def showMoviesLinks(sHtmlContent):
         oGui.addMovie(SITE_IDENTIFIER, 'ShowBA', 'Bande annonce', '', sThumbnail, '', oOutputParameterHandler)
     
     #Affichage du menu  
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualités disponibles pour ce film :[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]QualitÃ©s disponibles pour ce film :[/COLOR]')
 
-    #on recherche d'abord la qualité courante
-    sPattern = '<b>(?:<strong>)*Qualité (.+?)<'
+    #on recherche d'abord la qualitÃ© courante
+    sPattern = '<b>(?:<strong>)*QualitÃ© (.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
 
@@ -417,8 +349,8 @@ def showMoviesLinks(sHtmlContent):
     oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
     oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sCom, oOutputParameterHandler)
 
-    #on regarde si dispo dans d'autres qualités
-    sPattern = '<a title="Téléchargez.+?en (.+?)" href="(.+?)"><button class="button_subcat"'
+    #on regarde si dispo dans d'autres qualitÃ©s
+    sPattern = '<a title="TÃ©lÃ©chargez.+?en (.+?)" href="(.+?)"><button class="button_subcat"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if (aResult[0] == True):
@@ -453,18 +385,18 @@ def showSeriesLinks(sHtmlContent):
 
     oParser = cParser()
     
-    #Mise àjour du titre
+    #Mise Ã jour du titre
     sPattern = '<h1 style="font-family:\'Ubuntu Condensed\',\'Segoe UI\',Verdana,Helvetica,sans-serif;">(?:<span itemprop="name">)*([^<]+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0]):
         sMovieTitle = aResult[1][0]
     
     #Utile ou pas ?
-    sMovieTitle = sMovieTitle.replace('[Complete]','').replace('[Complète]','')
+    sMovieTitle = sMovieTitle.replace('[Complete]','').replace('[ComplÃ¨te]','')
     
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualités disponibles pour cette saison :[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]QualitÃ©s disponibles pour cette saison :[/COLOR]')
     
-    #on recherche d'abord la qualité courante
+    #on recherche d'abord la qualitÃ© courante
     sPattern = '<span style="color:#[0-9a-z]{6}"><b>(?:<strong>)* *\[[^\]]+?\] ([^<]+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
@@ -479,10 +411,10 @@ def showSeriesLinks(sHtmlContent):
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
     oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-    oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+    oGui.addMovie(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
     
-    #on regarde si dispo dans d'autres qualités
-    sPattern1 = '<a title="Téléchargez.+?en ([^"]+?)" href="([^"]+?)"><button class="button_subcat"'
+    #on regarde si dispo dans d'autres qualitÃ©s
+    sPattern1 = '<a title="TÃ©lÃ©chargez.+?en ([^"]+?)" href="([^"]+?)"><button class="button_subcat"'
     aResult1 = oParser.parse(sHtmlContent, sPattern1)
     #print aResult1
     
@@ -499,18 +431,18 @@ def showSeriesLinks(sHtmlContent):
             oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)            
     
     #on regarde si dispo d'autres saisons
     
-    sPattern2 = '<a title="Téléchargez[^"]+?" href="([^"]+?)"><button class="button_subcat" style="font-size: 12px;height: 26px;width:190px;color:666666;letter-spacing:0.05em">([^<]+?)</button>'
+    sPattern2 = '<a title="TÃ©lÃ©chargez[^"]+?" href="([^"]+?)"><button class="button_subcat" style="font-size: 12px;height: 26px;width:190px;color:666666;letter-spacing:0.05em">([^<]+?)</button>'
     aResult2 = oParser.parse(sHtmlContent, sPattern2)
     #print aResult2
     
     if (aResult2[0] == True):
-        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Saisons aussi disponibles pour cette série :[/COLOR]')
+        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Saisons aussi disponibles pour cette sÃ©rie :[/COLOR]')
     
         for aEntry in aResult2[1]:
 
@@ -532,31 +464,24 @@ def showHosters():# recherche et affiche les hotes
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumbnail=oInputParameterHandler.getValue('sThumbnail')
     
-    xbmc.log(sUrl)
+    xbmc.log( sUrl )
 
     oRequestHandler = cRequestHandler(sUrl)
-    oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0')
-    oRequestHandler.addHeaderEntry('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-    oRequestHandler.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
     sHtmlContent = oRequestHandler.request()
 
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent.replace('\n',''))
-    #fh.close()
-    
     #Fonction pour recuperer uniquement les liens
-    sHtmlContent = Cutlink(sHtmlContent)
+    sHtmlContent = Cutlink(sHtmlContent)    
     
     #Si ca ressemble aux lien premiums on vire les liens non premium
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent:
-        sHtmlContent = CutNonPremiumlinks(sHtmlContent)
+        sHtmlContent = CutNonPremiumlinks(sHtmlContent)  
     
     oParser = cParser()
     
-    sPattern = '<span style="color:#.{6}">([^>]+?)<\/span>(?:.(?!color))+?<a href="([^<>"]+?)" target="_blank">Télécharger<\/a>|>\[(Liens Premium) \]<|<span style="color:#FF0000">([^<]+)<'
+    sPattern = '<span style="color:#.{6}">([^>]+?)<\/span>(?:.(?!color))+?<a href="([^<>"]+?)" target="_blank">TÃ©lÃ©charger<\/a>|>\[(Liens Premium) \]<|<span style="color:#FF0000">([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-    #xbmc.log(str(aResult))
+    #print aResult
         
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -572,7 +497,7 @@ def showHosters():# recherche et affiche les hotes
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                if 'Télécharger' in aEntry[2]:
+                if 'TÃ©lÃ©charger' in aEntry[2]:
                     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]'+str(aEntry[2])+'[/COLOR]')
                 else:
                     oGui.addText(SITE_IDENTIFIER, '[COLOR red]'+str(aEntry[2])+'[/COLOR]')
@@ -636,13 +561,13 @@ def showSeriesHosters():# recherche et affiche les hotes
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                if 'Télécharger' in aEntry[2]:
+                if 'TÃ©lÃ©charger' in aEntry[2]:
                     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]'+str(aEntry[2])+'[/COLOR]')
                 else:
                     oGui.addText(SITE_IDENTIFIER, '[COLOR red]'+str(aEntry[2])+'[/COLOR]')
             else:
                 sName = aEntry[1]
-                sName = sName.replace('Télécharger','')
+                sName = sName.replace('TÃ©lÃ©charger','')
                 sName = sName.replace('pisodes','pisode')
                 
                 sTitle = sMovieTitle + ' ' + sName
@@ -675,12 +600,8 @@ def Display_protected_link():
         sHtmlContent = DecryptDlProtect(sUrl) 
         
         if sHtmlContent:
-            #Si redirection
-            if sHtmlContent.startswith('http'):
-                aResult_dlprotect = (True, [sHtmlContent])
-            else:
-                sPattern_dlprotect = '><a href="(.+?)" target="_blank">'
-                aResult_dlprotect = oParser.parse(sHtmlContent, sPattern_dlprotect)
+            sPattern_dlprotect = '><a href="(.+?)" target="_blank">'
+            aResult_dlprotect = oParser.parse(sHtmlContent, sPattern_dlprotect)
             
         else:
             oDialog = cConfig().createDialogOK('Desole, probleme de captcha.\n Veuillez en rentrer un directement sur le site, le temps de reparer')
@@ -719,7 +640,7 @@ def Display_protected_link():
     
 def Cutlink(sHtmlContent):
     oParser = cParser()
-    sPattern = '<img src="https*:\/\/www\.zone-telechargement\.com\/prez\/style\/v1\/liens\.png"(.+?)<div class="divinnews'
+    sPattern = '<img src="https*:\/\/www\.exdown\.net\/prez\/style\/v1\/liens\.png"(.+?)<div class="divinnews"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):
@@ -736,7 +657,7 @@ def Cutlink(sHtmlContent):
     
 def CutNonPremiumlinks(sHtmlContent):
     oParser = cParser()
-    sPattern = '(?i)Liens* Premium(.+?)Publié le '
+    sPattern = '(?i)Liens* Premium(.+?)PubliÃ© le '
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):
@@ -754,7 +675,7 @@ def CutPremiumlinks(sHtmlContent):
     if (aResult[0]):
         res = aResult[1][0]
     
-    #si l'ordre a été chnage ou si il ya un probleme    
+    #si l'ordre a Ã©tÃ© chnage ou si il ya un probleme    
     if 'dl-protect.com' not in res:
         sPattern = '(?i) par .{1,2}pisode(.+?)$'
         aResult = oParser.parse(sHtmlContent, sPattern)
