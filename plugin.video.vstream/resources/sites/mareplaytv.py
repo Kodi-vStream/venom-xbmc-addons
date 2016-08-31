@@ -128,7 +128,7 @@ def showMovies(sSearch = ''):
                 
             sTitle = sTitle.replace('Replay du ','')
             sTitle = sTitle.replace('Emission du ','')
-            sTitle = re.sub('([0-9]+ [a-zA-Zéè]+ [0-9]{4})','[\\1]', sTitle)
+            sTitle = re.sub('(?:du )*([0-9]+ [a-zA-Zéèû]+ [0-9]{4})','[\\1]', sTitle)
             
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
@@ -137,7 +137,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
 
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'replay.png',  sThumb,  sThumb, oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'replay.png',  sThumb,  sThumb, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -160,6 +160,48 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
+def showEpisode():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    oParser = cParser()
+    sPattern = '<a href="([^"<>]+\/\?tape=[0-9]+)">([0-9]+)<\/a>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    #Si pas plusieurs liens on affiche direct les hosts.
+    if (aResult[0] == False):
+        showHosters()
+        return
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+
+
+            sTitle =  '(' + aEntry[1] + ')' + sMovieTitle
+            sUrl = str(aEntry[0])
+           
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'replay.png',  sThumbnail,  sThumbnail, oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()
 
 def showHosters():
     oGui = cGui()
