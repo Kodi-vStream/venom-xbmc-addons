@@ -25,7 +25,7 @@ FUNCTION_SEARCH = 'showMovies'
 
 REPLAYTV_GENRES = (True, 'showGenre')
 REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
-REPLAYTV_REPLAYTV = (URL_MAIN + 'videos/', 'showMovies')
+REPLAYTV_REPLAYTV = (URL_MAIN + 'video/', 'showMovies')
 
 
 def load():
@@ -65,7 +65,7 @@ def showGenre():
     sHtmlContent = oRequestHandler.request()
     
     oParser = cParser()
-    sPattern = 'menu-item-[0-9]+ depth"><a href="([^"]+\/)">(.+?)<\/a><([^><]+)>'
+    sPattern = 'menu-item-[0-9]+ depth"><a href="([^"]+\/)">([^<>]+)<\/a><([^><]+)>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     oGui = cGui()
@@ -76,10 +76,10 @@ def showGenre():
             oOutputParameterHandler = cOutputParameterHandler()
             sTitle = str(aEntry[1])
             
-            if 'Toutes les vidéos' in sTitle:
+            if ('F.A.Q' in sTitle) or ('Télévision en direc' in sTitle) or ('Proposer des vidéos' in sTitle):
                 break
                 
-            if 'ul' in aEntry[2]:
+            if ('ul' in aEntry[2]) or (sTitle=='Documentaires') or (sTitle=='Reportages'):
                 sTitle = '[B][COLOR skyblue]' + sTitle + '[/COLOR][/B]'
             
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
@@ -102,7 +102,7 @@ def showMovies(sSearch = ''):
     if not (sUrl == URL_MAIN):
         sPattern = '<div class="item-img">.+?<img.+?src="([^"]+)".+?<h3><a href="([^"]+)\/">([^<>]+)<'
     else:
-        sPattern = '<div class="item-img"> *<a href="([^"]+)" title="([^"]+)"><img.+?src="([^"]+)"'
+        sPattern = '<div class="item-img"> *<a title="([^"]+)" href="([^"]+)"><img.+?src="([^"]+)"'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -122,8 +122,8 @@ def showMovies(sSearch = ''):
                 sUrl2 = str(aEntry[1])
                 sThumb = str(aEntry[0])
             else:
-                sTitle = aEntry[1]
-                sUrl2 = str(aEntry[0])
+                sTitle = aEntry[0]
+                sUrl2 = str(aEntry[1])
                 sThumb = str(aEntry[2])
                 
             sTitle = sTitle.replace('Replay du ','')
@@ -167,12 +167,16 @@ def showEpisode():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
+    xbmc.log(sUrl)
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
     sPattern = '<a href="([^"<>]+\/\?tape=[0-9]+)">([0-9]+)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    #xbmc.log(str(aResult))
     
     #Si pas plusieurs liens on affiche direct les hosts.
     if (aResult[0] == False):
