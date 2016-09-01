@@ -42,7 +42,7 @@ class cHoster(iHoster):
         return ''
         
     def __getIdFromUrl(self, sUrl):
-        sPattern = '\/([a-zA-Z0-9]{20,40})\/'
+        sPattern = '\/([a-zA-Z0-9-]{20,40})\/'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
