@@ -13,7 +13,7 @@ from resources.lib.util import cUtil
 import urllib2,urllib,re
 import unicodedata
 import xbmc
-
+import sets
 
 def DecryptMangacity(chain):
     oParser = cParser()
@@ -316,7 +316,7 @@ def showMovies(sSearch = ''):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         
-        for aEntry in aResult[1]:
+        for aEntry in list(set(aResult[1])):
             cConfig().updateDialog(dialog, total) #dialog
             if dialog.iscanceled():
                 break
