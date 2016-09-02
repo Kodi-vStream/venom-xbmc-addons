@@ -11,7 +11,8 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
-import re,urllib2,urllib
+
+import re,urllib2,urllib,xbmc
 
 #copie du site http://www.film-streaming.co/
 #copie du site http://www.streaming-club.com/
@@ -71,6 +72,29 @@ def showSearch():
         oGui.setEndOfDirectory()
         return 
 
+def showPage():
+    oGui = cGui()
+ 
+    sSearchNum = oGui.showNumBoard()
+    
+    if (sSearchNum):
+
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrlbase')
+        sMaxPage = oInputParameterHandler.getValue('MaxPage')
+        
+        sSearchNum = str(sSearchNum)
+        
+        if int(sSearchNum) > int (sMaxPage):
+            sSearchNum = sMaxPage
+            
+        sUrl = sUrl + str(sSearchNum)
+        
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return
+
+    
 def showGenre():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -106,7 +130,7 @@ def showGenre():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()
-
+    
 def showMovies(sSearch = ''):
     oGui = cGui()
     
@@ -118,12 +142,13 @@ def showMovies(sSearch = ''):
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
     
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
 
-    sPattern = '<figure class="thumbnail thumbnail__portfolio"> <a href="([^"]+)" class="image-wrap" title="([^"]+)"> <img src="([^"]+)" '
+    sPattern = '<figure class="thumbnail thumbnail__portfolio"> *<a href="([^"<>]+)" class="image-wrap" title="([^"]+)"> <img src="([^"]+)" alt='
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -138,7 +163,8 @@ def showMovies(sSearch = ''):
            
             sThumbnail = URL_MAIN+str(aEntry[2])
             siteUrl = URL_MAIN+str(aEntry[0])
-            sTitle = str(aEntry[1]).replace('en Streaming','')
+            sTitle = aEntry[1]
+            sTitle = sTitle.replace(" en Streaming","")
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
@@ -158,7 +184,7 @@ def showMovies(sSearch = ''):
          
 def __checkForNextPage(sHtmlContent):
     
-    sPattern = '<a href=.([^"\']+). class="inactive">Suivant<\/a>'
+    sPattern = '<a href=["\']([^"\']+)["\'] class="inactive">Suivant<\/a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -177,20 +203,24 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail  = oInputParameterHandler.getValue('sThumbnail')
    
+    #xbmc.log(sUrl)
+   
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
      
     url = ''
    
     oParser = cParser()
-    sPattern = '{file:"([^"]+mp4)"}'
+    sPattern = '{file:"([^"]+)"}'
     aResult = oParser.parse(sHtmlContent, sPattern)
    
-    if (aResult[0] == True):
+    if (aResult[0]):
         url = aResult[1][0]
-    
+   
     #dialogue final
     if (url):
+ 
+        #xbmc.log(url)
  
         sHosterUrl = str(url)
         oHoster = cHosterGui().checkHoster(sHosterUrl)
