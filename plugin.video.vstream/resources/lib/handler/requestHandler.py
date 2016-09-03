@@ -20,6 +20,7 @@ class cRequestHandler:
         self.removeBreakLines(True)
         self.removeNewLines(True)
         self.__setDefaultHeader()
+        self.__timeout = 30
 
     def removeNewLines(self, bRemoveNewLines):
         self.__bRemoveNewLines = bRemoveNewLines
@@ -29,6 +30,9 @@ class cRequestHandler:
 
     def setRequestType(self, cType):
         self.__cType = cType
+        
+    def setTimeout(self, valeur):
+        self.__timeout = valeur    
 
     def addHeaderEntry(self, sHeaderKey, sHeaderValue):
         aHeader = {sHeaderKey : sHeaderValue}
@@ -79,7 +83,7 @@ class cRequestHandler:
 
         sContent = ''
         try:
-            oResponse = urllib2.urlopen(oRequest, timeout=30)
+            oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout)
             sContent = oResponse.read()
             
             self.__sResponseHeader = oResponse.info()
