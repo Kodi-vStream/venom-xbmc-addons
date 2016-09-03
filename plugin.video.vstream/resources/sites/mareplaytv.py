@@ -100,10 +100,12 @@ def showMovies(sSearch = ''):
     sUrl = sUrl.replace('https','http') 
     
     if not (sUrl == URL_MAIN):
-        sPattern = '<div class="item-img">.+?<img.+?src="([^"]+)".+?<h3><a href="([^"]+)\/">([^<>]+)<'
+        sPattern = '<div class="item-img">.+?<img.+?src="([^"]+)".+?<h3><a href="([^"]+)\/*">([^<>]+)<'
     else:
         sPattern = '<div class="item-img"> *<a title="([^"]+)" href="([^"]+)"><img.+?src="([^"]+)"'
 
+    #xbmc.log(sUrl)
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
