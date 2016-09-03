@@ -12,15 +12,15 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re,urllib,urllib2
  
-SITE_IDENTIFIER = 'filmsvostfr_org'
+SITE_IDENTIFIER = 'filmsvostfr_biz'
 SITE_NAME = 'Filmsvostfr'
 SITE_DESC = 'Films/Serie/Anime'
  
-URL_MAIN = 'http://www.filmsvostfr.org/'
+URL_MAIN = 'http://www.filmsvostfr.biz/'
 
-MOVIE_NEWS = ('http://www.filmsvostfr.org/films-en-streaming', 'showMovies')
-SERIE_NEWS = ('http://www.filmsvostfr.org/series-en-streaming', 'showMovies')
-ANIM_NEWS = ('http://www.filmsvostfr.org/animes-en-streaming', 'showMovies')
+MOVIE_NEWS = ('http://www.filmsvostfr.biz/films-en-streaming', 'showMovies')
+SERIE_NEWS = ('http://www.filmsvostfr.biz/series-en-streaming', 'showMovies')
+ANIM_NEWS = ('http://www.filmsvostfr.biz/animes-en-streaming', 'showMovies')
 
 MOVIE_GENRES = (True, 'showGenre')
   
@@ -105,8 +105,8 @@ def showMovies(sSearch = ''):
     if sSearch:
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'
         headers = {'User-Agent': UA ,
-                   'Host' : 'www.filmsvostfr.org',
-                   'Referer': 'http://www.filmsvostfr.org/search.php',
+                   'Host' : 'www.filmsvostfr.biz',
+                   'Referer': 'http://www.filmsvostfr.biz/search.php',
                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                    'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
                  #  'Accept-Encoding' : 'gzip, deflate',
@@ -115,13 +115,13 @@ def showMovies(sSearch = ''):
         post_data = {'t' : sSearch,
                      'R_token': 'U7OJA8L3qwr9DuqYANPWI9k3hGXqoSTp6DdaUuDi'}
         
-        req = urllib2.Request('http://www.filmsvostfr.org/search.php' , urllib.urlencode(post_data), headers)
+        req = urllib2.Request('http://www.filmsvostfr.biz/search.php' , urllib.urlencode(post_data), headers)
         
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
         response.close()
         
-        sUrl = 'http://www.filmsvostfr.org/search.php'
+        sUrl = 'http://www.filmsvostfr.biz/search.php'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
