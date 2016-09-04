@@ -11,44 +11,46 @@ from resources.lib.config import cConfig #config
 from resources.lib.parser import cParser #recherche de code
 #from resources.lib.util import cUtil #outils pouvant etre utiles
 
+import xbmc
+
 #Si vous créez une source et la deposez dans le dossier "sites" elle sera directement visible sous xbmc
 
 SITE_IDENTIFIER = 'full_streaming_org' #identifant (nom de votre fichier) remplacez les espaces et les . par _ AUCUN CARACTERE SPECIAL
 SITE_NAME = 'Full-Streaming.org' # nom que xbmc affiche
-SITE_DESC = 'films en streaming, vk streaming, youwatch, vimple , streaming hd , streaming 720p , streaming sans limite' #description courte de votre source
+SITE_DESC = 'films en streaming, streaming hd , streaming 720p , Films/series, recent' #description courte de votre source
 
-URL_MAIN = 'http://full-streaming.org/' # url de votre source
+URL_MAIN = 'http://le_site.org/' # url de votre source
 
 #definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle seras affichee.
-URL_SEARCH = ('http://www.fullmoviz.org/?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_NEWS = ('http://url', 'showMovies') # films nouveautés
-MOVIE_MOVIE = ('http://url', 'showMovies') # films vrac
-MOVIE_VIEWS = ('http://url', 'showMovies') # films + plus
-MOVIE_COMMENTS = ('http://url', 'showMovies') # films + commentés
-MOVIE_NOTES = ('http://url', 'showMovies') # films mieux notés
+MOVIE_NEWS = (URL_MAIN + 'url', 'showMovies') # films nouveautés
+MOVIE_MOVIE = (URL_MAIN + 'url', 'showMovies') # films vrac
+MOVIE_VIEWS = (URL_MAIN + 'url', 'showMovies') # films + plus
+MOVIE_COMMENTS = (URL_MAIN + 'url', 'showMovies') # films + commentés
+MOVIE_NOTES = (URL_MAIN + 'url', 'showMovies') # films mieux notés
 MOVIE_GENRES = (True, 'showGenre')
-MOVIE_VF = ('http://url', 'showMovies') # films VF
-MOVIE_VOSTFR = ('http://url', 'showMovies') # films VOSTFR
+MOVIE_VF = (URL_MAIN + 'url', 'showMovies') # films VF
+MOVIE_VOSTFR = (URL_MAIN + 'url', 'showMovies') # films VOSTFR
 
-SERIE_NEWS = ('http://url', 'showSeries') # serie nouveautés
-SERIE_SERIES = ('http://url', 'showSeries') # serie vrac
-SERIE_VFS = ('http://url', 'showSeries') # serie VF
-SERIE_VOSTFRS = ('http://url', 'showSeries') # serie Vostfr
+SERIE_NEWS = (URL_MAIN + 'url', 'showSeries') # serie nouveautés
+SERIE_SERIES = (URL_MAIN + 'url', 'showSeries') # serie vrac
+SERIE_VFS = (URL_MAIN + 'url', 'showSeries') # serie VF
+SERIE_VOSTFRS = (URL_MAIN + 'url', 'showSeries') # serie Vostfr
 SERIE_GENRE = (True, 'showGenre')
 
-ANIM_NEWS = ('http://url', 'showAnimes') #anime nouveautés
-ANIM_ANIMS = ('http://url', 'showAnimes') #anime vrac
-ANIM_VFS = ('http://url', 'showAnimes') #anime VF
-ANIM_VOSTFRS = ('http://url', 'showAnimes') #anime VOSTFR
-ANIM_MOVIES = ('http://url', 'showAnimes') #anime film
+ANIM_NEWS = (URL_MAIN + 'url', 'showAnimes') #anime nouveautés
+ANIM_ANIMS = (URL_MAIN + 'url', 'showAnimes') #anime vrac
+ANIM_VFS = (URL_MAIN + 'url', 'showAnimes') #anime VF
+ANIM_VOSTFRS = (URL_MAIN + 'url', 'showAnimes') #anime VOSTFR
+ANIM_MOVIES = (URL_MAIN + 'url'', 'showAnimes') #anime film
 ANIM_GENRES = (True, 'showGenre') #anime genre
 
-DOC_DOCS = ('http://url', 'showOthers') #Documentaire
-SPORT_SPORTS = ('http://url', 'showOthers') #sport
-MOVIE_NETS = ('http://url', 'showOthers') #video du net
-REPLAYTV_REPLAYTV = ('http://url', 'showOthers') #Replay
+DOC_DOCS = (URL_MAIN + 'url', 'showOthers') #Documentaire
+SPORT_SPORTS = (URL_MAIN + 'url', 'showOthers') #sport
+MOVIE_NETS = (URL_MAIN + 'url', 'showOthers') #video du net
+REPLAYTV_REPLAYTV = (URL_MAIN + 'url', 'showOthers') #Replay
 
 def load(): #fonction chargee automatiquement par l'addon l'index de votre navigation.
     oGui = cGui() #ouvre l'affichage
@@ -56,7 +58,7 @@ def load(): #fonction chargee automatiquement par l'addon l'index de votre navig
     oOutputParameterHandler = cOutputParameterHandler() #apelle la function pour sortir un parametre
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') # sortie du parametres siteUrl n'oubliez pas la Majuscule
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler) 
-    #Ajoute lien dossier (identifant, function a attendre, nom, icon, parametre de sortie)
+    #Ajoute lien dossier (identifant, function a attendre, nom, icone, parametre de sortie)
     #Puisque nous ne voulons pas atteindre une url on peut mettre ce qu'on veut dans le parametre siteUrl
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -78,10 +80,10 @@ def load(): #fonction chargee automatiquement par l'addon l'index de votre navig
 def showSearch(): #function de recherche
     oGui = cGui()
 
-    sSearchText = oGui.showKeyBoard() #apelle le clavier xbmx
+    sSearchText = oGui.showKeyBoard() #appelle le clavier xbmc
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText  #modifi l'url de recherche
-        showMovies(sUrl) #apelle la function qui pouras lire la page de resultats
+        showMovies(sUrl) #apelle la function qui pourra lire la page de resultats
         oGui.setEndOfDirectory()
         return  
     
@@ -91,32 +93,32 @@ def showGenre(): #affiche les genres
  
     #juste a entrer les caterories et les liens qui vont bien
     liste = []
-    liste.append( ['Action','http://full-streaming.org/action/'] )
-    liste.append( ['Animation','http://full-streaming.org/animation/'] )
-    liste.append( ['Arts Martiaux','http://full-streaming.org/arts-martiaux/'] )
-    liste.append( ['Aventure','http://full-streaming.org/aventure/'] )
-    liste.append( ['Biopic','http://full-streaming.org/biopic/'] )
-    liste.append( ['Comedie','http://full-streaming.org/comedie/'] )
-    liste.append( ['Comedie Dramatique','http://full-streaming.org/comedie-dramatique/'] )
-    liste.append( ['Comedie Musicale','http://full-streaming.org/comedie-musicale/'] )
-    liste.append( ['Documentaire','http://full-streaming.org/documentaire/'] )
-    liste.append( ['Drame','http://full-streaming.org/drame/'] )
-    liste.append( ['Epouvante Horreur','http://full-streaming.org/epouvante-horreur/'] ) 
-    liste.append( ['Erotique','http://full-streaming.org/erotique'] )
-    liste.append( ['Espionnage','http://full-streaming.org/espionnage/'] )
-    liste.append( ['Famille','http://full-streaming.org/famille/'] )
-    liste.append( ['Fantastique','http://full-streaming.org/fantastique/'] )  
-    liste.append( ['Guerre','http://full-streaming.org/guerre/'] )
-    liste.append( ['Historique','http://full-streaming.org/historique/'] )
-    liste.append( ['Musical','http://full-streaming.org/musical/'] )
-    liste.append( ['Policier','http://full-streaming.org/policier/'] )
-    liste.append( ['Peplum','http://full-streaming.org/peplum/'] )
-    liste.append( ['Romance','http://full-streaming.org/romance/'] )
-    liste.append( ['Science Fiction','http://full-streaming.org/science-fiction/'] )
-    liste.append( ['Spectacle','http://full-streaming.org/spectacle/'] )
-    liste.append( ['Thriller','http://full-streaming.org/thriller/'] )
-    liste.append( ['Western','http://full-streaming.org/western/'] )
-    liste.append( ['Divers','http://full-streaming.org/divers/'] ) 
+    liste.append( ['Action',URL_MAIN + 'action/'] )
+    liste.append( ['Animation',URL_MAIN + 'animation/'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'arts-martiaux/'] )
+    liste.append( ['Aventure',URL_MAIN + 'aventure/'] )
+    liste.append( ['Biopic',URL_MAIN + 'biopic/'] )
+    liste.append( ['Comedie',URL_MAIN + 'comedie/'] )
+    liste.append( ['Comedie Dramatique',URL_MAIN + 'comedie-dramatique/'] )
+    liste.append( ['Comedie Musicale',URL_MAIN + 'comedie-musicale/'] )
+    liste.append( ['Documentaire',URL_MAIN + 'documentaire/'] )
+    liste.append( ['Drame',URL_MAIN + 'drame/'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'epouvante-horreur/'] ) 
+    liste.append( ['Erotique',URL_MAIN + 'erotique'] )
+    liste.append( ['Espionnage',URL_MAIN + 'espionnage/'] )
+    liste.append( ['Famille',URL_MAIN + 'famille/'] )
+    liste.append( ['Fantastique',URL_MAIN + 'fantastique/'] )  
+    liste.append( ['Guerre',URL_MAIN + 'guerre/'] )
+    liste.append( ['Historique',URL_MAIN + 'historique/'] )
+    liste.append( ['Musical',URL_MAIN + 'musical/'] )
+    liste.append( ['Policier',URL_MAIN + 'policier/'] )
+    liste.append( ['Peplum',URL_MAIN + 'peplum/'] )
+    liste.append( ['Romance',URL_MAIN + 'romance/'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'science-fiction/'] )
+    liste.append( ['Spectacle',URL_MAIN + 'spectacle/'] )
+    liste.append( ['Thriller',URL_MAIN + 'thriller/'] )
+    liste.append( ['Western',URL_MAIN + 'western/'] )
+    liste.append( ['Divers',URL_MAIN + 'divers/'] ) 
                 
     for sTitle,sUrl in liste:#boucle
         
@@ -147,13 +149,15 @@ def showMovies(sSearch = ''):
     #- ([^<]+) je veut cette partie de code mais y a une suite
     #- .+? je ne veut pas cette partis et peux importe ceux qu'elle contient
     #- (.+?) je veut cette partis et c'est la fin
+    #
+    #Pour tester vos Regex, vous pouvez utiliser le site https://regex101.com/ en mettant dans les modifiers "gmis"
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # le plus simple et de faire un print aResult 
-    # dans le fichier log d'xbmc vous pourez voir un array de ce que recupere le script
+    # le plus simple et de faire un  xbmc.log(str(aResult))
+    # dans le fichier log d'xbmc vous pourrez voir un array de ce que recupere le script
     # et modifier sPattern si besoin
-    print aResult #Commenter ou supprimer cette ligne une foix fini
+    xbmc.log(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
     
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -164,17 +168,24 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total) #dialog update
             
             #L'array affiche vos info dans l'orde de sPattern en commencant a 0
-            sTitle = aEntry[1]
+            sTitle = str(aEntry[1])
+            sUrl2 = str(aEntry[2])
+            sThumb = str(aEntry[0])
+            SResume = ''
+            
+            sTitle = sTitle.replace('En streaming', '')
+            sUrl2 = URL_MAIN + sUrl2
+            
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2])) #sortie de l'url
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1])) #sortie du titre
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0])) #sortie du poster
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2) #sortie de l'url
+            oOutputParameterHandler.addParameter('sMovieTitle',sTitle) #sortie du titre
+            oOutputParameterHandler.addParameter('sThumbnail',sThumb ) #sortie du poster
 
             if '/series' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle,'', aEntry[0], aEntry[3], oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle,'', sThumb, SResume, oOutputParameterHandler)
                 #addTV pour sortir les series tv (identifiant, function, titre, icon, poster, description, sortie parametre)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], aEntry[3], oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, SResume, oOutputParameterHandler)
                 #addMovies pour sortir les films (identifiant, function, titre, icon, poster, description, sortie parametre)
                 
             #il existe aussis addMisc(identifiant, function, titre, icon, poster, description, sortie parametre)
@@ -212,15 +223,14 @@ def showHosters():# recherche et affiche les hotes
     sThumbnail = oInputParameterHandler.getValue('sThumbnail') # apelle le poster
     
     oRequestHandler = cRequestHandler(sUrl) #requete sur l'url
-    sHtmlContent = oRequestHandler.request(); #requete sur l'url
-    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','')
-    #supprimer a l'aide de replace toute les entrer qui corresponde a votre recherche mais ne doivent pas etre pris en compte      
+    sHtmlContent = oRequestHandler.request(); #requete sur l'url    
 
     oParser = cParser()
     sPattern = '<iframe.+?src="(.+?)"'
     #ici nous cherchont toute les sources iframe
+    
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #penser a faire un print aResult pour verifier
+    #pensez a faire un xbmc.log(str(aResult)) pour verifier
     
     #si un lien ne s'affiche pas peux etre que l'hote n'est pas supporte par l'addon
     if (aResult[0] == True):
@@ -236,7 +246,7 @@ def showHosters():# recherche et affiche les hotes
                 
     oGui.setEndOfDirectory() #fin
    
-def seriesHosters(): #cherche les episode de series
+def seriesHosters(): #cherche les episodes de series
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -244,8 +254,7 @@ def seriesHosters(): #cherche les episode de series
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','')
+    sHtmlContent = oRequestHandler.request()
                
     sPattern = '<dd><a href="([^<]+)" class="zoombox.+?" title="(.+?)"><button class="btn">.+?</button></a></dd>'
     oParser = cParser()

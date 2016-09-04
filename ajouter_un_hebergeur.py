@@ -1,9 +1,11 @@
 #-*- coding: utf-8 -*-
 #Auteur
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.config import cConfig
+from resources.lib.handler.requestHandler import cRequestHandler #requete url
+from resources.lib.parser import cParser #recherche de code
+from resources.lib.config import cConfig #config
+from resources.lib.gui.gui import cGui #systeme d'affichage pour xbmc
 from resources.hosters.hoster import iHoster
+#from resources.lib.util import cUtil #Autres fonctions utiles
 
 #AAdecoder
 #from resources.lib.aadecode import AADecoder
@@ -14,13 +16,14 @@ from resources.hosters.hoster import iHoster
 #Si premium
 #from resources.lib.handler.premiumHandler import cPremiumHandler
 
-import re,urllib2,utllib
+#Ne garder que celles qui vous servent
+import re,urllib2,urllib
 import xbmcgui,xmbc
 
 class cHoster(iHoster):
 
     def __init__(self):
-        #Nom a afficher
+        #Nom a afficher dans Vstream
         self.__sDisplayName = 'Nouvel hebergeur'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
@@ -40,7 +43,7 @@ class cHoster(iHoster):
         return self.__sFileName
 
     def getPluginIdentifier(self):
-        #Nom du fichier exact
+        #Nom du fichier exact sans .py
         return 'ajouter_un_hebergeur'
         
     #facultatif mais a laisser pour compatibilitee
@@ -67,7 +70,7 @@ class cHoster(iHoster):
     def __getIdFromUrl(self, sUrl):
         sPattern = "id=([^<]+)"
         oParser = cParser()
-        aResult = oParser.parse(self.__sUrl, sPattern)
+        aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
             return aResult[1][0]
 
@@ -76,6 +79,7 @@ class cHoster(iHoster):
     #premiere fonction utilisee, memorise le lien
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
+        #self.__sUrl = self.__sUrl.replace('https://', 'http://')
 
     #facultatif mais a laisser pour compatibilitee
     def checkUrl(self, sUrl):
@@ -89,6 +93,7 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
+    #Extraction du lien et decodage si besoin
     def __getMediaLinkForGuest(self):
 
         oRequest = cRequestHandler(self.__sUrl)
@@ -99,7 +104,46 @@ class cHoster(iHoster):
         sPattern =  'file: *"([^<>"]+?mp4)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         
-        if (aResult[0] == True):
-            return True, aResult[1][0]
+        api_call = ''
+        
+        if (aResult[0]):
+            api_call = aResult[1][0]
+            
+        if (api_call):
+            #Rajout d'un header ?
+            #api_call = api_call + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
+            return True, api_call
+        else:
+            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
         
         return False, False
+
+        
+#Attention : Pour fonctionner le nouvel hebergeur doit etre rajoute dans le corps de Vstream, fichier Hosters.py.
+#----------------------------------------------------------------------------------------------------------------
+#
+#Code pour selection de plusieurs liens
+#--------------------------------------
+#
+#            url=[]
+#            qua=[]
+#            
+#            for aEntry in aResult[1]:
+#                url.append(aEntry[0])
+#                qua.append(aEntry[1])
+#                
+#            #Si une seule url
+#            if len(url) == 1:
+#                stream_url = url[0]
+#            #si plus de une
+#            elif len(url) > 1:
+#                #Afichage du tableau
+#                dialog2 = xbmcgui.Dialog()
+#                ret = dialog2.select('Select Quality',qua)
+#                if (ret > -1):
+#                    stream_url = url[ret]
+#                else:
+#                    return False, False
+#            else:
+#                return False, False
+#
