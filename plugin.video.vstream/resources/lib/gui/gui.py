@@ -257,6 +257,8 @@ class cGui():
             oGuiElement.setSiteUrl(sSiteUrl)
             
         oListItem = self.createListItem(oGuiElement)
+        if (isFolder == False):
+            oListItem.addStreamInfo('video', {})
         
         # if oGuiElement.getMeta():
             # oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
