@@ -9,6 +9,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.util import cUtil
 
 from resources.lib.aadecode import AADecoder
+from resources.lib.jjdecode import JJDecoder
 
 import re,urllib2, base64, math
 
@@ -89,24 +90,43 @@ class cHoster(iHoster):
         #fh.write(sHtmlContent)
         #fh.close()
         
+        code = ''
+        
+        #JJdecoder
+        sPattern = '<script type="text\/javascript">([a-z]=.+?\(\)\)\(\);)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            #xbmc.log(aResult[1][0])
+            s = JJDecoder(aResult[1][0]).decode()
+            if 'tmp.slice' in s:
+                code = s
+
         #"aaencode - Encode any JavaScript program to Japanese style emoticons (^_^)"
-        sPattern = '<script type="text\/javascript">(ﾟωﾟ.+?)<\/script>'
+        #sPattern = '<script type="text\/javascript">(ﾟωﾟ.+?)<\/script>'
+        sPattern = '(ﾟωﾟ.+?)<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         
-        if not (aResult[0]):
+        if (aResult[0] == True):
+            s = AADecoder(aResult[1][0]).decode()
+            if 'tmp.slice' in s:
+                code = s
+        
+        if not (code):
             return False,False
             
-        s = AADecoder(aResult[1][0]).decode()
-        
         sPattern = '\(tmp\.slice\(-1\)\.charCodeAt\(0\) \+ ([0-9]+)\)'
-        aResult = oParser.parse(s, sPattern)
+        aResult = oParser.parse(code, sPattern)
         
-        val = 2
+        #xbmc.log(str(aResult))
+        
+        val = 3
         if (aResult[0]):
             val = int(aResult[1][0])
 
         sPattern = '<span id="hiddenurl">(.+?)<\/span>'
         aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        #xbmc.log(str(aResult))
         
         if not (aResult[0]):
             return False,False
