@@ -25,7 +25,7 @@ FUNCTION_SEARCH = 'showMovies'
 
 REPLAYTV_GENRES = (True, 'showGenre')
 REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
-REPLAYTV_REPLAYTV = (URL_MAIN + 'video/', 'showMovies')
+REPLAYTV_REPLAYTV = (URL_MAIN + 'videos/', 'showMovies')
 
 
 def load():
