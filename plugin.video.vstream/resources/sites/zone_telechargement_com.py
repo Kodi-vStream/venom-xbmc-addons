@@ -597,7 +597,7 @@ def showHosters():# recherche et affiche les hotes
         oGui.setEndOfDirectory()
 
 def showSeriesHosters():# recherche et affiche les hotes
-    #print "ZT:showSeriesHosters"
+
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler() #apelle l'entree de paramettre
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -616,7 +616,7 @@ def showSeriesHosters():# recherche et affiche les hotes
    
     oParser = cParser()
     
-    sPattern = '<a href="([^"]+?)" target="_blank">([^<]+)<\/a>|<span style="color:#.{6}">([^<]+)<\/span>'
+    sPattern = '<a href="([^"]+?)" target="_blank">([^<]+)<|<span style="color:#.{6}">([^<]+)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
 
