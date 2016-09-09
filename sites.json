@@ -18,16 +18,16 @@
   {
     "name": "adkami_com.py",
     "path": "plugin.video.vstream/resources/sites/adkami_com.py",
-    "sha": "1d2e8333bf23c46cd3c560aedadf3c5cd23abcb6",
-    "size": 19173,
+    "sha": "5e52d70c399ec67aac9909084d48fcae6a3e4d36",
+    "size": 19366,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/adkami_com.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/adkami_com.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/1d2e8333bf23c46cd3c560aedadf3c5cd23abcb6",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/5e52d70c399ec67aac9909084d48fcae6a3e4d36",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/adkami_com.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/adkami_com.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/1d2e8333bf23c46cd3c560aedadf3c5cd23abcb6",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/5e52d70c399ec67aac9909084d48fcae6a3e4d36",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/adkami_com.py"
     }
   },
