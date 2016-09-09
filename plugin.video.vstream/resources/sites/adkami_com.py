@@ -367,7 +367,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '</div><iframe.+?src="(.+?)"'
+    sPattern = '</div><iframe.+?src="(.+?)"|<a rel="nofollow" target="_back" href="([^"]+)" [^<>]+">[^<>]+Redirection<\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -381,7 +381,11 @@ def showHosters():
             if dialog.iscanceled():
                 break
 
-            sHosterUrl = str(aEntry)
+            if (aEntry[0]):
+                sHosterUrl = str(aEntry[0])
+            else:
+                sHosterUrl = str(aEntry[1])
+                
             oHoster = cHosterGui().checkHoster(sHosterUrl)
         
             if (oHoster != False):
