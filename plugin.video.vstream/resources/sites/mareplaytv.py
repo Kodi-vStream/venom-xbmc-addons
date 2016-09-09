@@ -175,7 +175,7 @@ def showEpisode():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<a href="([^"<>]+\/\?tape=[0-9]+)">([0-9]+)<\/a>'
+    sPattern = '<a href="(.+?tape=[0-9]+)">([0-9]+)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     #xbmc.log(str(aResult))
