@@ -127,7 +127,7 @@ class cGui():
         
         self.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
         
-        self.addFolder(oGuiElement, oOutputParameterHandler, False)     
+        self.addFolder(oGuiElement, oOutputParameterHandler)     
     
         
     def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler = ''):
@@ -249,17 +249,23 @@ class cGui():
 
         self.addFolder(oGuiElement, oOutputParameterHandler)          
 
-    
-    def addFolder(self, oGuiElement, oOutputParameterHandler='', isFolder=True):
+    #afficher les liens non playable
+    def addFolder(self, oGuiElement, oOutputParameterHandler=''):
         
         if oOutputParameterHandler.getValue('siteUrl'):
             sSiteUrl = oOutputParameterHandler.getValue('siteUrl')
             oGuiElement.setSiteUrl(sSiteUrl)
             
         oListItem = self.createListItem(oGuiElement)
-        if (isFolder == False):
-            oListItem.addStreamInfo('video', {})
+        oListItem.setProperty("IsPlayable", "false")
         
+        #affiche tag HD
+        if '1080' in oGuiElement.getTitle():
+            oListItem.addStreamInfo('video', { 'aspect': '1.78', 'width':1920 ,'height' : 1080 })
+        elif '720' in  oGuiElement.getTitle():
+            oListItem.addStreamInfo('video', { 'aspect': '1.50', 'width':1280 ,'height' : 720 })
+        #oListItem.addStreamInfo('audio', { 'codec': 'aac', 'language': 'en', 'channels' : 2 })
+
         # if oGuiElement.getMeta():
             # oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
         
@@ -287,7 +293,7 @@ class cGui():
        
         sPluginHandle = cPluginHandler().getPluginHandle();
 
-        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=isFolder)      
+        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=True)      
         
 
     def createListItem(self, oGuiElement):        
@@ -295,17 +301,33 @@ class cGui():
         oListItem = xbmcgui.ListItem(oGuiElement.getTitle(), oGuiElement.getTitleSecond(), oGuiElement.getIcon())
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
         oListItem.setThumbnailImage(oGuiElement.getThumbnail())
-        
-        #modif le 26/08
-        oListItem.setProperty("IsPlayable", "true")
-        oListItem.setProperty("Video", "true")
-        #
 
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey in aProperties.keys():
             oListItem.setProperty(sPropertyKey, aProperties[sPropertyKey])
 
         return oListItem
+     
+    #affiche les liens playable
+    def addHost(self, oGuiElement, oOutputParameterHandler=''):
+        
+        if oOutputParameterHandler.getValue('siteUrl'):
+            sSiteUrl = oOutputParameterHandler.getValue('siteUrl')
+            oGuiElement.setSiteUrl(sSiteUrl)
+            
+        oListItem = self.createListItem(oGuiElement)
+        oListItem.setProperty("IsPlayable", "true")
+        oListItem.setProperty("Video", "true")
+        
+        oListItem.addStreamInfo('video', {})
+        
+        sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)
+
+        oListItem = self.__createContextMenu(oGuiElement, oListItem)
+       
+        sPluginHandle = cPluginHandler().getPluginHandle();
+
+        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=False)      
 
     def createContexMenuWatch(self, oGuiElement, oOutputParameterHandler= ''):
         self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'setWatched','[COLOR azure]Marquer vu/Non vu[/COLOR]')

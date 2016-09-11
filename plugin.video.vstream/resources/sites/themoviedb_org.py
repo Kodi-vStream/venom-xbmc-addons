@@ -649,4 +649,4 @@ def addMoviedb(sId, sFunction, sLabel, sIcon, sThumbnail, fanart, oOutputParamet
     #oGuiElement.setFanart(fanart)
     
     #cGui.addFolder(oGuiElement, oOutputParameterHandler)
-    oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
+    oGui.addFolder(oGuiElement, oOutputParameterHandler)

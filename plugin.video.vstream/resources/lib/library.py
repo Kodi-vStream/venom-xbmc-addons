@@ -179,7 +179,7 @@ class cLibrary:
                 #menu contextuel
                 oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cLibrary','cLibrary','Delfile','Supprimer ce fichiert')
                 
-                oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
+                oGui.addFolder(oGuiElement, oOutputParameterHandler)
           
         oGui.setEndOfDirectory()       
         

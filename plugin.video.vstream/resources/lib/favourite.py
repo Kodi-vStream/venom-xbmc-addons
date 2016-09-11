@@ -142,7 +142,7 @@ class cFav:
                     oGui.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
                     
                     if (function == 'play'):
-                        oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
+                        oGui.addHost(oGuiElement, oOutputParameterHandler)
                     else:
                         oGui.addFolder(oGuiElement, oOutputParameterHandler)
                         

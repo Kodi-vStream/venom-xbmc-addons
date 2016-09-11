@@ -96,7 +96,7 @@ class cHosterGui:
         oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cLibrary','cLibrary','setLibrary','[COLOR teal]Ajouter a la librairie[/COLOR]')
       
         #bug
-        oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
+        oGui.addHost(oGuiElement, oOutputParameterHandler)
          
         #oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
