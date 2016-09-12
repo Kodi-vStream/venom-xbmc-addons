@@ -104,7 +104,7 @@ URL_MAIN = 'http://www.mangacity.co/'
 
 ANIM_ANIMS = (URL_MAIN + 'animes.php?liste=SHOWALPHA', 'ShowAlpha')
 ANIM_GENRES = (True, 'showGenre')
-ANIM_NEWS = (URL_MAIN + 'nouveautees.php', 'showMovies')
+ANIM_NEWS = (URL_MAIN + 'nouveautees.html', 'showMovies')
 
 ANIM_VFS = (URL_MAIN + 'listing_vf.php', 'ShowAlpha2')
 ANIM_VOSTFRS = (URL_MAIN + 'listing_vostfr.php', 'ShowAlpha2')
