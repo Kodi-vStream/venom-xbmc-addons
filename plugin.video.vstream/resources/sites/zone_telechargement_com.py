@@ -333,38 +333,38 @@ def __checkForNextPage(sHtmlContent):
         
     return False
 
-    
+
 def showLinks():
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    
-    #print sUrl
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    #on recupere la vraie url
+    sUrl = oRequestHandler.getRealUrl()
     
     #Bon ici, grosse bataille, c'est un film ou une serie ?
     #On peut utiliser l'url redirigée ou cette astuce en test
     
     if 'infos_film.png' in sHtmlContent:
         if 'épisode par épisode' in sHtmlContent or '<b>Episode :</b>' in sHtmlContent:
-            showSeriesLinks(sHtmlContent)
+            showSeriesLinks(sHtmlContent,sUrl)
         else:
-            showMoviesLinks(sHtmlContent)
+            showMoviesLinks(sHtmlContent,sUrl)
     else:
-        showSeriesLinks(sHtmlContent)
+        showSeriesLinks(sHtmlContent,sUrl)
     
     return
 
     
-def showMoviesLinks(sHtmlContent):
+def showMoviesLinks(sHtmlContent,sUrl):
     xbmc.log('mode film')
     
     oGui = cGui()
     
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
@@ -418,7 +418,7 @@ def showMoviesLinks(sHtmlContent):
     oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sCom, oOutputParameterHandler)
 
     #on regarde si dispo dans d'autres qualités
-    sPattern = '<a title="Téléchargez.+?en (.+?)" href="(.+?)"><button class="button_subcat"'
+    sPattern = '<a title="Téléchargez.+? en (.+?)" href="(.+?)"><button class="button_subcat"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if (aResult[0] == True):
@@ -440,12 +440,11 @@ def showMoviesLinks(sHtmlContent):
 
     oGui.setEndOfDirectory()
 
-def showSeriesLinks(sHtmlContent):
+def showSeriesLinks(sHtmlContent,sUrl):
     xbmc.log('mode serie')
     
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
@@ -482,7 +481,7 @@ def showSeriesLinks(sHtmlContent):
     oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
     
     #on regarde si dispo dans d'autres qualités
-    sPattern1 = '<a title="Téléchargez.+?en ([^"]+?)" href="([^"]+?)"><button class="button_subcat"'
+    sPattern1 = '<a title="Téléchargez.+? en ([^"]+?)" href="([^"]+?)"><button class="button_subcat"'
     aResult1 = oParser.parse(sHtmlContent, sPattern1)
     #print aResult1
     
