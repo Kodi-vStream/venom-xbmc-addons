@@ -4,12 +4,12 @@ from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.lib.jjdecode import JJDecoder
 from resources.hosters.hoster import iHoster
-from resources.lib.packer import cPacker
 from resources.lib.gui.gui import cGui
 from resources.lib.util import cUtil
 
 from resources.lib.aadecode import AADecoder
 from resources.lib.jjdecode import JJDecoder
+from resources.lib.packer import cPacker
 
 import re,urllib2, base64, math
 
@@ -18,6 +18,39 @@ import xbmc
 def parseInt(sin):
     return int(''.join([c for c in re.split(r'[,.]',str(sin))[0] if c.isdigit()])) if re.match(r'\d+', str(sin), re.M) and not callable(sin) else None
 
+def CheckCpacker(str):
+    oParser = cParser()
+    sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+    aResult = oParser.parse(str, sPattern)
+    if (aResult[0]):
+        xbmc.log('Cpacker encryption')
+        str2 = aResult[1][0]
+        if not str2.endswith(';'):
+            str2 = str2 + ';'
+        return cPacker().unpack(str2)
+        
+    return str
+    
+def CheckJJDecoder(str):
+    oParser = cParser()
+    sPattern = '([a-z]=.+?\(\)\)\(\);)'
+    aResult = oParser.parse(str, sPattern)
+    if (aResult[0]):
+        xbmc.log('JJ encryption')
+        return JJDecoder(aResult[1][0]).decode()
+        
+    return str
+    
+def CheckAADecoder(str):
+    oParser = cParser()
+    sPattern = '(ﾟωﾟ.+?)<\/script>'
+    aResult = oParser.parse(str, sPattern)
+    if (aResult[0]):
+        xbmc.log('AA encryption')
+        return AADecoder(aResult[1][0]).decode()
+        
+    return str  
+    
 class cHoster(iHoster):
 
     def __init__(self):
@@ -86,30 +119,34 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('User-Agent',UA)
         sHtmlContent = oRequest.request()
         
+        #Recuperation url cachee
+        hideenurl = ''
+        sPattern = '<span id="hiddenurl">(.+?)<\/span>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0]):
+            hideenurl = aResult[1][0]
+        else:
+            return False, False
+        
+        
+        #on essais de situer le code
+        sPattern = '<script src="\/assets\/js\/video-js\/video\.js\.ol\.js">(.+)*'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0]):
+            sHtmlContent = aResult[1][0]
+        
         #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
         
         code = ''
         
-        #JJdecoder
-        sPattern = '<script type="text\/javascript">([a-z]=.+?\(\)\)\(\);)'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            #xbmc.log(aResult[1][0])
-            s = JJDecoder(aResult[1][0]).decode()
-            if 'tmp.slice' in s:
-                code = s
-
-        #"aaencode - Encode any JavaScript program to Japanese style emoticons (^_^)"
-        #sPattern = '<script type="text\/javascript">(ﾟωﾟ.+?)<\/script>'
-        sPattern = '(ﾟωﾟ.+?)<\/script>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        #liste tout les decoders
+        sHtmlContent = CheckCpacker(sHtmlContent)
+        sHtmlContent = CheckJJDecoder(sHtmlContent)
         
-        if (aResult[0] == True):
-            s = AADecoder(aResult[1][0]).decode()
-            if 'tmp.slice' in s:
-                code = s
+        code = sHtmlContent
+        #xbmc.log(code)
         
         if not (code):
             return False,False
@@ -122,18 +159,8 @@ class cHoster(iHoster):
         val = 3
         if (aResult[0]):
             val = int(aResult[1][0])
-
-        sPattern = '<span id="hiddenurl">(.+?)<\/span>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
         
-        #xbmc.log(str(aResult))
-        
-        if not (aResult[0]):
-            return False,False
-
-        string = aResult[1][0]
-        
-        string = cUtil().unescape(string)
+        string = cUtil().unescape(hideenurl)
         
         url = ''
         
