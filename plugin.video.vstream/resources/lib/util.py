@@ -80,7 +80,7 @@ class cUtil:
         string = re.sub('([\(](?![0-9]{4}).{1,7}[\)])',' [COLOR coral]\\1[/COLOR] ', string)
         #pr les series
         string = self.FormatSerie(string)
-        string = re.sub('(?i)(.*) ((?:[S|E][0-9]+){1,2})','\\1 [COLOR coral]\\2[/COLOR] ', string)
+        string = re.sub('(?i)(.*) ((?:[S|E][0-9\.-]+){1,2})','\\1 [COLOR coral]\\2[/COLOR] ', string)
             
         #vire doubles espaces
         string = re.sub(' +',' ',string)
@@ -149,18 +149,26 @@ class cUtil:
         #vire doubles espaces
         string = re.sub(' +',' ',string)
         
+        #vire espace a la fin
+        if string.endswith(' '):
+            string = string[:-1]
+        
         #convertion unicode
         string = string.decode("utf-8")
         
         SXEX = ''
-        m = re.search( ur'(?i)(\wpisode ([0-9]+))(?:$| [^a\u00E0])',string,re.UNICODE)
+        m = re.search( ur'(?i)(\wpisode ([0-9\.-]+))(?:$| [^a\u00E0])',string,re.UNICODE)
         if m:
             #ok y a des episodes
             string = string.replace(m.group(1),'')
-            SXEX = 'E' + "%02d" % int(m.group(2))
+            #SXEX + "%02d" % int(m.group(2))
+            SXEX = m.group(2)
+            if len(SXEX) < 2:
+                SXEX = '0' + SXEX
+            SXEX = 'E' + SXEX   
             
             #pr les saisons
-            m = re.search('(?i)(saison ([0-9]+))', string)
+            m = re.search('(?i)(s(?:aison )*([0-9]+))', string)
             if m:
                 string = string.replace(m.group(1),'')
                 SXEX = 'S' + "%02d" % int(m.group(2)) + SXEX
