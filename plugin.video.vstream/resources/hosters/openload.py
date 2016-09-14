@@ -49,7 +49,7 @@ def CheckAADecoder(str):
         xbmc.log('AA encryption')
         return AADecoder(aResult[1][0]).decode()
         
-    return str  
+    return str
     
 class cHoster(iHoster):
 
@@ -120,14 +120,13 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
         
         #Recuperation url cachee
-        hideenurl = ''
-        sPattern = '<span id="hiddenurl">(.+?)<\/span>'
+        TabUrl = []
+        sPattern = '<span id="([^"]+)">([^<>]+)<\/span>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0]):
-            hideenurl = aResult[1][0]
+            TabUrl = aResult[1]
         else:
             return False, False
-        
         
         #on essais de situer le code
         sPattern = '<script src="\/assets\/js\/video-js\/video\.js\.ol\.js">(.+)*'
@@ -151,6 +150,19 @@ class cHoster(iHoster):
         if not (code):
             return False,False
             
+        #Search the codes url
+        hideenurl = ''
+        sPattern = '\$\("#([^"]+)"\)'
+        aResult = oParser.parse(code, sPattern)
+        if (aResult[0]):
+            for i in TabUrl:
+                if aResult[1][0] in i[0]:
+                    hideenurl = i[1]
+
+        if not(hideenurl):
+            xbmc.log('Url codee non trouvee')
+            return False, False
+        
         sPattern = '\(tmp\.slice\(-1\)\.charCodeAt\(0\) \+ ([0-9]+)\)'
         aResult = oParser.parse(code, sPattern)
         
