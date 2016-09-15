@@ -287,7 +287,7 @@ def showSeries(sLoop = False):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class="nextpostslink" rel="next" href="(http:\/\/tv-streaming\.ch.+?)">(?:»|&raquo;)<\/a>'
+    sPattern = '<a class="nextpostslink" rel="next" href="(.+?)">(?:»|&raquo;)<\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
