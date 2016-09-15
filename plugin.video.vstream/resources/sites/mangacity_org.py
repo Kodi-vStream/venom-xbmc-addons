@@ -37,6 +37,10 @@ def DecryptMangacity(chain):
     return d
 
 def ICDecode(html):
+    
+    if 'HTML/JavaScript Encoder' not in html:
+        return html
+    
     import math
 
     sPattern = 'language=javascript>c="([^"]+)";eval\(unescape\("([^"]+)"\)\);x\("([^"]+)"\);'
@@ -595,6 +599,21 @@ def showHosters():
                 except:
                     pass
                     
+            #Potection visio.php
+            if '/visio.php?' in sHosterUrl:
+                xbmc.log('ok')
+                oRequestHandler = cRequestHandler(sHosterUrl )
+                oRequestHandler.addHeaderEntry('Referer',sUrl)
+                sHtmlContent = oRequestHandler.request()
+                
+                sHtmlContent = ICDecode(sHtmlContent)
+                    
+                sPattern = 'src=[\'"]([^\'"]+)[\'"]'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                if aResult[0]:
+                    sHosterUrl = aResult[1][0]
+                    
+            
             #xbmc.log( 'fini :' + str(sHosterUrl)) 
             
             #oHoster = __checkHoster(sHosterUrl)
