@@ -292,7 +292,9 @@ class cHosterGui:
             return cHosterHandler().getHoster('vidwatch')
         if ('up2stream' in sHosterUrl):
             return cHosterHandler().getHoster('up2stream')
-
+        if ('tune' in sHosterUrl):
+            return cHosterHandler().getHoster('tune')
+            
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHosterUrl):
             return cHosterHandler().getHoster('onefichier')
