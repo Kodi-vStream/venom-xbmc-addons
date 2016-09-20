@@ -146,6 +146,8 @@ class cUtil:
         
     def FormatSerie(self,string):
         
+        #xbmc.log(string)
+        
         #vire doubles espaces
         string = re.sub(' +',' ',string)
         
@@ -176,7 +178,7 @@ class cUtil:
         
         else:
             #pas d'episode mais y a t il des saisons ?
-            m = re.search('(?i)(s(?:aison )*([0-9]+))', string)
+            m = re.search('(?i)(s(?:aison )*([0-9]+))(?:$| )', string)
             if m:
                 string = string.replace(m.group(1),'')
                 SXEX = 'S' + "%02d" % int(m.group(2))
