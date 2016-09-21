@@ -38,8 +38,8 @@ def DecryptMangacity(chain):
 
 def ICDecode(html):
     
-    if 'HTML/JavaScript Encoder' not in html:
-        return html
+    #if 'HTML/JavaScript Encoder' not in html:
+    #    return html
     
     import math
 
@@ -47,7 +47,7 @@ def ICDecode(html):
     aResult = re.findall(sPattern,html)
     
     if not aResult:
-        return ''
+        return html
     
     c = aResult[0][0]
     a = aResult[0][1]
@@ -101,10 +101,10 @@ def ICDecode(html):
 #------------------------------------------------------------------------------------    
     
 SITE_IDENTIFIER = 'mangacity_org'
-SITE_NAME = 'MangaCity.org'
+SITE_NAME = 'MangaCity.org - ianime.tv'
 SITE_DESC = 'Anime en streaming'
 
-URL_MAIN = 'http://www.mangacity.co/'
+URL_MAIN = 'http://www.ianime.tv/'
 
 ANIM_ANIMS = (URL_MAIN + 'animes.php?liste=SHOWALPHA', 'ShowAlpha')
 ANIM_GENRES = (True, 'showGenre')
@@ -527,6 +527,10 @@ def showHosters():
             if not (sHosterUrl[:4] == 'http'):
                 sHosterUrl = ExtractLink(sHosterUrl)
 
+            #Si aucun lien on arrette ici
+            if not (sHosterUrl):
+                continue
+            
             #xbmc.log( 'brut :' + str(sHosterUrl)) 
 
             #si openload code
@@ -541,7 +545,7 @@ def showHosters():
                 sHosterUrl = ExtractLink(sHtmlContent)
                 
             #Passe par lien .asx ??
-            sPattern = '(http:\/\/www.mangacity.co\/[0-9a-zA-Z_-]+\.asx)'
+            sPattern = '(http:\/\/www.ianime.tv\/[0-9a-zA-Z_-]+\.asx)'
             aResult = oParser.parse(sHosterUrl, sPattern)
             if aResult[0] :
                 xbmc.log( 'Lien Aasx :' + str(sHosterUrl)) 
@@ -551,7 +555,7 @@ def showHosters():
                 sHtmlContent = oRequestHandler.request()
                 
                 #Si c'est une redirection, on passe juste le vrai lien
-                if ('mangacity' not in oRequestHandler.getRealUrl().split('/')[2]):
+                if ('ianime' not in oRequestHandler.getRealUrl().split('/')[2]):
                     sHosterUrl = oRequestHandler.getRealUrl()
                 else:
                     #Sinon on remplace le code
@@ -559,7 +563,7 @@ def showHosters():
                     sHosterUrl = ExtractLink(html)
                 
             #Passe par lien .vxm ??
-            sPattern = 'http:\/\/www.mangacity.co\/([0-9a-zA-Z_-]+)\.vxm'
+            sPattern = 'http:\/\/www.ianime.tv\/([0-9a-zA-Z_-]+)\.vxm'
             aResult = oParser.parse(sHosterUrl, sPattern)
             if aResult[0] :
                 sHosterUrl = 'http://embed.nowvideo.sx/embed.php?v=' + aResult[1][0]
@@ -601,7 +605,6 @@ def showHosters():
                     
             #Potection visio.php
             if '/visio.php?' in sHosterUrl:
-                xbmc.log('ok')
                 oRequestHandler = cRequestHandler(sHosterUrl )
                 oRequestHandler.addHeaderEntry('Referer',sUrl)
                 sHtmlContent = oRequestHandler.request()
@@ -613,8 +616,19 @@ def showHosters():
                 if aResult[0]:
                     sHosterUrl = aResult[1][0]
                     
+            #Derniere en date
+            sPattern = '(http:\/\/www\.ianime\.tv\/[a-z\.]+&[a-z0-9]+\.htm)'
+            aResult = oParser.parse(sHosterUrl, sPattern)
+            if aResult[0]:
+                oRequestHandler = cRequestHandler(aResult[1][0] )
+                oRequestHandler.addHeaderEntry('Referer',sUrl)
+                sHtmlContent = oRequestHandler.request()
+                
+                sHtmlContent = ICDecode(sHtmlContent)
+                
+                sHosterUrl = ExtractLink(sHtmlContent)
             
-            #xbmc.log( 'fini :' + str(sHosterUrl)) 
+            #xbmc.log( 'final :' + str(sHosterUrl)) 
             
             #oHoster = __checkHoster(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
