@@ -512,7 +512,7 @@ def showHosters():
             if not aEntry[0]:
                 sHosterUrl = DecryptMangacity(aEntry[2])
                 sHosterUrl = sHosterUrl.replace('\\','')
-                xbmc.log( 'Decrypte :' + sHosterUrl)
+                #xbmc.log( 'Decrypte :' + sHosterUrl)
             #adresse directe  
             else:
                 if re.match(".+?&#[0-9]+;", aEntry[0]):#directe mais codé html
@@ -617,7 +617,7 @@ def showHosters():
                     sHosterUrl = aResult[1][0]
                     
             #Derniere en date
-            sPattern = '(http:\/\/www\.ianime\.tv\/[a-z\.]+&[a-z0-9]+\.htm)'
+            sPattern = '(http:\/\/www\.ianime\.tv\/[a-z\.]+&[\w-]+\.htm)'
             aResult = oParser.parse(sHosterUrl, sPattern)
             if aResult[0]:
                 oRequestHandler = cRequestHandler(aResult[1][0] )
