@@ -12,7 +12,7 @@ http://live.francetv.fr/simulcast/France_4/hls_v1/index.m3u8
 http://live.francetv.fr/simulcast/France_5/hls_v1/index.m3u8
 
 #EXTINF:-1 tvg-id="ART1.kazer.org" tvg-name="Arte" tvg-logo="arte.png" group-title="Group 14",Arte
-http://frlive.artestras.cshls.lldns.net/artestras/contrib/frlive/frlive_925.m3u8
+http://artelive-lh.akamaihd.net/i/artelive_fr@344805/master.m3u8
 
 #EXTINF:-1 tvg-id="M61.kazer.org" tvg-name="M6" tvg-logo="m6.png" group-title="Group 6",M6
 https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/m6_hls_aes/m6_hls_aes_856.m3u8
