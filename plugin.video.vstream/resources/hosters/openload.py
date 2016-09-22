@@ -15,6 +15,8 @@ import re,urllib2, base64, math
 
 import xbmc
 
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
+
 def parseInt(sin):
     return int(''.join([c for c in re.split(r'[,.]',str(sin))[0] if c.isdigit()])) if re.match(r'\d+', str(sin), re.M) and not callable(sin) else None
 
@@ -27,8 +29,9 @@ def CheckCpacker(str):
         str2 = aResult[1][0]
         if not str2.endswith(';'):
             str2 = str2 + ';'
+            
         return cPacker().unpack(str2)
-        
+
     return str
     
 def CheckJJDecoder(str):
@@ -51,6 +54,27 @@ def CheckAADecoder(str):
         
     return str
     
+def GetOpenloadUrl(url):
+    if 'openload.co/stream' in url:
+    
+        headers = {'User-Agent': UA }
+                  
+        req = urllib2.Request(url,None,headers)
+        res = urllib2.urlopen(req)
+        finalurl = res.geturl()
+        
+        #autres infos
+        #xbmc.log(res.info())
+        #xbmc.log(res.info()['Content-Length'])
+        
+        if 'KDA_8nZ2av4/x.mp4' in finalurl:
+            xbmc.log('pigeon url : ' + url)
+            finalurl = ''
+            
+        #xbmc.log(finalurl)
+        return finalurl
+    return url
+        
 class cHoster(iHoster):
 
     def __init__(self):
@@ -106,11 +130,7 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-
-        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
-        
-        api_call = ''
-        
+   
         oParser = cParser()        
         
         #recuperation de la page
@@ -142,7 +162,9 @@ class cHoster(iHoster):
         
         #liste tout les decoders
         sHtmlContent = CheckCpacker(sHtmlContent)
+        #xbmc.log(sHtmlContent)
         sHtmlContent = CheckJJDecoder(sHtmlContent)
+        #xbmc.log(sHtmlContent)
         
         code = sHtmlContent
         #xbmc.log(code)
@@ -150,27 +172,29 @@ class cHoster(iHoster):
         if not (code):
             return False,False
             
-        #Search the codes url
+        #Search the coded url
         hideenurl = ''
         sPattern = '\$\("#([^"]+)"\)'
         aResult = oParser.parse(code, sPattern)
         if (aResult[0]):
             for i in TabUrl:
-                if aResult[1][0] in i[0]:
+                if aResult[1][0] == i[0]:
                     hideenurl = i[1]
+                    #xbmc.log(str(i))
 
         if not(hideenurl):
             xbmc.log('Url codee non trouvee')
             return False, False
         
+        #Calcul du decalage
         sPattern = '\(tmp\.slice\(-1\)\.charCodeAt\(0\) \+ ([0-9]+)\)'
         aResult = oParser.parse(code, sPattern)
-        
-        #xbmc.log(str(aResult))
         
         val = 3
         if (aResult[0]):
             val = int(aResult[1][0])
+            
+        xbmc.log('Decalage : ' + str(val))
         
         string = cUtil().unescape(hideenurl)
         
@@ -184,22 +208,23 @@ class cHoster(iHoster):
         
         url = url[:-1] + chr(ord(url[-1]) + val)
         
-        api_call = "https://openload.co/stream/" + url + "?mime=true"
+        api_call = "https://openload.co/stream/" + url + "?mime=true"        
+        xbmc.log('1 er url : ' + api_call)
+        api_call = GetOpenloadUrl(api_call)
         
-        xbmc.log(api_call)
+        #Si ca marche pas on teste d'autres trucs au hazard
+        if not (api_call):
+            url0 = url[:-1] + chr(ord(url[-1]) - val)
+            for i in range(0,5):
+                if i != val:
+                    url2 = url0[:-1] + chr(ord(url0[-1]) + i)
+                    url2 = "https://openload.co/stream/" + url2 + "?mime=true" 
+                    #xbmc.log(url2)
+                    url3 = GetOpenloadUrl(url2)
+                    if (url3):
+                        api_call = url3
         
-        if (api_call):
-            
-            if 'openload.co/stream' in api_call:
-                
-                headers = {'User-Agent': UA }
-                          
-                req = urllib2.Request(api_call,None,headers)
-                res = urllib2.urlopen(req)
-                finalurl = res.geturl()
-                #xbmc.log(finalurl)
-                api_call = finalurl
-
+        if (api_call):          
             return True, api_call
             
         return False, False
