@@ -28,6 +28,14 @@ class cAbout:
     
     def getUpdate(self):
         service_time = cConfig().getSetting('service_time')
+        
+        #Si pas d'heure indique = premiere install
+        if not (service_time):
+            #On memorise la date d'aujourdhui
+            cConfig().setSetting('service_time', str(datetime.datetime.now()))
+            #Mais on force la maj avec une date a la con
+            service_time = '2000-09-23 10:59:50.877000'
+        
         if (service_time):
             #delay mise a jour            
             time_sleep = datetime.timedelta(hours=72)
@@ -39,8 +47,6 @@ class cAbout:
                 #test les fichier pour mise a jour
                 self.checkupdate()
                 #Function update auto
-        else:
-            cConfig().setSetting('service_time', str(datetime.datetime.now()))  
 
         return
       
@@ -102,19 +108,13 @@ class cAbout:
     
     
     def checkupdate(self):
-            
-            service_time = cConfig().getSetting('service_time')            
-            
-            #dialog = cConfig().showInfo("vStream", "Cherche les mises a jour")
-            
-            result = self.resultGit()
-           
+                      
+            #dialog = cConfig().showInfo("vStream", "Cherche les mises a jour")            
+            result = self.resultGit()          
             sDown = 0
             
             if result:
-            
                 for i in result:
-                    
                     try: 
                         rootpath = self.getRootPath(i['path'])
                         
