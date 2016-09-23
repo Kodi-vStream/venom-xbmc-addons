@@ -198,6 +198,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
    
 def __checkForNextPage(sUrl):
+    #sPattern = 'class="current">.+?<a rel="nofollow" class="page larger" href="(.+?)">(.+?)</a>'
     if '/page/' in sUrl:
         sPattern = "\/page\/([0-9]+)\/"
         oParser = cParser()
