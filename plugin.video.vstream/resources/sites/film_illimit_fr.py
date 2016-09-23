@@ -74,7 +74,7 @@ def showGenre():
     oGui = cGui()
  
     liste = []
-    liste.append( ['Action',URL_MAIN + 'action-aventure/'] )
+    liste.append( ['Action/Aventure',URL_MAIN + 'action-aventure/'] )
     liste.append( ['Animation',URL_MAIN + 'animation/'] )
     liste.append( ['Arts Martiaux',URL_MAIN + 'arts-martiaux/'] )
     liste.append( ['Biographie',URL_MAIN + 'biographique/'] )
@@ -90,6 +90,8 @@ def showGenre():
     liste.append( ['Thriller/Suspense',URL_MAIN + 'thrillersuspense/'] )
     liste.append( ['720p/1080p',URL_MAIN + '720p1080p/'] )
     liste.append( ['Mystère',URL_MAIN + 'mystere/'] )
+    liste.append( ['Western',URL_MAIN + 'western/'] )
+    liste.append( ['Animes',URL_MAIN + 'mangas/'] )
                
     for sTitle,sUrl in liste:
        
@@ -165,14 +167,14 @@ def showMovies(sSearch = ''):
                 pass
             
             sTitle = sName + ' [' + aEntry[3] + ']'
-            sUrl = aEntry[0]
+            sUrl2 = aEntry[0]
             sThumbnail = aEntry[1]
             
             if sThumbnail.startswith('//'):
                 sThumbnail = 'http:' + sThumbnail
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+            oOutputParameterHandler.addParameter('siteUrl', str(sUrl2))
             oOutputParameterHandler.addParameter('sMovieTitle', sName)
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             sDisplayTitle = cUtil().DecoTitle(sTitle)
@@ -186,7 +188,7 @@ def showMovies(sSearch = ''):
         cConfig().finishDialog(dialog)
            
         if not sSearch:
-            sNextPage = __checkForNextPage(sHtmlContent)
+            sNextPage = __checkForNextPage(sUrl)
             if (sNextPage != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
@@ -195,14 +197,16 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
    
-def __checkForNextPage(sHtmlContent):
-    sPattern = "class='current'>.+?<a rel='nofollow' class='page larger' href='(.+?)'>"
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        return aResult[1][0]
+def __checkForNextPage(sUrl):
+    if '/page/' in sUrl:
+        sPattern = "\/page\/([0-9]+)\/"
+        oParser = cParser()
+        aResult = oParser.parse(sUrl, sPattern)
+        if (aResult[0] == True):
+            newpage = str(int(aResult[1][0]) + 1)
+            return sUrl.replace('/page/' + aResult[1][0],'/page/' + newpage)
  
-    return False
+    return sUrl + 'page/2/'
  
 def showHosters():
     oGui = cGui()
