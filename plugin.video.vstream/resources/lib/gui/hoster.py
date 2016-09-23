@@ -292,6 +292,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('vidwatch')
         if ('up2stream' in sHosterUrl):
             return cHosterHandler().getHoster('up2stream')
+        if ('stream.moe' in sHosterUrl):
+            return cHosterHandler().getHoster('streammoe')
         if ('tune' in sHosterUrl):
             return cHosterHandler().getHoster('tune')
             
