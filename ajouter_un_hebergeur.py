@@ -18,7 +18,7 @@ from resources.hosters.hoster import iHoster
 
 #Ne garder que celles qui vous servent
 import re,urllib2,urllib
-import xbmcgui,xmbc
+import xbmcgui,xbmc
 
 class cHoster(iHoster):
 
@@ -32,7 +32,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]''
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
 
     #facultatif mais a laisser pour compatibilitee
     def setFileName(self, sFileName):
