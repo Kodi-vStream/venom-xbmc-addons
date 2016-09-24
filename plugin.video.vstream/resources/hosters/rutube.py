@@ -1,8 +1,9 @@
+#-*- coding: utf-8 -*-
 from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
-import urllib
+import urllib,xbmc,xbmcgui
  
 class cHoster(iHoster):
  
@@ -26,35 +27,29 @@ class cHoster(iHoster):
         self.__sUrl = sUrl.replace('http://rutube.ru/video/embed/', '')
         self.__sUrl = self.__sUrl.replace('http://video.rutube.ru/', '')
         self.__sUrl = self.__sUrl.replace('http://rutube.ru/video/', '')
+        self.__sUrl = self.__sUrl.replace('http://rutube.ru/play/embed/', '')
         self.__sUrl = 'http://rutube.ru/play/embed/' + str(self.__sUrl)
-        self.__sUrl = str(self.__modifyUrl(self.__sUrl))
    
-    def __getIdFromUrl(self):
-        sPattern = "http://rutube.ru/play/embed/([^<]+)"
+    def __getIdFromUrl(self,url):
+        sPattern = "\/play\/embed\/(\d*)"
         oParser = cParser()
-        aResult = oParser.parse(self.__sUrl, sPattern)
+        aResult = oParser.parse(url, sPattern)
+        if (aResult[0] == True):
+            return aResult[1][0]
+ 
+        return ''
+        
+    def __getRestFromUrl(self,url):
+        sPattern = "\?([\w]=[\w-]+)"
+        oParser = cParser()
+        aResult = oParser.parse(url, sPattern)
         if (aResult[0] == True):
             return aResult[1][0]
  
         return ''
        
     def __modifyUrl(self, sUrl):
-        api = ('http://rutube.ru/api/play/trackinfo/%s/?format=json') % (self.__getIdFromUrl())
- 
-        oRequest = cRequestHandler(api)
-        sHtmlContent = oRequest.request()
-        sHtmlContent = sHtmlContent.replace('\\', '').replace('//', '')
-       
-        sPattern = 'src="(.+?)"'
-       
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            self.__sUrl = 'http://' + aResult[1][0]
-            return self.__sUrl
-           
-        return
- 
+        return ''
  
     def getPluginIdentifier(self):
         return 'rutube'
@@ -78,21 +73,61 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
  
     def __getMediaLinkForGuest(self):
-       
-        oRequest = cRequestHandler(self.__sUrl)
+        
+        oParser = cParser()
+        
+        sID = self.__getIdFromUrl(self.__sUrl)
+        sRestUrl = self.__getRestFromUrl(self.__sUrl)
+        
+        api = 'http://rutube.ru/api/play/options/' + sID+ '/?format=json&no_404=true&referer=' + urllib.quote(self.__sUrl,safe='')
+        api = api + '&' + sRestUrl
+        
+        oRequest = cRequestHandler(api)
+        sHtmlContent = oRequest.request()
+
+        sPattern = '"m3u8": *"([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        if not (aResult):
+            sPattern = '"default": *"([^"]+)"'
+            aResult = oParser.parse(sHtmlContent, sPattern)           
+        
+        if (aResult[0] == True):
+            url2 = aResult[1][0]
+        else:
+            return False,False
+
+        oRequest = cRequestHandler(url2)
         sHtmlContent = oRequest.request()
  
-        sPattern = '&quot;m3u8&quot;: &quot;(.+?);}, &quot;live_streams&quot;:'
-        oParser = cParser()
+        sPattern = '(http.+?\?i=)([0-9x_]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
  
+        stream_url = ''
+ 
         if (aResult[0] == True):
-            cGui().showInfo(self.__sDisplayName, 'Streaming', 5)
-            return True, aResult[1][0]
-           
+            url=[]
+            qua=[]
+            
+            for aEntry in aResult[1]:
+                url.append(aEntry[0]+aEntry[1])
+                qua.append(aEntry[1])
+                
+            #Si une seule url
+            if len(url) == 1:
+                stream_url = url[0]
+            #si plus de une
+            elif len(url) > 1:
+                #Afichage du tableau
+                dialog2 = xbmcgui.Dialog()
+                ret = dialog2.select('Select Quality',qua)
+                if (ret > -1):
+                    stream_url = url[ret]
+        
+        if (stream_url):
+            return True,stream_url
         else:
             cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
             return False, False
            
- 
         return False, False
