@@ -12,18 +12,20 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
+import xbmc
+
 SITE_IDENTIFIER = 'fullmoviz_org'
 SITE_NAME = 'FullMoviz.org'
 SITE_DESC = 'Films complets en streaming et en Français sur Fullmoviz'
 
 URL_MAIN = 'http://www.fullmoviz.org/'
 
-MOVIE_MOVIE = ('http://www.fullmoviz.org/?p=movies&orderby=name', 'showMovies')
-MOVIE_NEWS = ('http://www.fullmoviz.org/?p=movies&orderby=date', 'showMovies')
-MOVIE_COMMENTS = ('http://www.fullmoviz.org/?p=movies&orderby=comment_count', 'showMovies')
-MOVIE_GENRES = ('http://www.fullmoviz.org/', 'showGenre')
+MOVIE_MOVIE = (URL_MAIN + '?p=movies&orderby=name', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + '?p=movies&orderby=date', 'showMovies')
+MOVIE_COMMENTS = (URL_MAIN + '?p=movies&orderby=comment_count', 'showMovies')
+MOVIE_GENRES = (URL_MAIN + '', 'showGenre')
 
-URL_SEARCH = ('http://www.fullmoviz.org/?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -53,11 +55,11 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = 'http://www.fullmoviz.org/?s='+sSearchText
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return  
-    
+        sUrl = URL_MAIN + '?s='+sSearchText
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return  
+
  
 def showGenre():
     oGui = cGui()
@@ -65,24 +67,24 @@ def showGenre():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['Action','http://www.fullmoviz.org/category/action/'] )
-    liste.append( ['Animation','http://www.fullmoviz.org/category/animation/'] )
-    liste.append( ['Art martiaux','http://www.fullmoviz.org/category/art-martiaux/'] )
-    liste.append( ['Aventure','http://www.fullmoviz.org/category/aventure/'] )
-    liste.append( ['Biographique','http://www.fullmoviz.org/category/biographique/'] )
-    liste.append( ['Comédie','http://www.fullmoviz.org/category/comedie/'] )
-    liste.append( ['Drame','http://www.fullmoviz.org/category/drame/'] )
-    liste.append( ['Epique','http://www.fullmoviz.org/category/epique/'] )
-    liste.append( ['Epouvante','http://www.fullmoviz.org/category/epouvante/'] )
-    liste.append( ['Familial','http://www.fullmoviz.org/category/familial/'] )
-    liste.append( ['Fantaisie','http://www.fullmoviz.org/category/fantaisie/'] )
-    liste.append( ['Film noir','http://www.fullmoviz.org/category/film-noir'] )
-    liste.append( ['Highlights','http://www.fullmoviz.org/category/highlights/'] )
-    liste.append( ['Historique','http://www.fullmoviz.org/category/historique/'] )
-    liste.append( ['Psychologique','http://www.fullmoviz.org/category/psychologique'] )
-    liste.append( ['Romance','http://www.fullmoviz.org/category/romance/'] )
-    liste.append( ['Science-fiction','http://www.fullmoviz.org/category/science-fiction/'] )
-    liste.append( ['Thriller','http://www.fullmoviz.org/category/thriller/'] )
+    liste.append( ['Action',URL_MAIN + 'category/action/'] )
+    liste.append( ['Animation',URL_MAIN + 'category/animation/'] )
+    liste.append( ['Art martiaux',URL_MAIN + 'category/art-martiaux/'] )
+    liste.append( ['Aventure',URL_MAIN + 'category/aventure/'] )
+    liste.append( ['Biographique',URL_MAIN + 'category/biographique/'] )
+    liste.append( ['Comédie',URL_MAIN + 'category/comedie/'] )
+    liste.append( ['Drame',URL_MAIN + 'category/drame/'] )
+    liste.append( ['Epique',URL_MAIN + 'category/epique/'] )
+    liste.append( ['Epouvante',URL_MAIN + 'category/epouvante/'] )
+    liste.append( ['Familial',URL_MAIN + 'category/familial/'] )
+    liste.append( ['Fantaisie',URL_MAIN + 'category/fantaisie/'] )
+    liste.append( ['Film noir',URL_MAIN + 'category/film-noir'] )
+    liste.append( ['Highlights',URL_MAIN + 'category/highlights/'] )
+    liste.append( ['Historique',URL_MAIN + 'category/historique/'] )
+    liste.append( ['Psychologique',URL_MAIN + 'category/psychologique'] )
+    liste.append( ['Romance',URL_MAIN + 'category/romance/'] )
+    liste.append( ['Science-fiction',URL_MAIN + 'category/science-fiction/'] )
+    liste.append( ['Thriller',URL_MAIN + 'category/thriller/'] )
                 
     for sTitle,sUrl in liste:
         
@@ -105,8 +107,9 @@ def showMovies(sSearch=''):
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#46;', '')
     
-    sPattern = '<div class="post-thumbnail"><a href="([^<]+)" title="(.+?)"><img width=".+?" height=".+?" src="(.+?)".+?>.+?<div class="entry excerpt entry-summary"><p>(.+?)</p></div>'
     oParser = cParser()
+    
+    sPattern = '<div class="post-thumbnail"><a href="([^<]+)" title="([^"]+)"><img [^<>]+src="([^"]+)".+?<div class="entry excerpt entry-summary"><p>([^<>]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -118,6 +121,7 @@ def showMovies(sSearch=''):
                 break
 
             sTitle = aEntry[1].replace('Film Complet en Streaming', '')
+            sTitle = aEntry[1].replace(' streaming', '')
             #sThumbnail = 'http:'+str(aEntry[2])
             #sUrl = URL_MAIN+str(aEntry[1])
 
@@ -157,10 +161,11 @@ def showHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
+    
+    oParser = cParser()
 
     sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]'
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -171,6 +176,17 @@ def showHosters():
                 break
 
             sHosterUrl = str(aEntry)
+            
+            if 'filmzenstream.com' in sHosterUrl:
+                if not sHosterUrl.startswith('http'):
+                    sHosterUrl = 'http:' + sHosterUrl
+                oRequestHandler = cRequestHandler(sHosterUrl)
+                sHtmlContent = oRequestHandler.request()
+                sPattern = 'file: *"([^"]+)"'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                if (aResult[0] == True):
+                    sHosterUrl = aResult[1][0]
+            
             oHoster = cHosterGui().checkHoster(sHosterUrl)
         
             if (oHoster != False):
