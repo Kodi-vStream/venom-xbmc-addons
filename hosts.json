@@ -562,16 +562,16 @@
   {
     "name": "rutube.py",
     "path": "plugin.video.vstream/resources/hosters/rutube.py",
-    "sha": "1da49e23c7e176cfa7c33a0fa6a8c44c247ee7d7",
-    "size": 2911,
+    "sha": "91006aceacfc0ba77dcdc02f684002205cbc2457",
+    "size": 3922,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/rutube.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/rutube.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/1da49e23c7e176cfa7c33a0fa6a8c44c247ee7d7",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/91006aceacfc0ba77dcdc02f684002205cbc2457",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/rutube.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/rutube.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/1da49e23c7e176cfa7c33a0fa6a8c44c247ee7d7",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/91006aceacfc0ba77dcdc02f684002205cbc2457",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/rutube.py"
     }
   },

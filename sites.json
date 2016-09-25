@@ -258,16 +258,16 @@
   {
     "name": "fullmoviz_org.py",
     "path": "plugin.video.vstream/resources/sites/fullmoviz_org.py",
-    "sha": "de6500be2bef6e0344652f3949a38937ea4ce624",
-    "size": 7742,
+    "sha": "908da9f8d367233d402c2ed4b28d37ab30beb3b3",
+    "size": 7941,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/fullmoviz_org.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/fullmoviz_org.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/de6500be2bef6e0344652f3949a38937ea4ce624",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/908da9f8d367233d402c2ed4b28d37ab30beb3b3",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/fullmoviz_org.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/fullmoviz_org.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/de6500be2bef6e0344652f3949a38937ea4ce624",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/908da9f8d367233d402c2ed4b28d37ab30beb3b3",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/fullmoviz_org.py"
     }
   },
