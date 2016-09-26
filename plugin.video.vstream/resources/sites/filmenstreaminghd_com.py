@@ -40,44 +40,6 @@ URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
-
-
-#-------------------------------------------------
-#Partie speciale pour contourner le DNS ban
-
-#import httplib
-#import socket
-
-#def MyResolver(host):
-#    if host == 'frenchstream.tv':
-#        return '154.46.33.11'
-#    else:
-#        return host
-#
-#class MyHTTPConnection(httplib.HTTPConnection):
-#    def connect(self):
-#        self.sock = socket.create_connection((MyResolver(self.host),self.port),self.timeout)
-#
-#class MyHTTPHandler(urllib2.HTTPHandler):
-#    def http_open(self,req):
-#        return self.do_open(MyHTTPConnection,req)
-#        
-#def GetHtmlViaDns(url,postdata = None):
-#    opener = urllib2.build_opener(MyHTTPHandler)
-#    opener.addheaders = [('User-agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')]
-#    urllib2.install_opener(opener)
-#
-#    f = urllib2.urlopen(url,postdata)
-#    sHtmlContent = f.read()
-#    f.close()
-#    
-#    return sHtmlContent
-        
-#---------------------------------------------------
-
-
-
-
 def load():
     oGui = cGui()
 
@@ -302,12 +264,10 @@ def showMovies(sSearch = ''):
             
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
-            if '/series/' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'showMovies', sDisplayTitle,'', sThumb, sCom, oOutputParameterHandler)
-            elif '/animes/' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle,'', sThumb, sCom, oOutputParameterHandler)
-            elif '/series-saison/' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle,'', sThumb, sCom, oOutputParameterHandler)
+            if '/series-tv' in sUrl or 'saison' in sUrl2:
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle,'series.png', sThumb, sCom, oOutputParameterHandler)
+            elif '/animes' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle,'animes.png', sThumb, sCom, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, 'films.png', sThumb, sCom, oOutputParameterHandler)           
     
@@ -316,9 +276,7 @@ def showMovies(sSearch = ''):
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
-            import xbmc
             sUrl = re.sub('\/page-[0-9]','',sUrl)
-            xbmc.log(sUrl+'/'+sNextPage)
             oOutputParameterHandler.addParameter('siteUrl', sUrl+'/'+sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
@@ -333,12 +291,11 @@ def showSeries():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
-    #sHtmlContent = GetHtmlViaDns(sUrl)
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
     oParser = cParser()
-    sPattern = '<li><a href="([^<>"]+?)" (?:class="active")*><i class="fa fa-film"><\/i>(.+?)<span><\/span><\/a><\/li>'
+    sPattern = '<span class="pikon" style="background-image: url\(/sistem/inc/part_ikon/(.+?).png\);"></span>(.+?)<span|class="partsec.+?" id="([^"]+?)".+?</i>([^<]+?)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     #print aResult    
@@ -351,16 +308,21 @@ def showSeries():
             if dialog.iscanceled():
                 break
             
+                
             sTitle = sMovieTitle
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-            sDisplayTitle = sDisplayTitle + '[COLOR teal] >> ' + aEntry[1] +' [/COLOR]'
+            sDisplayTitle = sDisplayTitle + '[COLOR teal] >> ' + aEntry[3] +' [/COLOR]'
             
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            oOutputParameterHandler.addParameter('sPid', aEntry[2])
             
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)             
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER,  '[COLOR red]'+aEntry[0]+' - '+aEntry[1]+'[/COLOR]', oOutputParameterHandler)
+            else:
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)             
     
         cConfig().finishDialog(dialog)
 
@@ -462,88 +424,6 @@ def showHosters():
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
-    
-        cConfig().finishDialog(dialog)
-
-    oGui.setEndOfDirectory()
-    
-def showHosters2():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
-    #sHtmlContent = GetHtmlViaDns(sUrl)
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    
-    #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src="http://www.facebook.com/','')
-    #sHtmlContent = sHtmlContent.replace('http://videomega.tv/validateemb.php','')
-    #sHtmlContent = sHtmlContent.replace('src="http://frenchstream.org/','')
-    
-    sPattern = '(?:(?:<script type="text\/javascript")|(?:<ifram[^<>]+?)) src=[\'"](https*:[^\'"]+?)[\'"]'
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    
-     
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-            
-            sHosterUrl = str(aEntry)
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-                oHoster.setDisplayName(sDisplayTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
-    
-        cConfig().finishDialog(dialog)
-
-    oGui.setEndOfDirectory()
-    
-def showEpisode():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
-    #sHtmlContent = GetHtmlViaDns(sUrl)
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close() 
- 
-    sPattern = '<li style="[^<>]+?"><a href="([^<>"]+?)">(.+?)<\/a><\/li>'
-
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-
-            sTitle = sMovieTitle+' - ' + aEntry[1]
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
-            
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)            
     
         cConfig().finishDialog(dialog)
 
