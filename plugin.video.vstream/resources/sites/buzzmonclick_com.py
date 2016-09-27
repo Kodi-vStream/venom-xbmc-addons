@@ -115,7 +115,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
    
     #sPattern = 'data-id="[0-9]+" title="([^<]+)" href="([^<]+)"><span class="clip"><img src="([^<]+)" alt="'
-    sPattern = 'class="post-thumbnail">.*?<a href="([^"]+)" title="([^"]+)".*?<img.*?src="([^"]+)".*?<div class="entry">.*?<p>([^>]+)</p>'
+    sPattern = '<a class="clip-link".+? title="(.+?)" href="([^"]+)".*?<img.*?src="([^"]+)".+?<p class="entry-summary">([^<]+)</p>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -128,7 +128,7 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
  
-            sTitle = unicode(aEntry[1], 'utf-8')#converti en unicode
+            sTitle = unicode(aEntry[0], 'utf-8')#converti en unicode
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
             #sTitle = unescape(str(sTitle))
             sTitle = sTitle.encode( "utf-8")
@@ -144,7 +144,7 @@ def showMovies(sSearch = ''):
             #sTitle = cUtil().DecoTitle(sTitle)
            
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
            
@@ -170,7 +170,7 @@ def showMovies(sSearch = ''):
  
 def __checkForNextPage(sHtmlContent):
     #sPattern = '<span class=\'current\'>.+?</span><a class="page larger" href="(.+?)">'
-    sPattern = '<span class="current">.+?</span><a href="(.+?)"'
+    sPattern = '<span class=\'current\'>.+?href="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
  
