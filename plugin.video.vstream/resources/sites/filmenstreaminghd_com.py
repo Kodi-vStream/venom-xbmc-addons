@@ -23,7 +23,7 @@ URL_MAIN = 'http://www.filmenstreaminghd.com'
 
 
 MOVIE_MOVIE = (URL_MAIN + '/films', 'showMovies')
-MOVIE_NEWS = (URL_MAIN + '/derniers-ajoutes' , 'showMovies')
+#MOVIE_NEWS = (URL_MAIN + '/derniers-ajoutes' , 'showMovies')
 MOVIE_HD = (URL_MAIN + '/1080p-films', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + '/films-populaires/', 'showMovies')
 #MOVIE_COMMENTS = (URL_MAIN + 'les-plus-commentes/', 'showMovies')
@@ -36,7 +36,7 @@ SERIE_GENRES = ('http://venom', 'showGenreS')
 
 ANIM_ANIMS = (URL_MAIN +'/animes', 'showMovies')
 
-URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 
@@ -47,9 +47,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautés', 'news.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    # oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautés', 'news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
@@ -99,8 +99,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_MAIN + '?s='+sSearchText  
-        showMovies(sUrl)
+        showMovies(str(sSearchText))
         oGui.setEndOfDirectory()
         return  
     
@@ -212,25 +211,22 @@ def showQlt():
 def showMovies(sSearch = ''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
+    
+    sUrl = oInputParameterHandler.getValue('siteUrl')
             
     if sSearch:
-        sUrl = sSearch.replace(' ','+')
-        
-        sDisp = oInputParameterHandler.getValue('disp')
-       
-        if (sDisp == 'search3'):#anime
-            sUrl = sUrl + '&cat_id=45477'
-        elif (sDisp == 'search2'):#serie
-            sUrl = sUrl + '&cat_id=16989'
-        elif (sDisp == 'search1'):#film
-            sUrl = sUrl + '&cat_id=1'   
-        else:#tout le reste
-            sUrl = sUrl
-    else:
-        sUrl = oInputParameterHandler.getValue('siteUrl')
     
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+        oRequestHandler = cRequestHandler('http://www.filmenstreaminghd.com/recherche/')
+        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+        oRequestHandler.addParameters('query', sSearch)
+        oRequestHandler.addParameters('submit=Valider', 'Valider')
+        sHtmlContent = oRequestHandler.request()
+
+    else:
+    
+    
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
     sPattern = '<div class="film-k.+?<a href="([^<"]+)".+?<div class="kalite">([^<"]+).+?<img src="([^<"]+).+?<div class="baslik">([^<"]+).+?<div class="aciklama">([^<"]+)'
@@ -346,7 +342,6 @@ def showLinks():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
-    #sHtmlContent = GetHtmlViaDns(sUrl)
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
@@ -390,11 +385,16 @@ def showHosters():
 
     postdata = 'pid=' + sPid
     
-    headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0' }
-    request = urllib2.Request(sUrl,postdata,headers)
-    reponse = urllib2.urlopen(request)
-    sHtmlContent = reponse.read()
-    reponse.close()
+    # headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0' }
+    # request = urllib2.Request(sUrl,postdata,headers)
+    # reponse = urllib2.urlopen(request)
+    # sHtmlContent = reponse.read()
+    # reponse.close()
+    
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+    oRequestHandler.addParameters('pid', sPid)
+    sHtmlContent = oRequestHandler.request()
     
     # fh = open('D:\\test.txt', "w")
     # fh.write(sHtmlContent)
