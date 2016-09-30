@@ -88,7 +88,7 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
         
         oParser = cParser()
-        sPattern =  "<source src='([^<>']+)' type='[^'><]+?' data-res='([0-9]+p)'"
+        sPattern =  "<source src='([^<>']+)' type='[^'><]+?' data-res='([0-9]+p)'(?:[^<>]* lang='([^']+))*"
         aResult = oParser.parse(sHtmlContent, sPattern)
         
         stream_url = ''
@@ -99,7 +99,10 @@ class cHoster(iHoster):
             
             for aEntry in aResult[1]:
                 url.append(aEntry[0])
-                qua.append(aEntry[1])
+                tmp_qua = aEntry[1]
+                if (aEntry[2]):
+                    tmp_qua = tmp_qua + ' (' + aEntry[2] + ')'
+                qua.append(tmp_qua)
                 
             #Si une seule url
             if len(url) == 1:
