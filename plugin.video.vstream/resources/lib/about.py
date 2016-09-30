@@ -46,7 +46,8 @@ class cAbout:
             if (time_now - time_service > time_sleep):
                 #test les fichier pour mise a jour
                 self.checkupdate()
-                #Function update auto
+            else:
+                cConfig().log('Prochaine verification de MAJ le : ' + str(time_sleep + time_now) )
 
         return
       
