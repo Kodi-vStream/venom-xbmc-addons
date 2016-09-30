@@ -1,6 +1,6 @@
 =============================================================================
-- Version & Repository: https://github.com/LordVenom/venom-xbmc-addons/releases
-- Question & Support: https://github.com/LordVenom/venom-xbmc-addons/issues
+- Version & Repository: https://github.com/Kodi-vStream/venom-xbmc-addons/releases
+- Question & Support: https://github.com/Kodi-vStream/venom-xbmc-addons/issues
 - Suivez les mises a jour en direct : Twitter @lordvenom57
 =============================================================================
 Merci aux généreux donateurs

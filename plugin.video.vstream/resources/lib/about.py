@@ -64,7 +64,7 @@ class cAbout:
             version = cConfig().getAddonVersion()
             if (version > service_version):
                 try:
-                    sUrl = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/plugin.video.vstream/changelog.txt'
+                    sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/changelog.txt'
                     oRequest =  urllib2.Request(sUrl)
                     oResponse = urllib2.urlopen(oRequest)
                     sContent = oResponse.read()
@@ -93,12 +93,12 @@ class cAbout:
         except: import simplejson as json
         
         try: 
-            sUrl = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/sites.json'
+            sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/sites.json'
             oRequestHandler = cRequestHandler(sUrl)
             sHtmlContent = oRequestHandler.request();
             result = json.loads(sHtmlContent)
             
-            sUrl = 'https://raw.githubusercontent.com/LordVenom/venom-xbmc-addons/master/hosts.json'
+            sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/hosts.json'
             oRequestHandler = cRequestHandler(sUrl)
             sHtmlContent = oRequestHandler.request();
             result += json.loads(sHtmlContent)
