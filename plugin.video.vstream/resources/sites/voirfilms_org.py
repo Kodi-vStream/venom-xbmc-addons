@@ -10,7 +10,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import urllib2,urllib,re
+
+import urllib2,urllib,re,xbmc
  
  
 SITE_IDENTIFIER = 'voirfilms_org'
@@ -19,15 +20,15 @@ SITE_DESC = 'Films et serie en streaming'
  
 URL_MAIN = 'http://www.voirfilms.org/'
 
-MOVIE_NEWS = ('http://www.voirfilms.org/film-en-streaming', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film-en-streaming', 'showMovies')
 MOVIE_MOVIE = ('http://', 'showAlpha')
 MOVIE_GENRES = (True, 'showGenre')
 
-SERIE_SERIES = ('http://www.voirfilms.org/series/alphabet/', 'AlphaSearch')
-SERIE_NEWS = ('http://www.voirfilms.org/series/page-1', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'series/alphabet/', 'AlphaSearch')
+SERIE_NEWS = (URL_MAIN + 'series/page-1', 'showMovies')
   
-ANIM_ANIMS = ('http://www.voirfilms.org/animes/alphabet/', 'AlphaSearch')
-ANIM_NEWS = ('http://www.voirfilms.org/animes/page-1', 'showMovies')
+ANIM_ANIMS = (URL_MAIN + 'animes/alphabet/', 'AlphaSearch')
+ANIM_NEWS = (URL_MAIN + 'animes/page-1', 'showMovies')
   
 URL_SEARCH = ('', 'showMovies')
 #FUNCTION_SEARCH = 'showMovies'
@@ -106,28 +107,28 @@ def showGenre():
     oGui = cGui()
  
     liste = []
-    liste.append( ['Action','http://www.voirfilms.org/action_1'] )
-    liste.append( ['Animation','http://www.voirfilms.org/animation_1'] )
-    liste.append( ['Arts Martiaux','http://www.voirfilms.org/arts-martiaux_1'] )
-    liste.append( ['Aventure','http://www.voirfilms.org/aventure_1'] )
-    liste.append( ['Biopic','http://www.voirfilms.org/biopic_1'] )
-    liste.append( ['Comedie','http://www.voirfilms.org/comedie_1'] )
-    liste.append( ['Comedie Dramatique','http://www.voirfilms.org/comedie-dramatique_1'] )
-    liste.append( ['Documentaire','http://www.voirfilms.org/documentaire_1'] )
-    liste.append( ['Drame','http://www.voirfilms.org/drame_1'] )
-    liste.append( ['Epouvante Horreur','http://www.voirfilms.org/epouvante-horreur_1'] )
-    liste.append( ['Espionnage','http://www.voirfilms.org/espionnage_1'] )
-    liste.append( ['Fantastique','http://www.voirfilms.org/fantastique_1'] )  
-    liste.append( ['Guerre','http://www.voirfilms.org/guerre_1'] )
-    liste.append( ['Historique','http://www.voirfilms.org/historique_1'] )
-    liste.append( ['Musical','http://www.voirfilms.org/musical_1'] )
-    liste.append( ['Policier','http://www.voirfilms.org/policier_1'] )
-    liste.append( ['Romance','http://www.voirfilms.org/romance_1'] )
-    liste.append( ['Science Fiction','http://www.voirfilms.org/science-fiction_1'] )
-    liste.append( ['Serie','http://www.voirfilms.org/series_1'] )
-    liste.append( ['Thriller','http://www.voirfilms.org/thriller_1'] )
-    liste.append( ['Western','http://www.voirfilms.org/western_1'] )
-    liste.append( ['Divers','http://www.voirfilms.org/non-classe_1'] )
+    liste.append( ['Action',URL_MAIN + 'action_1'] )
+    liste.append( ['Animation',URL_MAIN + 'animation_1'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'arts-martiaux_1'] )
+    liste.append( ['Aventure',URL_MAIN + 'aventure_1'] )
+    liste.append( ['Biopic',URL_MAIN + 'biopic_1'] )
+    liste.append( ['Comedie',URL_MAIN + 'comedie_1'] )
+    liste.append( ['Comedie Dramatique',URL_MAIN + 'comedie-dramatique_1'] )
+    liste.append( ['Documentaire',URL_MAIN + 'documentaire_1'] )
+    liste.append( ['Drame',URL_MAIN + 'drame_1'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'epouvante-horreur_1'] )
+    liste.append( ['Espionnage',URL_MAIN + 'espionnage_1'] )
+    liste.append( ['Fantastique',URL_MAIN + 'fantastique_1'] )  
+    liste.append( ['Guerre',URL_MAIN + 'guerre_1'] )
+    liste.append( ['Historique',URL_MAIN + 'historique_1'] )
+    liste.append( ['Musical',URL_MAIN + 'musical_1'] )
+    liste.append( ['Policier',URL_MAIN + 'policier_1'] )
+    liste.append( ['Romance',URL_MAIN + 'romance_1'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'science-fiction_1'] )
+    liste.append( ['Serie',URL_MAIN + 'series_1'] )
+    liste.append( ['Thriller',URL_MAIN + 'thriller_1'] )
+    liste.append( ['Western',URL_MAIN + 'western_1'] )
+    liste.append( ['Divers',URL_MAIN + 'non-classe_1'] )
                
     for sTitle,sUrl in liste:
        
@@ -141,41 +142,41 @@ def showAlpha():
     oGui = cGui()
  
     liste = []
-    liste.append( ['0','http://www.voirfilms.org/alphabet/0/1'] )
-    liste.append( ['1','http://www.voirfilms.org/alphabet/1/1'] )
-    liste.append( ['2','http://www.voirfilms.org/alphabet/2/1'] )
-    liste.append( ['3','http://www.voirfilms.org/alphabet/3/1'] )
-    liste.append( ['4','http://www.voirfilms.org/alphabet/4/1'] )
-    liste.append( ['5','http://www.voirfilms.org/alphabet/5/1'] )
-    liste.append( ['6','http://www.voirfilms.org/alphabet/6/1'] )
-    liste.append( ['7','http://www.voirfilms.org/alphabet/7/1'] )
-    liste.append( ['8','http://www.voirfilms.org/alphabet/8/1'] )
-    liste.append( ['9','http://www.voirfilms.org/alphabet/9/1'] )
-    liste.append( ['A','http://www.voirfilms.org/alphabet/a/1'] )
-    liste.append( ['B','http://www.voirfilms.org/alphabet/b/1'] )
-    liste.append( ['C','http://www.voirfilms.org/alphabet/c/1'] )
-    liste.append( ['D','http://www.voirfilms.org/alphabet/d/1'] )
-    liste.append( ['E','http://www.voirfilms.org/alphabet/e/1'] )
-    liste.append( ['F','http://www.voirfilms.org/alphabet/f/1'] )
-    liste.append( ['G','http://www.voirfilms.org/alphabet/g/1'] )
-    liste.append( ['H','http://www.voirfilms.org/alphabet/h/1'] )
-    liste.append( ['I','http://www.voirfilms.org/alphabet/i/1'] )
-    liste.append( ['J','http://www.voirfilms.org/alphabet/j/1'] )
-    liste.append( ['K','http://www.voirfilms.org/alphabet/k/1'] )
-    liste.append( ['L','http://www.voirfilms.org/alphabet/l/1'] )
-    liste.append( ['M','http://www.voirfilms.org/alphabet/m/1'] )
-    liste.append( ['N','http://www.voirfilms.org/alphabet/n/1'] )
-    liste.append( ['O','http://www.voirfilms.org/alphabet/o/1'] )
-    liste.append( ['P','http://www.voirfilms.org/alphabet/p/1'] )
-    liste.append( ['R','http://www.voirfilms.org/alphabet/r/1'] )
-    liste.append( ['S','http://www.voirfilms.org/alphabet/s/1'] )
-    liste.append( ['T','http://www.voirfilms.org/alphabet/t/1'] )
-    liste.append( ['U','http://www.voirfilms.org/alphabet/u/1'] )
-    liste.append( ['V','http://www.voirfilms.org/alphabet/v/1'] )
-    liste.append( ['W','http://www.voirfilms.org/alphabet/w/1'] )
-    liste.append( ['X','http://www.voirfilms.org/alphabet/x/1'] )
-    liste.append( ['Y','http://www.voirfilms.org/alphabet/y/1'] )
-    liste.append( ['Z','http://www.voirfilms.org/alphabet/z/1'] )
+    liste.append( ['0',URL_MAIN + 'alphabet/0/1'] )
+    liste.append( ['1',URL_MAIN + 'alphabet/1/1'] )
+    liste.append( ['2',URL_MAIN + 'alphabet/2/1'] )
+    liste.append( ['3',URL_MAIN + 'alphabet/3/1'] )
+    liste.append( ['4',URL_MAIN + 'alphabet/4/1'] )
+    liste.append( ['5',URL_MAIN + 'alphabet/5/1'] )
+    liste.append( ['6',URL_MAIN + 'alphabet/6/1'] )
+    liste.append( ['7',URL_MAIN + 'alphabet/7/1'] )
+    liste.append( ['8',URL_MAIN + 'alphabet/8/1'] )
+    liste.append( ['9',URL_MAIN + 'alphabet/9/1'] )
+    liste.append( ['A',URL_MAIN + 'alphabet/a/1'] )
+    liste.append( ['B',URL_MAIN + 'alphabet/b/1'] )
+    liste.append( ['C',URL_MAIN + 'alphabet/c/1'] )
+    liste.append( ['D',URL_MAIN + 'alphabet/d/1'] )
+    liste.append( ['E',URL_MAIN + 'alphabet/e/1'] )
+    liste.append( ['F',URL_MAIN + 'alphabet/f/1'] )
+    liste.append( ['G',URL_MAIN + 'alphabet/g/1'] )
+    liste.append( ['H',URL_MAIN + 'alphabet/h/1'] )
+    liste.append( ['I',URL_MAIN + 'alphabet/i/1'] )
+    liste.append( ['J',URL_MAIN + 'alphabet/j/1'] )
+    liste.append( ['K',URL_MAIN + 'alphabet/k/1'] )
+    liste.append( ['L',URL_MAIN + 'alphabet/l/1'] )
+    liste.append( ['M',URL_MAIN + 'alphabet/m/1'] )
+    liste.append( ['N',URL_MAIN + 'alphabet/n/1'] )
+    liste.append( ['O',URL_MAIN + 'alphabet/o/1'] )
+    liste.append( ['P',URL_MAIN + 'alphabet/p/1'] )
+    liste.append( ['R',URL_MAIN + 'alphabet/r/1'] )
+    liste.append( ['S',URL_MAIN + 'alphabet/s/1'] )
+    liste.append( ['T',URL_MAIN + 'alphabet/t/1'] )
+    liste.append( ['U',URL_MAIN + 'alphabet/u/1'] )
+    liste.append( ['V',URL_MAIN + 'alphabet/v/1'] )
+    liste.append( ['W',URL_MAIN + 'alphabet/w/1'] )
+    liste.append( ['X',URL_MAIN + 'alphabet/x/1'] )
+    liste.append( ['Y',URL_MAIN + 'alphabet/y/1'] )
+    liste.append( ['Z',URL_MAIN + 'alphabet/z/1'] )
                
     for sTitle,sUrl in liste:
        
@@ -198,7 +199,7 @@ def showMovies(sSearch = ''):
         
         data = urllib.urlencode(query_args)
         headers = {'User-Agent' : 'Mozilla 5.10'}
-        url = 'http://www.voirfilms.org/rechercher'
+        url = URL_MAIN + 'rechercher'
         request = urllib2.Request(url,data,headers)
      
         try:
@@ -285,7 +286,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        next = aResult[1][0].replace('http://www.voirfilms.org/', '')
+        next = aResult[1][0].replace(URL_MAIN, '')
         return URL_MAIN + next
  
     return False
@@ -396,7 +397,19 @@ def showHostersLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
-    #print sUrl
+    #patch a virer a la V17 de kodi
+    import ssl
+    ssl.PROTOCOL_SSLv23 = ssl.PROTOCOL_TLSv1
+    
+    #On recupere la redirection
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    sUrl = oRequestHandler.getRealUrl()
+    
+    #Modifications
+    sUrl = sUrl.replace('1wskdbkp.xyz','youwatch.org')
+
+    #xbmc.log(sUrl)
    
     sHosterUrl = sUrl
     oHoster = cHosterGui().checkHoster(sHosterUrl)
