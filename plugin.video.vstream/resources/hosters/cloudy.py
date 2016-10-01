@@ -2,7 +2,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-import urllib
+import urllib,xbmc
 
 class cHoster(iHoster):
 
@@ -44,24 +44,19 @@ class cHoster(iHoster):
         return ''
         
     def __modifyUrl(self, sUrl):
-        if (sUrl.startswith('http://')):
-            oRequestHandler = cRequestHandler(sUrl)
-            oRequestHandler.request()
-            sRealUrl = oRequestHandler.getRealUrl()
-            self.__sUrl = sRealUrl
-            return self.__getIdFromUrl()
-
         return sUrl;
         
     def __getKey(self):
+        
         oRequestHandler = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequestHandler.request()
-        sPattern = 'key: "(.+?)";'
+
         oParser = cParser()
+        sPattern = 'key: "(.+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
+
         if (aResult[0] == True):
-            aResult = aResult[1][0].replace('.','%2E')
-            return aResult
+            return urllib.quote_plus(aResult[1][0].replace('.', '%2E'))
 
         return ''
 
@@ -70,6 +65,8 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.replace('https://www.cloudy.ec/', '')
         self.__sUrl = self.__sUrl.replace('embed.php?id=', '')
         self.__sUrl = 'https://www.cloudy.ec/embed.php?id=' + str(self.__sUrl)
+        #Patch en attendant kodi V17
+        self.__sUrl = self.__sUrl.replace('https','http')
 
     def checkUrl(self, sUrl):
         return True
@@ -81,20 +78,22 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        cGui().showInfo('Resolve', self.__sDisplayName, 5)
         
- 
-        #api_call = ('http://www.nowvideo.sx/api/player.api.php?key=%s&file=%s') % (self.__getKey(), self.__getIdFromUrl())
-        api_call = ('http://www.cloudy.ec/api/player.api.php?user=undefined&codes=1&file=%s&pass=undefined&key=%s') % (self.__getIdFromUrl(), self.__getKey())
+        Key = self.__getKey()
+        File = urllib.quote_plus(';' + self.__getIdFromUrl())
+   
+        api_call = 'http://www.cloudy.ec/api/player.api.php?user=undefined&codes=1&file=' + File + '&pass=undefined&key=' + Key
         
         oRequest = cRequestHandler(api_call)
         sHtmlContent = oRequest.request()
         
-        sPattern =  'url=(.+?)&title'
         oParser = cParser()
+        sPattern =  'url=(.+?)&title='
         aResult = oParser.parse(sHtmlContent, sPattern)
+        
         if (aResult[0] == True):
             stream_url = urllib.unquote(aResult[1][0])
+            #stream_url = stream_url + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
             return True, stream_url
         else:
             cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
