@@ -1,6 +1,6 @@
 #EXTM3U
 
-#EXTINF:-1: [COLOR red]Chiffres[/COLOR]
+#EXTINF:-1: tvg-logo="radio.png", [COLOR red]Chiffres[/COLOR]
 http://
 #EXTINF:-1: tvg-logo="radio.png", 100 % 
 http://gisv3.tv-radio.com/station/centpourcent-mp3/centpourcent-mp3-128k.m3u
