@@ -1,0 +1,787 @@
+#EXTM3U
+
+#EXTINF:-1: [COLOR red]Chiffres[/COLOR]
+http://
+#EXTINF:-1: 100 %
+http://gisv3.tv-radio.com/station/centpourcent-mp3/centpourcent-mp3-128k.m3u
+#EXTINF:-1: 102FM
+http://102fm.livestreaming.rundev.com:8000/listen.pls
+#EXTINF:-1: 4U Classic Rock
+http://www.4uradios.com/classicrock.m3u
+#EXTINF:-1: 4U Rock N Metal
+http://www.4uradios.com/4urocknmetal.m3u
+#EXTINF:-1: 48 FM
+http://213.186.61.62:9000/listen.pls
+#EXTINF:-1: 77 FM
+http://www.77fm.net/77FM.m3u
+#EXTINF:-1: [COLOR red]A[/COLOR]
+http://
+#EXTINF:-1,FR: Accent 4
+http://str0.creacast.com:900/listen.pls
+#EXTINF:-1: Activ radio 
+http://activradio.free.fr/www/m3u/activadsl.m3u 
+#EXTINF:-1: Addict Radio Alternative 
+http://www.addictradio.net/extern/pl/alternative/hdlinuxpedia.m3u 
+#EXTINF:-1: Addict Radio Lounge 
+http://www.addictradio.net/extern/pl/lounge/hdlinuxpedia.m3u 
+#EXTINF:-1: Addict Radio Rock 
+http://www.addictradio.net/extern/pl/rock/hdlinuxpedia.m3u 
+#EXTINF:-1: Addict Radio Star 
+http://www.addictradio.net/extern/pl/star/hdlinuxpedia.m3u 
+#EXTINF:-1: Ado FM 
+http://broadcast.infomaniak.ch/start-adofm-high.mp3.m3u  
+#EXTINF:-1: Alouette 
+http://www.alouette.fr/alouette.m3u 
+#EXTINF:-1: Alternantes 
+http://www.alternantesfm.net/alternantes_mp3.m3u 
+#EXTINF:-1: Alpes 1 
+http://broadcast.infomaniak.ch/alpes1gap-high.mp3 
+#EXTINF:-1: Altermusica 
+http://213.251.129.18:8000/live.m3u 
+#EXTINF:-1: Ange Radio 
+http://players.creacast.com/creacast/ange_radio/playlist.pls 
+#EXTINF:-1: ARL 
+http://gisv3.tv-radio.com/station/arl/arl.m3u 
+#EXTINF:-1: Atlantis FM 
+http://www.radioatlantis.fr:8000/listen.pls 
+#EXTINF:-1: AlwaDj Radio 
+http://www.radionomy.com/fr/radio/alwadj/listen 
+#EXTINF:-1: AlwaDj Radio 
+http://listen.radionomy.com/alwadj.m3u 
+#EXTINF:-1: AlwaDj Radio 
+http://alwadj.jimdo.com/?logout=1 
+#EXTINF:-1: Aufilduson80s 
+http://listen.radionomy.com/aufilduson80s
+#EXTINF:-1: [COLOR red]B[/COLOR]
+http://
+#EXTINF:-1: BBC Radio 1 
+http://bbc.co.uk/radio/listen/live/r1.asx 
+#EXTINF:-1: BBC Radio 1 
+http://www.bbc.co.uk/radio/listen/live/r1_aaclca.pls 
+#EXTINF:-1: BBC World Service 
+http://www.bbc.co.uk/worldservice/meta/tx/nb/live/eneuk.pls 
+#EXTINF:-1: Be.radio 
+http://www.beradio.net/radio/beradio.m3u
+#EXTINF:-1: Beaub Fm 
+http://gisv3.tv-radio.com/station/beaub/beaub.m3u
+#EXTINF:-1: Ben Ben Radio 
+http://benbenradio2.free.fr/benbenradio2.m3u
+#EXTINF:-1: BestRadio 
+http://www.best-radio.net/streams/64.m3u
+#EXTINF:-1: BFM 
+http://viphttpplayers.yacast.net/V4/bfm/bfm.m3u
+#EXTINF:-1: Bide et Musique 
+http://www.bide-et-musique.com/playlist-hq.m3u
+#EXTINF:-1: Booster FM 
+http://www.boosterfm.net/live/listen.m3u
+#EXTINF:-1: Booster FM - 80 
+http://www.boosterfm.net/liveb80/listenb80.m3u 
+#EXTINF:-1: BSB 100% Electro 
+http://listen.radionomy.com/bsb31.m3u 
+#EXTINF:-1: BSB 100% Hits des Clubs 
+http://listen.radionomy.com/bsbradio.m3u 
+#EXTINF:-1: [COLOR red]C[/COLOR]
+http://
+#EXTINF:-1:  C9 Radio 
+http://streaming.c9radio.eu/listen.m3u 
+#EXTINF:-1:  CambosFM 
+http://radio-cambos.hopto.org:9000/listen.pls 
+#EXTINF:-1:  Canal7 
+http://www.canal7.net/canal7.m3u 
+#EXTINF:-1:  Canal Academie 
+http://www.canalacademie.com/squelettes/canalacademie_haut_debit.m3u 
+#EXTINF:-1:  Canal B 
+http://stream.levillage.org/canalb.m3u 
+#EXTINF:-1:  Capytol 
+http://live140.impek.com:8020 
+#EXTINF:-1:  Catalogne Nord 
+http://gisv3.tv-radio.com/station/catalogne_nord/catalogne_nord-20k.asx 
+#EXTINF:-1:  Chante France 
+http://stream.chantefrance.com/stream_chante_france.mp3 
+#EXTINF:-1:  Chemins de la Connaissance 
+http://www.tv-radio.com/station/les_chemins_de_la_connaissance_mp3/les_chemins_de_la_connaissance_mp3-128k.m3u 
+#EXTINF:-1:  Cherie FM 
+http://mp3.live.tv-radio.com/cherie_fm/all/che_124310.mp3 
+#EXTINF:-1:  Cherie FM @ Work 
+http://mp3.live.tv-radio.com/cherie_fm_pop_soul/all/che_141749.mp3 
+#EXTINF:-1:  Cherie FM by A. Manoukian 
+http://mp3.live.tv-radio.com/cherie_by_a_manoukian/all/che_124622.mp3 
+#EXTINF:-1:  Cherie FM Cinema 
+http://mp3.live.tv-radio.com/cherie_fm_cinema/all/che_144540.mp3 
+#EXTINF:-1:  Cherie FM Crooners 
+http://mp3.live.tv-radio.com/2048/cherie_fm_crooners/che_190007.mp3 
+#EXTINF:-1:  Cherie FM Dolce Vita 
+http://mp3.live.tv-radio.com/2047/cherie_fm_dolce_vita/che_185747.mp3 
+#EXTINF:-1:  Cherie FM Duos 
+http://mp3.live.tv-radio.com/cherie_fm_duos/all/che_145639.mp3 
+#EXTINF:-1:  Cherie FM Frenchy 
+http://mp3.live.tv-radio.com/cherie_fm_frenchy/all/che_123008.mp3 
+#EXTINF:-1:  Cherie FM Gold 
+http://mp3.live.tv-radio.com/cherie_fm_golds/all/che_123506.mp3 
+#EXTINF:-1:  Cherie FM Love Songs 
+http://mp3.live.tv-radio.com/cherie_fm_love_song/all/che_140854.mp3 
+#EXTINF:-1:  Cherie FM Sade 
+http://mp3.live.tv-radio.com/cherie_fm_100_sade/all/che_121553.mp3 
+#EXTINF:-1:  Cherie FM Zen 
+http://mp3.live.tv-radio.com/cherie_fm_zen/all/che_122753.mp3 
+#EXTINF:-1:  Chic Radio 
+http://stream.chicradio.be:8002/listen.pls 
+#EXTINF:-1:  Click'N'Rock 
+http://240plan.ovh.net/~clicknro/_www/www/dwd/player/hautdebit_winamp.m3u 
+#EXTINF:-1:  Clube Brazil 
+http://www.clubebrasil.fr/wmphq.m3u 
+#EXTINF:-1:  Cocktail FM 
+http://91.121.62.121:7450/listen.pls 
+#EXTINF:-1:  Collines FM 
+http://gisv3.tv-radio.com/station/collines/collines-20k.asx 
+#EXTINF:-1:  Contact (128k) 
+http://broadcast.infomaniak.ch/radio-contact-high.mp3 
+#EXTINF:-1:  Contact (192k gratuit) 
+http://91.121.100.202:9092/listen 
+#EXTINF:-1:  Contact Story 
+http://213.186.39.130:8000/zione 
+#EXTINF:-1:  Couleur 3 
+http://broadcast.infomaniak.ch/rsr-couleur3-high.mp3.pls 
+#EXTINF:-1:  Cristal FM 
+http://cristalsite.no-ip.biz/default.m3u 
+#EXTINF:-1: [COLOR red]D[/COLOR]
+http://
+#EXTINF:-1:  Demoiselle FM 
+http://213.186.61.62:8800/listen.pls 
+#EXTINF:-1:  Difé Radio 
+http://www.bien-glace.com/light/choixradio/dife.m3u 
+#EXTINF:-1:  Direct FM 
+http://91.121.156.212:8200/listen.pls 
+#EXTINF:-1:  Discoid 
+http://88.191.24.237:8080/radio.mp3 
+#EXTINF:-1:  Divergence FM 
+http://divergence-fm.org:8008/divergence.mp3.m3u 
+#EXTINF:-1: [COLOR red]E[/COLOR]
+http://
+#EXTINF:-1:  ECN 
+http://gisv3.tv-radio.com/station/ecn/ecn-20k.asx
+#EXTINF:-1:  EFM
+http://broadcast.infomaniak.ch/radioefm-high.mp3.pls
+#EXTINF:-1:  Electra Radio
+http://www.electraradio.com/stream/Electra-MD.m3u
+#EXTINF:-1:  ElectrO-Ice
+http://electro-ice.com/playeur/winamp.m3u
+#EXTINF:-1: electrOne
+http://www.electrone.net/pls/electrone.pls
+#EXTINF:-1: Endoctrasia
+http://www.endoctrasia.com/archives/live/ENDOCTRASIA.m3u 
+#EXTINF:-1: Enjoy Station
+http://www.enjoystation.net/player/mp3.m3u
+#EXTINF:-1: EspryRadio
+http://onestream.group-network.net:8006/listen.pls
+#EXTINF:-1: Europe 1
+http://vipicecast.yacast.net/europe1.m3u
+#EXTINF:-1: Europe 1 Sport
+http://vipicecast.yacast.net/europe1sport.m3u
+#EXTINF:-1: Evasion
+http://87.98.138.91/stream.mp3
+#EXTINF:-1: [COLOR red]F[/COLOR]
+http://
+#EXTINF:-1: Febradio
+http://febradio.vestaradio.com/listen.m3u
+#EXTINF:-1: FG America
+http://www.radiofg.com/streams/fg6.pls
+#EXTINF:-1: FG Chic
+http://www.radiofg.com/streams/fgc.pls
+#EXTINF:-1: FG Dance
+http://www.radiofg.com/streams/fgd.pls
+#EXTINF:-1: FG DJ Radio 
+http://www.radiofg.com/streams/fg.pls
+#EXTINF:-1: FG Underground
+http://www.radiofg.com/streams/fgu.pls
+#EXTINF:-1: FG Vintage
+http://www.radiofg.com/streams/fgv.pls
+#EXTINF:-1: FIP
+http://www.tv-radio.com/station/fip_mp3/fip_mp3-128k.m3u
+#EXTINF:-1: Flash FM
+http://live140.impek.com:8000/listen.pls
+#EXTINF:-1: FMC Radio
+http://www.fmcradio.info/module/radio/fmc_haut_debit.m3u
+#EXTINF:-1: France 80
+http://listen.radionomy.com/france80.m3u
+#EXTINF:-1: France Bleu Alsace 
+http://gisv3.tv-radio.com/station/france_bleu_alsace_mp3/france_bleu_alsace_mp3-32k.m3u
+#EXTINF:-1: France Bleu Armorique  http://gisv3.tv-radio.com/station/france_bleu_armorique_mp3/france_bleu_armorique_mp3-32k.m3u
+#EXTINF:-1: France Bleu Auxerre 
+http://gisv3.tv-radio.com/station/france_bleu_auxerre_mp3/france_bleu_auxerre_mp3-32k.m3u
+#EXTINF:-1: France Bleu Azur 
+http://gisv3.tv-radio.com/station/france_bleu_azur_mp3/france_bleu_azur_mp3-32k.m3u
+#EXTINF:-1: France Bleu Basse-Normandie 
+http://gisv3.tv-radio.com/station/france_bleu_basse_normandie_mp3/france_bleu_basse_normandie_mp3-32k.m3u
+#EXTINF:-1: France Bleu Belfort 
+http://gisv3.tv-radio.com/station/france_bleu_belfort_mp3/france_bleu_belfort_mp3-32k.m3u
+#EXTINF:-1: France Bleu Berry 
+http://gisv3.tv-radio.com/station/france_bleu_berry_mp3/france_bleu_berry_mp3-32k.m3u
+#EXTINF:-1: France Bleu Besançon 
+http://gisv3.tv-radio.com/station/france_bleu_besancon_mp3/france_bleu_besancon_mp3-32k.m3u
+#EXTINF:-1: France Bleu Béarn 
+http://gisv3.tv-radio.com/station/france_bleu_bearn_mp3/france_bleu_bearn_mp3-32k.m3u
+#EXTINF:-1: France Bleu Bourgogne 
+http://gisv3.tv-radio.com/station/france_bleu_bourgogne_mp3/france_bleu_bourgogne_mp3-32k.m3u
+#EXTINF:-1: France Bleu Breiz Izel 
+http://gisv3.tv-radio.com/station/france_bleu_breiz_izel_mp3/france_bleu_breiz_izel_mp3-32k.m3u
+#EXTINF:-1: France Bleu Champagne 
+http://gisv3.tv-radio.com/station/france_bleu_champagne_mp3/france_bleu_champagne_mp3-32k.m3u
+#EXTINF:-1: France Bleu Cotentin 
+http://gisv3.tv-radio.com/station/france_bleu_cotentin_mp3/france_bleu_cotentin_mp3-32k.m3u
+#EXTINF:-1: France Bleu Creuse 
+http://gisv3.tv-radio.com/station/france_bleu_creuse_mp3/france_bleu_creuse_mp3-32k.m3u
+#EXTINF:-1: France Bleu Drôme Ardèche 
+http://gisv3.tv-radio.com/station/france_bleu_drome_ardeche_mp3/france_bleu_drome_ardeche_mp3-32k.m3u
+#EXTINF:-1: France Bleu Frequenza Mora 
+http://gisv3.tv-radio.com/station/france_bleu_frequenza_mora_mp3/france_bleu_frequenza_mora_mp3-32k.m3u
+#EXTINF:-1: France Bleu Gard Lozère 
+http://gisv3.tv-radio.com/station/france_bleu_gard_lozere_mp3/france_bleu_gard_lozere_mp3-32k.m3u
+#EXTINF:-1: France Bleu Gascogne 
+http://gisv3.tv-radio.com/station/france_bleu_gascogne_mp3/france_bleu_gascogne_mp3-32k.m3u
+#EXTINF:-1: France Bleu Gironde 
+http://gisv3.tv-radio.com/station/france_bleu_gironde_mp3/france_bleu_gironde_mp3-32k.m3u
+#EXTINF:-1: France Bleu Haute-Normandie 
+http://gisv3.tv-radio.com/station/france_bleu_haute_normandie_mp3/france_bleu_haute_normandie_mp3-32k.m3u
+#EXTINF:-1: France Bleu Hérault 
+http://gisv3.tv-radio.com/station/france_bleu_herault_mp3/france_bleu_herault_mp3-32k.m3u
+#EXTINF:-1: France Bleu Ile de France 
+http://gisv3.tv-radio.com/station/france_bleu_ile-de-france_mp3/france_bleu_ile-de-france_mp3-128k.m3u
+#EXTINF:-1: France Bleu Isère 
+http://gisv3.tv-radio.com/station/france_bleu_isere_mp3/france_bleu_isere_mp3-32k.m3u
+#EXTINF:-1: France Bleu La Rochelle 
+http://gisv3.tv-radio.com/station/france_bleu_la_rochelle_mp3/france_bleu_la_rochelle_mp3-32k.m3u
+#EXTINF:-1: France Bleu Limousin 
+http://gisv3.tv-radio.com/station/france_bleu_limousin_mp3/france_bleu_limousin_mp3-32k.m3u
+#EXTINF:-1: France Bleu Loire Océan 
+http://gisv3.tv-radio.com/station/france_bleu_loire_ocean_mp3/france_bleu_loire_ocean_mp3-32k.m3u
+#EXTINF:-1: France Bleu Lorraine Nord 
+http://gisv3.tv-radio.com/station/france_bleu_lorraine_nord_mp3/france_bleu_lorraine_nord_mp3-32k.m3u 
+#EXTINF:-1: France Bleu Mayenne 
+http://gisv3.tv-radio.com/station/france_bleu_mayenne_mp3/france_bleu_mayenne_mp3-32k.m3u 
+#EXTINF:-1: France Bleu Nord 
+http://gisv3.tv-radio.com/station/france_bleu_nord_mp3/france_bleu_nord_mp3-32k.m3u 
+#EXTINF:-1: France Bleu Orléans 
+http://gisv3.tv-radio.com/station/france_bleu_orleans_mp3/france_bleu_orleans_mp3-32k.m3u 
+#EXTINF:-1: France Bleu Pays Basque 
+http://gisv3.tv-radio.com/station/france_bleu_pays_basque_mp3/france_bleu_pays_basque_mp3-32k.m3u 
+#EXTINF:-1: France Bleu Pays d'Auvergne 
+http://gisv3.tv-radio.com/station/france_bleu_pays_dauvergne_mp3/france_bleu_pays_dauvergne_mp3-32k.m3u 
+#EXTINF:-1: France Bleu Pays de Savoie 
+http://gisv3.tv-radio.com/station/france_bleu_pays_de_savoie_mp3/france_bleu_pays_de_savoie_mp3-32k.m3u 
+#EXTINF:-1: France Bleu Périgord 
+http://gisv3.tv-radio.com/station/france_bleu_perigord_mp3/france_bleu_perigord_mp3-32k.m3u 
+#EXTINF:-1: France Bleu Picardie 
+http://gisv3.tv-radio.com/station/france_bleu_picardie_mp3/france_bleu_picardie_mp3-32k.m3u 
+#EXTINF:-1: France Bleu Poitou 
+http://gisv3.tv-radio.com/station/france_bleu_poitou_mp3/france_bleu_poitou_mp3-32k.m3u 
+#EXTINF:-1: France Bleu Provence 
+http://gisv3.tv-radio.com/station/france_bleu_provence_mp3/france_bleu_provence_mp3-32k.m3u 
+#EXTINF:-1: France Bleu Roussillon 
+http://gisv3.tv-radio.com/station/france_bleu_roussillon_mp3/france_bleu_roussillon_mp3-32k.m3u 
+#EXTINF:-1: France Bleu Sud Lorraine 
+http://gisv3.tv-radio.com/station/france_bleu_sud_lorraine_mp3/france_bleu_sud_lorraine_mp3-32k.m3u 
+#EXTINF:-1: France Bleu Tourraine 
+http://gisv3.tv-radio.com/station/france_bleu_touraine_mp3/france_bleu_touraine_mp3-32k.m3u 
+#EXTINF:-1: France Bleu Vaucluse 
+http://gisv3.tv-radio.com/station/france_bleu_vaucluse_mp3/france_bleu_vaucluse_mp3-32k.m3u 
+#EXTINF:-1: France Culture 
+http://mp3.live.tv-radio.com/franceculture/all/franceculturehautdebit.mp3 
+#EXTINF:-1: France Culture 
+http://www.tv-radio.com/station/france_culture_mp3/france_culture_mp3-32k.m3u 
+#EXTINF:-1: France Culture 
+http://www.tv-radio.com/station/france_culture_mp3/france_culture_mp3-128k.m3u 
+#EXTINF:-1: France Info 
+http://www.listenlive.eu/franceinfo.m3u 
+#EXTINF:-1: France Info 
+http://players.creacast.com/creacast/france_info/playlist.m3u 
+#EXTINF:-1: France Info 
+http://mp3.live.tv-radio.com/franceinfo/all/franceinfo.mp3 
+#EXTINF:-1: France Inter 
+http://mp3.live.tv-radio.com/franceinter/all/franceinterhautdebit.mp3
+#EXTINF:-1: France Musiques 
+http://www.tv-radio.com/station/france_musique_mp3/france_musique_mp3-128k.m3u
+#EXTINF:-1: France Vivace 
+http://www.tv-radio.com/station/france_vivace_mp3/france_vivace_mp3-128k.m3u 
+#EXTINF:-1: Fréquence 3 
+http://ice.stream.frequence3.net/frequence3-128.mp3 
+#EXTINF:-1: Fréquence Banane 
+http://www.frequencebanane.ch/fb_128.m3u 
+#EXTINF:-1: Fréquence K 
+http://www.frequencek.com/stream/FrequenceK.m3u 
+#EXTINF:-1: Frequence Plus 
+http://gisv3.tv-radio.com/station/frequence_plus/frequence_plus.m3u 
+#EXTINF:-1: Frequence Sud 
+http://91.121.62.121:9500/listen.pls 
+#EXTINF:-1: Frequence Terre 
+http://players.creacast.com/creacast/f_terre/playlist.m3u 
+#EXTINF:-1: Fun Radio 
+http://icecast.funradio.fr/fun-1-44-128 
+#EXTINF:-1: Fusion FM 
+http://www.fusionsurlenet.com/ecouterfusionfm/fusion-fm.m3u 
+#EXTINF:-1: Fusion FM Dance 
+http://listen.radionomy.com/fusion-fm-dance.m3u 
+#EXTINF:-1: Fusion FM Pop Rock 
+http://listen.radionomy.com/fusion-fm-pop-rock.m3u 
+#EXTINF:-1: Futuradio - Dance 
+http://ns1.futuradios.net/dance-thd.m3u 
+#EXTINF:-1: Futuradio - Hit & Rock 
+http://ns1.futuradios.net/futuradios-thd.m3u 
+#EXTINF:-1: Futuradio - Sweet 
+http://ns1.futuradios.net/sweet-thd.m3u 
+#EXTINF:-1: [COLOR red]G[/COLOR]
+http://
+#EXTINF:-1: Génération Disco Funk 
+http://www.generationdiscofunk.com/v3/pls/stream02/hd.m3u 
+#EXTINF:-1: Génération Do 
+http://listen.radionomy.com/generation-do.m3u 
+#EXTINF:-1: Génération-FM 
+http://stream.generation-fm.com/generationfm-128.mp3 
+#EXTINF:-1: GénérationsFM 
+http://91.121.169.50:7000/listen.pls 
+#EXTINF:-1: Graffiti Urban Radio 
+http://www.urban-radio.com/128.m3u 
+#EXTINF:-1: Graph'Hit 
+http://ghstreaming.utc.fr/playlists/grafhit.mp3.m3u 
+#EXTINF:-1: [COLOR red]H[/COLOR]
+http://
+#EXTINF:-1: Happy FM 
+http://88.191.44.54:8008/listen.pls 
+#EXTINF:-1: Hit-Generation -100% Club 
+http://www.hit-generation.fm/playlist/itunes-club.m3u 
+#EXTINF:-1: Hit-Génération - 100% Hits
+http://www.hit-generation.fr/playlist/itunes-hits.m3u 
+#EXTINF:-1: Hit-Génération - 100% Rock 
+http://www.hit-generation.fr/playlist/itunes-rock.m3u 
+#EXTINF:-1: HotFresh 
+http://www.hotfresh.fr/hotfreshwinamp.m3u 
+#EXTINF:-1: Hot Mix Radio 80 
+http://www.hotmixradio.fr/stream/hotmix80.m3u 
+#EXTINF:-1: Hot Mix Radio 90 
+http://www.hotmixradio.fr/stream/hotmix90.m3u 
+#EXTINF:-1: Hot Mix Radio 100% Hits 
+http://www.hotmixradio.fr/stream/hotmixHIT.m3u 
+#EXTINF:-1: Hot Mix Radio Funky 
+http://www.hotmixradio.fr/stream/funky.m3u 
+#EXTINF:-1: Hot Mix Radio House 
+http://www.hotmixradio.fr/stream/hotmix.m3u 
+#EXTINF:-1: Hot Mix Radio Rock & Pop 
+http://www.hotmixradio.fr/stream/hotmixrock.m3u 
+#EXTINF:-1: House Nation Radio 
+http://srv9.votreradio.com:8006/listen.pls 
+#EXTINF:-1: [COLOR red]I[/COLOR]
+http://
+#EXTINF:-1: Ici et Maintenant 
+http://radio.rim952.fr:8001/stream.ogg http://radio.rim952.fr:8000/stream.mp3 http://radio.rim952.fr:8002/stream3.mp3 (bas débit) 
+#EXTINF:-1: idFM 98.0 
+http://88.191.12.229/live/idfm_pls_bq.pls 
+#EXTINF:-1: Imagine La Webradio 
+http://www.imaginelawebradio.com/stream/Imagine-128kbps.pls 
+#EXTINF:-1: Imixx 
+http://relay1.imixx.fr:8170/listen.pls 
+#EXTINF:-1: Impact FM 
+http://gisv3.tv-radio.com/station/impact_fm_mp3/impact_fm_mp3-128k.m3u 
+#EXTINF:-1: Info Concert Radio 
+http://broadcast.infomaniak.net/infoconcert-high.mp3.pls 
+#EXTINF:-1: Info Concert Alternative live 
+http://broadcast.infomaniak.net/infoconcert-alternative-high.mp3.pls 
+#EXTINF:-1: Info Concert Franco Live 
+http://broadcast.infomaniak.net/infoconcert-francolive-high.mp3.pls 
+#EXTINF:-1: Info Concert Memory Live 
+http://broadcast.infomaniak.net/infoconcert-memorylive-high.mp3.pls 
+#EXTINF:-1: [COLOR red]J[/COLOR]
+http://
+#EXTINF:-1: Jazz Radio 
+http://www.jazzradio.fr/frequencejazz-high.m3u 
+#EXTINF:-1: Jeunzradio 
+http://streaming.radionomy.com:8000/JeunZ-RADIO.m3u 
+#EXTINF:-1: Jordanne FM 
+http://www.tv-radio.com/station/jordanne_fm_mp3/jordanne_fm_mp3-96k.m3u 
+#EXTINF:-1: Js Dj Radio 
+http://streaming.radionomy.com:8000/Js-Dj-RaDio.m3u 
+
+#EXTINF:-1: [COLOR red]K[/COLOR]
+http://
+#EXTINF:-1: Kif Cool 
+http://www.kifradio.com/cool/kifcool256.m3u 
+#EXTINF:-1: Kif Radio 
+http://www.kifradio.com/www.kifradio.com.m3u 
+#EXTINF:-1: Kif Rock 
+http://www.kifradio.com/kifusa.m3u 
+#EXTINF:-1: Kiss FM 
+http://gisv3.tv-radio.com/station/kissfm-mp3/kissfm-mp3-128k.m3u 
+#EXTINF:-1: Kiss FM Dance 
+http://gisv3.tv-radio.com/station/kissdance-mp3/kissdance-mp3-128k.m3u 
+#EXTINF:-1: [COLOR red]L[/COLOR]
+http://
+#EXTINF:-1: La Grosse Radio (Rock) 
+http://www.lagrosseradio.com/son/stream/192.m3u 
+#EXTINF:-1: La Radio de sebb 
+http://www.laradiodesebb.com/stream/laradiodesebb.m3u 
+#EXTINF:-1: Lazer 80 
+http://stream3.group-network.net:9066/listen.m3u 
+#EXTINF:-1: Ledjam Radio 
+http://www.ledjamradio.com/sound 
+#EXTINF:-1: Le mouv' 
+http://www.tv-radio.com/station/le_mouv_mp3/le_mouv_mp3-128k.m3u
+#EXTINF:-1: Littoral AM 
+http://www.streamakaci.com/radios/littoralam.asx 
+#EXTINF:-1: Littoral FM 
+http://gisv3.tv-radio.com/station/littoral/littoral-64k.asx 
+#EXTINF:-1: Live7 
+http://srv9.votreradio.com/PLAYERS/player_53.m3u 
+#EXTINF:-1: Live9 
+http://www.Live9.fr/ecoute/192.m3u 
+#EXTINF:-1: Lyon 1ere 
+http://broadcast.infomaniak.net:80/lyon1ere-high.mp3 
+#EXTINF:-1: [COLOR red]M[/COLOR]
+http://
+#EXTINF:-1: M2 80 
+http://live.m2stream.fr/m280-128.mp3 
+#EXTINF:-1: M2 90 
+http://live.m2stream.fr/m290-128.mp3 
+#EXTINF:-1: M2 CALIENTE 
+http://live.m2stream.fr/m2caliente-128.mp3 
+#EXTINF:-1: M2 CHILLOUT 
+http://live.m2stream.fr/m2chillout-128.mp3 
+#EXTINF:-1: M2 CLASSIC 
+http://live.m2stream.fr/m2classic-128.mp3 
+#EXTINF:-1: M2 CLUB 
+http://live.m2stream.fr/m2club-128.mp3 
+#EXTINF:-1: M2 FUNK 
+http://live.m2stream.fr/m2funk-128.mp3 
+#EXTINF:-1: M2 HIP-HOP 
+http://live.m2stream.fr/m2hip-hop-128.mp3 
+#EXTINF:-1: M2 HIT 
+http://live.m2stream.fr/m2hit-128.mp3 
+#EXTINF:-1: M2 JAZZ 
+http://live.m2stream.fr/m2jazz-128.mp3 
+#EXTINF:-1: M2 LOVE 
+http://live.m2stream.fr/m2love-128.mp3 
+#EXTINF:-1: M2 ROCK 
+http://live.m2stream.fr/m2rock-128.mp3 
+#EXTINF:-1: M2 SUNSHINE 
+http://live.m2stream.fr/m2sunshine-128.mp3 
+#EXTINF:-1: Magic Radio 
+http://www.magic-radio.net/ogg.m3u 
+#EXTINF:-1: MAX la radio 
+http://91.121.62.121:9410/listen.pls 
+#EXTINF:-1: Maxi 80 
+http://www.maxi80.com/ecoute/maxi80.m3u 
+#EXTINF:-1: Maxi-France 
+http://www.maxi-france.fr/stream128.m3u 
+#EXTINF:-1: Maxxhits 
+http://www.maxxhitsbootlegs.com/listen/high.m3u 
+#EXTINF:-1: Maxxima 
+http://www.maxxima.org/v4/radio/maxx_win.m3u 
+#EXTINF:-1: Maxximum 
+http://vipicecast.yacast.net/maxximum.m3u 
+#EXTINF:-1: Méga FM 
+http://www.streamakaci.com/radios/megafm.m3u 
+#EXTINF:-1: MIXX Radio 
+http://www.mixxradio.fr/stream/mixxwinamp128.m3u 
+#EXTINF:-1: MIXX Radio Gold 
+http://www.radio13.fr/stream128k.m3u 
+#EXTINF:-1: MFM 
+http://str30.creacast.com/mfm1.m3u
+#EXTINF:-1: MFM Flashback 
+http://str2.creacast.com:80/mfm5.m3u 
+#EXTINF:-1: MFM Serenité 
+http://str2.creacast.com:80/mfm3.m3u 
+#EXTINF:-1: MFM Sexy 
+http://str2.creacast.com:80/mfm4.m3u 
+#EXTINF:-1: MKM Radio 
+http://www.mkmradio.com/MKMRADIO.m3u 
+#EXTINF:-1: Music Hitz FM 
+http://www.musichitzfm.com/listen/winamp-192.m3u 
+#EXTINF:-1: [COLOR red]N[/COLOR]
+http://
+#EXTINF:-1: Nostalgie 
+http://mp3.live.tv-radio.com/nostalgie/all/nos_113812.mp3 
+#EXTINF:-1: Nostalgie ABBA 
+http://mp3.live.tv-radio.com/nostalgie_abba/all/nos_170812.mp3 
+#EXTINF:-1: Nostalgie Best of 60's 
+http://mp3.live.tv-radio.com/nostalgie_best_of_sixties/all/nos_174945.mp3 
+#EXTINF:-1: Nostalgie Best of 70's 
+http://mp3.live.tv-radio.com/nostalgie_best_of_seventies/all/nos_175440.mp3 
+#EXTINF:-1: Nostalgie Best of 80's 
+http://mp3.live.tv-radio.com/nostalgie_best_of_eighties/all/nos_172115.mp3 
+#EXTINF:-1: Nostalgie British & American 
+http://mp3.live.tv-radio.com/nostalgie_british_american/all/nos_172046.mp3 
+#EXTINF:-1: Nostalgie Chansons Francaises 
+http://mp3.live.tv-radio.com/nostalgie_chansons_francaises/all/nos_174706.mp3 
+#EXTINF:-1: Nostalgie Disco 
+http://mp3.live.tv-radio.com/nostalgie_disco/all/nos_172319.mp3 
+#EXTINF:-1: Nostalgie Joe Dassin 
+http://mp3.live.tv-radio.com/nostalgie_joe_dassin/all/nos_171332.mp3 
+#EXTINF:-1: Nostalgie Queen 
+http://mp3.live.tv-radio.com/2050/nostalgie_queen/nos_190147.mp3 
+#EXTINF:-1: Nostalgie Rock 
+http://mp3.live.tv-radio.com/nostalgie_rock/all/nos_145822.mp3 
+#EXTINF:-1: Nostalgie Rolling Stones 
+http://mp3.live.tv-radio.com/nostalgie_rolling_stones/all/nos_170513.mp3 
+#EXTINF:-1: Nostalgie Slow 
+http://mp3.live.tv-radio.com/nostalgie_slow_legend/all/nos_173315.mp3 
+#EXTINF:-1: Nostalgie Soul 
+http://mp3.live.tv-radio.com/nostalgie_soul_legend/all/nos_173540.mp3 
+#EXTINF:-1: Nostalgie Top 100 
+http://mp3.live.tv-radio.com/nostalgie_top_100/all/nos_180225.mp3 
+#EXTINF:-1: NRJ 
+http://mp3.live.tv-radio.com/nrj/all/nrj_113225.mp3 
+#EXTINF:-1: NRJ @ Work 
+http://mp3.live.tv-radio.com/nrj_at_work/all/nrj_143400.mp3 
+#EXTINF:-1: NRJ by Disney 
+http://mp3.live.tv-radio.com/nrj_by_disney/all/nrj_152411.mp3 
+#EXTINF:-1: NRJ Clubbin' 
+http://mp3.live.tv-radio.com/nrj_clubbin/all/nrj_153250.mp3 
+#EXTINF:-1: NRJ Dance 
+http://mp3.live.tv-radio.com/nrj_dance/all/nrj_151505.mp3 
+#EXTINF:-1: NRJ French 
+http://mp3.live.tv-radio.com/nrj_french/all/nrj_155913.mp3 
+#EXTINF:-1: NRJ Friendly 
+http://mp3.live.tv-radio.com/nrj_friendly/all/nrj_164207.mp3 
+#EXTINF:-1: NRJ Girl 
+http://mp3.live.tv-radio.com/nrj_girl/all/nrj_153716.mp3 
+#EXTINF:-1: NRJ Hits 
+http://mp3.live.tv-radio.com/nrj_hits/all/nrj_150726.mp3 
+#EXTINF:-1: NRJ Ibiza 
+http://mp3.live.tv-radio.com/nrj_ibiza/all/nrj_164849.mp3 
+#EXTINF:-1: NRJ In Bed 
+http://mp3.live.tv-radio.com/nrj_in_bed/all/nrj_135650.mp3 
+#EXTINF:-1: NRJ iTunes 
+http://mp3.live.tv-radio.com/nrj_itunes/all/nrj_153938.mp3 
+#EXTINF:-1: NRJ Lady GaGa 
+http://mp3.live.tv-radio.com/nrj_lady_gaga/all/nrj_152704.mp3 
+#EXTINF:-1: NRJ Lounge 
+http://mp3.live.tv-radio.com/nrj_lounge/all/nrj_151750.mp3
+#EXTINF:-1: NRJ Master Mix 
+http://mp3.live.tv-radio.com/nrj_mastermix/all/nrj_163522.mp3 
+#EXTINF:-1: NRJ Michael Jackson 
+http://mp3.live.tv-radio.com/nrj_michael_jackson/all/nrj_154634.mp3 
+#EXTINF:-1: NRJ New York 
+http://mp3.live.tv-radio.com/nrj_new-york/all/nrj_140527.mp3 
+#EXTINF:-1: NRJ Next 
+http://mp3.live.tv-radio.com/nrj_next/all/nrj_122336.mp3 
+#EXTINF:-1: NRJ Nouveautés 
+http://mp3.live.tv-radio.com/nrj_nouveaute/all/nrj_161209.mp3 
+#EXTINF:-1: NRJ Party 
+http://mp3.live.tv-radio.com/2051/nrj_party/nrj_190407.mp3 
+#EXTINF:-1: NRJ Pop 
+http://mp3.live.tv-radio.com/nrj_pop/all/nrj_151240.mp3 
+#EXTINF:-1: NRJ Rap FR 
+http://mp3.live.tv-radio.com/nrj_rap_fr/all/nrj_145338.mp3 
+#EXTINF:-1: NRJ Rap US 
+http://mp3.live.tv-radio.com/nrj_rap_us/all/nrj_144854.mp3 
+#EXTINF:-1: NRJ Rihanna 
+http://mp3.live.tv-radio.com/nrj_rihanna/all/nrj_163955.mp3 
+#EXTINF:-1: NRJ RnB 
+http://mp3.live.tv-radio.com/nrj_rnb/all/nrj_151038.mp3 
+#EXTINF:-1: NRJ Rock 
+http://mp3.live.tv-radio.com/nrj_rock/all/nrj_161510.mp3 
+#EXTINF:-1: NRJ Running 
+http://mp3.live.tv-radio.com/nrj_running/all/nrj_162813.mp3 
+#EXTINF:-1: NRJ Shakira 
+http://mp3.live.tv-radio.com/nrj_shakira/all/nrj_144619.mp3 
+#EXTINF:-1: NRJ Shop 
+http://mp3.live.tv-radio.com/nrj_shop/all/nrj_121822.mp3 
+#EXTINF:-1: NRJ Soleil 
+http://mp3.live.tv-radio.com/nrj_soleil/all/nrj_155103.mp3 
+#EXTINF:-1: NRJ The Black Eyed Peas 
+http://mp3.live.tv-radio.com/nrj_black_eyed_peas/all/nrj_161845.mp3 
+#EXTINF:-1: NRJ Usher 
+http://mp3.live.tv-radio.com/nrj_usher/all/nrj_142337.mp3 
+#EXTINF:-1: NTI 
+http://www.tv-radio.com/station/nti-mp3/nti-mp3-128k.m3u 
+
+#EXTINF:-1: [COLOR red]O[/COLOR]
+http://
+#EXTINF:-1: ODS Radio 
+http://broadcast.infomaniak.ch/ods-high.mp3.pls 
+#EXTINF:-1: Otaradio 
+http://srv2.streaming-ingenierie.fr:8160/listen.pls 
+#EXTINF:-1: Oui FM 
+http://broadcast.infomaniak.ch/ouifm-high.mp3.pls 
+#EXTINF:-1: Oui FM 2 
+http://ouifm2.impek.com/listen.pls 
+#EXTINF:-1: Oui FM 3 
+http://ouifm3.impek.com/listen.pls 
+#EXTINF:-1: Oxyradio 
+http://www.oxyradio.net/listen/oxyradio.pls 
+
+#EXTINF:-1: [COLOR red]P[/COLOR]
+http://
+#EXTINF:-1: Pacifique FM 
+http://r15919.ovh.net:9510/listen.pls 
+#EXTINF:-1: Paris One Club 
+http://www.paris-one.com/pls/radio.pls 
+#EXTINF:-1: Paris One Reserve 
+http://www.paris-one.com/pls/radio_v6.pls 
+#EXTINF:-1: Paris One Deeper 
+http://www.paris-one.com/pls/radio_deeper.pls 
+#EXTINF:-1: Paris One Trance 
+http://www.paris-one.com/pls/radio_trance.pls 
+#EXTINF:-1: Paris One Dance 
+http://www.paris-one.com/pls/radio_dance.pls 
+#EXTINF:-1: Puls Radio 
+http://www.pulsradio.com/pls/puls-adsl.m3u 
+#EXTINF:-1: Puls Radio Version 8.0 
+http://www.pulsradio.com/pls/pulsV80-adsl.m3u 
+#EXTINF:-1: Puls Radio Version 9.0 
+http://www.pulsradio.com/pls/pulsV90-adsl.m3u 
+#EXTINF:-1: Puls Radio Version Trance 
+http://www.pulsradio.com/pls/pulstrance-adsl.m3u 
+
+#EXTINF:-1: [COLOR red]R[/COLOR]
+http://
+#EXTINF:-1: R'Courchevel
+http://www.laradiostation.fr:8888/listen.pls 
+#EXTINF:-1: Radio 666
+http://www.radio666.com/ecouter/radio666.pls 
+#EXTINF:-1: Radio activ' 101.9
+http://www.radio-activ.com:8000/listen.mp3 
+#EXTINF:-1: Radio Aléo
+http://srv13.votreradio.com/PLAYERS/player_344.m3u 
+#EXTINF:-1: Radio Alpine Meilleure
+http://91.121.62.121:8310/listen.pls 
+#EXTINF:-1: Radio Belle Vue
+http://www.radiobellevue.fr/rbv.asx ou http://www.radiobellevue.fr:8000/hd 
+#EXTINF:-1: Radio Béton
+http://213.186.61.62:8400/listen.pls 
+#EXTINF:-1: Radio Blagon - Ambiance Cool
+http://www.webradio-fr.info/Playlist_Webradio/RadioBlagonAmbianceCool.m3u 
+#EXTINF:-1: Radio Blagon - Festif Etrange
+http://www.webradio-fr.info/Playlist_Webradio/RadioBlagonFestifEtrange.m3u 
+#EXTINF:-1: Radio Blagon - Reggae des Iles
+http://www.webradio-fr.info/Playlist_Webradio/RadioBlagonReggaeIles.m3u 
+#EXTINF:-1: Radio Blagon - Rock Francais
+http://www.webradio-fr.info/Playlist_Webradio/RadioBlagonRockFrancais.m3u 
+#EXTINF:-1: Radio Blagon - Scene Francaise
+http://www.webradio-fr.info/Playlist_Webradio/RadioBlagonSceneFrancaise.m3u 
+#EXTINF:-1: Radio Brassens
+http://listen.radionomy.com/radiobrassens.m3u 
+#EXTINF:-1: Radio Bodink
+http://www.bodink.org/bodink_mp3.m3u 
+#EXTINF:-1: Radio Bresse
+http://91.121.62.121:7350/listen.pls 
+#EXTINF:-1: Radio Campus Paris
+http://www.radiocampusparis.org/coa/stream_rcp.m3u 
+#EXTINF:-1: Radio Classique
+http://players.creacast.com/creacast/classique/playlist.pls 
+#EXTINF:-1: Radio Classique Baroque
+http://str2.creacast.com:106/listen.pls 
+#EXTINF:-1: Radio Classique Cinéma
+http://str2.creacast.com:94/listen.pls 
+#EXTINF:-1: Radio Coucou
+http://portail.coocoo.free.fr/radio/coucou.pls 
+#EXTINF:-1: Radio Courtoisie
+http://www.tv-radio.com/station/courtoisie/courtoisie-20k.asx 
+#EXTINF:-1: Radio Côte d'Amour
+http://www.streamakaci.com/radios/radiocotedamour.m3u 
+#EXTINF:-1: Radio Dogmazic
+http://radio.musique-libre.org:8000/radio_dogmazic.ogg.m3u 
+#EXTINF:-1: Radio Ellebore
+http://broadcast.infomaniak.net:80/ellebore-high.mp3.m3u 
+#EXTINF:-1: Radio Etudiante Evryone
+http://streaming.evryone.com:8000/evryone-low.mp3.m3u 
+#EXTINF:-1: Radio Flemme
+http://str15.streamakaci.com:8014/listen.pls 
+#EXTINF:-1: Radio FMR
+http://giss.tv:8000/fmr.ogg.m3u
+#EXTINF:-1: Radio Frequence Metz Dance
+http://www.radiodance.fr/lecteurs/2/high.m3u 
+#EXTINF:-1: Radio Frequence Metz Hits
+http://www.frequencewoippy.fr/lecteurs/5/high.m3u 
+#EXTINF:-1: Radio Frequence Metz Lounge
+http://www.radiolounge.fr/lecteurs/4/high.m3u 
+#EXTINF:-1: Radio Frequence Metz RNB
+http://www.radiornb.fr/lecteurs/3/high.m3u 
+#EXTINF:-1: Radio Frequence Metz Rock
+http://www.rockradio.fr/lecteurs/1/high.m3u 
+#EXTINF:-1: Radio generique80s
+http://listen.radionomy.com/radiogenerique80s.m3u 
+#EXTINF:-1: Radio Grille Ouverte
+http://91.121.62.121:7200/listen.pls 
+#EXTINF:-1: Radio Imagine
+http://213.186.61.62:7900/listen.pls 
+#EXTINF:-1: Radio Intensité
+http://radiointensite.free.fr/live128.m3u 
+#EXTINF:-1: Radio Junior
+http://213.186.61.62:8080/listen.pls 
+#EXTINF:-1: Radio Libertaire
+http://ecoutez.radio-libertaire.org:8080/radiolib.m3u 
+#EXTINF:-1: Radio LSL
+http://www.radiolsl.fr/192.m3u 
+#EXTINF:-1: Radio Métal
+http://www.radiometal.fr/rm.m3u 
+#EXTINF:-1: Radio Mille Pattes
+http://broadcast.infomaniak.ch/millepattes-high.mp3.pls 
+#EXTINF:-1: Radio Neo
+http://www.radioneo.org/radio/neo.m3u 
+#EXTINF:-1: Radio Nova
+http://broadcast.infomaniak.net/radionova-high.mp3.m3u
+#EXTINF:-1: Radio Phénix
+http://www.radio-phenix.unicaen.fr:8000/radiophenix_mid.mp3 
+#EXTINF:-1: Radio Pulsar
+http://91.121.62.121:8100/listen.pls 
+#EXTINF:-1: Radio RDL
+http://91.121.62.121:8300/listen.pls 
+#EXTINF:-1: Radio RDM
+http://213.186.61.62:8200/listen.pls 
+#EXTINF:-1: Radio Scoop annee 80
+http://web4.radioscoop.com/scoop1.mp3.m3u 
+#EXTINF:-1: Radio Scoop Box Vintage
+http://web4.radioscoop.com/scoop3.mp3.m3u 
+#EXTINF:-1: Radio Scoop Music Pod
+http://web4.radioscoop.com/scoop2.mp3.m3u 
+#EXTINF:-1: Radio Sing Sing
+http://www.sing-sing.org/confort2.pls 
+#EXTINF:-1: Radio TeenTall
+http://www.radioteentaal.com/masala128.m3u 
+#EXTINF:-1: Radio Top Side
+http://91.121.109.79:11000/listen.pls 
+#EXTINF:-1: Radio Vallespir 66
+http://srv6.streaming-ingenierie.fr:8030/listen.pls 
+#EXTINF:-1: Radio Vitamine
+http://str2.creacast.com/vitamine.m3u 
+#EXTINF:-1: RBI FM
+http://213.186.61.62:7400/listen.pls 
+#EXTINF:-1: RCI Guadeloupe
+http://gp.rci.fm/player/gp.m3u 
+#EXTINF:-1: RCI Martinique
+http://mq.rci.fm/player/mq.m3u 
+#EXTINF:-1: RDM - Lorraine
+http://213.186.61.62:7070/listen.pls 
+#EXTINF:-1: R.E.N
+http://listen.radionomy.com/ren.m3u 
+#EXTINF:-1: RFI
+http://vipicecast.yacast.net/rfi.m3u
+#EXTINF:-1: RFM
+http://vipicecast.yacast.net/rfm
+#EXTINF:-1: RFM Collector
+http://vipicecast.yacast.net/rfm_webradio06 
+#EXTINF:-1: RFM Music France
+http://vipicecast.yacast.net/rfm_webradio03 
+#EXTINF:-1: RFM New Wave 80
+http://vipicecast.yacast.net/rfm_webradio04 
+#EXTINF:-1: RFM Night Fever
+http://vipicecast.yacast.net/rfm_webradio02 
+#EXTINF:-1: RFM Nouveautés
+http://vipicecast.yacast.net/rfm_webradio01 
+#EXTINF:-1: RFM Party 80
+http://vipicecast.yacast.net/rfm_webradio05 
+#EXTINF:-1: RFO Guadeloupe
+http://mp3.live.tv-radio.com/rfo/all/rfoguadeloupe-128k.mp3
+#EXTINF:-1: RFO Martinique
+http://mp3.live.tv-radio.com/rfo/all/rfomartinique-128k.mp3
+#EXTINF:-1: Rires & Chansons
+http://mp3.live.tv-radio.com/rire_et_chansons/all/rir_124629.mp3
+#EXTINF:-1: Rires & Chansons 100% Blagues
+http://mp3.live.tv-radio.com/rire_100_blagues/all/rir_123949.mp3
+#EXTINF:-1: Rires & Chansons 100% Eternel
+http://mp3.live.tv-radio.com/rire_100_eternel/all/rir_151634.mp3
+#EXTINF:-1: Rires & Chansons 100% Live
+http://mp3.live.tv-radio.com/rire_100_live/all/rir_124257.mp3
+#EXTINF:-1: Rires & Chansons 100% Nouveaux talents
+http://mp3.live.tv-radio.com/rire_100_nouveaux_talents/all/rir_153424.mp3
+#EXTINF:-1: Rires & Chansons 100% Sketches
+http://mp3.live.tv-radio.com/rire_100_s
