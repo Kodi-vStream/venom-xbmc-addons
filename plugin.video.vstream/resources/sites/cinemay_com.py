@@ -19,16 +19,16 @@ SITE_IDENTIFIER = 'cinemay_com'
 SITE_NAME = 'Cinemay.com' 
 SITE_DESC = 'films et series en streaming' 
 
-URL_MAIN = 'http://cinemay.com' 
+URL_MAIN = 'http://www.cinemay.com/' 
 
-MOVIE_NEWS = ('http://www.cinemay.com/', 'showMoviesNews')
+MOVIE_NEWS = (URL_MAIN , 'showMoviesNews')
 
-MOVIE_MOVIE = ('http://www.cinemay.com/films/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 
-SERIE_SERIES = ('http://www.cinemay.com/serie/', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'serie/', 'showMovies')
 
-URL_SEARCH = ('http://www.cinemay.com/?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load(): 
@@ -63,7 +63,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = 'http://cinemay.com/?s='+sSearchText  
+        sUrl = URL_MAIN + '?s='+sSearchText  
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return  
@@ -73,31 +73,31 @@ def showGenre():
     oGui = cGui()
  
     liste = []
-    liste.append( ['Action','http://www.cinemay.com/action/'] )
-    liste.append( ['Animation','http://www.cinemay.com/animation/'] )
-    liste.append( ['Arts Martiaux','http://www.cinemay.com/arts-martiaux/'] )
-    liste.append( ['Aventure','http://www.cinemay.com/aventure/'] )
-    liste.append( ['Biopic','http://www.cinemay.com/biopic/'] )
-    liste.append( ['Comédie','http://www.cinemay.com/comedie/'] )
-    liste.append( ['Comédie Dramatique','http://www.cinemay.com/comedie-dramatique/'] )
-    liste.append( ['Documentaire','http://www.cinemay.com/documentaire/'] )
-    liste.append( ['Drame','http://www.cinemay.com/drame/'] )
-    liste.append( ['Epouvante Horreur','http://www.cinemay.com/epouvante-horreur/'] ) 
-    liste.append( ['Espionnage','http://www.cinemay.com/espionnage/'] )
-    liste.append( ['Famille','http://www.cinemay.com/famille/'] )
-    liste.append( ['Fantastique','http://www.cinemay.com/fantastique/'] )  
+    liste.append( ['Action',URL_MAIN + 'action/'] )
+    liste.append( ['Animation',URL_MAIN + 'animation/'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'arts-martiaux/'] )
+    liste.append( ['Aventure',URL_MAIN + 'aventure/'] )
+    liste.append( ['Biopic',URL_MAIN + 'biopic/'] )
+    liste.append( ['Comédie',URL_MAIN + 'comedie/'] )
+    liste.append( ['Comédie Dramatique',URL_MAIN + 'comedie-dramatique/'] )
+    liste.append( ['Documentaire',URL_MAIN + 'documentaire/'] )
+    liste.append( ['Drame',URL_MAIN + 'drame/'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'epouvante-horreur/'] ) 
+    liste.append( ['Espionnage',URL_MAIN + 'espionnage/'] )
+    liste.append( ['Famille',URL_MAIN + 'famille/'] )
+    liste.append( ['Fantastique',URL_MAIN + 'fantastique/'] )  
     liste.append( ['Guerre','http://full-streaming.org/guerre/'] )
-    liste.append( ['Historique','http://www.cinemay.com/histoirique/'] )
-    liste.append( ['Manga','http://www.cinemay.com/manga/'] )    
-    liste.append( ['Musical','http://www.cinemay.com/musical/'] )
-    liste.append( ['Non_classé','http://www.cinemay.com/non-classe/'] )
-    liste.append( ['peplum','http://www.cinemay.com/peplum-2/'] )        
-    liste.append( ['Policier','http://www.cinemay.com/policier/'] )
-    liste.append( ['Romance','http://www.cinemay.com/romance/'] )
-    liste.append( ['Science_Fiction','http://www.cinemay.com/science-fiction/'] )
-    liste.append( ['Spéctacle','http://www.cinemay.com/spectacle/'] )
-    liste.append( ['Thriller','http://www.cinemay.com/thriller/'] )
-    liste.append( ['Western','http://www.cinemay.com/western/'] )
+    liste.append( ['Historique',URL_MAIN + 'histoirique/'] )
+    liste.append( ['Manga',URL_MAIN + 'manga/'] )    
+    liste.append( ['Musical',URL_MAIN + 'musical/'] )
+    liste.append( ['Non_classé',URL_MAIN + 'non-classe/'] )
+    liste.append( ['peplum',URL_MAIN + 'peplum-2/'] )        
+    liste.append( ['Policier',URL_MAIN + 'policier/'] )
+    liste.append( ['Romance',URL_MAIN + 'romance/'] )
+    liste.append( ['Science_Fiction',URL_MAIN + 'science-fiction/'] )
+    liste.append( ['Spéctacle',URL_MAIN + 'spectacle/'] )
+    liste.append( ['Thriller',URL_MAIN + 'thriller/'] )
+    liste.append( ['Western',URL_MAIN + 'western/'] )
                 
     for sTitle,sUrl in liste:
         
@@ -191,7 +191,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
-            if '/serie/' in sUrl or '/serie/' in aEntry[0]:
+            if '/serie/' in sUrl or '/serie/' in aEntry[1]:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, aEntry[0], aEntry[0], sCom , oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, aEntry[0], aEntry[0], sCom, oOutputParameterHandler)
@@ -277,7 +277,8 @@ def showSeries():
     
         cConfig().finishDialog(dialog)
 
-    oGui.setEndOfDirectory()    
+    oGui.setEndOfDirectory()
+    
 def showLinks():
     oGui = cGui()
     
@@ -289,7 +290,7 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     #sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'')
-    sPattern = '<td><a href="(.+?)">(.+?)</a>.+?<span class="user-icn">'
+    sPattern = '<td><a href="\/(.+?)">(.+?)</a>.+?<span class="user-icn">'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -297,17 +298,16 @@ def showLinks():
 
         for aEntry in aResult[1]:
             
-            sHoster = cHosterGui().checkHoster(aEntry[1].lower())
-            if (sHoster != False):
+            sHoster = aEntry[1].lower()
             
-                sTitle = sMovieTitle + ' - [COLOR skyblue]' + sHoster.getDisplayName()+'[/COLOR]'
-                sUrl = URL_MAIN+aEntry[0]
-                
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+            sTitle = sMovieTitle + ' - [COLOR skyblue]' + sHoster +'[/COLOR]'
+            sUrl = URL_MAIN + aEntry[0]
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
         
 
     oGui.setEndOfDirectory() 
@@ -332,7 +332,7 @@ def showHosters():
         for aEntry in aResult[1]:
 
             sHosterUrl = str(aEntry)
-            #oHoster = __checkHoster(sHosterUrl)
+ 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
         
