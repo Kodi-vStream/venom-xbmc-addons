@@ -115,7 +115,8 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
    
     #sPattern = 'data-id="[0-9]+" title="([^<]+)" href="([^<]+)"><span class="clip"><img src="([^<]+)" alt="'
-    sPattern = '<a class="clip-link".+? title="(.+?)" href="([^"]+)".*?<img.*?src="([^"]+)".+?<p class="entry-summary">([^<]+)</p>'
+    #sPattern = '<a class="clip-link".+? title="(.+?)" href="([^"]+)".*?<img.*?src="([^"]+)".+?<p class="entry-summary">([^<]+)</p>'
+    sPattern ='<div id="(post-[0-9]+)".+?<a class="clip-link".+?title="([^<]+)" href="([^<]+)"><span class="clip"><img src="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -128,7 +129,7 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
  
-            sTitle = unicode(aEntry[0], 'utf-8')#converti en unicode
+            sTitle = unicode(aEntry[1], 'utf-8')#converti en unicode
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
             #sTitle = unescape(str(sTitle))
             sTitle = sTitle.encode( "utf-8")
@@ -144,16 +145,16 @@ def showMovies(sSearch = ''):
             #sTitle = cUtil().DecoTitle(sTitle)
            
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
+            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[3]))
            
             #print str(sTitle)
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             if "/series-tv/" in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', aEntry[2], aEntry[3], oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', aEntry[3], '', oOutputParameterHandler)
             else:
-                oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'doc.png', aEntry[2], aEntry[3], oOutputParameterHandler)
+                oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'doc.png', aEntry[3], '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
  
