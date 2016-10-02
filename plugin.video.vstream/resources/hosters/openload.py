@@ -1,4 +1,6 @@
 #coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
