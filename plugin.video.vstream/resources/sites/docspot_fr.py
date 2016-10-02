@@ -58,13 +58,14 @@ def showGenres():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ["Nouveaux-2015","http://www.docspot.fr/search/documentaire+2015"] )
+    liste.append( ["Nouveaux-2016","http://www.docspot.fr/search/documentaire+2016"] )
     liste.append( ["Documentaires","http://www.docspot.fr/"] )
     liste.append( ["Météo de la semaine","http://www.docspot.fr/watch/W24bVp2dh74"] )
     liste.append( ["Bandes annonces cinéma","http://www.docspot.fr/search/bande+annonce+vf"] )
     liste.append( ["Revues de livres","http://www.docspot.fr/search/point+lecture"] )
-    
-	            
+    liste.append( ["Musique","http://www.docspot.fr/channel/music"] )
+    liste.append( ["Jeux-vidéos-Gaming","http://www.docspot.fr/channel/gaming"] )
+                
     for sTitle,sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()
