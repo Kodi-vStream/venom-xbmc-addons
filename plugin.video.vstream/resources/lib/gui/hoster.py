@@ -296,6 +296,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('streammoe')
         if ('tune' in sHosterUrl):
             return cHosterHandler().getHoster('tune')
+        if ('sendvid' in sHosterUrl):
+            return cHosterHandler().getHoster('sendvid')
             
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHosterUrl):
