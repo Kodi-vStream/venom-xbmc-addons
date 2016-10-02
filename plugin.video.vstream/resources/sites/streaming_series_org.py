@@ -24,9 +24,9 @@ URL_MAIN = 'http://streaming-series.tv/'
 
 
 SERIE_SERIES = (URL_MAIN, 'showMovies')
-SERIE_VIEWS = (URL_MAIN + 'lesplusvues/', 'showMovies')
-SERIE_COMMENTS = (URL_MAIN + 'lespluscommentees/', 'showMovies')
-SERIE_NOTES = (URL_MAIN + 'lesmieuxnotees/', 'showMovies')
+SERIE_VIEWS = (URL_MAIN + 'series-les-plus-vues/', 'showMovies')
+SERIE_COMMENTS = (URL_MAIN + 'en-cok-yorumlananlar/', 'showMovies')
+SERIE_NOTES = (URL_MAIN + 'en-cok-begenilenler/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -123,7 +123,7 @@ def showMovies(sSearch = ''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -138,6 +138,7 @@ def showMovies(sSearch = ''):
                     continue
 
             sSmall = aEntry[3].replace('<span class="likeThis">', '').replace('</span>', '')
+            sSmall = sSmall.replace('Yorum','Commentaire')
             sTitle = aEntry[2]+' - [COLOR azure]'+sSmall+'[/COLOR]'
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
@@ -171,7 +172,7 @@ def showSeries():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
 
-    sPattern = '<a href="([^<]+)"><span>(.+?)</span></a>'
+    sPattern = '<a href="([^<]+)"><span>([^"]+(?<!Infos série))</span></a>' #vire non épisode
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
