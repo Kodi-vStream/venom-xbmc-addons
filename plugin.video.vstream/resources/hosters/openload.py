@@ -137,22 +137,23 @@ class cHoster(iHoster):
         xbmc.log('url teste : ' + self.__sUrl)
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('User-Agent',UA)
-        sHtmlContent = oRequest.request()
+        sHtmlContent1 = oRequest.request()
         
         #Recuperation url cachee
         TabUrl = []
         sPattern = '<span id="([^"]+)">([^<>]+)<\/span>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        aResult = oParser.parse(sHtmlContent1, sPattern)
         if (aResult[0]):
             TabUrl = aResult[1]
+            #xbmc.log(str(TabUrl))
         else:
             return False, False
         
         #on essais de situer le code
         sPattern = '<script src="\/assets\/js\/video-js\/video\.js\.ol\.js">(.+)*'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        aResult = oParser.parse(sHtmlContent1, sPattern)
         if (aResult[0]):
-            sHtmlContent = aResult[1][0]
+            sHtmlContent2 = aResult[1][0]
         
         #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent)
@@ -161,20 +162,40 @@ class cHoster(iHoster):
         code = ''
         
         #liste tout les decoders
-        sHtmlContent = CheckCpacker(sHtmlContent)
-        #xbmc.log(sHtmlContent)
-        sHtmlContent = CheckJJDecoder(sHtmlContent)
-        #xbmc.log(sHtmlContent)
+        maxboucle = 1
+        sHtmlContent3 = sHtmlContent2
         
-        code = sHtmlContent
+        while (('#streamurl' not in sHtmlContent3) and (maxboucle > 0)):
+            sHtmlContent3 = CheckCpacker(sHtmlContent3)
+            #xbmc.log(sHtmlContent3)
+            sHtmlContent3 = CheckJJDecoder(sHtmlContent3)
+            #xbmc.log(sHtmlContent3)            
+            #sHtmlContent3 = CheckAADecoder(sHtmlContent3)
+            #xbmc.log(sHtmlContent3)
+            
+            maxboucle = maxboucle - 1
+            
+        code = sHtmlContent3   
         #xbmc.log(code)
         
         if not (code):
             return False,False
-            
+        
+        #Remarques persos pour plus tard.
+        #------------------------
+        #La bonne url est tjours la plus courte
+        #Mauvaise finie par x
+        
         #Search the coded url
         hideenurl = ''
-        sPattern = '\$\("#([^"]+)"\)'
+        Hiddenvar = 'y'
+        
+        sPattern = 'var j=([a-z])\.charCodeAt'
+        aResult = oParser.parse(code, sPattern)
+        if (aResult[0]):
+            Hiddenvar = re.search('var j=([a-z])\.charCodeAt', code).group(1)
+            
+        sPattern = 'var ' + Hiddenvar + ' = \$\("#([^"]+)"\)'
         aResult = oParser.parse(code, sPattern)
         if (aResult[0]):
             for i in TabUrl:
@@ -215,7 +236,7 @@ class cHoster(iHoster):
         #Si ca marche pas on teste d'autres trucs au hazard
         if not (api_call):
             url0 = url[:-1] + chr(ord(url[-1]) - val)
-            for i in range(0,5):
+            for i in range(0,3):
                 if i != val:
                     url2 = url0[:-1] + chr(ord(url0[-1]) + i)
                     url2 = "https://openload.co/stream/" + url2 + "?mime=true" 
