@@ -514,16 +514,16 @@
   {
     "name": "series_en_streaming_tv.py",
     "path": "plugin.video.vstream/resources/sites/series_en_streaming_tv.py",
-    "sha": "eeaea776900c086f295abf8fb60d59f76ac34c2f",
-    "size": 11596,
+    "sha": "23f12b4a8df733fd6e0eb50f90844d5cf83fd919",
+    "size": 11528,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/series_en_streaming_tv.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/series_en_streaming_tv.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/eeaea776900c086f295abf8fb60d59f76ac34c2f",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/23f12b4a8df733fd6e0eb50f90844d5cf83fd919",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/series_en_streaming_tv.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/series_en_streaming_tv.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/eeaea776900c086f295abf8fb60d59f76ac34c2f",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/23f12b4a8df733fd6e0eb50f90844d5cf83fd919",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/series_en_streaming_tv.py"
     }
   },
