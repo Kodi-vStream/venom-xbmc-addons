@@ -1,14 +1,16 @@
 #-*- coding: utf-8 -*-
-#Venom.
-from resources.lib.gui.hoster import cHosterGui #system de recherche pour l'hote
-from resources.lib.handler.hosterHandler import cHosterHandler #system de recherche pour l'hote
-from resources.lib.gui.gui import cGui #system d'affichage pour xbmc
-from resources.lib.gui.guiElement import cGuiElement #system d'affichage pour xbmc
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler #entrer des parametres
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler #sortis des parametres
-from resources.lib.handler.requestHandler import cRequestHandler #requete url
-from resources.lib.config import cConfig #config
-from resources.lib.parser import cParser #recherche de code
+# Venom.
+# https://github.com/Kodi-vStream/venom-xbmc-addons
+#
+from resources.lib.gui.hoster import cHosterGui
+from resources.lib.handler.hosterHandler import cHosterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.guiElement import cGuiElement
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.config import cConfig
+from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import urllib2,urllib,re
 import xbmcgui
@@ -93,8 +95,12 @@ def AlphaDisplay():
 
     sHtmlContent = CloudflareBypass().GetHtml(sUrl)
     
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
+    
     oParser = cParser()
-    sPattern = '<a href=\'(http:\/\/www\.series-en-streaming\.tv\/serie\/.+?)\'>(' + sLetter + '[^<>]+?)<\/a><br>'
+    sPattern = '<a href=\'\.\.\/(serie\/.+?)\'>(' + sLetter + '[^<>]+?)<\/a><br>'
     aResult = oParser.parse(sHtmlContent, sPattern)
    
     if (aResult[0] == True):
@@ -106,9 +112,10 @@ def AlphaDisplay():
                 break
                 
             sTitle = CleanTitle(aEntry[1])
+            sUrl2 = URL_MAIN + aEntry[0]
             
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
             oGui.addTV(SITE_IDENTIFIER, 'ShowSaisons', sTitle, '', '','', oOutputParameterHandler)
