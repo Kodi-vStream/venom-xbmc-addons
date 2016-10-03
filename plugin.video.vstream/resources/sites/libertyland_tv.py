@@ -453,8 +453,8 @@ def seriesLinks():
                 break
 
             sUrlLink = aEntry[0]
-            if not URL_MAIN in sUrlLink:
-                sUrlLink = URL_MAIN + sUrlLink
+            if not 'http://libertyland.co/' in sUrlLink:
+                sUrlLink = 'http://libertyland.co/' + sUrlLink
             
             #test de doublon
             if sUrlLink not in listdoublon:
