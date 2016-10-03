@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'libertyland_tv'
 SITE_NAME = 'Libertyland'
 SITE_DESC = 'Les films et series recentes en streaming et en telechargement'
 
-URL_MAIN = 'http://www.libertyland.co/'
+URL_MAIN = 'http://libertyland.co/'
 
 URL_SEARCH = (URL_MAIN + 'v2/recherche/', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -97,28 +97,28 @@ def showGenre():
     oGui = cGui()
  
     liste = []
-    liste.append( ['Action','http://www.libertyland.tv/films/genre/action.html'] )
-    liste.append( ['Animation','http://www.libertyland.tv/films/genre/animation.html'] )
-    liste.append( ['Aventure','http://www.libertyland.tv/films/genre/aventure.html/'] )
-    liste.append( ['Biopic','http://www.libertyland.tv/films/genre/biopic.html'] )
-    liste.append( ['Comedie','http://www.libertyland.tv/films/genre/comedie.html'] )
-    liste.append( ['Comedie Dramatique','http://www.libertyland.tv/films/genre/comedie-dramatique.html'] )
-    liste.append( ['Comedie Musicale','http://www.libertyland.tv/films/genre/comedie-musicale.html'] )
-    liste.append( ['Drame','http://www.libertyland.tv/films/genre/drame.html'] )
-    liste.append( ['Epouvante Horreur','http://www.libertyland.tv/films/genre/horreur.html'] ) 
-    liste.append( ['Espionnage','http://www.libertyland.tv/films/genre/espionnage.html'] )
-    liste.append( ['Famille','http://www.libertyland.tv/films/genre/famille.html'] )
-    liste.append( ['Fantastique','http://www.libertyland.tv/films/genre/fantastique.html'] )  
-    liste.append( ['Guerre','http://www.libertyland.tv/films/genre/guerre.html'] )
-    liste.append( ['Historique','http://www.libertyland.tv/films/genre/historique.html'] )
-    liste.append( ['Judiciaire','http://www.libertyland.tv/films/genre/historique.html'] )
-    liste.append( ['Medical','http://www.libertyland.tv/films/genre/musical.html'] )
-    liste.append( ['Policier','http://www.libertyland.tv/films/genre/policier.html'] )
-    liste.append( ['Peplum','http://www.libertyland.tv/films/genre/peplum.html'] )
-    liste.append( ['Romance','http://www.libertyland.tv/films/genre/romance.html'] )
-    liste.append( ['Science Fiction','http://www.libertyland.tv/films/genre/science-fiction.html'] )
-    liste.append( ['Thriller','http://www.libertyland.tv/films/genre/thriller.html'] )
-    liste.append( ['Western','http://www.libertyland.tv/films/genre/western.html'] )
+    liste.append( ['Action',URL_MAIN + 'films/genre/action.html'] )
+    liste.append( ['Animation',URL_MAIN + 'films/genre/animation.html'] )
+    liste.append( ['Aventure',URL_MAIN + 'films/genre/aventure.html/'] )
+    liste.append( ['Biopic',URL_MAIN + 'films/genre/biopic.html'] )
+    liste.append( ['Comedie',URL_MAIN + 'films/genre/comedie.html'] )
+    liste.append( ['Comedie Dramatique',URL_MAIN + 'films/genre/comedie-dramatique.html'] )
+    liste.append( ['Comedie Musicale',URL_MAIN + 'films/genre/comedie-musicale.html'] )
+    liste.append( ['Drame',URL_MAIN + 'films/genre/drame.html'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'films/genre/horreur.html'] ) 
+    liste.append( ['Espionnage',URL_MAIN + 'films/genre/espionnage.html'] )
+    liste.append( ['Famille',URL_MAIN + 'films/genre/famille.html'] )
+    liste.append( ['Fantastique',URL_MAIN + 'films/genre/fantastique.html'] )  
+    liste.append( ['Guerre',URL_MAIN + 'films/genre/guerre.html'] )
+    liste.append( ['Historique',URL_MAIN + 'films/genre/historique.html'] )
+    liste.append( ['Judiciaire',URL_MAIN + 'films/genre/historique.html'] )
+    liste.append( ['Medical',URL_MAIN + 'films/genre/musical.html'] )
+    liste.append( ['Policier',URL_MAIN + 'films/genre/policier.html'] )
+    liste.append( ['Peplum',URL_MAIN + 'films/genre/peplum.html'] )
+    liste.append( ['Romance',URL_MAIN + 'films/genre/romance.html'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'films/genre/science-fiction.html'] )
+    liste.append( ['Thriller',URL_MAIN + 'films/genre/thriller.html'] )
+    liste.append( ['Western',URL_MAIN + 'films/genre/western.html'] )
                 
     for sTitle,sUrl in liste:
         
@@ -373,11 +373,10 @@ def showSaisons():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    
     oParser = cParser()
-    sPattern = '(?:<h2 class="heading-small">(Saison .+?)</h2>)|(?:<li><a title="Titre \| (.+?)" class="num_episode" href="(.+?)">.+?<\/a><\/li>)'
+    sPattern = '(?:<h2 class="heading-small">(Saison .+?)</h2>)|(?:<li><a title=".+? \| (.+?)" class="num_episode" href="(.+?)">.+?<\/a><\/li>)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -420,20 +419,19 @@ def seriesLinks():
     sHtmlContent = oRequestHandler.request()
     
     oParser = cParser()
-    
     #Gros calcul donc on delimite la zone
-    sPattern = 'Choisissez une langue(.+?)Postez votre commentaires ici'
+    sPattern = 'Choisissez une langue(.+?)<div class="blogmetas" *>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if not (aResult[0] == True):
         xbmc.log('erreur de regex')
-        sHtmlContent = ''
+        #sHtmlContent = ''
     else:
         sHtmlContent =  aResult[1][0]
     
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
-    
+
     sPattern = 'data-fancybox-type="ajax" href="(.+?)" class="fancybox fancybox\.iframe">.+?Regarder sur:<\/span> <b>(.+?)<\/b> *<\/a> *<\/p> *<\/td><td data-title="Langue" class="[^"]+">(.+?)<\/td> *<td data-title="Qualité" class="separateur[^"]+">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -453,7 +451,7 @@ def seriesLinks():
                 break
 
             sUrlLink = aEntry[0]
-            if not URL_MAIN in sUrlLink:
+            if not 'http' in sUrlLink:
                 sUrlLink = URL_MAIN + sUrlLink
             
             #test de doublon
