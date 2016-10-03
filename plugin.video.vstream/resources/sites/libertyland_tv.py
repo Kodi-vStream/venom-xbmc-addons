@@ -373,11 +373,10 @@ def showSaisons():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    
     oParser = cParser()
-    sPattern = '(?:<h2 class="heading-small">(Saison .+?)</h2>)|(?:<li><a title="Titre \| (.+?)" class="num_episode" href="(.+?)">.+?<\/a><\/li>)'
+    sPattern = '(?:<h2 class="heading-small">(Saison .+?)</h2>)|(?:<li><a title=".+? \| (.+?)" class="num_episode" href="(.+?)">.+?<\/a><\/li>)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -420,20 +419,19 @@ def seriesLinks():
     sHtmlContent = oRequestHandler.request()
     
     oParser = cParser()
-    
     #Gros calcul donc on delimite la zone
-    sPattern = 'Choisissez une langue(.+?)Postez votre commentaires ici'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if not (aResult[0] == True):
-        xbmc.log('erreur de regex')
-        sHtmlContent = ''
-    else:
-        sHtmlContent =  aResult[1][0]
+    #sPattern = 'Choisissez une langue(.+?)Postez votre commentaires ici' a voir fonctionne plus
+    #aResult = oParser.parse(sHtmlContent, sPattern)
+    #if not (aResult[0] == True):
+        #xbmc.log('erreur de regex')
+        #sHtmlContent = ''
+    #else:
+        #sHtmlContent =  aResult[1][0]
     
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
-    
+
     sPattern = 'data-fancybox-type="ajax" href="(.+?)" class="fancybox fancybox\.iframe">.+?Regarder sur:<\/span> <b>(.+?)<\/b> *<\/a> *<\/p> *<\/td><td data-title="Langue" class="[^"]+">(.+?)<\/td> *<td data-title="Qualité" class="separateur[^"]+">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
