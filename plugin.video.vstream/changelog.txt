@@ -7,77 +7,254 @@ Merci aux généreux donateurs
 - Mor17, Yoann, Stéphane G, Sylvain L, Daniel L, Jean Charles A, 3DWorld, David M, Johnny D, Rachid L, Fabrice M.
 =============================================================================
 Merci au contributeur de la bêta. 
-- FreeFighter77/mino60/zombiB/chataigne73/Kodigoal
+- FreeFighter77/mino60/zombiB/chataigne73/Kodigoal/Johngf
 =============================================================================
 =============================================================================
-- Merci à http://libretv.me/ pour le partage de leurs sources.
-=============================================================================
-=============================================================================
-- Version 0.4.4 -30.07.2016
+- Version 0.4.5 -04.10.2016
 =============================================================================
 
-2016-07-29 15:10:35 -- @TmpName -- Update planet_streaming.py
+2016-10-03 20:32:25 -- @johngf -- Update libertyland_tv.py -- fix type search et global serie
 
-2016-07-27 16:46:49 -- @mino60 -- Update topimdb.py
+2016-10-03 16:14:22 -- @TmpName -- Merge pull request #559 from Kodi-vStream/master -- Master
 
-2016-07-26 20:25:14 -- @TmpName -- Update openload.py
+2016-10-03 16:14:10 -- @TmpName -- Update sites.json
 
-2016-07-26 20:07:35 -- @TmpName -- Update hoster.py
+2016-10-03 16:12:23 -- @TmpName -- Update libertyland_tv.py
 
-2016-07-25 22:23:25 -- @mino60 -- Add files via upload
+2016-10-03 16:11:32 -- @TmpName -- Update libertyland_tv.py
 
-2016-07-25 21:39:45 -- @mino60 -- Ctreat topimdb.py
+2016-10-03 15:43:55 -- @TmpName -- Merge pull request #558 from johngf/Beta -- Update libertyland_tv.py
 
-2016-07-20 08:42:38 -- @TmpName -- Update flashx.py
+2016-10-03 14:19:27 -- @johngf -- Update libertyland_tv.py
 
-2016-07-20 08:35:10 -- @TmpName -- Update planet_streaming.py
+2016-10-03 09:58:54 -- @johngf -- Update libertyland_tv.py
 
-2016-07-19 11:36:03 -- @TmpName -- Update flashx.py
+2016-10-03 01:20:09 -- @Lord Venom -- Merge pull request #557 from Kodi-vStream/master -- Master
 
-2016-07-14 19:20:32 -- @chataigne73 -- Update zone_telechargement_com.py -- ajout recherche de spectacle
+2016-10-03 01:14:44 -- @Lord Venom -- Merge pull request #556 from johngf/johngf-patch-1 -- Update spion_com.py
 
-2016-07-14 16:52:01 -- @TmpName -- Update freebox.py
+2016-10-02 18:49:04 -- @johngf -- Update spion_com.py
 
-2016-07-14 14:17:56 -- @TmpName -- Update film_illimit_fr.py
+2016-10-02 17:36:29 -- @TmpName -- Update sites.json
 
-2016-07-13 17:59:56 -- @chataigne73 -- Update uptobox.py -- prise en charge caracte?res spe?ciaux dans les noms de fichiers uptobox
+2016-10-02 17:36:04 -- @TmpName -- Update cinemay_com.py
 
-2016-07-13 15:00:54 -- @TmpName -- Create exdown_com.py
+2016-10-02 17:35:48 -- @TmpName -- Update cinemay_com.py
 
-2016-07-12 14:48:09 -- @mino60 -- Update frenchstream_org.py
+2016-10-02 16:54:18 -- @TmpName -- Merge pull request #555 from Kodi-vStream/master -- Master
 
-2016-07-12 06:49:14 -- @Lord Venom -- update bug icon -- Modification bug icon par Djeman
+2016-10-02 16:54:04 -- @TmpName -- Update sites.json
 
-2016-07-11 22:55:56 -- @mino60 -- Update frenchstream_org.py -- changement showAne
+2016-10-02 16:53:35 -- @TmpName -- Update series_en_streaming_tv.py
 
-2016-07-11 09:19:31 -- @Lord Venom -- update the movie db -- modification encodage recherche
+2016-10-02 16:53:18 -- @TmpName -- Update series_en_streaming_tv.py
 
-2016-07-11 09:14:35 -- @Lord Venom -- update Kepliz -- limite recherche
+2016-10-02 16:42:47 -- @TmpName -- Update cloudflare.py
 
-2016-07-10 17:22:18 -- @TmpName -- Create mareplaytv.py
+2016-10-02 15:48:10 -- @TmpName -- Merge pull request #554 from Kodi-vStream/master -- Master
 
-2016-07-10 17:21:27 -- @TmpName -- Delete mareplaytv.py -- MAJ
+2016-10-02 15:47:55 -- @TmpName -- Update sites.json
 
-2016-07-09 12:30:36 -- @TmpName -- Update megastream.py
+2016-10-02 15:47:23 -- @TmpName -- Update docspot_fr.py
 
-2016-07-09 12:27:29 -- @TmpName -- Update libertyland_tv.py
+2016-10-02 15:46:54 -- @TmpName -- Update buzzmonclick_com.py
 
-2016-07-09 12:05:25 -- @TmpName -- Update nowvideo.py
+2016-10-02 15:43:52 -- @TmpName -- Merge pull request #553 from johngf/Beta -- Update buzzmonclick_com.py
 
-2016-07-09 11:32:23 -- @TmpName -- Update freebox.py
+2016-10-02 15:39:31 -- @johngf -- Update docspot_fr.py
 
-2016-07-08 21:07:45 -- @mino60 -- Update frenchstream_org
+2016-10-02 13:42:30 -- @johngf -- Update buzzmonclick_com.py
 
-2016-07-08 18:16:38 -- @TmpName -- Update frenchstream_org.py
+2016-10-02 09:49:42 -- @TmpName -- Update hoster.py
 
-2016-07-08 17:38:42 -- @TmpName -- Update frenchstream_org.py
+2016-10-02 09:49:13 -- @TmpName -- Create vidup.py
 
-2016-07-08 08:16:00 -- @Lord Venom -- update player -- del refresh inutile
+2016-10-02 09:12:02 -- @TmpName -- Update hoster.py
 
-2016-07-07 17:57:49 -- @TmpName -- Update mareplaytv.py
+2016-10-02 09:11:07 -- @TmpName -- Merge pull request #552 from Kodi-vStream/master -- Master
 
-2016-07-07 17:46:30 -- @TmpName -- Create mareplaytv.py
+2016-10-02 09:10:41 -- @TmpName -- Update sites.json
 
-2016-07-07 16:15:32 -- @TmpName -- Update tv_streaming_ch.py
+2016-10-02 09:10:04 -- @TmpName -- Update streaming_series_org.py
 
-2016-07-04 09:00:43 -- @Lord Venom -- update player
+2016-10-02 09:09:00 -- @TmpName -- Merge pull request #550 from johngf/Beta -- Update streaming_series_org.py
+
+2016-10-02 09:08:09 -- @TmpName -- Update hosts.json
+
+2016-10-02 09:07:32 -- @TmpName -- Update openload.py
+
+2016-10-02 09:05:41 -- @TmpName -- Update openload.py
+
+2016-10-02 09:05:26 -- @TmpName -- Update openload.py
+
+2016-10-02 08:51:55 -- @johngf -- Update streaming_series_org.py
+
+2016-10-01 16:35:16 -- @TmpName -- Update sites.json
+
+2016-10-01 16:34:50 -- @TmpName -- Update voirfilms_org.py
+
+2016-10-01 16:34:16 -- @TmpName -- Update voirfilms_org.py
+
+2016-10-01 16:00:27 -- @TmpName -- Merge pull request #547 from Kodi-vStream/master -- Master
+
+2016-10-01 16:00:12 -- @TmpName -- Update hosts.json
+
+2016-10-01 15:59:45 -- @TmpName -- Update cloudy.py
+
+2016-10-01 15:58:54 -- @TmpName -- Update cloudy.py
+
+2016-10-01 14:57:56 -- @TmpName -- Create rapidvideo.py
+
+2016-10-01 14:39:25 -- @Lord Venom -- Merge branch 'Beta' of https://github.com/Kodi-vStream/venom-xbmc-addons into Beta
+
+2016-10-01 14:39:20 -- @Lord Venom -- radio
+
+2016-10-01 14:37:45 -- @Lord Venom -- Merge pull request #546 from Kodi-vStream/master -- Master
+
+2016-10-01 14:37:12 -- @Lord Venom -- del
+
+2016-10-01 14:31:08 -- @Lord Venom -- add
+
+2016-10-01 14:28:50 -- @Lord Venom -- add
+
+2016-10-01 14:26:53 -- @Lord Venom -- add radio
+
+2016-10-01 14:21:31 -- @TmpName -- Create sendvid.py
+
+2016-10-01 14:16:18 -- @Lord Venom -- add radio
+
+2016-10-01 14:11:30 -- @Lord Venom -- add radio
+
+2016-10-01 12:35:31 -- @Lord Venom -- Merge pull request #545 from Kodi-vStream/master -- Master
+
+2016-09-30 16:42:40 -- @TmpName -- Update hosts.json
+
+2016-09-30 16:42:06 -- @TmpName -- Update uptostream.py
+
+2016-09-30 16:41:52 -- @TmpName -- Update uptostream.py
+
+2016-09-30 16:11:10 -- @TmpName -- Update about.py
+
+2016-09-30 14:31:17 -- @Lord Venom -- update url -- changement url
+
+2016-09-28 12:13:25 -- @Lord Venom -- Merge pull request #539 from Kodigoal/patch-1 -- Update planet_streaming.py
+
+2016-09-27 22:23:37 -- @Kodigoal -- Update planet_streaming.py -- Correction  des Url pour l'affichage  des Thumbnails  sous forme '/img/xxxxxxx.jpg/'.
+
+2016-09-27 14:11:14 -- @Lord Venom -- reparation -- buzmonclick
+
+2016-09-27 13:32:40 -- @Lord Venom -- update -- Film en streaming fin
+
+2016-09-26 15:42:29 -- @Lord Venom -- update -- presque fini
+
+2016-09-26 14:45:41 -- @Lord Venom -- Ajout d'un Donateur
+
+2016-09-26 14:43:04 -- @Lord Venom -- mise a jour filmenstreaming
+
+2016-09-25 12:00:45 -- @TmpName -- Merge pull request #536 from Kodi-vStream/master -- Master
+
+2016-09-25 11:58:51 -- @TmpName -- Update hosts.json
+
+2016-09-25 11:58:30 -- @TmpName -- Update sites.json
+
+2016-09-25 11:57:56 -- @TmpName -- Update fullmoviz_org.py
+
+2016-09-25 11:57:43 -- @TmpName -- Update fullmoviz_org.py
+
+2016-09-25 11:30:17 -- @TmpName -- Update rutube.py
+
+2016-09-24 18:33:03 -- @johngf -- Update fullmoviz_org.py -- fix recherche avec le texte youtube ou rutube qui freeze kodi
+
+2016-09-24 16:35:40 -- @TmpName -- Update rutube.py
+
+2016-09-23 16:43:48 -- @TmpName -- Update film_illimit_fr.py
+
+2016-09-23 16:36:05 -- @TmpName -- Update hoster.py
+
+2016-09-23 16:35:17 -- @TmpName -- Create streammoe.py
+
+2016-09-23 16:12:00 -- @TmpName -- Update ajouter_un_hebergeur.py
+
+2016-09-23 16:11:42 -- @TmpName -- Update ajouter_un_hebergeur.py
+
+2016-09-23 15:41:56 -- @TmpName -- Merge pull request #533 from Kodi-vStream/master -- Master
+
+2016-09-23 15:41:39 -- @TmpName -- Update sites.json
+
+2016-09-23 15:41:03 -- @TmpName -- Update film_illimit_fr.py
+
+2016-09-23 15:40:48 -- @TmpName -- Update film_illimit_fr.py
+
+2016-09-23 10:58:38 -- @TmpName -- Update about.py -- Modification pour que lors de la premiere install, un scan des MAJ soit declenche d'office.
+
+
+
+A TESTER/VALIDER.
+
+2016-09-22 19:03:55 -- @TmpName -- Merge pull request #530 from Kodi-vStream/master -- Update webtv2.m3u
+
+2016-09-22 19:02:25 -- @TmpName -- Update webtv2.m3u
+
+2016-09-22 19:01:01 -- @TmpName -- Update webtv2.m3u
+
+2016-09-22 10:10:02 -- @TmpName -- Merge pull request #529 from Kodi-vStream/master -- Master
+
+2016-09-22 10:09:44 -- @TmpName -- Update hosts.json
+
+2016-09-22 10:09:14 -- @TmpName -- Update openload.py
+
+2016-09-22 10:08:33 -- @TmpName -- Update openload.py
+
+2016-09-22 09:42:11 -- @TmpName -- Update sites.json
+
+2016-09-22 09:41:39 -- @TmpName -- Update mangacity_org.py
+
+2016-09-22 09:40:31 -- @TmpName -- Update mangacity_org.py
+
+2016-09-21 10:15:37 -- @TmpName -- Merge pull request #528 from Kodi-vStream/master -- Master
+
+2016-09-21 10:15:24 -- @TmpName -- Update sites.json
+
+2016-09-21 10:14:57 -- @TmpName -- Update mangacity_org.py
+
+2016-09-21 10:14:13 -- @TmpName -- Update mangacity_org.py
+
+2016-09-20 11:26:21 -- @TmpName -- Update util.py
+
+2016-09-20 11:20:28 -- @TmpName -- Update easyvid.py -- Rien d'important, juste une demarrage direct si il n'y qu'un seul lien.
+
+2016-09-17 21:10:08 -- @TmpName -- Merge pull request #527 from johngf/Beta -- ajout de tune.pk comme hoster
+
+2016-09-17 16:44:48 -- @johngf -- Update hoster.py
+
+2016-09-17 16:41:39 -- @johngf -- Add files via upload
+
+2016-09-16 14:34:01 -- @TmpName -- Update streamingk_com.py -- Rien d'important uste un filtrage des resultats.
+
+2016-09-16 14:31:09 -- @TmpName -- Update planet_streaming.py
+
+2016-09-16 14:26:19 -- @TmpName -- Update planet_streaming.py -- Rien d'important, juste un filtrage sur les resultats.
+
+2016-09-15 12:32:09 -- @TmpName -- Merge pull request #524 from Kodi-vStream/master -- Master
+
+2016-09-15 12:31:56 -- @TmpName -- Update sites.json
+
+2016-09-15 12:31:19 -- @TmpName -- Update packer.py
+
+2016-09-15 09:47:30 -- @TmpName -- Update mangacity_org.py
+
+2016-09-15 09:47:15 -- @TmpName -- Update mangacity_org.py
+
+2016-09-15 09:24:52 -- @TmpName -- Update tv_streaming_ch.py
+
+2016-09-15 09:24:37 -- @TmpName -- Update tv_streaming_ch.py
+
+2016-09-14 12:16:32 -- @TmpName -- Update util.py
+
+2016-09-14 11:41:37 -- @TmpName -- Merge pull request #523 from Kodi-vStream/master -- Master
+
+2016-09-14 11:41:20 -- @TmpName -- Update hosts.json
+
+2016-09-14 11:40:52 -- @TmpName -- Update openload.py
+
+
