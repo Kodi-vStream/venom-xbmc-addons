@@ -274,13 +274,14 @@ def ShowSaisons():
             sTitle = sMovieTitle + ' Saison ' + aEntry[1]
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
-            sThumb = sThumb.replace(' ','%20')
+            if sThumb: #alphadisplay pas de thumbs
+               sThumb.replace(' ','%20')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
- 
+            oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', str(sThumb), '', oOutputParameterHandler)
+
         cConfig().finishDialog(dialog)
            
     oGui.setEndOfDirectory()
@@ -333,3 +334,4 @@ def showEpisode():
     else:
         oGui.addText(SITE_IDENTIFIER, '[COLOR coral]Aucun episode disponible[/COLOR]')   
     oGui.setEndOfDirectory()
+
