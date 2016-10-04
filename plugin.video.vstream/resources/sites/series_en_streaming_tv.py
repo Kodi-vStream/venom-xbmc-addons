@@ -163,19 +163,20 @@ def showMovies(sSearch = ''):
         SpecHead = CloudflareBypass().GetHeadercookie(sUrl)  
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
-       
+
         for aEntry in list(set(aResult[1])):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
 
             sThumb = aEntry[1]
+
             if sThumb.startswith('../'):
-               sThumb = URL_MAIN + sThumb.replace('../','')
-               
+               sThumb = URL_MAIN + sThumb.replace('../','').replace(' ','%20')
+
             if URL_MAIN in sThumb:
                 sThumb = sThumb + SpecHead
-           
+
             sUrl = aEntry[0]  
             if sUrl.startswith('../'):
                sUrl = URL_MAIN + sUrl.replace('../','')
@@ -255,7 +256,7 @@ def ShowSaisons():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumbnail')
-    
+
     sHtmlContent = CloudflareBypass().GetHtml(sUrl)
    
     oParser = cParser()
@@ -275,7 +276,7 @@ def ShowSaisons():
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
             if sThumb: #alphadisplay pas de thumbs
-               sThumb.replace(' ','%20')
+               sThumb = sThumb.replace(' ','%20')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
@@ -334,4 +335,3 @@ def showEpisode():
     else:
         oGui.addText(SITE_IDENTIFIER, '[COLOR coral]Aucun episode disponible[/COLOR]')   
     oGui.setEndOfDirectory()
-
