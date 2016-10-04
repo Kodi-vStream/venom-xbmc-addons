@@ -15,9 +15,9 @@ from resources.lib.util import cUtil
 import urllib2,urllib,re
 import xbmcgui
 import unicodedata,htmlentitydefs
-
+import sets
 from resources.lib.cloudflare import CloudflareBypass
- 
+
 SITE_IDENTIFIER = 'series_en_streaming_tv'
 SITE_NAME = 'Series-en-streaming.tv'
 SITE_DESC = 'Serie en streaming'
@@ -157,23 +157,28 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     sPattern = "<a href='([^'<>]+?)' data-original-title='' title=''><img src='([^'<>]+?)' width='100%' height='100%' title='' data-original-title=''><h3 data-original-title='' title=''>(.+?)<\/h3>"
     aResult = oParser.parse(sHtmlContent, sPattern)
-   
+
     if (aResult[0] == True):
         
-        SpecHead = CloudflareBypass().GetHeadercookie(sUrl)
-        
+        SpecHead = CloudflareBypass().GetHeadercookie(sUrl)  
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
        
-        for aEntry in aResult[1]:
+        for aEntry in list(set(aResult[1])):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
 
             sThumb = aEntry[1]
+            if sThumb.startswith('../'):
+               sThumb = URL_MAIN + sThumb.replace('../','')
+               
             if URL_MAIN in sThumb:
                 sThumb = sThumb + SpecHead
-            #print sThumb
+           
+            sUrl = aEntry[0]  
+            if sUrl.startswith('../'):
+               sUrl = URL_MAIN + sUrl.replace('../','')
            
             #not found better way
             #sTitle = unicode(sTitle,'iso-8859-1')
@@ -184,9 +189,9 @@ def showMovies(sSearch = ''):
             sTitle = CleanTitle(aEntry[2])
             
             #sDisplayTitle = cUtil().DecoTitle(sTitle)
-           
+
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
  
@@ -210,8 +215,6 @@ def showHosters():
     sPattern = "href='([^<>]+?)'.+?>(?:<img src='([^<>]+?)'><\/a>)*"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    #print aResult
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -247,10 +250,11 @@ def showHosters():
    
 def ShowSaisons():
     oGui = cGui()
-    
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumbnail')
     
     sHtmlContent = CloudflareBypass().GetHtml(sUrl)
    
@@ -269,12 +273,13 @@ def ShowSaisons():
            
             sTitle = sMovieTitle + ' Saison ' + aEntry[1]
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-           
+            
+            sThumb = sThumb.replace(' ','%20')
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
- 
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', '', '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
            
@@ -296,9 +301,7 @@ def showEpisode():
     #sPattern = "<a class='various' data-fancybox-type='iframe' href='(.+?)' > *(.+?)<\/a>\t*<\/h3>\t*(.+?)<br>"
     sPattern = ';" src="(.+?)" class="img-responsive">.+?<a class="various" data-fancybox-type="iframe" href="(.+?)" *> *(.+?)<\/a>\t*<\/h3>\t*(.+?)<br>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-   
-    #print aResult
-   
+
     if (aResult[0] == True):
         
         SpecHead = CloudflareBypass().GetHeadercookie(sUrl)
@@ -327,5 +330,6 @@ def showEpisode():
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sCom, oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
-           
+    else:
+        oGui.addText(SITE_IDENTIFIER, '[COLOR coral]Aucun episode disponible[/COLOR]')   
     oGui.setEndOfDirectory()
