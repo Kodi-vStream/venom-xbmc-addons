@@ -161,8 +161,17 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-           
-            sThumbnail = aEntry[0]
+                
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),aEntry[1]) == 0:
+                    continue
+            
+            if aEntry[0].startswith('/'):
+                sThumbnail = 'http://www.planet-streaming.com' + aEntry[0]
+            else:
+                sThumbnail = aEntry[0]
+              
             siteUrl = aEntry[2]
             sTitle = str(aEntry[1])
             sQual = cUtil().removeHtmlTags(str(aEntry[3]))

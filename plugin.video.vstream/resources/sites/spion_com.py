@@ -26,7 +26,7 @@ NETS_NEWS = (URL_MAIN + 'page/1/', 'showMovies')
 NETS_GENRES = (True, 'showGenre')
  
 # True : Contenu Censuré | False : Contenu Non Censuré
-SPION_CENSURE = True   
+SPION_CENSURE = True  
                          
  
 def load(): 
@@ -79,13 +79,13 @@ def showGenre():
     liste.append( ['Santé', URL_MAIN + 'category/sante-corps/page/1/'] )  
     liste.append( ['Sport', URL_MAIN + 'category/sport/page/1/'] )
     liste.append( ['Technologie', URL_MAIN + 'category/technologie-innovations/page/1/'] )
-    liste.append( ['Transport', URL_MAIN + 'category/auto-transport/'] )
+    liste.append( ['Transport', URL_MAIN + 'category/auto-transport/page/1/'] )
     liste.append( ['TV & Cinema', URL_MAIN + 'category/tv-cinema/page/1/'] )
     liste.append( ['WTF?!', URL_MAIN + 'category/wtf/page/1/'] )
     liste.append( ['Zapping', URL_MAIN + 'category/zapping-web/page/1/'] )
                  
     if SPION_CENSURE == False:
-        liste.append( ['NSFW (+18)', URL_MAIN + 'category/notsafeforwork/page/1/'] )
+        liste.append( ['NSFW (+18)', URL_MAIN + 'nsfw/page/1/'] )
         liste.append( ['Trash (+18)', URL_MAIN + 'category/trash-gore/page/1/'] )          
                  
     for sTitle,sUrl in liste:
@@ -111,11 +111,11 @@ def showMovies(sSearch = ''):
      
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '')
      
-    sPattern = 'class="post clearfix">.+?<img src="([^<>"]+?)".+?<a href="([^<>"]+?)" rel="bookmark" title="([^"<>]+?)">'
+    sPattern = '<article id="(post-[0-9]+)".+?<img src="([^<>"]+?)".+?<a href="([^<>"]+?)" rel="bookmark" title="([^"<>]+?)">'
      
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-     
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -123,9 +123,9 @@ def showMovies(sSearch = ''):
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
              
-            sUrlp    = str(aEntry[1]) 
-            sTitle  = str(aEntry[2])
-            sPoster = str(aEntry[0])
+            sUrlp    = str(aEntry[2]) 
+            sTitle  = str(aEntry[3])
+            sPoster = str(aEntry[1])
              
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrlp) 
@@ -135,7 +135,7 @@ def showMovies(sSearch = ''):
              
         cConfig().finishDialog(dialog)
             
-        sNextPage = __checkForNextPage(sUrl)
+        sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
@@ -146,18 +146,14 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory() 
  
  
-def __checkForNextPage(sUrl):
+def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'page\/([0-9]+)\/'
-    aResult = oParser.parse(sUrl, sPattern)
-    
-    print sUrl
-    print aResult
+    sPattern = '<div class="nav-previous"><a href="([^"<>]+/[0-9]/)" class="nq_previous">'
+    aResult = oParser.parse(sHtmlContent, sPattern)
  
     if (aResult[0] == True):
-        page = int(aResult[1][0]) + 1
-        return URL_MAIN + 'page/' + str(page) + '/'
- 
+        return aResult[1][0]
+
     return False
      
  
@@ -208,3 +204,4 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
                  
     oGui.setEndOfDirectory()
+

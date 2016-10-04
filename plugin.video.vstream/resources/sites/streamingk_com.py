@@ -155,6 +155,11 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
+                
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),aEntry[2]) == 0:
+                    continue
 
             sTitle = aEntry[2]
             sTitle = sTitle.replace(' [Streaming]','')

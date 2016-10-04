@@ -586,7 +586,7 @@ class cDownload:
             
             oGui.createContexMenuDownload(oGuiElement, oOutputParameterHandler,status)
             
-            oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
+            oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
 
         oGui.setEndOfDirectory()

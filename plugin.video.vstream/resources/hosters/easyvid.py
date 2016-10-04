@@ -85,8 +85,11 @@ class cHoster(iHoster):
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
                 
-            #Si au moins 1 url
-            if (url):
+            #Si une seule url
+            if len(url) == 1:
+                api_call = url[0]
+            #si plus de une
+            elif len(url) > 1:
             #Afichage du tableau
                 dialog2 = xbmcgui.Dialog()
                 ret = dialog2.select('Select Quality',qua)

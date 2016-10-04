@@ -1,4 +1,7 @@
 #
+# Modified version From https://github.com/Kodi-vStream/venom-xbmc-addons
+#
+#
 # Unpacker for Dean Edward's p.a.c.k.e.r, a part of javascript beautifier
 # by Einar Lielmanis <einar@jsbeautifier.org>
 #
@@ -50,7 +53,7 @@ class cPacker():
                 def openload_re(match):
                     c = match.group(0)
                     b = ord(c) + int(a[1])
-                    return chr(ord(c) if (90 if c <= "Z" else 122) >= b else b - 26)
+                    return chr(b if (90 if c <= "Z" else 122) >= b else b - 26)
 
                 str = re.sub(r"[a-zA-Z]", openload_re, a[0]);
                 str = urllib2.unquote(str)
