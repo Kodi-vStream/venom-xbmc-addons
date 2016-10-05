@@ -232,6 +232,11 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir(SITE_IDENTIFIER, 'serieSeries', '[COLOR '+color_series+']'+cConfig().getlanguage(30138)+'[/COLOR]', 'series_host.png', oOutputParameterHandler)
 
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir(SITE_IDENTIFIER, 'serieHD', '[COLOR '+color_series+']'+cConfig().getlanguage(30121)+' ('+cConfig().getlanguage(30160)+')[/COLOR]', 'films_hd.png', oOutputParameterHandler)
+
+        
         oGui.setEndOfDirectory()
 
     def showAnimes(self):
@@ -327,6 +332,9 @@ class cHome:
 
     def serieVostfrs(self):
         self.__callpluging('SERIE_VOSTFRS', color_series, 'series_vostfr.png')
+        
+    def serieHD(self):
+        self.__callpluging('SERIE_HD', color_films, 'films_hd.png')
 
     def serieGenres(self):
         self.__callpluging('SERIE_GENRES', color_series, 'series_genres.png')
