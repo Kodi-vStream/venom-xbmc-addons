@@ -10,11 +10,16 @@ import xbmc, xbmcgui, xbmcplugin, sys
 import xbmcaddon,xbmcvfs
 import time
 
+#pour les sous titres
+#https://github.com/amet/service.subtitles.demo/blob/master/service.subtitles.demo/service.py
+
 class cPlayer(xbmc.Player):
     
     def __init__(self, *args):
         xbmc.Player.__init__(self)
         self.loadingStarting = time.time()
+        
+        self.Subtitles_file = []
         
         oInputParameterHandler = cInputParameterHandler()
         #aParams = oInputParameterHandler.getAllParameter()
@@ -42,13 +47,21 @@ class cPlayer(xbmc.Player):
         oPlaylist = self.__getPlayList()	
         oPlaylist.add(oGuiElement.getMediaUrl(), oListItem )
         
+    def AddSubtitles(self,file):
+        self.Subtitles_file.append(file)
+        
     def run(self, oGuiElement, sTitle, sUrl):
+    
         sPluginHandle = cPluginHandler().getPluginHandle();
         #meta = oGuiElement.getInfoLabel()
         meta = {'label': sTitle, 'title': sTitle}
         item = xbmcgui.ListItem(path=sUrl, iconImage="DefaultVideo.png",  thumbnailImage=self.sThumbnail)
         
         item.setInfo( type="Video", infoLabels= meta )
+        
+        #Sous titres
+        if (self.Subtitles_file):
+            item.setSubtitles(self.Subtitles_file)
                     
         if (cConfig().getSetting("playerPlay") == '0'):   
                             
@@ -75,6 +88,11 @@ class cPlayer(xbmc.Player):
         xbmcPlayer = xbmc.Player(sPlayerType)
         oPlayList = self.__getPlayList()
         xbmcPlayer.play(oPlayList)
+        
+        #Sous-titres
+        #Non actives ici car j'ai pas trouve de fichiers pour tester
+        #xbmc.Player().setSubtitles()
+        
         timer = int(cConfig().getSetting('param_timeout'))
         xbmc.sleep(timer)            
 
