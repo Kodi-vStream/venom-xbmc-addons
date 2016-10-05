@@ -179,8 +179,10 @@ class cHoster(iHoster):
     def GetMedialinkStreaming(self,sHtmlContent):
         
         oParser = cParser()
-        sPattern =  "<source src='([^<>']+)' type='[^'><]+?' data-res='([0-9]+p)'"
+        sPattern =  "<source src='([^<>']+)' type='[^'><]+?' data-res='([0-9]+p)'(?:[^<>]* lang='([^']+))*"
         aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        stream_url = ''
         
         if (aResult[0] == True):
             url=[]
@@ -188,22 +190,34 @@ class cHoster(iHoster):
             
             for aEntry in aResult[1]:
                 url.append(aEntry[0])
-                qua.append(aEntry[1])
-             
-            dialog2 = xbmcgui.Dialog()
-            ret = dialog2.select('Select Quality',qua)
-            if (ret > -1):
-                stream_url = url[ret]
+                tmp_qua = aEntry[1]
+                if (aEntry[2]):
+                    tmp_qua = tmp_qua + ' (' + aEntry[2] + ')'
+                qua.append(tmp_qua)
+                
+            #Si une seule url
+            if len(url) == 1:
+                stream_url = url[0]
+            #si plus de une
+            elif len(url) > 1:
+                #Afichage du tableau
+                dialog2 = xbmcgui.Dialog()
+                ret = dialog2.select('Select Quality',qua)
+                if (ret > -1):
+                    stream_url = url[ret]
+                else:
+                    return False, False
             else:
-                return False
+                return False, False
             
             stream_url = urllib.unquote(stream_url)
+            
             if not stream_url.startswith('http'):
                 stream_url = 'http:' + stream_url
-            return stream_url
+                
+            return True, stream_url
         else:
             cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
-            return False
+            return False, False
         
-        return False
-        
+        return False, False
