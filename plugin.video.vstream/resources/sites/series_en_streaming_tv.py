@@ -289,7 +289,6 @@ def ShowSaisons():
     
 def showEpisode():
     oGui = cGui()
-    
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -301,7 +300,7 @@ def showEpisode():
    
     oParser = cParser()
     #sPattern = "<a class='various' data-fancybox-type='iframe' href='(.+?)' > *(.+?)<\/a>\t*<\/h3>\t*(.+?)<br>"
-    sPattern = ';" src="(.+?)" class="img-responsive">.+?<a class="various" data-fancybox-type="iframe" href="(.+?)" *> *(.+?)<\/a>\t*<\/h3>\t*(.+?)<br>'
+    sPattern = ';" src="([^"]+)" class="img-responsive">.+?<a class="various" data-fancybox-type="iframe" href="(.+?)" *> *(.+?)<\/a> *<\/h3>([^<>]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -315,17 +314,21 @@ def showEpisode():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-           
+                
+            sUrl = aEntry[1]
+            if not URL_MAIN in sUrl:
+               sUrl = 'http://www.series-en-streaming.tv' + sUrl
+
             sTitle = sMovieTitle + ' ' + aEntry[2]
             sThumb = aEntry[0]
             if URL_MAIN in sThumb:
-                sThumb = sThumb + SpecHead        
+                sThumb = sThumb + SpecHead
+                      
             sCom = aEntry[3]
-                        
             sDisplayTitle = cUtil().DecoTitle(sTitle)
            
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
  
