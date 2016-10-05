@@ -11,8 +11,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-
-import xbmc
+import urllib
 
 SITE_IDENTIFIER = 'fullmoviz_org'
 SITE_NAME = 'FullMoviz.org'
@@ -109,7 +108,7 @@ def showMovies(sSearch=''):
     
     oParser = cParser()
     
-    sPattern = '<div class="post-thumbnail"><a href="([^<]+)" title="([^"]+)"><img [^<>]+src="([^"]+)".+?<div class="entry excerpt entry-summary"><p>([^<>]+)<'
+    sPattern = '<div class="post-thumbnail"><a href="([^<]+)" title="([^"]+)"><img [^<>]+src="([^"]+)".+?<p>([^<>]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -120,16 +119,20 @@ def showMovies(sSearch=''):
             if dialog.iscanceled():
                 break
 
-            sTitle = aEntry[1].replace('Film Complet en Streaming', '')
-            sTitle = aEntry[1].replace(' streaming', '')
-            #sThumbnail = 'http:'+str(aEntry[2])
-            #sUrl = URL_MAIN+str(aEntry[1])
-
+            sTitle = aEntry[1]
+            bliste = ['Film Complet en Streaming','en streaming','streaming','sreaming']
+            for item in bliste:
+                if item in aEntry[1]:
+                   sTitle = sTitle.replace(item,'')
+            
+            sThumb = aEntry[2]
+            sThumb = urllib.quote(sThumb, safe=':/')
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))            
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[2], aEntry[3], oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)           
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, aEntry[3], oOutputParameterHandler)
          
         cConfig().finishDialog(dialog)
 
@@ -197,4 +200,3 @@ def showHosters():
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
-    
