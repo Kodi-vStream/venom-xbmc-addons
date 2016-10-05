@@ -26,7 +26,7 @@ URL_MAIN = 'http://www.hd-stream.in/'
  
 MOVIE_NEWS = (URL_MAIN + 'index.php', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films.php', 'showMovies')
-MOVIE_VIEWS = (URL_MAIN + 'top.php', 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'top-films.php', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'films.php', 'showMovies')
  
 MOVIE_GENRES = (True, 'showGenre')
@@ -179,12 +179,14 @@ def showMovies(sSearch = ''):
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
-
-    sPattern = 'div class="view view-third"><img src="([^"<>]+?)".+?<a href="([^<>"]+?)" style="color:#FFFFFF"><div class="mask"><h2>(.+?)<\/h2><p>(.+?)<\/p>'
+    if '/top-films.php' in sUrl:
+        sPattern = 'div class="view view-third"><img src="([^"<>]+?)".+?<div class="mask"><h2>(.+?)<\/h2><p>(.+?)<\/p><a href="([^<>"]+?)"'
+    else:
+        sPattern = 'div class="view view-third"><img src="([^"<>]+?)".+?<a href="([^<>"]+?)" style="color:#FFFFFF"><div class="mask"><h2>(.+?)<\/h2><p>(.+?)<\/p>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-   
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -192,16 +194,23 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-           
-            sThumbnail = URL_MAIN+str(aEntry[0])
-            siteUrl = URL_MAIN+str(aEntry[1])
-            sCom = str(aEntry[3])
+                
+            if '/top-films.php' in sUrl:
+                sThumbnail = URL_MAIN+str(aEntry[0])
+                siteUrl = URL_MAIN+str(aEntry[3])
+                sCom = str(aEntry[2])
+                sTitle = str(aEntry[1])
+            else:
+                sThumbnail = URL_MAIN+str(aEntry[0])
+                siteUrl = URL_MAIN+str(aEntry[1])
+                sCom = str(aEntry[3])
+                sTitle = str(aEntry[2])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)            
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[2], 'films.png', sThumbnail, sCom, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumbnail, sCom, oOutputParameterHandler)
            
         cConfig().finishDialog(dialog)
  
