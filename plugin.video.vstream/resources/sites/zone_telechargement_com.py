@@ -684,7 +684,16 @@ def Display_protected_link():
         else:
             oDialog = cConfig().createDialogOK('Desole, probleme de captcha.\n Veuillez en rentrer un directement sur le site, le temps de reparer')
             aResult_dlprotect = (False, False)
-            
+
+    #Est ce un lien engine/tmpd ?
+    elif 'engine/tmpd' in sUrl:
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
+    
+        if sHtmlContent:
+            sPattern_dlprotect = '><a href="(.+?)" target="_blank">'
+            aResult_dlprotect = oParser.parse(sHtmlContent, sPattern_dlprotect)
+    
     #Si lien normal       
     else:
         if not sUrl.startswith('http'):
