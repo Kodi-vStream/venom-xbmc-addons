@@ -61,8 +61,12 @@ class cPlayer(xbmc.Player):
         
         #Sous titres
         if (self.Subtitles_file):
-            item.setSubtitles(self.Subtitles_file)
-                    
+            try:
+                item.setSubtitles(self.Subtitles_file)
+                cConfig().log("Load SubTitle :" + str(self.Subtitles_file))
+            except:
+                cConfig().log("Can't load subtitle :" + str(self.Subtitles_file))
+                
         if (cConfig().getSetting("playerPlay") == '0'):   
                             
             sPlayerType = self.__getPlayerType()
