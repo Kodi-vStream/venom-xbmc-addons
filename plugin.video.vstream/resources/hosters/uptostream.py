@@ -1,3 +1,6 @@
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
+#
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
@@ -101,7 +104,8 @@ class cHoster(iHoster):
                 url.append(aEntry[0])
                 tmp_qua = aEntry[1]
                 if (aEntry[2]):
-                    tmp_qua = tmp_qua + ' (' + aEntry[2] + ')'
+                    if 'unknow' not in aEntry[2]:
+                        tmp_qua = tmp_qua + ' (' + aEntry[2] + ')'
                 qua.append(tmp_qua)
                 
             #Si une seule url
