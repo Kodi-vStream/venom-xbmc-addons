@@ -352,6 +352,11 @@ class cHosterGui:
                 oGuiElement.getInfoLabel()
                 
                 oPlayer = cPlayer()
+                
+                #sous titres ?
+                if len(aLink) > 2:
+                    oPlayer.AddSubtitles(aLink[2])
+                    
                 oPlayer.run(oGuiElement, oHoster.getFileName(), aLink[1])
                 
                 # oGuiElement = cGuiElement()

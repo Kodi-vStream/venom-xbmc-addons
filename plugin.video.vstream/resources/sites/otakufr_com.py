@@ -1,0 +1,303 @@
+#-*- coding: utf-8 -*-
+#johngf.
+from resources.lib.gui.hoster import cHosterGui 
+from resources.lib.handler.hosterHandler import cHosterHandler 
+from resources.lib.gui.gui import cGui 
+from resources.lib.gui.guiElement import cGuiElement 
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler 
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler 
+from resources.lib.handler.requestHandler import cRequestHandler 
+from resources.lib.config import cConfig 
+from resources.lib.parser import cParser 
+from resources.lib.util import cUtil 
+import urllib2,urllib,re
+import xbmc,xbmcgui
+
+SITE_IDENTIFIER = 'otakufr_com'  
+SITE_NAME = 'otakufr.com' 
+SITE_DESC = 'OtakuFR animes en streaming et telechargement'
+
+URL_MAIN = 'http://otakufr.com'
+URL_SEARCH = (URL_MAIN + '/anime-list/search/', 'showMovies')
+FUNCTION_SEARCH = 'showMovies'
+ANIM_NEWS = (URL_MAIN + '/latest-episodes/' , 'showMovies')
+ANIM_ANIMS = (URL_MAIN + '/anime-list-all/', 'showAlpha')
+ANIM_POPULAR = (URL_MAIN + '/anime-list/all/any/most-popular/' , 'showMovies')
+ANIM_VOSTFRS = (URL_MAIN + '/anime-list-all/', 'showAlpha')
+
+def load():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler() 
+    oOutputParameterHandler.addParameter('siteUrl', 'siteUrl') 
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler) 
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animes Nouveautés', 'animes.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_POPULAR[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_POPULAR[1], 'Animes Populaire', 'animes.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animes liste complete', 'animes.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Anime VOSTFR', 'animes.png', oOutputParameterHandler) 
+            
+    oGui.setEndOfDirectory()
+
+def showSearch(): 
+    oGui = cGui()
+    sSearchText = oGui.showKeyBoard() 
+    if (sSearchText != False):
+        sUrl = URL_SEARCH[0] + sSearchText
+        showMovies(sUrl) 
+        oGui.setEndOfDirectory()
+        return  
+
+def showMovies(sSearch = ''):
+    oGui = cGui()
+    if sSearch:
+      sUrl = sSearch
+    else:
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+   
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
+    
+    if '/latest-episodes/' in sUrl:
+        sPattern = '<a href="([^"]+)" class="anm" title="([^"]+)">[^<]+<\/a>.+?<img src="([^"]+)" alt="(.+?)">' #news
+    else:
+        sPattern = '<h2><a href="([^<]+)">([^<]+)</a></h2>.+?<img src="(.+?)"' #populaire et search
+
+
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+                
+            sUrl = aEntry[0]
+            #sThumb = 'http:' + aEntry[2]
+            sThumb = aEntry[2]
+            sThumb = sThumb.replace(' ','%20')
+
+            sType = ''
+            if 'vostfr' or 'Vostfr' in sUrl:
+                sType = 'VOSTFR'
+
+            sTitle =  aEntry[1] + '(' + sType + ')'
+
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+
+            oGui.addMisc(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
+
+
+        cConfig().finishDialog(dialog)
+           
+        sNextPage = __checkForNextPage(sHtmlContent)
+        if (sNextPage != False):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+
+    if not sSearch:
+        oGui.setEndOfDirectory()
+
+def showAlpha():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    oParser = cParser()
+    sPattern = '<a href="([^<]+)">([A-Z#])<\/a>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            
+            sLetter = aEntry[1]
+            Link = aEntry[0]
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN) + Link)
+            oOutputParameterHandler.addParameter('AZ', sLetter)
+            oGui.addTV(SITE_IDENTIFIER, 'showAZ', 'Lettre - [B][COLOR coral]' + sLetter + '[/COLOR][/B]', 'animes.png', '', '', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+        
+def showAZ():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    dAZ = oInputParameterHandler.getValue('AZ')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    oParser = cParser()
+    sPattern = '<li><a href="([^<]+)" title="([^<]+)" rel="([^<]+)" class="anm_det_pop">([^<]+)<\/a><\/li>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True) :
+        for aEntry in aResult[1]:
+            if aEntry[1].upper()[0] == dAZ or aEntry[1][0].isdigit() and dAZ == '#':
+            
+               sUrl = aEntry[0]
+               sTitle =  aEntry[1] + '(' + 'VOSTFR' + ')'
+               sDisplayTitle = cUtil().DecoTitle(sTitle)
+
+               oOutputParameterHandler = cOutputParameterHandler()
+               oOutputParameterHandler.addParameter('siteUrl', sUrl)
+               oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+               oGui.addMisc(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, 'animes.png', '', '', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+    
+def __checkForNextPage(sHtmlContent): #cherche la page suivante
+    oParser = cParser()
+    sPattern = '<li><a href="([^<]+)">Suivant<\/a><\/li>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        return aResult[1][0]
+
+    return False
+    
+   
+def showEpisodes():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    #thumbetsyno
+    try:
+       oParser = cParser()
+       sThumb = ''
+       sSyn = '' 
+       sPattern = '<img class="cvr" src="([^"]+)".+?<div class="det"><p><b>Synopsis</b>:<br/>([^<]+)<\/p>'
+       aResult = oParser.parse(sHtmlContent, sPattern)
+       if aResult[0]:
+          sThumb = aResult[1][0][0]
+          sSyn = aResult[1][0][1]
+    except:
+       pass
+
+    oParser = cParser()
+    #sPattern = '<a class="lst" href="([^"]+)" title="([^"]+)"><b class="val">'ok
+    sPattern = '<a class="lst" href="([^"]+)" title="([^"]+(?<!Episode Date)(?<!Episode News))"><b class="val">'#vire les non épisode
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+               break
+               
+            p = re.search(r'(\d+)[ +](\d+)',aEntry[1])
+            if p:
+                sTitle = re.sub(r'(\d+)[ +](\d+)', p.group(1) + "-" + p.group(2) ,aEntry[1])
+            else:
+                sTitle = aEntry[1]
+            iliste = ['Ep-','-Vostfr','Vostfr-']
+            for item in iliste:
+                if item in aEntry[1]:
+                   sTitle = sTitle.replace(item,'')
+
+            sUrl  = aEntry[0]
+            sThumb = sThumb.replace(' ','%20')
+            sTitle = sTitle.replace('Episode SP','Episode Spécial')
+            sTitle = sTitle.replace(' + ','-')
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters',sDisplayTitle, 'animes.png', sThumb, sSyn, oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+          
+    oGui.setEndOfDirectory()
+        
+def showHosters():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'}
+    
+    sUrl = sUrl.replace(' + ','+%2B+')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    oParser = cParser()
+    sPattern = '<a href="([^"<>]+/[0-9]/)">([^"]+)<\/a>' 
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    #on saute une navigation par rapport a l'ancienne version
+    #et on récupère tous les liens d'un coup
+    
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog('veuillez patienter')
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+               break
+            try:
+               request = urllib2.Request(aEntry[0],None,headers)
+               reponse = urllib2.urlopen(request) #foule le_dimanche_soir
+            except:
+               break          
+            else:  
+               eLinks = reponse.read()
+               hLinks = re.search('<div class="vdo_wrp"><iframe.+?src="(.+?)"',eLinks)
+               reponse.close()
+               
+               if hLinks:
+                  sHosterUrl = hLinks.group(1) 
+                  if not sHosterUrl.startswith('http'):
+                     sHosterUrl = 'http:' + sHosterUrl
+
+                  oHoster = cHosterGui().checkHoster(sHosterUrl)
+
+                  if (oHoster != False):
+                      sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                      oHoster.setDisplayName(sDisplayTitle)
+                      oHoster.setFileName(sMovieTitle)
+                      cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+                      
+        cConfig().finishDialog(dialog)
+          
+    cHosterGui().plusHoster(oGui) #alluc_ee
+        
+    oGui.setEndOfDirectory()
+
+
