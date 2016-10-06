@@ -206,18 +206,18 @@ class cHoster(iHoster):
                 if (ret > -1):
                     stream_url = url[ret]
                 else:
-                    return False, False
+                    return False
             else:
-                return False, False
+                return False
             
             stream_url = urllib.unquote(stream_url)
             
             if not stream_url.startswith('http'):
                 stream_url = 'http:' + stream_url
                 
-            return True, stream_url
+            return stream_url
         else:
             cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
-            return False, False
+            return False
         
-        return False, False
+        return False
