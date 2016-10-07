@@ -131,7 +131,11 @@ class cHosterGui:
         sHosterUrl = sHosterUrl.split('|')[0]
         
         #Recuperation du host
-        sHostName = sHosterUrl.split('/')[2]
+        try:
+            sHostName = sHosterUrl.split('/')[2]
+        except:
+            sHostName = sHosterUrl
+        
             
         #L'user a active l'url resolver ?
         if cConfig().getSetting('UserUrlResolver') == 'true':
