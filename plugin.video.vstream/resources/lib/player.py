@@ -1,3 +1,6 @@
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
+#
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
@@ -47,8 +50,11 @@ class cPlayer(xbmc.Player):
         oPlaylist = self.__getPlayList()	
         oPlaylist.add(oGuiElement.getMediaUrl(), oListItem )
         
-    def AddSubtitles(self,file):
-        self.Subtitles_file.append(file)
+    def AddSubtitles(self,files):
+        if isinstance(files, basestring):
+            self.Subtitles_file.append(files)
+        else:
+            self.Subtitles_file = files
         
     def run(self, oGuiElement, sTitle, sUrl):
     
