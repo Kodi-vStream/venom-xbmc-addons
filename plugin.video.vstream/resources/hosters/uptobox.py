@@ -80,6 +80,18 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.replace('https://uptobox.com/', '')
         self.__sUrl = self.__sUrl.replace('iframe/', '')
         self.__sUrl = 'http://uptobox.com/' + str(self.__sUrl)
+        
+    def checkSubtitle(self,sHtmlContent):
+        oParser = cParser()
+        sPattern = "<track type='srt' kind='subtitles' src='([^']+)' srclang='fr' label='French'>"
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            r = aResult[1][0]
+            if not r.startswith('http'):
+                r = 'http:' + r
+            return r
+
+        return False
 
     def checkUrl(self, sUrl):
         return True
@@ -133,14 +145,20 @@ class cHoster(iHoster):
 
         sHtmlContent = self.oPremiumHandler.GetHtml(self.__sUrl)
         
+        SubTitle = ''
+        SubTitle = self.checkSubtitle(sHtmlContent)
+        
         if (self.stream):
             api_call = self.GetMedialinkStreaming(sHtmlContent)
         else:
             api_call = self.GetMedialinkDL(sHtmlContent)
             
         if api_call:
-            return True, api_call
-            
+            if SubTitle:
+               return True, api_call,SubTitle
+            else:
+                return True, api_call
+
         cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
         return False, False
         
