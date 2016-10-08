@@ -290,7 +290,7 @@ def showHostersSerie():
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','')
 
-    sPattern = 'onclick="lecteur_serie\([0-9]+,\'([^<>]+?)\'\);">'
+    sPattern = 'onclick="lecteur_serie\([0-9]+,\'(http[^<>]+?)\'\);">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -308,7 +308,6 @@ def showHostersSerie():
 
             sHosterUrl = str(aEntry)
 
-            #oHoster = __checkHoster(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
