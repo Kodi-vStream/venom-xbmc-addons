@@ -104,8 +104,8 @@ class cHoster(iHoster):
                         
                         #xbmc.log('>> ' + sUrl)
                         
-                        url_stream = sUrl + '?start=0 '
-            
+                        url_stream = sUrl
+
         if (url_stream): 
             return True, url_stream
         else:
