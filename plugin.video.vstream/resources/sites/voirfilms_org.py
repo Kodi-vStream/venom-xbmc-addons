@@ -54,7 +54,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries nouveaute', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries nouveautees', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
@@ -62,7 +62,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animes Nouveaute', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animes Nouveautes', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
@@ -224,15 +224,9 @@ def showMovies(sSearch = ''):
         sPattern = '<div class="imagefilm">.+?<img src="(.+?)".+?<a href="([^<>]+?)".+?titreunfilm" style="width:145px;">(.+?)<\/div>'
     
     sHtmlContent = sHtmlContent.replace('\n','')
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-    
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-   
-    #print aResult
    
     if not (aResult[0] == False):
         total = len(aResult[1])
@@ -246,11 +240,11 @@ def showMovies(sSearch = ''):
             sTitle = cUtil().unescape(aEntry[2])
             sPicture = str(aEntry[0])
             if not 'http' in sPicture:
-                sPicture = str(URL_MAIN) + sPicture
+                sPicture = URL_MAIN + sPicture
                 
             sUrl = str(aEntry[1])
             if not 'http' in sUrl:
-                sUrl = str(URL_MAIN) + sUrl
+                sUrl = URL_MAIN + sUrl
            
             #not found better way
             #sTitle = unicode(sTitle, errors='replace')
@@ -306,12 +300,6 @@ def showHosters():
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent.replace('\n',''))
-    #fh.close()
-
-    #print aResult
    
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -348,6 +336,11 @@ def serieHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
+    #xbmc.log(sUrl)
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
+    
     if '-saison-' in sUrl or '/anime/' in sUrl:
         sPattern = '<li class="description132"><a class="n_episode2" title=".+?" href="(.+?)">(.+?)<\/a><\/li>'
     else:
@@ -370,8 +363,8 @@ def serieHosters():
                 
             sTitle = sMovieTitle + sEp
             sUrl = str(aEntry[0])
-            if 'http://www.voirfilms.org' not in sUrl:
-                sUrl = str(URL_MAIN) + sUrl
+            if 'http' not in sUrl:
+                sUrl = URL_MAIN + sUrl
            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -409,7 +402,7 @@ def showHostersLink():
     #Modifications
     sUrl = sUrl.replace('1wskdbkp.xyz','youwatch.org')
 
-    #xbmc.log(sUrl)
+    xbmc.log(sUrl)
    
     sHosterUrl = sUrl
     oHoster = cHosterGui().checkHoster(sHosterUrl)
