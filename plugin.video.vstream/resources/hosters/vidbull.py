@@ -106,7 +106,6 @@ class cHoster(iHoster):
                         
                         url_stream = sUrl + '?start=0 '
             
-        #http://91.195.99.72:182/d/7jshfdiuljrwuximqy5wb7qw7x4brumuxbj7xdvvsmbhfe7j4ll6d4tc/video.mp4?start=0 
         if (url_stream): 
             return True, url_stream
         else:
