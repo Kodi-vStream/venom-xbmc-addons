@@ -86,10 +86,16 @@ class cHoster(iHoster):
         sPattern = "<track type='srt' kind='subtitles' src='([^']+)' srclang='fr' label='French'>"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            r = aResult[1][0]
-            if not r.startswith('http'):
-                r = 'http:' + r
-            return r
+            Files = []
+            for aEntry in aResult[1]:
+                url = aEntry[0]
+                label = aEntry[1]
+                
+                if not url.startswith('http'):
+                    url = 'http:' + url
+                if 'Forced' not in label:
+                    Files.append(url)
+            return Files
 
         return False
 
@@ -155,7 +161,8 @@ class cHoster(iHoster):
             
         if api_call:
             if SubTitle:
-               return True, api_call,SubTitle
+                cGui().showInfo('Sous-titres disponibles', '', 2)
+                return True, api_call,SubTitle
             else:
                 return True, api_call
 
