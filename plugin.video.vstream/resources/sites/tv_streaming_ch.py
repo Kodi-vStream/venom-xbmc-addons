@@ -36,7 +36,6 @@ SERIE_NEWS = (URL_MAIN + '/category/series-tv/', 'showMovies')
 SERIE_VFS = (URL_MAIN + '/category/series-tv/serie-vf/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + '/category/series-tv/serie-vostfr/', 'showMovies')
 
-
 ANIM_VFS = (URL_MAIN + '/category/manga-vf/', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + '/category/manga-vf/manga-vostfr/', 'showMovies')
 
@@ -76,7 +75,11 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series VOSTFR', 'series_vostfr.png', oOutputParameterHandler)
-    
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/sitcoms/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Sitcoms', 'series.png', oOutputParameterHandler)
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés VF', 'animes_vf.png', oOutputParameterHandler)
