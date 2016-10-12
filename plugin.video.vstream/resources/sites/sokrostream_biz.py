@@ -375,7 +375,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()	
     sHtmlContent = sHtmlContent.replace('<span class="tr-dublaj"></span>', '').replace('<span class="tr-altyazi"></span>','').replace('<small>','').replace('</small>','').replace('<span class="likeThis">','').replace('</span>','')
     
-    if (sSearch or ('/series' in sUrl)):
+    if (sSearch or ('/series' in sUrl) or ('/search/' in sUrl)):
       #sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<]+)" alt=".+?" height=".+?" width=".+?" \/><\/a> *<div class="movief"><a href="([^<]+)">(.+?)<\/a><\/div> *<div class="movies"><\/div>'
       sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<]+)" alt=".+?" height="125px" width="119px" \/><\/a> *<div class="movief"><a href="([^<]+)">(.+?)<\/a>'
     else:
@@ -395,7 +395,7 @@ def showMovies(sSearch = ''):
             if (URL_MAIN + 'series/' in sUrl) and ('-saison-' not in aEntry[1]):
                 continue
             
-            if (sSearch or ('categories/series' in sUrl) or ('/series/' in sUrl) or ('/series-tv/' in sUrl)):
+            if (sSearch or ('categories/series' in sUrl) or ('/series/' in sUrl) or ('/series-tv/' in sUrl) or ('/search/' in sUrl)):
               sTitle = aEntry[2]
             else:
               sTitle = aEntry[2]+' ('+aEntry[3]+')'
