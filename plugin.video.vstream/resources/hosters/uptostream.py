@@ -1,8 +1,11 @@
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
+#
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-import urllib,xbmcgui
+import urllib,xbmcgui,xbmc
 
 class cHoster(iHoster):
 
@@ -72,6 +75,18 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.replace('iframe/', '')
         self.__sUrl = 'http://uptostream.com/iframe/' + str(self.__sUrl)
 
+    def checkSubtitle(self,sHtmlContent):
+        oParser = cParser()
+        sPattern = "<track type='srt' kind='subtitles' src='([^']+)' srclang='fr' label='French'>"
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            r = aResult[1][0]
+            if not r.startswith('http'):
+                r = 'http:' + r
+            return r
+
+        return False
+
     def checkUrl(self, sUrl):
         return True
 
@@ -87,6 +102,9 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
+        SubTitle = ''
+        #SubTitle = self.checkSubtitle(sHtmlContent)
+        
         oParser = cParser()
         sPattern =  "<source src='([^<>']+)' type='[^'><]+?' data-res='([0-9]+p)'(?:[^<>]* lang='([^']+))*"
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -101,7 +119,8 @@ class cHoster(iHoster):
                 url.append(aEntry[0])
                 tmp_qua = aEntry[1]
                 if (aEntry[2]):
-                    tmp_qua = tmp_qua + ' (' + aEntry[2] + ')'
+                    if 'unknow' not in aEntry[2]:
+                        tmp_qua = tmp_qua + ' (' + aEntry[2] + ')'
                 qua.append(tmp_qua)
                 
             #Si une seule url
@@ -123,8 +142,11 @@ class cHoster(iHoster):
             
             if not stream_url.startswith('http'):
                 stream_url = 'http:' + stream_url
-                
-            return True, stream_url
+            
+            if SubTitle:
+                return True, stream_url,SubTitle
+            else:
+                return True, stream_url
         else:
             cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
             return False, False

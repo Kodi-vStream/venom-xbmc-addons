@@ -55,6 +55,7 @@ SERIE_SERIES = (URL_MAIN + 'telecharger-series.html', 'showMovies') # series
 SERIE_NEWS = (URL_MAIN + 'series-vf.html?orderby_by=date&orderby_order=desc&tv=all', 'showMovies') # serie VF
 SERIE_VFS = (URL_MAIN + 'series-vf.html', 'showMovies') # serie VF
 SERIE_VOSTFRS = (URL_MAIN + 'series-vostfr.html', 'showMovies') # serie VOSTFR
+SERIE_HD = (URL_MAIN + 'telecharger-series.html', 'showMovies') # serie HD, toutes en fait mais n'appparait pas dans le menu
 SERIE_GENRES = (True, 'showGenreSeries')
 
 ANIM_VFS = (URL_MAIN + 'animes-vf.html', 'showMovies')

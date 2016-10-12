@@ -1,3 +1,6 @@
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
+#
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
@@ -77,6 +80,18 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.replace('https://uptobox.com/', '')
         self.__sUrl = self.__sUrl.replace('iframe/', '')
         self.__sUrl = 'http://uptobox.com/' + str(self.__sUrl)
+        
+    def checkSubtitle(self,sHtmlContent):
+        oParser = cParser()
+        sPattern = "<track type='srt' kind='subtitles' src='([^']+)' srclang='fr' label='French'>"
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            r = aResult[1][0]
+            if not r.startswith('http'):
+                r = 'http:' + r
+            return r
+
+        return False
 
     def checkUrl(self, sUrl):
         return True
@@ -130,14 +145,20 @@ class cHoster(iHoster):
 
         sHtmlContent = self.oPremiumHandler.GetHtml(self.__sUrl)
         
+        SubTitle = ''
+        SubTitle = self.checkSubtitle(sHtmlContent)
+        
         if (self.stream):
             api_call = self.GetMedialinkStreaming(sHtmlContent)
         else:
             api_call = self.GetMedialinkDL(sHtmlContent)
             
         if api_call:
-            return True, api_call
-            
+            if SubTitle:
+               return True, api_call,SubTitle
+            else:
+                return True, api_call
+
         cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
         return False, False
         
@@ -192,7 +213,8 @@ class cHoster(iHoster):
                 url.append(aEntry[0])
                 tmp_qua = aEntry[1]
                 if (aEntry[2]):
-                    tmp_qua = tmp_qua + ' (' + aEntry[2] + ')'
+                    if 'unknow' not in aEntry[2]:
+                        tmp_qua = tmp_qua + ' (' + aEntry[2] + ')'
                 qua.append(tmp_qua)
                 
             #Si une seule url

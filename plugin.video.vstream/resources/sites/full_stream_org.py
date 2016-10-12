@@ -328,7 +328,7 @@ def showMovies(sSearch = ''):
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
             if not 'http' in sThumb:
-                sThumb = 'http://full-stream.org'+ sThumb
+                sThumb = 'http://full-stream.nu'+ sThumb
                 
             #Bon petit modif pr corriger nom, apparement le regex a tendance a chnager
             if sThumb.startswith('/IMG/full-stream.php?'):

@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 # Par chataigne73 
-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
+#
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -34,6 +35,7 @@ SERIE_NEWS = (URL_MAIN + 'categories/series', 'showMovies') # serie nouveautés
 SERIE_SERIES = (URL_MAIN + 'categories/series', 'showMovies') # serie vrac
 SERIE_VFS = (URL_MAIN + 'series-tv/langues/french', 'showMovies') # serie VF
 SERIE_VOSTFRS = (URL_MAIN + 'series-tv/langues/vostfr', 'showMovies') # serie Vostfr
+SERIE_HD = (URL_MAIN + 'series-tv/qualites/hd-720p', 'showMovies') # serie HD
 SERIE_GENRES = (URL_MAIN + 'series-tv/', 'showGenre')
 
 URL_SEARCH = ('http://sokrostream.biz/search.php?slug=&slug=', 'showMovies')
@@ -373,7 +375,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()	
     sHtmlContent = sHtmlContent.replace('<span class="tr-dublaj"></span>', '').replace('<span class="tr-altyazi"></span>','').replace('<small>','').replace('</small>','').replace('<span class="likeThis">','').replace('</span>','')
     
-    if (sSearch or ('/series' in sUrl)):
+    if (sSearch or ('/series' in sUrl) or ('/search/' in sUrl)):
       #sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<]+)" alt=".+?" height=".+?" width=".+?" \/><\/a> *<div class="movief"><a href="([^<]+)">(.+?)<\/a><\/div> *<div class="movies"><\/div>'
       sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<]+)" alt=".+?" height="125px" width="119px" \/><\/a> *<div class="movief"><a href="([^<]+)">(.+?)<\/a>'
     else:
@@ -393,7 +395,7 @@ def showMovies(sSearch = ''):
             if (URL_MAIN + 'series/' in sUrl) and ('-saison-' not in aEntry[1]):
                 continue
             
-            if (sSearch or ('categories/series' in sUrl) or ('/series/' in sUrl) or ('/series-tv/' in sUrl)):
+            if (sSearch or ('categories/series' in sUrl) or ('/series/' in sUrl) or ('/series-tv/' in sUrl) or ('/search/' in sUrl)):
               sTitle = aEntry[2]
             else:
               sTitle = aEntry[2]+' ('+aEntry[3]+')'

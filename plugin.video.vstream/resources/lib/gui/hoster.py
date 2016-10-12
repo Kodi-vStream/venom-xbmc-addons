@@ -131,7 +131,11 @@ class cHosterGui:
         sHosterUrl = sHosterUrl.split('|')[0]
         
         #Recuperation du host
-        sHostName = sHosterUrl.split('/')[2]
+        try:
+            sHostName = sHosterUrl.split('/')[2]
+        except:
+            sHostName = sHosterUrl
+        
             
         #L'user a active l'url resolver ?
         if cConfig().getSetting('UserUrlResolver') == 'true':
@@ -296,8 +300,10 @@ class cHosterGui:
         if ('sendvid' in sHostName):
             return cHosterHandler().getHoster('sendvid')
         if ('vidup' in sHostName):
-            return cHosterHandler().getHoster('vidup')           
-            
+            return cHosterHandler().getHoster('vidup')
+        if ('vidbull' in sHostName):
+            return cHosterHandler().getHoster('vidbull')
+
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
             return cHosterHandler().getHoster('onefichier')

@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 #Venom.
+#
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -27,6 +28,7 @@ MOVIE_HD = (URL_MAIN + '720p1080p/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 
 SERIE_NEWS = (URL_MAIN + 'serie-tv/', 'showMovies')
+SERIE_HD = (URL_MAIN + 'serie-tv/', 'showMovies')
   
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
  
