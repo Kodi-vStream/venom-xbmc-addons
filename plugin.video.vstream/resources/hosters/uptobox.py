@@ -83,7 +83,7 @@ class cHoster(iHoster):
         
     def checkSubtitle(self,sHtmlContent):
         oParser = cParser()
-        sPattern = "<track type='srt' kind='subtitles' src='([^']+)' srclang='fr' label='French'>"
+        sPattern = "<track type='srt' kind='subtitles' src='([^']+)' srclang='.+?' label='([^']+)'>"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             Files = []
