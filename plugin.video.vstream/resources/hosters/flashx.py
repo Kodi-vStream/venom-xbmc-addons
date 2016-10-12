@@ -180,7 +180,11 @@ class cHoster(iHoster):
             #on debloque la page (en test ca a l'air inutile)
             #sHtmlContent = self.GetRedirectHtml(aResult[0],sId)
             
-            #on rafraichi la page
+            #lien speciaux ?
+            if sRefresh.startswith('./'):
+                sRefresh = 'http://' + self.GetHost(sGoodUrl) + sRefresh[1:]
+            
+            #on rafraichit la page
             sHtmlContent = self.GetRedirectHtml(sRefresh,sId)
             
             #et on re-recupere la page
