@@ -11,7 +11,7 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser 
 from resources.lib.util import cUtil 
 import urllib2,urllib,re
-import xbmc,xbmcgui
+
 
 SITE_IDENTIFIER = 'otakufr_com'  
 SITE_NAME = 'otakufr.com' 
@@ -21,7 +21,7 @@ URL_MAIN = 'http://otakufr.com'
 URL_SEARCH = (URL_MAIN + '/anime-list/search/', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 ANIM_NEWS = (URL_MAIN + '/latest-episodes/' , 'showMovies')
-ANIM_ANIMS = (URL_MAIN + '/anime-list-all/', 'showAlpha')
+ANIM_ANIMS = ('http://', 'load')
 ANIM_POPULAR = (URL_MAIN + '/anime-list/all/any/most-popular/' , 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + '/anime-list-all/', 'showAlpha')
 
@@ -39,10 +39,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_POPULAR[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_POPULAR[1], 'Animes Populaire', 'animes.png', oOutputParameterHandler)
-    
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animes liste complete', 'animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
@@ -89,10 +85,8 @@ def showMovies(sSearch = ''):
                 break
                 
             sUrl = aEntry[0]
-            #sThumb = 'http:' + aEntry[2]
             sThumb = aEntry[2]
-            sThumb = sThumb.replace(' ','%20')
-
+            sThumb = urllib.quote(sThumb, safe=':/')
             sType = ''
             if 'vostfr' or 'Vostfr' in sUrl:
                 sType = 'VOSTFR'
@@ -106,7 +100,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
 
-            oGui.addMisc(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
 
 
         cConfig().finishDialog(dialog)
@@ -141,7 +135,7 @@ def showAlpha():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN) + Link)
             oOutputParameterHandler.addParameter('AZ', sLetter)
-            oGui.addTV(SITE_IDENTIFIER, 'showAZ', 'Lettre - [B][COLOR coral]' + sLetter + '[/COLOR][/B]', 'animes.png', '', '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Lettre - [B][COLOR coral]' + sLetter + '[/COLOR][/B]', 'animes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
         
@@ -169,7 +163,7 @@ def showAZ():
                oOutputParameterHandler = cOutputParameterHandler()
                oOutputParameterHandler.addParameter('siteUrl', sUrl)
                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-               oGui.addMisc(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, 'animes.png', '', '', oOutputParameterHandler)
+               oGui.addDir(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, 'animes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -231,15 +225,14 @@ def showEpisodes():
 
             sUrl  = aEntry[0]
             sThumb = sThumb.replace(' ','%20')
-            sTitle = sTitle.replace('Episode SP','Episode Spécial')
-            sTitle = sTitle.replace(' + ','-')
+            sTitle = sTitle.replace('Episode SP','Episode Spécial').replace(' + ','-')
             sDisplayTitle = cUtil().DecoTitle(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters',sDisplayTitle, 'animes.png', sThumb, sSyn, oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters',sDisplayTitle, 'animes.png', sThumb, sSyn, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
           
@@ -252,7 +245,7 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'}
     
-    sUrl = sUrl.replace(' + ','+%2B+')
+    sUrl = urllib.quote(sUrl, safe=':/')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -299,5 +292,3 @@ def showHosters():
     cHosterGui().plusHoster(oGui) #alluc_ee
         
     oGui.setEndOfDirectory()
-
-
