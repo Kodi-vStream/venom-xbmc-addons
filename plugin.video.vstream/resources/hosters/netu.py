@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
-#From Anonymous author modified by Tmpname
+# From Anonymous author modified by Tmpname
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 
 from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -201,8 +202,6 @@ class cHoster(iHoster):
         
         player_url = self.__sUrl
         
-        #import xbmc
-
         req = urllib2.Request(player_url, None, headers)
         try:
             response = urllib2.urlopen(req)
@@ -275,14 +274,25 @@ class cHoster(iHoster):
                 
                 l = re.search(r'link_1: ([a-zA-Z]+), server_1: ([a-zA-Z]+)', data)
                 
-                vid_server = re.search(r'var ' + l.group(1) + ' = "([^"]+)"', data).group(1)
-                vid_link = re.search(r'var ' + l.group(2) + ' = "([^"]+)"', data).group(1)
+                vid_server = re.search(r'var ' + l.group(2) + ' = "([^"]+)"', data).group(1)
+                vid_link = re.search(r'var ' + l.group(1) + ' = "([^"]+)"', data).group(1)
+                
+                #new video id, not really usefull
+                m = re.search(r' vid: "([a-zA-Z0-9]+)"}', data)
+                if m:
+                    id = m.group(1)
+                
+                #id = '9QQrbdts6wNA'
                 
                 if vid_server and vid_link and at:
 
                     #get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '0/','b':'1','vid':id} #,'iss':'MzEuMz'
                     get_data = {'server_1': vid_server, 'link_1': vid_link, 'at': at.group(1), 'adb': '0/','b':'1','vid':id}
                     
+                    #xbmc.log(str(get_data))
+
+                    headers['x-requested-with'] = 'XMLHttpRequest'
+
                     req = urllib2.Request("http://hqq.tv/player/get_md5.php?" + urllib.urlencode(get_data),None,headers)
                     try:
                         response = urllib2.urlopen(req)
@@ -301,10 +311,13 @@ class cHoster(iHoster):
                    
                     if file_url:
                         list_url = _decode2(file_url.group(1).replace('\\', ''))
-                        
+
+                    xbmc.log(list_url)
+
                     #Now faut tout remettre dans l'ordre
-                    url = re.search(r'(^.+)secip(.+?\/)(http.+$)', list_url)
-                    list_url = url.group(3) + '/secip' + url.group(2) + url.group(1)
+                    #plus besoin maintenant
+                    #url = re.search(r'(^.+)secip(.+?\/)(http.+$)', list_url)
+                    #list_url = url.group(3) + '/secip' + url.group(2) + url.group(1)
         
         api_call = list_url
         #api_call = list_url.replace('?socket=','.mp4Frag1Num0.ts')
