@@ -802,32 +802,32 @@
   {
     "name": "uptobox.py",
     "path": "plugin.video.vstream/resources/hosters/uptobox.py",
-    "sha": "5496a3427d15093c553118ad24f32e98b4cedbfd",
-    "size": 7135,
+    "sha": "d0e754455aaf4259b1b540820ef7ef43f0b1c299",
+    "size": 7843,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/uptobox.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/uptobox.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/5496a3427d15093c553118ad24f32e98b4cedbfd",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/d0e754455aaf4259b1b540820ef7ef43f0b1c299",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/uptobox.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/uptobox.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/5496a3427d15093c553118ad24f32e98b4cedbfd",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/d0e754455aaf4259b1b540820ef7ef43f0b1c299",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/uptobox.py"
     }
   },
   {
     "name": "uptostream.py",
     "path": "plugin.video.vstream/resources/hosters/uptostream.py",
-    "sha": "1e0f81472e73590e16e5f41e4b23589b0b3fa1d4",
-    "size": 4042,
+    "sha": "bc2d7221719078338e3bf1c98bca73784be112bc",
+    "size": 4759,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/uptostream.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/uptostream.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/1e0f81472e73590e16e5f41e4b23589b0b3fa1d4",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/bc2d7221719078338e3bf1c98bca73784be112bc",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/uptostream.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/uptostream.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/1e0f81472e73590e16e5f41e4b23589b0b3fa1d4",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/bc2d7221719078338e3bf1c98bca73784be112bc",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/uptostream.py"
     }
   },
@@ -877,6 +877,22 @@
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/vid_ag.py?ref=master",
       "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/3f6135cce7fabbc65340fa0348ed32409cdce9dc",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/vid_ag.py"
+    }
+  },
+  {
+    "name": "vidbull.py",
+    "path": "plugin.video.vstream/resources/hosters/vidbull.py",
+    "sha": "76bd852eb5b456cffa7727e98ec8cc9aa8c03b1e",
+    "size": 3441,
+    "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/vidbull.py?ref=master",
+    "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/vidbull.py",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/76bd852eb5b456cffa7727e98ec8cc9aa8c03b1e",
+    "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/vidbull.py",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/vidbull.py?ref=master",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/76bd852eb5b456cffa7727e98ec8cc9aa8c03b1e",
+      "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/vidbull.py"
     }
   },
   {
