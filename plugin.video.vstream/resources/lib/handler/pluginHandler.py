@@ -22,7 +22,7 @@ class cPluginHandler:
         aNameList = []
         #items = os.listdir(sFolder)
         items = os.listdir(unicode(sFolder, 'utf-8'))
-
+        items.sort()
         for sItemName in items:
             #sFilePath = os.path.join(sFolder, sItemName)
             sFilePath = os.path.join(unicode(sFolder, 'utf-8'), sItemName)
