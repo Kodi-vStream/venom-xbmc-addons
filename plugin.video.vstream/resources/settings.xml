@@ -384,10 +384,19 @@
     <category label="30025">
         <setting label="30025" type="lsep"/>
         <setting id="home_cherches" type="bool" label="Recherches" default="true"/>
+        <setting type="sep" />
         <setting id="search1_label" type="text" label="30078" default="Films"/>
+        <setting id="search1_type" type="select" label="Mode de recherche a preferer pour cette recherche" values="film|serie|anime" default="film"/>
+        <setting type="sep" />
         <setting id="search2_label" type="text" label="30079" default="Séries" />
+        <setting id="search2_type" type="select" label="Mode de recherche a preferer pour cette recherche" values="film|serie|anime" default="serie"/>
+        <setting type="sep" />
         <setting id="search3_label" type="text" label="30080" default="Animes" />
+        <setting id="search3_type" type="select" label="Mode de recherche a preferer pour cette recherche" values="film|serie|anime" default="anime"/>
+        <setting type="sep" />
         <setting id="search4_label" type="text" label="30081" default="Documentaires" />
+        <setting id="search4_type" type="select" label="Mode de recherche a preferer pour cette recherche" values="film|serie|anime" default="film"/>
+        <setting type="sep" />
         <setting id="color_cherches" type="select" label="Recherches: Couleur" values="ivory|beige|wheat|tan|khaki|silver|gray|dimgray|navy|royalblue|mediumblue|azure|cyan|aquamarine|forestgreen|olive|chartreuse|lime|gold|yellow|coral|salmon|hotpink|fuchsia|violet|lavender|plum|maroon|crimson|red" default="gray" visible="eq(-1,true)"/>
         <setting label="Recherches: Image" type="image" id="images_cherches" default="special://home/addons/plugin.video.vstream/resources/art/search_fanart.jpg"/>
         
