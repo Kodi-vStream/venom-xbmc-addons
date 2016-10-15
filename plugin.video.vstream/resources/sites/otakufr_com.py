@@ -225,7 +225,7 @@ def showEpisodes():
 
             sUrl  = aEntry[0]
             sThumb = sThumb.replace(' ','%20')
-            sTitle = sTitle.replace('Episode SP','Episode Spécial').replace(' + ','-')
+            sTitle = sTitle.replace('Episode SP','[ Episode Spécial ] episode').replace(' + ','-')
             sDisplayTitle = cUtil().DecoTitle(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
