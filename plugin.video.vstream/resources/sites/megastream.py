@@ -39,17 +39,17 @@ def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://mega-stream.fr/fonctions/recherche.php')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'fonctions/recherche.php')
     oOutputParameterHandler.addParameter('disp', 'search1')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de Film', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://mega-stream.fr/fonctions/recherche.php')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'fonctions/recherche.php')
     oOutputParameterHandler.addParameter('disp', 'search2')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de Serie', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://mega-stream.fr/fonctions/recherche.php')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'fonctions/recherche.php')
     oOutputParameterHandler.addParameter('disp', 'search3')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d Animes', 'search.png', oOutputParameterHandler)
     
@@ -498,7 +498,7 @@ def showSerieHosters():
                'Host' : 'mega-stream.fr'}
     post_data = {'episode_serie' : sId }
                                 
-    req = urllib2.Request('http://mega-stream.fr/lecteur_serie.php' , urllib.urlencode(post_data), headers)
+    req = urllib2.Request(URL_MAIN + 'lecteur_serie.php' , urllib.urlencode(post_data), headers)
     
     response = urllib2.urlopen(req)
     sHtmlContent = response.read()
@@ -599,7 +599,7 @@ def Getlink():
     
     post_data = {'vid' : sId}
                  
-    req = urllib2.Request('http://mega-stream.fr/fonctions/video.php' , urllib.urlencode(post_data), headers)
+    req = urllib2.Request(URL_MAIN + 'fonctions/video.php' , urllib.urlencode(post_data), headers)
     
     response = urllib2.urlopen(req)
     sHtmlContent = response.read()
