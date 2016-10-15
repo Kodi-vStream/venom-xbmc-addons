@@ -141,7 +141,7 @@ class cHoster(iHoster):
         sHtmlContent = response.read()
         response.close()        
         
-        api_call = GetMedialinkDL(sHtmlContent)
+        api_call = self.GetMedialinkDL(sHtmlContent)
         
         if (api_call):
             return True, api_call
