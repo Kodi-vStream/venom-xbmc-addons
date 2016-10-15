@@ -11,7 +11,7 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
-import re,urllib2,urllib
+import re,urllib2,urllib,xbmc
 
 SITE_IDENTIFIER = 'megastream'
 SITE_NAME = 'Mega-stream'
@@ -259,27 +259,41 @@ def showGenreAnime():
     
     
 def resultSearch(sSearch):
+    
+    xbmc.log('ok')
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
         
     sUrl = "http://mega-stream.fr/fonctions/recherche.php"
     sDisp = oInputParameterHandler.getValue('disp')
+    sType = oInputParameterHandler.getValue('type')
     
     #oInputParameterHandler.getAllParameter()
 
-    post_data = {'searchValue' : sSearch,
-                'smallSearch': 'false' }
+    post_data = {'searchValue' : sSearch,'smallSearch': 'false' }
 
     sMode = ''
-    if sDisp == 'search2':
-        post_data['cat_recherche'] = 'series'
-        sMode = 'serie'
-    elif sDisp == 'search3':
-        post_data['cat_recherche'] = 'mangas'
-        sMode = 'anime'
-    else:
-        post_data['cat_recherche'] = 'films'
-        sMode = 'film'
+    if (sDisp):
+        if sDisp == 'search2':
+            post_data['cat_recherche'] = 'series'
+            sMode = 'serie'
+        elif sDisp == 'search3':
+            post_data['cat_recherche'] = 'mangas'
+            sMode = 'anime'
+        else:
+            post_data['cat_recherche'] = 'films'
+            sMode = 'film'
+            
+    if (sType):
+        if sType == 'serie':
+            post_data['cat_recherche'] = 'series'
+            sMode = 'serie'
+        elif sType == 'anime':
+            post_data['cat_recherche'] = 'mangas'
+            sMode = 'anime'
+        elif sType == 'film':
+            post_data['cat_recherche'] = 'films'
+            sMode = 'film'
         
     UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'
     headers = {'User-Agent': UA ,
