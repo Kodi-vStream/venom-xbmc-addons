@@ -244,20 +244,15 @@ def showMovies(sSearch = ''):
     oInputParameterHandler = cInputParameterHandler()
     
     dlenewssortby = False
+    sType = ''
     
     if sSearch:
         sUrl = sSearch
         
-        #sDisp = oInputParameterHandler.getValue('disp')
-        #if (sDisp == 'search3'):#anime
-        #    sUrl = sUrl + '&catlist[]=36'
-        #elif (sDisp == 'search2'):#serie
-        #    sUrl = sUrl + '&catlist[]=2'
-        #elif (sDisp == 'search1'):#film
-        #    sUrl = sUrl + '&catlist[]=43'   
-        #else:#tout le reste
-        #    sUrl = sUrl
-        
+        #partie en test
+        oInputParameterHandler = cInputParameterHandler()
+        sType = oInputParameterHandler.getValue('type')
+
         #sPattern = 'fullstreaming">.*?<img src="(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a><\/h3>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*Regarder<\/a>'
         sPattern = 'fullstreaming">.*?<img src="(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*<span style="font-family:.+?>(.+?)<\/span>'
     else:
@@ -266,7 +261,7 @@ def showMovies(sSearch = ''):
    
     #recuperation des tris
     
-    #les plus noter dlenewssortby=rating&dledirection=desc&set_new_sort=dle_sort_cat&set_direction_sort=dle_direction_cat
+    # les plus noter dlenewssortby=rating&dledirection=desc&set_new_sort=dle_sort_cat&set_direction_sort=dle_direction_cat
     # les plus vue dlenewssortby=news_read&dledirection=desc&set_new_sort=dle_sort_cat&set_direction_sort=dle_direction_cat
     
     #les plus commenter dlenewssortby=comm_num&dledirection=desc&set_new_sort=dle_sort_main&set_direction_sort=dle_direction_main
@@ -294,6 +289,14 @@ def showMovies(sSearch = ''):
     else :
         oRequestHandler = cRequestHandler(sUrl)
         
+        if sType:
+            if sType == "film":
+                oRequestHandler.addParameters('catlist[]', '43')
+            if sType == "serie":
+                oRequestHandler.addParameters('catlist[]', '2')
+            if sType == "anime":
+                oRequestHandler.addParameters('catlist[]', '36')
+        
     
     if oInputParameterHandler.getValue('dlenewssortby'):
     
@@ -303,8 +306,6 @@ def showMovies(sSearch = ''):
         oRequestHandler.addParameters('dledirection', 'desc')
         oRequestHandler.addParameters('set_new_sort', 'dle_sort_cat')
         oRequestHandler.addParameters('set_direction_sort', 'dle_direction_cat')
-    
-        
         
     sHtmlContent = oRequestHandler.request()
 
@@ -328,7 +329,7 @@ def showMovies(sSearch = ''):
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
             if not 'http' in sThumb:
-                sThumb = 'http://full-stream.nu'+ sThumb
+                sThumb = 'http://full-stream.org'+ sThumb
                 
             #Bon petit modif pr corriger nom, apparement le regex a tendance a chnager
             if sThumb.startswith('/IMG/full-stream.php?'):
