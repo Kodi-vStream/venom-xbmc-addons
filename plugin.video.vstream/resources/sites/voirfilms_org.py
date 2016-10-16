@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'voirfilms_org'
 SITE_NAME = 'VoirFilms.org'
 SITE_DESC = 'Films et serie en streaming'
  
-URL_MAIN = 'http://www.voirfilms.org/'
+URL_MAIN = 'http://www.voirfilms.co/'
 
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming', 'showMovies')
 MOVIE_MOVIE = ('http://', 'showAlpha')
@@ -193,9 +193,9 @@ def showMovies(sSearch = ''):
         #on redecode la recherhce codé il y a meme pas une seconde par l'addon
         sSearch = urllib2.unquote(sSearch)
  
-        query_args = { 'do' : 'search' , 'subaction' : 'search' , 'story' : str(sSearch) , 'x' : '0', 'y' : '0'}
+        query_args = { 'action' : 'recherche' , 'story' : str(sSearch) }
         
-        #print query_args
+        xbmc.log(str(query_args))
         
         data = urllib.urlencode(query_args)
         headers = {'User-Agent' : 'Mozilla 5.10'}
@@ -210,7 +210,6 @@ def showMovies(sSearch = ''):
      
         sHtmlContent = reponse.read()
 
-        #sPattern = '<div class="imagefilm">.+?<a href="(.+?)" title="(.+?)">.+?<img src="(.+?)"'
         sPattern = '<div class="imagefilm">.+?<img src="(.+?)".+?<a href="([^<>]+?)".+?titreunfilm" style="width:145px;"> *(.+?) *<\/div>'
  
     else:
