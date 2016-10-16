@@ -209,7 +209,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str('none'))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('disp', 'search1')
+            oOutputParameterHandler.addParameter('type', 'film')
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             
             oGui.addMovieDB(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumbnail, sFanart, oOutputParameterHandler)
@@ -394,7 +394,7 @@ def showSeriesEpisode():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sMovieTitle+ '|' + sExtraTitle) #Pour compatibilite Favoris
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('disp', 'search2')
+            oOutputParameterHandler.addParameter('type', 'serie')
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             #oOutputParameterHandler.addParameter('sSeason', sSeason)
             #oOutputParameterHandler.addParameter('sEpisode', str(sEpNumber))
@@ -468,7 +468,7 @@ def showActors():
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'none')
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-                oOutputParameterHandler.addParameter('disp', 'search1')
+                oOutputParameterHandler.addParameter('type', 'film')
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 
                 oGui.addMovieDB(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sFanart, oOutputParameterHandler)
@@ -610,12 +610,21 @@ def VstreamSearch(sMovieTitle):
     sUrl = oInputParameterHandler.getValue('siteUrl')
     
     #Type de recherche
-    sDisp = oInputParameterHandler.getValue('disp')
+    sType = oInputParameterHandler.getValue('type')
 
-    if not(sDisp):
-        sDisp = 'search1'
+    if not(sType):
+        sType = 'film'
         if sUrl != 'none':
-            sDisp = 'search2'
+            sType = 'serie'
+            
+    #ugly patch to convert type to sdisp
+    sDisp = 'search1'
+    if sType == 'film':
+        sDisp = 'search1'
+    elif sType == 'serie':
+        sDisp = 'search2'
+    elif sType == 'anime':
+        sDisp = 'search3'
     
     oHandler = cRechercheHandler()
     oHandler.setText(sMovieTitle)
