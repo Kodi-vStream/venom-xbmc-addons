@@ -427,7 +427,8 @@ class cHome:
         oOutputParameterHandler.addParameter('readdb', readdb)
         sLabel4 = cConfig().getlanguage(30091)+": "+cConfig().getSetting('search4_label')
         oGui.addDir(SITE_IDENTIFIER, 'searchMovie', sLabel4, 'search.png', oOutputParameterHandler)
-        
+
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oOutputParameterHandler.addParameter('disp', 'search10')
@@ -441,8 +442,13 @@ class cHome:
             if row:
                 oGui.addText(SITE_IDENTIFIER, "[COLOR azure]Votre Historique[/COLOR]")
             for match in row:
-
                 oOutputParameterHandler = cOutputParameterHandler()
+                
+                #ugly patch to have type instead of sdisp
+                type = cConfig().getSetting('search' + match[2][-1:] + '_type')
+                if type:
+                    oOutputParameterHandler.addParameter('type', type)
+                
                 oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
                 oOutputParameterHandler.addParameter('searchtext', match[1])
                 oOutputParameterHandler.addParameter('disp', match[2])
