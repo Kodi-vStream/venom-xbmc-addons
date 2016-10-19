@@ -466,16 +466,16 @@
   {
     "name": "onefichier.py",
     "path": "plugin.video.vstream/resources/hosters/onefichier.py",
-    "sha": "30236e4d7b69f549876f6f86b8426c8b429eb4eb",
-    "size": 5376,
+    "sha": "e048953d7ef1eaefb2bfe7dcfb59394812f70b1a",
+    "size": 5381,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/onefichier.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/onefichier.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/30236e4d7b69f549876f6f86b8426c8b429eb4eb",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/e048953d7ef1eaefb2bfe7dcfb59394812f70b1a",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/onefichier.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/onefichier.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/30236e4d7b69f549876f6f86b8426c8b429eb4eb",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/e048953d7ef1eaefb2bfe7dcfb59394812f70b1a",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/onefichier.py"
     }
   },
