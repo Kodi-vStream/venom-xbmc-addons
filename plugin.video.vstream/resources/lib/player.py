@@ -22,6 +22,9 @@ class cPlayer(xbmc.Player):
         xbmc.Player.__init__(self)
         self.loadingStarting = time.time()
         
+        sPlayerType = self.__getPlayerType()
+        self.xbmcPlayer = xbmc.Player(sPlayerType)
+        
         self.Subtitles_file = []
         
         oInputParameterHandler = cInputParameterHandler()
@@ -76,8 +79,7 @@ class cPlayer(xbmc.Player):
         if (cConfig().getSetting("playerPlay") == '0'):   
                             
             sPlayerType = self.__getPlayerType()
-            xbmcPlayer = xbmc.Player(sPlayerType)
-            xbmcPlayer.play( sUrl, item )
+            self.xbmcPlayer.play( sUrl, item )
             xbmcplugin.endOfDirectory(sPluginHandle, True, False, False) 
             
         else:
@@ -86,29 +88,31 @@ class cPlayer(xbmc.Player):
         #timer = int(cConfig().getSetting('param_timeout'))
         #xbmc.sleep(timer)
         
-        #Attend que le lecteur demarre, avec un max de 30s
-        player = xbmc.Player()
-        for _ in xrange(30):
-            if player.isPlaying():
+        #Attend que le lecteur demarre, avec un max de 10s
+        for _ in xrange(10):
+            if self.xbmcPlayer.isPlaying():
                 break
             xbmc.sleep(1000)
             
         #desactive les sous titres si on les a rajoute nous meme
         if (self.Subtitles_file):
-            player.showSubtitles(False)
-        
-        while not xbmc.abortRequested:
+            self.xbmcPlayer.showSubtitles(False)
+       
+        while self.xbmcPlayer.isPlaying():
+        #while not xbmc.abortRequested:
+            try: 
+               self.currentTime = self.getTime()
+               self.totalTime = self.getTotalTime()
+            except: break
             xbmc.sleep(1000)
 
-
     def startPlayer(self):
-        sPlayerType = self.__getPlayerType()
-        xbmcPlayer = xbmc.Player(sPlayerType)
+
         oPlayList = self.__getPlayList()
-        xbmcPlayer.play(oPlayList)
+        self.xbmcPlayer.play(oPlayList)
         
         #Sous-titres
-        #Non actives ici car j'ai pas trouve de fichiers pour tester cette fonction
+        #Non actives ici car j'ai pas trouve de fichiers pour tester
         #xbmc.Player().setSubtitles()
         
         timer = int(cConfig().getSetting('param_timeout'))
@@ -140,7 +144,8 @@ class cPlayer(xbmc.Player):
         except: pass
         #xbmc.executebuiltin( 'Container.Refresh' )
         
-    def onPlayBackStarted(self):       
+    def onPlayBackStarted(self):
+        
         meta = {}      
         meta['title'] = self.sTitle
         #meta['hoster'] = self.sHosterIdentifier
