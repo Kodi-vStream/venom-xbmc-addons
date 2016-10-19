@@ -24,7 +24,6 @@ DOC_GENRES = (True, 'showGenre')
 DOC_NEWS = (URL_MAIN, 'showMovies')
 DOC_DOCS = ('http://', 'load')
 
-
 def load():
     oGui = cGui()
 
@@ -143,7 +142,9 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     # sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
 
-    sPattern = '<div class="post-header"><a href="([^"<]+)" title="([^"<]+)">.+? src="([^"<]+)".+?<\/a><p style="[^<>"]+?">(.+?)<\/p>'
+    #sPattern = '<div class="post-header"><a href="([^"<]+)" title="([^"<]+)">.+? src="([^"<]+)".+?<\/a><p style="[^<>"]+?">(.+?)<\/p>'
+
+    sPattern = '<divclass="post-header"><ahref="([^"<]+)" title="([^"<]+)">.+?/><noscript>.+?src="([^"<]+)".+?<\/a><pstyle="[^<>"]+?">(.+?)<\/p>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -156,6 +157,7 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
 
             sTitle = aEntry[1]
+            sTitle = sTitle.replace('&laquo;','<<').replace('&raquo;','>>')
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
@@ -177,7 +179,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<a class="next page-numbers" href="(.+?)">'
+    sPattern = '<aclass="next page-numbers" href="(.+?)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return aResult[1][0]
@@ -197,7 +199,7 @@ def showHosters():
     # sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','')
 
     oParser = cParser()
-    sPattern = '<iframe .+? src="(.+?)"'
+    sPattern = '<iframe.+?src="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
