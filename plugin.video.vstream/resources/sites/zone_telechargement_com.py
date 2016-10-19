@@ -272,9 +272,27 @@ def showGenre(basePath):
 
 
 def showMovies(sSearch = ''):
-    oGui = cGui() 
+    oGui = cGui()
+    bGlobal_Search = False
     if sSearch:
-      sUrl = sSearch
+        
+        #par defaut
+        sUrl = sSearch
+        
+        if URL_SEARCH[0] in sSearch:
+            bGlobal_Search = True
+        
+        #partie en test
+        oInputParameterHandler = cInputParameterHandler()
+        sType = oInputParameterHandler.getValue('type') 
+      
+        if sType:
+            if sType == "film":
+                sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_MOVIES[0])
+            if sType == "serie":
+                sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_SERIES[0])
+            if sType == "anime":
+                sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_ANIMS[0])
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -315,7 +333,7 @@ def showMovies(sSearch = ''):
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     #tPassage en mode vignette sauf en cas de recherche globale
-    if 'index.php?q=' not in sUrl:
+    if not bGlobal_Search:
         xbmc.executebuiltin('Container.SetViewMode(500)')
     
      

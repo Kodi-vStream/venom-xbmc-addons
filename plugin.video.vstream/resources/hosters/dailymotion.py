@@ -167,11 +167,12 @@ class cHoster(iHoster):
             qua.append('Live')
 
         #pattern plus generaliste
-        aResult = re.findall(r'"([0-9]+)":\[{"type":"video\\mp4","url":"(.+?)"}]', sHtmlContent)
+        #aResult = re.findall(r'"([0-9]+)":\[{"type":"video\\mp4","url":"(.+?)"}]', sHtmlContent)
+        aResult = re.findall(r'{"type":"video.+?","url":"(.+?)"}],"(\d+)"', sHtmlContent)
         if (aResult):
             for aEntry in aResult:
-                url.append(aEntry[1])
-                qua.append(str(aEntry[0]) + 'p')
+                url.append(aEntry[0])
+                qua.append(str(aEntry[1]) + 'p')
 
  
         if (url):

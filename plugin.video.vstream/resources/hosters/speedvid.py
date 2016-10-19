@@ -2,6 +2,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
+from resources.lib.packer import cPacker
 import re
 
 class cHoster(iHoster):
@@ -65,19 +66,25 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):        
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
-        
-        sPattern = 'file: "([^"]+)"';
-        
+
         oParser = cParser()
-        sHtmlContent=sHtmlContent.replace('|','/')
+        #sPattern = 'file: "([^"]+)"';
+        #sHtmlContent=sHtmlContent.replace('|','/')
+        #aResult = oParser.parse(sHtmlContent, sPattern)
+
+        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
+        if (aResult[0] == True):
+            sHtmlContent = cPacker().unpack(aResult[1][0])
+            sHtmlContent = sHtmlContent.replace('\\','')
+
+        sPattern = '{file:.([^"]+.mp4)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True):
             api_call = aResult[1][0]
             return True, api_call
             
         return False, False
-        
         

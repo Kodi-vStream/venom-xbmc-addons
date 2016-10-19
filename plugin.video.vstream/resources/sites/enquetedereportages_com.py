@@ -115,7 +115,7 @@ def showMoviesSearch():
     oGui = cGui()
  
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if (sSearchText != False and sSearchText != 'bad'): #le mot bad seul fait planté kodi
         sUrl = 'http://enquetedereportages.com/?s='+sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()

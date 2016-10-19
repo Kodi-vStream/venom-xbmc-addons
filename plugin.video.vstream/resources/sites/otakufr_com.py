@@ -14,7 +14,7 @@ import urllib2,urllib,re
 
 
 SITE_IDENTIFIER = 'otakufr_com'  
-SITE_NAME = 'otakufr.com' 
+SITE_NAME = 'Otakufr.com' 
 SITE_DESC = 'OtakuFR animes en streaming et telechargement'
 
 URL_MAIN = 'http://otakufr.com'

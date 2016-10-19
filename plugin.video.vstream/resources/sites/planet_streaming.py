@@ -106,14 +106,13 @@ def showGenre():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
     
     if sSearch:
+        
+        sType = oInputParameterHandler.getValue('type')
 
         sUrl = URL_SEARCH[0]
-        
-        #sPOST = 'do=search&subaction=search&story=' + sSearch
-        #print sUrl
-        #print sPOST
         
         oRequestHandler = cRequestHandler(URL_MAIN)
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
@@ -123,19 +122,16 @@ def showMovies(sSearch = ''):
         oRequestHandler.addParameters('do', 'search')
         oRequestHandler.addParameters('subaction', 'search')
         oRequestHandler.addParameters('story', sSearch)
+        
+        if (sType):
+            if sType == 'serie':
+                oRequestHandler.addParameters('catlist[]', '30')
+            elif sType == 'film':
+                oRequestHandler.addParameters('catlist[]', '3')
+        
         sHtmlContent = oRequestHandler.request()
         
-        # request = urllib2.Request(sUrl,sPOST)
-        # request.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:22.0) Gecko/20100101 Firefox/22.0')
-        # request.add_header('Content-Type', 'application/x-www-form-urlencoded')
-        # request.add_header('Referer', 'http://www.planet-streaming.com/')
-        
-        # reponse = urllib2.urlopen(request)
-        # sHtmlContent = reponse.read()
-        # reponse.close()
-        
     else:
-        oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         
         oRequestHandler = cRequestHandler(sUrl)
@@ -168,7 +164,7 @@ def showMovies(sSearch = ''):
                     continue
             
             if aEntry[0].startswith('/'):
-                sThumbnail = 'http://www.planet-streaming.com' + aEntry[0]
+                sThumbnail = URL_MAIN[:-1] + aEntry[0]
             else:
                 sThumbnail = aEntry[0]
               
