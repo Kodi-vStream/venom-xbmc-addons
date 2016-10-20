@@ -2,9 +2,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import re,urllib2
 import xbmcgui
-import json
 
 class cHoster(iHoster):
 
@@ -44,7 +42,7 @@ class cHoster(iHoster):
         return '';
         
     def __getIdFromUrl(self, sUrl):
-        sPattern = 'https*:\/\/(?:.+)?vimeo\.com\/(?:video\/)?([0-9]+)'
+        sPattern = 'vimeo\.com\/(?:video\/)?([0-9]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -65,57 +63,43 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-
-        api_call = ''
-    
+   
         id = self.__getIdFromUrl(self.__sUrl)
 
-        if id:
-            vid_sel = ''
-            
-            web_url = 'https://player.vimeo.com/video/' + id + '/config?autoplay=0&byline=0&bypass_privacy=1&context=clip.main&default_to_hd=1&portrait=0&title=0'
-            
-            #https://player.vimeo.com/video/131759737/config?autoplay=0&byline=0&bypass_privacy=1&context=clip.main&default_to_hd=1&portrait=0&title=0&s=141e12c8893bf681900e198a59c42394af6e02f0
-            #http://player.vimeo.com/v2/video/131759737/config?type=moogaloop&referrer=&player_url=player.vimeo.com&v=1.0.0&cdn_url=http://a.vimeocdn.com        
+        web_url = 'https://player.vimeo.com/video/' + id
 
-            headers = {'Referer': web_url}
-            
-            request = urllib2.Request(web_url,None,headers)
-                
-            try: 
-                reponse = urllib2.urlopen(request)
-            except URLError, e:
-                print e.read()
-                print e.reason
-  
-            resp = reponse.read()
-            data = json.loads(resp)
-            
-            if data:
-                vid_list = []
-                url_list = []
-                best = 0
-                quality = 0
-                
-                h264 = data["request"]["files"]["h264"]
+        oRequest = cRequestHandler(web_url)
+        sHtmlContent = oRequest.request()
+        sPattern =  ',"url":"(.+?)",.+?"quality":"(.+?)",'
+        oParser = cParser()
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
-                for quality in h264.iterkeys():
-                    vid_list.extend(['[ %s ]' % quality])
-                    url_list.extend([ h264[quality]['url'] ])
-                
-                if len(vid_list) == 1: vid_sel = videos[0]
-                else:
-                    result = xbmcgui.Dialog().select('Choose a link', vid_list)
-                    if result != -1:
-                        vid_sel = url_list[result]
-                        
-            if vid_sel:
-                api_call = vid_sel
-                
-        
-        #print api_call
+        if (aResult[0] == True):
+            #initialisation des tableaux
+            url=[]
+            qua=[]
+            api_call = ''
 
-        if (api_call):
-            return True, api_call
+            #Replissage des tableaux
+            for i in aResult[1]:
+                url.append(str(i[0]))
+                qua.append(str(i[1]))
+
+            #Si une seule url
+            if len(url) == 1:
+                api_call = url[0]
+            #si plus de une
+            elif len(url) > 1:
+                #Afichage du tableau
+                dialog2 = xbmcgui.Dialog()
+                ret = dialog2.select('Select Quality',qua)
+                if (ret > -1):
+                    api_call = url[ret]
+                else: 
+                    return False, False
+     
             
-        return False, False
+            if (api_call):
+                return True, api_call 
+
+            return False, False
