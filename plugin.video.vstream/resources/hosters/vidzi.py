@@ -78,7 +78,7 @@ class cHoster(iHoster):
         
         #Dexieme test Dean Edwards Packer
         oParser = cParser()
-        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+        sPattern = "<\/a><\/noscript><\/div>.+?(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
         aResult = oParser.parse(sHtmlContent, sPattern)
         
         if (aResult[0] == True):
