@@ -15,6 +15,8 @@ import time
 
 #pour les sous titres
 #https://github.com/amet/service.subtitles.demo/blob/master/service.subtitles.demo/service.py
+#player API
+#http://mirrors.xbmc.org/docs/python-docs/stable/xbmc.html#Player
 
 class cPlayer(xbmc.Player):
     
@@ -60,6 +62,9 @@ class cPlayer(xbmc.Player):
             self.Subtitles_file = files
         
     def run(self, oGuiElement, sTitle, sUrl):
+        
+        self.totalTime = 0
+        self.currentTime = 0
     
         sPluginHandle = cPluginHandler().getPluginHandle();
         #meta = oGuiElement.getInfoLabel()
@@ -73,6 +78,7 @@ class cPlayer(xbmc.Player):
             try:
                 item.setSubtitles(self.Subtitles_file)
                 cConfig().log("Load SubTitle :" + str(self.Subtitles_file))
+                cGui().showInfo("Sous titre charges, Vous pouvez les activer", "Sous-Titres", 5)
             except:
                 cConfig().log("Can't load subtitle :" + str(self.Subtitles_file))
                 
@@ -88,8 +94,8 @@ class cPlayer(xbmc.Player):
         #timer = int(cConfig().getSetting('param_timeout'))
         #xbmc.sleep(timer)
         
-        #Attend que le lecteur demarre, avec un max de 10s
-        for _ in xrange(10):
+        #Attend que le lecteur demarre, avec un max de 20s
+        for _ in xrange(20):
             if self.xbmcPlayer.isPlaying():
                 break
             xbmc.sleep(1000)
@@ -103,7 +109,9 @@ class cPlayer(xbmc.Player):
             try: 
                self.currentTime = self.getTime()
                self.totalTime = self.getTotalTime()
-            except: break
+            except:
+                #pass
+                break
             xbmc.sleep(1000)
 
     def startPlayer(self):
