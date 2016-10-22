@@ -522,7 +522,7 @@ def showFilmActor():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'none')
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('disp', 'search1')
+            oOutputParameterHandler.addParameter('type', 'film')
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             
             oGui.addMovieDB(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
@@ -609,26 +609,9 @@ def VstreamSearch(sMovieTitle):
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     
-    #Type de recherche
-    sType = oInputParameterHandler.getValue('type')
-
-    if not(sType):
-        sType = 'film'
-        if sUrl != 'none':
-            sType = 'serie'
-            
-    #ugly patch to convert type to sdisp
-    sDisp = 'search1'
-    if sType == 'film':
-        sDisp = 'search1'
-    elif sType == 'serie':
-        sDisp = 'search2'
-    elif sType == 'anime':
-        sDisp = 'search3'
-    
     oHandler = cRechercheHandler()
     oHandler.setText(sMovieTitle)
-    oHandler.setDisp(sDisp)
+    #oHandler.setDisp(sDisp)
     aPlugins = oHandler.getAvailablePlugins()
                 
     oGui.setEndOfDirectory()
