@@ -93,7 +93,7 @@ class cHoster(iHoster):
                 
                 if not url.startswith('http'):
                     url = 'http:' + url
-                if 'Forced' not in label:
+                if 'Forc' not in label:
                     Files.append(url)
             return Files
 
@@ -161,7 +161,7 @@ class cHoster(iHoster):
             
         if api_call:
             if SubTitle:
-                cGui().showInfo('Sous-titres disponibles', '', 2)
+                
                 return True, api_call,SubTitle
             else:
                 return True, api_call
