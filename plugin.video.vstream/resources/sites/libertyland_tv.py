@@ -80,15 +80,15 @@ def typsearch():
     oGui = cGui()
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('disp', 'search1')
+    oOutputParameterHandler.addParameter('type', 'film')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Film', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('disp', 'search2')
+    oOutputParameterHandler.addParameter('type', 'serie')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Serie', 'news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('disp', 'search3')
+    oOutputParameterHandler.addParameter('type', 'anime')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Anime', 'films.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory() 
@@ -138,14 +138,14 @@ def showMovies(sSearch = ''):
         scategorie = ''
         sUrl = ''
         
-        sDisp = oInputParameterHandler.getValue('disp')
+        sType = oInputParameterHandler.getValue('type')
        
-        if (sDisp == 'search3'):#anime
+        if (sType == 'anime'):#anime
             scategorie = 'mangas'
             sUrl = '/mangas/'
-        elif (sDisp == 'search2'):#serie
+        elif (sType == 'serie'):#serie
             scategorie = 'series'
-        elif (sDisp == 'search1'):#film
+        elif (sType == 'film'):#film
             scategorie = 'films'
         else:#tout le reste
             scategorie = 'films'

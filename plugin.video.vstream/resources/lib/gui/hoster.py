@@ -303,6 +303,10 @@ class cHosterGui:
             return cHosterHandler().getHoster('vidup')
         if ('vidbull' in sHostName):
             return cHosterHandler().getHoster('vidbull')
+        if ('vidlox' in sHostName):
+            return cHosterHandler().getHoster('vidlox')
+        if ('stagevu' in sHostName):
+            return cHosterHandler().getHoster('stagevu')
 
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):

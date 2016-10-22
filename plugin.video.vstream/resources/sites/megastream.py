@@ -40,17 +40,17 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'fonctions/recherche.php')
-    oOutputParameterHandler.addParameter('disp', 'search1')
+    oOutputParameterHandler.addParameter('type', 'film')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de Film', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'fonctions/recherche.php')
-    oOutputParameterHandler.addParameter('disp', 'search2')
+    oOutputParameterHandler.addParameter('type', 'serie')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de Serie', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'fonctions/recherche.php')
-    oOutputParameterHandler.addParameter('disp', 'search3')
+    oOutputParameterHandler.addParameter('type', 'anime')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d Animes', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -260,30 +260,20 @@ def showGenreAnime():
     
 def resultSearch(sSearch):
     
-    xbmc.log('ok')
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
         
     sUrl = "http://mega-stream.fr/fonctions/recherche.php"
-    sDisp = oInputParameterHandler.getValue('disp')
+
     sType = oInputParameterHandler.getValue('type')
     
     #oInputParameterHandler.getAllParameter()
+    sSearch = urllib.unquote(sSearch)
 
     post_data = {'searchValue' : sSearch,'smallSearch': 'false' }
 
     sMode = ''
-    if (sDisp):
-        if sDisp == 'search2':
-            post_data['cat_recherche'] = 'series'
-            sMode = 'serie'
-        elif sDisp == 'search3':
-            post_data['cat_recherche'] = 'mangas'
-            sMode = 'anime'
-        else:
-            post_data['cat_recherche'] = 'films'
-            sMode = 'film'
-            
+        
     if (sType):
         if sType == 'serie':
             post_data['cat_recherche'] = 'series'

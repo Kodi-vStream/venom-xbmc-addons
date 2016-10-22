@@ -172,7 +172,7 @@ class cHoster(iHoster):
             #xbmc.log(sHtmlContent3)
             sHtmlContent3 = CheckJJDecoder(sHtmlContent3)
             #xbmc.log(sHtmlContent3)            
-            #sHtmlContent3 = CheckAADecoder(sHtmlContent3)
+            sHtmlContent3 = CheckAADecoder(sHtmlContent3)
             #xbmc.log(sHtmlContent3)
             
             maxboucle = maxboucle - 1
@@ -223,8 +223,21 @@ class cHoster(iHoster):
         
         url = ''
         
+        if 'magic' in code:
+            xbmc.log('Mode avec magic')
+            magic = ord(string[-1])
+        else:
+            magic = -1
+        
         for c in string:
             v = ord(c)
+            
+            #noueau truc inutile
+            if v == magic:
+                v -= 1
+            elif v == magic - 1:
+                v += 1            
+            
             if v >= 33 and v <= 126:
                 v = ((v + 14) % 94) + 33
             url = url + chr(v)

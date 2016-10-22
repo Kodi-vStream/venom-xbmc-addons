@@ -444,7 +444,7 @@ class cHome:
             for match in row:
                 oOutputParameterHandler = cOutputParameterHandler()
                 
-                #ugly patch to have type instead of sdisp
+                #code to get type with disp
                 type = cConfig().getSetting('search' + match[2][-1:] + '_type')
                 if type:
                     oOutputParameterHandler.addParameter('type', type)

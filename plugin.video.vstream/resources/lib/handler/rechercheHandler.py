@@ -74,8 +74,7 @@ class cRechercheHandler:
         sPluginSettingsName = sLabel+'_' +sName
         bPlugin = oConfig.getSetting(sPluginSettingsName)
         
-        OnPlugins = oConfig.getSetting('plugin_' + sName)
-        
+        OnPlugins = oConfig.getSetting('plugin_' + sName) 
 
         if (bPlugin == 'true') and (OnPlugins == 'true'):    
             try:
