@@ -82,12 +82,10 @@ class cPlayer(xbmc.Player):
             except:
                 cConfig().log("Can't load subtitle :" + str(self.Subtitles_file))
                 
-        if (cConfig().getSetting("playerPlay") == '0'):   
-                            
+        if (cConfig().getSetting("playerPlay") == '0'):                            
             sPlayerType = self.__getPlayerType()
             self.xbmcPlayer.play( sUrl, item )
-            xbmcplugin.endOfDirectory(sPluginHandle, True, False, False) 
-            
+            xbmcplugin.endOfDirectory(sPluginHandle, True, False, False)             
         else:
             xbmcplugin.setResolvedUrl(sPluginHandle, True, item)
         
@@ -110,8 +108,8 @@ class cPlayer(xbmc.Player):
                self.currentTime = self.getTime()
                self.totalTime = self.getTotalTime()
             except:
-                #pass
-                break
+                pass
+                #break
             xbmc.sleep(1000)
 
     def startPlayer(self):

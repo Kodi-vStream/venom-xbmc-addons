@@ -7,7 +7,7 @@ from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
 
-import urllib2,urllib,xbmcgui,re
+import urllib2,urllib,xbmcgui,re,xbmc
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0'}
 
@@ -83,19 +83,24 @@ class cHoster(iHoster):
         
     def checkSubtitle(self,sHtmlContent):
         oParser = cParser()
-        sPattern = "<track type='srt' kind='subtitles' src='([^']+)' srclang='.+?' label='([^']+)'>"
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            Files = []
-            for aEntry in aResult[1]:
-                url = aEntry[0]
-                label = aEntry[1]
-                
-                if not url.startswith('http'):
-                    url = 'http:' + url
-                if 'Forced' not in label:
-                    Files.append(url)
-            return Files
+
+        #On ne charge les sous titres uniquement si vostfr se trouve dans le titre.
+        if re.search('<head>\s*<title>[^<>]+VOSTFR[^<>]*<\/title>',sHtmlContent,re.IGNORECASE):
+        
+            sPattern = "<track type='srt' kind='subtitles' src='([^']+)' srclang='.+?' label='([^']+)'>"
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            
+            if (aResult[0] == True):
+                Files = []
+                for aEntry in aResult[1]:
+                    url = aEntry[0]
+                    label = aEntry[1]
+                    
+                    if not url.startswith('http'):
+                        url = 'http:' + url
+                    if 'Forc' not in label:
+                        Files.append(url)
+                return Files
 
         return False
 
@@ -132,13 +137,19 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
+        SubTitle = ''
+        SubTitle = self.checkSubtitle(sHtmlContent)
+        
         if (self.stream):
             api_call = self.GetMedialinkStreaming(sHtmlContent)
         else:
             api_call = self.GetMedialinkDL(sHtmlContent)
             
         if api_call:
-            return True, api_call
+            if SubTitle:               
+                return True, api_call,SubTitle
+            else:
+                return True, api_call
             
         cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
         return False, False
@@ -161,7 +172,7 @@ class cHoster(iHoster):
             
         if api_call:
             if SubTitle:
-                cGui().showInfo('Sous-titres disponibles', '', 2)
+                
                 return True, api_call,SubTitle
             else:
                 return True, api_call

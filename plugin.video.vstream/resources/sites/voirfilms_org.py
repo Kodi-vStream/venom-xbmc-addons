@@ -32,6 +32,12 @@ ANIM_NEWS = (URL_MAIN + 'animes/page-1', 'showMovies')
   
 URL_SEARCH = ('', 'showMovies')
 #FUNCTION_SEARCH = 'showMovies'
+
+class NoRedirection(urllib2.HTTPErrorProcessor):    
+    def http_response(self, request, response):
+        return response
+        
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'
  
 def load():
     oGui = cGui()
@@ -393,11 +399,32 @@ def showHostersLink():
     import ssl
     ssl.PROTOCOL_SSLv23 = ssl.PROTOCOL_TLSv1
     
+    #xbmc.log('url > ' + sUrl)
+    
     #On recupere la redirection
     oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('User-agent',UA)
+    oRequestHandler.addHeaderEntry('Referer','http://www.voirfilms.co/')
     sHtmlContent = oRequestHandler.request()
-    sUrl = oRequestHandler.getRealUrl()
+    redirection_target = oRequestHandler.getRealUrl() 
     
+    #opener = urllib2.build_opener(NoRedirection)
+    #opener.addheaders = [('User-agent', UA)]
+    #response = opener.open(sUrl)
+    #sHtmlContent = response.read()
+    #if response.code == 302:
+    #    redirection_target = response.headers['Location']
+    #response.close()
+    
+    #xbmc.log('red > ' + redirection_target)
+    #xbmc.log('cod > ' + sHtmlContent)
+    
+    #attention fake redirection
+    #sUrl = redirection_target
+    m = re.search(r'url=([^"]+)',sHtmlContent)
+    if m:
+        sUrl = m.group(1)
+        
     #Modifications
     sUrl = sUrl.replace('1wskdbkp.xyz','youwatch.org')
 
