@@ -2,7 +2,9 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import re,xbmcgui
+from resources.lib.gui.gui import cGui
+
+import re,xbmcgui,xbmc
 
 class cHoster(iHoster):
 
@@ -42,7 +44,7 @@ class cHoster(iHoster):
         return ''
         
     def __getIdFromUrl(self, sUrl):
-        sPattern = '\/([a-zA-Z0-9-]{20,40})\/'
+        sPattern = '\/([a-zA-Z0-9-_]{20,40})\/'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -79,9 +81,14 @@ class cHoster(iHoster):
         
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
+        #Ok on ne trouve pas en streaming on tente avec le dl
         if not aResult[0]:
+            #sUrl = 'https://drive.google.com/uc?export=download&id=' + sId + '&confirm=make'
+            #xbmc.log('yy')
+            if '"errorcode","150"]' in sHtmlContent:
+                cGui().showInfo("Erreur", "Nombre de lectures max depasse" , 5)
             return False,False
-
+            
         sListUrl = aResult[1][0][0]
         sListRes = aResult[1][0][1]
 
