@@ -7,7 +7,7 @@ from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
 
-import urllib2,urllib,xbmcgui,re
+import urllib2,urllib,xbmcgui,re,xbmc
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0'}
 
@@ -83,9 +83,9 @@ class cHoster(iHoster):
         
     def checkSubtitle(self,sHtmlContent):
         oParser = cParser()
-        
+
         #On ne charge les sous titres uniquement si vostfr se trouve dans le titre.
-        if re.match('<head><title>[^<>]+VOSTFR[^<>]*</title>',sHtmlContent,re.IGNORECASE):
+        if re.search('<head>\s*<title>[^<>]+VOSTFR[^<>]*<\/title>',sHtmlContent,re.IGNORECASE):
         
             sPattern = "<track type='srt' kind='subtitles' src='([^']+)' srclang='.+?' label='([^']+)'>"
             aResult = oParser.parse(sHtmlContent, sPattern)
