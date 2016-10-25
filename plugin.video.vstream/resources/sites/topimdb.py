@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-#Venom.
+#Venom.mino60.TmpName
 from resources.lib.config import cConfig
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.rechercheHandler import cRechercheHandler
@@ -146,14 +146,15 @@ def showMovies(sSearch = ''):
         sHtmlContent = oRequestHandler.request()
         #oRequestHandler = cRequestHandler(sUrl)
         #sHtmlContent = oRequestHandler.request()
-        #sHtmlContent = sHtmlContent.replace('<span class="runtime">', '').replace('</span>','')
-   
-    fh = open('c:\\test.txt', "w")
-    fh.write(sHtmlContent)
-    fh.close()
- 
-    #sPattern = '<td class="number">(.*?)<\/td>.*?class="image">.*?<a href=".+?" title=".+?"><img src="(.*?)" alt="(.*?)" title=".*?".*?<a href="([^<]+)">.*?<\/a>'
-    sPattern = '<span class="lister-item-index unbold text-primary">([^<]+)<\/span> *<a href="([^"]+)">([^<]+)<\/a>.+?src="([^"]+)"'  
+        #sHtmlContent = sHtmlContent.replace('<span class="runtime">', '').replace('</span>
+          
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
+    #sPattern = 'class="lister-item.*?<img\salt="(.*?)".*?loadlate="(.*?\.jpg)".*?class="lister-item-index.*?>(.*?)\.</span>' 
+    #sPattern = 'class="lister-item-index.*?>(.*?)\.</span>.*?class="lister-item.*?<img\salt="(.*?)".*?loadlate="(.*?\.jpg)".*?class="lister-item-year.*?>\((\d+)\)</span.*?title="Users rated this (.*?\/10)'
+    sPattern = 'class="lister-item.*?<img\salt="(.*?)".*?loadlate="(.*?\.jpg)".*?class="lister-item-index.*?>(.*?)\.</span>.*?class="lister-item-year.*?>\((\d+)\)</span.*?title="Users rated this (.*?\/10)' 
+    #sPattern = '<span class="lister-item-index unbold text-primary">([^<]+)<\/span> *<a href="([^"]+)">([^<]+)<\/a>.+?src="([^"]+)"'  
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
    
@@ -165,16 +166,16 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
                
-            sTitle = unicode(aEntry[0], 'utf-8')#converti en unicode
+            sTitle = unicode(aEntry[2], 'utf-8')#converti en unicode
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
             sTitle = unescape(str(aEntry[2]))
-            sTitle = sTitle.encode( "utf-8")
-            sNumber = aEntry[0].replace('<td class="number">', '').replace('</td>', '')
+            #sTitle = sTitle.encode( "utf-8")
+            sNumber = aEntry[0].replace('<span class="lister-item-index>', '').replace('</span>', '')
             #sRuntime = aEntry[0].replace('<span class="runtime">', '').replace('</span>', '')            
-            sTitle = '[COLOR azure]'+sNumber+'[/COLOR] ' + aEntry[2]
+            sTitle = '[COLOR yellow]'+sNumber+'[/COLOR] ' + aEntry[2]
             sMovieTitle=re.sub('(\[.*\])','', sTitle)
             sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle)
-            sTitle2=re.sub('(.*)(\[.*\])','\\1 [COLOR azure]\\2[/COLOR]', sTitle)
+            sTitle2=re.sub('(.*)(\[.*\])','\\1 [COLOR yellow]\\2[/COLOR]', sTitle)
            
  
             #sCom = unicode(aEntry[3], 'utf-8')#converti en unicode
@@ -189,16 +190,18 @@ def showMovies(sSearch = ''):
            
         cConfig().finishDialog(dialog)
  
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage = __checkForNextPage(sHtmlContent) 
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]' , oOutputParameterHandler)
  
     oGui.setEndOfDirectory()
+       
      
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a href="([^<>"]+?)">Next&nbsp;»<\/a>'
+    sPattern = '<a href="([^<>"]+?)">Next&nbsp;Â»<\/a>'
+    #sPattern = '<a href="(.*?)" class="lister-page-next next-page" ref-marker="adv_nxt">(.*?)<\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -236,18 +239,18 @@ def showHosters():
     #print 'apres ' + sMovieTitle
  
     dialog3 = xbmcgui.Dialog()
-    ret = dialog3.select('Recherche',['V stream','zone_telechargement','film_streaming','kepliz','Movieshd'])
+    ret = dialog3.select('Recherche',['Vstream','zone_telechargement','film_streaming','kepliz','Movieshd'])
  
     if ret == 0:
         VstreamSearch(sMovieTitle)
     elif ret == 1:
         zone_telechargementSearch(sMovieTitle)
     elif ret == 2:
-        film_streamingSearch(sMovieTitle + sExtraTitle)
+        film_streamingSearch(sMovieTitle)
     elif ret == 3:
-        keplizSearch(sMovieTitle + sExtraTitl)
+        keplizSearch(sMovieTitle)
     elif ret == 4:
-        movieshdSearch(sMovieTitle + sExtraTitle)
+        movieshdSearch(sMovieTitle)
         
 def VstreamSearch(sMovieTitle):
     
@@ -274,16 +277,20 @@ def zone_telechargementSearch(sMovieTitle):
     oGui = cGui()
    
     exec "from resources.sites import zone_telechargement_com as search"
-    sSearchText = oGui.showKeyBoard()
+    #sSearchText = oGui.showKeyBoard()
     #title = (_("Enter search criteria")), text = searchTitle, is_dialog=True)
  
-    if (sSearchText != False):
-        sSearchText = cUtil().urlEncode(sSearchText)    
-        sUrl = ('(http://www.film-streaming.co/' + sMovieTitle)
-        searchUrl = "search.php?movie=", ('resultSearch', sUrl)
-    exec "searchUrl"
-   
-    oGui.setEndOfDirectory()
+    #if (sSearchText != False):
+       # sSearchText = cUtil().urlEncode(sSearchText)    
+       # sUrl = ('http://www.zone-telechargement.com/films-gratuit.html?q=' + sMovieTitle)
+        #searchUrl = "search.php?movie=", ('resultSearch', sUrl)
+
+    sUrl = 'http://www.zone-telechargement.com/films-gratuit.html?q=%s&tab=all&orderby_by=popular&orderby_order=desc&displaychangeto=thumb' + sMovieTitle
+    xbmc.log(str(sUrl))
+    searchUrl = "search.%s('%s')" % ('showMovies', sUrl)
+    exec searchUrl
+    
+    oGui.setEndOfDirectory()  
  
  
 def film_streamingSearch(sMovieTitle):
@@ -295,36 +302,31 @@ def film_streamingSearch(sMovieTitle):
  
    # if (sSearchText != False):
         #sSearchText = cUtil().urlEncode(sSearchText)    
-    sUrl = ('(http://www.film-streaming.co/' + sMovieTitle)
-    sUrl = URL_SEARCH[0] + sSearchText
-    resultSearch(sUrl)        
-    searchUrl = "search.php?movie=", ('resultSearch', sUrl)
-    exec "searchUrl"
-   
-    oGui.setEndOfDirectory()
-   
+    sUrl = 'http://www.film-streaming.co/search.php?s=' + sMovieTitle
+    xbmc.log(str(sUrl))
+    searchUrl = "search.%s('%s')" % ('showMovies', sUrl)
+    exec searchUrl
+    
+    oGui.setEndOfDirectory()  
  
  
 def keplizSearch(sMovieTitle):
     oGui = cGui()
    
     exec "from resources.sites import kepliz_com as search"
-    sSearchText = oGui.showKeyBoard()
-    #title = (_("Enter search criteria")), text = searchTitle, is_dialog=True)
- 
-    if (sSearchText != False):
-        sSearchText = cUtil().urlEncode(sSearchText)    
-        sUrl = ('(http://www.film-streaming.co/' + sMovieTitle)
-        searchUrl = "search.php?movie=", ('resultSearch', sUrl)
-    exec "searchUrl"
-   
-    oGui.setEndOfDirectory()
+    sUrl = URL_MAIN + '/index.php?ordering=&searchphrase=all&Itemid=1&option=com_search&searchword=' + sMovieTitle   
+    #sUrl = 'http://www.kepliz_com/index.php?ordering=&searchphrase=all&Itemid=1&option=com_search&searchword=' + sMovieTitle
+    xbmc.log(str(sUrl))
+    searchUrl = "search.%s('%s')" % ('showMovies', sUrl)
+    exec searchUrl
+    
+    oGui.setEndOfDirectory() 
  
  
 def movieshdSearch(sMovieTitle):
     oGui = cGui()
    
-    exec "from resources.sites import movieshd.tv as search"
+    exec "from resources.sites import movieshd_tv as search"
     sSearchText = oGui.showKeyBoard()
     #title = (_("Enter search criteria")), text = searchTitle, is_dialog=True)
  
@@ -350,4 +352,4 @@ def addMoviedb(sId, sFunction, sLabel, sIcon, sThumbnail, fanart, oOutputParamet
     #oGuiElement.setFanart(fanart)
    
     #cGui.addFolder(oGuiElement, oOutputParameterHandler)
-    oGui.addFolder(oGuiElement, oOutputParameterHandler)
+    oGui.addFolder(oGuiElement, oOutputParameterHandler, False)
