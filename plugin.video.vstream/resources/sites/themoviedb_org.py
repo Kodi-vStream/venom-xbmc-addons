@@ -209,7 +209,6 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str('none'))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('type', 'film')
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             
             oGui.addMovieDB(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumbnail, sFanart, oOutputParameterHandler)
@@ -394,7 +393,6 @@ def showSeriesEpisode():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sMovieTitle+ '|' + sExtraTitle) #Pour compatibilite Favoris
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('type', 'serie')
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             #oOutputParameterHandler.addParameter('sSeason', sSeason)
             #oOutputParameterHandler.addParameter('sEpisode', str(sEpNumber))
@@ -468,7 +466,7 @@ def showActors():
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'none')
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-                oOutputParameterHandler.addParameter('type', 'film')
+                oOutputParameterHandler.addParameter('sTmdbId', i['id'])
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 
                 oGui.addMovieDB(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sFanart, oOutputParameterHandler)
@@ -522,7 +520,6 @@ def showFilmActor():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'none')
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('type', 'film')
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             
             oGui.addMovieDB(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
