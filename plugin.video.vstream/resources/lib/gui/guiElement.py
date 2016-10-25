@@ -28,6 +28,11 @@ class cGuiElement:
         self.__sIcon = self.DEFAULT_FOLDER_ICON
         self.__sFanart = self.__sRootArt+'fanart.jpg'
         
+        #For meta search
+        self.__TmdbId = ''
+        self.__ImdbId = ''
+        self.__Year = ''   
+        
         self.__sFanart_search = self.__sRootArt+'search_fanart.jpg'
         self.__sFanart_tv = self.__sRootArt+'tv_fanart.jpg'
         self.__sFanart_films = self.__sRootArt+'films_fanart.jpg'
@@ -81,6 +86,15 @@ class cGuiElement:
 
     def getTrailerUrl(self):
         return self.__sTrailerUrl
+        
+    def setTmdbId(self,data):
+        self.__TmdbId = data
+
+    def setImdbId(self,data):
+        self.__ImdbId = data
+        
+    def setYear(self,data):
+        self.__Year = data        
         
     def setMeta(self, sMeta):
         self.__sMeta = sMeta
@@ -313,31 +327,56 @@ class cGuiElement:
             self.__sThumbnail = meta['cover_url']
         
         return
+        
     def getMetadonne(self):
-        # try:
-            # from metahandler import metahandlers
-            # grab = metahandlers.MetaData(preparezip=False)
-        # except :
-            # return
-            
+        
         #sTitle = self.__sTitle.decode('latin-1').encode("utf-8")
         #sTitle=re.sub(r'\[.*\]|\(.*\)',r'',str(self.__sFileName))
         #sTitle=sTitle.replace('VF','').replace('VOSTFR','').replace('FR','')
-
+        
+        #Pour les films
         if self.getMeta() == 1:
             try:
                 from metahandler import metahandlers
                 grab = metahandlers.MetaData(preparezip=False,  tmdb_api_key='92ab39516970ab9d86396866456ec9b6')
-                meta = grab.get_meta('movie',self.__sFileName)
+                if (self.__TmdbId) or (self.__Year):
+                    dict = {}
+                    if (self.__TmdbId):
+                        dict['tmdb_id'] = self.__TmdbId
+                    if (self.__Year):
+                        dict['year'] =  self.__Year
+                    #convertion dict to kwarg because **karg not working
+                    kwarg = ''
+                    for i,j in dict.iteritems():
+                        kwarg = kwarg + i + '=' + j+ ','
+                    kwarg = kwarg[:-1]
+                    meta = grab.get_meta('movie',self.__sFileName,kwarg)
+                else:
+                    meta = grab.get_meta('movie',self.__sFileName)
             except:
                 return
+                
+        #Pour les series
         elif self.getMeta() == 2:
             try:
                 from metahandler import metahandlers
                 grab = metahandlers.MetaData(preparezip=False, tmdb_api_key='92ab39516970ab9d86396866456ec9b6')
-            #sTitle=re.sub(r'[0-9]+?',r'',str(sTitle))
-            #sTitle=sTitle.replace('-','').replace('Saison','').replace('saison','').replace('Season','').replace('Episode','').replace('episode','')
-                meta = grab.get_meta('tvshow',self.__sFileName)
+                #Nom a nettoyer ?
+                #attention l'annee peut mettre le bordel a cause des differences de sortie
+                if (self.__TmdbId) or (self.__Year):
+                    dict = {}
+                    if (self.__TmdbId):
+                        dict['tmdb_id'] = self.__TmdbId
+                    if (self.__Year):
+                        dict['year'] =  self.__Year
+                    #convertion dict to kwarg because **karg not working
+                    kwarg = ''
+                    for i,j in dict.iteritems():
+                        kwarg = kwarg + i + '=' + j+ ','
+                    kwarg = kwarg[:-1]
+                    meta = grab.get_meta('tvshow',self.__sFileName,kwarg)
+                else:
+                    meta = grab.get_meta('tvshow',self.__sFileName)
             except:
                 return
         else:
