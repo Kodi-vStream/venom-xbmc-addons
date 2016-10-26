@@ -22,7 +22,7 @@ class cPlayer(xbmc.Player):
     
     def __init__(self, *args):
         xbmc.Player.__init__(self)
-        self.loadingStarting = time.time()
+        #self.loadingStarting = time.time()
         
         sPlayerType = self.__getPlayerType()
         self.xbmcPlayer = xbmc.Player(sPlayerType)
@@ -38,6 +38,8 @@ class cPlayer(xbmc.Player):
         #self.sSite = oInputParameterHandler.getValue('site')
         self.sSite = oInputParameterHandler.getValue('siteUrl')
         self.sThumbnail = xbmc.getInfoLabel('ListItem.Art(thumb)')
+        
+        xbmc.log("player initialized")
         
     def clearPlayList(self):
         oPlaylist = self.__getPlayList()
@@ -66,7 +68,7 @@ class cPlayer(xbmc.Player):
         self.totalTime = 0
         self.currentTime = 0
     
-        sPluginHandle = cPluginHandler().getPluginHandle();
+        sPluginHandle = cPluginHandler().getPluginHandle()
         #meta = oGuiElement.getInfoLabel()
         meta = {'label': sTitle, 'title': sTitle}
         item = xbmcgui.ListItem(path=sUrl, iconImage="DefaultVideo.png",  thumbnailImage=self.sThumbnail)
@@ -107,10 +109,16 @@ class cPlayer(xbmc.Player):
             try: 
                self.currentTime = self.getTime()
                self.totalTime = self.getTotalTime()
+               
+               #xbmc.log(str(self.currentTime))
+               
             except:
+                xbmc.log("player error 1")
                 pass
                 #break
             xbmc.sleep(1000)
+            
+        xbmc.log('Closing player')
 
     def startPlayer(self):
 
@@ -133,21 +141,18 @@ class cPlayer(xbmc.Player):
 
 
     def onPlayBackEnded( self ):
-        try:
-            self.__setWatched()
-        except: pass
-        try:
-            self.__setResume()
-        except: pass
-        #xbmc.executebuiltin( 'Container.Refresh' )
+        self.onPlayBackStopped()
 
     def onPlayBackStopped( self ):
+        xbmc.log("player stoped")
         try:
             self.__setWatched()
-        except: pass
+        except:
+            pass
         try:
             self.__setResume()
-        except: pass
+        except:
+            pass
         #xbmc.executebuiltin( 'Container.Refresh' )
         
     def onPlayBackStarted(self):
@@ -156,6 +161,9 @@ class cPlayer(xbmc.Player):
         meta['title'] = self.sTitle
         #meta['hoster'] = self.sHosterIdentifier
         meta['site'] = self.sSite
+        
+        xbmc.log('LR ' + str(meta))
+        
         try:
             data = cDb().get_resume(meta)
             if not data == '':
@@ -176,6 +184,9 @@ class cPlayer(xbmc.Player):
         #meta['hoster'] = self.sHosterIdentifier
         meta['site'] = self.sSite
         meta['point'] = str(self.currentTime)
+        
+        xbmc.log('IR ' + str(meta))
+        
         try:
             cDb().insert_resume(meta)
         except:
