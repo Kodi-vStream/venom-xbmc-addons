@@ -47,7 +47,8 @@ class cAbout:
                 #test les fichier pour mise a jour
                 self.checkupdate()
             else:
-                cConfig().log('Prochaine verification de MAJ le : ' + str(time_sleep + time_now) )
+                #cConfig().log('Prochaine verification de MAJ le : ' + str(time_sleep + time_now) )
+                cConfig().setSetting('service_last', str(time_sleep + time_service))
 
         return
       
