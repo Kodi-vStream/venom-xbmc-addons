@@ -8,7 +8,6 @@ from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
 from resources.lib.db import cDb
 
-
 import xbmc, xbmcgui, xbmcplugin, sys
 import xbmcaddon,xbmcvfs
 import time
@@ -22,7 +21,6 @@ class cPlayer(xbmc.Player):
     
     def __init__(self, *args):
         xbmc.Player.__init__(self)
-        self.loadingStarting = time.time()
         
         sPlayerType = self.__getPlayerType()
         self.xbmcPlayer = xbmc.Player(sPlayerType)
@@ -38,6 +36,11 @@ class cPlayer(xbmc.Player):
         #self.sSite = oInputParameterHandler.getValue('site')
         self.sSite = oInputParameterHandler.getValue('siteUrl')
         self.sThumbnail = xbmc.getInfoLabel('ListItem.Art(thumb)')
+        
+        self.playBackEventReceived = False
+        self.forcestop = False        
+        
+        cConfig().log("player initialized")
         
     def clearPlayList(self):
         oPlaylist = self.__getPlayList()
@@ -66,7 +69,7 @@ class cPlayer(xbmc.Player):
         self.totalTime = 0
         self.currentTime = 0
     
-        sPluginHandle = cPluginHandler().getPluginHandle();
+        sPluginHandle = cPluginHandler().getPluginHandle()
         #meta = oGuiElement.getInfoLabel()
         meta = {'label': sTitle, 'title': sTitle}
         item = xbmcgui.ListItem(path=sUrl, iconImage="DefaultVideo.png",  thumbnailImage=self.sThumbnail)
@@ -89,12 +92,9 @@ class cPlayer(xbmc.Player):
         else:
             xbmcplugin.setResolvedUrl(sPluginHandle, True, item)
         
-        #timer = int(cConfig().getSetting('param_timeout'))
-        #xbmc.sleep(timer)
-        
         #Attend que le lecteur demarre, avec un max de 20s
         for _ in xrange(20):
-            if self.xbmcPlayer.isPlaying():
+            if self.playBackEventReceived:
                 break
             xbmc.sleep(1000)
             
@@ -102,65 +102,66 @@ class cPlayer(xbmc.Player):
         if (self.Subtitles_file):
             self.xbmcPlayer.showSubtitles(False)
        
-        while self.xbmcPlayer.isPlaying():
+        while self.isPlaying() and not self.forcestop:
         #while not xbmc.abortRequested:
             try: 
                self.currentTime = self.getTime()
                self.totalTime = self.getTotalTime()
+               
+               #xbmc.log(str(self.currentTime))
+               
             except:
                 pass
                 #break
             xbmc.sleep(1000)
+            
+        cConfig().log('Closing player')
 
+    #fonction light servant par exmple pour visualiser les DL ou les chaines de TV
     def startPlayer(self):
 
         oPlayList = self.__getPlayList()
         self.xbmcPlayer.play(oPlayList)
-        
-        #Sous-titres
-        #Non actives ici car j'ai pas trouve de fichiers pour tester
-        #xbmc.Player().setSubtitles()
-        
-        timer = int(cConfig().getSetting('param_timeout'))
-        xbmc.sleep(timer)            
-
-        # while not xbmc.abortRequested:
-            # try: 
-               # self.currentTime = self.getTime()
-               # self.totalTime = self.getTotalTime()
-            # except: break
-            # xbmc.sleep(1000)
-
 
     def onPlayBackEnded( self ):
-        try:
-            self.__setWatched()
-        except: pass
-        try:
-            self.__setResume()
-        except: pass
-        #xbmc.executebuiltin( 'Container.Refresh' )
+        self.onPlayBackStopped()
 
+    #Attention pas de stop, si on lance une seconde video sans fermer la premiere
     def onPlayBackStopped( self ):
+        
+        cConfig().log("player stoped")
+        
         try:
             self.__setWatched()
-        except: pass
+        except:
+            pass
         try:
             self.__setResume()
-        except: pass
+        except:
+            pass
         #xbmc.executebuiltin( 'Container.Refresh' )
         
     def onPlayBackStarted(self):
+        
+        cConfig().log("player started")
+        
+        #Si on recoit une nouvelle fois l'event, c'est que ca buggue, on stope tout
+        if self.playBackEventReceived:
+            self.forcestop = True
+            return
+        
+        self.playBackEventReceived = True
         
         meta = {}      
         meta['title'] = self.sTitle
         #meta['hoster'] = self.sHosterIdentifier
         meta['site'] = self.sSite
+        
         try:
             data = cDb().get_resume(meta)
             if not data == '':
                 time = float(data[0][3]) / 60
-                label = '%s %.2f minutes' % ('reprendre:', time)     
+                label = '%s %.2f minutes' % ('Reprendre:', time)     
                 oDialog = cConfig().createDialogYesNo(label)
                 if (oDialog == 1):
                     seekTime = float(data[0][3])
@@ -176,6 +177,7 @@ class cPlayer(xbmc.Player):
         #meta['hoster'] = self.sHosterIdentifier
         meta['site'] = self.sSite
         meta['point'] = str(self.currentTime)
+        
         try:
             cDb().insert_resume(meta)
         except:
@@ -207,4 +209,5 @@ class cPlayer(xbmc.Player):
             if (sPlayerType == '2'):
                 cConfig().log("playertype from config: dvdplayer")
                 return xbmc.PLAYER_CORE_DVDPLAYER
-        except: return False
+        except:
+            return False

@@ -70,7 +70,7 @@ class cHoster(iHoster):
         oParser = cParser()
         
         #lien indirect
-        sPattern = '<iframe[^<>]+src="(http:\/\/allvid\.ch\/embed-.+?)"[^<>]+><\/iframe>'
+        sPattern = '<iframe.+?src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             oRequest = cRequestHandler(aResult[1][0])

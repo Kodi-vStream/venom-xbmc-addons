@@ -2,7 +2,11 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import re,xbmcgui
+from resources.lib.gui.gui import cGui
+
+import re,xbmcgui,xbmc,urllib2
+
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
 class cHoster(iHoster):
 
@@ -42,7 +46,7 @@ class cHoster(iHoster):
         return ''
         
     def __getIdFromUrl(self, sUrl):
-        sPattern = '\/([a-zA-Z0-9-]{20,40})\/'
+        sPattern = '\/([a-zA-Z0-9-_]{20,40})\/'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -63,8 +67,6 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
-        import xbmc
 
         #reformatage du lien
         sId = self.__getIdFromUrl(self.__sUrl)
@@ -72,16 +74,33 @@ class cHoster(iHoster):
 
         #xbmc.log(sUrl)
         
-        oRequest = cRequestHandler(sUrl)
-        sHtmlContent = oRequest.request()
+        req = urllib2.Request(sUrl)
+        response = urllib2.urlopen(req)  
+        sHtmlContent = response.read()
+        Headers = response.headers
+        response.close()
+        
+        #listage des cookies
+        c = Headers['Set-Cookie']
+        c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);',c)
+        if c2:
+            cookies = ''
+            for cook in c2:
+                cookies = cookies + cook[0] + '=' + cook[1]+ ';'  
+                
+        #xbmc.log(cookies)
 
         sPattern = '\["fmt_stream_map","([^"]+)"]\s*,\["fmt_list","([^"]+)"]'
         
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if not aResult[0]:
-            return False,False
 
+        if not aResult[0]:
+            #sUrl = 'https://drive.google.com/uc?export=download&id=' + sId + '&confirm=make'
+            if '"errorcode","150"]' in sHtmlContent:
+                cGui().showInfo("Erreur", "Nombre de lectures max depasse" , 5)
+            return False,False
+            
         sListUrl = aResult[1][0][0]
         sListRes = aResult[1][0][1]
 
@@ -109,10 +128,12 @@ class cHoster(iHoster):
             ret = dialog2.select('Select Quality',qua)
             if (ret > -1):
                 api_call = url[ret]
+        
+        api_call = api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
+        
+        #xbmc.log(api_call)
             
         if (api_call):
             return True, api_call
             
         return False, False
-        
-        

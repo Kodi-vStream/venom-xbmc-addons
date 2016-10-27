@@ -252,9 +252,18 @@ class cGui():
     #afficher les liens non playable
     def addFolder(self, oGuiElement, oOutputParameterHandler=''):
         
-        if oOutputParameterHandler.getValue('siteUrl'):
-            sSiteUrl = oOutputParameterHandler.getValue('siteUrl')
-            oGuiElement.setSiteUrl(sSiteUrl)
+        #Des infos a rajouter ?
+        params = {
+            "siteUrl": oGuiElement.setSiteUrl,#indispensable
+            "sTmdbId": oGuiElement.setTmdbId,
+            "sImbdId": oGuiElement.setImdbId,#inutile ?
+            "sYear": oGuiElement.setYear,
+        }
+
+        for sParam, callback in params.iteritems():
+            value = oOutputParameterHandler.getValue(sParam)
+            if value:
+                callback(value)
             
         oListItem = self.createListItem(oGuiElement)
         oListItem.setProperty("IsPlayable", "false")
@@ -286,8 +295,6 @@ class cGui():
             self.createContexMenuba(oGuiElement, oOutputParameterHandler)
             self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
             self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
-
-            
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
        
