@@ -4,7 +4,7 @@ from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 import re,urllib2,urllib,time
 import xbmcgui
-  
+###necessite de résoudre un recaptcha pour 4h de stream désormais a cette adresse https://thevideo.me/pair?
 def Getvt(id):
     vtcheck = 'https://thevideo.me/pair?file_code=' + id + '&check'
     headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'}
