@@ -1,10 +1,13 @@
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
+#
 import urllib
 import urllib2
+
 from urllib2 import HTTPError, URLError
 from resources.lib.config import cConfig
 
 from resources.lib import cloudflare
-
 
 
 class cRequestHandler:
@@ -21,6 +24,8 @@ class cRequestHandler:
         self.removeNewLines(True)
         self.__setDefaultHeader()
         self.__timeout = 30
+        
+        self.__HeaderReturn = ''
 
     def removeNewLines(self, bRemoveNewLines):
         self.__bRemoveNewLines = bRemoveNewLines
@@ -46,7 +51,21 @@ class cRequestHandler:
 
     # url after redirects
     def getRealUrl(self):
-        return self.__sRealUrl;
+        return self.__sRealUrl
+        
+    def GetHeaders(self):
+        return self.__HeaderReturn
+        
+    def GetCookies(self):
+        import re
+        c = self.__HeaderReturn['Set-Cookie']
+        c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);',c)
+        if c2:
+            cookies = ''
+            for cook in c2:
+                cookies = cookies + cook[0] + '=' + cook[1]+ ';'
+            return cookies
+        return ''
 
     def request(self):
         self.__sUrl = self.__sUrl.replace(' ', '+')
@@ -88,6 +107,7 @@ class cRequestHandler:
             
             self.__sResponseHeader = oResponse.info()
             self.__sRealUrl = oResponse.geturl()
+            self.__HeaderReturn = oResponse.headers
         
             oResponse.close()
             
