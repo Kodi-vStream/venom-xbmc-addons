@@ -4,6 +4,19 @@ from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 import re,urllib2,urllib,time
 import xbmcgui
+  
+def Getvt(id):
+    vtcheck = 'https://thevideo.me/pair?file_code=' + id + '&check'
+    headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'}
+                  
+    req = urllib2.Request(vtcheck,None,headers)
+    res = urllib2.urlopen(req)
+    rvt = res.read()
+    res.close()
+    ovt = re.findall('{"vt":"([^"]+)"',rvt)
+    if ovt:
+       return ovt
+    return False
 
 class cHoster(iHoster):
 
@@ -42,12 +55,10 @@ class cHoster(iHoster):
     def getPattern(self):
         return '';
         
-    def __getIdFromUrl(self):
-        #http://www.thevideo.me/embed-mtx733dpzksx.html
-        sPattern = 'http:\/\/thevideo.me.+?\/(.+)'
+    def __getIdFromUrl(self,sUrl):
+        sPattern = 'http://www.thevideo.me/embed-([^\.]+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
-        
         if (aResult[0] == True):
             return aResult[1][0]
         return ''
@@ -66,17 +77,17 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         
-        #print self.__sUrl
-   
+        id = self.__getIdFromUrl(self.__sUrl)
+
+        vt = Getvt(id)
+
         api_call = False
-        
-        #print self.__sUrl
-        
+
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
         oParser = cParser()
-        sPattern = "{.+?label:.+?'(.+?)',.+?file:.+?'(.+?)'.+?}"
+        sPattern = '{"file":"([^"]+)","label":"(\d+p)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True):
@@ -86,8 +97,8 @@ class cHoster(iHoster):
         
             #Replissage des tableaux
             for i in aResult[1]:
-                url.append(str(i[1]))
-                qua.append(str(i[0]))
+                url.append(str(i[0]))
+                qua.append(str(i[1]))
                 
             #Si au moins 1 url
             if (url):
@@ -96,8 +107,7 @@ class cHoster(iHoster):
                 ret = dialog2.select('Select Quality',qua)
                 if (ret > -1):
                     api_call = url[ret]
-
-        #print api_call
+                    api_call = api_call + '?direct=false&ua=1&vt=' + vt[0]
         
         if (api_call):
             return True, api_call
