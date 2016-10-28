@@ -184,7 +184,14 @@ class cConfig():
     def update(self):
         xbmc.executebuiltin("Container.Refresh")
 
+    def show_busy_dialog():
+        xbmc.executebuiltin('ActivateWindow(busydialog)')
 
+    def hide_busy_dialog():
+        xbmc.executebuiltin('Dialog.Close(busydialog)')
+        while xbmc.getCondVisibility('Window.IsActive(busydialog)'):
+            xbmc.sleep(100)
+        
     def error(self, e):
         xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % ('Vstream', ('Erreur: '+str(e)), '10000', self.__sIcon))
         xbmc.log('\t[PLUGIN] Vstream Erreur: '+str(e))
@@ -358,7 +365,3 @@ class cConfig():
         wd = XMLDialog('DialogInfo.xml', self.__oPath, 'default', '720p')
         wd.doModal()
         del wd
-
-        
-        
-        
