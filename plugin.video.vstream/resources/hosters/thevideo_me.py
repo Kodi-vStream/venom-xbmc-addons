@@ -1,22 +1,14 @@
+#coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 import re,urllib2,urllib,time
-import xbmcgui
-###necessite de résoudre un recaptcha pour 4h de stream désormais a cette adresse https://thevideo.me/pair?
-def Getvt(id):
-    vtcheck = 'https://thevideo.me/pair?file_code=' + id + '&check'
-    headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'}
-                  
-    req = urllib2.Request(vtcheck,None,headers)
-    res = urllib2.urlopen(req)
-    rvt = res.read()
-    res.close()
-    ovt = re.findall('{"vt":"([^"]+)"',rvt)
-    if ovt:
-       return ovt
-    return False
+import xbmcgui,xbmc,re
+
+from resources.lib.packer import cPacker
 
 class cHoster(iHoster):
 
@@ -79,14 +71,44 @@ class cHoster(iHoster):
         
         id = self.__getIdFromUrl(self.__sUrl)
 
-        vt = Getvt(id)
-
         api_call = False
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
         oParser = cParser()
+        
+        sPattern = "var mpri_Key='([^']+)';(.+?)<\/script>"
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        if not (aResult[0]):
+            return False , False
+            
+        key = aResult[1][0][0]
+        code = cPacker().unpack(aResult[1][0][1])
+        
+        xbmc.log(str(code))
+        
+        #ca deconne ici
+        #sPattern = "\=\"\\'\+\\'\/(.+?)\\\'\.concat"
+        #r = re.search(sPattern,code)
+        #xbmc.log(str(r))
+        #if not (r):
+        #    return False , False
+            
+        url2 = 'http://thevideo.me/jwv/' + key       
+
+        oRequest = cRequestHandler(url2)
+        sHtmlContent2 = oRequest.request()
+        
+        xbmc.log(sHtmlContent2)
+        
+        code = cPacker().unpack(sHtmlContent2)
+        
+        xbmc.log(code)
+        
+        #*************************************************
+        
         sPattern = '{"file":"([^"]+)","label":"(\d+p)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -107,7 +129,10 @@ class cHoster(iHoster):
                 ret = dialog2.select('Select Quality',qua)
                 if (ret > -1):
                     api_call = url[ret]
-                    api_call = api_call + '?direct=false&ua=1&vt=' + vt[0]
+        
+                api_call = api_call + '?direct=false&ua=1&vt=' + vt
+        
+        xbmc.log(api_call)
         
         if (api_call):
             return True, api_call
