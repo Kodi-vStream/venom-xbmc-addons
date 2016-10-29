@@ -64,7 +64,7 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
         
-        sPattern =  'http:\/\/(?:www.|embed.)nowvideo.[a-z]{2}\/(?:video\/|embed\/\?.*?v=)([0-9a-z]+)' 
+        sPattern =  'http:\/\/(?:www.|embed.)nowvideo.[a-z]{2}\/(?:video\/|embed.+?\?.*?v=)([0-9a-z]+)' 
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)        
         self.__sUrl = 'http://embed.nowvideo.sx/embed.php?v=' + str(aResult[1][0])
