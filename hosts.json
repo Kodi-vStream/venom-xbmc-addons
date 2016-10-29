@@ -34,16 +34,16 @@
   {
     "name": "allvid.py",
     "path": "plugin.video.vstream/resources/hosters/allvid.py",
-    "sha": "0bdd8407bdc38bf87be930ba4326c6179aabf0b3",
-    "size": 3207,
+    "sha": "d9ee5289e4b946463351add3b7e39ded6c91f172",
+    "size": 3162,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/allvid.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/allvid.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/0bdd8407bdc38bf87be930ba4326c6179aabf0b3",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/d9ee5289e4b946463351add3b7e39ded6c91f172",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/allvid.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/allvid.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/0bdd8407bdc38bf87be930ba4326c6179aabf0b3",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/d9ee5289e4b946463351add3b7e39ded6c91f172",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/allvid.py"
     }
   },
@@ -242,16 +242,16 @@
   {
     "name": "googledrive.py",
     "path": "plugin.video.vstream/resources/hosters/googledrive.py",
-    "sha": "e4bfb96859c25ddec3e54ec38631cddb4f39f965",
-    "size": 3099,
+    "sha": "b35c84c8629d675d883374f036068e14d093c10d",
+    "size": 3952,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/googledrive.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/googledrive.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/e4bfb96859c25ddec3e54ec38631cddb4f39f965",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/b35c84c8629d675d883374f036068e14d093c10d",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/googledrive.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/googledrive.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/e4bfb96859c25ddec3e54ec38631cddb4f39f965",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/b35c84c8629d675d883374f036068e14d093c10d",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/googledrive.py"
     }
   },
