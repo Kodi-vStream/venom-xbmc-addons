@@ -1,12 +1,12 @@
 #coding: utf-8
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import re,urllib2,urllib,time
-import xbmcgui,xbmc,re
+import re,urllib2
+import xbmcgui
 
 from resources.lib.packer import cPacker
 
@@ -68,8 +68,6 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
-        id = self.__getIdFromUrl(self.__sUrl)
 
         api_call = False
 
@@ -80,34 +78,26 @@ class cHoster(iHoster):
         
         sPattern = "var mpri_Key='([^']+)';(.+?)<\/script>"
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
         if not (aResult[0]):
             return False , False
             
         key = aResult[1][0][0]
         code = cPacker().unpack(aResult[1][0][1])
-        
-        xbmc.log(str(code))
-        
-        #ca deconne ici
-        #sPattern = "\=\"\\'\+\\'\/(.+?)\\\'\.concat"
-        #r = re.search(sPattern,code)
-        #xbmc.log(str(r))
-        #if not (r):
-        #    return False , False
+
+        sPattern = "rc=.+?\/(.+?)\\\\'\.concat"
+        r = re.search(sPattern,code)
+        if not (r):
+            return False , False
             
         url2 = 'http://thevideo.me/jwv/' + key       
 
         oRequest = cRequestHandler(url2)
         sHtmlContent2 = oRequest.request()
-        
-        xbmc.log(sHtmlContent2)
-        
-        code = cPacker().unpack(sHtmlContent2)
-        
-        xbmc.log(code)
-        
-        #*************************************************
+
+        sPattern = "jwConfig\|([^|]+)"
+        r2 = re.search(sPattern,sHtmlContent2)
+        if not (r2):
+            return False , False
         
         sPattern = '{"file":"([^"]+)","label":"(\d+p)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -129,11 +119,9 @@ class cHoster(iHoster):
                 ret = dialog2.select('Select Quality',qua)
                 if (ret > -1):
                     api_call = url[ret]
-        
-                api_call = api_call + '?direct=false&ua=1&vt=' + vt
-        
-        xbmc.log(api_call)
-        
+
+                    api_call = api_call + '?direct=false&ua=1&vt=' + r2.group(1)
+
         if (api_call):
             return True, api_call
             
