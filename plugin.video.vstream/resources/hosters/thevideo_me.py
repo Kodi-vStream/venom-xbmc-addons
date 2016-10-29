@@ -1,9 +1,15 @@
+#coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import re,urllib2,urllib,time
-import xbmcgui
+
+import re,urllib2
+import xbmcgui,xbmc
+
+from resources.lib.packer import cPacker
 
 class cHoster(iHoster):
 
@@ -42,12 +48,10 @@ class cHoster(iHoster):
     def getPattern(self):
         return '';
         
-    def __getIdFromUrl(self):
-        #http://www.thevideo.me/embed-mtx733dpzksx.html
-        sPattern = 'http:\/\/thevideo.me.+?\/(.+)'
+    def __getIdFromUrl(self,sUrl):
+        sPattern = 'http://www.thevideo.me/embed-([^\.]+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
-        
         if (aResult[0] == True):
             return aResult[1][0]
         return ''
@@ -65,18 +69,39 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
-        #print self.__sUrl
-   
+
         api_call = False
-        
-        #print self.__sUrl
-        
+
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
         oParser = cParser()
-        sPattern = "{.+?label:.+?'(.+?)',.+?file:.+?'(.+?)'.+?}"
+        
+        sPattern = "var mpri_Key='([^']+)';(.+?)<\/script>"
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if not (aResult[0]):
+            return False , False
+            
+        key = aResult[1][0][0]
+        code = cPacker().unpack(aResult[1][0][1])
+
+        sPattern = "rc=.+?\/(.+?)\\\\'\.concat"
+        r = re.search(sPattern,code)
+        if not (r):
+            return False , False
+            
+        url2 = 'http://thevideo.me/' + r.group(1) + '/' + key       
+
+        oRequest = cRequestHandler(url2)
+        sHtmlContent2 = oRequest.request()
+        
+        code = cPacker().unpack(sHtmlContent2)
+        sPattern = '"vt=([^"]+)'
+        r2 = re.search(sPattern,code)
+        if not (r2):
+            return False , False
+        
+        sPattern = '{"file":"([^"]+)","label":"(\d+p)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True):
@@ -86,8 +111,8 @@ class cHoster(iHoster):
         
             #Replissage des tableaux
             for i in aResult[1]:
-                url.append(str(i[1]))
-                qua.append(str(i[0]))
+                url.append(str(i[0]))
+                qua.append(str(i[1]))
                 
             #Si au moins 1 url
             if (url):
@@ -96,9 +121,8 @@ class cHoster(iHoster):
                 ret = dialog2.select('Select Quality',qua)
                 if (ret > -1):
                     api_call = url[ret]
+                    api_call = api_call + '?direct=false&ua=1&vt=' + r2.group(1)
 
-        #print api_call
-        
         if (api_call):
             return True, api_call
             

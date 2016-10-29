@@ -1,17 +1,20 @@
 #-*- coding: utf-8 -*-
 from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
+from resources.lib.db import cDb
 
 import sys
 import os
 import urllib
 import xbmcgui
+import xbmc
 
 class cRechercheHandler:
     
     def __init__(self):
         self.__sText = ""
         self.__sDisp = ""
+        self.__sRead = "True"
 
     def getPluginHandle(self):
         try:
@@ -38,6 +41,9 @@ class cRechercheHandler:
 
     def setDisp(self, sDisp):
         self.__sDisp = sDisp
+        
+    def setRead(self, sRead):
+        self.__sRead = sRead
 
     def getDisp(self):
         if not self.__sDisp:
@@ -124,6 +130,15 @@ class cRechercheHandler:
         if not sLabel:
             return
         
+        #historique
+        try:
+            if (cConfig().getSetting("history-view") == 'true' and self.__sRead != "False"):
+                meta = {}
+                meta['title'] = sText
+                meta['disp'] = sLabel
+                cDb().insert_history(meta)
+        except: pass
+            
         sFolder =  self.getRootFolder()
         sFolder = os.path.join(sFolder, 'resources/sites')
 

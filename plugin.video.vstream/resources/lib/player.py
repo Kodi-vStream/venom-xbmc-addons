@@ -20,12 +20,12 @@ import time
 class cPlayer(xbmc.Player):
     
     def __init__(self, *args):
-        xbmc.Player.__init__(self)
         
         sPlayerType = self.__getPlayerType()
-        self.xbmcPlayer = xbmc.Player(sPlayerType)
+        xbmc.Player.__init__(self,sPlayerType)
         
         self.Subtitles_file = []
+        self.SubtitleActive = False
         
         oInputParameterHandler = cInputParameterHandler()
         #aParams = oInputParameterHandler.getAllParameter()
@@ -38,6 +38,7 @@ class cPlayer(xbmc.Player):
         self.sThumbnail = xbmc.getInfoLabel('ListItem.Art(thumb)')
         
         self.playBackEventReceived = False
+        self.playBackStoppedEventReceived = False
         self.forcestop = False        
         
         cConfig().log("player initialized")
@@ -80,14 +81,14 @@ class cPlayer(xbmc.Player):
         if (self.Subtitles_file):
             try:
                 item.setSubtitles(self.Subtitles_file)
-                cConfig().log("Load SubTitle :" + str(self.Subtitles_file))
-                cGui().showInfo("Sous titre charges, Vous pouvez les activer", "Sous-Titres", 5)
+                cConfig().log("Load SubTitle :" + str(self.Subtitles_file))               
+                self.SubtitleActive = True
             except:
                 cConfig().log("Can't load subtitle :" + str(self.Subtitles_file))
                 
         if (cConfig().getSetting("playerPlay") == '0'):                            
             sPlayerType = self.__getPlayerType()
-            self.xbmcPlayer.play( sUrl, item )
+            self.play( sUrl, item )
             xbmcplugin.endOfDirectory(sPluginHandle, True, False, False)             
         else:
             xbmcplugin.setResolvedUrl(sPluginHandle, True, item)
@@ -99,8 +100,9 @@ class cPlayer(xbmc.Player):
             xbmc.sleep(1000)
             
         #desactive les sous titres si on les a rajoute nous meme
-        if (self.Subtitles_file):
-            self.xbmcPlayer.showSubtitles(False)
+        if (self.SubtitleActive):
+            self.showSubtitles(False)
+            cGui().showInfo("Sous titre charges, Vous pouvez les activer", "Sous-Titres", 15)
        
         while self.isPlaying() and not self.forcestop:
         #while not xbmc.abortRequested:
@@ -115,13 +117,16 @@ class cPlayer(xbmc.Player):
                 #break
             xbmc.sleep(1000)
             
+        if not self.playBackStoppedEventReceived:
+            self.onPlayBackStopped()
+        
         cConfig().log('Closing player')
 
     #fonction light servant par exmple pour visualiser les DL ou les chaines de TV
     def startPlayer(self):
 
         oPlayList = self.__getPlayList()
-        self.xbmcPlayer.play(oPlayList)
+        self.play(oPlayList)
 
     def onPlayBackEnded( self ):
         self.onPlayBackStopped()
@@ -130,6 +135,8 @@ class cPlayer(xbmc.Player):
     def onPlayBackStopped( self ):
         
         cConfig().log("player stoped")
+        
+        self.playBackStoppedEventReceived = True
         
         try:
             self.__setWatched()
@@ -172,6 +179,11 @@ class cPlayer(xbmc.Player):
             pass
                 
     def __setResume(self):
+        
+        #Faut pas deconner quand meme
+        if self.currentTime < 30:
+            return
+        
         meta = {}      
         meta['title'] = self.sTitle
         #meta['hoster'] = self.sHosterIdentifier
@@ -184,6 +196,11 @@ class cPlayer(xbmc.Player):
             pass
             
     def __setWatched(self):
+        
+        #Faut pas deconner quand meme
+        if self.currentTime < 30:
+            return
+        
         meta = {}      
         meta['title'] = self.sTitle
         meta['site'] = self.sSite

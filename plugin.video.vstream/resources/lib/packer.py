@@ -17,6 +17,7 @@
 
 import re,urllib2
 import string
+#import xbmc
 
 class cPacker():
     def detect(self, source):
@@ -28,12 +29,12 @@ class cPacker():
         payload, symtab, radix, count = self._filterargs(source)
 
         if count != len(symtab):
-            raise self.UnpackingError('Malformed p.a.c.k.e.r. symtab.')
+            raise UnpackingError('Malformed p.a.c.k.e.r. symtab.')
         
         try:
             unbase = Unbaser(radix)
         except TypeError:
-            raise self.UnpackingError('Unknown p.a.c.k.e.r. encoding.')
+            raise UnpackingError('Unknown p.a.c.k.e.r. encoding.')
 
         def lookup(match):
             """Look up symbols in the synthetic symtab."""
@@ -70,6 +71,8 @@ class cPacker():
 
     def _filterargs(self, source):
         """Juice from a source file the four args needed by decoder."""
+        
+        source = source.replace(',[],',',0,')
 
         juicer = (r"}\s*\(\s*(.*?)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\((.*?)\).split\((.*?)\)")
         args = re.search(juicer, source, re.DOTALL)
@@ -78,7 +81,7 @@ class cPacker():
             try:
                 return self._cleanstr(a[0]), self._cleanstr(a[3]).split(self._cleanstr(a[4])), int(a[1]), int(a[2])
             except ValueError:
-                raise self.UnpackingError('Corrupted p.a.c.k.e.r. data.')
+                raise UnpackingError('Corrupted p.a.c.k.e.r. data.')
 
         juicer = (r"}\('(.*)', *(\d+), *(\d+), *'(.*)'\.split\('(.*?)'\)")
         args = re.search(juicer, source, re.DOTALL)
@@ -87,10 +90,10 @@ class cPacker():
             try:
                 return a[0], a[3].split(a[4]), int(a[1]), int(a[2])
             except ValueError:
-                raise self.UnpackingError('Corrupted p.a.c.k.e.r. data.')
+                raise UnpackingError('Corrupted p.a.c.k.e.r. data.')
 
         # could not find a satisfying regex
-        raise self.UnpackingError('Could not make sense of p.a.c.k.e.r data (unexpected code structure)')
+        raise UnpackingError('Could not make sense of p.a.c.k.e.r data (unexpected code structure)')
 
 
 
@@ -108,10 +111,11 @@ class cPacker():
             return source[startpoint:]
         return source
         
-    def UnpackingError(Exception):
+def UnpackingError(Exception):
     #Badly packed source or general error.#
-        print Exception
-        pass
+    #xbmc.log(str(Exception))
+    print Exception
+    pass
 
 
 class Unbaser(object):
@@ -125,8 +129,11 @@ class Unbaser(object):
 
     def __init__(self, base):
         self.base = base
-
-
+        
+        #Error not possible, use 36 by defaut
+        if base == 0 :
+            base = 36
+        
         # If base can be handled by int() builtin, let it do it for us
         if 2 <= base <= 36:
             self.unbase = lambda string: int(string, base)
@@ -149,6 +156,7 @@ class Unbaser(object):
     def _dictunbaser(self, string):
         """Decodes a  value to an integer."""
         ret = 0
+        
         for index, cipher in enumerate(string[::-1]):
             ret += (self.base ** index) * self.dictionary[cipher]
         return ret

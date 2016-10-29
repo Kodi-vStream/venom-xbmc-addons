@@ -44,7 +44,7 @@ ANIM_NEWS = (URL_MAIN + 'url', 'showAnimes') #anime nouveautés
 ANIM_ANIMS = (URL_MAIN + 'url', 'showAnimes') #anime vrac
 ANIM_VFS = (URL_MAIN + 'url', 'showAnimes') #anime VF
 ANIM_VOSTFRS = (URL_MAIN + 'url', 'showAnimes') #anime VOSTFR
-ANIM_MOVIES = (URL_MAIN + 'url'', 'showAnimes') #anime film
+ANIM_MOVIES = (URL_MAIN + 'url', 'showAnimes') #anime film
 ANIM_GENRES = (True, 'showGenre') #anime genre
 
 DOC_DOCS = (URL_MAIN + 'url', 'showOthers') #Documentaire

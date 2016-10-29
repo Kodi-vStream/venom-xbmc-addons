@@ -1,10 +1,13 @@
+#coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 
-import xbmc,re
+import re,xbmcgui
 
 class cHoster(iHoster):
 
@@ -36,11 +39,10 @@ class cHoster(iHoster):
     def getPattern(self):
         return ''
         
-    def __getIdFromUrl(self):
-        sPattern = "v=([^<]+)"
+    def __getIdFromUrl(self,sUrl):
+        sPattern = 'v=([^<]+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
-
         if (aResult[0] == True):
             return aResult[1][0]
 
@@ -62,8 +64,7 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
         
-        sPattern =  'http:\/\/(?:www.|embed.)nowvideo.[a-z]{2}\/(?:video\/|embed.php\?.*?v=)([0-9a-z]+)'
-         
+        sPattern =  'http:\/\/(?:www.|embed.)nowvideo.[a-z]{2}\/(?:video\/|embed.+?\?.*?v=)([0-9a-z]+)' 
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)        
         self.__sUrl = 'http://embed.nowvideo.sx/embed.php?v=' + str(aResult[1][0])
@@ -79,30 +80,49 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         
-        #xbmc.log(self.__sUrl)
+        api_call = ''
+        
+        oParser = cParser()
+
+        id = self.__getIdFromUrl(self.__sUrl)
         
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
-        oParser = cParser()
-        sPattern =  '<script type="text\/javascript" src="([^"]+)"><\/script>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult):
-            url1 = 'http://embed.nowvideo.sx' + aResult[1][0]
-            
-            oRequest = cRequestHandler(url1)
-            sHtmlContent2 = oRequest.request()
-            #a continuer quand ca va bloquer
-            
-        
-        sPattern =  '<source src="([^"]+)" type=\'video\/mp4\'>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        #xbmc.log(str(aResult))
 
-        if (aResult[0] == True):
-            api_call = aResult[1][0]
-            #xbmc.log(api_call)
-            return True, api_call
+        # 1 er lecteur
+        r = re.search('var fkzd="([^"]+)"', sHtmlContent)
+        if (r):
+            surl = 'http://www.nowvideo.sx/api/player.api.php?key=' + r.group(1) +'&file=' + id
+            oRequest = cRequestHandler(surl)
+            sHtmlContent = oRequest.request()
+
+            r2 = re.search('url=([^&]+)', sHtmlContent)
+            if (r2):
+                api_call = r2.group(1)
+                
+        #second lecteur
+        sPattern = '<source src="([^"]+)" type=\'([^"\']+)\'>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
         
-        return False, False
+        if (aResult[0] == True):
+            #initialisation des tableaux
+            url=[]
+            qua=[]
+        
+            #Replissage des tableaux
+            for i in aResult[1]:
+                url.append(str(i[0]))
+                qua.append(str(i[1]))
+                
+            #Si au moins 1 url
+            if (url):
+            #Afichage du tableau
+                dialog2 = xbmcgui.Dialog()
+                ret = dialog2.select('Select Quality',qua)
+                if (ret > -1):
+                    api_call = url[ret]
+                
+        if (api_call):
+            return True, api_call
+
+        return False , False
