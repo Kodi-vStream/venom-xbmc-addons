@@ -5,8 +5,9 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
+
 import re,urllib2
-import xbmcgui
+import xbmcgui,xbmc
 
 from resources.lib.packer import cPacker
 
@@ -89,13 +90,14 @@ class cHoster(iHoster):
         if not (r):
             return False , False
             
-        url2 = 'http://thevideo.me/jwv/' + key       
+        url2 = 'http://thevideo.me/' + r.group(1) + '/' + key       
 
         oRequest = cRequestHandler(url2)
         sHtmlContent2 = oRequest.request()
-
-        sPattern = "jwConfig\|([^|]+)"
-        r2 = re.search(sPattern,sHtmlContent2)
+        
+        code = cPacker().unpack(sHtmlContent2)
+        sPattern = '"vt=([^"]+)'
+        r2 = re.search(sPattern,code)
         if not (r2):
             return False , False
         
@@ -119,7 +121,6 @@ class cHoster(iHoster):
                 ret = dialog2.select('Select Quality',qua)
                 if (ret > -1):
                     api_call = url[ret]
-
                     api_call = api_call + '?direct=false&ua=1&vt=' + r2.group(1)
 
         if (api_call):
