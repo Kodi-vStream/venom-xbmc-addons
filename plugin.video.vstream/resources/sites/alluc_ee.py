@@ -188,19 +188,27 @@ def showHosters():
             
             aResult = oParser.parse(sHtmlContent, sPattern)
             
-            
         else:
             return
             
     
     if (aResult[0] == True):
-            
-        aEntry = aResult[1]
-        
-        sTitle = sMovieTitle
-        
-        sHosterUrl = str(aEntry[0])
-        
+        if 'alluc.ee' in aResult[1][0]: #Redirection vers hoster 
+            aEntry = aResult[1][0]
+            if not aEntry.startswith('http'):
+               sUrl = 'http:' + aEntry
+
+            oRequest = cRequestHandler(sUrl)
+            sHtmlContent = oRequest.request()
+            rH = re.search('<div class="inLink">.+?<a href="([^"]+)"', sHtmlContent)
+            if (rH):
+                sHosterUrl = rH.group(1)
+                sTitle = sMovieTitle
+        else:
+            aEntry = aResult[1]
+            sTitle = sMovieTitle
+            sHosterUrl = str(aEntry[0])
+
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sTitle)
@@ -208,4 +216,3 @@ def showHosters():
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
             
     oGui.setEndOfDirectory()
-    
