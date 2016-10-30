@@ -309,6 +309,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('stagevu')
         if ('veehd.' in sHostName):
             return cHosterHandler().getHoster('veehd')
+        if (('movshare' in sHostName) or ('wholecloud' in sHostName)):
+            return cHosterHandler().getHoster('wholecloud')
 
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
