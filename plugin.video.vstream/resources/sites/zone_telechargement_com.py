@@ -610,9 +610,9 @@ def showHosters():# recherche et affiche les hotes
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumbnail, '', oOutputParameterHandler)
    
-            cConfig().finishDialog(dialog)
+        cConfig().finishDialog(dialog)
 
-        oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
 
 def showSeriesHosters():# recherche et affiche les hotes
 
@@ -672,9 +672,9 @@ def showSeriesHosters():# recherche et affiche les hotes
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
    
-            cConfig().finishDialog(dialog)
+        cConfig().finishDialog(dialog)
 
-        oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
         
 def Display_protected_link():
     
