@@ -180,6 +180,10 @@ class cPlayer(xbmc.Player):
                 
     def __setResume(self):
         
+        #inutile sur les dernieres version > Dharma
+        if (cConfig().isDharma()):
+            return
+        
         #Faut pas deconner quand meme
         if self.currentTime < 30:
             return
@@ -196,6 +200,10 @@ class cPlayer(xbmc.Player):
             pass
             
     def __setWatched(self):
+        
+        #inutile sur les dernieres version > Dharma
+        if (cConfig().isDharma()):
+            return
         
         #Faut pas deconner quand meme
         if self.currentTime < 30:
