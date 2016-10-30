@@ -6,7 +6,7 @@
         <setting id="playerPlay" type="enum" values="XbmcPlayer|XbmcPlugin (recommandé)" label="30029" default="1"/>
         <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2" enable="eq(-1,0)"/>
          
-        <setting id="param_timeout" label="30027" type="number" default="1000"/>
+        #<setting id="param_timeout" label="30027" type="number" default="1000"/>
         
         <setting label="30031" type="lsep"/>
         <setting id="meta-view" type="bool" label="Recherche les Métadonnées (ralenti l'Addon)" default="false"/>
