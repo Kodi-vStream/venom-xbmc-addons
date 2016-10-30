@@ -110,7 +110,7 @@ class cPlayer(xbmc.Player):
         if (self.SubtitleActive):
              if (cConfig().getSetting("srt-view") == 'true'):
                  self.showSubtitles(True)
-                 cGui().showInfo("Sous titre charges", "Sous-Titres", 15)
+                 cGui().showInfo("Sous titre charges", "Sous-Titres", 5)
 	     else:
 		 self.showSubtitles(False)
                  cGui().showInfo("Sous titre charges, Vous pouvez les activer", "Sous-Titres", 15)
