@@ -106,10 +106,15 @@ class cPlayer(xbmc.Player):
                 break
             xbmc.sleep(1000)
             
-        #desactive les sous titres si on les a rajoute nous meme
+        #active/desactive les sous titres suivant l'option choisie dans la config 
         if (self.SubtitleActive):
-            self.showSubtitles(False)
-            cGui().showInfo("Sous titre charges, Vous pouvez les activer", "Sous-Titres", 15)
+             if (cConfig().getSetting("srt-view") == 'true'):
+                 self.showSubtitles(True)
+                 cGui().showInfo("Sous titre charges", "Sous-Titres", 15)
+	     else:
+		 self.showSubtitles(False)
+                 cGui().showInfo("Sous titre charges, Vous pouvez les activer", "Sous-Titres", 15)
+		
        
         while self.isPlaying() and not self.forcestop:
         #while not xbmc.abortRequested:
