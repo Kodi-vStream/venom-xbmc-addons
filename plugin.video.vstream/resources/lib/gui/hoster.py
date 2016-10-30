@@ -307,6 +307,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('vidlox')
         if ('stagevu' in sHostName):
             return cHosterHandler().getHoster('stagevu')
+        if ('veehd.' in sHostName):
+            return cHosterHandler().getHoster('veehd')
 
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
