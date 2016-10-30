@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'mareplaytv'
 SITE_NAME = 'MaReplayTV'
 SITE_DESC = 'Replay TV Divers: peu de sources'
 
-URL_MAIN = 'http://mareplaytv.fr/'
+URL_MAIN = 'http://mareplaytv.com/'
 
 URL_SEARCH = (URL_MAIN + '?post_type=video&s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
