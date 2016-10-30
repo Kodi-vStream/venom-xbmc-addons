@@ -465,6 +465,7 @@
         <setting id="service_last" type="text" label="Mise à jour auto le:" default="" enable="false"/>
         <setting id="download_folder" type="folder" label="30145" default=""/>
         <setting id="history-view" type="bool" label="Activer l'historique de recherche" default="true"/>
+        <setting id="srt-view" type="bool" label="Activation auto des sous-titres" default="false"/>
         <setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>    
         <setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, xbmc)"/>
         <setting label="Clear .fi Files" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, fi)"/>
