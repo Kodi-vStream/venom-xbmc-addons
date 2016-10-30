@@ -467,6 +467,8 @@
         <setting id="history-view" type="bool" label="Activer l'historique de recherche" default="true"/>
         <setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>    
         <setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, xbmc)"/>
+        <setting label="Clear .fi Files" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, fi)"/>
+        <setting label="Clear Thumbnails" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, thumb)"/>
         
         <setting label="30034" type="lsep"/>
         <setting label="30036" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, changelog)"/>
