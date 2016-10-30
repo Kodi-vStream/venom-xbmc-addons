@@ -85,13 +85,20 @@ class cPlayer(xbmc.Player):
                 self.SubtitleActive = True
             except:
                 cConfig().log("Can't load subtitle :" + str(self.Subtitles_file))
-                
-        if (cConfig().getSetting("playerPlay") == '0'):                            
-            sPlayerType = self.__getPlayerType()
+        
+        #1 er mode de lecture
+        if (cConfig().getSetting("playerPlay") == '0'):
             self.play( sUrl, item )
-            xbmcplugin.endOfDirectory(sPluginHandle, True, False, False)             
+            xbmcplugin.endOfDirectory(sPluginHandle, True, False, False)
+            cConfig().log('Player use Play() method')
+        #2 eme mode non utilise
+        elif (cConfig().getSetting("playerPlay") == 'neverused'):
+            xbmc.executebuiltin( "PlayMedia("+sUrl+")" )
+            cConfig().log('Player use PlayMedia() method')
+        #3 eme mode (defaut)
         else:
             xbmcplugin.setResolvedUrl(sPluginHandle, True, item)
+            cConfig().log('Player use setResolvedUrl() method')
         
         #Attend que le lecteur demarre, avec un max de 20s
         for _ in xrange(20):
@@ -124,7 +131,6 @@ class cPlayer(xbmc.Player):
 
     #fonction light servant par exmple pour visualiser les DL ou les chaines de TV
     def startPlayer(self):
-
         oPlayList = self.__getPlayList()
         self.play(oPlayList)
 
