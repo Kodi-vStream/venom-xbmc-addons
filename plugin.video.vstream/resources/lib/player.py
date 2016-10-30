@@ -159,6 +159,12 @@ class cPlayer(xbmc.Player):
         
         self.playBackEventReceived = True
         
+        #inutile sur les dernieres version > Dharma
+        if not (cConfig().isDharma()):
+            self.__getResume()
+            
+    def __getResume(self):
+        
         meta = {}      
         meta['title'] = self.sTitle
         #meta['hoster'] = self.sHosterIdentifier
@@ -176,7 +182,7 @@ class cPlayer(xbmc.Player):
                 else: 
                     pass
         except:
-            pass
+            pass        
                 
     def __setResume(self):
         
