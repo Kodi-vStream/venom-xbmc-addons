@@ -11,7 +11,6 @@ class cHoster(iHoster):
     def __init__(self):
         self.__sDisplayName = 'Gorillavid'
         self.__sFileName = self.__sDisplayName
-        self.__sHD = ''
 
     def getDisplayName(self):
         return  self.__sDisplayName
@@ -27,12 +26,6 @@ class cHoster(iHoster):
 
     def getPluginIdentifier(self):
         return 'gorillavid'
-        
-    def setHD(self, sHD):
-        self.__sHD = ''
-        
-    def getHD(self):
-        return self.__sHD
 
     def isDownloadable(self):
         return True
