@@ -208,24 +208,24 @@ def showHosters():
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-     
-    url = ''
-   
     oParser = cParser()
+
+    sPattern = '<video><source type="video/mp4" src="([^"]+)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0]):
+        BA = aResult[1][0]
+
+    url = ''
     sPattern = '{\s+file: "(.+?.m3u8)"\s+}'
     aResult = oParser.parse(sHtmlContent, sPattern)
-   
     if (aResult[0]):
         url = aResult[1][0]
    
     #dialogue final
     if (url):
- 
         #xbmc.log(url)
- 
         sHosterUrl = str(url)
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-       
         if (oHoster != False):
             sHosterUrl = sHosterUrl + '|Referer='+ sUrl.replace(URL_MAIN,'http://www.hd-stream.in/')
             # oGuiElement = cGuiElement()
@@ -242,6 +242,15 @@ def showHosters():
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+
+    if (BA):
+        sHosterUrl2 = str(BA)
+        oHoster2 = cHosterGui().checkHoster(sHosterUrl2)
+        if (oHoster2 != False):
+            sHosterUrl2 = sHosterUrl2 + '|Referer='+ sUrl.replace(URL_MAIN,'http://www.hd-stream.in/')
             
+            oHoster2.setDisplayName(sMovieTitle + '[COLOR coral]' + (' [Bande Annonce] ') + '[/COLOR]')
+            oHoster2.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster2, sHosterUrl2, '')            
              
         oGui.setEndOfDirectory()
