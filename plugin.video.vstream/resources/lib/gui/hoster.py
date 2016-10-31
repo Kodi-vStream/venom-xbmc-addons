@@ -149,7 +149,7 @@ class cHosterGui:
                 return tmp
 
         #Gestion classique
-        if ('novamov' in sHostName):
+        if (('novamov' in sHostName) or ('auroravid' in sHostName)):
             return cHosterHandler().getHoster('novamov')
         if ('divxstage' in sHostName):
             return cHosterHandler().getHoster('divxstage')
