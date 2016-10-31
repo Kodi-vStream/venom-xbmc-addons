@@ -212,7 +212,7 @@ def showHosters():
     url = ''
    
     oParser = cParser()
-    sPattern = '{file:"([^"]+)"}'
+    sPattern = '{\s+file: "(.+?.m3u8)"\s+}'
     aResult = oParser.parse(sHtmlContent, sPattern)
    
     if (aResult[0]):
