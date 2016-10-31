@@ -311,6 +311,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('veehd')
         if (('movshare' in sHostName) or ('wholecloud' in sHostName)):
             return cHosterHandler().getHoster('wholecloud')
+        if ('gorillavid' in sHostName):
+            return cHosterHandler().getHoster('gorillavid')
 
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
