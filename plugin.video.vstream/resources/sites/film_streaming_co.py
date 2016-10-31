@@ -246,9 +246,7 @@ def showHosters():
     if (BA):
         sHosterUrl2 = str(BA)
         oHoster2 = cHosterGui().checkHoster(sHosterUrl2)
-        if (oHoster2 != False):
-            sHosterUrl2 = sHosterUrl2 + '|Referer='+ sUrl.replace(URL_MAIN,'http://www.hd-stream.in/')
-            
+        if (oHoster2 != False):            
             oHoster2.setDisplayName(sMovieTitle + '[COLOR coral]' + (' [Bande Annonce] ') + '[/COLOR]')
             oHoster2.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster2, sHosterUrl2, '')            
