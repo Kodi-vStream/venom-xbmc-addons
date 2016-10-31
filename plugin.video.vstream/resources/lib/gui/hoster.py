@@ -313,6 +313,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('wholecloud')
         if ('gorillavid' in sHostName):
             return cHosterHandler().getHoster('gorillavid')
+        if ('daclips' in sHostName):
+            return cHosterHandler().getHoster('daclips')
 
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
