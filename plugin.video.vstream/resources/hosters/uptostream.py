@@ -77,13 +77,24 @@ class cHoster(iHoster):
 
     def checkSubtitle(self,sHtmlContent):
         oParser = cParser()
-        sPattern = "<track type='srt' kind='subtitles' src='([^']+)' srclang='fr' label='French'>"
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            r = aResult[1][0]
-            if not r.startswith('http'):
-                r = 'http:' + r
-            return r
+
+        #On ne charge les sous titres uniquement si vostfr se trouve dans le titre.
+        if re.search('<head>\s*<title>[^<>]+VOSTFR[^<>]*<\/title>',sHtmlContent,re.IGNORECASE):
+        
+            sPattern = "<track type='srt' kind='subtitles' src='([^']+)' srclang='.+?' label='([^']+)'>"
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            
+            if (aResult[0] == True):
+                Files = []
+                for aEntry in aResult[1]:
+                    url = aEntry[0]
+                    label = aEntry[1]
+                    
+                    if not url.startswith('http'):
+                        url = 'http:' + url
+                    if 'Forc' not in label:
+                        Files.append(url)
+                return Files
 
         return False
 
@@ -103,7 +114,7 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
         
         SubTitle = ''
-        #SubTitle = self.checkSubtitle(sHtmlContent)
+        SubTitle = self.checkSubtitle(sHtmlContent)
         
         oParser = cParser()
         sPattern =  "<source src='([^<>']+)' type='[^'><]+?' data-res='([0-9]+p)'(?:[^<>]* lang='([^']+))*"

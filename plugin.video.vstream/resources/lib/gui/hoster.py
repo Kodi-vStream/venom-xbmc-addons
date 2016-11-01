@@ -149,7 +149,7 @@ class cHosterGui:
                 return tmp
 
         #Gestion classique
-        if ('novamov' in sHostName):
+        if (('novamov' in sHostName) or ('auroravid' in sHostName)):
             return cHosterHandler().getHoster('novamov')
         if ('divxstage' in sHostName):
             return cHosterHandler().getHoster('divxstage')
@@ -159,7 +159,7 @@ class cHosterGui:
             return cHosterHandler().getHoster('vidbux')
         if ('megavideo' in sHostName):
             return cHosterHandler().getHoster('megavideo')
-        if ('videoweed' in sHostName):
+        if (('videoweed' in sHostName) or ('bitvid' in sHostName)):
             return cHosterHandler().getHoster('videoweed')
         if ('youwatch' in sHostName):
             return cHosterHandler().getHoster('youwatch')
@@ -307,6 +307,14 @@ class cHosterGui:
             return cHosterHandler().getHoster('vidlox')
         if ('stagevu' in sHostName):
             return cHosterHandler().getHoster('stagevu')
+        if ('veehd.' in sHostName):
+            return cHosterHandler().getHoster('veehd')
+        if (('movshare' in sHostName) or ('wholecloud' in sHostName)):
+            return cHosterHandler().getHoster('wholecloud')
+        if ('gorillavid' in sHostName):
+            return cHosterHandler().getHoster('gorillavid')
+        if ('daclips' in sHostName):
+            return cHosterHandler().getHoster('daclips')
 
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):

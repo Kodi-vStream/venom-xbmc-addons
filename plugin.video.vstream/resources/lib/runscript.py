@@ -5,6 +5,7 @@ from config import cConfig
 import xbmc, xbmcgui, xbmcaddon
 import sys, os
 import urllib, urllib2
+import sqlite3
 
 SITE_IDENTIFIER = 'runscript'
 SITE_NAME = 'runscript'
@@ -65,6 +66,41 @@ class cClear:
             if dialog.yesno('vStream', 'Êtes-vous sûr ?','','','Non', 'Oui'):
                 self.ClearDir(xbmc.translatePath('special://temp/'),True)
                 xbmc.executebuiltin("XBMC.Notification(Clear XBMC Cache,Successful,5000,"")")
+            return
+
+        elif (env == 'fi'):
+            dialog = xbmcgui.Dialog()
+            if dialog.yesno('vStream', 'Êtes-vous sûr ?','','','Non', 'Oui'):
+                xbmc.executebuiltin("XBMC.Notification(Clear .fi Files ,Successful,2000,"")")
+                path = xbmc.translatePath('special://temp/')
+                filenames = next(os.walk(path))[2]
+                for i in filenames:
+                    if ".fi" in i:
+                        os.remove(os.path.join(path, i))
+            return
+
+        elif (env == 'thumb'):
+            dialog = xbmcgui.Dialog()
+            if dialog.yesno('vStream', 'Êtes-vous sûr ? Ceci effacera toutes les thumbnails ','','','Non', 'Oui'):
+                xbmc.executebuiltin("XBMC.Notification(Clear Thumbnails ,Successful,2000,"")")
+                path = xbmc.translatePath('special://userdata/Thumbnails/')
+                path2 = xbmc.translatePath('special://userdata/Database/')
+                for i in os.listdir(path):
+                    folders = os.path.join(path, i)
+                    if os.path.isdir(folders):
+                        p = next(os.walk(folders))[2]
+                        for x in p:
+                            os.remove(os.path.join(folders, x))
+                       
+                filenames = next(os.walk(path2))[2]
+                for x in filenames:
+                    if "exture" in x:
+                        con = sqlite3.connect(os.path.join(path2, x))
+                        cursor = con.cursor()
+                        cursor.execute("DELETE FROM texture")
+                        con.commit()
+                        cursor.close()
+                        con.close()
             return
 
         else:

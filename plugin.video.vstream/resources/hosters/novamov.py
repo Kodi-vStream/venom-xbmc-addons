@@ -3,7 +3,7 @@ from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
 import urllib
-
+#Novamov Auroravid
 class cHoster(iHoster):
 
     def __init__(self):
@@ -31,22 +31,19 @@ class cHoster(iHoster):
     def isJDownloaderable(self):
         return True
 
-    def getPattern(self):
-        return 'flashvars.file=\"([^\"]+)\"';
-
-    def __getIdFromUrl(self):
-        sPattern = "v=([^<]+)"
+    def __getIdFromUrl(self,sUrl):
+        sPattern = '(novamov.com|auroravid.to)([^<]+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
         if (aResult[0] == True):
-            return aResult[1][0]
+            return aResult[1][0][1]
 
         return ''
 
-    def __getKey(self):
-        oRequestHandler = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequestHandler.request()
-        sPattern = 'flashvars.filekey="(.+?)";'
+    def __getKey(self,sUrl):
+        oRequest = cRequestHandler(sUrl)
+        sHtmlContent = oRequest.request()
+        sPattern = 'flashvars.filekey="([^"]+)";'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
@@ -57,10 +54,9 @@ class cHoster(iHoster):
         self.__sUrl = str(sUrl)
         self.__sUrl = self.__sUrl.replace('http://embed.novamov.com/', '')
         self.__sUrl = self.__sUrl.replace('http://novamov.com/', '')
-        self.__sUrl = self.__sUrl.replace('video/', '')
+        self.__sUrl = self.__sUrl.replace('/video/', '')
         self.__sUrl = self.__sUrl.replace('embed.php?v=', '')
         self.__sUrl = self.__sUrl.replace('&width=711&height=400', '')
-        self.__sUrl = 'http://embed.novamov.com/embed.php?v=' + str(self.__sUrl)
 
     def checkUrl(self, sUrl):
         return True
@@ -74,7 +70,11 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
         cGui().showInfo('Resolve', self.__sDisplayName, 5)
 
-        api_call = ('http://www.novamov.com/api/player.api.php?key=%s&file=%s') % (self.__getKey(), self.__getIdFromUrl())
+        id = self.__getIdFromUrl(self.__sUrl)
+        sUrl = 'http://www.auroravid.to/embed/?v=' + id
+        cKey =  self.__getKey(sUrl)
+
+        api_call = 'http://www.auroravid.to/api/player.api.php?key=' + cKey + '&file=' + id
 
         oRequest = cRequestHandler(api_call)
         sHtmlContent = oRequest.request()

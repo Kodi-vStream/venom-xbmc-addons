@@ -59,11 +59,12 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
         self.__sUrl = self.__sUrl.replace('http://www.videoweed.es/', '')
+        self.__sUrl = self.__sUrl.replace('http://www.bitvid.sx/', '')
         self.__sUrl = self.__sUrl.replace('http://embed.videoweed.es/', '')
         self.__sUrl = self.__sUrl.replace('file/', '')
         self.__sUrl = self.__sUrl.replace('embed.php?v=', '')
         self.__sUrl = self.__sUrl.replace('&width=711&height=400', '')
-        self.__sUrl = 'http://embed.videoweed.es/embed.php?v=' + str(self.__sUrl)
+        self.__sUrl = 'http://www.bitvid.sx/embed/?v=' + str(self.__sUrl)
 
 
     def checkUrl(self, sUrl):
@@ -78,11 +79,11 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
         cGui().showInfo('Resolve', self.__sDisplayName, 5)
         
-        api_call = ('http://www.videoweed.es/api/player.api.php?user=undefined&codes=1&file=%s&pass=undefined&key=%s') % (self.__getIdFromUrl(), self.__getKey())
+        api_call = ('http://www.bitvid.sx/api/player.api.php?key=%s&file=%s') % ( self.__getKey(),self.__getIdFromUrl())
        
         oRequest = cRequestHandler(api_call)
         sHtmlContent = oRequest.request()
-        
+
         sPattern =  'url=(.+?)&title'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -92,4 +93,4 @@ class cHoster(iHoster):
         
         return False, False
         
-        
+   

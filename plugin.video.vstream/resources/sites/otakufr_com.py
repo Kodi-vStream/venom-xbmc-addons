@@ -218,7 +218,7 @@ def showEpisodes():
                 sTitle = re.sub(r'(\d+)[ +](\d+)', p.group(1) + "-" + p.group(2) ,aEntry[1])
             else:
                 sTitle = aEntry[1]
-            iliste = ['Ep-','-Vostfr','Vostfr-']
+            iliste = ['Ep-','-Vostfr','Vostfr-','-Non-Censure']
             for item in iliste:
                 if item in aEntry[1]:
                    sTitle = sTitle.replace(item,'')
@@ -226,6 +226,7 @@ def showEpisodes():
             sUrl  = aEntry[0]
             sThumb = sThumb.replace(' ','%20')
             sTitle = sTitle.replace('Episode SP','[ Episode Spécial ] episode').replace(' + ','-')
+            sTitle = sTitle.replace('Episode ONA','[ Episode ONA ] episode').replace('Episode OVA','[ Episode OVA ] episode').replace('Episode NC','Episode')
             sDisplayTitle = cUtil().DecoTitle(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()

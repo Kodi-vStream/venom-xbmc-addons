@@ -85,13 +85,20 @@ class cPlayer(xbmc.Player):
                 self.SubtitleActive = True
             except:
                 cConfig().log("Can't load subtitle :" + str(self.Subtitles_file))
-                
-        if (cConfig().getSetting("playerPlay") == '0'):                            
-            sPlayerType = self.__getPlayerType()
+        
+        #1 er mode de lecture
+        if (cConfig().getSetting("playerPlay") == '0'):
             self.play( sUrl, item )
-            xbmcplugin.endOfDirectory(sPluginHandle, True, False, False)             
+            xbmcplugin.endOfDirectory(sPluginHandle, True, False, False)
+            cConfig().log('Player use Play() method')
+        #2 eme mode non utilise
+        elif (cConfig().getSetting("playerPlay") == 'neverused'):
+            xbmc.executebuiltin( "PlayMedia("+sUrl+")" )
+            cConfig().log('Player use PlayMedia() method')
+        #3 eme mode (defaut)
         else:
             xbmcplugin.setResolvedUrl(sPluginHandle, True, item)
+            cConfig().log('Player use setResolvedUrl() method')
         
         #Attend que le lecteur demarre, avec un max de 20s
         for _ in xrange(20):
@@ -99,10 +106,15 @@ class cPlayer(xbmc.Player):
                 break
             xbmc.sleep(1000)
             
-        #desactive les sous titres si on les a rajoute nous meme
+        #active/desactive les sous titres suivant l'option choisie dans la config 
         if (self.SubtitleActive):
-            self.showSubtitles(False)
-            cGui().showInfo("Sous titre charges, Vous pouvez les activer", "Sous-Titres", 15)
+             if (cConfig().getSetting("srt-view") == 'true'):
+                 self.showSubtitles(True)
+                 cGui().showInfo("Sous titre charges", "Sous-Titres", 5)
+	     else:
+		 self.showSubtitles(False)
+                 cGui().showInfo("Sous titre charges, Vous pouvez les activer", "Sous-Titres", 15)
+		
        
         while self.isPlaying() and not self.forcestop:
         #while not xbmc.abortRequested:
@@ -124,7 +136,6 @@ class cPlayer(xbmc.Player):
 
     #fonction light servant par exmple pour visualiser les DL ou les chaines de TV
     def startPlayer(self):
-
         oPlayList = self.__getPlayList()
         self.play(oPlayList)
 
@@ -159,6 +170,12 @@ class cPlayer(xbmc.Player):
         
         self.playBackEventReceived = True
         
+        #inutile sur les dernieres version > Dharma
+        if not (cConfig().isDharma()):
+            self.__getResume()
+            
+    def __getResume(self):
+        
         meta = {}      
         meta['title'] = self.sTitle
         #meta['hoster'] = self.sHosterIdentifier
@@ -176,9 +193,13 @@ class cPlayer(xbmc.Player):
                 else: 
                     pass
         except:
-            pass
+            pass        
                 
     def __setResume(self):
+        
+        #inutile sur les dernieres version > Dharma
+        if (cConfig().isDharma()):
+            return
         
         #Faut pas deconner quand meme
         if self.currentTime < 30:
@@ -196,6 +217,10 @@ class cPlayer(xbmc.Player):
             pass
             
     def __setWatched(self):
+        
+        #inutile sur les dernieres version > Dharma
+        if (cConfig().isDharma()):
+            return
         
         #Faut pas deconner quand meme
         if self.currentTime < 30:

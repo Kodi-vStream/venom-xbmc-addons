@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.vstream" name="vStream" version="0.4.5" provider-name="Venom,TmpName">
+<addon id="plugin.video.vstream" name="vStream" version="0.4.6" provider-name="Venom,TmpName">
   <requires>
 	<import addon="script.module.metahandler" version="1.0.2"/>
 	<import addon="xbmc.python" version="2.1.0"/>
@@ -15,7 +15,7 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="fr">vStream</summary>
-    <description lang="fr">vStream et un module de streaming français, trouver tous vos films, séries et mangas.</description>
+    <description lang="fr">vStream est un module de streaming français, trouver tous vos films, séries et mangas.</description>
     <summary lang="en">vStream</summary>
     <description lang="en">vStream module and a french streaming, find all your movies, TV shows and mangas.</description>
     <platform>all</platform>
