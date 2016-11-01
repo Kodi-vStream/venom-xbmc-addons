@@ -255,6 +255,7 @@ def parseWebM3U(infile):
 
     playlist=[]
     song=track(None,None,None,None)
+    ValidEntry = False
 
     for line in inf:
         line=line.strip()
@@ -265,9 +266,12 @@ def parseWebM3U(infile):
                 icon = licon.split('"')[1]
             except:
                 icon = "tv.png"
+            ValidEntry = True
+                
             song=track(length,title,None,icon)
         elif (len(line) != 0):
-            if not (line.startswith('!') or line.startswith('#')):
+            if (ValidEntry) and (not (line.startswith('!') or line.startswith('#'))):
+                ValidEntry = False
                 song.path=line
                 playlist.append(song)
                 song=track(None,None,None,None)
@@ -285,14 +289,17 @@ def parseM3U(infile):
 
     playlist=[]
     song=track(None,None,None,None)
+    ValidEntry = False
 
     for line in inf:
         line=line.strip()
         if line.startswith('#EXTINF:'):
             length,title=line.split('#EXTINF:')[1].split(',',1)
             song=track(length,title,None,None)
+            ValidEntry = True
         elif (len(line) != 0):
-            if not line.startswith('!'):
+            if (not line.startswith('!') and ValidEntry):
+                ValidEntry = False
                 song.path=line
                 playlist.append(song)
                 song=track(None,None,None,None)
