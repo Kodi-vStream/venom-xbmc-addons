@@ -159,7 +159,7 @@ class cHosterGui:
             return cHosterHandler().getHoster('vidbux')
         if ('megavideo' in sHostName):
             return cHosterHandler().getHoster('megavideo')
-        if ('videoweed' in sHostName):
+        if (('videoweed' in sHostName) or ('bitvid' in sHostName)):
             return cHosterHandler().getHoster('videoweed')
         if ('youwatch' in sHostName):
             return cHosterHandler().getHoster('youwatch')
