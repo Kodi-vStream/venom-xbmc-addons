@@ -214,6 +214,8 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0]):
         BA = aResult[1][0]
+    else:
+        BA = False
 
     url = ''
     sPattern = '{\s+file: "(.+?.m3u8)"\s+}'
@@ -243,12 +245,12 @@ def showHosters():
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
 
-    if (BA):
-        sHosterUrl2 = str(BA)
-        oHoster2 = cHosterGui().checkHoster(sHosterUrl2)
-        if (oHoster2 != False):            
-            oHoster2.setDisplayName(sMovieTitle + '[COLOR coral]' + (' [Bande Annonce] ') + '[/COLOR]')
-            oHoster2.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster2, sHosterUrl2, '')            
+            if (BA != False):
+                sHosterUrl2 = str(BA)
+                oHoster2 = cHosterGui().checkHoster(sHosterUrl2)
+                if (oHoster2 != False):            
+                    oHoster2.setDisplayName(sMovieTitle + '[COLOR coral]' + (' [Bande Annonce] ') + '[/COLOR]')
+                    oHoster2.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster2, sHosterUrl2, '')            
              
         oGui.setEndOfDirectory()
