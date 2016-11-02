@@ -222,14 +222,15 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0]):
         url = aResult[1][0]
-   
+
+    #on passe par le m3u8 pour le choix de la qualité
     #dialogue final
     if (url):
         #xbmc.log(url)
         sHosterUrl = str(url)
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
-            sHosterUrl = sHosterUrl + '|Referer='+ sUrl.replace(URL_MAIN,'http://www.hd-stream.in/')
+            # sHosterUrl = sHosterUrl + '|Referer='+ sUrl.replace(URL_MAIN,'http://www.hd-stream.in/')
             # oGuiElement = cGuiElement()
             # oGuiElement.setSiteName(SITE_IDENTIFIER)
             # oGuiElement.setTitle(sMovieTitle)
