@@ -28,11 +28,11 @@ MOVIE_GENRES = (True, 'showGenreMovie')
 
 SERIE_SERIES = (URL_MAIN +'accueil-series', 'showMovies')
 #SERIE_HD = (URL_MAIN +'fonctions/infinite_scroll.php?count_tiles_series=0&tout_les_genres=none&onlyHD=none', 'showMovies')
-#SERIE_GENRES = (True, 'showGenreSerie')
+SERIE_GENRES = (True, 'showGenreSerie')
 
 ANIM_ANIMS = (URL_MAIN +'accueil-mangas', 'showMovies')
 #ANIM_HD = (URL_MAIN +'fonctions/infinite_scroll.php?count_tiles_mangas=0&tout_les_genres=none&onlyHD=none', 'showMovies')
-#ANIM_GENRES = (True, 'showGenreAnime')
+ANIM_GENRES = (True, 'showGenreAnime')
  
 URL_SEARCH = ('', 'resultSearch')
 FUNCTION_SEARCH = 'resultSearch'
@@ -79,9 +79,9 @@ def load():
     #oOutputParameterHandler.addParameter('siteUrl', SERIE_HD[0])
     #oGui.addDir(SITE_IDENTIFIER, SERIE_HD[1], 'Series HD', 'films.png', oOutputParameterHandler)
     
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
-    #oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Series Genres', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Series Genres', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
@@ -91,9 +91,9 @@ def load():
     #oOutputParameterHandler.addParameter('siteUrl', ANIM_HD[0] )
     #oGui.addDir(SITE_IDENTIFIER, ANIM_HD[1], 'Animes HD', 'films.png', oOutputParameterHandler)
     
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
-    #oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animes Genres', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animes Genres', 'genres.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
  
@@ -334,7 +334,8 @@ def showMovies(sSearch = ''):
                 sQual = '[' + aEntry[1] + ']'
             siteUrl = aEntry[2]
             sTitle = aEntry[3]
-            sTitle = sTitle.split('-')[1]
+            if '-films' in sUrl:
+                sTitle = sTitle.split('-')[1]
             sCom = aEntry[4]
             
             sDisplayTitle = cUtil().DecoTitle(sTitle + sQual)
