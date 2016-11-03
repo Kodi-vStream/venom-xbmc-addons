@@ -70,8 +70,7 @@ class cHoster(iHoster):
         sPattern =  '<input type="hidden" name="([^"]+)" value="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True): 
-            oRequest = cRequestHandler(url)
+        if (aResult[0] == True):
             oRequest.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
             for aEntry in aResult[1]:
                 oRequest.addParameters(aEntry[0], aEntry[1])     
