@@ -151,7 +151,7 @@ class cHosterGui:
         #Gestion classique
         if (('novamov' in sHostName) or ('auroravid' in sHostName)):
             return cHosterHandler().getHoster('novamov')
-        if ('divxstage' in sHostName):
+        if (('divxstage' in sHostName) or ('cloudtime' in sHostName)):
             return cHosterHandler().getHoster('divxstage')
         if ('vidxden' in sHostName):
             return cHosterHandler().getHoster('vidxden')
