@@ -56,7 +56,7 @@ class cHoster(iHoster):
     def __getKey(self):
         oRequestHandler = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequestHandler.request()
-        sPattern = 'key: "(.+?)";'
+        sPattern = 'key: "([^"]+)"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
@@ -68,8 +68,9 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
         self.__sUrl = self.__sUrl.replace('http://www.videoraj.ch/', '')
+        self.__sUrl = self.__sUrl.replace('http://www.videoraj.sx/', '')
         self.__sUrl = self.__sUrl.replace('embed.php?id=', '')
-        self.__sUrl = 'http://www.videoraj.ch/embed.php?id=' + str(self.__sUrl)
+        self.__sUrl = 'http://www.videoraj.to/embed.php?id=' + str(self.__sUrl)
 
     def checkUrl(self, sUrl):
         return True
@@ -82,11 +83,9 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         cGui().showInfo('Resolve', self.__sDisplayName, 5)
-        
- 
-        #api_call = ('http://www.nowvideo.sx/api/player.api.php?key=%s&file=%s') % (self.__getKey(), self.__getIdFromUrl())
-        api_call = ('http://www.videoraj.ch/api/player.api.php?user=undefined&codes=1&file=%s&pass=undefined&key=%s') % (self.__getIdFromUrl(), self.__getKey())
-        
+
+        api_call = ('http://www.videoraj.to/api/player.api.php?user=undefined&codes=1&file=%s&pass=undefined&key=%s') % (self.__getIdFromUrl(), self.__getKey())
+
         oRequest = cRequestHandler(api_call)
         sHtmlContent = oRequest.request()
         
