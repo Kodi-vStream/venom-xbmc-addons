@@ -315,7 +315,9 @@ class cHosterGui:
             return cHosterHandler().getHoster('gorillavid')
         if ('daclips' in sHostName):
             return cHosterHandler().getHoster('daclips')
-
+        if ('kvid' in sHostName):
+            return cHosterHandler().getHoster('kvid')
+        
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
             return cHosterHandler().getHoster('onefichier')
