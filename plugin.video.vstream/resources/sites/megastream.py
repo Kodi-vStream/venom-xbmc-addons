@@ -383,103 +383,39 @@ def showEpisode():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
 
-    sPattern = '<p>(SAISON [0-9]+)<\/p>|<p class="episode_saison(?: episode_select)*" id="([0-9]+)">(Episode [0-9]+)<\/p>'
+    sPattern = '<a href="(#saison[0-9]+)">(.+?)<\/a>|href="([^"]+/[0-9]+)">(.+?)<\/a><\/li>'
     aResult = re.findall(sPattern,sHtmlContent)
 
     if (aResult):
         total = len(aResult)
         dialog = cConfig().createDialog(SITE_NAME)
-        
         sSaison = ''
-        
         for aEntry in aResult:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
 
+
             if aEntry[0]:
-                sSaison = aEntry[0]
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addText(SITE_IDENTIFIER, '[COLOR olive]'+str(aEntry[0])+'[/COLOR]')
+                sSaison = aEntry[1]
+                oGui.addText(SITE_IDENTIFIER, '[COLOR olive]'+ sSaison+ '[/COLOR]')
                 
             else:
-                sTitle = sMovieTitle + ' '+ sSaison + ' ' + aEntry[2]
-                
+                sTitle = sMovieTitle + ' ' + sSaison + ' ' + aEntry[3]
+                sUrl = aEntry[2]
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
                 
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('sId', aEntry[1])
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMovie(SITE_IDENTIFIER, 'showSerieHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog) 
 
     oGui.setEndOfDirectory()
 
-def showSerieHosters():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-
-    sId = oInputParameterHandler.getValue('sId')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
-    UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'
-    headers = {'User-Agent': UA ,
-               'Host' : 'mega-stream.fr'}
-    post_data = {'episode_serie' : sId }
-                                
-    req = urllib2.Request(URL_MAIN + 'lecteur_serie.php' , urllib.urlencode(post_data), headers)
-    
-    response = urllib2.urlopen(req)
-    sHtmlContent = response.read()
-    response.close()
-
-    sPattern = 'class="checkShowlistVidQualite"\/>\s+<p>(.+?)<\/p>|<div class="vidQualite vidSelect" id="([0-9]+)">\s+<img class="video_langue_img" src="IMG\/flag\/(.+?).png"\/>\s+<p>(.+?)<\/p>'
-    aResult = re.findall(sPattern,sHtmlContent)
-
-    if (aResult):
-        total = len(aResult)
-        dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-                
-            sLang = '[VOSTFR] '
-            if 'France' in aEntry[2]:
-                sLang = '[VF] '
-
-            if aEntry[0]:
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('sId', str(sId))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addText(SITE_IDENTIFIER, '[COLOR olive]'+str(aEntry[0])+'[/COLOR]')
-                
-            else:
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-                
-                sDisplayTitle = sLang + '[COLOR skyblue]' + aEntry[3]+ '[/COLOR] ' + sDisplayTitle
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('sId', aEntry[1])
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMovie(SITE_IDENTIFIER, 'Getlink', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
-
-        cConfig().finishDialog(dialog) 
-
-    oGui.setEndOfDirectory()
-    
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
