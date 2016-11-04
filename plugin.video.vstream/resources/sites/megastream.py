@@ -23,15 +23,15 @@ URL_MAIN = 'http://mega-stream.fr/'
 
 MOVIE_NEWS = (URL_MAIN +'accueil-films', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN +'accueil-films', 'showMovies')
-#MOVIE_HD = (URL_MAIN +'fonctions/infinite_scroll.php?count_tiles_film=0&tout_les_genres=none&onlyHD=none', 'showMovies')
+MOVIE_HD = (URL_MAIN +'accueil-films', 'showMovies')
 MOVIE_GENRES = (True, 'showGenreMovie')
 
 SERIE_SERIES = (URL_MAIN +'accueil-series', 'showMovies')
-#SERIE_HD = (URL_MAIN +'fonctions/infinite_scroll.php?count_tiles_series=0&tout_les_genres=none&onlyHD=none', 'showMovies')
+SERIE_HD = (URL_MAIN +'accueil-series', 'showMovies')
 SERIE_GENRES = (True, 'showGenreSerie')
 
 ANIM_ANIMS = (URL_MAIN +'accueil-mangas', 'showMovies')
-#ANIM_HD = (URL_MAIN +'fonctions/infinite_scroll.php?count_tiles_mangas=0&tout_les_genres=none&onlyHD=none', 'showMovies')
+ANIM_HD = (URL_MAIN +'accueil-mangas')
 ANIM_GENRES = (True, 'showGenreAnime')
  
 URL_SEARCH = ('', 'resultSearch')
@@ -59,13 +59,13 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films', 'news.png', oOutputParameterHandler)
    
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    #oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Tous Les Films', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Tous Les Films', 'films.png', oOutputParameterHandler)
     
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
-    #oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD', 'films.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -75,9 +75,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Series', 'series.png', oOutputParameterHandler)
     
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', SERIE_HD[0])
-    #oGui.addDir(SITE_IDENTIFIER, SERIE_HD[1], 'Series HD', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_HD[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_HD[1], 'Series HD', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
@@ -87,9 +87,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animes', 'series.png', oOutputParameterHandler)
     
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', ANIM_HD[0] )
-    #oGui.addDir(SITE_IDENTIFIER, ANIM_HD[1], 'Animes HD', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_HD[0] )
+    oGui.addDir(SITE_IDENTIFIER, ANIM_HD[1], 'Animes HD', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
@@ -429,7 +429,6 @@ def showHosters():
     #on recupere d'abord les liens
     sPattern = '<div id="(lecteur_[0-9]+)">.+?data-tnetnoc-crs="([^"]+)"'
     tablink = re.findall(sPattern,sHtmlContent)
-    xbmc.log(str(tablink))
 
     #le classique
     sPattern = '<a href="#(lecteur_[0-9]+)".+?title="([^"]+)"\/> *([^<>]+)<\/a'
