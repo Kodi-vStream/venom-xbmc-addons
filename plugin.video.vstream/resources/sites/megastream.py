@@ -31,7 +31,7 @@ SERIE_HD = (URL_MAIN +'accueil-series', 'showMovies')
 SERIE_GENRES = (True, 'showGenreSerie')
 
 ANIM_ANIMS = (URL_MAIN +'accueil-mangas', 'showMovies')
-ANIM_HD = (URL_MAIN +'accueil-mangas')
+ANIM_HD = (URL_MAIN +'accueil-mangas', 'showMovies')
 ANIM_GENRES = (True, 'showGenreAnime')
  
 URL_SEARCH = ('', 'resultSearch')
