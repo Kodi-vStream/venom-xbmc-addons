@@ -77,7 +77,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_HD[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_HD[1], 'Series HD', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_HD[1], 'Series HD', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
@@ -85,16 +85,23 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animes', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animes', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_HD[0] )
-    oGui.addDir(SITE_IDENTIFIER, ANIM_HD[1], 'Animes HD', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_HD[1], 'Animes HD', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animes Genres', 'genres.png', oOutputParameterHandler)
-    
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'top-films')
+    oGui.addDir(SITE_IDENTIFIER, 'showTop', 'Top-100-Films', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'top-series')
+    oGui.addDir(SITE_IDENTIFIER, 'showTop', 'Top-100-Series', 'series.png', oOutputParameterHandler)
     oGui.setEndOfDirectory()
  
  
@@ -396,7 +403,6 @@ def showEpisode():
             if dialog.iscanceled():
                 break
 
-
             if aEntry[0]:
                 sSaison = aEntry[1]
                 oGui.addText(SITE_IDENTIFIER, '[COLOR olive]'+ sSaison+ '[/COLOR]')
@@ -461,5 +467,45 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
         cConfig().finishDialog(dialog) 
+
+    oGui.setEndOfDirectory()
+
+def showTop():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+   
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
+    
+    sPattern = '<li class="tops-item">.+?<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)"'
+
+    aResult = oParser.parse(sHtmlContent, sPattern)
+   
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+           
+            sThumbnail = aEntry[1]
+            sUrl = aEntry[0]
+            sTitle = aEntry[2]
+            
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            if '-films-' in siteUrl:
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
+            else:
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'series.png', sThumbnail, '', oOutputParameterHandler)
+           
+        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
