@@ -220,9 +220,20 @@ class cHoster(iHoster):
                     JScode = JScode.replace('tmp.substring(' + chain + ')', 'tmp[('+ chain2[0] + '):]')
             s = JScode.find('tmp.substring')
             
-        #petite securitee, elle sert pas a grand chose, mais pr le moment j'ai que ca.
+        #petite securitees, elle servent pas a grand chose, mais pr le moment j'ai que ca.
         if re.search('[a-zA-Z]{4}',JScode):
-            return ""           
+            xbmc.log('Code louche')
+            return ""
+        num = 0
+        for char in JScode:
+            if (ord(char) > 64) and (ord(char) < 123):
+               num = num + 1
+        if num > 40:
+            xbmc.log('Code louche')
+            return ""
+        if 'for' in JScode:
+            xbmc.log('Code louche')
+            return ""              
             
         #ok make eval
         JScode = JScode.replace('tmp', '"' + tmp + '"')
