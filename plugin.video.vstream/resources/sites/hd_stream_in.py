@@ -248,18 +248,18 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
      
     url = ''
-   
     oParser = cParser()
     sPattern = 'document.write\(unescape\("(.+?)"\)\);'
     aResult = oParser.parse(sHtmlContent, sPattern)
    
     if (aResult[0] == True):
         chainedecrypte = urllib.unquote(aResult[1][0])
-        sPattern = 'file: "(http.+?mp4)"'
+        sPattern = 'file: "(http.+?m3u8)"'
         aResult = re.findall(sPattern,chainedecrypte)
         if (aResult):
             url = aResult[0]
-   
+
+    #on passe par le m3u8 pour le choix de la qualité
     #dialogue final
     if (url):
  
@@ -267,7 +267,7 @@ def showHosters():
         oHoster = cHosterGui().checkHoster(sHosterUrl)
        
         if (oHoster != False):
-            sHosterUrl = sHosterUrl + '|Referer='+ sUrl.replace(URL_MAIN,'http://www.hd-stream.in/')
+            # sHosterUrl = sHosterUrl + '|Referer='+ sUrl.replace(URL_MAIN,'http://www.hd-stream.in/')
             # oGuiElement = cGuiElement()
             # oGuiElement.setSiteName(SITE_IDENTIFIER)
             # oGuiElement.setTitle(sMovieTitle)

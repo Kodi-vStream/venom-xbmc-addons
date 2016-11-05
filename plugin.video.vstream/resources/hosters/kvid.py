@@ -1,15 +1,14 @@
 from resources.lib.handler.requestHandler import cRequestHandler 
-from resources.lib.parser import cParser 
-from resources.lib.config import cConfig
+from resources.lib.config import cConfig 
 from resources.hosters.hoster import iHoster
-
 import re
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Gorillavid'
+        self.__sDisplayName = 'Kvid'
         self.__sFileName = self.__sDisplayName
+        self.__sHD = ''
 
     def getDisplayName(self):
         return  self.__sDisplayName
@@ -24,7 +23,13 @@ class cHoster(iHoster):
         return self.__sFileName
 
     def getPluginIdentifier(self):
-        return 'gorillavid'
+        return 'kvid'
+        
+    def setHD(self, sHD):
+        self.__sHD = ''
+        
+    def getHD(self):
+        return self.__sHD
 
     def isDownloadable(self):
         return True
@@ -36,12 +41,6 @@ class cHoster(iHoster):
         return ''
     
     def __getIdFromUrl(self, sUrl):
-        sPattern = 'http://gorillavid.in/embed.+?-([^<]+)-'
-        oParser = cParser()
-        aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
-            return aResult[1][0]
-
         return ''
 
     def setUrl(self, sUrl):
@@ -57,27 +56,15 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        oParser = cParser()
 
-        id = self.__getIdFromUrl(self.__sUrl)
-
-        url = 'http://gorillavid.in/' + id
-        oRequest = cRequestHandler(url)
+        oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        sPattern =  '<input type="hidden" name="([^"]+)" value="([^"]+)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        r2 = re.search('mp4:"([^"]+)"', sHtmlContent)
+        if (r2):
+            api_call = r2.group(1)
 
-        if (aResult[0] == True): 
-            oRequest.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-            for aEntry in aResult[1]:
-                oRequest.addParameters(aEntry[0], aEntry[1])     
-            oRequest.addParameters('referer', url)
-            sHtmlContent = oRequest.request()
-            r2 = re.search('file: "([^"]+)",', sHtmlContent)
-            if (r2):
-                api_call = r2.group(1)
-                
+            
         if (api_call):
-            return True, api_call
+            return True, api_call 
 
-        return False , False
+        return False, False

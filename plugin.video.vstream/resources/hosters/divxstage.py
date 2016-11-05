@@ -1,6 +1,5 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
 import urllib
 
@@ -31,11 +30,8 @@ class cHoster(iHoster):
     def isJDownloaderable(self):
         return True
 
-    def getPattern(self):
-        return 's1.addVariable\("file","([^"]+)"'
-
-    def __getIdFromUrl(self):
-        sPattern = "v=([^<]+)"
+    def __getIdFromUrl(self,sUrl):
+        sPattern = 'v=([^<]+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
         if (aResult[0] == True):
@@ -43,22 +39,21 @@ class cHoster(iHoster):
 
         return ''
 
-    def __getKey(self):
-        oRequestHandler = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequestHandler.request()
-        sPattern = 'var fkz="(.+?)";'
+    def __getKey(self,sUrl):
+        oRequest = cRequestHandler(sUrl)
+        sHtmlContent = oRequest.request()
+        sPattern = 'var fkz="([^"]+)";'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             aResult = aResult[1][0].replace('.','%2E')
             return aResult
 
-        return ''
-
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
         self.__sUrl = self.__sUrl.replace('http://embed.divxstage.eu/', '')
         self.__sUrl = self.__sUrl.replace('http://www.divxstage.to/', '')
+        self.__sUrl = self.__sUrl.replace('http://www.cloudtime.to/', '')
         self.__sUrl = self.__sUrl.replace('video/', '')
         self.__sUrl = self.__sUrl.replace('embed.php?v=', '')
         self.__sUrl = self.__sUrl.replace('&width=711&height=400', '')
@@ -74,9 +69,12 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        cGui().showInfo('Resolve', self.__sDisplayName, 5)
 
-        api_call = ('http://www.divxstage.eu/api/player.api.php?user=undefined&key=%s&pass=undefined&codes=1&file=%s') % (self.__getKey(), self.__getIdFromUrl())
+        id = self.__getIdFromUrl(self.__sUrl)
+        sUrl = 'http://www.cloudtime.to/embed/?v=' + id
+        cKey =  self.__getKey(sUrl)
+
+        api_call = 'http://www.cloudtime.to/api/player.api.php?key=' + cKey + '&file=' + id
         
         oRequest = cRequestHandler(api_call)
         sHtmlContent = oRequest.request()

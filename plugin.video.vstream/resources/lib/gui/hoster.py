@@ -151,7 +151,7 @@ class cHosterGui:
         #Gestion classique
         if (('novamov' in sHostName) or ('auroravid' in sHostName)):
             return cHosterHandler().getHoster('novamov')
-        if ('divxstage' in sHostName):
+        if (('divxstage' in sHostName) or ('cloudtime' in sHostName)):
             return cHosterHandler().getHoster('divxstage')
         if ('vidxden' in sHostName):
             return cHosterHandler().getHoster('vidxden')
@@ -315,7 +315,9 @@ class cHosterGui:
             return cHosterHandler().getHoster('gorillavid')
         if ('daclips' in sHostName):
             return cHosterHandler().getHoster('daclips')
-
+        if ('kvid' in sHostName):
+            return cHosterHandler().getHoster('kvid')
+        
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
             return cHosterHandler().getHoster('onefichier')

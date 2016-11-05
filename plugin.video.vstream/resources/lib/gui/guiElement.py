@@ -237,12 +237,20 @@ class cGuiElement:
         self.__aItemValues[sItemKey] = mItemValue
         
     def getWatched(self):
+        
+        #inutile sur les dernieres version > Dharma
+        if (cConfig().isDharma()):
+            return ''
+        
+        if not self.getTitle():
+            return ''
+            
         meta = {}
         meta['title'] = urllib.quote_plus(self.getTitle())
         meta['site'] = self.getSiteUrl()
 
         data = cDb().get_watched(meta)
-        return data   
+        return data
     
         
     def setWatched(self, sId, sTitle):

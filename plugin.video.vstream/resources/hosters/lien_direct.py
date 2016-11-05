@@ -2,7 +2,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import re,urllib2
+import re,urllib2,xbmcgui
 
 class cHoster(iHoster):
 
@@ -68,18 +68,42 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
 
         api_call = self.__sUrl
-        
+
         #Special pour mangacity
         if 'pixsil' in api_call:
             api_call = api_call.split('|')[0] + '|Referer=http://www.mangacity.org/jwplayer/player.swf'
             
-        #Special pour hd-stream.ws
-        if 'hd-stream.ws' in api_call:            
-            api_call = api_call.split('|')[0] + '|Referer=http://www.hd-stream.ws/blabla.php'
+        #Special pour hd-stream.in et film-streaming.co
+        if 'hd-stream.in' in api_call or 'film-streaming.co' in api_call:
+            base = api_call.replace('playlist.m3u8','')
+            oRequest = cRequestHandler(api_call)
+            sHtmlContent = oRequest.request()
+            sPattern =  ',NAME="([^"]+)".+?(chunklist.+?.m3u8)'
+            oParser = cParser()
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                #initialisation des tableaux
+                url=[]
+                qua=[]
+                api_call = ''
+                #Replissage des tableaux
+                for i in aResult[1]:
+                    url.append(str(i[1]))
+                    qua.append(str(i[0]))
 
-        #Special pour streaming.co
-        if 'film-streaming.co' in api_call:            
-            api_call = api_call.split('|')[0] + '|Referer=http://www.hd-stream.in/blabla.php'
+                #Si une seule url
+                if len(url) == 1:
+                   api_call = base + url[0]
+                #si plus de une
+                elif len(url) > 1:
+                    #Afichage du tableau
+                    dialog2 = xbmcgui.Dialog()
+                    ret = dialog2.select('Select Quality',qua)
+                    if (ret > -1):
+                        api_call = base + url[ret]
+                        
+                    else: 
+                        return False, False
 
         if (api_call):
             return True, api_call
