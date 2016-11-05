@@ -42,18 +42,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'fonctions/recherche.php')
-    oOutputParameterHandler.addParameter('type', 'film')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de Film', 'search.png', oOutputParameterHandler)
-    
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'fonctions/recherche.php')
-    oOutputParameterHandler.addParameter('type', 'serie')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de Serie', 'search.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'fonctions/recherche.php')
-    oOutputParameterHandler.addParameter('type', 'anime')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche d Animes', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -246,27 +235,12 @@ def resultSearch(sSearch):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
         
-    sUrl = "http://mega-stream.fr/fonctions/recherche.php"
-
-    sType = oInputParameterHandler.getValue('type')
+    sUrl = "http://mega-stream.fr/recherche"
     
     #oInputParameterHandler.getAllParameter()
-    sSearch = urllib.unquote(sSearch)
+    #sSearch = urllib.unquote(sSearch)
 
-    post_data = {'searchValue' : sSearch,'smallSearch': 'false' }
-
-    sMode = ''
-        
-    if (sType):
-        if sType == 'serie':
-            post_data['cat_recherche'] = 'series'
-            sMode = 'serie'
-        elif sType == 'anime':
-            post_data['cat_recherche'] = 'mangas'
-            sMode = 'anime'
-        elif sType == 'film':
-            post_data['cat_recherche'] = 'films'
-            sMode = 'film'
+    post_data = {'search' : sSearch }
         
     UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'
     headers = {'User-Agent': UA ,
@@ -278,7 +252,7 @@ def resultSearch(sSearch):
     sHtmlContent = response.read()
     response.close()
     
-    sPattern = 'href="(.+?)" style="background-image: url\((.+?)\);"><p>(.+?)<\/p>'
+    sPattern = '<div class="movie-img img-box">\s*<img.+?src="([^"]+)".+?<a href="([^"]+)"[^<>]+>([^<>]+)<\/a>.+?<span>([^<>]+)<\/span>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -291,17 +265,20 @@ def resultSearch(sSearch):
             if dialog.iscanceled():
                 break
 
-            siteUrl = URL_MAIN + aEntry[0]
-            sThumbnail = URL_MAIN + aEntry[1]
-            sTitle = aEntry[2]
+            sQual = ""
+            if aEntry[3]:
+                sQual = '[' + aEntry[3] + '] '
+            siteUrl = aEntry[1]
+            sThumbnail = aEntry[0]
+            sTitle = sQual + aEntry[2]
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            if sMode == 'serie':
+            if '-serie-' in siteUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
-            elif sMode == 'anime':
+            if '-mangas-' in siteUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)

@@ -17,7 +17,7 @@ import re,urllib2, base64, math
 
 import xbmc
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
 
 def parseInt(sin):
     return int(''.join([c for c in re.split(r'[,.]',str(sin))[0] if c.isdigit()])) if re.match(r'\d+', str(sin), re.M) and not callable(sin) else None
@@ -56,26 +56,63 @@ def CheckAADecoder(str):
         
     return str
     
-def GetOpenloadUrl(url):
+def GetBeetweenParenth(str):
+    #Search the first (
+    s = str.find('(')
+    if s == -1:
+        return ''
+        
+    n = 1
+    e = s + 1
+    while (n > 0) and (e < len(str)):
+        c = str[e]
+        if c == '(':
+            n = n + 1
+        if c == ')':
+            n = n - 1
+        e = e + 1
+        
+    s = s + 1
+    e = e - 1
+    return str[s:e]
+    
+def GetOpenloadUrl(url,referer):
     if 'openload.co/stream' in url:
     
-        headers = {'User-Agent': UA }
-                  
+        headers = {'User-Agent': UA,
+                   #'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                   #'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+                   #'Accept-Encoding':'gzip, deflate, br',
+                   #'Host':'openload.co',
+                   'Referer':referer
+        }
+
         req = urllib2.Request(url,None,headers)
         res = urllib2.urlopen(req)
+        #xbmc.log(res.read())
         finalurl = res.geturl()
+
+        
+        xbmc.log('Url decodee : ' + finalurl)
         
         #autres infos
-        #xbmc.log(res.info())
+        #xbmc.log(str(res.info()))
         #xbmc.log(res.info()['Content-Length'])
         
         if 'KDA_8nZ2av4/x.mp4' in finalurl:
             xbmc.log('pigeon url : ' + url)
             finalurl = ''
-            
-        #xbmc.log(finalurl)
+        if 'Content-Length' in res.info():
+            if res.info()['Content-Length'] == '33410733':
+                xbmc.log('pigeon url : ' + url)
+                finalurl = ''
+        if url == finalurl:
+            xbmc.log('Bloquage')
+            finalurl = ''        
+
         return finalurl
     return url
+ 
         
 class cHoster(iHoster):
 
@@ -130,6 +167,70 @@ class cHoster(iHoster):
         
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
+        
+
+    def ProcessJS(self,JScode,tmp):
+        #Need to use in future ast.literal_eval(), need python 3
+        #import ast
+        
+        function = re.compile('function ([\w_]+\(\)) *{\s*return ([^;]+)').findall(JScode)
+        
+        #need 3 loops
+        i = 0
+        while i < 3:
+            for j in function:
+                JScode = JScode.replace(j[0],'(' + j[1]+ ')')
+            i = i + 1
+            
+        #Extract principal chain
+        f = re.search('var str = (.+?);',JScode)
+        if not f:
+            return ''
+
+        JScode = ' ' + f.group(1).replace(' ','')
+        
+        #https://nemisj.com/python-api-javascript/
+        
+        #Simple replacement
+        JScode = JScode.replace('String.fromCharCode', 'chr')
+        JScode = JScode.replace('.charCodeAt(0)', '')
+        JScode = JScode.replace('tmp.length', 'len(tmp)')
+        
+        #hard replacement
+        s = JScode.find('tmp.slice')
+        while s > 0:
+            if s > - 1:
+                chain = GetBeetweenParenth(JScode[s:])
+                chain2 = chain.split(',')
+                if len(chain2) > 1:
+                    JScode = JScode.replace('tmp.slice(' + chain + ')', 'ord(tmp[(' + chain2[0] + '):(' +chain2[1] + ')][0])')
+                else:
+                    JScode = JScode.replace('tmp.slice(' + chain + ')', 'ord(tmp[(' + chain2[0] + '):][0])')
+
+            s = JScode.find('tmp.slice')
+        
+        s = JScode.find('tmp.substring')
+        while s > 0:
+            if s > - 1:
+                chain = GetBeetweenParenth(JScode[s:])
+                chain2 = chain.split(',')
+                if len(chain2) > 1:
+                    JScode = JScode.replace('tmp.substring(' + chain + ')', 'tmp[('+ chain2[0] + '):(' + chain2[1] + ')]')
+                else:
+                    JScode = JScode.replace('tmp.substring(' + chain + ')', 'tmp[('+ chain2[0] + '):]')
+            s = JScode.find('tmp.substring')
+            
+        #petite securitee, elle sert pas a grand chose, mais pr le moment j'ai que ca.
+        if re.search('[a-zA-Z]{4}',JScode):
+            return ""           
+            
+        #ok make eval
+        JScode = JScode.replace('tmp', '"' + tmp + '"')
+        xbmc.log('Code a evaluer :' + JScode)
+        res = eval(JScode)
+        
+        return res
+        
 
     def __getMediaLinkForGuest(self):
    
@@ -203,62 +304,51 @@ class cHoster(iHoster):
             for i in TabUrl:
                 if aResult[1][0] == i[0]:
                     hideenurl = i[1]
-                    #xbmc.log(str(i))
+                    xbmc.log('hidden url : ' + str(i))
 
         if not(hideenurl):
             xbmc.log('Url codee non trouvee')
             return False, False
         
-        #Calcul du decalage
-        sPattern = '\(tmp\.slice\(-1\)\.charCodeAt\(0\) \+ ([0-9]+)\)'
-        aResult = oParser.parse(code, sPattern)
-        
-        val = 3
-        if (aResult[0]):
-            val = int(aResult[1][0])
-            
-        xbmc.log('Decalage : ' + str(val))
-        
         string = cUtil().unescape(hideenurl)
         
         url = ''
-        
-        if 'magic' in code:
-            xbmc.log('Mode avec magic')
-            magic = ord(string[-1])
-        else:
-            magic = -1
-        
+
         for c in string:
-            v = ord(c)
-            
-            #noueau truc inutile
-            if v == magic:
-                v -= 1
-            elif v == magic - 1:
-                v += 1            
+            v = ord(c)              
             
             if v >= 33 and v <= 126:
                 v = ((v + 14) % 94) + 33
             url = url + chr(v)
+
+        #Partie gerant le decalage
+        #xbmc.log('avant :' + url)
+        url = self.ProcessJS(code,url)
+        #xbmc.log('apres :' + url)
+
+        if not (url):
+            return False,False
         
-        url = url[:-1] + chr(ord(url[-1]) + val)
-        
+        #Now on teste les urls
         api_call = "https://openload.co/stream/" + url + "?mime=true"        
         xbmc.log('1 er url : ' + api_call)
-        api_call = GetOpenloadUrl(api_call)
+        api_call = GetOpenloadUrl(api_call,self.__sUrl)
         
-        #Si ca marche pas on teste d'autres trucs au hazard
-        if not (api_call):
-            url0 = url[:-1] + chr(ord(url[-1]) - val)
-            for i in range(0,3):
-                if i != val:
-                    url2 = url0[:-1] + chr(ord(url0[-1]) + i)
-                    url2 = "https://openload.co/stream/" + url2 + "?mime=true" 
-                    #xbmc.log(url2)
-                    url3 = GetOpenloadUrl(url2)
-                    if (url3):
-                        api_call = url3
+        if (False):
+            #Si ca marche pas on teste d'autres trucs au hazard
+            if not (api_call):
+                url0 = url[:-1] + chr(ord(url[-1]) - val)
+                for i in range(1,3):
+                    if i != val:
+                        url2 = url0[:-1] + chr(ord(url0[-1]) + i)
+                        url2 = "https://openload.co/stream/" + url2 + "?mime=true" 
+                        #xbmc.log(url2)
+                        url3 = GetOpenloadUrl(url2,self.__sUrl)
+                        xbmc.sleep(2000)
+                        if (url3):
+                            api_call = url3
+        
+        xbmc.log('Url validee : ' + api_call)
         
         if (api_call):          
             return True, api_call
