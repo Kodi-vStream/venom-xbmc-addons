@@ -109,12 +109,12 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'')
-    #sPattern = '<img src="([^<]+)" class="attachment.+?<h3 class="loop-title"><a href="([^<]+)" rel="bookmark">([^<]+)</a></h3>.+?<div class="mh-excerpt">(.+?)</a>'
     
-    sPattern = '<img src="([^<]+)" class="attachment.+?<h3 class="entry-title mh-loop-title">.+?<a href="([^<]+)" rel="bookmark">([^<]+)</a></h3>.+?<div class="mh-excerpt">(.+?)</a>'
+    sPattern = '<div class="mh-loop-thumb"><a href="([^"]+)".+?<img src="([^<]+)" class="attachment.+?<h3 class="entry-title mh-loop-title">.+?rel="bookmark">([^<]+)</a></h3>.+?<div class="mh-excerpt"><p>(.+?)<a class="mh-excerpt-more"'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -123,11 +123,14 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
             
+            sTitle = aEntry[2].replace('&laquo;','<<').replace('&raquo;','>>')
+            sSin = aEntry[3].replace('&laquo;','<<').replace('&raquo;','>>')
+
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[2], 'doc.png', aEntry[0], aEntry[3], oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[1]))
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', aEntry[1], sSin, oOutputParameterHandler)
         
         cConfig().finishDialog(dialog)
             
@@ -142,7 +145,7 @@ def showMovies(sSearch = ''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = "<span class='page-numbers current'>.+?</span> <a class='page-numbers' href='(.+?)'>.+?</a>"
+    sPattern = "<span class='page-numbers current'>.+?<a class='page-numbers' href='(.+?)'>.+?</a>"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -154,41 +157,10 @@ def __checkForRealUrl(sHtmlContent):
     sPattern = '<p style="text-align: center;">.+?<a href="(.+?)".+?<input type="button".+?</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         return aResult[1][0]
 
     return False
-    
-    
-def showLinks():
-    oGui = cGui()
-    
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-   
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    #sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'')
-    sPattern = '<div class="entry clearfix">(.+?)<p style="text-align: center;">.+?<a href="(.+?)">.+?<input type="button".+?</div>'
-    
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-
-        for aEntry in aResult[1]:
-            
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sMovieTitle, '', sThumbnail, aEntry[0], oOutputParameterHandler)
-        
-
-    oGui.setEndOfDirectory()
-    
 
 def showHosters():
     oGui = cGui()
@@ -196,7 +168,7 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request(); 
 
@@ -205,12 +177,11 @@ def showHosters():
     if (sRealUrl != False):
         oRequestHandler = cRequestHandler(sRealUrl)
         sHtmlContent = oRequestHandler.request(); 
-        
+
     sPattern = '<iframe.+?src="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-        
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -219,7 +190,7 @@ def showHosters():
             if dialog.iscanceled():
                 break
 
-            aEntry= aEntry.replace('//', 'http://')
+            aEntry = aEntry.replace('//', 'http://')
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
