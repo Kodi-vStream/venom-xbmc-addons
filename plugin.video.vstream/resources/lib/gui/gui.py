@@ -39,10 +39,7 @@ def CleanName(str):
     #vire espace a la fin
     if str.endswith(' '):
         str = str[:-1]
-        
-
     return str
-
 
 
 class cGui():
@@ -132,22 +129,14 @@ class cGui():
         
     def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler = ''):
         
+        cGui.CONTENT = "files"
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon(sIcon)
         oGuiElement.setMeta(0)
-
         oGuiElement.setDirFanart(sIcon)
-        
-        #oGuiElement.setFanart(self.sFanart)
-        
-        
-            
-        # if oOutputParameterHandler.getValue('sFanart'):
-            # sFanart = oOutputParameterHandler.getValue('sFanart')
-            # oGuiElement.setFanart(sFanart)
         
         oOutputParameterHandler.addParameter('sFav', sFunction)
         
@@ -155,16 +144,18 @@ class cGui():
         
     def addNext(self, sId, sFunction, sLabel, oOutputParameterHandler):
         
+        cGui.CONTENT = "files"
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon('next.png')
         oGuiElement.setMeta(0)
-
         oGuiElement.setDirFanart('next.png')
+        oGuiElement.setCat(5)
         
         self.createContexMenuPageSelect(oGuiElement, oOutputParameterHandler)
+        self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
         
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
