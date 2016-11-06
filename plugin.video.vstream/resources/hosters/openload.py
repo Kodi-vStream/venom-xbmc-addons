@@ -55,27 +55,7 @@ def CheckAADecoder(str):
         return AADecoder(aResult[1][0]).decode()
         
     return str
-    
-def GetBeetweenParenth(str):
-    #Search the first (
-    s = str.find('(')
-    if s == -1:
-        return ''
-        
-    n = 1
-    e = s + 1
-    while (n > 0) and (e < len(str)):
-        c = str[e]
-        if c == '(':
-            n = n + 1
-        if c == ')':
-            n = n - 1
-        e = e + 1
-        
-    s = s + 1
-    e = e - 1
-    return str[s:e]
-    
+
 def GetOpenloadUrl(url,referer):
     if 'openload.co/stream' in url:
     
@@ -112,7 +92,114 @@ def GetOpenloadUrl(url,referer):
 
         return finalurl
     return url
- 
+
+class JsParser(object):
+    
+    def GetBeetweenParenth(self,str):
+        #Search the first (
+        s = str.find('(')
+        if s == -1:
+            return ''
+            
+        n = 1
+        e = s + 1
+        while (n > 0) and (e < len(str)):
+            c = str[e]
+            if c == '(':
+                n = n + 1
+            if c == ')':
+                n = n - 1
+            e = e + 1
+            
+        s = s + 1
+        e = e - 1
+        return str[s:e]
+
+    def SafeEval(self,str):
+        f = re.search('[^0-9+-.\(\)]',str)
+        if f:
+            xbmc.log('Wrong parameter to Eval : ' + str)
+            return 0
+        return eval(str)
+    
+    def ProcessJS(self,JScode,tmp):
+        #Need to use in future ast.literal_eval(), need python 3
+        #import ast
+        
+        function = re.compile('function ([\w_]+\(\)) *{\s*return ([^;]+)').findall(JScode)
+        
+        #need 3 loops
+        i = 0
+        while i < 3:
+            for j in function:
+                JScode = JScode.replace(j[0],'(' + j[1]+ ')')
+            i = i + 1
+            
+        #Extract principal chain
+        f = re.search('var str = (.+?);',JScode)
+        if not f:
+            return ''
+
+        JScode = f.group(1).replace(' ','')
+        
+        #https://nemisj.com/python-api-javascript/
+        
+        #Simple replacement
+        JScode = JScode.replace('String.fromCharCode', 'chr')
+        JScode = JScode.replace('.charCodeAt(0)', '')
+        JScode = JScode.replace('tmp.length', str(len(tmp)))
+        
+        #xbmc.log('avant ' + JScode)
+            
+        #Eval Number
+        modif = True
+        while (modif):
+            modif = False
+            #Remplacement en virant parenthses
+            r = re.search('[^a-z](\([0-9+-]+\))',JScode)
+            if r:
+                JScode = JScode.replace(r.group(1),str(self.SafeEval(r.group(1))))
+                modif = True
+            #remplacement en laissant parenthses
+            r = re.search('[\(\),]([0-9+-]+[+-][0-9]+)[\(\),]',JScode)
+            if r:
+                JScode = JScode.replace(r.group(1),str(self.SafeEval(r.group(1))))
+                modif = True
+            #slice
+            r = re.search('tmp\.slice\((-*[0-9]+)(?:,(-*[0-9]+))*\)',JScode)
+            if r:
+                if r.group(2):
+                    JScode = JScode.replace(r.group(0), str(ord(tmp[int(r.group(1)):int(r.group(2))][0])) )
+                else:
+                    JScode = JScode.replace(r.group(0),str(ord(tmp[int(r.group(1)):][0])) )
+                modif = True
+         
+
+        #Eval string
+        modif = True
+        while (modif):
+            modif = False
+            #Substring
+            r = re.search('tmp\.substring\((-*[0-9]+)(?:,(-*[0-9]+))*\)',JScode)
+            if r:
+                if r.group(2):
+                    JScode = JScode.replace(r.group(0),tmp[ int(r.group(1)) : int(r.group(2)) ] )
+                else:
+                    JScode = JScode.replace(r.group(0),tmp[ int(r.group(1)) :] )
+                modif = True
+            #chr
+            r = re.search('chr\(([0-9]+)\)',JScode)
+            if r:
+                JScode = JScode.replace(r.group(0),chr(int(r.group(1))) )
+                modif = True
+        
+        #On colle le tout
+        JScode = JScode.replace ('+','')
+        
+        #xbmc.log('apres ' + JScode)
+        
+        return JScode
+        
         
 class cHoster(iHoster):
 
@@ -166,82 +253,7 @@ class cHoster(iHoster):
         return
         
     def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-        
-
-    def ProcessJS(self,JScode,tmp):
-        #Need to use in future ast.literal_eval(), need python 3
-        #import ast
-        
-        function = re.compile('function ([\w_]+\(\)) *{\s*return ([^;]+)').findall(JScode)
-        
-        #need 3 loops
-        i = 0
-        while i < 3:
-            for j in function:
-                JScode = JScode.replace(j[0],'(' + j[1]+ ')')
-            i = i + 1
-            
-        #Extract principal chain
-        f = re.search('var str = (.+?);',JScode)
-        if not f:
-            return ''
-
-        JScode = ' ' + f.group(1).replace(' ','')
-        
-        #https://nemisj.com/python-api-javascript/
-        
-        #Simple replacement
-        JScode = JScode.replace('String.fromCharCode', 'chr')
-        JScode = JScode.replace('.charCodeAt(0)', '')
-        JScode = JScode.replace('tmp.length', 'len(tmp)')
-        
-        #hard replacement
-        s = JScode.find('tmp.slice')
-        while s > 0:
-            if s > - 1:
-                chain = GetBeetweenParenth(JScode[s:])
-                chain2 = chain.split(',')
-                if len(chain2) > 1:
-                    JScode = JScode.replace('tmp.slice(' + chain + ')', 'ord(tmp[(' + chain2[0] + '):(' +chain2[1] + ')][0])')
-                else:
-                    JScode = JScode.replace('tmp.slice(' + chain + ')', 'ord(tmp[(' + chain2[0] + '):][0])')
-
-            s = JScode.find('tmp.slice')
-        
-        s = JScode.find('tmp.substring')
-        while s > 0:
-            if s > - 1:
-                chain = GetBeetweenParenth(JScode[s:])
-                chain2 = chain.split(',')
-                if len(chain2) > 1:
-                    JScode = JScode.replace('tmp.substring(' + chain + ')', 'tmp[('+ chain2[0] + '):(' + chain2[1] + ')]')
-                else:
-                    JScode = JScode.replace('tmp.substring(' + chain + ')', 'tmp[('+ chain2[0] + '):]')
-            s = JScode.find('tmp.substring')
-            
-        #petite securitees, elle servent pas a grand chose, mais pr le moment j'ai que ca.
-        if re.search('[a-zA-Z]{4}',JScode):
-            xbmc.log('Code louche')
-            return ""
-        num = 0
-        for char in JScode:
-            if (ord(char) > 64) and (ord(char) < 123):
-               num = num + 1
-        if num > 40:
-            xbmc.log('Code louche')
-            return ""
-        if 'for' in JScode:
-            xbmc.log('Code louche')
-            return ""              
-            
-        #ok make eval
-        JScode = JScode.replace('tmp', '"' + tmp + '"')
-        xbmc.log('Code a evaluer :' + JScode)
-        res = eval(JScode)
-        
-        return res
-        
+        return self.__getMediaLinkForGuest()       
 
     def __getMediaLinkForGuest(self):
    
@@ -334,9 +346,9 @@ class cHoster(iHoster):
 
         #Partie gerant le decalage
         #xbmc.log('avant :' + url)
-        url = self.ProcessJS(code,url)
+        url = JsParser().ProcessJS(code,url)
         #xbmc.log('apres :' + url)
-
+        
         if not (url):
             return False,False
         
