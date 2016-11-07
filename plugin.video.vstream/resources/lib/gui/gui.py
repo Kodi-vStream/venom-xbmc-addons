@@ -128,8 +128,6 @@ class cGui():
     
         
     def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler = ''):
-        
-        cGui.CONTENT = "files"
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -143,8 +141,6 @@ class cGui():
         self.addFolder(oGuiElement, oOutputParameterHandler)
         
     def addNext(self, sId, sFunction, sLabel, oOutputParameterHandler):
-        
-        cGui.CONTENT = "files"
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -273,19 +269,20 @@ class cGui():
         sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)
         
         #new context prend en charge les metas
-        if cGui.CONTENT == "movies":
-            self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-            self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
-            self.createContexMenuba(oGuiElement, oOutputParameterHandler)
-            self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
-            self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+        if (oGuiElement.getMeta() > 0):
+            if cGui.CONTENT == "movies":
+                self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuba(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
 
-        elif cGui.CONTENT == "tvshows":
-            self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-            self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
-            self.createContexMenuba(oGuiElement, oOutputParameterHandler)
-            self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
-            self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+            elif cGui.CONTENT == "tvshows":
+                self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuba(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
        
@@ -456,7 +453,6 @@ class cGui():
                 sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)                
                 aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.RunPlugin(%s)" % (sTest,),)]
 
-            #oListItem.addContextMenuItems(aContextMenus)
             oListItem.addContextMenuItems(aContextMenus, True)    
 
         #Ajout de voir marque page
@@ -578,8 +574,8 @@ class cGui():
         return False
         
      
-    def selectpage(self):
-        sPluginPath = cPluginHandler().getPluginPath();
+    def selectpage2(self):
+        sPluginPath = cPluginHandler().getPluginPath()
         oInputParameterHandler = cInputParameterHandler()        
         #sParams = oInputParameterHandler.getAllParameter()
 
@@ -607,17 +603,25 @@ class cGui():
         return False     
 
         
-    def selectpage2(self):
-        sPluginPath = cPluginHandler().getPluginPath();
-        oInputParameterHandler = cInputParameterHandler()        
-        #sParams = oInputParameterHandler.getAllParameter()
+    def selectpage(self):
+        sPluginPath = cPluginHandler().getPluginPath()
+        oInputParameterHandler = cInputParameterHandler()    
+        
+        sParams = oInputParameterHandler.getAllParameter()
+
 
         sId = oInputParameterHandler.getValue('sId')
-        sUrlBase = oInputParameterHandler.getValue('siteUrlbase')
-        sMaxpage = oInputParameterHandler.getValue('MaxPage')
+        siteUrl = oInputParameterHandler.getValue('siteUrl')
+        sFunction = oInputParameterHandler.getValue('OldFunction')
         
-        sTest = '%s?site=%s' % (sPluginPath, sId)
-        sTest = sTest +'&function=showPage&siteUrlbase=' + urllib.quote(sUrlBase) + '&MaxPage=' + str(sMaxpage)
+        selpage = self.showNumBoard()
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', siteUrl)
+        oOutputParameterHandler.addParameter('Selpage', selpage)
+        
+        sParams = oOutputParameterHandler.getParameterAsUri()
+        sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, sId, sFunction, sParams)   
         xbmc.executebuiltin('XBMC.Container.Update(%s, replace)' % sTest )
     
     def setWatched(self):
