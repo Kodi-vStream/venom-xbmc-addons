@@ -151,10 +151,10 @@ class cHosterGui:
         #Gestion classique
         if (('novamov' in sHostName) or ('auroravid' in sHostName)):
             return cHosterHandler().getHoster('novamov')
-        if (('divxstage' in sHostName) or ('cloudtime' in sHostName)):
-            return cHosterHandler().getHoster('divxstage')
-        if ('vidxden' in sHostName):
-            return cHosterHandler().getHoster('vidxden')
+        #if (('divxstage' in sHostName) or ('cloudtime' in sHostName)):
+        #    return cHosterHandler().getHoster('divxstage')
+        #if ('vidxden' in sHostName):
+        #    return cHosterHandler().getHoster('vidxden')
         if ('vidbux' in sHostName):
             return cHosterHandler().getHoster('vidbux')
         if ('megavideo' in sHostName):
@@ -163,8 +163,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('videoweed')
         if ('youwatch' in sHostName):
             return cHosterHandler().getHoster('youwatch')
-        if ('turbovid' in sHostName):
-            return cHosterHandler().getHoster('turbovid')
+        #if ('turbovid' in sHostName):
+        #    return cHosterHandler().getHoster('turbovid')
         if (('youtube' in sHostName) or ('youtu.be' in sHostName)):
             return cHosterHandler().getHoster('youtube')
         if ('rutube' in sHostName):
@@ -193,8 +193,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('uptostream')
         if (('dailymotion' in sHostName) or (('dai.ly' in sHostName))):
             return cHosterHandler().getHoster('dailymotion')        
-        if ('azerfile' in sHostName):
-            return cHosterHandler().getHoster('azerfile')
+        #if ('azerfile' in sHostName):
+        #    return cHosterHandler().getHoster('azerfile')
         if ('vodlocker' in sHostName):
             return cHosterHandler().getHoster('vodlocker')
         if ('mystream' in sHostName):
@@ -205,8 +205,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('speedvideo')
         if ('speedvid' in sHostName):
             return cHosterHandler().getHoster('speedvid')
-        if ('axavid' in sHostName):
-            return cHosterHandler().getHoster('axavid') 
+        #if ('axavid' in sHostName):
+        #    return cHosterHandler().getHoster('axavid') 
         if (('netu' in sHostName) or ('hqq' in sHostName)):
             return cHosterHandler().getHoster('netu')
         if ('waaw' in sHostName):
@@ -263,12 +263,12 @@ class cHosterGui:
             return cHosterHandler().getHoster('amazon')
         if ('filepup' in sHostName):
             return cHosterHandler().getHoster('filepup')
-        if ('v-vids' in sHostName):
-            return cHosterHandler().getHoster('v_vids')
+        #if ('v-vids' in sHostName):
+        #    return cHosterHandler().getHoster('v_vids')
         if ('vid.ag' in sHostName):
             return cHosterHandler().getHoster('vid_ag')
-        if ('wat.tv' in sHostName):
-            return cHosterHandler().getHoster('wat_tv')
+        #if ('wat.tv' in sHostName):
+        #    return cHosterHandler().getHoster('wat_tv')
         if ('thevid' in sHostName):
             return cHosterHandler().getHoster('thevid')
         if ('nosvideo' in sHostName):
@@ -281,8 +281,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('idowatch')
         if ('wstream.' in sHostName):
             return cHosterHandler().getHoster('wstream')
-        if ('veevr.' in sHostName):
-            return cHosterHandler().getHoster('veevr')
+        #if ('veevr.' in sHostName):
+        #    return cHosterHandler().getHoster('veevr')
         if ('watchvideo.' in sHostName):
              return cHosterHandler().getHoster('watchvideo')
         if ('drive.google.com' in sHostName):
