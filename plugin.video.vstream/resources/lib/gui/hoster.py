@@ -155,8 +155,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('divxstage')
         #if ('vidxden' in sHostName):
         #    return cHosterHandler().getHoster('vidxden')
-        if ('vidbux' in sHostName):
-            return cHosterHandler().getHoster('vidbux')
+        #if ('vidbux' in sHostName):
+        #    return cHosterHandler().getHoster('vidbux')
         if ('megavideo' in sHostName):
             return cHosterHandler().getHoster('megavideo')
         if (('videoweed' in sHostName) or ('bitvid' in sHostName)):
