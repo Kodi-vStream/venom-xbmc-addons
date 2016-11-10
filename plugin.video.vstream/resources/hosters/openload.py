@@ -94,6 +94,9 @@ def GetOpenloadUrl(url,referer):
     return url
 
 class JsParser(object):
+    def __init__(self):
+        self.Var = []
+        
     
     def GetBeetweenParenth(self,str):
         #Search the first (
@@ -121,28 +124,11 @@ class JsParser(object):
             xbmc.log('Wrong parameter to Eval : ' + str)
             return 0
         return eval(str)
-    
-    def ProcessJS(self,JScode,tmp):
-        #Need to use in future ast.literal_eval(), need python 3
-        #import ast
         
-        function = re.compile('function ([\w_]+\(\)) *{\s*return ([^;]+)').findall(JScode)
-        
-        #need 3 loops
-        i = 0
-        while i < 3:
-            for j in function:
-                JScode = JScode.replace(j[0],'(' + j[1]+ ')')
-            i = i + 1
-            
-        #Extract principal chain
-        f = re.search('var str = (.+?);',JScode)
-        if not f:
-            return ''
-
-        JScode = f.group(1).replace(' ','')
-        
+    def evalJS(self,JScode,tmp):
         #https://nemisj.com/python-api-javascript/
+        
+        JScode = JScode.replace(' ','')
         
         #Simple replacement
         JScode = JScode.replace('String.fromCharCode', 'chr')
@@ -192,11 +178,59 @@ class JsParser(object):
             if r:
                 JScode = JScode.replace(r.group(0),chr(int(r.group(1))) )
                 modif = True
+            #join
+            r = re.search('tmp\.join\((.+)\)',JScode)
+            if r:
+                JScode = JScode.replace(r.group(0),r.group(1).join(tmp) )
+                modif = True            
         
         #On colle le tout
         JScode = JScode.replace ('+','')
         
         #xbmc.log('apres ' + JScode)
+        
+        return JScode
+            
+    def UpdateVar(self,var,value):
+        for j in self.Var:
+            if j[0] == var:
+                self.Var[self.Var.index(j)] = (var,value)
+                return
+        self.Var.append((var,value))
+            
+    def ReplaceVar(self,JScode):
+        modif = True
+        while (modif):
+            modif = False
+            for j in self.Var:
+                if j[0] in JScode:
+                    JScode = JScode.replace(j[0],'(' + j[1]+ ')')
+                    modif = True
+                    
+        return JScode
+
+    def ProcessJS(self,JScode,tmp):
+        #Need to use in future ast.literal_eval(), need python 3
+        
+        #Get variable and function fixed
+        function = re.compile('function ([\w_]+\(\)) *{\s*return ([^;]+)').findall(JScode)
+        if function:
+            for i,j in function:
+                self.UpdateVar(i,j)
+ 
+        #xbmc.log(str(self.Var))
+  
+        #Extract principal chain
+        f = re.search('var str = (.+?);',JScode)
+        if not f:
+            return ''
+        JScode = f.group(1)
+        
+        #Update code with replace fixed fonctions
+        JScode = self.ReplaceVar(JScode)
+        
+        #eval code
+        JScode = self.evalJS(JScode,tmp)
         
         return JScode
         

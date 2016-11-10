@@ -3,7 +3,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 import urllib, urllib2, re
-import xbmc
 
 class cHoster(iHoster):
 
@@ -27,12 +26,11 @@ class cHoster(iHoster):
         self.__sUrl = sUrl
     
     def __getIdFromUrl(self,sUrl):
-        sPattern = 'http://((?:www.)?streamin.to)/(.*)'
+        sPattern = 'v=([^-]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        
         if (aResult[0] == True):
-            return aResult[1][0][1]
+            return aResult[1][0]
 
         return ''
         
@@ -51,11 +49,14 @@ class cHoster(iHoster):
     def getPattern(self):
         return '';
 
+    def setUrl(self, sUrl):
+        self.__sUrl = str(sUrl)
+        self.__sUrl = self.__sUrl.replace('http://streamin.to/', '')
+        self.__sUrl = self.__sUrl.replace('embed-', '')
+        self.__sUrl = 'http://streamin.to/embed/?v=' + str(self.__sUrl)
+
     def checkUrl(self, sUrl):
         return True
-
-    def getUrl(self,media_id):
-        return 'http://streamin.to/%s' % (media_id)
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
@@ -63,7 +64,8 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
 
         sId = self.__getIdFromUrl(self.__sUrl)
-        web_url = self.getUrl(sId)
+
+        web_url = 'http://streamin.to/embed-%s.html' % sId
 
         api_call =''
 

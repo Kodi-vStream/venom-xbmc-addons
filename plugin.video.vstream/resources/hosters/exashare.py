@@ -36,22 +36,10 @@ class cHoster(iHoster):
         return ''
         
     def __getIdFromUrl(self, sUrl):
-        sPattern = "http://exashare.com/([^<]+)"
-        oParser = cParser()
-        aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
-            return aResult[1][0]
-
         return ''
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        
-        #sPattern =  'http://(?:www.|embed.|)exashare.(?:com)/(?:video/|embed\-)?([0-9a-z]+)'
-        #oParser = cParser()
-        #aResult = oParser.parse(sUrl, sPattern)
-        #self.__sUrl = 'http://exashare.com/embed-'+str(aResult[1][0])+'.html'
-
 
     def checkUrl(self, sUrl):
         return True
@@ -64,12 +52,14 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
+
+        api_call = ''
+
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-     
         oParser = cParser()
-        
+
+        #methode1 
         #lien indirect
         if 'You have requested the file:' in sHtmlContent:
             POST_Url               = re.findall('form method="POST" action=\'([^<>"]*)\'',sHtmlContent)[0]
@@ -106,26 +96,36 @@ class cHoster(iHoster):
      
         sPattern = 'file: "([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        if not (aResult[0] == True):
-            sPattern = '<iframe[^<>]+?src="(.+?)"[^<>]+?><\/iframe>'
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            
-            if (aResult[0] == True):
-                url = aResult[1][0]
-                
-                oRequest = cRequestHandler(url)
-                oRequest.addHeaderEntry('Referer',url)
-                #oRequest.addHeaderEntry('Host','dowed.info')
-                sHtmlContent = oRequest.request()
-                
-                sPattern = 'file: *"([^"]+)"'
-                aResult = oParser.parse(sHtmlContent, sPattern)
-                
         if (aResult[0] == True):
             api_call = aResult[1][0]
-            return True, api_call       
-            
+
+        #methode2 
+        sPattern = '<iframe[^<>]+?src="(.+?)"[^<>]+?><\/iframe>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            url = aResult[1][0]
+            oRequest = cRequestHandler(url)
+            oRequest.addHeaderEntry('Referer',url)
+            #oRequest.addHeaderEntry('Host','dowed.info')
+            sHtmlContent = oRequest.request()
+                
+            sPattern = 'file: *"([^"]+)"'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                api_call = aResult[1][0]
+
+            #methode2-3    
+            sPattern = '<iframe.+?src="([^"]+)".+?<\/iframe>'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                vurl = aResult[1][0]
+                oRequest = cRequestHandler(vurl)
+                sHtmlContent = oRequest.request()
+                sPattern = 'file: *"([^"]+)"'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                api_call = aResult[1][0]
+
+        if (api_call):
+            return True, api_call 
+
         return False, False
-        
-        

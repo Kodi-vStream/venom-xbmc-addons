@@ -1,36 +1,29 @@
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.util import cUtil
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
+from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-import re
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Azerfile'
-        self.__sFileName = self.__sDisplayName
-        self.__sHD = ''
+        self.__sDisplayName = 'Turbovid.net'
+	self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
 
     def setFileName(self, sFileName):
-        self.__sFileName = sFileName
+	self.__sFileName = sFileName
 
     def getFileName(self):
-        return self.__sFileName
+	return self.__sFileName
 
     def getPluginIdentifier(self):
-        return 'azerfile'
-
-    def setHD(self, sHD):
-        self.__sHD = ''
-
-    def getHD(self):
-        return self.__sHD
+        return 'turbovid'
 
     def isDownloadable(self):
         return True
@@ -42,7 +35,7 @@ class cHoster(iHoster):
         return '';
         
     def __getIdFromUrl(self, sUrl):
-        sPattern = "http://azerfile.com/embed-([^<]+)-640x340.html"
+        sPattern = "http://turbovid.net/([^<]+)"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -50,15 +43,12 @@ class cHoster(iHoster):
 
         return ''
 
-    def setUrl(self, sUrl):        
-        self.__sUrl = str(sUrl)
-        
-        sPattern =  'http://(?:www.|embed.|)azerfile.(?:com)/(?:video/|embed\-|)?([0-9a-z]+)'
-         
-        oParser = cParser()
-        aResult = oParser.parse(sUrl, sPattern)
-        self.__sUrl = 'http://azerfile.com/'+str(aResult[1][0])
-
+    def setUrl(self, sUrl):
+        if 'embed' not in sUrl:
+            self.__sUrl = str(self.__getIdFromUrl(sUrl))
+            self.__sUrl = 'http://turbovid.net/embed-'+str(self.__sUrl)+'.html'
+        else:
+            self.__sUrl = sUrl
 
     def checkUrl(self, sUrl):
         return True
@@ -69,26 +59,24 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
-    def __getMediaLinkForGuest(self):        
+    def __getMediaLinkForGuest(self):
+        cGui().showInfo('Resolve', self.__sDisplayName, 5)
+        
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
+        if not sHtmlContent:
+            cGui().showInfo('Not Url', self.__sDisplayName, 5)
+            return False, False            
         
-        
-        sPattern = 'file=([^<]+)&image';
+        sPattern = 'var/type/(.+?)/.+?/provider/mp4/([^<]+)/flash/';
         
         oParser = cParser()
+        sHtmlContent=sHtmlContent.replace('|','/')
         aResult = oParser.parse(sHtmlContent, sPattern)
-
-
         if (aResult[0] == True):
-            file = aResult[1][0]
-
-            liste = file.split('/')
-
-            #api_call = ('http://azerfile.com:%s/d/%s/video.mp4') % (liste[-1], liste[-2])
-            api_call = aResult[1][0]
+            api_call = ('http://178.33.122.207:%s/%s/v.mp4') % (aResult[1][0][0], aResult[1][0][1])
             return True, api_call
-            
+        
         return False, False
         
         

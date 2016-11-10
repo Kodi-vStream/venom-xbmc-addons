@@ -3,7 +3,6 @@ from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.lib.util import cUtil
 from resources.hosters.hoster import iHoster
-import xbmcgui, re, time
 
 class cHoster(iHoster):
 
@@ -41,12 +40,9 @@ class cHoster(iHoster):
     def __modifyUrl(self, sUrl):
         return ''
 
-    def setUrl(self, sUrl):       
-        self.__sUrl = sUrl.replace('http://v-vids.com/', '')
-        self.__sUrl = self.__sUrl.replace('embed-', '')
-        self.__sUrl=re.sub(r'\-.*\.html',r'',self.__sUrl)
-        self.__sUrl = 'http://v-vids.com/' + str(self.__sUrl)
-
+    def setUrl(self, sUrl):
+        self.__sUrl = sUrl
+        
     def checkUrl(self, sUrl):
         return True
 
@@ -61,35 +57,16 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        sPattern =  '<input type="hidden" name="(.+?)" value="(.*?)">'
+        sPattern =  "file: '(.+?)'"
               
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True): 
-            time.sleep(7)
-            oRequest = cRequestHandler(self.__sUrl)
-            oRequest.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-            for aEntry in aResult[1]:
-                oRequest.addParameters(aEntry[0], aEntry[1])
-
-            
-            oRequest.addParameters('referer', self.__sUrl)
-            sHtmlContent = oRequest.request()
-            
-            sPattern =  "file: '(.+?)'"
-            
-            oParser = cParser()
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
-                cGui().showInfo(self.__sDisplayName, 'Streaming', 5)
-                return True, aResult[1][0]
-            else:
+            cGui().showInfo(self.__sDisplayName, 'Streaming', 5)
+            return True, aResult[1][0]
+        else:
                 cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
                 return False, False
-
-        else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
-            return False, False
         
         return False, False

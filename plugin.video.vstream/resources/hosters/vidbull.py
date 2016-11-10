@@ -10,7 +10,7 @@ from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
 import re,xbmc
 
-import resources.lib.pyaes as pyaes
+#import resources.lib.pyaes as pyaes (no module name pyaes found)
 
 import resources.lib.GKDecrypter
 from resources.lib.GKDecrypter import decryptKey
