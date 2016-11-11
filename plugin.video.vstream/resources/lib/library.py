@@ -77,8 +77,15 @@ class cLibrary:
             sTitle = cUtil().CleanName(sTitle)
             
             try:
-                print folder
-                self.MakeFile(folder,sTitle,sLink)
+                #print folder
+                #creer un dossier aussi pour les films sinon mauvais affichage
+                
+                folder2 = folder + '/' + sTitle + '/'
+                
+                if not os.path.exists(folder2):
+                    os.mkdir(folder2)
+                    
+                self.MakeFile(folder2,sTitle,sLink)
                 cConfig().showInfo('vStream', 'Element rajouté a la librairie')
                 xbmc.executebuiltin('UpdateLibrary(video, '+ folder + ')')
             except:
@@ -95,7 +102,7 @@ class cLibrary:
                 sTitleGlobal = sTitleGlobal[:-1]
 
             try:
-                print folder
+                #print folder
                 folder2 = folder + '/' + sTitleGlobal + '/'
                 
                 if not os.path.exists(folder2):
@@ -125,11 +132,11 @@ class cLibrary:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('folder', self.__sMovieFolder)
-        oGui.addDir(SITE_IDENTIFIER, 'ShowContent', 'Films', 'download.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'ShowContent', 'Films', 'library.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('folder', self.__sTVFolder)
-        oGui.addDir(SITE_IDENTIFIER, 'ShowContent', 'Series', 'download.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'ShowContent', 'Series', 'library.png', oOutputParameterHandler)
           
         oGui.setEndOfDirectory()
         
