@@ -13,12 +13,19 @@
 # Object
 # Globla/Local variables/function/object
 
+#help
+#https://sarfraznawaz.wordpress.com/2012/01/26/javascript-self-invoking-functions/
 
 import re
 import types
+import time
 
 REG_NAME = '[\w]+'
 REG_OP = '[\/*-+\(\)\{\}\[\]<>]+'
+
+JScode2 ="""
+eval(function(p,a,c,k,e,r){e=String;if(!''.replace(/^/,String)){while(c--)r[c]=k[c]||c;k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('(0(){4 1="5 6 7 8";0 2(3){9(3)}2(1)})();',10,10,'function|b|something|a|var|some|sample|packed|code|alert'.split('|'),0,{}));
+"""
 
 
 JScode ="""
@@ -79,11 +86,12 @@ class JsParser(object):
             return '',0
     
         l = len(string)
+        string = string + ' ' #To prevent index out of range, hack
         
         i = 0
-        p = 0
-        a = 0
-        f = False
+        p = 0 #parenbthese
+        a = 0 #accolade
+        f = False #fonction ?
         while (l > i):
             ch = string[i]
             if ch == '(':
@@ -94,21 +102,38 @@ class JsParser(object):
                 a = a + 1
             if ch == '}':
                 a = a - 1
-            if (ch == ';') and not (f) and (p == 0):
-                #ok simple chain
-                if (p == 0) and (a == 0):
+            #Dans tout les cas les parenthses doivent etre fermees
+            if (p == 0):
+                #Si on rencontre un ; par defaut
+                if (ch == ';') and not (f):
+                    #Ok, accolade fermees aussi, c'est tout bon
+                    if(a == 0):
+                        i = i + 1
+                        return string[:i],i
+                    #Accoloade non fermee, c'est une fonction
+                    else:
+                        f = True
+                #si c'est une fonction et l'accolade fermee
+                if (f) and (a == 0):
+                    #quel est le caractere suivant ?
                     i = i + 1
-                    return string[:i],i
-                #else function
-                else:
-                    f = True
-            if (f) and (p == 0) and (a == 0):
-                i = i + 1
-                #hack
-                if string[i] == ';':
-                    i = i + 1
-                return string[:i],i            
+                    while (string[i] == ' ') and(l > i):
+                        i = i + 1
+                    #on repart
+                    if string[i] == '(':
+                        continue
+                    
+                    #hack
+                    if string[i] == ';':
+                        i = i + 1
+                        
+                    return string[:i],i            
             i = i + 1
+        
+        #chaine bugguée ?
+        if ';' not in string:
+            out('ERROR Extract chain without ;')
+            return self.ExtractFirstchain(string + ';')
             
         raise Exception("Can't extract chain " + string)
            
@@ -130,7 +155,7 @@ class JsParser(object):
             
         s = s + 1
         e = e - 1
-        return str[s:e]
+        return e,str[s:e]
         
     def GetBeetweenCroch(self,str):
         #Search the first (
@@ -221,8 +246,7 @@ class JsParser(object):
                 continue
             #parentheses
             if c == "(":
-                print 'ok'
-                c2 = self.GetBeetweenParenth(JScode)
+                c2 = self.GetBeetweenParenth(JScode)[1]
                 v = self.evalJS(c2,vars,func,allow_recursion)
                 InterpretedCode = InterpretedCode + v
                 JScode = JScode[(len(c2) + 2):]
@@ -244,28 +268,35 @@ class JsParser(object):
                 InterpretedCode = ''
              
             #fonction ?
-            r = re.search('^('+REG_NAME+')\(([^\)]*)\)',JScode)
+            r = re.search('^('+REG_NAME+')\(',JScode)
             if r:
-                Func_chain = r.group(0)
-                print "func " + Func_chain
+                Func_chain = r.group(0)[:-1]
+                
+                #need to find all arg
+                pos,content = self.GetBeetweenParenth(JScode[(r.end()-1):])
+                arg = content.split(',')
+                
+                out( "> func : " + Func_chain +'(' + content + ')')
                 
                 #Def function ?
                 fe = self.IsFunc(func,r.group(1))
                 if fe:
-                    f,p,c = fe
+                    n,p,c = fe
                     
-                    if (len(p) > 0) and (len(r.group(2))>0):
-                        nv = tuple(zip(p, r.group(1)))
+                    if (len(p) > 0) and (len(arg)>0):
+                        nv = tuple(zip(p, arg))
                         vars.append(nv)
 
                     v = self.Parse(c,vars,func,allow_recursion)
                     
                     InterpretedCode = InterpretedCode + v
-                    JScode = JScode[(len(Func_chain)):]
+                    JScode = JScode[(len(Func_chain) + len(content) + 2):]
                     continue
                     
                 #Native function ?
-      
+                
+                #error
+                print str(func)
                 raise Exception("Can't find function " +Func_chain)
                 
             #variables
@@ -289,7 +320,7 @@ class JsParser(object):
                 #parentheses ?
                 if len(JScode) > len(r.group(0)):
                     if JScode[r.end()] == '(':
-                        object_chain = object_chain + '(' + self.GetBeetweenParenth(JScode) + ')'
+                        object_chain = object_chain + '(' + self.GetBeetweenParenth(JScode)[1] + ')'
  
                 print "Obj " + object_chain
                 
@@ -369,6 +400,7 @@ class JsParser(object):
             # We will make another turn
             out("Can't eval string :" + JScode)
             out("Last eval : " + self.LastEval)
+            print c
             InterpretedCode = InterpretedCode + JScode
             self.debug = True
             ee(pp)
@@ -511,34 +543,92 @@ class JsParser(object):
     
         #on decoupe le code
         
-        #Need all functions first
-        Found = True
-        while (Found):
-            Found = False
-            #fonction
-            m = re.search(r'function ([^\s]+) *\(([^\)]*)', JScode)
-            if m:
-                Found = True
-                
-                name = m.group(1)
-                arg = m.group(2)
-
-                pos,content = self.GetBeetweenCroch(JScode[m.start():])
-                pos = pos + m.start()
-                
-                func.append((name,arg,content.lstrip()))
-                JScode = JScode[:m.start()]+ JScode[(pos + 2):]
-                
-                #out('> Fonction ' + name)
+        #Need all functions first, because they can be called first and be at the bottom of the code
+        #So we extract all functions first, and replace them by a simple call in the code, if they are self invoked
         
+        posG = 0
+        Startoff = 0
+        Endoff = 0
+        
+        while (True):
+
+            chain,pos = self.ExtractFirstchain(JScode[posG:])
+            if not (chain):
+                break
+
+            Endoff = posG + pos
+            #skip empty char
+            before = len(chain)
+            chain = chain.lstrip()
+            posG = posG + before - len(chain)
+                
+            Startoff = posG
+                
+            #out('> ' + chain)
+            posG = posG + pos
+            
+            #fonction
+            m = re.search(r'^(\()* *function(?: ([\w]+))* *\(([^\)]*)\) *{', chain,re.DOTALL)
+            if m:
+                if m.group(2):
+                    name = m.group(2)
+                else:
+                    n0 = 0
+                    while self.IsFunc(func,'AnonymousFunc' + str(n0)):
+                        n0=n0+1
+                    name = 'AnonymousFunc' + str(n0)
+                param = m.group(3).split(',')
+                
+                out('Function ' + name + str(param))
+
+                #self invoked ? Not workign yet
+                if m.group(1):
+                    ddd(pp)
+                    pos,content = self.GetBeetweenParenth(chain)
+                    pos = pos + m.start()
+                    print '++ ' + chain[(pos+2):]
+                    print content
+                    #need arg too
+                    pos2,content2 = self.GetBeetweenParenth(chain[(pos+2):])
+                    arg = content2
+                    
+                    func.append((name,param,content.lstrip()))
+
+                    
+                    chain = chain[pos:] 
+                    
+                else:
+                    pos,content = self.GetBeetweenCroch(chain)
+                    pos = pos + 1
+                    out('content >' + content)
+                    func.append((name,param,content.lstrip()))
+
+                    chain = chain[pos:] 
+                    
+                #param in function ?
+                if len(chain)> 0:
+                    r = name + chain
+                    if not chain.endswith(';'):
+                        r = r + ';'
+                    out('Self invoked > ' + r)
+                    out('param inside ' + chain)
+                    JScode = JScode[:Startoff]+ r + JScode[Endoff:]
+
+                else:
+                    JScode = JScode[:Startoff]+ JScode[Endoff:]
+                    posG = Startoff
+                    
+
         while (True):
             chain,pos = self.ExtractFirstchain(JScode)
             if not (chain):
                 break
-        
+                
+            JScode = JScode[pos:]
+                        
             chain = chain.lstrip()
-            JScode = JScode[(pos + 1):]
-            
+            chain = chain.rstrip()
+              
             #print '++++++++++++++++++'
             #print chain
             #print '++++++++++++++++++'
@@ -555,6 +645,14 @@ class JsParser(object):
                     vars = self.Parse(self.Jquery,vars,func,allow_recursion)
                     
                 continue
+                
+            #eval ?
+            m = re.search(r'^eval\((.+)\);$', chain,re.DOTALL)
+            if m:
+                out('Eval')
+                JScode = JScode.replace(m.group(0),'')
+                #out('To eval >' + m.group(1))
+                vars = self.Parse(m.group(1),vars,func,allow_recursion)
 
             #For boucle ?
             m = re.search(r'^for *\((var[^;]+;)([^;]+);([^\)]+)\) *{(.+?)}$', chain,re.DOTALL)
@@ -599,7 +697,8 @@ class JsParser(object):
                 continue
                 
             #Boucle if
-            m = re.search(r'^if \(([^{]+)\) *{(.+?)}$', chain,re.DOTALL)
+            print '** ' + chain
+            m = re.search(r'^if *\(([^{]+)\) *{(.+?)}$', chain,re.DOTALL)
             if m:
                 t = m.group(1)
                 f = m.group(2)
@@ -625,14 +724,17 @@ class JsParser(object):
 
                 continue
                 
-            #Variable ?
-            #initalisation
-            m = re.search(r'^var ([^\s]+) *= *(.+) *;$', chain)
+            #Variable operation/creation ?
+            m = re.search(r'^(?:var )*([^\s\[]+) *= *(.+) *;$', chain)
             if m:
                 variable = m.group(1)
                 value = m.group(2)
                 
-                out( '> Variable Init => ' + variable + ' = ' + value)
+                if value == 'String':
+                    value = '""'
+                
+                out( '> Variable Creation => ' + variable + ' = ' + value)
+                print chain
                 
                 #chain
                 m = re.match(r'^"([^"]+)"$', value)
@@ -653,7 +755,7 @@ class JsParser(object):
             #modification
             m = re.search(r'^([\w]+)(?:\[([^\]]+)\])*\s*=([^;]+);$', chain)
             if m:
-                out( '> Variable => ' + m.group(1) + ' = ' + m.group(3))
+                out( '> Variable Modification => ' + m.group(1) + ' = ' + m.group(3))
             
                 v = self.evalJS(m.group(3),vars,func,allow_recursion)
 
@@ -693,6 +795,8 @@ class JsParser(object):
                 self.SetVar(self.HackVars,m.group(1),self.GetVar(vars,m.group(2)))
                 continue
             
+            #Pas trouve, une fonction ?
+            self.evalJS(chain,vars,func,allow_recursion)
             
             #Non gere encore
             out( '> ERROR : can t parse >' + chain)
