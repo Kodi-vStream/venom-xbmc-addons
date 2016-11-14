@@ -219,7 +219,7 @@ class cHoster(iHoster):
             sUnpacked = cPacker().unpack(aResult[0])
             sHtmlContent = sUnpacked
             
-            xbmc.log(sHtmlContent)
+            #xbmc.log(sHtmlContent)
   
         #decodage classique
         sPattern = '{file:"([^",]+)",label:"([^"<>,]+)"}'
