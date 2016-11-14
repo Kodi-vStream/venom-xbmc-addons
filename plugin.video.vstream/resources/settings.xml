@@ -484,7 +484,11 @@
         <setting id="update_auto" type="bool" label="30302" default="true" />
     </category>
     
-    <category label="30400">-->
+    <category label="30400">
+        <setting label="BetaSeries" type="lsep"/>
+        <setting id="bs_login" type="text" label="30401" default=""/>
+        <setting id="bs_pass" type="text" label="30402" default="" option="hidden"/>
+        <setting type="sep" />
         <setting label="Uptobox" type="lsep"/>
         <setting id="hoster_uptobox_premium" type="bool" label="30403" default="false"/>
         <setting id="hoster_uptobox_username" type="text" label="30401" default=""/>

@@ -628,8 +628,9 @@ class cGui():
 
         oInputParameterHandler = cInputParameterHandler()
        
-        #aParams = oInputParameterHandler.getAllParameter()
-        #print aParams
+        aParams = oInputParameterHandler.getAllParameter()
+        # import xbmc
+        # xbmc.log(str(aParams))
         
         sSite = oInputParameterHandler.getValue('siteUrl')
         sTitle = xbmc.getInfoLabel('ListItem.label')
@@ -750,7 +751,7 @@ class cGui():
         else:
             iSeconds = iSeconds * 1000
             
-        xbmc.executebuiltin("Notification(%s,%s,%s)" % (cConfig().getlanguage(30308), (cConfig().getlanguage(30309) % str(sTitle)), iSeconds))
+        xbmc.executebuiltin("Notification(%s,%s,%s)" % ('vStream', str(sTitle), iSeconds))
 
     def showError(self, sTitle, sDescription, iSeconds=0):
         if (cConfig().isDharma() == False):

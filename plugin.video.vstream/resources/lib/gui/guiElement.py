@@ -238,10 +238,7 @@ class cGuiElement:
         
     def getWatched(self):
         
-        #inutile sur les dernieres version > Dharma
-        if (cConfig().isDharma()):
-            return ''
-        
+        #Fonctionne pour marquer lus un dossier        
         if not self.getTitle():
             return ''
             

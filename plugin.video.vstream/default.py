@@ -72,6 +72,9 @@ class main:
             
             if (isHome(sSiteName, sFunction) == True):
                 return
+                
+            if (isBseries(sSiteName, sFunction) == True):
+                return
 
             #if (isAboutGui(sSiteName, sFunction) == True):            
                 #return
@@ -163,6 +166,14 @@ def isHome(sSiteName, sFunction):
     if (sSiteName == 'cHome'):
         oHome = cHome()
         exec "oHome."+ sFunction +"()"
+        return True
+    return False
+    
+def isBseries(sSiteName, sFunction):
+    if (sSiteName == 'cBseries'):
+        from resources.lib.betaseries import cBseries
+        oBseries = cBseries()
+        exec "oBseries."+ sFunction +"()"
         return True
     return False
 

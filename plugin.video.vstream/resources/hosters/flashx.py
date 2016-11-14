@@ -148,11 +148,27 @@ class cHoster(iHoster):
             web_url = aResult[0]
         else:
             return False,False
+            
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+        
+        #Request to unlock video
+        sPattern ='fastcontentdelivery\.com.+?\?([^"]+)">'
+        aResult = re.findall(sPattern,sHtmlContent)
+        if aResult:
+            UnlockUrl = 'http://www.flashx.tv/counter.cgi?' + aResult[0]
+            oRequest = cRequestHandler(UnlockUrl)
+            sHtmlContent = oRequest.request()
+        else:
+            xbmc.log('No unlock url')
+
         
         sHtmlContent = self.GetRedirectHtml(web_url,sId)
         
         if not sHtmlContent:
-            return False,False 
+            return False,False
+
             
         #A t on le lien code directement?
         sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
