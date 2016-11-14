@@ -628,8 +628,9 @@ class cGui():
 
         oInputParameterHandler = cInputParameterHandler()
        
-        #aParams = oInputParameterHandler.getAllParameter()
-        #print aParams
+        aParams = oInputParameterHandler.getAllParameter()
+        # import xbmc
+        # xbmc.log(str(aParams))
         
         sSite = oInputParameterHandler.getValue('siteUrl')
         sTitle = xbmc.getInfoLabel('ListItem.label')
