@@ -9,9 +9,10 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 
-import urllib
+import urllib, re
 import xbmc
 import md5
+import unicodedata
 
 try:    import json
 except: import simplejson as json
@@ -39,14 +40,13 @@ class cBseries:
         oRequestHandler.addHeaderEntry('X-BetaSeries-Key', API_KEY)
         oRequestHandler.addHeaderEntry('X-BetaSeries-Version', API_VERS)
         
-        oRequestHandler.addParameters('login', 'Dev025')
-        passw = md5.new('developer').hexdigest()
+        oRequestHandler.addParameters('login', cConfig().getSetting('bs_login'))
+        
+        passw = md5.new(cConfig().getSetting('bs_pass')).hexdigest()
         oRequestHandler.addParameters('password', passw)
 
         sHtmlContent = oRequestHandler.request();
         result = json.loads(sHtmlContent)
-        
-        xbmc.log(str(result['user']))
 
         total = len(sHtmlContent)
 
@@ -91,11 +91,12 @@ class cBseries:
             sHtmlContent = oRequestHandler.request();
             result = json.loads(sHtmlContent)
             
-            xbmc.log(str(result))
+            #xbmc.log(str(result))
             
             total = len(sHtmlContent)
             
             if (total > 0):
+            
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'https://')
                 oGui.addText(SITE_IDENTIFIER, '[COLOR khaki]Bonjour, '+result['member']['login']+'[/COLOR]', oOutputParameterHandler)
@@ -123,8 +124,89 @@ class cBseries:
         oOutputParameterHandler.addParameter('siteUrl', 'https://api.betaseries.com/shows/member')
         oGui.addDir(SITE_IDENTIFIER, 'getBseries', 'Series (favories)', 'mark.png', oOutputParameterHandler)
         
-        oGui.setEndOfDirectory()        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'https://api.betaseries.com/timeline/member')
+        oGui.addDir(SITE_IDENTIFIER, 'getBseries', 'Testt (favories)', 'mark.png', oOutputParameterHandler)
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://')
+        oOutputParameterHandler.addParameter('userID', result['member']['id'])
+        oGui.addDir(SITE_IDENTIFIER, 'getBtimeline', 'Timeline', 'mark.png', oOutputParameterHandler)
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'https://api.betaseries.com/members/destroy')
+        oGui.addDir(SITE_IDENTIFIER, 'getBsout', 'Deconnection', 'mark.png', oOutputParameterHandler)
+        
+
+        
+        oGui.setEndOfDirectory()   
+
+    def getBtimeline(self):
+        
+        import datetime, time
+        #self.getToken()
+        oGui = cGui()
+        
+        oInputParameterHandler = cInputParameterHandler()
+        userID = oInputParameterHandler.getValue('userID')
+        
+        #timeline
+        oRequestHandler = cRequestHandler('https://api.betaseries.com/timeline/member')
+        oRequestHandler.addHeaderEntry('X-BetaSeries-Key', API_KEY)
+        oRequestHandler.addHeaderEntry('X-BetaSeries-Version', API_VERS)
+        oRequestHandler.addHeaderEntry('Authorization', cConfig().getSetting("bstoken"))
+        oRequestHandler.addParameters('id', userID)
+        
+        sHtmlContent = oRequestHandler.request();
+        result = json.loads(sHtmlContent)
+            
+        #xbmc.log(str(result))
+        
+        total = len(sHtmlContent)
+        if (total > 0):
+            for i in result['events']:
+                sHtml = unicodedata.normalize('NFD',  i['html']).encode('ascii', 'ignore').decode("unicode_escape")
+                sHtml.encode("utf-8") #on repasse en utf-8
+                titre = re.sub('<a href(.+?)>|<\/a>','', sHtml)
+                
+                xbmc.log(str(i['date']))
+                #2016-11-14 09:50:35
+                #date = datetime.datetime.strptime("2016-11-14", "%Y-%m-%d")
+                date = datetime.datetime(*(time.strptime(i['date'], "%Y-%m-%d %H:%M:%S")[0:6])).strftime('%d-%m-%Y %H:%M')
+
+                
+                sTitle = ('%s - %s') % (date, titre)
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', 'http://')
+                oGui.addText(SITE_IDENTIFIER, sTitle, oOutputParameterHandler)
+        
+        oGui.setEndOfDirectory()              
      
+    def getBsout(self):
+    
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+        
+        oGui = cGui()
+           
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('X-BetaSeries-Key', API_KEY)
+        oRequestHandler.addHeaderEntry('X-BetaSeries-Version', API_VERS)
+        oRequestHandler.addHeaderEntry('Authorization', cConfig().getSetting("bstoken"))
+        #api buguer normalement ça affiche que les films et series
+        oRequestHandler.addParameters('token', cConfig().getSetting("bstoken"))
+
+        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+        sHtmlContent = oRequestHandler.request();
+        result = json.loads(sHtmlContent)
+        total = len(sHtmlContent)
+        if (total > 0):
+            cConfig().setSetting('bstoken', '')
+            oGui.showNofication('Vous avez ?t? d?connect? avec succ?s')
+            xbmc.executebuiltin("Container.Refresh")
+            
+        return
+            
 
     def getBseries(self):
     
@@ -144,17 +226,43 @@ class cBseries:
         sHtmlContent = oRequestHandler.request();
         result = json.loads(sHtmlContent)
         
-        xbmc.log(str(result['member']['movies']))
+        xbmc.log(str(result))
         
         total = len(sHtmlContent)
         
         if (total > 0):
             for i in result['member'][sParam]:
-                sId, sTitle = i['id'], i['title']
-                sTitle = sTitle.encode("utf-8")
+                if sParam == 'shows':
+                    sId, sImdb_id, sTitle, sDesc, sSeasons, sEpisodes, sThumb, sRemaining, sLast = i['id'],  i['imdb_id'], i['title'], i['description'], i['seasons'], i['episodes'], i['images']['show'], i['user']['remaining'], i['user']['last'] 
+                    
+                    sTitle = ('%s - Saisons (%s) / Episodes (%s/%s) / Dernier %s') % (sTitle.encode("utf-8"), sSeasons, sRemaining, sEpisodes, sLast) 
+                else:
+                    sId, sImdb_id, sTitle, sDesc, sYear, sThumb, sStatus = i['id'],  i['imdb_id'], i['title'], i['synopsis'], i['production_year'], i['poster'], str(i['user']['status'])
+                    
+                    sStatus = sStatus.replace('0','Non vue').replace('1','Vue').replace('2','Ne pas voir')
+                                        
+                    sTitle = ('%s - (%s) / %s') % (sTitle.encode("utf-8"), int(sYear), sStatus) 
+                
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'http://')
-                oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'next.png', oOutputParameterHandler)
+                
+                oGuiElement = cGuiElement()
+    
+                oGuiElement.setSiteName(SITE_IDENTIFIER)
+                oGuiElement.setFunction('load')
+                oGuiElement.setTitle(sTitle)
+                oGuiElement.setIcon("mark.png")
+                oGuiElement.setMeta(0)
+                oGuiElement.setThumbnail(sThumb)
+                oGuiElement.setTmdb(sImdb_id)
+                oGuiElement.setDescription(sDesc)
+                #oGuiElement.setFanart(fanart)
+                    
+                #oGui.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
+                    
+                 #oGui.addHost(oGuiElement, oOutputParameterHandler)
+                oGui.addFolder(oGuiElement, oOutputParameterHandler)
+                #oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'next.png', oOutputParameterHandler)
                
                
             oGui.setEndOfDirectory()

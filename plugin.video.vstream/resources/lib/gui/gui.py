@@ -751,7 +751,7 @@ class cGui():
         else:
             iSeconds = iSeconds * 1000
             
-        xbmc.executebuiltin("Notification(%s,%s,%s)" % (cConfig().getlanguage(30308), (cConfig().getlanguage(30309) % str(sTitle)), iSeconds))
+        xbmc.executebuiltin("Notification(%s,%s,%s)" % ('vStream', str(sTitle), iSeconds))
 
     def showError(self, sTitle, sDescription, iSeconds=0):
         if (cConfig().isDharma() == False):
