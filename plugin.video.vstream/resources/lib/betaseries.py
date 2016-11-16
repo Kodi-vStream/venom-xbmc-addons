@@ -9,10 +9,12 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 
-import urllib, re
+import urllib, urllib2, re
 import xbmc
-import md5
+import time, md5
 import unicodedata
+
+import datetime, time
 
 try:    import json
 except: import simplejson as json
@@ -20,8 +22,9 @@ except: import simplejson as json
 SITE_IDENTIFIER = 'cBseries'
 SITE_NAME = 'Betaseries'
 
-API_KEY = '56ab1fd1ef57'
-API_VERS = '2.4'
+API_KEY = '7139b7dace25c7bdf0bd79acf46fb02bd63310548b1f671d88832f75a4ac3dd6'
+API_SECRET = 'bb02b2b0267b045590bc25c21dac21b1c47446a62b792091b3275e9c4a943e74'
+API_VERS = '2'
 API_URL = 'https://api.betaseries.com'
 
 class cBseries:
@@ -30,30 +33,60 @@ class cBseries:
         #self.__sFile = cConfig().getFileFav()
         self.__sTitle = ''
         #self.__sFunctionName = ''
-      
+
 
     def getToken(self):
         
-        sUrl = 'https://api.betaseries.com/members/auth'
-        oRequestHandler = cRequestHandler(sUrl)
-        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-        oRequestHandler.addHeaderEntry('X-BetaSeries-Key', API_KEY)
-        oRequestHandler.addHeaderEntry('X-BetaSeries-Version', API_VERS)
+        headers = {'Content-Type': 'application/json'}
+        post = {'client_id': API_KEY}
+        post = json.dumps(post)
         
-        oRequestHandler.addParameters('login', cConfig().getSetting('bs_login'))
         
-        passw = md5.new(cConfig().getSetting('bs_pass')).hexdigest()
-        oRequestHandler.addParameters('password', passw)
-
-        sHtmlContent = oRequestHandler.request();
+        req = urllib2.Request('https://api.trakt.tv/oauth/device/code', post,headers)
+        response = urllib2.urlopen(req)
+        sHtmlContent = response.read()
         result = json.loads(sHtmlContent)
+       # xbmc.log(str(result))
+        response.close()
+        
+        #{"device_code":"a434135042b5a76159628bc974eed2f266fb47df9f438d5738ce40396d531490","user_code":"EBDFD843","verification_url":"https://trakt.tv/activate","expires_in":600,"interval":5}
 
         total = len(sHtmlContent)
+        
+        xbmc.log(str(sHtmlContent))
 
         if (total > 0):
             #self.__Token  = result['token']
-            cConfig().setSetting('bstoken', str(result['token']))
-            xbmc.executebuiltin("Container.Refresh")
+            sText = ('Rendez vous sur [COLOR teal]%s[/COLOR] \nEntrer le code [COLOR teal]%s[/COLOR]') % (result['verification_url'], result['user_code'])
+            dialog = cConfig().createDialog('vStream')
+            dialog.update(0, sText)
+            
+            for i in range(0, result['expires_in']):
+                try:
+                    dialog.update(i)
+                    time.sleep(1)
+                    if dialog.iscanceled():
+                        break
+                     
+                    headers = {'Content-Type': 'application/json'}
+                    post = {'client_id': API_KEY, 'client_secret': API_SECRET, 'code': result['device_code']}
+                    post = json.dumps(post)
+                    
+                    req = urllib2.Request('https://api.trakt.tv/oauth/device/token', post,headers)
+                    response = urllib2.urlopen(req)
+                    sHtmlContent = response.read()
+                    result = json.loads(sHtmlContent)
+                    response.close()
+                    
+                    if result['access_token']:
+                        cConfig().setSetting('bstoken', str(result['access_token']))
+                        break
+                
+                except:
+                    pass
+            cConfig().finishDialog(dialog)
+            
+            #xbmc.executebuiltin("Container.Refresh")
             return
         return False
         
@@ -80,70 +113,100 @@ class cBseries:
         
         if cConfig().getSetting("bstoken") == '':
             self.getToken()
-        else:            
-            oRequestHandler = cRequestHandler('https://api.betaseries.com/members/infos')
-            oRequestHandler.addHeaderEntry('X-BetaSeries-Key', API_KEY)
-            oRequestHandler.addHeaderEntry('X-BetaSeries-Version', API_VERS)
-            oRequestHandler.addHeaderEntry('Authorization', cConfig().getSetting("bstoken"))
-            #n'affiche pas les infos des films
-            oRequestHandler.addParameters('summary', 'false')
+        else:
 
-            sHtmlContent = oRequestHandler.request();
+            #nom de luser
+            headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
+            #post = {'client_id': API_KEY, 'client_secret': API_SECRET, 'code': result['device_code']}
+            #post = json.dumps(post)
+            
+            req = urllib2.Request('https://api.trakt.tv/users/me', None,headers)
+            response = urllib2.urlopen(req)
+            sHtmlContent = response.read()
             result = json.loads(sHtmlContent)
-            
-            #xbmc.log(str(result))
-            
+            response.close()
             total = len(sHtmlContent)
             
-            if (total > 0):
+            #stats user
+            req2 = urllib2.Request('https://api.trakt.tv/users/me/stats', None,headers)
+            response2 = urllib2.urlopen(req2)
+            sHtmlContent2 = response2.read()
+            result2 = json.loads(sHtmlContent2)
+            response2.close()
+            total2 = len(sHtmlContent2)
+            #xbmc.log(str(result2))
             
+            
+            if (total > 0):
+                sUsername = result['username']
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'https://')
-                oGui.addText(SITE_IDENTIFIER, '[COLOR khaki]Bonjour, '+result['member']['login']+'[/COLOR]', oOutputParameterHandler)
-        
-                # for i in result['shows']:
-                    # sId, sTitle = i['id'], i['name']
-                if (result['member']['stats']['shows'] > 0): 
-                    oOutputParameterHandler = cOutputParameterHandler()
-                    oOutputParameterHandler.addParameter('siteUrl', 'https://api.betaseries.com/members/infos')
-                    oOutputParameterHandler.addParameter('param', 'shows')
-                    oGui.addDir(SITE_IDENTIFIER, 'getBseries', 'Series ('+str(result['member']['stats']['shows'])+')', 'mark.png', oOutputParameterHandler)
+                oGui.addText(SITE_IDENTIFIER, '[COLOR khaki]Bonjour, '+sUsername+'[/COLOR]', oOutputParameterHandler)
                     
-                if (result['member']['stats']['movies'] > 0): 
-                    oOutputParameterHandler = cOutputParameterHandler()
-                    oOutputParameterHandler.addParameter('siteUrl', 'https://api.betaseries.com/members/infos')
-                    oOutputParameterHandler.addParameter('param', 'movies')
-                    oGui.addDir(SITE_IDENTIFIER, 'getBseries', 'Films ('+str(result['member']['stats']['movies'])+')', 'mark.png', oOutputParameterHandler)
-        
-        
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'https://api.betaseries.com/movies/member')
-        oGui.addDir(SITE_IDENTIFIER, 'getBseries', 'Films (favories)', 'mark.png', oOutputParameterHandler)
-        
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'https://api.betaseries.com/shows/member')
-        oGui.addDir(SITE_IDENTIFIER, 'getBseries', 'Series (favories)', 'mark.png', oOutputParameterHandler)
-        
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'https://api.betaseries.com/timeline/member')
-        oGui.addDir(SITE_IDENTIFIER, 'getBseries', 'Testt (favories)', 'mark.png', oOutputParameterHandler)
-        
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://')
-        oOutputParameterHandler.addParameter('userID', result['member']['id'])
-        oGui.addDir(SITE_IDENTIFIER, 'getBtimeline', 'Timeline', 'mark.png', oOutputParameterHandler)
-        
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'https://api.betaseries.com/members/destroy')
-        oGui.addDir(SITE_IDENTIFIER, 'getBsout', 'Deconnection', 'mark.png', oOutputParameterHandler)
+            sTitle = ('Films (%s/%s) regarder pour %s minutes / Series regarder (%s) / Episodes (%s/%s) regarder pour %s minutes') % (result2['movies']['plays'], result2['movies']['watched'], result2['movies']['minutes'], result2['shows']['watched'], result2['episodes']['plays'], result2['episodes']['watched'], result2['episodes']['minutes']) 
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'https://')
+            oGui.addText(SITE_IDENTIFIER, '[COLOR white]'+sTitle+'[/COLOR]', oOutputParameterHandler)
+                
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'https://')
+            oOutputParameterHandler.addParameter('type', 'movie')
+            oGui.addDir(SITE_IDENTIFIER, 'getLists', 'Films', 'mark.png', oOutputParameterHandler)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'https://')
+            oOutputParameterHandler.addParameter('type', 'show')
+            oGui.addDir(SITE_IDENTIFIER, 'getLists', 'Séries', 'mark.png', oOutputParameterHandler)
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/users/me/history')
+            oGui.addDir(SITE_IDENTIFIER, 'getBseries', 'Historique', 'mark.png', oOutputParameterHandler)
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/users/me/watching')
+            oGui.addDir(SITE_IDENTIFIER, 'getBseries', 'Actuellement', 'mark.png', oOutputParameterHandler)
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'https://api.betaseries.com/members/destroy')
+            oGui.addDir(SITE_IDENTIFIER, 'getBsout', 'Deconnection', 'mark.png', oOutputParameterHandler)
         
 
         
-        oGui.setEndOfDirectory()   
+        oGui.setEndOfDirectory()  
+
+    def getLists(self):
+    
+        oInputParameterHandler = cInputParameterHandler()
+        sType = oInputParameterHandler.getValue('type')
+        
+        oGui = cGui()
+        
+        liste = []
+        if sType == 'movie':
+            liste.append( ['Collection','https://api.trakt.tv/users/me/collection/movies'] )
+            liste.append( ['Surveiller','https://api.trakt.tv/users/me/watchlist/movies'] )
+            liste.append( ['Regarder','https://api.trakt.tv/users/me/watched/movies'] )
+            liste.append( ['Recommender','https://api.trakt.tv/recommendations/movies'] )
+        elif sType == 'show':
+            liste.append( ['Collection','https://api.trakt.tv/users/me/collection/shows'] )
+            liste.append( ['Surveiller','https://api.trakt.tv/users/me/watchlist/shows'] )
+            liste.append( ['Surveiller (saisons)','https://api.trakt.tv/users/me/watchlist/seasons'] )
+            liste.append( ['Surveiller (episodes)','https://api.trakt.tv/users/me/watchlist/episodes'] )
+            liste.append( ['Regarder','https://api.trakt.tv/users/me/watched/shows'] )
+            liste.append( ['Recommender','https://api.trakt.tv/recommendations/shows'] )
+                    
+        for sTitle,sUrl in liste:
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'getBseries', sTitle, 'genres.png', oOutputParameterHandler)
+
+        
+        oGui.setEndOfDirectory()         
 
     def getBtimeline(self):
         
-        import datetime, time
+        
         #self.getToken()
         oGui = cGui()
         
@@ -193,8 +256,9 @@ class cBseries:
         oRequestHandler.addHeaderEntry('X-BetaSeries-Key', API_KEY)
         oRequestHandler.addHeaderEntry('X-BetaSeries-Version', API_VERS)
         oRequestHandler.addHeaderEntry('Authorization', cConfig().getSetting("bstoken"))
-        #api buguer normalement ça affiche que les films et series
+        #api buguer normalement รงa affiche que les films et series
         oRequestHandler.addParameters('token', cConfig().getSetting("bstoken"))
+        
 
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
         sHtmlContent = oRequestHandler.request();
@@ -212,36 +276,69 @@ class cBseries:
     
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sParam = oInputParameterHandler.getValue('param')
+        sType = oInputParameterHandler.getValue('type')
         
         oGui = cGui()
            
-        oRequestHandler = cRequestHandler(sUrl)
-        oRequestHandler.addHeaderEntry('X-BetaSeries-Key', API_KEY)
-        oRequestHandler.addHeaderEntry('X-BetaSeries-Version', API_VERS)
-        oRequestHandler.addHeaderEntry('Authorization', cConfig().getSetting("bstoken"))
-        #api buguer normalement ça affiche que les films et series
-        #oRequestHandler.addParameters('only', 'true')
-
-        sHtmlContent = oRequestHandler.request();
+        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
+        #post = {'extended': 'metadata'}
+        # post = json.dumps(post)
+        
+        req = urllib2.Request(sUrl, None,headers)
+        response = urllib2.urlopen(req)
+        sHtmlContent = response.read()
         result = json.loads(sHtmlContent)
-        
         xbmc.log(str(result))
-        
+        response.close()
         total = len(sHtmlContent)
         
         if (total > 0):
-            for i in result['member'][sParam]:
-                if sParam == 'shows':
-                    sId, sImdb_id, sTitle, sDesc, sSeasons, sEpisodes, sThumb, sRemaining, sLast = i['id'],  i['imdb_id'], i['title'], i['description'], i['seasons'], i['episodes'], i['images']['show'], i['user']['remaining'], i['user']['last'] 
+            for i in result:
+
+                if 'collection' in sUrl:
+                    if  'show' in i:
+                        sTrakt, sTitle, sYear, sTmdb = i['show']['ids']['trakt'], i['show']['title'], i['show']['year'], i['show']['ids']['tmdb']
+                    else:
+                        sTrakt, sTitle, sYear, sTmdb = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['year'], i['movie']['ids']['tmdb']
+                    sTitle = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear)) 
+                 
+                elif 'history' in sUrl:
+                #commun
+                    sAction, sType, sWatched_at  = i['action'], i['type'], i['watched_at']
+                    #2016-11-16T09:21:18.000Z
+                    sDate = datetime.datetime(*(time.strptime(sWatched_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
+                    if 'episode' in i:
+                        sTrakt, sTitle, sTmdb, sSeason, sNumber = i['episode']['ids']['trakt'], i['episode']['title'], i['episode']['ids']['tmdb'], i['episode']['season'],  i['episode']['number']
+                        sExtra = ('(S%sEP%s)') % (sSeason, sNumber)
+                    else:
+                        sTrakt, sTitle, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['tmdb'], i['movie']['year']
+                        sExtra = ('(%s)') % (sYear)  
+                    sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode("unicode_escape")
+                    sTitle.encode("utf-8")
+                    sTitle = ('[COLOR white]%s - %s %s[/COLOR] - %s %s') % (sDate, sAction, sType, sTitle, sExtra ) 
                     
-                    sTitle = ('%s - Saisons (%s) / Episodes (%s/%s) / Dernier %s') % (sTitle.encode("utf-8"), sSeasons, sRemaining, sEpisodes, sLast) 
-                else:
-                    sId, sImdb_id, sTitle, sDesc, sYear, sThumb, sStatus = i['id'],  i['imdb_id'], i['title'], i['synopsis'], i['production_year'], i['poster'], str(i['user']['status'])
-                    
-                    sStatus = sStatus.replace('0','Non vue').replace('1','Vue').replace('2','Ne pas voir')
-                                        
-                    sTitle = ('%s - (%s) / %s') % (sTitle.encode("utf-8"), int(sYear), sStatus) 
+                elif 'watchlist' in sUrl:
+                    #commun
+                    sType, sListed_at  = i['type'], i['listed_at']
+                    #2016-11-16T09:21:18.000Z
+                    sDate = datetime.datetime(*(time.strptime(sListed_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
+                    if  'show' in i:
+                        sTrakt, sTitle, sYear, sTmdb = i['show']['ids']['trakt'], i['show']['title'], i['show']['year'], i['show']['ids']['tmdb']
+                        sExtra = ('(%s)') % (sYear) 
+                    elif 'episode' in i:
+                        sTrakt, sTitle, sTmdb, sSeason, sNumber = i['episode']['ids']['trakt'], i['episode']['title'], i['episode']['ids']['tmdb'], i['episode']['season'],  i['episode']['number']
+                        sExtra = ('(S%sEP%s)') % (sSeason, sNumber)
+                    else:
+                        sTrakt, sTitle, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['tmdb'], i['movie']['year']
+                        sExtra = ('(%s)') % (sYear)  
+                    sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode("unicode_escape")
+                    sTitle.encode("utf-8")
+                    sTitle = ('[COLOR white]%s - %s[/COLOR] - %s %s') % (sDate, sType, sTitle, sExtra ) 
+                
+                
+                
+                else: return
+                
                 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'http://')
@@ -253,9 +350,9 @@ class cBseries:
                 oGuiElement.setTitle(sTitle)
                 oGuiElement.setIcon("mark.png")
                 oGuiElement.setMeta(0)
-                oGuiElement.setThumbnail(sThumb)
-                oGuiElement.setTmdb(sImdb_id)
-                oGuiElement.setDescription(sDesc)
+                #oGuiElement.setThumbnail(sThumb)
+                oGuiElement.setTmdb(sTmdb)
+                #oGuiElement.setDescription(sDesc)
                 #oGuiElement.setFanart(fanart)
                     
                 #oGui.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
@@ -268,81 +365,6 @@ class cBseries:
             oGui.setEndOfDirectory()
         return
         
-    def getBseries2(self):
-        oGui = cGui()
-
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-
-        #aParams = oInputParameterHandler.getAllParameter()
-
-        iPage = 1
-        if (oInputParameterHandler.exist('page')):
-            iPage = oInputParameterHandler.getValue('page')
-           
-        oRequestHandler = cRequestHandler(sUrl)
-        oRequestHandler.addHeaderEntry('X-BetaSeries-Key', API_KEY)
-        oRequestHandler.addHeaderEntry('X-BetaSeries-Version', API_VERS)
-        oRequestHandler.addHeaderEntry('Authorization', cConfig().getSetting("bstoken"))
-        #oRequestHandler.addParameters('start', iPage)
-
-        sHtmlContent = oRequestHandler.request();
-        result = json.loads(sHtmlContent)
-        
-        xbmc.log(str(result))
-        
-        total = len(sHtmlContent)
-        
-        try:
-            row = cDb().get_favorite()
-
-            for data in row:
-
-                title = data[1]
-                siteurl = urllib.unquote_plus(data[2])
-                site = data[3]
-                function = data[4]
-                cat = data[5]
-                thumbnail = data[6]
-                fanart = data[7]
-                
-                if thumbnail == '':
-                    thumbnail = 'False'
-
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', siteurl)
-                oOutputParameterHandler.addParameter('sMovieTitle', title)
-                oOutputParameterHandler.addParameter('sThumbnail', thumbnail)
-                
-                if (function == 'play'):
-                    oHoster = cHosterGui().checkHoster(siteurl)
-                    oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
-                    oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
-                    oOutputParameterHandler.addParameter('sMediaUrl', siteurl)
-
-                if (cat == sCat):
-                    oGuiElement = cGuiElement()
-        
-                    oGuiElement.setSiteName(site)
-                    oGuiElement.setFunction(function)
-                    oGuiElement.setTitle(title)
-                    oGuiElement.setIcon("mark.png")
-                    oGuiElement.setMeta(0)
-                    oGuiElement.setThumbnail(thumbnail)
-                    oGuiElement.setFanart(fanart)
-                    
-                    oGui.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
-                    
-                    if (function == 'play'):
-                        oGui.addHost(oGuiElement, oOutputParameterHandler)
-                    else:
-                        oGui.addFolder(oGuiElement, oOutputParameterHandler)
-                        
-                    #oGui.addFav(site, function, title, "mark.png", thumbnail, fanart, oOutputParameterHandler)
-               
-            oGui.setEndOfDirectory()
-        except: pass
-        return
         
     def setFavorite(self):
         oInputParameterHandler = cInputParameterHandler()
