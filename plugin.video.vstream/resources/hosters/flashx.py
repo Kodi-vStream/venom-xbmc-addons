@@ -211,12 +211,12 @@ class cHoster(iHoster):
             #et on recherche le lien code
             sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
             aResult = re.findall(sPattern,sHtmlContent)
-        else :
-             #A t on le lien code directement?
-             sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
-             aResult = re.findall(sPattern,sHtmlContent)
-             if aResult:
-                xbmc.log('page non Bloquée')
+        else:
+            #A t on le lien code directement?
+            sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+            aResult = re.findall(sPattern,sHtmlContent)
+            if aResult:
+               xbmc.log('page non Bloquée')
                 
         if (aResult):
             xbmc.log( "lien code")
