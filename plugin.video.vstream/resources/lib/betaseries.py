@@ -38,6 +38,7 @@ class cBseries:
     def __init__(self):
         #self.__sFile = cConfig().getFileFav()
         self.__sTitle = ''
+        self.__sAction = ''
         #self.__sFunctionName = ''
 
 
@@ -180,7 +181,11 @@ class cBseries:
             liste.append( ['Surveiller','https://api.trakt.tv/users/me/watchlist/movies'] )
             liste.append( ['Regarder','https://api.trakt.tv/users/me/watched/movies'] )
             liste.append( ['Recommender','https://api.trakt.tv/recommendations/movies'] )
-            liste.append( ['BoxOffice','https://api.trakt.tv/movies/boxoffice'] )      
+            liste.append( ['BoxOffice','https://api.trakt.tv/movies/boxoffice'] ) 
+            liste.append( ['Populaire','https://api.trakt.tv/movies/popular'] )  
+            liste.append( ['Les plus vues de la semaine','https://api.trakt.tv/movies/played/weekly'] )
+            liste.append( ['Les plus vues du mois','https://api.trakt.tv/movies/played/monthly'] )             
+       
         elif sType == 'show':
             liste.append( ['Collection','https://api.trakt.tv/users/me/collection/shows'] )
             liste.append( ['Surveiller','https://api.trakt.tv/users/me/watchlist/shows'] )
@@ -188,6 +193,9 @@ class cBseries:
             liste.append( ['Surveiller (episodes)','https://api.trakt.tv/users/me/watchlist/episodes'] )
             liste.append( ['Regarder','https://api.trakt.tv/users/me/watched/shows'] )
             liste.append( ['Recommender','https://api.trakt.tv/recommendations/shows'] )
+            liste.append( ['Populaire','https://api.trakt.tv/shows/popular'] ) 
+            liste.append( ['Les plus vues de la semaine','https://api.trakt.tv/shows/played/weekly'] )
+            liste.append( ['Les plus vues du mois','https://api.trakt.tv/shows/played/monthly'] )  
                     
         for sTitle,sUrl in liste:
             
@@ -234,7 +242,6 @@ class cBseries:
         headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
         #post = {'extended': 'metadata'}
         # post = json.dumps(post)
-        
         req = urllib2.Request(sUrl, None,headers)
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
@@ -321,31 +328,43 @@ class cBseries:
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), sYear)
                     sTitle = ('[COLOR white]%s - %s Lectures[/COLOR] - %s (%s)') % (sDate, sPlays, sTitle, sYear ) 
                     
+                elif 'played' in sUrl:
+                #commun
+                    sWatcher_count, sPlay_count, sCollected_count = i['watcher_count'], i['play_count'], i['collected_count']
+                    if  'show' in i:
+                        sTrakt, sTitle, sYear, sTmdb = i['show']['ids']['trakt'], i['show']['title'], i['show']['year'], i['show']['ids']['tmdb']
+                        cBseries.CONTENT = '2'
+                    else:
+                        sTrakt, sTitle, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['tmdb'], i['movie']['year'] 
+                        cBseries.CONTENT = '1'
+                    sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear)) 
+                    sTitle = ('Spectateur [COLOR white](%s)[/COLOR] - Collection [COLOR white](%s)[/COLOR] - %s - (%s)') % (int(sPlay_count), int(sCollected_count), sTitle.encode("utf-8"), int(sYear)) 
+                    
                 
-                elif 'recommendations' in sUrl:
+                elif 'recommendations' in sUrl or 'popular' in sUrl:
                     if 'shows' in sUrl:
                         cBseries.CONTENT = '2'
                     else :
                         cBseries.CONTENT = '1'
                     sTrakt, sTitle, sYear, sTmdb = i['ids']['trakt'], i['title'], i['year'], i['ids']['tmdb']
-                    sTitle = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear)) 
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear)) 
-                    
+                    sTitle = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear)) 
                     
                 elif 'boxoffice' in sUrl:
                         sTrakt, sTitle, sYear, sTmdb, sRevenue = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['year'], i['movie']['ids']['tmdb'], i['revenue']
                         cBseries.CONTENT = '1'
-                        sTitle = ('Revenues [COLOR white](%s)[/COLOR] - %s - (%s)') % (sRevenue, sTitle.encode("utf-8"), int(sYear)) 
                         sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear)) 
+                        sTitle = ('Revenues [COLOR white](%s)[/COLOR] - %s - (%s)') % (sRevenue, sTitle.encode("utf-8"), int(sYear)) 
+                        
                 
              
                 else: return
             
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('title', sFile)
+                oOutputParameterHandler.addParameter('file', sFile)
                 oOutputParameterHandler.addParameter('key', sKey)
-                self.getFolder(oGui, sTitle, 'getBseasons', sTmdb, oOutputParameterHandler)    
+                self.getFolder(oGui, sTitle, sFile, 'getBseasons', sTmdb, oOutputParameterHandler)    
                 sKey += 1
         oGui.setEndOfDirectory()
         return
@@ -354,7 +373,7 @@ class cBseries:
     
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sTitle = oInputParameterHandler.getValue('title')
+        sFile = oInputParameterHandler.getValue('file')
         sKey = oInputParameterHandler.getValue('key')
         
         oGui = cGui()
@@ -372,7 +391,7 @@ class cBseries:
         total = len(sHtmlContent)
         
         oGui = cGui()
-        xbmc.log(str(sKey))
+        
         total = len(result)
         sNum = 0
         if (total > 0):
@@ -383,12 +402,14 @@ class cBseries:
                     cBseries.CONTENT = '2'
                 else: return
                    
-                sTitle2 = ('%s - (S%s)') % (sTitle.encode("utf-8"), int(sNumber)) 
+                sTitle2 = ('%s - (S%s)') % (sFile.encode("utf-8"), int(sNumber)) 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('Key', sKey)
                 oOutputParameterHandler.addParameter('sNum', sNum)
-                self.getFolder(oGui, sTitle2, 'getBepisodes', '', oOutputParameterHandler)  
+                oOutputParameterHandler.addParameter('file', sFile)
+                oOutputParameterHandler.addParameter('title', sTitle2)
+                self.getFolder(oGui, sTitle2, sFile, 'getBepisodes', '', oOutputParameterHandler)  
                 sNum += 1
 
         oGui.setEndOfDirectory()
@@ -399,6 +420,7 @@ class cBseries:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         sTitle = oInputParameterHandler.getValue('title')
+        sFile = oInputParameterHandler.getValue('file')
         sKey = oInputParameterHandler.getValue('key')
         sNum = oInputParameterHandler.getValue('sNum')
         
@@ -418,7 +440,7 @@ class cBseries:
         total = len(sHtmlContent)
         
         oGui = cGui()
-        xbmc.log(str(sKey))
+        #xbmc.log(str(sKey))
         total = len(result)
         if (total > 0):
             for i in result[int(sKey)]['seasons'][int(sNum)]['episodes']:
@@ -433,35 +455,37 @@ class cBseries:
                     sNumber, sPlays, sDate = i['number'], i['plays'], i['last_watched_at']
                     sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
 
-                    sTitle2 = ('[COLOR white]%s - %s Lectures[/COLOR] - %s (ep%s)') % (sDate, sPlays, sTitle.encode("utf-8"), int(sNumber)) 
+                    sTitle2 = ('[COLOR white]%s - %s Lectures[/COLOR] - %s - (ep%s)') % (sDate, sPlays, sTitle.encode("utf-8"), int(sNumber)) 
                         
                 else: return
                    
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 #oOutputParameterHandler.addParameter('Key', skey)
-                self.getFolder(oGui, sTitle2, 'load', '', oOutputParameterHandler)    
+                self.getFolder(oGui, sTitle2, sFile, 'load', '', oOutputParameterHandler)    
 
         oGui.setEndOfDirectory()
         return
       
-    def getFolder(self, oGui, sTitle, sFunction, sTmdb, oOutputParameterHandler):
+    def getFolder(self, oGui, sTitle, sFile, sFunction, sTmdb, oOutputParameterHandler):
 
         oGuiElement = cGuiElement()
 
         oGuiElement.setSiteName(SITE_IDENTIFIER)
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sTitle)
-        oGuiElement.setFileName(sTitle)
+        oGuiElement.setFileName(sFile)
         oGuiElement.setIcon("mark.png")
         #oGuiElement.setThumbnail(sThumb)
         oGuiElement.setTmdb(sTmdb)
         oGuiElement.setImdbId(sTmdb)
+        
+        #self.getTmdb(sTmdb, oGuiElement)
         #xbmc.log(str(cBseries.CONTENT))
-        # if cBseries.CONTENT == '2':
-            # oGuiElement.setMeta(2)
-        # else:
-            # oGuiElement.setMeta(1)
+        if cBseries.CONTENT == '2':
+            oGuiElement.setMeta(2)
+        else:
+            oGuiElement.setMeta(1)
             
         #oGuiElement.setDescription(sDesc)
         #oGuiElement.setFanart(fanart)
@@ -473,20 +497,73 @@ class cBseries:
         #oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'next.png', oOutputParameterHandler)
        
        
+       
+    def getContext(self):
+    
+        import xbmcgui
+        disp = ['https://api.trakt.tv/sync/collection/','https://api.trakt.tv/sync/history','https://api.trakt.tv/sync/watchlist','search4']
+        dialog2 = xbmcgui.Dialog()
+        dialog_select = 'Add Collection', 'Add history', 'Suivre', 'search4_label'
+
+        ret = dialog2.select('Select Recherche',dialog_select)
+
+        if ret > -1:
+            self.__sAction = disp[ret]
+        return self.__sAction
         
+    def getAction(self):
+    
+        sAction = self.getContext()
+        if not sAction:
+            return
+          
+        oGuiElement = cGuiElement()
+        sId = oGuiElement.getTmdb()
+        oInputParameterHandler = cInputParameterHandler()
+        aParams = oInputParameterHandler.getAllParameter()
+        sImdb = oInputParameterHandler.getValue('sImdb')
         
-    def getTmdb(self, sTmdb):
+        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
+        #sUrl =  ('%s%s') % (sAction, str(sImdb)) 
+        sPost = {"movies": [{"ids": {"imdb": sImdb}}]}
+        sPost = json.dumps(sPost)
         
-        oRequestHandler = cRequestHandler(sUrl)
+        req = urllib2.Request(sAction, sPost,headers)
+        response = urllib2.urlopen(req)
+        sHtmlContent = response.read()
+        result = json.loads(sHtmlContent)   
+        xbmc.log(str(result))
+             
+        
+        return
+        
+    def getTmdb(self, sTmdb, oGuiElement):
+        
+        oRequestHandler = cRequestHandler('https://api.themoviedb.org/3/movie/'+str(sTmdb))
         oRequestHandler.addParameters('api_key', '92ab39516970ab9d86396866456ec9b6')
         oRequestHandler.addParameters('language', 'fr')
 
         sHtmlContent = oRequestHandler.request()
         result = json.loads(sHtmlContent)
+        #xbmc.log(str(result))
     
         total = len(sHtmlContent)
-        if (total > 0):
+        #format
+        meta = {}
+        meta['imdb_id'] = result['id']
+        meta['title'] = result['title']     
+        meta['tagline'] = result['tagline']
+        meta['rating'] = result['vote_average']
+        meta['votes'] = result['vote_count']
+        meta['duration'] = result['runtime']
+        meta['plot'] = result['overview']
+        #meta['mpaa'] = result['certification']    
+        #meta['premiered'] = result['released']
+        #meta['director'] = result['director']
+        #meta['writer'] = result['writer']
+        # if (total > 0):
         
-            xbmc.log(str(result))
-        
+        for key, value in meta.items():
+            oGuiElement.addItemValues(key, value)
+            
         return

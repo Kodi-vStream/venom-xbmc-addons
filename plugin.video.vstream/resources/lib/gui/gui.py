@@ -276,13 +276,17 @@ class cGui():
                 self.createContexMenuba(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
+                
 
             elif cGui.CONTENT == "tvshows":
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuba(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+                
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
        
@@ -360,6 +364,11 @@ class cGui():
         oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
         
         self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','setFavorite','[COLOR teal]Marque-Page[/COLOR]')
+        
+    def createContexMenuTrakt(self, oGuiElement, oOutputParameterHandler= ''):
+        oOutputParameterHandler.addParameter('sImdb', oGuiElement.getImdb())
+        #oOutputParameterHandler.addParameter('cBseries', oGuiElement.getFunction())        
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cBseries','cBseries','getAction','[COLOR teal]Trakt[/COLOR]')
         
     def createContexMenuDownload(self, oGuiElement, oOutputParameterHandler= '', status = '0'):
 
