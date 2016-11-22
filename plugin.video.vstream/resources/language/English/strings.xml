@@ -35,19 +35,6 @@
     <string id="30090">Search 3</string>
     <string id="30091">Search 4</string>
 
-
-    <!-- Pluginnames begin by 30201 - 30299 -->
-    <string id="30201">Add to playlist</string>
-    <string id="30202">Download</string>
-    <string id="30203">Mark source</string>
-    <string id="30204">No informations</string>
-    <string id="30205">Connection Failed</string>
-    <string id="30206">Mark movie</string>
-    <string id="30207">Mark Serie</string>
-    <string id="30208">Mark diverses</string>
-    <string id="30209">Delete Bookmark</string>
-    <string id="30210">Display Bookmark</string>
-        
     <!-- catégorie -->
     <string id="30101">News</string>
     <string id="30102">Most seeing</string>
@@ -75,33 +62,67 @@
     <string id="30129">Clear Cache Addon</string>
     <!--version 3.0.5 -->
     <string id="30130">Lists</string>
-    <string id="30134">Movies VF</string>    
+    <string id="30134">Movies VF</string>
     <string id="30135">Movies VOSTFR</string>
     <string id="30138">Sources</string>
-    
+
     <string id="30145">Download folder</string>
     <string id="30146">Show / Hide search settings</string>
     <string id="30147">Plugins on/off (2/3)</string>
-    
+    <string id="30148">Plugins on/off (3/3)</string>
+
+    <!-- Pluginnames begin by 30201 - 30299 -->
+    <string id="30201">Add to playlist</string>
+    <string id="30202">Download</string>
+    <string id="30203">Mark source</string>
+    <string id="30204">No informations</string>
+    <string id="30205">Connection Failed</string>
+    <string id="30206">Mark movie</string>
+    <string id="30207">Mark Serie</string>
+    <string id="30208">Mark diverses</string>
+    <string id="30209">Delete Bookmark</string>
+    <string id="30210">Display Bookmark</string>
+
     <!--Librairie -->
     <string id="30300">Library</string>
     <string id="30301">To configure in kodi if you want them to be imported</string>
     <string id="30302">Auto updatet</string>
-    
+
     <!--version 0.3.8 -->
     <string id="30303">Enable/Disable</string>
-    <string id="30148">Plugins on/off (3/3)</string>
-    
+    <!--trakt -->
+    <string id="30304">Go to [COLOR teal]%s[/COLOR] Enter the code [COLOR teal]%s[/COLOR]</string>
+    <String id="30305">[COLOR khaki]Click here to login[/COLOR]</string>
+    <String id="30306">[COLOR khaki]Hello, %s[/COLOR]</string>
+    <string id="30307">Movie (%s/%s) watch for %s minute / Show watch (%s) / episode (%s/%s) watch for pour %s minute</string>
+    <String id="30308">History</string>
+    <String id= "30309">Disconnection</string>
+    <String id= "30310">Collection</string>
+    <String id= "30311">Watchlist</string>
+    <String id= "30312">Watch</string>
+    <String id= "30313">Recommend</string>
+    <String id= "30314">BoxOffice</string>
+    <String id= "30315">Popular</string>
+    <String id= "30316">Most viewed this week</string>
+    <String id= "30317">Most viewed of the month</string>
+    <String id= "30318">Watchlist (seasons)</string>
+    <String id= "30319">Watchlist (episodes)</string>
+    <String id= "30320">You have successfully logged out</string>
+
+    <string id="30321">Add collection</string>
+    <string id="30322">Add watch history</string>
+    <string id="30323">Add watchlist</string>
+
     <!--Premium -->
     <string id="30400">Premium/Login</string>
     <string id="30401">Username</string>
     <string id="30402">Password</string>
     <string id="30403">Activate</string>
-    
+
     <string id="30404">View : Movies (recommended 50-51-500-501-508) </string>
     <string id="30405">View: Tvshow (recommended 50-51-500-501-508) </string>
     <string id="30406">View: Default (recommended 50-51-500) </string>
     <string id="30407">Vue: Home (recommended 50-51-500) </string>
     <string id="30408">Enable customized view</string>
-        
+
 </strings>

@@ -35,19 +35,6 @@
     <string id="30090">Recherche 3</string>
     <string id="30091">Recherche 4</string>
 
-
-    <!-- Pluginnames begin by 30201 - 30299 -->
-    <string id="30201">Ajouter à la playlist</string>
-    <string id="30202">Télécharger</string>
-    <string id="30203">Marque-Source</string>
-    <string id="30204">Aucune information</string>
-    <string id="30205">Connection Impossible</string>
-    <string id="30206">Marque-Film</string>
-    <string id="30207">Marque-Série</string>
-    <string id="30208">Marque-Diver</string>
-    <string id="30209">Supprimer Marque-page</string>
-    <string id="30210">Voir Marque-page</string>
-    
     <!-- catégorie -->
     <string id="30101">Derniers ajouts</string>
     <string id="30102">Les plus Vues</string>
@@ -62,7 +49,7 @@
     <string id="30115">Télévision</string>
     <string id="30116">Toutes les sources</string>
     <string id="30117">Télévision Replay</string>
-    <string id="30160">Qualité HD</string>    
+    <string id="30160">Qualité HD</string>
     <!--version 3.0.2 -->
     <string id="30120">Films</string>
     <string id="30121">Séries</string>
@@ -75,29 +62,65 @@
     <string id="30129">Clear Cache Addon</string>
     <!--version 3.0.5 -->
     <string id="30130">Listes</string>
-    <string id="30134">VF</string>    
+    <string id="30134">VF</string>
     <string id="30135">VOSTFR</string>
     <string id="30138">Sources</string>
-    
+
     <string id="30145">Dossier de Téléchagements</string>
-    
+
     <string id="30146">Afficher/Masquer les paramètres de recherche</string>
     <string id="30147">Plugins on/off (2/3)</string>
-    
+    <string id="30148">Plugins on/off (3/3)</string>
+
+    <!-- Pluginnames begin by 30201 - 30299 -->
+    <string id="30201">Ajouter à la playlist</string>
+    <string id="30202">Télécharger</string>
+    <string id="30203">Marque-Source</string>
+    <string id="30204">Aucune information</string>
+    <string id="30205">Connection Impossible</string>
+    <string id="30206">Marque-Film</string>
+    <string id="30207">Marque-Série</string>
+    <string id="30208">Marque-Diver</string>
+    <string id="30209">Supprimer Marque-page</string>
+    <string id="30210">Voir Marque-page</string>
+
     <!--Librairie -->
     <string id="30300">Librairie</string>
     <string id="30301">A configurer dans kodi si vous voulez qu'ils soient importes</string>
     <string id="30302">Mise a jour a chaque ajout</string>
     <!--version 0.3.8 -->
     <string id="30303">Activer/Désactiver</string>
-    <string id="30148">Plugins on/off (3/3)</string>
-    
+    <!--trakt -->
+    <string id="30304">Rendez vous sur [COLOR teal]%s[/COLOR] Entrer le code [COLOR teal]%s[/COLOR]</string>
+    <string id="30305">[COLOR khaki]Cliquez ici, pour vous connectez[/COLOR]</string>
+    <string id="30306">[COLOR khaki][COLOR khaki]Bonjour, %s[/COLOR]</string>
+    <string id="30307">Films (%s/%s) regarder pour %s minutes / Series regarder (%s) / Episodes (%s/%s) regarder pour %s minutes</string>
+    <string id="30308">Historique</string>
+    <string id="30309">Déconnection</string>
+    <string id="30310">Collection</string>
+    <string id="30311">Surveiller</string>
+    <string id="30312">Regarder</string>
+    <string id="30313">Recommender</string>
+    <string id="30314">BoxOffice</string>
+    <string id="30315">Populaire</string>
+    <string id="30316">Les plus vues de la semaine</string>
+    <string id="30317">Les plus vues du mois</string>
+    <string id="30318">Surveiller (saisons)</string>
+    <string id="30319">Surveiller (episodes)</string>
+    <string id="30320">Vous avez été déconnecté avec succés</string>
+
+    <string id="30321">Ajouter à la collection</string>
+    <string id="30322">Marquer comme regarder</string>
+    <string id="30323">Marquer à surveiller</string>
+
+
+
     <!--Premium -->
     <string id="30400">Premium/Login</string>
     <string id="30401">Utilisateur</string>
     <string id="30402">Mot de passe</string>
     <string id="30403">Activer</string>
-    
+
     <string id="30404">Vue : Films (recommandé 50-51-500-501-508) </string>
     <string id="30405">Vue: Séries (recommandé 50-51-500-501-508) </string>
     <string id="30406">Vue: Defaut (recommandé 50-51-500) </string>
@@ -105,4 +128,3 @@
     <string id="30408">Activer vue personnaliser</string>
 
 </strings>
-
