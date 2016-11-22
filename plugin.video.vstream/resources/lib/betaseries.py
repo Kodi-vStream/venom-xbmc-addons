@@ -39,6 +39,7 @@ class cBseries:
         #self.__sFile = cConfig().getFileFav()
         self.__sTitle = ''
         self.__sAction = ''
+        self.__sType = ''
         #self.__sFunctionName = ''
 
 
@@ -499,7 +500,6 @@ class cBseries:
         #oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'next.png', oOutputParameterHandler)
 
 
-
     def getContext(self):
 
         import xbmcgui
@@ -513,28 +513,44 @@ class cBseries:
             self.__sAction = disp[ret]
         return self.__sAction
 
+    def getType(self):
+
+        import xbmcgui
+        disp = ['movies','shows']
+        dialog2 = xbmcgui.Dialog()
+        dialog_select = 'Films', 'Series'
+
+        ret = dialog2.select('Trakt',dialog_select)
+
+        if ret > -1:
+            self.__sType = disp[ret]
+        return self.__sType
+
     def getAction(self):
 
         sAction = self.getContext()
         if not sAction:
             return
 
-        oGuiElement = cGuiElement()
-        sId = oGuiElement.getTmdb()
         oInputParameterHandler = cInputParameterHandler()
-        aParams = oInputParameterHandler.getAllParameter()
+        # aParams = oInputParameterHandler.getAllParameter()
+        sType = oInputParameterHandler.getValue('sType')
+        if not sType:
+            sType = self.getType()
         sImdb = oInputParameterHandler.getValue('sImdb')
+        if not sImdb:
+            return
 
         headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
         #sUrl =  ('%s%s') % (sAction, str(sImdb))
-        sPost = {"movies": [{"ids": {"imdb": sImdb}}]}
+        sPost = {sType: [{"ids": {"imdb": sImdb}}]}
         sPost = json.dumps(sPost)
 
         req = urllib2.Request(sAction, sPost,headers)
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
         result = json.loads(sHtmlContent)
-        xbmc.log(str(result))
+        xbmc.log(str(sType))
 
 
         return
