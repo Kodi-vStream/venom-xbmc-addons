@@ -96,16 +96,16 @@ def showMovies(sSearch = ''):
         sUrl = oInputParameterHandler.getValue('siteUrl')
    
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
+    sHtmlContent = oRequestHandler.request()
    
-    oParser = cParser()
+
     #sPattern = "<div class='mediathumb'>.*?<a href='([^<]+)' title='([^<]+)'>.*?<img src='([^<]+)' alt='(.+?)'>.*?</a>"
-    sPattern = '<article class="shortstory cf"> <a href="([^<]+)" class="short_post post_img"> <img src="([^<]+)"> </a> <div class="short_post_content"> <h2 class="short_title"><a href=".*?" title="([^<]+)">.*?</a></h2> <div class="short_views">([^<]+)</div> </div></article>'
-    sPattern = sPattern + '|' + 'class="hblock cf"> <h4>([^<]+)</h4>'
+    sPattern = '<div class="mov-i img-box"><img src="([^<]+)" alt="([^<]+)" /><div class="mov-mask flex-col ps-link" data-link="([^<]+)"><span'
+
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
    
-    Saison = '0'
+
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -115,22 +115,15 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
                         
-            if aEntry[4]:
-               Saison = 'Top Replay Tv'
-               oOutputParameterHandler = cOutputParameterHandler()
-               oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
-               oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[1]))
-               oGui.addMisc(SITE_IDENTIFIER, 'showHosters', '[COLOR red]'+ Saison + '[/COLOR]', 'series.png', '', aEntry[2], oOutputParameterHandler)
 
-            else:
-                sTitle = aEntry[2]
-                sUrl= str(aEntry[1])
+            sTitle = aEntry[1]
+            sUrl= str(aEntry[2])
             
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
-                oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[1]))
-                oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[2], 'doc.png', aEntry[1], aEntry[3], oOutputParameterHandler)
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[1], 'doc.png', aEntry[0], '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
             
@@ -145,7 +138,7 @@ def showMovies(sSearch = ''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = 'class="next"><a href="(.+?)">SUIVANT</a>'
+    sPattern = 'class="pnext"><a href="([^<]+)"><span'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -167,8 +160,8 @@ def showHosters():
     #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/plugins/like.php','').replace('<iframe src="http://www.facebook.com/plugins/likebox.php','')
     oParser = cParser()
                
-        
-    sPattern = '<b>(.+?)2016<br/><a' 
+
+    sPattern = '<b>(.+?)2016<br' 
     sPattern = sPattern + '|' + '>E(.+?)<br'
     sPattern = sPattern + '|' + 'target="_blank">(.+?)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -199,4 +192,4 @@ def showHosters():
         cConfig().finishDialog(dialog) 
                 
     oGui.setEndOfDirectory()
-    
+   

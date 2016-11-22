@@ -317,30 +317,33 @@ def showHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     #evite redirection vers fausse video hs
-    UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
+    if 'voirstream.org' in sUrl:
+        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
 
-    headers = {'User-Agent': UA ,
-               'Host' : 'www.voirstream.org',
-               'Referer': 'http://www.filmsvostfr.biz/',
-               'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-               'Content-Type': 'text/html; charset=utf-8'}
+        headers = {'User-Agent': UA ,
+                   'Host' : 'www.voirstream.org',
+                   'Referer': 'http://www.filmsvostfr.biz/',
+                   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                   'Content-Type': 'text/html; charset=utf-8'}
 
-    request = urllib2.Request(sUrl,None,headers)
-    reponse = urllib2.urlopen(request)
-    repok = reponse.read()
-    reponse.close()
+        request = urllib2.Request(sUrl,None,headers)
+        reponse = urllib2.urlopen(request)
+        repok = reponse.read()
+        reponse.close()
 
-    vUrl = re.search('url=([^"]+)"', repok)
-    if vUrl:   
-       sHosterUrl = vUrl.group(1)
-       sHosterUrl = sHosterUrl.replace('http://www.filmsvostfr.biz/uptoboxlink.php?link=','http://uptobox.com/').replace('http://www.filmsvostfr.biz/1fichierlink.php?link=','https://1fichier.com/?')
+        vUrl = re.search('url=([^"]+)"', repok)
+        if vUrl:   
+           sHosterUrl = vUrl.group(1)
+           sHosterUrl = sHosterUrl.replace('http://www.filmsvostfr.biz/uptoboxlink.php?link=','http://uptobox.com/').replace('http://www.filmsvostfr.biz/1fichierlink.php?link=','https://1fichier.com/?')
+    else:
+        sHosterUrl = sUrl
 
-       oHoster = cHosterGui().checkHoster(sHosterUrl)
-       if (oHoster != False):
-           sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-           oHoster.setDisplayName(sDisplayTitle)
-           oHoster.setFileName(sMovieTitle)
-           cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+    oHoster = cHosterGui().checkHoster(sHosterUrl)
+    if (oHoster != False):
+         sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+         oHoster.setDisplayName(sDisplayTitle)
+         oHoster.setFileName(sMovieTitle)
+         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
        
     cHosterGui().plusHoster(oGui)
 
@@ -360,8 +363,7 @@ def showHostersSetA():
     sPattern = '<a href="([^<>"]+?)" target="filmPlayer" class="ilink sinactive" rel="nofollow"><img alt=".+?">(.+?)<\/span><\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        for aEntry in aResult[1]:
-                
+        for aEntry in aResult[1]:    
             sHosterUrl = str(aEntry[0])
             oHoster = cHosterGui().checkHoster(sHosterUrl)
  
@@ -372,8 +374,5 @@ def showHostersSetA():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
        
     cHosterGui().plusHoster(oGui)
-    oGui.setEndOfDirectory()
-        
-#fh = open('c:\\test.txt', "w")
-#fh.write(sHtmlContent)
-#fh.close()    
+    oGui.setEndOfDirectory()  
+    

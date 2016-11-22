@@ -17,6 +17,7 @@ class cGuiElement:
         self.__sPlaycount = 0
         self.__sTrailerUrl = ''
         self.__sMetaAddon = cConfig().getSetting('meta-view')
+        self.__sImdb = ''
         self.__sTmdb = ''
         self.__sMediaUrl = ''
         self.__sSiteUrl = ''
@@ -62,6 +63,12 @@ class cGuiElement:
 
     def getType(self):
         return self.__sType
+        
+    def setImdb(self, sImdb):
+        self.__sImdb = sImdb
+
+    def getImdb(self):
+        return self.__sImdb
         
     def setTmdb(self, sTmdb):
         self.__sTmdb = sTmdb
@@ -389,6 +396,8 @@ class cGuiElement:
         del meta['playcount']
         del meta['trailer']
         
+        xbmc.log(str(meta))
+        
         if meta['title']:
             meta['title'] = self.getTitle()
             
@@ -396,7 +405,18 @@ class cGuiElement:
             self.addItemValues(key, value)
          
         if meta['imdb_id']:
-            self.__sImdb = meta['imdb_id']         
+            self.__sImdb = meta['imdb_id']
+        
+        try:
+            if meta['tmdb_id']:
+                self.__sTmdb = meta['tmdb_id']
+        except: pass
+        
+        try:
+            if meta['tvdb_id']:
+                self.__sTmdb = meta['tvdb_id']
+        except: pass
+        
         if meta['backdrop_url']:
             self.addItemProperties('fanart_image', meta['backdrop_url'])
             self.__sFanart = meta['backdrop_url']
