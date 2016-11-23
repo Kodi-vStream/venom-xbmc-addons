@@ -259,11 +259,11 @@ class cBseries:
 
                 if 'collection' in sUrl:
                     if  'show' in i:
-                        sTrakt, sTitle, sYear, sTmdb, sDate = i['show']['ids']['trakt'], i['show']['title'], i['show']['year'], i['show']['ids']['tmdb'], i['last_collected_at']
+                        sTrakt, sTitle, sYear, sImdb, sTmdb, sDate = i['show']['ids']['trakt'], i['show']['title'], i['show']['year'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['last_collected_at']
                         sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                         cBseries.CONTENT = '2'
                     else:
-                        sTrakt, sTitle, sYear, sTmdb, sDate = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['year'], i['movie']['ids']['tmdb'], i['collected_at']
+                        sTrakt, sTitle, sYear, sImdb, sTmdb, sDate = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['year'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['collected_at']
                         sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                         cBseries.CONTENT = '1'
 
@@ -280,7 +280,7 @@ class cBseries:
                         sExtra = ('(S%sEP%s)') % (sSeason, sNumber)
                         cBseries.CONTENT = '2'
                     else:
-                        sTrakt, sTitle, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['tmdb'], i['movie']['year']
+                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
                         sExtra = ('(%s)') % (sYear)
                         cBseries.CONTENT = '1'
 
@@ -304,7 +304,7 @@ class cBseries:
                         sExtra = ('(S%sEP%s)') % (sSeason, sNumber)
                         cBseries.CONTENT = '2'
                     else:
-                        sTrakt, sTitle, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['tmdb'], i['movie']['year']
+                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
                         sExtra = ('(%s)') % (sYear)
                         cBseries.CONTENT = '1'
 
@@ -323,7 +323,7 @@ class cBseries:
                         sTrakt, sTitle, sYear, sTmdb = i['show']['ids']['trakt'], i['show']['title'], i['show']['year'], i['show']['ids']['tmdb']
                         cBseries.CONTENT = '2'
                     else:
-                        sTrakt, sTitle, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['tmdb'], i['movie']['year']
+                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
                         cBseries.CONTENT = '1'
 
                     sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode("unicode_escape")
@@ -338,7 +338,7 @@ class cBseries:
                         sTrakt, sTitle, sYear, sTmdb = i['show']['ids']['trakt'], i['show']['title'], i['show']['year'], i['show']['ids']['tmdb']
                         cBseries.CONTENT = '2'
                     else:
-                        sTrakt, sTitle, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['tmdb'], i['movie']['year']
+                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
                         cBseries.CONTENT = '1'
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                     sTitle = ('Spectateur [COLOR white](%s)[/COLOR] - Collection [COLOR white](%s)[/COLOR] - %s - (%s)') % (int(sPlay_count), int(sCollected_count), sTitle.encode("utf-8"), int(sYear))
@@ -349,12 +349,12 @@ class cBseries:
                         cBseries.CONTENT = '2'
                     else :
                         cBseries.CONTENT = '1'
-                    sTrakt, sTitle, sYear, sTmdb = i['ids']['trakt'], i['title'], i['year'], i['ids']['tmdb']
+                    sTrakt, sTitle, sYear, sImdb, sTmdb = i['ids']['trakt'], i['title'], i['year'], i['ids']['imdb'], i['ids']['tmdb']
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                     sTitle = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
 
                 elif 'boxoffice' in sUrl:
-                        sTrakt, sTitle, sYear, sTmdb, sRevenue = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['year'], i['movie']['ids']['tmdb'], i['revenue']
+                        sTrakt, sTitle, sYear, sImdb, sTmdb, sRevenue = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['year'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['revenue']
                         cBseries.CONTENT = '1'
                         sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                         sTitle = ('Revenues [COLOR white](%s)[/COLOR] - %s - (%s)') % (sRevenue, sTitle.encode("utf-8"), int(sYear))
@@ -367,7 +367,7 @@ class cBseries:
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('file', sFile)
                 oOutputParameterHandler.addParameter('key', sKey)
-                self.getFolder(oGui, sTitle, sFile, 'getBseasons', sTmdb, oOutputParameterHandler)
+                self.getFolder(oGui, sTitle, sFile, 'getBseasons', sImdb, oOutputParameterHandler)
                 sKey += 1
         oGui.setEndOfDirectory()
         return
@@ -470,7 +470,7 @@ class cBseries:
         oGui.setEndOfDirectory()
         return
 
-    def getFolder(self, oGui, sTitle, sFile, sFunction, sTmdb, oOutputParameterHandler):
+    def getFolder(self, oGui, sTitle, sFile, sFunction, sImdb, oOutputParameterHandler):
 
         oGuiElement = cGuiElement()
 
@@ -480,8 +480,8 @@ class cBseries:
         oGuiElement.setFileName(sFile)
         oGuiElement.setIcon("mark.png")
         #oGuiElement.setThumbnail(sThumb)
-        oGuiElement.setTmdb(sTmdb)
-        oGuiElement.setImdbId(sTmdb)
+        oGuiElement.setImdb(sImdb)
+        oGuiElement.setImdbId(sImdb)
 
         #self.getTmdb(sTmdb, oGuiElement)
         #xbmc.log(str(cBseries.CONTENT))
@@ -496,6 +496,7 @@ class cBseries:
         #oGui.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
 
          #oGui.addHost(oGuiElement, oOutputParameterHandler)
+        self.createContexTrakt(oGui, oGuiElement, oOutputParameterHandler)
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
         #oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'next.png', oOutputParameterHandler)
 
@@ -528,11 +529,13 @@ class cBseries:
 
     def getAction(self):
 
-        sAction = self.getContext()
+        oInputParameterHandler = cInputParameterHandler()
+        sAction = oInputParameterHandler.getValue('sAction')
+        if not sAction:
+            sAction = self.getContext()
         if not sAction:
             return
 
-        oInputParameterHandler = cInputParameterHandler()
         # aParams = oInputParameterHandler.getAllParameter()
         sType = oInputParameterHandler.getValue('sType')
         if not sType:
@@ -550,9 +553,33 @@ class cBseries:
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
         result = json.loads(sHtmlContent)
-        xbmc.log(str(sType))
+        #{u'not_found': {u'movies': [], u'seasons': [], u'people': [], u'episodes': [], u'shows': []}, u'updated': {u'movies': 0, u'episodes': 0}, u'added': {u'movies': 1, u'episodes': 0}, u'existing': {u'movies': 0, u'episodes': 0}}
+        #affiche le resultas code a l'arache
+        cGui().showNofication(str(result))
+        if (oInputParameterHandler.exist('sReload')):
+            xbmc.executebuiltin("Container.Refresh")
+        return
 
+    def createContexTrakt(self, oGui, oGuiElement, oOutputParameterHandler= ''):
 
+        liste = []
+        liste.append( ['[COLOR teal]Ajouter: '+cConfig().getlanguage(30310)+'[/COLOR]','https://api.trakt.tv/sync/collection'] )
+        liste.append( ['[COLOR red]Supprimer: '+cConfig().getlanguage(30310)+'[/COLOR]','https://api.trakt.tv/sync/collection/remove'] )
+        liste.append( ['[COLOR teal]Ajouter: '+cConfig().getlanguage(30311)+'[/COLOR]','https://api.trakt.tv/sync/watchlist'] )
+        liste.append( ['[COLOR red]Supprimer: '+cConfig().getlanguage(30311)+'[/COLOR]','https://api.trakt.tv/sync/watchlist/remove'] )
+        liste.append( ['[COLOR teal]Ajouter: '+cConfig().getlanguage(30312)+'[/COLOR]','https://api.trakt.tv/sync/history'] )
+        liste.append( ['[COLOR red]Supprimer: '+cConfig().getlanguage(30312)+'[/COLOR]','https://api.trakt.tv/sync/history/remove'] )
+        for sTitle,sUrl in liste:
+            oOutputParameterHandler = cOutputParameterHandler()
+            if cBseries.CONTENT == '2':
+                oOutputParameterHandler.addParameter('sType', 'shows')
+            else:
+                oOutputParameterHandler.addParameter('sType', 'movies')
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sAction', sUrl)
+            oOutputParameterHandler.addParameter('sReload', True)
+            oOutputParameterHandler.addParameter('sImdb', oGuiElement.getImdb())
+            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cBseries','cBseries','getAction',sTitle)
         return
 
     def getTmdb(self, sTmdb, oGuiElement):
