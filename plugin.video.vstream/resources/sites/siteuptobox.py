@@ -21,27 +21,30 @@ SITE_NAME = '[COLOR red]' + 'ComptePremiumUptobox.com' + '[/COLOR]'
 SITE_DESC = 'fichier sur compte uptobox' 
 
 def load(): 
-    oGui = cGui() 
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'getPremiumUser', 'MesFichiers', 'genres.png', oOutputParameterHandler)
+    oGui = cGui()
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://Dossier/')
-    oGui.addDir(SITE_IDENTIFIER, 'getPremiumUser', 'MesDossiers', 'genres.png', oOutputParameterHandler)
+    if (cConfig().getSetting('hoster_uptobox_premium') == 'false'):
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]'+ 'Nécessite Un Compte Uptobox' + '[/COLOR]')
+    else:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+        oGui.addDir(SITE_IDENTIFIER, 'getPremiumUser', 'MesFichiers', 'genres.png', oOutputParameterHandler)
+    
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://Dossier/')
+        oGui.addDir(SITE_IDENTIFIER, 'getPremiumUser', 'MesDossiers', 'genres.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory() 
     
 def getPremiumUser():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    
+
     post_data = {}
     url = 'https://login.uptobox.com/logarithme'
     post_data['op'] = 'login'
-    post_data['login'] = 'ton id' #ton identifiant ici entre les ''
-    post_data['password'] = 'ton pass' #ton pass ici entre les ''
+    post_data['login'] = cConfig().getSetting('hoster_uptobox_username')
+    post_data['password'] = cConfig().getSetting('hoster_uptobox_password')
     request = urllib2.Request(url, urllib.urlencode(post_data), headers)
     response = urllib2.urlopen(request)
     head = response.headers
@@ -57,7 +60,8 @@ def getPremiumUser():
                 cookies = cookies + cook[0] + '=' + cook[1]+ ';'
                 
     url2 = 'https://uptobox.com/?op=my_files'            
-    req = urllib2.Request(url2, None, headers)  
+    req = urllib2.Request(url2, None, headers)            
+    #req.add_header('Referer', url)    
     req.add_header('Cookie', cookies)
 
     try:
