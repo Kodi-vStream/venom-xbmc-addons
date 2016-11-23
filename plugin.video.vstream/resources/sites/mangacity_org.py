@@ -13,7 +13,7 @@ from resources.lib.util import cUtil
 import urllib2,urllib,re
 import unicodedata
 import xbmc
-import sets
+#import sets (plus besoin du module pour que set fonctionne)
 
 def DecryptMangacity(chain):
     oParser = cParser()
