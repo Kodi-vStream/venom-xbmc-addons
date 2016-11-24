@@ -44,6 +44,7 @@ MOVIE_NOTES = (URL_MAIN + 'films-gratuit.html?tab=all&orderby_by=rating&orderby_
 MOVIE_3D = (URL_MAIN + 'films-bluray-3d.html?periodlist[]=2010&periodlist[]=2000&periodlist[]=1990&hf=1', 'showMovies') # films en 3D
 MOVIE_HD = (URL_MAIN + 'films-bluray-hd.html?periodlist[]=2010&periodlist[]=2000&periodlist[]=1990&hf=1', 'showMovies') # films en HD
 MOVIE_HDLIGHT = (URL_MAIN + 'x265-x264-hdlight.html', 'showMovies') # films en x265 et x264
+MOVIE_DATE = (URL_MAIN + 'films-gratuit.html?tab=all&orderby_by=rlsdate&orderby_order=desc', 'showMovies') # films par date de sortie
 #MOVIE_4K = (URL_MAIN + 'films-gratuit.html?q=4k&orderby_by=popular', 'showMovies')# films en 4K 
 
 MOVIE_GENRES = (True, 'showGenreMovies')
@@ -118,6 +119,10 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les mieux notes', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_DATE[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films par Date de Sortie', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_3D[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_3D[1], 'Films 3D', 'news.png', oOutputParameterHandler)
     
@@ -190,6 +195,7 @@ def load():
     #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Musiques en 4K', 'films.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory() 
+
 
 def showSearchMovies(): 
     oGui = cGui()
