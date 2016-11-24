@@ -32,9 +32,9 @@ class main:
         cDb()._create_tables()
 
     def parseUrl(self):
-        
+
         #print sys.argv
-        
+
         #print 'Debug 1'
         oInputParameterHandler = cInputParameterHandler()
         #print 'Debug 2'
@@ -46,7 +46,7 @@ class main:
             cConfig().log('call load methode')
             sFunction = "load"
 
-        #print 'Debug 5'   
+        #print 'Debug 5'
         if (sFunction=='DoNothing'):
             return
 
@@ -57,26 +57,26 @@ class main:
 
             if (isHosterGui(sSiteName, sFunction) == True):
                 return
-            
+
             if (isGui(sSiteName, sFunction) == True):
                 return
-            
+
             if (isFav(sSiteName, sFunction) == True):
                 return
-                
+
             if (isLibrary(sSiteName, sFunction) == True):
                 return
-                
+
             if (isDl(sSiteName, sFunction) == True):
                 return
-            
+
             if (isHome(sSiteName, sFunction) == True):
                 return
-                
-            if (isBseries(sSiteName, sFunction) == True):
+
+            if (isTrakt(sSiteName, sFunction) == True):
                 return
 
-            #if (isAboutGui(sSiteName, sFunction) == True):            
+            #if (isAboutGui(sSiteName, sFunction) == True):
                 #return
 
             #try:
@@ -85,7 +85,7 @@ class main:
             #except:
             #    cConfig().log('could not load site: ' + sSiteName )
         else:
-        
+
             try:
                 from resources.lib.about import cAbout
                 cAbout().getUpdate()
@@ -93,10 +93,10 @@ class main:
                 #exec "plugin.getUpdate()"
             except:
                 pass
-            
+
             if (cConfig().getSetting("home-view") == 'true'):
                 oHome = cHome()
-                
+
                 exec "oHome."+ sFunction +"()"
                 return
 
@@ -108,7 +108,7 @@ class main:
                 oGui.updateDirectory()
             else:
                 for aPlugin in aPlugins:
-                    
+
                     # oGuiElement = cGuiElement()
                     # oGuiElement.setTitle(aPlugin[0])
                     # oGuiElement.setSiteName(aPlugin[1])
@@ -116,13 +116,13 @@ class main:
                     # oGuiElement.setFunction(sFunction)
                     # oGuiElement.setIcon("icon.png")
                     # oGui.addFolder(oGuiElement)
-                    
+
                         oOutputParameterHandler = cOutputParameterHandler()
                         oOutputParameterHandler.addParameter('siteUrl', 'test')
                         oGui.addDir(aPlugin[1], sFunction, aPlugin[0], 'icon.png', oOutputParameterHandler)
 
             oGui.setEndOfDirectory()
-    
+
 
 def isHosterGui(sSiteName, sFunction):
     if (sSiteName == 'cHosterGui'):
@@ -130,14 +130,14 @@ def isHosterGui(sSiteName, sFunction):
         exec "oHosterGui."+ sFunction +"()"
         return True
     return False
-    
+
 def isGui(sSiteName, sFunction):
     if (sSiteName == 'cGui'):
         oGui = cGui()
         exec "oGui."+ sFunction +"()"
         return True
     return False
-    
+
 def isFav(sSiteName, sFunction):
     if (sSiteName == 'cFav'):
         from resources.lib.favourite import cFav
@@ -145,7 +145,7 @@ def isFav(sSiteName, sFunction):
         exec "oFav."+ sFunction +"()"
         return True
     return False
-    
+
 def isLibrary(sSiteName, sFunction):
     if (sSiteName == 'cLibrary'):
         from resources.lib.library import cLibrary
@@ -168,12 +168,12 @@ def isHome(sSiteName, sFunction):
         exec "oHome."+ sFunction +"()"
         return True
     return False
-    
-def isBseries(sSiteName, sFunction):
-    if (sSiteName == 'cBseries'):
-        from resources.lib.betaseries import cBseries
-        oBseries = cBseries()
-        exec "oBseries."+ sFunction +"()"
+
+def isTrakt(sSiteName, sFunction):
+    if (sSiteName == 'cTrakt'):
+        from resources.lib.trakt import cTrakt
+        oTrakt = cTrakt()
+        exec "oTrakt."+ sFunction +"()"
         return True
     return False
 
