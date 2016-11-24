@@ -253,6 +253,7 @@ class cTrakt:
         response.close()
         total = len(sHtmlContent)
         sKey = 0
+        sFunction = 'getLoad'
         if (total > 0):
             for i in result:
 
@@ -261,10 +262,12 @@ class cTrakt:
                         sTrakt, sTitle, sYear, sImdb, sTmdb, sDate = i['show']['ids']['trakt'], i['show']['title'], i['show']['year'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['last_collected_at']
                         sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                         cTrakt.CONTENT = '2'
+                        sFunction = 'getBseasons'
                     else:
                         sTrakt, sTitle, sYear, sImdb, sTmdb, sDate = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['year'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['collected_at']
                         sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                         cTrakt.CONTENT = '1'
+                        sFunction = 'getLoad'
 
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                     sTitle = ('[COLOR white]%s[/COLOR] %s - (%s)') % (sDate, sTitle.encode("utf-8"), int(sYear))
@@ -272,10 +275,11 @@ class cTrakt:
                 elif 'history' in sUrl:
                 #commun
                     sAction, sType, sWatched_at  = i['action'], i['type'], i['watched_at']
+                    sFunction = 'getLoad'
                     #2016-11-16T09:21:18.000Z
                     sDate = datetime.datetime(*(time.strptime(sWatched_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                     if 'episode' in i:
-                        sTrakt, sTitle, sTmdb, sSeason, sNumber = i['episode']['ids']['trakt'], i['episode']['title'], i['episode']['ids']['tmdb'], i['episode']['season'],  i['episode']['number']
+                        sTrakt, sTitle, sImdb, sTmdb, sSeason, sNumber = i['episode']['ids']['trakt'], i['episode']['title'], i['episode']['ids']['imdb'], i['episode']['ids']['tmdb'], i['episode']['season'],  i['episode']['number']
                         sExtra = ('(S%sEP%s)') % (sSeason, sNumber)
                         cTrakt.CONTENT = '2'
                     else:
@@ -292,14 +296,15 @@ class cTrakt:
                 elif 'watchlist' in sUrl:
                     #commun
                     sType, sListed_at  = i['type'], i['listed_at']
+                    sFunction = 'getLoad'
                     #2016-11-16T09:21:18.000Z
                     sDate = datetime.datetime(*(time.strptime(sListed_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                     if  'show' in i:
-                        sTrakt, sTitle, sYear, sTmdb = i['show']['ids']['trakt'], i['show']['title'], i['show']['year'], i['show']['ids']['tmdb']
+                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year']
                         sExtra = ('(%s)') % (sYear)
                         cTrakt.CONTENT = '2'
                     elif 'episode' in i:
-                        sTrakt, sTitle, sTmdb, sSeason, sNumber = i['episode']['ids']['trakt'], i['episode']['title'], i['episode']['ids']['tmdb'], i['episode']['season'],  i['episode']['number']
+                        sTrakt, sTitle, sImdb, sTmdb, sSeason, sNumber = i['episode']['ids']['trakt'], i['episode']['title'], i['episode']['ids']['imdb'], i['episode']['ids']['tmdb'], i['episode']['season'],  i['episode']['number']
                         sExtra = ('(S%sEP%s)') % (sSeason, sNumber)
                         cTrakt.CONTENT = '2'
                     else:
@@ -319,11 +324,13 @@ class cTrakt:
                     #2016-11-16T09:21:18.000Z
                     sDate = datetime.datetime(*(time.strptime(sLast_watched_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                     if  'show' in i:
-                        sTrakt, sTitle, sYear, sTmdb = i['show']['ids']['trakt'], i['show']['title'], i['show']['year'], i['show']['ids']['tmdb']
+                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year']
                         cTrakt.CONTENT = '2'
+                        sFunction = 'getBseasons'
                     else:
                         sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
                         cTrakt.CONTENT = '1'
+                        sFunction = 'getLoad'
 
                     sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode("unicode_escape")
                     sTitle.encode("utf-8")
@@ -333,8 +340,9 @@ class cTrakt:
                 elif 'played' in sUrl:
                 #commun
                     sWatcher_count, sPlay_count, sCollected_count = i['watcher_count'], i['play_count'], i['collected_count']
+                    sFunction = 'getLoad'
                     if  'show' in i:
-                        sTrakt, sTitle, sYear, sTmdb = i['show']['ids']['trakt'], i['show']['title'], i['show']['year'], i['show']['ids']['tmdb']
+                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year']
                         cTrakt.CONTENT = '2'
                     else:
                         sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
@@ -351,13 +359,14 @@ class cTrakt:
                     sTrakt, sTitle, sYear, sImdb, sTmdb = i['ids']['trakt'], i['title'], i['year'], i['ids']['imdb'], i['ids']['tmdb']
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                     sTitle = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
+                    sFunction = 'getLoad'
 
                 elif 'boxoffice' in sUrl:
                         sTrakt, sTitle, sYear, sImdb, sTmdb, sRevenue = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['year'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['revenue']
                         cTrakt.CONTENT = '1'
                         sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                         sTitle = ('Revenues [COLOR white](%s)[/COLOR] - %s - (%s)') % (sRevenue, sTitle.encode("utf-8"), int(sYear))
-
+                        sFunction = 'getLoad'
 
 
                 else: return
@@ -366,7 +375,7 @@ class cTrakt:
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('file', sFile)
                 oOutputParameterHandler.addParameter('key', sKey)
-                self.getFolder(oGui, sTitle, sFile, 'getBseasons', sImdb, oOutputParameterHandler)
+                self.getFolder(oGui, sTitle, sFile, sFunction, sImdb, oOutputParameterHandler)
                 sKey += 1
         oGui.setEndOfDirectory()
         return
