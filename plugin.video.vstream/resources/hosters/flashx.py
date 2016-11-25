@@ -142,14 +142,26 @@ class cHoster(iHoster):
         #web_url = 'http://' + HOST + '/playit-' + sId + '.html'
         sHtmlContent = self.GetRedirectHtml(self.__sUrl,sId)
         
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+        
         sPattern = 'href="(http:\/\/www\.flashx[^"]+)'
         aResult = re.findall(sPattern,sHtmlContent)
+        xbmc.log(str(aResult))
+        
         if aResult:
+            # Need to find which one is the good link
+            # The bad one have the tag "visibility:hidden"
+            # But it seem the good one is the shorten one
             web_url = aResult[0]
+            for i in aResult:
+                if len(i) < len(web_url):
+                    web_url = i
         else:
             return False,False
             
-        #fh = open('c:\\test.txt', "w")
+        #fh = open('c:\\test2.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
         
@@ -169,10 +181,10 @@ class cHoster(iHoster):
         if not sHtmlContent:
             return False,False
             
-        #la page est-elle bloquée ... parfois oui parfois non!  
-        sPattern = '<font color="red">This is prohibited!<\/font>'
+        #A t on le lien code directement?
+        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
         aResult = re.findall(sPattern,sHtmlContent)
-        if aResult:
+        if not aResult:
             xbmc.log("page bloquée")
             
             #On recupere la bonne url
@@ -211,16 +223,12 @@ class cHoster(iHoster):
             #et on recherche le lien code
             sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
             aResult = re.findall(sPattern,sHtmlContent)
-        else:
-            #A t on le lien code directement?
-            sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
-            aResult = re.findall(sPattern,sHtmlContent)
-            if aResult:
-               xbmc.log('page non Bloquée')
+
                 
         if (aResult):
             xbmc.log( "lien code")
-            sUnpacked = cPacker().unpack(aResult[1])
+            xbmc.log(str(aResult))
+            sUnpacked = cPacker().unpack(aResult[0])
             sHtmlContent = sUnpacked
             
             #xbmc.log(sHtmlContent)

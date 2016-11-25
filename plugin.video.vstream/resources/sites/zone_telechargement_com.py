@@ -196,6 +196,7 @@ def load():
     
     oGui.setEndOfDirectory() 
 
+
 def showSearchMovies(): 
     oGui = cGui()
     sSearchText = oGui.showKeyBoard() 
@@ -673,7 +674,7 @@ def showSeriesHosters():# recherche et affiche les hotes
                 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+                oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
    

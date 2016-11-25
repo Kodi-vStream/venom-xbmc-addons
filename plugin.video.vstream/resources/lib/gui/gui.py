@@ -366,10 +366,13 @@ class cGui():
         self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','setFavorite','[COLOR teal]Marque-Page[/COLOR]')
 
     def createContexMenuTrakt(self, oGuiElement, oOutputParameterHandler= ''):
+        #pas de menu si pas de meta.
+        if cConfig().getSetting("meta-view") == 'false':
+            return
         oOutputParameterHandler.addParameter('sImdb', oGuiElement.getImdb())
         sType = cGui.CONTENT.replace('tvshows', 'shows')
         oOutputParameterHandler.addParameter('sType', sType)
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cBseries','cBseries','getAction','[COLOR teal]Trakt[/COLOR]')
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cTrakt','cTrakt','getAction','[COLOR teal]Trakt[/COLOR]')
 
     def createContexMenuDownload(self, oGuiElement, oOutputParameterHandler= '', status = '0'):
 

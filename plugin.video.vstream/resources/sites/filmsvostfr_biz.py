@@ -161,8 +161,8 @@ def showMovies(sSearch = ''):
 
             sUrl = aEntry[1]
             sThumbnail = aEntry[0]
-                
-            sThumbnail = URL_MAIN + sThumbnail
+            if not sThumbnail.startswith('http'): 
+               sThumbnail = URL_MAIN + sThumbnail
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl))

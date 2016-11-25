@@ -27,7 +27,7 @@ color_videos = cConfig().getSetting('color_videos')
 color_replaytvs = cConfig().getSetting('color_replaytvs')
 
 class cHome:
-        
+
 
     def load(self):
         oGui = cGui()
@@ -85,10 +85,10 @@ class cHome:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir('cFav', 'getFavourites', '[COLOR teal]'+cConfig().getlanguage(30210)+'[/COLOR]', 'mark.png', oOutputParameterHandler)
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('cBseries', 'getLoad', '[COLOR teal]betaseries (en cours)[/COLOR]', 'mark.png', oOutputParameterHandler)
+        oGui.addDir('cTrakt', 'getLoad', '[COLOR teal]Trakt (bêta)[/COLOR]', 'trakt.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -174,7 +174,7 @@ class cHome:
 
     def showMovies(self):
         oGui = cGui()
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir(SITE_IDENTIFIER, 'movieNews', '[COLOR '+color_films+']'+cConfig().getlanguage(30120)+' ('+cConfig().getlanguage(30101)+')[/COLOR]', 'films_news.png', oOutputParameterHandler)
@@ -240,7 +240,7 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir(SITE_IDENTIFIER, 'serieHD', '[COLOR '+color_series+']'+cConfig().getlanguage(30121)+' ('+cConfig().getlanguage(30160)+')[/COLOR]', 'films_hd.png', oOutputParameterHandler)
 
-        
+
         oGui.setEndOfDirectory()
 
     def showAnimes(self):
@@ -336,7 +336,7 @@ class cHome:
 
     def serieVostfrs(self):
         self.__callpluging('SERIE_VOSTFRS', color_series, 'series_vostfr.png')
-        
+
     def serieHD(self):
         self.__callpluging('SERIE_HD', color_films, 'films_hd.png')
 
@@ -442,12 +442,12 @@ class cHome:
                 oGui.addText(SITE_IDENTIFIER, "[COLOR azure]Votre Historique[/COLOR]")
             for match in row:
                 oOutputParameterHandler = cOutputParameterHandler()
-                
+
                 #code to get type with disp
                 type = cConfig().getSetting('search' + match[2][-1:] + '_type')
                 if type:
                     oOutputParameterHandler.addParameter('type', type)
-                
+
                 oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
                 oOutputParameterHandler.addParameter('searchtext', match[1])
                 oOutputParameterHandler.addParameter('disp', match[2])
