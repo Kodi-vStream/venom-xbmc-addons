@@ -142,14 +142,26 @@ class cHoster(iHoster):
         #web_url = 'http://' + HOST + '/playit-' + sId + '.html'
         sHtmlContent = self.GetRedirectHtml(self.__sUrl,sId)
         
-        sPattern = '<\/a><\/div><a href="(http:\/\/www\.flashx[^"]+)'
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+        
+        sPattern = 'href="(http:\/\/www\.flashx[^"]+)'
         aResult = re.findall(sPattern,sHtmlContent)
+        xbmc.log(str(aResult))
+        
         if aResult:
+            # Need to find which one is the good link
+            # The bad one have the tag "visibility:hidden"
+            # But it seem the good one is the shorten one
             web_url = aResult[0]
+            for i in aResult:
+                if len(i) < len(web_url):
+                    web_url = i
         else:
             return False,False
             
-        #fh = open('c:\\test.txt', "w")
+        #fh = open('c:\\test2.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
         
@@ -215,6 +227,7 @@ class cHoster(iHoster):
                 
         if (aResult):
             xbmc.log( "lien code")
+            xbmc.log(str(aResult))
             sUnpacked = cPacker().unpack(aResult[0])
             sHtmlContent = sUnpacked
             
