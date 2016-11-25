@@ -142,7 +142,7 @@ class cHoster(iHoster):
         #web_url = 'http://' + HOST + '/playit-' + sId + '.html'
         sHtmlContent = self.GetRedirectHtml(self.__sUrl,sId)
         
-        sPattern = 'href="(http:\/\/www\.flashx[^"]+)'
+        sPattern = '<\/a><\/div><a href="(http:\/\/www\.flashx[^"]+)'
         aResult = re.findall(sPattern,sHtmlContent)
         if aResult:
             web_url = aResult[0]
