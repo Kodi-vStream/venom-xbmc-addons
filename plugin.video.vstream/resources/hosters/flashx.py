@@ -169,10 +169,10 @@ class cHoster(iHoster):
         if not sHtmlContent:
             return False,False
             
-        #la page est-elle bloquée ... parfois oui parfois non!  
-        sPattern = '<font color="red">This is prohibited!<\/font>'
+        #A t on le lien code directement?
+        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
         aResult = re.findall(sPattern,sHtmlContent)
-        if aResult:
+        if not aResult:
             xbmc.log("page bloquée")
             
             #On recupere la bonne url
@@ -211,12 +211,7 @@ class cHoster(iHoster):
             #et on recherche le lien code
             sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
             aResult = re.findall(sPattern,sHtmlContent)
-        else:
-            #A t on le lien code directement?
-            sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
-            aResult = re.findall(sPattern,sHtmlContent)
-            if aResult:
-               xbmc.log('page non Bloquée')
+
                 
         if (aResult):
             xbmc.log( "lien code")
