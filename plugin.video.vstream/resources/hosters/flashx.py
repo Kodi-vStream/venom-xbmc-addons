@@ -271,7 +271,7 @@ class cHoster(iHoster):
             sUnpacked = cPacker().unpack(aResult[0])
             sHtmlContent = sUnpacked
             
-            xbmc.log(sHtmlContent)
+            #xbmc.log(sHtmlContent)
   
         #decodage classique
         sPattern = '{file:"([^",]+)",label:"([^"<>,]+)"}'
@@ -306,6 +306,3 @@ class cHoster(iHoster):
             return True, api_call
             
         return False, False
-        
-#http://www.flashx.tv/playit-tnet1zxpyl6q.html?playvid
-#http://www.flashx.tv/playvid-tnet1zxpyl6q.html?playvid
