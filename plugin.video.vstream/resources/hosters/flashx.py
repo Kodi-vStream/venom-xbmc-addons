@@ -11,7 +11,9 @@ from resources.lib.packer import cPacker
 
 import xbmc
 
-#meme code que vodlocker
+#Remarque : meme code que vodlocker
+
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
 
 class cHoster(iHoster):
 
@@ -50,10 +52,10 @@ class cHoster(iHoster):
     def getPattern(self):
         return ''
         
-    def GetRedirectHtml(self,web_url,sId):
+    def GetRedirectHtml(self,web_url,sId,NoEmbed = False):
         headers = {
         #'Host' : HOST,
-        'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
+        'User-Agent': UA,
         'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
         'Referer':'http://embed.flashx.tv/embed.php?c=' + sId,
@@ -92,12 +94,16 @@ class cHoster(iHoster):
                 
             web_url = redirection_target
             
+            if 'embed' in redirection_target and NoEmbed:
+                #rattage, on a prit la mauvaise url
+                return False
+            
             MaxRedirection = MaxRedirection - 1
             
         return sHtmlContent       
 
     def __getIdFromUrl(self, sUrl):
-        sPattern = "http://((?:www.|play.)?flashx.tv)/(?:embed-)?([0-9a-zA-Z]+)(?:.html)?"
+        sPattern = "http://((?:www.|play.)?flashx.tv)/(?:playvid-)?(?:embed-)?(?:embed.+?=)?([0-9a-zA-Z]+)?(?:.html)?"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -125,6 +131,35 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
         
+    def CheckGoodUrl(self,url):
+        
+        xbmc.log('test de ' + url)
+        headers = {'User-Agent': UA
+                   #'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                   #'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+                   #'Accept-Encoding':'gzip, deflate, br',
+                   #'Host':'openload.co',
+                   #'Referer':referer
+        }
+
+        req = urllib2.Request(url,None,headers)
+        res = urllib2.urlopen(req)
+        #pour afficher contenu
+        #xbmc.log(res.read())
+        #pour afficher header
+        xbmc.log(str(res.info()))
+        #Pour afficher redirection
+        xbmc.log('red ' + res.geturl())
+        
+        if 'embed' is res.geturl():
+            return false
+            
+        html = res.read()
+        
+        res.close()
+
+        return res
+        
     def __getMediaLinkForGuest(self):
         
         oParser = cParser()
@@ -146,21 +181,19 @@ class cHoster(iHoster):
         #fh.write(sHtmlContent)
         #fh.close()
         
-        sPattern = 'href="(http:\/\/www\.flashx[^"]+)'
-        aResult = re.findall(sPattern,sHtmlContent)
-        xbmc.log(str(aResult))
+        sPattern = '(<[^<>]+(?:"visibility:hidden"|"opacity: 0;")><a )*href="(http:\/\/www\.flashx[^"]+)'
+        AllUrl = re.findall(sPattern,sHtmlContent,re.DOTALL)
+        xbmc.log(str(AllUrl))
         
-        if aResult:
+        if AllUrl:
             # Need to find which one is the good link
-            # The bad one have the tag "visibility:hidden"
-            # But it seem the good one is the shorten one
-            web_url = aResult[0]
-            for i in aResult:
-                if len(i) < len(web_url):
-                    web_url = i
+            # Use the len don't work
+            for i in AllUrl:
+                if i[0] == '':
+                    web_url = i[1]
         else:
             return False,False
-            
+ 
         #fh = open('c:\\test2.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
@@ -176,7 +209,14 @@ class cHoster(iHoster):
             xbmc.log('No unlock url')
 
         
-        sHtmlContent = self.GetRedirectHtml(web_url,sId)
+        sHtmlContent = self.GetRedirectHtml(web_url,sId,True)
+        if sHtmlContent == False:
+            xbmc.log('Passage en mode barbare')
+            #ok ca a rate on passe toutes les url de AllUrl
+            for i in AllUrl:
+                sHtmlContent = self.GetRedirectHtml(i[1],sId)
+                if sHtmlContent:
+                    break
         
         if not sHtmlContent:
             return False,False
@@ -266,4 +306,3 @@ class cHoster(iHoster):
             return True, api_call
             
         return False, False
-        

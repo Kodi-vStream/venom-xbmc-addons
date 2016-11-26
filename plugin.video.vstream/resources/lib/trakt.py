@@ -8,9 +8,10 @@ from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.rechercheHandler import cRechercheHandler
 
 import urllib, urllib2, re
-import xbmc
+import xbmc, xbmcgui
 import time, md5
 import unicodedata
 
@@ -267,7 +268,7 @@ class cTrakt:
                         sTrakt, sTitle, sYear, sImdb, sTmdb, sDate = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['year'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['collected_at']
                         sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                         cTrakt.CONTENT = '1'
-                        sFunction = 'getLoad'
+                        sFunction = 'showHosters'
 
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                     sTitle = ('[COLOR white]%s[/COLOR] %s - (%s)') % (sDate, sTitle.encode("utf-8"), int(sYear))
@@ -275,7 +276,7 @@ class cTrakt:
                 elif 'history' in sUrl:
                 #commun
                     sAction, sType, sWatched_at  = i['action'], i['type'], i['watched_at']
-                    sFunction = 'getLoad'
+                    sFunction = 'showHosters'
                     #2016-11-16T09:21:18.000Z
                     sDate = datetime.datetime(*(time.strptime(sWatched_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                     if 'episode' in i:
@@ -296,7 +297,7 @@ class cTrakt:
                 elif 'watchlist' in sUrl:
                     #commun
                     sType, sListed_at  = i['type'], i['listed_at']
-                    sFunction = 'getLoad'
+                    sFunction = 'showHosters'
                     #2016-11-16T09:21:18.000Z
                     sDate = datetime.datetime(*(time.strptime(sListed_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                     if  'show' in i:
@@ -330,7 +331,7 @@ class cTrakt:
                     else:
                         sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
                         cTrakt.CONTENT = '1'
-                        sFunction = 'getLoad'
+                        sFunction = 'showHosters'
 
                     sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode("unicode_escape")
                     sTitle.encode("utf-8")
@@ -340,7 +341,7 @@ class cTrakt:
                 elif 'played' in sUrl:
                 #commun
                     sWatcher_count, sPlay_count, sCollected_count = i['watcher_count'], i['play_count'], i['collected_count']
-                    sFunction = 'getLoad'
+                    sFunction = 'showHosters'
                     if  'show' in i:
                         sTrakt, sTitle, sImdb, sTmdb, sYear = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year']
                         cTrakt.CONTENT = '2'
@@ -359,14 +360,14 @@ class cTrakt:
                     sTrakt, sTitle, sYear, sImdb, sTmdb = i['ids']['trakt'], i['title'], i['year'], i['ids']['imdb'], i['ids']['tmdb']
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                     sTitle = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
-                    sFunction = 'getLoad'
+                    sFunction = 'showHosters'
 
                 elif 'boxoffice' in sUrl:
                         sTrakt, sTitle, sYear, sImdb, sTmdb, sRevenue = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['year'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['revenue']
                         cTrakt.CONTENT = '1'
                         sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                         sTitle = ('Revenues [COLOR white](%s)[/COLOR] - %s - (%s)') % (sRevenue, sTitle.encode("utf-8"), int(sYear))
-                        sFunction = 'getLoad'
+                        sFunction = 'showHosters'
 
 
                 else: return
@@ -472,8 +473,9 @@ class cTrakt:
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('file', sFile)
                 #oOutputParameterHandler.addParameter('Key', skey)
-                self.getFolder(oGui, sTitle2, sFile, 'load', '', oOutputParameterHandler)
+                self.getFolder(oGui, sTitle2, sFile, 'showHosters', '', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
         return
@@ -593,6 +595,63 @@ class cTrakt:
             oOutputParameterHandler.addParameter('sImdb', oGuiElement.getImdb())
             oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cTrakt','cTrakt','getAction',sTitle)
         return
+
+    def showHosters(self):
+
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+        sMovieTitle = oInputParameterHandler.getValue('file')
+        #sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+        #ancien decodage
+        sMovieTitle = unicode(sMovieTitle, 'utf-8')#converti en unicode pour aider aux convertions
+        sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'replace').decode("unicode_escape")#vire accent et '\'
+        sMovieTitle = sMovieTitle.encode("utf-8").lower() #on repasse en utf-8
+
+        sMovieTitle = urllib.quote(sMovieTitle)
+
+        sMovieTitle = re.sub('\(.+?\)',' ', sMovieTitle) #vire les tags entre parentheses
+
+        #modif venom si le titre comporte un - il doit le chercher
+        sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle) #vire les caracteres a la con qui peuvent trainer
+
+        sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)',' ', sMovieTitle) #vire les articles
+
+        sMovieTitle = re.sub(' +',' ',sMovieTitle) #vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
+        #print 'apres ' + sMovieTitle
+
+        dialog3 = xbmcgui.Dialog()
+        ret = dialog3.select('Selectionner un Moteur de Recherche',['Vstream (Fiable mais plus complexe)','Alluc (Simple mais resultats non garantis)'])
+
+        if ret == 0:
+            self.VstreamSearch(sMovieTitle)
+        elif ret == 1:
+            #AllucSearch(sMovieTitle + sExtraTitle)
+            #modif test préfére les accent supprimer é = e
+            sMovieTitle = sMovieTitle.replace('%C3%A9','e').replace('%C3%A0','a')
+            self.AllucSearch(sMovieTitle)
+
+    def VstreamSearch(self, sMovieTitle):
+        oGui = cGui()
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+
+        oHandler = cRechercheHandler()
+        oHandler.setText(sMovieTitle)
+        #oHandler.setDisp(sDisp)
+        aPlugins = oHandler.getAvailablePlugins()
+
+        oGui.setEndOfDirectory()
+
+    def AllucSearch(self, sMovieTitle):
+        oGui = cGui()
+
+        exec "from resources.sites import alluc_ee as search"
+        sUrl = 'http://www.alluc.ee/stream/lang%3Afr+' + sMovieTitle
+        #xbmc.log(str(sUrl))
+        searchUrl = "search.%s('%s')" % ('showMovies', sUrl)
+        exec searchUrl
+
+        oGui.setEndOfDirectory()
 
     def getTmdb(self, sTmdb, oGuiElement):
 

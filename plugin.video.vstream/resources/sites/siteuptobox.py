@@ -17,7 +17,7 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
 headers = { 'User-Agent' : UA }
 
 SITE_IDENTIFIER = 'siteuptobox' 
-SITE_NAME = '[COLOR red]' + 'ComptePremiumUptobox.com' + '[/COLOR]'
+SITE_NAME = '[COLOR dodgerblue]' + 'ComptePremiumUptobox.com' + '[/COLOR]'
 SITE_DESC = 'fichier sur compte uptobox' 
 
 def load(): 
