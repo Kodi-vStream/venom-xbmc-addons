@@ -144,6 +144,11 @@ def showMovies(sSearch=''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
+                
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sSearch,aEntry[1]) == 0:
+                    continue                
            
             #sTitle = aEntry[2].decode('latin-1').encode("utf-8")
             #sThumbnail = 'http:'+str(aEntry[2])
