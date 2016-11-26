@@ -53,7 +53,7 @@ class cHoster(iHoster):
     def GetRedirectHtml(self,web_url,sId):
         headers = {
         #'Host' : HOST,
-        'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
+        'User-Agent':'Iphone42',
         'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
         'Referer':'http://embed.flashx.tv/embed.php?c=' + sId,
@@ -97,7 +97,7 @@ class cHoster(iHoster):
         return sHtmlContent       
 
     def __getIdFromUrl(self, sUrl):
-        sPattern = "http://((?:www.|play.)?flashx.tv)/(?:embed-)?([0-9a-zA-Z]+)(?:.html)?"
+        sPattern = "http://((?:www.|play.)?flashx.tv)/(?:playvid-)?(?:embed-)?(?:embed.+?=)?([0-9a-zA-Z]+)?(?:.html)?"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -146,18 +146,10 @@ class cHoster(iHoster):
         #fh.write(sHtmlContent)
         #fh.close()
         
-        sPattern = 'href="(http:\/\/www\.flashx[^"]+)'
+        sPattern = '<a href="(http:\/\/www\.flashx\.tv\/playvid[^"]+)'
         aResult = re.findall(sPattern,sHtmlContent)
-        xbmc.log(str(aResult))
-        
         if aResult:
-            # Need to find which one is the good link
-            # The bad one have the tag "visibility:hidden"
-            # But it seem the good one is the shorten one
             web_url = aResult[0]
-            for i in aResult:
-                if len(i) < len(web_url):
-                    web_url = i
         else:
             return False,False
             
@@ -227,7 +219,6 @@ class cHoster(iHoster):
                 
         if (aResult):
             xbmc.log( "lien code")
-            xbmc.log(str(aResult))
             sUnpacked = cPacker().unpack(aResult[0])
             sHtmlContent = sUnpacked
             
