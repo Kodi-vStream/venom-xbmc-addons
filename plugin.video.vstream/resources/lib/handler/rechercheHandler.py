@@ -47,9 +47,9 @@ class cRechercheHandler:
 
     def getDisp(self):
         if not self.__sDisp:
-            disp = ['search1','search2','search3','search4']
+            disp = ['search1','search2','search3','search4','search5']
             dialog2 = xbmcgui.Dialog()
-            dialog_select = [cConfig().getSetting('search1_label'), cConfig().getSetting('search2_label'), cConfig().getSetting('search3_label'), cConfig().getSetting('search4_label')]
+            dialog_select = [cConfig().getSetting('search1_label'), cConfig().getSetting('search2_label'), cConfig().getSetting('search3_label'), cConfig().getSetting('search4_label'), 'Sélectionner']
 
             ret = dialog2.select('Select Recherche',dialog_select)
     
@@ -79,7 +79,10 @@ class cRechercheHandler:
         oConfig = cConfig()
         sPluginSettingsName = sLabel+'_' +sName
         bPlugin = oConfig.getSetting(sPluginSettingsName)
-        
+        #multicherche
+        if sLabel == 'search5':
+            bPlugin = 'true'
+            
         OnPlugins = oConfig.getSetting('plugin_' + sName) 
 
         if (bPlugin == 'true') and (OnPlugins == 'true'):    
@@ -129,7 +132,7 @@ class cRechercheHandler:
         sLabel = self.getDisp()
         if not sLabel:
             return
-        
+            
         #historique
         try:
             if (cConfig().getSetting("history-view") == 'true' and self.__sRead != "False"):
@@ -147,7 +150,20 @@ class cRechercheHandler:
         cConfig().log("Sites Folder: " + sFolder)
         
         aFileNames = self.__getFileNamesFromFolder(sFolder)
+        xbmc.log(str(aFileNames))
+        #multiselect
+        if sLabel == 'search5':
+            #self.getMultiSources()
+            dialog = xbmcgui.Dialog() 
+            ret = dialog.multiselect("Choose something", aFileNames)
+            NewFileNames = []
+            if ret > -1:
+                for i in ret:
+                    NewFileNames.append(aFileNames[i])
+                    
+            aFileNames = NewFileNames
 
+        xbmc.log(str(aFileNames))
         aPlugins = []
         
         total = len(aFileNames)  
