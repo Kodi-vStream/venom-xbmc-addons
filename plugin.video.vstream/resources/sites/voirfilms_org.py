@@ -258,7 +258,8 @@ def showMovies(sSearch = ''):
             #Vstream don't work with unicode url for the moment
             sPicture = unicode(sPicture,"UTF-8")
             sPicture = sPicture.encode('ascii', 'ignore').decode('ascii')
-           
+            #sPicture=sPicture.decode('utf8')
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
@@ -301,6 +302,9 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    
+    # patch for unicode url
+    sUrl = urllib.quote(sUrl,':/')
  
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
