@@ -602,7 +602,6 @@ class cTrakt:
         sUrl = oInputParameterHandler.getValue('siteUrl')
         sMovieTitle = oInputParameterHandler.getValue('file')
         #sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-        xbmc.log(str(sMovieTitle))
         #ancien decodage
         sMovieTitle = unicode(sMovieTitle, 'utf-8')#converti en unicode pour aider aux convertions
         sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'replace').decode("unicode_escape")#vire accent et '\'
