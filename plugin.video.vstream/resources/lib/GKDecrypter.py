@@ -1,3 +1,15 @@
+# To use it
+#
+#	Key = "a949abce37b369f11237d3c7a04c5721"
+#	x = GKDecrypter(128,128)
+#	sUrl = x.decrypt(EncodedLink.group(1), Key.decode("hex"), "ECB").split('\0')[0]
+#
+#       Key = "JyI8fNAUVUDrrbbT1nxg"
+#       x = GKDecrypter(192,128)
+#	sUrl = x.decrypt(EncodedLink, Key, "ECB").split('\0')[0]
+#
+#
+
 import math
 
 class GKDecrypter:
