@@ -254,11 +254,15 @@ def showMovies(sSearch = ''):
             #not found better way
             #sTitle = unicode(sTitle, errors='replace')
             #sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
+            
+            #Vstream don't work with unicode url for the moment
+            sPicture = unicode(sPicture,"UTF-8")
+            sPicture = sPicture.encode('ascii', 'ignore').decode('ascii')
            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', sPicture) #sortis du poster
+            oOutputParameterHandler.addParameter('sThumbnail', sPicture)
  
             if '/serie/' in aEntry[1]:
                 oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, sPicture, sPicture, '', oOutputParameterHandler)
