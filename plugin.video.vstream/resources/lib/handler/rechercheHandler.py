@@ -150,7 +150,6 @@ class cRechercheHandler:
         cConfig().log("Sites Folder: " + sFolder)
 
         aFileNames = self.__getFileNamesFromFolder(sFolder)
-        xbmc.log(str(aFileNames))
         #multiselect
         if sLabel == 'search5':
             dialog = xbmcgui.Dialog()
