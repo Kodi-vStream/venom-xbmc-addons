@@ -494,10 +494,10 @@ class cTrakt:
         #oGuiElement.setThumbnail(sThumb)
         oGuiElement.setImdb(sImdb)
         oGuiElement.setImdbId(sImdb)
-        
+
         if cConfig().getSetting("meta-view") == 'false':
             self.getTmdbInfo(sTmdb, oGuiElement)
-            
+
         #xbmc.log(str(cTrakt.CONTENT))
         if cTrakt.CONTENT == '2':
             oGuiElement.setMeta(2)
@@ -540,7 +540,7 @@ class cTrakt:
         if ret > -1:
             self.__sType = disp[ret]
         return self.__sType
-        
+
     def getAction2(self):
         sAction = 'https://api.trakt.tv/search/movie?query=tron'
         headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS}
@@ -560,7 +560,7 @@ class cTrakt:
             return
 
         oInputParameterHandler = cInputParameterHandler()
-        
+
         sAction = oInputParameterHandler.getValue('sAction')
         if not sAction:
             sAction = self.getContext()
@@ -586,16 +586,16 @@ class cTrakt:
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
         result = json.loads(sHtmlContent)
-        
+
         #xbmc.log(str(result))
-        
+
         if not result["added"]['movies'] == 0:
             cGui().showNofication('Film rajoute en Watchlist')
         elif not result["added"]['shows'] == 0:
             cGui().showNofication('Serie rajoute en Watchlist')
         else:
-            cGui().showNofication('probleme de rajout en Watchlist')           
-        
+            cGui().showNofication('probleme de rajout en Watchlist')
+
         #{u'not_found': {u'movies': [], u'seasons': [], u'people': [], u'episodes': [], u'shows': []}, u'updated': {u'movies': 0, u'episodes': 0}, u'added': {u'movies': 1, u'episodes': 0}, u'existing': {u'movies': 0, u'episodes': 0}}
 
         if (oInputParameterHandler.exist('sReload')):
@@ -706,12 +706,14 @@ class cTrakt:
         #meta['director'] = result['director']
         #meta['writer'] = result['writer']
         # if (total > 0):
+        oGuiElement.setThumbnail('https://image.tmdb.org/t/p/w396'+result['poster_path'])
+        oGuiElement.setFanart('https://image.tmdb.org/t/p/w1280'+result['backdrop_path'])
 
         for key, value in meta.items():
             oGuiElement.addItemValues(key, value)
 
         return
-        
+
     def getTmdbID(self,sTitle):
         oRequestHandler = cRequestHandler('http://api.themoviedb.org/3/search/movie?query=' + urllib.quote_plus(sTitle) )
         oRequestHandler.addParameters('api_key', '92ab39516970ab9d86396866456ec9b6')
@@ -720,7 +722,7 @@ class cTrakt:
         sHtmlContent = oRequestHandler.request()
         result = json.loads(sHtmlContent)
         #xbmc.log(str(result))
-        
+
         n = 0
         d = 100
         n3 = sTitle.count(' ') + 1
@@ -734,5 +736,5 @@ class cTrakt:
                 n = n2
                 d = d2
                 ret = i['id']
-        
+
         return ret
