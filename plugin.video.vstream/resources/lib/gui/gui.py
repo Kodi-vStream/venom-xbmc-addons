@@ -275,8 +275,8 @@ class cGui():
                 self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuba(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
 
 
             elif cGui.CONTENT == "tvshows":
@@ -284,10 +284,9 @@ class cGui():
                 self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuba(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
-
-
+                self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
+        
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
 
         sPluginHandle = cPluginHandler().getPluginHandle();
@@ -367,8 +366,8 @@ class cGui():
 
     def createContexMenuTrakt(self, oGuiElement, oOutputParameterHandler= ''):
         #pas de menu si pas de meta.
-        if cConfig().getSetting("meta-view") == 'false':
-            return
+        #if cConfig().getSetting("meta-view") == 'false':
+        #    return
         oOutputParameterHandler.addParameter('sImdb', oGuiElement.getImdb())
         sType = cGui.CONTENT.replace('tvshows', 'shows')
         oOutputParameterHandler.addParameter('sType', sType)
