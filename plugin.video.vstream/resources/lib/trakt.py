@@ -2,6 +2,7 @@
 #Venom.
 from resources.lib.config import cConfig
 from resources.lib.db import cDb
+from resources.lib.util import cUtil
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.hoster import cHosterGui
@@ -10,9 +11,10 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.rechercheHandler import cRechercheHandler
 
+
 import urllib, urllib2, re
 import xbmc, xbmcgui
-import time, md5
+import time, md5 ,math
 import unicodedata
 
 import datetime, time
@@ -104,12 +106,12 @@ class cTrakt:
         oGui = cGui()
 
         if cConfig().getSetting("bstoken") == '':
+            xbmc.log('er')
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'movie')
             oGui.addDir(SITE_IDENTIFIER, 'getToken()', cConfig().getlanguage(30305), 'trakt.png', oOutputParameterHandler)
         else:
-
             #nom de luser
             headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
             #post = {'client_id': API_KEY, 'client_secret': API_SECRET, 'code': result['device_code']}
@@ -376,7 +378,7 @@ class cTrakt:
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('file', sFile)
                 oOutputParameterHandler.addParameter('key', sKey)
-                self.getFolder(oGui, sTitle, sFile, sFunction, sImdb, oOutputParameterHandler)
+                self.getFolder(oGui, sTitle, sFile, sFunction, sImdb, sTmdb, oOutputParameterHandler)
                 sKey += 1
         oGui.setEndOfDirectory()
         return
@@ -421,7 +423,7 @@ class cTrakt:
                 oOutputParameterHandler.addParameter('sNum', sNum)
                 oOutputParameterHandler.addParameter('file', sFile)
                 oOutputParameterHandler.addParameter('title', sTitle2)
-                self.getFolder(oGui, sTitle2, sFile, 'getBepisodes', '', oOutputParameterHandler)
+                self.getFolder(oGui, sTitle2, sFile, 'getBepisodes', '','' ,oOutputParameterHandler)
                 sNum += 1
 
         oGui.setEndOfDirectory()
@@ -475,12 +477,12 @@ class cTrakt:
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('file', sFile)
                 #oOutputParameterHandler.addParameter('Key', skey)
-                self.getFolder(oGui, sTitle2, sFile, 'showHosters', '', oOutputParameterHandler)
+                self.getFolder(oGui, sTitle2, sFile, 'showHosters', '', '', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
         return
 
-    def getFolder(self, oGui, sTitle, sFile, sFunction, sImdb, oOutputParameterHandler):
+    def getFolder(self, oGui, sTitle, sFile, sFunction, sImdb, sTmdb, oOutputParameterHandler):
 
         oGuiElement = cGuiElement()
 
@@ -492,8 +494,10 @@ class cTrakt:
         #oGuiElement.setThumbnail(sThumb)
         oGuiElement.setImdb(sImdb)
         oGuiElement.setImdbId(sImdb)
-
-        #self.getTmdb(sTmdb, oGuiElement)
+        
+        if cConfig().getSetting("meta-view") == 'false':
+            self.getTmdbInfo(sTmdb, oGuiElement)
+            
         #xbmc.log(str(cTrakt.CONTENT))
         if cTrakt.CONTENT == '2':
             oGuiElement.setMeta(2)
@@ -536,6 +540,18 @@ class cTrakt:
         if ret > -1:
             self.__sType = disp[ret]
         return self.__sType
+        
+    def getAction2(self):
+        sAction = 'https://api.trakt.tv/search/movie?query=tron'
+        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS}
+
+        req = urllib2.Request(sAction, None ,headers)
+        response = urllib2.urlopen(req)
+        sHtmlContent = response.read()
+        result = json.loads(sHtmlContent)
+        xbmc.log(str(result))
+        for i in result:
+            xbmc.log(str(i['movie']['title'].encode('utf-8')) + '=' + str(i['movie']['ids']['imdb']))
 
     def getAction(self):
 
@@ -544,6 +560,7 @@ class cTrakt:
             return
 
         oInputParameterHandler = cInputParameterHandler()
+        
         sAction = oInputParameterHandler.getValue('sAction')
         if not sAction:
             sAction = self.getContext()
@@ -556,20 +573,31 @@ class cTrakt:
             sType = self.getType()
         sImdb = oInputParameterHandler.getValue('sImdb')
         if not sImdb:
-            return
+            sTMDB = int(self.getTmdbID(oInputParameterHandler.getValue('sMovieTitle')))
+            sPost = {sType: [{"ids": {"tmdb": sTMDB}}]}
+        else:
+            sPost = {sType: [{"ids": {"imdb": sImdb}}]}
 
         headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
-        #sUrl =  ('%s%s') % (sAction, str(sImdb))
-        sPost = {sType: [{"ids": {"imdb": sImdb}}]}
+
         sPost = json.dumps(sPost)
 
         req = urllib2.Request(sAction, sPost,headers)
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
         result = json.loads(sHtmlContent)
+        
+        #xbmc.log(str(result))
+        
+        if not result["added"]['movies'] == 0:
+            cGui().showNofication('Film rajoute en Watchlist')
+        elif not result["added"]['shows'] == 0:
+            cGui().showNofication('Serie rajoute en Watchlist')
+        else:
+            cGui().showNofication('probleme de rajout en Watchlist')           
+        
         #{u'not_found': {u'movies': [], u'seasons': [], u'people': [], u'episodes': [], u'shows': []}, u'updated': {u'movies': 0, u'episodes': 0}, u'added': {u'movies': 1, u'episodes': 0}, u'existing': {u'movies': 0, u'episodes': 0}}
-        #affiche le resultas code a l'arache
-        cGui().showNofication(str(result))
+
         if (oInputParameterHandler.exist('sReload')):
             xbmc.executebuiltin("Container.Refresh")
         return
@@ -653,7 +681,7 @@ class cTrakt:
 
         oGui.setEndOfDirectory()
 
-    def getTmdb(self, sTmdb, oGuiElement):
+    def getTmdbInfo(self, sTmdb, oGuiElement):
 
         oRequestHandler = cRequestHandler('https://api.themoviedb.org/3/movie/'+str(sTmdb))
         oRequestHandler.addParameters('api_key', '92ab39516970ab9d86396866456ec9b6')
@@ -661,7 +689,7 @@ class cTrakt:
 
         sHtmlContent = oRequestHandler.request()
         result = json.loads(sHtmlContent)
-        #xbmc.log(str(result))
+        xbmc.log(str(result))
 
         total = len(sHtmlContent)
         #format
@@ -683,3 +711,28 @@ class cTrakt:
             oGuiElement.addItemValues(key, value)
 
         return
+        
+    def getTmdbID(self,sTitle):
+        oRequestHandler = cRequestHandler('http://api.themoviedb.org/3/search/movie?query=' + urllib.quote_plus(sTitle) )
+        oRequestHandler.addParameters('api_key', '92ab39516970ab9d86396866456ec9b6')
+        oRequestHandler.addParameters('language', 'fr')
+
+        sHtmlContent = oRequestHandler.request()
+        result = json.loads(sHtmlContent)
+        #xbmc.log(str(result))
+        
+        n = 0
+        d = 100
+        n3 = sTitle.count(' ') + 1
+        for i in result['results']:
+            xbmc.log( i['title'].encode("utf-8") + ' ' + str(i['id'] ))
+            #compare le nombre de mot
+            sTitle2 = i['title'].encode("utf-8")
+            n2 = cUtil().CheckOccurence(sTitle,sTitle2)
+            d2 = math.fabs( sTitle2.count(' ') + 1 - n3 )
+            if  (n2 >= n) and (d2 < 2):
+                n = n2
+                d = d2
+                ret = i['id']
+        
+        return ret
