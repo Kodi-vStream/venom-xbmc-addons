@@ -3,6 +3,7 @@
 #
 import urllib
 import urllib2
+import zlib
 
 from urllib2 import HTTPError, URLError
 from resources.lib.config import cConfig
@@ -106,6 +107,8 @@ class cRequestHandler:
             sContent = oResponse.read()
             
             self.__sResponseHeader = oResponse.info()
+            if self.__sResponseHeader.get('Content-Encoding') == 'gzip':
+                sContent = zlib.decompress(sContent, zlib.MAX_WBITS|16)
             self.__sRealUrl = oResponse.geturl()
             self.__HeaderReturn = oResponse.headers
         
