@@ -10,7 +10,7 @@ import xbmcgui
 import xbmc
 
 class cRechercheHandler:
-    
+
     def __init__(self):
         self.__sText = ""
         self.__sDisp = ""
@@ -27,7 +27,7 @@ class cRechercheHandler:
             return sys.argv[0]
         except:
             return ''
-            
+
     def setText(self, sText):
         self.__sText = sText
 
@@ -37,11 +37,11 @@ class cRechercheHandler:
             sSearchText = oGui.showKeyBoard()
             self.__sText = urllib.quote(sSearchText)
         return self.__sText
-        
+
 
     def setDisp(self, sDisp):
         self.__sDisp = sDisp
-        
+
     def setRead(self, sRead):
         self.__sRead = sRead
 
@@ -49,10 +49,10 @@ class cRechercheHandler:
         if not self.__sDisp:
             disp = ['search1','search2','search3','search4','search5']
             dialog2 = xbmcgui.Dialog()
-            dialog_select = [cConfig().getSetting('search1_label'), cConfig().getSetting('search2_label'), cConfig().getSetting('search3_label'), cConfig().getSetting('search4_label'), 'Sélectionner']
+            dialog_select = [cConfig().getSetting('search1_label'), cConfig().getSetting('search2_label'), cConfig().getSetting('search3_label'), cConfig().getSetting('search4_label'), cConfig().getlanguage(30092)]
 
-            ret = dialog2.select('Select Recherche',dialog_select)
-    
+            ret = dialog2.select(cConfig().getlanguage(30093),dialog_select)
+
             if ret > -1:
                 self.__sDisp = disp[ret]
         return self.__sDisp
@@ -67,7 +67,7 @@ class cRechercheHandler:
             sFilePath = os.path.join(unicode(sFolder, 'utf-8'), sItemName)
             # xbox hack
             sFilePath = sFilePath.replace('\\', '/')
-            
+
             if (os.path.isdir(sFilePath) == False):
                 #if (str(sFilePath.lower()).endswith('py')):
                 if (sFilePath.lower().endswith('py')):
@@ -82,45 +82,45 @@ class cRechercheHandler:
         #multicherche
         if sLabel == 'search5':
             bPlugin = 'true'
-            
-        OnPlugins = oConfig.getSetting('plugin_' + sName) 
 
-        if (bPlugin == 'true') and (OnPlugins == 'true'):    
+        OnPlugins = oConfig.getSetting('plugin_' + sName)
+
+        if (bPlugin == 'true') and (OnPlugins == 'true'):
             try:
                 oGui = cGui()
-                
+
                 exec "from resources.sites import " + sName
                 exec "sDisplayname = " + sName + ".SITE_NAME"
                 exec "sSearch = " + sName + ".URL_SEARCH"
-                
+
                 cConfig().log("Load Recherche: " + str(sName))
-                
+
                 oGui.addText(sName,'[COLOR olive]'+sDisplayname+'[/COLOR]')
                 #exec "sFunction = " + sName + ".FUNCTION_SEARCH"
                 #sPluginSettingsName = sLabel+'_' + sName
                 sUrl = sSearch[0]+sText
                 searchUrl = "%s.%s('%s')" % (sName, sSearch[1], sUrl)
                 exec searchUrl
-                
+
                 return True
             except Exception, e:
-                cConfig().log("cant import plugin: " + str(sName))            
+                cConfig().log("cant import plugin: " + str(sName))
                 return False, False
-        else:    
+        else:
             return False, False
-            
 
-    def getRootFolder(self):        
+
+    def getRootFolder(self):
         sRootFolder = cConfig().getAddonPath()
         cConfig().log("Root Folder: " + sRootFolder)
         return sRootFolder
-        
+
     def getRootArt(self):
         oConfig = cConfig()
 
         sFolder =  self.getRootFolder()
         sFolder = os.path.join(sFolder, 'resources/art/')
-       
+
         sFolder = sFolder.replace('\\', '/')
         return sFolder
 
@@ -132,7 +132,7 @@ class cRechercheHandler:
         sLabel = self.getDisp()
         if not sLabel:
             return
-            
+
         #historique
         try:
             if (cConfig().getSetting("history-view") == 'true' and self.__sRead != "False"):
@@ -141,45 +141,43 @@ class cRechercheHandler:
                 meta['disp'] = sLabel
                 cDb().insert_history(meta)
         except: pass
-            
+
         sFolder =  self.getRootFolder()
         sFolder = os.path.join(sFolder, 'resources/sites')
 
-        # xbox hack        
+        # xbox hack
         sFolder = sFolder.replace('\\', '/')
         cConfig().log("Sites Folder: " + sFolder)
-        
+
         aFileNames = self.__getFileNamesFromFolder(sFolder)
         xbmc.log(str(aFileNames))
         #multiselect
         if sLabel == 'search5':
-            #self.getMultiSources()
-            dialog = xbmcgui.Dialog() 
-            ret = dialog.multiselect("Choose something", aFileNames)
+            dialog = xbmcgui.Dialog()
+            ret = dialog.multiselect(cConfig().getlanguage(30094), aFileNames)
             NewFileNames = []
             if ret > -1:
                 for i in ret:
                     NewFileNames.append(aFileNames[i])
-                    
-            aFileNames = NewFileNames
 
-        xbmc.log(str(aFileNames))
+            aFileNames = NewFileNames
+        #fin multiselect
         aPlugins = []
-        
-        total = len(aFileNames)  
+
+        total = len(aFileNames)
         dialog = cConfig().createDialog("vStream")
         xbmcgui.Window(10101).setProperty('search', 'true')
-        
+
         for sFileName in aFileNames:
-        
-            cConfig().updateDialogSearch(dialog, total, sFileName)               
+
+            cConfig().updateDialogSearch(dialog, total, sFileName)
             if dialog.iscanceled():
                 break
-                
+
             aPlugin = self.__importPlugin(sFileName, sLabel, sText)
 
         xbmcgui.Window(10101).setProperty('search', 'false')
-        cConfig().finishDialog(dialog) 
+        cConfig().finishDialog(dialog)
         return True
 
     def __createAvailablePluginsItem(self, sPluginName, sPluginIdentifier, sPluginDesc):

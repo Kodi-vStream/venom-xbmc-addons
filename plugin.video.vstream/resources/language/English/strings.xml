@@ -34,6 +34,9 @@
     <string id="30089">Search 2</string>
     <string id="30090">Search 3</string>
     <string id="30091">Search 4</string>
+    <String id="30092">Multiple Choices</string>
+    <String id="30093">Select Search Engine</string>
+    <String id="30094">Select your Sources</string>
 
     <!-- catégorie -->
     <string id="30101">News</string>

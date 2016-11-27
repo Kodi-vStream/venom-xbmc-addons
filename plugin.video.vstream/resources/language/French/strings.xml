@@ -34,6 +34,9 @@
     <string id="30089">Recherche 2</string>
     <string id="30090">Recherche 3</string>
     <string id="30091">Recherche 4</string>
+    <string id="30092">Choix Multiples</string>
+    <string id="30093">Selectionner un Moteur de Recherche</string>
+    <string id="30094">Selectionner vos Sources</string>
 
     <!-- catégorie -->
     <string id="30101">Derniers ajouts</string>
