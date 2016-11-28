@@ -494,6 +494,8 @@ class cTrakt:
         #oGuiElement.setThumbnail(sThumb)
         oGuiElement.setImdb(sImdb)
         oGuiElement.setImdbId(sImdb)
+        oGuiElement.setTmdb(sTmdb)
+        oGuiElement.setTmdbId(sTmdb)
 
         if cConfig().getSetting("meta-view") == 'false':
             self.getTmdbInfo(sTmdb, oGuiElement)
@@ -573,7 +575,7 @@ class cTrakt:
             sType = self.getType()
         sImdb = oInputParameterHandler.getValue('sImdb')
         if not sImdb:
-            sTMDB = int(self.getTmdbID(oInputParameterHandler.getValue('sMovieTitle')))
+            sTMDB = int(self.getTmdbID(oInputParameterHandler.getValue('sMovieTitle'),sType))
             sPost = {sType: [{"ids": {"tmdb": sTMDB}}]}
         else:
             sPost = {sType: [{"ids": {"imdb": sImdb}}]}
@@ -682,12 +684,19 @@ class cTrakt:
         oGui.setEndOfDirectory()
 
     def getTmdbInfo(self, sTmdb, oGuiElement):
+        
+        if not sTmdb:
+            xbmc.log('Probleme sTmdb')
+            return
 
         oRequestHandler = cRequestHandler('https://api.themoviedb.org/3/movie/'+str(sTmdb))
         oRequestHandler.addParameters('api_key', '92ab39516970ab9d86396866456ec9b6')
         oRequestHandler.addParameters('language', 'fr')
 
         sHtmlContent = oRequestHandler.request()
+        
+        xbmc.log(sHtmlContent)
+        
         result = json.loads(sHtmlContent)
         xbmc.log(str(result))
 
@@ -706,16 +715,22 @@ class cTrakt:
         #meta['director'] = result['director']
         #meta['writer'] = result['writer']
         # if (total > 0):
-        oGuiElement.setThumbnail('https://image.tmdb.org/t/p/w396'+result['poster_path'])
-        oGuiElement.setFanart('https://image.tmdb.org/t/p/w1280'+result['backdrop_path'])
+        if result['poster_path']:
+            oGuiElement.setThumbnail('https://image.tmdb.org/t/p/w396'+result['poster_path'])
+        if result['backdrop_path']:
+            oGuiElement.setFanart('https://image.tmdb.org/t/p/w1280'+result['backdrop_path'])
 
         for key, value in meta.items():
             oGuiElement.addItemValues(key, value)
 
         return
 
-    def getTmdbID(self,sTitle):
-        oRequestHandler = cRequestHandler('http://api.themoviedb.org/3/search/movie?query=' + urllib.quote_plus(sTitle) )
+    def getTmdbID(self,sTitle,sType):
+        
+        if sType == 'show':
+            sType = 'tv'
+        
+        oRequestHandler = cRequestHandler('http://api.themoviedb.org/3/search/'+ sType +' ?query=' + urllib.quote_plus(sTitle) )
         oRequestHandler.addParameters('api_key', '92ab39516970ab9d86396866456ec9b6')
         oRequestHandler.addParameters('language', 'fr')
 
