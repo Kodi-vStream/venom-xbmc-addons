@@ -4,7 +4,7 @@ from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 
-import re,urllib2
+import re,urllib2,urllib
 import xbmcgui
 
 from resources.lib.packer import cPacker
@@ -13,7 +13,7 @@ import xbmc
 
 #Remarque : meme code que vodlocker
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
 class cHoster(iHoster):
 
@@ -53,13 +53,14 @@ class cHoster(iHoster):
         return ''
         
     def GetRedirectHtml(self,web_url,sId,NoEmbed = False):
+        
         headers = {
-        #'Host' : HOST,
+        #'Host' : 'www.flashx.tv',
         'User-Agent': UA,
-        'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+        #'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        #'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
         'Referer':'http://embed.flashx.tv/embed.php?c=' + sId,
-        #'Accept-Encoding':'gzip, deflate'
+        'Accept-Encoding':'identity'
         }
         
         MaxRedirection = 3
@@ -79,14 +80,14 @@ class cHoster(iHoster):
                 reponse = urllib2.urlopen(request)
                 sHtmlContent = reponse.read()
                 reponse.close()
-                break
+                #disabled
+                if not (reponse.geturl() == web_url) and not (reponse.geturl() == ''):
+                    redirection_target = reponse.geturl()
+                else:
+                    break
             except urllib2.URLError, e:
-                #print e.code
-                #print e.headers
-                #print e.read()
                 if (e.code == 301) or  (e.code == 302):
                     redirection_target = e.headers['Location']
-                    #xbmc.log('Redirection : ' + web_url)
          
             #pas de redirection on annulle
             if not (redirection_target):
@@ -113,7 +114,7 @@ class cHoster(iHoster):
         
     def GetHost(self,sUrl):
         oParser = cParser()
-        sPattern = 'http:\/\/(.+?)\/'
+        sPattern = 'https*:\/\/(.+?)\/'
         aResult = oParser.parse(sUrl, sPattern)
         if aResult[0]:
             return aResult[1][0]
@@ -142,7 +143,7 @@ class cHoster(iHoster):
                    #'Referer':referer
         }
 
-        req = urllib2.Request(url,None,headers)
+        req = urllib2.Request(url)#,None,headers)
         res = urllib2.urlopen(req)
         #pour afficher contenu
         #xbmc.log(res.read())
@@ -174,29 +175,29 @@ class cHoster(iHoster):
         sId = re.sub(r'-.+', '', sId)
         
         #on cherche la vraie url
-        #web_url = 'http://' + HOST + '/playit-' + sId + '.html'
-        sHtmlContent = self.GetRedirectHtml(self.__sUrl,sId)
+        sHtmlContent = self.GetRedirectHtml(self.__sUrl,sId)        
         
         #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
         
-        sPattern = '(<[^<>]+(?:"visibility:hidden"|"opacity: 0;")><a )*href="(http:\/\/www\.flashx[^"]+)'
+        #sPattern = '(<[^<>]+(?:"visibility:hidden"|"opacity: 0;")><a )*href="(http:\/\/www\.flashx[^"]+)'
+        sPattern = 'href="(https*:\/\/www\.flashx[^"]+)'
         AllUrl = re.findall(sPattern,sHtmlContent,re.DOTALL)
         xbmc.log(str(AllUrl))
         
-        if AllUrl:
-            # Need to find which one is the good link
-            # Use the len don't work
-            for i in AllUrl:
-                if i[0] == '':
-                    web_url = i[1]
+        #Disabled for the moment
+        if (False):
+            if AllUrl:
+                # Need to find which one is the good link
+                # Use the len don't work
+                for i in AllUrl:
+                    if i[0] == '':
+                        web_url = i[1]
+            else:
+                return False,False
         else:
-            return False,False
- 
-        #fh = open('c:\\test2.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
+            web_url = AllUrl[1]
         
         #Request to unlock video
         sPattern ='fastcontentdelivery\.com.+?\?([^"]+)">'
@@ -207,16 +208,22 @@ class cHoster(iHoster):
             sHtmlContent = oRequest.request()
         else:
             xbmc.log('No unlock url')
-
         
         sHtmlContent = self.GetRedirectHtml(web_url,sId,True)
+        
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+        
         if sHtmlContent == False:
             xbmc.log('Passage en mode barbare')
             #ok ca a rate on passe toutes les url de AllUrl
             for i in AllUrl:
-                sHtmlContent = self.GetRedirectHtml(i[1],sId)
+                xbmc.log('++' + i)
+                sHtmlContent = self.GetRedirectHtml(i,sId,True)
                 if sHtmlContent:
-                    break
+                    break              
+                    
         
         if not sHtmlContent:
             return False,False
@@ -255,10 +262,6 @@ class cHoster(iHoster):
             
             #et on re-recupere la page
             sHtmlContent = self.GetRedirectHtml(sGoodUrl,sId)
-            
-            #fh = open('c:\\test.txt', "w")
-            #fh.write(sHtmlContent)
-            #fh.close() 
                 
             #et on recherche le lien code
             sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
@@ -267,7 +270,7 @@ class cHoster(iHoster):
                 
         if (aResult):
             xbmc.log( "lien code")
-            xbmc.log(str(aResult))
+            #xbmc.log(str(aResult))
             sUnpacked = cPacker().unpack(aResult[0])
             sHtmlContent = sUnpacked
             
@@ -278,6 +281,8 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         api_call = ''
+        
+        #xbmc.log(str(aResult))
         
         if (aResult[0] == True):
             #initialisation des tableaux
