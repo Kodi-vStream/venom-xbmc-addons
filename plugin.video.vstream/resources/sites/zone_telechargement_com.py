@@ -14,11 +14,13 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
-import urllib, re,urllib2
+import urllib,re,urllib2
 import xbmcgui
 import xbmc
-
 from resources.lib.dl_deprotect import DecryptDlProtect
+
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
+headers = { 'User-Agent' : UA }
 
 SITE_IDENTIFIER = 'zone_telechargement_com' 
 SITE_NAME = '[COLOR violet]Zone-telechargement[/COLOR]' 
@@ -304,14 +306,17 @@ def showMovies(sSearch = ''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl') 
         
-    oRequestHandler = cRequestHandler(sUrl) 
-    sHtmlContent = oRequestHandler.request()
-    
+    request = urllib2.Request(sUrl,None,headers) 
+    reponse = urllib2.urlopen(request)
+    sHtmlContent = reponse.read()
+    reponse.close()
+
+             
     sPattern = '<div style="height:[0-9]{3}px;"><a title="" href="([^"]+)[^>]+?><img class="[^"]+?" data-newsid="[^"]+?" src="([^<"]+)".+?<a title="" href[^>]+?>([^<]+?)<'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     #print aResult 
     
     if (aResult[0] == True):
