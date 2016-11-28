@@ -34,6 +34,9 @@
     <string id="30089">Recherche 2</string>
     <string id="30090">Recherche 3</string>
     <string id="30091">Recherche 4</string>
+    <string id="30092">Choix Multiples</string>
+    <string id="30093">Selectionner un Moteur de Recherche</string>
+    <string id="30094">Selectionner vos Sources</string>
 
     <!-- catégorie -->
     <string id="30101">Derniers ajouts</string>
@@ -98,20 +101,20 @@
     <string id="30308">Historique</string>
     <string id="30309">Déconnection</string>
     <string id="30310">Collection</string>
-    <string id="30311">Surveiller</string>
-    <string id="30312">Regarder</string>
-    <string id="30313">Recommender</string>
+    <string id="30311">A surveiller</string>
+    <string id="30312">Regardé</string>
+    <string id="30313">Recommandé</string>
     <string id="30314">BoxOffice</string>
     <string id="30315">Populaire</string>
     <string id="30316">Les plus vues de la semaine</string>
     <string id="30317">Les plus vues du mois</string>
-    <string id="30318">Surveiller (saisons)</string>
-    <string id="30319">Surveiller (episodes)</string>
+    <string id="30318">A surveiller (saisons)</string>
+    <string id="30319">A surveiller (episodes)</string>
     <string id="30320">Vous avez été déconnecté avec succés</string>
 
     <string id="30321">Ajouter à la collection</string>
-    <string id="30322">Marquer comme regarder</string>
-    <string id="30323">Marquer à surveiller</string>
+    <string id="30322">Marquer comme regardé</string>
+    <string id="30323">Marquer a surveiller</string>
 
 
 

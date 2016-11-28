@@ -427,6 +427,13 @@ class cHome:
         sLabel4 = cConfig().getlanguage(30091)+": "+cConfig().getSetting('search4_label')
         oGui.addDir(SITE_IDENTIFIER, 'searchMovie', sLabel4, 'search.png', oOutputParameterHandler)
 
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oOutputParameterHandler.addParameter('disp', 'search5')
+        oOutputParameterHandler.addParameter('type', '')
+        oOutputParameterHandler.addParameter('readdb', 'True')
+        sLabel5 = ('%s: %s') % (cConfig().getlanguage(30076), cConfig().getlanguage(30092))
+        oGui.addDir(SITE_IDENTIFIER, 'searchMovie', sLabel5, 'search.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
