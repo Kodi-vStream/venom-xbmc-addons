@@ -334,7 +334,12 @@ def showHosters():
         vUrl = re.search('url=([^"]+)"', repok)
         if vUrl:   
            sHosterUrl = vUrl.group(1)
-           sHosterUrl = sHosterUrl.replace('http://www.filmsvostfr.co/uptoboxlink.php?link=','http://uptobox.com/').replace('http://www.filmsvostfr.co/1fichierlink.php?link=','https://1fichier.com/?')
+           if 'uptobox' in sHosterUrl:
+               sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/uptoboxlink\.php\?link=)', 'http://uptobox.com/' ,sHosterUrl)
+           elif '1fichier' in sHosterUrl:
+                 sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/1fichierlink\.php\?link=)', 'https://1fichier.com/?' ,sHosterUrl)
+           #sHosterUrl = sHosterUrl.replace('http://www.filmsvostfr.co/uptoboxlink.php?link=','http://uptobox.com/').replace('http://www.filmsvostfr.co/1fichierlink.php?link=','https://1fichier.com/?')
+
     else:
         sHosterUrl = sUrl
 
@@ -375,4 +380,3 @@ def showHostersSetA():
        
     cHosterGui().plusHoster(oGui)
     oGui.setEndOfDirectory()  
-    
