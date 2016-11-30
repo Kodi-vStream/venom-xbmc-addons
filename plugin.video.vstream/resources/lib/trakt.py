@@ -162,15 +162,39 @@ class cTrakt:
             # oOutputParameterHandler = cOutputParameterHandler()
             # oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/users/me/watching')
             # oGui.addDir(SITE_IDENTIFIER, 'getBseries', 'Actuellement', 'mark.png', oOutputParameterHandler)
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/oauth/revoke')
+            oGui.addDir(SITE_IDENTIFIER, 'getCalendrier', 'Calendrier des sorties VO', 'trakt.png', oOutputParameterHandler)            
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/oauth/revoke')
             oGui.addDir(SITE_IDENTIFIER, 'getBsout', cConfig().getlanguage(30309), 'trakt.png', oOutputParameterHandler)
-
-
-
+ 
         oGui.setEndOfDirectory()
 
+    def getCalendrier(self):
+        oInputParameterHandler = cInputParameterHandler()
+        sType = oInputParameterHandler.getValue('type')
+
+        oGui = cGui()
+        
+        today_date = str(datetime.datetime.now().date())
+        
+        #DANGER ca rame, freeze
+        liste = []
+        liste.append( ['Mes sorties Sur les 7 jours a venir','https://api.trakt.tv/calendars/my/shows/' + today_date + '/7'] )
+        liste.append( ['Freeze - Sur les X jours a venir','https://api.trakt.tv/calendars/all/shows/' + today_date + '/1'] )
+        
+        for sTitle,sUrl in liste:
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'getTrakt', sTitle, 'genres.png', oOutputParameterHandler)
+
+        oGui.setEndOfDirectory()
+        
+        
     def getLists(self):
 
         oInputParameterHandler = cInputParameterHandler()
@@ -200,7 +224,6 @@ class cTrakt:
             liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/shows/popular'] )
             liste.append( [cConfig().getlanguage(30316),'https://api.trakt.tv/shows/played/weekly'] )
             liste.append( [cConfig().getlanguage(30317),'https://api.trakt.tv/shows/played/monthly'] )
-            liste.append( ['Calendrier des sorties VO','https://api.trakt.tv/calendars/all/shows/2014-09-01/7'] )
             #liste.append( ['Historique de séries','https://api.trakt.tv/users/me/history/shows'] )
 
         for sTitle,sUrl in liste:
@@ -354,7 +377,17 @@ class cTrakt:
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                     sTitle = ('Spectateur [COLOR white](%s)[/COLOR] - Collection [COLOR white](%s)[/COLOR] - %s - (%s)') % (int(sPlay_count), int(sCollected_count), sTitle.encode("utf-8"), int(sYear))
 
-
+                elif 'calendars' in sUrl:
+                    xbmc.log(str(i))
+                    if  'show' in i:
+                        sTrakt, sTitle, sImdb, sTmdb, sYear, sFirst_aired = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year'],i['first_aired']
+                        cTrakt.CONTENT = '2'
+                    else:
+                        sTrakt, sTitle, sImdb, sTmdb, sYear, sFirst_aired  = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year'],i['first_aired']
+                        cTrakt.CONTENT = '1'
+                    sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
+                    sTitle = sTitle.encode("utf-8")
+                    
                 elif 'recommendations' in sUrl or 'popular' in sUrl:
                     if 'shows' in sUrl:
                         cTrakt.CONTENT = '2'
