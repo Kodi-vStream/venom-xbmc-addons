@@ -200,6 +200,7 @@ class cTrakt:
             liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/shows/popular'] )
             liste.append( [cConfig().getlanguage(30316),'https://api.trakt.tv/shows/played/weekly'] )
             liste.append( [cConfig().getlanguage(30317),'https://api.trakt.tv/shows/played/monthly'] )
+            liste.append( ['Calendrier des sorties VO','https://api.trakt.tv/calendars/all/shows/2014-09-01/7'] )
             #liste.append( ['Historique de séries','https://api.trakt.tv/users/me/history/shows'] )
 
         for sTitle,sUrl in liste:
@@ -569,7 +570,8 @@ class cTrakt:
         if not sAction:
             return
 
-        # aParams = oInputParameterHandler.getAllParameter()
+        xbmc.log(str(oInputParameterHandler.getAllParameter()))
+        
         sType = oInputParameterHandler.getValue('sType')
         if not sType:
             sType = self.getType()
@@ -685,6 +687,8 @@ class cTrakt:
 
     def getTmdbInfo(self, sTmdb, oGuiElement):
         
+        return
+        
         if not sTmdb:
             xbmc.log('Probleme sTmdb')
             return
@@ -695,10 +699,12 @@ class cTrakt:
 
         sHtmlContent = oRequestHandler.request()
         
-        xbmc.log(sHtmlContent)
-        
-        result = json.loads(sHtmlContent)
-        xbmc.log(str(result))
+        try:
+            xbmc.log(sHtmlContent)
+            result = json.loads(sHtmlContent)
+            #xbmc.log(str(result))
+        except:
+            return
 
         total = len(sHtmlContent)
         #format
@@ -727,10 +733,21 @@ class cTrakt:
 
     def getTmdbID(self,sTitle,sType):
         
-        if sType == 'show':
+        if sType == 'show' or sType == 'shows':
             sType = 'tv'
+            
+        if sType == 'movies':
+            sType = 'movie'
+            
+        ret = 0
         
-        oRequestHandler = cRequestHandler('http://api.themoviedb.org/3/search/'+ sType +' ?query=' + urllib.quote_plus(sTitle) )
+        if sType == 'tv':
+            sTitle = cUtil().FormatSerie(sTitle)
+            sTitle = re.sub('((?:[S|E][0-9\.\-\_]+){1,2})','', sTitle)       
+            
+        xbmc.log('Recherche de : ' + sTitle)
+             
+        oRequestHandler = cRequestHandler('http://api.themoviedb.org/3/search/'+ sType +'?query=' + urllib.quote_plus(sTitle) )
         oRequestHandler.addParameters('api_key', '92ab39516970ab9d86396866456ec9b6')
         oRequestHandler.addParameters('language', 'fr')
 
@@ -740,13 +757,18 @@ class cTrakt:
 
         n = 0
         d = 100
+        sTitle = sTitle.strip()
         n3 = sTitle.count(' ') + 1
         for i in result['results']:
-            xbmc.log( i['title'].encode("utf-8") + ' ' + str(i['id'] ))
+            #xbmc.log( i['title'].encode("utf-8") + ' ' + str(i['id'] ))
             #compare le nombre de mot
-            sTitle2 = i['title'].encode("utf-8")
+            if 'title' in i:
+                sTitle2 = i['title'].encode("utf-8")
+            else:
+                sTitle2 = i['name'].encode("utf-8")
             n2 = cUtil().CheckOccurence(sTitle,sTitle2)
             d2 = math.fabs( sTitle2.count(' ') + 1 - n3 )
+            
             if  (n2 >= n) and (d2 < 2):
                 n = n2
                 d = d2
