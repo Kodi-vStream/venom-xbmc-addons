@@ -182,7 +182,7 @@ class cHoster(iHoster):
         #fh.close()
         
         #sPattern = '(<[^<>]+(?:"visibility:hidden"|"opacity: 0;")><a )*href="(http:\/\/www\.flashx[^"]+)'
-        sPattern = 'href="(https*:\/\/www\.flashx[^"]+)'
+        sPattern = 'href=["\'](https*:\/\/www\.flashx[^"\']+)'
         AllUrl = re.findall(sPattern,sHtmlContent,re.DOTALL)
         xbmc.log(str(AllUrl))
         
@@ -197,13 +197,14 @@ class cHoster(iHoster):
             else:
                 return False,False
         else:
-            web_url = AllUrl[1]
+            web_url = AllUrl[0]
         
         #Request to unlock video
         sPattern ='fastcontentdelivery\.com.+?\?([^"]+)">'
         aResult = re.findall(sPattern,sHtmlContent)
         if aResult:
             UnlockUrl = 'http://www.flashx.tv/counter.cgi?' + aResult[0]
+            xbmc.log('unlock url' + UnlockUrl)
             oRequest = cRequestHandler(UnlockUrl)
             sHtmlContent = oRequest.request()
         else:
