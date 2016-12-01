@@ -532,7 +532,8 @@ class cTrakt:
         oGuiElement.setTmdbId(sTmdb)
 
         if cConfig().getSetting("meta-view") == 'false':
-            self.getTmdbInfo(sTmdb, oGuiElement)
+            #self.getTmdbInfo(sTmdb, oGuiElement)
+            oGuiElement.setMetaAddon('true')
 
         #xbmc.log(str(cTrakt.CONTENT))
         if cTrakt.CONTENT == '2':
@@ -627,11 +628,11 @@ class cTrakt:
         #xbmc.log(str(result))
 
         if not result["added"]['movies'] == 0:
-            cGui().showNofication('Film rajoute en Watchlist')
+            cGui().showNofication('Film rajoute avec succes')
         elif not result["added"]['shows'] == 0:
-            cGui().showNofication('Serie rajoute en Watchlist')
+            cGui().showNofication('Serie rajoute avec succes')
         else:
-            cGui().showNofication('probleme de rajout en Watchlist')
+            cGui().showNofication('Probleme de rajout')
 
         #{u'not_found': {u'movies': [], u'seasons': [], u'people': [], u'episodes': [], u'shows': []}, u'updated': {u'movies': 0, u'episodes': 0}, u'added': {u'movies': 1, u'episodes': 0}, u'existing': {u'movies': 0, u'episodes': 0}}
 
@@ -773,14 +774,39 @@ class cTrakt:
             sType = 'movie'
             
         ret = 0
+        SaisonEpisode = ''
+        annee = ''
         
         if sType == 'tv':
             sTitle = cUtil().FormatSerie(sTitle)
-            sTitle = re.sub('((?:[S|E][0-9\.\-\_]+){1,2})','', sTitle)       
+            r = re.search('((?:[S|E][0-9\.\-\_]+){1,2})', sTitle)
+            if r:
+                SaisonEpisode = r.group(0)
+                sTitle = sTitle.replace(SaisonEpisode,'')
+                
+        #on cherche l'annee
+        r = re.search('(\([0-9]{4}\))', sTitle)
+        if r:
+            annee = str(r.group(0))
+            sTitle = sTitle.replace(annee,'')
+
+        #Nettoyage nom
+        sTitle = sTitle.replace('-','')
+        sTitle = sTitle.replace(':','')
+        sTitle = re.sub(' +',' ',sTitle)
+        sTitle = sTitle.strip()        
             
         xbmc.log('Recherche de : ' + sTitle)
+        xbmc.log('Saison/episode : ' + SaisonEpisode)
+        xbmc.log('Annee : ' + annee)
+        xbmc.log('Type : ' + sType)
+        
+        url = 'http://api.themoviedb.org/3/search/'+ sType +'?query=' + urllib.quote_plus(sTitle)
+        
+        if annee:
+            url = url + '&year=' + str(annee)
              
-        oRequestHandler = cRequestHandler('http://api.themoviedb.org/3/search/'+ sType +'?query=' + urllib.quote_plus(sTitle) )
+        oRequestHandler = cRequestHandler(url)
         oRequestHandler.addParameters('api_key', '92ab39516970ab9d86396866456ec9b6')
         oRequestHandler.addParameters('language', 'fr')
 
@@ -790,11 +816,11 @@ class cTrakt:
 
         n = 0
         d = 100
-        sTitle = sTitle.strip()
+
         n3 = sTitle.count(' ') + 1
         for i in result['results']:
             #xbmc.log( i['title'].encode("utf-8") + ' ' + str(i['id'] ))
-            #compare le nombre de mot
+            #compare le nombre de mot identique ET le nombre de mot total
             if 'title' in i:
                 sTitle2 = i['title'].encode("utf-8")
             else:
@@ -807,4 +833,5 @@ class cTrakt:
                 d = d2
                 ret = i['id']
 
+        xbmc.log('Id trouve : ' + str(ret))
         return ret
