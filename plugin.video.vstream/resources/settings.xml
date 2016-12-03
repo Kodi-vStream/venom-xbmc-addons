@@ -394,7 +394,10 @@
         <setting id="search2_zone_telechargement_com" type="bool" label="30089" default="false"/>
         <setting id="search3_zone_telechargement_com" type="bool" label="30090" default="false"/>
         <setting id="search4_zone_telechargement_com" type="bool" label="30091" default="false"/>
-
+        
+        <setting label="DDL Island" type="lsep"/>
+        <setting id="plugin_ddl_island_su" type="bool" label="30303" default="true"/>
+        <setting type="sep"/>
     </category>
 
     <category label="30025">
