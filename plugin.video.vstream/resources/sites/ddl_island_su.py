@@ -29,7 +29,7 @@ URL_MAIN = 'http://www.ddl-island.su/telechargement/'
 URL_PROTECT = 'http://protect.ddl-island.su'
 
 URL_SEARCH_MOVIES = ('http://www.ddl-island.su/recherche.php?categorie=99&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
-URL_SEARCH_SERIES = ('http://www.ddl-island.su/recherche.php?categorie=99&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
+URL_SEARCH_SERIES = ('http://www.ddl-island.su/recherche.php?categorie=98&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
 
 
 URL_SEARCH = (URL_MAIN + 'index.php?q=', 'showMovies')
