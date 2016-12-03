@@ -117,7 +117,7 @@ def showHosters():
 
             blockTitle = sTitle
             result = re.search('15px;\'>-(.+?)<', entry)
-            print ('KKK '+entry)
+            
             if result:
                 blockTitle = result.group(1)
             blockTitle = blockTitle.strip(' []-')
