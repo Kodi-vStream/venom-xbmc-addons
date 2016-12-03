@@ -52,8 +52,7 @@ def showFile():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     
     oPremiumHandler = cPremiumHandler('uptobox')
-    cookies = oPremiumHandler.Readcookie('uptobox')
-    
+
     if 'uptobox.com' in sUrl:
         sHtmlContent = oPremiumHandler.GetHtml(sUrl)
     else:    
@@ -87,8 +86,7 @@ def showFile():
 def showFolder():
     oGui = cGui()
     oPremiumHandler = cPremiumHandler('uptobox')
-    cookies = oPremiumHandler.Readcookie('uptobox')
-    
+
     sHtmlContent = oPremiumHandler.GetHtml(BURL)
     
     oParser = cParser()
@@ -111,7 +109,6 @@ def showFolder():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('cookie', cookies)
             oGui.addDir(SITE_IDENTIFIER, 'showFile', sDisplayTitle, 'genres.png', oOutputParameterHandler)
                 
         cConfig().finishDialog(dialog)
@@ -129,8 +126,7 @@ def UploadFile():
         return
        
     oPremiumHandler = cPremiumHandler('uptobox')
-    cookies = oPremiumHandler.Readcookie('uptobox')
-    
+
     # on récupère l'id
     sId = re.sub(r'htt.+?://uptobox\.com/','',sMediaUrl)
     
@@ -145,5 +141,4 @@ def UploadFile():
          xbmcgui.Dialog().notification('Info upload','Fichier introuvable',xbmcgui.NOTIFICATION_INFO,2000,False)
     else:
          xbmcgui.Dialog().notification('Info upload','Erreur',xbmcgui.NOTIFICATION_ERROR,2000,False)    
-
 
