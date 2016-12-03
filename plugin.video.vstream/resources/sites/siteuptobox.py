@@ -1,87 +1,64 @@
 #-*- coding: utf-8 -*-
-#johngf - V0.2
-from resources.lib.gui.hoster import cHosterGui 
-from resources.lib.handler.hosterHandler import cHosterHandler 
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#johngf - V0.3
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui 
-from resources.lib.gui.guiElement import cGuiElement 
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler 
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler 
-from resources.lib.handler.requestHandler import cRequestHandler 
-from resources.lib.config import cConfig 
 from resources.lib.parser import cParser 
 from resources.lib.util import cUtil
-
-import xbmc,urllib,urllib2
-
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
-headers = { 'User-Agent' : UA }
+from resources.lib.config import cConfig
+import xbmc,xbmcgui,urllib,urllib2,re
+from resources.lib.handler.premiumHandler import cPremiumHandler
 
 SITE_IDENTIFIER = 'siteuptobox' 
-SITE_NAME = '[COLOR dodgerblue]' + 'ComptePremiumUptobox.com' + '[/COLOR]'
-SITE_DESC = 'fichier sur compte uptobox' 
+SITE_NAME = '[COLOR dodgerblue]' + 'VotreCompteUptobox' + '[/COLOR]'
+SITE_DESC = 'fichier sur compte uptobox'
+ 
+BURL = 'https://uptobox.com/?op=my_files' 
 
 def load(): 
     oGui = cGui()
     
-    if (cConfig().getSetting('hoster_uptobox_premium') == 'false'):
-        oGui.addText(SITE_IDENTIFIER, '[COLOR red]'+ 'Nécessite Un Compte Uptobox' + '[/COLOR]')
+    if (cConfig().getSetting('hoster_uptobox_username') == '') and (cConfig().getSetting('hoster_uptobox_password') == ''):
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]'+ 'Nécessite Un Compte Uptobox Premium ou Gratuit' + '[/COLOR]')
     else:
+        cpConnection = GetConnect()
+        if (cpConnection == False):
+            xbmcgui.Dialog().notification('Info connexion', 'Connexion refusé', xbmcgui.NOTIFICATION_ERROR,2000,False)
+            return
+            
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-        oGui.addDir(SITE_IDENTIFIER, 'getPremiumUser', 'MesFichiers', 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showFile', 'MesFichiers', 'genres.png', oOutputParameterHandler)
     
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://Dossier/')
-        oGui.addDir(SITE_IDENTIFIER, 'getPremiumUser', 'MesDossiers', 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showFolder', 'MesDossiers', 'genres.png', oOutputParameterHandler)
+            
+
+    oGui.setEndOfDirectory()
     
-    oGui.setEndOfDirectory() 
+def GetConnect():
+    oPremiumHandler = cPremiumHandler('uptobox')
+    cConnection = oPremiumHandler.Authentificate() 
+    if cConnection == False:
+       return False
+    return True 
     
-def getPremiumUser():
+def showFile():
+    oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    post_data = {}
-    url = 'https://login.uptobox.com/logarithme'
-    post_data['op'] = 'login'
-    post_data['login'] = cConfig().getSetting('hoster_uptobox_username')
-    post_data['password'] = cConfig().getSetting('hoster_uptobox_password')
-    request = urllib2.Request(url, urllib.urlencode(post_data), headers)
-    response = urllib2.urlopen(request)
-    head = response.headers
-    response.close()
     
-    cookies = ''
-    if 'Set-Cookie' in head:
-        oParser = cParser()
-        sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?);'
-        aResult = oParser.parse(str(head['Set-Cookie']), sPattern)
-        if (aResult[0] == True):
-            for cook in aResult[1]:
-                cookies = cookies + cook[0] + '=' + cook[1]+ ';'
-                
-    url2 = 'https://uptobox.com/?op=my_files'            
-    req = urllib2.Request(url2, None, headers)            
-    #req.add_header('Referer', url)    
-    req.add_header('Cookie', cookies)
-
-    try:
-       response = urllib2.urlopen(req)
-    except urllib2.URLError, e:
-            print e.code
-            print e.reason
-            return ''
-
-        
-    sHtmlContent = response.read()
-    response.close()
-    if 'Dossier' in sUrl:
-        showfolder(sHtmlContent,cookies)
-    else:
-        showlink(sHtmlContent)
+    oPremiumHandler = cPremiumHandler('uptobox')
+    cookies = oPremiumHandler.Readcookie('uptobox')
     
-def showlink(sHtmlContent):
-    oGui = cGui()
-
+    if 'uptobox.com' in sUrl:
+        sHtmlContent = oPremiumHandler.GetHtml(sUrl)
+    else:    
+        sHtmlContent = oPremiumHandler.GetHtml(BURL)
+    
     oParser = cParser()
     sPattern = '<td><a href="([^"]+)" class=".+?">([^<]+)<\/a><\/td><td>(.+?)<\/td>'
     aResult = oParser.parse(sHtmlContent, sPattern)  
@@ -95,10 +72,9 @@ def showlink(sHtmlContent):
 
             sTitle = aEntry[1] + ' ' + '[' + aEntry[2] + ']'
             sHosterUrl = aEntry[0]
-
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-        
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sTitle)
@@ -108,9 +84,13 @@ def showlink(sHtmlContent):
         
     oGui.setEndOfDirectory()
 
-def showfolder(sHtmlContent,cookies):
+def showFolder():
     oGui = cGui()
-
+    oPremiumHandler = cPremiumHandler('uptobox')
+    cookies = oPremiumHandler.Readcookie('uptobox')
+    
+    sHtmlContent = oPremiumHandler.GetHtml(BURL)
+    
     oParser = cParser()
     sPattern = '<td class="tri">.+?<a href="([^"]+)" class="blue_link">(.+?)<\/a><\/td>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -132,52 +112,38 @@ def showfolder(sHtmlContent,cookies):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('cookie', cookies)
-            oGui.addDir(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showFile', sDisplayTitle, 'genres.png', oOutputParameterHandler)
                 
         cConfig().finishDialog(dialog)
         
     oGui.setEndOfDirectory()
-    
-def showHosters():
-    oGui = cGui()
+       
+def UploadFile():
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sCookie = oInputParameterHandler.getValue('cookie')
+    sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
     
-    req = urllib2.Request(sUrl, None, headers)               
-    req.add_header('Cookie', sCookie)
-    try:
-       response = urllib2.urlopen(req)
-    except urllib2.URLError, e:
-            print e.code
-            print e.reason
-            return ''
+    #on check la connection
+    checkConnection = GetConnect()
+    if (checkConnection == False):
+        xbmcgui.Dialog().notification('Info connexion', 'Connexion refusé', xbmcgui.NOTIFICATION_ERROR,2000,False)
+        return
+       
+    oPremiumHandler = cPremiumHandler('uptobox')
+    cookies = oPremiumHandler.Readcookie('uptobox')
     
-    sHtmlContent = response.read()
-    response.close()
+    # on récupère l'id
+    sId = re.sub(r'htt.+?://uptobox\.com/','',sMediaUrl)
     
-    oParser = cParser()
-    sPattern = '<td><a href="([^"]+)" class=".+?">([^<]+)<\/a><\/td><td>(.+?)<\/td>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
- 
-            sTitle = aEntry[1] + ' ' + '[' + aEntry[2] + ']'
-            sHosterUrl = aEntry[0]
+    #go page            
+    Upurl = 'https://uptobox.com/?op=my_files&add_my_acc=' + sId
+    
+    sHtmlContent = oPremiumHandler.GetHtml(Upurl)
 
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
-        
-            if (oHoster != False):
-                oHoster.setDisplayName(sDisplayTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl,'')
-                
-        cConfig().finishDialog(dialog)
-        
-    oGui.setEndOfDirectory()
+    if ('dded to your account' in sHtmlContent):
+         xbmcgui.Dialog().notification('Info upload','Fichier ajouté à votre compte',xbmcgui.NOTIFICATION_INFO,2000,False)      
+    elif ('nvalid file' in sHtmlContent):
+         xbmcgui.Dialog().notification('Info upload','Fichier introuvable',xbmcgui.NOTIFICATION_INFO,2000,False)
+    else:
+         xbmcgui.Dialog().notification('Info upload','Erreur',xbmcgui.NOTIFICATION_ERROR,2000,False)    
+
+
