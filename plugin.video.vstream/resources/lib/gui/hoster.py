@@ -90,7 +90,16 @@ class cHosterGui:
             oContext.setTitle('DL et Visualiser')
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)           
-        
+        #Upload menu    
+        if ((oHoster.getPluginIdentifier() == 'uptobox') and (cConfig().getSetting('hoster_uptobox_username') != '') and (cConfig().getSetting('hoster_uptobox_password') != '')):
+             oContext = cContextElement()
+             oContext.setFile('siteuptobox')
+             oContext.setSiteName(self.SITE_NAME)
+             oContext.setFunction('UploadFile')
+             oContext.setTitle('[COLOR dodgerblue]Ajouter à mon compte Uptobox[/COLOR]')
+             oContext.setOutputParameterHandler(oOutputParameterHandler)
+             oGuiElement.addContextItem(oContext)
+                
         #context FAV menu
         oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
         
