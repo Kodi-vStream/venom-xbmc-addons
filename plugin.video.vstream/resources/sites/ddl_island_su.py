@@ -134,7 +134,7 @@ def showHosters():
             if result:
                 blockTitle = result.group(1)
             blockTitle = blockTitle.strip(' []-')
-            oGui.addText(SITE_IDENTIFIER, '[B]'+blockTitle + '[COLOR teal]'+title+'[/COLOR][/B]')
+            oGui.addText(SITE_IDENTIFIER, '[B][COLOR yellow]'+blockTitle + '[/COLOR][COLOR teal]'+title+'[/COLOR][/B]')
 
             sProvider = '<li(.+?)<span class=\'providers (.+?)\'(.+?)href=\'(.+?)\'(.+?)</li>'
             aProviders = oParser.parse(aEntry[1], sProvider)
