@@ -194,7 +194,7 @@ def captcha(url):
 
     name = 'captcha-%s.png' % time.time()
     filename  = os.path.join(PathCache, name)
-    o = open(filename, 'w')
+    o = open(filename, 'wb')
     o.write(png)
     o.close()
 
