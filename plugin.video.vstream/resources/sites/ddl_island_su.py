@@ -9,7 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-import urllib2
+import urllib, urllib2
 import re, os
 import xbmc,xbmcgui,xbmcaddon
 
@@ -23,15 +23,24 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'movieSearch', 'Recherche films', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche séries', 'search.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
+def movieSearch():
+    oGui = cGui()
+    sSearchText = oGui.showKeyBoard()
+    if sSearchText != False:
+        sUrl = URL_MAIN+'recherche.php?categorie=99&fastr_type=ddl&find=' + urllib.quote(sSearchText)
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
 
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if sSearchText != False:
-        sUrl = URL_MAIN+'recherche.php?categorie=99&fastr_type=ddl&find=' + urllib.quote(sSearchText)
+        sUrl = URL_MAIN+'recherche.php?categorie=98&fastr_type=ddl&find=' + urllib.quote(sSearchText)
         showMovies(sUrl)
         oGui.setEndOfDirectory()
 
@@ -55,9 +64,14 @@ def showMovies(sUrl):
                 sQuality = result.group(1)
 
             sTitle = str(aEntry[1])
-            sDisplaytitle = sTitle
+            sDisplaytitle = sTitle.strip(' []-')
             if sQuality:
                 sDisplaytitle = '[COLOR blue][' + sQuality + '][/COLOR] ' + sDisplaytitle
+
+            # HD?
+            result = re.search('hd.png"', entry)
+            if result:
+                sDisplaytitle = '[COLOR blue][HD][/COLOR]' + sDisplaytitle
 
             # Entry URL
             sUrl = ''
@@ -100,7 +114,14 @@ def showHosters():
                 result = re.search(label+'.png', entry)
                 if result:
                     title += ' - ' + label.upper()
-            oGui.addText(SITE_IDENTIFIER, sTitle + '[COLOR teal]'+title+'[/COLOR]')
+
+            blockTitle = sTitle
+            result = re.search('15px;\'>-(.+?)<', entry)
+            print ('KKK '+entry)
+            if result:
+                blockTitle = result.group(1)
+            blockTitle = blockTitle.strip(' []-')
+            oGui.addText(SITE_IDENTIFIER, blockTitle + '[COLOR teal]'+title+'[/COLOR]')
 
             sProvider = '<li(.+?)<span class=\'providers (.+?)\'(.+?)href=\'(.+?)\'(.+?)</li>'
             aProviders = oParser.parse(aEntry[1], sProvider)
