@@ -10,7 +10,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 import urllib, urllib2
-import re, os
+import re, os, time
 import xbmc,xbmcgui,xbmcaddon
 
 SITE_IDENTIFIER = 'ddl_island_su'
@@ -34,7 +34,6 @@ def movieSearch():
     if sSearchText != False:
         sUrl = URL_MAIN+'recherche.php?categorie=99&fastr_type=ddl&find=' + urllib.quote(sSearchText)
         showMovies(sUrl)
-        oGui.setEndOfDirectory()
 
 def showSearch():
     oGui = cGui()
@@ -42,11 +41,16 @@ def showSearch():
     if sSearchText != False:
         sUrl = URL_MAIN+'recherche.php?categorie=98&fastr_type=ddl&find=' + urllib.quote(sSearchText)
         showMovies(sUrl)
-        oGui.setEndOfDirectory()
 
-def showMovies(sUrl):
+def showMovies(sUrl=None, page=1):
     oGui = cGui()
-    oRequestHandler = cRequestHandler(sUrl)
+    if sUrl == None:
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('sUrl')
+        page = oInputParameterHandler.getValue('page')
+
+    searchUrl = sUrl
+    oRequestHandler = cRequestHandler(sUrl+'&start='+str(page))
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '(<div class="fiche_listing">.+?titre_fiche"><img src=".+?".+?>(.+?)<.+?<\/div>)'
@@ -92,6 +96,15 @@ def showMovies(sUrl):
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumb))
                 oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplaytitle, '', sThumb,'', oOutputParameterHandler)
 
+    nextPage = 'start=%d"' % (int(page)+1)
+    result = re.search(nextPage, sHtmlContent)
+    if result:
+        oOutputParameterHandler.addParameter('sUrl', str(searchUrl))
+        oOutputParameterHandler.addParameter('page', str(int(page)+1))
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -117,7 +130,7 @@ def showHosters():
 
             blockTitle = sTitle
             result = re.search('15px;\'>-(.+?)<', entry)
-            
+
             if result:
                 blockTitle = result.group(1)
             blockTitle = blockTitle.strip(' []-')
@@ -162,7 +175,7 @@ def captcha(url):
         url = 'http://protect.ddl-island.su/other?id='+result.group(1)
 
     # Sending the request
-    request = urllib2.Request('http://protect.ddl-island.su/securimage/securimage_show.php')
+    request = urllib2.Request('http://protect.ddl-island.su/securimage/securimage_show.php?'+str(time.time()))
     response = urllib2.urlopen(request,timeout = 5)
 
     cookies = response.info()['Set-Cookie']
@@ -175,7 +188,8 @@ def captcha(url):
     png = response.read()
     response.close()
 
-    filename  = os.path.join(PathCache, 'Captcha.png')
+    name = 'captcha-%s.png' % time.time()
+    filename  = os.path.join(PathCache, name)
     o = open(filename, 'w')
     o.write(png)
     o.close()
