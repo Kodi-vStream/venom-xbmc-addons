@@ -134,7 +134,7 @@ def showHosters():
             if result:
                 blockTitle = result.group(1)
             blockTitle = blockTitle.strip(' []-')
-            oGui.addText(SITE_IDENTIFIER, blockTitle + '[COLOR teal]'+title+'[/COLOR]')
+            oGui.addText(SITE_IDENTIFIER, '[B]'+blockTitle + '[COLOR teal]'+title+'[/COLOR][/B]')
 
             sProvider = '<li(.+?)<span class=\'providers (.+?)\'(.+?)href=\'(.+?)\'(.+?)</li>'
             aProviders = oParser.parse(aEntry[1], sProvider)
@@ -142,11 +142,15 @@ def showHosters():
                 for aProvider in aProviders[1]:
                     provider = aProvider[1].title()
                     protected = aProvider[3]
+                    display = '[COLOR blue]'+provider+'[/COLOR]'
+                    result = re.search('title="(.+?)"', aProvider[4])
+                    if result:
+                        display += ' '+result.group(1)
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', str(protected))
                     oOutputParameterHandler.addParameter('thumb', str(sThumbnail))
                     oOutputParameterHandler.addParameter('provider', str(provider))
-                    oGui.addMisc(SITE_IDENTIFIER, 'showProtected', '[COLOR blue]'+provider+'[/COLOR]', '', '','', oOutputParameterHandler)
+                    oGui.addMisc(SITE_IDENTIFIER, 'showProtected', display, '', '','', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
