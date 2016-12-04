@@ -294,6 +294,9 @@ def showSeriesReleases():
     #cut de la zone des releases
     sPattern = 'Episode :</span>(.+?)>Hébergeur :'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    if aResult[0]==False:
+        sPattern = 'Release :</span>(.+?)>Hébergeur :'
+        aResult = oParser.parse(sHtmlContent, sPattern)
     sHtmlContent = aResult[1][0]
     
     sPattern = '<option value="([^"]+)"  id="([^"]+)"'	
