@@ -45,7 +45,6 @@ class cPremiumHandler:
     #------------------------
     
     def DeleteCookie(self,Domain):
-        print 'Effacement cookies'
         file = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
         os.remove(os.path.join(PathCache,file))
     
@@ -59,15 +58,13 @@ class cPremiumHandler:
         file.close()
         
     def Readcookie(self,Domain):
-        Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
-        
+        Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')        
         try:
             file = open(Name,'r')
             data = file.read()
             file.close()
         except:
-            return ''
-        
+            return ''       
         return data
         
     def AddCookies(self):
@@ -86,6 +83,9 @@ class cPremiumHandler:
         if self.__LoginTry:
             return False
         self.__LoginTry = True
+        
+        if not self.__Ispremium:
+            return False
         
         post_data = {}
         
@@ -231,5 +231,3 @@ class cPremiumHandler:
                 return ''
         
         return sHtmlContent
-
-        
