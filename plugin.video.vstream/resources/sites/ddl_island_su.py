@@ -361,51 +361,7 @@ def showSeriesLinks():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-    oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-    oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
-    
-    #on regarde si dispo dans d'autres qualités
-    sPattern1 = '<a title="Téléchargez.+? en ([^"]+?)" href="([^"]+?)"><button class="button_subcat"'
-    aResult1 = oParser.parse(sHtmlContent, sPattern1)
-    #print aResult1
-    
-    if (aResult1[0] == True):
-        total = len(aResult1[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult1[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-            
-            sDisplayTitle = cUtil().DecoTitle(sMovieTitle) +  ' - [COLOR skyblue]' + aEntry[0]+'[/COLOR]'
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)            
-    
-    #on regarde si dispo d'autres saisons
-    
-    sPattern2 = '<a title="Téléchargez[^"]+?" href="([^"]+?)"><button class="button_subcat" style="font-size: 12px;height: 26px;width:190px;color:666666;letter-spacing:0.05em">([^<]+?)</button>'
-    aResult2 = oParser.parse(sHtmlContent, sPattern2)
-    #print aResult2
-    
-    if (aResult2[0] == True):
-        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Saisons aussi disponibles pour cette série :[/COLOR]')
-    
-        for aEntry in aResult2[1]:
-
-            sTitle = '[COLOR skyblue]' + aEntry[1]+'[/COLOR]'
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))            
-            oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, 'series.png', sThumbnail, '', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory() 
 	
 def showHosters():# recherche et affiche les hotes
     print "showHosters"
@@ -482,34 +438,6 @@ def showSeriesHosters():# recherche et affiche les hotes
             cConfig().updateDialog(dialog, total)
             #print aEntry
             if dialog.iscanceled():
-                break
-            
-            if aEntry[2]:
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                if 'Télécharger' in aEntry[2]:
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]'+str(aEntry[2])+'[/COLOR]')
-                else:
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]'+str(aEntry[2])+'[/COLOR]')
-            else:
-                sName = aEntry[1]
-                sName = sName.replace('Télécharger','')
-                sName = sName.replace('pisodes','pisode')
-                
-                sTitle = sMovieTitle + ' ' + sName
-                sDisplayTitle = cUtil().DecoTitle(sTitle)
-                
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
-   
-        cConfig().finishDialog(dialog)
-
-    oGui.setEndOfDirectory()
         
 def Display_protected_link():
     print "Display_protected_link"
