@@ -53,8 +53,8 @@ def load():
 def GetConnect():
     oPremiumHandler = cPremiumHandler('uptobox')
     cConnection = oPremiumHandler.Authentificate() 
-    if cConnection == False:
-       return False
+    if (cConnection == False):
+        return False
     return True 
     
 def showFile():
@@ -131,24 +131,16 @@ def UploadFile():
         return 
     oInputParameterHandler = cInputParameterHandler()
     sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
-
-    oPremiumHandler = cPremiumHandler('uptobox')
-
     # on récupère l'id
     sId = sMediaUrl.replace('https://uptobox.com/','')
     sId = sMediaUrl.replace('http://uptobox.com/','')
-
     #go page            
     Upurl = 'https://uptobox.com/?op=my_files&add_my_acc=' + sId
-    
-    sHtmlContent = oPremiumHandler.GetHtml(Upurl)
 
-    if (len(sHtmlContent) > 25):
-        checkConnection = GetConnect()
-        if (checkConnection == False):
-            xbmcgui.Dialog().notification('Info connexion', 'Connexion refusé', xbmcgui.NOTIFICATION_ERROR,2000,False)
-            return
-        sHtmlContent = oPremiumHandler.GetHtml(Upurl) 
+    oPremiumHandler = cPremiumHandler('uptobox')
+    cookies = oPremiumHandler.Readcookie('uptobox')
+
+    sHtmlContent = oPremiumHandler.GetHtmlwithcookies(Upurl,None,cookies)
 
     if ('dded to your account' in sHtmlContent):
          xbmcgui.Dialog().notification('Info upload','Fichier ajouté à votre compte',xbmcgui.NOTIFICATION_INFO,2000,False)      
@@ -156,5 +148,3 @@ def UploadFile():
          xbmcgui.Dialog().notification('Info upload','Fichier introuvable',xbmcgui.NOTIFICATION_INFO,2000,False)
     else:
          xbmcgui.Dialog().notification('Info upload','Erreur',xbmcgui.NOTIFICATION_ERROR,2000,False)    
-
-
