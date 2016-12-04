@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+#Venom.
 from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
 from resources.lib.parser import cParser
@@ -17,15 +19,18 @@ class cPremiumHandler:
         self.__sHosterIdentifier = sHosterIdentifier.lower()
         self.__sDisplayName = 'Premium mode'
         self.isLogin = False
-
-    def isPremiumModeAvailable(self):
+        self.__LoginTry = False
+        
+        self.__Ispremium = False
         bIsPremium = cConfig().getSetting('hoster_' + str(self.__sHosterIdentifier) + '_premium')        
         if (bIsPremium == 'true'):
             cConfig().log("Utilise compte premium pour hoster " +  str(self.__sHosterIdentifier))
-            return True
+            self.__Ispremium = True
+        else:
+            cConfig().log("Utilise compte gratuit pour hoster: " + str(self.__sHosterIdentifier))
 
-        cConfig().log("Utilise compte gratuit pour hoster: " + str(self.__sHosterIdentifier))
-        return False
+    def isPremiumModeAvailable(self):
+        return self.__Ispremium
 
     def getUsername(self):
         sUsername = cConfig().getSetting('hoster_' + str(self.__sHosterIdentifier) + '_username')
@@ -40,7 +45,6 @@ class cPremiumHandler:
     #------------------------
     
     def DeleteCookie(self,Domain):
-        print 'Effacement cookies'
         file = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
         os.remove(os.path.join(PathCache,file))
     
@@ -54,23 +58,35 @@ class cPremiumHandler:
         file.close()
         
     def Readcookie(self,Domain):
-        Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
-        
+        Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')        
         try:
             file = open(Name,'r')
             data = file.read()
             file.close()
         except:
-            return ''
-        
+            return ''       
         return data
         
     def AddCookies(self):
         cookies = self.Readcookie(self.__sHosterIdentifier)
         return 'Cookie=' + cookies
+        
+    def Checklogged(self,code):
+        if 'uptobox' in self.__sHosterIdentifier:
+            if 'href="http://uptobox.com/?op=logout">Logout</a>' in code:
+                return True
+        return False
 
     def Authentificate(self):
 
+        #un seul essais par session, pas besoin de bombarder le serveur
+        if self.__LoginTry:
+            return False
+        self.__LoginTry = True
+        
+        if not self.__Ispremium:
+            return False
+        
         post_data = {}
         
         if 'uptobox' in self.__sHosterIdentifier:
@@ -165,12 +181,11 @@ class cPremiumHandler:
         self.SaveCookie(self.__sHosterIdentifier,cookies)
         
         cGui().showInfo(self.__sDisplayName, 'Authentification reussie' , 5)
-        print 'Auhentification reussie'
+        xbmc.log( 'Auhentification reussie' )
         
         return True
         
-    def GetHtml(self,url,data = None):
-        cookies = self.Readcookie(self.__sHosterIdentifier)
+    def GetHtmlwithcookies(self,url,data,cookies):
         
         req = urllib2.Request(url, data, headers)
         
@@ -182,14 +197,37 @@ class cPremiumHandler:
         try:
             response = urllib2.urlopen(req)
         except urllib2.URLError, e:
-            print e.code
-            print e.reason
+            xbmc.log( str(e.code))
+            xbmc.log( e.reason )
             return ''
-
         
         sHtmlContent = response.read()
         response.close()
+        return sHtmlContent
+        
+    def GetHtml(self,url,data = None):
+        cookies = self.Readcookie(self.__sHosterIdentifier)
+        
+        #aucun ne marche sans cookies
+        if (cookies== '') and not (self.__LoginTry) and self.__Ispremium:
+            self.Authentificate()
+            if not (self.isLogin):
+                return ''
+            cookies = self.Readcookie(self.__sHosterIdentifier)           
+        
+        sHtmlContent = self.GetHtmlwithcookies(url,data,cookies)
+        
+        #fh = open('c:\\premium.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+        
+        #Les cookies ne sont plus valables, mais on teste QUE si la personne n'a pas essaye de s'authentifier
+        if not(self.Checklogged(sHtmlContent)) and not self.__LoginTry and self.__Ispremium :
+            xbmc.log('Cookies non valables')
+            self.Authentificate()
+            if (self.isLogin):
+                sHtmlContent = self.GetHtmlwithcookies(url,data,cookies)
+            else:
+                return ''
         
         return sHtmlContent
-
-        

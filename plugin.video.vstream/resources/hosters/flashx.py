@@ -15,6 +15,64 @@ import xbmc
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
+def ASCIIDecode(string):
+    i = 0
+    l = len(string)
+    ret = ''
+    while i < l:
+        c =string[i]
+        if string[i:(i+2)] == '\\x':
+            c = chr(int(string[(i+2):(i+4)],16))
+            i+=3
+        if string[i:(i+2)] == '\\u':
+            c = chr(int(string[(i+2):(i+6)],16))
+            i+=5     
+        ret = ret + c
+        i = i + 1
+
+    return ret
+    
+def LoadLinks(htmlcode):
+        host = 'https://www.flashx.tv'
+        sPattern ='(https*:)*(\/[^,"\'\)\s]+)'
+        aResult = re.findall(sPattern,htmlcode,re.DOTALL)
+        
+        #xbmc.log(str(aResult))
+        for http,urlspam in aResult:
+            sUrl = urlspam
+            if (sUrl.count('/') < 2) or ('<' in sUrl) or ('>' in sUrl) or (len(sUrl) < 6):
+                #xbmc.log('not url' + sUrl)
+                continue
+            if http:
+                sUrl = http + sUrl
+            sUrl = sUrl.replace('/\/','//')
+            sUrl = sUrl.replace('\/','/')
+            
+            if '\\x' in sUrl or '\\u' in sUrl:
+                sUrl = ASCIIDecode(sUrl)                       
+            
+            if sUrl.startswith('//'):
+                sUrl = 'http:' + sUrl
+                
+            if sUrl.startswith('/'):
+                sUrl = host + sUrl
+            
+            #Url ou il ne faut pas aller
+            if 'dok3v' in sUrl:
+                continue
+
+            try:
+                oRequest = cRequestHandler(sUrl)
+                #oRequest.setTimeout(5)
+                oRequest.addHeaderEntry('Referer','https://www.flashx.tv/dl?playthis')
+                sCode = oRequest.request()
+                xbmc.log('Worked ' + sUrl)
+            except:
+                xbmc.log('Blocked ' + sUrl)
+                pass
+        
+        xbmc.log('fin des unlock')   
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -180,12 +238,12 @@ class cHoster(iHoster):
         #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
-        
+
         #sPattern = '(<[^<>]+(?:"visibility:hidden"|"opacity: 0;")><a )*href="(http:\/\/www\.flashx[^"]+)'
-        sPattern = 'href="(https*:\/\/www\.flashx[^"]+)'
+        sPattern = 'href=["\'](https*:\/\/www\.flashx[^"\']+)'
         AllUrl = re.findall(sPattern,sHtmlContent,re.DOTALL)
         xbmc.log(str(AllUrl))
-        
+
         #Disabled for the moment
         if (False):
             if AllUrl:
@@ -197,34 +255,19 @@ class cHoster(iHoster):
             else:
                 return False,False
         else:
-            web_url = AllUrl[1]
-        
+            web_url = AllUrl[0]
+            
+            
         #Request to unlock video
-        sPattern ='fastcontentdelivery\.com.+?\?([^"]+)">'
-        aResult = re.findall(sPattern,sHtmlContent)
-        if aResult:
-            UnlockUrl = 'http://www.flashx.tv/counter.cgi?' + aResult[0]
-            oRequest = cRequestHandler(UnlockUrl)
-            sHtmlContent = oRequest.request()
-        else:
-            xbmc.log('No unlock url')
-        
+        #LoadLinks(sHtmlContent)
+
+        #get the page
         sHtmlContent = self.GetRedirectHtml(web_url,sId,True)
         
         #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent)
-        #fh.close()
-        
-        if sHtmlContent == False:
-            xbmc.log('Passage en mode barbare')
-            #ok ca a rate on passe toutes les url de AllUrl
-            for i in AllUrl:
-                xbmc.log('++' + i)
-                sHtmlContent = self.GetRedirectHtml(i,sId,True)
-                if sHtmlContent:
-                    break              
-                    
-        
+        #fh.close()        
+
         if not sHtmlContent:
             return False,False
             

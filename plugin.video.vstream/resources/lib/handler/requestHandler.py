@@ -58,13 +58,14 @@ class cRequestHandler:
         
     def GetCookies(self):
         import re
-        c = self.__HeaderReturn['Set-Cookie']
-        c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);',c)
-        if c2:
-            cookies = ''
-            for cook in c2:
-                cookies = cookies + cook[0] + '=' + cook[1]+ ';'
-            return cookies
+        if 'Set-Cookie' in self.__HeaderReturn:
+            c = self.__HeaderReturn['Set-Cookie']
+            c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);',c)
+            if c2:
+                cookies = ''
+                for cook in c2:
+                    cookies = cookies + cook[0] + '=' + cook[1]+ ';'
+                return cookies
         return ''
 
     def request(self):

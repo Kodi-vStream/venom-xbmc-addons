@@ -63,13 +63,15 @@ class cGuiElement:
 
     def getType(self):
         return self.__sType
-        
+      
+    #utiliser setImdbId      
     def setImdb(self, sImdb):
         self.__sImdb = sImdb
 
     def getImdb(self):
         return self.__sImdb
-        
+     
+    #utiliser  setTmdbId 
     def setTmdb(self, sTmdb):
         self.__sTmdb = sTmdb
 
@@ -346,25 +348,23 @@ class cGuiElement:
         #sTitle=re.sub(r'\[.*\]|\(.*\)',r'',str(self.__sFileName))
         #sTitle=sTitle.replace('VF','').replace('VOSTFR','').replace('FR','')
         
+        #get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', overlay=6, update=False):
+        
         #Pour les films
         if self.getMeta() == 1:
             try:
                 from metahandler import metahandlers
                 grab = metahandlers.MetaData(preparezip=False,  tmdb_api_key='92ab39516970ab9d86396866456ec9b6')
+                args = ("movie", self.__sFileName)
+                kwargs = {}
                 if (self.__TmdbId) or (self.__Year):
-                    dict = {}
+                    if (self.__ImdbId):
+                        kwargs['imdb_id'] = self.__ImdbId
                     if (self.__TmdbId):
-                        dict['tmdb_id'] = self.__TmdbId
+                        kwargs['tmdb_id'] = self.__TmdbId
                     if (self.__Year):
-                        dict['year'] =  self.__Year
-                    #convertion dict to kwarg because **karg not working
-                    kwarg = ''
-                    for i,j in dict.iteritems():
-                        kwarg = kwarg + i + '=' + j+ ','
-                    kwarg = kwarg[:-1]
-                    meta = grab.get_meta('movie',self.__sFileName,kwarg)
-                else:
-                    meta = grab.get_meta('movie',self.__sFileName)
+                        kwargs['year'] =  self.__Year
+                meta = grab.get_meta(*args, **kwargs)
             except:
                 return
                 
@@ -375,29 +375,24 @@ class cGuiElement:
                 grab = metahandlers.MetaData(preparezip=False, tmdb_api_key='92ab39516970ab9d86396866456ec9b6')
                 #Nom a nettoyer ?
                 #attention l'annee peut mettre le bordel a cause des differences de sortie
+                args = ("tvshow", self.__sFileName)
+                kwargs = {}
                 if (self.__TmdbId) or (self.__Year):
                     dict = {}
+                    if (self.__ImdbId):
+                        kwargs['imdb_id'] = self.__ImdbId
                     if (self.__TmdbId):
-                        dict['tmdb_id'] = self.__TmdbId
+                        kwargs['tmdb_id'] = self.__TmdbId
                     if (self.__Year):
-                        dict['year'] =  self.__Year
-                    #convertion dict to kwarg because **karg not working
-                    kwarg = ''
-                    for i,j in dict.iteritems():
-                        kwarg = kwarg + i + '=' + j+ ','
-                    kwarg = kwarg[:-1]
-                    meta = grab.get_meta('tvshow',self.__sFileName,kwarg)
-                else:
-                    meta = grab.get_meta('tvshow',self.__sFileName)
+                        kwargs['year'] =  self.__Year
+                meta = grab.get_meta(*args, **kwargs)
             except:
                 return
         else:
             return
         del meta['playcount']
         del meta['trailer']
-        
-        xbmc.log(str(meta))
-        
+
         if meta['title']:
             meta['title'] = self.getTitle()
             

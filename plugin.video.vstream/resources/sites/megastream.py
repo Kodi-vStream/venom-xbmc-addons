@@ -252,7 +252,7 @@ def resultSearch(sSearch):
     sHtmlContent = response.read()
     response.close()
     
-    sPattern = '<div class="movie-img img-box">\s*<img.+?src="([^"]+)".+?<a href="([^"]+)"[^<>]+>([^<>]+)<\/a>.+?<span>([^<>]+)<\/span>'
+    sPattern = '<div class="movie-img img-box">\s*<img.+?src="([^"]+)".+?<a href="([^"]+)"[^<>]+>([^<>]+)<\/a>.+?<span[^<>]+>([^<>]+)<\/span>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -270,18 +270,20 @@ def resultSearch(sSearch):
                 sQual = '[' + aEntry[3] + '] '
             siteUrl = aEntry[1]
             sThumbnail = aEntry[0]
-            sTitle = sQual + aEntry[2]
+            sTitle = aEntry[2]
+            
+            sDisplayTitle = cUtil().DecoTitle(sTitle + sQual)
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             if '-serie-' in siteUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
             if '-mangas-' in siteUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
         
         cConfig().finishDialog(dialog)
       
@@ -295,12 +297,14 @@ def showMovies(sSearch = ''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         
+    xbmc.log(sUrl)
+        
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
     oParser = cParser()
     
-    sPattern = '<img[^<>]+src="([^"]+)" class="tubeposter".+?<span>([^<>]+)*<\/span>.+?<a class="movie-title" href="([^"]+)"[^<>]+>([^<>]+)<.+?<b>Description :<\/b>([^><]+)<'
+    sPattern = '<img[^<>]+src="([^"]+)" class="tubeposter".+?<span[^<>]+>([^<>]+)*<\/span>.+?<a class="movie-title" href="([^"]+)"[^<>]+>([^<>]+)<.+?<b>Description :<\/b>([^><]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
    
     if (aResult[0] == True):

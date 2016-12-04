@@ -6,7 +6,48 @@ import xbmcgui
 import xbmcaddon
 
 DIALOG2 = None
+PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
 
+
+#-----------------------
+#     Cookies gestion
+#------------------------
+    
+class GestionCookie():
+    def DeleteCookie(self,Domain):
+        file = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
+        os.remove(os.path.join(PathCache,file))
+    
+    def SaveCookie(self,Domain,data):
+        Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
+
+        #save it
+        file = open(Name,'w')
+        file.write(data)
+
+        file.close()
+        
+    def Readcookie(self,Domain):
+        Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
+        
+        try:
+            file = open(Name,'r')
+            data = file.read()
+            file.close()
+        except:
+            return ''
+        
+        return data
+        
+    def AddCookies(self):
+        cookies = self.Readcookie(self.__sHosterIdentifier)
+        return 'Cookie=' + cookies
+        
+
+#-------------------------------
+#     Configuration gestion
+#-------------------------------
+        
 class cConfig():
 
     COUNT = 0
