@@ -294,6 +294,7 @@ def showSeriesReleases():
     #cut de la zone des releases
     sPattern = 'Episode :</span>(.+?)>Hébergeur :'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    print aResult
     if aResult[0]==False:
         sPattern = 'Release :</span>(.+?)>Hébergeur :'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -325,42 +326,6 @@ def showSeriesReleases():
     
     oGui.setEndOfDirectory()    
 
-def showSeriesLinks():
-    xbmc.log('mode serie')
-    
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
-    #print sUrl
-
-    oParser = cParser()
-    
-    #Mise àjour du titre
-    sPattern = '<h1 style="font-family:\'Ubuntu Condensed\',\'Segoe UI\',Verdana,Helvetica,sans-serif;">(?:<span itemprop="name">)*([^<]+?)<'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0]):
-        sMovieTitle = aResult[1][0]
-    
-    #Utile ou pas ?
-    sMovieTitle = sMovieTitle.replace('[Complete]','').replace('[Complète]','')
-    
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualités disponibles pour cette saison :[/COLOR]')
-    
-    #on recherche d'abord la qualité courante
-    sPattern = '<span style="color:#[0-9a-z]{6}"><b>(?:<strong>)* *\[[^\]]+?\] ([^<]+?)<'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
-    
-    sQual = ''
-    if (aResult[1]):
-        sQual = aResult[1][0]
-
-    sDisplayTitle = cUtil().DecoTitle(sMovieTitle) +  ' - [COLOR skyblue]' + sQual + '[/COLOR]'
-    
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', sUrl)
 
 	
 def showHosters():# recherche et affiche les hotes
@@ -405,39 +370,7 @@ def showHosters():# recherche et affiche les hotes
 
     oGui.setEndOfDirectory()
 
-def showSeriesHosters():# recherche et affiche les hotes
 
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler() #apelle l'entree de paramettre
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumbnail=oInputParameterHandler.getValue('sThumbnail')
-    
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    #Fonction pour recuperer uniquement les liens
-    sHtmlContent = Cutlink(sHtmlContent)
-    
-    #Pour les series on fait l'inverse des films on vire les liens premiums
-    if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent:
-        sHtmlContent = CutPremiumlinks(sHtmlContent)
-   
-    oParser = cParser()
-    
-    sPattern = '<a href="([^"]+?)" target="_blank">([^<]+)<|<span style="color:#.{6}">([^<]+)<\/span>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    
-
-    
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-        
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            #print aEntry
-            if dialog.iscanceled():
         
 def Display_protected_link():
     print "Display_protected_link"
@@ -515,7 +448,7 @@ def DecryptddlProtect(url):
     #Si ca demande le captcha
     if 'value="Submit form"' in sHtmlContent:
         if cookies:
-		DeleteCookie('protect_ddl_island.su')	
+            DeleteCookie('protect_ddl_island.su')
         cookies = oRequestHandler.GetCookies()
         
         #save cookies
