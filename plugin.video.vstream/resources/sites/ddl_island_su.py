@@ -583,7 +583,8 @@ def DecryptddlProtect(url):
     
     #Si ca demande le captcha
     if 'value="Submit form"' in sHtmlContent:
-        DeleteCookie('protect_ddl_island.su')	
+        if cookies:
+		DeleteCookie('protect_ddl_island.su')	
         cookies = oRequestHandler.GetCookies()
         
         #save cookies
