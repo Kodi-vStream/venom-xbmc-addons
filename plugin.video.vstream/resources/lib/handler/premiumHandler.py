@@ -73,7 +73,7 @@ class cPremiumHandler:
         
     def Checklogged(self,code):
         if 'uptobox' in self.__sHosterIdentifier:
-            if 'href="http://uptobox.com/?op=logout">Logout</a>' in code:
+            if '//uptobox.com/?op=logout">Logout</a>' in code:
                 return True
         return False
 
@@ -231,3 +231,5 @@ class cPremiumHandler:
                 return ''
         
         return sHtmlContent
+
+        
