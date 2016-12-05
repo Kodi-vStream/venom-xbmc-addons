@@ -148,6 +148,16 @@ class cTrakt:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'movie')
+            oGui.addDir(SITE_IDENTIFIER, 'search', 'Recherche de film', 'films.png', oOutputParameterHandler)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'https://')
+            oOutputParameterHandler.addParameter('type', 'show')
+            oGui.addDir(SITE_IDENTIFIER, 'search', 'Recherche de serie', 'films.png', oOutputParameterHandler)              
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'https://')
+            oOutputParameterHandler.addParameter('type', 'movie')
             oGui.addDir(SITE_IDENTIFIER, 'getLists', cConfig().getlanguage(30120), 'films.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -171,6 +181,17 @@ class cTrakt:
             oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/oauth/revoke')
             oGui.addDir(SITE_IDENTIFIER, 'getBsout', cConfig().getlanguage(30309), 'trakt.png', oOutputParameterHandler)
  
+        oGui.setEndOfDirectory()
+        
+    def search(self):
+        oGui = cGui()
+        sSearchText = oGui.showKeyBoard()
+        if (sSearchText != False):
+            oInputParameterHandler = cInputParameterHandler()
+            sType = oInputParameterHandler.getValue('type')
+            sUrl = 'https://api.trakt.tv/search/' + sType + '?query=' + urllib.quote_plus(sSearchText)
+            self.getTrakt(sUrl)
+            return
         oGui.setEndOfDirectory()
 
     def getCalendrier(self):
@@ -262,10 +283,13 @@ class cTrakt:
         return
 
 
-    def getTrakt(self):
+    def getTrakt(self,url2 = None):
 
         oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+        if url2:
+            sUrl = url2
+        else:    
+            sUrl = oInputParameterHandler.getValue('siteUrl')
 
         oGui = cGui()
 
@@ -379,7 +403,7 @@ class cTrakt:
                     sTitle = ('Spectateur [COLOR white](%s)[/COLOR] - Collection [COLOR white](%s)[/COLOR] - %s - (%s)') % (int(sPlay_count), int(sCollected_count), sTitle.encode("utf-8"), int(sYear))
 
                 elif 'calendars' in sUrl:
-                    xbmc.log(str(i))
+                    #xbmc.log(str(i))
                     sRajout = ''
                     if  'show' in i:
                         sTrakt, sTitle, sImdb, sTmdb, sYear, sFirst_aired = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year'],i['first_aired']
@@ -392,6 +416,21 @@ class cTrakt:
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                     sTitle = sTitle.encode("utf-8") + sRajout + " (" + sFirst_aired[:10] + ')'
                     sFunction = 'showHosters'
+                    
+                elif 'search' in sUrl:
+                    if  'show' in i:
+                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year']
+                        cTrakt.CONTENT = '2'
+                        sFunction = 'getBseasons'
+                    else:
+                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
+                        cTrakt.CONTENT = '1'
+                        sFunction = 'showHosters'
+
+                    sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode("unicode_escape")
+                    sTitle.encode("utf-8")
+                    sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), sYear)
+                    sTitle = ('%s (%s)') % ( sTitle, sYear )
                     
                 elif 'recommendations' in sUrl or 'popular' in sUrl:
                     if 'shows' in sUrl:
@@ -455,7 +494,7 @@ class cTrakt:
                     cTrakt.CONTENT = '2'
                 else: return
 
-                sTitle2 = ('%s - (S%s)') % (sFile.encode("utf-8"), int(sNumber))
+                sTitle2 = ('%s - S%s') % (sFile.encode("utf-8"), int(sNumber))
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('Key', sKey)
@@ -502,13 +541,13 @@ class cTrakt:
                     sNumber, sDate = i['number'],  i['collected_at']
                     sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
 
-                    sTitle2 = ('[COLOR white]%s [/COLOR] %s - (ep%s)') % (sDate, sTitle.encode("utf-8"), int(sNumber))
+                    sTitle2 = ('[COLOR white]%s [/COLOR] %sE%s') % (sDate, sTitle.encode("utf-8"), int(sNumber))
 
                 elif 'watched' in sUrl:
                     sNumber, sPlays, sDate = i['number'], i['plays'], i['last_watched_at']
                     sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
 
-                    sTitle2 = ('[COLOR white]%s - %s Lectures[/COLOR] - %s - (ep%s)') % (sDate, sPlays, sTitle.encode("utf-8"), int(sNumber))
+                    sTitle2 = ('[COLOR white]%s - %s Lectures[/COLOR] - %sE%s') % (sDate, sPlays, sTitle.encode("utf-8"), int(sNumber))
 
                 else: return
 
