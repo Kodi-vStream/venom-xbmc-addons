@@ -47,7 +47,8 @@ MOVIE_SD_VIEWS = (URL_MAIN + 'telechargement/films-1.html&order=3', 'showMovies'
 MOVIE_HD_VIEWS = (URL_MAIN + 'telechargement/films-hd-13.html&order=3', 'showMovies') # derniers films en HD
 MOVIE_3D_VIEWS = (URL_MAIN + 'telechargement/films-3d-21.html&order=3', 'showMovies') # derniers films en 3D
 MOVIE_TOP = (URL_MAIN +'telechargement-top-films', 'showMovies') # derniers films en 3D
-MOVIE_GENRES = (True, 'showGenreMovies')
+MOVIE_GENRES_HD = (True, 'showGenreMoviesHD')
+MOVIE_GENRES_SD = (True, 'showGenreMoviesSD')
 
 ANIMES = (URL_MAIN + 'telechargement/dessins-animes-5.html&order=2', 'showMovies') # derniers dessins animés
 
@@ -62,7 +63,9 @@ SERIES_HD = (URL_MAIN + 'telechargement/series-hd-20.html&order=2', 'showMovies'
 SERIES_SD_VIEWS = (URL_MAIN + 'telechargement/series-tv-6.html&order=3', 'showMovies') # derniers films en SD
 SERIES_HD_VIEWS = (URL_MAIN + 'telechargement/series-tv-6.html&order=3', 'showMovies') # derniers films en HD
 SERIES_TOP = (URL_MAIN +'telechargement-top-series', 'showMovies') # derniers films en 3D
-SERIE_GENRES = (True, 'showGenreSeries')
+SERIES_GENRES_SD = (True, 'showGenreSeriesSD')
+SERIES_GENRES_HD = (True, 'showGenreSeriesHD')
+
 
 def load():
     oGui = cGui()
@@ -99,11 +102,7 @@ def showMenuFilms():
     oOutputParameterHandler = cOutputParameterHandler() 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
     oGui.addDir(SITE_IDENTIFIER, 'showSearchMovies', 'Recherche de films', 'search.png', oOutputParameterHandler) 
-        
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films Genre', 'genres.png', oOutputParameterHandler)
-    
+         
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_SD[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_SD[1], 'Derniers Films SD ajoutes', 'news.png', oOutputParameterHandler)  
@@ -132,6 +131,14 @@ def showMenuFilms():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP[1], 'Top Films du Mois', 'films.png', oOutputParameterHandler)  
 
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES_SD[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES_SD[1], 'Films SD par Genre', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES_HD[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES_HD[1], 'Films HD par Genre', 'genres.png', oOutputParameterHandler)
+     
     oGui.setEndOfDirectory()     
 
 def showMenuSeries():
@@ -159,7 +166,16 @@ def showMenuSeries():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIES_TOP[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIES_TOP[1], 'Top Series du Mois', 'films.png', oOutputParameterHandler)    
+    oGui.addDir(SITE_IDENTIFIER, SERIES_TOP[1], 'Top Series du Mois', 'films.png', oOutputParameterHandler)  
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIES_GENRES_SD[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIES_GENRES_SD[1], 'Séries SD par Genre', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIES_GENRES_HD[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIES_GENRES_HD[1], 'Séries HD par Genre', 'genres.png', oOutputParameterHandler)
+      
     
     oGui.setEndOfDirectory()     
     
@@ -214,8 +230,7 @@ def showMenuEmissionsTV():
     oGui.addDir(SITE_IDENTIFIER, EMISSIONS_TV[1], 'Dernieres Emissions TV', 'news.png', oOutputParameterHandler)  
     
     oGui.setEndOfDirectory()     
-        
-    
+           
 def showSearchMovies(): 
     oGui = cGui()
     sSearchText = oGui.showKeyBoard() 
@@ -260,8 +275,7 @@ def showSearchSpectacles():
         showMovies(sUrl) 
         oGui.setEndOfDirectory()
         return    
-        
-        
+               
 def showSearchEmissionsTV(): 
     oGui = cGui()
     sSearchText = oGui.showKeyBoard() 
@@ -270,42 +284,66 @@ def showSearchEmissionsTV():
         showMovies(sUrl) 
         oGui.setEndOfDirectory()
         return    
+      
+def showGenreMoviesSD(): 
+    showGenre("films-1.html&order=2")
  
-        
-def showGenreMovies(): 
-    showGenre("films-gratuit.html")
+def showGenreMoviesHD(): 
+    showGenre("films-hd-13.html&order=2")
 
-def showGenreSeries(): 
-    showGenre("telecharger-series.html")
+def showGenreSeriesSD(): 
+    showGenre("series-tv-6.html")
+
+def showGenreSeriesHD(): 
+    showGenre("series-hd-20.html")
 
 def showGenre(basePath): 
     oGui = cGui()
     
     liste = []
-    liste.append( ['Action',URL_MAIN + basePath + '?genrelist[]=1'] )
-    liste.append( ['Animation',URL_MAIN +  basePath + '?genrelist[]=2'] )
-    liste.append( ['Arts Martiaux',URL_MAIN +  basePath + '?genrelist[]=3'] )
-    liste.append( ['Aventure',URL_MAIN +  basePath + '?genrelist[]=4'] )
-    liste.append( ['Biopic',URL_MAIN +  basePath + '?genrelist[]=5'] )
-    liste.append( ['Comedie Dramatique',URL_MAIN +  basePath + '?genrelist[]=7'] )
-    liste.append( ['Comedie Musicale',URL_MAIN +  basePath + '?genrelist[]=8'] )
-    liste.append( ['Comedie',URL_MAIN +  basePath + '?genrelist[]=9'] )
-    liste.append( ['Divers',URL_MAIN +  basePath + '?genrelist[]=10'] )
-    liste.append( ['Documentaires',URL_MAIN +  basePath + '?genrelist[]=11'] )
-    liste.append( ['Drame',URL_MAIN +  basePath + '?genrelist[]=12'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN +  basePath + '?genrelist[]=13'] ) 
-    liste.append( ['Espionnage',URL_MAIN +  basePath + '?genrelist[]=14'] )
-    liste.append( ['Famille',URL_MAIN +  basePath + '?genrelist[]=15'] )
-    liste.append( ['Fantastique',URL_MAIN +  basePath + '?genrelist[]=16'] )  
-    liste.append( ['Guerre',URL_MAIN +  basePath + '?genrelist[]=17'] )
-    liste.append( ['Historique',URL_MAIN +  basePath + '?genrelist[]=18'] )
-    liste.append( ['Musical',URL_MAIN +  basePath + '?genrelist[]=19'] )
-    liste.append( ['Peplum',URL_MAIN +  basePath + '?genrelist[]=6'] )
-    liste.append( ['Policier',URL_MAIN +  basePath + '?genrelist[]=20'] )
-    liste.append( ['Romance',URL_MAIN +  basePath + '?genrelist[]=21'] )
-    liste.append( ['Science Fiction',URL_MAIN +  basePath + '?genrelist[]=22'] )
-    liste.append( ['Thriller',URL_MAIN +  basePath + '?genrelist[]=23'] )
-    liste.append( ['Western',URL_MAIN +  basePath + '?genrelist[]=24'] )
+    liste.append( ['Action',URL_MAIN + 'telechargement+5/' + basePath] )
+    liste.append( ['Animation',URL_MAIN + 'telechargement+4/' + basePath] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'telechargement+64/' + basePath] )
+    liste.append( ['Aventure',URL_MAIN + 'telechargement+20/' + basePath] )
+    liste.append( ['Biographie',URL_MAIN + 'telechargement+38/' + basePath] )
+    liste.append( ['Biopic',URL_MAIN + 'telechargement+28/' + basePath] )
+    liste.append( ['Combat',URL_MAIN + 'telechargement+35/' + basePath] )
+    liste.append( ['Comédie',URL_MAIN + 'telechargement+1/' + basePath] )
+    liste.append( ['Comédie dramatique',URL_MAIN + 'telechargement+12/' + basePath] )
+    liste.append( ['Comédie musicale',URL_MAIN + 'telechargement+33/' + basePath] )
+    liste.append( ['Comédie romantique',URL_MAIN + 'telechargement+53/' + basePath] )
+    liste.append( ['Comique',URL_MAIN + 'telechargement+51/' + basePath] )
+    liste.append( ['Court métrage',URL_MAIN + 'telechargement+45/' + basePath] )
+    liste.append( ['Criminalité',URL_MAIN + 'telechargement+40/' + basePath] )
+    liste.append( ['Dessin animé',URL_MAIN + 'telechargement+27/' + basePath] )
+    liste.append( ['Divers',URL_MAIN + 'telechargement+34/' + basePath] )
+    liste.append( ['Divertissement',URL_MAIN + 'telechargement+66/' + basePath] )
+    liste.append( ['Documentaire',URL_MAIN + 'telechargement+9/' + basePath] )
+    liste.append( ['Drame',URL_MAIN + 'telechargement+3/' + basePath] )
+    liste.append( ['Epouvante',URL_MAIN + 'telechargement+41/' + basePath] )
+    liste.append( ['Epouvante-horreur',URL_MAIN + 'telechargement+17/' + basePath] )
+    liste.append( ['Erotique',URL_MAIN + 'telechargement+24/' + basePath] ) 
+    liste.append( ['Espionnage',URL_MAIN + 'telechargement+13/' + basePath] ) 
+    liste.append( ['Famille',URL_MAIN + 'telechargement+31/' + basePath] ) 
+    liste.append( ['Fantastique',URL_MAIN + 'telechargement+16/' + basePath] ) 
+    liste.append( ['Guerre',URL_MAIN + 'telechargement+22/' + basePath] ) 
+    liste.append( ['Historique',URL_MAIN + 'telechargement+21/' + basePath] ) 
+    liste.append( ['Horreur',URL_MAIN + 'telechargement+15/' + basePath] ) 
+    liste.append( ['Humour',URL_MAIN + 'telechargement+44/' + basePath] ) 
+    liste.append( ['Jeunesse',URL_MAIN + 'telechargement+19/' + basePath] ) 
+    liste.append( ['Judiciaire',URL_MAIN + 'telechargement+67/' + basePath] ) 
+    liste.append( ['Manga',URL_MAIN + 'telechargement+58/' + basePath] ) 
+    liste.append( ['Médical',URL_MAIN + 'telechargement+47/' + basePath] ) 
+    liste.append( ['Musical',URL_MAIN + 'telechargement+10/' + basePath] ) 
+    liste.append( ['Mystère',URL_MAIN + 'telechargement+26/' + basePath] ) 
+    liste.append( ['Péplum',URL_MAIN + 'telechargement+54/' + basePath] ) 
+    liste.append( ['Policier',URL_MAIN + 'telechargement+2/' + basePath] ) 
+    liste.append( ['Romance',URL_MAIN + 'telechargement+6/' + basePath] ) 
+    liste.append( ['Science fiction',URL_MAIN + 'telechargement+7/' + basePath] ) 
+    liste.append( ['Spectacle',URL_MAIN + 'telechargement+39/' + basePath] ) 
+    liste.append( ['Sport',URL_MAIN + 'telechargement+68/' + basePath] ) 
+    liste.append( ['Thriller',URL_MAIN + 'telechargement+8/' + basePath] ) 
+    liste.append( ['Western',URL_MAIN + 'telechargement+11/' + basePath] ) 
                 
     for sTitle,sUrl in liste:
         
@@ -314,7 +352,6 @@ def showGenre(basePath):
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)    
        
     oGui.setEndOfDirectory() 
-
         
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -400,7 +437,10 @@ def __checkForNextPage(sHtmlContent):
 
     if (aResult[0] == True):
         #print aResult
-        return URL_MAIN+'telechargement/'+aResult[1][0]
+        if 'recherche.php' in aResult[1][0]:
+            return URL_MAIN+aResult[1][0]
+        else:
+            return URL_MAIN+'telechargement/'+aResult[1][0]
         
     return False
 
@@ -440,6 +480,7 @@ def showMoviesReleases():
     #print aResult
 	
     #Affichage du menu  
+    oGui.addText(SITE_IDENTIFIER,sMovieTitle)
     oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Releases disponibles pour ce film :[/COLOR]')
 
     if (aResult[0] == True):
@@ -450,7 +491,7 @@ def showMoviesReleases():
             if dialog.iscanceled():
                 break
             if ('rapidgator' not in aEntry[1]) and ('turbobit' not in aEntry[1]) and ('uploaded' not in aEntry[1]) and ('uptobox' not in aEntry[1]) :
-                sTitle = sMovieTitle +  ' - [COLOR skyblue]' + aEntry[1]+'[/COLOR]'
+                sTitle = '[COLOR skyblue]' + aEntry[1]+'[/COLOR]'
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
@@ -461,8 +502,6 @@ def showMoviesReleases():
     
     oGui.setEndOfDirectory()    
 	
-
-
 def showSeriesReleases():
     xbmc.log('showSeriesReleases')
     oInputParameterHandler = cInputParameterHandler()
@@ -492,7 +531,8 @@ def showSeriesReleases():
     #print aResult
 	
     #Affichage du menu  
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Releases disponibles pour ce film :[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER,sMovieTitle)
+    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Episodes disponibles :[/COLOR]')
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -502,7 +542,7 @@ def showSeriesReleases():
             if dialog.iscanceled():
                 break
             if ('rapidgator' not in aEntry[1]) and ('turbobit' not in aEntry[1]) and ('uploaded' not in aEntry[1]) and ('uptobox' not in aEntry[1]) :
-                sTitle = sMovieTitle +  ' - [COLOR skyblue]' + aEntry[1]+'[/COLOR]'
+                sTitle = '[COLOR skyblue]' + aEntry[1]+'[/COLOR]'
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
@@ -513,8 +553,6 @@ def showSeriesReleases():
     
     oGui.setEndOfDirectory()    
 
-
-	
 def showHosters():# recherche et affiche les hotes
     print "showHosters"
     
@@ -556,9 +594,7 @@ def showHosters():# recherche et affiche les hotes
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
-
-
-        
+  
 def Display_protected_link():
     print "Display_protected_link"
     oGui = cGui()
@@ -668,7 +704,6 @@ def DecryptddlProtect(url):
     
     return sHtmlContent  
 
-    
 def DeleteCookie(Domain):
     file = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
     os.remove(os.path.join(PathCache,file))
@@ -693,9 +728,7 @@ def Readcookie(Domain):
         return ''
     
     return data
-		
-
-		
+	
 def get_response(img,cookie):    
     print "get_reponse"
     #on telecharge l'image
