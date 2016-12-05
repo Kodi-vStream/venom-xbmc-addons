@@ -184,7 +184,8 @@ class cTrakt:
         #DANGER ca rame, freeze
         liste = []
         liste.append( ['Mes sorties Sur les 7 jours a venir','https://api.trakt.tv/calendars/my/shows/' + today_date + '/7'] )
-        liste.append( ['Freeze - Sur les X jours a venir','https://api.trakt.tv/calendars/all/shows/' + today_date + '/1'] )
+        liste.append( ['Nouveautes sur 7 jours','https://api.trakt.tv/calendars/all/shows/new/' + today_date + '/7'] )
+        liste.append( ['Freeze - Nouveautees sur la journee a venir','https://api.trakt.tv/calendars/all/shows/' + today_date + '/1'] )
         
         for sTitle,sUrl in liste:
 
@@ -379,14 +380,18 @@ class cTrakt:
 
                 elif 'calendars' in sUrl:
                     xbmc.log(str(i))
+                    sRajout = ''
                     if  'show' in i:
                         sTrakt, sTitle, sImdb, sTmdb, sYear, sFirst_aired = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year'],i['first_aired']
+                        sSaison,sEpisode = i['episode']['season'],i['episode']['number']
+                        sRajout = " S" + str(sSaison) + "E" + str(sEpisode)
                         cTrakt.CONTENT = '2'
                     else:
                         sTrakt, sTitle, sImdb, sTmdb, sYear, sFirst_aired  = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year'],i['first_aired']
                         cTrakt.CONTENT = '1'
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
-                    sTitle = sTitle.encode("utf-8")
+                    sTitle = sTitle.encode("utf-8") + sRajout + " (" + sFirst_aired[:10] + ')'
+                    sFunction = 'showHosters'
                     
                 elif 'recommendations' in sUrl or 'popular' in sUrl:
                     if 'shows' in sUrl:
