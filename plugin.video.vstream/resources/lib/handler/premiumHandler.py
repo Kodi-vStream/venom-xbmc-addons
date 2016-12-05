@@ -226,10 +226,9 @@ class cPremiumHandler:
             xbmc.log('Cookies non valables')
             self.Authentificate()
             if (self.isLogin):
+                cookies = self.Readcookie(self.__sHosterIdentifier)
                 sHtmlContent = self.GetHtmlwithcookies(url,data,cookies)
             else:
                 return ''
         
         return sHtmlContent
-
-        
