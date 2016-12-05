@@ -25,11 +25,15 @@ SITE_IDENTIFIER = 'ddl_island_su'
 SITE_NAME = '[COLOR violet]DDL-Island[/COLOR]' 
 SITE_DESC = 'Fichier en DDL, HD' 
 
-URL_MAIN = 'http://www.ddl-island.su/telechargement/'
+URL_MAIN = 'http://www.ddl-island.su/'
 URL_PROTECT = 'http://protect.ddl-island.su'
 
 URL_SEARCH_MOVIES = ('http://www.ddl-island.su/recherche.php?categorie=99&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
 URL_SEARCH_SERIES = ('http://www.ddl-island.su/recherche.php?categorie=98&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
+URL_SEARCH_ANIMES = ('http://www.ddl-island.su/recherche.php?categorie=5&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
+URL_SEARCH_MANGAS = ('http://www.ddl-island.su/recherche.php?categorie=3&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
+URL_SEARCH_EMISSIONS_TV = ('http://www.ddl-island.su/recherche.php?categorie=17&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
+URL_SEARCH_SPECTACLES = ('http://www.ddl-island.su/recherche.php?categorie=2&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
 
 
 URL_SEARCH = (URL_MAIN + 'index.php?q=', 'showMovies')
@@ -42,24 +46,63 @@ MOVIE_3D = (URL_MAIN + 'telechargement/films-3d-21.html&order=2', 'showMovies') 
 MOVIE_SD_VIEWS = (URL_MAIN + 'telechargement/films-1.html&order=3', 'showMovies') # derniers films en SD
 MOVIE_HD_VIEWS = (URL_MAIN + 'telechargement/films-hd-13.html&order=3', 'showMovies') # derniers films en HD
 MOVIE_3D_VIEWS = (URL_MAIN + 'telechargement/films-3d-21.html&order=3', 'showMovies') # derniers films en 3D
-MOVIE_TOP = ('http://www.ddl-island.su/telechargement-top-films', 'showMovies') # derniers films en 3D
+MOVIE_TOP = (URL_MAIN +'telechargement-top-films', 'showMovies') # derniers films en 3D
+MOVIE_GENRES = (True, 'showGenreMovies')
+
+ANIMES = (URL_MAIN + 'telechargement/dessins-animes-5.html&order=2', 'showMovies') # derniers dessins animés
+
+MANGAS = (URL_MAIN + 'telechargement/mangas-3.html&order=2', 'showMovies') # derniers dessins animés
+
+EMISSIONS_TV = (URL_MAIN + 'telechargement/emissions-tv-17.html&order=2', 'showMovies') # dernieres émissions TV
+
+SPECTACLES = (URL_MAIN + 'telechargement/comedies-spectacles-2.html&order=2', 'showMovies') # dernieres émissions TV
 
 SERIES_SD = (URL_MAIN + 'telechargement/series-tv-6.html&order=2', 'showMovies') # derniers films en SD
 SERIES_HD = (URL_MAIN + 'telechargement/series-hd-20.html&order=2', 'showMovies') # derniers films en HD
 SERIES_SD_VIEWS = (URL_MAIN + 'telechargement/series-tv-6.html&order=3', 'showMovies') # derniers films en SD
 SERIES_HD_VIEWS = (URL_MAIN + 'telechargement/series-tv-6.html&order=3', 'showMovies') # derniers films en HD
-SERIES_TOP = ('http://www.ddl-island.su/telechargement-top-series', 'showMovies') # derniers films en 3D
+SERIES_TOP = (URL_MAIN +'telechargement-top-series', 'showMovies') # derniers films en 3D
+SERIE_GENRES = (True, 'showGenreSeries')
 
 def load():
     oGui = cGui()
     
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuFilms', 'Films', 'films.png', oOutputParameterHandler)  
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Series', 'series.png', oOutputParameterHandler)      
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuDessinsAnimes', 'Dessins Animés', 'animes.png', oOutputParameterHandler)    
+   
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuMangas', 'Mangas', 'animes.png', oOutputParameterHandler)    
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuSpectacles', 'Spectacles', 'films.png', oOutputParameterHandler)    
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuEmissionsTV', 'Emissions TV', 'tv.png', oOutputParameterHandler)    
+    
+    oGui.setEndOfDirectory() 
+
+def showMenuFilms():
+    oGui = cGui()
+       
     oOutputParameterHandler = cOutputParameterHandler() 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
     oGui.addDir(SITE_IDENTIFIER, 'showSearchMovies', 'Recherche de films', 'search.png', oOutputParameterHandler) 
-    
-    oOutputParameterHandler = cOutputParameterHandler() 
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchSeries', 'Recherche de series', 'search.png', oOutputParameterHandler)
+        
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films Genre', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_SD[0])
@@ -89,6 +132,15 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP[1], 'Top Films du Mois', 'films.png', oOutputParameterHandler)  
 
+    oGui.setEndOfDirectory()     
+
+def showMenuSeries():
+    oGui = cGui()
+       
+    oOutputParameterHandler = cOutputParameterHandler() 
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchSeries', 'Recherche de series', 'search.png', oOutputParameterHandler)
+        
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIES_SD[0])
     oGui.addDir(SITE_IDENTIFIER, SERIES_SD[1], 'Dernieres Séries SD ajoutees', 'news.png', oOutputParameterHandler)  
@@ -107,10 +159,63 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIES_TOP[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIES_TOP[1], 'Top Series du Mois', 'films.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, SERIES_TOP[1], 'Top Series du Mois', 'films.png', oOutputParameterHandler)    
+    
+    oGui.setEndOfDirectory()     
+    
+def showMenuDessinsAnimes():
+    oGui = cGui()
+       
+    oOutputParameterHandler = cOutputParameterHandler() 
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchAnimes', 'Recherche de Dessins Animés', 'search.png', oOutputParameterHandler) 
         
-    oGui.setEndOfDirectory() 
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIMES[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIMES[1], 'Derniers Dessins Animés ajoutés', 'news.png', oOutputParameterHandler)  
+    
+    oGui.setEndOfDirectory()     
 
+def showMenuMangas():
+    oGui = cGui()
+       
+    oOutputParameterHandler = cOutputParameterHandler() 
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchMangas', 'Recherche de Mangas', 'search.png', oOutputParameterHandler) 
+        
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MANGAS[0])
+    oGui.addDir(SITE_IDENTIFIER, MANGAS[1], 'Derniers Mangas ajoutés', 'news.png', oOutputParameterHandler)  
+    
+    oGui.setEndOfDirectory()     
+
+def showMenuSpectacles():
+    oGui = cGui()
+       
+    oOutputParameterHandler = cOutputParameterHandler() 
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchSpectacles', 'Recherche de Spectacles', 'search.png', oOutputParameterHandler) 
+        
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SPECTACLES[0])
+    oGui.addDir(SITE_IDENTIFIER, SPECTACLES[1], 'Derniers Spectacles ajoutés', 'news.png', oOutputParameterHandler)  
+    
+    oGui.setEndOfDirectory()         
+    
+def showMenuEmissionsTV():
+    oGui = cGui()
+       
+    oOutputParameterHandler = cOutputParameterHandler() 
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchEmissionsTV', 'Recherche d Emissions TV', 'search.png', oOutputParameterHandler) 
+        
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', EMISSIONS_TV[0])
+    oGui.addDir(SITE_IDENTIFIER, EMISSIONS_TV[1], 'Dernieres Emissions TV', 'news.png', oOutputParameterHandler)  
+    
+    oGui.setEndOfDirectory()     
+        
+    
 def showSearchMovies(): 
     oGui = cGui()
     sSearchText = oGui.showKeyBoard() 
@@ -129,6 +234,88 @@ def showSearchSeries():
         oGui.setEndOfDirectory()
         return
 
+def showSearchAnimes(): 
+    oGui = cGui()
+    sSearchText = oGui.showKeyBoard() 
+    if (sSearchText != False):
+        sUrl = URL_SEARCH_ANIMES[0] + sSearchText
+        showMovies(sUrl) 
+        oGui.setEndOfDirectory()
+        return        
+ 
+def showSearchMangas(): 
+    oGui = cGui()
+    sSearchText = oGui.showKeyBoard() 
+    if (sSearchText != False):
+        sUrl = URL_SEARCH_MANGAS[0] + sSearchText
+        showMovies(sUrl) 
+        oGui.setEndOfDirectory()
+        return    
+
+def showSearchSpectacles(): 
+    oGui = cGui()
+    sSearchText = oGui.showKeyBoard() 
+    if (sSearchText != False):
+        sUrl = URL_SEARCH_SPECTACLES[0] + sSearchText
+        showMovies(sUrl) 
+        oGui.setEndOfDirectory()
+        return    
+        
+        
+def showSearchEmissionsTV(): 
+    oGui = cGui()
+    sSearchText = oGui.showKeyBoard() 
+    if (sSearchText != False):
+        sUrl = URL_SEARCH_EMISSIONS_TV[0] + sSearchText
+        showMovies(sUrl) 
+        oGui.setEndOfDirectory()
+        return    
+ 
+        
+def showGenreMovies(): 
+    showGenre("films-gratuit.html")
+
+def showGenreSeries(): 
+    showGenre("telecharger-series.html")
+
+def showGenre(basePath): 
+    oGui = cGui()
+    
+    liste = []
+    liste.append( ['Action',URL_MAIN + basePath + '?genrelist[]=1'] )
+    liste.append( ['Animation',URL_MAIN +  basePath + '?genrelist[]=2'] )
+    liste.append( ['Arts Martiaux',URL_MAIN +  basePath + '?genrelist[]=3'] )
+    liste.append( ['Aventure',URL_MAIN +  basePath + '?genrelist[]=4'] )
+    liste.append( ['Biopic',URL_MAIN +  basePath + '?genrelist[]=5'] )
+    liste.append( ['Comedie Dramatique',URL_MAIN +  basePath + '?genrelist[]=7'] )
+    liste.append( ['Comedie Musicale',URL_MAIN +  basePath + '?genrelist[]=8'] )
+    liste.append( ['Comedie',URL_MAIN +  basePath + '?genrelist[]=9'] )
+    liste.append( ['Divers',URL_MAIN +  basePath + '?genrelist[]=10'] )
+    liste.append( ['Documentaires',URL_MAIN +  basePath + '?genrelist[]=11'] )
+    liste.append( ['Drame',URL_MAIN +  basePath + '?genrelist[]=12'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN +  basePath + '?genrelist[]=13'] ) 
+    liste.append( ['Espionnage',URL_MAIN +  basePath + '?genrelist[]=14'] )
+    liste.append( ['Famille',URL_MAIN +  basePath + '?genrelist[]=15'] )
+    liste.append( ['Fantastique',URL_MAIN +  basePath + '?genrelist[]=16'] )  
+    liste.append( ['Guerre',URL_MAIN +  basePath + '?genrelist[]=17'] )
+    liste.append( ['Historique',URL_MAIN +  basePath + '?genrelist[]=18'] )
+    liste.append( ['Musical',URL_MAIN +  basePath + '?genrelist[]=19'] )
+    liste.append( ['Peplum',URL_MAIN +  basePath + '?genrelist[]=6'] )
+    liste.append( ['Policier',URL_MAIN +  basePath + '?genrelist[]=20'] )
+    liste.append( ['Romance',URL_MAIN +  basePath + '?genrelist[]=21'] )
+    liste.append( ['Science Fiction',URL_MAIN +  basePath + '?genrelist[]=22'] )
+    liste.append( ['Thriller',URL_MAIN +  basePath + '?genrelist[]=23'] )
+    liste.append( ['Western',URL_MAIN +  basePath + '?genrelist[]=24'] )
+                
+    for sTitle,sUrl in liste:
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)    
+       
+    oGui.setEndOfDirectory() 
+
+        
 def showMovies(sSearch = ''):
     oGui = cGui()
     bGlobal_Search = False
@@ -213,7 +400,7 @@ def __checkForNextPage(sHtmlContent):
 
     if (aResult[0] == True):
         #print aResult
-        return URL_MAIN+aResult[1][0]
+        return URL_MAIN+'telechargement/'+aResult[1][0]
         
     return False
 
