@@ -467,7 +467,7 @@ def showMoviesReleases():
     sCom = oInputParameterHandler.getValue('sCom')
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sUrl = sUrl.replace('.html','')
-    #print sUrl
+    print sUrl
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
@@ -481,7 +481,7 @@ def showMoviesReleases():
     
     sPattern = '<option value="([^"]+)"  id="([^"]+)"'	
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
+    print aResult
 	
     #Affichage du menu  
     oGui.addText(SITE_IDENTIFIER,sMovieTitle)
@@ -497,7 +497,7 @@ def showMoviesReleases():
             if ('rapidgator' not in aEntry[1]) and ('turbobit' not in aEntry[1]) and ('uploaded' not in aEntry[1]) and ('uptobox' not in aEntry[1]) :
                 sTitle = '[COLOR skyblue]' + aEntry[1]+'[/COLOR]'
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
+                oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sCom, oOutputParameterHandler)             
@@ -566,14 +566,14 @@ def showHosters():# recherche et affiche les hotes
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumbnail=oInputParameterHandler.getValue('sThumbnail')
     
-    #print sUrl
-
+    print sUrl
+    sUrl = sUrl.replace(' & ','+%26+').replace(' ','+')
+    print sUrl
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+    #print sHtmlContent
     oParser = cParser()
     
-    #sPattern = '<span class=\'providers[^\']+?\' title=\'([^\']+\')\'></span>&nbsp;<a href=\'([^\']+)\' target=\'_blank\' title="([^"]+)"'
     sPattern = '<span class=\'providers.+?\' title=\'([^\']+)\'><\/span> *<a href=\'([^\']+)\' target=\'_blank\' title="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     print aResult
