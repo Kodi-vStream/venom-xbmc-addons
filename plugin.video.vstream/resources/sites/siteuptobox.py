@@ -118,7 +118,7 @@ def showFolder():
         
     oGui.setEndOfDirectory()
        
-def UploadFile():
+def AddmyAccount():
     if (cConfig().getSetting('hoster_uptobox_username') == '') and (cConfig().getSetting('hoster_uptobox_password') == ''):
         return 
     oInputParameterHandler = cInputParameterHandler()
