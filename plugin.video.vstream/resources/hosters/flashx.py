@@ -266,7 +266,16 @@ class cHoster(iHoster):
         
         #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent)
-        #fh.close()        
+        #fh.close()
+        
+        if sHtmlContent == False:
+            xbmc.log('Passage en mode barbare')
+            #ok ca a rate on passe toutes les url de AllUrl
+            for i in AllUrl:
+                xbmc.log('++' + i)
+                sHtmlContent = self.GetRedirectHtml(i,sId,True)
+                if sHtmlContent:
+                    break    
 
         if not sHtmlContent:
             return False,False
