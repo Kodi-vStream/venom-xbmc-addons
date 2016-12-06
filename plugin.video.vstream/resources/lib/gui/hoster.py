@@ -95,7 +95,7 @@ class cHosterGui:
              oContext = cContextElement()
              oContext.setFile('siteuptobox')
              oContext.setSiteName(self.SITE_NAME)
-             oContext.setFunction('UploadFile')
+             oContext.setFunction('AddmyAccount')
              oContext.setTitle('[COLOR dodgerblue]Ajouter à mon compte Uptobox[/COLOR]')
              oContext.setOutputParameterHandler(oOutputParameterHandler)
              oGuiElement.addContextItem(oContext)
