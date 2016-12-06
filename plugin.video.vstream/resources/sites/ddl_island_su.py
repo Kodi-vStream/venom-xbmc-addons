@@ -672,6 +672,9 @@ def DecryptddlProtect(url):
     if 'value="Submit form"' in sHtmlContent:
         if cookies:
             DeleteCookie('protect_ddl_island.su')
+            oRequestHandler = cRequestHandler(url)
+            sHtmlContent = oRequestHandler.request()
+            
         cookies = oRequestHandler.GetCookies()
         
         #save cookies
