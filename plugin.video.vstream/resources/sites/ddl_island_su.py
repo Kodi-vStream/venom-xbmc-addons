@@ -399,7 +399,11 @@ def showMovies(sSearch = ''):
     if (aResult[0] == True):
         total = len(aResult[1])        
         for aEntry in aResult[1]:
-            sQual = str(aEntry[3])
+            sQual = 'SD'
+            if '-hd-' in aEntry[0]:
+                sQual = 'HD'
+            if '-3d-' in aEntry[0]:
+                sQual = '3D'
             sCom = str(aEntry[4])
             sTitle = str(aEntry[2])
             sUrl2 = aEntry[0]
@@ -411,7 +415,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle)) 
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             oOutputParameterHandler.addParameter('sCom', sCom)
-            sDisplayTitle = cUtil().DecoTitle(sTitle+' ('+sQual+')')
+            sDisplayTitle = cUtil().DecoTitle('('+sQual+') '+sTitle)
             
             oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
             
