@@ -60,12 +60,24 @@ def LoadLinks(htmlcode):
             #Url ou il ne faut pas aller
             if 'dok3v' in sUrl:
                 continue
-
+                
+            #pour test
+            if '.js' not in sUrl:
+                continue
+            if 'flashx' in sUrl:
+                continue
+            #ok good url are files.fx.fastcontentdelivery.com
+                
+            headers8 = {
+            'User-Agent': UA,
+            'Referer':'https://www.flashx.tv/dl?playthis'
+            }
+            
             try:
-                oRequest = cRequestHandler(sUrl)
-                #oRequest.setTimeout(5)
-                oRequest.addHeaderEntry('Referer','https://www.flashx.tv/dl?playthis')
-                sCode = oRequest.request()
+                request = urllib2.Request(sUrl,None,headers8)
+                reponse = urllib2.urlopen(request)
+                sCode = reponse.read()
+                reponse.close()                
                 xbmc.log('Worked ' + sUrl)
             except:
                 xbmc.log('Blocked ' + sUrl)
@@ -259,14 +271,10 @@ class cHoster(iHoster):
             
             
         #Request to unlock video
-        #LoadLinks(sHtmlContent)
+        LoadLinks(sHtmlContent)
 
         #get the page
         sHtmlContent = self.GetRedirectHtml(web_url,sId,True)
-        
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
         
         if sHtmlContent == False:
             xbmc.log('Passage en mode barbare')
@@ -278,7 +286,7 @@ class cHoster(iHoster):
                     break    
 
         if not sHtmlContent:
-            return False,False
+            return False,False           
             
         #A t on le lien code directement?
         sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
@@ -303,7 +311,7 @@ class cHoster(iHoster):
                 return False,False
             
             #on debloque la page (en test ca a l'air inutile)
-            #sHtmlContent = self.GetRedirectHtml(aResult[0],sId)
+            sHtmlContent = self.GetRedirectHtml(aResult[0],sId)
             
             #lien speciaux ?
             if sRefresh.startswith('./'):
@@ -322,9 +330,17 @@ class cHoster(iHoster):
                 
         if (aResult):
             xbmc.log( "lien code")
-            #xbmc.log(str(aResult))
-            sUnpacked = cPacker().unpack(aResult[0])
-            sHtmlContent = sUnpacked
+            
+            AllPacked = re.findall('(eval\(function\(p,a,c,k.*?)\s+<\/script>',sHtmlContent,re.DOTALL)
+            if AllPacked:
+                for i in AllPacked:
+                    sUnpacked = cPacker().unpack(i)
+                    sHtmlContent = sUnpacked
+                    xbmc.log(sHtmlContent)
+                    if "file" in sHtmlContent:
+                        break
+            else:
+                return False,False           
             
             #xbmc.log(sHtmlContent)
   
