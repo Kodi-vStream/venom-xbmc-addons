@@ -457,7 +457,7 @@ def showMovies(sSearch = ''):
 	    
 	    oOutputParameterHandler = cOutputParameterHandler()
 	    oOutputParameterHandler.addParameter('siteUrl', str(sUrl2))
-	    oOutputParameterHandler.addParameter('sMovieTitle', str(sDisplayTitle)
+	    oOutputParameterHandler.addParameter('sMovieTitle', str(sDisplayTitle))
 	    oOutputParameterHandler.addParameter('sMovieTitle2', str(sDisplayTitle2))
 	    oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 	    oOutputParameterHandler.addParameter('sCom', sCom)
