@@ -446,7 +446,7 @@ def showMovies(sSearch = ''):
                 if 'categorie=98' in sUrl:
                     sEpisode = ''
                 if 'top-series' in sUrl:
-		    sTitle = ' ' + sTitle[0]
+		    sTitle = ' ' + sTitle2[0]
 	    if  '[e' in sEpisode:
                  sEpisode = sEpisode.split(" ")
                  sEpisode = sEpisode[0]
