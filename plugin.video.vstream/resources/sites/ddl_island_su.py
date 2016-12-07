@@ -350,7 +350,7 @@ def showGenre(basePath):
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)    
-       
+    
     oGui.setEndOfDirectory() 
         
 def showMovies(sSearch = ''):
@@ -413,55 +413,53 @@ def showMovies(sSearch = ''):
             #print sUrl2
             #sFanart =aEntry[1]
             sThumbnail=aEntry[1]
-	    
 	    #Reformatage sDisplayTitle (séries)
 	    sSaison = ''
-            sLang = ''
-            sEpisode = ''
-            sTitle2 = sTitle.split(" - ")
-            total2 =len(sTitle2)
-           
+	    sLang = ''
+	    sEpisode = ''
+	    sTitle2 = sTitle.split(" - ")
+	    total2 =len(sTitle2)
 	    if '-series-' in sUrl2:
-                sTitle = sTitle2[0]
-                if 'vostfr' in sUrl2:
-                    if (total2 == 4):
-                       sSaison = sTitle2[1]
-                       sLang = ' ' + sTitle2[2]
-                       sEpisode = sTitle2[3]
-                    elif (total2 == 3):  
-                         sSaison = sTitle2[1]
-                         sLang = ' ' + sTitle2[2]
-                    else:
-                         sTitle = str(aEntry[2])
-                else:
-                    if (total2 == 3):
-                       sSaison = sTitle2[1]
-                       sLang = ' VF'
-                       sEpisode = sTitle2[2]
-                    elif (total2 == 2):
-                         sSaison = sTitle2[1]
+		sTitle = sTitle2[0]
+		if 'vostfr' in sUrl2:
+		    if (total2 == 4):
+		       sSaison = sTitle2[1]
+		       sLang = ' ' + sTitle2[2]
+		       sEpisode = sTitle2[3]
+		    elif (total2 == 3):
+			 sSaison = sTitle2[1]
+			 sLang = ' ' + sTitle2[2]
+		    else:
+			 sTitle = str(aEntry[2])
+		else:
+		    if (total2 == 3):
+		       sSaison = sTitle2[1]
+		       sLang = ' VF'
+		       sEpisode = sTitle2[2]
+		    elif (total2 == 2):
+			 sSaison = sTitle2[1]
                          sLang = ' VF'
-                    else:
-                         sTitle = str(aEntry[2])
-                if 'categorie=98' in sUrl:
-                    sEpisode = ''
-                if 'top-series' in sUrl:
+		    else:
+			 sTitle = str(aEntry[2])
+		if 'categorie=98' in sUrl:
+		    sEpisode = ''
+		if 'top-series' in sUrl:
 		    sTitle = ' ' + sTitle2[0]
-	    if  '[e' in sEpisode:
-                 sEpisode = sEpisode.split(" ")
-                 sEpisode = sEpisode[0]
-                 sEpisode = sEpisode.replace('[e', 'E')
-                 sSaison = sSaison.replace('Saison ', 'S')
-                 sDisplayTitle2 = '[COLOR coral]' +' ('+sQual+') ' + '[/COLOR]' + '[COLOR skyblue]' + sTitle + '[/COLOR]' + '[COLOR coral]' + sLang + '[/COLOR]' + '[COLOR skyblue]' + ' (' + 'Ajout episode : ' + sSaison + sEpisode + ')' '[/COLOR]'
-            else:
-                 sDisplayTitle2 = '[COLOR coral]' +' ('+sQual+') ' + '[/COLOR]' + '[COLOR skyblue]' + sTitle + '[/COLOR]' + '[COLOR coral]' + sLang + '[/COLOR]' + '[COLOR skyblue]' + ' ' + sSaison + sEpisode + '[/COLOR]'
+	    if  '[' in sEpisode:
+		 sEpisode = sEpisode.split(" ")
+		 sEpisode = sEpisode[0]
+		 sEpisode = sEpisode.replace('[e', 'E').replace('[ddl', 'E')
+		 sSaison = sSaison.replace('Saison ', 'S')
+		 sDisplayTitle2 = '[COLOR coral]' +' ('+sQual+') ' + '[/COLOR]' + '[COLOR skyblue]' + sTitle + '[/COLOR]' + '[COLOR coral]' + sLang + '[/COLOR]' + '[COLOR skyblue]' + ' (' + 'Ajout episode : ' + sSaison + sEpisode + ')' '[/COLOR]'
+	    else:
+		 sDisplayTitle2 = '[COLOR coral]' +' ('+sQual+') ' + '[/COLOR]' + '[COLOR skyblue]' + sTitle + '[/COLOR]' + '[COLOR coral]' + sLang + '[/COLOR]' + '[COLOR skyblue]' + ' ' + sSaison + sEpisode + '[/COLOR]'
 		
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl2)) 
             oOutputParameterHandler.addParameter('sMovieTitle', str(sDisplayTitle2)) 
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             oOutputParameterHandler.addParameter('sCom', sCom)
-            
+	
 	    sDisplayTitle = '[COLOR coral]' + ' ('+sQual+') ' + '[/COLOR]' + '[COLOR skyblue]' + sSaison + sEpisode + '[/COLOR]' + '[COLOR coral]' + sLang + '[/COLOR]' + '[COLOR skyblue]' + sTitle + '[/COLOR]'
             
             oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
