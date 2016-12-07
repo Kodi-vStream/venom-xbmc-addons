@@ -10,12 +10,14 @@ from resources.lib.util import cUtil
 from resources.lib.config import cConfig
 import xbmc,xbmcgui,urllib,urllib2,re
 from resources.lib.handler.premiumHandler import cPremiumHandler
-
+import random, mimetypes, string
 SITE_IDENTIFIER = 'siteuptobox' 
 SITE_NAME = '[COLOR dodgerblue]' + 'VotreCompteUptobox' + '[/COLOR]'
 SITE_DESC = 'fichier sur compte uptobox'
 URL_MAIN = 'https://uptobox.com/'
 BURL = 'https://uptobox.com/?op=my_files' 
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
+headers = { 'User-Agent' : UA }
 
 def load(): 
     oGui = cGui()
@@ -153,13 +155,9 @@ def AddmyAccount():
          xbmcgui.Dialog().notification('Info upload','Erreur',xbmcgui.NOTIFICATION_ERROR,2000,False)    
 
 def UptomyAccount():
-    from resources.lib import mpart
-    UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
-    headers = { 'User-Agent' : UA }
-
     oInputParameterHandler = cInputParameterHandler()
     sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
-
+    #xbmc.log(str(sMediaUrl))
     oPremiumHandler = cPremiumHandler('uptobox')
     #go page d'accueil           
     sHtmlContent = oPremiumHandler.GetHtml(URL_MAIN)
@@ -174,7 +172,7 @@ def UptomyAccount():
         UPurl = ('%s%s&js_on=1&utype=reg&upload_type=url' % (aCt,sId))
  
         fields = {'sess_id':sId,'upload_type':'url','srv_tmp_url':sTmp,'url_mass':sMediaUrl,'tos':'1','submit_btn':'Uploader'}
-        mpartdata = mpart.encode(fields)
+        mpartdata = MPencode(fields)
         req = urllib2.Request(UPurl,mpartdata[1],headers)
         req.add_header('Content-Type', mpartdata[0])
         req.add_header('Cookie', cookies)
@@ -195,3 +193,43 @@ def UptomyAccount():
            xbmcgui.Dialog().notification('Info upload', 'Fichier introuvable', xbmcgui.NOTIFICATION_INFO,2000,False)
     else:
         xbmcgui.Dialog().notification('Info upload','Erreur pattern',xbmcgui.NOTIFICATION_ERROR,2000,False)
+        
+
+def MPencode(fields):
+	random_boundary = __randy_boundary()
+	content_type = "multipart/form-data, boundary=%s" % random_boundary
+
+	form_data = []
+	
+	if fields:
+		for (key, value) in fields.iteritems():
+			if not hasattr(value, 'read'):
+				itemstr = '--%s\r\nContent-Disposition: form-data; name="%s"\r\n\r\n%s\r\n' % (random_boundary, key, value)
+				form_data.append(itemstr)
+			elif hasattr(value, 'read'):
+				with value:
+					file_mimetype = mimetypes.guess_type(value.name)[0] if mimetypes.guess_type(value.name)[0] else 'application/octet-stream'
+					itemstr = '--%s\r\nContent-Disposition: form-data; name="%s"; filename="%s"\r\nContent-Type: %s\r\n\r\n%s\r\n' % (random_boundary, key, value.name, file_mimetype, value.read())
+				form_data.append(itemstr)
+			else:
+				raise Exception(value, 'Field is neither a file handle or any other decodable type.')
+	else:
+		pass
+
+	form_data.append('--%s--\r\n' % random_boundary)
+
+	return content_type, ''.join(form_data)
+
+def __randy_boundary(length=10,reshuffle=False):
+	character_string = string.letters+string.digits
+	boundary_string = []
+	for i in range(0,length):
+		rand_index = random.randint(0,len(character_string) - 1)
+		boundary_string.append(character_string[rand_index])
+	if reshuffle:
+		random.shuffle(boundary_string)
+	else:
+		pass
+	return ''.join(boundary_string)        
+        
+ 
