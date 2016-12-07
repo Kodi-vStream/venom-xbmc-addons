@@ -9,7 +9,6 @@ from resources.lib.config import cConfig
 
 from resources.lib import cloudflare
 
-
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
     REQUEST_TYPE_POST = 1
@@ -76,8 +75,8 @@ class cRequestHandler:
         return self.__sUrl + '?' + urllib.urlencode(self.__aParamaters)
 
     def __setDefaultHeader(self):
-        self.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        self.addHeaderEntry('Accept-Language', 'de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4')
+        self.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0')
+        self.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         self.addHeaderEntry('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.7')
 
     def __callRequest(self):
@@ -117,7 +116,7 @@ class cRequestHandler:
             
         except urllib2.HTTPError, e:
             if e.code == 503:
-                if cloudflare.CheckIfActive(e.headers):
+                if cloudflare.CheckIfActive(e.read()):
                     cookies = e.headers['Set-Cookie']
                     cookies = cookies.split(';')[0]
                     print 'Page protegee par cloudflare'
@@ -143,5 +142,3 @@ class cRequestHandler:
     def getHeaderLocationUrl(self):        
         opened = urllib.urlopen(self.__sUrl)
         return opened.geturl()
-
-

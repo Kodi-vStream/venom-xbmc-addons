@@ -148,6 +148,16 @@ class cTrakt:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'movie')
+            oGui.addDir(SITE_IDENTIFIER, 'search', 'Recherche de film', 'films.png', oOutputParameterHandler)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'https://')
+            oOutputParameterHandler.addParameter('type', 'show')
+            oGui.addDir(SITE_IDENTIFIER, 'search', 'Recherche de serie', 'films.png', oOutputParameterHandler)              
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'https://')
+            oOutputParameterHandler.addParameter('type', 'movie')
             oGui.addDir(SITE_IDENTIFIER, 'getLists', cConfig().getlanguage(30120), 'films.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -172,6 +182,17 @@ class cTrakt:
             oGui.addDir(SITE_IDENTIFIER, 'getBsout', cConfig().getlanguage(30309), 'trakt.png', oOutputParameterHandler)
  
         oGui.setEndOfDirectory()
+        
+    def search(self):
+        oGui = cGui()
+        sSearchText = oGui.showKeyBoard()
+        if (sSearchText != False):
+            oInputParameterHandler = cInputParameterHandler()
+            sType = oInputParameterHandler.getValue('type')
+            sUrl = 'https://api.trakt.tv/search/' + sType + '?query=' + urllib.quote_plus(sSearchText)
+            self.getTrakt(sUrl)
+            return
+        oGui.setEndOfDirectory()
 
     def getCalendrier(self):
         oInputParameterHandler = cInputParameterHandler()
@@ -184,7 +205,8 @@ class cTrakt:
         #DANGER ca rame, freeze
         liste = []
         liste.append( ['Mes sorties Sur les 7 jours a venir','https://api.trakt.tv/calendars/my/shows/' + today_date + '/7'] )
-        liste.append( ['Freeze - Sur les X jours a venir','https://api.trakt.tv/calendars/all/shows/' + today_date + '/1'] )
+        liste.append( ['Nouveautes sur 7 jours','https://api.trakt.tv/calendars/all/shows/new/' + today_date + '/7'] )
+        liste.append( ['Freeze - Nouveautees sur la journee a venir','https://api.trakt.tv/calendars/all/shows/' + today_date + '/1'] )
         
         for sTitle,sUrl in liste:
 
@@ -261,10 +283,13 @@ class cTrakt:
         return
 
 
-    def getTrakt(self):
+    def getTrakt(self,url2 = None):
 
         oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+        if url2:
+            sUrl = url2
+        else:    
+            sUrl = oInputParameterHandler.getValue('siteUrl')
 
         oGui = cGui()
 
@@ -274,15 +299,20 @@ class cTrakt:
         req = urllib2.Request(sUrl, None,headers)
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
+        
         result = json.loads(sHtmlContent)
         #xbmc.log(str(result))
 
         response.close()
-        total = len(sHtmlContent)
+        total = len(result)
         sKey = 0
         sFunction = 'getLoad'
         if (total > 0):
+            dialog = cConfig().createDialog(SITE_NAME)
             for i in result:
+                cConfig().updateDialog(dialog, total)
+                if dialog.iscanceled():
+                    break
 
                 if 'collection' in sUrl:
                     if  'show' in i:
@@ -307,7 +337,7 @@ class cTrakt:
                     sDate = datetime.datetime(*(time.strptime(sWatched_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                     if 'episode' in i:
                         sTrakt, sTitle, sImdb, sTmdb, sSeason, sNumber = i['episode']['ids']['trakt'], i['episode']['title'], i['episode']['ids']['imdb'], i['episode']['ids']['tmdb'], i['episode']['season'],  i['episode']['number']
-                        sExtra = ('(S%sEP%s)') % (sSeason, sNumber)
+                        sExtra = ('(S%02dE%02d)') % (sSeason, sNumber)
                         cTrakt.CONTENT = '2'
                     else:
                         sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
@@ -332,7 +362,7 @@ class cTrakt:
                         cTrakt.CONTENT = '2'
                     elif 'episode' in i:
                         sTrakt, sTitle, sImdb, sTmdb, sSeason, sNumber = i['episode']['ids']['trakt'], i['episode']['title'], i['episode']['ids']['imdb'], i['episode']['ids']['tmdb'], i['episode']['season'],  i['episode']['number']
-                        sExtra = ('(S%sEP%s)') % (sSeason, sNumber)
+                        sExtra = ('(S%02dE%02d)') % (sSeason, sNumber)
                         cTrakt.CONTENT = '2'
                     else:
                         sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
@@ -378,15 +408,37 @@ class cTrakt:
                     sTitle = ('Spectateur [COLOR white](%s)[/COLOR] - Collection [COLOR white](%s)[/COLOR] - %s - (%s)') % (int(sPlay_count), int(sCollected_count), sTitle.encode("utf-8"), int(sYear))
 
                 elif 'calendars' in sUrl:
-                    xbmc.log(str(i))
+                    #xbmc.log(str(i))
+                    #sRajout = ''
                     if  'show' in i:
                         sTrakt, sTitle, sImdb, sTmdb, sYear, sFirst_aired = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year'],i['first_aired']
+                        sSaison,sEpisode = i['episode']['season'],i['episode']['number']
+                        #sRajout = " S" + str(sSaison) + "E" + str(sEpisode)
                         cTrakt.CONTENT = '2'
                     else:
                         sTrakt, sTitle, sImdb, sTmdb, sYear, sFirst_aired  = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year'],i['first_aired']
                         cTrakt.CONTENT = '1'
-                    sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
-                    sTitle = sTitle.encode("utf-8")
+
+                    sDate = datetime.datetime(*(time.strptime(sFirst_aired, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y')
+                    sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), sYear)
+                    sTitle = ('[COLOR white]%s[/COLOR] - %s (S%02dE%02d)') % (sDate, sTitle.encode('utf-8').decode('ascii','ignore'), sSaison,sEpisode)
+
+                    sFunction = 'showHosters'
+                    
+                elif 'search' in sUrl:
+                    if  'show' in i:
+                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year']
+                        cTrakt.CONTENT = '2'
+                        sFunction = 'getBseasons'
+                    else:
+                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
+                        cTrakt.CONTENT = '1'
+                        sFunction = 'showHosters'
+
+                    sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode("unicode_escape")
+                    sTitle.encode("utf-8")
+                    sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), sYear)
+                    sTitle = ('%s (%s)') % ( sTitle, sYear )
                     
                 elif 'recommendations' in sUrl or 'popular' in sUrl:
                     if 'shows' in sUrl:
@@ -414,6 +466,8 @@ class cTrakt:
                 oOutputParameterHandler.addParameter('key', sKey)
                 self.getFolder(oGui, sTitle, sFile, sFunction, sImdb, sTmdb, oOutputParameterHandler)
                 sKey += 1
+                
+            cConfig().finishDialog(dialog)
         oGui.setEndOfDirectory()
         return
 
@@ -450,7 +504,7 @@ class cTrakt:
                     cTrakt.CONTENT = '2'
                 else: return
 
-                sTitle2 = ('%s - (S%s)') % (sFile.encode("utf-8"), int(sNumber))
+                sTitle2 = ('%s - S%02d') % (sFile.encode("utf-8"), int(sNumber))
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('Key', sKey)
@@ -497,13 +551,13 @@ class cTrakt:
                     sNumber, sDate = i['number'],  i['collected_at']
                     sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
 
-                    sTitle2 = ('[COLOR white]%s [/COLOR] %s - (ep%s)') % (sDate, sTitle.encode("utf-8"), int(sNumber))
+                    sTitle2 = ('[COLOR white]%s [/COLOR] %sE%02d') % (sDate, sTitle.encode("utf-8"), int(sNumber))
 
                 elif 'watched' in sUrl:
                     sNumber, sPlays, sDate = i['number'], i['plays'], i['last_watched_at']
                     sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
 
-                    sTitle2 = ('[COLOR white]%s - %s Lectures[/COLOR] - %s - (ep%s)') % (sDate, sPlays, sTitle.encode("utf-8"), int(sNumber))
+                    sTitle2 = ('[COLOR white]%s - %s Lectures[/COLOR] - %sE%02d') % (sDate, sPlays, sTitle.encode("utf-8"), int(sNumber))
 
                 else: return
 
@@ -610,8 +664,10 @@ class cTrakt:
         if not sType:
             sType = self.getType()
         sImdb = oInputParameterHandler.getValue('sImdb')
+        sTMDB = oInputParameterHandler.getValue('sTmdbId')
         if not sImdb:
-            sTMDB = int(self.getTmdbID(oInputParameterHandler.getValue('sMovieTitle'),sType))
+            if not sTMDB:
+                sTMDB = int(self.getTmdbID(oInputParameterHandler.getValue('sMovieTitle'),sType))
             sPost = {sType: [{"ids": {"tmdb": sTMDB}}]}
         else:
             sPost = {sType: [{"ids": {"imdb": sImdb}}]}
@@ -624,17 +680,28 @@ class cTrakt:
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
         result = json.loads(sHtmlContent)
-
         #xbmc.log(str(result))
+        sText = "Erreur"
+        try:
+            if result["added"]['movies'] == 1 or result["added"]['episodes'] > 0:
+                sText = "Ajouté avec succes"
+        except: pass
 
-        if not result["added"]['movies'] == 0:
-            cGui().showNofication('Film rajoute avec succes')
-        elif not result["added"]['shows'] == 0:
-            cGui().showNofication('Serie rajoute avec succes')
-        else:
-            cGui().showNofication('Probleme de rajout')
+        try:
+            if result["updated"]['movies'] == 1 or result["updated"]['episodes'] > 0:
+                sText = "Mise à jour avec succes"
+        except: pass
+        
+        try:
+            if result["deleted"]['movies'] == 1 or result["deleted"]['episodes'] > 0:
+                sText = 'Supprimé avec succes'
+        except: pass
+        
+
+        cGui().showNofication(sText)
 
         #{u'not_found': {u'movies': [], u'seasons': [], u'people': [], u'episodes': [], u'shows': []}, u'updated': {u'movies': 0, u'episodes': 0}, u'added': {u'movies': 1, u'episodes': 0}, u'existing': {u'movies': 0, u'episodes': 0}}
+        #{u'deleted': {u'movies': 0, u'episodes': 55}, u'not_found': {u'movies': [], u'seasons': [], u'people': [], u'episodes': [], u'shows': []}}
 
         if (oInputParameterHandler.exist('sReload')):
             xbmc.executebuiltin("Container.Refresh")
@@ -734,7 +801,7 @@ class cTrakt:
         sHtmlContent = oRequestHandler.request()
         
         try:
-            xbmc.log(sHtmlContent)
+            #xbmc.log(sHtmlContent)
             result = json.loads(sHtmlContent)
             #xbmc.log(str(result))
         except:
@@ -764,7 +831,7 @@ class cTrakt:
             oGuiElement.addItemValues(key, value)
 
         return
-
+    
     def getTmdbID(self,sTitle,sType):
         
         if sType == 'show' or sType == 'shows':
@@ -812,7 +879,7 @@ class cTrakt:
 
         sHtmlContent = oRequestHandler.request()
         result = json.loads(sHtmlContent)
-        #xbmc.log(str(result))
+        xbmc.log(str(result))
 
         n = 0
         d = 100
@@ -825,10 +892,15 @@ class cTrakt:
                 sTitle2 = i['title'].encode("utf-8")
             else:
                 sTitle2 = i['name'].encode("utf-8")
-            n2 = cUtil().CheckOccurence(sTitle,sTitle2)
-            d2 = math.fabs( sTitle2.count(' ') + 1 - n3 )
+                
+            xbmc.log(sTitle2 + ' = ' + str(i['id']))
             
-            if  (n2 >= n) and (d2 < 2):
+            #nombre de mots identiques            
+            n2 = cUtil().CheckOccurence(sTitle,sTitle2)
+            #nombre de mot different entre les 2 titres, doit etre le plus petit possible
+            d2 = math.fabs( sTitle2.count(' ') + 1 - n3 ) - n2
+            
+            if  (n2 >= n) and (d2 < d):
                 n = n2
                 d = d2
                 ret = i['id']

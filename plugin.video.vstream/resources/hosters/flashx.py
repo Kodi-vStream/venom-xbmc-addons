@@ -13,7 +13,8 @@ import xbmc
 
 #Remarque : meme code que vodlocker
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
+#UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
+UA = 'Nokia7250/1.0 (3.14) Profile/MIDP-1.0 Configuration/CLDC-1.0'
 
 def ASCIIDecode(string):
     i = 0
@@ -60,12 +61,24 @@ def LoadLinks(htmlcode):
             #Url ou il ne faut pas aller
             if 'dok3v' in sUrl:
                 continue
-
+                
+            #pour test
+            if '.js' not in sUrl:
+                continue
+            if 'flashx' in sUrl:
+                continue
+            #ok good url are files.fx.fastcontentdelivery.com
+                
+            headers8 = {
+            'User-Agent': UA,
+            'Referer':'https://www.flashx.tv/dl?playthis'
+            }
+            
             try:
-                oRequest = cRequestHandler(sUrl)
-                #oRequest.setTimeout(5)
-                oRequest.addHeaderEntry('Referer','https://www.flashx.tv/dl?playthis')
-                sCode = oRequest.request()
+                request = urllib2.Request(sUrl,None,headers8)
+                reponse = urllib2.urlopen(request)
+                sCode = reponse.read()
+                reponse.close()                
                 xbmc.log('Worked ' + sUrl)
             except:
                 xbmc.log('Blocked ' + sUrl)
@@ -162,7 +175,7 @@ class cHoster(iHoster):
         return sHtmlContent       
 
     def __getIdFromUrl(self, sUrl):
-        sPattern = "http://((?:www.|play.)?flashx.tv)/(?:playvid-)?(?:embed-)?(?:embed.+?=)?([0-9a-zA-Z]+)?(?:.html)?"
+        sPattern = "https*://((?:www.|play.)?flashx.tv)/(?:playvid-)?(?:embed-)?(?:embed.+?=)?([0-9a-zA-Z]+)?(?:.html)?"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -259,17 +272,32 @@ class cHoster(iHoster):
             
             
         #Request to unlock video
-        #LoadLinks(sHtmlContent)
+        #Request for buble
+        sPattern ='fastcontentdelivery\.com.+?\?([^"]+)">'
+        aResult = re.findall(sPattern,sHtmlContent)
+        if aResult:
+            UnlockUrl = 'http://www.flashx.tv/counter.cgi?' + aResult[0]
+            xbmc.log('unlock url' + UnlockUrl)
+            oRequest = cRequestHandler(UnlockUrl)
+            sHtmlContent = oRequest.request()
+        else:
+            xbmc.log('No unlock url')
+        #Request for china video
+        LoadLinks(sHtmlContent)
 
         #get the page
         sHtmlContent = self.GetRedirectHtml(web_url,sId,True)
         
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()        
+        if sHtmlContent == False:
+            xbmc.log('Passage en mode barbare')
+            #ok ca a rate on passe toutes les url de AllUrl
+            for i in AllUrl:
+                sHtmlContent = self.GetRedirectHtml(i,sId,True)
+                if sHtmlContent:
+                    break    
 
         if not sHtmlContent:
-            return False,False
+            return False,False           
             
         #A t on le lien code directement?
         sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
@@ -294,7 +322,7 @@ class cHoster(iHoster):
                 return False,False
             
             #on debloque la page (en test ca a l'air inutile)
-            #sHtmlContent = self.GetRedirectHtml(aResult[0],sId)
+            sHtmlContent = self.GetRedirectHtml(aResult[0],sId)
             
             #lien speciaux ?
             if sRefresh.startswith('./'):
@@ -313,9 +341,17 @@ class cHoster(iHoster):
                 
         if (aResult):
             xbmc.log( "lien code")
-            #xbmc.log(str(aResult))
-            sUnpacked = cPacker().unpack(aResult[0])
-            sHtmlContent = sUnpacked
+            
+            AllPacked = re.findall('(eval\(function\(p,a,c,k.*?)\s+<\/script>',sHtmlContent,re.DOTALL)
+            if AllPacked:
+                for i in AllPacked:
+                    sUnpacked = cPacker().unpack(i)
+                    sHtmlContent = sUnpacked
+                    xbmc.log(sHtmlContent)
+                    if "file" in sHtmlContent:
+                        break
+            else:
+                return False,False           
             
             #xbmc.log(sHtmlContent)
   

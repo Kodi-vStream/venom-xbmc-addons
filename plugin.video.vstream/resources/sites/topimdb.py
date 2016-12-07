@@ -176,7 +176,7 @@ def showMovies(sSearch = ''):
             sMovieTitle=re.sub('(\[.*\])','', sTitle)
             sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle)
             sTitle2=re.sub('(.*)(\[.*\])','\\1 [COLOR orange]\\2[/COLOR]', sTitle)
-            sThumbnail = aEntry[1].replace('UX67', 'UX228').replace('UY98', 'UY228').replace('67','0').replace('98','0')
+            sThumbnail = aEntry[1].replace('UX67', 'UX328').replace('UY98', 'UY492').replace('67','0').replace('98','0')
             
             #sCom = unicode(aEntry[3], 'utf-8')#converti en unicode
             #sCom = unicodedata.normalize('NFD', sCom).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
@@ -220,36 +220,23 @@ def showHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
     sExtraTitle = ''
-    #si c'est une serie
-    if sUrl != 'none':
-        sExtraTitle = sUrl.split('|')[1]
-        sMovieTitle = sUrl.split('|')[0]
-      
-    #nettoyage du nom pr la recherche
-    #print 'avant ' + sMovieTitle
-    
-    #modif teste
-    s2 = urllib.quote(sMovieTitle)
-    s2 = s2.replace('%3A','')
-    s2 = s2.replace('%20%20','%20')
-    
 
-    #ancien decodage
-    #sMovieTitle = unicode(sMovieTitle, 'utf-8')#converti en unicode pour aider aux convertions
-    #sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'replace').decode("unicode_escape")#vire accent et '\'
-    #sMovieTitle = sMovieTitle.encode("utf-8").lower() #on repasse en utf-8
+    sMovieTitle = unicode(sMovieTitle, 'utf-8')#converti en unicode pour aider aux convertions
+    sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
+    sMovieTitle = sMovieTitle.encode("utf-8").lower() #on repasse en utf-8
+
+    sMovieTitle = urllib.quote(sMovieTitle)
     
-    #sMovieTitle = urllib.quote(sMovieTitle)
-    
-    #sMovieTitle = re.sub('\(.+?\)',' ', sMovieTitle) #vire les tags entre parentheses
+    sMovieTitle = re.sub('\(.+?\)',' ', sMovieTitle) #vire les tags entre parentheses
     
     #modif venom si le titre comporte un - il doit le chercher
-    #sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle) #vire les caracteres a la con qui peuvent trainer
+    sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle) #vire les caracteres a la con qui peuvent trainer
     
-    #sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)',' ', sMovieTitle) #vire les articles
+    
+    sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)',' ', sMovieTitle) #vire les articles
 
-    #sMovieTitle = re.sub(' +',' ',sMovieTitle) #vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
-    #print 'apres ' + sMovieTitle
+    sMovieTitle = re.sub(' +',' ',sMovieTitle)
+    
 
     dialog3 = xbmcgui.Dialog()
     ret = dialog3.select('Selectionner un Moteur de Recherche',['Vstream (Fiable mais plus complexe)','Alluc (Simple mais resultats non garantis)'])

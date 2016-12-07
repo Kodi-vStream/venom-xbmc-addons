@@ -95,7 +95,16 @@ class cHosterGui:
              oContext = cContextElement()
              oContext.setFile('siteuptobox')
              oContext.setSiteName(self.SITE_NAME)
-             oContext.setFunction('UploadFile')
+             oContext.setFunction('AddmyAccount')
+             oContext.setTitle('[COLOR dodgerblue]Ajouter à mon compte Uptobox[/COLOR]')
+             oContext.setOutputParameterHandler(oOutputParameterHandler)
+             oGuiElement.addContextItem(oContext)
+        #Upload url vers upto  
+        if ((oHoster.getPluginIdentifier() == 'onefichier') or (oHoster.getPluginIdentifier() == 'uplea') and (cConfig().getSetting('hoster_uptobox_premium') == 'true')):
+             oContext = cContextElement()
+             oContext.setFile('siteuptobox')
+             oContext.setSiteName(self.SITE_NAME)
+             oContext.setFunction('UptomyAccount')
              oContext.setTitle('[COLOR dodgerblue]Ajouter à mon compte Uptobox[/COLOR]')
              oContext.setOutputParameterHandler(oOutputParameterHandler)
              oGuiElement.addContextItem(oContext)

@@ -85,6 +85,10 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showActors', 'Acteurs Populaires', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://')
+    oGui.addDir('topimdb', 'load', 'Top Imdb', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', API_URL+'/search/movie')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche de film', 'films.png', oOutputParameterHandler)
     
@@ -210,6 +214,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', str('none'))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            oOutputParameterHandler.addParameter('sTmdbId', i['id'])
             
             oGui.addMovieDB(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumbnail, sFanart, oOutputParameterHandler)
             
@@ -275,6 +280,7 @@ def showSeries(sSearch=''):
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oOutputParameterHandler.addParameter('sId', str(sId))
             oOutputParameterHandler.addParameter('sFanart', str(sFanart))
+            oOutputParameterHandler.addParameter('sTmdbId', i['id'])
             
             oGui.addTVDB(SITE_IDENTIFIER, 'showSeriesSaison', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
             
@@ -335,7 +341,8 @@ def showSeriesSaison():
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oOutputParameterHandler.addParameter('sId', sId)
             oOutputParameterHandler.addParameter('sSeason', str(SSeasonNum))
-            oOutputParameterHandler.addParameter('sFanart', str(sFanart))            
+            oOutputParameterHandler.addParameter('sFanart', str(sFanart))
+            oOutputParameterHandler.addParameter('sTmdbId', i['id'])            
             
             oGui.addTVDB(SITE_IDENTIFIER, 'showSeriesEpisode', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
             
@@ -394,6 +401,7 @@ def showSeriesEpisode():
             oOutputParameterHandler.addParameter('siteUrl', sMovieTitle+ '|' + sExtraTitle) #Pour compatibilite Favoris
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            oOutputParameterHandler.addParameter('sTmdbId', i['id'])
             #oOutputParameterHandler.addParameter('sSeason', sSeason)
             #oOutputParameterHandler.addParameter('sEpisode', str(sEpNumber))
             
@@ -563,8 +571,9 @@ def showHosters():
 
     #ancien decodage
     sMovieTitle = unicode(sMovieTitle, 'utf-8')#converti en unicode pour aider aux convertions
-    sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'replace').decode("unicode_escape")#vire accent et '\'
+    sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
     sMovieTitle = sMovieTitle.encode("utf-8").lower() #on repasse en utf-8
+    
     
     sMovieTitle = urllib.quote(sMovieTitle)
     
