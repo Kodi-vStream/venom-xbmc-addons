@@ -304,11 +304,15 @@ class cTrakt:
         #xbmc.log(str(result))
 
         response.close()
-        total = len(sHtmlContent)
+        total = len(result)
         sKey = 0
         sFunction = 'getLoad'
         if (total > 0):
+            dialog = cConfig().createDialog(SITE_NAME)
             for i in result:
+                cConfig().updateDialog(dialog, total)
+                if dialog.iscanceled():
+                    break
 
                 if 'collection' in sUrl:
                     if  'show' in i:
@@ -462,6 +466,8 @@ class cTrakt:
                 oOutputParameterHandler.addParameter('key', sKey)
                 self.getFolder(oGui, sTitle, sFile, sFunction, sImdb, sTmdb, oOutputParameterHandler)
                 sKey += 1
+                
+            cConfig().finishDialog(dialog)
         oGui.setEndOfDirectory()
         return
 

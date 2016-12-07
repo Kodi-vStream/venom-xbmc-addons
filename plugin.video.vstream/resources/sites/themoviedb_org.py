@@ -567,8 +567,9 @@ def showHosters():
 
     #ancien decodage
     sMovieTitle = unicode(sMovieTitle, 'utf-8')#converti en unicode pour aider aux convertions
-    sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'replace').decode("unicode_escape")#vire accent et '\'
+    sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
     sMovieTitle = sMovieTitle.encode("utf-8").lower() #on repasse en utf-8
+    
     
     sMovieTitle = urllib.quote(sMovieTitle)
     
