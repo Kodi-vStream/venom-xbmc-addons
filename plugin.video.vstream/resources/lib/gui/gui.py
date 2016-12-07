@@ -587,7 +587,7 @@ class cGui():
         return False
 
 
-    def selectpage2(self):
+    def selectpage(self):
         sPluginPath = cPluginHandler().getPluginPath()
         oInputParameterHandler = cInputParameterHandler()
         #sParams = oInputParameterHandler.getAllParameter()
@@ -616,7 +616,7 @@ class cGui():
         return False
 
 
-    def selectpage(self):
+    def selectpage2(self):
         sPluginPath = cPluginHandler().getPluginPath()
         oInputParameterHandler = cInputParameterHandler()
 
