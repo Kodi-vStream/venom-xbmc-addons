@@ -214,6 +214,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', str('none'))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            oOutputParameterHandler.addParameter('sTmdbId', i['id'])
             
             oGui.addMovieDB(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumbnail, sFanart, oOutputParameterHandler)
             
@@ -279,6 +280,7 @@ def showSeries(sSearch=''):
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oOutputParameterHandler.addParameter('sId', str(sId))
             oOutputParameterHandler.addParameter('sFanart', str(sFanart))
+            oOutputParameterHandler.addParameter('sTmdbId', i['id'])
             
             oGui.addTVDB(SITE_IDENTIFIER, 'showSeriesSaison', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
             
@@ -339,7 +341,8 @@ def showSeriesSaison():
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oOutputParameterHandler.addParameter('sId', sId)
             oOutputParameterHandler.addParameter('sSeason', str(SSeasonNum))
-            oOutputParameterHandler.addParameter('sFanart', str(sFanart))            
+            oOutputParameterHandler.addParameter('sFanart', str(sFanart))
+            oOutputParameterHandler.addParameter('sTmdbId', i['id'])            
             
             oGui.addTVDB(SITE_IDENTIFIER, 'showSeriesEpisode', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
             
@@ -398,6 +401,7 @@ def showSeriesEpisode():
             oOutputParameterHandler.addParameter('siteUrl', sMovieTitle+ '|' + sExtraTitle) #Pour compatibilite Favoris
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            oOutputParameterHandler.addParameter('sTmdbId', i['id'])
             #oOutputParameterHandler.addParameter('sSeason', sSeason)
             #oOutputParameterHandler.addParameter('sEpisode', str(sEpNumber))
             
