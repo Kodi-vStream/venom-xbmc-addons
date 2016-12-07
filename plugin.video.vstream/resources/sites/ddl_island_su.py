@@ -453,16 +453,15 @@ def showMovies(sSearch = ''):
 		 sDisplayTitle2 = '[COLOR coral]' +' ('+sQual+') ' + '[/COLOR]' + '[COLOR skyblue]' + sTitle + '[/COLOR]' + '[COLOR coral]' + sLang + '[/COLOR]' + '[COLOR skyblue]' + ' (' + 'Ajout episode : ' + sSaison + sEpisode + ')' '[/COLOR]'
 	    else:
 		 sDisplayTitle2 = '[COLOR coral]' +' ('+sQual+') ' + '[/COLOR]' + '[COLOR skyblue]' + sTitle + '[/COLOR]' + '[COLOR coral]' + sLang + '[/COLOR]' + '[COLOR skyblue]' + ' ' + sSaison + sEpisode + '[/COLOR]'
-		
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(sUrl2)) 
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sDisplayTitle2)) 
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            oOutputParameterHandler.addParameter('sCom', sCom)
-	
 	    sDisplayTitle = '[COLOR coral]' + ' ('+sQual+') ' + '[/COLOR]' + '[COLOR skyblue]' + sSaison + sEpisode + '[/COLOR]' + '[COLOR coral]' + sLang + '[/COLOR]' + '[COLOR skyblue]' + sTitle + '[/COLOR]'
-            
-            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
+	    
+	    oOutputParameterHandler = cOutputParameterHandler()
+	    oOutputParameterHandler.addParameter('siteUrl', str(sUrl2))
+	    oOutputParameterHandler.addParameter('sMovieTitle', str(sDisplayTitle)
+	    oOutputParameterHandler.addParameter('sMovieTitle2', str(sDisplayTitle2))
+	    oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+	    oOutputParameterHandler.addParameter('sCom', sCom)
+	    oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
             
 
         sNextPage = __checkForNextPage(sHtmlContent)#cherche la page suivante
@@ -555,6 +554,7 @@ def showSeriesReleases():
     xbmc.log('showSeriesReleases')
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sMovieTitle2 = oInputParameterHandler.getValue('sMovieTitle2')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     sCom = oInputParameterHandler.getValue('sCom')
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -580,7 +580,7 @@ def showSeriesReleases():
     #print aResult
 	
     #Affichage du menu  
-    oGui.addText(SITE_IDENTIFIER,sMovieTitle)
+    oGui.addText(SITE_IDENTIFIER,sMovieTitle2)
     oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Episodes disponibles :[/COLOR]')
 
     if (aResult[0] == True):
