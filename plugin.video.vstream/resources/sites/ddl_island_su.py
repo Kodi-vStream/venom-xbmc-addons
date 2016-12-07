@@ -423,7 +423,7 @@ def showMovies(sSearch = ''):
            
 	    if '-series-' in sUrl2:
                 sTitle = sTitle2[0]
-                if 'VOSTFR' in sTitle2:
+                if 'vostfr' in sUrl2:
                     if (total2 == 4):
                        sSaison = sTitle2[1]
                        sLang = ' ' + sTitle2[2]
@@ -445,7 +445,8 @@ def showMovies(sSearch = ''):
                          sTitle = str(aEntry[2])
                 if 'categorie=98' in sUrl:
                     sEpisode = ''
-            
+                if 'top-series' in sUrl:
+		    sTitle = ' ' + sTitle[0]
 	    if  '[e' in sEpisode:
                  sEpisode = sEpisode.split(" ")
                  sEpisode = sEpisode[0]
