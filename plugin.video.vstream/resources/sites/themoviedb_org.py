@@ -85,6 +85,10 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showActors', 'Acteurs Populaires', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://')
+    oGui.addDir('topimdb', 'load', 'Top Imdb', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', API_URL+'/search/movie')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche de film', 'films.png', oOutputParameterHandler)
     
