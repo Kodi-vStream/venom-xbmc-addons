@@ -13,7 +13,8 @@ import xbmc
 
 #Remarque : meme code que vodlocker
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
+#UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
+UA = 'Nokia7250/1.0 (3.14) Profile/MIDP-1.0 Configuration/CLDC-1.0'
 
 def ASCIIDecode(string):
     i = 0
@@ -271,6 +272,17 @@ class cHoster(iHoster):
             
             
         #Request to unlock video
+        #Request for buble
+        sPattern ='fastcontentdelivery\.com.+?\?([^"]+)">'
+        aResult = re.findall(sPattern,sHtmlContent)
+        if aResult:
+            UnlockUrl = 'http://www.flashx.tv/counter.cgi?' + aResult[0]
+            xbmc.log('unlock url' + UnlockUrl)
+            oRequest = cRequestHandler(UnlockUrl)
+            sHtmlContent = oRequest.request()
+        else:
+            xbmc.log('No unlock url')
+        #Request for china video
         LoadLinks(sHtmlContent)
 
         #get the page
@@ -280,7 +292,6 @@ class cHoster(iHoster):
             xbmc.log('Passage en mode barbare')
             #ok ca a rate on passe toutes les url de AllUrl
             for i in AllUrl:
-                xbmc.log('++' + i)
                 sHtmlContent = self.GetRedirectHtml(i,sId,True)
                 if sHtmlContent:
                     break    
