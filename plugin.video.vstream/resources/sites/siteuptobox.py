@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#johngf - V0.3
+#johngf - V0.4b
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui 
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler 
@@ -14,7 +14,7 @@ from resources.lib.handler.premiumHandler import cPremiumHandler
 SITE_IDENTIFIER = 'siteuptobox' 
 SITE_NAME = '[COLOR dodgerblue]' + 'VotreCompteUptobox' + '[/COLOR]'
 SITE_DESC = 'fichier sur compte uptobox'
- 
+URL_MAIN = 'https://uptobox.com/'
 BURL = 'https://uptobox.com/?op=my_files' 
 
 def load(): 
@@ -150,4 +150,48 @@ def AddmyAccount():
     elif ('nvalid file' in sHtmlContent):
          xbmcgui.Dialog().notification('Info upload','Fichier introuvable',xbmcgui.NOTIFICATION_INFO,2000,False)
     else:
-         xbmcgui.Dialog().notification('Info upload','Erreur',xbmcgui.NOTIFICATION_ERROR,2000,False) 
+         xbmcgui.Dialog().notification('Info upload','Erreur',xbmcgui.NOTIFICATION_ERROR,2000,False)    
+
+def UptomyAccount():
+    from resources.lib import mpart
+    UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
+    headers = { 'User-Agent' : UA }
+
+    oInputParameterHandler = cInputParameterHandler()
+    sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
+
+    oPremiumHandler = cPremiumHandler('uptobox')
+    #go page d'accueil           
+    sHtmlContent = oPremiumHandler.GetHtml(URL_MAIN)
+    cookies = oPremiumHandler.Readcookie('uptobox')
+  
+    aResult = re.search('<div id="div_url".+?action="([^"]+)".+?name="sess_id" value="([^"]+)".+?name="srv_tmp_url" value="([^"]+)"',sHtmlContent,re.DOTALL)
+    if (aResult):
+        aCt = aResult.group(1)
+        sId = aResult.group(2)
+        sTmp = aResult.group(3)
+ 
+        UPurl = ('%s%s&js_on=1&utype=reg&upload_type=url' % (aCt,sId))
+ 
+        fields = {'sess_id':sId,'upload_type':'url','srv_tmp_url':sTmp,'url_mass':sMediaUrl,'tos':'1','submit_btn':'Uploader'}
+        mpartdata = mpart.encode(fields)
+        req = urllib2.Request(UPurl,mpartdata[1],headers)
+        req.add_header('Content-Type', mpartdata[0])
+        req.add_header('Cookie', cookies)
+        req.add_header('Content-Length', len(mpartdata[1]))
+        #req.add_data(mpartdata[1])
+        #xbmc.log(str(mpartdata[1]))
+        try:
+           rep = urllib2.urlopen(req)
+        except:
+            return ''
+
+        sHtmlContent = rep.read()
+        rep.close()
+    
+        if '>OK<' in sHtmlContent:
+           xbmcgui.Dialog().notification('Info upload', 'Upload réussie', xbmcgui.NOTIFICATION_INFO,2000,False)
+        else:
+           xbmcgui.Dialog().notification('Info upload', 'Fichier introuvable', xbmcgui.NOTIFICATION_INFO,2000,False)
+    else:
+        xbmcgui.Dialog().notification('Info upload','Erreur pattern',xbmcgui.NOTIFICATION_ERROR,2000,False)
