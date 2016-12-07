@@ -664,8 +664,10 @@ class cTrakt:
         if not sType:
             sType = self.getType()
         sImdb = oInputParameterHandler.getValue('sImdb')
+        sTMDB = oInputParameterHandler.getValue('sTmdbId')
         if not sImdb:
-            sTMDB = int(self.getTmdbID(oInputParameterHandler.getValue('sMovieTitle'),sType))
+            if not sTMDB:
+                sTMDB = int(self.getTmdbID(oInputParameterHandler.getValue('sMovieTitle'),sType))
             sPost = {sType: [{"ids": {"tmdb": sTMDB}}]}
         else:
             sPost = {sType: [{"ids": {"imdb": sImdb}}]}
@@ -829,7 +831,7 @@ class cTrakt:
             oGuiElement.addItemValues(key, value)
 
         return
-
+    
     def getTmdbID(self,sTitle,sType):
         
         if sType == 'show' or sType == 'shows':
@@ -877,7 +879,7 @@ class cTrakt:
 
         sHtmlContent = oRequestHandler.request()
         result = json.loads(sHtmlContent)
-        #xbmc.log(str(result))
+        xbmc.log(str(result))
 
         n = 0
         d = 100
@@ -890,10 +892,15 @@ class cTrakt:
                 sTitle2 = i['title'].encode("utf-8")
             else:
                 sTitle2 = i['name'].encode("utf-8")
-            n2 = cUtil().CheckOccurence(sTitle,sTitle2)
-            d2 = math.fabs( sTitle2.count(' ') + 1 - n3 )
+                
+            xbmc.log(sTitle2 + ' = ' + str(i['id']))
             
-            if  (n2 >= n) and (d2 < 2):
+            #nombre de mots identiques            
+            n2 = cUtil().CheckOccurence(sTitle,sTitle2)
+            #nombre de mot different entre les 2 titres, doit etre le plus petit possible
+            d2 = math.fabs( sTitle2.count(' ') + 1 - n3 ) - n2
+            
+            if  (n2 >= n) and (d2 < d):
                 n = n2
                 d = d2
                 ret = i['id']
