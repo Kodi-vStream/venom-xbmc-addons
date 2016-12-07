@@ -248,7 +248,7 @@ class cGui():
         }
 
         for sParam, callback in params.iteritems():
-            value = oOutputParameterHandler.getValue(sParam)
+            value = oOutputParameterHandler.getValue(sParam)          
             if value:
                 callback(value)
 
@@ -369,6 +369,7 @@ class cGui():
         #if cConfig().getSetting("meta-view") == 'false':
         #    return
         oOutputParameterHandler.addParameter('sImdb', oGuiElement.getImdb())
+        oOutputParameterHandler.addParameter('sTmdb', oGuiElement.getTmdb())
         sType = cGui.CONTENT.replace('tvshows', 'shows')
         oOutputParameterHandler.addParameter('sType', sType)
         self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cTrakt','cTrakt','getAction','[COLOR teal]Trakt[/COLOR]')
@@ -586,7 +587,7 @@ class cGui():
         return False
 
 
-    def selectpage(self):
+    def selectpage2(self):
         sPluginPath = cPluginHandler().getPluginPath()
         oInputParameterHandler = cInputParameterHandler()
         #sParams = oInputParameterHandler.getAllParameter()
@@ -615,7 +616,7 @@ class cGui():
         return False
 
 
-    def selectpage2(self):
+    def selectpage(self):
         sPluginPath = cPluginHandler().getPluginPath()
         oInputParameterHandler = cInputParameterHandler()
 
