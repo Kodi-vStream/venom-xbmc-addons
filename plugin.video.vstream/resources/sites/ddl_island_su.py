@@ -548,7 +548,51 @@ def showMoviesReleases():
     
             cConfig().finishDialog(dialog)
     
-    oGui.setEndOfDirectory()    
+    oGui.setEndOfDirectory()
+
+
+def ShowSaisons():
+    
+    oGui = cGui()
+    
+    oInputParameterHandler = cInputParameterHandler()
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sMovieTitle2 = oInputParameterHandler.getValue('sMovieTitle2')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sCom = oInputParameterHandler.getValue('sCom')
+    
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()  
+    
+    oParser = cParser()
+    sPattern = "<li><a[^<>]+Saison[^<>]+?href='([^']+)'>([^<>]+)<\/a><\/li>"
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+                            
+            sTitle = aEntry[1]
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+            oOutputParameterHandler.addParameter('sMovieTitle2', str(sMovieTitle2))
+            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            oOutputParameterHandler.addParameter('sCom', sCom)
+            oGui.addMovie(SITE_IDENTIFIER, 'showSeriesReleases', sTitle, '', sThumbnail, '', oOutputParameterHandler)             
+    
+        cConfig().finishDialog(dialog)
+    
+    oGui.setEndOfDirectory() 
 	
 def showSeriesReleases():
     xbmc.log('showSeriesReleases')
@@ -559,7 +603,9 @@ def showSeriesReleases():
     sCom = oInputParameterHandler.getValue('sCom')
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sUrl = sUrl.replace('.html','')
-    #print sUrl
+    
+    xbmc.log(sUrl)
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
@@ -582,6 +628,15 @@ def showSeriesReleases():
     #Affichage du menu  
     oGui.addText(SITE_IDENTIFIER,sMovieTitle2)
     oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Episodes disponibles :[/COLOR]')
+    
+    #Affichage des autres saisons
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', sUrl + '.html')
+    oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+    oOutputParameterHandler.addParameter('sMovieTitle2', str(sMovieTitle2))
+    oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+    oOutputParameterHandler.addParameter('sCom', sCom)
+    oGui.addMisc(SITE_IDENTIFIER, 'ShowSaisons', "[COLOR olive]Autres saisons >[/COLOR]", '', sThumbnail, ' ',oOutputParameterHandler)   
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -598,7 +653,7 @@ def showSeriesReleases():
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sCom, oOutputParameterHandler)             
     
-            cConfig().finishDialog(dialog)
+        cConfig().finishDialog(dialog)
     
     oGui.setEndOfDirectory()    
 
@@ -633,7 +688,7 @@ def showHosters():# recherche et affiche les hotes
             if dialog.iscanceled():
                 break
             
-            sTitle = '[COLOR skyblue]' + aEntry[0]+ '[/COLOR] ' + aEntry[2]
+            sTitle = '[COLOR skyblue]' + aEntry[0]+ '[/COLOR] ' + sMovieTitle
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
