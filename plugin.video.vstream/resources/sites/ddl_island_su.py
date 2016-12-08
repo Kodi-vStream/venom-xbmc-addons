@@ -448,9 +448,9 @@ def showMovies(sSearch = ''):
                  sEpisode = sEpisode[0]
                  sEpisode = sEpisode.replace('[e', 'E').replace('[ddl', 'E')
                  sSaison = sSaison.replace('Saison ', 'S')
-                 sDisplayTitle2 = '[COLOR coral]' +' ('+sQual+') ' + '[/COLOR]' + '[COLOR skyblue]' + sTitle + '[/COLOR]' + '[COLOR coral]' + sLang + '[/COLOR]' + '[COLOR skyblue]' + ' (' + 'Ajout episode : ' + sSaison + sEpisode + ')' '[/COLOR]'
+                 sDisplayTitle2 = '[COLOR coral]' +' ('+sQual+') ' + '[/COLOR]' + sTitle + '[COLOR coral]' + sLang + '[/COLOR]' + '[COLOR skyblue]' + ' (' + 'Ajout episode : ' + sSaison + sEpisode + ')' '[/COLOR]'
             else:
-                 sDisplayTitle2 = '[COLOR coral]' +' ('+sQual+') ' + '[/COLOR]' + '[COLOR skyblue]' + sTitle + '[/COLOR]' + '[COLOR coral]' + sLang + '[/COLOR]' + '[COLOR skyblue]' + ' ' + sSaison + sEpisode + '[/COLOR]'
+                 sDisplayTitle2 = '[COLOR coral]' +' ('+sQual+') ' + '[/COLOR]' + sTitle + '[COLOR coral]' + sLang + '[/COLOR]' + '[COLOR skyblue]' + ' ' + sSaison + sEpisode + '[/COLOR]'
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl2))
@@ -459,7 +459,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             oOutputParameterHandler.addParameter('sCom', sCom)
 	
-            sDisplayTitle = '[COLOR coral]' + ' ('+sQual+') ' + '[/COLOR]' + '[COLOR skyblue]' + sSaison + sEpisode + '[/COLOR]' + '[COLOR coral]' + sLang + '[/COLOR]' + '[COLOR skyblue]' + sTitle + '[/COLOR]'
+            sDisplayTitle = '[COLOR coral]' + ' ('+sQual+') ' + '[/COLOR]' + '[COLOR skyblue]' + sSaison + sEpisode + '[/COLOR]' + '[COLOR coral]' + sLang + '[/COLOR]' + sTitle
             oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
             
 
