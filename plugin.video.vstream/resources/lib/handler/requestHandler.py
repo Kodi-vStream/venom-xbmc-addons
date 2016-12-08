@@ -124,10 +124,10 @@ class cRequestHandler:
                     cookies = cookies.split(';')[0]
                     print 'Page protegee par cloudflare'
                     from resources.lib.cloudflare import CloudflareBypass
-                    sContent = CloudflareBypass().GetHtml(self.__sUrl,e.read(),cookies)
+                    CF = CloudflareBypass()
+                    sContent = CF.GetHtml(self.__sUrl,e.read(),cookies)
                     
-                    self.__sResponseHeader = ''
-                    self.__sRealUrl = ''
+                    self.__sRealUrl,self.__sResponseHeader = CF.GetReponseInfo()
 
             if not  sContent:
                 cConfig().error("%s,%s" % (cConfig().getlanguage(30205), self.__sUrl))
