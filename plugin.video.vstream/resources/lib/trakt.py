@@ -580,9 +580,9 @@ class cTrakt:
         oGuiElement.setFileName(sFile)
         oGuiElement.setIcon("trakt.png")
         #oGuiElement.setThumbnail(sThumb)
-        oGuiElement.setImdb(sImdb)
-        oGuiElement.setImdbId(sImdb)
-        oGuiElement.setTmdb(sTmdb)
+        #oGuiElement.setImdb(sImdb)
+        #oGuiElement.setImdbId(sImdb)
+        #oGuiElement.setTmdb(sTmdb)
         oGuiElement.setTmdbId(sTmdb)
 
         if cConfig().getSetting("meta-view") == 'false':
@@ -658,12 +658,13 @@ class cTrakt:
         if not sAction:
             return
 
-        xbmc.log(str(oInputParameterHandler.getAllParameter()))
+        #xbmc.log(str(oInputParameterHandler.getAllParameter()))
         
         sType = oInputParameterHandler.getValue('sType')
         if not sType:
             sType = self.getType()
-        sImdb = oInputParameterHandler.getValue('sImdb')
+        #entrer imdb ? venant d'ou?
+        sImdb = oInputParameterHandler.getValue('sImdbId')
         sTMDB = oInputParameterHandler.getValue('sTmdbId')
         if not sImdb:
             if not sTMDB:
@@ -725,7 +726,8 @@ class cTrakt:
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sAction', sUrl)
             oOutputParameterHandler.addParameter('sReload', True)
-            oOutputParameterHandler.addParameter('sImdb', oGuiElement.getImdb())
+            #oOutputParameterHandler.addParameter('sImdb', oGuiElement.getImdbId())
+            oOutputParameterHandler.addParameter('sTmdbId', oGuiElement.getTmdbId())
             oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cTrakt','cTrakt','getAction',sTitle)
         return
 
