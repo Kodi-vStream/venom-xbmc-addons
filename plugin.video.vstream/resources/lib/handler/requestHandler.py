@@ -117,7 +117,10 @@ class cRequestHandler:
         except urllib2.HTTPError, e:
             if e.code == 503:
                 if cloudflare.CheckIfActive(e.read()):
-                    cookies = e.headers['Set-Cookie']
+                    if 'Set-Cookie' in e.headers:
+                        cookies = e.headers['Set-Cookie']
+                    else:
+                        cookies = ''
                     cookies = cookies.split(';')[0]
                     print 'Page protegee par cloudflare'
                     from resources.lib.cloudflare import CloudflareBypass
