@@ -23,6 +23,8 @@ class cRequestHandler:
         self.removeNewLines(True)
         self.__setDefaultHeader()
         self.__timeout = 30
+        self.__bRemoveNewLines = False
+        self.__bRemoveBreakLines = False
         
         self.__HeaderReturn = ''
 
@@ -127,7 +129,7 @@ class cRequestHandler:
                     CF = CloudflareBypass()
                     sContent = CF.GetHtml(self.__sUrl,e.read(),cookies)
                     
-                    self.__sRealUrl,self.__sResponseHeader = CF.GetReponseInfo()
+                    self.__sRealUrl,self.__HeaderReturn = CF.GetReponseInfo()
 
             if not  sContent:
                 cConfig().error("%s,%s" % (cConfig().getlanguage(30205), self.__sUrl))
