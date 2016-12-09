@@ -330,7 +330,8 @@ class cGuiElement:
         'plotoutline': xbmc.getInfoLabel('ListItem.plotoutline'), 
         'plot': xbmc.getInfoLabel('ListItem.plot'),
         'cover_url': xbmc.getInfoLabel('ListItem.Art(thumb)'),
-        'backdrop_url': xbmc.getInfoLabel('ListItem.Art(fanart)')
+        'backdrop_url': xbmc.getInfoLabel('ListItem.Art(fanart)'),
+        'imdb_id': xbmc.getInfoLabel('ListItem.IMDBNumber')
         }
         
         if meta['title']:
@@ -403,7 +404,7 @@ class cGuiElement:
 
         if meta['title']:
             meta['title'] = self.getTitle()
-            
+                 
         for key, value in meta.items():
             self.addItemValues(key, value)
          
