@@ -274,13 +274,15 @@ def resultSearch(sSearch):
             
             sDisplayTitle = cUtil().DecoTitle(sTitle + sQual)
             
+            xbmc.log(siteUrl)
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            if '-serie-' in siteUrl:
+            if '-serie' in siteUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
-            if '-mangas-' in siteUrl:
+            elif '-mangas-' in siteUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
@@ -482,7 +484,7 @@ def showTop():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            if '-films-' in siteUrl:
+            if '-films-' in sUrl:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'series.png', sThumbnail, '', oOutputParameterHandler)

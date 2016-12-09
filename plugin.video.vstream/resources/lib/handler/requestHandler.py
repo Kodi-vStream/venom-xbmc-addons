@@ -23,6 +23,8 @@ class cRequestHandler:
         self.removeNewLines(True)
         self.__setDefaultHeader()
         self.__timeout = 30
+        self.__bRemoveNewLines = False
+        self.__bRemoveBreakLines = False
         
         self.__HeaderReturn = ''
 
@@ -117,14 +119,17 @@ class cRequestHandler:
         except urllib2.HTTPError, e:
             if e.code == 503:
                 if cloudflare.CheckIfActive(e.read()):
-                    cookies = e.headers['Set-Cookie']
+                    if 'Set-Cookie' in e.headers:
+                        cookies = e.headers['Set-Cookie']
+                    else:
+                        cookies = ''
                     cookies = cookies.split(';')[0]
                     print 'Page protegee par cloudflare'
                     from resources.lib.cloudflare import CloudflareBypass
-                    sContent = CloudflareBypass().GetHtml(self.__sUrl,e.read(),cookies)
+                    CF = CloudflareBypass()
+                    sContent = CF.GetHtml(self.__sUrl,e.read(),cookies)
                     
-                    self.__sResponseHeader = ''
-                    self.__sRealUrl = ''
+                    self.__sRealUrl,self.__HeaderReturn = CF.GetReponseInfo()
 
             if not  sContent:
                 cConfig().error("%s,%s" % (cConfig().getlanguage(30205), self.__sUrl))

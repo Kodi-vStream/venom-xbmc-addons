@@ -368,8 +368,9 @@ class cGui():
         #pas de menu si pas de meta.
         #if cConfig().getSetting("meta-view") == 'false':
         #    return
-        oOutputParameterHandler.addParameter('sImdb', oGuiElement.getImdb())
-        oOutputParameterHandler.addParameter('sTmdb', oGuiElement.getTmdb())
+        oOutputParameterHandler.addParameter('sImdbId', oGuiElement.getImdbId())
+        oOutputParameterHandler.addParameter('sTmdbId', oGuiElement.getTmdbId())
+        
         sType = cGui.CONTENT.replace('tvshows', 'shows')
         oOutputParameterHandler.addParameter('sType', sType)
         self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cTrakt','cTrakt','getAction','[COLOR teal]Trakt[/COLOR]')

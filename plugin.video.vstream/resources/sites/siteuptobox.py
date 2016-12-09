@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#johngf - V0.4b
+#johngf - V0.4
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui 
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler 
@@ -8,9 +8,9 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.parser import cParser 
 from resources.lib.util import cUtil
 from resources.lib.config import cConfig
-import xbmc,xbmcgui,urllib,urllib2,re
 from resources.lib.handler.premiumHandler import cPremiumHandler
-import random, mimetypes, string
+import xbmc,xbmcgui,urllib,urllib2,re,random,mimetypes,string
+
 SITE_IDENTIFIER = 'siteuptobox' 
 SITE_NAME = '[COLOR dodgerblue]' + 'VotreCompteUptobox' + '[/COLOR]'
 SITE_DESC = 'fichier sur compte uptobox'
@@ -125,25 +125,24 @@ def AddmyAccount():
         return 
     oInputParameterHandler = cInputParameterHandler()
     sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
-    # on récupère l'id
+
     sId = sMediaUrl.replace('https://uptobox.com/','')
     sId = sMediaUrl.replace('http://uptobox.com/','')
-    #go page            
+          
     Upurl = 'https://uptobox.com/?op=my_files&add_my_acc=' + sId
 
     oPremiumHandler = cPremiumHandler('uptobox')
     if (oPremiumHandler.Readcookie('uptobox') != ''):
-        #xbmc.log('cookie trouvé')
+
         cookies = oPremiumHandler.Readcookie('uptobox')
         sHtmlContent = oPremiumHandler.GetHtmlwithcookies(Upurl,None,cookies)
         if (len(sHtmlContent) > 25):
-            #xbmc.log('mais il a expiré')
+
             oPremiumHandler.Authentificate()
             cookies = oPremiumHandler.Readcookie('uptobox')
             sHtmlContent = oPremiumHandler.GetHtmlwithcookies(Upurl,None,cookies)
-            #xbmc.log('nouveau cookie')
+
     else:
-        #xbmc.log('aucun cookie')
         sHtmlContent = oPremiumHandler.GetHtml(Upurl)
         
     xbmc.executebuiltin("Dialog.Close(all,true)") 
@@ -155,11 +154,13 @@ def AddmyAccount():
          xbmcgui.Dialog().notification('Info upload','Erreur',xbmcgui.NOTIFICATION_ERROR,2000,False)    
 
 def UptomyAccount():
+    if (cConfig().getSetting('hoster_uptobox_username') == '') and (cConfig().getSetting('hoster_uptobox_password') == ''):
+        return 
     oInputParameterHandler = cInputParameterHandler()
     sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
-    #xbmc.log(str(sMediaUrl))
+
     oPremiumHandler = cPremiumHandler('uptobox')
-    #go page d'accueil           
+         
     sHtmlContent = oPremiumHandler.GetHtml(URL_MAIN)
     cookies = oPremiumHandler.Readcookie('uptobox')
   
@@ -168,7 +169,7 @@ def UptomyAccount():
         aCt = aResult.group(1)
         sId = aResult.group(2)
         sTmp = aResult.group(3)
- 
+
         UPurl = ('%s%s&js_on=1&utype=reg&upload_type=url' % (aCt,sId))
  
         fields = {'sess_id':sId,'upload_type':'url','srv_tmp_url':sTmp,'url_mass':sMediaUrl,'tos':'1','submit_btn':'Uploader'}
@@ -178,7 +179,7 @@ def UptomyAccount():
         req.add_header('Cookie', cookies)
         req.add_header('Content-Length', len(mpartdata[1]))
         #req.add_data(mpartdata[1])
-        #xbmc.log(str(mpartdata[1]))
+        xbmcgui.Dialog().notification('Info upload', 'Envoi de la requete patienter ..', xbmcgui.NOTIFICATION_INFO,2000,False)
         try:
            rep = urllib2.urlopen(req)
         except:
@@ -186,7 +187,7 @@ def UptomyAccount():
 
         sHtmlContent = rep.read()
         rep.close()
-    
+        xbmc.executebuiltin("Dialog.Close(all,true)")
         if '>OK<' in sHtmlContent:
            xbmcgui.Dialog().notification('Info upload', 'Upload réussie', xbmcgui.NOTIFICATION_INFO,2000,False)
         else:
@@ -194,7 +195,6 @@ def UptomyAccount():
     else:
         xbmcgui.Dialog().notification('Info upload','Erreur pattern',xbmcgui.NOTIFICATION_ERROR,2000,False)
         
-
 def MPencode(fields):
 	random_boundary = __randy_boundary()
 	content_type = "multipart/form-data, boundary=%s" % random_boundary
@@ -231,5 +231,3 @@ def __randy_boundary(length=10,reshuffle=False):
 	else:
 		pass
 	return ''.join(boundary_string)        
-        
- 

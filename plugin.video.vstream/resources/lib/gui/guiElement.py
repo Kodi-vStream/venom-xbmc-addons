@@ -30,7 +30,9 @@ class cGuiElement:
         self.__sFanart = self.__sRootArt+'fanart.jpg'
         
         #For meta search
+        #TmdbId the movie database https://developers.themoviedb.org/
         self.__TmdbId = ''
+        #ImdbId pas d'api http://www.imdb.com/
         self.__ImdbId = ''
         self.__Year = ''   
         
@@ -66,17 +68,17 @@ class cGuiElement:
       
     #utiliser setImdbId      
     def setImdb(self, sImdb):
-        self.__sImdb = sImdb
-
+        self.__ImdbId = sImdb
+    #utiliser  getImdbId 
     def getImdb(self):
-        return self.__sImdb
+        return self.__ImdbId
      
     #utiliser  setTmdbId 
     def setTmdb(self, sTmdb):
-        self.__sTmdb = sTmdb
-
+        self.__TmdbId = sTmdb
+    #utiliser  getTmdbId 
     def getTmdb(self):
-        return self.__sTmdb
+        return self.__TmdbId
         
     def setCat(self, sCat):
         self.__sCat = sCat
@@ -98,9 +100,15 @@ class cGuiElement:
         
     def setTmdbId(self,data):
         self.__TmdbId = data
+        
+    def getTmdbId(self):
+        return self.__TmdbId        
 
     def setImdbId(self,data):
         self.__ImdbId = data
+        
+    def getImdbId(self):
+        return self.__ImdbId
         
     def setYear(self,data):
         self.__Year = data        
@@ -322,7 +330,8 @@ class cGuiElement:
         'plotoutline': xbmc.getInfoLabel('ListItem.plotoutline'), 
         'plot': xbmc.getInfoLabel('ListItem.plot'),
         'cover_url': xbmc.getInfoLabel('ListItem.Art(thumb)'),
-        'backdrop_url': xbmc.getInfoLabel('ListItem.Art(fanart)')
+        'backdrop_url': xbmc.getInfoLabel('ListItem.Art(fanart)'),
+        'imdb_id': xbmc.getInfoLabel('ListItem.IMDBNumber')
         }
         
         if meta['title']:
@@ -395,21 +404,21 @@ class cGuiElement:
 
         if meta['title']:
             meta['title'] = self.getTitle()
-            
+                 
         for key, value in meta.items():
             self.addItemValues(key, value)
          
         if meta['imdb_id']:
-            self.__sImdb = meta['imdb_id']
+            self.__ImdbId = meta['imdb_id']
         
         try:
             if meta['tmdb_id']:
-                self.__sTmdb = meta['tmdb_id']
+                self.__TmdbId = meta['tmdb_id']
         except: pass
         
         try:
             if meta['tvdb_id']:
-                self.__sTmdb = meta['tvdb_id']
+                self.__TmdbId = meta['tvdb_id']
         except: pass
         
         if meta['backdrop_url']:
