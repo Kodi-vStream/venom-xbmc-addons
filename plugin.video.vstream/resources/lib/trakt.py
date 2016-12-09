@@ -184,7 +184,7 @@ class cTrakt:
  
         oGui.setEndOfDirectory()
         
-    def search(self):
+    #def search(self):
         # oGui = cGui()
         # sSearchText = oGui.showKeyBoard()
         # if (sSearchText != False):
