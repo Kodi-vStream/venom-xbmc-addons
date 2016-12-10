@@ -202,6 +202,9 @@ def showSeriesHosters():# recherche et affiche les hotes
             sUrl = aEntry[0]
             sThumbnail = aEntry[1]
             sNumber = aEntry[2]
+            parts = sNumber.split('-')
+            if len(parts) == 2:
+                sNumber = 'S%02dE%02d' % (int(parts[0]), int(parts[1]))
             sTitle = aEntry[3]
             sDisplayTitle = '[COLOR yellow]['+sNumber+'][/COLOR] '+sTitle
 
