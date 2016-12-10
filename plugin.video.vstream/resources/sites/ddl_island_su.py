@@ -426,7 +426,7 @@ def showMovies(sSearch = ''):
                 sSaison = a[0]
                 sSaison = sSaison.replace('Saison ', 'S')
             if 'VOSTFR' in sTitle2:
-                sLang = 'VOSTFR'
+                sLang = '[VOSTFR]'
             #Temp test
             sDisplayTitle = cUtil().DecoTitle(' ('+sQual+') ' + sLang + sSaison + sTitle)
            
