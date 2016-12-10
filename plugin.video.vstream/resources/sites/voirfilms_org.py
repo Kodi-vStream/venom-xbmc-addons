@@ -321,8 +321,9 @@ def showHosters():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-                
-            sTitle = '(' + str(aEntry[1]) + ') [' + str(aEntry[2]) + '] ' + sMovieTitle
+            
+            sHost = str(aEntry[2]).replace('&nbsp;','')
+            sTitle = '(' + str(aEntry[1]) + ') [' + sHost + '] ' + sMovieTitle
             sUrl = aEntry[0].replace('https://', 'http://')
             #print sUrl
             oOutputParameterHandler = cOutputParameterHandler()
