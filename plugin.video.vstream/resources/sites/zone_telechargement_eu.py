@@ -29,10 +29,75 @@ def load(): #fonction chargee automatiquement par l'addon l'index de votre navig
     oOutputParameterHandler = cOutputParameterHandler() #apelle la function pour sortir un parametre
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') # sortie du parametres siteUrl n'oubliez pas la Majuscule
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    #Ajoute lien dossier (identifant, function a attendre, nom, icon, parametre de sortie)
-    #Puisque nous ne voulons pas atteindre une url on peut mettre ce qu'on veut dans le parametre siteUrl
 
+    oOutputParameterHandler.addParameter('siteUrl', 'http://www.zone-telechargement.eu/trending/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Tendances', 'views.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', 'http://www.zone-telechargement.eu/series/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries', 'tv.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', 'http://www.zone-telechargement.eu/films/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler.addParameter('siteUrl', 'http://www.zone-telechargement.eu/ratings/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Evaluations', 'films_comments.png', oOutputParameterHandler)
+
+    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Genres', 'films_genres.png', oOutputParameterHandler)
+
+    oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Année de sortie', 'news.png', oOutputParameterHandler)
+
+    xbmc.executebuiltin('Container.SetViewMode(500)')
     oGui.setEndOfDirectory() #ferme l'affichage
+
+def showGenres(): #affiche les genres
+    oGui = cGui()
+
+    oRequestHandler = cRequestHandler('http://www.zone-telechargement.eu/') # envoye une requete a l'url
+    sHtmlContent = oRequestHandler.request() #requete aussi
+
+    sPattern = '<li class="cat-item.+?<a href="(.+?)">(.+?)</a>.+?</li>'
+
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    #juste a entrer les caterories et les liens qui vont bien
+    liste = []
+    if aResult[0]:
+        for aEntry in aResult[1]:
+            liste.append([aEntry[1], aEntry[0]])
+
+    for sTitle,sUrl in liste:#boucle
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)#sortie de l'url en parametre
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        #ajouter un dossier vers la function showMovies avec le titre de chaque categorie.
+
+    oGui.setEndOfDirectory()
+
+def showYears(): #affiche les genres
+    oGui = cGui()
+
+    oRequestHandler = cRequestHandler('http://www.zone-telechargement.eu/') # envoye une requete a l'url
+    sHtmlContent = oRequestHandler.request() #requete aussi
+
+    sPattern = '<a href="(http://www.zone-telechargement.eu/release/(\d+?)/)">.+?</a>'
+
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    #juste a entrer les caterories et les liens qui vont bien
+    liste = []
+    if aResult[0]:
+        for aEntry in aResult[1]:
+            liste.append([aEntry[1], aEntry[0]])
+
+    for sTitle,sUrl in liste:#boucle
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)#sortie de l'url en parametre
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'searchtmdb.png', oOutputParameterHandler)
+        #ajouter un dossier vers la function showMovies avec le titre de chaque categorie.
+
+    oGui.setEndOfDirectory()
 
 def showSearch(): #function de recherche
     oGui = cGui()
@@ -44,55 +109,13 @@ def showSearch(): #function de recherche
         oGui.setEndOfDirectory()
         return
 
-
-def showGenre(): #affiche les genres
-    oGui = cGui()
-
-    #juste a entrer les caterories et les liens qui vont bien
-    liste = []
-    liste.append( ['Action','http://full-streaming.org/action/'] )
-    liste.append( ['Animation','http://full-streaming.org/animation/'] )
-    liste.append( ['Arts Martiaux','http://full-streaming.org/arts-martiaux/'] )
-    liste.append( ['Aventure','http://full-streaming.org/aventure/'] )
-    liste.append( ['Biopic','http://full-streaming.org/biopic/'] )
-    liste.append( ['Comedie','http://full-streaming.org/comedie/'] )
-    liste.append( ['Comedie Dramatique','http://full-streaming.org/comedie-dramatique/'] )
-    liste.append( ['Comedie Musicale','http://full-streaming.org/comedie-musicale/'] )
-    liste.append( ['Documentaire','http://full-streaming.org/documentaire/'] )
-    liste.append( ['Drame','http://full-streaming.org/drame/'] )
-    liste.append( ['Epouvante Horreur','http://full-streaming.org/epouvante-horreur/'] )
-    liste.append( ['Erotique','http://full-streaming.org/erotique'] )
-    liste.append( ['Espionnage','http://full-streaming.org/espionnage/'] )
-    liste.append( ['Famille','http://full-streaming.org/famille/'] )
-    liste.append( ['Fantastique','http://full-streaming.org/fantastique/'] )
-    liste.append( ['Guerre','http://full-streaming.org/guerre/'] )
-    liste.append( ['Historique','http://full-streaming.org/historique/'] )
-    liste.append( ['Musical','http://full-streaming.org/musical/'] )
-    liste.append( ['Policier','http://full-streaming.org/policier/'] )
-    liste.append( ['Peplum','http://full-streaming.org/peplum/'] )
-    liste.append( ['Romance','http://full-streaming.org/romance/'] )
-    liste.append( ['Science Fiction','http://full-streaming.org/science-fiction/'] )
-    liste.append( ['Spectacle','http://full-streaming.org/spectacle/'] )
-    liste.append( ['Thriller','http://full-streaming.org/thriller/'] )
-    liste.append( ['Western','http://full-streaming.org/western/'] )
-    liste.append( ['Divers','http://full-streaming.org/divers/'] )
-
-    for sTitle,sUrl in liste:#boucle
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)#sortie de l'url en parametre
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-        #ajouter un dossier vers la function showMovies avec le titre de chaque categorie.
-
-    oGui.setEndOfDirectory()
-
-
 def showMovies(sSearch = '', page = 1):
     oGui = cGui() #ouvre l'affichage
+
+    oInputParameterHandler = cInputParameterHandler()
     if sSearch:
-      sUrl = sSearch
+        sUrl = sSearch
     else:
-        oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl') # recupere l'url sortie en parametre
 
     oRequestHandler = cRequestHandler(sUrl) # envoye une requete a l'url
@@ -101,11 +124,7 @@ def showMovies(sSearch = '', page = 1):
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
     #la function replace et pratique pour supprimer un code du resultat
 
-    sPattern = '<article>(.+?)<img src="(.+?)"(.+?)<a href="(.+?)">(.+?)</a>(.+?)</article>'
-    #pour faire simple recherche ce bout de code dans le code source de l'url
-    #- ([^<]+) je veut cette partie de code mais y a une suite
-    #- .+? je ne veut pas cette partis et peux importe ceux qu'elle contient
-    #- (.+?) je veut cette partis et c'est la fin
+    sPattern = '<article.+?<img src="(.+?)".+?<a href="(.+?)">(.+?)</a>.+?</article>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -123,17 +142,20 @@ def showMovies(sSearch = '', page = 1):
             cConfig().updateDialog(dialog, total) #dialog update
 
             #L'array affiche vos info dans l'orde de sPattern en commencant a 0
-            sTitle = aEntry[4]
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[3])) #sortie de l'url
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[4])) #sortie du titre
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[1])) #sortie du poster
+            sTitle = aEntry[2]
+            sUrl = aEntry[1]
+            sThumbnail = aEntry[0]
 
-            result = re.search('eu/series', aEntry[3])
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl) #sortie de l'url
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle) #sortie du titre
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail) #sortie du poster
+
+            result = re.search('eu/series', sUrl)
             if result:
-                oGui.addMovie(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', aEntry[1], aEntry[3], oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', sThumbnail, sUrl, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[1], aEntry[3], oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sUrl, oOutputParameterHandler)
 
             #il existe aussis addMisc(identifiant, function, titre, icon, poster, description, sortie parametre)
             #la difference et pour les metadonner serie, films ou sans
