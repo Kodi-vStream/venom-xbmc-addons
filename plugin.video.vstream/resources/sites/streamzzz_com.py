@@ -10,15 +10,17 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re, urllib
-
+import re,urllib,xbmc
+import unicodedata
 SITE_IDENTIFIER = 'streamzzz_com'
 SITE_NAME = 'streamzzz.com'
 SITE_DESC = 'Streaming series'
 
 URL_MAIN = 'http://streamzzz.com/'
 
-SERIE_SERIES = ('http://streamzzz.com/', 'showMovies')
+SERIE_SERIES = (URL_MAIN, 'showMovies')
+SERIE_NEWS = (URL_MAIN, 'showSerieNews')
+
 #SERIE_VFS = ('http://www.telecharger-films.ws/telecharger-serie/series-fr/', 'showMovies')
 #SERIE_VOSTFRS = ('http://www.telecharger-films.ws/telecharger-serie/sries-vostfr/', 'showMovies')
 
@@ -27,32 +29,14 @@ SERIE_SERIES = ('http://streamzzz.com/', 'showMovies')
 def load():
     oGui = cGui()
 
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    #oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    #oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautés', 'films.png', oOutputParameterHandler)
-    
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    #oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'genres.png', oOutputParameterHandler)
-    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries liste complete', 'series.png',oOutputParameterHandler)
-    
-    
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
-    #oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries VF', 'series.png', oOutputParameterHandler)
-    
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    #oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries VOSTFR', 'series.png',oOutputParameterHandler)
-    
-            
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries Nouveautés', 'series.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
  
 
@@ -113,12 +97,16 @@ def showSeries(sSearch = ''):
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
- 
-    sPattern = '<li><a href="(http:..streamzzz.com\/page[^<]+)" title=".+?">([^<]+)<.a><.li>'
     oParser = cParser()
+    #recuperation syn
+    sSyn = ''
+    sPattern = '<div class="category_desc">([^<]+)<\/div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
-
+    if aResult[0]:
+        sSyn = aResult[1][0]
+    
+    sPattern = '<li><a href="(http:..streamzzz.com\/page[^<]+)" title=".+?">([^<]+)<.a><.li>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -135,7 +123,7 @@ def showSeries(sSearch = ''):
             
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
-            oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, 'tv.png', '', '', oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'listHosters', sDisplayTitle, 'tv.png', '', sSyn, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -151,10 +139,8 @@ def showSeries(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     sPattern = '<a class="pagination-next" href="(.+?)">.+?</a>'
-     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
     if (aResult[0] == True):
         return aResult[1][0]
 
@@ -165,24 +151,112 @@ def serieHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumbnail')
+
+    if 'regarder-film-gratuit' in sThumb:
+        sUrl = sUrl.replace('http://streamzzz.com/page/','http://www.regarder-film-gratuit.com/')
+        sUrl = unicode(sUrl,'utf-8')
+        sUrl = unicodedata.normalize('NFD', unicode(sUrl)).encode('ascii', 'ignore')
+        sUrl = re.search('([^"<>]+-[0-9]+)',sUrl)
+        sUrl = sUrl.group(1)
+
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
+        oParser = cParser()
+        sPattern = '<p><a href="([^"<>]+?)" target="_blank"><br\/>\s*<img src="http:\/\/www\.regarder-film-gratuit\.com'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+
+    else:
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()   
+        oParser = cParser()
+        sPattern = '<a href="([^<>"]+?)" target="_blank"><img'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+
+        
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+            
+            sHosterUrl = str(aEntry)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)         
+    
+        cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()
+    
+def showSerieNews():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+        
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request();
+
+    sPattern = '<h1><a href="([^"]+)".+?title="([^"]+)".+?<body>.+?<img.+?rc="([^"]+)"'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
+            sUrl = aEntry[0]
+            filter = re.search('(\d+)-(\d+)',sUrl)
+            if filter:
+               continue
+            sTitle = aEntry[1]
+            sThumb = aEntry[2]
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+            oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+
+
+        cConfig().finishDialog(dialog)
+
+        sNextPage = __checkForNextPage(sHtmlContent)
+        if (sNextPage != False):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            oGui.addDir(SITE_IDENTIFIER, 'showSerieNews', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+
+        oGui.setEndOfDirectory()
+        
+def listHosters():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
     oParser = cParser()
-    
     #recuperation thumb
     sThumbnail = ''
-    sPattern = 'style="cursor: default; float: left; margin: 0px 10px 10px 0px;" unselectable="on" src="([^<>"]+?)">'
+    sPattern = '<body><p>.+?src="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         sThumbnail = aResult[1][0]
         
     sPattern = '<a href="([^<>"]+?)" target="_blank"><img'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    #print aResult
-     
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -201,4 +275,4 @@ def serieHosters():
     
         cConfig().finishDialog(dialog)
 
-    oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()        
