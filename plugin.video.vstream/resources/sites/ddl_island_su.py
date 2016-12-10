@@ -416,9 +416,9 @@ def showMovies(sSearch = ''):
             sLang = ''
             #sEpisode = ''
             sTitle2 = sTitle.split(" - ")
-            sTitle = sTitle[0]
+            sTitle = sTitle2[0]
             if 'top' in sUrl:
-                sTitle = ' ' + sTitle[0]
+                sTitle = ' ' + sTitle2[0]
             #on vire le titre pour rechercher saison dans sTitle2
             del sTitle2[0]
             a = filter(lambda x: 'Saison' in x, sTitle2)
@@ -426,8 +426,7 @@ def showMovies(sSearch = ''):
                 sSaison = a[0]
                 sSaison = sSaison.replace('Saison ', 'S')
             if 'VOSTFR' in sTitle2:
-            b = sTitle2.index('VOSTFR')
-            sLang = sTitle2[b]
+                sLang = 'VOSTFR'
             #Temp test
             sDisplayTitle = cUtil().DecoTitle(' ('+sQual+') ' + sLang + sSaison + sTitle)
            
