@@ -175,7 +175,7 @@ def showMovies(sSearch = '', page = 1):
 
 def __checkForNextPage(sHtmlContent): #cherche la page suivante
     oParser = cParser()
-    sPattern = '<div class=\'resppages\'>.+?href="(.+?)".+?</div>'
+    sPattern = 'href="([^"]+?)"><span class="icon-chevron-right'
     aResult = oParser.parse(sHtmlContent, sPattern)
     print aResult #affiche le result dans le log
     if (aResult[0] == True):
