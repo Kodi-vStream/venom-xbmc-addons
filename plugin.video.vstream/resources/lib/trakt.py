@@ -28,7 +28,6 @@ SITE_NAME = 'Trakt'
 API_KEY = '7139b7dace25c7bdf0bd79acf46fb02bd63310548b1f671d88832f75a4ac3dd6'
 API_SECRET = 'bb02b2b0267b045590bc25c21dac21b1c47446a62b792091b3275e9c4a943e74'
 API_VERS = '2'
-API_URL = 'https://api.betaseries.com'
 
 POSTER_URL = 'https://image.tmdb.org/t/p/w396'
 #FANART_URL = 'https://image.tmdb.org/t/p/w780/'
@@ -148,12 +147,14 @@ class cTrakt:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'movie')
-            oGui.addDir(SITE_IDENTIFIER, 'search', 'Recherche de film', 'films.png', oOutputParameterHandler)
+            #oGui.addDir(SITE_IDENTIFIER, 'search', 'Recherche de film', 'films.png', oOutputParameterHandler)
+            oGui.addDir('themoviedb_org', 'showSearchMovie', 'Recherche de film', 'films.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'show')
-            oGui.addDir(SITE_IDENTIFIER, 'search', 'Recherche de serie', 'films.png', oOutputParameterHandler)              
+            #oGui.addDir(SITE_IDENTIFIER, 'search', 'Recherche de serie', 'films.png', oOutputParameterHandler)
+            oGui.addDir('themoviedb_org', 'showSearchSerie', 'Recherche de serie', 'series.png', oOutputParameterHandler)           
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
@@ -183,16 +184,16 @@ class cTrakt:
  
         oGui.setEndOfDirectory()
         
-    def search(self):
-        oGui = cGui()
-        sSearchText = oGui.showKeyBoard()
-        if (sSearchText != False):
-            oInputParameterHandler = cInputParameterHandler()
-            sType = oInputParameterHandler.getValue('type')
-            sUrl = 'https://api.trakt.tv/search/' + sType + '?query=' + urllib.quote_plus(sSearchText)
-            self.getTrakt(sUrl)
-            return
-        oGui.setEndOfDirectory()
+    #def search(self):
+        # oGui = cGui()
+        # sSearchText = oGui.showKeyBoard()
+        # if (sSearchText != False):
+            # oInputParameterHandler = cInputParameterHandler()
+            # sType = oInputParameterHandler.getValue('type')
+            # sUrl = 'https://api.trakt.tv/search/' + sType + '?query=' + urllib.quote_plus(sSearchText)
+            # self.getTrakt(sUrl)
+            # return
+        # oGui.setEndOfDirectory()
 
     def getCalendrier(self):
         oInputParameterHandler = cInputParameterHandler()
@@ -881,7 +882,7 @@ class cTrakt:
 
         sHtmlContent = oRequestHandler.request()
         result = json.loads(sHtmlContent)
-        xbmc.log(str(result))
+        #xbmc.log(str(result))
 
         n = 0
         d = 100
@@ -895,7 +896,7 @@ class cTrakt:
             else:
                 sTitle2 = i['name'].encode("utf-8")
                 
-            xbmc.log(sTitle2 + ' = ' + str(i['id']))
+            #xbmc.log(sTitle2 + ' = ' + str(i['id']))
             
             #nombre de mots identiques            
             n2 = cUtil().CheckOccurence(sTitle,sTitle2)

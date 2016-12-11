@@ -7,11 +7,190 @@ Merci aux généreux donateurs
 - Mor17, Yoann, Stéphane G, Sylvain L, Daniel L, Jean Charles A, 3DWorld, David M, Johnny D, Rachid L, Fabrice M.
 =============================================================================
 Merci au contributeur de la bêta. 
-- FreeFighter77/mino60/zombiB/chataigne73/Kodigoal/Johngf
+- FreeFighter77/mino60/zombiB/chataigne73/Kodigoal/Johngf/Gregwar
 =============================================================================
 =============================================================================
 - Version 0.4.7 - 04.12.2016
 =============================================================================
+2016-12-10 22:32:15 -- @chataigne73 -- correction pattern hosters
+
+2016-12-10 14:24:01 -- @johngf -- Update streamzzz_com.py -- fix + serie news - filtrage- synopsis
+
+2016-12-10 13:49:53 -- @TmpName -- Update voirfilms_org.py
+
+2016-12-10 13:42:48 -- @TmpName -- Merge pull request #725 from Gregwar/zoneteu -- Zone-telechargement.eu
+
+2016-12-10 13:10:20 -- @Gregwar -- Fix next page
+
+2016-12-10 12:55:08 -- @Gregwar -- Menu order
+
+2016-12-10 12:50:47 -- @Gregwar -- zt.eu
+
+2016-12-10 12:47:21 -- @Gregwar -- zteu v1
+
+2016-12-10 12:09:07 -- @Gregwar -- zteu v0
+
+2016-12-10 04:53:37 -- @Kodigoal -- Update ddl_island_su.py
+
+2016-12-10 03:51:23 -- @Kodigoal -- Update ddl_island_su.py
+
+2016-12-10 03:38:40 -- @Kodigoal -- Update ddl_island_su.py
+
+2016-12-09 18:46:18 -- @TmpName -- Update trakt.py
+
+2016-12-09 18:44:30 -- @TmpName -- Update trakt.py -- Boulette
+
+2016-12-09 18:41:19 -- @TmpName -- Update trakt.py
+
+2016-12-09 18:26:14 -- @TmpName -- Update sites.json
+
+2016-12-09 18:25:40 -- @TmpName -- Merge pull request #724 from Kodi-vStream/master -- Master
+
+2016-12-09 18:25:26 -- @TmpName -- Merge pull request #723 from Kodi-vStream/Beta -- dfgsdfg
+
+2016-12-09 17:52:29 -- @TmpName -- Update requestHandler.py
+
+2016-12-09 17:34:07 -- @johngf -- Update megastream.py
+
+2016-12-09 16:38:51 -- @TmpName -- Update megastream.py
+
+2016-12-09 14:13:10 -- @Lord Venom -- ddl island
+
+2016-12-09 13:55:47 -- @Lord Venom -- trak
+
+2016-12-09 08:09:03 -- @johngf -- final -- nettoyage
+
+2016-12-09 06:37:38 -- @johngf -- Update settings.xml
+
+2016-12-08 23:11:23 -- @Kodigoal -- Update ddl_island_su.py -- correction couleur Nom titre
+
+2016-12-08 19:07:03 -- @TmpName -- Update cloudflare.py
+
+2016-12-08 19:06:21 -- @TmpName -- Update requestHandler.py
+
+2016-12-08 18:34:53 -- @TmpName -- Update requestHandler.py
+
+2016-12-08 18:07:23 -- @TmpName -- Update ddl_island_su.py
+
+2016-12-08 12:30:57 -- @Lord Venom -- Bug trak
+
+2016-12-08 01:18:26 -- @Kodigoal -- Correction Tab + affichage
+
+2016-12-07 23:17:21 -- @Kodigoal -- Update ddl_island_su.py
+
+2016-12-07 22:58:49 -- @Kodigoal -- Update ddl_island_su.py
+
+2016-12-07 22:55:37 -- @Kodigoal -- Update ddl_island_su.py
+
+2016-12-07 21:44:57 -- @Kodigoal -- Update ddl_island_su.py -- Correction
+
+2016-12-07 20:21:40 -- @Kodigoal -- Update ddl_island_su.py -- Correction
+
+2016-12-07 20:19:09 -- @Kodigoal -- Update ddl_island_su.py -- Correction bug affichage
+
+2016-12-07 19:13:28 -- @Kodigoal -- Update ddl_island_su.py -- Reformatage sDisplayTitle pour les se?ries.
+
+2016-12-07 18:44:46 -- @TmpName -- Merge pull request #715 from Kodi-vStream/Beta -- gdg
+
+2016-12-07 18:44:24 -- @TmpName -- Update hosts.json
+
+2016-12-07 18:43:50 -- @TmpName -- Merge pull request #714 from Kodi-vStream/master -- Merge pull request #713 from Kodi-vStream/Beta
+
+2016-12-07 18:42:52 -- @TmpName -- Merge pull request #713 from Kodi-vStream/Beta -- MAJ 07/12
+
+2016-12-07 18:42:06 -- @TmpName -- Update flashx.py
+
+2016-12-07 18:13:41 -- @TmpName -- Update trakt.py
+
+2016-12-07 18:11:35 -- @TmpName -- Update gui.py -- Boulette
+
+2016-12-07 18:09:52 -- @TmpName -- Update gui.py
+
+2016-12-07 18:09:03 -- @TmpName -- Update themoviedb_org.py
+
+2016-12-07 17:45:52 -- @johngf -- Update siteuptobox.py -- add multipart
+
+2016-12-07 17:35:12 -- @johngf -- Delete mpart.py
+
+2016-12-07 15:20:08 -- @johngf -- Update siteuptobox.py -- add up url
+
+2016-12-07 15:14:46 -- @johngf -- Create mpart.py
+
+2016-12-07 15:11:53 -- @johngf -- Update hoster.py -- menu up url vers upto
+
+2016-12-07 12:52:49 -- @Lord Venom -- bug recherche et popup load trakt
+
+2016-12-07 12:05:40 -- @Lord Venom -- Add topimdb
+
+2016-12-06 20:51:40 -- @TmpName -- Update flashx.py
+
+2016-12-06 18:19:33 -- @TmpName -- Update flashx.py
+
+2016-12-06 18:17:07 -- @TmpName -- Update flashx.py
+
+2016-12-06 18:00:27 -- @TmpName -- Update requestHandler.py
+
+2016-12-06 15:45:42 -- @johngf -- Update hoster.py
+
+2016-12-06 15:45:01 -- @johngf -- Update siteuptobox.py
+
+2016-12-06 13:47:51 -- @chataigne73 -- correction provisoire caract & dans noms de fichiers
+
+2016-12-06 12:39:40 -- @Lord Venom -- bug trakt
+
+2016-12-06 09:26:54 -- @chataigne73 -- modif affichage qualite?
+
+2016-12-06 09:01:10 -- @chataigne73 -- correction pb de cookies
+
+2016-12-05 21:57:39 -- @chataigne73 -- modif affichage noms, ajout films et se?ries par genre, correction nextpage
+
+2016-12-05 18:48:44 -- @TmpName -- Update trakt.py
+
+2016-12-05 18:25:58 -- @TmpName -- Update trakt.py
+
+2016-12-05 18:04:07 -- @TmpName -- Update premiumHandler.py
+
+2016-12-05 17:33:57 -- @TmpName -- Merge pull request #705 from Kodi-vStream/master -- Master
+
+2016-12-05 17:28:42 -- @TmpName -- Merge pull request #703 from Kodi-vStream/Beta -- Update hosts.json
+
+2016-12-05 17:28:17 -- @TmpName -- Update hosts.json
+
+2016-12-05 17:27:37 -- @TmpName -- Merge pull request #702 from Kodi-vStream/Beta -- rrtgrg
+
+2016-12-05 17:27:12 -- @TmpName -- Update openload.py
+
+2016-12-05 16:17:27 -- @chataigne73 -- modif menus, ajout emissions tv spectacles mangas
+
+2016-12-05 13:47:24 -- @johngf -- Update siteuptobox.py
+
+2016-12-05 10:31:26 -- @Lord Venom -- topimbd & remove ZT
+
+2016-12-04 22:51:31 -- @chataigne73 -- menage2
+
+2016-12-04 22:10:48 -- @chataigne73 -- me?nage
+
+2016-12-04 22:01:16 -- @chataigne73 -- correction pattern se?ries HD
+
+2016-12-04 21:41:52 -- @chataigne73 -- Update ddl_island_su.py
+
+2016-12-04 17:51:19 -- @chataigne73 -- Update ddl_island_su.py
+
+2016-12-04 16:42:53 -- @johngf -- Update siteuptobox.py -- fix
+
+2016-12-04 15:42:47 -- @TmpName -- Update premiumHandler.py
+
+2016-12-04 14:48:09 -- @TmpName -- Update hosts.json
+
+2016-12-04 14:47:36 -- @TmpName -- Update sites.json
+
+2016-12-04 14:46:51 -- @TmpName -- Merge pull request #699 from Kodi-vStream/master -- Master
+
+2016-12-04 14:46:34 -- @TmpName -- Merge pull request #698 from Kodi-vStream/Beta -- MAJ 04/12
+
+2016-12-04 14:40:29 -- @TmpName -- Update premiumHandler.py
+
+2016-12-04 14:33:57 -- @TmpName -- Update premiumHandler.py
 
 2016-12-03 09:52:31 -- @johngf -- image uptobox
 
