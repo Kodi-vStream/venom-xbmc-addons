@@ -417,11 +417,13 @@ def showHosters():
     
     #on recupere d'abord les liens
     sPattern = '<div id="(lecteur_[0-9]+)">.+?data-tnetnoc-crs="([^"]+)"'
-    tablink = re.findall(sPattern,sHtmlContent)
+    tablink = re.findall(sPattern,sHtmlContent, re.DOTALL)
+    
+    #xbmc.log(str(tablink))
 
     #le classique
     sPattern = '<a href="#(lecteur_[0-9]+)".+?title="([^"]+)"\/> *([^<>]+)<\/a'
-    aResult = re.findall(sPattern,sHtmlContent)
+    aResult = re.findall(sPattern,sHtmlContent, re.DOTALL)
 
     if (aResult):
         total = len(aResult)
