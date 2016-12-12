@@ -12,10 +12,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.config import cConfig
-import re, urllib, urllib2
+import re,urllib,urllib2,xbmc
 from urllib2 import URLError
-
-import xbmc
 
 SITE_IDENTIFIER = 'sokrostream_biz'
 SITE_NAME = 'Sokrostream'
@@ -368,22 +366,20 @@ def showMovies(sSearch = ''):
 
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        
-    #print sUrl
     
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()	
+    sHtmlContent = oRequestHandler.request()
+
     sHtmlContent = sHtmlContent.replace('<span class="tr-dublaj"></span>', '').replace('<span class="tr-altyazi"></span>','').replace('<small>','').replace('</small>','').replace('<span class="likeThis">','').replace('</span>','')
     
     if (sSearch or ('/series' in sUrl) or ('/search/' in sUrl)):
       #sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<]+)" alt=".+?" height=".+?" width=".+?" \/><\/a> *<div class="movief"><a href="([^<]+)">(.+?)<\/a><\/div> *<div class="movies"><\/div>'
       sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<]+)" alt=".+?" height="125px" width="119px" \/><\/a> *<div class="movief"><a href="([^<]+)">(.+?)<\/a>'
     else:
-      sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<]+)" alt=".+?" height=".+?" width=".+?" \/><\/a> *<div class="ozet">.+?</div> *<div class="movief"><a href="([^<]+)">([^<]+)<\/a><\/div> *<div class="movies">(.+?)<\/div>'
+      sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<]+)" alt=".+?" height=".+?" width=".+?" \/><\/a> *<div class="ozet">.+?</div> *<div class="movief"><a href="([^<]+)">([^<]+)<\/a><\/div> *<div class="movie.+?">(.+?)<\/div>'
 
     oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    
+    aResult = oParser.parse(sHtmlContent,sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -446,13 +442,6 @@ def showLinks():
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
-    #import xbmc
-    #xbmc.log(sUrl)       
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-
     oParser = cParser()
     
     #get post vars
@@ -471,7 +460,7 @@ def showLinks():
             
             sLang = '[' + aEntry[1].upper() + ']'
             sHost = aEntry[0]
-            sHost = sHost.replace('Telecharger sur ','')
+            sHost = sHost.replace('Telecharger sur ','').replace('&nbsp;','')
                 
             sDisplayTitle = cUtil().DecoTitle(sLang + sMovieTitle)
             sTitle = sDisplayTitle +  ' - [COLOR skyblue]' + sHost +'[/COLOR]'
@@ -525,10 +514,9 @@ def showHosters():
             if aEntry[0]:
                 sHosterUrl = str(aEntry[0])
             else:
-                sHosterUrl = str(aEntry[1])               
+                sHosterUrl = str(aEntry[1])            
                 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
                 oHoster.setDisplayName(sDisplayTitle)
@@ -554,8 +542,6 @@ def showEpisode(): #cherche les episode de series
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
-    
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)

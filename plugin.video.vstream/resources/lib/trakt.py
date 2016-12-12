@@ -580,10 +580,11 @@ class cTrakt:
         oGuiElement.setTitle(sTitle)
         oGuiElement.setFileName(sFile)
         oGuiElement.setIcon("trakt.png")
+        
         #oGuiElement.setThumbnail(sThumb)
-        #oGuiElement.setImdb(sImdb)
-        #oGuiElement.setImdbId(sImdb)
-        #oGuiElement.setTmdb(sTmdb)
+        oGuiElement.setImdb(sImdb)
+        oGuiElement.setImdbId(sImdb)
+        oGuiElement.setTmdb(sTmdb)
         oGuiElement.setTmdbId(sTmdb)
 
         if cConfig().getSetting("meta-view") == 'false':

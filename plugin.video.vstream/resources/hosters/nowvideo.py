@@ -9,6 +9,8 @@ from resources.hosters.hoster import iHoster
 
 import re,xbmcgui
 
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -95,7 +97,6 @@ class cHoster(iHoster):
             surl = 'http://www.nowvideo.sx/api/player.api.php?key=' + r.group(1) +'&file=' + id
             oRequest = cRequestHandler(surl)
             sHtmlContent = oRequest.request()
-
             r2 = re.search('url=([^&]+)', sHtmlContent)
             if (r2):
                 api_call = r2.group(1)
@@ -121,7 +122,8 @@ class cHoster(iHoster):
                 ret = dialog2.select('Select Quality',qua)
                 if (ret > -1):
                     api_call = url[ret]
-                
+                    
+        api_call = api_call + '|User-Agent=' + UA        
         if (api_call):
             return True, api_call
 
