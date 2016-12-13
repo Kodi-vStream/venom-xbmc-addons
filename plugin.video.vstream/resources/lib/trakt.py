@@ -669,7 +669,7 @@ class cTrakt:
         if not sAction:
             return
 
-        #xbmc.log(str(oInputParameterHandler.getAllParameter()))
+        xbmc.log(str(oInputParameterHandler.getAllParameter()))
         
         sType = oInputParameterHandler.getValue('sType')
         if not sType:
@@ -677,15 +677,24 @@ class cTrakt:
         #entrer imdb ? venant d'ou?
         sImdb = oInputParameterHandler.getValue('sImdbId')
         sTMDB = oInputParameterHandler.getValue('sTmdbId')
+        sSeason = oInputParameterHandler.getValue('sSeason')
+        sEpisode = oInputParameterHandler.getValue('sEpisode')
+        
         if not sImdb:
+            sPost = {}
             if not sTMDB:
                 sTMDB = int(self.getTmdbID(oInputParameterHandler.getValue('sMovieTitle'),sType))
-            sPost = {sType: [{"ids": {"tmdb": sTMDB}}]}
+                
+            sPost = {sType: [ {"ids": {"tmdb": sTMDB}} ]}         
+            if sSeason:
+                sPost = {sType: [ {"ids": {"tmdb": sTMDB} , "seasons": [ { "number": int(sSeason) }] } ]}
+            if sEpisode:
+                sPost = {sType: [ {"ids": {"tmdb": sTMDB} , "seasons": [ { "number": int(sSeason) , "episodes": [ { "number": int(sEpisode) } ] } ] } ]}
         else:
             sPost = {sType: [{"ids": {"imdb": sImdb}}]}
 
         headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
-
+        
         sPost = json.dumps(sPost)
 
         req = urllib2.Request(sAction, sPost,headers)
@@ -693,6 +702,7 @@ class cTrakt:
         sHtmlContent = response.read()
         result = json.loads(sHtmlContent)
         #xbmc.log(str(result))
+        
         sText = "Erreur"
         try:
             if result["added"]['movies'] == 1 or result["added"]['episodes'] > 0:
