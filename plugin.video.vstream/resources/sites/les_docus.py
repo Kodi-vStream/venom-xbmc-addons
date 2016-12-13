@@ -140,15 +140,13 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    # sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
 
     #sPattern = '<div class="post-header"><a href="([^"<]+)" title="([^"<]+)">.+? src="([^"<]+)".+?<\/a><p style="[^<>"]+?">(.+?)<\/p>'
 
-    sPattern = '<divclass="post-header"><ahref="([^"<]+)" title="([^"<]+)">.+?/><noscript>.+?src="([^"<]+)".+?<\/a><pstyle="[^<>"]+?">(.+?)<\/p>'
+    sPattern = '<div class="post-header"><a *href="([^"]+)" title="([^"]+)">.+?<noscript><img.+?src="([^"]+)".+?<p *style.+?>([^<]+)<\/p>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -157,10 +155,10 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
 
             sTitle = aEntry[1]
-            sTitle = sTitle.replace('&laquo;','<<').replace('&raquo;','>>')
+            sTitle = sTitle.replace('&laquo;','<<').replace('&raquo;','>>').replace('&nbsp;','')
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
 
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png',  aEntry[2],  aEntry[3], oOutputParameterHandler)
@@ -179,7 +177,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<aclass="next page-numbers" href="(.+?)">'
+    sPattern = '<a *class="next page-numbers" href="(.+?)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return aResult[1][0]
@@ -196,7 +194,6 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    # sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','')
 
     oParser = cParser()
     sPattern = '<iframe.+?src="(.+?)"'
