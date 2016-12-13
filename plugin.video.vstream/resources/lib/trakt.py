@@ -98,6 +98,22 @@ class cTrakt:
             #xbmc.executebuiltin("Container.Refresh")
             return
         return
+        
+    def search(self):
+        oGui = cGui()
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'https://')
+        oOutputParameterHandler.addParameter('type', 'movie')
+        oGui.addDir('themoviedb_org', 'showSearchMovie', 'Recherche de film', 'films.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'https://')
+        oOutputParameterHandler.addParameter('type', 'show')
+        oGui.addDir('themoviedb_org', 'showSearchSerie', 'Recherche de serie', 'series.png', oOutputParameterHandler)
+        
+        oGui.setEndOfDirectory()
+        
 
     def getLoad(self):
         #pour regen le token()
@@ -147,14 +163,7 @@ class cTrakt:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'movie')
-            #oGui.addDir(SITE_IDENTIFIER, 'search', 'Recherche de film', 'films.png', oOutputParameterHandler)
-            oGui.addDir('themoviedb_org', 'showSearchMovie', 'Recherche de film', 'films.png', oOutputParameterHandler)
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'https://')
-            oOutputParameterHandler.addParameter('type', 'show')
-            #oGui.addDir(SITE_IDENTIFIER, 'search', 'Recherche de serie', 'films.png', oOutputParameterHandler)
-            oGui.addDir('themoviedb_org', 'showSearchSerie', 'Recherche de serie', 'series.png', oOutputParameterHandler)           
+            oGui.addDir(SITE_IDENTIFIER, 'search', cConfig().getlanguage(30330), 'films.png', oOutputParameterHandler)        
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
@@ -176,7 +185,7 @@ class cTrakt:
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/oauth/revoke')
-            oGui.addDir(SITE_IDENTIFIER, 'getCalendrier', 'Calendrier des sorties VO', 'trakt.png', oOutputParameterHandler)            
+            oGui.addDir(SITE_IDENTIFIER, 'getCalendrier', cConfig().getlanguage(30331), 'trakt.png', oOutputParameterHandler)            
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/oauth/revoke')
