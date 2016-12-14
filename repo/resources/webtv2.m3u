@@ -181,15 +181,3 @@ rtmp://iptv.livetv.tn/live/ch508?code=ea3050dac0b8133
 
 #EXTINF:0,BEING SPORT 3
 rtmp://iptv.livetv.tn/live/ch906?code=ea3050dac0b8133
-
-#EXTINF:0,SFR SPORT 1
-http://iptv11.iptvfannansat10.com:8000/live/ssss/ssss/4625.ts
-
-#EXTINF:0,SFR SPORT 2
-http://iptv11.iptvfannansat10.com:8000/live/ssss/ssss/4626.ts
-
-#EXTINF:0,SFR SPORT 3
-http://iptv11.iptvfannansat10.com:8000/live/ssss/ssss/4627.ts
-
-#EXTINF:0,SFR SPORT 5
-http://iptv11.iptvfannansat10.com:8000/live/ssss/ssss/4628.ts
