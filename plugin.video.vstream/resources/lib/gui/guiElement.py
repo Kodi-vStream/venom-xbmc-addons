@@ -150,7 +150,13 @@ class cGuiElement:
         return self.__sFunctionName
 
     def setTitle(self, sTitle):
-        self.__sTitle = sTitle;
+        if type(sTitle) is list:
+            self.__sTitle = sTitle[0]
+            del sTitle[0]
+            if len(sTitle) >0:
+                self.__sTitle +=  "[COLOR coral]["+ '] ['.join(map(str,sTitle)) + "][/COLOR]"
+        else:
+            self.__sTitle = sTitle
 
     def getTitle(self):
         return self.__sTitle
