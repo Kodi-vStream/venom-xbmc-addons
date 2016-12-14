@@ -133,6 +133,7 @@ class cGui():
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon(sIcon)
+        oGuiElement.setThumbnail(oGuiElement.getIcon())
         oGuiElement.setMeta(0)
         oGuiElement.setDirFanart(sIcon)
 
@@ -146,6 +147,7 @@ class cGui():
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon('next.png')
+        oGuiElement.setThumbnail(oGuiElement.getIcon())
         oGuiElement.setMeta(0)
         oGuiElement.setDirFanart('next.png')
         oGuiElement.setCat(5)
@@ -161,6 +163,7 @@ class cGui():
         oGuiElement.setFunction('load')
         oGuiElement.setTitle('[COLOR= red]'+cConfig().getlanguage(30204)+'[/COLOR]')
         oGuiElement.setIcon('none.png')
+        oGuiElement.setThumbnail(oGuiElement.getIcon())
         oGuiElement.setMeta(0)
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -174,6 +177,7 @@ class cGui():
         oGuiElement.setFunction('DoNothing')
         oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon('none.png')
+        oGuiElement.setThumbnail(oGuiElement.getIcon())
         oGuiElement.setMeta(0)
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -260,7 +264,8 @@ class cGui():
             oListItem.addStreamInfo('video', { 'aspect': '1.78', 'width':1920 ,'height' : 1080 })
         elif '720' in  oGuiElement.getTitle():
             oListItem.addStreamInfo('video', { 'aspect': '1.50', 'width':1280 ,'height' : 720 })
-        #oListItem.addStreamInfo('audio', { 'codec': 'aac', 'language': 'en', 'channels' : 2 })
+        #oListItem.addStreamInfo('audio', {'language': 'fr'})
+        
 
         # if oGuiElement.getMeta():
             # oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
