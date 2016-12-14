@@ -352,7 +352,14 @@ def showGenre(basePath):
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)    
     
     oGui.setEndOfDirectory() 
-        
+
+def getIdFromUrl(sUrl):
+    sPattern = "\/(telechargemen.+?\/)"
+    oParser = cParser()
+    aResult = oParser.parse(sUrl, sPattern)
+    if (aResult[0] == True):
+       return aResult[1][0]
+    return
 def showMovies(sSearch = ''):
     oGui = cGui()
     bGlobal_Search = False
@@ -400,14 +407,17 @@ def showMovies(sSearch = ''):
     if (aResult[0] == True):
         total = len(aResult[1])
         for aEntry in aResult[1]:
-            sQual = 'SD'
-            if '-hd-' in aEntry[0]:
-                sQual = 'HD'
-            if '-3d-' in aEntry[0]:
-                sQual = '3D'
+            sUrl2 = aEntry[0]
+            if ('-films-' in sUrl2) or ('-series-' in sUrl2):
+                sQual = '(SD)'
+                if '-hd-' in aEntry[0]:
+                    sQual = '(HD)'
+                if '-3d-' in aEntry[0]:
+                    sQual = '(3D)'
+            else:
+                sQual = '('+aEntry[3]+')'
             sCom = str(aEntry[4])
             sTitle = str(aEntry[2])
-            sUrl2 = aEntry[0]
             #print sUrl2
             #sFanart =aEntry[1]
             sThumbnail=aEntry[1]
@@ -426,9 +436,9 @@ def showMovies(sSearch = ''):
                 sSaison = a[0]
                 sSaison = sSaison.replace('Saison ', 'S')
             if 'VOSTFR' in sTitle2:
-                sLang = '[VOSTFR]'
+                sLang = '[vostfr]'
             #Temp test
-            sDisplayTitle = cUtil().DecoTitle(' ('+sQual+') ' + sLang + sSaison + sTitle)
+            sDisplayTitle = cUtil().DecoTitle(sQual + sLang + sSaison + sTitle)
            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl2))
@@ -454,6 +464,8 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     oParser = cParser()
     sPattern = '<div class="page">.+?</div></td><td align="center"><a href="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -463,7 +475,8 @@ def __checkForNextPage(sHtmlContent):
         if 'recherche.php' in aResult[1][0]:
             return URL_MAIN+aResult[1][0]
         else:
-            return URL_MAIN+'telechargement/'+aResult[1][0]
+            id = getIdFromUrl(sUrl)
+            return URL_MAIN+ id +aResult[1][0]
         
     return False
 

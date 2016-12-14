@@ -34,9 +34,9 @@
     <string id="30089">Search 2</string>
     <string id="30090">Search 3</string>
     <string id="30091">Search 4</string>
-    <String id="30092">Multiple Choices</string>
-    <String id="30093">Select Search Engine</string>
-    <String id="30094">Select your Sources</string>
+    <string id="30092">Multiple Choices</string>
+    <string id="30093">Select Search Engine</string>
+    <string id="30094">Select your Sources</string>
 
     <!-- catégorie -->
     <string id="30101">News</string>
@@ -90,27 +90,28 @@
     <string id="30300">Library</string>
     <string id="30301">To configure in kodi if you want them to be imported</string>
     <string id="30302">Auto updatet</string>
-
     <!--version 0.3.8 -->
     <string id="30303">Enable/Disable</string>
     <!--trakt -->
     <string id="30304">Go to [COLOR teal]%s[/COLOR] Enter the code [COLOR teal]%s[/COLOR]</string>
-    <String id="30305">[COLOR khaki]Click here to login[/COLOR]</string>
-    <String id="30306">[COLOR khaki]Hello, %s[/COLOR]</string>
+    <string id="30305">[COLOR khaki]Click here to login[/COLOR]</string>
+    <string id="30306">[COLOR khaki]Hello, %s[/COLOR]</string>
     <string id="30307">Movie (%s/%s) watch for %s minute / Show watch (%s) / episode (%s/%s) watch for pour %s minute</string>
-    <String id="30308">History</string>
-    <String id= "30309">Disconnection</string>
-    <String id= "30310">Collection</string>
-    <String id= "30311">Watchlist</string>
-    <String id= "30312">Watch</string>
-    <String id= "30313">Recommend</string>
-    <String id= "30314">BoxOffice</string>
-    <String id= "30315">Popular</string>
-    <String id= "30316">Most viewed this week</string>
-    <String id= "30317">Most viewed of the month</string>
-    <String id= "30318">Watchlist (seasons)</string>
-    <String id= "30319">Watchlist (episodes)</string>
-    <String id= "30320">You have successfully logged out</string>
+    <string id="30308">History</string>
+    <string id= "30309">Disconnection</string>
+    <string id= "30310">Collection</string>
+    <string id= "30311">Watchlist</string>
+    <string id= "30312">Watch</string>
+    <string id= "30313">Recommend</string>
+    <string id= "30314">BoxOffice</string>
+    <string id= "30315">Popular</string>
+    <string id= "30316">Most viewed this week</string>
+    <string id= "30317">Most viewed of the month</string>
+    <string id= "30318">Watchlist (seasons)</string>
+    <string id= "30319">Watchlist (episodes)</string>
+    <string id= "30320">You have successfully logged out</string>
+    <string id= "30330">Search</string>
+    <string id= "30331">Calendar</string>
 
     <string id="30321">Add collection</string>
     <string id="30322">Add watch history</string>

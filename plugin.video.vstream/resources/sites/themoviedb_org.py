@@ -303,6 +303,7 @@ def showSeriesSaison():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sFanart = oInputParameterHandler.getValue('sFanart')
+    sTmdbId = oInputParameterHandler.getValue('sTmdbId')
     
     sId = oInputParameterHandler.getValue('sId')
     if sId == False:
@@ -321,7 +322,7 @@ def showSeriesSaison():
     result = json.loads(sHtmlContent)
     
     total = len(sHtmlContent)
-    #print result['results']
+    #xbmc.log(str( result ))
     if (total > 0):
         for i in result['seasons']:
             
@@ -342,7 +343,7 @@ def showSeriesSaison():
             oOutputParameterHandler.addParameter('sId', sId)
             oOutputParameterHandler.addParameter('sSeason', str(SSeasonNum))
             oOutputParameterHandler.addParameter('sFanart', str(sFanart))
-            oOutputParameterHandler.addParameter('sTmdbId', i['id'])            
+            oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)            
             
             oGui.addTVDB(SITE_IDENTIFIER, 'showSeriesEpisode', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
             
@@ -359,6 +360,7 @@ def showSeriesEpisode():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sFanart = oInputParameterHandler.getValue('sFanart')
+    sTmdbId = oInputParameterHandler.getValue('sTmdbId')
     
     sSeason = oInputParameterHandler.getValue('sSeason')
     #sId = oInputParameterHandler.getValue('sId')
@@ -401,9 +403,9 @@ def showSeriesEpisode():
             oOutputParameterHandler.addParameter('siteUrl', sMovieTitle+ '|' + sExtraTitle) #Pour compatibilite Favoris
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oOutputParameterHandler.addParameter('sTmdbId', i['id'])
-            #oOutputParameterHandler.addParameter('sSeason', sSeason)
-            #oOutputParameterHandler.addParameter('sEpisode', str(sEpNumber))
+            oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
+            oOutputParameterHandler.addParameter('sSeason', sSeason)
+            oOutputParameterHandler.addParameter('sEpisode', str(sEpNumber))
             
             oGui.addTVDB(SITE_IDENTIFIER, 'showHosters', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
             

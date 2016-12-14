@@ -1,4 +1,7 @@
 #EXTM3U
+#EXTINF:-1 tvg-id="FRA1.kazer.org" tvg-name="France 1" tvg-logo="france1.png" group-title="Group 1",TF1
+rtmp://iptv.livetv.tn/live/ch5041?code=ea3050dac0b8133
+
 #EXTINF:-1 tvg-id="FRA2.kazer.org" tvg-name="France 2" tvg-logo="france2.png" group-title="Group 2",France 2
 http://live.francetv.fr/simulcast/France_2/hls_v1/index.m3u8
 
@@ -20,6 +23,9 @@ https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/m6_hls_aes/m6_hls_ae
 #EXTINF:-1 tvg-id="DIR1.kazer.org" tvg-name="D8" tvg-logo="d8.png" group-title="Group 8",D8
 http://hls-live-m1-l3.canal-plus.com/live/hls/d8-clair-v3-sd-andr7/and-sd-clair/index.m3u8
 
+#EXTINF:-1 tvg-id="" tvg-name="Bet" tvg-logo="bet.png" group-title="Group 18",Bet
+rtmp://iptv.livetv.tn/live/ch1025?code=ea3050dac0b8133
+
 #EXTINF:-1 tvg-id="W91.kazer.org" tvg-name="W9" tvg-logo="w9.png" group-title="Group 9",W9
 https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/w9_hls_aes/w9_hls_aes_856.m3u8
 
@@ -33,19 +39,25 @@ http://hls-live-m1-l3.canal-plus.com/live/hls/d17-clair-v3-sd-andr7/and-sd-clair
 https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/six_ter_hls_aes/six_ter_hls_aes_856.m3u8
 
 #EXTINF:-1 tvg-id="NU23.kazer.org" tvg-name="Numéro 23" tvg-logo="n23.png" group-title="Group 23",Numéro 23
-http://stream-l3-4.vty.dmcdn.net/17/dm/1/x13p3qi/live.isml/live.m3u8
+http://stream-04.vty.dailymotion.com/41/dm/1/x13p3qi/live.isml/events(live-1481528675)/live-audio=128000-video=1200000.m3u8
 
 #EXTINF:-1 tvg-id="FRA1.kazer.org" tvg-name="France O" tvg-logo="franceo.png" group-title="Group 65",France O
 http://live.francetv.fr/simulcast/France_O/hls_v1/index.m3u8
 
 #EXTINF:-1 tvg-id="ITL1.kazer.org" tvg-name="I Télé" tvg-logo="itele.png" group-title="Group 102",I Télé
-http://hls-live-m2-l3.canal-plus.com/live/hls/itele-clair-v3-sd-andr7/and-sd-clair/index.m3u8
+http://hls-live-m6-l3.canal-plus.com/live/hls/itele-clair-hd-andr7/and-hd-clair/itele-clair-hd-video=3400000-audio_AACL_fra_96000_127=96000.m3u8
 
 #EXTINF:-1 tvg-id="BFM1.kazer.org" tvg-name="BFM TV" tvg-logo="bfm.png" group-title="Group 103",BFM TV
 http://bfmlive2-i.akamaihd.net/hls/live/214427/bfmtv/04.m3u8
 
-#EXTINF:-1 tvg-id="FRA16.kazer.org" tvg-name="France 24" tvg-logo="france24.png" group-title="Group 105",France 24
-http://tv.flux.france24.com/4684/02.m3u8
+#EXTINF:-1 tvg-id="CHE1.kazer.org" tvg-name="Cherie25" tvg-logo="bfm.png" group-title="Group 100",Cherie25
+rtmp://iptv.livetv.tn/live/ch5053?code=ea3050dac0b8133
+
+#EXTINF:-1 tvg-id="TVA1.kazer.org" tvg-name="Teva" tvg-logo="bfm.png" group-title="Group 101",Teva
+rtmp://iptv.livetv.tn/live/ch944?code=ea3050dac0b8133
+
+#EXTINF:-1 tvg-id="CHA1.kazer.org" tvg-name="Chasse et peche" tvg-logo="bfm.png" group-title="Group 102", Chasse et peche
+rtmp://iptv.livetv.tn/live/ch1097?code=ea3050dac0b8133
 
 #EXTINF:-1 tvg-id="LAC1.kazer.org" tvg-name="LCP" tvg-logo="lcp.png" group-title="Group 313",LCP
 http://vipwowza.yacast.net/lcplive/_definst_/mp4:lcplive_HVGA/playlist.m3u8
@@ -55,6 +67,9 @@ http://mobile.ktotv.com/live/KTO_Layer1.m3u8
 
 #EXTINF:-1 tvg-id="BFM2.kazer.org" tvg-name="BFM Business" tvg-logo="bfmbus.png" group-title="Group 107",BFM Business
 http://bfmlive-i.akamaihd.net/hls/live/214272/bfmbusiness/01.m3u8
+
+#EXTINF:-1 tvg-id="BFM1.kazer.org" tvg-name="BFM TV" tvg-logo="kto.png" group-title="Group 113",BFM TV
+http://stream-05.vty.dailymotion.com/03/dm/1/xgz4t1/live.isml/live.m3u8?e=1481717339&st=a1XpjcKpecGgX2oqjn4q0A#cell=lvty&comment=QOEP2P
 
 #EXTINF:-1 tvg-id="GUL1.kazer.org" tvg-name="Gulli" tvg-logo="gulli.png" group-title="Group 165",Gulli
 http://vipwowza.yacast.net/gulli_live/_definst_/mp4:gulli_850/playlist.m3u8
@@ -67,6 +82,9 @@ http://stream7.idf1.yacast.net/iphone/idf1/live01/idf1_live01hd.m3u8
 
 #EXTINF:-1 tvg-id="RMC2.kazer.org" tvg-name="RMC Découverte" tvg-logo="rmcdecouverte.png" group-title="Group 98",RMC Découverte
 rtmp://vipwowza.yacast.net/rmc_decouverte_rtmp//live
+
+#EXTINF:-1 tvg-id="PAR1.kazer.org" tvg-name="Parie Premiere" tvg-logo="parispremiere.png" group-title="Group 120",Paris Premiere
+rtmp://iptv.livetv.tn/live/ch951?code=ea3050dac0b8133
 
 #EXTINF:-1 tvg-id="LATE1.kazer.org" tvg-name="LaTélé" tvg-logo="latele.png" group-title="Group 300",LaTélé
 http://rtmp.infomaniak.ch/livecast/latele/playlist.m3u8
@@ -91,3 +109,75 @@ rtmp://str81.creacast.com:80/weo/high
 
 #EXTINF:-1 tvg-id="EUR3.kazer.org" tvg-name="Eurosport" tvg-logo="eurosport.png" group-title="Group 3",Eurosport
 http://esioslive6-i.akamaihd.net/hls/live/202892/AL_P_ESP1_FR_FRA/playlist.m3u8
+
+#EXTINF:-1 tvg-id="CAN4.kazer.org" tvg-name="Canal + Decale" tvg-logo="canaldecale.png" group-title="", CANAL + DECALE
+rtmp://aymeniptv1.xcamd.com/live/ch930?code=c0917a61ab383d8
+
+#EXTINF:-1 tvg-id="" tvg-name="Canal + Xtra" tvg-logo="canalextra.png" group-title="",CANAL + XTRA
+rtmp://aymeniptv1.xcamd.com/live/ch800?code=c0917a61ab383d8
+
+#EXTINF:-1 tvg-id="CIN21.kazer.org" tvg-name="Cine Emotion" tvg-logo="cineemotion.png" group-title="",CINE EMOTION
+rtmp://iptv.livetv.tn/live/ch921?code=ea3050dac0b8133
+
+#EXTINF:-1 tvg-id="CIN22.kazer.org" tvg-name="Cine Frisson" tvg-logo="cinefrisson.png" group-title="",CINE + FRISSON
+rtmp://iptv.livetv.tn/live/ch941?code=ea3050dac0b8133
+
+#EXTINF:-1 tvg-id="CIN23.kazer.org" tvg-name="Cine Premier" tvg-logo="cinepremier.png" group-title="",CINE + PREMIER
+rtmp://iptv.livetv.tn/live/ch920?code=ea3050dac0b8133
+
+#EXTINF:-1 tvg-id="CO11.kazer.org" tvg-name="Comedie+" tvg-logo="comedie.png" group-title="",COMEDIE +
+rtmp://iptv.livetv.tn/live/ch978?code=ea3050dac0b8133
+
+#EXTINF:-1 tvg-id="" tvg-name="Ocs Chocs" tvg-logo="chocs.png" group-title="",OCS CHOCS HD
+rtmp://iptv.livetv.tn/live/ch960?code=ea3050dac0b8133
+
+#EXTINF:-1 tvg-id="" tvg-name="Ocs City" tvg-logo="cityhd.png" group-title="",OCS CITY HD
+rtmp://iptv.livetv.tn/live/ch824?code=ea3050dac0b8133
+
+#EXTINF:-1 tvg-id="" tvg-name="Ocs Geants" tvg-logo="geants.png" group-title="",OCS GEANTS HD
+rtmp://iptv.livetv.tn/live/ch5045?code=ea3050dac0b8133
+
+#EXTINF:-1 tvg-id="" tvg-name="Planete +" tvg-logo="planeteplus.png" group-title="",PLANETE+ CI HD
+rtmp://iptv.livetv.tn/live/ch917?code=ea3050dac0b8133
+
+#EXTINF:-1 tvg-id="" tvg-name="DisneyHd" tvg-logo="disneyhd.png" group-title="",DISNEY HD
+rtmp://iptv.livetv.tn/live/ch861?code=ea3050dac0b8133
+
+#EXTINF:-1 tvg-id="" tvg-name="disneyJunior" tvg-logo="disneyjunior.png" group-title="",DISNEY JUNIOR
+rtmp://iptv.livetv.tn/live/ch1005?code=ea3050dac0b8133
+
+#EXTINF:0,MTV FRANCE
+rtmp://iptv.livetv.tn/live/ch946?code=ea3050dac0b8133
+
+#EXTINF:0,MTV IDOLE
+rtmp://iptv.livetv.tn/live/ch1023?code=ea3050dac0b8133
+
+#EXTINF:0,C STAR
+rtmp://iptv.livetv.tn/live/ch311?code=ea3050dac0b8133
+
+#EXTINF:0,CANAL + SPORT
+rtmp://aymeniptv1.xcamd.com/live/ch916?code=c0917a61ab383d8
+
+#EXTINF:0,BFM SPORT
+http://rmc-i.akamaihd.net/hls/live/218333/876630703001/BFMSPORT/master-3.m3u8
+
+#EXTINF:0,EQUIPE TV
+http://stream-01.vty.dailymotion.com/14/dm/1/x2lefik/live.isml/live.m3u8?t=2016-01-01T00:00:00.000&e=1481717618&st=hdXZPkEENkWSWr_e_Z3qeA#cell=lvty&p2p=p5&comment=QOEP2P
+
+#EXTINF:0,GOLF +
+rtmp://iptv.livetv.tn/live/ch1027?code=ea3050dac0b8133
+
+#EXTINF:0,EQUIDA LIVE
+rtmp://aymeniptv1.xcamd.com/live/ch803?code=c0917a61ab383d8
+
+#EXTINF:0,EUROSPORT 1
+rtmp://aymeniptv1.xcamd.com/live/ch915?code=c0917a61ab383d8
+
+#EXTINF:0,BEING SPORT 1
+rtmp://iptv.livetv.tn/live/ch507?code=ea3050dac0b8133
+
+#EXTINF:0,BEING SPORT 2
+rtmp://iptv.livetv.tn/live/ch508?code=ea3050dac0b8133
+
+#EXTINF:0,BEING SPORT 3
+rtmp://iptv.livetv.tn/live/ch906?code=ea3050dac0b8133
