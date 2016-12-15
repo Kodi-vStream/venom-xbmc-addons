@@ -1,14 +1,19 @@
+#coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#
 from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
+
+from resources.lib.packer import cPacker
 import urllib, urllib2, re
 
 class cHoster(iHoster):
 
     def __init__(self):
         self.__sDisplayName = 'Streamin.to'
-	self.__sFileName = self.__sDisplayName
+        self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
         return  self.__sDisplayName
@@ -17,7 +22,7 @@ class cHoster(iHoster):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
 
     def setFileName(self, sFileName):
-	self.__sFileName = sFileName
+        self.__sFileName = sFileName
 
     def getFileName(self):
 	return self.__sFileName
@@ -71,22 +76,23 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(web_url)
         html = oRequest.request()
+        
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(html)
+        #fh.close()
 
-        # get stream url
-        try:
-            api_call = re.compile("file\s*:\s*[\'|\"](http.+?)[\'|\"]").findall(html)[0]
-            r = urllib2.Request(stream_url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'})
-            r = urllib2.urlopen(r, timeout=15).headers['Content-Length']
-        except:
-            pass
+        oParser = cParser()
+        sPattern = '(eval\(function\(p,a,c,k,e.+?)<\/script>'
+        aResult = oParser.parse(html, sPattern)
+        if (aResult[0] == True):
+            html = cPacker().unpack(aResult[1][0])
 
-        if api_call == '':
-            try:
-                streamer = re.search('streamer:\s*"([^"]+)",', html).group(1).replace(':1935', '')
-                playpath = re.search('file:\s*"([^"]+)",', html).group(1).replace('.flv', '')
-                api_call = streamer + ' playpath=' + playpath
-            except:
-                pass
+
+        sPattern = 'file:"([^"]+)"'
+        aResult = oParser.parse(html, sPattern)
+        if (aResult[0] == True):
+            api_call = aResult[1][0]
+
             
         if (api_call):
             return True, api_call
