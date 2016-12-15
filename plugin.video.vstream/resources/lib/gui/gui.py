@@ -301,9 +301,10 @@ class cGui():
 
     def createListItem(self, oGuiElement):
 
-        oListItem = xbmcgui.ListItem(oGuiElement.getTitle(), oGuiElement.getTitleSecond(), oGuiElement.getIcon())
+        oListItem = xbmcgui.ListItem(oGuiElement.getTitle(), oGuiElement.getTitleSecond(), iconImage=oGuiElement.getIcon(), thumbnailImage=oGuiElement.getThumbnail())
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
-        oListItem.setThumbnailImage(oGuiElement.getThumbnail())
+        #oListItem.setThumbnailImage(oGuiElement.getThumbnail())
+        #oListItem.setIconImage(oGuiElement.getIcon())
 
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey in aProperties.keys():
