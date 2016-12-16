@@ -373,10 +373,9 @@ def showMovies(sSearch = ''):
     sHtmlContent = sHtmlContent.replace('<span class="tr-dublaj"></span>', '').replace('<span class="tr-altyazi"></span>','').replace('<small>','').replace('</small>','').replace('<span class="likeThis">','').replace('</span>','')
     
     if (sSearch or ('/series' in sUrl) or ('/search/' in sUrl)):
-      #sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<]+)" alt=".+?" height=".+?" width=".+?" \/><\/a> *<div class="movief"><a href="([^<]+)">(.+?)<\/a><\/div> *<div class="movies"><\/div>'
-      sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<]+)" alt=".+?" height="125px" width="119px" \/><\/a> *<div class="movief"><a href="([^<]+)">(.+?)<\/a>'
+        sPattern = '<div class="moviefilm">\s+<a href=".+?">\s+<img src="([^<]+)" alt=".+?".+?<\/a>\s+<div class="movief"><a href="([^<]+)">(.+?)<\/a>'
     else:
-      sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<]+)" alt=".+?" height=".+?" width=".+?" \/><\/a> *<div class="ozet">.+?</div> *<div class="movief"><a href="([^<]+)">([^<]+)<\/a><\/div> *<div class="movie.+?">(.+?)<\/div>'
+        sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<]+)" alt=".+?" height=".+?" width=".+?" \/><\/a> *<div class="ozet">.+?</div> *<div class="movief"><a href="([^<]+)">([^<]+)<\/a><\/div> *<div class="movie.+?">(.+?)<\/div>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent,sPattern)
@@ -392,9 +391,9 @@ def showMovies(sSearch = ''):
                 continue
             
             if (sSearch or ('categories/series' in sUrl) or ('/series/' in sUrl) or ('/series-tv/' in sUrl) or ('/search/' in sUrl)):
-              sTitle = aEntry[2]
+                sTitle = aEntry[2]
             else:
-              sTitle = aEntry[2]+' ('+aEntry[3]+')'
+                sTitle = aEntry[2]+' ('+aEntry[3]+')'
               
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             sUrl2 = str(aEntry[1])
@@ -538,7 +537,7 @@ def showEpisode(): #cherche les episode de series
     sHtmlContent = oRequestHandler.request();
     #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','')
  
-    sPattern = '<div class="moviefilm2"><div class="movief2"><a href="([^<]+)" class="listefile">(.+?)<\/a><\/div><\/div>'
+    sPattern = '<div class="movief2"><a href="([^<]+)" class="listefile">(.+?)<\/a><\/div>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
