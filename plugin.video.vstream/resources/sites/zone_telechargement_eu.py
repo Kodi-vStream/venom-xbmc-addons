@@ -105,7 +105,7 @@ def showSearch():
 
 def showMovies(sSearch = '', page = 1):
     oGui = cGui()
-    bGlobal_Search = True
+    bGlobal_Search = False
 
     oInputParameterHandler = cInputParameterHandler()
     if sSearch:
