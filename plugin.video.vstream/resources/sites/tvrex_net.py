@@ -12,7 +12,7 @@ from resources.lib.parser import cParser
 #from resources.lib.util import cUtil
 
 
-SITE_IDENTIFIER = 'Tvrex_net' 
+SITE_IDENTIFIER = 'tvrex_net' 
 SITE_NAME = 'Tvrex.net'
 SITE_DESC = 'NBA Live/Replay'
 
