@@ -2,6 +2,7 @@
 #*************************************************************************************************************************
 # from Shani's LPro Code https://github.com/Shani-08/ShaniXBMCWork2/blob/master/other/unCaptcha.py
 # and https://github.com/OpenMediaVault-Plugin-Developers/openmediavault-pyload/blob/master/usr/share/pyload/module/plugins/captcha/ReCaptcha.py
+# and https://gitlab.com/iptvplayer-for-e2/iptvplayer-for-e2
 
 import random
 import re
@@ -18,6 +19,12 @@ __sLang__ = 'fr'
 
 class cInputWindow(xbmcgui.WindowDialog):
     def __init__(self, *args, **kwargs):
+        
+        self.cptloc = kwargs.get('captcha')
+        self.img = xbmcgui.ControlImage(335,200,624,400,"")
+        xbmc.sleep(500)
+        self.img = xbmcgui.ControlImage(335,200,624,400,self.cptloc)
+        xbmc.sleep(500)
         
         bg_image =  os.path.join( __addon__.getAddonInfo('path'), 'resources/art/' ) + "background.png"
         check_image =  os.path.join( __addon__.getAddonInfo('path'), 'resources/art/' ) + "trans_checked.png"
@@ -38,8 +45,6 @@ class cInputWindow(xbmcgui.WindowDialog):
         self.strActionInfo = xbmcgui.ControlLabel(335, 20, 724, 400, 'Captcha round %s'%(str(self.roundnum)), 'font40', '0xFFFF00FF')
         self.addControl(self.strActionInfo)
         
-        self.cptloc = kwargs.get('captcha')
-        self.img = xbmcgui.ControlImage(335,200,624,400,self.cptloc)
         self.addControl(self.img)
         
         self.chk=[0]*9
@@ -209,12 +214,15 @@ def getUrl(url, cookieJar=None,post=None, timeout=20, headers=None, noredir=Fals
         opener = urllib2.build_opener(cookie_handler, urllib2.HTTPBasicAuthHandler(), urllib2.HTTPHandler())
     #opener = urllib2.install_opener(opener)
     req = urllib2.Request(url)
-    req.add_header('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36')
-    req.add_header('Accept-Language', __sLang__)
+
     if headers:
         for h,hv in headers:
             req.add_header(h,hv)
+    else:
+        req.add_header('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36')
+        req.add_header('Accept-Language', __sLang__)        
 
+    xbmc.log('post : ' + str(post))
     response = opener.open(req,post,timeout=timeout)
     link=response.read()
     response.close()
@@ -261,184 +269,109 @@ class UnCaptchaReCaptcha:
 
         return millis, rpc
         
+    def ExtReg(self, r, chain):
+        r = re.search(r,chain)
+        if not r:
+            return ''
+        return r.group(1)
+        
     def processCaptcha(self, key,lang,gcookieJar):
         
         headers=[("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0"),
-                 ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
-                 ("Referer", "https://www.google.com/recaptcha/api2/demo/"),
-                 ("Accept-Language", lang)];
-
-        botguardstring      = "!A"
-        vers, language, jsh, questionfile = self._collect_api_info()
-        millis, rpc         = self._prepare_time_and_rpc()
-        
+                 #("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
+                 ("Referer", "https://www.google.com/recaptcha/api2/demo"),
+                 ("Accept-Language", lang)]
+                 
+                 
+        millis, rpc = self._prepare_time_and_rpc()
         co = base64.b64encode('https://www.google.com:443')
-        
-        parent="www.google.com/recaptcha/api2/demo/"
-        html =getUrl("https://www.google.com/recaptcha/api2/anchor?"+
-                            urllib.urlencode({
-                                 'k'       : key,
-                                 'hl'      : language,
-                                 'v'       : vers,
-                                 #'co' : "aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbTo0NDM.",
-                                 'co' : co,
-                                 'size'     : "large",
-                                 "cb"  : "8shiuzd0nyrv"
-                                 }),headers=headers)
+        botguardstring      = "!A"
+        vers, language, jsh, questionfile = self._collect_api_info()         
 
-        token1 = re.search(r'id="recaptcha-token" value="(.*?)">', html)
+        post_data = None
+        token = ''
+        iteration = 0
+        reCaptchaUrl = 'http://www.google.com/recaptcha/api/fallback?k=%s' % (key)
         
-        
-        frameurl="https://www.google.com/recaptcha/api2/frame?"+urllib.urlencode({'c'      : token1.group(1),
-                                     'hl'     : language,
-                                     'v'      : vers,
-                                     'bg'     : botguardstring,
-                                     'k'      : key})
-        html = getUrl(frameurl).decode("unicode-escape")
-        
-        #html = getUrl("https://www.google.com/recaptcha/api2/reload?k="+key,
-        #                         post=urllib.urlencode({'c'      : token1.group(1),
-        #                            'hl'     : language,
-        #                             'v'      : vers,
-        #                             'bg'     : botguardstring,
-        #                             'reason'     : "t"}),headers=headers).decode("unicode-escape")
-        
-       
-        #self.log_debug("Token #3: %s" % token3.group(1))
-        
-        
-        
-        #captcha_response =getUrl("https://www.google.com/recaptcha/api2/payload?"+
-                                              #urllib.urlencode({'c':token3.group(1), 'k':key}),headers=headers)
-                                              
-        
-        
-        
-        
-#        self.log_debug("Token #1: %s" % token1.group(1))
-
-
-        
-        #html=getUrl("http://www.google.com/recaptcha/api/fallback?k=" + key,headers=headers);
-        token=""
-        roundnum=0
-        first=True
-        while True:
-
-            message=""
+        while iteration < 20:
+            
             millis_captcha_loading= int(round(time.time() * 1000))
-
+                        
+            #,'cookiefile':self.COOKIE_FILE, 'use_cookie': True, 'load_cookie': True, 'save_cookie':True
+            data = getUrl(reCaptchaUrl ,headers=headers, post = post_data ,cookieJar=gcookieJar)
+            xbmc.log(reCaptchaUrl)
+            imgUrl = re.search(r'"(/recaptcha/api2/payload[^"]+?)"',data).group(1)
             
-            token2 = re.search(r'"finput","(.*?)",', html)
-            #self.log_debug("Token #2: %s" % token2.group(1))
-
-            token3 = re.search(r'"rresp","(.*?)",', html)
-            cval=token3.group(1)
-            captcha_imgurl="https://www.google.com/recaptcha/api2/payload?"+urllib.urlencode({'c':token3.group(1), 'k':key})
-            #response = base64.b64encode('{"response":"%s"}' % captcha_response)
+            xbmc.log(imgUrl)
+            iteration += 1
+            message = self.ExtReg(r'<label[^>]+class="fbc-imageselect-message-text"[^>]*>(.*?)</label>',data)
             
-            
-            fh = open('c:\\c.txt', "w")
-            fh.write(html)
-            fh.close()
-            
-            #q = re.search(r'<script type="text\/javascript" src="(https:\/\/www\.gstatic\.com\/recaptcha\/api2\/.+?\.js)">', html)
-            #q2 = q.group(1)
-            q3 = getUrl(questionfile)
-            
-            fh = open('c:\\c.txt', "w")
-            fh.write(q3)
-            fh.close()
-            
-            q4 = re.search(r'\["pmeta",\["(.+?)",,[0-9]*,[0-9]*,[0-9]*\]', html)
-            q5 = q4.group(1).decode('string_escape')
-            
-            message = re.search(r'case "' + q5 + '".+?e\+="(.+?)";', q3).group(1).decode('unicode-escape')
-        
-            first=True
-            if not first:
-                payload = re.findall("\"(/recaptcha/api2/payload[^\"]+)",html);
-                roundnum+=1
-                
-                if len(message)==0:
-                    token = re.findall("\"this\\.select\\(\\)\">(.*?)</textarea>",html)[0];
-                    if not token=="":
-                        line1 = "Captcha Sucessfull"
-                        xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%('LSPro',line1, 3000, None))
-                    else:
-                        line1 = "Captcha failed"
-                        xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%('LSPro',line1, 3000, None))
-                    break
+            if '' == message:
+                message = self.ExtReg(r'<div[^>]+class="fbc-imageselect-message-error">(.*?)</div>',data)
+            if '' == message:
+                token = re.search(r'"this\.select\(\)">(.*?)</textarea>',data).group(1)
+                if '' != token:
+                    xbmc.log('>>>>>>>> Captcha token[%s]' % (token))
                 else:
-                    message=message[0]
-                    payload=payload[0]
+                    xbmc.log('>>>>>>>> Captcha Failed')
+                break
 
+            cval = re.search(r'name="c"\s+value="([^"]+)',data).group(1)
+            
+            imgUrl = 'https://www.google.com%s' % (imgUrl.replace('&amp;', '&'))
+            accepLabel = re.search(r'type="submit"\s+value="([^"]+)',data).group(1)
+            
+            filePath = 'c://c.jpeg'
+            import random
+            n = random.randint(1,1000)
+            filePath = 'c://c' + str(n) + '.jpeg'
+            
+            
+            xbmc.log(">>>>>>>> Captcha message[%s]" % (message))
+            xbmc.log(">>>>>>>> Captcha accep label[%s]" % (accepLabel))
+            xbmc.log(">>>>>>>> Captcha imgUrl[%s] filePath[%s]" % (imgUrl, filePath))
+            
+            #params = {'maintype': 'image', 'subtypes':['jpeg'], 'check_first_bytes':['\xFF\xD8','\xFF\xD9']}
+            #ret = self.cm.saveWebFile(filePath, imgUrl, params)            
+            #retArg = self.sessionEx.waitForFinishOpen(UnCaptchaReCaptchaWidget, imgFilePath=filePath, message=message, title="reCAPTCHA v2", additionalParams={'accep_label':accepLabel})
+            
+            ret = ''
+            ret = getUrl(imgUrl ,headers=headers, cookieJar=gcookieJar)
+            downloaded_image = file(filePath, "wb")
+            downloaded_image.write(ret)
+            downloaded_image.close()
 
-                imgurl=re.findall("name=\"c\"\\s+value=\\s*\"([^\"]+)",html)[0]
-                cval=re.findall('name="c" value="(.*?)"',html)[0]
-                captcha_imgurl = "https://www.google.com"+payload.replace('&amp;','&')
             
-            headers=[("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0"),
-                 ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
-                 ("Referer", frameurl),
-                 ("Accept-Language", lang)];
-               
+            oSolver = cInputWindow(captcha = filePath,msg = message,roundnum=iteration)
+            retArg = oSolver.get()           
+            xbmc.log('>>>>>>>> Captcha response [%s]' % (retArg))
+            
+            responses = base64.b64encode('{"response":[%s]}' % retArg)
+            #xbmc.log(responses)
+            responses=responses.replace('=','.')
 
-
-            html=getUrl(captcha_imgurl,headers=headers,cookieJar=gcookieJar);
-            
-            message=message.replace('<strong>','')
-            message=message.replace('</strong>','')
-            #captcha_response=raw_input('-->')
-            
-            #xbmc.log(str(message))
-            
-            oSolver = cInputWindow(captcha = captcha_imgurl,msg = message,roundnum=roundnum)
-            captcha_response = oSolver.get()
-            
-            xbmc.log('reponse :' + str(captcha_response))
-            
-            xbmc.log('00')
-            
-            if captcha_response=="":
+            if retArg is not None and len(retArg) and retArg[0]:
+                post_data = urllib.urlencode({'c': cval, 'response': responses}, doseq=True)
+            else:
                 break
                 
-            xbmc.log('77')
-            responses=""
-            
-            if 1==2:
-                for rr in captcha_response.split(','):
-                    responses += "&response=" + rr;
-            else:
-                xbmc.log('11')
-                responses = base64.b64encode('{"response":"%s"}' % captcha_response)
-                responses=responses.replace('=','.')
-                xbmc.log('>>>:' + str(responses))
-                ##responses="eyJyZXNwb25zZSI6IjAsMSwzLDYifQ.."
-           
-            timeToSolve     = int(round(time.time() * 1000)) - millis_captcha_loading
-            timeToSolveMore = timeToSolve#timeToSolve + int(float("0." + str(random.randint(1, 99999999))) * 500)
-            
-            postdata = urllib.urlencode({'c'       : cval,
-                                          'response': responses,
-                                          'v'      : vers,
-                                          't'       : timeToSolve,
-                                          'bg'     : botguardstring,
-                                          'ct'      : timeToSolveMore})
-                                          
-            xbmc.log(postdata)
+                
+            if (False):
+                timeToSolve     = int(round(time.time() * 1000)) - millis_captcha_loading
+                timeToSolveMore = timeToSolve#timeToSolve + int(float("0." + str(random.randint(1, 99999999))) * 500)
+                
+                postdata = urllib.urlencode({'c'       : cval,
+                                              'response': responses,
+                                              'v'      : vers,
+                                              't'       : timeToSolve,
+                                              'bg'     : botguardstring,
+                                              'ct'      : timeToSolveMore})
+                html = getUrl("https://www.google.com/recaptcha/api2/userverify?k="+key,post=postdata,headers=headers)                         
+                fh = open('c:\\test.txt', "w")
+                fh.write(html)
+                fh.close()
 
-            html = getUrl("https://www.google.com/recaptcha/api2/userverify?k="+key,
-                                    post=postdata,headers=headers)
-                                          
-                                          
-            fh = open('c:\\test.txt', "w")
-            fh.write(html)
-            fh.close()                             
-                                          
-            if first and '["bgdata"' not in html:
-               token3 = re.search(r'"uvresp","(.*?)",', html)
-               return token3.group(1)
+        
         return token
 
 def getg():

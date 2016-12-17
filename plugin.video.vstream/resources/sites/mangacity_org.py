@@ -166,15 +166,13 @@ def showGenre(): #affiche les genres
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    if 'HTML/JavaScript Encoder' in sHtmlContent:
+    if 'language=javascript' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
     
-    sPattern = '<a href="(.+?)" onmouseover="this.style.color.+?>(.+?)</a>'
+    sPattern = '<center><a href="(.+?)" onmouseover="this.style.color.+?>(.+?)</a>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
-    
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -213,7 +211,7 @@ def ShowAlpha2():
     oRequestHandler = cRequestHandler(sUrl2)
     sHtmlContent = oRequestHandler.request()
     
-    if 'HTML/JavaScript Encoder' in sHtmlContent:
+    if 'language=javascript' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
     
     oParser = cParser()
@@ -237,15 +235,13 @@ def ShowAlpha(url = None):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    if 'HTML/JavaScript Encoder' in sHtmlContent:
+    if 'language=javascript' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
 
     sPattern = "<a href='([^<>]+?)' class='button (?:red )*light'><headline6>(?:<font color='black'>)*([A-Z#])(?:<\/font>)*<\/headline6><\/a>"
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
-    
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -302,7 +298,7 @@ def showMovies(sSearch = ''):
         sHtmlContent = oRequestHandler.request()
         #sHtmlContent = DecryptMangacity(sHtmlContent)
     
-    if 'HTML/JavaScript Encoder' in sHtmlContent:
+    if 'language=javascript' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
 
     #fh = open('c:\\manga.txt', "w")
@@ -313,9 +309,6 @@ def showMovies(sSearch = ''):
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #aResult = re.findall(sPattern, sHtmlContent)
-    xbmc.log(str(aResult))
-
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -390,7 +383,7 @@ def showEpisode():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    if 'HTML/JavaScript Encoder' in sHtmlContent:
+    if 'language=javascript' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
     
     #fh = open('c:\\manga.txt', "w")
@@ -490,7 +483,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    if 'HTML/JavaScript Encoder' in sHtmlContent:
+    if 'language=javascript' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
     
     sHtmlContent = sHtmlContent.replace('<iframe src="http://www.promoliens.net','')

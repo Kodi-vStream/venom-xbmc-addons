@@ -105,12 +105,15 @@ def showSearch():
 
 def showMovies(sSearch = '', page = 1):
     oGui = cGui()
+    bGlobal_Search = False
 
     oInputParameterHandler = cInputParameterHandler()
     if sSearch:
         sUrl = sSearch
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
+    if URL_SEARCH[0] in sSearch:
+        bGlobal_Search = True
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
