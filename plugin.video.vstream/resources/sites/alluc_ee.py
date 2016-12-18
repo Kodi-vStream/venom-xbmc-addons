@@ -200,7 +200,7 @@ def showHosters():
 
             oRequest = cRequestHandler(sUrl)
             sHtmlContent = oRequest.request()
-            rH = re.search('<div class="inLink">.+?<a href="([^"]+)"', sHtmlContent)
+            rH = re.search('<div class="inLink">.+?<a href="([^"]+)"',sHtmlContent,re.DOTALL)
             if (rH):
                 sHosterUrl = rH.group(1)
                 sTitle = sMovieTitle
