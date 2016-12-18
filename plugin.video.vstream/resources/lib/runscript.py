@@ -7,6 +7,9 @@ import sys, os
 import urllib, urllib2
 import sqlite3
 
+sLibrary = xbmc.translatePath(cConfig().getAddonPath())
+sys.path.append (sLibrary) 
+
 SITE_IDENTIFIER = 'runscript'
 SITE_NAME = 'runscript'
 
@@ -77,6 +80,89 @@ class cClear:
                 for i in filenames:
                     if ".fi" in i:
                         os.remove(os.path.join(path, i))
+            return
+            
+        elif (env == 'search'):
+        
+            from resources.lib.handler.pluginHandler import cPluginHandler
+            try:
+                sDips = sys.argv[2]
+            except: return
+        
+
+            
+            class XMLDialog(xbmcgui.WindowXMLDialog):
+
+                def __init__(self, *args, **kwargs):
+                    xbmcgui.WindowXMLDialog.__init__( self )
+                    pass
+
+                def onInit(self):
+
+                    self.container = self.getControl(6)
+                    self.button = self.getControl(5)
+                    self.getControl(3).setVisible(False)
+                    self.getControl(1).setLabel('Choix de recherche')
+                    self.button.setLabel('OK')
+                    listitems = []    
+                    oPluginHandler = cPluginHandler()
+                    aPlugins = oPluginHandler.getSearchPlugins()
+                    #aPlugins = ['Adkami.com', u'adkami_com', 'Bienvenue sur ADkami.com.']
+                    for aPlugin in aPlugins:
+                        icon = os.path.join(unicode(cConfig().getRootArt(), 'utf-8'), 'sites', aPlugin[1]+'.png')
+                        stitle = aPlugin[0].replace('[COLOR violet]','').replace('[COLOR orange]','').replace('[/COLOR]','')
+                        listitem = xbmcgui.ListItem(label = stitle)
+                        listitem.setArt({'icon' : icon, 'thumb' : icon})
+                        listitem.setProperty('Addon.Summary', aPlugin[2])
+                        listitem.setProperty('sitename', aPlugin[1])
+                        #teste si deja dans le dsip
+                        sPluginSettingsName = sDips+'_' +aPlugin[1]
+                        bPlugin = cConfig().getSetting(sPluginSettingsName)
+                        if (bPlugin == 'true'):
+                            listitem.select(True) 
+                            
+                        listitems.append(listitem)
+                    self.container.addItems(listitems)
+                    
+                    
+                    self.setFocus(self.container)
+                      
+                def message(self, message):
+                    dialog = xbmcgui.Dialog()
+                    dialog.ok(" My message title", message)
+      
+                def onClick(self, controlId):
+                    if controlId == 5:
+                        self.close()
+                        return
+                    elif controlId == 99:
+                        self.close()
+                        return
+                    elif controlId == 6:
+                        item = self.container.getSelectedItem()
+                        if item.isSelected() == True:
+                            item.select(False)
+                            sPluginSettingsName = ('%s_%s') % (sDips, item.getProperty('sitename'))
+                            cConfig().setSetting(sPluginSettingsName, str('false')) 
+                        else : 
+                            item.select(True)
+                            sPluginSettingsName = ('%s_%s') % (sDips, item.getProperty('sitename'))
+                            cConfig().setSetting(sPluginSettingsName, str('true'))
+                        return
+
+                def onFocus(self, controlId):
+                    self.controlId = controlId
+                    
+                def _close_dialog( self ):
+                    self.close()
+
+                # def onAction( self, action ):
+                    # if action.getId() in ( 9, 10, 92, 216, 247, 257, 275, 61467, 61448, ):
+                        # self.close()
+          
+            wd = XMLDialog('DialogSelect.xml', cConfig().getAddonPath(), "Default")
+            wd.doModal()
+            del wd
             return
 
         elif (env == 'thumb'):

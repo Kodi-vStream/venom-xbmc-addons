@@ -95,6 +95,45 @@ class cPluginHandler:
                    aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName, sSiteDesc))
 
         return aPlugins
+        
+        
+    def getSearchPlugins(self):
+        oConfig = cConfig()
+
+        sFolder =  self.getRootFolder()
+        sFolder = os.path.join(sFolder, 'resources/sites')
+
+        # xbox hack        
+        sFolder = sFolder.replace('\\', '/')
+        cConfig().log("Sites Folder " + sFolder)
+        
+        aFileNames = self.__getFileNamesFromFolder(sFolder)
+
+        aPlugins = []
+        for sFileName in aFileNames:
+            cConfig().log("Load Plugin " + str(sFileName))
+
+            # wir versuchen das plugin zu importieren
+            aPlugin = self.__importPlugin(sFileName)
+            if (aPlugin[0] != False):
+                sSiteName = aPlugin[0]
+                sPluginSettingsName = aPlugin[1]
+                sSiteDesc = aPlugin[2]
+
+                # tester si active ou pas
+                bPlugin = oConfig.getSetting(sPluginSettingsName)
+                #test si une recherche et possible
+                try:
+                    exec "from resources.sites import " + sFileName
+                    exec "sSearch = " + sFileName + ".URL_SEARCH"
+                    sPlugin = True
+                except: 
+                    sPlugin = False
+                    
+                if (bPlugin == 'true') and (sPlugin == True):
+                    aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName, sSiteDesc))
+
+        return aPlugins
 
     def __createAvailablePluginsItem(self, sPluginName, sPluginIdentifier, sPluginDesc):
         aPluginEntry = []
