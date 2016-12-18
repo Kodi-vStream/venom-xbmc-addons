@@ -262,10 +262,11 @@ class cGui():
         #affiche tag HD
         if '1080' in oGuiElement.getTitle():
             oListItem.addStreamInfo('video', { 'aspect': '1.78', 'width':1920 ,'height' : 1080 })
-        elif '720' in  oGuiElement.getTitle():
+        elif '720' in oGuiElement.getTitle():
             oListItem.addStreamInfo('video', { 'aspect': '1.50', 'width':1280 ,'height' : 720 })
-        #oListItem.addStreamInfo('audio', {'language': 'fr'})
-        
+        elif '2160'in oGuiElement.getTitle():
+            oListItem.addStreamInfo('video', { 'aspect': '1.78', 'width':3840 ,'height' : 2160 })
+        #oListItem.addStreamInfo('audio', {'language': 'fr'})       
 
         # if oGuiElement.getMeta():
             # oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
