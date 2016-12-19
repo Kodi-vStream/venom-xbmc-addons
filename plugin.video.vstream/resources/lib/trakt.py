@@ -33,6 +33,8 @@ POSTER_URL = 'https://image.tmdb.org/t/p/w396'
 #FANART_URL = 'https://image.tmdb.org/t/p/w780/'
 FANART_URL = 'https://image.tmdb.org/t/p/w1280'
 
+MAXRESULT = 10
+
 class cTrakt:
 
     CONTENT = '0'
@@ -101,6 +103,21 @@ class cTrakt:
         
     def search(self):
         oGui = cGui()
+        
+#        url = 'http://ddlfr.org/films/exclue/69336-nitro-rush-bdrip-french.html'
+#        oRequestHandler = cRequestHandler(url)
+#        sHtmlContent = oRequestHandler.request()
+#        
+#        r = re.search('data-sitekey="([^"]+)', sHtmlContent)
+#        if r:
+#            import cookielib
+#            import recaptcha
+#            cookieJar = cookielib.LWPCookieJar()
+#            recaptcha.performCaptcha(url,cookieJar)
+#            xbmc.log('ok')
+#        
+#        return
+        
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'https://')
@@ -236,9 +253,9 @@ class cTrakt:
 
         liste = []
         if sType == 'movie':
-            liste.append( [cConfig().getlanguage(30310),'https://api.trakt.tv/users/me/collection/movies'] )
-            liste.append( [cConfig().getlanguage(30311),'https://api.trakt.tv/users/me/watchlist/movies'] )
-            liste.append( [cConfig().getlanguage(30312),'https://api.trakt.tv/users/me/watched/movies'] )
+            liste.append( [cConfig().getlanguage(30310),'https://api.trakt.tv/users/me/collection/movies?page=1&limit=' + str(MAXRESULT)] )
+            liste.append( [cConfig().getlanguage(30311),'https://api.trakt.tv/users/me/watchlist/movies?page=1&limit=' + str(MAXRESULT) ] )
+            liste.append( [cConfig().getlanguage(30312),'https://api.trakt.tv/users/me/watched/movies?page=1&limit=' + str(MAXRESULT)] )
             liste.append( [cConfig().getlanguage(30313),'https://api.trakt.tv/recommendations/movies'] )
             liste.append( [cConfig().getlanguage(30314),'https://api.trakt.tv/movies/boxoffice'] )
             liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/movies/popular'] )
@@ -247,11 +264,11 @@ class cTrakt:
             #liste.append( ['historique de Films','https://api.trakt.tv/users/me/history/movies'] )
 
         elif sType == 'show':
-            liste.append( [cConfig().getlanguage(30310),'https://api.trakt.tv/users/me/collection/shows'] )
-            liste.append( [cConfig().getlanguage(30311),'https://api.trakt.tv/users/me/watchlist/shows'] )
-            liste.append( [cConfig().getlanguage(30318),'https://api.trakt.tv/users/me/watchlist/seasons'] )
-            liste.append( [cConfig().getlanguage(30319),'https://api.trakt.tv/users/me/watchlist/episodes'] )
-            liste.append( [cConfig().getlanguage(30312),'https://api.trakt.tv/users/me/watched/shows'] )
+            liste.append( [cConfig().getlanguage(30310),'https://api.trakt.tv/users/me/collection/shows?page=1&limit=' + str(MAXRESULT)] )
+            liste.append( [cConfig().getlanguage(30311),'https://api.trakt.tv/users/me/watchlist/shows?page=1&limit=' + str(MAXRESULT) ] )
+            liste.append( [cConfig().getlanguage(30318),'https://api.trakt.tv/users/me/watchlist/seasons?page=1&limit=' + str(MAXRESULT)] )
+            liste.append( [cConfig().getlanguage(30319),'https://api.trakt.tv/users/me/watchlist/episodes?page=1&limit=' + str(MAXRESULT)] )
+            liste.append( [cConfig().getlanguage(30312),'https://api.trakt.tv/users/me/watched/shows?page=1&limit=' + str(MAXRESULT)] )
             liste.append( [cConfig().getlanguage(30313),'https://api.trakt.tv/recommendations/shows'] )
             liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/shows/popular'] )
             liste.append( [cConfig().getlanguage(30316),'https://api.trakt.tv/shows/played/weekly'] )
@@ -309,11 +326,19 @@ class cTrakt:
         req = urllib2.Request(sUrl, None,headers)
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
+        sHeaders = response.headers
+        response.close()
         
         result = json.loads(sHtmlContent)
         #xbmc.log(str(result))
-
-        response.close()
+        
+        sPage = '1'
+        sMaxPage = '1'
+        if 'X-Pagination-Page' in sHeaders:
+            sPage = sHeaders['X-Pagination-Page']
+        if 'X-Pagination-Page-Count' in sHeaders:
+            sMaxPage = sHeaders['X-Pagination-Page-Count']
+        
         total = len(result)
         sKey = 0
         sFunction = 'getLoad'
@@ -478,6 +503,13 @@ class cTrakt:
                 sKey += 1
                 
             cConfig().finishDialog(dialog)
+            
+            if (sPage < sMaxPage):
+                sNextPage = sUrl.replace('page=' + str(sPage),'page=' + str(int(sPage)+1))
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+                oGui.addDir(SITE_IDENTIFIER, 'getTrakt', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            
         oGui.setEndOfDirectory()
         return
 
