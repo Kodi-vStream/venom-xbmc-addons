@@ -104,21 +104,6 @@ class cTrakt:
     def search(self):
         oGui = cGui()
         
-#        url = 'http://ddlfr.org/films/exclue/69336-nitro-rush-bdrip-french.html'
-#        oRequestHandler = cRequestHandler(url)
-#        sHtmlContent = oRequestHandler.request()
-#        
-#        r = re.search('data-sitekey="([^"]+)', sHtmlContent)
-#        if r:
-#            import cookielib
-#            import recaptcha
-#            cookieJar = cookielib.LWPCookieJar()
-#            recaptcha.performCaptcha(url,cookieJar)
-#            xbmc.log('ok')
-#        
-#        return
-        
-        
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'https://')
         oOutputParameterHandler.addParameter('type', 'movie')
