@@ -422,7 +422,8 @@ def showMovies(sSearch = ''):
                 sCom = sCom.decode("unicode_escape").encode("latin-1")
                 sThumbnail=aEntry[2]
             else:
-                sCom = str(aEntry[2]).encode("utf-8") 
+                sCom = aEntry[2]
+		sCom = sCom.decode("unicode_escape").encode("latin-1")
                 sThumbnail=aEntry[3]
             
             oOutputParameterHandler = cOutputParameterHandler()
