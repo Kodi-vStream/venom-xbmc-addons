@@ -74,8 +74,15 @@ def showGenres(): #affiche les genres
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    
+    bGlobal_Search = False
+    
     if sSearch:
-      sUrl = sSearch
+        sUrl = sSearch
+      
+        if URL_SEARCH[0] in sSearch:
+            bGlobal_Search = True
+      
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')

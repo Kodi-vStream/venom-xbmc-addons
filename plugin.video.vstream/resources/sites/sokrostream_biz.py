@@ -483,44 +483,56 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('sUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
     if '29702' in sPOST:
         sPOST = ''
     
     #data = urllib.urlencode(sPOST)
     request = urllib2.Request(sUrl,sPOST)
-    request.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:22.0) Gecko/20100101 Firefox/22.0')
+    request.add_header('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0')
     sHtmlContent = ''
     try: 
         reponse = urllib2.urlopen(request)
         sHtmlContent = reponse.read()
-        reponse.close
+        sHtmlContent = re.sub(r'<iframe.+?src=(.+?//www\.facebook\.com.+</iframe>)','',sHtmlContent)
+        reponse.close()
     except URLError, e:
         print e.read()
         print e.reason
     
     oParser = cParser()
-    
-    #Recherche du bon fichier
-    sPattern = '<iframe.+?src=([^ ]+) |<script[^<>]+src="([^<>" ]+hash[^"]+)"><\/script>'
+
+    sPattern = '<iframe.+?src=([^ ]+).+?<\/iframe>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    #print aResult
-    	
     if (aResult[0] == True):
-        for aEntry in aResult[1]:
+        cUrl = str(aResult[1][0])
+        if 'sokrostr' in cUrl:
+            UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
+            headers = {'User-Agent': UA ,
+                       'Host' : 'sokrostrem.xyz',
+                       'Referer': sUrl,
+                       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                       'Content-Type': 'text/html; charset=utf-8'}
+
+            request = urllib2.Request(cUrl,None,headers)
+            reponse = urllib2.urlopen(request)
+            repok = reponse.read()
+            reponse.close()
+            vUrl = re.search('url=([^"]+)"',repok)
+            if vUrl:   
+               sHosterUrl = vUrl.group(1)
+               if 'uptobox' in sHosterUrl:
+                   sHosterUrl = re.sub(r'(http://sokrostream.+?/uptobox\.php\?id=)','http://uptobox.com/',sHosterUrl)
+                   
+        else:
+            sHosterUrl = str(aResult[1][0])
             
-            if aEntry[0]:
-                sHosterUrl = str(aEntry[0])
-            else:
-                sHosterUrl = str(aEntry[1])            
-                
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-                oHoster.setDisplayName(sDisplayTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        if (oHoster != False):
+            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+            oHoster.setDisplayName(sDisplayTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
                 
     oGui.setEndOfDirectory()
    
