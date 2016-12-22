@@ -223,35 +223,48 @@ def showHosters():
     if (aResult[0]):
         url = aResult[1][0]
 
-    #on passe par le m3u8 pour le choix de la qualité
-    #dialogue final
-    if (url):
-        #xbmc.log(url)
-        sHosterUrl = str(url)
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
-            # sHosterUrl = sHosterUrl + '|Referer='+ sUrl.replace(URL_MAIN,'http://www.hd-stream.in/')
-            # oGuiElement = cGuiElement()
-            # oGuiElement.setSiteName(SITE_IDENTIFIER)
-            # oGuiElement.setTitle(sMovieTitle)
-            # oGuiElement.setMediaUrl(sHosterUrl)
-            # oGuiElement.setThumbnail(sThumbnail)
+        #on passe par le m3u8 pour le choix de la qualité
+        #dialogue final
+        if (url):
+            #xbmc.log(url)
+            sHosterUrl = str(url)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                # sHosterUrl = sHosterUrl + '|Referer='+ sUrl.replace(URL_MAIN,'http://www.hd-stream.in/')
+                # oGuiElement = cGuiElement()
+                # oGuiElement.setSiteName(SITE_IDENTIFIER)
+                # oGuiElement.setTitle(sMovieTitle)
+                # oGuiElement.setMediaUrl(sHosterUrl)
+                # oGuiElement.setThumbnail(sThumbnail)
 
-            # oPlayer = cPlayer()
-            # oPlayer.clearPlayList()
-            # oPlayer.addItemToPlaylist(oGuiElement)
-            # oPlayer.startPlayer()
-            
-            oHoster.setDisplayName(sMovieTitle)
-            oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+                # oPlayer = cPlayer()
+                # oPlayer.clearPlayList()
+                # oPlayer.addItemToPlaylist(oGuiElement)
+                # oPlayer.startPlayer()
+                
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
 
-            if (BA != False):
-                sHosterUrl2 = str(BA)
-                oHoster2 = cHosterGui().checkHoster(sHosterUrl2)
-                if (oHoster2 != False):            
-                    oHoster2.setDisplayName(sMovieTitle + '[COLOR coral]' + (' [Bande Annonce] ') + '[/COLOR]')
-                    oHoster2.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster2, sHosterUrl2, '')            
-             
-        oGui.setEndOfDirectory()
+                if (BA != False):
+                    sHosterUrl2 = str(BA)
+                    oHoster2 = cHosterGui().checkHoster(sHosterUrl2)
+                    if (oHoster2 != False):            
+                        oHoster2.setDisplayName(sMovieTitle + '[COLOR coral]' + (' [Bande Annonce] ') + '[/COLOR]')
+                        oHoster2.setFileName(sMovieTitle)
+                        cHosterGui().showHoster(oGui, oHoster2, sHosterUrl2, '')
+                        
+    else:
+        #Ip bloquee ou site HS
+        sPattern = 'id=.mediaplayer.> *<iframe src="([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sHosterUrl = str(aResult[1][0])
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')        
+                 
+    oGui.setEndOfDirectory()
