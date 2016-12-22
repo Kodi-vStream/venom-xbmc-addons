@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-#Venom.
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -20,10 +20,13 @@ URL_MAIN = 'http://streamay.bz/'
 
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/recents', 'showMovies')
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenre')
 
 SERIE_SERIE = (URL_MAIN + 'series/alphabet', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
+SERIE_GENRES = (URL_MAIN + 'series/', 'showGenre')
+
+ANIM_ANIMS = (URL_MAIN + 'mangas', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -37,25 +40,27 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genre', 'genres.png', oOutputParameterHandler)
-
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    #oGui.addDir(SITE_IDENTIFIER, 'Films Qualités', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films Genre', 'genres.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Series Nouveautés', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIE[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIE[1], 'Series Liste Complete', 'series.png', oOutputParameterHandler)  
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Series Nouveautés', 'series.png', oOutputParameterHandler)  
-    
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Series Genre', 'genres.png', oOutputParameterHandler)
  
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animes', 'animes.png', oOutputParameterHandler)
              
     oGui.setEndOfDirectory()
 
@@ -71,35 +76,45 @@ def showSearch():
     
 def showGenre():
     oGui = cGui()
-    sUrl = URL_MAIN
-
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    
     liste = []
-    liste.append( ['Action',sUrl + 'films/genre/action'] )
-    liste.append( ['Animation',sUrl + 'films/genre/animation'] )
-    liste.append( ['Aventure',sUrl + 'films/genre/aventure'] )
-    liste.append( ['Biopic',sUrl + 'films/genre/biopic'] )
-    liste.append( ['Comedie',sUrl + 'films/genre/comedie'] )
-    liste.append( ['Comedie Dramatique',sUrl + 'films/genre/comedie-dramatique'] )
-    liste.append( ['Crime',sUrl + 'films/genre/crime'] )
-    liste.append( ['Documentaire',sUrl + 'films/genre/documentaire'] )
-    liste.append( ['Drame',sUrl + 'films/genre/drame'] )
-    liste.append( ['Epouvante Horreur',sUrl + 'films/genre/epouvante-horreur'] ) 
-    liste.append( ['Espionnage',sUrl + 'films/genre/espionnage'] )
-    liste.append( ['Famille',sUrl + 'films/genre/famille'] )
-    liste.append( ['Fantastique',sUrl + 'films/genre/fantastique'] )  
-    liste.append( ['Guerre',sUrl + 'films/genre/guerre'] )
-    liste.append( ['Historique',sUrl + 'films/genre/historique'] )
-    liste.append( ['Horreur',sUrl + 'films/genre/horreur'] )
-    liste.append( ['Musical',sUrl + 'films/genre/musical'] )
-    liste.append( ['Policier',sUrl + 'films/genre/policier'] )
-    liste.append( ['Peplum',sUrl + 'films/genre/peplum'] )
-    liste.append( ['Romance',sUrl + 'films/genre/romance'] )
-    liste.append( ['Science Fiction',sUrl + 'films/genre/science-fiction'] )
-    liste.append( ['Spectacle',sUrl + 'films/genre/spectacle'] )
-    liste.append( ['Thriller',sUrl + 'films/genre/thriller'] )
-    liste.append( ['Western',sUrl + 'films/genre/western'] )
+    liste.append( ['Action',sUrl + 'genre/action'] )
+    liste.append( ['Animation',sUrl + 'genre/animation'] )
+    liste.append( ['Arts Martiaux',sUrl + 'genre/arts-martiaux'] )
+    liste.append( ['Aventure',sUrl + 'genre/aventure'] )
+    liste.append( ['Biopic',sUrl + 'genre/biopic'] )
+    liste.append( ['Comedie',sUrl + 'genre/comedie'] )
+    liste.append( ['Comedie Dramatique',sUrl + 'genre/comedie-dramatique'] )
+    liste.append( ['Comedie Musicale',sUrl + 'genre/comedie-musicale'] )
+    liste.append( ['Crime',sUrl + 'genre/crime'] )
+    liste.append( ['Dessin Animé',sUrl + 'genre/dessin-anime'] )
+    liste.append( ['Divers',sUrl + 'genre/divers'] )
+    liste.append( ['Documentaire',sUrl + 'genre/documentaire'] )
+    liste.append( ['Drame',sUrl + 'genre/drame'] )
+    liste.append( ['Drama',sUrl + 'genre/drama'] )
+    liste.append( ['Epouvante Horreur',sUrl + 'genre/epouvante-horreur'] ) 
+    liste.append( ['Espionnage',sUrl + 'genre/espionnage'] )
+    liste.append( ['Famille',sUrl + 'genre/famille'] )
+    liste.append( ['Fantastique',sUrl + 'genre/fantastique'] )  
+    liste.append( ['Guerre',sUrl + 'genre/guerre'] )
+    liste.append( ['Historique',sUrl + 'genre/historique'] )
+    liste.append( ['Horreur',sUrl + 'genre/horreur'] )
+    liste.append( ['Judiciaire',sUrl + 'genre/judiciaire'] )
+    liste.append( ['Médical',sUrl + 'genre/medical'] )
+    liste.append( ['Musical',sUrl + 'genre/musical'] )
+    liste.append( ['Policier',sUrl + 'genre/policier'] )
+    liste.append( ['Peplum',sUrl + 'genre/peplum'] )
+    liste.append( ['Romance',sUrl + 'genre/romance'] )
+    liste.append( ['Science Fiction',sUrl + 'genre/science-fiction'] )
+    liste.append( ['Soap',sUrl + 'genre/soap'] )
+    liste.append( ['Spectacle',sUrl + 'genre/spectacle'] )
+    liste.append( ['Sport Event',sUrl + 'genre/sport-event'] )
+    liste.append( ['Thriller',sUrl + 'genre/thriller'] )
+    liste.append( ['Western',sUrl + 'genre/western'] )
                 
-    for sTitle,sUrl in liste:#boucle
+    for sTitle,sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -121,9 +136,7 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     sPattern = '<a href="([^"]+)" class="mv">.+?<img src="([^"]+)" alt="">.+?<span>([^<>]+)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # fh = open('I:\\streamay.txt', "w")
-    # fh.write(sHtmlContent)
-    # fh.close()
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -132,7 +145,8 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            sTitle = aEntry[2]
+            sTitle = aEntry[2].decode("utf-8")
+            sTitle = cUtil().unescape(sTitle).encode("utf-8")
             sUrl = aEntry[0]
             sThumb = aEntry[1]
 
@@ -142,6 +156,8 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
             if 'serie' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
+            elif 'mangas' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showAnime', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
@@ -179,7 +195,7 @@ def showSaisons():
    
     sPattern = '<a class="head an choseSaison">(.+?)<\/a>|<a class="item" href="([^"]+)">.+?<span class="epitoto">(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # xbmc.log(str(aResult))
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -215,13 +231,10 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    # fh = open('I:\\streamay.txt', "w")
-    # fh.write(sHtmlContent)
-    # fh.close()
-    sPattern = '<a href="[^<]+" data-streamer="(.+?)" data-v-on=".+?" data-id="(.+?)"> <i style=".+?"></i> <span>(.+?)</span></a>'
+
+    sPattern = '<a href="([^"]+)" data-streamer="([^"]+)" data-v-on=".+?" data-id="([^"]+)"> <i style=".+?"></i> <span>(.+?)</span></a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -284,4 +297,92 @@ def GetLink():
         cConfig().finishDialog(dialog)
                 
     oGui.setEndOfDirectory()
+    
+def showAnime():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '<div class="chooseEpisodeManga" data-id="([^"]+)"'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        sUrl2 = 'http://streamay.bz/read/mepisodes/' + aResult[1][0]
+        oRequestHandler = cRequestHandler(sUrl2)
+        sHtmlContent = oRequestHandler.request()
+        sPattern = '{"episodeNumber":"([^"]+)","id":"([^"]+)","manga_id":"([^"]+)"}'
+        aResult = oParser.parse(sHtmlContent,sPattern)
+        if (aResult[0] == True):
+            total = len(aResult[1])
+            dialog = cConfig().createDialog(SITE_NAME)
+            for aEntry in aResult[1]:
+                cConfig().updateDialog(dialog, total)
+                if dialog.iscanceled():
+                   break
+                   
+                sTitle = sMovieTitle + 'episode' + ' ' + aEntry[0]
+                sDisplayTitle = cUtil().DecoTitle(sTitle)   
+                sUrl3 = 'http://streamay.bz/read/mepisode/' + aEntry[2] + '/' + aEntry[0]
+
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl3)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+                oOutputParameterHandler.addParameter('sMangaid', aEntry[2])
+                oOutputParameterHandler.addParameter('sEp', aEntry[0])
+                oGui.addMovie(SITE_IDENTIFIER, 'showAnimeHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)     
+    
+            cConfig().finishDialog(dialog)
+                
+    oGui.setEndOfDirectory()
+    
+def showAnimeHosters():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sMangaid = oInputParameterHandler.getValue('sMangaid')
+    sEp = oInputParameterHandler.getValue('sEp')
+    
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '{.+?"views":".+?",|"([^"]+)":"([^"]+)"|,"published":".+?".+}'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+                
+            if aEntry[0]:
+                if 'stfr' in aEntry[0]:
+                    sLang = '[' + 'Vostfr' + ']'
+                else:
+                    sLang = '[' + 'Vf' + ']'
+                
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)   
+                sHost = aEntry[0]    
+                sTitle = '[COLOR coral]' + sLang + '[/COLOR]' + ' ' + sDisplayTitle + ' ' + '[COLOR teal]>> ' + sHost + '[/COLOR]'
+                sUrl = 'http://streamay.bz/streamerMEpisode/' + sEp + '/' + sMangaid + '/' + aEntry[0] 
+                aTitle = sMovieTitle
+            
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', aTitle)
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+                oGui.addMovie(SITE_IDENTIFIER, 'GetLink', sTitle, '', sThumbnail, '', oOutputParameterHandler)     
+    
+        cConfig().finishDialog(dialog)
+                
+    oGui.setEndOfDirectory()
+    
