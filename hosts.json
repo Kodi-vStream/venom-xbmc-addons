@@ -98,16 +98,16 @@
   {
     "name": "dailymotion.py",
     "path": "plugin.video.vstream/resources/hosters/dailymotion.py",
-    "sha": "8c4f33b33a99953c7fc7f25000887d05d7b1d5e2",
-    "size": 6098,
+    "sha": "97324a6362f07285394e35ce0cf2e2b1f9389e91",
+    "size": 6126,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/dailymotion.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/dailymotion.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/8c4f33b33a99953c7fc7f25000887d05d7b1d5e2",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/97324a6362f07285394e35ce0cf2e2b1f9389e91",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/dailymotion.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/dailymotion.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/8c4f33b33a99953c7fc7f25000887d05d7b1d5e2",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/97324a6362f07285394e35ce0cf2e2b1f9389e91",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/dailymotion.py"
     }
   },
@@ -674,16 +674,16 @@
   {
     "name": "streaminto.py",
     "path": "plugin.video.vstream/resources/hosters/streaminto.py",
-    "sha": "fdaf134b010b69bdf7a1264d6baaea160c9063a5",
-    "size": 2708,
+    "sha": "bb0f3f442fbe9720e75e50e03fad958fc1d78d03",
+    "size": 2594,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/streaminto.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/streaminto.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/fdaf134b010b69bdf7a1264d6baaea160c9063a5",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/bb0f3f442fbe9720e75e50e03fad958fc1d78d03",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/streaminto.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/streaminto.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/fdaf134b010b69bdf7a1264d6baaea160c9063a5",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/bb0f3f442fbe9720e75e50e03fad958fc1d78d03",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/streaminto.py"
     }
   },
@@ -834,16 +834,16 @@
   {
     "name": "uptostream.py",
     "path": "plugin.video.vstream/resources/hosters/uptostream.py",
-    "sha": "9a4b3fd3e0dc77415348fc87af69cf9b92f9c443",
-    "size": 5225,
+    "sha": "5a39bd63a1874792b61afd176047c7866f30f29d",
+    "size": 5228,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/uptostream.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/uptostream.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/9a4b3fd3e0dc77415348fc87af69cf9b92f9c443",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/5a39bd63a1874792b61afd176047c7866f30f29d",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/uptostream.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/uptostream.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/9a4b3fd3e0dc77415348fc87af69cf9b92f9c443",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/5a39bd63a1874792b61afd176047c7866f30f29d",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/uptostream.py"
     }
   },
@@ -1026,16 +1026,16 @@
   {
     "name": "vidup.py",
     "path": "plugin.video.vstream/resources/hosters/vidup.py",
-    "sha": "1e799857eda4227a07bde67f8a362c41ab068619",
-    "size": 2647,
+    "sha": "5be8eaae256bd7b7727916eb6c8a78881dfdf5d9",
+    "size": 2882,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/vidup.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/vidup.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/1e799857eda4227a07bde67f8a362c41ab068619",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/5be8eaae256bd7b7727916eb6c8a78881dfdf5d9",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/vidup.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/vidup.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/1e799857eda4227a07bde67f8a362c41ab068619",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/5be8eaae256bd7b7727916eb6c8a78881dfdf5d9",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/vidup.py"
     }
   },
