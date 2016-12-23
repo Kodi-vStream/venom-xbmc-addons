@@ -65,35 +65,42 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
+        
+        url=[]
+        qua=[]
+        stream_url = ''
 
         oParser = cParser()
+        
         sPattern =  "label: '([0-9]+)p', file: '([^']+)'"
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        stream_url = ''
-        
         if (aResult[0]):
-            url=[]
-            qua=[]
-            
             for aEntry in aResult[1]:
                 url.append(aEntry[1])
                 qua.append(aEntry[0])
+        else:
+            sPattern = '"file":"([^"]+)","label":"([0-9]+)p"'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0]):
+                for aEntry in aResult[1]:
+                    url.append(aEntry[0])
+                    qua.append(aEntry[1])            
                 
-            #Si une seule url
-            if len(url) == 1:
-                stream_url = url[0]
-            #si plus de une
-            elif len(url) > 1:
-                #Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
-                if (ret > -1):
-                    stream_url = url[ret]
-                else:
-                    return False, False
+        
+        #Si une seule url
+        if len(url) == 1:
+            stream_url = url[0]
+        #si plus de une
+        elif len(url) > 1:
+            #Afichage du tableau
+            dialog2 = xbmcgui.Dialog()
+            ret = dialog2.select('Select Quality',qua)
+            if (ret > -1):
+                stream_url = url[ret]
             else:
                 return False, False
+        else:
+            return False, False
 
         if (stream_url):
             return True, stream_url
