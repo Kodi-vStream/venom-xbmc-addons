@@ -390,10 +390,11 @@ def showMovies(sSearch = ''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl') 
         
-    xbmc.log(sUrl)
+    #xbmc.log(sUrl)
     oRequestHandler = cRequestHandler(sUrl) 
     sHtmlContent = oRequestHandler.request()
     #xbmc.log(sHtmlContent)
+    
     sCom = ''
     sQual = ''
     if sSearch:
@@ -406,7 +407,7 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    xbmc.log(str(aResult))
+    #xbmc.log(str(aResult))
     
     if (aResult[0] == True):
         total = len(aResult[1])        
@@ -425,7 +426,7 @@ def showMovies(sSearch = ''):
                 sThumbnail=aEntry[2]
             else:
                 sCom = aEntry[2]
-		sCom = sCom.decode("unicode_escape").encode("latin-1")
+                sCom = sCom.decode("unicode_escape").encode("latin-1")
                 sThumbnail=aEntry[3]
             
             oOutputParameterHandler = cOutputParameterHandler()
