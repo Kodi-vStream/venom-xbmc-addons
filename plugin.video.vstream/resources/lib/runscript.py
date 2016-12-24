@@ -85,6 +85,7 @@ class cClear:
         elif (env == 'search'):
         
             from resources.lib.handler.pluginHandler import cPluginHandler
+            valid = '[COLOR green][x][/COLOR]'
             try:
                 sDips = sys.argv[2]
             except: return
@@ -102,22 +103,25 @@ class cClear:
                     self.container = self.getControl(6)
                     self.button = self.getControl(5)
                     self.getControl(3).setVisible(False)
-                    self.getControl(1).setLabel('Choix de recherche')
+                    self.getControl(1).setLabel(cConfig().getlanguage(30094))
                     self.button.setLabel('OK')
                     listitems = []    
                     oPluginHandler = cPluginHandler()
                     aPlugins = oPluginHandler.getSearchPlugins()
                     #aPlugins = ['Adkami.com', u'adkami_com', 'Bienvenue sur ADkami.com.']
                     for aPlugin in aPlugins:
+                        #teste si deja dans le dsip
+                        sPluginSettingsName = sDips+'_' +aPlugin[1]
+                        bPlugin = cConfig().getSetting(sPluginSettingsName)
+                        
                         icon = os.path.join(unicode(cConfig().getRootArt(), 'utf-8'), 'sites', aPlugin[1]+'.png')
                         stitle = aPlugin[0].replace('[COLOR violet]','').replace('[COLOR orange]','').replace('[/COLOR]','')
+                        if (bPlugin == 'true'):
+                            stitle = ('%s %s') % (stitle, valid) 
                         listitem = xbmcgui.ListItem(label = stitle)
                         listitem.setArt({'icon' : icon, 'thumb' : icon})
                         listitem.setProperty('Addon.Summary', aPlugin[2])
                         listitem.setProperty('sitename', aPlugin[1])
-                        #teste si deja dans le dsip
-                        sPluginSettingsName = sDips+'_' +aPlugin[1]
-                        bPlugin = cConfig().getSetting(sPluginSettingsName)
                         if (bPlugin == 'true'):
                             listitem.select(True) 
                             
@@ -136,15 +140,21 @@ class cClear:
                         self.close()
                         return
                     elif controlId == 99:
+                        window = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+                        del window
                         self.close()
                         return
                     elif controlId == 6:
                         item = self.container.getSelectedItem()
                         if item.isSelected() == True:
+                            label = item.getLabel().replace(valid,'')
+                            item.setLabel(label)
                             item.select(False)
                             sPluginSettingsName = ('%s_%s') % (sDips, item.getProperty('sitename'))
                             cConfig().setSetting(sPluginSettingsName, str('false')) 
                         else : 
+                            label = ('%s %s') % (item.getLabel(), valid) 
+                            item.setLabel(label)
                             item.select(True)
                             sPluginSettingsName = ('%s_%s') % (sDips, item.getProperty('sitename'))
                             cConfig().setSetting(sPluginSettingsName, str('true'))
