@@ -397,7 +397,9 @@ def showMovies(sSearch = ''):
     sCom = ''
     sQual = ''
     if sSearch:
-        sPattern = '<b><p style="font-size: 18px;"><A href="([^"]+)">([^<]+?)</b>.+?<td align="center"> *<img src="([^"]+)".+?<b>Description : </b></br></br>(.+?)<br /><br />Origine '
+        sHtmlContent = sHtmlContent.replace('<span style="background-color: yellow;"><font color="red">','')
+        
+        sPattern = '<b><p style="font-size: 18px;"><A href="([^"]+)">([^<]+?)<.+?<td align="center">\s*<img src="([^"]+)".+?<b>Description : <\/b><\/br><\/br>(.+?)<'
     else:
         sPattern = '<table style="float:left;padding-left:8px"> *<td> *<div align="left"> *<a href="([^"]+)" onmouseover="Tip\(\'<b>([^"]+?)<\/b>.+?Description :</b> <i>([^<]+?)<.+?<img src="([^"]+?)"'
 
