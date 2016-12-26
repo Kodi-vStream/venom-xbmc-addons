@@ -235,6 +235,7 @@ def showHosters():
     sPattern = '<a href="([^"]+)" data-streamer="([^"]+)" data-v-on=".+?" data-id="([^"]+)"> <i style=".+?"></i> <span>(.+?)</span></a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    #xbmc.log(str(aResult))
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -243,13 +244,13 @@ def showHosters():
             if dialog.iscanceled():
                 break
                 
-            if 'stfr' in aEntry[0]:
+            if 'stfr' in aEntry[1]:
                 sLang = '[' + 'Vostfr' + ']'
             else:
                 sLang = '[' + 'Vf' + ']'
                 
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle)   
-            sHost = aEntry[2]    
+            sHost = aEntry[3]    
             sTitle = '[COLOR coral]' + sLang + '[/COLOR]' + ' ' + sDisplayTitle + ' ' + '[COLOR teal]>> ' + sHost + '[/COLOR]'
             sUrl = 'http://streamay.com/streamer/' + aEntry[1] + '/' + aEntry[0]
             aTitle = sMovieTitle
@@ -356,6 +357,7 @@ def showAnimeHosters():
     sPattern = '{.+?"views":".+?",|"([^"]+)":"([^"]+)"|,"published":".+?".+}'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    #xbmc.log(str(aResult))
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -371,7 +373,7 @@ def showAnimeHosters():
                     sLang = '[' + 'Vf' + ']'
                 
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)   
-                sHost = aEntry[0]    
+                sHost = aEntry[0].replace('_vostfr','')    
                 sTitle = '[COLOR coral]' + sLang + '[/COLOR]' + ' ' + sDisplayTitle + ' ' + '[COLOR teal]>> ' + sHost + '[/COLOR]'
                 sUrl = 'http://streamay.bz/streamerMEpisode/' + sEp + '/' + sMangaid + '/' + aEntry[0] 
                 aTitle = sMovieTitle
