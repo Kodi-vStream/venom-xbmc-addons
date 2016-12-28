@@ -346,6 +346,9 @@ class cHosterGui:
         if ('uploaded' in sHostName or 'ul.to' in sHostName):
             return cHosterHandler().getHoster('uploaded')
             
+        if ('kaydo.ws' in sHostName):
+            return cHosterHandler().getHoster('lien_direct')
+            
         #Si aucun hebergeur connu on teste les liens directs
         if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8'):
             return cHosterHandler().getHoster('lien_direct')
