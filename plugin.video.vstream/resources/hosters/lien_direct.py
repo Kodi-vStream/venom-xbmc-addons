@@ -75,7 +75,7 @@ class cHoster(iHoster):
             
         #Special pour hd-stream.in et film-streaming.co
         if 'hd-stream.in' in api_call or 'film-streaming.co' in api_call or 'kaydo.ws' in api_call:
-            base = api_call.replace('playlist.m3u8','')
+            base = re.sub(r'(playlist.m3u8.+)','',api_call)
             oRequest = cRequestHandler(api_call)
             sHtmlContent = oRequest.request()
             sPattern =  ',NAME="([^"]+)".+?(chunklist.+?.m3u8)'
