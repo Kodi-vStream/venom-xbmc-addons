@@ -186,7 +186,7 @@ def showHosters():
      
     oParser = cParser()
     #sPattern = 'document.write\(unescape\("(.+?)"\)\);'
-    sPattern = 'file:"(http.+?m3u8)"'
+    sPattern = '{file:"([^\"]+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
    
