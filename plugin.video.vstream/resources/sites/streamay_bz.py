@@ -206,7 +206,7 @@ def showMovies():
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-   
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
@@ -314,6 +314,7 @@ def showHosters():
     sPattern = '<a href="([^"]+)" data-streamer="([^"]+)" data-v-on=".+?" data-id="([^"]+)"> <i style=".+?"></i> <span>(.+?)</span></a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -330,7 +331,7 @@ def showHosters():
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle)   
             sHost = aEntry[3]    
             sTitle = '[COLOR coral]' + sLang + '[/COLOR]' + ' ' + sDisplayTitle + ' ' + '[COLOR teal]>> ' + sHost + '[/COLOR]'
-            sUrl = 'http://streamay.com/streamer/' + aEntry[1] + '/' + aEntry[0]
+            sUrl = 'http://streamay.bz/streamer/' + aEntry[2] + '/' + aEntry[1]
             aTitle = sMovieTitle
             
             oOutputParameterHandler = cOutputParameterHandler()
@@ -356,7 +357,6 @@ def GetLink():
     sPattern = 'code":"([^"]+)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
