@@ -49,6 +49,23 @@ def showSearch():
         oGui.setEndOfDirectory()
         return  
 
+
+def TimeET():
+    sUrl = 'http://www.worldtimeserver.com/time-zones/est/'
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
+    
+    sPattern = '<span id="theTime" class="fontTS">\s*(.+?)\s*</span>'
+    
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    if (aResult[0] == True):
+        return aResult[1][0]
+        
+    timeError = ''
+    return timeError
+
 def ReplayTV():
 
     oGui = cGui()
@@ -80,9 +97,6 @@ def ReplayTV():
             
     oGui.setEndOfDirectory()  
     
- 
-
-
 def showMovies(sSearch = ''):
     
     oGui = cGui()
@@ -99,26 +113,22 @@ def showMovies(sSearch = ''):
     
     if '/live' in sUrl:
 
-        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Live NBA Games[/COLOR]')
-        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Programme des Matchs:[/COLOR]')
-        
-        sPattern = '<td><a href="(http://tvrex.net/live/.+?)">(.+?)</a></td><td>(.+?)</td></tr><tr><td>' 
+        sPattern = '<tr><td>\s*([a-zA-Z]{0,3}\s[0-9]{0,2})</td><td><a href="(http://tvrex.net/live/.+?)">(.+?)</a></td><td>(.+?)</td></tr>' 
     
     else:
 
-        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Replay NBA Games[/COLOR]')
         sPattern = '<a href="([^"]+)">\s*<img src="[^"]+" data-hidpi="(.+?)\?.+?" alt="(.+?)" width=".+?"'
 
     if '?s=' in sUrl:
         
         sPattern = '<a href="([^"]+)"><img src="[^"]+" data-hidpi="(.+?)\?.+?" alt="(.+?)"'
     
+    sDateReplay = ''
+    sDate = ''
+    TimeUTC = TimeET()
     
-   
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    sDate2 = ''
     
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -132,33 +142,82 @@ def showMovies(sSearch = ''):
             sTitle = aEntry[2]
             sUrl2 = aEntry[0]
             sThumbnail = aEntry[1]
-
-            if '/live/' in sUrl2:
-                sTitle = aEntry[1] + ' ' + '[COLOR coral]' +  ' (' + aEntry[2] + ') ' + '[/COLOR]'
-                sTitle = sTitle.replace('@', 'vs')
             
-            if 'category/nba' in sUrl:
-                sTitle2 = sTitle.split(" – ")
-                sTitle = sTitle2[0]
-                sDate =  sTitle2[1]
+            try:
+               if '/live/' in aEntry[1]:
+                   sThumbnail = ''
+                   sDateLive= aEntry[0]
+                   sUrl2 = aEntry[1]
+                
+                   sTimeLive = aEntry[3]
+                   total = len(sTimeLive)
+                   if (total < 11):
+                       sTimeLive = '0' +sTimeLive
+                   
+                   sTitle = '[COLOR teal]' + sTimeLive + '[/COLOR]' + '   ' + sTitle
+                
+                   if (sDate != sDateLive):
 
-                if (sDate2 != sDate):
-                   oGui.addText(SITE_IDENTIFIER,'[COLOR olive]' + sDate + '[/COLOR]')
-                   sDate2 = sDate
+
+                         
+        
+                       oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Programme Live / [/COLOR]' + '[COLOR teal]' +sDateLive   + '[/COLOR]' + '[COLOR gray]' + '  [ Utc ET: ' +  TimeUTC + ']' + '[/COLOR]')
+                       sDate = ' '  
+            except:
+
+                  sThumbnail = ''
+                  sUrl2 = aEntry[1]
+            try:
+
+               if 'category/nba' in sUrl:
+                   sTitle2 = sTitle.split(" – ")
+                   sTitle = sTitle2[0]
+                   sDateReplay =  sTitle2[1]
+
+                   if (sDate != sDateReplay):
+                       oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Replay[/COLOR]' + '[COLOR teal]' + ' / '+ sDateReplay + '[/COLOR]')
+                       sDate = sDateReplay
             
-           
+            except:
+                  pass  
+
+            try:
+               if ('category/2016' in sUrl) or ('?s=' in sUrl):
+                   if 'Game' in sTitle:
+                       sTitle2 = sTitle.split(":")
+                       sGame = sTitle2[0] +':'
+                       sTitle3 = sTitle2[1]
+                   else:
+                       sGame = 'Game: '
+                       sTitle3 = sTitle
+
+                   sTitle3 = sTitle3.replace('\xe2\x80\x93', '-')
+                   sTitle = sTitle3.split("-")
+                   sTeam = sTitle[0]
+                   if sTitle[1]:
+                       sDatePlayoff = sTitle[1]
+                   else: 
+                       sDatePlayoff = ''
+   
+                   sTitle = '[COLOR olive]' + sGame + '[/COLOR]' + sTeam + '[COLOR teal]' +'/' + sDatePlayoff + '[/COLOR]'  
+
+            except:
+                  pass
+            
+            sTitle = sTitle.replace(' vs ', '[COLOR gray] vs [/COLOR]').replace('@', '[COLOR gray] vs [/COLOR]')
+            
+                   
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2) 
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
+            oOutputParameterHandler.addParameter('sDateReplay', sDateReplay)
             
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sUrl2, oOutputParameterHandler)
                 
                 
-            
-            
         cConfig().finishDialog(dialog)
            
         sNextPage = __checkForNextPage(sHtmlContent)
@@ -193,6 +252,7 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')  
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sDateReplay = oInputParameterHandler.getValue('sDateReplay')
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
@@ -204,9 +264,16 @@ def showHosters():
     
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-     
+    if sDateReplay:
+       sMovieTitle = sMovieTitle + '[COLOR teal]' + ' / ' + sDateReplay +'[/COLOR]'
+    
     oGui.addText(SITE_IDENTIFIER,sMovieTitle)
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualités disponibles:[/COLOR]')
+    
+    if '/live/' in sUrl:
+  
+       oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Streaming disponibles:[/COLOR]')
+    else:
+       oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualités disponibles:[/COLOR]')  
     
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -216,9 +283,8 @@ def showHosters():
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
+                oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
                 
                 
     oGui.setEndOfDirectory()
- 
