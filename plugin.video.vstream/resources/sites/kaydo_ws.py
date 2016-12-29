@@ -11,7 +11,7 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
-import re,urllib2,urllib
+import re,urllib2,urllib,xbmc
 
 #copie du site http://www.film-streaming.co/
 #copie du site http://www.streaming-club.com/
@@ -49,8 +49,12 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films les plus vus', 'top.png', oOutputParameterHandler)
-   
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films les plus vues', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'top-films.php')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Top Films', 'films.png', oOutputParameterHandler)
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Tout Les Films', 'films.png', oOutputParameterHandler)
@@ -121,15 +125,14 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    # fh = open('c:\\test.txt', "w")
+    # fh = open('I:\\test.txt', "w")
     # fh.write(sHtmlContent)
     # fh.close()
 
-    sPattern = 'class="box"><img src="([^"]+)" width="228" height="301">.+?<h2>([^<]+)</h2>.+?<p.*?>([^<]+)</p>.+?ref="([^"]+)">'
+    sPattern = '<div class="box"> *<img src="([^"]+)" width=".+?" height=".+?">.+?<h2>([^<]+)</h2>.+?<p.*?>([^<]+)</p>.+?ref="([^"]+)">'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -160,10 +163,7 @@ def showMovies(sSearch = ''):
     oGui.setEndOfDirectory()
          
 def __checkForNextPage(sHtmlContent):
-    
-    #sPattern = '<a class="btn btn-default" href="([^<>"]+?)">\[Suivant >>\]<\/a>'
     sPattern = 'class="pagination">.*?<li class="active">.+?<li><a href="(.+?)"'
-
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -185,11 +185,16 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
      
     oParser = cParser()
-    #sPattern = 'document.write\(unescape\("(.+?)"\)\);'
+    sPattern = '<video><source type="video/mp4" src="([^"]+)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0]):
+        BA = aResult[1][0]
+    else:
+        BA = False
+
     sPattern = '{file:"([^\"]+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-   
     if (aResult[0] == True):   
         sHosterUrl = str(aResult[1][0])
         oHoster = cHosterGui().checkHoster(sHosterUrl)       
@@ -198,5 +203,12 @@ def showHosters():
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
             
-             
+        if (BA != False):
+            sHosterUrl2 = str(BA)
+            oHoster2 = cHosterGui().checkHoster(sHosterUrl2)
+            if (oHoster2 != False):            
+                oHoster2.setDisplayName(sMovieTitle + '[COLOR coral]' + (' [Bande Annonce] ') + '[/COLOR]')
+                oHoster2.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster2, sHosterUrl2, '') 
+                  
         oGui.setEndOfDirectory()
