@@ -211,7 +211,7 @@ def showMovies():
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
     
-    sPattern = '<a href="([^"]+)" class="mv">.+?<span class="qualitos">(.+?)<\/span>.+?<img src="([^"]+)" alt="">.+?<span>([^<>]+)</span>.+?</span>(.+?)</p>'
+    sPattern = '<a href="([^"]+)" class="mv">.+?<img src="([^"]+)" alt="">.+?<span>([^<>]+)<\/span>.+?<\/span>(.+?)<\/p>'
  
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -223,15 +223,13 @@ def showMovies():
             if dialog.iscanceled():
                 break
 
-            sTitle = aEntry[3].decode("utf-8")
+            sTitle = aEntry[2].decode("utf-8")
             sTitle = cUtil().unescape(sTitle).encode("utf-8")
-            sTitle = '[' + aEntry[1] + ']' + sTitle 
-            sTitle = cUtil().DecoTitle(sTitle)
             sUrl = aEntry[0]
-            sThumb = aEntry[2]
-            sSyn = aEntry[4].decode("utf-8")
+            sThumb = aEntry[1]
+            sSyn = aEntry[3].decode("utf-8")
             sSyn = cUtil().unescape(sSyn).encode("utf-8")
-
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
