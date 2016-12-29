@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -10,16 +10,16 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re,xbmc
+import re,xbmc,xbmcgui,urllib,urllib2,unicodedata
 
-SITE_IDENTIFIER = 'streamay_com'
-SITE_NAME = 'streamay.com'
+SITE_IDENTIFIER = 'streamay_bz'
+SITE_NAME = 'Streamay.bz'
 SITE_DESC = 'films en streaming'
-
 URL_MAIN = 'http://streamay.bz/'
 
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/recents', 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'films?p=populaire', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenre')
 
 SERIE_SERIE = (URL_MAIN + 'series/alphabet', 'showMovies')
@@ -28,8 +28,8 @@ SERIE_GENRES = (URL_MAIN + 'series/', 'showGenre')
 
 ANIM_ANIMS = (URL_MAIN + 'mangas', 'showMovies')
 
-URL_SEARCH = (URL_MAIN + '?q=', 'showMovies')
-FUNCTION_SEARCH = 'showMovies'
+URL_SEARCH = ('', 'showResultSearch')
+FUNCTION_SEARCH = 'showResultSearch'
 
 def load():
     oGui = cGui()
@@ -43,8 +43,16 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films Les plus vues', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films Genre', 'genres.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+    oGui.addDir(SITE_IDENTIFIER, 'selectAnn', 'Films Années', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
@@ -61,18 +69,32 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animes', 'animes.png', oOutputParameterHandler)
-             
+
     oGui.setEndOfDirectory()
 
 def showSearch():
     oGui = cGui()
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText  
-        showMovies(sUrl)
+        showResultSearch(sUrl)
         oGui.setEndOfDirectory()
         return  
+        
+def showNumBoard(sDefaultNum=''):
+    dialog = xbmcgui.Dialog()
+    numboard = dialog.numeric(0, 'Entrer une année', sDefaultNum)
+    if numboard != None:
+       return numboard
+    return False
+    
+def selectAnn():
+    oGui = cGui()
+    newNum = showNumBoard()
+    sUrl = 'http://streamay.bz/films/annee/' + newNum
+    showMovies(sUrl)
+    oGui.setEndOfDirectory()
+    return
     
 def showGenre():
     oGui = cGui()
@@ -121,22 +143,77 @@ def showGenre():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()
-      
-def showMovies(sSearch = ''):
+    
+def showResultSearch(sSearch = ''):
     oGui = cGui()
-    if sSearch:
-      sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+    oParser = cParser()
+    
+    UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
+    headers = {'User-Agent': UA }
+
+    post_data = {'k' : sSearch}
+        
+    req = urllib2.Request('http://streamay.bz/search',urllib.urlencode(post_data),headers)
+        
+    response = urllib2.urlopen(req)
+    sHtmlContent = response.read()
+    sHtmlContent = unicode(sHtmlContent,'utf-8')
+    sHtmlContent = unicodedata.normalize('NFD', sHtmlContent).encode('ascii', 'ignore').decode("unicode_escape")
+    sHtmlContent = sHtmlContent.encode("utf-8")
+    response.close()
+  
+    sPattern = '{"result":{"id":".+?","title":"([^"]+)",.+?(?:"story"|"synopsis"):"([^"]+)",.+?(?:"img"|"banner"):"([^"]+)",.+?,"url":"([^"]+)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+                
+            sTitle = aEntry[0]
+            sTitle = cUtil().removeHtmlTags(sTitle)
+            sSyn = aEntry[1]
+            sUrl = aEntry[3] 
+            sThumb = URL_MAIN + 'cdn/img/' + aEntry[2]
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+            if 'serie' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, sSyn, oOutputParameterHandler)
+            elif 'mangas' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showAnime', sTitle, '', sThumb, sSyn, oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sSyn, oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+        
+        sNextPage = __checkForNextPage(sHtmlContent)
+        if (sNextPage != False):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+
+    if not sSearch:
+        oGui.setEndOfDirectory()
+        
+def showMovies():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     oParser = cParser()
+    
     sPattern = '<a href="([^"]+)" class="mv">.+?<img src="([^"]+)" alt="">.+?<span>([^<>]+)<\/span>'
+        
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -235,7 +312,6 @@ def showHosters():
     sPattern = '<a href="([^"]+)" data-streamer="([^"]+)" data-v-on=".+?" data-id="([^"]+)"> <i style=".+?"></i> <span>(.+?)</span></a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #xbmc.log(str(aResult))
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -357,7 +433,6 @@ def showAnimeHosters():
     sPattern = '{.+?"views":".+?",|"([^"]+)":"([^"]+)"|,"published":".+?".+}'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #xbmc.log(str(aResult))
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -387,4 +462,3 @@ def showAnimeHosters():
         cConfig().finishDialog(dialog)
                 
     oGui.setEndOfDirectory()
-    
