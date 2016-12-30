@@ -17,7 +17,8 @@ SITE_NAME = 'Tvrex.net'
 SITE_DESC = 'NBA Live/Replay'
 
 URL_MAIN = 'http://tvrex.net'
-
+REDDIT = 'https://www.reddit.com/r/nbastreams/'
+    
 URL_SEARCH = ('http://tvrex.net/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
@@ -51,6 +52,7 @@ def showSearch():
 
 
 def TimeET():
+    #Temp
     sUrl = 'http://www.worldtimeserver.com/time-zones/est/'
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -76,7 +78,7 @@ def ReplayTV():
     
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/live')
+    oOutputParameterHandler.addParameter('siteUrl', REDDIT)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Live NBA Games', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -97,6 +99,7 @@ def ReplayTV():
             
     oGui.setEndOfDirectory()  
     
+
 def showMovies(sSearch = ''):
     
     oGui = cGui()
@@ -111,21 +114,27 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     
     
-    if '/live' in sUrl:
+    if 'reddit' in sUrl:
 
-        sPattern = '<tr><td>\s*([a-zA-Z]{0,3}\s[0-9]{0,2})</td><td><a href="(http://tvrex.net/live/.+?)">(.+?)</a></td><td>(.+?)</td></tr>' 
+        TimeUTC = TimeET()
+        
+        sPattern = 'utm_name=nbastreams".+?>Game Thread:(.+?)</a>.+?<ul class=".+?"><li class=".+?"><a href="(.+?)"'  
+        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Live NBA Game (@Reddit)[/COLOR]' + '[COLOR teal]' + ' / '+ '[Utc ET: ' +TimeUTC+ ']' + '[/COLOR]')
     
+    
+    elif '?s=' in sUrl:
+        
+        sPattern = '<a href="([^"]+)"><img src="[^"]+" data-hidpi="(.+?)\?.+?" alt="(.+?)"'
+
     else:
 
         sPattern = '<a href="([^"]+)">\s*<img src="[^"]+" data-hidpi="(.+?)\?.+?" alt="(.+?)" width=".+?"'
 
-    if '?s=' in sUrl:
-        
-        sPattern = '<a href="([^"]+)"><img src="[^"]+" data-hidpi="(.+?)\?.+?" alt="(.+?)"'
+    
     
     sDateReplay = ''
     sDate = ''
-    TimeUTC = TimeET()
+    
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -138,35 +147,30 @@ def showMovies(sSearch = ''):
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
             
-            
-            sTitle = aEntry[2]
-            sUrl2 = aEntry[0]
-            sThumbnail = aEntry[1]
-            
-            try:
-               if '/live/' in aEntry[1]:
-                   sThumbnail = ''
-                   sDateLive= aEntry[0]
+            #game thread sur reddit 
+            if 'reddit' in sUrl:
+                try:  
                    sUrl2 = aEntry[1]
-                
-                   sTimeLive = aEntry[3]
-                   total = len(sTimeLive)
-                   if (total < 11):
-                       sTimeLive = '0' +sTimeLive
+                   sTitle = aEntry[0]
+                   sThumbnail = ''
                    
-                   sTitle = '[COLOR teal]' + sTimeLive + '[/COLOR]' + '   ' + sTitle
-                
-                   if (sDate != sDateLive):
+                   sTitle2= sTitle.split("(")
+                   sTitle = sTitle2[0]
+                   sTimeLive = sTitle2[1]
+                   sTimeLive = sTimeLive.replace(')', '')
+                   sTitle = '[COLOR teal]' + sTimeLive + '[/COLOR]' + sTitle
 
+                except:
+                      #temp test
+                      sThumbnail = ''
+                      sTitle = 'Erreur parse'
+                      sUrl2 = ''
+            else:
 
-                         
-        
-                       oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Programme Live / [/COLOR]' + '[COLOR teal]' +sDateLive   + '[/COLOR]' + '[COLOR gray]' + '  [ Utc ET: ' +  TimeUTC + ']' + '[/COLOR]')
-                       sDate = ' '  
-            except:
-
-                  sThumbnail = ''
-                  sUrl2 = aEntry[1]
+                sTitle = aEntry[2]
+                sUrl2 = aEntry[0]
+                sThumbnail = aEntry[1]
+          
             try:
 
                if 'category/nba' in sUrl:
@@ -214,9 +218,12 @@ def showMovies(sSearch = ''):
 
             oOutputParameterHandler.addParameter('sDateReplay', sDateReplay)
             
+           
 
+  
+            
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sUrl2, oOutputParameterHandler)
-                
+    
                 
         cConfig().finishDialog(dialog)
            
@@ -259,32 +266,49 @@ def showHosters():
           
     
     oParser = cParser()
-    
-    sPattern = '<a href="(https://open.+?)" target="_blank">(.+?)</a>'
-    
-    aResult = oParser.parse(sHtmlContent, sPattern)
+
     
     if sDateReplay:
        sMovieTitle = sMovieTitle + '[COLOR teal]' + ' / ' + sDateReplay +'[/COLOR]'
+
+    
+    #Test 
+    if 'nbastreams' in sUrl:
+
+        sPattern = '<a href="(http://nbastreams.pw/.+?)">(.+?)</a>'   
+        sDisplay ='[COLOR olive]Streaming disponibles:[/COLOR]'         
+        sThumbnail = ''
+   
+    else:  
+  
+        sPattern = '<a href="(https://open.+?)" target="_blank">(.+?)</a>'
+    
+        
+        sDisplay = '[COLOR olive]Qualités disponibles:[/COLOR]'   
+    
+    aResult = oParser.parse(sHtmlContent, sPattern)  
     
     oGui.addText(SITE_IDENTIFIER,sMovieTitle)
     
-    if '/live/' in sUrl:
-  
-       oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Streaming disponibles:[/COLOR]')
-    else:
-       oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualités disponibles:[/COLOR]')  
+    
+    oGui.addText(SITE_IDENTIFIER,sDisplay)  
     
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             
             sHosterUrl = aEntry[0]
             sTitle = aEntry[1]
+            
+            #Pour affichage test reddit
+            if 'nbastreams' in sUrl:
+                sTitle = '[nbastreamspw] ' + sTitle
+                sHosterUrl ='http://lol.m3u8'
+            
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
-                
-                
+            
+ 
     oGui.setEndOfDirectory()
