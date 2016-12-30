@@ -51,8 +51,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films Genre', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'selectAnn', 'Films Années', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', 'http://parannee')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Années', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
@@ -83,7 +83,7 @@ def showSearch():
         
 def showNumBoard(sDefaultNum=''):
     dialog = xbmcgui.Dialog()
-    numboard = dialog.numeric(0, 'Entrer une année', sDefaultNum)
+    numboard = dialog.numeric(0, 'Entrer une année ex: 2005', sDefaultNum)
     if numboard != None:
        return numboard
     return False
@@ -92,10 +92,8 @@ def selectAnn():
     oGui = cGui()
     newNum = showNumBoard()
     sUrl = 'http://streamay.bz/films/annee/' + newNum
-    showMovies(sUrl)
-    oGui.setEndOfDirectory()
-    return
-    
+    return sUrl
+
 def showGenre():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -203,9 +201,13 @@ def showResultSearch(sSearch = ''):
         
 def showMovies():
     oGui = cGui()
-
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    if 'parannee' in sUrl:
+        sUrl = selectAnn()
+    else:
+        sUrl = sUrl
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -214,7 +216,6 @@ def showMovies():
     sPattern = '<a href="([^"]+)" class="mv">.+?<img src="([^"]+)" alt="">.+?<span>([^<>]+)<\/span>.+?<\/span>(.+?)<\/p>'
  
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -251,7 +252,6 @@ def showMovies():
 
     oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     sPattern = '<li><a href="([^"]+)" rel="next">'
     oParser = cParser()
@@ -274,7 +274,6 @@ def showSaisons():
    
     sPattern = '<a class="head an choseSaison">(.+?)<\/a>|<a class="item" href="([^"]+)">.+?<span class="epitoto">(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -314,7 +313,6 @@ def showHosters():
     sPattern = '<a href="([^"]+)" data-streamer="([^"]+)" data-v-on=".+?" data-id="([^"]+)"> <i style=".+?"></i> <span>(.+?)</span></a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
