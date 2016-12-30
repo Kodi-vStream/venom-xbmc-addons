@@ -154,7 +154,7 @@ class cGuiElement:
             self.__sTitle = sTitle[0]
             del sTitle[0]
             if len(sTitle) >0:
-                self.__sTitle +=  "[COLOR coral]["+ '] ['.join(map(str,sTitle)) + "][/COLOR]"
+                self.__sTitle +=  " [COLOR coral]["+ '] ['.join(map(str,sTitle)) + "][/COLOR]"
         else:
             self.__sTitle = sTitle
 

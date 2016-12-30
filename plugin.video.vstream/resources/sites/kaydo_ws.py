@@ -20,7 +20,7 @@ import re,urllib2,urllib,xbmc
 
 
 SITE_IDENTIFIER = 'kaydo_ws'
-SITE_NAME = 'Kaydo.ws'
+SITE_NAME = 'Kaydo.ws (beta)'
 SITE_DESC = 'Le seul site de streaming en HD 720p 100% Gratuit'
 
 URL_MAIN = 'http://www.kaydo.ws/'
@@ -32,6 +32,9 @@ MOVIE_NOTES = (URL_MAIN + 'best-rating.php', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'films.php', 'showMovies')
  
 MOVIE_GENRES = (True, 'showGenre')
+
+SERIE_NEWS = (URL_MAIN + 'last-added-series.php', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'series.php', 'showMovies')
  
 URL_SEARCH = (URL_MAIN + 'search.php?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -62,6 +65,14 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genre', 'genres.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Series Nouveautes', 'series.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Toutes les Series', 'series.png', oOutputParameterHandler)
            
     oGui.setEndOfDirectory()
  
@@ -122,17 +133,26 @@ def showMovies(sSearch = ''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
     
+    #modif url par Gregwar  
+    if '?' in sUrl:
+        sUrl += '&r=n'
+    else:
+        sUrl += '?r=n'
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    # fh = open('I:\\test.txt', "w")
+    # fh = open('C:\\test.txt', "w")
     # fh.write(sHtmlContent)
     # fh.close()
 
-    sPattern = '<div class="box"> *<img src="([^"]+)" width=".+?" height=".+?">.+?<h2>([^<]+)</h2>.+?<p.*?>([^<]+)</p>.+?ref="([^"]+)">'
+    #sPattern = '<div class="box"> *<img src="([^"]+)" width=".+?" height=".+?">.+?<h2>([^<]+)</h2>.+?<p.*?>([^<]+)</p>.+?ref="([^"]+)">'
 
+    sPattern = '<img src="([^"]+?)" width=".+?<h2>(.+?)</h2>.*?<h3>(.+?)</h3>.+?<p>([^<]+)</p><a class="btn.+?href="(.+?)"'
+        
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    import xbmc
+    xbmc.log(str(aResult))
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -142,15 +162,20 @@ def showMovies(sSearch = ''):
                 break
                 
             sThumbnail = URL_MAIN+str(aEntry[0])
-            siteUrl = URL_MAIN+str(aEntry[3])
-            sCom = str(aEntry[2])
-            sTitle = str(aEntry[1])
+            siteUrl = URL_MAIN+str(aEntry[4])
+            sCom = str(aEntry[3])
+            sTitle = [str(aEntry[1]), str(aEntry[2])]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)            
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumbnail, sCom, oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sMovieTitle', aEntry[1])
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail) 
+            if 'details-serie.php' in siteUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showMovies', sTitle, 'series.png', sThumbnail, sCom, oOutputParameterHandler)
+            elif '/series' in siteUrl or '/series' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'series.png', sThumbnail, sCom, oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumbnail, sCom, oOutputParameterHandler)
            
         cConfig().finishDialog(dialog)
  
@@ -161,6 +186,56 @@ def showMovies(sSearch = ''):
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]' , oOutputParameterHandler)
  
     oGui.setEndOfDirectory()
+    
+def seriesHosters():
+    oGui = cGui() 
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl') 
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+
+    #modif url par Gregwar  
+    if '?' in sUrl:
+        sUrl += '&r=n'
+    else:
+        sUrl += '?r=n'
+    oRequestHandler = cRequestHandler(sUrl+'&ep=0')
+    sHtmlContent = oRequestHandler.request();
+
+    oParser = cParser()
+    result = re.search('^(.+?)(|col s4 hide-on-med-and-down(.+?))$', sHtmlContent, re.DOTALL)
+    sHtmlContent = result.group(1)
+    sPattern = '<li><div class="truncate.+?</i>(.+?)</div>(.+?)</li>'
+    #ici nous cherchont toute les sources iframe
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    #penser a faire un print aResult pour verifier
+
+    #si un lien ne s'affiche pas peux etre que l'hote n'est pas supporte par l'addon
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            if 'ep=0&' in aEntry[1]:
+                continue
+
+            links = []
+            result = re.search('href="(.+?ver=vf)"', aEntry[1])
+            if result:
+                links += [['VF', result.group(1)]]
+            result = re.search('href="(.+?ver=vo)"', aEntry[1])
+            if result:
+                links += [['VOST', result.group(1)]]
+
+            for t, link in links:
+                oOutputParameterHandler = cOutputParameterHandler()
+                sUrl = URL_MAIN+'/series/'+link+'&r=n'
+                name = aEntry[0] + ' ('+t+')'
+                oOutputParameterHandler.addParameter('siteUrl', sUrl) #sortie de l'url
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle) #sortie du titre
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail) #sortie du poster
+
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', name, '', sThumbnail, sUrl, oOutputParameterHandler)
+                #affiche le lien (oGui, oHoster, url du lien, poster)
+
+    oGui.setEndOfDirectory() #fin
          
 def __checkForNextPage(sHtmlContent):
     sPattern = 'class="pagination">.*?<li class="active">.+?<li><a href="(.+?)"'
@@ -181,6 +256,11 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail  = oInputParameterHandler.getValue('sThumbnail')
    
+   #modif url par Gregwar  
+    if '?' in sUrl:
+        sUrl += '&r=n'
+    else:
+        sUrl += '?r=n'
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
      
