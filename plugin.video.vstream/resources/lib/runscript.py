@@ -81,7 +81,34 @@ class cClear:
                     if ".fi" in i:
                         os.remove(os.path.join(path, i))
             return
-            
+        
+        elif (env == 'uplog'):
+            dialog = xbmcgui.Dialog()
+            if dialog.yesno('vStream', 'Êtes-vous sûr ?','','','Non', 'Oui'):
+                path = xbmc.translatePath('special://logpath/')
+                UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
+                headers = { 'User-Agent' : UA }
+                filenames = next(os.walk(path))[2]
+                for i in filenames:
+                    if 'kodi.log' in i:
+                        post_data = {}
+                        cUrl = 'http://slexy.org/index.php/submit'
+                        logop = open(path + i,'r')
+                        result = logop.read()
+                        logop.close()
+                        post_data['raw_paste'] = result
+                        post_data['author'] = 'kodi.log'
+                        post_data['language'] = 'text'
+                        post_data['permissions'] = 1 #private
+                        post_data['expire'] = 259200 #3j
+                        post_data['submit'] = 'Submit+Paste'
+                        request = urllib2.Request(cUrl,urllib.urlencode(post_data),headers)
+                        reponse = urllib2.urlopen(request)
+                        code = reponse.geturl().replace('http://slexy.org/view/','')
+                        reponse.close()
+                        cConfig().createDialogOK('Ce code doit être transmis lorsque vous ouvrez une issue veuillez le noter:' + '  ' + code)
+            return 
+        
         elif (env == 'search'):
         
             from resources.lib.handler.pluginHandler import cPluginHandler
