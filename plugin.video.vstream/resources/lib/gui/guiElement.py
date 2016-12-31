@@ -369,7 +369,7 @@ class cGuiElement:
         if self.getMeta() == 1:
             try:
                 from metahandler import metahandlers
-                grab = metahandlers.MetaData(preparezip=False,  tmdb_api_key='92ab39516970ab9d86396866456ec9b6')
+                grab = metahandlers.MetaData(preparezip=False,  tmdb_api_key=cConfig().getSetting('api_tmdb'))
                 args = ("movie", self.__sFileName)
                 kwargs = {}
                 if (self.__TmdbId) or (self.__Year):
@@ -387,7 +387,7 @@ class cGuiElement:
         elif self.getMeta() == 2:
             try:
                 from metahandler import metahandlers
-                grab = metahandlers.MetaData(preparezip=False, tmdb_api_key='92ab39516970ab9d86396866456ec9b6')
+                grab = metahandlers.MetaData(preparezip=False, tmdb_api_key=cConfig().getSetting('api_tmdb'))
                 #Nom a nettoyer ?
                 #attention l'annee peut mettre le bordel a cause des differences de sortie
                 args = ("tvshow", self.__sFileName)
