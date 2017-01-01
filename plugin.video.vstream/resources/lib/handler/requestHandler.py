@@ -7,8 +7,6 @@ import urllib2
 from urllib2 import HTTPError, URLError
 from resources.lib.config import cConfig
 
-from resources.lib import cloudflare
-
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
     REQUEST_TYPE_POST = 1
@@ -108,9 +106,12 @@ class cRequestHandler:
             sContent = oResponse.read()
             
             self.__sResponseHeader = oResponse.info()
+            
+            #compressed page ?
             if self.__sResponseHeader.get('Content-Encoding') == 'gzip':
                 import zlib
                 sContent = zlib.decompress(sContent, zlib.MAX_WBITS|16)
+                
             self.__sRealUrl = oResponse.geturl()
             self.__HeaderReturn = oResponse.headers
         
@@ -118,20 +119,22 @@ class cRequestHandler:
             
         except urllib2.HTTPError, e:
             if e.code == 503:
+                
+                #Protected by cloudFlare ?
+                from resources.lib import cloudflare
                 if cloudflare.CheckIfActive(e.read()):
                     if 'Set-Cookie' in e.headers:
                         cookies = e.headers['Set-Cookie']
                     else:
                         cookies = ''
                     cookies = cookies.split(';')[0]
-                    print 'Page protegee par cloudflare'
-                    from resources.lib.cloudflare import CloudflareBypass
-                    CF = CloudflareBypass()
-                    sContent = CF.GetHtml(self.__sUrl,e.read(),cookies)
                     
+                    print 'Page protegee par cloudflare'
+                    CF = cloudflare.CloudflareBypass()
+                    sContent = CF.GetHtml(self.__sUrl,e.read(),cookies,sParameters)
                     self.__sRealUrl,self.__HeaderReturn = CF.GetReponseInfo()
 
-            if not  sContent:
+            if not sContent:
                 cConfig().error("%s,%s" % (cConfig().getlanguage(30205), self.__sUrl))
                 return ''
         
