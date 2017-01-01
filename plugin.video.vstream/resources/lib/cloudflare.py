@@ -132,7 +132,7 @@ class CloudflareBypass(object):
     def GetReponseInfo(self):
         return self.HttpReponse.geturl(), self.HttpReponse.headers
         
-    def GetHtml(self,url,htmlcontent = '',cookies = ''):
+    def GetHtml(self,url,htmlcontent = '',cookies = '',postdata = ''):
         
         self.hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',url)
         self.host = re.sub(r'https*:\/\/','',self.hostComplet)
@@ -151,7 +151,7 @@ class CloudflareBypass(object):
             #Add saved cookies
             opener.addheaders.append (('Cookie', cookies))
             
-            self.HttpReponse = opener.open(url)
+            self.HttpReponse = opener.open(url,postdata)
             htmlcontent = self.HttpReponse.read()
             head = self.HttpReponse.headers
             
@@ -179,10 +179,11 @@ class CloudflareBypass(object):
             opener = urllib2.build_opener(NoRedirection)
             opener.addheaders = self.SetHeader()
            
-            self.HttpReponse = opener.open(url)
+            self.HttpReponse = opener.open(url,postdata)
             
             #code
             htmlcontent = self.HttpReponse.read()
+            
             #fh = open('c:\\test.txt', "r")
             #htmlcontent = fh.read()
             #fh.close()
@@ -220,8 +221,8 @@ class CloudflareBypass(object):
         #Add first cookie
         if not cookies == '':
             opener.addheaders.append(('Cookie', cookies))
-        
-        self.HttpReponse = opener.open(NewUrl)
+
+        self.HttpReponse = opener.open(NewUrl,postdata)
 
         if 'Set-Cookie' in self.HttpReponse.headers:
             cookies2 = str(self.HttpReponse.headers.get('Set-Cookie'))
@@ -259,7 +260,7 @@ class CloudflareBypass(object):
         #Add the two cookies
         opener.addheaders.append (('Cookie', cookies))
         
-        self.HttpReponse = opener.open(url)
+        self.HttpReponse = opener.open(url,postdata)
         htmlcontent = self.HttpReponse.read()
         head = self.HttpReponse.headers
         if CheckIfActive(htmlcontent):
