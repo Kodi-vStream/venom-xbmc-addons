@@ -64,7 +64,7 @@ def showFile():
         sHtmlContent = oPremiumHandler.GetHtml(BURL)
 
     oParser = cParser()
-    sPattern = '<td><a href="([^"]+)" class=".+?">([^<]+)<\/a><\/td><td>(.+?)<\/td>'
+    sPattern = '<td><a href="([^"]+)" class=".+?">([^<]+)<\/a>.+?<td>(.+?)<\/td>'
     aResult = oParser.parse(sHtmlContent, sPattern)  
     if (aResult[0] == True):
         total = len(aResult[1])
