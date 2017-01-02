@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#johngf - V0.4
+#johngf - V0.4.1
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui 
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler 
@@ -85,9 +85,23 @@ def showFile():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl,'')
                 
         cConfig().finishDialog(dialog)
-        
+        sNextPage = __checkForNextPage(sHtmlContent)
+        if (sNextPage != False):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            oGui.addDir(SITE_IDENTIFIER, 'showFile', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            
     oGui.setEndOfDirectory()
-
+    
+def __checkForNextPage(sHtmlContent):
+    sPattern = "<a href='([^']+)'>(?:Next|Suivant).+?<\/a>"
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        return URL_MAIN + aResult[1][0]
+ 
+    return False
+    
 def showFolder():
     oGui = cGui()
     oPremiumHandler = cPremiumHandler('uptobox')
