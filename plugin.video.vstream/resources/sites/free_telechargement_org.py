@@ -519,15 +519,23 @@ def showHosters():# recherche et affiche les hotes
     
     aResult1 = oParser.parse(sHtmlContent, sPattern)
     if (aResult1[0] == True):
-        if 'Forced' in aResult1[1][0]: aResult1[1][0]=''
-    xbmc.log(str(aResult1))
+        if 'Forced' in aResult1[1][0]:
+            aResult1[1][0]=''
+            
+    #xbmc.log(str(aResult1))
     
     #cut de la zone des liens
-    if 'Lien Premium  --' in sHtmlContent:
-        sPattern = 'Lien Premium  --(.+?)</div>'
+    if 'Lien Premium --' in sHtmlContent:
+        xbmc.log('lien premiums')
+        sPattern = 'Lien Premium *--(.+?)</div>'
     else:
         sPattern = '<div id="link">(.+?)</div>'
+        
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    if not aResult[0]:
+        return
+    
     sHtmlContent = aResult[1][0]
     sHtmlContent = re.sub('<font color="[^"]+">','',sHtmlContent)
     sHtmlContent = re.sub('</font>','',sHtmlContent)
@@ -538,7 +546,7 @@ def showHosters():# recherche et affiche les hotes
     if '-multi' in sHtmlContent:
         sPattern = '<a href="link.php\?lien\=([^"]+)"'
     else:
-        sPattern = '<b>(.+?)</b> </br> <a href="link.php\?lien\=([^"]+)" target="_blank" ><b>Cliquer ici pour Télécharger</b></a><br /><br />'
+        sPattern = '<b>(.+?)<\/b> <\/*br> *<a href="link.php\?lien\=([^"]+)" target="_blank" *><b>Cliquer ici pour Télécharger'
    
     aResult = oParser.parse(sHtmlContent, sPattern)
     #xbmc.log(str(aResult))
@@ -688,17 +696,17 @@ def Display_protected_link():
     oGui.setEndOfDirectory()
 
 def DecryptddlProtect(url):
-    xbmc.log("DecryptddlProtect")
+    #xbmc.log("DecryptddlProtect")
     
-    xbmc.log('>>' + url)
+    #xbmc.log('>>' + url)
     
     if not (url): return ''
     
     cookies = ''
     #try to get previous cookie
     cookies = Readcookie('liens_free-telechargement_org')
-    xbmc.log( 'cookie récupéré:')
-    xbmc.log( 'Ancien' + cookies )
+    #xbmc.log( 'cookie récupéré:')
+    #xbmc.log( 'Ancien' + cookies )
     oRequestHandler = cRequestHandler(url)
     if cookies:
         oRequestHandler.addHeaderEntry('Cookie',cookies)
@@ -718,11 +726,11 @@ def DecryptddlProtect(url):
         else:
             image = URL_PROTECT + s[0]
             
-        xbmc.log(image)
+        #xbmc.log(image)
 
         captcha,cookies2 = get_response(image,cookies)
         cookies = cookies + '; ' +cookies2
-        xbmc.log( 'New ' + cookies)
+        #xbmc.log( 'New ' + cookies)
         
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.setRequestType(1)
@@ -779,7 +787,8 @@ def Readcookie(Domain):
     return data
 	
 def get_response(img,cookie):    
-    xbmc.log( "get_reponse")
+    #xbmc.log( "get_reponse")
+    
     #on telecharge l'image
     filename  = os.path.join(PathCache,'Captcha.png')
 
