@@ -151,8 +151,7 @@ def showMovies(sSearch = ''):
         
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    import xbmc
-    xbmc.log(str(aResult))
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -206,11 +205,8 @@ def seriesHosters():
     result = re.search('^(.+?)(|col s4 hide-on-med-and-down(.+?))$', sHtmlContent, re.DOTALL)
     sHtmlContent = result.group(1)
     sPattern = '<li><div class="truncate.+?</i>(.+?)</div>(.+?)</li>'
-    #ici nous cherchont toute les sources iframe
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #penser a faire un print aResult pour verifier
 
-    #si un lien ne s'affiche pas peux etre que l'hote n'est pas supporte par l'addon
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             if 'ep=0&' in aEntry[1]:
@@ -227,13 +223,14 @@ def seriesHosters():
             for t, link in links:
                 oOutputParameterHandler = cOutputParameterHandler()
                 sUrl = URL_MAIN+'/series/'+link+'&r=n'
-                name = aEntry[0] + ' ('+t+')'
-                oOutputParameterHandler.addParameter('siteUrl', sUrl) #sortie de l'url
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle) #sortie du titre
-                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail) #sortie du poster
+                #name = aEntry[0] + ' ('+t+')'
+                name = [aEntry[0], t]
+                oOutputParameterHandler.addParameter('siteUrl', sUrl) 
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle) 
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail) 
 
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', name, '', sThumbnail, sUrl, oOutputParameterHandler)
-                #affiche le lien (oGui, oHoster, url du lien, poster)
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', name, 'series.png', sThumbnail, sUrl, oOutputParameterHandler)
+
 
     oGui.setEndOfDirectory() #fin
          
