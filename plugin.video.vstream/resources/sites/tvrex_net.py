@@ -9,8 +9,9 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-#from resources.lib.util import cUtil
-
+from resources.lib.player import cPlayer
+import urllib,re,urllib2
+import base64,sys,xbmc
 
 SITE_IDENTIFIER = 'tvrex_net' 
 SITE_NAME = 'Tvrex.net'
@@ -18,12 +19,18 @@ SITE_DESC = 'NBA Live/Replay'
 
 URL_MAIN = 'http://tvrex.net'
 REDDIT = 'https://www.reddit.com/r/nbastreams/'
-    
+  
 URL_SEARCH = ('http://tvrex.net/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-
 SPORT_SPORTS = ('http://', 'ReplayTV')
+
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Chrome/47.0'
+
+headers = { 'User-Agent' : UA }
+
+Logo_Reddit = 'aHR0cHM6Ly9iLnRodW1icy5yZWRkaXRtZWRpYS5jb20va1c5ZFNqRFlzUDhGbEJYeUUyemJaaEFCaXM5eS0zVHViSWtic0JfUDlBay5wbmc='
+Logo_Nba = 'aHR0cDovL3d3dy5vZmZpY2lhbHBzZHMuY29tL2ltYWdlcy90aHVtYnMvSS1sb3ZlLXRoaXMtZ2FtZS1uYmEtbG9nby1wc2Q2MDQwNy5wbmc='
 
 def load():
     
@@ -35,7 +42,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Replay NBA Games', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Live/Replay NBA Games', 'news.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
 
@@ -52,8 +59,8 @@ def showSearch():
 
 
 def TimeET():
-    #Temp
-    sUrl = 'http://www.worldtimeserver.com/time-zones/est/'
+    
+    sUrl = 'http://www.worldtimeserver.com/current_time_in_CA-ON.aspx'
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
@@ -79,7 +86,7 @@ def ReplayTV():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REDDIT)
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Live NBA Games', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Live NBA Games [beta]', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/nba/')
@@ -98,7 +105,74 @@ def ReplayTV():
     #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA All Star Weekend', 'tv.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()  
+  
+
+def showLive():
+   
+      oGui = cGui()
+      oInputParameterHandler = cInputParameterHandler()
+      sUrl = oInputParameterHandler.getValue('siteUrl')
+
+      sTitle = oInputParameterHandler.getValue('sMovieTitle')
+      sThumbnail = oInputParameterHandler.getValue('sThumbnail')  
+      
+      try:
+         request = urllib2.Request(sUrl,None,headers)
+         reponse = urllib2.urlopen(request)
+         sHtmlContent = reponse.read()
+         reponse.close()
+      except urllib2.HTTPError:
+                              sHtmlContent = ''
+                              pass
+      
+      sPattern = 'player.html\#(.+?)"'
+      
+      oParser = cParser()
+      aResult = oParser.parse(sHtmlContent, sPattern)
+      
+      if (aResult[0] == True):
+          
+          sUrl = aResult[1][0]
+          
+          sDisplayTitle = sTitle + '[COLOR skyblue]' + '  Lien Direct' + '[/COLOR]'
+
+     
+          oOutputParameterHandler = cOutputParameterHandler()
+          oOutputParameterHandler.addParameter('siteUrl', sUrl)
+          oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+          oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+
+          oGui.addMovie(SITE_IDENTIFIER, 'play__', sDisplayTitle, '', sThumbnail, sUrl, oOutputParameterHandler)
+     
+      else:
+          oGui.addText(SITE_IDENTIFIER, '(Lien non disponible)')
+  
+      oGui.setEndOfDirectory()
+
+
+def play__():
     
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    
+    oGuiElement = cGuiElement()
+    oGuiElement.setSiteName(SITE_IDENTIFIER)
+    oGuiElement.setTitle(sTitle)
+    oGuiElement.setMediaUrl(sUrl)
+    oGuiElement.setThumbnail(sThumbnail)
+
+    oPlayer = cPlayer()
+    oPlayer.clearPlayList()
+    oPlayer.addItemToPlaylist(oGuiElement)
+    oPlayer.startPlayer()
+    return
+        
+    oGui.setEndOfDirectory()
+   
 
 def showMovies(sSearch = ''):
     
@@ -113,13 +187,12 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    
     if 'reddit' in sUrl:
 
         TimeUTC = TimeET()
         
         sPattern = 'utm_name=nbastreams".+?>Game Thread:(.+?)</a>.+?<ul class=".+?"><li class=".+?"><a href="(.+?)"'  
-        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Live NBA Game (@Reddit)[/COLOR]' + '[COLOR teal]' + ' / '+ '[Utc ET: ' +TimeUTC+ ']' + '[/COLOR]')
+        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Live NBA Game (@Reddit)[/COLOR]' + '[COLOR gray]' + '  [ utc ET: ' + '[/COLOR]' +TimeUTC+ '[COLOR gray]' + ' ]' + '[/COLOR]')
     
     
     elif '?s=' in sUrl:
@@ -147,13 +220,12 @@ def showMovies(sSearch = ''):
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
             
-            #game thread sur reddit 
+            #Listage game thread sur reddit 
             if 'reddit' in sUrl:
                 try:  
                    sUrl2 = aEntry[1]
                    sTitle = aEntry[0]
-                   sThumbnail = ''
-                   
+                   sThumbnail = base64.b64decode(Logo_Reddit)
                    sTitle2= sTitle.split("(")
                    sTitle = sTitle2[0]
                    sTimeLive = sTitle2[1]
@@ -161,16 +233,17 @@ def showMovies(sSearch = ''):
                    sTitle = '[COLOR teal]' + sTimeLive + '[/COLOR]' + sTitle
 
                 except:
-                      #temp test
-                      sThumbnail = ''
+                      #temp erreur test
+                      sThumbnail = ' '
                       sTitle = 'Erreur parse'
                       sUrl2 = ''
             else:
-
+                
                 sTitle = aEntry[2]
                 sUrl2 = aEntry[0]
                 sThumbnail = aEntry[1]
-          
+               
+                          
             try:
 
                if 'category/nba' in sUrl:
@@ -215,12 +288,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2) 
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-
             oOutputParameterHandler.addParameter('sDateReplay', sDateReplay)
-            
-           
-
-  
             
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sUrl2, oOutputParameterHandler)
     
@@ -232,7 +300,14 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
-            
+    
+    else:
+        if  'reddit' in sUrl:
+
+             oGui.addText(SITE_IDENTIFIER,'Thread liens matchs non disponible pour le moment')
+        else:
+
+            oGui.addText(SITE_IDENTIFIER,'(Replay non disponible/Erreur)')
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -272,12 +347,12 @@ def showHosters():
        sMovieTitle = sMovieTitle + '[COLOR teal]' + ' / ' + sDateReplay +'[/COLOR]'
 
     
-    #Test 
-    if 'nbastreams' in sUrl:
-
-        sPattern = '<a href="(http://nbastreams.pw/.+?)">(.+?)</a>'   
+    if 'nbastream' in sUrl:
+    
+        sPattern = '<a href="(http://nbastreams.pw/.+?)">(.+?)</a>'
+        
         sDisplay ='[COLOR olive]Streaming disponibles:[/COLOR]'         
-        sThumbnail = ''
+        
    
     else:  
   
@@ -286,6 +361,7 @@ def showHosters():
         
         sDisplay = '[COLOR olive]Qualités disponibles:[/COLOR]'   
     
+   
     aResult = oParser.parse(sHtmlContent, sPattern)  
     
     oGui.addText(SITE_IDENTIFIER,sMovieTitle)
@@ -298,17 +374,28 @@ def showHosters():
             
             sHosterUrl = aEntry[0]
             sTitle = aEntry[1]
+            xbmc.log('NBASTREAMPW: ' +str(sHosterUrl))
+            #On ouvre liens nbastreams via showLive&play__
+            #todo lien youtube a rajouter via hoster
             
-            #Pour affichage test reddit
-            if 'nbastreams' in sUrl:
-                sTitle = '[nbastreamspw] ' + sTitle
-                sHosterUrl ='http://lol.m3u8'
-            
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+            if 'nbastreams' in sHosterUrl:
+                sTitle = '[NBAstreamspw] ' + sTitle
+                sUrl = sHosterUrl
+                sThumbnail = base64.b64decode(Logo_Nba)
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl) 
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+                oGui.addMovie(SITE_IDENTIFIER, 'showLive', sTitle, '', sThumbnail, sUrl, oOutputParameterHandler)
+
+            else:
+
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
             
  
     oGui.setEndOfDirectory()
