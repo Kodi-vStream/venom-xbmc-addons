@@ -104,6 +104,21 @@ class cTrakt:
     def search(self):
         oGui = cGui()
         
+#        url = 'http://ddlfr.org/films/exclue/69336-nitro-rush-bdrip-french.html'
+#        oRequestHandler = cRequestHandler(url)
+#        sHtmlContent = oRequestHandler.request()
+#        
+#        r = re.search('data-sitekey="([^"]+)', sHtmlContent)
+#        if r:
+#            import cookielib
+#            import recaptcha
+#            cookieJar = cookielib.LWPCookieJar()
+#            recaptcha.performCaptcha(url,cookieJar)
+#            xbmc.log('ok')
+#        
+#        return
+        
+        
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'https://')
         oOutputParameterHandler.addParameter('type', 'movie')
@@ -216,9 +231,10 @@ class cTrakt:
         
         #DANGER ca rame, freeze
         liste = []
-        liste.append( ['Mes sorties Sur les 7 jours a venir','https://api.trakt.tv/calendars/my/shows/' + today_date + '/7'] )
+        liste.append( ['Mes sorties sur les 7 jours a venir','https://api.trakt.tv/calendars/my/shows/' + today_date + '/7'] )
+        liste.append( ['Mes sorties sur les 30 jours a venir','https://api.trakt.tv/calendars/my/shows/' + today_date + '/30'] )
         liste.append( ['Nouveautes sur 7 jours','https://api.trakt.tv/calendars/all/shows/new/' + today_date + '/7'] )
-        liste.append( ['Freeze - Nouveautees sur la journee a venir','https://api.trakt.tv/calendars/all/shows/' + today_date + '/1'] )
+        #liste.append( ['Freeze - Nouveautees sur la journee a venir','https://api.trakt.tv/calendars/all/shows/' + today_date + '/1'] )
         
         for sTitle,sUrl in liste:
 
@@ -686,7 +702,7 @@ class cTrakt:
         if not sAction:
             return
 
-        xbmc.log(str(oInputParameterHandler.getAllParameter()))
+        #xbmc.log(str(oInputParameterHandler.getAllParameter()))
         
         sType = oInputParameterHandler.getValue('sType')
         if not sType:
@@ -722,12 +738,12 @@ class cTrakt:
         
         sText = "Erreur"
         try:
-            if result["added"]['movies'] == 1 or result["added"]['episodes'] > 0:
+            if result["added"]['movies'] == 1 or result["added"]['episodes'] > 0 or result["added"]['shows'] > 0:
                 sText = "Ajouté avec succes"
         except: pass
 
         try:
-            if result["updated"]['movies'] == 1 or result["updated"]['episodes'] > 0:
+            if result["updated"]['movies'] == 1 or result["updated"]['episodes'] > 0 or result["updated"]['shows'] > 0:
                 sText = "Mise à jour avec succes"
         except: pass
         
@@ -735,7 +751,11 @@ class cTrakt:
             if result["deleted"]['movies'] == 1 or result["deleted"]['episodes'] > 0:
                 sText = 'Supprimé avec succes'
         except: pass
-        
+           
+        try:
+            if result["existing"]['movies'] >0  or result["existing"]['episodes'] > 0 or result["existing"]['seasons'] > 0  or result["existing"]['shows'] > 0:
+                sText = 'Entree deja presente'
+        except: pass       
 
         cGui().showNofication(sText)
 
