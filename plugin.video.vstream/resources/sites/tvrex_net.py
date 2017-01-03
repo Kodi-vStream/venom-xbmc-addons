@@ -24,9 +24,8 @@ URL_SEARCH = ('http://tvrex.net/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 SPORT_SPORTS = ('http://', 'ReplayTV')
-
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Chrome/47.0'
-
+UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36' 
+#UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Chrome/47.0'
 headers = { 'User-Agent' : UA }
 
 Logo_Reddit = 'aHR0cHM6Ly9iLnRodW1icy5yZWRkaXRtZWRpYS5jb20va1c5ZFNqRFlzUDhGbEJYeUUyemJaaEFCaXM5eS0zVHViSWtic0JfUDlBay5wbmc='
@@ -363,7 +362,7 @@ def showHosters():
     
    
     aResult = oParser.parse(sHtmlContent, sPattern)  
-    
+    sHtmlContent = sHtmlContent.replace(' rel="nofollow"', '')
     oGui.addText(SITE_IDENTIFIER,sMovieTitle)
     
     
