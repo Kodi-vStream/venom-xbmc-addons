@@ -24,7 +24,7 @@ URL_SEARCH = ('http://tvrex.net/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 SPORT_SPORTS = ('http://', 'ReplayTV')
-UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36' 
+UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
 #UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Chrome/47.0'
 headers = { 'User-Agent' : UA }
 
@@ -360,9 +360,9 @@ def showHosters():
         
         sDisplay = '[COLOR olive]Qualités disponibles:[/COLOR]'   
     
-   
-    aResult = oParser.parse(sHtmlContent, sPattern)  
     sHtmlContent = sHtmlContent.replace(' rel="nofollow"', '')
+    aResult = oParser.parse(sHtmlContent, sPattern)  
+    
     oGui.addText(SITE_IDENTIFIER,sMovieTitle)
     
     
