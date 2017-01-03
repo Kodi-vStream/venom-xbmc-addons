@@ -171,17 +171,19 @@
         <setting id="plugin_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="true"/>
         <setting visible="false" id="search1_film_streaming_co" type="bool" label="30077" default="true"/>
         
+        <setting id="plugin_free_telechargement_org" type="bool" label="Free Telechargement (Films)" default="true"/>
+        <setting visible="false" id="search1_free_telechargement_org" type="bool" label="30077" default="true"/>
+        <setting visible="false" id="search2_free_telechargement_org" type="bool" label="30077" default="true"/>
+        
         <setting id="plugin_frenchddl_com" type="bool" label="frenchddl_com(Films)" default="true"/>
         
         <setting id="plugin_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="true"/>
         <setting visible="false" id="search1_fullmoviz_org" type="bool" label="30077" default="true"/>
 		
-        <setting id="plugin_full_streamvk_net" type="bool" label="Full Streamvk.com (Films)" default="true"/>
-        
         <setting id="plugin_full_stream_org" type="bool" label="Full Stream (Films, Séries)" default="true"/>
     
-        <setting id="plugin_hd_stream_in" type="bool" label="hd_stream_in (Films)" default="true"/>
-        <setting visible="false" id="search1_hd_stream_in" type="bool" label="30077" default="true"/>
+        <setting id="plugin_kaydo_ws" type="bool" label="kaydo (Films)" default="true"/>
+        <setting visible="false" id="search1_kaydo_ws" type="bool" label="30077" default="true"/>
         
         <setting id="plugin_kepliz_com" type="bool" label="Kepliz.com (Films)" default="true"/>
         <setting visible="false" id="search1_kepliz_com" type="bool" label="30077" default="true"/>
