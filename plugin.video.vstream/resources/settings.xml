@@ -168,9 +168,6 @@
         <setting id="plugin_film_illimit_fr" type="bool" label="Film Illimit (Films)" default="true"/>
         <setting visible="false" id="search1_film_illimit_fr" type="bool" label="30077" default="true"/>
         
-        <setting id="plugin_film_streaming_co" type="bool" label="Film Streaming.co (Films)" default="true"/>
-        <setting visible="false" id="search1_film_streaming_co" type="bool" label="30077" default="true"/>
-        
         <setting id="plugin_free_telechargement_org" type="bool" label="Free Telechargement (Films)" default="true"/>
         <setting visible="false" id="search1_free_telechargement_org" type="bool" label="30077" default="true"/>
         <setting visible="false" id="search2_free_telechargement_org" type="bool" label="30077" default="true"/>
