@@ -171,7 +171,10 @@ def showMovies(sSearch = ''):
             sUrl2 = aEntry[0]
             sCom = aEntry[4]
             sCom = sCom.decode("unicode_escape").encode("latin-1")
-            sThumbnail=aEntry[2]
+            if 'http://' in aEntry[2]:
+                sThumbnail=aEntry[2]
+            else:
+                sThumbnail=URL_MAIN+aEntry[2] 
             sYear =aEntry[5]
             
             
@@ -193,7 +196,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-    #tPassage en mode vignette sauf en cas de recherche globale
+    #Passage en mode vignette sauf en cas de recherche globale
     xbmc.executebuiltin('Container.SetViewMode(500)')
      
     oGui.setEndOfDirectory()
@@ -224,7 +227,7 @@ def showHosters():# recherche et affiche les hotes
     #xbmc.log(sHtmlContent)
     oParser = cParser()
     
-    sPattern = '<a href="([^"]+)" target="_blank">([^<]+?)</a>'
+    sPattern = '<!--/colorstart-->([^<]+)<!--colorend-->|<a href="([^"]+)" target="_blank">([^<]+?)</a>'
    
     aResult = oParser.parse(sHtmlContent, sPattern)
     #xbmc.log(str(aResult))
@@ -232,20 +235,23 @@ def showHosters():# recherche et affiche les hotes
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
-        oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sMovieTitle + '[/COLOR] ')
+        
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-            sHosterUrl=aEntry[0]
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            sTitle = aEntry[1]
-            if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(sTitle)
-                sDisplayTitle = sDisplayTitle.replace('-EXTREME','')
-                oHoster.setDisplayName(sDisplayTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR] ')
+            else:
+                sHosterUrl=aEntry[1]
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                sTitle = aEntry[2]
+                if (oHoster != False):
+                    sDisplayTitle = cUtil().DecoTitle(sTitle)
+                    sDisplayTitle = sDisplayTitle.replace('-EXTREME','')
+                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setFileName(sTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
    
         cConfig().finishDialog(dialog)
 
