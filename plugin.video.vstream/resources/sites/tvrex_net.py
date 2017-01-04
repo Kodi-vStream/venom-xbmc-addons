@@ -19,14 +19,11 @@ SITE_DESC = 'NBA Live/Replay'
 
 URL_MAIN = 'http://tvrex.net'
 REDDIT = 'https://www.reddit.com/r/nbastreams/'
-  
+
 URL_SEARCH = ('http://tvrex.net/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 SPORT_SPORTS = ('http://', 'ReplayTV')
-UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
-#UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Chrome/47.0'
-headers = { 'User-Agent' : UA }
 
 Logo_Reddit = 'aHR0cHM6Ly9iLnRodW1icy5yZWRkaXRtZWRpYS5jb20va1c5ZFNqRFlzUDhGbEJYeUUyemJaaEFCaXM5eS0zVHViSWtic0JfUDlBay5wbmc='
 Logo_Nba = 'aHR0cDovL3d3dy5vZmZpY2lhbHBzZHMuY29tL2ltYWdlcy90aHVtYnMvSS1sb3ZlLXRoaXMtZ2FtZS1uYmEtbG9nby1wc2Q2MDQwNy5wbmc='
@@ -74,6 +71,7 @@ def TimeET():
     timeError = ''
     return timeError
 
+
 def ReplayTV():
 
     oGui = cGui()
@@ -85,7 +83,7 @@ def ReplayTV():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REDDIT)
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Live NBA Games [beta]', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Live NBA Games (beta)', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/nba/')
@@ -103,75 +101,8 @@ def ReplayTV():
     #oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/nba/all-star-weekend/')
     #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA All Star Weekend', 'tv.png', oOutputParameterHandler)
             
-    oGui.setEndOfDirectory()  
-  
-
-def showLive():
-   
-      oGui = cGui()
-      oInputParameterHandler = cInputParameterHandler()
-      sUrl = oInputParameterHandler.getValue('siteUrl')
-
-      sTitle = oInputParameterHandler.getValue('sMovieTitle')
-      sThumbnail = oInputParameterHandler.getValue('sThumbnail')  
-      
-      try:
-         request = urllib2.Request(sUrl,None,headers)
-         reponse = urllib2.urlopen(request)
-         sHtmlContent = reponse.read()
-         reponse.close()
-      except urllib2.HTTPError:
-                              sHtmlContent = ''
-                              pass
-      
-      sPattern = 'player.html\#(.+?)"'
-      
-      oParser = cParser()
-      aResult = oParser.parse(sHtmlContent, sPattern)
-      
-      if (aResult[0] == True):
-          
-          sUrl = aResult[1][0]
-          
-          sDisplayTitle = sTitle + '[COLOR skyblue]' + '  Lien Direct' + '[/COLOR]'
-
-     
-          oOutputParameterHandler = cOutputParameterHandler()
-          oOutputParameterHandler.addParameter('siteUrl', sUrl)
-          oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-          oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-
-          oGui.addMovie(SITE_IDENTIFIER, 'play__', sDisplayTitle, '', sThumbnail, sUrl, oOutputParameterHandler)
-     
-      else:
-          oGui.addText(SITE_IDENTIFIER, '(Lien non disponible)')
-  
-      oGui.setEndOfDirectory()
-
-
-def play__():
-    
-    oGui = cGui()
-
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
-    oGuiElement = cGuiElement()
-    oGuiElement.setSiteName(SITE_IDENTIFIER)
-    oGuiElement.setTitle(sTitle)
-    oGuiElement.setMediaUrl(sUrl)
-    oGuiElement.setThumbnail(sThumbnail)
-
-    oPlayer = cPlayer()
-    oPlayer.clearPlayList()
-    oPlayer.addItemToPlaylist(oGuiElement)
-    oPlayer.startPlayer()
-    return
-        
     oGui.setEndOfDirectory()
-   
+
 
 def showMovies(sSearch = ''):
     
@@ -191,7 +122,8 @@ def showMovies(sSearch = ''):
         TimeUTC = TimeET()
         
         sPattern = 'utm_name=nbastreams".+?>Game Thread:(.+?)</a>.+?<ul class=".+?"><li class=".+?"><a href="(.+?)"'  
-        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Live NBA Game (@Reddit)[/COLOR]' + '[COLOR gray]' + '  [ utc ET: ' + '[/COLOR]' +TimeUTC+ '[COLOR gray]' + ' ]' + '[/COLOR]')
+        
+        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Live NBA Game (@Reddit)[/COLOR]' + '[COLOR gray]' + '  [ Heure Locale ET : ' + '[/COLOR]' +TimeUTC+ '[COLOR gray]' + ' ]' + '[/COLOR]')
     
     
     elif '?s=' in sUrl:
@@ -202,8 +134,6 @@ def showMovies(sSearch = ''):
 
         sPattern = '<a href="([^"]+)">\s*<img src="[^"]+" data-hidpi="(.+?)\?.+?" alt="(.+?)" width=".+?"'
 
-    
-    
     sDateReplay = ''
     sDate = ''
     
@@ -219,7 +149,7 @@ def showMovies(sSearch = ''):
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
             
-            #Listage game thread sur reddit 
+            #listage game thread via reddit 
             if 'reddit' in sUrl:
                 try:  
                    sUrl2 = aEntry[1]
@@ -232,7 +162,7 @@ def showMovies(sSearch = ''):
                    sTitle = '[COLOR teal]' + sTimeLive + '[/COLOR]' + sTitle
 
                 except:
-                      #temp erreur test
+                      #erreur parse
                       sThumbnail = ' '
                       sTitle = 'Erreur parse'
                       sUrl2 = ''
@@ -303,10 +233,9 @@ def showMovies(sSearch = ''):
     else:
         if  'reddit' in sUrl:
 
-             oGui.addText(SITE_IDENTIFIER,'Thread liens matchs non disponible pour le moment')
+             oGui.addText(SITE_IDENTIFIER,'(Aucun Match disponible via Reddit pour le moment)')
         else:
-
-            oGui.addText(SITE_IDENTIFIER,'(Replay non disponible/Erreur)')
+            oGui.addText(SITE_IDENTIFIER,'(Erreur -Replay non disponible)')
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -337,64 +266,154 @@ def showHosters():
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-          
-    
-    oParser = cParser()
-
+    sHtmlContent = sHtmlContent.replace(' rel="nofollow"', '')
     
     if sDateReplay:
        sMovieTitle = sMovieTitle + '[COLOR teal]' + ' / ' + sDateReplay +'[/COLOR]'
 
     
-    if 'nbastream' in sUrl:
+    if 'reddit' in sUrl:
     
-        sPattern = '<a href="(http://nbastreams.pw/.+?)">(.+?)</a>'
+        sPattern = '<a href="(.+?)">(.+?)</a>'
         
         sDisplay ='[COLOR olive]Streaming disponibles:[/COLOR]'         
-        
    
-    else:  
-  
+    else:
+
         sPattern = '<a href="(https://open.+?)" target="_blank">(.+?)</a>'
     
-        
         sDisplay = '[COLOR olive]Qualités disponibles:[/COLOR]'   
     
-    sHtmlContent = sHtmlContent.replace(' rel="nofollow"', '')
-    aResult = oParser.parse(sHtmlContent, sPattern)  
     
     oGui.addText(SITE_IDENTIFIER,sMovieTitle)
+    oGui.addText(SITE_IDENTIFIER,sDisplay)
     
-    
-    oGui.addText(SITE_IDENTIFIER,sDisplay)  
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)  
     
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             
-            sHosterUrl = aEntry[0]
-            sTitle = aEntry[1]
-            xbmc.log('NBASTREAMPW: ' +str(sHosterUrl))
-            #On ouvre liens nbastreams via showLive&play__
-            #todo lien youtube a rajouter via hoster
-            
-            if 'nbastreams' in sHosterUrl:
-                sTitle = '[NBAstreamspw] ' + sTitle
-                sUrl = sHosterUrl
-                sThumbnail = base64.b64decode(Logo_Nba)
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl) 
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-
-                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-                oGui.addMovie(SITE_IDENTIFIER, 'showLive', sTitle, '', sThumbnail, sUrl, oOutputParameterHandler)
-
+            if 'reddit' in sUrl:
+                
+                if '//nbastreams' in aEntry[0]:
+                    sTitle = '[NBAstreamspw] ' + aEntry[1]
+                    sHosterUrl = aEntry[0]
+                    sThumbnail = base64.b64decode(Logo_Nba)
+                    xbmc.log('NBASTREAMPW: ' +str(sHosterUrl))
+                
+                elif '//www.youtube' in aEntry[0]:
+                      sTitle = '[NBA] Youtube HD'
+                      sHosterUrl = aEntry[0]
+                      sThumbnail = base64.b64decode(Logo_Nba)
+                else:
+                    #on vire le reste
+                    sHosterUrl = 'pasprisencompte'
+                    
             else:
+                sTitle = aEntry[1]
+                sHosterUrl = aEntry[0]
+            
+            #cherche&joue m3u8 nbastreamspw via showLive&play__
+            if '//nbastreams' in aEntry[0]:
 
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sHosterUrl) 
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+                
+                oGui.addMovie(SITE_IDENTIFIER, 'showLive', sTitle, '', sThumbnail, sHosterUrl, oOutputParameterHandler)
+              
+            else:
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
-            
+    
+    else:
+
+        oGui.addText(SITE_IDENTIFIER,'(Live/Replay non disponible)')
+       
  
+    oGui.setEndOfDirectory()
+
+
+#recuperation lien m3u8 nbastreamspw & play
+
+UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
+
+#UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Chrome/47.0'
+
+headers = { 'User-Agent' : UA }
+
+def showLive():
+   
+      oGui = cGui()
+      oInputParameterHandler = cInputParameterHandler()
+      sUrl = oInputParameterHandler.getValue('siteUrl')
+      sTitle = oInputParameterHandler.getValue('sMovieTitle')
+      sThumbnail = oInputParameterHandler.getValue('sThumbnail')  
+      
+      try:
+         request = urllib2.Request(sUrl,None,headers)
+         reponse = urllib2.urlopen(request)
+         sHtmlContent = reponse.read()
+         reponse.close()
+      except urllib2.HTTPError:
+                              sHtmlContent = ''
+                              pass
+      
+      #recup lien m3u8 ok - parfois geo ip - ou  k.o si secu
+      #ou soluce à trouver
+      sPattern = 'player.html\#(.+?)"'
+
+      #recup lien m3u8 toujours secu
+      #ou soluce a trouver si possible
+      #sPattern = 'stream1 = "(http://.+?)"'
+      
+      oParser = cParser()
+      aResult = oParser.parse(sHtmlContent, sPattern)
+      #xbmc.log('NBASTREAMPW - m3u8 :' +str(aResult))
+      
+      if (aResult[0] == True):
+            
+          sUrl = aResult[1][0]
+          
+          sDisplayTitle = sTitle + '[COLOR skyblue]' + '  Lien Direct' + '[/COLOR]'
+
+          oOutputParameterHandler = cOutputParameterHandler()
+          oOutputParameterHandler.addParameter('siteUrl', sUrl)
+          oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+          oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+
+          oGui.addMovie(SITE_IDENTIFIER, 'play__', sDisplayTitle, '', sThumbnail, sUrl, oOutputParameterHandler)
+     
+      else:
+
+          oGui.addText(SITE_IDENTIFIER, '(Erreur connection ou stream non disponible : UA pas bon/Lien protégé/code soluce à trouver)')
+  
+      oGui.setEndOfDirectory()
+
+def play__():
+    
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    
+    oGuiElement = cGuiElement()
+    oGuiElement.setSiteName(SITE_IDENTIFIER)
+    oGuiElement.setTitle(sTitle)
+    oGuiElement.setMediaUrl(sUrl)
+    oGuiElement.setThumbnail(sThumbnail)
+
+    oPlayer = cPlayer()
+    oPlayer.clearPlayList()
+    oPlayer.addItemToPlaylist(oGuiElement)
+    oPlayer.startPlayer()
+    return
+        
     oGui.setEndOfDirectory()
