@@ -273,49 +273,47 @@ def showHosters():
 
     
     if 'reddit' in sUrl:
-    
-        sPattern = '<a href="(.+?)">(.+?)</a>'
+        sPattern = '<a href="(http://nbastreams.+?)">(.+?)</a>'
+        sPattern2 = '<a href="(http://www.eplstream.+?)">(.+?)</a>'
+        sPattern3 = '<a href="(.+?youtu.+?)">(.+?)</a>'     
+        aResult = []
+        aResult1 = re.findall(sPattern,sHtmlContent)
+        aResult2 = re.findall(sPattern2,sHtmlContent)
+        aResult3 = re.findall(sPattern3,sHtmlContent)
+        aResult = aResult1 + aResult2 +aResult3
         
         sDisplay ='[COLOR olive]Streaming disponibles:[/COLOR]'         
    
     else:
 
         sPattern = '<a href="(https://open.+?)" target="_blank">(.+?)</a>'
-    
+        aResult = re.findall(sPattern,sHtmlContent)
         sDisplay = '[COLOR olive]Qualités disponibles:[/COLOR]'   
     
     
     oGui.addText(SITE_IDENTIFIER,sMovieTitle)
     oGui.addText(SITE_IDENTIFIER,sDisplay)
-    
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)  
-    
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
+    print aResult
+    if (aResult):
+        for aEntry in aResult:
             
             if 'reddit' in sUrl:
-                
-                if '//nbastreams' in aEntry[0]:
+                sThumbnail = base64.b64decode(Logo_Nba)
+                sHosterUrl = aEntry[0]
+
+                if ('eplstream' in aEntry[0]):
+                    sTitle = '[EPLstreams] ' + aEntry[1]
+                if ('nbastream' in aEntry[0]):
                     sTitle = '[NBAstreamspw] ' + aEntry[1]
-                    sHosterUrl = aEntry[0]
-                    sThumbnail = base64.b64decode(Logo_Nba)
-                    xbmc.log('NBASTREAMPW: ' +str(sHosterUrl))
-                
-                elif '//www.youtube' in aEntry[0]:
+                if ('youtu' in aEntry[0]):
                       sTitle = '[NBA] Youtube HD'
-                      sHosterUrl = aEntry[0]
-                      sThumbnail = base64.b64decode(Logo_Nba)
-                else:
-                    #on vire le reste
-                    sHosterUrl = 'pasprisencompte'
-                    
+                      
             else:
                 sTitle = aEntry[1]
                 sHosterUrl = aEntry[0]
             
-            #cherche&joue m3u8 nbastreamspw via showLive&play__
-            if '//nbastreams' in aEntry[0]:
+            #cherche&joue m3u8 epl/nbastreamspw via showLive&play__
+            if 'streams' in sTitle:
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sHosterUrl) 
@@ -364,21 +362,18 @@ def showLive():
                               sHtmlContent = ''
                               pass
       
-      #recup lien m3u8 ok - parfois geo ip - ou  k.o si secu
-      #ou soluce à trouver
+      #recup lien m3u8 lecture ok - parfois geo ip ou k.o si secu
       sPattern = 'player.html\#(.+?)"'
-
-      #recup lien m3u8 toujours secu
-      #ou soluce a trouver si possible
-      #sPattern = 'stream1 = "(http://.+?)"'
-      
-      oParser = cParser()
-      aResult = oParser.parse(sHtmlContent, sPattern)
+      sPattern2 = 'stream1 = "(http://.+?)"'
+      aResult =[]
+      aResult1 = re.findall(sPattern,sHtmlContent)
+      aResult2 = re.findall(sPattern2,sHtmlContent)
+      aResult = aResult1 + aResult2
       #xbmc.log('NBASTREAMPW - m3u8 :' +str(aResult))
       
-      if (aResult[0] == True):
-            
-          sUrl = aResult[1][0]
+      if (aResult):
+          for m3u8 in aResult:  
+              sUrl = m3u8
           
           sDisplayTitle = sTitle + '[COLOR skyblue]' + '  Lien Direct' + '[/COLOR]'
 
