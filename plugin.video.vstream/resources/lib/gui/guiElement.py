@@ -337,7 +337,9 @@ class cGuiElement:
         'plot': xbmc.getInfoLabel('ListItem.plot'),
         'cover_url': xbmc.getInfoLabel('ListItem.Art(thumb)'),
         'backdrop_url': xbmc.getInfoLabel('ListItem.Art(fanart)'),
-        'imdb_id': xbmc.getInfoLabel('ListItem.IMDBNumber')
+        'imdb_id': xbmc.getInfoLabel('ListItem.IMDBNumber'),
+        'season': xbmc.getInfoLabel('ListItem.season'),
+        'episode': xbmc.getInfoLabel('ListItem.episode')
         }
         
         if meta['title']:
@@ -442,6 +444,43 @@ class cGuiElement:
         self.__aItemValues['Plot'] = self.getDescription()
         self.__aItemValues['Playcount'] = self.getWatched()
         self.addItemProperties('fanart_image', self.__sFanart)
+        
+         # - Video Values:
+        # - genre : string (Comedy)
+        # - year : integer (2009)
+        # - episode : integer (4)
+        # - season : integer (1)
+        # - top250 : integer (192)
+        # - tracknumber : integer (3)
+        # - rating : float (6.4) - range is 0..10
+        # - watched : depreciated - use playcount instead
+        # - playcount : integer (2) - number of times this item has been played
+        # - overlay : integer (2) - range is 0..8. See GUIListItem.h for values
+        # - cast : list (Michal C. Hall)
+        # - castandrole : list (Michael C. Hall|Dexter)
+        # - director : string (Dagur Kari)
+        # - mpaa : string (PG-13)
+        # - plot : string (Long Description)
+        # - plotoutline : string (Short Description)
+        # - title : string (Big Fan)
+        # - originaltitle : string (Big Fan)
+        # - sorttitle : string (Big Fan)
+        # - duration : string (3:18)
+        # - studio : string (Warner Bros.)
+        # - tagline : string (An awesome movie) - short description of movie
+        # - writer : string (Robert D. Siegel)
+        # - tvshowtitle : string (Heroes)
+        # - premiered : string (2005-03-04)
+        # - status : string (Continuing) - status of a TVshow
+        # - code : string (tt0110293) - IMDb code
+        # - aired : string (2008-12-07)
+        # - credits : string (Andy Kaufman) - writing credits
+        # - lastplayed : string (Y-m-d h:m:s = 2009-04-05 23:16:04)
+        # - album : string (The Joshua Tree)
+        # - artist : list (['U2'])
+        # - votes : string (12345 votes)
+        # - trailer : string (/home/user/trailer.avi)
+        # - dateadded : string (Y-m-d h:m:s = 2009-04-05 23:16:04)
         
 
         if self.getMeta() > 0 and self.getMetaAddon() == 'true':

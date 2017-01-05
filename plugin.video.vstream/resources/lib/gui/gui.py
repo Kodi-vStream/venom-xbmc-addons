@@ -79,6 +79,14 @@ class cGui():
         oGuiElement.setDescription(sDesc)
         oGuiElement.setTvFanart()
         oGuiElement.setCat(2)
+        
+        # if oOutputParameterHandler.getValue('season'):
+            # sSeason = oOutputParameterHandler.getValue('season')
+            # oGuiElement.addItemValues('Season', sSeason)
+            
+        # if oOutputParameterHandler.getValue('episode'):
+            # sSeason = oOutputParameterHandler.getValue('episode')
+            # oGuiElement.addItemValues('Episode', sSeason)
 
         if oOutputParameterHandler.getValue('sMovieTitle'):
             sTitle = oOutputParameterHandler.getValue('sMovieTitle')
