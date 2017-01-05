@@ -269,14 +269,15 @@ def showHosters():
     else:
         BA = False
 
-    sPattern = '{file:"([^\"]+?)"'
+    #sPattern = '{file:"([^\"]+?)"'
+    sPattern = '"(http://[^"]+)",'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):   
         sHosterUrl = str(aResult[1][0])
         oHoster = cHosterGui().checkHoster(sHosterUrl)       
         if (oHoster != False):            
-            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setDisplayName(xbmc.getInfoLabel('ListItem.title'))
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
             
