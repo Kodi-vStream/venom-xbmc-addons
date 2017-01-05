@@ -18,11 +18,14 @@ import xbmcgui
 import xbmc
 import xbmcaddon,os
 
+PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
+
 SITE_IDENTIFIER = 'streamase_com' 
 SITE_NAME = '[COLOR violet]Streamase.com[/COLOR]' 
 SITE_DESC = 'Fichier en Streaming et en DDL, HD' 
 
 URL_MAIN = 'http://streamase.com/'
+URL_FAV = URL_MAIN + 'favorites/'
 
 
 URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')
@@ -33,6 +36,10 @@ MOVIE_GENRES = (True, 'showGenreMovies')
 
 def load():
     oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuMembres', 'Espace Membres', 'none.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -47,6 +54,20 @@ def load():
     #oGui.addDir(SITE_IDENTIFIER, 'showMenuMangas', 'Mangas', 'animes.png', oOutputParameterHandler)    
     
     oGui.setEndOfDirectory() 
+
+    
+def showMenuMembres():
+    oGui = cGui()
+       
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'login', 'Login', 'none.png', oOutputParameterHandler)  
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showFavorites', 'Mes Favoris', 'none.png', oOutputParameterHandler)  
+
+    oGui.setEndOfDirectory()     
 
 def showMenuFilms():
     oGui = cGui()
@@ -78,6 +99,12 @@ def showSearch():
         oGui.setEndOfDirectory()
         return     
 
+def showFavorites():
+    oGui = cGui()
+    showMovies(URL_FAV)
+    oGui.setEndOfDirectory()
+    return             
+        
 def showGenreMovies(): 
     showGenre("")
 
@@ -118,7 +145,35 @@ def showGenre(basePath):
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)    
        
     oGui.setEndOfDirectory()
-       
+
+
+def login():
+    oGui = cGui()
+    name = oGui.showKeyBoard()
+    password = oGui.showKeyBoard()
+    cookies = ''
+    
+    oRequestHandler = cRequestHandler(URL_MAIN)
+    oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+    #oRequestHandler.addHeaderEntry('Origin','http://streamase.com/')
+    oRequestHandler.addHeaderEntry('Referer','http://streamase.com/')
+    oRequestHandler.addParameters('login_name', name)
+    oRequestHandler.addParameters('login_password', password)
+    oRequestHandler.addParameters('login', 'submit')
+        
+    sHtmlContent = oRequestHandler.request()
+    cookies = oRequestHandler.GetCookies()
+    print cookies
+    if cookies:
+        cConfig().showInfo('vStream', 'Login OK')
+        #save cookies
+        SaveCookie('streamase.com',cookies)
+    
+    
+    oGui.setEndOfDirectory()
+    return     
+
+    
 def showMovies(sSearch = ''):
     xbmc.log('showMovies')
     
@@ -126,20 +181,31 @@ def showMovies(sSearch = ''):
     oInputParameterHandler = cInputParameterHandler()
     
     if sSearch:
+        if sSearch == URL_FAV:
+            sUrl = URL_FAV
+            cookies = ''
+            #try to get previous cookie
+            cookies = Readcookie('streamase.com')
+            oRequestHandler = cRequestHandler(sUrl)
+            if cookies:
+                oRequestHandler.addHeaderEntry('Cookie',cookies)
+             
+            sHtmlContent = oRequestHandler.request()
+            #xbmc.log(sHtmlContent)
+        else:
+            sUrl = URL_SEARCH[0]  
+            oRequestHandler = cRequestHandler(URL_SEARCH[0])
+            oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+            #oRequestHandler.addHeaderEntry('Origin','http://streamase.com/')
+            oRequestHandler.addHeaderEntry('Referer','http://streamase.com/')
+            #oRequestHandler.addParameters('do', 'search')
+            oRequestHandler.addParameters('subaction', 'search')
+            oRequestHandler.addParameters('search_start', '0')
+            oRequestHandler.addParameters('full_search', '0')
+            oRequestHandler.addParameters('result_from', '1')
+            oRequestHandler.addParameters('story', sSearch)
         
-        sUrl = URL_SEARCH[0]  
-        oRequestHandler = cRequestHandler(URL_SEARCH[0])
-        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-        #oRequestHandler.addHeaderEntry('Origin','http://streamase.com/')
-        oRequestHandler.addHeaderEntry('Referer','http://streamase.com/')
-        #oRequestHandler.addParameters('do', 'search')
-        oRequestHandler.addParameters('subaction', 'search')
-        oRequestHandler.addParameters('search_start', '0')
-        oRequestHandler.addParameters('full_search', '0')
-        oRequestHandler.addParameters('result_from', '1')
-        oRequestHandler.addParameters('story', sSearch)
-        
-        sHtmlContent = oRequestHandler.request()
+            sHtmlContent = oRequestHandler.request()
                 
     else:
     
@@ -156,7 +222,7 @@ def showMovies(sSearch = ''):
     sQual = ''
     sYear = ''
 
-    sPattern = '<h3 class="btl"><a href="([^"]+)">([^<]+?)</a></h3>.+?src="([^"]+)".+?<br */>([^<]+?)<br */><br */>([^<]+?)<div class="clr"><\/div>.+?<a href="[^"]+date[^"]+">([^<]+?)</a>'
+    sPattern = '<h3 class="btl"><a href="([^"]+)">([^<]+?)</a></h3>.+?<div class="maincont">.+?src="([^"]+)".+?<br */>([^<]+?)<br */><br */>([^<]+?)<div class="clr"><\/div>.+?<a href="[^"]+date[^"]+">([^<]+?)</a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -258,3 +324,28 @@ def showHosters():# recherche et affiche les hotes
     oGui.setEndOfDirectory()
   
 
+def DeleteCookie(Domain):
+    file = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
+    os.remove(os.path.join(PathCache,file))
+    
+def SaveCookie(Domain,data):
+    Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
+
+    #save it
+    file = open(Name,'w')
+    file.write(data)
+
+    file.close()
+    
+def Readcookie(Domain):
+    Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
+    
+    try:
+        file = open(Name,'r')
+        data = file.read()
+        file.close()
+    except:
+        return ''
+    
+    return data
+	
