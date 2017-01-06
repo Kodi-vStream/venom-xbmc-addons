@@ -217,9 +217,9 @@ def showLasts():
 
             sUrl = aEntry[0] 
             sThumb = aEntry[1]
-            sMovieTitle = CleanTitle(aEntry[2])
-            sTitle = [aEntry[2], aEntry[3], aEntry[4]]
-            sExtraTitle = aEntry[3]
+            sMovieTitle = CleanTitle(aEntry[2] + ' '+aEntry[3])
+            
+            sDisplayTitle = [cUtil().DecoTitle(sMovieTitle), aEntry[4]]
             
             # season = re.search('S([0-9]{1,2})', aEntry[3])
             # if season:
@@ -242,11 +242,10 @@ def showLasts():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sExtraTitle', sExtraTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
             
  
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
            
@@ -257,7 +256,6 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sExtraTitle = oInputParameterHandler.getValue('sExtraTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -278,12 +276,7 @@ def showHosters():
                
             sUrl2 = URL_MAIN + 'cale/' + aEntry[0]
             
-            #sDisplayTitle = '[' + aEntry[2] + '][' + aEntry[1] + '] ' + sTitle
-            sDisplayTitle = [sTitle, aEntry[2], aEntry[1]]
-            if sExtraTitle:
-                sDisplayTitle = [sTitle, sExtraTitle, aEntry[2], aEntry[1]]
-                sTitle = sTitle + ' ' + sExtraTitle
-                
+            sDisplayTitle = [cUtil().DecoTitle(sTitle), aEntry[2], aEntry[1]]
                 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)

@@ -312,7 +312,7 @@ class cGui():
 
         oListItem = xbmcgui.ListItem(oGuiElement.getTitle(), oGuiElement.getTitleSecond(), iconImage=oGuiElement.getIcon(), thumbnailImage=oGuiElement.getThumbnail())
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
-        #oListItem.setThumbnailImage(oGuiElement.getThumbnail())
+        oListItem.setThumbnailImage(oGuiElement.getThumbnail())
         #oListItem.setIconImage(oGuiElement.getIcon())
 
         aProperties = oGuiElement.getItemProperties()
