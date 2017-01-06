@@ -537,25 +537,29 @@ def showHosters():# recherche et affiche les hotes
         return
     
     sHtmlContent = aResult[1][0]
-    sHtmlContent = re.sub('<font color="[^"]+">','',sHtmlContent)
-    sHtmlContent = re.sub('</font>','',sHtmlContent)
-    #sHtmlContent = re.sub('link.php\?lien\=','',sHtmlContent)
              
     #xbmc.log(sHtmlContent)
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
     
     if '-multi' in sHtmlContent:
         sPattern = '<a href="link.php\?lien\=([^"]+)"'
     else:
-        sPattern = '<b>(.+?)<\/b> <\/*br> *<a href="link.php\?lien\=([^"]+)" target="_blank" *><b>Cliquer ici pour Télécharger'
+        sPattern = '<br \/>(.+?)<\/b>.+?<a href="link.php\?lien\=([^"]+)" target="_blank" *><b>Cliquer ici pour Télécharger'
    
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #xbmc.log(str(aResult))
+    xbmc.log(str(aResult))
        
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         oGui.addText(SITE_IDENTIFIER, aResult1[1][0])
         for aEntry in aResult[1]:
+            
+            sHostName = aEntry[0]
+            sHostName = cUtil().removeHtmlTags(sHostName)
+            
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
@@ -564,7 +568,7 @@ def showHosters():# recherche et affiche les hotes
                 sTitle = '[COLOR skyblue]' + 'Liens Premium' + '[/COLOR] '
                 oOutputParameterHandler.addParameter('siteUrl', aEntry)
             else:
-                sTitle = '[COLOR skyblue]' + aEntry[0]+ '[/COLOR] '
+                sTitle = '[COLOR skyblue]' + sHostName+ '[/COLOR] '
                 oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
             
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
