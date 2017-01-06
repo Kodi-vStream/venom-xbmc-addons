@@ -91,7 +91,7 @@ class cHosterGui:
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)           
         #Upload menu    
-        if ((oHoster.getPluginIdentifier() == 'uptobox') and (cConfig().getSetting('hoster_uptobox_premium') == 'true')):
+        if ((oHoster.getPluginIdentifier() == 'uptobox') and (cConfig().getSetting('hoster_uptobox_premium') == 'true') and (cInputParameterHandler().getValue('site') != 'siteuptobox')):
              oContext = cContextElement()
              oContext.setFile('siteuptobox')
              oContext.setSiteName(self.SITE_NAME)
