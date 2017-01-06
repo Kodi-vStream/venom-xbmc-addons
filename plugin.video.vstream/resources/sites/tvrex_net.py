@@ -274,8 +274,8 @@ def showHosters():
     
     if 'reddit' in sUrl:
         sPattern = '<a href="(http://nbastreams.+?)">(.+?)</a>'
-        sPattern2 = '<a href="(http://www.eplstream.+?)">(.+?)</a>'
-        sPattern3 = '<a href="(.+?youtu.+?)">(.+?)</a>'     
+        sPattern2 = '<a href="(http.+?eplstream.+?)">(.+?)</a>'
+        sPattern3 = '<a href="(http.+?youtu.+?)">(.+?)</a>'     
         aResult = []
         aResult1 = re.findall(sPattern,sHtmlContent)
         aResult2 = re.findall(sPattern2,sHtmlContent)
