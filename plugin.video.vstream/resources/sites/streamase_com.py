@@ -208,12 +208,16 @@ def showMovies(sSearch = ''):
             sHtmlContent = oRequestHandler.request()
                 
     else:
-    
+        
         sUrl = oInputParameterHandler.getValue('siteUrl')     
-
+        
         #xbmc.log(sUrl)
-    
+   
         oRequestHandler = cRequestHandler(sUrl) 
+        if URL_FAV in sUrl:
+            cookies = Readcookie('streamase.com')
+            oRequestHandler.addHeaderEntry('Cookie',cookies)
+ 
         sHtmlContent = oRequestHandler.request()
         #xbmc.log(sHtmlContent)
       
@@ -222,7 +226,7 @@ def showMovies(sSearch = ''):
     sQual = ''
     sYear = ''
 
-    sPattern = '<h3 class="btl"><a href="([^"]+)">([^<]+?)</a></h3>.+?<div class="maincont">.+?src="([^"]+)".+?<br */>([^<]+?)<br */><br */>([^<]+?)<div class="clr"><\/div>.+?<a href="[^"]+date[^"]+">([^<]+?)</a>'
+    sPattern = '<h3 class="btl"><a href="([^"]+)">([^<]+?)</a></h3>.+?<div class="maincont">.+?src="([^"]+)".+?<br */>([^<]+?)<br */><br */>(.+?)<div class="clr"><\/div>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -241,7 +245,7 @@ def showMovies(sSearch = ''):
                 sThumbnail=aEntry[2]
             else:
                 sThumbnail=URL_MAIN+aEntry[2] 
-            sYear =aEntry[5]
+            
             
             
             oOutputParameterHandler = cOutputParameterHandler()
@@ -263,7 +267,8 @@ def showMovies(sSearch = ''):
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     #Passage en mode vignette sauf en cas de recherche globale
-    xbmc.executebuiltin('Container.SetViewMode(500)')
+    if not bGlobal_Search:
+        xbmc.executebuiltin('Container.SetViewMode(500)')
      
     oGui.setEndOfDirectory()
 
@@ -271,7 +276,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<a href="([^"]+)"><span class="thide pnext">Next</span></a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+    #xbmc.log(str(aResult))
     if (aResult[0] == True):
         return aResult[1][0]
         
