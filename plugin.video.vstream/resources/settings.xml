@@ -217,6 +217,8 @@
         <setting id="plugin_megatrackmovies_net" type="bool" label="MegatrackMovies.net (Films)" default="true"/>
         <setting visible="false" id="search1_megatrackmovies_net" type="bool" label="30077" default="true"/>
         
+        <setting id="plugin_navixsport_com" type="bool" label="Navixsport (Sport)" default="true"/>
+        
         <setting id="plugin_neuf_docu" type="bool" label="9Docu (Documentaires)" default="true"/>
         <setting visible="false" id="search4_neuf_docu" type="bool" label="30091" default="true"/>
         
@@ -243,6 +245,14 @@
         <setting visible="false" id="search2_sokrostream_biz" type="bool" label="30089" default="true"/>
         
         <setting id="plugin_spion_com" type="bool" label="Spion.com (Video du net)" default="true"/>
+        
+        <setting id="plugin_streamase_com" type="bool" label="Streamase (Films)" default="true"/>
+        <setting visible="false" id="search1_streamase_com" type="bool" label="30077" default="true"/>
+        
+        <setting id="plugin_streamay_bz" type="bool" label="Streamay (Films, Series, Animes)" default="true"/>
+        <setting visible="false" id="search1_streamay_bz" type="bool" label="30077" default="true"/>
+        <setting visible="false" id="search2_streamay_bz" type="bool" label="30089" default="true"/>
+        <setting visible="false" id="search3_streamay_bz" type="bool" label="30090" default="true"/>
         
         <setting id="plugin_streamcomplet" type="bool" label="StreamComplet.com (Films)" default="true"/>
         <setting visible="false" id="search1_streamcomplet" type="bool" label="30077" default="true"/>
@@ -275,6 +285,8 @@
         
         <setting id="plugin_tntv_rattrapage" type="bool" label="TNTV Rattrapage (TV Replay, Séries)" default="true"/>
         <setting visible="false" id="search2_tntv_rattrapage" type="bool" label="30089" default="true"/>
+        
+        <setting id="plugin_tvrex_net" type="bool" label="Tvrex (Sports)" default="true"/>
         
         <setting id="plugin_tv_streaming_ch" type="bool" label="TV Streaming.ch (TV Replay, Films, Séries, Animes, Documentaires)" default="true"/>
         <setting visible="false" id="search1_tv_streaming_ch" type="bool" label="30077" default="true"/>
