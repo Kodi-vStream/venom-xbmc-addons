@@ -525,7 +525,7 @@ def showHosters():# recherche et affiche les hotes
     #xbmc.log(str(aResult1))
     
     #cut de la zone des liens
-    if 'Lien Premium --' in sHtmlContent:
+    if 'Lien Premium' in sHtmlContent:
         xbmc.log('lien premiums')
         sPattern = 'Lien Premium *--(.+?)</div>'
     else:
