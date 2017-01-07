@@ -293,7 +293,7 @@ def showHosters():
     
     oGui.addText(SITE_IDENTIFIER,sMovieTitle)
     oGui.addText(SITE_IDENTIFIER,sDisplay)
-    print aResult
+    
     if (aResult):
         for aEntry in aResult:
             
