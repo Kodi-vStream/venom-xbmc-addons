@@ -74,8 +74,8 @@ class cHoster(iHoster):
             api_call = api_call.split('|')[0] + '|Referer=http://www.mangacity.org/jwplayer/player.swf'
             
         #Special pour hd-stream.in et film-streaming.co
-        if 'hd-stream.in' in api_call or 'film-streaming.co' in api_call:
-            base = api_call.replace('playlist.m3u8','')
+        if 'm3u8' in api_call:
+            base = re.sub(r'(playlist.m3u8.+)','',api_call)
             oRequest = cRequestHandler(api_call)
             sHtmlContent = oRequest.request()
             sPattern =  ',NAME="([^"]+)".+?(chunklist.+?.m3u8)'

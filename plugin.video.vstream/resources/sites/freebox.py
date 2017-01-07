@@ -384,6 +384,7 @@ def play__():
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName(SITE_IDENTIFIER)
     oGuiElement.setTitle(sTitle)
+    sUrl = sUrl.replace(' ','%20')
     oGuiElement.setMediaUrl(sUrl)
     oGuiElement.setThumbnail(sThumbnail)
 

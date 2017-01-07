@@ -148,13 +148,40 @@ class cGuiElement:
 
     def getFunction(self):
         return self.__sFunctionName
+        
+    def getSaisonTitre(self, sTitle):
+
+        string = re.search('(?i)(s(?:[a-z]+son\s?)*([0-9]+))', str(sTitle))
+        if string:
+            sTitle = sTitle.replace(string.group(1),'')
+            sTitle = "%s [COLOR coral]S%02d[/COLOR]"%(sTitle, int(string.group(2)))
+            self.addItemValues('Season', string.group(2))
+            return sTitle, True
+
+        return sTitle, False
+        
+    def getEpisodeTitre(self, sTitle):
+  
+        string = re.search('(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', str(sTitle))
+        if string:
+            sTitle = sTitle.replace(string.group(1),'')
+            sTitle = "%s [COLOR coral]E%02d[/COLOR]"%(sTitle, int(string.group(2)))
+            self.addItemValues('Episode', string.group(2))
+            return sTitle, True
+
+        return sTitle, False
 
     def setTitle(self, sTitle):
         if type(sTitle) is list:
-            self.__sTitle = sTitle[0]
-            del sTitle[0]
-            if len(sTitle) >0:
-                self.__sTitle +=  "[COLOR coral]["+ '] ['.join(map(str,sTitle)) + "][/COLOR]"
+            for i in range(len(sTitle)): 
+                
+                sTitle[i], sSaison = self.getSaisonTitre(sTitle[i])
+                sTitle[i], sEpisode = self.getEpisodeTitre(sTitle[i])
+
+                if i == 0 or sSaison == True or sEpisode == True:
+                    self.__sTitle += sTitle[i]
+                else:
+                    self.__sTitle +=  " [COLOR coral]["+str(sTitle[i])+ "][/COLOR]"
         else:
             self.__sTitle = sTitle
 
@@ -337,7 +364,9 @@ class cGuiElement:
         'plot': xbmc.getInfoLabel('ListItem.plot'),
         'cover_url': xbmc.getInfoLabel('ListItem.Art(thumb)'),
         'backdrop_url': xbmc.getInfoLabel('ListItem.Art(fanart)'),
-        'imdb_id': xbmc.getInfoLabel('ListItem.IMDBNumber')
+        'imdb_id': xbmc.getInfoLabel('ListItem.IMDBNumber'),
+        'season': xbmc.getInfoLabel('ListItem.season'),
+        'episode': xbmc.getInfoLabel('ListItem.episode')
         }
         
         if meta['title']:
@@ -369,7 +398,7 @@ class cGuiElement:
         if self.getMeta() == 1:
             try:
                 from metahandler import metahandlers
-                grab = metahandlers.MetaData(preparezip=False,  tmdb_api_key='92ab39516970ab9d86396866456ec9b6')
+                grab = metahandlers.MetaData(preparezip=False,  tmdb_api_key=cConfig().getSetting('api_tmdb'))
                 args = ("movie", self.__sFileName)
                 kwargs = {}
                 if (self.__TmdbId) or (self.__Year):
@@ -387,7 +416,7 @@ class cGuiElement:
         elif self.getMeta() == 2:
             try:
                 from metahandler import metahandlers
-                grab = metahandlers.MetaData(preparezip=False, tmdb_api_key='92ab39516970ab9d86396866456ec9b6')
+                grab = metahandlers.MetaData(preparezip=False, tmdb_api_key=cConfig().getSetting('api_tmdb'))
                 #Nom a nettoyer ?
                 #attention l'annee peut mettre le bordel a cause des differences de sortie
                 args = ("tvshow", self.__sFileName)
@@ -407,6 +436,9 @@ class cGuiElement:
             return
         del meta['playcount']
         del meta['trailer']
+        
+        import xbmc
+        xbmc.log(str(meta))
 
         if meta['title']:
             meta['title'] = self.getTitle()
@@ -442,6 +474,43 @@ class cGuiElement:
         self.__aItemValues['Plot'] = self.getDescription()
         self.__aItemValues['Playcount'] = self.getWatched()
         self.addItemProperties('fanart_image', self.__sFanart)
+        
+         # - Video Values:
+        # - genre : string (Comedy)
+        # - year : integer (2009)
+        # - episode : integer (4)
+        # - season : integer (1)
+        # - top250 : integer (192)
+        # - tracknumber : integer (3)
+        # - rating : float (6.4) - range is 0..10
+        # - watched : depreciated - use playcount instead
+        # - playcount : integer (2) - number of times this item has been played
+        # - overlay : integer (2) - range is 0..8. See GUIListItem.h for values
+        # - cast : list (Michal C. Hall)
+        # - castandrole : list (Michael C. Hall|Dexter)
+        # - director : string (Dagur Kari)
+        # - mpaa : string (PG-13)
+        # - plot : string (Long Description)
+        # - plotoutline : string (Short Description)
+        # - title : string (Big Fan)
+        # - originaltitle : string (Big Fan)
+        # - sorttitle : string (Big Fan)
+        # - duration : string (3:18)
+        # - studio : string (Warner Bros.)
+        # - tagline : string (An awesome movie) - short description of movie
+        # - writer : string (Robert D. Siegel)
+        # - tvshowtitle : string (Heroes)
+        # - premiered : string (2005-03-04)
+        # - status : string (Continuing) - status of a TVshow
+        # - code : string (tt0110293) - IMDb code
+        # - aired : string (2008-12-07)
+        # - credits : string (Andy Kaufman) - writing credits
+        # - lastplayed : string (Y-m-d h:m:s = 2009-04-05 23:16:04)
+        # - album : string (The Joshua Tree)
+        # - artist : list (['U2'])
+        # - votes : string (12345 votes)
+        # - trailer : string (/home/user/trailer.avi)
+        # - dateadded : string (Y-m-d h:m:s = 2009-04-05 23:16:04)
         
 
         if self.getMeta() > 0 and self.getMetaAddon() == 'true':

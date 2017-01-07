@@ -7,8 +7,6 @@ import urllib2
 from urllib2 import HTTPError, URLError
 from resources.lib.config import cConfig
 
-from resources.lib import cloudflare
-
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
     REQUEST_TYPE_POST = 1
@@ -46,6 +44,13 @@ class cRequestHandler:
 
     def addParameters(self, sParameterKey, mParameterValue):
         self.__aParamaters[sParameterKey] = mParameterValue
+        
+    #egg addMultipartFiled('sess_id':sId,'upload_type':'url','srv_tmp_url':sTmp)
+    def addMultipartFiled(self,fields ):
+        mpartdata = MPencode(fields)
+        self.__aParamaters = mpartdata[1]
+        self.addHeaderEntry('Content-Type', mpartdata[0] )
+        self.addHeaderEntry('Content-Length', len(mpartdata[1]))
 
     def getResponseHeader(self):
         return self.__sResponseHeader
@@ -108,9 +113,12 @@ class cRequestHandler:
             sContent = oResponse.read()
             
             self.__sResponseHeader = oResponse.info()
+            
+            #compressed page ?
             if self.__sResponseHeader.get('Content-Encoding') == 'gzip':
                 import zlib
                 sContent = zlib.decompress(sContent, zlib.MAX_WBITS|16)
+                
             self.__sRealUrl = oResponse.geturl()
             self.__HeaderReturn = oResponse.headers
         
@@ -118,20 +126,22 @@ class cRequestHandler:
             
         except urllib2.HTTPError, e:
             if e.code == 503:
+                
+                #Protected by cloudFlare ?
+                from resources.lib import cloudflare
                 if cloudflare.CheckIfActive(e.read()):
                     if 'Set-Cookie' in e.headers:
                         cookies = e.headers['Set-Cookie']
                     else:
                         cookies = ''
                     cookies = cookies.split(';')[0]
-                    print 'Page protegee par cloudflare'
-                    from resources.lib.cloudflare import CloudflareBypass
-                    CF = CloudflareBypass()
-                    sContent = CF.GetHtml(self.__sUrl,e.read(),cookies)
                     
+                    print 'Page protegee par cloudflare'
+                    CF = cloudflare.CloudflareBypass()
+                    sContent = CF.GetHtml(self.__sUrl,e.read(),cookies,sParameters)
                     self.__sRealUrl,self.__HeaderReturn = CF.GetReponseInfo()
 
-            if not  sContent:
+            if not sContent:
                 cConfig().error("%s,%s" % (cConfig().getlanguage(30205), self.__sUrl))
                 return ''
         
@@ -147,3 +157,46 @@ class cRequestHandler:
     def getHeaderLocationUrl(self):        
         opened = urllib.urlopen(self.__sUrl)
         return opened.geturl()
+
+#******************************************************************************
+#from https://github.com/eliellis/mpart.py
+
+def MPencode(fields):
+    import mimetypes
+    random_boundary = __randy_boundary()
+    content_type = "multipart/form-data, boundary=%s" % random_boundary
+
+    form_data = []
+    
+    if fields:
+        for (key, value) in fields.iteritems():
+            if not hasattr(value, 'read'):
+                itemstr = '--%s\r\nContent-Disposition: form-data; name="%s"\r\n\r\n%s\r\n' % (random_boundary, key, value)
+                form_data.append(itemstr)
+            elif hasattr(value, 'read'):
+                with value:
+                    file_mimetype = mimetypes.guess_type(value.name)[0] if mimetypes.guess_type(value.name)[0] else 'application/octet-stream'
+                    itemstr = '--%s\r\nContent-Disposition: form-data; name="%s"; filename="%s"\r\nContent-Type: %s\r\n\r\n%s\r\n' % (random_boundary, key, value.name, file_mimetype, value.read())
+                form_data.append(itemstr)
+            else:
+                raise Exception(value, 'Field is neither a file handle or any other decodable type.')
+    else:
+        pass
+
+    form_data.append('--%s--\r\n' % random_boundary)
+
+    return content_type, ''.join(form_data)
+
+def __randy_boundary(length=10,reshuffle=False):
+    import random,string
+    
+    character_string = string.letters+string.digits
+    boundary_string = []
+    for i in range(0,length):
+        rand_index = random.randint(0,len(character_string) - 1)
+        boundary_string.append(character_string[rand_index])
+    if reshuffle:
+        random.shuffle(boundary_string)
+    else:
+        pass
+    return ''.join(boundary_string) 

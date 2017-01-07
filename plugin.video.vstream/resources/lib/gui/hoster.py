@@ -91,7 +91,7 @@ class cHosterGui:
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)           
         #Upload menu    
-        if ((oHoster.getPluginIdentifier() == 'uptobox') and (cConfig().getSetting('hoster_uptobox_premium') == 'true')):
+        if ((oHoster.getPluginIdentifier() == 'uptobox') and (cConfig().getSetting('hoster_uptobox_premium') == 'true') and (cInputParameterHandler().getValue('site') != 'siteuptobox')):
              oContext = cContextElement()
              oContext.setFile('siteuptobox')
              oContext.setSiteName(self.SITE_NAME)
@@ -345,6 +345,9 @@ class cHosterGui:
             return cHosterHandler().getHoster('uplea')            
         if ('uploaded' in sHostName or 'ul.to' in sHostName):
             return cHosterHandler().getHoster('uploaded')
+            
+        if ('kaydo.ws' in sHostName):
+            return cHosterHandler().getHoster('lien_direct')
             
         #Si aucun hebergeur connu on teste les liens directs
         if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8'):

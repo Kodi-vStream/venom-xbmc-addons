@@ -10,7 +10,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re,urllib,urllib2
+
+import re,urllib,urllib2,xbmc
  
 SITE_IDENTIFIER = 'filmsvostfr_biz'
 SITE_NAME = 'Filmsvostfr'
@@ -103,23 +104,24 @@ def showMovies(sSearch = ''):
     
     if sSearch:
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'
-        headers = {'User-Agent': UA ,
-                   'Host' : 'www.filmsvostfr.co',
-                   'Referer': 'http://www.filmsvostfr.co/search.php',
-                   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                   'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-                 #  'Accept-Encoding' : 'gzip, deflate',
-                   'Content-Type': 'application/x-www-form-urlencoded'}
-    
-        post_data = {'t' : sSearch,
-                     'R_token': 'U7OJA8L3qwr9DuqYANPWI9k3hGXqoSTp6DdaUuDi'}
+                                         
+        oRequestHandler = cRequestHandler(URL_MAIN +'search.php')
+        oRequestHandler.setRequestType(1)
+        oRequestHandler.addHeaderEntry('User-Agent' , UA)
+        oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        oRequestHandler.addHeaderEntry('Accept' , 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        oRequestHandler.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
+        oRequestHandler.addHeaderEntry('Referer','http://www.filmsvostfr.co/search.php')
         
-        req = urllib2.Request('http://www.filmsvostfr.co/search.php' , urllib.urlencode(post_data), headers)
+        oRequestHandler.addParameters( 't' , sSearch)
+        oRequestHandler.addParameters( 'R_token' , 'U7OJA8L3qwr9DuqYANPWI9k3hGXqoSTp6DdaUuDi')
         
-        response = urllib2.urlopen(req)
-        sHtmlContent = response.read()
-        response.close()
+        sHtmlContent = oRequestHandler.request()
         
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+
         sUrl = 'http://www.filmsvostfr.co/search.php'
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -379,4 +381,4 @@ def showHostersSetA():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
        
     cHosterGui().plusHoster(oGui)
-    oGui.setEndOfDirectory()  
+    oGui.setEndOfDirectory()
