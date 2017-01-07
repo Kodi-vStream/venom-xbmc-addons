@@ -148,13 +148,40 @@ class cGuiElement:
 
     def getFunction(self):
         return self.__sFunctionName
+        
+    def getSaisonTitre(self, sTitle):
+
+        string = re.search('(?i)(s(?:[a-z]+son\s?)*([0-9]+))', str(sTitle))
+        if string:
+            sTitle = sTitle.replace(string.group(1),'')
+            sTitle = "%s [COLOR coral]S%02d[/COLOR]"%(sTitle, int(string.group(2)))
+            self.addItemValues('Season', string.group(2))
+            return sTitle, True
+
+        return sTitle, False
+        
+    def getEpisodeTitre(self, sTitle):
+  
+        string = re.search('(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', str(sTitle))
+        if string:
+            sTitle = sTitle.replace(string.group(1),'')
+            sTitle = "%s [COLOR coral]E%02d[/COLOR]"%(sTitle, int(string.group(2)))
+            self.addItemValues('Episode', string.group(2))
+            return sTitle, True
+
+        return sTitle, False
 
     def setTitle(self, sTitle):
         if type(sTitle) is list:
-            self.__sTitle = sTitle[0]
-            del sTitle[0]
-            if len(sTitle) >0:
-                self.__sTitle +=  " [COLOR coral]["+ '] ['.join(map(str,sTitle)) + "][/COLOR]"
+            for i in range(len(sTitle)): 
+                
+                sTitle[i], sSaison = self.getSaisonTitre(sTitle[i])
+                sTitle[i], sEpisode = self.getEpisodeTitre(sTitle[i])
+
+                if i == 0 or sSaison == True or sEpisode == True:
+                    self.__sTitle += sTitle[i]
+                else:
+                    self.__sTitle +=  " [COLOR coral]["+str(sTitle[i])+ "][/COLOR]"
         else:
             self.__sTitle = sTitle
 
@@ -409,6 +436,9 @@ class cGuiElement:
             return
         del meta['playcount']
         del meta['trailer']
+        
+        import xbmc
+        xbmc.log(str(meta))
 
         if meta['title']:
             meta['title'] = self.getTitle()
