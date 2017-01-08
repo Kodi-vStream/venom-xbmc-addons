@@ -26,7 +26,7 @@ UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/20080924
 
 SITE_IDENTIFIER = 'free_telechargement_org' 
 SITE_NAME = '[COLOR violet]Free-telechargement[/COLOR]' 
-SITE_DESC = 'Fichier en DDL, HD' 
+SITE_DESC = 'Fichier en DDL, HD, Film et Serie' 
 
 URL_MAIN = 'http://www.free-telechargement.org/'
 URL_PROTECT = 'http://liens.free-telechargement.org/'
@@ -317,6 +317,8 @@ def showGenre(basePath):
 def showSearchResult(sSearch = ''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
+    
+    xbmc.log(str(oInputParameterHandler.getAllParameter()))
             
     sUrl = sSearch
     
@@ -421,9 +423,9 @@ def showSearchResult(sSearch = ''):
         for n,u in NextPage:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', u)
-            oGui.addDir(SITE_IDENTIFIER, 'showSearchResult', n, 'next.png', oOutputParameterHandler)              
-
-    oGui.setEndOfDirectory()        
+            oGui.addDir(SITE_IDENTIFIER, 'showSearchResult', n, 'next.png', oOutputParameterHandler)
+    if not sSearch:
+        oGui.setEndOfDirectory()        
         
 def showMovies():
     xbmc.log('showMovies')
@@ -525,7 +527,7 @@ def showHosters():# recherche et affiche les hotes
     #xbmc.log(str(aResult1))
     
     #cut de la zone des liens
-    if 'Lien Premium' in sHtmlContent:
+    if 'Lien Premium --' in sHtmlContent:
         xbmc.log('lien premiums')
         sPattern = 'Lien Premium *--(.+?)</div>'
     else:
