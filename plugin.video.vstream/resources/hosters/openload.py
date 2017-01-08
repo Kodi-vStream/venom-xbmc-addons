@@ -27,12 +27,14 @@ def CheckCpacker(str):
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = oParser.parse(str, sPattern)
     if (aResult[0]):
-        xbmc.log('Cpacker encryption')
         str2 = aResult[1][0]
         if not str2.endswith(';'):
             str2 = str2 + ';'
-            
-        return cPacker().unpack(str2)
+        try:
+            str = cPacker().unpack(str2)
+            xbmc.log('Cpacker encryption')
+        except:
+            pass
 
     return str
     
@@ -47,12 +49,13 @@ def CheckJJDecoder(str):
     return str
     
 def CheckAADecoder(str):
-    oParser = cParser()
-    sPattern = '(ﾟωﾟ.+?)<\/script>'
-    aResult = oParser.parse(str, sPattern)
-    if (aResult[0]):
+    sPattern = '[>;]\s*(ﾟωﾟ.+?\(\'_\'\);)'
+    aResult = re.search(sPattern, str,re.DOTALL | re.UNICODE)
+    if (aResult):
         xbmc.log('AA encryption')
-        return AADecoder(aResult[1][0]).decode()
+        tmp = AADecoder(aResult.group(1)).decode()
+        #xbmc.log('>> ' + tmp)
+        return str[:aResult.start()] + tmp + str[aResult.end():]
         
     return str
 
@@ -169,20 +172,22 @@ class cHoster(iHoster):
             return False, False
         
         #on essais de situer le code
-        sPattern = '<script src="\/assets\/js\/video-js\/video\.js\.ol\.js">(.+)*'
+        sPattern = '<script src="\/assets\/js\/video-js\/video\.js\.ol\.js"(.+)*'
+        
         aResult = oParser.parse(sHtmlContent1, sPattern)
         if (aResult[0]):
-            sHtmlContent2 = aResult[1][0]
+            sHtmlContent3 = aResult[1][0]
         
         #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
         
+        #xbmc.log(sHtmlContent3)
+        
         code = ''
         
         #liste tout les decoders
-        maxboucle = 1
-        sHtmlContent3 = sHtmlContent2
+        maxboucle = 3
         
         while (('window.r' not in sHtmlContent3) and (maxboucle > 0)):
             sHtmlContent3 = CheckCpacker(sHtmlContent3)
@@ -195,14 +200,20 @@ class cHoster(iHoster):
             maxboucle = maxboucle - 1
             
         code = sHtmlContent3   
-        #xbmc.log(code)
+        #xbmc.log('>>' + code)
         
         if not (code):
             return False,False
-        
+            
+        aResult = oParser.parse(code, "window.r='([^']+)';")
+        if (aResult[0]):
+            ID = aResult[1][0]
+            
+        #xbmc.log('Id : ' +  ID)
+            
         #Search the coded url
         for i in TabUrl:
-            if i[0].endswith('x') and len(i[1]) > 30:
+            if len(i[1]) > 30:
                 hideenurl = i[1]
                 xbmc.log('hidden url : ' + str(i))
 
@@ -217,11 +228,13 @@ class cHoster(iHoster):
         urlcode = ''
         id = hideenurl
 
-        firstTwoChars = parseInt(id[0:2])
+        dec = parseInt(id[0:3])
+        firstTwoChars = parseInt(id[3:5])
+        
         urlcode = ''
-        num = 2
+        num = 5
         while (num < len(id)):
-            urlcode = urlcode + chr(parseInt(id[num: (num +3)]) - firstTwoChars * parseInt(id[(num + 3):(num+ 3 + 2)]))
+            urlcode = urlcode + chr(parseInt(id[num: (num +3)]) - dec - firstTwoChars * parseInt(id[(num + 3):(num+ 3 + 2)]))
             num = num + 5
        
         if not (urlcode):
@@ -254,4 +267,3 @@ class cHoster(iHoster):
             return True, api_call
             
         return False, False
- 
