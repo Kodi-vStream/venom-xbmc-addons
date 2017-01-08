@@ -363,27 +363,19 @@ def getIdFromUrl(sUrl):
 def showMovies(sSearch = ''):
     oGui = cGui()
     bGlobal_Search = False
-    if sSearch:        
-        #modif dans recherche pour retourne le disp
-        from resources.lib.handler.rechercheHandler import cRechercheHandler
-        oHandler = cRechercheHandler()
-        sDisp = oHandler.DISP
-        
-        if sDisp:
-            if sDisp == "search1":
-                sUrl = URL_SEARCH_MOVIES[0]+sSearch
-            if sDisp == "search2":
-                sUrl = URL_SEARCH_SERIES[0]+sSearch
-            if sDisp == "search3":
-                sUrl = URL_SEARCH_ANIMS[0]+sSearch
+    if sSearch:
+        #partie en test
+        sType = xbmcgui.Window(10101).getProperty('search_type')
       
-        # if sType:
-            # if sType == "film":
-                # sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_MOVIES[0])
-            # if sType == "serie":
-                # sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_SERIES[0])
-            # if sType == "anime":
-                # sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_ANIMS[0])
+        if sType:
+            if sType == "film":
+                sUrl = URL_SEARCH_MOVIES[0]+sSearch
+            if sType == "serie":
+                sUrl = URL_SEARCH_SERIES[0]+sSearch
+            if sType == "anime":
+                sUrl = URL_SEARCH_ANIMS[0]+sSearch
+        else:
+            sUrl = sSearch
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -458,7 +450,6 @@ def showMovies(sSearch = ''):
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     #tPassage en mode vignette sauf en cas de recherche globale
-    #INTERDIT SetView merci
     # if not bGlobal_Search:
         # xbmc.executebuiltin('Container.SetViewMode(500)')
     
