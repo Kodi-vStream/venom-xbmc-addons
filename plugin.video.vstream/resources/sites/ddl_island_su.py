@@ -36,7 +36,7 @@ URL_SEARCH_EMISSIONS_TV = ('http://www.ddl-island.su/recherche.php?categorie=17&
 URL_SEARCH_SPECTACLES = ('http://www.ddl-island.su/recherche.php?categorie=2&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
 
 
-URL_SEARCH = (URL_MAIN + 'index.php?q=', 'showMovies')
+URL_SEARCH = ('', 'showMovies')
 
 FUNCTION_SEARCH = 'showMovies'
 
@@ -364,24 +364,18 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     bGlobal_Search = False
     if sSearch:
-        
-        #par defaut
-        sUrl = sSearch
-        
-        if URL_SEARCH[0] in sSearch:
-            bGlobal_Search = True
-        
         #partie en test
-        oInputParameterHandler = cInputParameterHandler()
-        sType = oInputParameterHandler.getValue('type') 
+        sType = xbmcgui.Window(10101).getProperty('search_type')
       
         if sType:
             if sType == "film":
-                sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_MOVIES[0])
+                sUrl = URL_SEARCH_MOVIES[0]+sSearch
             if sType == "serie":
-                sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_SERIES[0])
+                sUrl = URL_SEARCH_SERIES[0]+sSearch
             if sType == "anime":
-                sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_ANIMS[0])
+                sUrl = URL_SEARCH_ANIMS[0]+sSearch
+        else:
+            sUrl = sSearch
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -456,8 +450,8 @@ def showMovies(sSearch = ''):
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     #tPassage en mode vignette sauf en cas de recherche globale
-    if not bGlobal_Search:
-        xbmc.executebuiltin('Container.SetViewMode(500)')
+    # if not bGlobal_Search:
+        # xbmc.executebuiltin('Container.SetViewMode(500)')
     
      
     if not sSearch:

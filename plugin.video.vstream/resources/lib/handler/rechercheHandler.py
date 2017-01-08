@@ -3,6 +3,8 @@ from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
 from resources.lib.db import cDb
 
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+
 import sys
 import os
 import urllib
@@ -55,6 +57,13 @@ class cRechercheHandler:
 
             if ret > -1:
                 self.__sDisp = disp[ret]
+                
+        sType = cConfig().getSetting(self.__sDisp+'_type')
+        sLabel = cConfig().getSetting(self.__sDisp+'_label')
+        
+        xbmcgui.Window(10101).setProperty('search_disp', self.__sDisp)
+        xbmcgui.Window(10101).setProperty('search_type', sType)
+        xbmcgui.Window(10101).setProperty('search_label', sLabel)
         return self.__sDisp
 
     def __getFileNamesFromFolder(self, sFolder):
