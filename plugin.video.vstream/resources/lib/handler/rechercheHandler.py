@@ -11,6 +11,8 @@ import xbmc
 
 class cRechercheHandler:
 
+    DISP = ""
+
     def __init__(self):
         self.__sText = ""
         self.__sDisp = ""
@@ -41,6 +43,7 @@ class cRechercheHandler:
 
     def setDisp(self, sDisp):
         self.__sDisp = sDisp
+        cRechercheHandler.DISP = sDisp
 
     def setRead(self, sRead):
         self.__sRead = sRead

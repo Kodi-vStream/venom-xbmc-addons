@@ -24,7 +24,7 @@ REPLAYTV_REPLAYTV = ('http://', 'load')
 
 REPLAYTV_GENRES = (True, 'showGenres')
 
-URL_SEARCH = ('http://ddlfrench.org/index.php?story={)', 'showMovies')
+URL_SEARCH = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -90,7 +90,8 @@ def showGenres():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-      sUrl = sSearch
+      #sUrl = sSearch
+      sUrl = 'http://ddlfrench.org/index.php?story={'+sSearch+'}&do=search&subaction=search'  
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')

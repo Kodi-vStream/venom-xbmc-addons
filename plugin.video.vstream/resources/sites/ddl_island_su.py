@@ -36,7 +36,7 @@ URL_SEARCH_EMISSIONS_TV = ('http://www.ddl-island.su/recherche.php?categorie=17&
 URL_SEARCH_SPECTACLES = ('http://www.ddl-island.su/recherche.php?categorie=2&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
 
 
-URL_SEARCH = (URL_MAIN + 'index.php?q=', 'showMovies')
+URL_SEARCH = ('', 'showMovies')
 
 FUNCTION_SEARCH = 'showMovies'
 
@@ -363,25 +363,27 @@ def getIdFromUrl(sUrl):
 def showMovies(sSearch = ''):
     oGui = cGui()
     bGlobal_Search = False
-    if sSearch:
+    if sSearch:        
+        #modif dans recherche pour retourne le disp
+        from resources.lib.handler.rechercheHandler import cRechercheHandler
+        oHandler = cRechercheHandler()
+        sDisp = oHandler.DISP
         
-        #par defaut
-        sUrl = sSearch
-        
-        if URL_SEARCH[0] in sSearch:
-            bGlobal_Search = True
-        
-        #partie en test
-        oInputParameterHandler = cInputParameterHandler()
-        sType = oInputParameterHandler.getValue('type') 
+        if sDisp:
+            if sDisp == "search1":
+                sUrl = URL_SEARCH_MOVIES[0]+sSearch
+            if sDisp == "search2":
+                sUrl = URL_SEARCH_SERIES[0]+sSearch
+            if sDisp == "search3":
+                sUrl = URL_SEARCH_ANIMS[0]+sSearch
       
-        if sType:
-            if sType == "film":
-                sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_MOVIES[0])
-            if sType == "serie":
-                sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_SERIES[0])
-            if sType == "anime":
-                sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_ANIMS[0])
+        # if sType:
+            # if sType == "film":
+                # sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_MOVIES[0])
+            # if sType == "serie":
+                # sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_SERIES[0])
+            # if sType == "anime":
+                # sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_ANIMS[0])
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -456,8 +458,9 @@ def showMovies(sSearch = ''):
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     #tPassage en mode vignette sauf en cas de recherche globale
-    if not bGlobal_Search:
-        xbmc.executebuiltin('Container.SetViewMode(500)')
+    #INTERDIT SetView merci
+    # if not bGlobal_Search:
+        # xbmc.executebuiltin('Container.SetViewMode(500)')
     
      
     if not sSearch:
