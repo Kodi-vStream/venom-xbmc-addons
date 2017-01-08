@@ -267,8 +267,8 @@ def showMovies(sSearch = ''):
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     #Passage en mode vignette sauf en cas de recherche globale
-    if not bGlobal_Search:
-        xbmc.executebuiltin('Container.SetViewMode(500)')
+    #if not bGlobal_Search:
+        #xbmc.executebuiltin('Container.SetViewMode(500)')
      
     oGui.setEndOfDirectory()
 
