@@ -11,6 +11,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
+import xbmcgui
 import re
 
 SITE_IDENTIFIER = 'full_stream_org'

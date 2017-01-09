@@ -36,7 +36,7 @@ URL_SEARCH_EMISSIONS_TV = ('http://www.ddl-island.su/recherche.php?categorie=17&
 URL_SEARCH_SPECTACLES = ('http://www.ddl-island.su/recherche.php?categorie=2&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
 
 
-URL_SEARCH = ('', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?q=', 'showMovies')
 
 FUNCTION_SEARCH = 'showMovies'
 
@@ -364,18 +364,24 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     bGlobal_Search = False
     if sSearch:
+        
+        #par defaut
+        sUrl = sSearch
+        
+        if URL_SEARCH[0] in sSearch:
+            bGlobal_Search = True
+        
         #partie en test
-        sType = xbmcgui.Window(10101).getProperty('search_type')
+        oInputParameterHandler = cInputParameterHandler()
+        sType = oInputParameterHandler.getValue('type') 
       
         if sType:
             if sType == "film":
-                sUrl = URL_SEARCH_MOVIES[0]+sSearch
+                sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_MOVIES[0])
             if sType == "serie":
-                sUrl = URL_SEARCH_SERIES[0]+sSearch
+                sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_SERIES[0])
             if sType == "anime":
-                sUrl = URL_SEARCH_ANIMS[0]+sSearch
-        else:
-            sUrl = sSearch
+                sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_ANIMS[0])
 
     else:
         oInputParameterHandler = cInputParameterHandler()
