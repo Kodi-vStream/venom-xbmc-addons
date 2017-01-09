@@ -175,7 +175,7 @@ def login():
 
     
 def showMovies(sSearch = ''):
-    xbmc.log('showMovies')
+    #xbmc.log('showMovies')
     
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -270,7 +270,8 @@ def showMovies(sSearch = ''):
     #if not bGlobal_Search:
         #xbmc.executebuiltin('Container.SetViewMode(500)')
      
-    oGui.setEndOfDirectory()
+    if not sSearch:
+        oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -284,7 +285,7 @@ def __checkForNextPage(sHtmlContent):
 
 
 def showHosters():# recherche et affiche les hotes
-    xbmc.log("showHosters")
+    #xbmc.log("showHosters")
     
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler() 
@@ -353,4 +354,3 @@ def Readcookie(Domain):
         return ''
     
     return data
-	
