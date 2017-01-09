@@ -169,16 +169,14 @@ def showEpisode():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
-    xbmc.log(sUrl)
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<a href="(.+?tape=[0-9]+)">([0-9]+)<\/a>'
+    sPattern = '<a href="([^"<]+tape=.+?)">(\d+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-    #xbmc.log(str(aResult))
     
     #Si pas plusieurs liens on affiche direct les hosts.
     if (aResult[0] == False):
