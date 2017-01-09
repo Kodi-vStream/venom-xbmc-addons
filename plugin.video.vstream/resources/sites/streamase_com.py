@@ -193,7 +193,9 @@ def showMovies(sSearch = ''):
             sHtmlContent = oRequestHandler.request()
             #xbmc.log(sHtmlContent)
         else:
-            sUrl = URL_SEARCH[0]  
+            sUrl = URL_SEARCH[0] 
+            if URL_SEARCH[0] in sSearch:
+                sSearch=sSearch.replace(URL_SEARCH[0],'')
             oRequestHandler = cRequestHandler(URL_SEARCH[0])
             oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
             #oRequestHandler.addHeaderEntry('Origin','http://streamase.com/')
