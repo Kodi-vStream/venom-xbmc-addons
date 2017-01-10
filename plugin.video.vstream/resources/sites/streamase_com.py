@@ -175,7 +175,7 @@ def login():
 
     
 def showMovies(sSearch = ''):
-    xbmc.log('showMovies')
+    #xbmc.log('showMovies')
     
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -193,7 +193,9 @@ def showMovies(sSearch = ''):
             sHtmlContent = oRequestHandler.request()
             #xbmc.log(sHtmlContent)
         else:
-            sUrl = URL_SEARCH[0]  
+            sUrl = URL_SEARCH[0] 
+            if URL_SEARCH[0] in sSearch:
+                sSearch=sSearch.replace(URL_SEARCH[0],'')
             oRequestHandler = cRequestHandler(URL_SEARCH[0])
             oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
             #oRequestHandler.addHeaderEntry('Origin','http://streamase.com/')
@@ -270,7 +272,8 @@ def showMovies(sSearch = ''):
     #if not bGlobal_Search:
         #xbmc.executebuiltin('Container.SetViewMode(500)')
      
-    oGui.setEndOfDirectory()
+    if not sSearch:
+        oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -284,7 +287,7 @@ def __checkForNextPage(sHtmlContent):
 
 
 def showHosters():# recherche et affiche les hotes
-    xbmc.log("showHosters")
+    #xbmc.log("showHosters")
     
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler() 
@@ -353,4 +356,3 @@ def Readcookie(Domain):
         return ''
     
     return data
-	
