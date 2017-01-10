@@ -179,6 +179,8 @@ class cGui():
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
+    #utiliser addText2
+    #add text 1 un outpout alors qu'il et renitialiser
     def addText(self, sId, sLabel,oOutputParameterHandler = ''):
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
@@ -190,6 +192,20 @@ class cGui():
 
         oOutputParameterHandler = cOutputParameterHandler()
         #oOutputParameterHandler.addParameter('siteUrl', 'none')
+
+        self.addFolder(oGuiElement, oOutputParameterHandler)
+     
+     
+    def addText2(self, sId, sLabel, sIcon='none.png'):
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(sId)
+        oGuiElement.setFunction('DoNothing')
+        oGuiElement.setTitle(sLabel)
+        oGuiElement.setIcon(sIcon)
+        oGuiElement.setThumbnail(oGuiElement.getIcon())
+        oGuiElement.setMeta(0)
+
+        oOutputParameterHandler = cOutputParameterHandler()
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
