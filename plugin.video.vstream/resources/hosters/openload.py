@@ -170,6 +170,8 @@ class cHoster(iHoster):
             #xbmc.log(str(TabUrl))
         else:
             return False, False
+            
+        xbmc.log("Nbre d'url : " + str(len(TabUrl)))
         
         #on essais de situer le code
         sPattern = '<script src="\/assets\/js\/video-js\/video\.js\.ol\.js"(.+)*'
@@ -222,20 +224,39 @@ class cHoster(iHoster):
             return False, False
 
         #
-        # The Python algoritm if from the javascript version by TwelveCharzz https://github.com/TwelveCharzz
+        # Code updated with code from https://gitlab.com/iptvplayer-for-e2
         #
         
         urlcode = ''
         id = hideenurl
-
-        dec = parseInt(id[0:3])
-        firstTwoChars = parseInt(id[3:5])
+        ok = False
         
-        urlcode = ''
-        num = 5
-        while (num < len(id)):
-            urlcode = urlcode + chr(parseInt(id[num: (num +3)]) - dec - firstTwoChars * parseInt(id[(num + 3):(num+ 3 + 2)]))
-            num = num + 5
+        for fs in [-1, 1]:
+            for fe in [-1, 1]:
+                
+                try:
+
+                    s = parseInt(id[0:3]) * fs
+                    e = parseInt(id[3:5]) * fe
+                    
+                    urlcode = ''
+                    num = 5
+                    while (num < len(id)):
+                        urlcode = urlcode + chr(parseInt(id[num: (num +3)]) - s - e * parseInt(id[(num + 3):(num+ 3 + 2)]))
+                        num = num + 5
+                    
+                    xbmc.log(urlcode)
+                    #check if the url seem good                    
+                    if re.compile('~[0-9]{10}~').search(urlcode):
+                        ok = True
+                        break
+                    else:
+                        urlcode = ''
+                        
+                except Exception:
+                    continue
+            if (ok):
+                break;
        
         if not (urlcode):
             return False,False
