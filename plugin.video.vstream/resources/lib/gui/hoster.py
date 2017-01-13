@@ -335,6 +335,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('daclips')
         if ('kvid' in sHostName):
             return cHosterHandler().getHoster('kvid')
+        if ('estream' in sHostName):
+            return cHosterHandler().getHoster('estream')
         
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
