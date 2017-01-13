@@ -346,9 +346,13 @@ class cTrakt:
                         sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                         cTrakt.CONTENT = '1'
                         sFunction = 'showHosters'
-
-                    sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
-                    sTitle = ('[COLOR white]%s[/COLOR] %s - (%s)') % (sDate, sTitle.encode("utf-8"), int(sYear))
+                        
+                    if sYear:
+                        sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
+                        sTitle = ('[COLOR white]%s[/COLOR] %s - (%s)') % (sDate, sTitle.encode("utf-8"), int(sYear))
+                    else:
+                        sFile = ('%s') % (sTitle.encode("utf-8"))
+                        sTitle = ('[COLOR white]%s[/COLOR] %s') % (sDate, sTitle.encode("utf-8"))
 
                 elif 'history' in sUrl:
                 #commun
