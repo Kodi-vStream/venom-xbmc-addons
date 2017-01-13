@@ -38,6 +38,8 @@ class cTMDb:
             if not os.path.exists(self.cache):
                 f = open(self.cache,'w')
                 f.close()
+                self.db = sqlite.connect(self.cache)
+                self.dbcur = self.db.cursor()
                 self.__createdb()
         except:
             pass
@@ -51,13 +53,14 @@ class cTMDb:
     def __createdb(self):
 
         sql_create = "CREATE TABLE IF NOT EXISTS movie ("\
-                           "imdb_id VARCHAR(10), "\
-                           "tmdb_id VARCHAR(10), "\
+                           "imdb_id TEXT, "\
+                           "tmdb_id TEXT, "\
                            "title TEXT, "\
                            "year INTEGER,"\
                            "director TEXT, "\
                            "writer TEXT, "\
-                           "tagline TEXT, cast TEXT,"\
+                           "tagline TEXT, "\
+                           "cast TEXT,"\
                            "rating FLOAT, "\
                            "votes TEXT, "\
                            "duration TEXT, "\
@@ -74,9 +77,12 @@ class cTMDb:
                            "overlay INTEGER,"\
                            "UNIQUE(imdb_id, tmdb_id, title, year)"\
                            ");"
-        self.dbcur.execute(sql_create)
+        try:
+            self.dbcur.execute(sql_create)
+        except:
+            xbmc.log("non")
        
-        sql_create = "CREATE TABLE IF NOT EXISTS tvshow_meta ("\
+        sql_create = "CREATE TABLE IF NOT EXISTS tvshow ("\
                            "imdb_id VARCHAR(10), "\
                            "tvdb_id VARCHAR(10), "\
                            "title TEXT, "\
@@ -101,7 +107,7 @@ class cTMDb:
                            
         self.dbcur.execute(sql_create)
        
-        sql_create = "CREATE TABLE IF NOT EXISTS season_meta ("\
+        sql_create = "CREATE TABLE IF NOT EXISTS season ("\
                            "imdb_id VARCHAR(10), "\
                            "tvdb_id VARCHAR(10), " \
                            "season INTEGER, "\
@@ -112,7 +118,7 @@ class cTMDb:
                            
         self.dbcur.execute(sql_create)
         
-        sql_create = "CREATE TABLE IF NOT EXISTS episode_meta ("\
+        sql_create = "CREATE TABLE IF NOT EXISTS episode ("\
                            "imdb_id VARCHAR(10), "\
                            "tvdb_id VARCHAR(10), "\
                            "episode_id VARCHAR(10), "\
@@ -130,7 +136,7 @@ class cTMDb:
                            ");"
                            
         self.dbcur.execute(sql_create)
-        return
+        xbmc.log("table creer")
         
     def __del__(self):
         ''' Cleanup db when object destroyed '''
@@ -140,7 +146,7 @@ class cTMDb:
         except: pass
 
     # Get the basic movie information for a specific movie id.
-    def get_movie(self, movie_id, append_to_response="append_to_response=trailers,images,casts,translations"):
+    def search_movie_id(self, movie_id, append_to_response="append_to_response=trailers,images,casts,translations"):
         result = self._call('movie/'+ str(movie_id), append_to_response)
         return result #obj(**self._call('movie/' + str(movie_id), append_to_response))
 
@@ -215,7 +221,7 @@ class cTMDb:
         return arr
 
     # Search for movies by title.
-    def search_movie(self, name, year='', page=1):
+    def search_movie_name(self, name, year='', page=1):
     
         meta = {}
         
@@ -234,7 +240,7 @@ class cTMDb:
             tmdb_id = meta['results'][0]['id']
         #cherche toutes les infos
             
-            meta = self.get_movie(tmdb_id)
+            meta = self.search_movie_id(tmdb_id)
             meta = self._format(meta)
         else:
             meta = {}
@@ -244,7 +250,7 @@ class cTMDb:
         return meta
         
             # Search for TV shows by title.
-    def search_tv(self, term, page=1):
+    def search_tvshow_name(self, term, page=1):
         arr = []
         result = self._call('search/tv', 'query=' + quote_plus(term) + '&page=' + str(page))
         [arr.append(obj(**res)) for res in result['results']]
@@ -258,7 +264,7 @@ class cTMDb:
         return arr
 
     # Get the primary information about a TV series by id.
-    def get_tv_show(self, show_id, append_to_response="append_to_response=trailers,images,casts,translations"):
+    def search_tvshow_id(self, show_id, append_to_response="append_to_response=trailers,images,casts,translations"):
         return obj(**self._call('tv/' + str(show_id), append_to_response))
 
     # Get the latest TV show id.
@@ -339,6 +345,37 @@ class cTMDb:
     
         return _meta
         
+    def _cache_name(self, media_type, name, tmdb_id='', year=''):
+        if media_type == 'movie':
+                sql_select = "SELECT * FROM movie"
+                if tmdb_id:
+                    sql_select = sql_select + " WHERE tmdb_id = '%s'" % tmdb_id
+                else:
+                    sql_select = sql_select + " WHERE title = '%s'" % name
+                    
+                    
+        self.dbcur.execute(sql_select)            
+        matchedrow = self.dbcur.fetchone()
+        return dict(matchedrow)
+        
+    def _cache_save(self, meta, media_type, overlay):
+    
+        #self.dbcur.execute('INSERT INTO movie VALUES (NULL, x)'), meta)
+        columns = ', '.join(values.keys())
+        placeholders = ', '.join('?' * len(values))
+        sql = 'INSERT INTO movie ({}) VALUES ({})'.format(columns, placeholders)
+        self.dbcur.execute(sql, values.values())
+        try:
+            self.db.commit() 
+            cConfig().log('SQL INSERT watched Successfully') 
+        except Exception, e:
+            #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
+            cConfig().log('SQL ERROR INSERT') 
+            pass
+        self.db.close()
+    
+    
+        
     def get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', overlay=6, update=False):
         '''
         Main method to get meta data for movie or tvshow. Will lookup by name/year 
@@ -362,10 +399,7 @@ class cTMDb:
         xbmc.log('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id), 0)
         #recherche dans la base de donner
         if not update:
-            if tmdb_id:
-                meta = self._cache_lookup_by_id(media_type, tmdb_id=tmdb_id)
-            else:
-                meta = self._cache_lookup_by_name(media_type, name, year)
+            meta = self._cache_name(media_type, name, tmdb_id, year)
         else:
             meta = {}
             
@@ -375,17 +409,18 @@ class cTMDb:
             
             if media_type=='movie':
                 if tmbd_id:
-                    self.get_movie(tmdb_id)                
+                    self.search_movie_id(tmdb_id)                
                 else:
-                    self.search_movie(self, name, year)
+                    self.search_movie_name(name, year)
             elif media_type=='tvshow':
-                meta = self._get_tvdb_meta(imdb_id, name, year)
-            
+                if tmbd_id:
+                    meta = self.search_tvshow_id(imdb_id)
+                else:
+                    meta = self.search_tvshow_name(name, year)
+            #meta = self.__format_meta(media_type, meta, name)
+            meta = self._format(meta)
             #ecrit dans le cache
-            self._cache_save_video_meta(meta, name, media_type, overlay)
-            
-        #meta = self.__format_meta(media_type, meta, name)
-        meta = self._format(meta)
+            self._cache_save(meta, media_type, overlay)
         
         return meta
 
