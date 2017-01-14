@@ -4,7 +4,7 @@
 
 from resources.lib.config import cConfig
 
-import json, os
+import json, os, copy
 import pprint
 from urllib import quote_plus, urlopen, urlencode
 import xbmc
@@ -16,12 +16,7 @@ except:
     from pysqlite2 import dbapi2 as sqlite
     cConfig().log('SQLITE 2 as DB engine') 
 
-
-class obj:
-    def __init__(self, **entries):
-        self.__dict__.update(entries)
-
-
+    
 # http://docs.themoviedb.apiary.io
 class cTMDb:
     URL = "http://api.themoviedb.org/3/"
@@ -39,6 +34,7 @@ class cTMDb:
                 f = open(self.cache,'w')
                 f.close()
                 self.db = sqlite.connect(self.cache)
+                self.db.row_factory = sqlite.Row 
                 self.dbcur = self.db.cursor()
                 self.__createdb()
         except:
@@ -46,7 +42,8 @@ class cTMDb:
             
         try:
             self.db = sqlite.connect(self.cache)
-            self.dbcur = self.db.cursor()
+            self.db.row_factory = sqlite.Row 
+            self.dbcur = self.db.cursor()            
         except:
             pass
 
@@ -233,15 +230,16 @@ class cTMDb:
         meta = self._call('search/movie', 'query=' + quote_plus(term) + '&page=' + str(page))
         #teste sans l'année
         if meta and meta['total_results'] == 0 and year:
-                meta = self._search(name,'') 
+                meta = self.search_movie_name(name,'')
+                
         #cherche 1 seul resultat
         if meta and meta['total_results'] != 0 and meta['results']:
-            tmdb_id = meta['results'][0]['id']            
+            tmdb_id = meta['results'][0]['id'] 
             #cherche toutes les infos
             meta = self.search_movie_id(tmdb_id)
         else:
             meta = {}
-
+            
         return meta
         
             # Search for TV shows by title.
@@ -306,12 +304,22 @@ class cTMDb:
             return 1
         else:
             return 0
-            
-    def _format(self, meta):
+     
+    def _cache_format(self, meta):
+    
+        if 'cast' in meta:
+            meta['cast'] = eval(str(meta['cast']))
+        return meta
+        
+    def _format(self, meta, name):
         _meta = {}
 
-        _meta['title'] = meta['title']
-        _meta['tmdb_id'] = meta['id']
+        if not 'title' in meta:
+            _meta['title'] = name
+        else:            
+            _meta['title'] = meta['title']
+        if 'id' in meta:
+            _meta['tmdb_id'] = meta['id']
         if 'imdb_id' in meta:
             _meta['imdb_id'] = meta['imdb_id']
         if 'runtime' in meta:
@@ -343,6 +351,18 @@ class cTMDb:
         if not 'playcount' in meta:
             _meta['playcount'] = self.__set_playcount(6)
             
+        if 'cast' in meta:
+            xbmc.log("passeeeeeeeeeeeeeeeeeee")
+            _meta['cast'] = json.loads(_meta['cast'])
+            
+        if 'casts' in meta:
+            #meta['cast'] = str(meta['casts']['cast'])
+            licast = []
+            for cast in meta['casts']['cast']:
+                licast.append((cast['name'], cast['character']))
+            _meta['cast'] = licast
+            
+            
         #ont prend juste le premier
         try:
             _meta['trailer'] = 'plugin://plugin.video.youtube/?action=play_video&videoid=%s' % meta['trailers']['youtube'][0]['source']
@@ -351,6 +371,12 @@ class cTMDb:
             
     
         return _meta
+     
+    def _clean_title(self, title):
+        title= title.replace(' ', '')
+        title = title.lower()
+        return title
+        
         
     def _cache_search(self, media_type, name, tmdb_id='', year=''):
         if media_type == 'movie':
@@ -362,7 +388,7 @@ class cTMDb:
 
                 if year:
                     sql_select = sql_select + " AND year = %s" % year
-         
+        xbmc.log(sql_select)
         try:
             self.dbcur.execute(sql_select)            
             matchedrow = self.dbcur.fetchone()
@@ -371,31 +397,32 @@ class cTMDb:
             return None
             
         if matchedrow:
-            xbmc.log('Found meta information by name in cache table: %s' % dict(matchedrow), 0)
-            return dict(matchedrow)
+            xbmc.log('Found meta information by name in cache table') 
+            return self._cache_format(dict(matchedrow))
         else:
             xbmc.log('No match in local DB', 0)
             return None
+            
+    def _cache_save(self, meta, name, media_type, overlay):
+
+        metadb = copy.copy(meta)    
+        metadb['title'] = name
+        #list en str
+        metadb['cast'] = str(metadb['cast'])
+        #news_meta['CastAndRole'] = str(news_meta['CastAndRole'])
         
-    def _cache_save(self, meta, media_type, overlay):
-    
-        #self.dbcur.execute('INSERT INTO movie VALUES (NULL, x)'), meta)
-        xbmc.log(str(meta))       
-        
-        columns = ', '.join(meta.keys())
-        placeholders = ':'+', :'.join(meta.keys())
+        columns = ', '.join(metadb.keys())
+        placeholders = ':'+', :'.join(metadb.keys())
         sql = 'INSERT INTO movie (%s) VALUES (%s)' % (columns, placeholders)
-        self.dbcur.execute(sql, meta)
+        self.dbcur.execute(sql, metadb)
         try:
             self.db.commit() 
-            cConfig().log('SQL INSERT watched Successfully') 
+            cConfig().log('SQL INSERT Successfully') 
         except Exception, e:
             #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
             cConfig().log('SQL ERROR INSERT') 
             pass
         self.db.close()
-    
-    
         
     def get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', overlay=6, update=False):
         '''
@@ -420,9 +447,12 @@ class cTMDb:
         xbmc.log('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id), 0)
         #recherche dans la base de donner
         if not update:
-            meta = self._cache_search(media_type, name, tmdb_id, year)
+            meta = self._cache_search(media_type, self._clean_title(name), tmdb_id, year)
         else:
             meta = {}
+            
+        xbmc.log("meta chacheeeee")
+        #xbmc.log(str(meta))
             
         #recherche online
 
@@ -439,21 +469,28 @@ class cTMDb:
                 else:
                     meta = self.search_tvshow_name(name, year)
             #meta = self.__format_meta(media_type, meta, name)
-            xbmc.log(str(meta))   
-            
             #transforme les metas
-            meta = self._format(meta)         
-            #ecrit dans le cache
-            self._cache_save(meta, media_type, overlay)
-            
-
-            
-        
+            if meta:
+                meta = self._format(meta, name)      
+                #ecrit dans le cache
+                self._cache_save(meta, self._clean_title(name), media_type, overlay)
+                
+            else:
+                #utiliser par l'addon donc plante si y a vraiment pas de reponse.
+                meta['title'] = name         
+                meta['imdb_id'] = ''
+                meta['tmdb_id'] = ''
+                meta['tvdb_id'] = ''        
+                meta['backdrop_url'] = ''
+                meta['cover_url'] = ''
+                
         return meta
+
 
     def _call(self, action, append_to_response):
         url = '%s%s?api_key=%s&%s&language=%s' % (self.URL, action, self.api_key, append_to_response, self.lang)
         response = urlopen(url)
+        xbmc.log(url)
         data = json.loads(response.read())
         if self.debug:
             pprint.pprint(data)
