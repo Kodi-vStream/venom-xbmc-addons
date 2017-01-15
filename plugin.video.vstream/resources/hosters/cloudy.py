@@ -93,7 +93,7 @@ class cHoster(iHoster):
         
         if (aResult[0] == True):
             stream_url = urllib.unquote(aResult[1][0])
-            #stream_url = stream_url + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
+            stream_url = stream_url + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
             return True, stream_url
         else:
             cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
