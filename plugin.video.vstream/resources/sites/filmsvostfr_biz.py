@@ -10,7 +10,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-
+from resources.lib.cloudflare import CloudflareBypass
 import re,urllib,urllib2,xbmc
  
 SITE_IDENTIFIER = 'filmsvostfr_biz'
@@ -148,7 +148,7 @@ def showMovies(sSearch = ''):
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
-       
+        SpecHead = CloudflareBypass().GetHeadercookie(sUrl)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total) #dialog
             if dialog.iscanceled():
@@ -162,7 +162,7 @@ def showMovies(sSearch = ''):
                 pass
 
             sUrl = aEntry[1]
-            sThumbnail = aEntry[0]
+            sThumbnail = aEntry[0] + SpecHead
             if not sThumbnail.startswith('http'): 
                sThumbnail = URL_MAIN + sThumbnail
 

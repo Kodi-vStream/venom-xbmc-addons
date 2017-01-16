@@ -159,7 +159,8 @@ class cUtil:
         string = string.decode("utf-8")
         
         SXEX = ''
-        m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))(?:$| [^a\u00E0])',string,re.UNICODE)
+        #m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))(?:$| [^a\u00E0])',string,re.UNICODE)
+        m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',string,re.UNICODE)
         if m:
             #ok y a des episodes
             string = string.replace(m.group(1),'')

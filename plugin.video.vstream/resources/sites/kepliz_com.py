@@ -17,8 +17,8 @@ import unicodedata,htmlentitydefs
 SITE_IDENTIFIER = 'kepliz_com'
 SITE_NAME = 'Kepliz'
 SITE_DESC = 'Film en streaming'
-URL_HOST = 'http://www.grudal.com/'
- 
+#URL_HOST = 'http://www.grudal.com/'
+URL_HOST = 'http://www.ozporo.com/'
 URL_MAIN = 'URL_MAIN'
 FILMPATTERN = '<div class="article-content"><p style="text-align: center;"><img src="(.+?)" border.+?<p style="text-align: left;">([^<>]+?)<\/p>'
 SEARCHPATTERN = '<fieldset> *<div> *<b><a *href="\/[0-9a-zA-Z]+\/(.+?)" *>(.+?)<\/a><\/b>'
@@ -261,7 +261,7 @@ def showHostersLink():
     
     UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
     headers = {'User-Agent': UA ,
-               'Host' : 'grudal.com',
+               'Host' : 'ozporo.com',
                'Referer': sUrl,
                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
@@ -318,7 +318,7 @@ def showHostersLink2():
     
     UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'
     headers = {'User-Agent': UA ,
-               'Host' : 'grudal.com',
+               'Host' : 'ozporo.com',
                'Referer': sLink,
                'Accept': 'video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5',
                'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',

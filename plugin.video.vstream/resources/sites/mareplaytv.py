@@ -130,7 +130,10 @@ def showMovies(sSearch = ''):
                 
             sTitle = sTitle.replace('Replay du ','')
             sTitle = sTitle.replace('Emission du ','')
+            sTitle = sTitle.replace(',','')
+            sTitle = sTitle.replace('Vidéo','')
             sTitle = re.sub('(?:du )*([0-9]+ [a-zA-Zéèû]+ [0-9]{4})','[\\1]', sTitle)
+            
             
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
@@ -239,6 +242,7 @@ def showHosters():
                 if (aResult[0] == True):
                     sHosterUrl = aResult[1][0]
 
+            xbmc.log(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle)

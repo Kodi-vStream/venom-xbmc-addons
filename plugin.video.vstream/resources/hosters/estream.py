@@ -1,13 +1,20 @@
+#coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
+from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import urllib,xbmc
+
+from resources.lib.packer import cPacker
+
+import xbmc,xbmcgui
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Cloudy'
+        self.__sDisplayName = 'Estream'
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
@@ -23,7 +30,7 @@ class cHoster(iHoster):
         return self.__sFileName
 
     def getPluginIdentifier(self):
-        return 'cloudy'
+        return 'estream'
 
     def isDownloadable(self):
         return True
@@ -35,9 +42,10 @@ class cHoster(iHoster):
         return ''
         
     def __getIdFromUrl(self):
-        sPattern = "id=([^<]+)"
+        sPattern = "v=([^<]+)"
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
+
         if (aResult[0] == True):
             return aResult[1][0]
 
@@ -47,26 +55,10 @@ class cHoster(iHoster):
         return sUrl;
         
     def __getKey(self):
-        
-        oRequestHandler = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequestHandler.request()
-
-        oParser = cParser()
-        sPattern = 'key: "(.+?)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-
-        if (aResult[0] == True):
-            return urllib.quote_plus(aResult[1][0].replace('.', '%2E'))
-
         return ''
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace('https://www.cloudy.ec/', '')
-        self.__sUrl = self.__sUrl.replace('embed.php?id=', '')
-        self.__sUrl = 'https://www.cloudy.ec/embed.php?id=' + str(self.__sUrl)
-        #Patch en attendant kodi V17
-        self.__sUrl = self.__sUrl.replace('https','http')
 
     def checkUrl(self, sUrl):
         return True
@@ -78,25 +70,45 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
-        Key = self.__getKey()
-        File = urllib.quote_plus(';' + self.__getIdFromUrl())
-   
-        api_call = 'http://www.cloudy.ec/api/player.api.php?user=undefined&codes=1&file=' + File + '&pass=undefined&key=' + Key
-        
-        oRequest = cRequestHandler(api_call)
+
+        oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
+        stream_url = ''
+        
         oParser = cParser()
-        sPattern =  'url=(.+?)&title='
+
+        sPattern =  '<script type=\'text/javascript\'>(.+?)</script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         
         if (aResult[0] == True):
-            stream_url = urllib.unquote(aResult[1][0])
-            stream_url = stream_url + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
-            return True, stream_url
-        else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
-            return False, False
+            stri = cPacker().unpack(aResult[1][0])
+            sPattern =  'file:"([^"]+)",label:"([0-9]+)"}'
+            aResult = oParser.parse(stri, sPattern)
+
+            if (aResult[0] == True):
+                url=[]
+                qua=[]
+                
+                for aEntry in aResult[1]:
+                    url.append(aEntry[0])
+                    qua.append(aEntry[1][:3] + '*' + aEntry[1][3:])
+                    
+                #Si une seule url
+                if len(url) == 1:
+                    stream_url = url[0]
+                #si plus de une
+                elif len(url) > 1:
+                    #Afichage du tableau
+                    dialog2 = xbmcgui.Dialog()
+                    ret = dialog2.select('Select Quality',qua)
+                    if (ret > -1):
+                        stream_url = url[ret]
+                    else:
+                        return False, False
+                else:
+                    return False, False
+                    
+                return True,stream_url
         
         return False, False
