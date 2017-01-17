@@ -142,7 +142,7 @@ class cRequestHandler:
                     self.__sRealUrl,self.__HeaderReturn = CF.GetReponseInfo()
 
             if not sContent:
-                cConfig().error("%s,%s" % (cConfig().getlanguage(30205), self.__sUrl))
+                cConfig().error("%s (%d),%s" % (cConfig().getlanguage(30205), e.code , self.__sUrl))
                 return ''
         
         if (self.__bRemoveNewLines == True):
