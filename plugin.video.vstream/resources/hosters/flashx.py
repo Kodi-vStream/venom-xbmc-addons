@@ -1,4 +1,6 @@
-#-*- coding: utf-8 -*-
+#coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
@@ -17,6 +19,7 @@ import xbmc
 UA = 'Nokia7250/1.0 (3.14) Profile/MIDP-1.0 Configuration/CLDC-1.0'
 
 def ASCIIDecode(string):
+    
     i = 0
     l = len(string)
     ret = ''
@@ -48,6 +51,10 @@ def LoadLinks(htmlcode):
                 sUrl = http + sUrl
             sUrl = sUrl.replace('/\/','//')
             sUrl = sUrl.replace('\/','/')
+            
+            #fast patch
+            if 'jquery2' not in sUrl:
+                continue
             
             if '\\x' in sUrl or '\\u' in sUrl:
                 sUrl = ASCIIDecode(sUrl)                       
@@ -282,6 +289,11 @@ class cHoster(iHoster):
             sHtmlContent = oRequest.request()
         else:
             xbmc.log('No unlock url')
+            
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()                
+            
         #Request for china video
         LoadLinks(sHtmlContent)
 
@@ -297,7 +309,7 @@ class cHoster(iHoster):
                     break    
 
         if not sHtmlContent:
-            return False,False           
+            return False,False             
             
         #A t on le lien code directement?
         sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
