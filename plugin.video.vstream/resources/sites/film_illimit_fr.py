@@ -11,7 +11,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re
+import re,urllib,urllib2,xbmc
 
 from resources.lib.sucuri import SucurieBypass
  
@@ -143,8 +143,10 @@ def showMovies(sSearch = ''):
     #sHtmlContent = oRequestHandler.request()
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
     
-    sPattern = 'class="item"> *<a href="([^<]+)">.+?<img src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">(.+?)<\/span>'
+    xbmc.log(sUrl)
+    
     oParser = cParser()
+    sPattern = 'class="item"> *<a href="([^<]+)">.+?<img src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
    
     if (aResult[0] == False):
@@ -235,20 +237,49 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-    #print aResult
+    #xbmc.log(sUrl)
+    #xbmc.log(str(aResult))
    
     if (aResult[0] == True):
 
         for aEntry in aResult[1]:
                 
             sHosterUrl = str(aEntry)
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
- 
-            if (oHoster != False):
+            
+            if '//goo.gl' in sHosterUrl:
+                try:
+                    class NoRedirection(urllib2.HTTPErrorProcessor):    
+                        def http_response(self, request, response):
+                            return response
+                    
+                    url8 = sHosterUrl.replace('https','http')
+                    
+                    opener = urllib2.build_opener(NoRedirection)
+                    opener.addheaders.append (('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'))
+                    opener.addheaders.append (('Connection', 'keep-alive'))
+            
+                    HttpReponse = opener.open(url8)
+                    sHosterUrl = HttpReponse.headers['Location']
+
+                except:
+                    pass
+            
+            if 'official-film-illimite' in sHosterUrl:
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-                oHoster.setDisplayName(sDisplayTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                sDisplayTitle = sDisplayTitle + ' [COLOR skyblue]Google[/COLOR]'
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+                oGui.addMisc(SITE_IDENTIFIER, 'ShowSpecialHosters', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
+            else:
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+     
+                if (oHoster != False):
+                    sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
        
     oGui.setEndOfDirectory()
     
@@ -265,28 +296,71 @@ def serieHosters():
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
 
     sHtmlContent = sHtmlContent.replace('<iframe width="420" height="315" src="https://www.youtube.com/', '')
-    sPattern = '<div class="su-tabs-pane su-clearfix"><iframe.+?src="(http.+?)"[^<>]+?><\/iframe><\/div>'
+    sPattern = '<iframe.+?src="(http.+?)".+?>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-   
+
     if (aResult[0] == True):
         i = 1
-        for aEntry in aResult[1]:
-                
-            sHosterUrl = str(aEntry)
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            
+        for aEntry in aResult[1]: 
+        
+            sUrl = str(aEntry)
             sTitle = sMovieTitle + 'episode ' + str(i)
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
             i = i + 1
- 
-            if (oHoster != False):
-                oHoster.setDisplayName(sDisplayTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            oGui.addTV(SITE_IDENTIFIER, 'ShowSpecialHosters', sDisplayTitle, '', sThumbnail,'', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()
+
+def ShowSpecialHosters():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    data = sUrl.replace('http://official-film-illimite.net/Jwplayer_plugins_official-film-illimite.net/embed.php?f=','').replace('&c=','')
+    pdata = 'data=' + urllib.quote_plus(data)
     
-    
+    if 'official-film-illimite' in sUrl:
+        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
+
+        headers = {'User-Agent': UA ,
+                   'Host' : 'official-film-illimite.net',
+                   'Referer': sUrl,
+                   #'Accept': '*/*',
+                   'Accept-Language': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                   'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
+                   
+        request = urllib2.Request('http://official-film-illimite.net/Jwplayer_plugins_official-film-illimite.net/Htplugins/Loader.php',pdata,headers)
+        reponse = urllib2.urlopen(request)
+        sHtmlContent = reponse.read().replace('\\','')
+        reponse.close()
+
+        sPattern = '\[(.+?)\]'
+
+        oParser = cParser()
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            listurl = aResult[1][0].replace('"','').split(',')
+            listqual = aResult[1][1].replace('"','').split(',')
+            
+            tab = zip(listurl,listqual)
+            
+            for url,qual in tab:
+                sHosterUrl = url
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    sDisplayTitle = '[' + qual + '] ' + sMovieTitle
+                    sDisplayTitle = cUtil().DecoTitle(sDisplayTitle)
+                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+
+    oGui.setEndOfDirectory()    
