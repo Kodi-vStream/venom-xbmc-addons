@@ -171,8 +171,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('novamov')
         if (('divxstage' in sHostName) or ('cloudtime' in sHostName)):
             return cHosterHandler().getHoster('divxstage')
-        if ('papystreaming' in sHostName):
-            return cHosterHandler().getHoster('papylink')
+        #if ('papystreaming' in sHostName):
+            #return cHosterHandler().getHoster('papylink')
         if ('watchers.to' in sHostName):
             return cHosterHandler().getHoster('watchers')
         if ('megavideo' in sHostName):
