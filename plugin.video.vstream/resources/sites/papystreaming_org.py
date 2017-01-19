@@ -228,30 +228,68 @@ def showHosters():
     sPattern = '<script type="text/javascript">.+?{"link":"([^"]+)","type":".+?"}'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
-        papylink = 'http:' + aResult[1][0]
-
+        papylink = aResult[1][0]
+        if not papylink.startswith('http'):
+           papylink = 'http:' + aResult[1][0]
+           
     sPattern = '<img class="btn btn-serv" src="([^"]+)".+?<img class="btn-language" src="([^"]+)"/>.+?<td>(.+?)</td>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        for aEntry in aResult[1]:    
-            if 'papystreaming' in aEntry[0]:
-                sHosterUrl = papylink
-            else:
-                sHosterUrl = aEntry[0]
-                
+        for aEntry in aResult[1]:
+            
             if 'vf' in aEntry[1]:
                 sLang = 'Vf' 
             else:
                 sLang = 'Vostfr'
+            
+            
+            if 'papystreaming' in aEntry[0]:
+                sDisplayTitle = cUtil().DecoTitle('[' + aEntry[2] + '-' + sLang + ']' + ' ' + sMovieTitle)
+                sDisplayTitle = sDisplayTitle + ' [COLOR skyblue]PapyLink[/COLOR]'
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', papylink)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+                oGui.addMisc(SITE_IDENTIFIER, 'ShowPapyLink', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
+            else:
+                sHosterUrl = aEntry[0]
                 
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    sDisplayTitle = cUtil().DecoTitle('[' + aEntry[2] + '-' + sLang + ']' + ' ' + sMovieTitle)
+                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+       
+    oGui.setEndOfDirectory()
+    
+def ShowPapyLink():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    oParser = cParser()
+        
+    sPattern = '"file":"([^"]+)",.+?,"label":"(\d+p)"'   #'<iframe.+?src="([^"]+)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            sHosterUrl = aEntry[0]
+            sLabel = aEntry[1]
+            
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle('[' + aEntry[2] + '-' + sLang + ']' + ' ' + sMovieTitle)
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle + '[' + sLabel + ']')
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
        
-    oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()  
     
 def showSaisons():
     oGui = cGui()
@@ -314,7 +352,7 @@ def showEpisodes():
 
     sPattern = '<div class="larr episode-header">.+?<a href="([^"]+)" title="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #xbmc.log(str(aResult))
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -394,4 +432,4 @@ def __checkForNextPage2(sHtmlContent):
     if (aResult[0] == True):
         return aResult[1][0]
 
-    return False   
+    return False

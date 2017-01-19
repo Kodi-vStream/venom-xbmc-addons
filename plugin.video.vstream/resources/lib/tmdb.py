@@ -229,14 +229,17 @@ class cTMDb:
             
         meta = self._call('search/movie', 'query=' + quote_plus(term) + '&page=' + str(page))
         #teste sans l'année
-        if meta and meta['total_results'] == 0 and year:
-                meta = self.search_movie_name(name,'')
-                
-        #cherche 1 seul resultat
-        if meta and meta['total_results'] != 0 and meta['results']:
-            tmdb_id = meta['results'][0]['id'] 
-            #cherche toutes les infos
-            meta = self.search_movie_id(tmdb_id)
+        if 'errors' not in meta:
+            if meta and meta['total_results'] == 0 and year:
+                    meta = self.search_movie_name(name,'')
+                    
+            #cherche 1 seul resultat
+            if meta and meta['total_results'] != 0 and meta['results']:
+                tmdb_id = meta['results'][0]['id'] 
+                #cherche toutes les infos
+                meta = self.search_movie_id(tmdb_id)
+            else:
+                meta = {}
         else:
             meta = {}
             
@@ -332,16 +335,25 @@ class cTMDb:
             _meta['mpaa'] = meta['certification']
         if 'release_date' in meta:
             _meta['year'] = int(meta['release_date'][:4])
+            _meta['premiered'] = meta['release_date']
         # if not 'year' in meta and 'premiered' in _meta:
             # _meta['year'] = _meta['premiered']
         
+        if 'production_companies' in meta:
+            _meta['studio'] = ""
+            for studio in meta['production_companies']:
+                if _meta['studio'] == "":
+                     _meta['studio'] += studio['name']
+                else:
+                    _meta['studio'] += ' / '+studio['name']
+                    
         if 'genres' in meta:
             _meta['genre'] = ""
             for genre in meta['genres']:
                 if _meta['genre'] == "":
                      _meta['genre'] += genre['name']
                 else:
-                    _meta['genre'] += '/'+genre['name']
+                    _meta['genre'] += ' / '+genre['name']
             
         if 'backdrop_path' in meta:
             _meta['backdrop_url'] = self.fanart+str(meta['backdrop_path'])
@@ -351,9 +363,18 @@ class cTMDb:
         if not 'playcount' in meta:
             _meta['playcount'] = self.__set_playcount(6)
             
-        if 'cast' in meta:
-            xbmc.log("passeeeeeeeeeeeeeeeeeee")
-            _meta['cast'] = json.loads(_meta['cast'])
+        if 'tagline' in meta:
+            _meta['tagline'] = meta['tagline']
+            
+        if 'vote_average' in meta:
+            _meta['rating'] = meta['vote_average']
+            
+        if 'vote_count' in meta:
+            _meta['votes'] = meta['vote_count']
+            
+        # if 'cast' in meta:
+            # xbmc.log("passeeeeeeeeeeeeeeeeeee")
+            # _meta['cast'] = json.loads(_meta['cast'])
             
         if 'casts' in meta:
             #meta['cast'] = str(meta['casts']['cast'])
@@ -361,7 +382,17 @@ class cTMDb:
             for cast in meta['casts']['cast']:
                 licast.append((cast['name'], cast['character']))
             _meta['cast'] = licast
-            
+
+            _meta['writer'] = ""
+            for crew in meta['casts']['crew']:
+                if crew['job'] == 'Director':
+                    _meta['director'] = crew['name']
+                else:  
+                    if _meta['writer'] == "":
+                        _meta['writer'] += '%s (%s)' % (crew['job'], crew['name'])
+                    else:
+                       _meta['writer'] += ' / %s (%s)' % (crew['job'], crew['name'])
+                                 
             
         #ont prend juste le premier
         try:
@@ -450,9 +481,6 @@ class cTMDb:
             meta = self._cache_search(media_type, self._clean_title(name), tmdb_id, year)
         else:
             meta = {}
-            
-        xbmc.log("meta chacheeeee")
-        #xbmc.log(str(meta))
             
         #recherche online
 
