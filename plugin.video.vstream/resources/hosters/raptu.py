@@ -5,7 +5,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig 
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser 
-from resources.lib.packer import cPacker
 import re,xbmcgui
 
 class cHoster(iHoster):
