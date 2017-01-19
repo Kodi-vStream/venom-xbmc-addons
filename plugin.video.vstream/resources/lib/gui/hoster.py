@@ -173,8 +173,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('divxstage')
         if ('papystreaming' in sHostName):
             return cHosterHandler().getHoster('papylink')
-        #if ('vidbux' in sHostName):
-        #    return cHosterHandler().getHoster('vidbux')
+        if ('watchers.to' in sHostName):
+            return cHosterHandler().getHoster('watchers')
         if ('megavideo' in sHostName):
             return cHosterHandler().getHoster('megavideo')
         if (('videoweed' in sHostName) or ('bitvid' in sHostName)):
