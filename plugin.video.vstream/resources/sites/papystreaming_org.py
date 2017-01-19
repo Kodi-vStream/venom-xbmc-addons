@@ -269,7 +269,7 @@ def ShowPapyLink():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    xbmc.log(str(sUrl))
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -352,7 +352,7 @@ def showEpisodes():
 
     sPattern = '<div class="larr episode-header">.+?<a href="([^"]+)" title="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #xbmc.log(str(aResult))
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
