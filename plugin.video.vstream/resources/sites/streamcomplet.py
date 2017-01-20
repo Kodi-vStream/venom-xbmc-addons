@@ -11,8 +11,9 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.config import cConfig
 from resources.lib.player import cPlayer
+from resources.lib.packer import cPacker
 import re, urllib, urllib2
-import xbmc
+
  
 SITE_IDENTIFIER = 'streamcomplet'
 SITE_NAME = 'Streamcomplet.com'
@@ -83,10 +84,7 @@ def showGenre():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()  
-    
-        
-    
-        
+
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
@@ -157,37 +155,47 @@ def showHosters():
     sPattern = 'src="(http:\/\/media\.vimple\.me.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    # 1 seul resultat et sur leur propre hebergeur
     if (aResult[0] == True):
         
         sUrl2 = aResult[1][0]
 
         oRequestHandler = cRequestHandler(sUrl2)
-        oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0')
+        oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0')
         oRequestHandler.addHeaderEntry('Referer',sUrl)
         sHtmlContent = oRequestHandler.request()
         
-        sPattern = 'src: *"(.+?)"'
+        sPattern = '<source.+?src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-
-        if not (aResult[0]):
-            return
+        if (aResult[0] == True):
+            cGui().showInfo('Info', 'Chargement film' , 5) 
+            web_url = 'http://media.vimple.me/playerk.swf/' + aResult[1][0]
             
-        cGui().showInfo('Info', 'Chargement film' , 5)
-            
-        web_url = 'http://media.vimple.me/playerk.swf/' + aResult[1][0]
-            
-        sHosterUrl = web_url
+            sHosterUrl = web_url
 
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(SITE_IDENTIFIER)
-        oGuiElement.setTitle(sMovieTitle)
-        oGuiElement.setMediaUrl(sHosterUrl)
-        oGuiElement.setThumbnail(sThumbnail)
+            oGuiElement = cGuiElement()
+            oGuiElement.setSiteName(SITE_IDENTIFIER)
+            oGuiElement.setTitle(sMovieTitle)
+            oGuiElement.setMediaUrl(sHosterUrl)
+            oGuiElement.setThumbnail(sThumbnail)
 
-        oPlayer = cPlayer()
-        oPlayer.clearPlayList()
-        oPlayer.addItemToPlaylist(oGuiElement)
-        oPlayer.startPlayer()
+            oPlayer = cPlayer()
+            oPlayer.clearPlayList()
+            oPlayer.addItemToPlaylist(oGuiElement)
+            oPlayer.startPlayer()
 
-  
+        else:
+            oGui = cGui()
+            sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+            aResult = oParser.parse(sHtmlContent,sPattern)
+            if (aResult[0] == True):
+                sHtmlContent = cPacker().unpack(aResult[1][0])
+                code = re.search('var code="([^"]+)"',sHtmlContent)
+                if code:
+                   sHosterUrl  = 'https://openload.co/embed/' + code.group(1)
+                   oHoster = cHosterGui().checkHoster(sHosterUrl)
+                   if (oHoster != False):
+                       oHoster.setDisplayName(sMovieTitle)
+                       oHoster.setFileName(sMovieTitle)
+                       cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+                     
+            oGui.setEndOfDirectory()     
