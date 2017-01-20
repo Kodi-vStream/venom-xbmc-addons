@@ -393,53 +393,69 @@ class cGuiElement:
         #sTitle=sTitle.replace('VF','').replace('VOSTFR','').replace('FR','')
         
         #get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', overlay=6, update=False):
-        
+        sType = '1'
+        sType = str(self.getMeta()).replace('1','movie').replace('2','tvshow')
+
+        if sType:
+            from resources.lib.tmdb import cTMDb
+            grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
+            args = (sType, self.__sFileName)
+            kwargs = {}
+            if (self.__TmdbId) or (self.__Year):
+                if (self.__ImdbId):
+                    kwargs['imdb_id'] = self.__ImdbId
+                if (self.__TmdbId):
+                    kwargs['tmdb_id'] = self.__TmdbId
+                if (self.__Year):
+                    kwargs['year'] =  self.__Year
+            meta = grab.get_meta(*args, **kwargs)
+            
+        else :
+            return
+
         #Pour les films
-        if self.getMeta() == 1:
-            try:
-                from metahandler import metahandlers
-                grab = metahandlers.MetaData(preparezip=False,  tmdb_api_key=cConfig().getSetting('api_tmdb'))
-                args = ("movie", self.__sFileName)
-                kwargs = {}
-                if (self.__TmdbId) or (self.__Year):
-                    if (self.__ImdbId):
-                        kwargs['imdb_id'] = self.__ImdbId
-                    if (self.__TmdbId):
-                        kwargs['tmdb_id'] = self.__TmdbId
-                    if (self.__Year):
-                        kwargs['year'] =  self.__Year
-                meta = grab.get_meta(*args, **kwargs)
-            except:
-                return
+        # if self.getMeta() == 1:
+            # try:
+                # from metahandler import metahandlers
+                # grab = metahandlers.MetaData(preparezip=False,  tmdb_api_key=cConfig().getSetting('api_tmdb'))
+                # args = ("movie", self.__sFileName)
+                # kwargs = {}
+                # if (self.__TmdbId) or (self.__Year):
+                    # if (self.__ImdbId):
+                        # kwargs['imdb_id'] = self.__ImdbId
+                    # if (self.__TmdbId):
+                        # kwargs['tmdb_id'] = self.__TmdbId
+                    # if (self.__Year):
+                        # kwargs['year'] =  self.__Year
+                # meta = grab.get_meta(*args, **kwargs)
+            # except:
+                # return
                 
         #Pour les series
-        elif self.getMeta() == 2:
-            try:
-                from metahandler import metahandlers
-                grab = metahandlers.MetaData(preparezip=False, tmdb_api_key=cConfig().getSetting('api_tmdb'))
-                #Nom a nettoyer ?
+        # elif self.getMeta() == 2:
+            # try:
+                # from metahandler import metahandlers
+                # grab = metahandlers.MetaData(preparezip=False, tmdb_api_key=cConfig().getSetting('api_tmdb'))
+               # Nom a nettoyer ?
                 #attention l'annee peut mettre le bordel a cause des differences de sortie
-                args = ("tvshow", self.__sFileName)
-                kwargs = {}
-                if (self.__TmdbId) or (self.__Year):
-                    dict = {}
-                    if (self.__ImdbId):
-                        kwargs['imdb_id'] = self.__ImdbId
-                    if (self.__TmdbId):
-                        kwargs['tmdb_id'] = self.__TmdbId
-                    if (self.__Year):
-                        kwargs['year'] =  self.__Year
-                meta = grab.get_meta(*args, **kwargs)
-            except:
-                return
-        else:
-            return
+                # args = ("tvshow", self.__sFileName)
+                # kwargs = {}
+                # if (self.__TmdbId) or (self.__Year):
+                    # dict = {}
+                    # if (self.__ImdbId):
+                        # kwargs['imdb_id'] = self.__ImdbId
+                    # if (self.__TmdbId):
+                        # kwargs['tmdb_id'] = self.__TmdbId
+                    # if (self.__Year):
+                        # kwargs['year'] =  self.__Year
+                # meta = grab.get_meta(*args, **kwargs)
+            # except:
+                # return
+        # else:
+            # return
         del meta['playcount']
         del meta['trailer']
         
-        import xbmc
-        xbmc.log(str(meta))
-
         if meta['title']:
             meta['title'] = self.getTitle()
                  
