@@ -15,48 +15,12 @@ import base64
 
 try:    import json
 except: import simplejson as json
-
-
-def _decode(data):
-    def O1l(string):
-        ret = ""
-        i = len(string) - 1
-        while i >= 0:
-            ret += string[i]
-            i -= 1
-        return ret
-
-    def l0I(string):
-        enc = ""
-        dec = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
-        i = 0
-        while True:
-            h1 = dec.find(string[i])
-            i += 1
-            h2 = dec.find(string[i])
-            i += 1
-            h3 = dec.find(string[i])
-            i += 1
-            h4 = dec.find(string[i])
-            i += 1
-            bits = h1 << 18 | h2 << 12 | h3 << 6 | h4
-            o1 = bits >> 16 & 0xff
-            o2 = bits >> 8 & 0xff
-            o3 = bits & 0xff
-            if h3 == 64:
-                enc += unichr(o1)
-            else:
-                if h4 == 64:
-                    enc += unichr(o1) + unichr(o2)
-                else:
-                    enc += unichr(o1) + unichr(o2) + unichr(o3)
-            if i >= len(string):
-                break
-        return enc
-
-    escape = re.search("var _escape=\'([^\']+)", l0I(O1l(data))).group(1)
-    return escape.replace('%', '\\').decode('unicode-escape')
-
+    
+def GetIp():
+    oRequest = cRequestHandler('http://hqq.tv/player/ip.php?type=json')
+    sHtmlContent = oRequest.request()
+    ip = re.search('"ip":"([^"]+)"', sHtmlContent, re.DOTALL).group(1)
+    return ip
 
 def _decode2(file_url):
     def K12K(a, typ='b'):
@@ -101,8 +65,7 @@ def _decode2(file_url):
         return _local2
 
     return _xc13(K12K(file_url, 'e'))
-
-
+    
 class cHoster(iHoster):
 
     def __init__(self):
@@ -122,6 +85,7 @@ class cHoster(iHoster):
 	return self.__sFileName
     
     def setUrl(self, sUrl):
+        self.__sUrl = sUrl.replace('https','http')
         self.__sUrl = sUrl.replace('http://netu.tv/','http://hqq.tv/')
         self.__sUrl = self.__sUrl.replace('http://waaw.tv/','http://hqq.tv/')
         self.__sUrl = self.__sUrl.replace('http://hqq.tv/watch_video.php?v=','http://hqq.tv/player/embed_player.php?vid=')       
@@ -135,21 +99,7 @@ class cHoster(iHoster):
             return aResult[1][0]
         return ''
         
-    def __modifyUrl(self, sUrl):
-        api = ('http://rutube.ru/api/play/trackinfo/%s/?format=json') % (self.__getIdFromUrl())
-
-        oRequest = cRequestHandler(api)
-        sHtmlContent = oRequest.request()
-        sHtmlContent = sHtmlContent.replace('\\', '').replace('//', '')
-        
-        sPattern = 'src="(.+?)"'
-        
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            self.__sUrl = 'http://' + aResult[1][0]
-            return self.__sUrl
-            
+    def __modifyUrl(self, sUrl):          
         return
 
 
@@ -205,27 +155,41 @@ class cHoster(iHoster):
         req = urllib2.Request(player_url, None, headers)
         try:
             response = urllib2.urlopen(req)
-            data = response.read()
+            html = response.read()
             response.close()
         except urllib2.URLError, e:
             #xbmc.log( e.read())
             #xbmc.log(e.reason)
-            data = e.read()
-        
-        b64enc = re.search('base64([^\"]+)', data, re.DOTALL)
-        b64dec = b64enc and base64.decodestring(b64enc.group(1))
-        enc = b64dec and re.search("\'([^']+)\'", b64dec).group(1)
-   
-        
-        if enc:
-            data = re.findall('<input name="([^"]+?)" [^>]+? value="([^"]+?)">', _decode(enc))
-            post_data = {}
-            for idx in range(len(data)):
-                post_data[data[idx][0]] = data[idx][1]
-
-            postdata = urllib.urlencode(post_data)
+            html = e.read()
             
-            req = urllib2.Request(player_url,postdata,headers)
+            
+        #fh = open('c:\\netu.txt', "w")
+        #fh.write(html)
+        #fh.close()
+
+        data = ''
+        code_crypt = re.search('(;eval\(function\(w,i,s,e\){.+?\)\);)<', html, re.DOTALL)
+        if code_crypt:
+            data = unwise_process(code_crypt.group(1))
+        else:
+            xbmc.log('prb1')
+
+        #xbmc.log('data :' + data)
+            
+        if data:
+            
+            iss = GetIp()
+            vid = re.search('var vid *= *"([^"]+)";', data, re.DOTALL).group(1)
+            at = re.search('var at = "([^"]+)";', data, re.DOTALL).group(1)
+            http_referer = re.search('var http_referer *= *"([^"]+)";', data, re.DOTALL).group(1)
+            _pass = ''
+            
+            url2 = "http://hqq.tv/sec/player/embed_player.php?iss="+iss+"&vid="+vid+"&at="+at+"&autoplayed=yes&referer=on&http_referer="+http_referer+"pass="+_pass+"&embed_from=&need_captcha=0"
+            
+            #xbmc.log(url2)
+            
+            req = urllib2.Request(url2,None,headers)
+            
             try:
                 response = urllib2.urlopen(req)
                 data = response.read()
@@ -234,90 +198,57 @@ class cHoster(iHoster):
                 #xbmc.log( e.read())
                 #xbmc.log(e.reason)
                 data = e.read()
-            
-            b64enc = re.search('base64([^\"]+)', data, re.DOTALL)
-            b64dec = b64enc and base64.decodestring(b64enc.group(1))
-            enc = b64dec and re.search("\'([^']+)\'", b64dec).group(1)
-            
-            if enc:
-                data = re.findall('<input name="([^"]+?)" [^>]+? value="([^"]*)">', _decode(enc))
 
-                post_data = {}
-                for idx in range(len(data)):
-                    post_data[data[idx][0]] = data[idx][1]
-                    
-                #correction de bug
-                #if post_data['vid'] == '':
-                #    post_data['vid'] = 'pmpmp'#str(id)
+            data = urllib.unquote(data)
 
-                    
-                #post_data['http_referer'] = 'http%3A%2F%2Ffull-stream.me%2Fmovies%2Ffilms-en-streaming%2F9699-diversion.html'
+            at = re.search(r'var\s*at\s*=\s*"([^"]*?)"', data)
+            
+            l = re.search(r'link_1: ([a-zA-Z]+), server_1: ([a-zA-Z]+)', data)
+            
+            vid_server = re.search(r'var ' + l.group(2) + ' = "([^"]+)"', data).group(1)
+            vid_link = re.search(r'var ' + l.group(1) + ' = "([^"]+)"', data).group(1)
+            
+            #new video id, not really usefull
+            m = re.search(r' vid: "([a-zA-Z0-9]+)"}', data)
+            if m:
+                id = m.group(1)
+            
+            #id = '9QQrbdts6wNA'
+            
+            if vid_server and vid_link and at:
+
+                #get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '0/','b':'1','vid':id} #,'iss':'MzEuMz'
+                get_data = {'server_1': vid_server, 'link_1': vid_link, 'at': at.group(1), 'adb': '0/','b':'1','vid':id}
                 
-                req = urllib2.Request("http://hqq.tv/sec/player/embed_player.php?" + urllib.urlencode(post_data),None,headers)
-                
+                #xbmc.log(str(get_data))
+
+                headers['x-requested-with'] = 'XMLHttpRequest'
+
+                req = urllib2.Request("http://hqq.tv/player/get_md5.php?" + urllib.urlencode(get_data),None,headers)
                 try:
                     response = urllib2.urlopen(req)
-                    data = response.read()
-                    response.close()
                 except urllib2.URLError, e:
-                    #xbmc.log( e.read())
-                    #xbmc.log(e.reason)
-                    data = e.read()
-
-                data = urllib.unquote(data)
+                    xbmc.log(str(e.read()))
+                    xbmc.log(str(e.reason))
+                    
+                data = response.read()
+                response.close()
                 
-                #fh = open('c:\\netu.txt', "w")
+                #fh = open('c:\\netu2.txt', "w")
                 #fh.write(data)
                 #fh.close()
                 
-                at = re.search(r'var\s*at\s*=\s*"([^"]*?)"', data)
-                
-                l = re.search(r'link_1: ([a-zA-Z]+), server_1: ([a-zA-Z]+)', data)
-                
-                vid_server = re.search(r'var ' + l.group(2) + ' = "([^"]+)"', data).group(1)
-                vid_link = re.search(r'var ' + l.group(1) + ' = "([^"]+)"', data).group(1)
-                
-                #new video id, not really usefull
-                m = re.search(r' vid: "([a-zA-Z0-9]+)"}', data)
-                if m:
-                    id = m.group(1)
-                
-                #id = '9QQrbdts6wNA'
-                
-                if vid_server and vid_link and at:
+                file_url = re.search(r'"file"\s*:\s*"([^"]*?)"', data)
+               
+                if file_url:
+                    list_url = _decode2(file_url.group(1).replace('\\', ''))
 
-                    #get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '0/','b':'1','vid':id} #,'iss':'MzEuMz'
-                    get_data = {'server_1': vid_server, 'link_1': vid_link, 'at': at.group(1), 'adb': '0/','b':'1','vid':id}
-                    
-                    #xbmc.log(str(get_data))
+                #xbmc.log(list_url)
 
-                    headers['x-requested-with'] = 'XMLHttpRequest'
-
-                    req = urllib2.Request("http://hqq.tv/player/get_md5.php?" + urllib.urlencode(get_data),None,headers)
-                    try:
-                        response = urllib2.urlopen(req)
-                    except urllib2.URLError, e:
-                        xbmc.log(str(e.read()))
-                        xbmc.log(str(e.reason))
-                        
-                    data = response.read()
-                    response.close()
-                    
-                    #fh = open('c:\\netu2.txt', "w")
-                    #fh.write(data)
-                    #fh.close()
-                    
-                    file_url = re.search(r'"file"\s*:\s*"([^"]*?)"', data)
-                   
-                    if file_url:
-                        list_url = _decode2(file_url.group(1).replace('\\', ''))
-
-                    xbmc.log(list_url)
-
-                    #Now faut tout remettre dans l'ordre
-                    #plus besoin maintenant
-                    #url = re.search(r'(^.+)secip(.+?\/)(http.+$)', list_url)
-                    #list_url = url.group(3) + '/secip' + url.group(2) + url.group(1)
+                #Now faut tout remettre dans l'ordre
+                #plus besoin maintenant
+                #url = re.search(r'(^.+)secip(.+?\/)(http.+$)', list_url)
+                #list_url = url.group(3) + '/secip' + url.group(2) + url.group(1)
         
         api_call = list_url
         #api_call = list_url.replace('?socket=','.mp4Frag1Num0.ts')
@@ -332,3 +263,112 @@ class cHoster(iHoster):
             return True, api_call          
             
         return False, False
+
+#*******************************************************************************
+# all this part is from a file taken in UrlResolver
+# https://github.com/tknorris/script.module.urlresolver/blob/master/lib/urlresolver/plugins/lib/unwise.py
+# the completed file will be intact in the future version of vstream, but for the automatic update
+# I need to put an extract in this file.
+
+def unwise1(w):
+    int1 = 0
+    result = ""
+    while int1 < len(w):
+        result = result + chr(int(w[int1:int1 + 2], 36))
+        int1 += 2
+    return result
+
+def unwise(w, i, s, e, wi, ii, si, ei):
+    int1 = 0
+    int2 = 0
+    int3 = 0
+    int4 = 0
+    string1 = ""
+    string2 = ""
+    while True:
+        if w != "":
+            if int1 < wi:
+                string2 = string2 + w[int1:int1 + 1]
+            elif int1 < len(w):
+                string1 = string1 + w[int1:int1 + 1]
+            int1 += 1
+        if i != "":
+            if int2 < ii:
+                string2 = string2 + i[int2:int2 + 1]
+            elif int2 < len(i):
+                string1 = string1 + i[int2:int2 + 1]
+            int2 += 1
+        if s != "":
+            if int3 < si:
+                string2 = string2 + s[int3:int3 + 1]
+            elif int3 < len(s):
+                string1 = string1 + s[int3:int3 + 1]
+            int3 = int3 + 1
+        if e != "":
+            if int4 < ei:
+                string2 = string2 + e[int4:int4 + 1]
+            elif int4 < len(e):
+                string1 = string1 + e[int4:int4 + 1]
+            int4 = int4 + 1
+        if len(w) + len(i) + len(s) + len(e) == len(string1) + len(string2):
+            break
+    int1 = 0
+    int2 = 0
+    result = ""
+    while int1 < len(string1):
+        flag = -1
+        if ord(string2[int2:int2 + 1]) % 2:
+            flag = 1
+        result = result + chr(int(string1[int1:int1 + 2], 36) - flag)
+        int2 += 1
+        if int2 >= len(string2):
+            int2 = 0
+        int1 += 2
+    return result
+
+def unwise_process(result):
+    while True:
+        a = re.compile(r';?eval\s*\(\s*function\s*\(\s*w\s*,\s*i\s*,\s*s\s*,\s*e\s*\).+?[\"\']\s*\)\s*\)(?:\s*;)?').search(result)
+        if not a:
+            break
+        a = a.group()
+        tmp = re.compile(r'\}\s*\(\s*[\"\'](\w*)[\"\']\s*,\s*[\"\'](\w*)[\"\']\s*,\s*[\"\'](\w*)[\"\']\s*,\s*[\"\'](\w*)[\"\']').search(a)
+        if not tmp:
+            result = result.replace(a, "")
+        else:
+            wise = ["", "", "", ""]
+            wise = tmp.groups()
+            if a.find("while") == -1:
+                result = result.replace(a, unwise1(wise[0]))
+            else:
+                c = 0
+                wisestr = ["", "", "", ""]
+                wiseint = [0, 0, 0, 0]
+                b = re.compile(r'while(.+?)var\s*\w+\s*=\s*\w+\.join\(\s*[\"\'][\"\']\s*\)').search(a).group(1)
+                for d in re.compile(r'if\s*\(\s*\w*\s*\<\s*(\d+)\)\s*\w+\.push').findall(b):
+                    wisestr[c] = wise[c]
+                    wiseint[c] = int(d)
+                    c += 1
+                result = result.replace(a, unwise(wisestr[0], wisestr[1], wisestr[2], wisestr[3], wiseint[0], wiseint[1], wiseint[2], wiseint[3]))
+    return result
+
+def resolve_var(HTML, key):  # this should probably be located elsewhere
+    key = re.escape(key)
+    tmp1 = HTML.replace("\r", "")
+    tmp1 = tmp1.replace("\n", ";")
+    tmp2 = re.compile(r'[^\w\.]' + key + '\s*=\s*([^\"\']*?)[;,]').search(tmp1)  # expect var first, movshare
+    if tmp2:
+        tmp2 = resolve_var(HTML, tmp2.group(1))
+    else:
+        tmp2 = re.compile(r'[^\w\.]' + key + '\s*=\s*[\"\'](.*?)[\"\']').search(tmp1)
+        if tmp2:
+            tmp2 = tmp2.group(1)
+        else:
+            key = key.split("\\.")
+            if len(key) == 2:
+                tmp2 = re.compile(r'[^\w\.]' + key[0] + '\s*=\s*\{.*[^\w\.]' + key[1] + '\s*\:\s*[\"\'](.*?)[\"\']').search(tmp1)  # for 'vars = { key: "value" }', cloudy
+            if tmp2:
+                tmp2 = tmp2.group(1)
+            else:
+                tmp2 = ""  # oops, should not happen in the variable is valid
+    return tmp2
