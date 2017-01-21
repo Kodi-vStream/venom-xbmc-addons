@@ -29,7 +29,11 @@ def ASCIIDecode(string):
             c = chr(int(string[(i+2):(i+4)],16))
             i+=3
         if string[i:(i+2)] == '\\u':
-            c = chr(int(string[(i+2):(i+6)],16))
+            cc = int(string[(i+2):(i+6)],16)
+            if cc > 256:
+                #ok c'est de l'unicode, pas du ascii
+                return ''
+            c = chr(cc)
             i+=5     
         ret = ret + c
         i = i + 1
@@ -38,7 +42,7 @@ def ASCIIDecode(string):
     
 def LoadLinks(htmlcode):
         host = 'https://www.flashx.tv'
-        sPattern ='(https*:)*(\/[^,"\'\)\s]+)'
+        sPattern ='[\("\'](https*:)*(\/[^,"\'\)\s]+)[\)\'"]'
         aResult = re.findall(sPattern,htmlcode,re.DOTALL)
         
         #xbmc.log(str(aResult))
@@ -53,11 +57,13 @@ def LoadLinks(htmlcode):
             sUrl = sUrl.replace('\/','/')
             
             #fast patch
-            if 'jquery2' not in sUrl:
-                continue
+            #if 'jquery2' not in sUrl:
+            #    continue
             
             if '\\x' in sUrl or '\\u' in sUrl:
-                sUrl = ASCIIDecode(sUrl)                       
+                sUrl = ASCIIDecode(sUrl)
+                if not sUrl:
+                    continue
             
             if sUrl.startswith('//'):
                 sUrl = 'http:' + sUrl
@@ -277,25 +283,32 @@ class cHoster(iHoster):
         else:
             web_url = AllUrl[0]
             
-            
-        #Request to unlock video
-        #Request for buble
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+        
+        #Requests to unlock video
+        #Request for bubble
         sPattern ='fastcontentdelivery\.com.+?\?([^"]+)">'
         aResult = re.findall(sPattern,sHtmlContent)
         if aResult:
             UnlockUrl = 'http://www.flashx.tv/counter.cgi?' + aResult[0]
-            xbmc.log('unlock url' + UnlockUrl)
+            xbmc.log('unlock  1 url' + UnlockUrl)
             oRequest = cRequestHandler(UnlockUrl)
             sHtmlContent = oRequest.request()
         else:
-            xbmc.log('No unlock url')
-            
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()                
+            xbmc.log('No first unlock url')
             
         #Request for china video
-        LoadLinks(sHtmlContent)
+        sPattern ='"([^"]+jquery2[^"]+)"'
+        aResult = re.findall(sPattern,sHtmlContent)
+        if aResult:
+            UnlockUrl = 'http:' + aResult[0]
+            xbmc.log('unlock 2 url' + UnlockUrl)
+            oRequest = cRequestHandler(UnlockUrl)
+            sHtmlContent = oRequest.request()
+        else:
+            xbmc.log('No second unlock url')
 
         #get the page
         sHtmlContent = self.GetRedirectHtml(web_url,sId,True)
@@ -304,9 +317,10 @@ class cHoster(iHoster):
             xbmc.log('Passage en mode barbare')
             #ok ca a rate on passe toutes les url de AllUrl
             for i in AllUrl:
-                sHtmlContent = self.GetRedirectHtml(i,sId,True)
-                if sHtmlContent:
-                    break    
+                if not i == web_url:
+                    sHtmlContent = self.GetRedirectHtml(i,sId,True)
+                    if sHtmlContent:
+                        break    
 
         if not sHtmlContent:
             return False,False             

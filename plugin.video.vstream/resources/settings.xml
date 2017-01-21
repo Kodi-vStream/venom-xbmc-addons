@@ -14,6 +14,8 @@
         <setting subsetting="true" label="vStream sera plus rapide avec votre propre clef API." type="lsep"/>
         <setting id="meta-view" type="bool" label="Recherche les Métadonnées (ralenti l'Addon)" default="false"/>
         <setting id="api_tmdb" type="text" label="API"  default="92ab39516970ab9d86396866456ec9b6" />
+        <setting id="poster_tmdb" type="select" label="Taille des Posters" values="w92|w154|w185|w342|w500|w780|original" default="w342"/>
+        <setting id="backdrop_tmdb" type="select" label="Taille des Fanarts" values="w300|w780|w1280|original" default="w1280"/>
         <setting label="Paramètres des Métadonnées" type="action" option="close" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, metahandler)" />
         <setting id="extendedinfo-view" type="bool" label="Utiliser extendedinfo" default="false"/>
 
