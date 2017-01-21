@@ -332,15 +332,19 @@ class cGuiElement:
         
         import unicodedata
         data = unicodedata.normalize('NFKD', data).encode('ascii','ignore')
+        #cherche la saison et episode puis les balises [color]titre[/color]
+        data, saison = self.getSaisonTitre(data)
+        data, episode = self.getEpisodeTitre(data)
+        #supprimer les balises
         data=re.sub(r'\[.*\]|\(.*\)',r'',str(data))
         data=data.replace('VF','').replace('VOSTFR','').replace('FR','')
-        data=re.sub(r'[0-9]+?',r'',str(data))
-        data=data.replace('-','').replace('Saison','').replace('saison','').replace('Season','').replace('Episode','').replace('episode','')
+        #data=re.sub(r'[0-9]+?',r'',str(data))
+        data=data.replace('-','')
+        #data=data.replace('-','').replace('Saison','').replace('saison','').replace('Season','').replace('Episode','').replace('episode','')
         data = re.sub('[^%s]' % string.ascii_lowercase, ' ', data.lower())
         #data = urllib.quote_plus(data)
         
         #data = data.decode('string-escape')
-        
         return data
         
     def getInfoLabel(self):
