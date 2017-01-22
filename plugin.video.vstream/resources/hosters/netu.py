@@ -17,9 +17,18 @@ try:    import json
 except: import simplejson as json
     
 def GetIp():
-    oRequest = cRequestHandler('http://hqq.tv/player/ip.php?type=json')
-    sHtmlContent = oRequest.request()
-    ip = re.search('"ip":"([^"]+)"', sHtmlContent, re.DOTALL).group(1)
+    if (False):
+        oRequest = cRequestHandler('http://hqq.tv/player/ip.php?type=json')
+        oRequest.addHeaderEntry
+        sHtmlContent = oRequest.request()
+        ip = re.search('"ip":"([^"]+)"', sHtmlContent, re.DOTALL).group(1)
+    else:
+        import random
+        for x in xrange(1,100):
+          ip = "192.168."
+          ip += ".".join(map(str, (random.randint(0, 255) for _ in range(2))))
+        ip = base64.b64encode(ip)
+
     return ip
 
 def _decode2(file_url):
@@ -70,7 +79,7 @@ class cHoster(iHoster):
 
     def __init__(self):
         self.__sDisplayName = 'netu'
-	self.__sFileName = self.__sDisplayName
+        self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
         return  self.__sDisplayName
@@ -124,15 +133,15 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
         
-    def GetIP(self):
-        req = urllib2.Request('http://hqq.tv/player/ip.php?type=json')
-        response = urllib2.urlopen(req)  
-        data = response.read()
-        response.close()
-        result = json.loads(data)
-        ip =  result[u'ip']
-        ip = urllib.quote(ip)
-        return ip
+    #def GetIP(self):
+    #    req = urllib2.Request('http://hqq.tv/player/ip.php?type=json')
+    #    response = urllib2.urlopen(req)  
+    #    data = response.read()
+    #    response.close()
+    #    result = json.loads(data)
+    #    ip =  result[u'ip']
+    #    ip = urllib.quote(ip)
+    #    return ip
 
     def __getMediaLinkForGuest(self):
     

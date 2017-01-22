@@ -97,11 +97,7 @@ def AlphaDisplay():
     sLetter = oInputParameterHandler.getValue('sLetter')
 
     sHtmlContent = CloudflareBypass().GetHtml(sUrl)
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-    
+
     oParser = cParser()
     sPattern = '<a href=\'\.\.\/(serie\/.+?)\'>(' + sLetter + '[^<>]+?)<\/a><br>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -127,8 +123,6 @@ def AlphaDisplay():
         
         oGui.setEndOfDirectory()
 
-        
-
 def showSearch():
     oGui = cGui()
  
@@ -138,8 +132,7 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return  
-   
-   
+      
 def showMovies(sSearch = ''):
     oGui = cGui()
     
@@ -166,7 +159,8 @@ def showMovies(sSearch = ''):
                 break
 
             sUrl = aEntry[0] 
-            sThumb = aEntry[1]
+            sThumb = aEntry[1].replace('=200','=360')
+
             sTitle = CleanTitle(aEntry[2])
 
             if not sThumb.startswith('http'):
@@ -216,8 +210,9 @@ def showLasts():
                 break
 
             sUrl = aEntry[0] 
-            sThumb = aEntry[1]
-            sMovieTitle = CleanTitle(aEntry[2] + ' '+aEntry[3])
+            sThumb = aEntry[1].replace('=110','=360') #qualité image
+
+            sMovieTitle = aEntry[2] + ' ' + aEntry[3]
             
             sDisplayTitle = [cUtil().DecoTitle(sMovieTitle), aEntry[4]]
             
@@ -306,17 +301,12 @@ def GetLink():
     
 
     if (aResult[0] == True):
-
         sHosterUrl = cPacker().unpack(aResult[1][0])
         
-        fh = open('c:\\test.txt', "w")
-        fh.write(sHosterUrl)
-        fh.close()
         sHosterUrl = sHosterUrl.replace('"+window.innerWidth+"', '1680')
         
         sPattern2 = "src=\\\\\'(.+?)\\\\" 
         aResult = oParser.parse(sHosterUrl, sPattern2)
-        
         if (aResult[0] == True):
             oHoster = cHosterGui().checkHoster(aResult[1][0])
             sHosterUrl = aResult[1][0]
@@ -343,8 +333,16 @@ def ShowSaisons():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-   
+
     oParser = cParser()
+    
+    img = ''
+    sPattern = '<img.+?src="([^"]+)" alt=".+?" width=".+?">'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        img = 'http://www.series-en-streaming.tv' + aResult[1][0]
+
+        
     sPattern = '<a href="([^<>]+?)" class="seasonLink">([^<>]+?)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -360,8 +358,8 @@ def ShowSaisons():
             sTitle = sMovieTitle + ' Saison ' + aEntry[1]
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
-            if sThumb: #alphadisplay pas de thumbs
-               sThumb = sThumb.replace(' ','%20')
+            if img: 
+               sThumb = img
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
@@ -402,10 +400,8 @@ def showEpisode():
                sUrl = 'http://www.series-en-streaming.tv' + sUrl
 
             sTitle = sMovieTitle + ' ' + aEntry[2]
-            sThumb = aEntry[0]
-            if URL_MAIN in sThumb:
-                sThumb = sThumb + SpecHead
-                      
+            sThumb = URL_MAIN + 'images/?src=' + aEntry[1]
+
             sCom = aEntry[3]
             sDisplayTitle = cUtil().DecoTitle(sTitle)
            
@@ -418,5 +414,6 @@ def showEpisode():
  
         cConfig().finishDialog(dialog)
     else:
-        oGui.addText(SITE_IDENTIFIER, '[COLOR coral]Aucun episode disponible[/COLOR]')   
+        oGui.addText(SITE_IDENTIFIER, '[COLOR coral]Aucun episode disponible[/COLOR]')  
+        
     oGui.setEndOfDirectory()

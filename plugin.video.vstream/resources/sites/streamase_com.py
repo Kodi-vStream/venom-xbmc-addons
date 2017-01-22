@@ -24,15 +24,27 @@ SITE_IDENTIFIER = 'streamase_com'
 SITE_NAME = '[COLOR violet]Streamase.com[/COLOR]' 
 SITE_DESC = 'Fichier en Streaming et en DDL, HD' 
 
+#film
 URL_MAIN = 'http://streamase.com/'
+MOVIE_NEWS = (URL_MAIN + 'lastnews/' , 'showMovies')
+MOVIE_GENRES = (True, 'showGenreMovies')
+
+#animes
+URL_MAIN_MANGA = 'http://manga.streamase.com/'
+MANGA_NEWS = (URL_MAIN_MANGA + 'index.php?do=lastnews/' , 'showMovies')
+MANGA_GENRES = (True, 'showGenreMangas')
+
+#serie
+URL_MAIN_SERIE = 'http://series.streamase.com/'
+SERIE_NEWS = (URL_MAIN_SERIE + 'index.php?do=lastnews/' , 'showMovies')
+SERIE_GENRES = (True, 'showGenreSeries')
+
+
 URL_FAV = URL_MAIN + 'favorites/'
 
-
+#recherche
 URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
-
-MOVIE_NEWS = (URL_MAIN + 'lastnews/' , 'showMovies') # derniers films ajoutes
-MOVIE_GENRES = (True, 'showGenreMovies')
 
 def load():
     oGui = cGui()
@@ -43,15 +55,15 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMenuFilms', 'Films', 'films.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuFilms', 'Films', 'films.png', oOutputParameterHandler)
     
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    #oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Series', 'series.png', oOutputParameterHandler)       
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Series', 'series.png', oOutputParameterHandler)       
    
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    #oGui.addDir(SITE_IDENTIFIER, 'showMenuMangas', 'Mangas', 'animes.png', oOutputParameterHandler)    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuMangas', 'Mangas', 'animes.png', oOutputParameterHandler)    
     
     oGui.setEndOfDirectory() 
 
@@ -77,9 +89,6 @@ def showMenuFilms():
     oOutputParameterHandler.addParameter('type', 'film') 
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de films', 'search.png', oOutputParameterHandler) 
 
-    oOutputParameterHandler = cOutputParameterHandler() 
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
-
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Derniers Films ajoutes', 'news.png', oOutputParameterHandler)    
@@ -88,7 +97,48 @@ def showMenuFilms():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films par Genre', 'genres.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()     
+    oGui.setEndOfDirectory()
+    
+def showMenuSeries():
+    oGui = cGui()
+       
+    oOutputParameterHandler = cOutputParameterHandler() 
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oOutputParameterHandler.addParameter('type', 'serie') 
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de serie', 'search.png', oOutputParameterHandler) 
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Derniers series ajoutees', 'news.png', oOutputParameterHandler)    
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Series par Genre', 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+    
+def showMenuMangas():
+    
+    oGui = cGui()
+    
+    oOutputParameterHandler = cOutputParameterHandler() 
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oOutputParameterHandler.addParameter('type', 'anime')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de mangas', 'search.png', oOutputParameterHandler) 
+
+    oOutputParameterHandler = cOutputParameterHandler() 
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MANGA_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MANGA_NEWS[1], 'Derniers Mangas ajoutes', 'news.png', oOutputParameterHandler)    
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MANGA_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MANGA_GENRES[1], 'Mangas par Genre', 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
 
 def showSearch():
     oGui = cGui()
@@ -105,38 +155,44 @@ def showFavorites():
     oGui.setEndOfDirectory()
     return             
         
-def showGenreMovies(): 
-    showGenre("")
+def showGenreMovies():
+    showGenre(URL_MAIN)
+    
+def showGenreMangas():
+    showGenre(URL_MAIN_MANGA)
+    
+def showGenreSeries():
+    showGenre(URL_MAIN_SERIE)
 
 def showGenre(basePath): 
     oGui = cGui()
     
     liste = []
-    liste.append( ['Action',URL_MAIN + 'action/' + basePath] )
-    liste.append( ['Animation',URL_MAIN + 'animation/' + basePath] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'arts-martiaux/' + basePath] )
-    liste.append( ['Aventure',URL_MAIN + 'aventure/' + basePath] )
-    liste.append( ['Biographies',URL_MAIN + 'biopic/' + basePath] )
-    liste.append( ['Comédie',URL_MAIN + 'comedie/' + basePath] )
-    liste.append( ['Comédie dramatique',URL_MAIN + 'comedie-dramatique/' + basePath] )
-    liste.append( ['Comédie musicale',URL_MAIN + 'comedie-musicale/' + basePath] )
-    liste.append( ['Crime',URL_MAIN + 'crime/' + basePath] )
-    liste.append( ['Documentaire',URL_MAIN + 'documentaire/' + basePath] )
-    liste.append( ['Drame',URL_MAIN + 'drame/' + basePath] )
-    liste.append( ['Espionnage',URL_MAIN + 'espionage/' + basePath] ) 
-    liste.append( ['Famille',URL_MAIN + 'famille/' + basePath] ) 
-    liste.append( ['Fantastique',URL_MAIN + 'fantastique/' + basePath] ) 
-    liste.append( ['Guerre',URL_MAIN + 'guerre/' + basePath] ) 
-    liste.append( ['Historique',URL_MAIN + 'historique/' + basePath] ) 
-    liste.append( ['Horreur',URL_MAIN + 'horror/' + basePath] ) 
-    liste.append( ['Péplum',URL_MAIN + 'peplum/' + basePath] ) 
-    liste.append( ['Policier',URL_MAIN + 'policier/' + basePath] ) 
-    liste.append( ['Romance',URL_MAIN + 'romance/' + basePath] ) 
-    liste.append( ['Science fiction',URL_MAIN + 'sci-fi/' + basePath] ) 
-    liste.append( ['Spectacle',URL_MAIN + 'spectacle/' + basePath] ) 
-    liste.append( ['Sport',URL_MAIN + 'sport/' + basePath] ) 
-    liste.append( ['Thriller',URL_MAIN + 'thriller/' + basePath] ) 
-    liste.append( ['Western',URL_MAIN + 'western/' + basePath] ) 
+    liste.append( ['Action',basePath + 'action/' ] )
+    liste.append( ['Animation',basePath + 'animation/' ] )
+    liste.append( ['Arts Martiaux',basePath + 'arts-martiaux/' ] )
+    liste.append( ['Aventure',basePath + 'aventure/' ] )
+    liste.append( ['Biographies',basePath + 'biopic/' ] )
+    liste.append( ['Comédie',basePath + 'comedie/' ] )
+    liste.append( ['Comédie dramatique',basePath + 'comedie-dramatique/' ] )
+    liste.append( ['Comédie musicale',basePath + 'comedie-musicale/' ] )
+    liste.append( ['Crime',basePath + 'crime/' ] )
+    liste.append( ['Documentaire',basePath + 'documentaire/' ] )
+    liste.append( ['Drame',basePath + 'drame/' ] )
+    liste.append( ['Espionnage',basePath + 'espionage/' ] ) 
+    liste.append( ['Famille',basePath + 'famille/' ] ) 
+    liste.append( ['Fantastique',basePath + 'fantastique/' ] ) 
+    liste.append( ['Guerre',basePath + 'guerre/' ] ) 
+    liste.append( ['Historique',basePath + 'historique/' ] ) 
+    liste.append( ['Horreur',basePath + 'horror/' ] ) 
+    liste.append( ['Péplum',basePath + 'peplum/' ] ) 
+    liste.append( ['Policier',basePath + 'policier/' ] ) 
+    liste.append( ['Romance',basePath + 'romance/' ] ) 
+    liste.append( ['Science fiction',basePath + 'sci-fi/' ] ) 
+    liste.append( ['Spectacle',basePath + 'spectacle/' ] ) 
+    liste.append( ['Sport',basePath + 'sport/' ] ) 
+    liste.append( ['Thriller',basePath + 'thriller/' ] ) 
+    liste.append( ['Western',basePath + 'western/' ] ) 
                 
     for sTitle,sUrl in liste:
         
@@ -181,6 +237,20 @@ def showMovies(sSearch = ''):
     oInputParameterHandler = cInputParameterHandler()
     
     if sSearch:
+        
+        oInputParameterHandler = cInputParameterHandler()
+        sType = oInputParameterHandler.getValue('type') 
+      
+        Url_Search = URL_MAIN
+       
+        if sType:
+            if sType == "serie":
+                Url_Search = URL_MAIN_SERIE
+            elif sType == "anime":
+                Url_Search = URL_MAIN_MANGA
+            else:
+                Url_Search = URL_MAIN
+        
         if sSearch == URL_FAV:
             sUrl = URL_FAV
             cookies = ''
@@ -193,13 +263,15 @@ def showMovies(sSearch = ''):
             sHtmlContent = oRequestHandler.request()
             #xbmc.log(sHtmlContent)
         else:
-            sUrl = URL_SEARCH[0] 
+            sUrl = Url_Search + 'index.php?do=search'
+            
             if URL_SEARCH[0] in sSearch:
                 sSearch=sSearch.replace(URL_SEARCH[0],'')
-            oRequestHandler = cRequestHandler(URL_SEARCH[0])
+                
+            oRequestHandler = cRequestHandler(sUrl)
             oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
             #oRequestHandler.addHeaderEntry('Origin','http://streamase.com/')
-            oRequestHandler.addHeaderEntry('Referer','http://streamase.com/')
+            oRequestHandler.addHeaderEntry('Referer',Url_Search)
             #oRequestHandler.addParameters('do', 'search')
             oRequestHandler.addParameters('subaction', 'search')
             oRequestHandler.addParameters('search_start', '0')
