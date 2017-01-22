@@ -3,7 +3,7 @@
 rtmp://iptv.livetv.tn/live/ch5041?code=ea3050dac0b8133
 
 #EXTINF:-1 tvg-id="FRA2.kazer.org" tvg-name="France 2" tvg-logo="france2.png" group-title="Group 2",France 2
-http://live.francetv.fr/simulcast/France_2/hls_v1/index.m3u8
+[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_2%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
 
 #EXTINF:-1 tvg-id="FRA3.kazer.org" tvg-name="France 3" tvg-logo="france3.png" group-title="Group 3",France 3
 http://live.francetv.fr/simulcast/France_3/hls_v1/index.m3u8
