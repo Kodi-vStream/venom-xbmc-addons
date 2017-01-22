@@ -111,6 +111,8 @@ class cTMDb:
                            "imdb_id TEXT, "\
                            "tmdb_id TEXT, " \
                            "season INTEGER, "\
+                           "year INTEGER,"\
+                           "premiered TEXT, "\
                            "cover_url TEXT,"\
                            "playcount INTEGER,"\
                            "UNIQUE(imdb_id, tmdb_id, season)"\
@@ -338,6 +340,16 @@ class cTMDb:
         if 'cast' in meta:
             meta['cast'] = eval(str(meta['cast']))
             
+        if 's_cover_url' in meta:
+            meta['cover_url'] = meta['s_cover_url']
+            
+        if 's_premiered' in meta:
+            meta['premiered'] = meta['s_premiered']
+            
+        if 's_year' in meta:
+            meta['year'] = meta['s_year']
+            
+            
         return meta
         
     def _format(self, meta, name):
@@ -412,6 +424,9 @@ class cTMDb:
         if 'vote_count' in meta:
             _meta['votes'] = meta['vote_count']
             
+        if 'seasons' in meta:
+                _meta['seasons'] = meta['seasons']
+            
         # if 'cast' in meta:
             # xbmc.log("passeeeeeeeeeeeeeeeeeee")
             # _meta['cast'] = json.loads(_meta['cast'])
@@ -450,15 +465,32 @@ class cTMDb:
         
         
     def _cache_search(self, media_type, name, tmdb_id='', year=''):
-        sql_select = "SELECT * FROM %s" % media_type
-        if tmdb_id:
-            sql_select = sql_select + " WHERE tmdb_id = '%s'" % tmdb_id
-        else:
-            sql_select = sql_select + " WHERE title = '%s'" % name
+        if media_type == "movie":
+            sql_select = "SELECT * FROM movie"
+            if tmdb_id:
+                sql_select = sql_select + " WHERE tmdb_id = '%s'" % tmdb_id
+            else:
+                sql_select = sql_select + " WHERE title = '%s'" % name
 
-        if year:
-            sql_select = sql_select + " AND year = %s" % year
+            if year:
+                sql_select = sql_select + " AND year = %s" % year
+                
+        elif media_type == "tvshow":
+            sql_select = "SELECT * FROM tvshow"
+            if xbmc.getInfoLabel('ListItem.season'):
+                sql_select = "SELECT *, season.cover_url as s_cover_url, season.premiered as s_premiered, season.year as s_year FROM tvshow LEFT JOIN season ON tvshow.imdb_id = season.imdb_id"
+            if tmdb_id:
+                sql_select = sql_select + " WHERE tvshow.tmdb_id = '%s'" % tmdb_id
+            else:
+                sql_select = sql_select + " WHERE tvshow.title = '%s'" % name
 
+            if year:
+                sql_select = sql_select + " AND tvshow.year = %s" % year
+                
+            if xbmc.getInfoLabel('ListItem.season'):
+                sql_select = sql_select + "and season.season = '%s'" % xbmc.getInfoLabel('ListItem.season')
+            
+        #xbmc.log(str(sql_select))
         try:
             self.dbcur.execute(sql_select)            
             matchedrow = self.dbcur.fetchone()
@@ -480,7 +512,23 @@ class cTMDb:
         #list en str
         if 'cast' in metadb:
             metadb['cast'] = str(metadb['cast'])
-        #news_meta['CastAndRole'] = str(news_meta['CastAndRole'])
+
+        #ecrit dans la base les saisons trop lourd?
+        if 'seasons' in metadb:
+            for season in meta['seasons']:
+                if 'poster_path' in season:
+                    season['poster_path'] = self.poster+str(season['poster_path'])
+            
+                sql = "INSERT INTO season (imdb_id, tmdb_id, season, year, premiered, cover_url, playcount) VALUES (?, ?, ?, ?, ?, ?, ?)"
+                self.dbcur.execute(sql, (metadb['imdb_id'], season['id'], season['season_number'], season['air_date'], season['air_date'], season['poster_path'], 6))
+                try:
+                    self.db.commit() 
+                    cConfig().log('SQL INSERT Successfully') 
+                except Exception, e:
+                    cConfig().log('SQL ERROR INSERT') 
+                    pass
+            del metadb['seasons']
+            del meta['seasons']
         
         columns = ', '.join(metadb.keys())
         placeholders = ':'+', :'.join(metadb.keys())
@@ -539,10 +587,10 @@ class cTMDb:
             #meta = self.__format_meta(media_type, meta, name)
             #transforme les metas
             if meta:
-                meta = self._format(meta, name)      
+                meta = self._format(meta, name)  
+                
                 #ecrit dans le cache
                 self._cache_save(meta, self._clean_title(name), media_type, overlay)
-                
             else:
                 #utiliser par l'addon donc plante si y a vraiment pas de reponse.
                 meta['title'] = name         
