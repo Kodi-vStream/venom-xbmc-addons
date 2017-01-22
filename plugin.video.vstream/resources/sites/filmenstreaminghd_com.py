@@ -246,13 +246,13 @@ def showMovies(sSearch = ''):
             sTitle = aEntry[3]
             if aEntry[1]:
                 sTitle = sTitle + '[' + aEntry[1]  + '] ' 
-            sCom = aEntry[4]
+                
+            sCom = aEntry[4].decode("utf-8")
+            sCom = cUtil().unescape(sCom).encode("utf-8")
+            sCom = cUtil().removeHtmlTags(sCom)
             sUrl2 = URL_MAIN + '/' + aEntry[0]
             sThumb = URL_MAIN + '/' + aEntry[2]
-            
-            
-            sCom = cUtil().removeHtmlTags(sCom)
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
