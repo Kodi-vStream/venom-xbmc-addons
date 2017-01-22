@@ -274,15 +274,15 @@ def showHosters(sLoop = False):
     #1 er version
     sPattern = '<iframe[^<>]+?src=[\'|"](http.+?)[\'|"]'
     aResult1 = re.findall( sPattern, sHtmlContent)
-    
+
     #seconde version
-    sPattern = '<a class="large button .+?" href="(.+?)" target="vid">'
+    sPattern = '<a class="large.+?href="(.+?)" target="vid">'
     aResult2 = re.findall( sPattern, sHtmlContent)
-    
+
     #3eme version
-    sPattern = '<a href="([^<>"]+?)" target="_blank">Regarder<\/a>'
+    sPattern = '<a class="large.+?href="([^<>"]+?)" target="_blank">'
     aResult3 = re.findall( sPattern, sHtmlContent)
-    
+
     #fusion des resultats
     aResult = []
     aResult = aResult1 + aResult2 + aResult3
