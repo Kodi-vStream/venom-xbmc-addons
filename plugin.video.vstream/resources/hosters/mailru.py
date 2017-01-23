@@ -103,7 +103,6 @@ class cHoster(iHoster):
 
         sPattern = '{"url":"([^"]+)",.+?"key":"(\d+p)"}'
         aResult = oParser.parse(data, sPattern)
-        xbmc.log(str(aResult))
         if (aResult[0] == True):
             #initialisation des tableaux
             url=[]
@@ -115,7 +114,6 @@ class cHoster(iHoster):
             #Si une seule url
             if len(url) == 1:
                 api_call = 'http:' + url[0]
-                xbmc.log(str(api_call))
             #si plus de une
             elif len(url) > 1:
             #Afichage du tableau
@@ -123,7 +121,6 @@ class cHoster(iHoster):
                 ret = dialog2.select('Select Quality',qua)
                 if (ret > -1):
                     api_call = 'http:' + url[ret]
-                    xbmc.log(str(api_call))
                     
         if (api_call):
             return True, api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
