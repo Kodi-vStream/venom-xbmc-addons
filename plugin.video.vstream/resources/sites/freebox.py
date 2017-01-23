@@ -122,9 +122,12 @@ def showWeb():
             sThumb = track.icon
             if not sThumb:
                 sThumb = 'tv.png'
+                
+            #les + ne peuvent pas passer
+            url2 = str(track.path).replace('+','P_L_U_S')
             
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(track.path))
+            oOutputParameterHandler.addParameter('siteUrl', url2)
             oOutputParameterHandler.addParameter('sMovieTitle', str(track.title))
             oOutputParameterHandler.addParameter('sThumbnail', str(sRootArt + '/tv/' + sThumb))
             oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt+'/tv/'+sThumb, oOutputParameterHandler)    
@@ -371,7 +374,7 @@ def play__():
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrl = oInputParameterHandler.getValue('siteUrl').replace('P_L_U_S','+')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
