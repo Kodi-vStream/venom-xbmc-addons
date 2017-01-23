@@ -8,9 +8,6 @@ from resources.lib.parser import cParser
 
 import urllib2,urllib,re,xbmcgui,xbmc
 
-try:    import json
-except: import simplejson as json
-
 class cHoster(iHoster):
 
     def __init__(self):
@@ -67,7 +64,6 @@ class cHoster(iHoster):
 
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
-        result = []
         headers = {"User-Agent":UA}
 
         req1 = urllib2.Request(self.__sUrl,None,headers)
@@ -78,7 +74,7 @@ class cHoster(iHoster):
         sPattern = '{"metadataUrl":"([^"]+)",'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        xbmc.log(str(aResult))
+
         vurl = 'http://my.mail.ru/' + aResult[1][0]
         
         req = urllib2.Request(vurl,None,headers)
@@ -92,7 +88,7 @@ class cHoster(iHoster):
         data = response.read()
         head = response.headers
         response.close()
-        
+
         #get cookie
         cookies = ''
         if 'Set-Cookie' in head:
@@ -104,24 +100,30 @@ class cHoster(iHoster):
                 for cook in aResult[1]:
                     cookies = cookies + cook[0] + '=' + cook[1]+ ';'
        
-        result = json.loads(data)
-        if result:
+
+        sPattern = '{"url":"([^"]+)",.+?"key":"(\d+p)"}'
+        aResult = oParser.parse(data, sPattern)
+        xbmc.log(str(aResult))
+        if (aResult[0] == True):
+            #initialisation des tableaux
             url=[]
             qua=[]
             #Replissage des tableaux
-            for i in result[u'videos']:
-                url.append(str(i['url']))
-                qua.append(str(i['key']))   
+            for i in aResult[1]:
+                url.append(str(i[0]))
+                qua.append(str(i[1]))   
             #Si une seule url
             if len(url) == 1:
-                api_call = 'http:' + url[0] 
+                api_call = 'http:' + url[0]
+                xbmc.log(str(api_call))
             #si plus de une
             elif len(url) > 1:
             #Afichage du tableau
                 dialog2 = xbmcgui.Dialog()
                 ret = dialog2.select('Select Quality',qua)
                 if (ret > -1):
-                    api_call = 'http' + url[ret] 
+                    api_call = 'http:' + url[ret]
+                    xbmc.log(str(api_call))
                     
         if (api_call):
             return True, api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
