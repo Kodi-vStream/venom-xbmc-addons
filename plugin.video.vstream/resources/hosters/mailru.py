@@ -1,14 +1,12 @@
+#-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+
+from resources.lib.handler.requestHandler import cRequestHandler 
+from resources.lib.config import cConfig 
 from resources.hosters.hoster import iHoster
-from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
-from resources.lib.config import cConfig
-import cookielib
-#import simplejson
-import urllib2,urllib,re
-#from t0mm0.common.net import Net
-import unicodedata
-import xbmcgui
+from resources.lib.parser import cParser 
+
+import urllib2,urllib,re,xbmcgui,xbmc
 
 try:    import json
 except: import simplejson as json
@@ -17,7 +15,8 @@ class cHoster(iHoster):
 
     def __init__(self):
         self.__sDisplayName = 'MailRu'
-	self.__sFileName = self.__sDisplayName
+        self.__sFileName = self.__sDisplayName
+        self.__sHD = ''
 
     def getDisplayName(self):
         return  self.__sDisplayName
@@ -26,45 +25,19 @@ class cHoster(iHoster):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
 
     def setFileName(self, sFileName):
-	self.__sFileName = sFileName
-
+        self.__sFileName = sFileName
+        
     def getFileName(self):
-	return self.__sFileName
-    
-    def setUrl(self, sUrl):
-        self.__sUrl = sUrl.replace('/my.mail.ru/video/', '/api.video.mail.ru/videos/embed/')
-        self.__sUrl = self.__sUrl.replace('/my.mail.ru/mail/', '/api.video.mail.ru/videos/embed/mail/')
-        self.__sUrl = self.__sUrl.replace('/videoapi.my.mail.ru/', '/api.video.mail.ru/')
-    
-    def __getIdFromUrl(self):
-        pass
-        #sPattern = 'http:..www.purevid.com.\?m=embed&id=([^<]+)'
-        #oParser = cParser()
-        #aResult = oParser.parse(self.__sUrl, sPattern)
-        #if (aResult[0] == True):
-        #    return aResult[1][0]
-        #return ''
-        
-    def __modifyUrl(self, sUrl):
-        api = ('http://rutube.ru/api/play/trackinfo/%s/?format=json') % (self.__getIdFromUrl())
-
-        oRequest = cRequestHandler(api)
-        sHtmlContent = oRequest.request()
-        sHtmlContent = sHtmlContent.replace('\\', '').replace('//', '')
-        
-        sPattern = 'src="(.+?)"'
-        
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            self.__sUrl = 'http://' + aResult[1][0]
-            return self.__sUrl
-            
-        return
-
+        return self.__sFileName
 
     def getPluginIdentifier(self):
         return 'mailru'
+        
+    def setHD(self, sHD):
+        self.__sHD = ''
+        
+    def getHD(self):
+        return self.__sHD
 
     def isDownloadable(self):
         return True
@@ -73,40 +46,41 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
+        return ''
+    
+    def __getIdFromUrl(self, sUrl):
+        return ''
+
+    def setUrl(self, sUrl):
+        self.__sUrl = str(sUrl)
 
     def checkUrl(self, sUrl):
         return True
 
-    def getUrl(self):
-        return self.__sUrl
-
+    def __getUrl(self, media_id):
+        return
+    
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
-        referer='http://img.mail.ru/r/video2/uvpv3.swf?3'
-        UA='Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
-        #cookie = getUrl(url, output='cookie').result
-        cookie='VID=2SlVa309oFH4; mrcu=EE18510E964723319742F901060A; p=IxQAAMr+IQAA; video_key=203516; s='
-        h = "|Cookie=%s" % urllib.quote(cookie)
-        
+        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
+
         result = []
-        headers = { "User-Agent":UA, "Referer":referer , "Cookie":cookie }
-        # header "Cookie" with parameters need to be set for your download/playback
-        
-        #recuperation du lien
-        oRequestHandler = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequestHandler.request();
-        sPattern = '"metadataUrl":"(.+?)","autoplay"'
+        headers = {"User-Agent":UA}
+
+        req1 = urllib2.Request(self.__sUrl,None,headers)
+        resp1 = urllib2.urlopen(req1)
+        sHtmlContent = resp1.read()
+        resp1.close()
+
+        sPattern = '{"metadataUrl":"([^"]+)",'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-
-        vurl = aResult[1][0]
+        xbmc.log(str(aResult))
+        vurl = 'http://my.mail.ru/' + aResult[1][0]
         
-        #req = urllib2.Request('http://api.video.mail.ru/videos/' + vurl + '.json',headers)
         req = urllib2.Request(vurl,None,headers)
         
         try:
@@ -115,25 +89,41 @@ class cHoster(iHoster):
             print e.read()
             print e.reason
         
-        data=response.read()
+        data = response.read()
+        head = response.headers
         response.close()
+        
+        #get cookie
+        cookies = ''
+        if 'Set-Cookie' in head:
+            oParser = cParser()
+            sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?);'
+            aResult = oParser.parse(str(head['Set-Cookie']), sPattern)
+            #print aResult
+            if (aResult[0] == True):
+                for cook in aResult[1]:
+                    cookies = cookies + cook[0] + '=' + cook[1]+ ';'
+       
         result = json.loads(data)
-        
-        url=[]
-        qua=[]
-        
-        for i in result[u'videos']:
-            url.append(str(i['url']))
-            qua.append(str(i['key']))
-        
-        if (url):
-            #cConfig().showInfo(self.__sDisplayName, 'fgdgfds')
-             
-            dialog2 = xbmcgui.Dialog()
-            ret = dialog2.select('Select Quality',qua)
-            return True, url[ret] + h
-        else:
-            cConfig().showInfo(self.__sDisplayName, 'Fichier introuvable')
-            return False, False
-        
+        if result:
+            url=[]
+            qua=[]
+            #Replissage des tableaux
+            for i in result[u'videos']:
+                url.append(str(i['url']))
+                qua.append(str(i['key']))   
+            #Si une seule url
+            if len(url) == 1:
+                api_call = 'http:' + url[0] 
+            #si plus de une
+            elif len(url) > 1:
+            #Afichage du tableau
+                dialog2 = xbmcgui.Dialog()
+                ret = dialog2.select('Select Quality',qua)
+                if (ret > -1):
+                    api_call = 'http' + url[ret] 
+                    
+        if (api_call):
+            return True, api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
+            
         return False, False
