@@ -181,21 +181,23 @@ def checkforHoster(sHosterUrl):
     code = re.search('\/(.+?)=([^"]+)',sHosterUrl)
     if not 'php?link' in code.group(1):
         if 'openload' in sHosterUrl:
-            return 'https://openload.co/embed/' + code.group(1) 
+            return 'https://openload.co/embed/' + code.group(2) 
         elif 'vidlox' in sHosterUrl:    
-            return 'http://vidlox.tv/' + code.group(1)
+            return 'http://vidlox.tv/' + code.group(2)
         elif 'streammoe' in sHosterUrl:    
-            return 'https://stream.moe/embed-' + code.group(1) + '.html'
-        elif 'playernaut' in sHosterUrl:    
-            return 'https://www.raptu.com/embed/' + code.group(1) 
+            return 'https://stream.moe/embed-' + code.group(2) + '.html'
+        elif 'playernaut' in sHosterUrl or 'rapidvideo' in sHosterUrl:    
+            return 'https://www.raptu.com/embed/' + code.group(2) 
         elif 'dailymotion' in sHosterUrl:    
-            return 'http://www.dailymotion.com/embed/video/' + code.group(1) 
+            return 'http://www.dailymotion.com/embed/video/' + code.group(2) 
         elif 'userscloud' in sHosterUrl:
-            return 'https://userscloud.com/embed-' + code.group(1) + '.html'
+            return 'https://userscloud.com/embed-' + code.group(2) + '.html'
         elif 'youwatch' in sHosterUrl:
-            return 'http://www.youwatch.org/embed-' + code.group(1) + '.html' 
+            return 'http://www.youwatch.org/embed-' + code.group(2) + '.html' 
         elif 'estream' in sHosterUrl:
-            return 'https://estream.to/' + code.group(1) + '.html' 
+            return 'https://estream.to/' + code.group(2) + '.html' 
+        elif 'uptostream' in sHosterUrl:
+            return 'https://uptostream.com/' + code.group(2)    
         elif 'mail.ru' in sHosterUrl:
             code = re.search('\/mail\.ru.+?embed\/([^"]+)',sHosterUrl) 
             if code:
@@ -204,7 +206,7 @@ def checkforHoster(sHosterUrl):
         if 'uptobox' in sHosterUrl:
             code = re.search('/plyr/.+?//uptobox.com/([^"]+)',sHosterUrl)
             if code:
-                return 'http://uptobox.com/' + code.group(1)    
+                return 'https://uptobox.com/' + code.group(1)   
             
 def showHosters(): # avoir c'est le bordel
     oGui = cGui()
