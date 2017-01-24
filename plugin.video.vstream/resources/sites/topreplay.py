@@ -11,21 +11,18 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re
-import xbmc
 
 SITE_IDENTIFIER = 'topreplay'
 SITE_NAME = 'TopReplay'
 SITE_DESC = 'Replay TV'
 
 URL_MAIN = 'http://www.topreplay.com'
-
 URL_SEARCH = (URL_MAIN + '/index.php?do=search&subaction=search&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 REPLAYTV_GENRES = (True, 'showGenre')
 REPLAYTV_NEWS = (URL_MAIN + '/lastnews', 'showMovies')
 REPLAYTV_REPLAYTV = (URL_MAIN , 'showListe')
-
 
 def load():
     oGui = cGui()
@@ -36,28 +33,27 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Nouveautées', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Nouveautées', 'replay.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Liste des émissions', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Liste des émissions', 'replay.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_GENRES[1], 'Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_GENRES[1], 'Genres', 'replay.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 def showSearch():
     oGui = cGui()
-    #nextpage recherche non pris en compte volontairement
+    #nextpage recherche non pris en compte volontairement a voir plus tard ou pas (multiple de 37)
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
-
 
 def showGenre():
     oGui = cGui()
@@ -84,7 +80,7 @@ def showGenre():
             
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle , 'genres.png', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle , 'replay.png', oOutputParameterHandler)
                 
             cConfig().finishDialog(dialog)
 
@@ -115,12 +111,12 @@ def showListe():
             
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle , 'genres.png', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle , 'replay.png', oOutputParameterHandler)
                 
             cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
-    
+
 def showMovies(sSearch = ''):
     oGui = cGui()
     
@@ -178,10 +174,19 @@ def __checkForNextPage(sHtmlContent):
     return False
 
 def checkforHoster(sHosterUrl):
+    #principal hoster les autres avec que des videos hs non mis
     code = re.search('\/(.+?)=([^"]+)',sHosterUrl)
     if not 'php?link' in code.group(1):
         if 'openload' in sHosterUrl:
             return 'https://openload.co/embed/' + code.group(2) 
+        elif 'netu' in sHosterUrl:
+            return 'http://hqq.tv/player/embed_player.php?vid=' + code.group(2)  
+        elif 'allvid' in sHosterUrl:    
+            return 'http://allvid.ch/embed-' + code.group(2) + '.html'
+        elif 'easyvid' in sHosterUrl:    
+            return 'http://easyvid.org/embed-' + code.group(2) + '.html'            
+        elif 'rutube' in sHosterUrl:    
+            return 'http://rutube.ru/play/embed/' + code.group(2)        
         elif 'vidlox' in sHosterUrl:    
             return 'http://vidlox.tv/' + code.group(2)
         elif 'streammoe' in sHosterUrl:    
@@ -193,7 +198,9 @@ def checkforHoster(sHosterUrl):
         elif 'userscloud' in sHosterUrl:
             return 'https://userscloud.com/embed-' + code.group(2) + '.html'
         elif 'youwatch' in sHosterUrl:
-            return 'http://www.youwatch.org/embed-' + code.group(2) + '.html' 
+            return 'http://www.youwatch.org/embed-' + code.group(2) + '.html'
+        elif 'exashare' in sHosterUrl:
+            return 'http://exashare.com/embed-' + code.group(2) + '.html'    
         elif 'estream' in sHosterUrl:
             return 'https://estream.to/' + code.group(2) + '.html' 
         elif 'uptostream' in sHosterUrl:
@@ -206,9 +213,9 @@ def checkforHoster(sHosterUrl):
         if 'uptobox' in sHosterUrl:
             code = re.search('/plyr/.+?//uptobox.com/([^"]+)',sHosterUrl)
             if code:
-                return 'https://uptobox.com/' + code.group(1)   
+                return 'https://uptobox.com/' + code.group(1)
             
-def showHosters(): # avoir c'est le bordel
+def showHosters(): 
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -224,11 +231,9 @@ def showHosters(): # avoir c'est le bordel
     #2
     sPattern = '<iframe.+?src="([^"]+)" style=".+?".+?<\/iframe>'
     aResult2 = re.findall(sPattern, sHtmlContent)
-    #xbmc.log(str(aResult2))
     
     aResult = []
     aResult = list(set(aResult1 + aResult2)) #pas de doublons
-    #xbmc.log(str(aResult))
     if (aResult):
         for aEntry in aResult:
             sHosterUrl = checkforHoster(str(aEntry))
