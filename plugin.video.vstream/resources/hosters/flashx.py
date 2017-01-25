@@ -8,9 +8,7 @@ from resources.hosters.hoster import iHoster
 
 import re,urllib2,urllib
 import xbmcgui
-
 from resources.lib.packer import cPacker
-
 import xbmc
 
 #Remarque : meme code que vodlocker
@@ -309,7 +307,18 @@ class cHoster(iHoster):
             sHtmlContent = oRequest.request()
         else:
             xbmc.log('No second unlock url')
-
+            
+        #dernier en date(comme fastcontentdelivery)   
+        sPattern = 'src="(\/\/.+?sidead\.js\?.+)"'
+        aResult = re.findall(sPattern,sHtmlContent)
+        if aResult:
+            UnlockUrl = 'http:' + aResult[0]
+            xbmc.log('unlock 3 url' + UnlockUrl)
+            oRequest = cRequestHandler(UnlockUrl)
+            sHtmlContent = oRequest.request()
+        else:
+            xbmc.log('No 3e unlock url')
+            
         #get the page
         sHtmlContent = self.GetRedirectHtml(web_url,sId,True)
         
@@ -373,7 +382,7 @@ class cHoster(iHoster):
                 for i in AllPacked:
                     sUnpacked = cPacker().unpack(i)
                     sHtmlContent = sUnpacked
-                    xbmc.log(sHtmlContent)
+                    #xbmc.log(sHtmlContent)
                     if "file" in sHtmlContent:
                         break
             else:
