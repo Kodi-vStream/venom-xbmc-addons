@@ -76,6 +76,8 @@ def showGenre():
                     break
                     
                 sTitle = aEntry[1]
+                if 'Film' in sTitle:
+                    continue
                 sUrl = URL_MAIN + aEntry[0]
             
                 oOutputParameterHandler = cOutputParameterHandler()
