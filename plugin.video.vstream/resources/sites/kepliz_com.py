@@ -10,7 +10,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import urllib2,urllib,re
+import urllib2,urllib,re,xbmc
 import unicodedata,htmlentitydefs
 
 #Je garde le nom kepliz pour pas perturber
@@ -25,7 +25,7 @@ SEARCHPATTERN = '<fieldset> *<div> *<b><a *href="\/[0-9a-zA-Z]+\/(.+?)" *>(.+?)<
 NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/(.+?)">(.+?)<\/a>'
 NEXTPAGEPATTERN = '<span class="pagenav">[0-9]+<.span><.li><li><a title=".+?" href="\/[0-9a-zA-Z]+\/(.+?)" class="pagenav">'
 FRAMEPATTERN = 'GRUDALpluginsphp\("player1",{link:"(.+?)"}\);'
-FRAMEPATTERN2 = '<iframe src="*\/([^<>"]+\/player\.php\?id=.+?)"'
+FRAMEPATTERN2 = '<iframe src= *"([^<>"]+\/player\.php\?id=.+?)"' #'<iframe src="*\/([^<>"]+\/player\.php\?id=.+?)"'
 HOSTPATTERN = '"link":"([^"]+?)","label":"([^"]+?)"'
 
 #pour l'addon
@@ -58,7 +58,11 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
-           
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'index.php?option=com_content&view=category&id=3')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Spectacle', 'doc.png', oOutputParameterHandler)  
+    
     oGui.setEndOfDirectory()
  
 def showSearch():
@@ -132,7 +136,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
    
     aResult = oParser.parse(sHtmlContent, sPattern)
-   
+    
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -198,8 +202,9 @@ def showHosters():
     #Recuperation info film, com et image
     sPattern = FILMPATTERN
     aResult = oParser.parse(sHtmlContent, sPattern)
-    sThumb = aResult[1][0][0]
-    sComm = cUtil().unescape(aResult[1][0][1])
+    if (aResult[0] == True):
+        sThumb = aResult[1][0][0]
+        sComm = cUtil().unescape(aResult[1][0][1])
  
     #Recuperation info lien du stream.
     sLink = None
@@ -237,8 +242,8 @@ def showHosters():
         sPattern = FRAMEPATTERN2
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0]):
-            sLink = URL_HOST + aResult[1][0]
-            
+            sLink = aResult[1][0]
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sLink', sLink)
@@ -318,7 +323,7 @@ def showHostersLink2():
     
     UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'
     headers = {'User-Agent': UA ,
-               'Host' : 'ozporo.com',
+               'Host' : 'grudal.com',
                'Referer': sLink,
                'Accept': 'video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5',
                'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
