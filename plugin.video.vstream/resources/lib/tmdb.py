@@ -57,20 +57,19 @@ class cTMDb:
                            "director TEXT, "\
                            "writer TEXT, "\
                            "tagline TEXT, "\
-                           "cast TEXT,"\
-                           "rating FLOAT, "\
-                           "votes TEXT, "\
-                           "duration TEXT, "\
-                           "plot TEXT,"\
+                           "credits TEXT,"\
+                           "vote_average FLOAT, "\
+                           "vote_count TEXT, "\
+                           "runtime TEXT, "\
+                           "overview TEXT,"\
                            "mpaa TEXT, "\
                            "premiered TEXT, "\
                            "genre TEXT, "\
                            "studio TEXT,"\
-                           "thumb_url TEXT, "\
-                           "cover_url TEXT, "\
+                           "status TEXT,"\
+                           "poster_path TEXT, "\
                            "trailer TEXT, "\
-                           "backdrop_url TEXT,"\
-                           "imgs_prepacked TEXT,"\
+                           "backdrop_path TEXT,"\
                            "playcount INTEGER,"\
                            "UNIQUE(imdb_id, tmdb_id, title, year)"\
                            ");"
@@ -86,21 +85,19 @@ class cTMDb:
                            "year INTEGER,"\
                            "director TEXT, "\
                            "writer TEXT, "\
-                           "cast TEXT,"\
-                           "rating FLOAT, "\
-                           "votes TEXT, "\
-                           "duration TEXT, "\
-                           "plot TEXT,"\
+                           "credits TEXT,"\
+                           "vote_average FLOAT, "\
+                           "vote_count TEXT, "\
+                           "runtime TEXT, "\
+                           "overview TEXT,"\
                            "mpaa TEXT, "\
                            "premiered TEXT, "\
                            "genre TEXT, "\
                            "studio TEXT,"\
                            "status TEXT,"\
-                           "banner_url TEXT, "\
-                           "cover_url TEXT,"\
+                           "poster_path TEXT,"\
                            "trailer TEXT, "\
-                           "backdrop_url TEXT,"\
-                           "imgs_prepacked TEXT,"\
+                           "backdrop_path TEXT,"\
                            "playcount INTEGER,"\
                            "UNIQUE(imdb_id, tmdb_id, title)"\
                            ");"
@@ -113,7 +110,7 @@ class cTMDb:
                            "season INTEGER, "\
                            "year INTEGER,"\
                            "premiered TEXT, "\
-                           "cover_url TEXT,"\
+                           "poster_path TEXT,"\
                            "playcount INTEGER,"\
                            "UNIQUE(imdb_id, tmdb_id, season)"\
                            ");"
@@ -129,10 +126,10 @@ class cTMDb:
                            "title TEXT, "\
                            "director TEXT, "\
                            "writer TEXT, "\
-                           "plot TEXT, "\
-                           "rating FLOAT, "\
+                           "overview TEXT, "\
+                           "vote_average FLOAT, "\
                            "premiered TEXT, "\
-                           "poster TEXT, "\
+                           "poster_path TEXT, "\
                            "playcount INTEGER, "\
                            "UNIQUE(imdb_id, tmdb_id, episode_id, title)"\
                            ");"
@@ -276,7 +273,7 @@ class cTMDb:
         return result #obj(**self._call('movie/' + str(movie_id), append_to_response))
         
     # Get the primary information about a TV series by id.
-    def search_tvshow_id(self, show_id, append_to_response="append_to_response=external_ids,credits,translations"):
+    def search_tvshow_id(self, show_id, append_to_response="append_to_response=external_ids,credits"):
         result = self._call('tv/' + str(show_id), append_to_response)
         return result
         
@@ -335,61 +332,52 @@ class cTMDb:
         else:
             return 0
      
-    def _cache_format(self, meta):
-    
-        if 'cast' in meta:
-            meta['cast'] = eval(str(meta['cast']))
-            
-        if 's_cover_url' in meta:
-            meta['cover_url'] = meta['s_cover_url']
-            
-        if 's_premiered' in meta:
-            meta['premiered'] = meta['s_premiered']
-            
-        if 's_year' in meta:
-            meta['year'] = meta['s_year']
-            
-            
-        return meta
         
     def _format(self, meta, name):
-        _meta = {}
+        _meta = {}            
+        _meta['imdb_id'] = ''
+        _meta['tvdb_id'] = ''
+        _meta['title'] = name
+        _meta['rating'] = 0
+        _meta['duration'] = ''
+        _meta['plot'] = ''
+        _meta['mpaa'] = ''
+        _meta['premiered'] = ''
+        _meta['year'] = ''
+        _meta['trailer_url'] = ''
+        _meta['genre'] = ''
+        _meta['studio'] = ''
+        _meta['status'] = ''        
+        _meta['cast'] = []
+        _meta['cover_url'] = ''
+        _meta['backdrop_url'] = ''
+        _meta['overlay'] = 6
+        _meta['episode'] = 0
+        _meta['playcount'] = 0
 
         if not 'title' in meta:
             _meta['title'] = name
         else:            
             _meta['title'] = meta['title']
-        if 'id' in meta:
-            _meta['tmdb_id'] = meta['id']
+        if 'tmdb_id' in meta:
+            _meta['tmdb_id'] = meta['tmdb_id']
         if 'imdb_id' in meta:
             _meta['imdb_id'] = meta['imdb_id']
-        else:
-            _meta['imdb_id'] = ""
-            
-        if 'external_ids' in meta:
-            _meta['imdb_id'] = meta['external_ids']['imdb_id']
-         
-            
+        if 'year' in meta:
+            _meta['year'] = meta['year']
+        if 'premiered' in meta:
+            _meta['premiered'] = meta['premiered'] 
+        if 'vote_average' in meta:
+            _meta['rating'] = meta['vote_average']   
+        if 'vote_count' in meta:
+            _meta['votes'] = meta['vote_count']            
         if 'runtime' in meta:
             if meta['runtime'] > 0:
                 _meta['duration'] = int(meta['runtime']) *60
             else: 
                  _meta['duration'] = 0
-                 
-         
         if 'overview' in meta:
             _meta['plot'] = meta['overview']
-        
-        if 'certification' in meta:
-            _meta['mpaa'] = meta['certification']
-        if 'release_date' in meta:
-            _meta['premiered'] = meta['release_date']
-        if 'first_air_date' in meta:
-            _meta['premiered'] = meta['first_air_date']
-        if 'premiered' in _meta:
-            _meta['year'] = int(_meta['premiered'][:4])
-        # if not 'year' in meta and 'premiered' in _meta:
-            # _meta['year'] = _meta['premiered']
         
         if 'production_companies' in meta:
             _meta['studio'] = ""
@@ -406,7 +394,12 @@ class cTMDb:
                      _meta['genre'] += genre['name']
                 else:
                     _meta['genre'] += ' / '+genre['name']
-            
+         
+        if 'trailer' in meta:
+            _meta['trailer'] = meta['trailer']  
+        else:
+            _meta['trailer'] = "" 
+        
         if 'backdrop_path' in meta:
             _meta['backdrop_url'] = self.fanart+str(meta['backdrop_path'])
         if 'poster_path' in meta:
@@ -414,28 +407,22 @@ class cTMDb:
         
         if not 'playcount' in meta:
             _meta['playcount'] = self.__set_playcount(6)
+        else:
+            _meta['playcount'] = meta['playcount'] 
+            
             
         if 'tagline' in meta:
             _meta['tagline'] = meta['tagline']
             
-        if 'vote_average' in meta:
-            _meta['rating'] = meta['vote_average']
-            
-        if 'vote_count' in meta:
-            _meta['votes'] = meta['vote_count']
-            
-        if 'seasons' in meta:
-                _meta['seasons'] = meta['seasons']
-            
         # if 'cast' in meta:
             # xbmc.log("passeeeeeeeeeeeeeeeeeee")
             # _meta['cast'] = json.loads(_meta['cast'])
-            
         if 'credits' in meta:
-            #meta['cast'] = str(meta['casts']['cast'])
+            meta['credits'] = eval(str(meta['credits']))
             licast = []
             for cast in meta['credits']['cast']:
                 licast.append((cast['name'], cast['character']))
+                #licast.append((cast['name'], cast['character'], self.poster+str(cast['profile_path'])))
             _meta['cast'] = licast
 
             _meta['writer'] = ""
@@ -446,15 +433,17 @@ class cTMDb:
                     if _meta['writer'] == "":
                         _meta['writer'] += '%s (%s)' % (crew['job'], crew['name'])
                     else:
-                       _meta['writer'] += ' / %s (%s)' % (crew['job'], crew['name'])
-                                 
+                        _meta['writer'] += ' / %s (%s)' % (crew['job'], crew['name'])
+        xbmc.log(str(_meta['cast']))              
+        #special saisons
+        if 's_poster_path' in meta:
+            _meta['cover_url'] = self.poster+str(meta['s_poster_path'])
             
-        #ont prend juste le premier
-        try:
-            _meta['trailer'] = 'plugin://plugin.video.youtube/?action=play_video&videoid=%s' % meta['trailers']['youtube'][0]['source']
-        except:
-            _meta['trailer'] = ''
+        if 's_premiered' in meta:
+            _meta['premiered'] = meta['s_premiered']
             
+        if 's_year' in meta:
+            _meta['year'] = meta['s_year']
     
         return _meta
      
@@ -464,7 +453,7 @@ class cTMDb:
         return title
         
         
-    def _cache_search(self, media_type, name, tmdb_id='', year=''):
+    def _cache_search(self, media_type, name, tmdb_id='', year='', season='', episode=''):
         if media_type == "movie":
             sql_select = "SELECT * FROM movie"
             if tmdb_id:
@@ -476,9 +465,10 @@ class cTMDb:
                 sql_select = sql_select + " AND year = %s" % year
                 
         elif media_type == "tvshow":
+
             sql_select = "SELECT * FROM tvshow"
-            if xbmc.getInfoLabel('ListItem.season'):
-                sql_select = "SELECT *, season.cover_url as s_cover_url, season.premiered as s_premiered, season.year as s_year FROM tvshow LEFT JOIN season ON tvshow.imdb_id = season.imdb_id"
+            if season:
+                sql_select = "SELECT *, season.poster_path as s_poster_path, season.premiered as s_premiered, season.year as s_year FROM tvshow LEFT JOIN season ON tvshow.imdb_id = season.imdb_id"
             if tmdb_id:
                 sql_select = sql_select + " WHERE tvshow.tmdb_id = '%s'" % tmdb_id
             else:
@@ -487,8 +477,8 @@ class cTMDb:
             if year:
                 sql_select = sql_select + " AND tvshow.year = %s" % year
                 
-            if xbmc.getInfoLabel('ListItem.season'):
-                sql_select = sql_select + "and season.season = '%s'" % xbmc.getInfoLabel('ListItem.season')
+            if season:
+                sql_select = sql_select + "and season.season = '%s'" % season
             
         #xbmc.log(str(sql_select))
         try:
@@ -500,50 +490,90 @@ class cTMDb:
             
         if matchedrow:
             xbmc.log('Found meta information by name in cache table') 
-            return self._cache_format(dict(matchedrow))
+            return dict(matchedrow)
         else:
             xbmc.log('No match in local DB', 0)
             return None
             
-    def _cache_save(self, meta, name, media_type, overlay):
+    def _cache_save(self, meta, name, media_type, season, overlay):
 
-        metadb = copy.copy(meta)    
-        metadb['title'] = name
+        #metadb = copy.copy(meta)    
+        meta['title'] = name
+        
+        if 'external_ids' in meta:
+            meta['imdb_id'] = meta['external_ids']['imdb_id']
         #list en str
-        if 'cast' in metadb:
-            metadb['cast'] = str(metadb['cast'])
-
-        #ecrit dans la base les saisons trop lourd?
-        if 'seasons' in metadb:
-            for season in meta['seasons']:
-                if 'poster_path' in season:
-                    season['poster_path'] = self.poster+str(season['poster_path'])
+        if 'credits' in meta:
+            meta['credits'] = str(meta['credits'])
             
-                sql = "INSERT INTO season (imdb_id, tmdb_id, season, year, premiered, cover_url, playcount) VALUES (?, ?, ?, ?, ?, ?, ?)"
-                self.dbcur.execute(sql, (metadb['imdb_id'], season['id'], season['season_number'], season['air_date'], season['air_date'], season['poster_path'], 6))
+        if 'genres' in meta:
+            meta['genre'] = str(meta['genres'])
+            
+        if 'production_companies' in meta:
+            meta['studio'] = str(meta['production_companies'])
+            
+        #ecrit les saisons dans la BDD
+        if 'seasons' in meta:
+            self._cache_save_season(meta, season)
+            del meta['seasons']
+        
+        if 'runtime' in meta:
+            meta['runtime'] = meta['runtime']
+
+        if 'episode_run_time' in meta:   
+            try:
+                meta['runtime'] = meta['episode_run_time'][0]
+            except:
+                meta['runtime'] = 0
+            
+        if 'release_date' in meta:
+            meta['premiered'] = meta['release_date']
+        if 'first_air_date' in meta:
+            meta['premiered'] = meta['first_air_date']
+        if 'premiered' in meta:
+            meta['year'] = int(meta['premiered'][:4])
+        else:
+            meta['year'] = ""
+            
+        
+        meta['mpaa'] = ""
+        
+        try:
+            meta['trailer'] = 'plugin://plugin.video.youtube/?action=play_video&videoid=%s' % meta['trailers']['youtube'][0]['source']
+        except:
+            meta['trailer'] = ''
+        
+        #ecrit movie et tvshow dans la BDD
+        sql = "INSERT INTO %s (imdb_id, tmdb_id, title, year, credits, vote_average, vote_count, runtime, overview, mpaa, premiered, genre, studio, status, poster_path, trailer, backdrop_path, playcount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" % media_type
+        self.dbcur.execute(sql, (meta['imdb_id'], meta['id'], meta['title'], meta['year'], meta['credits'], meta['vote_average'], meta['vote_count'], meta['runtime'], meta['overview'], meta['mpaa'], meta['premiered'], meta['genre'], meta['studio'], meta['status'], meta['poster_path'], meta['trailer'], meta['backdrop_path'], 6))
+        
+        try:
+            self.db.commit() 
+            cConfig().log('SQL INSERT Successfully') 
+        except Exception, e:
+            cConfig().log('SQL ERROR INSERT') 
+            pass
+        self.db.close()
+        
+    def _cache_save_season(self, meta, season):
+    
+            for s in meta['seasons']:
+                if  ("%02d" % int(s['season_number'])) == season:
+                    meta['s_poster_path']= s['poster_path']
+                    meta['s_premiered'] = s['air_date']
+                    meta['s_year'] = s['air_date']
+                
+                xbmc.log(str(s['season_number'])+str(season))
+                sql = "INSERT INTO season (imdb_id, tmdb_id, season, year, premiered, poster_path, playcount) VALUES (?, ?, ?, ?, ?, ?, ?)"
+                self.dbcur.execute(sql, (meta['imdb_id'], s['id'], s['season_number'], s['air_date'], s['air_date'], s['poster_path'], 6))
                 try:
                     self.db.commit() 
                     cConfig().log('SQL INSERT Successfully') 
                 except Exception, e:
                     cConfig().log('SQL ERROR INSERT') 
                     pass
-            del metadb['seasons']
-            del meta['seasons']
         
-        columns = ', '.join(metadb.keys())
-        placeholders = ':'+', :'.join(metadb.keys())
-        sql = 'INSERT INTO %s (%s) VALUES (%s)' % (media_type, columns, placeholders)
-        self.dbcur.execute(sql, metadb)
-        try:
-            self.db.commit() 
-            cConfig().log('SQL INSERT Successfully') 
-        except Exception, e:
-            #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
-            cConfig().log('SQL ERROR INSERT') 
-            pass
-        self.db.close()
-        
-    def get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', overlay=6, update=False):
+    def get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', season='', episode='', overlay=6, update=False):
         '''
         Main method to get meta data for movie or tvshow. Will lookup by name/year 
         if no IMDB ID supplied.       
@@ -556,6 +586,8 @@ class cTMDb:
             tmdb_id (str): TMDB ID
             year (str): 4 digit year of video, recommended to include the year whenever possible
                         to maximize correct search results.
+            season (int)
+            episode (int)
             overlay (int): To set the default watched status (6=unwatched, 7=watched) on new videos
                         
         Returns:
@@ -566,7 +598,7 @@ class cTMDb:
         xbmc.log('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id), 0)
         #recherche dans la base de donner
         if not update:
-            meta = self._cache_search(media_type, self._clean_title(name), tmdb_id, year)
+            meta = self._cache_search(media_type, self._clean_title(name), tmdb_id, year, season, episode)
         else:
             meta = {}
             
@@ -587,20 +619,18 @@ class cTMDb:
             #meta = self.__format_meta(media_type, meta, name)
             #transforme les metas
             if meta:
-                meta = self._format(meta, name)  
-                
                 #ecrit dans le cache
-                self._cache_save(meta, self._clean_title(name), media_type, overlay)
-            else:
-                #utiliser par l'addon donc plante si y a vraiment pas de reponse.
-                meta['title'] = name         
-                meta['imdb_id'] = ''
-                meta['tmdb_id'] = ''
-                meta['tvdb_id'] = ''        
-                meta['backdrop_url'] = ''
-                meta['cover_url'] = ''
-                meta['playcount'] = ''
-                meta['trailer'] = ''
+                self._cache_save(meta, self._clean_title(name), media_type, season, overlay)
+            # else:
+                # meta['title'] = name         
+                # meta['imdb_id'] = ''
+                # meta['tmdb_id'] = ''
+                # meta['tvdb_id'] = ''        
+                # meta['backdrop_url'] = ''
+                # meta['cover_url'] = ''
+                # meta['playcount'] = ''
+                # meta['trailer'] = ''
+        meta = self._format(meta, name)
                 
         return meta
 
