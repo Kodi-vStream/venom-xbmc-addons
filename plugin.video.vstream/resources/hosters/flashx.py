@@ -11,10 +11,8 @@ import xbmcgui
 from resources.lib.packer import cPacker
 import xbmc
 
-#Remarque : meme code que vodlocker
-
-#UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
-UA = 'Nokia7250/1.0 (3.14) Profile/MIDP-1.0 Configuration/CLDC-1.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
+#UA = 'Nokia7250/1.0 (3.14) Profile/MIDP-1.0 Configuration/CLDC-1.0'
 
 def ASCIIDecode(string):
     
@@ -37,26 +35,55 @@ def ASCIIDecode(string):
         i = i + 1
 
     return ret
+
+def GetHtml(url):
+    headers8 = {
+    'User-Agent': UA,
+    'Referer':'https://www.flashx.tv/dl?playthis'
+    }
+    request = urllib2.Request(url,None,headers8)
+    reponse = urllib2.urlopen(request)
+    sCode = reponse.read()
+    reponse.close()                
+    return sCode
     
+def UnlockUrl():
+    code = GetHtml('https://www.flashx.tv/js/code.js')
+    aResult = re.search("!= null\){\s*\$.get\('(.+?)', *{(.+?): *'(.+?)'}",code,re.DOTALL)
+    if aResult:
+        url = aResult.group(1)+ '?' + aResult.group(2) + '=' + aResult.group(3)
+        xbmc.log(url)
+        #GetHtml(url)
+        return True
+    return False
+
+
 def LoadLinks(htmlcode):
+        xbmc.log('Scan des liens')
+    
         host = 'https://www.flashx.tv'
         sPattern ='[\("\'](https*:)*(\/[^,"\'\)\s]+)[\)\'"]'
         aResult = re.findall(sPattern,htmlcode,re.DOTALL)
-        
+
         #xbmc.log(str(aResult))
         for http,urlspam in aResult:
             sUrl = urlspam
-            if (sUrl.count('/') < 2) or ('<' in sUrl) or ('>' in sUrl) or (len(sUrl) < 6):
-                #xbmc.log('not url' + sUrl)
-                continue
+                
             if http:
                 sUrl = http + sUrl
+                
             sUrl = sUrl.replace('/\/','//')
             sUrl = sUrl.replace('\/','/')
             
-            #fast patch
-            #if 'jquery2' not in sUrl:
-            #    continue
+            #filtrage mauvaise url
+            if (sUrl.count('/') < 2) or ('<' in sUrl) or ('>' in sUrl) or (len(sUrl) < 15):
+                continue
+            if '[' in sUrl or ']' in sUrl:
+                continue
+            if '.jpg' in sUrl or '.png' in sUrl:
+                continue
+            
+            #xbmc.log('test : ' + sUrl)
             
             if '\\x' in sUrl or '\\u' in sUrl:
                 sUrl = ASCIIDecode(sUrl)
@@ -78,7 +105,7 @@ def LoadLinks(htmlcode):
                 continue
             if 'flashx' in sUrl:
                 continue
-            #ok good url are files.fx.fastcontentdelivery.com
+
                 
             headers8 = {
             'User-Agent': UA,
@@ -91,9 +118,30 @@ def LoadLinks(htmlcode):
                 sCode = reponse.read()
                 reponse.close()                
                 xbmc.log('Worked ' + sUrl)
-            except:
-                xbmc.log('Blocked ' + sUrl)
-                pass
+            except urllib2.HTTPError, e:
+                if not e.geturl() == sUrl:
+                    try:
+                        headers9 = {
+                        'User-Agent': UA,
+                        'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                        'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+                        'Accept-Encoding':'gzip, deflate, br'
+                        }
+                        request = urllib2.Request(e.geturl().replace('https','http'),None,headers9)
+                        reponse = urllib2.urlopen(request)
+                        sCode = reponse.read()
+                        reponse.close()                
+                        xbmc.log('Worked ' + sUrl)
+                    except urllib2.HTTPError, e:
+                        xbmc.log(str(e.code))
+                        #xbmc.log(e.read())
+                        xbmc.log('Redirection Blocked ' + sUrl + ' Red ' + e.geturl())
+                        pass
+                else:
+                    xbmc.log('Blocked ' + sUrl)
+                    xbmc.log(str(e.code))
+                    xbmc.log('>>' + e.geturl())
+                    xbmc.log(e.read())
         
         xbmc.log('fin des unlock')   
 
@@ -286,39 +334,11 @@ class cHoster(iHoster):
         #fh.close()
         
         #Requests to unlock video
-        #Request for bubble
-        sPattern ='fastcontentdelivery\.com.+?\?([^"]+)">'
-        aResult = re.findall(sPattern,sHtmlContent)
-        if aResult:
-            UnlockUrl = 'http://www.flashx.tv/counter.cgi?' + aResult[0]
-            xbmc.log('unlock  1 url' + UnlockUrl)
-            oRequest = cRequestHandler(UnlockUrl)
-            sHtmlContent = oRequest.request()
-        else:
-            xbmc.log('No first unlock url')
-            
-        #Request for china video
-        sPattern ='"([^"]+jquery2[^"]+)"'
-        aResult = re.findall(sPattern,sHtmlContent)
-        if aResult:
-            UnlockUrl = 'http:' + aResult[0]
-            xbmc.log('unlock 2 url' + UnlockUrl)
-            oRequest = cRequestHandler(UnlockUrl)
-            sHtmlContent = oRequest.request()
-        else:
-            xbmc.log('No second unlock url')
-            
-        #dernier en date(comme fastcontentdelivery)   
-        sPattern = 'src="(\/\/.+?sidead\.js\?.+)"'
-        aResult = re.findall(sPattern,sHtmlContent)
-        if aResult:
-            UnlockUrl = 'http:' + aResult[0]
-            xbmc.log('unlock 3 url' + UnlockUrl)
-            oRequest = cRequestHandler(UnlockUrl)
-            sHtmlContent = oRequest.request()
-        else:
-            xbmc.log('No 3e unlock url')
-            
+        LoadLinks(sHtmlContent)
+        if not UnlockUrl():
+            xbmc.log('No special unlock url')
+            return False,False
+               
         #get the page
         sHtmlContent = self.GetRedirectHtml(web_url,sId,True)
         
@@ -388,7 +408,7 @@ class cHoster(iHoster):
             else:
                 return False,False           
             
-            #xbmc.log(sHtmlContent)
+            xbmc.log(sHtmlContent)
   
         #decodage classique
         sPattern = '{file:"([^",]+)",label:"([^"<>,]+)"}'

@@ -34,7 +34,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Nouveautées', 'replay.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Liste des émissions', 'replay.png', oOutputParameterHandler)
@@ -83,7 +83,7 @@ def showGenre():
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle , 'replay.png', oOutputParameterHandler)
-                
+
             cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
@@ -114,7 +114,7 @@ def showListe():
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle , 'replay.png', oOutputParameterHandler)
-                
+
             cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
@@ -189,8 +189,8 @@ def checkforHoster(sHosterUrl):
             return 'http://easyvid.org/embed-' + code.group(2) + '.html'            
         elif 'rutube' in sHosterUrl:    
             return 'http://rutube.ru/play/embed/' + code.group(2)        
-        elif 'vidlox' in sHosterUrl:    
-            return 'http://vidlox.tv/' + code.group(2)
+        #elif 'vidlox' in sHosterUrl:    # hs pour le moment
+            #return 'http://vidlox.tv/' + code.group(2)
         elif 'streammoe' in sHosterUrl:    
             return 'https://stream.moe/embed-' + code.group(2) + '.html'
         elif 'playernaut' in sHosterUrl or 'rapidvideo' in sHosterUrl:    
@@ -216,7 +216,7 @@ def checkforHoster(sHosterUrl):
             code = re.search('/plyr/.+?//uptobox.com/([^"]+)',sHosterUrl)
             if code:
                 return 'https://uptobox.com/' + code.group(1)
-            
+    
 def showHosters(): 
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -226,25 +226,48 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    #1
-    sPattern = '<option value="([^"]+)"'
-    aResult1 = re.findall(sPattern, sHtmlContent)
-    #2
-    sPattern = '<iframe.+?src="([^"]+)" style=".+?".+?<\/iframe>'
-    aResult2 = re.findall(sPattern, sHtmlContent)
     
-    aResult = []
-    aResult = list(set(aResult1 + aResult2)) #pas de doublons
-    if (aResult):
-        for aEntry in aResult:
-            sHosterUrl = checkforHoster(str(aEntry))
+    #integrale saison
+    oParser = cParser()
+    sPattern = '<div class="img-short"><img src="([^"]+)".+?<a href="([^"]+)">([^<]+)<\/a>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+                
+            sThumb = aEntry[0]
+            sUrl = aEntry[1]
+            sTitle = aEntry[2]
 
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-            if (oHoster != False):
-                oHoster.setDisplayName(sDisplayTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'replay.png',  sThumb,  '', oOutputParameterHandler)
+    else:        
+        #1
+        sPattern = '<option value="([^"]+)"'
+        aResult1 = re.findall(sPattern, sHtmlContent)
+        #2
+        sPattern = '<iframe.+?src="([^"]+)" style=".+?".+?<\/iframe>'
+        aResult2 = re.findall(sPattern, sHtmlContent)
+    
+        aResult = []
+        aResult = list(set(aResult1 + aResult2)) #pas de doublons
+        if (aResult):
+            for aEntry in aResult:
+                sHosterUrl = checkforHoster(str(aEntry))
+
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
     oGui.setEndOfDirectory()
