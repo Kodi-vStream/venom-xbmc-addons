@@ -39,6 +39,9 @@ class cRequestHandler:
         self.__timeout = valeur    
 
     def addHeaderEntry(self, sHeaderKey, sHeaderValue):
+        for sublist in self.__aHeaderEntries:
+            if sHeaderKey in sublist:
+                self.__aHeaderEntries.remove(sublist)
         aHeader = {sHeaderKey : sHeaderValue}
         self.__aHeaderEntries.append(aHeader)
 

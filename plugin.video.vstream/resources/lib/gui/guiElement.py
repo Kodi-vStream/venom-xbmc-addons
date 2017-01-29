@@ -26,6 +26,8 @@ class cGuiElement:
         self.__sFileName = ''
         self.__sDescription = ''
         self.__sThumbnail = ''
+        self.__Season = ''
+        self.__Episode = ''
         self.__sIcon = self.DEFAULT_FOLDER_ICON
         self.__sFanart = self.__sRootArt+'fanart.jpg'
         
@@ -154,8 +156,9 @@ class cGuiElement:
         string = re.search('(?i)(s(?:[a-z]+son\s?)*([0-9]+))', str(sTitle))
         if string:
             sTitle = sTitle.replace(string.group(1),'')
-            sTitle = "%s [COLOR coral]S%02d[/COLOR]"%(sTitle, int(string.group(2)))
-            self.addItemValues('Season', string.group(2))
+            self.__Season = ("%02d" % int(string.group(2)))
+            sTitle = "%s [COLOR coral]S%s[/COLOR]"%(sTitle, self.__Season)
+            self.addItemValues('Season', self.__Season)
             return sTitle, True
 
         return sTitle, False
@@ -165,8 +168,9 @@ class cGuiElement:
         string = re.search('(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', str(sTitle))
         if string:
             sTitle = sTitle.replace(string.group(1),'')
-            sTitle = "%s [COLOR coral]E%02d[/COLOR]"%(sTitle, int(string.group(2)))
-            self.addItemValues('Episode', string.group(2))
+            self.__Episode = ("%02d" % int(string.group(2)))
+            sTitle = "%s [COLOR coral]E%s[/COLOR]"%(sTitle, self.__Episode)
+            self.addItemValues('Episode', self.__Episode)
             return sTitle, True
 
         return sTitle, False
@@ -405,13 +409,16 @@ class cGuiElement:
             grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
             args = (sType, self.__sFileName)
             kwargs = {}
-            if (self.__TmdbId) or (self.__Year):
-                if (self.__ImdbId):
-                    kwargs['imdb_id'] = self.__ImdbId
-                if (self.__TmdbId):
-                    kwargs['tmdb_id'] = self.__TmdbId
-                if (self.__Year):
-                    kwargs['year'] =  self.__Year
+            if (self.__ImdbId):
+                kwargs['imdb_id'] = self.__ImdbId
+            if (self.__TmdbId):
+                kwargs['tmdb_id'] = self.__TmdbId
+            if (self.__Year):
+                kwargs['year'] =  self.__Year
+            if (self.__Season):
+                kwargs['season'] =  self.__Season
+            if (self.__Episode):
+                kwargs['episode'] =  self.__Episode
             meta = grab.get_meta(*args, **kwargs)
             
         else :

@@ -11,6 +11,8 @@ import xbmcgui
 from resources.lib.packer import cPacker
 import xbmc
 
+#Remarque : meme code que vodlocker
+
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 #UA = 'Nokia7250/1.0 (3.14) Profile/MIDP-1.0 Configuration/CLDC-1.0'
 
@@ -36,24 +38,24 @@ def ASCIIDecode(string):
 
     return ret
 
-def GetHtml(url):
-    headers8 = {
-    'User-Agent': UA,
-    'Referer':'https://www.flashx.tv/dl?playthis'
-    }
-    request = urllib2.Request(url,None,headers8)
+def GetHtml(url,headers):
+    request = urllib2.Request(url,None,headers)
     reponse = urllib2.urlopen(request)
     sCode = reponse.read()
     reponse.close()                
     return sCode
     
 def UnlockUrl():
-    code = GetHtml('https://www.flashx.tv/js/code.js')
+    headers9 = {
+    'User-Agent': UA,
+    'Referer':'https://www.flashx.tv/dl?playthis'
+    }
+    code = GetHtml('https://www.flashx.tv/js/code.js',headers9)
     aResult = re.search("!= null\){\s*\$.get\('(.+?)', *{(.+?): *'(.+?)'}",code,re.DOTALL)
     if aResult:
         url = aResult.group(1)+ '?' + aResult.group(2) + '=' + aResult.group(3)
-        xbmc.log(url)
-        #GetHtml(url)
+        #xbmc.log(url)
+        GetHtml(url,headers9)
         return True
     return False
 
