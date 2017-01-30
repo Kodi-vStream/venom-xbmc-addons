@@ -6,13 +6,13 @@ rtmp://iptv.livetv.tn/live/ch5041?code=ea3050dac0b8133
 [REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_2%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
 
 #EXTINF:-1 tvg-id="FRA3.kazer.org" tvg-name="France 3" tvg-logo="france3.png" group-title="Group 3",France 3
-http://live.francetv.fr/simulcast/France_3/hls_v1/index.m3u8
+[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_3%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
 
 #EXTINF:-1 tvg-id="FRA4.kazer.org" tvg-name="France 4" tvg-logo="france4.png" group-title="Group 4",France 4
-http://live.francetv.fr/simulcast/France_4/hls_v1/index.m3u8
+[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_4%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
 
 #EXTINF:-1 tvg-id="FRA5.kazer.org" tvg-name="France 5" tvg-logo="france5.png" group-title="Group 5",France 5
-http://live.francetv.fr/simulcast/France_5/hls_v1/index.m3u8
+[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_5%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
 
 #EXTINF:-1 tvg-id="ART1.kazer.org" tvg-name="Arte" tvg-logo="arte.png" group-title="Group 14",Arte
 http://artelive-lh.akamaihd.net/i/artelive_fr@344805/master.m3u8
