@@ -207,8 +207,8 @@ class cTMDb:
         [arr.append(obj(**res)) for res in result['results']]
         return arr
 
-    #cherche dans les films l'id par le nom return ID ou FALSE
-    def get_movie_idbyname(self, name, year='', page=1):
+    #cherche dans les films ou serie l'id par le nom return ID ou FALSE
+    def get_idbyname(self, name, year='', type='movie', page=1):
     
         meta = {}
         
@@ -217,7 +217,7 @@ class cTMDb:
         else:
             term = name
             
-        meta = self._call('search/movie', 'query=' + quote_plus(term) + '&page=' + str(page))
+        meta = self._call('search/'+str(type), 'query=' + quote_plus(term) + '&page=' + str(page))
         #teste sans l'année
         if 'errors' not in meta:
             if meta and meta['total_results'] == 0 and year:
@@ -234,29 +234,6 @@ class cTMDb:
             
         return False
      
-    #cherche dans les series l'id par le nom return ID ou FALSE
-    def get_tvshow_idbyname(self, name, year='', page=1):
-    
-        meta = {}
-        
-        if year:
-            term = name + '&year=' + year
-        else:
-            term = name
-        meta = self._call('search/tv', 'query=' + quote_plus(term) + '&page=' + str(page))
-        if 'errors' not in meta:
-            if meta and meta['total_results'] == 0 and year:
-                    meta = self.get_tvshow_idbyname(name,'')  
-            #cherche 1 seul resultat
-            if meta and meta['total_results'] != 0 and meta['results']:
-                tmdb_id = meta['results'][0]['id'] 
-                return tmdb_id
-            else:
-                return False
-        else:
-            return False
-            
-        return False
     # Search for movies by title.
     def search_movie_name(self, name, year='', page=1):
     

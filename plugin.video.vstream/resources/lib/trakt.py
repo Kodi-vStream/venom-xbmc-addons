@@ -880,8 +880,37 @@ class cTrakt:
             oGuiElement.addItemValues(key, value)
 
         return
-    
     def getTmdbID(self,sTitle,sType):
+    
+        oInputParameterHandler = cInputParameterHandler()
+        
+        from resources.lib.tmdb import cTMDb
+        grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
+        
+        if sType == 'show' or sType == 'shows':
+            sType = 'tv'
+            
+        if sType == 'movies':
+            sType = 'movie'
+            
+        meta = 0
+        annee = ''
+        #on cherche l'annee
+        r = re.search('(\([0-9]{4}\))', sTitle)
+        if r:
+            annee = str(r.group(0))
+            sTitle = sTitle.replace(annee,'')     
+            
+        # xbmc.log('Recherche de : ' + sTitle)
+        # xbmc.log('Saison/episode : ' + SaisonEpisode)
+        # xbmc.log('Annee : ' + annee)
+        # xbmc.log('Type : ' + sType)
+        
+        meta = grab.get_idbyname(oInputParameterHandler.getValue('sFileName'), annee, sType)
+
+        return int(meta)
+        
+    def getTmdbID_old(self,sTitle,sType):
         
         if sType == 'show' or sType == 'shows':
             sType = 'tv'
