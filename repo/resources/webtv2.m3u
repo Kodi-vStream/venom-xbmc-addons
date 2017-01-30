@@ -42,7 +42,7 @@ https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/six_ter_hls_aes/six_
 http://stream-04.vty.dailymotion.com/41/dm/1/x13p3qi/live.isml/events(live-1481528675)/live-audio=128000-video=1200000.m3u8
 
 #EXTINF:-1 tvg-id="FRA1.kazer.org" tvg-name="France O" tvg-logo="franceo.png" group-title="Group 65",France O
-http://live.francetv.fr/simulcast/France_O/hls_v1/index.m3u8
+[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_O%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
 
 #EXTINF:-1 tvg-id="ITL1.kazer.org" tvg-name="I Télé" tvg-logo="itele.png" group-title="Group 102",I Télé
 http://hls-live-m6-l3.canal-plus.com/live/hls/itele-clair-hd-andr7/and-hd-clair/itele-clair-hd-video=3400000-audio_AACL_fra_96000_127=96000.m3u8
@@ -72,7 +72,7 @@ http://bfmlive-i.akamaihd.net/hls/live/214272/bfmbusiness/01.m3u8
 http://stream-05.vty.dailymotion.com/03/dm/1/xgz4t1/live.isml/live.m3u8?e=1481717339&st=a1XpjcKpecGgX2oqjn4q0A#cell=lvty&comment=QOEP2P
 
 #EXTINF:-1 tvg-id="GUL1.kazer.org" tvg-name="Gulli" tvg-logo="gulli.png" group-title="Group 165",Gulli
-http://vipwowza.yacast.net/gulli_live/_definst_/mp4:gulli_850/playlist.m3u8
+[REGEX]file: '([^']+master.m3u8)'[URL]http://replay.gulli.fr/jwplayer/embedstreamtv
 
 #EXTINF:-1 tvg-id="ZOU1.kazer.org" tvg-name="Zouzous" tvg-logo="zouzous.png" group-title="Group 205",Zouzous
 http://medias2.francetv.fr/playlists/zouzous/zouzous_tablettes.m3u8

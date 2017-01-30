@@ -401,6 +401,8 @@ class cGui():
         #    return
         oOutputParameterHandler.addParameter('sImdbId', oGuiElement.getImdbId())
         oOutputParameterHandler.addParameter('sTmdbId', oGuiElement.getTmdbId())
+        #ajout de filename netoyage deja fait
+        oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
         
         sType = cGui.CONTENT.replace('tvshows', 'shows')
         oOutputParameterHandler.addParameter('sType', sType)
