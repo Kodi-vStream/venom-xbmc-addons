@@ -310,16 +310,16 @@ class cConfig():
         
         if num == "1":
             try:
-                from metahandler import metahandlers
-                grab = metahandlers.MetaData(preparezip=False, tmdb_api_key=self.getSetting('api_tmdb'))
+                from resources.lib.tmdb import cTMDb
+                grab = cTMDb(api_key=self.getSetting('api_tmdb'))
                 meta = grab.get_meta('movie',sFileName)
             except:         
                 xbmc.executebuiltin("Action(Info)")
                 return
         elif num == "2":
             try:
-                from metahandler import metahandlers
-                grab = metahandlers.MetaData(preparezip=False, tmdb_api_key=self.getSetting('api_tmdb'))
+                from resources.lib.tmdb import cTMDb
+                grab = cTMDb(api_key=self.getSetting('api_tmdb'))
                 meta = grab.get_meta('tvshow',sFileName)
             except:
                 xbmc.executebuiltin("Action(Info)")
