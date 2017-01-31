@@ -189,8 +189,8 @@ def checkforHoster(sHosterUrl):
             return 'http://easyvid.org/embed-' + code.group(2) + '.html'            
         elif 'rutube' in sHosterUrl:    
             return 'http://rutube.ru/play/embed/' + code.group(2)        
-        #elif 'vidlox' in sHosterUrl:    # hs pour le moment
-            #return 'http://vidlox.tv/' + code.group(2)
+        elif 'vidlox' in sHosterUrl:
+            return 'http://vidlox.tv/' + code.group(2)
         elif 'streammoe' in sHosterUrl:    
             return 'https://stream.moe/embed-' + code.group(2) + '.html'
         elif 'playernaut' in sHosterUrl or 'rapidvideo' in sHosterUrl:    
