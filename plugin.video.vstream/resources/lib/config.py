@@ -80,6 +80,7 @@ class cConfig():
             self.__sFanart = os.path.join(self.__oPath,'resources','art','fanart.jpg')
             self.__sFileFav = os.path.join(self.__oCache,'favourite.db')
             self.__sFileDB = os.path.join(self.__oCache,'vstream.db')
+            self.__sFileCache = os.path.join(self.__oCache,'video_cache.db')
 
 
     def isDharma(self):
@@ -108,6 +109,9 @@ class cConfig():
     
     def getFileDB(self):
         return self.__sFileDB
+        
+    def getFileCache(self):
+        return self.__sFileCache
 
     def getFileIcon(self):
         return self.__sIcon

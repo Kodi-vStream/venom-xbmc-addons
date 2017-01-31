@@ -5,7 +5,6 @@
 from resources.lib.config import cConfig
 
 import json, os, copy
-import pprint
 from urllib import quote_plus, urlopen, urlencode
 import xbmc
 
@@ -27,7 +26,7 @@ class cTMDb:
         self.lang = lang
         self.poster = 'https://image.tmdb.org/t/p/%s' % cConfig().getSetting('poster_tmdb')
         self.fanart = 'https://image.tmdb.org/t/p/%s'  % cConfig().getSetting('backdrop_tmdb')
-        self.cache = os.path.join(cConfig().getSettingCache(),'video_cache.db')
+        self.cache = cConfig().getFileCache()
         
         try:
             if not os.path.exists(self.cache):
@@ -144,69 +143,6 @@ class cTMDb:
             self.dbcon.close()
         except: pass
 
-    # Get the user reviews for a movie
-    def get_movie_reviews(self, id, page=1):
-        arr = []
-        result = self._call('movie/%s/reviews' % id, 'page=' + str(page))
-        [arr.append(obj(**res)) for res in result['results']]
-        return arr
-
-    def get_movie_lists(self, id, page=1):
-        arr = []
-        result = self._call('movie/%s/lists' % id, 'page=' + str(page))
-        [arr.append(obj(**res)) for res in result['results']]
-        return arr
-
-    def get_movie_videos(self, id, page=1):
-        arr = []
-        result = self._call('movie/%s/videos' % id, 'page=' + str(page))
-        [arr.append(obj(**res)) for res in result['results']]
-        return arr
-
-    def get_movie_recommendations(self, movie_id, page=1):
-        arr = []
-        result = self._call('movie/%s/recommendations' % movie_id, 'page=' + str(page))
-        [arr.append(obj(**res)) for res in result['results']]
-        return arr
-
-    def discover_movies(self, params):
-        arr = []
-        result = self._call('discover/movie/', urlencode(params))
-        [arr.append(obj(**res)) for res in result['results']]
-        return arr
-
-    def discover_tv_shows(self, params):
-        arr = []
-        result = self._call('discover/tv/', urlencode(params))
-        [arr.append(obj(**res)) for res in result['results']]
-        return arr
-
-    # Get the latest movie id.
-    def get_latest_movie(self):
-        return obj(**self._call('movie/latest', ''))
-
-    # Get the list of movies playing that have been, or are being released this week. This list refreshes every day.
-    def now_playing(self, page=1):
-        arr = []
-        result = self._call('movie/now_playing', 'page=' + str(page))
-        [arr.append(obj(**res)) for res in result['results']]
-        return arr
-
-    # Get the list of top rated movies. By default, this list will only include movies that have 50 or more votes.
-    # This list refreshes every day.
-    def top_rated(self, page=1):
-        arr = []
-        result = self._call('movie/top_rated', 'page=' + str(page))
-        [arr.append(obj(**res)) for res in result['results']]
-        return arr
-
-    # Get the list of upcoming movies by release date. This list refreshes every day.
-    def upcoming(self, page=1):
-        arr = []
-        result = self._call('movie/upcoming', 'page=' + str(page))
-        [arr.append(obj(**res)) for res in result['results']]
-        return arr
-
     #cherche dans les films ou serie l'id par le nom return ID ou FALSE
     def get_idbyname(self, name, year='', type='movie', page=1):
     
@@ -296,55 +232,6 @@ class cTMDb:
     def search_tvshow_id(self, show_id, append_to_response="append_to_response=external_ids,credits"):
         result = self._call('tv/' + str(show_id), append_to_response)
         return result
-        
-        
-    # Get the similar movies for a specific movie id.
-    def similar(self, id, page=1):
-        arr = []
-        result = self._call('movie/' + str(id) + '/similar', 'page=' + str(page))
-        [arr.append(obj(**res)) for res in result['results']]
-        return arr
-
-
-
-    # Get the latest TV show id.
-    def get_latest_tv_show(self):
-        return obj(**self._call('tv/latest', ''))
-
-    # Get the similar TV shows for a specific tv id.
-    def similar_shows(self, id, page=1):
-        arr = []
-        result = self._call('tv/' + str(id) + '/similar', 'page=' + str(page))
-        [arr.append(obj(**res)) for res in result['results']]
-        return arr
-
-    # Get the list of popular TV shows. This list refreshes every day.
-    def popular_shows(self, page=1):
-        arr = []
-        result = self._call('tv/popular', 'page=' + str(page))
-        [arr.append(obj(**res)) for res in result['results']]
-        return arr
-
-    # Get the list of top rated TV shows.
-    # By default, this list will only include TV shows that have 2 or more votes.
-    # This list refreshes every day.
-
-    def top_rated_shows(self, page=1):
-        arr = []
-        result = self._call('tv/top_rated', 'page=' + str(page))
-        [arr.append(obj(**res)) for res in result['results']]
-        return arr
-
-    # Get the general person information for a specific id.
-    def get_person(self, id):
-        return obj(**self._call('person/' + str(id), ''))
-
-    # Search for people by name.
-    def search_person(self, term, page=1):
-        arr = []
-        result = self._call('search/person', 'query=' + quote_plus(term) + '&page=' + str(page))
-        [arr.append(obj(**res)) for res in result['results']]
-        return arr
       
     def __set_playcount(self, overlay):
         if int(overlay) == 7:
@@ -352,7 +239,6 @@ class cTMDb:
         else:
             return 0
      
-        
     def _format(self, meta, name):
         _meta = {}            
         _meta['imdb_id'] = ''
@@ -672,10 +558,7 @@ class cTMDb:
 
     def _call(self, action, append_to_response):
         url = '%s%s?api_key=%s&%s&language=%s' % (self.URL, action, self.api_key, append_to_response, self.lang)
-        xbmc.log(url)
+        #xbmc.log(url)
         response = urlopen(url)
         data = json.loads(response.read())
-        if self.debug:
-            pprint.pprint(data)
-            print 'URL: ' + url
         return data

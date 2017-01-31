@@ -59,8 +59,10 @@ class cClear:
                 
                 cached_fav = cConfig().getFileFav()
                 cached_DB = cConfig().getFileDB()
+                cached_Cache = cConfig().getFileCache()
                 self.ClearDir2(xbmc.translatePath(cached_fav),True)
                 self.ClearDir2(xbmc.translatePath(cached_DB),True)
+                self.ClearDir2(xbmc.translatePath(cached_Cache),True)
                 xbmc.executebuiltin("XBMC.Notification(Clear Addon Cache,Successful,5000,"")")
             return
 
