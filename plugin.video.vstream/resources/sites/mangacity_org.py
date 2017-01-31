@@ -514,6 +514,8 @@ def showHosters():
             else:
                 if re.match(".+?&#[0-9]+;", aEntry[0]):#directe mais codé html
                     sHosterUrl = cUtil().unescape(aEntry[0])
+                if 'footerpub' in sHosterUrl:
+                        continue
                 else:#directe en clair
                     sHosterUrl = str(aEntry[0])
                 #Ces liens sont tjours des liens
@@ -545,7 +547,7 @@ def showHosters():
             sPattern = '(http:\/\/www.ianime.tv\/[0-9a-zA-Z_-]+\.asx)'
             aResult = oParser.parse(sHosterUrl, sPattern)
             if aResult[0] :
-                xbmc.log( 'Lien Aasx :' + str(sHosterUrl)) 
+                #xbmc.log( 'Lien Aasx :' + str(sHosterUrl)) 
                 #on telecharge la page
                 oRequestHandler = cRequestHandler(sHosterUrl )
                 oRequestHandler.addHeaderEntry('Referer',sUrl)
