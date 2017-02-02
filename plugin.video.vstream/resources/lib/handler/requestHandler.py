@@ -16,6 +16,7 @@ class cRequestHandler:
         self.__sRealUrl = ''
         self.__cType = 0
         self.__aParamaters = {}
+        self.__aParamatersLine = ''
         self.__aHeaderEntries = []
         self.removeBreakLines(True)
         self.removeNewLines(True)
@@ -47,6 +48,9 @@ class cRequestHandler:
 
     def addParameters(self, sParameterKey, mParameterValue):
         self.__aParamaters[sParameterKey] = mParameterValue
+        
+    def addParametersLine(self, mParameterValue):
+        self.__aParamatersLine = mParameterValue
         
     #egg addMultipartFiled('sess_id':sId,'upload_type':'url','srv_tmp_url':sTmp)
     def addMultipartFiled(self,fields ):
@@ -90,7 +94,10 @@ class cRequestHandler:
         self.addHeaderEntry('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.7')
 
     def __callRequest(self):
-        sParameters = urllib.urlencode(self.__aParamaters)
+        if self.__aParamatersLine:
+            sParameters = self.__aParamatersLine
+        else:
+            sParameters = urllib.urlencode(self.__aParamaters)
 
         if (self.__cType == cRequestHandler.REQUEST_TYPE_GET):
             if (len(sParameters) > 0):
@@ -202,4 +209,4 @@ def __randy_boundary(length=10,reshuffle=False):
         random.shuffle(boundary_string)
     else:
         pass
-    return ''.join(boundary_string) 
+    return ''.join(boundary_string)
