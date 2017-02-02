@@ -292,10 +292,10 @@ class cTMDb:
                      _meta['studio'] += studio['name']
                 else:
                     _meta['studio'] += ' / '+studio['name']
-                    
-        if 'genres' in meta:
+                 
+        if 'genre' in meta:
             _meta['genre'] = ""
-            for genre in meta['genres']:
+            for genre in eval(meta['genre']):
                 if _meta['genre'] == "":
                      _meta['genre'] += genre['name']
                 else:
