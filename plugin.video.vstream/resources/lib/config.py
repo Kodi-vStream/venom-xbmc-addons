@@ -304,9 +304,6 @@ class cConfig():
                 xbmc.executebuiltin("Action(Info)")      
             return
         
-        if self.getSetting('meta-view') == 'true':
-            xbmc.executebuiltin("Action(Info)")
-            return
         
         if num == "1":
             try:
@@ -352,10 +349,20 @@ class cConfig():
             def onInit(self):
                 #par default le resumer#                    
                 self.getControl(50).setVisible(False)
+                self.getControl(50).reset()
+                listitems = []
+                try:
+                    for a, r, i in meta['cast']:
+                        listitem = xbmcgui.ListItem(label = a, label2=r, iconImage=i)
+                    #listitem.setInfo('video', {'Title': 'test', 'RatingAndVotes':'6.8'})
+                    #listitem.setProperty('RatingAndVotes', '6.2')
+                        listitems.append(listitem)
+                    self.getControl(50).addItems(listitems)
+                except: pass
                 #title
                 #self.getControl(1).setLabel(meta['title'])
                 meta['title'] = sTitle
-                
+
                 self.getControl(49).setVisible(True)
                 #self.getControl(2).setImage(meta['cover_url'])
                 #self.getControl(3).setLabel(meta['rating'])
@@ -364,19 +371,7 @@ class cConfig():
                     if isinstance(meta[e], unicode):
                         xbmcgui.Window(10000).setProperty(property, meta[e].encode('utf-8'))
                     else:
-                        if (property == "ListItem.cast"):
-                            cast = ''
-                            try:
-                                for real, act in meta[e]:
-                                    cast += real+' est '+act+',  ' 
-                                xbmcgui.Window(10000).setProperty(property, cast.encode('utf-8'))
-                            except:
-                                for act in meta[e]:
-                                    cast += act+', '
-                                xbmcgui.Window(10000).setProperty(property, str(cast))
-                                
-                        else:
-                            xbmcgui.Window(10000).setProperty(property, str(meta[e]))
+                        xbmcgui.Window(10000).setProperty(property, str(meta[e]))
                 
                 
 
@@ -393,9 +388,13 @@ class cConfig():
                     self.getControl(50).setVisible(False)
                     self.getControl(400).setVisible(True)
                     return
-                elif controlId == 15:
+                elif controlId == 11:
+                    self.close()
                     return
-                self.close()
+                elif controlId == 30:
+                    self.close()
+                    return
+                #self.close()
 
             def onFocus(self, controlId):
                 self.controlId = controlId
@@ -404,7 +403,7 @@ class cConfig():
                 self.close()
 
             def onAction( self, action ):
-                if action.getId() in ( 9, 10, 92, 216, 247, 257, 275, 61467, 61448, ):
+                if action.getId() in ( 9, 10, 11, 30, 247, 257, 275, 61467, 61448, ):
                     self.close()
           
         wd = XMLDialog('DialogInfo.xml', self.__oPath, 'default', '720p')
