@@ -15,7 +15,6 @@ from resources.lib.util import cUtil
 import urllib, unicodedata, re
 import xbmcgui
 import xbmc
-from resources.lib.tmdb import cTMDb
 
 try:    import json
 except: import simplejson as json
@@ -45,46 +44,44 @@ FANART_URL = 'https://image.tmdb.org/t/p/w1280'
 #viewmode = 503 Film + Information
 #viewmode = 50  Liste
 
-grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
-
 
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'movie/popular')
+    oOutputParameterHandler.addParameter('siteUrl', API_URL+'/movie/popular')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Populaires', 'comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'movie/now_playing')
+    oOutputParameterHandler.addParameter('siteUrl', API_URL+'/movie/now_playing')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films en salle', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'movie/top_rated')
+    oOutputParameterHandler.addParameter('siteUrl', API_URL+'/movie/top_rated')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films les mieux notés', 'notes.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'genre/movie/list')
+    oOutputParameterHandler.addParameter('siteUrl', API_URL+'/genre/movie/list')
     oGui.addDir(SITE_IDENTIFIER, 'showGenreMovie', 'Films Genres', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'tv/popular')
+    oOutputParameterHandler.addParameter('siteUrl', API_URL+'/tv/popular')
     oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries Populaires', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'tv/on_the_air')
+    oOutputParameterHandler.addParameter('siteUrl', API_URL+'/tv/on_the_air')
     oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries a la tv', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'tv/top_rated')
+    oOutputParameterHandler.addParameter('siteUrl', API_URL+'/tv/top_rated')
     oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries les mieux notés', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'genre/tv/list')
+    oOutputParameterHandler.addParameter('siteUrl', API_URL+'/genre/tv/list')
     oGui.addDir(SITE_IDENTIFIER, 'showGenreTV', 'Séries Genres', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'person/popular')
+    oOutputParameterHandler.addParameter('siteUrl', API_URL+'/person/popular')
     oGui.addDir(SITE_IDENTIFIER, 'showActors', 'Acteurs Populaires', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -92,11 +89,11 @@ def load():
     oGui.addDir('topimdb', 'load', 'Top Imdb', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'search/movie')
+    oOutputParameterHandler.addParameter('siteUrl', API_URL+'/search/movie')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche de film', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'search/tv')
+    oOutputParameterHandler.addParameter('siteUrl', API_URL+'/search/tv')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchSerie', 'Recherche de serie', 'series.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
@@ -106,7 +103,8 @@ def showSearchMovie():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        showMovies(sSearchText)
+        sUrl = API_URL+'/search/movie?query=' + sSearchText
+        showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
         
@@ -115,7 +113,8 @@ def showSearchSerie():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        showSeries(sSearchText)
+        sUrl = API_URL+'/search/tv?query=' + sSearchText
+        showSeries(sUrl)
         oGui.setEndOfDirectory()
         return
         
@@ -125,22 +124,20 @@ def showGenreMovie():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    # oRequestHandler = cRequestHandler(sUrl)
-    # oRequestHandler.addParameters('api_key', API_KEY)
-    # oRequestHandler.addParameters('language', 'fr')
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addParameters('api_key', API_KEY)
+    oRequestHandler.addParameters('language', 'fr')
     
-    # sHtmlContent = oRequestHandler.request(); 
-    # result = json.loads(sHtmlContent) 
-    result = grab.getUrl(sUrl)
+    sHtmlContent = oRequestHandler.request(); 
+    result = json.loads(sHtmlContent)       
 
-    #total = len(sHtmlContent)
-    total = len(result)
+    total = len(sHtmlContent)
     if (total > 0):
         for i in result['genres']:
             sId, sTitle = i['id'], i['name']
 
             sTitle = sTitle.encode("utf-8")
-            sUrl = 'genre/'+str(sId)+'/movies'
+            sUrl = API_URL+'/genre/'+str(sId)+'/movies'
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', str(sTitle), 'genres.png', oOutputParameterHandler)
@@ -153,27 +150,23 @@ def showGenreTV():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    # oRequestHandler = cRequestHandler(sUrl)
-    # oRequestHandler.addParameters('api_key', API_KEY)
-    # oRequestHandler.addParameters('language', 'fr')
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addParameters('api_key', API_KEY)
+    oRequestHandler.addParameters('language', 'fr')
     
-    # sHtmlContent = oRequestHandler.request(); 
-    # result = json.loads(sHtmlContent) 
-    result = grab.getUrl(sUrl)    
+    sHtmlContent = oRequestHandler.request(); 
+    result = json.loads(sHtmlContent)       
 
-    #total = len(sHtmlContent)
-    total = len(result)
+    total = len(sHtmlContent)
     if (total > 0):
         for i in result['genres']:
             sId, sTitle = i['id'], i['name']
 
             sTitle = sTitle.encode("utf-8")
             #sUrl = API_URL+'/genre/'+str(sId)+'/tv'
-            sUrl = 'discover/tv'
-            xbmc.log(sUrl)
+            sUrl = API_URL+'/discover/tv?with_genres=' + str(sId)
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('genre', str(sId))
             oGui.addDir(SITE_IDENTIFIER, 'showSeries', str(sTitle), 'genres.png', oOutputParameterHandler)
            
     oGui.setEndOfDirectory()
@@ -183,21 +176,28 @@ def showMovies(sSearch = ''):
     
     oInputParameterHandler = cInputParameterHandler()
     
+    if sSearch:
+        sUrl = sSearch
+
+    else:
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    oGui = cGui()
+
     iPage = 1
     if (oInputParameterHandler.exist('page')):
         iPage = oInputParameterHandler.getValue('page')
-    
-    if sSearch:
-        result = grab.getUrl('search/movie', '', 'query='+sSearch)
-        sUrl = ''
-        
-    else:
-        sUrl = oInputParameterHandler.getValue('siteUrl')        
-        result = grab.getUrl(sUrl, iPage)
+   
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addParameters('api_key', API_KEY)
+    oRequestHandler.addParameters('language', 'fr')
+    oRequestHandler.addParameters('page', iPage)
 
-    oGui = cGui()
-    #total = len(sHtmlContent)
-    total = len(result)
+    sHtmlContent = oRequestHandler.request();
+    result = json.loads(sHtmlContent)
+    
+    total = len(sHtmlContent)
+
     if (total > 0):
         for i in result['results']:
             sId, sTitle, sOtitle, sThumbnail, sFanart = i['id'], i['title'], i['original_title'], i['poster_path'], i['backdrop_path']
@@ -237,27 +237,27 @@ def showMovies(sSearch = ''):
 def showSeries(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
     
+    if sSearch:
+        sUrl = sSearch
+
+    else:
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    oGui = cGui()
+
     iPage = 1
     if (oInputParameterHandler.exist('page')):
         iPage = oInputParameterHandler.getValue('page')
-        
-    if sSearch:
-        result = grab.getUrl('search/tv', '', 'query='+sSearch)
-        sUrl = ''
-        
-    else:
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+   
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addParameters('api_key', API_KEY)
+    oRequestHandler.addParameters('language', 'fr')
+    oRequestHandler.addParameters('page', iPage)
 
-        if (oInputParameterHandler.exist('genre')):
-            term = 'with_genres=' +  oInputParameterHandler.getValue('genre')
-        else : 
-            term = ''
-        
-        result = grab.getUrl(sUrl, iPage, term)
-        
-    oGui = cGui()
-    #total = len(sHtmlContent)
-    total = len(result)
+    sHtmlContent = oRequestHandler.request()
+    result = json.loads(sHtmlContent)
+    
+    total = len(sHtmlContent)
     #print result['results']
     if (total > 0):
         for i in result['results']:
@@ -273,7 +273,7 @@ def showSeries(sSearch=''):
 
             sTitle = sTitle.encode("utf-8")
 
-            sSiteUrl = 'tv/' + str(sId)
+            sSiteUrl = API_URL + '/tv/' + str(sId)
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sSiteUrl)
@@ -282,6 +282,7 @@ def showSeries(sSearch=''):
             oOutputParameterHandler.addParameter('sId', str(sId))
             oOutputParameterHandler.addParameter('sFanart', str(sFanart))
             oOutputParameterHandler.addParameter('sTmdbId', i['id'])
+            oOutputParameterHandler.addParameter('type', 'serie')
             
             oGui.addTVDB(SITE_IDENTIFIER, 'showSeriesSaison', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
             
@@ -315,15 +316,14 @@ def showSeriesSaison():
     
     oGui = cGui()
    
-    # oRequestHandler = cRequestHandler(sUrl)
-    # oRequestHandler.addParameters('api_key', API_KEY)
-    # oRequestHandler.addParameters('language', 'fr')
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addParameters('api_key', API_KEY)
+    oRequestHandler.addParameters('language', 'fr')
 
-    # sHtmlContent = oRequestHandler.request()
-    # result = json.loads(sHtmlContent)
-    result = grab.getUrl(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    result = json.loads(sHtmlContent)
     
-    total = len(result)
+    total = len(sHtmlContent)
     #xbmc.log(str( result ))
     if (total > 0):
         for i in result['seasons']:
@@ -336,7 +336,7 @@ def showSeriesSaison():
 
             sTitle = 'Saison ' + str(SSeasonNum) + ' (' + str(sNbreEp) + ')'
             
-            sUrl = 'tv/' + sId + '/season/' + str(SSeasonNum)
+            sUrl = API_URL+'/tv/' + sId + '/season/' + str(SSeasonNum)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -345,7 +345,8 @@ def showSeriesSaison():
             oOutputParameterHandler.addParameter('sId', sId)
             oOutputParameterHandler.addParameter('sSeason', str(SSeasonNum))
             oOutputParameterHandler.addParameter('sFanart', str(sFanart))
-            oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)           
+            oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
+            oOutputParameterHandler.addParameter('type', 'serie')
             
             oGui.addTVDB(SITE_IDENTIFIER, 'showSeriesEpisode', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
             
@@ -374,15 +375,14 @@ def showSeriesEpisode():
     
     oGui = cGui()
    
-    # oRequestHandler = cRequestHandler(sUrl)
-    # oRequestHandler.addParameters('api_key', API_KEY)
-    # oRequestHandler.addParameters('language', 'fr')
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addParameters('api_key', API_KEY)
+    oRequestHandler.addParameters('language', 'fr')
 
-    # sHtmlContent = oRequestHandler.request()
-    # result = json.loads(sHtmlContent)
-    result = grab.getUrl(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    result = json.loads(sHtmlContent)
     
-    total = len(result)
+    total = len(sHtmlContent)
     #print result['results']
     if (total > 0):
         for i in result['episodes']:
@@ -431,16 +431,15 @@ def showActors():
     if (oInputParameterHandler.exist('page')):
         iPage = oInputParameterHandler.getValue('page')
    
-    # oRequestHandler = cRequestHandler(sUrl)
-    # oRequestHandler.addParameters('api_key', API_KEY)
-    # oRequestHandler.addParameters('language', 'fr')
-    # oRequestHandler.addParameters('page', iPage)
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addParameters('api_key', API_KEY)
+    oRequestHandler.addParameters('language', 'fr')
+    oRequestHandler.addParameters('page', iPage)
 
-    # sHtmlContent = oRequestHandler.request()
-    # result = json.loads(sHtmlContent)
-    result = grab.getUrl(sUrl, iPage)
+    sHtmlContent = oRequestHandler.request()
+    result = json.loads(sHtmlContent)
     
-    total = len(result)
+    total = len(sHtmlContent)
 
     if (total > 0):
         for i in result['results']:
@@ -457,7 +456,7 @@ def showActors():
             
             sName = sName.encode('utf-8')
             
-            oOutputParameterHandler.addParameter('siteUrl', 'person/' + str(i['id']) + '/movie_credits')
+            oOutputParameterHandler.addParameter('siteUrl',API_URL + '/person/' + str(i['id']) + '/movie_credits')
             oGui.addMovieDB(SITE_IDENTIFIER, 'showFilmActor', '[COLOR red]'+str(sName)+'[/COLOR]', '', sThumbnail, '', oOutputParameterHandler)
 
             for e in i['known_for']:
@@ -477,11 +476,12 @@ def showActors():
                     sThumbnail = ''
 
                 #sTitle = sTitle.encode("utf-8")
+
+                oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'none')
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-                oOutputParameterHandler.addParameter('sTmdbId', sId)
+                oOutputParameterHandler.addParameter('sTmdbId', i['id'])
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oOutputParameterHandler.addParameter('type', 'film')
                 
                 oGui.addMovieDB(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sFanart, oOutputParameterHandler)
                 
@@ -505,17 +505,15 @@ def showFilmActor():
     if (oInputParameterHandler.exist('page')):
         iPage = oInputParameterHandler.getValue('page')
    
-    # oRequestHandler = cRequestHandler(sUrl)
-    # oRequestHandler.addParameters('api_key', API_KEY)
-    # oRequestHandler.addParameters('language', 'fr')
-    # oRequestHandler.addParameters('page', iPage)
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addParameters('api_key', API_KEY)
+    oRequestHandler.addParameters('language', 'fr')
+    oRequestHandler.addParameters('page', iPage)
 
-    # sHtmlContent = oRequestHandler.request()
-    # result = json.loads(sHtmlContent)
+    sHtmlContent = oRequestHandler.request()
+    result = json.loads(sHtmlContent)
     
-    result = grab.getUrl(sUrl, iPage)
-    
-    total = len(result)
+    total = len(sHtmlContent)
 
     if (total > 0):
         for i in result['cast']:
@@ -525,7 +523,6 @@ def showFilmActor():
                 sTitle = unicodedata.normalize('NFKD', i['title']).encode('ascii','ignore')
                 
             except: sTitle = "Aucune information"
-            sId = i['id']
                                            
             try:
                 sThumbnail = POSTER_URL+i['poster_path']
@@ -537,19 +534,17 @@ def showFilmActor():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'none')
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('sTmdbId', sId)
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oOutputParameterHandler.addParameter('type', 'film')
             
             oGui.addMovieDB(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
                 
-         #pas de paramettre de page   
-        # if (iPage > 0):
-            # iNextPage = int(iPage) + 1
-            # oOutputParameterHandler = cOutputParameterHandler()
-            # oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            # oOutputParameterHandler.addParameter('page', iNextPage)
-            # oGui.addDir(SITE_IDENTIFIER, 'showFilmActor', '[COLOR teal]Page '+str(iNextPage)+' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            
+        if (iPage > 0):
+            iNextPage = int(iPage) + 1
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('page', iNextPage)
+            oGui.addDir(SITE_IDENTIFIER, 'showFilmActor', '[COLOR teal]Page '+str(iNextPage)+' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
     
