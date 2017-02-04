@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-#johngf
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler 
 from resources.lib.parser import cParser 
 from resources.lib.config import cConfig 
@@ -11,7 +11,7 @@ import xbmcgui
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Vidlox'
+        self.__sDisplayName = 'Vidlox' + ' ' + '[Nécessite Kodi 17]'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
@@ -46,10 +46,9 @@ class cHoster(iHoster):
         return ''
     
     def __getIdFromUrl(self, sUrl):
-        sPattern = 'http://vidlox.tv/([^<]+)'
+        sPattern = 'https*://vidlox.tv/([^<]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-
         if (aResult[0] == True):
             return aResult[1][0]
 
@@ -71,24 +70,23 @@ class cHoster(iHoster):
 
         #recuperation de l'id et reformatage du lien
         id = self.__getIdFromUrl(self.__sUrl)
-        sUrl = 'http://vidlox.tv/' + id
+        sUrl = 'https://vidlox.tv/' + id
 
         oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
-        sPattern =  ',{file:"(.+?)",label:"(.+?)"}'
+        sPattern =  '([^"]+\.mp4)'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True):
             #initialisation des tableaux
             url=[]
-            qua=[]
+            qua=["HD","SD"] #bidouille evite m3u8
             api_call = ''
 
             #Replissage des tableaux
             for i in aResult[1]:
-                url.append(str(i[0]))
-                qua.append(str(i[1]))
+                url.append(str(i))
 
             #Si une seule url
             if len(url) == 1:
@@ -100,11 +98,8 @@ class cHoster(iHoster):
                 ret = dialog2.select('Select Quality',qua)
                 if (ret > -1):
                     api_call = url[ret]
-                else: 
-                    return False, False
-     
-            
-            if (api_call):
-                return True, api_call 
+  
+        if (api_call):
+            return True, api_call 
 
-            return False, False
+        return False, False

@@ -348,7 +348,7 @@ def ShowSpecialHosters():
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            listurl = aResult[1][0].replace('"','').split(',')
+            listurl = aResult[1][0].replace('"','').split(',http')
             listqual = aResult[1][1].replace('"','').split(',')
             
             tab = zip(listurl,listqual)

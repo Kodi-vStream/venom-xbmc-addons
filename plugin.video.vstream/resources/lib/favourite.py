@@ -134,8 +134,16 @@ class cFav:
                     oGuiElement.setSiteName(site)
                     oGuiElement.setFunction(function)
                     oGuiElement.setTitle(title)
+                    oGuiElement.setFileName(title)
                     oGuiElement.setIcon("mark.png")
-                    oGuiElement.setMeta(0)
+                    if (cat  == '1'):
+                        cGui.CONTENT = 'movies'
+                        oGuiElement.setMeta(cat)
+                    elif (cat == '2'):
+                        cGui.CONTENT = 'tvshows'
+                        oGuiElement.setMeta(cat)
+                    else:                    
+                        oGuiElement.setMeta(0)
                     oGuiElement.setThumbnail(thumbnail)
                     oGuiElement.setFanart(fanart)
                     

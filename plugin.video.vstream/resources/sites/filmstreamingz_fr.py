@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 #Venom.
+#04/02/17 desactiver par venom trop de temp de reponse
+return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui

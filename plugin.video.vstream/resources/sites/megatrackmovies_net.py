@@ -174,10 +174,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-    #tPassage en mode vignette sauf en cas de recherche globale
-    if not bGlobal_Search:
-        xbmc.executebuiltin('Container.SetViewMode(500)')
-    
+    #tPassage en mode vignette sauf en cas de recherche globale   
      
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -273,7 +270,7 @@ def showMoviesLinks():
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sCom, oOutputParameterHandler)             
     
         cConfig().finishDialog(dialog)
-    xbmc.executebuiltin('Container.SetViewMode(503)')
+    #xbmc.executebuiltin('Container.SetViewMode(503)')
     oGui.setEndOfDirectory()
    
  

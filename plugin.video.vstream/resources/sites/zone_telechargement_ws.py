@@ -260,11 +260,6 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-    #tPassage en mode vignette sauf en cas de recherche globale
-    if not bGlobal_Search:
-        xbmc.executebuiltin('Container.SetViewMode(500)')
-    
-     
     if not sSearch:
         oGui.setEndOfDirectory()
 
@@ -304,7 +299,7 @@ def showLinks():
 
     
 def showMoviesLinks(sHtmlContent,sUrl):
-    xbmc.log('mode film')
+    #xbmc.log('mode film')
     
     oGui = cGui()
     
@@ -362,7 +357,7 @@ def showMoviesLinks(sHtmlContent,sUrl):
     oGui.setEndOfDirectory()
 
 def showSeriesLinks(sHtmlContent,sUrl):
-    xbmc.log('mode serie')
+    #xbmc.log('mode serie')
     
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -443,7 +438,7 @@ def showSeriesLinks(sHtmlContent,sUrl):
     oGui.setEndOfDirectory()    
  
 def showHosters():# recherche et affiche les hotes
-    xbmc.log('showHosters')
+    #xbmc.log('showHosters')
     
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler() 
@@ -451,7 +446,7 @@ def showHosters():# recherche et affiche les hotes
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumbnail=oInputParameterHandler.getValue('sThumbnail')
     
-    xbmc.log(sUrl)
+    #xbmc.log(sUrl)
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0')
@@ -526,7 +521,7 @@ def showHosters():# recherche et affiche les hotes
     oGui.setEndOfDirectory()
 
 def showSeriesHosters():# recherche et affiche les hotes
-    xbmc.log('showSeriesHosters')
+    #xbmc.log('showSeriesHosters')
     
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler() #apelle l'entree de paramettre
@@ -589,7 +584,7 @@ def showSeriesHosters():# recherche et affiche les hotes
     oGui.setEndOfDirectory()
         
 def Display_protected_link():
-    xbmc.log('Display_protected_link')
+    #xbmc.log('Display_protected_link')
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -703,7 +698,7 @@ def CutPremiumlinks(sHtmlContent):
 
     
 def DecryptDlProtecte(url):
-    xbmc.log('DecryptDlProtecte')
+    #xbmc.log('DecryptDlProtecte')
     
     if not (url): return ''
     #print url

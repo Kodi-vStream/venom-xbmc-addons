@@ -514,7 +514,7 @@ def showHosters():
             else:
                 if re.match(".+?&#[0-9]+;", aEntry[0]):#directe mais codé html
                     sHosterUrl = cUtil().unescape(aEntry[0])
-                    if 'footerpub' in sHosterUrl:
+                if 'footerpub' in sHosterUrl:
                         continue
                 else:#directe en clair
                     sHosterUrl = str(aEntry[0])
@@ -525,7 +525,7 @@ def showHosters():
             #Dans le cas ou l'adresse n'est pas directe,on cherche a l 'extraire
             if not (sHosterUrl[:4] == 'http'):
                 sHosterUrl = ExtractLink(sHosterUrl)
-
+                
             #Si aucun lien on arrette ici
             if not (sHosterUrl):
                 continue
@@ -578,18 +578,31 @@ def showHosters():
                     sHosterUrl = sHosterUrl.replace('http://tinyurl.com/q44uiep/','https://openload.co/')
                 if 'http://tinyurl.com/jp3fg5x' in sHosterUrl:
                     sHosterUrl = sHosterUrl.replace('http://tinyurl.com/jp3fg5x/','http://allmyvideos.net/')
+                if 'http://tinyurl.com/hymuk2f' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/hymuk2f/','http://youwatch.org/')
                 elif 'http://tinyurl.com/lr6ytvj' in sHosterUrl:
                     sHosterUrl = sHosterUrl.replace('http://tinyurl.com/lr6ytvj/','http://netu.tv/')
                 #On va chercher le vrai lien
                 else:
-                    #xbmc.log(sHosterUrl)
-                    headers9 = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0',
-                        'Referer' : URL_MAIN}
-                    request = urllib2.Request(sHosterUrl,None,headers9)
-                    reponse = urllib2.urlopen(request,timeout = 5)
+                    xbmc.log(sHosterUrl)
+                    
+                    class NoRedirection(urllib2.HTTPErrorProcessor):    
+                        def http_response(self, request, response):
+                            return response
+
+                    headers9 = [('User-Agent' , 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'),('Referer',URL_MAIN)]
+                        
+                    opener = urllib2.build_opener(NoRedirection)
+                    opener.addheaders = headers9
+                    reponse = opener.open(sHosterUrl,None,5)
+                    
                     UrlRedirect = reponse.geturl()
+
                     if not(UrlRedirect == sHosterUrl):
                         sHosterUrl = UrlRedirect
+                    elif 'Location' in reponse.headers:
+                        sHosterUrl = reponse.headers['Location']
+                        
                     reponse.close()
             
             #test pr liens raccourcis

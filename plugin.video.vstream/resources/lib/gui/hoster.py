@@ -175,8 +175,6 @@ class cHosterGui:
             return cHosterHandler().getHoster('raptu')
         if ('watchers.to' in sHostName):
             return cHosterHandler().getHoster('watchers')
-        if ('megavideo' in sHostName):
-            return cHosterHandler().getHoster('megavideo')
         if (('videoweed' in sHostName) or ('bitvid' in sHostName)):
             return cHosterHandler().getHoster('videoweed')
         if ('youwatch' in sHostName):
@@ -197,8 +195,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('vk')
         if ('vkcom' in sHostName):
             return cHosterHandler().getHoster('vk')   
-        if ('videomega' in sHostName):
-            return cHosterHandler().getHoster('videomega')
+        #if ('videomega' in sHostName):
+        #    return cHosterHandler().getHoster('videomega')
         if ('vidto' in sHostName):
             return cHosterHandler().getHoster('vidto')
         if ('vidzi' in sHostName):

@@ -28,6 +28,7 @@ URL_LIBRETV = 'http://libretv.me/Liste-m3u/token_Tj1CRNSd/add_item.dat'
 
 #URL_LIBRETV = 'http://libretv.me/Liste-m3u/Liste-anonymes/(PB)Redeneobux(USA).m3u'
 
+UA = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
 
 icon = 'tv.png'        
 sRootArt = cConfig().getRootArt()
@@ -134,116 +135,116 @@ def showWeb():
   
     oGui.setEndOfDirectory()
 
-def showLibreMenu():
-    oGui = cGui()
+# def showLibreMenu():
+    # oGui = cGui()
     
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    # oInputParameterHandler = cInputParameterHandler()
+    # sUrl = oInputParameterHandler.getValue('siteUrl')
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    oOutputParameterHandler.addParameter('sOrder', '2')
-    oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Aujourd\'hui', 'libretv.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    # oOutputParameterHandler.addParameter('sOrder', '2')
+    # oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Aujourd\'hui', 'libretv.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    oOutputParameterHandler.addParameter('sOrder', '1')
-    oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Ce mois-ci', 'libretv.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    # oOutputParameterHandler.addParameter('sOrder', '1')
+    # oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Ce mois-ci', 'libretv.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    oOutputParameterHandler.addParameter('sOrder', '0')
-    oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Anterieur', 'libretv.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', sUrl)
+    # oOutputParameterHandler.addParameter('sOrder', '0')
+    # oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Anterieur', 'libretv.png', oOutputParameterHandler)
 
 
-    oGui.setEndOfDirectory()
+    # oGui.setEndOfDirectory()
 
     
-def showLibre():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sOrder = oInputParameterHandler.getValue('sOrder')
+# def showLibre():
+    # oGui = cGui()
+    # oInputParameterHandler = cInputParameterHandler()
+    # sUrl = oInputParameterHandler.getValue('siteUrl')
+    # sOrder = oInputParameterHandler.getValue('sOrder')
     
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+    # oRequestHandler = cRequestHandler(sUrl)
+    # sHtmlContent = oRequestHandler.request()
 
-    oParser = cParser()
-    sPattern = '<url>([^<>]+?)</url><title>([^<>]+?)</title><order>' + sOrder + '</order><icon>(.+?)</icon>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    # oParser = cParser()
+    # sPattern = '<url>([^<>]+?)</url><title>([^<>]+?)</title><order>' + sOrder + '</order><icon>(.+?)</icon>'
+    # aResult = oParser.parse(sHtmlContent, sPattern)
     
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
+    # if (aResult[0] == True):
+        # total = len(aResult[1])
+        # dialog = cConfig().createDialog(SITE_NAME)
+        # for aEntry in aResult[1]:
+            # cConfig().updateDialog(dialog, total)
+            # if dialog.iscanceled():
+                # break
                 
-            sTitle = aEntry[1]
-            sDate = aEntry[2]
-            sDate = '[' + sDate.split('/')[1] + '/' + sDate.split('/')[0] +'] '
-            sTitle = sDate + sTitle
+            # sTitle = aEntry[1]
+            # sDate = aEntry[2]
+            # sDate = '[' + sDate.split('/')[1] + '/' + sDate.split('/')[0] +'] '
+            # sTitle = sDate + sTitle
             
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            # sDisplayTitle = cUtil().DecoTitle(sTitle)
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oGui.addDirectTV(SITE_IDENTIFIER, 'showLibretv', sDisplayTitle, 'libretv.png' , '', oOutputParameterHandler)    
+            # oOutputParameterHandler = cOutputParameterHandler()
+            # oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
+            # oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            # oGui.addDirectTV(SITE_IDENTIFIER, 'showLibretv', sDisplayTitle, 'libretv.png' , '', oOutputParameterHandler)    
         
-        cConfig().finishDialog(dialog)
+        # cConfig().finishDialog(dialog)
         
-        oGui.setEndOfDirectory()
+        # oGui.setEndOfDirectory()
     
-def showLibretv():
-    oGui = cGui()
+# def showLibretv():
+    # oGui = cGui()
 
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    # oInputParameterHandler = cInputParameterHandler()
+    # sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    playlist = parseLibretvM3U(sUrl)
+    # playlist = parseLibretvM3U(sUrl)
 
-    for track in playlist:
+    # for track in playlist:
         
-        sTitle = track.title
-        sTitle = unicode(sTitle, 'latin-1')#converti en unicode
-        sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
-        sTitle = sTitle.encode( "utf-8")
+        # sTitle = track.title
+        # sTitle = unicode(sTitle, 'latin-1')#converti en unicode
+        # sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
+        # sTitle = sTitle.encode( "utf-8")
             
-        try: 
-            sTitle = urllib.unquote_plus(sTitle)
-        except:
+        # try: 
+            # sTitle = urllib.unquote_plus(sTitle)
+        # except:
 
-            sTitle = 'none'
+            # sTitle = 'none'
             
-        sthumb = str(track.icon)
-        if len(sthumb) > 0:
-            sthumb = 'http://libretv.me/icon/' + sthumb
-        else:
-            sthumb = 'http://libretv.me/icon/libretv.png'
+        # sthumb = str(track.icon)
+        # if len(sthumb) > 0:
+            # sthumb = 'http://libretv.me/icon/' + sthumb
+        # else:
+            # sthumb = 'http://libretv.me/icon/libretv.png'
         
-        sData = str(track.data)
+        # sData = str(track.data)
         
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', str(track.path))
-        oOutputParameterHandler.addParameter('sMovieTitle', str(track.title))
-        oOutputParameterHandler.addParameter('sThumbnail', sthumb)
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('siteUrl', str(track.path))
+        # oOutputParameterHandler.addParameter('sMovieTitle', str(track.title))
+        # oOutputParameterHandler.addParameter('sThumbnail', sthumb)
         
-        #garbage
-        if 'http://touski' in track.path or re.search('[0-9]\.[0-9]\.[0-9].[0-9]', track.path):
-            oGui.addText(SITE_IDENTIFIER, sTitle, oOutputParameterHandler)
-        #real stream
-        elif 'rtmp' in track.path or 'm3u8' in track.path:
-            oGui.addDirectTV(SITE_IDENTIFIER, 'play__', sTitle, sthumb, sthumb, oOutputParameterHandler)
-        #folder
-        elif '.m3u' in track.path : 
-            oGui.addDirectTV(SITE_IDENTIFIER, 'showLibretv', sTitle, sthumb, sthumb, oOutputParameterHandler)  
-        #unknow link, loaded as normal stream
-        else:
-            oGui.addDirectTV(SITE_IDENTIFIER, 'play__', sTitle, sthumb, sthumb, oOutputParameterHandler)
+        # #garbage
+        # if 'http://touski' in track.path or re.search('[0-9]\.[0-9]\.[0-9].[0-9]', track.path):
+            # oGui.addText(SITE_IDENTIFIER, sTitle, oOutputParameterHandler)
+        # #real stream
+        # elif 'rtmp' in track.path or 'm3u8' in track.path:
+            # oGui.addDirectTV(SITE_IDENTIFIER, 'play__', sTitle, sthumb, sthumb, oOutputParameterHandler)
+        # #folder
+        # elif '.m3u' in track.path : 
+            # oGui.addDirectTV(SITE_IDENTIFIER, 'showLibretv', sTitle, sthumb, sthumb, oOutputParameterHandler)  
+        # #unknow link, loaded as normal stream
+        # else:
+            # oGui.addDirectTV(SITE_IDENTIFIER, 'play__', sTitle, sthumb, sthumb, oOutputParameterHandler)
   
-    oGui.setEndOfDirectory()
+    # oGui.setEndOfDirectory()
 
 # import code https://github.com/dvndrsn/M3uParser #
 # David Anderson code thanck's for good job #
@@ -378,11 +379,9 @@ def play__():
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
-    #sUrl = '[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_2%2Fhds%2Findex.m3u8&callback=_jsonp_loader_callback_request_2'
-    #Special url
-    if '[REGEX]' in sUrl:
+    #Special url with tag
+    if '[' in sUrl and ']' in sUrl:
         sUrl = GetRealUrl(sUrl)
-        sUrl = sUrl + '|User-Agent=Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
     
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName(SITE_IDENTIFIER)
@@ -403,23 +402,52 @@ def play__():
         
     oGui.setEndOfDirectory()
     
-def GetRealUrl(url):
-    oParser = cParser()
-    sPattern = '\[REGEX\](.+?)\[URL\](.+$)'
-    aResult = oParser.parse(url, sPattern)
+def GetRealUrl(chain):
     
-    if (aResult):
-        reg = aResult[1][0][0]
-        url2 = aResult[1][0][1]
-        oRequestHandler = cRequestHandler(url2)
-        sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
+    
+    UA2 = UA
+    url = chain
+    regex = ''
+    sHtmlContent = ''
+    
         
-        aResult = oParser.parse(sHtmlContent, reg)
-        if (aResult):
-            url = aResult[1][0]
-            
+    r = re.search('\[[REGEX]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
+    if (r):
+        regex = r.group(1)
+    
+    r = re.search('\[[UA]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
+    if (r):
+        UA2 = r.group(1)
+        
+    r = re.search('\[[URL]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
+    if (r):
+        url = r.group(1)      
+    
+    #post metehod ?
+    r = re.search('\[[POSTFORM]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
+    if (r):
+        param = r.group(1)
+        oRequestHandler = cRequestHandler(url)
+        oRequestHandler.setRequestType(1)
+        oRequestHandler.addHeaderEntry('Accept-Encoding','identity')
+        oRequestHandler.addParametersLine(param)
+        sHtmlContent = oRequestHandler.request()
+    else:
+        if (url):
             oRequestHandler = cRequestHandler(url)
             sHtmlContent = oRequestHandler.request()
+            
+    #xbmc.log(sHtmlContent)
+    
+    if regex:
+        aResult2 = oParser.parse(sHtmlContent, regex)
+        if (aResult2):
+            url = aResult2[1][0]
+            
+    #xbmc.log('Url recuperee : ' + url)
+            
+    url = url + '|User-Agent=' + UA2
         
     return url
     
