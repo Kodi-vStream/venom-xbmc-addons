@@ -378,7 +378,7 @@ def showSaisons():
     if aResult[0]:
         sSyn = aResult[1][0]
         
-    sPattern = '<a class="expand-season-trigger" data-toggle="collapse" href="([^"]+)".+?<\/span>([^<]+)<\/a>'
+    sPattern = '<a class="expand-season-trigger" data-toggle="collapse".+?href="([^"]+)".+?<\/span>([^<]+)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
