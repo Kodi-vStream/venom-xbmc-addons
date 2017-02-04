@@ -316,7 +316,7 @@
         
         <setting label="30033" type="lsep"/>
         <setting type="sep"/>
-        <setting id="service_last" type="text" label="Mise à jour auto le:" default="" enable="false"/>
+        <setting id="service_last" type="text" label="Derniere MAJ auto le:" default="" enable="false"/>
         <setting label="Upload kodi.log" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, uplog)"/>
         <setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>    
         <setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, xbmc)"/>
