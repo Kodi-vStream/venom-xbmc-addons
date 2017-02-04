@@ -47,9 +47,8 @@ class cAbout:
                 #test les fichier pour mise a jour
                 self.checkupdate()
             else:
-                #cConfig().log('Prochaine verification de MAJ le : ' + str(time_sleep + time_now) )
-                cConfig().setSetting('service_last', str(time_sleep + time_service))
-
+                cConfig().log('Prochaine verification de MAJ le : ' + str(time_sleep + time_now) )
+                #Pas besoin de memoriser la date, a cause du cache kodi > pas fiable.
         return
       
     #bug python
@@ -172,8 +171,11 @@ class cAbout:
                 cConfig().finishDialog(dialog)
                 sContent = "Fichier mise à jour %s / %s \n %s" %  (sdown, total, site)
                 #self.TextBoxes('vStream mise à Jour', sContent)
+                
                 cConfig().setSetting('service_time', str(datetime.datetime.now()))
                 cConfig().setSetting('home_update', str('false'))
+                cConfig().setSetting('service_last', str(datetime.datetime.now()))
+                
                 fin = cConfig().createDialogOK(sContent)
                 cConfig().update()
             return
