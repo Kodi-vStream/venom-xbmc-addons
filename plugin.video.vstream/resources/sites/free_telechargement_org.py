@@ -353,7 +353,7 @@ def showSearchResult(sSearch = ''):
 
      
     while (loop):
-        xbmc.log(sUrl)
+        #xbmc.log(sUrl)
         oRequestHandler = cRequestHandler(sUrl) 
         sHtmlContent = oRequestHandler.request()
         sHtmlContent = sHtmlContent.replace('<span style="background-color: yellow;"><font color="red">','')
@@ -374,7 +374,7 @@ def showSearchResult(sSearch = ''):
                 
         loop = loop - 1
         if (loop == 1):
-            xbmc.log('recherche HD')
+            #xbmc.log('recherche HD')
             HD = len(aResult)
             if sUrl.endswith('video'):
                 sUrl = sUrl.replace('=video','=Films+HD')
@@ -428,7 +428,7 @@ def showSearchResult(sSearch = ''):
         oGui.setEndOfDirectory()        
         
 def showMovies():
-    xbmc.log('showMovies')
+    #xbmc.log('showMovies')
     
     oGui = cGui()
 
@@ -482,8 +482,8 @@ def showMovies():
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-    #tPassage en mode vignette sauf en cas de recherche globale
-    xbmc.executebuiltin('Container.SetViewMode(500)')
+    #Merci de ne pas faire ça
+    #xbmc.executebuiltin('Container.SetViewMode(500)')
      
     oGui.setEndOfDirectory()
 
@@ -499,7 +499,7 @@ def __checkForNextPage(sHtmlContent):
 
 
 def showHosters():# recherche et affiche les hotes
-    xbmc.log("showHosters")
+    #xbmc.log("showHosters")
     
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler() 
@@ -507,7 +507,7 @@ def showHosters():# recherche et affiche les hotes
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumbnail=oInputParameterHandler.getValue('sThumbnail')
     
-    xbmc.log(sUrl)
+    #xbmc.log(sUrl)
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     #xbmc.log(sHtmlContent)
@@ -528,7 +528,7 @@ def showHosters():# recherche et affiche les hotes
     
     #cut de la zone des liens
     if 'Lien Premium' in sHtmlContent:
-        xbmc.log('lien premiums')
+        #xbmc.log('lien premiums')
         sPattern = 'Lien Premium *--(.+?)</div>'
     else:
         sPattern = '<div id="link">(.+?)</div>'
@@ -551,7 +551,7 @@ def showHosters():# recherche et affiche les hotes
         sPattern = '<br \/>(.+?)<\/b>.+?<a href="link.php\?lien\=([^"]+)" target="_blank" *><b>Cliquer ici pour Télécharger'
    
     aResult = oParser.parse(sHtmlContent, sPattern)
-    xbmc.log(str(aResult))
+    #xbmc.log(str(aResult))
        
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -582,7 +582,7 @@ def showHosters():# recherche et affiche les hotes
     oGui.setEndOfDirectory()
   
 def showSeriesHosters():# recherche et affiche les hotes
-    xbmc.log("showSeriesHosters")
+    #xbmc.log("showSeriesHosters")
     
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler() 
@@ -590,7 +590,7 @@ def showSeriesHosters():# recherche et affiche les hotes
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumbnail=oInputParameterHandler.getValue('sThumbnail')
     
-    xbmc.log(sUrl)
+    #xbmc.log(sUrl)
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     #xbmc.log(sHtmlContent)
@@ -647,7 +647,7 @@ def showSeriesHosters():# recherche et affiche les hotes
     oGui.setEndOfDirectory()  
   
 def Display_protected_link():
-    xbmc.log("Display_protected_link")
+    #xbmc.log("Display_protected_link")
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -655,7 +655,7 @@ def Display_protected_link():
     sThumbnail=oInputParameterHandler.getValue('sThumbnail')
 
     oParser = cParser()
-    xbmc.log(sUrl)
+    #xbmc.log(sUrl)
     
     #Est ce un lien dl-protect ?
     if URL_PROTECT in sUrl:
