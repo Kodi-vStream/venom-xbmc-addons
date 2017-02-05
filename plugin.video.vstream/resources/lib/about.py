@@ -174,7 +174,7 @@ class cAbout:
                 
                 cConfig().setSetting('service_time', str(datetime.datetime.now()))
                 cConfig().setSetting('home_update', str('false'))
-                cConfig().setSetting('service_last', str(datetime.datetime.now()))
+                #cConfig().setSetting('service_last', str(datetime.datetime.now()))
                 
                 fin = cConfig().createDialogOK(sContent)
                 cConfig().update()

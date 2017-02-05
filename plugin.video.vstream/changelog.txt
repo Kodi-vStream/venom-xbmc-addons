@@ -10,211 +10,304 @@ Merci au contributeur de la bêta.
 - Mino60/Chataigne73/Kodigoal/Johngf/Gregwar/
 =============================================================================
 =============================================================================
-- Version 0.4.8 - 04.12.2016
+- Version 0.4.9 - 05.02.2017
 =============================================================================
-2017-01-07 12:23:46 -- @Lord Venom -- getSaietEp
+2017-02-05 11:20:31 -- @TmpName -- Update gum_gum_streaming_com.py
 
-2017-01-07 00:43:53 -- @Kodigoal -- Update tvrex_net.py
+2017-02-05 10:09:52 -- @johngf -- Update regarder_films.py
 
-2017-01-06 21:29:39 -- @TmpName -- Update free_telechargement_org.py
+2017-02-05 08:11:45 -- @johngf -- Update kaydo_ws.py
 
-2017-01-06 15:29:33 -- @johngf -- correction menu ajouter compte  -- le menu s'afficher aussi sur le compte lui meme
+2017-02-04 19:43:08 -- @Lord Venom -- update
 
-2017-01-06 13:47:22 -- @Lord Venom -- bug
+2017-02-04 17:45:13 -- @TmpName -- Update hosts.json
 
-2017-01-06 01:44:27 -- @Kodigoal -- Update tvrex_net.py
+2017-02-04 17:33:34 -- @TmpName -- Update hosts.json
 
-2017-01-05 16:55:05 -- @Lord Venom -- kaydo
+2017-02-04 17:33:00 -- @TmpName -- Update sites.json
 
-2017-01-05 16:37:32 -- @chataigne73 -- Ajout espace membres
+2017-02-04 17:32:22 -- @TmpName -- Merge pull request #890 from Kodi-vStream/master -- Merge pull request #889 from Kodi-vStream/Beta
 
-2017-01-05 13:23:48 -- @Lord Venom -- series en streaming
+2017-02-04 17:32:08 -- @TmpName -- Merge pull request #889 from Kodi-vStream/Beta -- MAJ 04/02
 
-2017-01-05 02:55:44 -- @Kodigoal -- Update tvrex_net.py -- Rajout lien Eplstream 
+2017-02-04 17:28:08 -- @TmpName -- Update settings.xml
 
-recherche des 2 sPattern pour les liens m3u8.
+2017-02-04 17:26:58 -- @TmpName -- Update about.py
 
-2017-01-04 22:34:40 -- @chataigne73 -- correction thumbnails & affichage hosts
+2017-02-04 14:37:24 -- @johngf -- Update papystreaming_org.py
 
-2017-01-04 20:10:16 -- @Kodigoal -- Add files via upload
+2017-02-04 14:08:57 -- @johngf -- Update papystreaming_org.py
 
-2017-01-04 20:03:56 -- @Kodigoal -- Add files via upload
+2017-02-04 13:09:10 -- @johngf -- Update film_illimit_fr.py
 
-2017-01-04 15:16:54 -- @chataigne73 -- Create Streamase
+2017-02-04 11:49:21 -- @Lord Venom -- remove print et viewmode
 
-2017-01-04 12:19:47 -- @Lord Venom -- bug espace framapad
+2017-02-04 01:58:22 -- @Lord Venom -- bug et del viewmode
 
-2017-01-04 09:12:20 -- @Lord Venom -- del film streaming_co
+2017-02-03 18:16:39 -- @Lord Venom -- add context fav -- menu context total pour les favories aussi merci SEB
 
-2017-01-04 00:57:32 -- @Kodigoal -- Update tvrex_net.py
+2017-02-03 13:12:07 -- @Lord Venom -- cast and dialogpopup
 
-2017-01-03 17:33:48 -- @TmpName -- Update trakt.py
+2017-02-02 16:26:59 -- @TmpName -- Update freebox.py
 
-2017-01-03 10:20:54 -- @Lord Venom -- Del et update
+2017-02-02 16:22:51 -- @TmpName -- Update requestHandler.py
 
-2017-01-02 17:35:36 -- @TmpName -- Update free_telechargement_org.py
+2017-02-02 15:14:35 -- @TmpName -- Update hoster.py
 
-2017-01-02 14:17:40 -- @johngf -- Update siteuptobox.py -- fix pre?sence description
+2017-02-02 15:13:34 -- @TmpName -- Delete videomega.py
 
-2017-01-02 10:38:44 -- @Lord Venom -- clean et bug
+2017-02-02 15:13:16 -- @TmpName -- Create videomega.py
 
-2017-01-02 07:45:03 -- @johngf -- add nextpage upto
+2017-02-02 09:22:46 -- @johngf -- moin de requete + petite modif
 
-2017-01-01 15:41:50 -- @TmpName -- Update requestHandler.py
+2017-02-02 00:03:09 -- @Lord Venom -- bug des genres
 
-2017-01-01 15:11:41 -- @TmpName -- Update filmsvostfr_biz.py
+2017-02-01 19:33:22 -- @TmpName -- Update hoster.py
 
-2017-01-01 15:10:20 -- @TmpName -- Update requestHandler.py
+2017-02-01 19:32:43 -- @TmpName -- Delete megavideo.py
 
-2017-01-01 15:06:17 -- @TmpName -- Update cloudflare.py
+2017-02-01 19:32:25 -- @TmpName -- Create megavideo.py
 
-2016-12-31 11:57:50 -- @Lord Venom -- Ajouter votre propre API TMDB (plus rapide)
+2017-01-31 23:40:45 -- @Lord Venom -- encore un metahandler supprimer
 
-2016-12-30 13:59:35 -- @Kodigoal -- Update tvrex_net.py -- live = thread reddit ( en test)
+2017-01-31 14:01:32 -- @Lord Venom -- update
 
-2016-12-30 13:44:12 -- @johngf -- Update runscript.py -- add uplog
+2017-01-31 10:51:37 -- @TmpName -- Update mangacity_org.py
 
-2016-12-30 13:37:38 -- @johngf -- Update settings.xml
+2017-01-31 10:48:16 -- @TmpName -- Update mangacity_org.py
 
-2016-12-30 12:33:39 -- @Lord Venom -- kaydo
+2017-01-31 08:10:30 -- @johngf -- Update topreplay.py
 
-2016-12-30 08:46:25 -- @johngf -- Update streamay_bz.py
+2017-01-31 08:08:36 -- @johngf -- Update vidlox.py
 
-2016-12-29 17:06:23 -- @TmpName -- Update free_telechargement_org.py
+2017-01-30 19:38:00 -- @TmpName -- Merge pull request #886 from Kodi-vStream/master -- Merge pull request #885 from Kodi-vStream/Beta
 
-2016-12-29 16:53:33 -- @Kodigoal -- Update tvrex_net.py
+2017-01-30 19:37:49 -- @TmpName -- Merge pull request #885 from Kodi-vStream/Beta -- MAJ pr TV
 
-2016-12-29 15:02:27 -- @johngf -- Update streamay_bz.py -- ok
+2017-01-30 19:37:27 -- @TmpName -- Update webtv2.m3u
 
-2016-12-29 11:50:30 -- @johngf -- Update streamay_com -- ajout recherche ok , film par anne?e, synopsis dans recherche
+2017-01-30 12:57:12 -- @Lord Venom -- modif trakt avec nouveau tmdb
 
-2016-12-29 07:12:58 -- @johngf -- Update kaydo_ws.py -- ba si dispo+ top film
+2017-01-30 10:31:36 -- @TmpName -- Merge pull request #884 from Kodi-vStream/master -- Merge pull request #883 from Kodi-vStream/Beta
 
-2016-12-28 14:33:15 -- @Lord Venom -- Kaydo
+2017-01-30 10:31:25 -- @TmpName -- Merge pull request #883 from Kodi-vStream/Beta -- Update france tv
 
-2016-12-28 13:27:39 -- @johngf -- Update kaydo_ws.py
+2017-01-30 10:29:29 -- @TmpName -- Update webtv2.m3u
 
-2016-12-28 11:56:35 -- @johngf -- pour kay do
+2017-01-29 18:36:57 -- @TmpName -- Update hosts.json
 
-2016-12-27 12:30:39 -- @Lord Venom -- hdstream devient Kaydo
+2017-01-29 18:36:24 -- @TmpName -- Merge pull request #881 from Kodi-vStream/master -- Master
 
-2016-12-26 08:21:53 -- @johngf -- Update streamay_com
+2017-01-29 18:36:12 -- @TmpName -- Merge pull request #880 from Kodi-vStream/Beta -- Nouveau test pr FlsX
 
-2016-12-24 15:50:30 -- @TmpName -- Update free_telechargement_org.py
+2017-01-29 18:35:14 -- @TmpName -- Update flashx.py
 
-2016-12-24 15:48:30 -- @TmpName -- Update free_telechargement_org.py
+2017-01-29 13:41:12 -- @TmpName -- Update requestHandler.py
 
-2016-12-24 10:52:42 -- @Lord Venom -- setting
+2017-01-28 11:49:59 -- @Lord Venom -- add season
 
-2016-12-23 18:33:58 -- @TmpName -- Update vidup.py
+2017-01-28 11:29:10 -- @Lord Venom -- update tmdb and visuelle
 
-2016-12-23 00:56:44 -- @mino60 -- Update topimdb -- corrective topimdb : erreur double page pour le script
+2017-01-27 11:32:17 -- @TmpName -- Merge pull request #877 from Kodi-vStream/Beta -- bcbvc
 
-2016-12-22 17:06:03 -- @TmpName -- Update film_streaming_co.py
+2017-01-27 11:31:55 -- @TmpName -- Update hosts.json
 
-2016-12-22 13:30:01 -- @johngf -- Update streamay_com
+2017-01-27 11:31:23 -- @TmpName -- Update sites.json
 
-2016-12-22 01:58:43 -- @Kodigoal -- Merge pull request #764 from mino60/patch-2 -- Update topimdb
+2017-01-27 11:30:51 -- @TmpName -- Merge pull request #876 from Kodi-vStream/master -- Merge pull request #875 from Kodi-vStream/Beta
 
-2016-12-21 22:18:43 -- @mino60 -- Update topimdb -- Added recherche et mode vignette.
+2017-01-27 11:30:38 -- @TmpName -- Merge pull request #875 from Kodi-vStream/Beta -- fdgdf
 
-2016-12-21 21:58:38 -- @chataigne73 -- Update free_telechargement_org.py
+2017-01-27 11:26:40 -- @TmpName -- Update flashx.py
 
-2016-12-21 21:56:19 -- @chataigne73 -- correction recherches
+2017-01-27 10:22:50 -- @johngf -- Update topreplay.py
 
-2016-12-21 20:34:48 -- @chataigne73 -- correction nextpage
+2017-01-27 10:14:34 -- @johngf -- kaydo encore
 
-2016-12-21 13:53:02 -- @johngf -- Update streamay_com -- avance? un peut
+2017-01-25 17:15:45 -- @TmpName -- Update sites.json
 
-2016-12-20 16:09:40 -- @TmpName -- Update frenchddl_com.py
+2017-01-25 17:15:06 -- @TmpName -- Merge pull request #868 from Kodi-vStream/master -- Master
 
-2016-12-19 23:18:22 -- @chataigne73 -- Add files via upload
+2017-01-25 17:14:49 -- @TmpName -- Merge pull request #867 from Kodi-vStream/Beta -- New maj 25/01
 
-2016-12-19 16:34:01 -- @TmpName -- Update trakt.py
+2017-01-25 15:46:04 -- @johngf -- Update kepliz_com.py
 
-2016-12-19 12:20:33 -- @johngf -- fix
+2017-01-25 14:35:00 -- @johngf -- Update full_stream_org.py -- bug page 7 retour page 2
 
-2016-12-18 17:02:17 -- @johngf -- Update alluc_ee.py
+2017-01-25 12:17:50 -- @TmpName -- Merge pull request #865 from Kodi-vStream/Beta -- dzf
 
-2016-12-18 11:35:44 -- @Lord Venom -- Nouvelle boite de selection
+2017-01-25 12:17:13 -- @TmpName -- Update hosts.json
 
-2016-12-18 11:07:58 -- @TmpName -- Create streamay_com
+2017-01-25 12:16:42 -- @TmpName -- Update sites.json
 
-2016-12-18 10:57:28 -- @TmpName -- Update gui.py
+2017-01-25 12:15:56 -- @TmpName -- Merge pull request #864 from Kodi-vStream/master -- Master
 
-2016-12-18 10:47:38 -- @TmpName -- Update uptostream.py
+2017-01-25 12:15:45 -- @TmpName -- Merge pull request #863 from Kodi-vStream/Beta -- Maj 25/01
 
-2016-12-18 08:06:49 -- @chataigne73 -- 1ere version de free-telecharrgement
+2017-01-25 10:36:23 -- @chataigne73 -- Create zone_telechargement_ws
 
-2016-12-18 01:48:30 -- @Kodigoal -- Add files via upload
+2017-01-25 10:16:23 -- @johngf -- Update topreplay.py
 
-2016-12-17 22:58:52 -- @TmpName -- Update tvrex_net.py
+2017-01-25 10:14:09 -- @johngf -- Update mangacity_org.py -- pub hoster url
 
-2016-12-17 22:53:50 -- @TmpName -- Rename Tvrex_net.py to tvrex_net.py
+2017-01-25 07:46:38 -- @johngf -- Update flashx.py
 
-2016-12-17 22:20:16 -- @Kodigoal -- Update Tvrex_net.py -- Correction Nextpage recherche
+2017-01-24 16:52:05 -- @Lord Venom -- refonte tmdb -- Plus simple pour les saisons
 
-2016-12-17 21:32:16 -- @Kodigoal -- Add files via upload -- Rubrique Sport / Source Tvrex_net
+2017-01-24 15:40:17 -- @johngf -- Update topreplay.py
 
-Live match NBA : Juste listage des matchs...
+2017-01-24 11:25:00 -- @johngf -- Update topreplay.py
 
-Replay match NBA saison en cours + ex playoffs 2016
+2017-01-24 11:04:20 -- @johngf -- Add files via upload
 
-Recherche ok.
+2017-01-23 16:24:07 -- @johngf -- oups
 
-2016-12-17 17:19:35 -- @johngf -- Update mangacity_org.py
+2017-01-23 16:21:08 -- @johngf -- bye json
 
-2016-12-17 12:15:54 -- @TmpName -- Merge pull request #752 from Kodi-vStream/Beta -- vcbn
+2017-01-23 15:46:09 -- @johngf -- debut top replay
 
-2016-12-16 14:39:10 -- @johngf -- Update sokrostream_biz.py
+2017-01-23 15:42:43 -- @johngf -- Update mailru.py -- teste? sur top replay et full moviz > test a approfondir rare comme lien
 
-2016-12-16 10:00:48 -- @johngf -- Update mangacity_org.py
+2017-01-23 10:41:18 -- @TmpName -- Create gum_gum_streaming_com.py
 
-2016-12-16 00:32:38 -- @Kodigoal -- Update zone_telechargement_eu.py
+2017-01-23 10:22:31 -- @TmpName -- Merge pull request #862 from Kodi-vStream/Beta -- cdcd
 
-2016-12-15 16:55:56 -- @TmpName -- Update streaminto.py
+2017-01-23 10:22:13 -- @TmpName -- Update sites.json
 
-2016-12-15 11:22:44 -- @Lord Venom -- update gui
+2017-01-23 10:21:40 -- @TmpName -- Merge pull request #861 from Kodi-vStream/master -- Master
 
-2016-12-14 19:58:02 -- @Lord Venom -- bug de skin mal coder -- certain skin ne font pas la difference entre icon et thumb c?a resous le
-prob.
+2017-01-23 10:21:21 -- @TmpName -- Update sites.json
 
-2016-12-14 19:07:32 -- @TmpName -- Update recaptcha.py
+2017-01-23 10:20:47 -- @TmpName -- Merge pull request #860 from Kodi-vStream/Beta -- dsd
 
-2016-12-14 15:56:46 -- @Lord Venom -- add liste pour titre
+2017-01-23 10:20:16 -- @TmpName -- Update freebox.py
 
-2016-12-14 10:24:28 -- @Lord Venom -- webtv
+2017-01-22 20:20:34 -- @Lord Venom -- update tmdb -- gere les saisons poster, date uniquement.
 
-2016-12-14 10:20:04 -- @Lord Venom -- webtv
+2017-01-22 19:01:39 -- @TmpName -- Merge pull request #857 from Kodi-vStream/Beta -- Update webtv2.m3u
 
-2016-12-14 09:00:12 -- @Kodigoal -- Update dailymotion.py -- correction lien choix qualite? vide?o.
+2017-01-22 18:59:12 -- @TmpName -- Update webtv2.m3u
 
-2016-12-13 18:38:12 -- @TmpName -- Update themoviedb_org.py
+2017-01-22 18:48:28 -- @TmpName -- Merge pull request #856 from Kodi-vStream/Beta -- update netu
 
-2016-12-13 18:37:22 -- @TmpName -- Update trakt.py
+2017-01-22 18:48:00 -- @TmpName -- Update hosts.json
 
-2016-12-13 17:30:49 -- @TmpName -- Update trakt.py
+2017-01-22 18:47:04 -- @TmpName -- Merge pull request #855 from Kodi-vStream/master -- Master
 
-2016-12-13 17:25:00 -- @TmpName -- Update strings.xml
+2017-01-22 18:46:49 -- @TmpName -- Merge pull request #854 from Kodi-vStream/Beta -- ffr
 
-2016-12-13 10:10:46 -- @johngf -- Update les_docus.py
+2017-01-22 18:46:07 -- @TmpName -- Update netu.py
 
-2016-12-13 02:18:19 -- @Kodigoal -- Update ddl_island_su.py -- Correction bug nextPage pour les Genres.
+2017-01-22 09:18:44 -- @johngf -- Update filmenstreaminghd_com.py -- correction synopsis
 
-Modif affichage qualite? pour les Mangas/dessins-animes/spectacles/emissionTV
+2017-01-22 08:54:22 -- @johngf -- Update series_en_streaming_tv.py -- correction affichage titre, thumb,qualite? thumb
 
-2016-12-12 20:44:25 -- @TmpName -- Update hosts.json
+2017-01-22 07:58:20 -- @johngf -- Update streamingk_com.py -- + de hoster
 
-2016-12-12 20:43:10 -- @TmpName -- Update sites.json
+2017-01-21 17:43:02 -- @TmpName -- Update streamase_com.py
 
-2016-12-12 18:46:33 -- @johngf -- Update sokrostream_biz.py
+2017-01-21 17:13:26 -- @TmpName -- Delete manga_streamase_com -- Fusion de fichiers
 
-2016-12-12 17:52:19 -- @TmpName -- Update megastream.py
+2017-01-21 17:05:02 -- @TmpName -- Merge pull request #850 from Kodi-vStream/Beta -- fssd
 
-2016-12-12 16:58:57 -- @TmpName -- Update frenchddl_com.py
+2017-01-21 17:04:40 -- @TmpName -- Update hosts.json
 
-2016-12-12 16:58:21 -- @TmpName -- Update zone_telechargement_eu.py
+2017-01-21 17:04:04 -- @TmpName -- Merge pull request #849 from Kodi-vStream/master -- Master
 
-2016-12-12 11:51:50 -- @johngf -- Update nowvideo.py
+2017-01-21 17:03:53 -- @TmpName -- Merge pull request #848 from Kodi-vStream/Beta -- dfgdf
 
-2016-12-11 18:51:34 -- @TmpName -- Update trakt.py
+2017-01-21 17:00:08 -- @TmpName -- Update netu.py
+
+2017-01-21 16:01:27 -- @TmpName -- Create unwise.py
+
+2017-01-21 13:37:16 -- @Lord Venom -- update guiElement -- certaine saison retourner S dans le filename.
+
+2017-01-21 11:15:10 -- @TmpName -- Merge pull request #845 from Arias800/patch-1 -- manga_streamase_com
+
+2017-01-21 07:37:50 -- @Arias800 -- manga_streamase_com
+
+2017-01-21 07:11:18 -- @johngf -- Update kaydo_ws.py
+
+2017-01-20 13:30:34 -- @Lord Venom -- update tmdb
+
+2017-01-20 09:14:39 -- @johngf -- Update streamcomplet.py -- fix + ajout support op load
+
+2017-01-19 18:17:26 -- @TmpName -- Update flashx.py
+
+2017-01-19 17:56:30 -- @TmpName -- Merge pull request #843 from Kodi-vStream/Beta -- gfxgf
+
+2017-01-19 17:56:11 -- @TmpName -- Update hosts.json
+
+2017-01-19 17:55:30 -- @TmpName -- Update sites.json
+
+2017-01-19 17:54:33 -- @TmpName -- Merge pull request #842 from Kodi-vStream/master -- Master
+
+2017-01-19 17:54:19 -- @TmpName -- Merge pull request #841 from Kodi-vStream/Beta -- MAJ 19/01
+
+2017-01-19 17:53:38 -- @TmpName -- Update hosts.json
+
+2017-01-19 17:52:57 -- @TmpName -- Update sites.json
+
+2017-01-19 17:51:46 -- @TmpName -- Update film_illimit_fr.py
+
+2017-01-19 12:15:02 -- @Lord Venom -- Update tmdb -- films 90%
+
+2017-01-19 10:15:06 -- @johngf -- Update raptu.py
+
+2017-01-19 09:54:01 -- @johngf -- Update hoster.py
+
+2017-01-19 09:52:37 -- @johngf -- Create raptu.py
+
+2017-01-19 08:40:13 -- @johngf -- Update papystreaming_org.py
+
+2017-01-19 08:28:19 -- @johngf -- Update hoster.py
+
+2017-01-19 08:27:42 -- @johngf -- Delete papylink.py
+
+2017-01-19 08:26:49 -- @johngf -- Update papystreaming_org.py
+
+2017-01-19 07:47:38 -- @johngf -- Update hoster.py
+
+2017-01-19 07:44:48 -- @johngf -- Create watchers.py
+
+2017-01-18 21:59:23 -- @TmpName -- Merge pull request #839 from Kodi-vStream/Beta -- cxvxv
+
+2017-01-18 21:59:03 -- @TmpName -- Update hosts.json
+
+2017-01-18 21:58:22 -- @TmpName -- Merge pull request #838 from Kodi-vStream/master -- Master
+
+2017-01-18 21:58:08 -- @TmpName -- Merge pull request #837 from Kodi-vStream/Beta -- sdf
+
+2017-01-18 21:57:22 -- @TmpName -- Update flashx.py
+
+2017-01-17 17:00:11 -- @TmpName -- Update requestHandler.py
+
+2017-01-16 17:05:00 -- @TmpName -- Update hosts.json
+
+2017-01-16 16:54:54 -- @TmpName -- Merge pull request #833 from Kodi-vStream/Beta -- fgd
+
+2017-01-16 16:54:09 -- @TmpName -- Update sites.json
+
+2017-01-16 16:53:09 -- @TmpName -- Merge pull request #832 from Kodi-vStream/master -- Master
+
+2017-01-16 16:52:50 -- @TmpName -- Merge pull request #831 from Kodi-vStream/Beta -- MAJ 16/01
+
+2017-01-15 11:23:11 -- @TmpName -- Update cloudy.py
+
+2017-01-15 09:38:37 -- @johngf -- Update kepliz_com.py -- grudal change de nom
+
+2017-01-15 09:03:50 -- @johngf -- Update voirfilms_org.py -- modif pour que select page fonctionne
+
+2017-01-14 11:47:13 -- @Lord Venom -- update tmdb -- movie fonctionnel 70%
+
+2017-01-14 11:20:36 -- @johngf -- Update filmsvostfr_biz.py -- affichage thumb
+
+2017-01-14 08:54:02 -- @johngf -- Update hoster.py
+
+2017-01-14 08:52:44 -- @johngf -- Create papylink.py
+
+2017-01-14 08:51:34 -- @johngf -- Create papystreaming_org.py
+
+2017-01-13 17:34:38 -- @TmpName -- Update trakt.py
+
+2017-01-13 17:28:17 -- @TmpName -- Update util.py
