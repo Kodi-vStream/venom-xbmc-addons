@@ -177,7 +177,7 @@ class cHoster(iHoster):
         #fh.close()
 
         data = ''
-        code_crypt = re.search('(;eval\(function\(w,i,s,e\){.+?\)\);)<', html, re.DOTALL)
+        code_crypt = re.search('(;eval\(function\(w,i,s,e\){.+?\)\);)\s*<', html, re.DOTALL)
         if code_crypt:
             data = unwise_process(code_crypt.group(1))
         else:
