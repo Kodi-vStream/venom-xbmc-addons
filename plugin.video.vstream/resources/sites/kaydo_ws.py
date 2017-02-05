@@ -11,7 +11,7 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
-import re,urllib2,urllib,xbmc
+import re,urllib2,urllib,xbmc,base64
 
 #copie du site http://www.film-streaming.co/
 #copie du site http://www.streaming-club.com/
@@ -38,7 +38,15 @@ SERIE_SERIES = (URL_MAIN + 'series.php', 'showMovies')
  
 URL_SEARCH = (URL_MAIN + 'search.php?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
-   
+
+def Decode(chain):
+    chain = 'aHR' + chain
+    chain = 'M'.join(chain.split('7A4c1Y9T8c'))
+    chain = 'V'.join(chain.split('8A5d1YX84A428s'))
+    chain = ''.join(chain.split('$'))
+    #xbmc.log(str(base64.b64decode(chain)))
+    return base64.b64decode(chain) 
+    
 def load():
     oGui = cGui()
 
@@ -271,14 +279,23 @@ def showHosters():
         BA = False
 
     #sPattern = '{file:"([^\"]+?)"'
-    sPattern = '{file:"([^"]+)",label:"([^"]+)"'
+    #sPattern = '{file:"([^"]+)",label:"([^"]+)"'
+    sPattern = '<script>function(.+?)</script>'
+    aResult = re.search(sPattern,sHtmlContent)
+    sHtmlContent = aResult.group(1).replace('return de("$")','') #serie
+    #redirection sur hdstream pour les new videos
+    sPattern = 'return.+?"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sHosterUrl = str(aEntry)
+            url = Decode(str(aEntry))
+            if 'manifest.mpd' in url or 'kaydo.ws/mp4' in url: #mp4 inutilisable pour le moment
+                continue
+                
+            sHosterUrl = url
             oHoster = cHosterGui().checkHoster(sHosterUrl)       
             if (oHoster != False):            
-                oHoster.setDisplayName(xbmc.getInfoLabel('ListItem.title') + ' ' + aEntry[1])
+                oHoster.setDisplayName(xbmc.getInfoLabel('ListItem.title'))
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
             
