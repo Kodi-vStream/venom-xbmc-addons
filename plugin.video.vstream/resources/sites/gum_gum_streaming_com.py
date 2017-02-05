@@ -9,6 +9,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 #from resources.lib.util import cUtil
+
 import xbmc, re
 
 SITE_IDENTIFIER = 'gum_gum_streaming_com'
@@ -18,7 +19,7 @@ SITE_DESC = 'Animés VF/VOSTFR'
 URL_MAIN = 'http://gum-gum-streaming.com/'
 
 ANIM_NEWS = (URL_MAIN, 'showNews')
-ANIM_ANIMS = (URL_MAIN, '')
+#ANIM_ANIMS = (URL_MAIN, '')
 ANIM_VFS = (URL_MAIN+'vf', 'showAnimes')
 ANIM_VOSTFRS = (URL_MAIN+'vostfr', 'showAnimes')
 ANIM_MOVIES = (URL_MAIN+'films', 'showMovies')
@@ -31,9 +32,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Nouveautés', 'news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Tous', 'animes.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
+    #oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Tous', 'animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
@@ -167,6 +168,7 @@ def showEpisodes():
                     aTitle = aTitleResult[1]
                     aUrl = aUrlResult[1]
                     for sIdx, sTitle in enumerate(aTitle):
+                        #sDisplayTitle = cUtil().DecoTitle(sTitle)
                         oOutputParameterHandler = cOutputParameterHandler()
                         oOutputParameterHandler.addParameter('siteUrl', aUrl[sIdx])
                         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -184,6 +186,7 @@ def showEpisodes():
                 aTitle = aTitleResult[1]
                 aUrl = aUrlResult[1]
                 for sIdx, sTitle in enumerate(aTitle):
+                    #sDisplayTitle = cUtil().DecoTitle(sTitle)
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', aUrl[sIdx])
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
