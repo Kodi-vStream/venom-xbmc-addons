@@ -284,7 +284,7 @@ def showHosters():
     aResult = re.search(sPattern,sHtmlContent)
     sHtmlContent = aResult.group(1).replace('return de("$")','') #serie
     #redirection sur hdstream pour les new videos
-    sPattern = 'return.+?"([^"]+)"'
+    sPattern = '"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
