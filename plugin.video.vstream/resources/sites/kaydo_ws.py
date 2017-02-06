@@ -292,11 +292,14 @@ def showHosters():
             
             if 'manifest.mpd' in url:
                 continue
-            if 'kaydo.ws/mp4' in url:
+                
+            if 'kaydo.ws/mp4' in url: #parfois upto parfois direct
                 uptourl = re.search('([a-zA-Z0-9-_]{20,50})',url)
                 if uptourl:
                    cf = uptourl.group(1)
                    sHosterUrl = base64.b64decode(cf + "==")
+                   if not 'uptobox' in sHosterUrl:
+                        sHosterUrl = url
             else:
                 sHosterUrl = url          
 
