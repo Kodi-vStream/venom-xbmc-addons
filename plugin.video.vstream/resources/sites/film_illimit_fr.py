@@ -355,6 +355,9 @@ def ShowSpecialHosters():
             
             for url,qual in tab:
                 sHosterUrl = url
+                if not sHosterUrl.startswith('http'):
+                    sHosterUrl = 'http' + sHosterUrl
+   
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     sDisplayTitle = '[' + qual + '] ' + sMovieTitle
