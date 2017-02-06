@@ -289,10 +289,17 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             url = Decode(str(aEntry))
-            if 'manifest.mpd' in url or 'kaydo.ws/mp4' in url: #mp4 inutilisable pour le moment
+            
+            if 'manifest.mpd' in url:
                 continue
-                
-            sHosterUrl = url
+            if 'kaydo.ws/mp4' in url:
+                uptourl = re.search('([a-zA-Z0-9-_]{20,50})',url)
+                if uptourl:
+                   cf = uptourl.group(1)
+                   sHosterUrl = base64.b64decode(cf + "==")
+            else:
+                sHosterUrl = url          
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)       
             if (oHoster != False):            
                 oHoster.setDisplayName(xbmc.getInfoLabel('ListItem.title'))
