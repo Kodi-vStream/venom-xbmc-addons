@@ -295,7 +295,8 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     #sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'')
-    sPattern = '<td><a href="\/(.+?)">(.+?)</a>.+?<span class="user-icn">'
+    #sPattern = '<td><a href="\/(.+?)">(.+?)</a>.+?<span class="user-icn">'
+    sPattern = '<td><a href="\/(.+?)">(.+?)<\/a>.+?<span class="user-icn">.+?<td>(.+?)<\/td>.+?\/cinema\/images\/([vostfren]+)\.png">'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -304,8 +305,10 @@ def showLinks():
         for aEntry in aResult[1]:
             
             sHoster = aEntry[1].lower()
+            sQual = aEntry[2].replace(' ','')
+            sLang = aEntry[3].upper()
             
-            sTitle = sMovieTitle + ' - [COLOR skyblue]' + sHoster +'[/COLOR]'
+            sTitle = sMovieTitle + '['+ sQual + '-' + sLang + '] - [COLOR skyblue]' + sHoster +'[/COLOR]'
             sUrl = URL_MAIN + aEntry[0]
             
             oOutputParameterHandler = cOutputParameterHandler()

@@ -73,7 +73,6 @@ def showAlpha():
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('AZ', sLetter)
-            oOutputParameterHandler.addParameter('sH', sHtmlContent)
             oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Lettre - [COLOR coral]' + sLetter + '[/COLOR]', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory() 
@@ -82,7 +81,9 @@ def showAZ():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     dAZ = oInputParameterHandler.getValue('AZ')
-    sHtmlContent = oInputParameterHandler.getValue('sH')
+
+    oRequestHandler = cRequestHandler(URL_MAIN + 'liste-de-series/')
+    sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
     sPattern = '<a href="([^"]+)">(.+?)<\/a>'

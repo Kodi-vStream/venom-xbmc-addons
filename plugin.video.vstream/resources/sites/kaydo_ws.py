@@ -273,6 +273,7 @@ def showHosters():
     oParser = cParser()
     sPattern = '<video><source type="video/mp4" src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    #xbmc.log(str(aResult))
     if (aResult[0]):
         BA = aResult[1][0]
     else:
@@ -284,15 +285,32 @@ def showHosters():
     aResult = re.search(sPattern,sHtmlContent)
     sHtmlContent = aResult.group(1).replace('return de("$")','') #serie
     #redirection sur hdstream pour les new videos
-    sPattern = 'return.+?"([^"]+)"'
+    sPattern = '"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             url = Decode(str(aEntry))
-            if 'manifest.mpd' in url or 'kaydo.ws/mp4' in url: #mp4 inutilisable pour le moment
+            if 'manifest.mpd' in url:
                 continue
                 
-            sHosterUrl = url
+            if 'kaydo.ws/mp4' in url: #lien upto,1fich,direct ou inutilisable
+                sId = re.search('kaydo\.ws.+?\/([^-]+)',url)
+                if sId:
+                    chaine = sId.group(1)
+                    vUrl = base64.b64decode(chaine + "==")
+                    #xbmc.log(str(vUrl))
+                    if 't411.li' in vUrl:
+                        continue
+                    elif 'uptobox' in vUrl:
+                        sHosterUrl = vUrl
+                    elif '1fichier' in vUrl:
+                        sHosterUrl = vUrl
+                    else:
+                        sHosterUrl = url
+                        #xbmc.log(str(sHosterUrl))
+            else:
+                sHosterUrl = url
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)       
             if (oHoster != False):            
                 oHoster.setDisplayName(xbmc.getInfoLabel('ListItem.title'))
