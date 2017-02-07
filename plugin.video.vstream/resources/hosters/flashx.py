@@ -199,8 +199,8 @@ class cHoster(iHoster):
         while MaxRedirection > 0:
             
             #generation headers
-            headers2 = headers
-            headers2['Host'] = self.GetHost(web_url)
+            #headers2 = headers
+            #headers2['Host'] = self.GetHost(web_url)
             
             xbmc.log('Test sur : ' + web_url)
             request = urllib2.Request(web_url,None,headers)
