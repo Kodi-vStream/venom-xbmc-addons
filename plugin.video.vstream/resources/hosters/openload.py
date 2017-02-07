@@ -224,43 +224,33 @@ class cHoster(iHoster):
             return False, False
 
         #
-        # Code updated with code from https://gitlab.com/iptvplayer-for-e2
+        # Code updated with code from https://github.com/rg3/youtube-dl/pull/12002
         #
         
         urlcode = ''
         id = hideenurl
-        ok = False
-        
-        for fs in [-1, 1]:
-            for fe in [-1, 1]:
-                
-                try:
 
-                    s = parseInt(id[0:3]) * fs
-                    e = parseInt(id[3:5]) * fe
-                    
-                    urlcode = ''
-                    num = 5
-                    while (num < len(id)):
-                        urlcode = urlcode + chr(parseInt(id[num: (num +3)]) - s - e * parseInt(id[(num + 3):(num+ 3 + 2)]))
-                        num = num + 5
-                    
-                    xbmc.log(urlcode)
-                    #check if the url seem good                    
-                    if re.compile('~[0-9]{10}~').search(urlcode):
-                        ok = True
-                        break
-                    else:
-                        urlcode = ''
-                        
-                except Exception:
-                    continue
-            if (ok):
-                break;
+        first_two_chars = int(float(id[0:][:2]))
+        
+        TabCode = {}
+        num = 2
+        
+        while (num < len(id)):
+            key = int(float(id[num + 3:][:2]))
+            TabCode[key] = chr(int(float(id[num:][:3])) - first_two_chars)
+            num = num + 5
+            
+        sorted(TabCode, key=lambda key: TabCode[key])
+        urlcode = ''.join(['%s' % (value) for (key, value) in TabCode.items()])
+        
+        xbmc.log('> ' + urlcode)
+        #check if the url seem good                    
+        #if re.compile('~[0-9]{10}~').search(urlcode):
+        #    ok = True
        
         if not (urlcode):
             return False,False
-            
+        
         #xbmc.log(urlcode)
         
         #Now on teste les urls
