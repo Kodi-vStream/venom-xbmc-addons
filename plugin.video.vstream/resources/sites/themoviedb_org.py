@@ -624,15 +624,33 @@ def VstreamSearch(sMovieTitle):
     oGui.setEndOfDirectory()
     
 def AllucSearch(sMovieTitle):
-    oGui = cGui()
+    #oGui = cGui()
+    import sys
     
-    exec "from resources.sites import alluc_ee as search"
     sUrl = 'http://www.alluc.ee/stream/lang%3Afr+' + sMovieTitle
-    #xbmc.log(str(sUrl))
-    searchUrl = "search.%s('%s')" % ('showMovies', sUrl)
-    exec searchUrl
+
+    sysaddon = sys.argv[0]
+
+    syshandle = int(sys.argv[1])
+     #xbmc.executebuiltin('RunPlugin(%s)' % url)
+     
+    #sPluginPath = cPluginHandler().getPluginPath();
     
-    oGui.setEndOfDirectory()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+    sParams = oOutputParameterHandler.getParameterAsUri()    
+
+    sTest = '%s?site=%s&function=%s&%s' % (sysaddon, 'alluc_ee', 'showMovies', sParams)
+    ok = xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest )
+    
+    # exec "from resources.sites import alluc_ee as search"
+    # sUrl = 'http://www.alluc.ee/stream/lang%3Afr+' + sMovieTitle
+    # searchUrl = "search.%s('%s')" % ('showMovies', sUrl)
+    # exec searchUrl
+    
+    #oGui.setEndOfDirectory()
+    return ok
     
 def addMoviedb(sId, sFunction, sLabel, sIcon, sThumbnail, fanart, oOutputParameterHandler = ''):
     
