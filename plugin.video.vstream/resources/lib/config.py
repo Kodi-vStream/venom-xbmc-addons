@@ -243,7 +243,7 @@ class cConfig():
         #cConfig().ERROR.append(e)
 
     def log(self, e):
-        xbmc.log('\t[PLUGIN] Vstream: '+str(e))
+        xbmc.log('\t[PLUGIN] Vstream: '+str(e), xbmc.LOGNOTICE)
     
     def openerror(self):
         xbmc.executebuiltin( "ActivateWindow(10147)" )
