@@ -78,17 +78,10 @@ class main:
 
             #if (isAboutGui(sSiteName, sFunction) == True):
                 #return
-            
-            mod = __import__('resources.sites.%s' % (sSiteName), fromlist=[sFunction])
-            klass = getattr(mod, sFunction)
-            klass()
-            
-            
-            #module = __import__('resources.sites.themoviedb_org')
-            # my_class = getattr(module, 'load')
-            # my_class()
-            # exec "from resources.sites import " + sSiteName + " as plugin"
-            # exec "plugin."+ sFunction +"()"
+
+            #try:
+            exec "from resources.sites import " + sSiteName + " as plugin"
+            exec "plugin."+ sFunction +"()"
             #except:
             #    cConfig().log('could not load site: ' + sSiteName )
         else:
