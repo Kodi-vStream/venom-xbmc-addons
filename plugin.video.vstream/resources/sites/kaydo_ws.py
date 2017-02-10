@@ -44,7 +44,7 @@ def Decode(chain):
     chain = 'M'.join(chain.split('7A4c1Y9T8c'))
     chain = 'V'.join(chain.split('8A5d1YX84A428s'))
     chain = ''.join(chain.split('$'))
-    #xbmc.log(str(base64.b64decode(chain)))
+    #cConfig().log(str(base64.b64decode(chain)))
     return base64.b64decode(chain) 
     
 def load():
@@ -273,7 +273,6 @@ def showHosters():
     oParser = cParser()
     sPattern = '<video><source type="video/mp4" src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #xbmc.log(str(aResult))
     if (aResult[0]):
         BA = aResult[1][0]
     else:
@@ -293,12 +292,12 @@ def showHosters():
             if 'manifest.mpd' in url:
                 continue
                 
-            if 'kaydo.ws/mp4' in url: #lien upto,1fich,direct ou inutilisable
-                sId = re.search('kaydo\.ws.+?\/([^-]+)',url)
+            if '/mp4/' in url: #lien upto,1fich,direct ou inutilisable
+                sId = re.search('\/mp4\/([^-]+)',url)
                 if sId:
                     chaine = sId.group(1)
                     vUrl = base64.b64decode(chaine + "==")
-                    #xbmc.log(str(vUrl))
+                    #cConfig().log(str(vUrl))
                     if 't411.li' in vUrl:
                         continue
                     elif 'uptobox' in vUrl:
@@ -307,7 +306,7 @@ def showHosters():
                         sHosterUrl = vUrl
                     else:
                         sHosterUrl = url
-                        #xbmc.log(str(sHosterUrl))
+                        #cConfig().log(str(sHosterUrl))
             else:
                 sHosterUrl = url
 
