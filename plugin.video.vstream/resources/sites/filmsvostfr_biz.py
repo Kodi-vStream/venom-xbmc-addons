@@ -10,7 +10,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.cloudflare import CloudflareBypass
 import re,urllib,urllib2,xbmc
  
 SITE_IDENTIFIER = 'filmsvostfr_biz'
@@ -148,7 +147,6 @@ def showMovies(sSearch = ''):
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
-        SpecHead = CloudflareBypass().GetHeadercookie(sUrl)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total) #dialog
             if dialog.iscanceled():
@@ -162,7 +160,7 @@ def showMovies(sSearch = ''):
                 pass
 
             sUrl = aEntry[1]
-            sThumbnail = aEntry[0] + SpecHead
+            sThumbnail = aEntry[0]
             if not sThumbnail.startswith('http'): 
                sThumbnail = URL_MAIN + sThumbnail
 
@@ -285,9 +283,10 @@ def showLinks():
     if (aResult[0] == True):
         sCom = aResult[1][0]
 
-    sPattern = '<a href="([^<>"]+?)" target="filmPlayer" class="ilink sinactive" rel="nofollow"><img alt="([^"]+)".+?<span.+?>(.+?)<\/span><\/a>'
+    sPattern = '<a href="([^"]+)" target="filmPlayer" class="ilink sinactive" rel="nofollow" title="([^"]+)">.+?<span class="langue(.+?)"><\/span>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -298,12 +297,13 @@ def showLinks():
 
             sUrl = aEntry[0]
             sHost = aEntry[1]
-            sTitle = ('[COLOR coral]' + aEntry[2] + '[/COLOR]' + ' ' + sMovieTitle + ' ' + '[COLOR teal]>> ' + sHost + '[/COLOR]')
-            aTitle = ('[COLOR coral]' + aEntry[2] + '[/COLOR]' + ' ' + sMovieTitle)
+            sLang = aEntry[2].replace(' ','')
+            sTitle = ('[COLOR coral]' + '[' + sLang + ']' + '[/COLOR]' + ' ' + sMovieTitle + ' ' + '[COLOR teal]>> ' + sHost + '[/COLOR]')
+
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', aTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumbnail, sCom, oOutputParameterHandler)
 
@@ -365,17 +365,20 @@ def showHostersSetA():
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    sHtmlContent = sHtmlContent.replace('HD streaming', '').replace('télécharger sur ','')
+
     oParser = cParser()
     
-    sPattern = '<a href="([^<>"]+?)" target="filmPlayer" class="ilink sinactive" rel="nofollow"><img alt=".+?">(.+?)<\/span><\/a>'
+    sPattern = '<a href="([^"]+)" target="filmPlayer" class="ilink sinactive" rel="nofollow" title="([^"]+)">.+?<span class="langue(.+?)"><\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:    
             sHosterUrl = str(aEntry[0])
+            sLang = aEntry[2].replace(' ','')
+            
             oHoster = cHosterGui().checkHoster(sHosterUrl)
- 
             if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(aEntry[1] + ' ' + sMovieTitle)
+                sDisplayTitle = cUtil().DecoTitle('[' + sLang + ']' + ' ' + sMovieTitle)
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)

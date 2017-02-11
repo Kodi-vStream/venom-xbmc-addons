@@ -286,7 +286,7 @@ def ShowPapyLink():
     sHtmlContent = sHtmlContent.replace('http://www.film-streaming.mmfilmes.com/embed2.php?f=','')
     oParser = cParser()
   
-    sPattern = '<iframe.+?src="([^"]+)"' #'"file":"([^"]+)",.+?,"label":"(\d+p)"'   
+    sPattern = '<iframe.+?src="(http.+?)"' #'"file":"([^"]+)",.+?,"label":"(\d+p)"'   
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):

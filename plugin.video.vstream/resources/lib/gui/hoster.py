@@ -195,8 +195,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('vk')
         if ('vkcom' in sHostName):
             return cHosterHandler().getHoster('vk')   
-        #if ('videomega' in sHostName):
-        #    return cHosterHandler().getHoster('videomega')
+        if ('megawatch' in sHostName):
+            return cHosterHandler().getHoster('megawatch')
         if ('vidto' in sHostName):
             return cHosterHandler().getHoster('vidto')
         if ('vidzi' in sHostName):
