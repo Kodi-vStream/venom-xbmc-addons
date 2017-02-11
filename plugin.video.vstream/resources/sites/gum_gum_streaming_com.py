@@ -79,7 +79,7 @@ def showNews():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', '', '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, 'sites/gum_gum_streaming_com.png', '', '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
     oGui.setEndOfDirectory()
@@ -110,7 +110,7 @@ def showAnimes():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
             # oGui.addDir(SITE_IDENTIFIER, 'showEpisodes', sTitle, 'anime.png', oOutputParameterHandler)
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, 'anime.png', 'anime.png', '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, 'sites/gum_gum_streaming_com.png', '', '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
     oGui.setEndOfDirectory()
@@ -278,7 +278,7 @@ def showHosters():
                 sHosterUrl = 'http:' + sHosterUrl
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                # oHoster.setDisplayName(sTitle)  # nom affiche
+                oHoster.setDisplayName(sTitle)  # nom affiche
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
     oGui.setEndOfDirectory()

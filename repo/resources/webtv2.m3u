@@ -1,6 +1,6 @@
 #EXTM3U
 #EXTINF:-1 tvg-id="FRA1.kazer.org" tvg-name="France 1" tvg-logo="france1.png" group-title="Group 1",TF1
-rtmp://iptv.livetv.tn/live/ch5041?code=ea3050dac0b8133
+[REGEX]"(http[^"]+)"[POSTFORM]udid=B85E0FCB-A255-48BD-9A71-3C1AB782A7BB&mediaId=L_TF1&appName=sdk%2FIphone%2F1.0&authKey=d7a5407b73696fc9b1e983c7be9009db%2F1409816606000&method=getLiveUrl[URL]http://api.wat.tv/services/Delivery
 
 #EXTINF:-1 tvg-id="FRA2.kazer.org" tvg-name="France 2" tvg-logo="france2.png" group-title="Group 2",France 2
 [REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_2%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
