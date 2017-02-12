@@ -622,7 +622,7 @@
                         <font>font12_title</font>
                         <height>40</height>
                         <width>200</width>
-						<label>15067</label>
+						<label>$ADDON[plugin.video.vstream 30409]</label>
                         <texturenofocus colordiffuse="4DFAFAFA">black-back.png</texturenofocus>
                         <texturefocus colordiffuse="BFFAFAFA">black-back.png</texturefocus>
 						<onclick>Action(Close)</onclick>

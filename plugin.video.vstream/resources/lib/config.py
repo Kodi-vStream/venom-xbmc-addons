@@ -403,7 +403,7 @@ class cConfig():
                 self.close()
 
             def onAction( self, action ):
-                if action.getId() in ( 9, 10, 11, 30, 247, 257, 275, 61467, 61448, ):
+                if action.getId() in ( 9, 10, 11, 30, 92, 216, 247, 257, 275, 61467, 61448, ):
                     self.close()
           
         wd = XMLDialog('DialogInfo.xml', self.__oPath, 'default', '720p')
