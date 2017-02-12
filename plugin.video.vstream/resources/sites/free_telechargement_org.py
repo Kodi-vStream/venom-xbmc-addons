@@ -15,6 +15,7 @@ from resources.lib.util import cUtil
 from resources.lib.cloudflare import CloudflareBypass
 from resources.lib.cloudflare import NoRedirection
 
+from resources.lib.config import GestionCookie
 
 import urllib,re,urllib2
 import xbmcgui
@@ -710,7 +711,7 @@ def DecryptddlProtect(url):
     
     cookies = ''
     #try to get previous cookie
-    cookies = Readcookie('liens_free-telechargement_org')
+    cookies = GestionCookie().Readcookie('liens_free-telechargement_org')
     #xbmc.log( 'cookie récupéré:')
     #xbmc.log( 'Ancien' + cookies )
     oRequestHandler = cRequestHandler(url)
@@ -723,16 +724,17 @@ def DecryptddlProtect(url):
     #Si ca demande le captcha
     if 'Veuillez recopier le captcha ci-dessus' in sHtmlContent:
         if cookies:
-            DeleteCookie('liens_free-telechargement_org')
+            GestionCookie().DeleteCookie('liens_free-telechargement_org')
             oRequestHandler = cRequestHandler(url)
             sHtmlContent = oRequestHandler.request()
+            
         s = re.findall('src=".\/([^<>"]+?)" alt="CAPTCHA Image"',sHtmlContent)
         if URL_PROTECT in s[0]:
             image = s[0]
         else:
             image = URL_PROTECT + s[0]
             
-        #xbmc.log(image)
+        #cConfig().log(image)
 
         captcha,cookies2 = get_response(image,cookies)
         cookies = cookies + '; ' +cookies2
@@ -763,40 +765,15 @@ def DecryptddlProtect(url):
             
         #si captcha reussi
         #save cookies
-        SaveCookie('liens_free-telechargement_org',cookies)        
+        GestionCookie().SaveCookie('liens_free-telechargement_org',cookies)        
     
-    return sHtmlContent  
-
-def DeleteCookie(Domain):
-    file = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
-    os.remove(os.path.join(PathCache,file))
-    
-def SaveCookie(Domain,data):
-    Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
-
-    #save it
-    file = open(Name,'w')
-    file.write(data)
-
-    file.close()
-    
-def Readcookie(Domain):
-    Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
-    
-    try:
-        file = open(Name,'r')
-        data = file.read()
-        file.close()
-    except:
-        return ''
-    
-    return data
+    return sHtmlContent
 	
 def get_response(img,cookie):    
     #xbmc.log( "get_reponse")
     
     #on telecharge l'image
-    filename  = os.path.join(PathCache,'Captcha.png')
+    filename  = os.path.join(PathCache,'Captcha.gif')
 
     hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',img)
     host = re.sub(r'https*:\/\/','',hostComplet)
@@ -816,6 +793,8 @@ def get_response(img,cookie):
     downloaded_image = file(filename, "wb")
     downloaded_image.write(htmlcontent)
     downloaded_image.close()
+    
+    #cConfig().log(filename)
            
     #on affiche le dialogue
     solution = ''
