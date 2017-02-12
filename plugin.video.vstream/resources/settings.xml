@@ -120,7 +120,7 @@
         <setting id="search4_label" type="text" label="30501" default="Documentaires" />
         <setting label="30094" type="action"  action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, search, search4)" />
         <setting id="search4_type" type="select" label="Mode de recherche a preferer pour cette recherche" values="film|serie|anime" default="film"/>
-        <setting visible="false" label="recherche alluc" id="search10_alluc_ee" type="bool" default="true"/>
+        
     </category>
 
     <!-- search1_ = Films | search2_ = séries | search3_ = anime | search4_ = Documentaire-->
@@ -129,7 +129,9 @@
         <setting label="30303" type="lsep"/>
         <setting type="sep"/>
         
-        <setting visible="false" id="plugin_alluc_ee" type="bool" label="active alluc" default="false"/>
+		<setting id="plugin_alluc_ee" type="bool" label="Alluc (recherche de sources)" default="true"/>
+		<setting visible="false" label="recherche alluc" id="search10_alluc_ee" type="bool" default="true"/>
+		
         <setting visible="false" id="plugin_freebox" type="bool" label="active freebox" default="false"/>
         
         <setting id="plugin_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="true"/>

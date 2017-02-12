@@ -59,11 +59,11 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        r2 = re.search('mp4:"([^"]+)"', sHtmlContent)
+
+        r2 = re.search('file: *"([^"]+)",', sHtmlContent)
         if (r2):
             api_call = r2.group(1)
-
-            
+ 
         if (api_call):
             return True, api_call 
 

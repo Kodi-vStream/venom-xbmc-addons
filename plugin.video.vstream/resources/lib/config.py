@@ -60,6 +60,16 @@ class cConfig():
             self.__bIsDharma = True            
         except ImportError:
             self.__bIsDharma = False
+            
+        try: 
+            version = xbmc.getInfoLabel('system.buildversion')
+            if version[0:2] >= "17":
+                self.__bIsKrypton = True  
+            else :
+                self.__bIsKrypton = False
+        except:
+            self.__bIsKrypton = False
+                
 
     def __init__(self):
         self.__check()
@@ -85,6 +95,9 @@ class cConfig():
 
     def isDharma(self):
         return self.__bIsDharma
+        
+    def isKrypton(self):
+        return self.__bIsKrypton
 
     def getPluginId(self):
         return 'plugin.video.vstream'
@@ -403,7 +416,7 @@ class cConfig():
                 self.close()
 
             def onAction( self, action ):
-                if action.getId() in ( 9, 10, 11, 30, 247, 257, 275, 61467, 61448, ):
+                if action.getId() in ( 9, 10, 11, 30, 92, 216, 247, 257, 275, 61467, 61448, ):
                     self.close()
           
         wd = XMLDialog('DialogInfo.xml', self.__oPath, 'default', '720p')

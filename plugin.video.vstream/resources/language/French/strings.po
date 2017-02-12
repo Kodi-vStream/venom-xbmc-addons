@@ -1,0 +1,441 @@
+# Addon Name: vStream
+# Addon id: plugin.video.vstream
+# Addon Provider: vStream
+msgid ""
+msgstr ""
+
+msgctxt "#30000"
+msgid "Logging"
+msgstr "Logging"
+
+msgctxt "#30001"
+msgid "Videoplayer"
+msgstr "Videoplayer"
+
+msgctxt "#30500"
+msgid "Select"
+msgstr "Séléctionner"
+
+msgctxt "#30501"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "#30021"
+msgid "General"
+msgstr "Général"
+
+msgctxt "#30022"
+msgid "Plugins on/off (1/3)"
+msgstr "Plugins on/off (1/3)"
+
+msgctxt "#30023"
+msgid "Plugins Preferences"
+msgstr "Plugins Préférences"
+
+msgctxt "#30024"
+msgid "Host"
+msgstr "Hote"
+
+msgctxt "#30025"
+msgid "Home"
+msgstr "Accueil"
+
+msgctxt "#30026"
+msgid "IPTV and TV Guid"
+msgstr "IPTV et GuideTV"
+
+msgctxt "#30027"
+msgid "Waiting time for player (ms)"
+msgstr "Délai d'attente du lecteur (ms)"
+
+msgctxt "#30028"
+msgid "PVR addon setting"
+msgstr "Paramètre à modifier dans l'addon PVR"
+
+msgctxt "#30029"
+msgid "Play default"
+msgstr "Lecture par default"
+
+msgctxt "#30030"
+msgid "Play"
+msgstr "Lecture"
+
+msgctxt "#30031"
+msgid "Métadata"
+msgstr "Métadonnées"
+
+msgctxt "#30032"
+msgid "View"
+msgstr "Affichage"
+
+msgctxt "#30033"
+msgid "Tool"
+msgstr "Outil"
+
+msgctxt "#30034"
+msgid "About"
+msgstr "A Propos"
+
+msgctxt "#30035"
+msgid "Support Us"
+msgstr "Soutenez-nous"
+
+msgctxt "#30036"
+msgid "Changelog"
+msgstr "Changelog"
+
+msgctxt "#30076"
+msgid "Search"
+msgstr "Recherche"
+
+msgctxt "#30077"
+msgid "Search 1"
+msgstr "Recherche 1"
+
+msgctxt "#30078"
+msgid "Custom search 1"
+msgstr "Recherche personnalisée 1"
+
+msgctxt "#30079"
+msgid "Custom search 2"
+msgstr "Recherche personnalisée 2"
+
+msgctxt "#30080"
+msgid "Custom search 3"
+msgstr "Recherche personnalisée 3"
+
+msgctxt "#30081"
+msgid "Custom search 4"
+msgstr "Recherche personnalisée 4"
+
+msgctxt "#30088"
+msgid "Visual Search"
+msgstr "Recherche visuelle"
+
+msgctxt "#30089"
+msgid "Search 2"
+msgstr "Recherche 2"
+
+msgctxt "#30090"
+msgid "Search 3"
+msgstr "Recherche 3"
+
+msgctxt "#30091"
+msgid "Search 4"
+msgstr "Recherche 4"
+
+msgctxt "#30092"
+msgid "Multiple Choices"
+msgstr "Choix Multiples"
+
+msgctxt "#30093"
+msgid "Select Search Engine"
+msgstr "Selectionner un Moteur de Recherche"
+
+msgctxt "#30094"
+msgid "Select your Sources"
+msgstr "Selectionner vos Sources"
+
+msgctxt "#30101"
+msgid "News"
+msgstr "Derniers ajouts"
+
+msgctxt "#30102"
+msgid "Most seeing"
+msgstr "Les plus Vues"
+
+msgctxt "#30103"
+msgid "Most commented"
+msgstr "Les plus Commentés"
+
+msgctxt "#30104"
+msgid "Top rated"
+msgstr "Les mieux Notés"
+
+msgctxt "#30105"
+msgid "Genre"
+msgstr "Genres"
+
+msgctxt "#30107"
+msgid "VF"
+msgstr "VF"
+
+msgctxt "#30108"
+msgid "VOSTFR"
+msgstr "VOSTFR"
+
+msgctxt "#30112"
+msgid "Documentary"
+msgstr "Documentaire"
+
+msgctxt "#30113"
+msgid "Sport"
+msgstr "Sport"
+
+msgctxt "#30114"
+msgid "Web Video"
+msgstr "Vidéo du net"
+
+msgctxt "#30115"
+msgid "Television"
+msgstr "Télévision"
+
+msgctxt "#30116"
+msgid "All the sources"
+msgstr "Toutes les sources"
+
+msgctxt "#30117"
+msgid "Television Replay"
+msgstr "Télévision Replay"
+
+msgctxt "#30160"
+msgid "Quality HD"
+msgstr "Qualité HD"
+
+msgctxt "#30120"
+msgid "Movies"
+msgstr "Films"
+
+msgctxt "#30121"
+msgid "Tvshow"
+msgstr "Séries"
+
+msgctxt "#30122"
+msgid "Animes"
+msgstr "Animés"
+
+msgctxt "#30125"
+msgid "Research Update (source only)"
+msgstr "Recherche mise à jour (Sources Uniquement)"
+
+msgctxt "#30126"
+msgid "Beta Tester (not recommended)"
+msgstr "Bêta testeur (Non recommandé)"
+
+msgctxt "#30127"
+msgid "Tool/About"
+msgstr "Outil/A propos"
+
+msgctxt "#30128"
+msgid "Clear Cache Addon"
+msgstr "Clear Cache Addon"
+
+msgctxt "#30129"
+msgid "Clear Cache Addon"
+msgstr "Clear Cache Addon"
+
+msgctxt "#30130"
+msgid "Lists"
+msgstr "Listes"
+
+msgctxt "#30134"
+msgid "Movies VF"
+msgstr "VF"
+
+msgctxt "#30135"
+msgid "Movies VOSTFR"
+msgstr "VOSTFR"
+
+msgctxt "#30138"
+msgid "Sources"
+msgstr "Sources"
+
+msgctxt "#30145"
+msgid "Download folder"
+msgstr "Dossier de Téléchargements"
+
+msgctxt "#30146"
+msgid "Show / Hide search settings"
+msgstr "Afficher/Masquer les paramètres de recherche"
+
+msgctxt "#30147"
+msgid "Plugins on/off (2/3)"
+msgstr "Plugins on/off (2/3)"
+
+msgctxt "#30148"
+msgid "Plugins on/off (3/3)"
+msgstr "Plugins on/off (3/3)"
+
+msgctxt "#30201"
+msgid "Add to playlist"
+msgstr "Ajouter à la playlist"
+
+msgctxt "#30202"
+msgid "Download"
+msgstr "Télécharger"
+
+msgctxt "#30203"
+msgid "Mark source"
+msgstr "Marque-Source"
+
+msgctxt "#30204"
+msgid "No informations"
+msgstr "Aucune information"
+
+msgctxt "#30205"
+msgid "Connection Failed"
+msgstr "Connection Impossible"
+
+msgctxt "#30206"
+msgid "Mark movie"
+msgstr "Marque-Film"
+
+msgctxt "#30207"
+msgid "Mark Serie"
+msgstr "Marque-Série"
+
+msgctxt "#30208"
+msgid "Mark diverses"
+msgstr "Marque-Diver"
+
+msgctxt "#30209"
+msgid "Delete Bookmark"
+msgstr "Supprimer Marque-page"
+
+msgctxt "#30210"
+msgid "Display Bookmark"
+msgstr "Voir Marque-page"
+
+msgctxt "#30300"
+msgid "Library"
+msgstr "Librairie"
+
+msgctxt "#30301"
+msgid "To configure in kodi if you want them to be imported"
+msgstr "A configurer dans kodi si vous voulez qu'ils soient importes"
+
+msgctxt "#30302"
+msgid "Auto update"
+msgstr "Mise a jour a chaque ajout"
+
+msgctxt "#30303"
+msgid "Enable/Disable"
+msgstr "Activer/Désactiver"
+
+msgctxt "#30304"
+msgid "Go to [COLOR teal]%s[/COLOR] Enter the code [COLOR teal]%s[/COLOR]"
+msgstr "Rendez vous sur [COLOR teal]%s[/COLOR] Entrer le code [COLOR teal]%s[/COLOR]"
+
+msgctxt "#30305"
+msgid "[COLOR khaki]Click here to login[/COLOR]"
+msgstr "[COLOR khaki]Cliquez ici, pour vous connecter[/COLOR]"
+
+msgctxt "#30306"
+msgid "[COLOR khaki]Hello, %s[/COLOR]"
+msgstr "[COLOR khaki][COLOR khaki]Bonjour, %s[/COLOR]"
+
+msgctxt "#30307"
+msgid "Movie (%s/%s) watch for %s minute / Show watch (%s) / episode (%s/%s) watch for pour %s minute"
+msgstr "Films (%s/%s) regarder pour %s minutes / Series regardée (%s) / Episodes (%s/%s) regardés pour %s minutes"
+
+msgctxt "#30308"
+msgid "History"
+msgstr "Historique"
+
+msgctxt "#30309"
+msgid "Disconnection"
+msgstr "Déconnection"
+
+msgctxt "#30310"
+msgid "Collection"
+msgstr "Collection"
+
+msgctxt "#30311"
+msgid "Watchlist"
+msgstr "A surveiller"
+
+msgctxt "#30312"
+msgid "Watch"
+msgstr "Regardé"
+
+msgctxt "#30313"
+msgid "Recommend"
+msgstr "Recommandé"
+
+msgctxt "#30314"
+msgid "BoxOffice"
+msgstr "BoxOffice"
+
+msgctxt "#30315"
+msgid "Popular"
+msgstr "Populaire"
+
+msgctxt "#30316"
+msgid "Most viewed this week"
+msgstr "Les plus vues de la semaine"
+
+msgctxt "#30317"
+msgid "Most viewed of the month"
+msgstr "Les plus vues du mois"
+
+msgctxt "#30318"
+msgid "Watchlist (seasons)"
+msgstr "A surveiller (saisons)"
+
+msgctxt "#30319"
+msgid "Watchlist (episodes)"
+msgstr "A surveiller (episodes)"
+
+msgctxt "#30320"
+msgid "You have successfully logged out"
+msgstr "Vous avez été déconnecté avec succés"
+
+msgctxt "#30321"
+msgid "Add collection"
+msgstr "Ajouter à la collection"
+
+msgctxt "#30322"
+msgid "Add watch history"
+msgstr "Marquer comme regardé"
+
+msgctxt "#30323"
+msgid "Add watchlist"
+msgstr "Marquer a surveiller"
+
+msgctxt "#30330"
+msgid "Search"
+msgstr "Recherche"
+
+msgctxt "#30331"
+msgid "Calendar"
+msgstr "Calendrier des sorties VO"
+
+msgctxt "#30400"
+msgid "Premium/Login"
+msgstr "Premium/Login"
+
+msgctxt "#30401"
+msgid "Username"
+msgstr "Utilisateur"
+
+msgctxt "#30402"
+msgid "Password"
+msgstr "Mot de passe"
+
+msgctxt "#30403"
+msgid "Activate"
+msgstr "Activer"
+
+msgctxt "#30404"
+msgid "View : Movies (recommended 50-51-500-501-508) "
+msgstr "Vue : Films (recommandé 50-51-500-501-508) "
+
+msgctxt "#30405"
+msgid "View: Tvshow (recommended 50-51-500-501-508) "
+msgstr "Vue: Séries (recommandé 50-51-500-501-508) "
+
+msgctxt "#30406"
+msgid "View: Default (recommended 50-51-500) "
+msgstr "Vue: Defaut (recommandé 50-51-500) "
+
+msgctxt "#30407"
+msgid "Vue: Home (recommended 50-51-500) "
+msgstr "Vue: Accueil (recommandé 50-51-500) "
+
+msgctxt "#30408"
+msgid "Enable customized view"
+msgstr "Activer vue personnaliser"
+
+msgctxt "#30409"
+msgid "Close"
+msgstr "Fermer"
