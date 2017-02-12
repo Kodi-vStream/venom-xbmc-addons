@@ -68,7 +68,11 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
 
         api_call = self.__sUrl
-
+        #full moviz lien direct final nowvideo
+        if 'zerocdn.to' in api_call:
+            UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
+            api_call = api_call + '|User-Agent=' + UA 
+            
         #Special pour mangacity
         if 'pixsil' in api_call:
             api_call = api_call.split('|')[0] + '|Referer=http://www.mangacity.org/jwplayer/player.swf'
