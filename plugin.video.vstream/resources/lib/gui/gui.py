@@ -46,6 +46,10 @@ class cGui():
 
     SITE_NAME = 'cGui'
     CONTENT = 'files'
+    
+    if cConfig().isKrypton:
+        CONTENT = 'addons'
+    
 
     def addMovie(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
         cGui.CONTENT = "movies"
