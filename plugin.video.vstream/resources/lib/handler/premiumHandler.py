@@ -20,6 +20,7 @@ class cPremiumHandler:
         self.__sDisplayName = 'Premium mode'
         self.isLogin = False
         self.__LoginTry = False
+        self.__ssl = False
         
         self.__Ispremium = False
         bIsPremium = cConfig().getSetting('hoster_' + str(self.__sHosterIdentifier) + '_premium')        
@@ -102,6 +103,7 @@ class cPremiumHandler:
             post_data['lt'] = 'on'
             post_data['purge'] = 'on'
             post_data['valider'] = 'Send'
+            self.__ssl = True
         elif 'uploaded' in self.__sHosterIdentifier:
             url = 'http://uploaded.net/io/login'
             post_data['id'] = self.getUsername()
@@ -113,24 +115,30 @@ class cPremiumHandler:
         
         #print url
         #print post_data
+        if (self.__ssl):
+            import ssl
+            context = ssl._create_unverified_context()
         
         req = urllib2.Request(url, urllib.urlencode(post_data), headers)
         
         try:
-            response = urllib2.urlopen(req)
+            if (self.__ssl):
+                response = urllib2.urlopen(req,context=context)
+            else:
+                response = urllib2.urlopen(req)       
         except urllib2.URLError, e:
-            if e.code == 403:
+            if getattr(e, "code", None) == 403:
                 #login denied
                 cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
-            elif e.code == 502:
+            elif getattr(e, "code", None) == 502:
                 #login denied
                 cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
-            elif e.code == 234:
+            elif getattr(e, "code", None) == 234:
                 #login denied
                 cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
             else:
-                print e.code
-                print e.reason
+                cConfig().log( "debug" + str(getattr(e, "code", None)))
+                cConfig().log("debug" + str(getattr(e, "reason", None)))
 
             self.isLogin = False
             return False
@@ -181,7 +189,7 @@ class cPremiumHandler:
         self.SaveCookie(self.__sHosterIdentifier,cookies)
         
         cGui().showInfo(self.__sDisplayName, 'Authentification reussie' , 5)
-        xbmc.log( 'Auhentification reussie' )
+        cConfig().log( 'Auhentification reussie' )
         
         return True
         
