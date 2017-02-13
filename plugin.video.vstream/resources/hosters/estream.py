@@ -1,15 +1,13 @@
 #coding: utf-8
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-
 from resources.lib.packer import cPacker
 
-import xbmc,xbmcgui
+import xbmcgui
 
 class cHoster(iHoster):
 
@@ -45,7 +43,6 @@ class cHoster(iHoster):
         sPattern = "v=([^<]+)"
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
-
         if (aResult[0] == True):
             return aResult[1][0]
 
@@ -74,18 +71,21 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        stream_url = ''
-        
+        api_call = ''
+        #type1
         oParser = cParser()
-
+        sPattern = '<source *src="([^"]+)" *type=\'video/.+?\''
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            api_call = aResult[1][0]
+            
+        #type2?   
         sPattern =  '<script type=\'text/javascript\'>(.+?)</script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
         if (aResult[0] == True):
             stri = cPacker().unpack(aResult[1][0])
             sPattern =  'file:"([^"]+)",label:"([0-9]+)"}'
             aResult = oParser.parse(stri, sPattern)
-
             if (aResult[0] == True):
                 url=[]
                 qua=[]
@@ -96,19 +96,16 @@ class cHoster(iHoster):
                     
                 #Si une seule url
                 if len(url) == 1:
-                    stream_url = url[0]
+                    api_call = url[0]
                 #si plus de une
                 elif len(url) > 1:
                     #Afichage du tableau
                     dialog2 = xbmcgui.Dialog()
                     ret = dialog2.select('Select Quality',qua)
                     if (ret > -1):
-                        stream_url = url[ret]
-                    else:
-                        return False, False
-                else:
-                    return False, False
-                    
-                return True,stream_url
-        
+                        api_call = url[ret]
+
+        if (api_call):
+            return True,api_call 
+
         return False, False
