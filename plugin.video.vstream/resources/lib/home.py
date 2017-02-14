@@ -401,7 +401,7 @@ class cHome:
         oOutputParameterHandler.addParameter('type', cConfig().getSetting('search1_type'))
         oOutputParameterHandler.addParameter('readdb', 'True')
         sLabel1 = cConfig().getlanguage(30077)+": "+cConfig().getSetting('search1_label')
-        oGui.addDir(SITE_IDENTIFIER, 'searchMovie', sLabel1, 'search.png', oOutputParameterHandler)
+        oGui.addDir('globalSearch', 'searchMovie', sLabel1, 'search.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -409,7 +409,7 @@ class cHome:
         oOutputParameterHandler.addParameter('type', cConfig().getSetting('search2_type'))
         oOutputParameterHandler.addParameter('readdb', 'True')
         sLabel2 = cConfig().getlanguage(30089)+": "+cConfig().getSetting('search2_label')
-        oGui.addDir(SITE_IDENTIFIER, 'searchMovie', sLabel2, 'search.png', oOutputParameterHandler)
+        oGui.addDir('globalSearch', 'searchMovie', sLabel2, 'search.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -417,7 +417,7 @@ class cHome:
         oOutputParameterHandler.addParameter('type', cConfig().getSetting('search3_type'))
         oOutputParameterHandler.addParameter('readdb', 'True')
         sLabel3 = cConfig().getlanguage(30090)+": "+cConfig().getSetting('search3_label')
-        oGui.addDir(SITE_IDENTIFIER, 'searchMovie', sLabel3, 'search.png', oOutputParameterHandler)
+        oGui.addDir('globalSearch', 'searchMovie', sLabel3, 'search.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -425,7 +425,7 @@ class cHome:
         oOutputParameterHandler.addParameter('type', cConfig().getSetting('search4_type'))
         oOutputParameterHandler.addParameter('readdb', 'True')
         sLabel4 = cConfig().getlanguage(30091)+": "+cConfig().getSetting('search4_label')
-        oGui.addDir(SITE_IDENTIFIER, 'searchMovie', sLabel4, 'search.png', oOutputParameterHandler)
+        oGui.addDir('globalSearch', 'searchMovie', sLabel4, 'search.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -433,13 +433,13 @@ class cHome:
         oOutputParameterHandler.addParameter('type', '')
         oOutputParameterHandler.addParameter('readdb', 'True')
         sLabel5 = ('%s: %s') % (cConfig().getlanguage(30076), cConfig().getlanguage(30092))
-        oGui.addDir(SITE_IDENTIFIER, 'searchMovie', sLabel5, 'search.png', oOutputParameterHandler)
+        oGui.addDir('globalSearch', 'searchMovie', sLabel5, 'search.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oOutputParameterHandler.addParameter('disp', 'search10')
         oOutputParameterHandler.addParameter('readdb', 'True')
-        oGui.addDir(SITE_IDENTIFIER, 'searchMovie', '[COLOR orange]Recherche: Alluc_ee[/COLOR]', 'search.png', oOutputParameterHandler)
+        oGui.addDir('globalSearch', 'searchMovie', '[COLOR orange]Recherche: Alluc_ee[/COLOR]', 'search.png', oOutputParameterHandler)
 
         #history
         if (cConfig().getSetting("history-view") == 'true'):
@@ -460,7 +460,7 @@ class cHome:
                 oOutputParameterHandler.addParameter('searchtext', match[1])
                 oOutputParameterHandler.addParameter('disp', match[2])
                 oOutputParameterHandler.addParameter('readdb', 'False')
-                oGui.addDir(SITE_IDENTIFIER, 'searchMovie', "- "+match[1], 'search.png', oOutputParameterHandler)
+                oGui.addDir('globalSearch', 'searchMovie', "- "+match[1], 'search.png', oOutputParameterHandler)
 
             if row:
 

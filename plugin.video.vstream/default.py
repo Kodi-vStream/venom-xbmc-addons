@@ -18,12 +18,13 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.home import cHome
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.pluginHandler import cPluginHandler
+from resources.lib.handler.rechercheHandler import cRechercheHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.config import cConfig
 from resources.lib.db import cDb
 
-import sys
+import xbmc, xbmcgui, sys
 
 class main:
     def __init__(self):
@@ -74,6 +75,10 @@ class main:
                 return
 
             if (isTrakt(sSiteName, sFunction) == True):
+                return
+                
+            if sSiteName == 'globalSearch':
+                searchGlobal()
                 return
 
             #if (isAboutGui(sSiteName, sFunction) == True):
@@ -177,6 +182,60 @@ def isTrakt(sSiteName, sFunction):
         return True
     return False
 
+def searchGlobal():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sSearchText = oInputParameterHandler.getValue('searchtext')
+    sReadDB = oInputParameterHandler.getValue('readdb')
+    sDisp = oInputParameterHandler.getValue('disp')
+
+    oHandler = cRechercheHandler()
+    sSearchText = oHandler.setText(sSearchText)
+    oHandler.setDisp(sDisp)
+    oHandler.setRead(sReadDB)
+    aPlugins = oHandler.getAvailablePlugins()
+    if not aPlugins: return True
+    total = len(aPlugins)
+    
+    #xbmc.log(str(aPlugins), xbmc.LOGNOTICE)
+    
+    dialog = cConfig().createDialog("vStream")
+    xbmcgui.Window(10101).setProperty('search', 'true')
+    
+    oGui.addText2('globalSearch', '[COLOR khaki]%s: %s[/COLOR]' % (cConfig().getlanguage(30076), sSearchText), 'none.png')
+    
+    for count, plugin in enumerate(aPlugins):
+    
+        xbmc.log(str(plugin['name']), xbmc.LOGNOTICE)
+        text = '%s/%s - %s' % ((count+1), total, plugin['name'])
+        cConfig().updateDialogSearch(dialog, total, text)
+        if dialog.iscanceled():
+            break
+        
+        #nom du site
+        oGui.addText2(plugin['identifier'], '%s. [COLOR olive]%s[/COLOR]' % ((count+1), plugin['name']), 'sites/%s.png' % (plugin['identifier']))
+        #recherche import
+        _pluginSearch(plugin, sSearchText)
+        
+    
+    
+    xbmcgui.Window(10101).setProperty('search', 'false')
+    cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()
+
+    return True
+    
+def _pluginSearch(plugin, sSearchText):
+    try:
+        plugins = __import__('resources.sites.%s' % plugin['identifier'], fromlist=[plugin['identifier']])
+        function = getattr(plugins, plugin['search'][1])
+        sUrl = plugin['search'][0]+str(sSearchText)
+        function(sUrl)      
+        cConfig().log("Load Recherche: " + str(plugin['identifier']))
+    except:
+        cConfig().log(plugin['identifier']+': search failed')
+        
 main()
 
 #import vstream
