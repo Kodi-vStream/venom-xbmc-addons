@@ -11,7 +11,7 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
-import urllib2,urllib,re,xbmc
+import urllib2,urllib,re
  
  
 SITE_IDENTIFIER = 'voirfilms_org'
@@ -201,8 +201,6 @@ def showMovies(sSearch = ''):
  
         query_args = { 'action' : 'recherche' , 'story' : str(sSearch) }
         
-        xbmc.log(str(query_args))
-        
         data = urllib.urlencode(query_args)
         headers = {'User-Agent' : 'Mozilla 5.10'}
         url = URL_MAIN + 'rechercher'
@@ -350,7 +348,6 @@ def serieHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    #xbmc.log(sUrl)
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
@@ -403,13 +400,7 @@ def showHostersLink():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
-    #patch a virer a la V17 de kodi
-    import ssl
-    ssl.PROTOCOL_SSLv23 = ssl.PROTOCOL_TLSv1
-    
-    #xbmc.log('url > ' + sUrl)
-    
+
     #On recupere la redirection
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-agent',UA)
@@ -436,9 +427,9 @@ def showHostersLink():
         
     #Modifications
     sUrl = sUrl.replace('1wskdbkp.xyz','youwatch.org')
+    if '1fichier' in sUrl:
+        sUrl = re.sub('(http.+?\?link=)','https://1fichier.com/?',sUrl)
 
-    xbmc.log(sUrl)
-   
     sHosterUrl = sUrl
     oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
