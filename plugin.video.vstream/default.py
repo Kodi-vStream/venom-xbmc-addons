@@ -51,6 +51,13 @@ class main:
         if (sFunction=='DoNothing'):
             return
 
+        if (not oInputParameterHandler.exist('site')):            
+            plugins = __import__('resources.lib.home', fromlist=['home']).cHome()
+            function = getattr(plugins, 'load')
+            function()
+            return
+        
+            
         if (oInputParameterHandler.exist('site')):
             sSiteName = oInputParameterHandler.getValue('site')
             cConfig().log('load site ' + sSiteName + ' and call function ' + sFunction)
@@ -80,17 +87,35 @@ class main:
             if sSiteName == 'globalSearch':
                 searchGlobal()
                 return
+                
+            if sSiteName == 'globalSources':
+            
+                oGui = cGui()
+                oPluginHandler = cPluginHandler()
+                aPlugins = oPluginHandler.getAvailablePlugins()
+                if (len(aPlugins) == 0):
+                    oGui.openSettings()
+                    oGui.updateDirectory()
+                else:
+                    for aPlugin in aPlugins:
+                    
+                        oOutputParameterHandler = cOutputParameterHandler()
+                        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+                        icon = 'sites/%s.png' % (aPlugin[1])
+                        oGui.addDir(aPlugin[1], 'load', aPlugin[0], icon, oOutputParameterHandler)
 
+                oGui.setEndOfDirectory()
+                return
+
+            if sSiteName == 'globalParametre':
+                oGui = cGui()
+                oGui.openSettings()
+                oGui.updateDirectory()
+                return
             #if (isAboutGui(sSiteName, sFunction) == True):
                 #return
 
-            #try:
-            exec "from resources.sites import " + sSiteName + " as plugin"
-            exec "plugin."+ sFunction +"()"
-            #except:
-            #    cConfig().log('could not load site: ' + sSiteName )
-        else:
-
+            #charge Home
             try:
                 from resources.lib.about import cAbout
                 cAbout().getUpdate()
@@ -98,35 +123,16 @@ class main:
                 #exec "plugin.getUpdate()"
             except:
                 pass
-
-            if (cConfig().getSetting("home-view") == 'true'):
-                oHome = cHome()
-
-                exec "oHome."+ sFunction +"()"
+            try:
+            #exec "from resources.sites import " + sSiteName + " as plugin"
+            #exec "plugin."+ sFunction +"()"
+                plugins = __import__('resources.sites.%s' % sSiteName, fromlist=[sSiteName])
+                function = getattr(plugins, sFunction)
+                function()
+            except:
+                cConfig().log('could not load site: ' + sSiteName )
                 return
-
-            oGui = cGui()
-            oPluginHandler = cPluginHandler()
-            aPlugins = oPluginHandler.getAvailablePlugins()
-            if (len(aPlugins) == 0):
-                oGui.openSettings()
-                oGui.updateDirectory()
-            else:
-                for aPlugin in aPlugins:
-
-                    # oGuiElement = cGuiElement()
-                    # oGuiElement.setTitle(aPlugin[0])
-                    # oGuiElement.setSiteName(aPlugin[1])
-                    # oGuiElement.setDescription(aPlugin[2])
-                    # oGuiElement.setFunction(sFunction)
-                    # oGuiElement.setIcon("icon.png")
-                    # oGui.addFolder(oGuiElement)
-
-                        oOutputParameterHandler = cOutputParameterHandler()
-                        oOutputParameterHandler.addParameter('siteUrl', 'test')
-                        oGui.addDir(aPlugin[1], sFunction, aPlugin[0], 'icon.png', oOutputParameterHandler)
-
-            oGui.setEndOfDirectory()
+            
 
 
 def isHosterGui(sSiteName, sFunction):
