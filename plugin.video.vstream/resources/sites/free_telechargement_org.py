@@ -508,10 +508,11 @@ def showHosters():# recherche et affiche les hotes
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumbnail=oInputParameterHandler.getValue('sThumbnail')
     
-    #xbmc.log(sUrl)
+    #cConfig().log(sUrl)
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #xbmc.log(sHtmlContent)
+
     oParser = cParser()
     
     #recuperation nom de la release
@@ -524,8 +525,6 @@ def showHosters():# recherche et affiche les hotes
     if (aResult1[0] == True):
         if 'Forced' in aResult1[1][0]:
             aResult1[1][0]=''
-            
-    #xbmc.log(str(aResult1))
     
     #cut de la zone des liens
     if 'Lien Premium' in sHtmlContent:
@@ -546,10 +545,13 @@ def showHosters():# recherche et affiche les hotes
     #fh.write(sHtmlContent)
     #fh.close()
     
+    #ne gere pas le multi pour le moment
     if '-multi' in sHtmlContent:
-        sPattern = '<a href="link.php\?lien\=([^"]+)"'
-    else:
-        sPattern = '<br \/>(.+?)<\/b>.+?<a href="link.php\?lien\=([^"]+)" target="_blank" *><b>Cliquer ici pour Télécharger'
+        sHtmlContent = sHtmlContent[sHtmlContent.find('-multi'):]
+        
+    #cConfig().log(sHtmlContent)
+
+    sPattern = '<br \/>(?!.+&nbsp;)(.*?)<\/br> *<a href="link.php\?lien\=([^"]+)" target="_blank" *><b>Cliquer ici pour Télécharger'
    
     aResult = oParser.parse(sHtmlContent, sPattern)
     #xbmc.log(str(aResult))
