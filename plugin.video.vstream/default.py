@@ -51,7 +51,18 @@ class main:
         if (sFunction=='DoNothing'):
             return
 
-        if (not oInputParameterHandler.exist('site')):            
+        if (not oInputParameterHandler.exist('site')):  
+
+            #mise a jour
+            try:
+                from resources.lib.about import cAbout
+                cAbout().getUpdate()
+                #exec "from resources.lib.about import cAbout as plugin"
+                #exec "plugin.getUpdate()"
+            except:
+                pass
+              
+            #charge home
             plugins = __import__('resources.lib.home', fromlist=['home']).cHome()
             function = getattr(plugins, 'load')
             function()
@@ -115,14 +126,7 @@ class main:
             #if (isAboutGui(sSiteName, sFunction) == True):
                 #return
 
-            #charge Home
-            try:
-                from resources.lib.about import cAbout
-                cAbout().getUpdate()
-                #exec "from resources.lib.about import cAbout as plugin"
-                #exec "plugin.getUpdate()"
-            except:
-                pass
+            #charge sites
             try:
             #exec "from resources.sites import " + sSiteName + " as plugin"
             #exec "plugin."+ sFunction +"()"
