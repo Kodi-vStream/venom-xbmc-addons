@@ -529,7 +529,7 @@ def showHosters():# recherche et affiche les hotes
     #cut de la zone des liens
     if 'Lien Premium' in sHtmlContent:
         #xbmc.log('lien premiums')
-        sPattern = 'Lien Premium *--(.+?)</div>target="_blank"'
+        sPattern = 'Lien Premium *--(.+?)target="_blank"'
     else:
         sPattern = '<div id="link">(.+?)</div>'
         
