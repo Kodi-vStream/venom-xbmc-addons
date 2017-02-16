@@ -416,8 +416,8 @@ def showSearchResult(sSearch = ''):
             oOutputParameterHandler.addParameter('sCom', sCom)
             sDisplayTitle = cUtil().DecoTitle('('+sQual+') '+sTitle)
             
-            if 'series-' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
+            if 'series-' in sUrl or '-Saison' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
         
@@ -528,18 +528,31 @@ def showHosters():# recherche et affiche les hotes
     
     #cut de la zone des liens
     if 'Lien Premium' in sHtmlContent:
-        #xbmc.log('lien premiums')
-        sPattern = 'Lien Premium *--(.+?)target="_blank"'
+        xbmc.log('lien premiums')
+        sPattern = 'Lien Premium(.+?)</div>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if not aResult[0]:
+            return
+        sHtmlContent = aResult[1][0]
+        xbmc.log(sHtmlContent)
+        if 'Interchangeables' in sHtmlContent:
+            #cut de restes de liens non premiums
+            xbmc.log('cut de restes de liens non premiums')
+            sPattern = '--(.+?)Interchangeables'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if not aResult[0]:
+                return
+            sHtmlContent = aResult[1][0]
+            xbmc.log(sHtmlContent)
+            
     else:
         sPattern = '<div id="link">(.+?)</div>'
-        
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    if not aResult[0]:
-        return
-    
-    sHtmlContent = aResult[1][0]
-             
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if not aResult[0]:
+            return
+        sHtmlContent = aResult[1][0]
+        xbmc.log(sHtmlContent)
+     
     #xbmc.log(sHtmlContent)
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
