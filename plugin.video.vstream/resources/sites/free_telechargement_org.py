@@ -786,7 +786,7 @@ def get_response(img,cookie):
     #xbmc.log( "get_reponse")
     
     #on telecharge l'image
-    filename  = os.path.join(PathCache,'Captcha.gif')
+    filename  = os.path.join(PathCache,'Captcha.png')
 
     hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',img)
     host = re.sub(r'https*:\/\/','',hostComplet)
