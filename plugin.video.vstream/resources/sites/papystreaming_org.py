@@ -167,7 +167,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
     
-    sPattern = '<a class="poster" href="([^"]+)" title="([^"]+)".+?<img src="([^"]+)"' 
+    sPattern = '<a class="poster" href="([^"]+)"\s+title="([^"]+)".+?<img src="([^"]+)"' 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -221,98 +221,87 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sHtmlContent = sHtmlContent.replace('http://www.google.com/s2/favicons?domain=','')
+    sHtmlContent = sHtmlContent.replace('http://www.google.com/s2/favicons?domain=','').replace('\\','')
     oParser = cParser()
         
-    papylink = ''
-    sPattern = '{"link":"([^"]+)","type":".+?"}'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-            if 'papystreaming' in str(aEntry):
-                papylink = str(aEntry)
-                if not papylink.startswith('http'):
-                    papylink = 'http:' + str(aEntry)
-           
-    sPattern = '<img class="btn btn-serv" src="([^"]+)".+?<img class="btn-language" src="([^"]+)"/>.+?<td>(.+?)</td>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-            
-            if 'vf' in aEntry[1]:
+    sPattern1 = '{"link":"([^"]+)","type":".+?"}'
+    sPattern2 = 'src="([^"]+)"/>.+?<td>(.+?)</td>'
+
+    aResult1 = re.findall(sPattern1, sHtmlContent,re.DOTALL)
+    aResult2 = re.findall(sPattern2, sHtmlContent,re.DOTALL)
+    aResult = zip(aResult1,aResult2)
+    if (aResult):
+        for aEntry in aResult:
+            sUrl = aEntry[0]
+            if not sUrl.startswith('http'):
+                sUrl = 'http:' + sUrl 
+            sLang = aEntry[1][0]
+            sQual = aEntry[1][1]
+
+            if 'vf' in sLang:
                 sLang = 'Vf' 
             else:
                 sLang = 'Vostfr'
             
             
-            if 'papystreaming' in aEntry[0]:
-                sDisplayTitle = cUtil().DecoTitle('[' + aEntry[2] + '-' + sLang + ']' + ' ' + sMovieTitle)
-                sDisplayTitle = sDisplayTitle + ' [COLOR skyblue]PapyLink[/COLOR]'
+            if 'papystreaming' in sUrl or 'mmfilmes.com' in sUrl or 'belike.pw' in sUrl:
+                sDisplayTitle = cUtil().DecoTitle('[' + sQual + '-' + sLang + ']' + ' ' + sMovieTitle)
+                sDisplayTitle = sDisplayTitle + ' [COLOR skyblue]Papyplayer[/COLOR]'
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', papylink)
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
                 oGui.addMisc(SITE_IDENTIFIER, 'ShowPapyLink', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
-                
-            if 'mmfilmes.com' in aEntry[0] or 'belike.pw' in aEntry[0]:
-                sDisplayTitle = cUtil().DecoTitle('[' + aEntry[2] + '-' + sLang + ']' + ' ' + sMovieTitle)
-                sDisplayTitle = sDisplayTitle + ' [COLOR skyblue]PapyLink[/COLOR]'
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-                oGui.addMisc(SITE_IDENTIFIER, 'ShowGLink', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)    
+                   
             else:
-                sHosterUrl = aEntry[0]
+                sHosterUrl = sUrl
                 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
-                    sDisplayTitle = cUtil().DecoTitle('[' + aEntry[2] + '-' + sLang + ']' + ' ' + sMovieTitle)
+                    sDisplayTitle = cUtil().DecoTitle('[' + aEntry[1][1] + '-' + sLang + ']' + ' ' + sMovieTitle)
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
        
     oGui.setEndOfDirectory()
-    
+
 def ShowPapyLink():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    sHtmlContent = sHtmlContent.replace('http://www.film-streaming.mmfilmes.com/embed2.php?f=','')
-    oParser = cParser()
-  
-    sPattern = '<iframe.+?src="(http.+?)"' #'"file":"([^"]+)",.+?,"label":"(\d+p)"'   
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        sHosterUrl = aResult[1][0]
-
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
-            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-            oHoster.setDisplayName(sDisplayTitle)
-            oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-       
-    oGui.setEndOfDirectory()
-    
-def ShowGLink():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     oParser = cParser()
     
-    if 'belike.pw' in sUrl:
+    if 'papystreaming' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        sPattern = 'file: *"([^"]+)",label:"(\d+p)"'   #'<iframe.+?src="([^"]+)"'
+        sHtmlContent = sHtmlContent.replace('http://www.film-streaming.mmfilmes.com/embed2.php?f=','')
+  
+        sPattern = '<iframe.+?src="(http.+?)"'  
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            if 'mmfilmes' in aResult[1][0]:
+                sDisplayTitle = sMovieTitle + ' [COLOR skyblue]PapyLink[/COLOR]'
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', aResult[1][0])
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+                oGui.addMisc(SITE_IDENTIFIER, 'ShowPapyLink', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler) 
+            else:
+                sHosterUrl = aResult[1][0]
+
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+       
+    elif 'belike.pw' in sUrl:
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
+        sPattern = 'file: *"([^"]+)",label:"(\d+p)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             for aEntry in aResult[1]:
@@ -340,7 +329,7 @@ def ShowGLink():
         reponse = urllib2.urlopen(request)
         sHtmlContent = reponse.read().replace('\\','')
         reponse.close()
-      
+
         sPattern = '\[(.+?)\]'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
@@ -360,7 +349,9 @@ def ShowGLink():
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-
+        else:
+            oGui.addText(SITE_IDENTIFIER, '[COLOR red]Lien video HS[/COLOR]')
+            
     oGui.setEndOfDirectory() 
     
 def showSaisons():
@@ -422,7 +413,7 @@ def showEpisodes():
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
 
-    sPattern = '<div class="larr episode-header">.+?<a href="([^"]+)" title="([^"]+)"'
+    sPattern = '<div class="larr episode-header">.+?<a href="([^"]+)"\s+title="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -461,7 +452,7 @@ def showSeries(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<a class="poster" href="([^"]+)" title="([^"]+)".+?<img src="([^"]+)"'
+    sPattern = '<a class="poster" href="([^"]+)"\s+title="([^"]+)".+?<img src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
