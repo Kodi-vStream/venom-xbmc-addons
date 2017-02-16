@@ -472,8 +472,8 @@ def showMovies():
             oOutputParameterHandler.addParameter('sCom', sCom)
             sDisplayTitle = cUtil().DecoTitle('('+sQual+') '+sTitle)
             
-            if 'series-' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
+            if 'series-' in sUrl or '-Saison' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
 
