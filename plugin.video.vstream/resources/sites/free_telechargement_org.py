@@ -529,7 +529,7 @@ def showHosters():# recherche et affiche les hotes
     #cut de la zone des liens
     if 'Lien Premium' in sHtmlContent:
         #xbmc.log('lien premiums')
-        sPattern = 'Lien Premium *--(.+?)</div>'
+        sPattern = 'Lien Premium *--(.+?)</div>target="_blank"'
     else:
         sPattern = '<div id="link">(.+?)</div>'
         
@@ -545,14 +545,12 @@ def showHosters():# recherche et affiche les hotes
     #fh.write(sHtmlContent)
     #fh.close()
     
-    #ne gere pas le multi pour le moment
     if '-multi' in sHtmlContent:
-        sHtmlContent = sHtmlContent[sHtmlContent.find('-multi'):]
-        
-    #cConfig().log(sHtmlContent)
-
-    sPattern = '<br \/>(?!.+&nbsp;)(.*?)<\/br> *<a href="link.php\?lien\=([^"]+)" target="_blank" *><b>Cliquer ici pour Télécharger'
+        sPattern = '<a href="link.php\?lien\=([^"]+)"'
+    else:
+        sPattern = '<br \/>(.+?)<\/b>.+?<a href="link.php\?lien\=([^"]+)" target="_blank" *><b>Cliquer ici pour Télécharger'
    
+
     aResult = oParser.parse(sHtmlContent, sPattern)
     #xbmc.log(str(aResult))
        
