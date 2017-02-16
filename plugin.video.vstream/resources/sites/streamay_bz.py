@@ -10,7 +10,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re,xbmc,xbmcgui,urllib,urllib2,unicodedata
+import re,xbmcgui,urllib,unicodedata
 
 SITE_IDENTIFIER = 'streamay_bz'
 SITE_NAME = 'Streamay.bz'
@@ -147,20 +147,24 @@ def showResultSearch(sSearch = ''):
     oParser = cParser()
     
     UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
-    headers = {'User-Agent': UA }
-
     post_data = {'k' : sSearch}
+    data = urllib.urlencode(post_data)
+    
+    oRequest = cRequestHandler('http://streamay.bz/search')
+    oRequest.setRequestType(1)
+    oRequest.addHeaderEntry('User-Agent',UA)
+    oRequest.addParametersLine(data)
         
-    req = urllib2.Request('http://streamay.bz/search',urllib.urlencode(post_data),headers)
-        
-    response = urllib2.urlopen(req)
-    sHtmlContent = response.read()
+    sHtmlContent = oRequest.request()
+
     sHtmlContent = unicode(sHtmlContent,'utf-8')
     sHtmlContent = unicodedata.normalize('NFD', sHtmlContent).encode('ascii', 'ignore').decode("unicode_escape")
     sHtmlContent = sHtmlContent.encode("utf-8")
-    response.close()
-  
-    sPattern = '{"result":{"id":".+?","title":"([^"]+)",.+?(?:"story"|"synopsis"):"([^"]+)",.+?(?:"img"|"banner"):"([^"]+)",.+?,"url":"([^"]+)"'
+    sHtmlContent = sHtmlContent.replace("\n","")
+    sHtmlContent = re.sub('"img":"([^"]+)","synopsis":"([^"]+)"','"synopsis":"\g<2>","img":"\g<1>"',sHtmlContent) #pattern en ordre img et syn inversé parfois
+
+
+    sPattern = '{"result":{"id":".+?","title":"([^"]+)",.+?(?:"story"|"synopsis"):"(.+?)",*.+?(?:"img"|"banner"):"([^"]+)",.+?,"url":"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -203,6 +207,7 @@ def showMovies():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    oParser = cParser()
     
     if 'parannee' in sUrl:
         sUrl = selectAnn()
@@ -211,8 +216,7 @@ def showMovies():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    oParser = cParser()
-    
+
     sPattern = '<a href="([^"]+)" class="mv">.+?<img src="([^"]+)" alt="">.+?<span>([^<>]+)<\/span>.+?<\/span>(.+?)<\/p>'
  
     aResult = oParser.parse(sHtmlContent, sPattern)
