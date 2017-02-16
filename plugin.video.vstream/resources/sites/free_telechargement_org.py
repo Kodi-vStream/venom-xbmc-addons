@@ -528,22 +528,22 @@ def showHosters():# recherche et affiche les hotes
     
     #cut de la zone des liens
     if 'Lien Premium' in sHtmlContent:
-        xbmc.log('lien premiums')
+        #xbmc.log('lien premiums')
         sPattern = 'Lien Premium(.+?)</div>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if not aResult[0]:
             return
         sHtmlContent = aResult[1][0]
-        xbmc.log(sHtmlContent)
+        #xbmc.log(sHtmlContent)
         if 'Interchangeables' in sHtmlContent:
             #cut de restes de liens non premiums
-            xbmc.log('cut de restes de liens non premiums')
+            #xbmc.log('cut de restes de liens non premiums')
             sPattern = '--(.+?)Interchangeables'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if not aResult[0]:
                 return
             sHtmlContent = aResult[1][0]
-            xbmc.log(sHtmlContent)
+            #xbmc.log(sHtmlContent)
             
     else:
         sPattern = '<div id="link">(.+?)</div>'
@@ -551,7 +551,7 @@ def showHosters():# recherche et affiche les hotes
         if not aResult[0]:
             return
         sHtmlContent = aResult[1][0]
-        xbmc.log(sHtmlContent)
+        #xbmc.log(sHtmlContent)
      
     #xbmc.log(sHtmlContent)
     #fh = open('c:\\test.txt', "w")
