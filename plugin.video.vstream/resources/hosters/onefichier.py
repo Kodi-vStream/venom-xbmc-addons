@@ -136,9 +136,10 @@ class cHoster(iHoster):
         req = urllib2.Request(url,postdata,headers)
         
         try:
-            import ssl
-            context = ssl._create_unverified_context()
-            response = urllib2.urlopen(req,context=context)
+            #import ssl
+            #context = ssl._create_unverified_context()
+            #response = urllib2.urlopen(req,context=context)
+            response = urllib2.urlopen(req)
         except URLError, e:
             print e.read()
             print e.reason
