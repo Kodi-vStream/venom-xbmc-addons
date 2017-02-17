@@ -1,3 +1,6 @@
+#coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
@@ -106,7 +109,7 @@ class cHoster(iHoster):
         
         api_call = url + '|' + self.oPremiumHandler.AddCookies()
         
-        #print api_call
+        cConfig().log( api_call )
         
         if (api_call):
             return True, api_call
@@ -133,13 +136,20 @@ class cHoster(iHoster):
         req = urllib2.Request(url,postdata,headers)
         
         try:
+            #import ssl
+            #context = ssl._create_unverified_context()
+            #response = urllib2.urlopen(req,context=context)
             response = urllib2.urlopen(req)
         except URLError, e:
             print e.read()
             print e.reason
         
         sHtmlContent = response.read()
-        response.close()        
+        response.close()
+        
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
         
         api_call = self.GetMedialinkDL(sHtmlContent)
         
@@ -165,9 +175,8 @@ class cHoster(iHoster):
         
         if (aResult[0] == True):
             #xbmc.sleep(1*1000)
-            print aResult[1][0]
+            cConfig().log(  aResult[1][0] )
             api_call = aResult[1][0] + '|User-Agent=' + UA# + '&Referer=' + self.__sUrl
             return api_call
         
         return False
-        

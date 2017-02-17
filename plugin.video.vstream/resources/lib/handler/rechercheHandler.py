@@ -31,32 +31,35 @@ class cRechercheHandler:
             return ''
 
     def setText(self, sText):
-        self.__sText = sText
-
-    def getText(self):
-        if not self.__sText:
+        if not sText:
             oGui = cGui()
             sSearchText = oGui.showKeyBoard()
-            self.__sText = urllib.quote(sSearchText)
+            sText = urllib.quote(sSearchText)
+        self.__sText = sText
+        return self.__sText
+
+    def getText(self):
         return self.__sText
 
 
     def setDisp(self, sDisp):
+        if not sDisp:
+            disp = ['search1','search2','search3','search4','search5','search10'] #modif
+            dialog2 = xbmcgui.Dialog()
+            dialog_select = [cConfig().getSetting('search1_label'), cConfig().getSetting('search2_label'), cConfig().getSetting('search3_label'), cConfig().getSetting('search4_label'), cConfig().getlanguage(30092),'Recherche Alluc_ee']#modif
+
+            ret = dialog2.select(cConfig().getlanguage(30093),dialog_select)
+
+            if ret > -1:
+                sDisp = disp[ret]
+                
         self.__sDisp = sDisp
+        return self.__sDisp
 
     def setRead(self, sRead):
         self.__sRead = sRead
 
     def getDisp(self):
-        if not self.__sDisp:
-            disp = ['search1','search2','search3','search4','search5']
-            dialog2 = xbmcgui.Dialog()
-            dialog_select = [cConfig().getSetting('search1_label'), cConfig().getSetting('search2_label'), cConfig().getSetting('search3_label'), cConfig().getSetting('search4_label'), cConfig().getlanguage(30092)]
-
-            ret = dialog2.select(cConfig().getlanguage(30093),dialog_select)
-
-            if ret > -1:
-                self.__sDisp = disp[ret]
         return self.__sDisp
 
     def __getFileNamesFromFolder(self, sFolder):
@@ -77,7 +80,7 @@ class cRechercheHandler:
                     aNameList.append(sItemName)
         return aNameList
 
-    def __importPlugin(self, sName, sLabel, sText):
+    def __importPlugin_old(self, sName, sLabel, sText):
         oConfig = cConfig()
         sPluginSettingsName = sLabel+'_' +sName
         bPlugin = oConfig.getSetting(sPluginSettingsName)
@@ -114,6 +117,31 @@ class cRechercheHandler:
                 return False, False
         else:
             return False, False
+            
+    def __importPlugin(self, sName, sLabel):
+        pluginData = {}
+        oConfig = cConfig()
+        sPluginSettingsName = sLabel+'_' +sName
+        bPlugin = oConfig.getSetting(sPluginSettingsName)
+        #multicherche
+        if sLabel == 'search5':
+            bPlugin = 'true'
+
+        OnPlugins = oConfig.getSetting('plugin_' + sName)
+
+        if (bPlugin == 'true') and (OnPlugins == 'true'):
+            try:
+
+                plugin = __import__('resources.sites.%s' % sName, fromlist=[sName])
+                
+                pluginData['identifier'] = plugin.SITE_IDENTIFIER
+                pluginData['name'] = plugin.SITE_NAME
+                pluginData['search'] = plugin.URL_SEARCH
+                 
+            except Exception, e:
+                cConfig().log("cant import plugin: " + str(sName))
+            
+        return pluginData
 
 
     def getRootFolder(self):
@@ -137,7 +165,7 @@ class cRechercheHandler:
             return False
         sLabel = self.getDisp()
         if not sLabel:
-            return
+            return False
 
         #historique
         try:
@@ -156,34 +184,28 @@ class cRechercheHandler:
         cConfig().log("Sites Folder: " + sFolder)
 
         aFileNames = self.__getFileNamesFromFolder(sFolder)
+  
+        aPlugins = []
+        for sFileName in aFileNames:
+            aPlugin = self.__importPlugin(sFileName, sLabel)
+            if aPlugin:
+                aPlugins.append(aPlugin)
+        
         #multiselect
         if sLabel == 'search5':
+            multi = []
+            for plugin in aPlugins:
+                multi.append(plugin['identifier'])
             dialog = xbmcgui.Dialog()
-            ret = dialog.multiselect(cConfig().getlanguage(30094), aFileNames)
+            ret = dialog.multiselect(cConfig().getlanguage(30094), multi)
             NewFileNames = []
             if ret > -1:
                 for i in ret:
-                    NewFileNames.append(aFileNames[i])
+                    NewFileNames.append(aPlugins[i])
 
-            aFileNames = NewFileNames
+            aPlugins = NewFileNames
         #fin multiselect
-        aPlugins = []
-
-        total = len(aFileNames)
-        dialog = cConfig().createDialog("vStream")
-        xbmcgui.Window(10101).setProperty('search', 'true')
-
-        for sFileName in aFileNames:
-
-            cConfig().updateDialogSearch(dialog, total, sFileName)
-            if dialog.iscanceled():
-                break
-
-            aPlugin = self.__importPlugin(sFileName, sLabel, sText)
-
-        xbmcgui.Window(10101).setProperty('search', 'false')
-        cConfig().finishDialog(dialog)
-        return True
+        return aPlugins
 
     def __createAvailablePluginsItem(self, sPluginName, sPluginIdentifier, sPluginDesc):
         aPluginEntry = []

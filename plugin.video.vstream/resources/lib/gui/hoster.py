@@ -209,8 +209,8 @@ class cHosterGui:
             return cHosterHandler().getHoster('uptostream')
         if (('dailymotion' in sHostName) or (('dai.ly' in sHostName))):
             return cHosterHandler().getHoster('dailymotion')        
-        #if ('azerfile' in sHostName):
-        #    return cHosterHandler().getHoster('azerfile')
+        if ('filez.' in sHostName):
+            return cHosterHandler().getHoster('filez')
         if ('vodlocker' in sHostName):
             return cHosterHandler().getHoster('vodlocker')
         if ('mystream' in sHostName):
@@ -273,7 +273,7 @@ class cHosterGui:
             return cHosterHandler().getHoster('letwatch')
         if ('easyvid' in sHostName):
             return cHosterHandler().getHoster('easyvid')
-        if ('allvid' in sHostName):
+        if (('allvid' in sHostName) or ('coo5shaine' in sHostName)):
             return cHosterHandler().getHoster('allvid')
         if ('www.amazon' in sHostName):
             return cHosterHandler().getHoster('amazon')

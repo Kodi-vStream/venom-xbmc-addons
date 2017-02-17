@@ -416,8 +416,8 @@ def showSearchResult(sSearch = ''):
             oOutputParameterHandler.addParameter('sCom', sCom)
             sDisplayTitle = cUtil().DecoTitle('('+sQual+') '+sTitle)
             
-            if 'series-' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
+            if 'series-' in sUrl or '-Saison' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
         
@@ -472,8 +472,8 @@ def showMovies():
             oOutputParameterHandler.addParameter('sCom', sCom)
             sDisplayTitle = cUtil().DecoTitle('('+sQual+') '+sTitle)
             
-            if 'series-' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
+            if 'series-' in sUrl or '-Saison' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
 
@@ -508,10 +508,11 @@ def showHosters():# recherche et affiche les hotes
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumbnail=oInputParameterHandler.getValue('sThumbnail')
     
-    #xbmc.log(sUrl)
+    #cConfig().log(sUrl)
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #xbmc.log(sHtmlContent)
+
     oParser = cParser()
     
     #recuperation nom de la release
@@ -524,23 +525,34 @@ def showHosters():# recherche et affiche les hotes
     if (aResult1[0] == True):
         if 'Forced' in aResult1[1][0]:
             aResult1[1][0]=''
-            
-    #xbmc.log(str(aResult1))
     
     #cut de la zone des liens
     if 'Lien Premium' in sHtmlContent:
         #xbmc.log('lien premiums')
-        sPattern = 'Lien Premium *--(.+?)</div>'
+        sPattern = 'Lien Premium(.+?)</div>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if not aResult[0]:
+            return
+        sHtmlContent = aResult[1][0]
+        #xbmc.log(sHtmlContent)
+        if 'Interchangeables' in sHtmlContent:
+            #cut de restes de liens non premiums
+            #xbmc.log('cut de restes de liens non premiums')
+            sPattern = '--(.+?)Interchangeables'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if not aResult[0]:
+                return
+            sHtmlContent = aResult[1][0]
+            #xbmc.log(sHtmlContent)
+            
     else:
         sPattern = '<div id="link">(.+?)</div>'
-        
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    if not aResult[0]:
-        return
-    
-    sHtmlContent = aResult[1][0]
-             
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if not aResult[0]:
+            return
+        sHtmlContent = aResult[1][0]
+        #xbmc.log(sHtmlContent)
+     
     #xbmc.log(sHtmlContent)
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
@@ -549,8 +561,9 @@ def showHosters():# recherche et affiche les hotes
     if '-multi' in sHtmlContent:
         sPattern = '<a href="link.php\?lien\=([^"]+)"'
     else:
-        sPattern = '<br \/>(.+?)<\/b>.+?<a href="link.php\?lien\=([^"]+)" target="_blank" *><b>Cliquer ici pour Télécharger'
+        sPattern = '<b>(.+?)<\/b>.+?<a href="link.php\?lien\=([^"]+)" target="_blank" *><b>Cliquer ici pour Télécharger'
    
+
     aResult = oParser.parse(sHtmlContent, sPattern)
     #xbmc.log(str(aResult))
        
@@ -773,7 +786,7 @@ def get_response(img,cookie):
     #xbmc.log( "get_reponse")
     
     #on telecharge l'image
-    filename  = os.path.join(PathCache,'Captcha.gif')
+    filename  = os.path.join(PathCache,'Captcha.png')
 
     hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',img)
     host = re.sub(r'https*:\/\/','',hostComplet)
