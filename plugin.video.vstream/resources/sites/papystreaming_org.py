@@ -1,16 +1,14 @@
 #-*- coding: utf-8 -*-
 #johngf.
-from resources.lib.gui.hoster import cHosterGui 
-from resources.lib.handler.hosterHandler import cHosterHandler 
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui 
-from resources.lib.gui.guiElement import cGuiElement 
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler 
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler 
 from resources.lib.handler.requestHandler import cRequestHandler 
 from resources.lib.config import cConfig 
 from resources.lib.parser import cParser 
 from resources.lib.util import cUtil 
-import re,xbmc,urllib,urllib2
+import re,urllib
 
 SITE_IDENTIFIER = 'papystreaming_org'  
 SITE_NAME = 'Papystreaming.org' 
@@ -127,7 +125,7 @@ def showGenre():
     liste.append( ['Science_Fiction_Fantastique',URL_MAIN + 'category/science-fiction-fantastique/'] )
     liste.append( ['Thriller',URL_MAIN + 'category/thriller/'] )
     liste.append( ['Western',URL_MAIN + 'category/western/'] )
-                
+  
     for sTitle,sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()
@@ -158,7 +156,7 @@ def showSSearch():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-      sUrl = sSearch
+        sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -213,6 +211,7 @@ def __checkForNextPage(sHtmlContent):
     return False
     
 def showHosters():
+
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -225,25 +224,24 @@ def showHosters():
     oParser = cParser()
         
     sPattern1 = '{"link":"([^"]+)","type":".+?"}'
-    sPattern2 = 'src="([^"]+)"/>.+?<td>(.+?)</td>'
+    sPattern2 = 'src="([^"]+)"/><\/td>.+?<td>(.+?)<\/td>'
 
     aResult1 = re.findall(sPattern1, sHtmlContent,re.DOTALL)
     aResult2 = re.findall(sPattern2, sHtmlContent,re.DOTALL)
+
     aResult = zip(aResult1,aResult2)
     if (aResult):
         for aEntry in aResult:
             sUrl = aEntry[0]
             if not sUrl.startswith('http'):
                 sUrl = 'http:' + sUrl 
-            sLang = aEntry[1][0]
-            sQual = aEntry[1][1]
 
-            if 'vf' in sLang:
+            sQual = aEntry[1][1]
+            if 'vf' in aEntry[1][0]:
                 sLang = 'Vf' 
             else:
                 sLang = 'Vostfr'
-            
-            
+
             if 'papystreaming' in sUrl or 'mmfilmes.com' in sUrl or 'belike.pw' in sUrl:
                 sDisplayTitle = cUtil().DecoTitle('[' + sQual + '-' + sLang + ']' + ' ' + sMovieTitle)
                 sDisplayTitle = sDisplayTitle + ' [COLOR skyblue]Papyplayer[/COLOR]'
@@ -317,18 +315,19 @@ def ShowPapyLink():
     else:
         data = sUrl.replace('http://www.film-streaming.mmfilmes.com/embed.php?f=','').replace('&c=','')
         pdata = 'data=' + urllib.quote_plus(data)
+        
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
-
-        headers = {'User-Agent': UA ,
-                   'Host' : 'www.film-streaming.mmfilmes.com',
-                   'Referer': sUrl,
-                   'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-                   'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
-                   
-        request = urllib2.Request('http://www.film-streaming.mmfilmes.com/Files/Loader.php',pdata,headers)
-        reponse = urllib2.urlopen(request)
-        sHtmlContent = reponse.read().replace('\\','')
-        reponse.close()
+        oRequest = cRequestHandler('http://www.film-streaming.mmfilmes.com/Files/Loader.php')
+        oRequest.setRequestType(1)
+        oRequest.addHeaderEntry('User-Agent',UA)
+        oRequest.addHeaderEntry('Host','www.film-streaming.mmfilmes.com')
+        oRequest.addHeaderEntry('Referer',sUrl)
+        oRequest.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        oRequest.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
+        oRequest.addParametersLine(pdata)
+        
+        sHtmlContent = oRequest.request()
+        sHtmlContent = sHtmlContent.replace('\\','')
 
         sPattern = '\[(.+?)\]'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -443,7 +442,7 @@ def showEpisodes():
 def showSeries(sSearch = ''):
     oGui = cGui()
     if sSearch:
-      sUrl = sSearch
+        sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
