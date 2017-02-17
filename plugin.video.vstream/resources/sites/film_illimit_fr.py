@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 #Venom.
-#
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -11,15 +10,14 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re,urllib,urllib2,xbmc
-
 from resources.lib.sucuri import SucurieBypass
- 
+import re,urllib
+
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 SITE_IDENTIFIER = 'film_illimit_fr'
 SITE_NAME = 'Film illimite'
 SITE_DESC = 'Films HD en streaming'
- 
-#URL_MAIN = 'http://xn--official-film-illimit-v5b.fr/'
+
 URL_MAIN = 'http://official-film-illimite.net/'
 
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
@@ -69,8 +67,7 @@ def showSearch():
         sUrl = URL_MAIN + '?s='+sSearchText 
         showMovies(sUrl)
         oGui.setEndOfDirectory()
-        return  
-            
+        return 
    
 def showGenre():
     oGui = cGui()
@@ -133,22 +130,17 @@ def showAlpha():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-      sSearch = sSearch.replace(' ','+')
-      sUrl = sSearch
+        sSearch = sSearch.replace(' ','+')
+        sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
     
-    #oRequestHandler = cRequestHandler(sUrl)
-    #sHtmlContent = oRequestHandler.request()
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
-    
-    xbmc.log(sUrl)
-    
+
     oParser = cParser()
     sPattern = 'class="item"> *<a href="([^<]+)">.+?<img src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-   
     if (aResult[0] == False):
         oGui.addNone(SITE_IDENTIFIER)
    
@@ -202,7 +194,6 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
    
 def __checkForNextPage(sUrl):
-    #sPattern = 'class="current">.+?<a rel="nofollow" class="page larger" href="(.+?)">(.+?)</a>'
     if '/page/' in sUrl:
         sPattern = "\/page\/([0-9]+)\/"
         oParser = cParser()
@@ -220,33 +211,22 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
-    #oRequestHandler = cRequestHandler(sUrl)
-    #sHtmlContent = oRequestHandler.request() 
+
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
     
     #Vire les bandes annonces
     sHtmlContent = sHtmlContent.replace('src="https://www.youtube.com/', '')
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-    
+
     sPattern = '<iframe[^<>]+?src="(http.+?)"'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    #xbmc.log(sUrl)
-    #xbmc.log(str(aResult))
-   
     if (aResult[0] == True):
-
         for aEntry in aResult[1]:
                 
             sHosterUrl = str(aEntry)
-            
             if '//goo.gl' in sHosterUrl:
+                import urllib2
                 try:
                     class NoRedirection(urllib2.HTTPErrorProcessor):    
                         def http_response(self, request, response):
@@ -255,12 +235,12 @@ def showHosters():
                     url8 = sHosterUrl.replace('https','http')
                     
                     opener = urllib2.build_opener(NoRedirection)
-                    opener.addheaders.append (('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'))
+                    opener.addheaders.append (('User-Agent', UA))
                     opener.addheaders.append (('Connection', 'keep-alive'))
             
                     HttpReponse = opener.open(url8)
                     sHosterUrl = HttpReponse.headers['Location']
-
+                    sHosterUrl = sHosterUrl.replace('https','http')
                 except:
                     pass
             
@@ -274,7 +254,6 @@ def showHosters():
                 oGui.addMisc(SITE_IDENTIFIER, 'ShowSpecialHosters', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
             else:
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-     
                 if (oHoster != False):
                     sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
                     oHoster.setDisplayName(sDisplayTitle)
@@ -285,14 +264,11 @@ def showHosters():
     
 def serieHosters():
     oGui = cGui()
-   
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
-    #oRequestHandler = cRequestHandler(sUrl)
-    #sHtmlContent = oRequestHandler.request()
+
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
 
     sHtmlContent = sHtmlContent.replace('<iframe width="420" height="315" src="https://www.youtube.com/', '')
@@ -300,7 +276,6 @@ def serieHosters():
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         i = 1
         for aEntry in aResult[1]: 
@@ -325,23 +300,23 @@ def ShowSpecialHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    
     data = sUrl.replace('http://official-film-illimite.net/Jwplayer_plugins_official-film-illimite.net/embed.php?f=','').replace('&c=','')
     pdata = 'data=' + urllib.quote_plus(data)
-    
-    if 'official-film-illimite' in sUrl:
-        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
-        headers = {'User-Agent': UA ,
-                   'Host' : 'official-film-illimite.net',
-                   'Referer': sUrl,
-                   #'Accept': '*/*',
-                   'Accept-Language': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                   'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
-                   
-        request = urllib2.Request('http://official-film-illimite.net/Jwplayer_plugins_official-film-illimite.net/Htplugins/Loader.php',pdata,headers)
-        reponse = urllib2.urlopen(request)
-        sHtmlContent = reponse.read().replace('\\','')
-        reponse.close()
+    if 'official-film-illimite' in sUrl:
+        oRequest = cRequestHandler('http://official-film-illimite.net/Jwplayer_plugins_official-film-illimite.net/Htplugins/Loader.php')
+        oRequest.setRequestType(1)
+        oRequest.addHeaderEntry('User-Agent',UA)
+        oRequest.addHeaderEntry('Host','official-film-illimite.net')
+        oRequest.addHeaderEntry('Referer',sUrl)
+        oRequest.addHeaderEntry('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        oRequest.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        oRequest.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
+        oRequest.addParametersLine(pdata)
+        
+        sHtmlContent = oRequest.request()
+        sHtmlContent = sHtmlContent.replace('\\','')
 
         sPattern = '\[(.+?)\]'
 
