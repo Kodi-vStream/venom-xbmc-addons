@@ -273,7 +273,7 @@ class cHosterGui:
             return cHosterHandler().getHoster('letwatch')
         if ('easyvid' in sHostName):
             return cHosterHandler().getHoster('easyvid')
-        if ('allvid' in sHostName):
+        if (('allvid' in sHostName) or ('coo5shaine' in sHostName)):
             return cHosterHandler().getHoster('allvid')
         if ('www.amazon' in sHostName):
             return cHosterHandler().getHoster('amazon')
