@@ -211,8 +211,9 @@ def showMovies(sSearch = ''):
         query_args = ( ( 'do' , 'search' ) , ('subaction' , 'search' ) , ('story' , sSearch ))
         data = urllib.urlencode(query_args)
         request = urllib2.Request(URL_SEARCH[0],data,headers)
-        sPattern = '<img src="([^"]+)" alt=".+?" title="([^"]+)"  />.+?<a href="([^"]+)" >Suite et Telecharger...</a>'    
-
+        #sPattern = '<img src="([^"]+)" alt=".+?" title="([^"]+)"  />.+?<a href="([^"]+)" >Suite et Telecharger...</a>'  
+        sPattern = '<div style="height:[0-9]{3}px;"> *<a href="([^"]+)" *><img class="[^"]+?" data-newsid="[^"]+?" src="([^<"]+)".+?<div class="[^"]+?" style="[^"]+?"> *<a href="[^"]+?" *> ([^<]+?)<'
+         
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl') 
@@ -235,14 +236,13 @@ def showMovies(sSearch = ''):
     if (aResult[0] == True):
         total = len(aResult[1])        
         for aEntry in aResult[1]:
-            if sSearch:
-                sTitle = aEntry[1]
-                sUrl2 = aEntry[2]
-                sThumbnail=aEntry[0]
-            else:
-                sTitle = str(aEntry[2])
-                sUrl2 = aEntry[0]
+            
+            sTitle = str(aEntry[2])
+            sUrl2 = aEntry[0]
+            if 'http' in aEntry[1]:
                 sThumbnail=aEntry[1]
+            else:
+                sThumbnail=URL_MAIN+aEntry[1]
                 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl2)) 
@@ -316,7 +316,7 @@ def showMoviesLinks(sHtmlContent,sUrl):
     oGui.addText(SITE_IDENTIFIER,'[COLOR olive]'+'Qualités disponibles pour ce film :'+'[/COLOR]')
 
     #on recherche d'abord la qualité courante
-    sPattern = '<div style="[^"]+?">Qualité (.+?)<\/div><center>'
+    sPattern = '<div style="[^"]+?"> *Qualité (.+?)<\/div><center>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
 
@@ -333,7 +333,8 @@ def showMoviesLinks(sHtmlContent,sUrl):
     oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sCom, oOutputParameterHandler)
 
     #on regarde si dispo dans d'autres qualités
-    sPattern = '<a href="([^"]+)"><span class="otherquality">([^<]+)</span></a>'
+    sPattern = '<a href="([^"]+)"><span class="otherquality"><span style="color:#.{6}"><b>([^<]+)<\/b><\/span><span style="color:#.{6}"><b>([^<]+)<\/b><\/span>'
+    
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     
@@ -345,7 +346,7 @@ def showMoviesLinks(sHtmlContent,sUrl):
             if dialog.iscanceled():
                 break
 
-            sTitle = sMovieTitle +  ' - [COLOR skyblue]' + aEntry[1]+'[/COLOR]'
+            sTitle = sMovieTitle +  ' - [COLOR skyblue]' + aEntry[1]+ aEntry[2]+'[/COLOR]'
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://www.zone-telechargement.ws'+aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
@@ -369,7 +370,7 @@ def showSeriesLinks(sHtmlContent,sUrl):
     oParser = cParser()
     
     #Mise àjour du titre
-    sPattern = 'content="Telecharger (.+?)Qualité .+? \| .+? \| (.+?)       la serie'
+    sPattern = 'content="Telecharger (.+?)Qualité [^\|]+?\| [^\|]+?\| (.+?)       la serie'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):
@@ -396,7 +397,9 @@ def showSeriesLinks(sHtmlContent,sUrl):
     
     #on regarde si dispo dans d'autres qualités
     sHtmlContent1 = CutQual(sHtmlContent)
-    sPattern1 = '<a href="([^"]+)"><span class="otherquality">([^<]+)<'
+    #sPattern1 = '<a href="([^"]+)"><span class="otherquality">([^<]+)<'
+    sPattern1 = '<a href="([^"]+)"><span class="otherquality"><span style="color:#.{6}"><b>([^<]+)<\/b><\/span><span style="color:#.{6}"><b>([^<]+)<\/b><\/span>'
+    
     aResult1 = oParser.parse(sHtmlContent1, sPattern1)
     #print aResult1
     
@@ -408,7 +411,7 @@ def showSeriesLinks(sHtmlContent,sUrl):
             if dialog.iscanceled():
                 break
             
-            sDisplayTitle = cUtil().DecoTitle(sMovieTitle) +  ' - [COLOR skyblue]' + aEntry[1]+'[/COLOR]'
+            sDisplayTitle = cUtil().DecoTitle(sMovieTitle) +  ' - [COLOR skyblue]' + aEntry[1]+aEntry[2]+'[/COLOR]'
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://www.zone-telechargement.ws/telecharger-series'+aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
@@ -419,7 +422,9 @@ def showSeriesLinks(sHtmlContent,sUrl):
     
     #on regarde si dispo d'autres saisons
     sHtmlContent2 = CutSais(sHtmlContent)
-    sPattern2 = '<a href="([^"]+)"><span class="otherquality">([^<]+)<'
+    #sPattern2 = '<a href="([^"]+)"><span class="otherquality">([^<]+)<'
+    sPattern2 = '<a href="([^"]+)"><span class="otherquality">([^<]+)<b>([^<]+)<span style="color:#.{6}">([^<]+)<\/span><span style="color:#.{6}">([^<]+)<\/b><\/span>'
+    
     aResult2 = oParser.parse(sHtmlContent2, sPattern2)
     #print aResult2
     
@@ -428,7 +433,7 @@ def showSeriesLinks(sHtmlContent,sUrl):
     
         for aEntry in aResult2[1]:
 
-            sTitle = '[COLOR skyblue]' + aEntry[1]+'[/COLOR]'
+            sTitle = '[COLOR skyblue]' + aEntry[1]+aEntry[2]+aEntry[3]+aEntry[4]+'[/COLOR]'
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://www.zone-telechargement.ws/telecharger-series'+aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
