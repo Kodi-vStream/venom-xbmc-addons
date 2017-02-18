@@ -786,7 +786,6 @@ def get_response(img,cookie):
     #xbmc.log( "get_reponse")
     
     #on telecharge l'image
-    filename  = os.path.join(PathCache,'Captcha.png')
 
     hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',img)
     host = re.sub(r'https*:\/\/','',hostComplet)
@@ -801,7 +800,13 @@ def get_response(img,cookie):
     htmlcontent = oRequestHandler.request()
     
     NewCookie = oRequestHandler.GetCookies()
-
+	
+    #Format ?
+    if 'GIF' in htmlcontent[:3]:
+        #cConfig().log('GIF format')
+        filename  = os.path.join(PathCache,'Captcha.gif')
+    else:
+        filename  = os.path.join(PathCache,'Captcha.png')
     
     downloaded_image = file(filename, "wb")
     downloaded_image.write(htmlcontent)
