@@ -416,8 +416,8 @@ def showSearchResult(sSearch = ''):
             oOutputParameterHandler.addParameter('sCom', sCom)
             sDisplayTitle = cUtil().DecoTitle('('+sQual+') '+sTitle)
             
-            if 'series-' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
+            if 'series-' in sUrl or '-Saison' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
         
@@ -472,8 +472,8 @@ def showMovies():
             oOutputParameterHandler.addParameter('sCom', sCom)
             sDisplayTitle = cUtil().DecoTitle('('+sQual+') '+sTitle)
             
-            if 'series-' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
+            if 'series-' in sUrl or '-Saison' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
 
@@ -529,30 +529,41 @@ def showHosters():# recherche et affiche les hotes
     #cut de la zone des liens
     if 'Lien Premium' in sHtmlContent:
         #xbmc.log('lien premiums')
-        sPattern = 'Lien Premium *--(.+?)</div>'
+        sPattern = 'Lien Premium(.+?)</div>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if not aResult[0]:
+            return
+        sHtmlContent = aResult[1][0]
+        #xbmc.log(sHtmlContent)
+        if 'Interchangeables' in sHtmlContent:
+            #cut de restes de liens non premiums
+            #xbmc.log('cut de restes de liens non premiums')
+            sPattern = '--(.+?)Interchangeables'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if not aResult[0]:
+                return
+            sHtmlContent = aResult[1][0]
+            #xbmc.log(sHtmlContent)
+            
     else:
         sPattern = '<div id="link">(.+?)</div>'
-        
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    if not aResult[0]:
-        return
-    
-    sHtmlContent = aResult[1][0]
-             
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if not aResult[0]:
+            return
+        sHtmlContent = aResult[1][0]
+        #xbmc.log(sHtmlContent)
+     
     #xbmc.log(sHtmlContent)
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
     
-    #ne gere pas le multi pour le moment
     if '-multi' in sHtmlContent:
-        sHtmlContent = sHtmlContent[sHtmlContent.find('-multi'):]
-        
-    #cConfig().log(sHtmlContent)
-
-    sPattern = '<br \/>(?!.+&nbsp;)(.*?)<\/br> *<a href="link.php\?lien\=([^"]+)" target="_blank" *><b>Cliquer ici pour Télécharger'
+        sPattern = '<a href="link.php\?lien\=([^"]+)"'
+    else:
+        sPattern = '<b>(.+?)<\/b>.+?<a href="link.php\?lien\=([^"]+)" target="_blank" *><b>Cliquer ici pour Télécharger'
    
+
     aResult = oParser.parse(sHtmlContent, sPattern)
     #xbmc.log(str(aResult))
        
@@ -775,10 +786,12 @@ def get_response(img,cookie):
     #xbmc.log( "get_reponse")
     
     #on telecharge l'image
+    filename  = os.path.join(PathCache,'Captcha.png')
 
     hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',img)
     host = re.sub(r'https*:\/\/','',hostComplet)
     url = img                 
+
 
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent' , UA)
@@ -789,12 +802,6 @@ def get_response(img,cookie):
     
     NewCookie = oRequestHandler.GetCookies()
 
-    #Format ?
-    if 'GIF' in htmlcontent[:3]:
-        #cConfig().log('GIF format')
-        filename  = os.path.join(PathCache,'Captcha.gif')
-    else:
-        filename  = os.path.join(PathCache,'Captcha.png')
     
     downloaded_image = file(filename, "wb")
     downloaded_image.write(htmlcontent)
