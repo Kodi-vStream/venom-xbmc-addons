@@ -119,9 +119,7 @@ class main:
                 return
 
             if sSiteName == 'globalParametre':
-                oGui = cGui()
-                oGui.openSettings()
-                oGui.updateDirectory()
+                cConfig().showSettingsWindow()
                 return
             #if (isAboutGui(sSiteName, sFunction) == True):
                 #return

@@ -340,7 +340,8 @@ class cConfig():
         
 
         if (not meta['imdb_id']):
-            xbmc.executebuiltin("Action(Info)")
+            #xbmc.executebuiltin("Action(Info)")
+            self.showInfo('vStream', self.getlanguage(30204))
             return
                 
         class XMLDialog(xbmcgui.WindowXMLDialog):

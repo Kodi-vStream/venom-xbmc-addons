@@ -47,7 +47,7 @@ class cGui():
     SITE_NAME = 'cGui'
     CONTENT = 'files'
     
-    if cConfig().isKrypton:
+    if cConfig().isKrypton():
         CONTENT = 'addons'
     
 
@@ -150,6 +150,10 @@ class cGui():
         oGuiElement.setDirFanart(sIcon)
 
         oOutputParameterHandler.addParameter('sFav', sFunction)
+        
+        #context paramettre
+        if (cConfig().isKrypton() == True):
+            self.createContexMenuSettings(oGuiElement, oOutputParameterHandler)
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
@@ -469,6 +473,12 @@ class cGui():
     def createContexMenuDelFav(self, oGuiElement, oOutputParameterHandler= ''):
         self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','delFavourites','[COLOR red]'+cConfig().getlanguage(30209)+'[/COLOR]')
 
+    def createContexMenuSettings(self, oGuiElement, oOutputParameterHandler= ''):
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'globalParametre','globalParametre','opensetting','[COLOR teal]'+cConfig().getlanguage(30023)+'[/COLOR]')
+
+    
+    
+    
     def createContexMenuEpg(self, oGuiElement, oOutputParameterHandler= ''):
 
         oContext = cContextElement()
