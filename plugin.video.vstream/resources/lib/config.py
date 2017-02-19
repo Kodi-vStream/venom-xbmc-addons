@@ -296,54 +296,50 @@ class cConfig():
                 self.win.getControl( self.CONTROL_TEXTBOX ).setText(text)
                 return
         TextBox()
-        
+
     def WindowsBoxes(self, sTitle, sFileName, num,year = ''):
     
-        extendedinfo = False
+        #Presence de l'addon ExtendedInfo ?
         try:
             if (xbmcaddon.Addon('script.extendedinfo') and self.getSetting('extendedinfo-view') == 'true'):
-                extendedinfo = True
+                if num == "2":
+                    self.showInfo('vStream', 'Lancement de ExtendInfo')
+                    xbmc.executebuiltin('XBMC.RunScript(script.extendedinfo, info=extendedtvinfo, name=%s)' % sFileName)
+                    return
+                elif num == "1":
+                    self.showInfo('vStream', 'Lancement de ExtendInfo')
+                    xbmc.executebuiltin('XBMC.RunScript(script.extendedinfo, info=extendedinfo, name=%s)' % sFileName)
+                    return
         except:
             pass
-            
-        if (extendedinfo):
-            if num == "2":
-                self.showInfo('vStream', 'Lancement de ExtendInfo')
-                xbmc.executebuiltin('XBMC.RunScript(script.extendedinfo, info=extendedtvinfo, name=%s)' % sFileName)
-            elif num == "1":
-                self.showInfo('vStream', 'Lancement de ExtendInfo')
-                xbmc.executebuiltin('XBMC.RunScript(script.extendedinfo, info=extendedinfo, name=%s)' % sFileName)
-            else:
-                xbmc.executebuiltin("Action(Info)")      
-            return
         
-        
+        #Sinon on gere par Vstream via la lib TMDB
         if num == "1":
             try:
                 from resources.lib.tmdb import cTMDb
                 grab = cTMDb(api_key=self.getSetting('api_tmdb'))
                 meta = grab.get_meta('movie',sFileName)
             except:         
-                xbmc.executebuiltin("Action(Info)")
-                return
+                pass
         elif num == "2":
             try:
                 from resources.lib.tmdb import cTMDb
                 grab = cTMDb(api_key=self.getSetting('api_tmdb'))
                 meta = grab.get_meta('tvshow',sFileName)
             except:
-                xbmc.executebuiltin("Action(Info)")
-                return
-        else:
-            xbmc.executebuiltin("Action(Info)")
-            return
-        
+                pass
 
+        #si rien ne marche
         if (not meta['imdb_id']):
+            #dialog par defaut
             #xbmc.executebuiltin("Action(Info)")
-            self.showInfo('vStream', self.getlanguage(30204))
+            
+            #fenetre d'erreur
+            self.error("Pas d'informations trouvees")
+            
             return
                 
+        #affichage du dialog perso   
         class XMLDialog(xbmcgui.WindowXMLDialog):
             """
             Dialog class that asks user about rating of movie.
