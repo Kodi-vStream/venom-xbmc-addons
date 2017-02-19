@@ -335,7 +335,7 @@ class cConfig():
             #xbmc.executebuiltin("Action(Info)")
             
             #fenetre d'erreur
-            self.error("Pas d'informations trouvees")
+            self.showInfo('Vstream', self.getlanguage(30204))
             
             return
                 
