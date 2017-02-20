@@ -439,3 +439,11 @@ msgstr ""
 msgctxt "#30409"
 msgid "Close"
 msgstr ""
+
+msgctxt "#30410"
+msgid "Divers"
+msgstr ""
+
+msgctxt "#30411"
+msgid "Block sounds notifications"
+msgstr ""
