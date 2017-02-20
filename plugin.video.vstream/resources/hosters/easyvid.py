@@ -1,7 +1,6 @@
 #coding: utf-8
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.packer import cPacker
 from resources.hosters.hoster import iHoster
 import xbmcgui,re
 
@@ -57,16 +56,19 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        oParser = cParser()
-        
+        if 'File was deleted' in sHtmlContent:
+            return False,False  
+
         api_call = ''
         
+        oParser = cParser()
         sPattern = '{file: *"([^"]+(?<!smil))"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             api_call = aResult[1][0]
             
-        if (aResult[0] == False):
+        else:
+            from resources.lib.packer import cPacker
             sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
             aResult = re.findall(sPattern,sHtmlContent)
             if (aResult):
@@ -98,4 +100,3 @@ class cHoster(iHoster):
             return True, api_call
             
         return False, False
-        
