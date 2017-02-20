@@ -227,7 +227,7 @@ class cConfig():
             xbmc.log('\t[PLUGIN] Vstream: close dialog')
             del dialog
             return False
-        
+
     def showInfo(self, sTitle, sDescription, iSeconds=0):
         if (self.__bIsDharma == False):
             return
@@ -236,9 +236,14 @@ class cConfig():
                 iSeconds = 1000
         else:
                 iSeconds = iSeconds * 1000
-        
-        xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds, self.__sIcon))
-        
+
+        sound = True
+        if self.getSetting('Block_Noti_sound') == 'true':
+            sound = False
+            
+        xbmcgui.Dialog().notification(str(sTitle), str(sDescription),self.__sIcon,iSeconds,sound)
+        #xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds, self.__sIcon))
+
     def update(self):
         xbmc.executebuiltin("Container.Refresh")
 
