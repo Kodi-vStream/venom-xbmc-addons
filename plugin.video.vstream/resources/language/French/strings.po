@@ -439,3 +439,11 @@ msgstr "Activer vue personnaliser"
 msgctxt "#30409"
 msgid "Close"
 msgstr "Fermer"
+
+msgctxt "#30410"
+msgid "Divers"
+msgstr "Divers"
+
+msgctxt "#30411"
+msgid "Block sounds notifications"
+msgstr "Bloquer les sons des notifications"
