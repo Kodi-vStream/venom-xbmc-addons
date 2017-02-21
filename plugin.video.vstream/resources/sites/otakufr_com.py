@@ -294,10 +294,29 @@ def showHosters():
     sPattern = '<div class="vdo_wrp"><iframe.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        sHosterUrl = aResult[1][0] 
+        sHosterUrl = aResult[1][0]
+        
         if sHosterUrl.startswith('//'):
             sHosterUrl = 'http:' + sHosterUrl
-
+            
+        if '//goo.gl' in sHosterUrl: #netu
+            import urllib2
+            try:
+                class NoRedirection(urllib2.HTTPErrorProcessor):    
+                    def http_response(self, request, response):
+                        return response
+                    
+                url8 = sHosterUrl.replace('https','http')
+                    
+                opener = urllib2.build_opener(NoRedirection)
+                opener.addheaders.append (('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'))
+                opener.addheaders.append (('Connection', 'keep-alive'))
+            
+                HttpReponse = opener.open(url8)
+                sHosterUrl = HttpReponse.headers['Location']
+            except:
+                pass
+                    
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle)

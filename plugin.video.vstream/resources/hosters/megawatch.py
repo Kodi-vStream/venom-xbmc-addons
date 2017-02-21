@@ -66,7 +66,6 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
         if 'File was deleted' in sHtmlContent:
-            cConfig().log("Le fichier a été supprimé")
             return False,False
             
         oParser = cParser()
@@ -74,7 +73,7 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent,sPattern)
         if (aResult[0] == True):
             sHtmlContent = cPacker().unpack(aResult[1][0])
-            #cConfig().log(sHtmlContent)
+
         sPattern = '{file:"(http.+?mp4)"}' 
         aResult = oParser.parse(sHtmlContent,sPattern)
         if (aResult[0] == True):

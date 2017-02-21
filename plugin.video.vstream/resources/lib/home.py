@@ -93,9 +93,9 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir('cFav', 'getFavourites', '[COLOR teal]'+cConfig().getlanguage(30210)+'[/COLOR]', 'mark.png', oOutputParameterHandler)
         
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('globalParametre', 'showSources', '[COLOR teal]'+cConfig().getlanguage(30023)+'[/COLOR]', 'param.png', oOutputParameterHandler)
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        # oGui.addDir('globalParametre', 'showSources', '[COLOR teal]'+cConfig().getlanguage(30023)+'[/COLOR]', 'param.png', oOutputParameterHandler)
 
         if (cConfig().getSetting('home_update') == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()

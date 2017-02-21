@@ -18,6 +18,10 @@
         <setting id="backdrop_tmdb" type="select" label="Taille des Fanarts" values="w300|w780|w1280|original" default="w1280"/>
         <setting id="extendedinfo-view" type="bool" label="Utiliser extendedinfo" default="false"/>
 
+        <setting label="30410" type="lsep"/>
+        <setting id="Block_Noti_sound" type="bool" label="30411" default="false"/>
+        <setting type="sep"/>
+        
         <setting label="30032" type="lsep"/>
         <setting type="sep"/>
         <setting id="home-view" type="bool" label="Afficher l'Accueil par Catégories" default="true"/>
