@@ -214,7 +214,6 @@ def searchGlobal():
     
     for count, plugin in enumerate(aPlugins):
     
-        xbmc.log(str(plugin['name']), xbmc.LOGNOTICE)
         text = '%s/%s - %s' % ((count+1), total, plugin['name'])
         cConfig().updateDialogSearch(dialog, total, text)
         if dialog.iscanceled():
