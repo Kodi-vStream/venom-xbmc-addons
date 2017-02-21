@@ -228,7 +228,7 @@ class cConfig():
             del dialog
             return False
 
-    def showInfo(self, sTitle, sDescription, iSeconds=0):
+    def showInfo(self, sTitle, sDescription, iSeconds=0,sound = True):
         if (self.__bIsDharma == False):
             return
 
@@ -237,7 +237,6 @@ class cConfig():
         else:
                 iSeconds = iSeconds * 1000
 
-        sound = True
         if self.getSetting('Block_Noti_sound') == 'true':
             sound = False
             
