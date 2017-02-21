@@ -130,16 +130,16 @@
   {
     "name": "easyvid.py",
     "path": "plugin.video.vstream/resources/hosters/easyvid.py",
-    "sha": "fbefb6f0d850977e475382fcee0cfe8b6851647e",
-    "size": 2763,
+    "sha": "da4b6c4420eae39d98938cff38a3a65c2da32b35",
+    "size": 2970,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/easyvid.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/easyvid.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/fbefb6f0d850977e475382fcee0cfe8b6851647e",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/da4b6c4420eae39d98938cff38a3a65c2da32b35",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/easyvid.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/easyvid.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/fbefb6f0d850977e475382fcee0cfe8b6851647e",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/da4b6c4420eae39d98938cff38a3a65c2da32b35",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/easyvid.py"
     }
   },
@@ -402,16 +402,16 @@
   {
     "name": "megawatch.py",
     "path": "plugin.video.vstream/resources/hosters/megawatch.py",
-    "sha": "80515cfe5ec24a0b35e05ddc021a8c19ca1a93db",
-    "size": 2391,
+    "sha": "6d5c549a391f9423dddb3cccf41327c903200846",
+    "size": 2293,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/megawatch.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/megawatch.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/80515cfe5ec24a0b35e05ddc021a8c19ca1a93db",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/6d5c549a391f9423dddb3cccf41327c903200846",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/megawatch.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/megawatch.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/80515cfe5ec24a0b35e05ddc021a8c19ca1a93db",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/6d5c549a391f9423dddb3cccf41327c903200846",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/megawatch.py"
     }
   },
