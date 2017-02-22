@@ -823,7 +823,7 @@ def Readcookie(Domain):
 def get_response(img,cookie):    
     print "get_reponse"
     #on telecharge l'image
-    filename  = os.path.join(PathCache,'Captcha.png')
+    filename  = os.path.join(PathCache,'Captcha.raw')
 
     headers2 = {
         'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0',
