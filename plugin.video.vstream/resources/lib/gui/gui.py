@@ -46,6 +46,7 @@ class cGui():
 
     SITE_NAME = 'cGui'
     CONTENT = 'files'
+    searchResults = []
     
     if cConfig().isKrypton():
         CONTENT = 'addons'
@@ -274,6 +275,12 @@ class cGui():
 
     #afficher les liens non playable
     def addFolder(self, oGuiElement, oOutputParameterHandler=''):
+    
+        #recherche append les reponses
+        if  xbmcgui.Window(10101).getProperty('search') == 'true':
+            import copy
+            cGui.searchResults.append({'guiElement':oGuiElement,'params':copy.deepcopy(oOutputParameterHandler)})
+            return
 
         #Des infos a rajouter ?
         params = {
