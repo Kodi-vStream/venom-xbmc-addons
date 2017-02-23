@@ -116,8 +116,11 @@ class cPremiumHandler:
         #print url
         #print post_data
         if (self.__ssl):
-            import ssl
-            context = ssl._create_unverified_context()
+            try:
+                import ssl
+                context = ssl._create_unverified_context()
+            except:
+                self.__ssl = False
         
         req = urllib2.Request(url, urllib.urlencode(post_data), headers)
         
