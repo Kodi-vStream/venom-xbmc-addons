@@ -801,12 +801,7 @@ def get_response(img,cookie):
     
     NewCookie = oRequestHandler.GetCookies()
 	
-    #Format ?
-    if 'GIF' in htmlcontent[:3]:
-        #cConfig().log('GIF format')
-        filename  = os.path.join(PathCache,'Captcha.gif')
-    else:
-        filename  = os.path.join(PathCache,'Captcha.png')
+    filename  = os.path.join(PathCache,'Captcha.raw')
     
     downloaded_image = file(filename, "wb")
     downloaded_image.write(htmlcontent)

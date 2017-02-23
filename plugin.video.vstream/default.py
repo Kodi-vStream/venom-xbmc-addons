@@ -223,11 +223,20 @@ def searchGlobal():
         oGui.addText2(plugin['identifier'], '%s. [COLOR olive]%s[/COLOR]' % ((count+1), plugin['name']), 'sites/%s.png' % (plugin['identifier']))
         #recherche import
         _pluginSearch(plugin, sSearchText)
-        
-    
-    
+      
     xbmcgui.Window(10101).setProperty('search', 'false')
+    
+    #affichage
+    total=len(oGui.searchResults)
+    
+    for count,result in enumerate(oGui.searchResults):
+        text = '%s/%s - %s' % ((count+1/total), total, result['guiElement'].getTitle())
+        cConfig().updateDialogSearch(dialog, total, text)
+        oGui.addFolder(result['guiElement'],result['params'])
+        #xbmc.log(str(result['guiElement'].getTitle()),  xbmc.LOGNOTICE)
+        
     cConfig().finishDialog(dialog)
+    
 
     oGui.setEndOfDirectory()
 

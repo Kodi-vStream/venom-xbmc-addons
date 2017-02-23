@@ -24,7 +24,7 @@ ANIM_NEWS = ('http://www.filmsvostfr.co/animes-en-streaming', 'showMovies')
 
 MOVIE_GENRES = (True, 'showGenre')
   
-URL_SEARCH = ('', 'showMovies')
+URL_SEARCH = ('http://www.filmsvostfr.co/recherche.htm?q=', 'showMovies')
  
 def load():
     oGui = cGui()
@@ -48,8 +48,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animes Nouveautés', 'news.png', oOutputParameterHandler)
-    
-           
+
     oGui.setEndOfDirectory()
  
 def showSearch():
@@ -57,7 +56,7 @@ def showSearch():
  
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = sSearchText 
+        sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return  
@@ -102,45 +101,35 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     
     if sSearch:
-        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'
+        sUrl = sSearch
+        # UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'
                                          
-        oRequestHandler = cRequestHandler(URL_MAIN +'search.php')
-        oRequestHandler.setRequestType(1)
-        oRequestHandler.addHeaderEntry('User-Agent' , UA)
-        oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        oRequestHandler.addHeaderEntry('Accept' , 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-        oRequestHandler.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
-        oRequestHandler.addHeaderEntry('Referer','http://www.filmsvostfr.co/search.php')
+        # oRequestHandler = cRequestHandler(URL_MAIN +'search.php')
+        # oRequestHandler.setRequestType(1)
+        # oRequestHandler.addHeaderEntry('User-Agent' , UA)
+        # oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        # oRequestHandler.addHeaderEntry('Accept' , 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        # oRequestHandler.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
+        # oRequestHandler.addHeaderEntry('Referer','http://www.filmsvostfr.co/search.php')
         
-        oRequestHandler.addParameters( 't' , sSearch)
-        oRequestHandler.addParameters( 'R_token' , 'U7OJA8L3qwr9DuqYANPWI9k3hGXqoSTp6DdaUuDi')
+        # oRequestHandler.addParameters( 't' , sSearch)
+        # oRequestHandler.addParameters( 'R_token' , 'U7OJA8L3qwr9DuqYANPWI9k3hGXqoSTp6DdaUuDi')
         
-        sHtmlContent = oRequestHandler.request()
-        
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
+        # sHtmlContent = oRequestHandler.request()
 
-        sUrl = 'http://www.filmsvostfr.co/search.php'
+
+        # sUrl = 'http://www.filmsvostfr.co/search.php'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
     
-        oRequestHandler = cRequestHandler(sUrl)
-        sHtmlContent = oRequestHandler.request()
-    
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-    
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
     sPattern = 'format-video hentry item-video">.+?<img src="(.+?)".+?<a href="([^<>"]+?)".+?<b>(.+?)<\/b>'
-         
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    #print aResult
-   
     if (aResult[0] == False):
         oGui.addNone(SITE_IDENTIFIER)
    

@@ -13,6 +13,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
+from resources.lib.config import GestionCookie
+
 import urllib,re,urllib2
 import xbmcgui
 import xbmc
@@ -223,7 +225,7 @@ def login():
     if cookies:
         cConfig().showInfo('vStream', 'Login OK')
         #save cookies
-        SaveCookie('streamase.com',cookies)
+        GestionCookie().SaveCookie('streamase.com',cookies)
     
     
     oGui.setEndOfDirectory()
@@ -255,7 +257,7 @@ def showMovies(sSearch = ''):
             sUrl = URL_FAV
             cookies = ''
             #try to get previous cookie
-            cookies = Readcookie('streamase.com')
+            cookies = GestionCookie().Readcookie('streamase.com')
             oRequestHandler = cRequestHandler(sUrl)
             if cookies:
                 oRequestHandler.addHeaderEntry('Cookie',cookies)
@@ -289,7 +291,7 @@ def showMovies(sSearch = ''):
    
         oRequestHandler = cRequestHandler(sUrl) 
         if URL_FAV in sUrl:
-            cookies = Readcookie('streamase.com')
+            cookies = GestionCookie().Readcookie('streamase.com')
             oRequestHandler.addHeaderEntry('Cookie',cookies)
  
         sHtmlContent = oRequestHandler.request()
@@ -305,7 +307,7 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    #xbmc.log(str(aResult))
+    #cConfig().log(str(aResult))
     
     if (aResult[0] == True):
         total = len(aResult[1])        
@@ -315,12 +317,10 @@ def showMovies(sSearch = ''):
             sUrl2 = aEntry[0]
             sCom = aEntry[4]
             sCom = sCom.decode("unicode_escape").encode("latin-1")
-            if 'http://' in aEntry[2]:
+            if aEntry[2].startswith('http'):
                 sThumbnail=aEntry[2]
             else:
-                sThumbnail=URL_MAIN+aEntry[2] 
-            
-            
+                sThumbnail=URL_MAIN+aEntry[2]
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl2)) 
@@ -367,13 +367,13 @@ def showHosters():# recherche et affiche les hotes
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumbnail=oInputParameterHandler.getValue('sThumbnail')
     
-    #xbmc.log(sUrl)
+    #cConfig().log(sUrl)
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #xbmc.log(sHtmlContent)
+
     oParser = cParser()
     
-    sPattern = '<!--/colorstart-->([^<]+)<!--colorend-->|<a href="([^"]+)" target="_blank">([^<]+?)</a>'
+    sPattern = '<!--/colorstart-->([^<]+)<!--colorend-->|<a href="([^"]+)" *target="_blank">([^<]+?)</a>'
    
     aResult = oParser.parse(sHtmlContent, sPattern)
     #xbmc.log(str(aResult))
@@ -402,29 +402,3 @@ def showHosters():# recherche et affiche les hotes
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
-  
-
-def DeleteCookie(Domain):
-    file = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
-    os.remove(os.path.join(PathCache,file))
-    
-def SaveCookie(Domain,data):
-    Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
-
-    #save it
-    file = open(Name,'w')
-    file.write(data)
-
-    file.close()
-    
-def Readcookie(Domain):
-    Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
-    
-    try:
-        file = open(Name,'r')
-        data = file.read()
-        file.close()
-    except:
-        return ''
-    
-    return data
