@@ -37,7 +37,7 @@ MANGA_NEWS = (URL_MAIN_MANGA + 'index.php?do=lastnews/' , 'showMovies')
 MANGA_GENRES = (True, 'showGenreMangas')
 
 #serie
-URL_MAIN_SERIE = 'http://series.streamase.com/'
+URL_MAIN_SERIE = 'http://serie.streamase.com/'
 SERIE_NEWS = (URL_MAIN_SERIE + 'index.php?do=lastnews/' , 'showMovies')
 SERIE_GENRES = (True, 'showGenreSeries')
 
