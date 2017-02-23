@@ -1,26 +1,24 @@
 #-*- coding: utf-8 -*-
 #Venom.
-from resources.lib.gui.hoster import cHosterGui #systeme de recherche pour l'hote
-from resources.lib.handler.hosterHandler import cHosterHandler #systeme de recherche pour l'hote
-from resources.lib.gui.gui import cGui #systeme d'affichage pour xbmc
-from resources.lib.gui.guiElement import cGuiElement #systeme d'affichage pour xbmc
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler #entree des parametres
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler #sortie des parametres
-from resources.lib.handler.requestHandler import cRequestHandler #requete url
-from resources.lib.config import cConfig #config
-from resources.lib.parser import cParser #recherche de code
-from resources.lib.util import cUtil #outils pouvant etre utiles
+from resources.lib.gui.hoster import cHosterGui
+from resources.lib.handler.hosterHandler import cHosterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.guiElement import cGuiElement
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.config import cConfig
+from resources.lib.parser import cParser
+from resources.lib.util import cUtil
+
 import re
  
-#Si vous créez une source et la deposez dans le dossier "sites" elle sera directement visible sous xbmc
+SITE_IDENTIFIER = 'french_stream_com'
+SITE_NAME = 'French-stream.com'
+SITE_DESC = 'films en streaming'
  
-SITE_IDENTIFIER = 'french_stream_com' #identifant (nom de votre fichier) remplacez les espaces et les . par _ AUCUN CARACTERE SPECIAL
-SITE_NAME = 'french-stream.com' # nom que xbmc affiche
-SITE_DESC = 'films en streaming, vk streaming, youwatch, vimple , streaming hd , streaming 720p , streaming sans limite' #description courte de votre source
+URL_MAIN = 'http://french-stream.com/'
  
-URL_MAIN = 'http://french-stream.com/' # url de votre source
- 
-#definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle seras affichee.
 URL_SEARCH = ('http://french-stream.com/index.php?story='),('showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
@@ -51,8 +49,8 @@ SPORT_SPORTS = ('http://url', 'showOthers') #sport
 MOVIE_NETS = ('http://url', 'showOthers') #video du net
 REPLAYTV_REPLAYTV = ('http://url', 'showOthers') #Replay
  
-def load(): #fonction chargee automatiquement par l'addon l'index de votre navigation.
-    oGui = cGui() #ouvre l'affichage
+def load():
+    oGui = cGui()
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -73,23 +71,22 @@ def load(): #fonction chargee automatiquement par l'addon l'index de votre navig
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries', 'series.png', oOutputParameterHandler)
  
              
-    oGui.setEndOfDirectory() #ferme l'affichage
+    oGui.setEndOfDirectory()
    
-def showSearch(): #function de recherche
+def showSearch():
     oGui = cGui()
  
-    sSearchText = oGui.showKeyBoard() #apelle le clavier xbmx
+    sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0]+sSearchText +'&do=search&subaction=search' #modifi l'url de recherche
-        showMovies(sUrl) #apelle la function qui pouras lire la page de resultats
+        sUrl = URL_SEARCH[0]+sSearchText +'&do=search&subaction=search'
+        showMovies(sUrl)
         oGui.setEndOfDirectory()
         return  
    
    
-def showGenre(): #affiche les genres
+def showGenre():
     oGui = cGui()
  
-    #juste a entrer les caterories et les liens qui vont bien
     liste = []
     liste.append( ['Action',URL_MAIN + 'xfsearch/genre-1/action'] )
     liste.append( ['Animation',URL_MAIN +'xfsearch/genre-1/animation'] )
@@ -118,12 +115,11 @@ def showGenre(): #affiche les genres
     liste.append( ['Western',URL_MAIN + 'xfsearch/genre-1/western/'] )
     liste.append( ['Divers',URL_MAIN + 'xfsearch/genre-1/divers/'] )
                
-    for sTitle,sUrl in liste:#boucle
+    for sTitle,sUrl in liste:
        
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)#sortie de l'url en parametre
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-        #ajouter un dossier vers la function showMovies avec le titre de chaque categorie.
        
     oGui.setEndOfDirectory()
  
@@ -397,6 +393,8 @@ def serieHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
+    #cConfig().log(sUrl)
+    
     oParser = cParser()
     
     #pour accelerer traitement
@@ -405,7 +403,7 @@ def serieHosters():
     if (aResult[0] == True):
         sHtmlContentListFile = aResult[1][0]     
         
-    sPattern = '<\/i> (VOSTFR|VF) *<\/div>|<a href="([^<>"]+)" title="([^<]+)" target="seriePlayer".+?>|<a " data-rel="episode([0-9]+)" class="fstab">'
+    sPattern = '<\/i> (VOSTFR|VF) *<\/div>|<a href="([^<>"]+)" target="seriePlayer" *title="([^"]+)" * data-rel="episode([0-9]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -422,30 +420,20 @@ def serieHosters():
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'host.png', oOutputParameterHandler)
-                
-            elif aEntry[1]:
-                sHosterUrl = str(aEntry[1])
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
-                sMovieTitle2 = aEntry[2]
-                sMovieTitle2 = re.sub(' en (VOSTFR|VF)','',sMovieTitle2)
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle2)
-        
-                if (oHoster != False):
-                    oHoster.setDisplayName(sDisplayTitle)
-                    oHoster.setFileName(sMovieTitle2)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
-            elif aEntry[3]:
-                    sPattern = '<div id="episode' + str(aEntry[4]) + '" class="fullsfeature">(.+?)<\/ul>'
+            elif aEntry[2]:
+                    sPattern = '<div id="episode' + str(aEntry[3]) + '" class="fullsfeature">(.+?)<\/ul>'
                     aResult3 = oParser.parse(sHtmlContentListFile, sPattern)
+                    
+                    #cConfig().log(sPattern)
 
                     if (aResult3[0] == True):
-                        sPattern = '<a href="([^<>"]+?)" target="seriePlayer" class="fsctab">'
+                        sPattern = '<a href="([^<>"]+?)" target="seriePlayer"'
                         aResult2 = oParser.parse(aResult3[1][0], sPattern)
 
                         if (aResult2[0] == True):
                             for aEntry2 in aResult2[1]:
-                                sMovieTitle2 = str(sMovieTitle) + ' '+  str(aEntry[3])
+                                sMovieTitle2 = str(sMovieTitle) + ' '+  str(aEntry[2])
                                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle2)
                                 
                                 sHosterUrl = aEntry2
