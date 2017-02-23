@@ -10,16 +10,17 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-import xbmc, re
-#from resources.lib.util import cUtil #outils pouvant etre utiles
+import xbmc
+import re
+from resources.lib.util import cUtil #outils pouvant etre utiles
 
-SITE_IDENTIFIER = 'zone_telechargement_eu'
-SITE_NAME = '[COLOR violet]Zone-Telechargement.eu[/COLOR]'
+SITE_IDENTIFIER = 'zone_telechargement_ru'
+SITE_NAME = '[COLOR violet]Zone-Telechargement.ru (Kodi V17)[/COLOR]'
 SITE_DESC = 'Films en DDL et streaming'
 
-URL_MAIN = 'http://www.zone-telechargement.eu/'
+URL_MAIN = 'https://www.zone-telechargement.ru/'
 
-URL_SEARCH = ('http://www.zone-telechargement.eu/?s=', 'showMovies')
+URL_SEARCH = ('https://www.zone-telechargement.ru/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -29,29 +30,29 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.zone-telechargement.eu/films/')
+    oOutputParameterHandler.addParameter('siteUrl', 'https://www.zone-telechargement.ru/films/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.zone-telechargement.eu/series/')
+    oOutputParameterHandler.addParameter('siteUrl', 'https://www.zone-telechargement.ru/series/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.zone-telechargement.eu/trending/')
+    oOutputParameterHandler.addParameter('siteUrl', 'https://www.zone-telechargement.ru/trending/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Tendances', 'views.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'http://www.zone-telechargement.eu/ratings/')
+    oOutputParameterHandler.addParameter('siteUrl', 'https://www.zone-telechargement.ru/ratings/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Evaluations', 'films_comments.png', oOutputParameterHandler)
 
     oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Genres', 'films_genres.png', oOutputParameterHandler)
 
     oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Année de sortie', 'news.png', oOutputParameterHandler)
 
-    xbmc.executebuiltin('Container.SetViewMode(500)')
+    
     oGui.setEndOfDirectory()
 
 def showGenres():
     oGui = cGui()
 
-    oRequestHandler = cRequestHandler('http://www.zone-telechargement.eu/')
+    oRequestHandler = cRequestHandler('https://www.zone-telechargement.ru/')
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<li class="cat-item.+?<a href="(.+?)">(.+?)</a>.+?</li>'
@@ -74,10 +75,10 @@ def showGenres():
 def showYears():
     oGui = cGui()
 
-    oRequestHandler = cRequestHandler('http://www.zone-telechargement.eu/')
+    oRequestHandler = cRequestHandler('https://www.zone-telechargement.ru/')
     sHtmlContent = oRequestHandler.request() 
 
-    sPattern = '<a href="(http://www.zone-telechargement.eu/release/(\d+?)/)">.+?</a>'
+    sPattern = '<a href="(https://www.zone-telechargement.ru/release/(\d+?)/)">.+?</a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -141,7 +142,7 @@ def showMovies(sSearch = '', page = 1):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle) #sortie du titre
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail) #sortie du poster
 
-            result = re.search('eu/series', sUrl)
+            result = re.search('ru/series', sUrl)
             if result:
                 oGui.addMovie(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', sThumbnail, sUrl, oOutputParameterHandler)
             else:
@@ -154,10 +155,6 @@ def showMovies(sSearch = '', page = 1):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
-
-    #tPassage en mode vignette sauf en cas de recherche globale
-    if not bGlobal_Search:
-        xbmc.executebuiltin('Container.SetViewMode(500)')
 
     if not sSearch:
         oGui.setEndOfDirectory()
