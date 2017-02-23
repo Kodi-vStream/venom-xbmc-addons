@@ -14,7 +14,7 @@ import xbmc
 import re
 from resources.lib.util import cUtil #outils pouvant etre utiles
 
-SITE_IDENTIFIER = 'zone_telechargement_ru'
+SITE_IDENTIFIER = 'zone_telechargement_eu'
 SITE_NAME = '[COLOR violet]Zone-Telechargement.ru (Kodi V17)[/COLOR]'
 SITE_DESC = 'Films en DDL et streaming'
 
