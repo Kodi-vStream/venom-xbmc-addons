@@ -21,17 +21,9 @@ Installer le zip du repository (pour avoir les mises à jour automatique) ou ins
 
 ## Video!
 
-######Video de présentation : Merci à Atlas
+######Video d'installation:
 
-[![Video de présentation](http://img.youtube.com/vi/LHV24CWg2hs/0.jpg)](https://www.youtube.com/watch?v=LHV24CWg2hs)
-
-######[Video de présentation2 : Merci à Atlas
-
-[![Video de présentation2](http://img.youtube.com/vi/reZ1ZKH41VE/0.jpg)](http://www.youtube.com/watch?v=reZ1ZKH41VE)
-
-######Video d'installation : Merci à Patulacci
-
-[![Video d'installation](http://img.youtube.com/vi/XeACz8uMoxQ/0.jpg)](http://www.youtube.com/watch?v=XeACz8uMoxQ)
+[![Video d'installation](http://img.youtube.com/vi/1uS5gbd8jpE/0.jpg)](https://www.youtube.com/watch?v=1uS5gbd8jpE)
 
 
 ## Quoi de neuf!
