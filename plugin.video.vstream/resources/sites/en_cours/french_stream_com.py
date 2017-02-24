@@ -30,12 +30,14 @@ MOVIE_NOTES = ('http://url', 'showMovies') # films mieux notés
 MOVIE_GENRES = (True, 'showGenre')
 MOVIE_VF = ('http://url', 'showMovies') # films VF
 MOVIE_VOSTFR = ('http://url', 'showMovies') # films VOSTFR
+MOVIE_HDLIGHT = (URL_MAIN + 'index.php?do=xfsearch&xfname=qualit&xf=HDLight','showMovies')
  
 SERIE_NEWS = ('http://french-stream.com/serie-tv-en-streaming/', 'showMovies') # serie nouveautés
 SERIE_SERIES = ('http://url', 'showSeries') # serie vrac
 SERIE_VFS = ('http://url', 'showSeries') # serie VF
 SERIE_VOSTFRS = ('http://url', 'showSeries') # serie Vostfr
 SERIE_GENRE = (True, 'showGenre')
+SERIE_HDLIGHT = (URL_MAIN + 'index.php?do=cat&category=serie-en-hd-streaming','showSeries')
  
 ANIM_NEWS = ('http://url', 'showAnimes') #anime nouveautés
 ANIM_ANIMS = ('http://url', 'showAnimes') #anime vrac
@@ -65,11 +67,18 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films Genre', 'genres.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_HDLIGHT[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HDLIGHT[1], 'Films HD-Light', 'genres.png', oOutputParameterHandler)
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries', 'series.png', oOutputParameterHandler)
- 
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_HDLIGHT[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries HD-Light', 'series.png', oOutputParameterHandler)
              
     oGui.setEndOfDirectory()
    
