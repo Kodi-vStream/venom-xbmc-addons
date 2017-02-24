@@ -162,7 +162,11 @@ class cFav:
         
     def setFavorite(self):
         oInputParameterHandler = cInputParameterHandler()
-        #xbmc.log(str(oInputParameterHandler.getAllParameter()))
+        #cConfig().log(str(oInputParameterHandler.getAllParameter()))
+        
+        if oInputParameterHandler.getValue('sId') == 'kepliz_com':
+            cConfig().showInfo('Error','Non possible pour ce site')
+            return
         
         if int(oInputParameterHandler.getValue('sCat')) < 1:
             cConfig().showInfo('Error','Mise en Favoris non possible pour ce lien')
