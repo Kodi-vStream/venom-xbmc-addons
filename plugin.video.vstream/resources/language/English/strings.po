@@ -12,6 +12,38 @@ msgctxt "#30001"
 msgid "Videoplayer"
 msgstr ""
 
+msgctxt "#30002"
+msgid "Auto-activate subtitles"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Activate filtering search"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Filter Error"
+msgstr ""
+
+msgctxt "#30005"
+msgid "VStream will be faster with your own API key."
+msgstr ""
+
+msgctxt "#30006"
+msgid "Search Metadata (slowed the Addon)"
+msgstr ""
+
+msgctxt "#30007"
+msgid "Posters Size"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Fanarts Size"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Use extendedinfo"
+msgstr ""
+
 msgctxt "#30500"
 msgid "Select"
 msgstr ""
