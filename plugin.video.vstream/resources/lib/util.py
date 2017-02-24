@@ -7,10 +7,24 @@ import htmlentitydefs
 import unicodedata
 
 class cUtil:
+
+    def CheckOrd(self, label):
+        count = 0
+        try:
+            label = label.lower()
+            label = label.strip()
+            label = unicode(label, 'utf-8')
+            label = unicodedata.normalize('NFKD', label).encode('ASCII', 'ignore')
+            for i in label:
+                count += ord(i)
+        except:
+            pass
+ 
+        return count
     
     def CheckOccurence(self,str1,str2):
         
-        Ignoreliste = ['du', 'la', 'le', 'les', 'de', 'un', 'une' ]
+        Ignoreliste = ['du', 'la', 'le', 'les', 'de', 'un', 'une','des']
         
         str1 = str1.replace('+',' ').replace('%20',' ')
         str1 = str1.lower()
@@ -26,7 +40,7 @@ class cUtil:
         str1 = unicodedata.normalize('NFKD', str1).encode('ASCII', 'ignore')
         str2 = unicodedata.normalize('NFKD', str2).encode('ASCII', 'ignore')
         
-        #xbmc.log(str1 + ' ---- ' + str2) 
+        #xbmc.log(str1 + ' ---- ' + str2, xbmc.LOGNOTICE)
         
         i = 0
         for part in str1.split(' '):

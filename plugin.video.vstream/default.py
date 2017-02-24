@@ -23,6 +23,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.config import cConfig
 from resources.lib.db import cDb
+from resources.lib.util import cUtil
 
 import xbmc, xbmcgui, sys
 
@@ -228,12 +229,24 @@ def searchGlobal():
     
     #affichage
     total=len(oGui.searchResults)
+    #filtre
+    int_1 = cUtil().CheckOrd(sSearchText)
     
     for count,result in enumerate(oGui.searchResults):
         text = '%s/%s - %s' % ((count+1/total), total, result['guiElement'].getTitle())
         cConfig().updateDialogSearch(dialog, total, text)
+        
+        #filtre
+        if cConfig().getSetting('search_filter') == 'true' and result['guiElement'].getFunction() != 'DoNothing':
+            int_2 = cUtil().CheckOrd(result['guiElement'].getFileName())
+            middle = int(abs(int_1-int_2))
+            #xbmc.log('%s (%s) - %s (%s)' % (middle, result['guiElement'].getFileName(), cConfig().getSetting('search_ord'), sSearchText),  xbmc.LOGNOTICE)
+            if middle > int(cConfig().getSetting('search_ord')):
+                continue
+            
+            
         oGui.addFolder(result['guiElement'],result['params'])
-        #xbmc.log(str(result['guiElement'].getTitle()),  xbmc.LOGNOTICE)
+        #xbmc.log('%s - %s' % (middle,old_label),  xbmc.LOGNOTICE)
         
     cConfig().finishDialog(dialog)
     

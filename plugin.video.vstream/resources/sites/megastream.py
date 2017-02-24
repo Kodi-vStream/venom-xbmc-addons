@@ -12,7 +12,7 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
-import re,urllib2,urllib,xbmc
+import re,urllib2,urllib
 import base64
 
 SITE_IDENTIFIER = 'megastream'
@@ -274,8 +274,6 @@ def resultSearch(sSearch):
             
             sDisplayTitle = cUtil().DecoTitle(sTitle + sQual)
             
-            xbmc.log(siteUrl)
-            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -298,8 +296,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        
-    xbmc.log(sUrl)
+
         
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -418,8 +415,7 @@ def showHosters():
     #on recupere d'abord les liens
     sPattern = '<div id="(lecteur_[0-9]+)">.+?data-tnetnoc-crs="([^"]+)"'
     tablink = re.findall(sPattern,sHtmlContent, re.DOTALL)
-    
-    #xbmc.log(str(tablink))
+
 
     #le classique
     sPattern = '<a href="#(lecteur_[0-9]+)".+?title="([^"]+)"\/> *([^<>]+)<\/a'
