@@ -272,7 +272,23 @@ class cGui():
         self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
+        
+    def addHistoryDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler = ''):
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(sId)
+        oGuiElement.setFunction(sFunction)
+        oGuiElement.setTitle(sLabel)
+        oGuiElement.setIcon(sIcon)
+        oGuiElement.setThumbnail(oGuiElement.getIcon())
+        oGuiElement.setMeta(0)
+        oGuiElement.setDirFanart(sIcon)
 
+        oOutputParameterHandler.addParameter('sFav', sFunction)
+        
+        self.createContexMenuDelEntryHistory(oGuiElement, oOutputParameterHandler)
+
+        self.addFolder(oGuiElement, oOutputParameterHandler)
+        
     #afficher les liens non playable
     def addFolder(self, oGuiElement, oOutputParameterHandler=''):
     
@@ -483,6 +499,8 @@ class cGui():
     def createContexMenuSettings(self, oGuiElement, oOutputParameterHandler= ''):
         self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'globalParametre','globalParametre','opensetting','[COLOR teal]'+cConfig().getlanguage(30023)+'[/COLOR]')
 
+    def createContexMenuDelEntryHistory(self, oGuiElement, oOutputParameterHandler= ''):
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDb','cDb','delEntry','[COLOR red]'+cConfig().getlanguage(30412)+'[/COLOR]')
     
     
     
