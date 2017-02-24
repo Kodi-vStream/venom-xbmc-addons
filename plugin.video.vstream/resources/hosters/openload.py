@@ -230,33 +230,25 @@ class cHoster(iHoster):
         urlcode = ''
         id = hideenurl
 
-        first_two_chars = int(float(id[0:][:2]))
-        
-        TabCode = {}
-        num = 2
+        first_char = int(id[0])
+        urlcode = []
+        num = 1
         
         while (num < len(id)):
-            key = int(float(id[num + 3:][:2]))
-            TabCode[key] = chr(int(float(id[num:][:3])) - first_two_chars)
-            num = num + 5
-            
-        sorted(TabCode, key=lambda key: TabCode[key])
-        urlcode = ''.join(['%s' % (value) for (key, value) in TabCode.items()])
-        
-        xbmc.log('> ' + urlcode)
-        #check if the url seem good                    
-        #if re.compile('~[0-9]{10}~').search(urlcode):
-        #    ok = True
-       
-        if not (urlcode):
-            return False,False
-        
-        #xbmc.log(urlcode)
-        
+            i = ord(id[num])
+            key = 0
+            if i <= 90:
+                key = i - 65
+            elif i >= 97:
+                key = 25 + i - 97
+            urlcode.append((key, chr(int(id[num + 2:num + 5]) // int(id[num + 1]) - first_char)))
+            num += 5
+
+        api_call = "https://openload.co/stream/" + ''.join([value for _, value in sorted(urlcode, key=lambda x: x[0])]) + "?mime=true"  
         #Now on teste les urls
-        api_call = "https://openload.co/stream/" + urlcode + "?mime=true"        
-        xbmc.log('1 er url : ' + api_call)
-        api_call = GetOpenloadUrl(api_call,self.__sUrl)
+        # api_call = "https://openload.co/stream/" + urlcode + "?mime=true"        
+        #xbmc.log('1 er url : ' + api_call)
+        #api_call = GetOpenloadUrl(api_call,self.__sUrl)
         
         if (False):
             #Si ca marche pas on teste d'autres trucs au hazard
