@@ -479,3 +479,7 @@ msgstr "Divers"
 msgctxt "#30411"
 msgid "Block sounds notifications"
 msgstr "Bloquer les sons des notifications"
+
+msgctxt "#30412"
+msgid "Delete entry"
+msgstr "Supprimer l'entrée"
