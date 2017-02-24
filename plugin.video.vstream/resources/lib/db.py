@@ -226,7 +226,20 @@ class cDb:
             return False, False
         self.dbcur.close()
 
-        
+    def delEntry(self,title):
+
+        sql_delete = "DELETE FROM history WHERE title = '%s'" % (title)
+
+        try:    
+            self.dbcur.execute(sql_delete)
+            self.db.commit()
+            cConfig().showInfo('vStream', "Supprimé de l'historique")
+            cConfig().update()
+            return False, False       
+        except Exception, e:
+            cConfig().log('SQL ERROR DELETE') 
+            return False, False
+        self.dbcur.close()            
         
     #***********************************
     #   Favoris fonctions
