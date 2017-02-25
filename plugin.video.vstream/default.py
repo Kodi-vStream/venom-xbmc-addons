@@ -95,7 +95,10 @@ class main:
 
             if (isTrakt(sSiteName, sFunction) == True):
                 return
-                
+            
+            if (iscDb(sSiteName, sFunction) == True):
+                return 
+            
             if sSiteName == 'globalSearch':
                 searchGlobal()
                 return
@@ -188,6 +191,15 @@ def isTrakt(sSiteName, sFunction):
         from resources.lib.trakt import cTrakt
         oTrakt = cTrakt()
         exec "oTrakt."+ sFunction +"()"
+        return True
+    return False
+
+def iscDb(sSiteName, sFunction):
+    oInputParameterHandler = cInputParameterHandler()
+    sSearchText = oInputParameterHandler.getValue('searchtext')
+    if (sSiteName == 'cDb'):
+        oDb = cDb()
+        exec "oDb."+ sFunction +"(sSearchText)"
         return True
     return False
 

@@ -454,7 +454,7 @@ class cHome:
                 oOutputParameterHandler.addParameter('searchtext', match[1])
                 oOutputParameterHandler.addParameter('disp', match[2])
                 oOutputParameterHandler.addParameter('readdb', 'False')
-                oGui.addDir('globalSearch', 'searchMovie', "- "+match[1], 'search.png', oOutputParameterHandler)
+                oGui.addHistoryDir('globalSearch', 'searchMovie', "- "+match[1], 'search.png', oOutputParameterHandler)
 
             if row:
 
