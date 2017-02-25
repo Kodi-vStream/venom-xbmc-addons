@@ -91,23 +91,12 @@ class cHosterGui:
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)           
         #Upload menu    
-        if ((oHoster.getPluginIdentifier() == 'uptobox') and (cConfig().getSetting('hoster_uptobox_premium') == 'true') and (cInputParameterHandler().getValue('site') != 'siteuptobox')):
-             oContext = cContextElement()
-             oContext.setFile('siteuptobox')
-             oContext.setSiteName(self.SITE_NAME)
-             oContext.setFunction('AddmyAccount')
-             oContext.setTitle('[COLOR dodgerblue]Ajouter à mon compte Uptobox[/COLOR]')
-             oContext.setOutputParameterHandler(oOutputParameterHandler)
-             oGuiElement.addContextItem(oContext)
+        if cInputParameterHandler().getValue('site') != 'siteuptobox' and cConfig().getSetting('hoster_uptobox_premium') == 'true' and oHoster.getPluginIdentifier() == 'uptobox' or oHoster.getPluginIdentifier() == 'uptostream':
+            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'siteuptobox','siteuptobox','AddmyAccount','[COLOR dodgerblue]Ajouter à mon compte Uptobox[/COLOR]')
+            
         #Upload url vers upto  
-        if ((oHoster.getPluginIdentifier() == 'onefichier') or (oHoster.getPluginIdentifier() == 'uplea') and (cConfig().getSetting('hoster_uptobox_premium') == 'true')):
-             oContext = cContextElement()
-             oContext.setFile('siteuptobox')
-             oContext.setSiteName(self.SITE_NAME)
-             oContext.setFunction('UptomyAccount')
-             oContext.setTitle('[COLOR dodgerblue]Ajouter à mon compte Uptobox[/COLOR]')
-             oContext.setOutputParameterHandler(oOutputParameterHandler)
-             oGuiElement.addContextItem(oContext)
+        if cConfig().getSetting('hoster_uptobox_premium') == 'true' and oHoster.getPluginIdentifier() == 'onefichier' or oHoster.getPluginIdentifier() == 'uplea':
+            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'siteuptobox','siteuptobox','UptomyAccount','[COLOR dodgerblue]Ajouter à mon compte Uptobox[/COLOR]')
                 
         #context FAV menu
         oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
