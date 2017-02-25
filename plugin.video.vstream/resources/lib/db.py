@@ -389,7 +389,7 @@ class cDb:
 
         title = self.str_conv(meta['title'])
         url = urllib.quote_plus(meta['url'])        
-        sIcon = meta['icon']
+        sIcon = urllib.quote_plus(meta['icon'])
         sPath = meta['path']
 
         ex = "INSERT INTO download (title, url, path, cat, icon, size, totalsize, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
