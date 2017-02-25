@@ -268,7 +268,7 @@ def showLinks():
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('HD streaming', '').replace('télécharger sur ','')
     oParser = cParser()
-    
+
     sPattern = '<img src="(\/images\/video-coming-soon\.jpg)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -276,7 +276,7 @@ def showLinks():
 
     #resume
     sCom= ''
-    sPattern = '<\/a>Regarder[^<>"]+?en streaming<\/h1>.+?">(.+?)<\/span>'
+    sPattern = '<span class="synopsis">([^<]+)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sCom = aResult[1][0]
@@ -317,11 +317,16 @@ def showHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     #evite redirection vers fausse video hs
-    if 'voirstream.org' in sUrl:
-        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
+    if 'filmsvostfr.vip' in sUrl:
+        sHost = 'www.filmsvostfr.vip'
+    elif 'voirstream.org' in sUrl:
+        sHost = 'www.voirstream.org'
+    
+    if 'filmsvostfr.vip' in sUrl or 'voirstream.org' in sUrl:   
+        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
         headers = {'User-Agent': UA ,
-                   'Host' : 'www.voirstream.org',
+                   'Host' : sHost,
                    'Referer': URL_MAIN ,
                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                    'Content-Type': 'text/html; charset=utf-8'}
@@ -337,7 +342,7 @@ def showHosters():
            if 'uptobox' in sHosterUrl:
                sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/uptoboxlink\.php\?link=)', 'http://uptobox.com/' ,sHosterUrl)
            elif '1fichier' in sHosterUrl:
-                 sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/1fichierlink\.php\?link=)', 'https://1fichier.com/?' ,sHosterUrl)
+               sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/1fichierlink\.php\?link=)', 'https://1fichier.com/?' ,sHosterUrl)
 
     else:
         sHosterUrl = sUrl
