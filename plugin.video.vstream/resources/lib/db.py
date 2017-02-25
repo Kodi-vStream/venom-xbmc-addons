@@ -184,8 +184,12 @@ class cDb:
         self.dbcur.close()          
 
     def del_history(self):
-
-        sql_delete = "DELETE FROM history;"
+    
+        oInputParameterHandler = cInputParameterHandler()    
+        if (oInputParameterHandler.exist('searchtext')):
+            sql_delete = "DELETE FROM history WHERE title = '%s'" % (oInputParameterHandler.getValue('searchtext'))
+        else:       
+            sql_delete = "DELETE FROM history;"
 
         try:    
             self.dbcur.execute(sql_delete)
@@ -197,7 +201,8 @@ class cDb:
             cConfig().log('SQL ERROR DELETE') 
             return False, False
         self.dbcur.close()  
-       
+    
+    
     def del_watched(self, meta):
         site = urllib.quote_plus(meta['site'])
         sql_select = "DELETE FROM watched WHERE site = '%s'" % (site)

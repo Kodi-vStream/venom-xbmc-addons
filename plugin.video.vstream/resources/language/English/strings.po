@@ -479,3 +479,10 @@ msgstr ""
 msgctxt "#30411"
 msgid "Block sounds notifications"
 msgstr ""
+
+msgctxt "#30412"
+msgid "[COLOR red]Delete entry[/COLOR]"
+msgstr ""
+
+msgctxt "#30413"
+msgid "[COLOR red]Delete history[/COLOR]"
