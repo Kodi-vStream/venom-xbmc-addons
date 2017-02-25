@@ -1,25 +1,16 @@
 #-*- coding: utf-8 -*-
 # Venom.
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import urllib2,urllib,re
-import xbmcgui
-import unicodedata,htmlentitydefs
-import xbmc
-
-from resources.lib.cloudflare import CloudflareBypass
-
 from resources.lib.packer import cPacker
+import urllib2,urllib,re,unicodedata
 
 SITE_IDENTIFIER = 'series_en_streaming_tv'
 SITE_NAME = 'Series-en-streaming.tv'
@@ -96,12 +87,12 @@ def AlphaDisplay():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sLetter = oInputParameterHandler.getValue('sLetter')
 
-    sHtmlContent = CloudflareBypass().GetHtml(sUrl)
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
     sPattern = '<a href=\'\.\.\/(serie\/.+?)\'>(' + sLetter + '[^<>]+?)<\/a><br>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-   
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -160,7 +151,6 @@ def showMovies(sSearch = ''):
 
             sUrl = aEntry[0] 
             sThumb = aEntry[1].replace('=200','=360')
-
             sTitle = CleanTitle(aEntry[2])
 
             if not sThumb.startswith('http'):
@@ -169,14 +159,11 @@ def showMovies(sSearch = ''):
              
             if not sUrl.startswith('http'):
                sUrl = URL_MAIN + sUrl[1:]
-           
-            #sDisplayTitle = cUtil().DecoTitle(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
- 
             oGui.addTV(SITE_IDENTIFIER, 'ShowSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
@@ -211,35 +198,19 @@ def showLasts():
 
             sUrl = aEntry[0] 
             sThumb = aEntry[1].replace('=110','=360') #qualité image
-
             sMovieTitle = aEntry[2] + ' ' + aEntry[3]
-            
             sDisplayTitle = [cUtil().DecoTitle(sMovieTitle), aEntry[4]]
-            
-            # season = re.search('S([0-9]{1,2})', aEntry[3])
-            # if season:
-                # season = (season.group(1))
-
-            # episode = re.search('E([0-9]{1,2})', aEntry[3])
-            # if episode:
-                # episode = (episode.group(1))
-                
 
             if not sThumb.startswith('http'):
                sThumb = URL_MAIN + sThumb[1:]
 
-             
             if not sUrl.startswith('http'):
                sUrl = URL_MAIN + sUrl[1:]
-           
-            #sDisplayTitle = cUtil().DecoTitle(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-            
- 
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
@@ -259,8 +230,6 @@ def showHosters():
     sPattern = "<a class=\"host-a wrap\" onclick=\"image\('([^']+)'\).+?<span>([^\.<>]+)\..{1,3}<\/span> *<span style='color: #[0-9A-Z]+'>&nbsp;\[(.+?)\]<\/span>"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -298,8 +267,6 @@ def GetLink():
     oParser = cParser()
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'   
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-
     if (aResult[0] == True):
         sHosterUrl = cPacker().unpack(aResult[1][0])
         
@@ -314,11 +281,9 @@ def GetLink():
             oHoster = False
     
         if (oHoster != False):         
-                
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             oHoster.setDisplayName(sDisplayTitle)
             oHoster.setFileName(sTitle)
-
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
 
     oGui.setEndOfDirectory() 
@@ -409,7 +374,6 @@ def showEpisode():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
- 
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sCom, oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
