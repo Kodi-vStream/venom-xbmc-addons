@@ -47,7 +47,7 @@ class cDownloadProgressBar(threading.Thread):
         self.__sTitle = ''
         self.__sUrl = ''
         self.__fPath = ''
-        self.__bFastMode = False
+        self.__bFastMode = True
     
         if (kwargs):
             self.__sTitle = kwargs['title']
@@ -487,8 +487,8 @@ class cDownload:
         title = data[1]
         url = urllib.unquote_plus(data[2])
         path = data[3]
-        thumbnail = data[4]
-        status = data[8]
+        #thumbnail = urllib.unquote_plus(data[4])
+        #status = data[8]
 
         self.download(url,title,path)
                 
@@ -542,7 +542,14 @@ class cDownload:
             title = data[1]
             url = urllib.unquote_plus(data[2])
             cat = data[4]
-            thumbnail = data[5]
+            thumbnail = urllib.unquote_plus(data[5])
+            #The url is unicode format ? Not managed yet
+            try:
+                #thumbnail = urllib.quote(thumbnail.encode('utf-8'), safe=':/.+?&')
+                thumbnail = str(thumbnail)
+            except:
+                thumbnail = ''
+            
             size = data[6]
             totalsize = data[7]
             status = data[8]
@@ -711,8 +718,8 @@ class cDownload:
                     title = row[0][1]
                     url = urllib.unquote_plus(row[0][2])
                     path = row[0][3]
-                    thumbnail = row[0][4]
-                    status = row[0][8]
+                    #thumbnail = urllib.unquote_plus(row[0][4])
+                    #status = row[0][8]
                     if (self.download(url,title,path,True) == True): #Download in fastmode
                         
                         #ok on attend un peu, et on lance le stream
