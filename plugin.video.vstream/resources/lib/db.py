@@ -299,7 +299,7 @@ class cDb:
         except Exception, e:
             cConfig().log('SQL ERROR EXECUTE') 
             return False, False
-            self.dbcur.close() 
+        self.dbcur.close() 
         
     def getFav(self):
         oGui = cGui()
