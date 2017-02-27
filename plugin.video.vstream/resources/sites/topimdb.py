@@ -28,7 +28,7 @@ SITE_DESC = 'Base de donnÃ©es video.'
 URL_MAIN = 'http://imdb.com'
  
 #URL_SEARCH = (URL_MAIN + '/find?ref_=nv_sr_fn&s=all&q=', 'showMovies')
-URL_SEARCH = (URL_MAIN + '/find?ref_=nv_sr_fn&q=&s=tt', 'showMovies')
+#URL_SEARCH = (URL_MAIN + '/find?ref_=nv_sr_fn&q=&s=tt', 'showMovies')
 #FUNCTION_SEARCH = 'showMovies'
                
 
@@ -73,27 +73,27 @@ FANART_URL = 'https://ia.media-.imdb.com/images/m/'
 #FANART_URL = 'https://image.tmdb.org/t/p/original/'
    
  
-def showSearch():
-    oGui = cGui()
+#def showSearch():
+    #oGui = cGui()
  
-    sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
-        sSearchText = cUtil().urlEncode(sSearchText)
-        #sUrl = 'http://imdb.com/search/title?groups=top_1000&sort=user_rating,desc&start=%s'+sSearchText
-        sUrl = URL_SEARCH[0] + sSearchText
+    #sSearchText = oGui.showKeyBoard()
+    #if (sSearchText != False):
+        #sSearchText = cUtil().urlEncode(sSearchText)
+        ##sUrl = 'http://imdb.com/search/title?groups=top_1000&sort=user_rating,desc&start=%s'+sSearchText
+        #sUrl = URL_SEARCH[0] + sSearchText
  
-        showMovies(sUrl)
-        oGui.setEndOfDirectory()
-        return
+        #showMovies(sUrl)
+        #oGui.setEndOfDirectory()
+        #return
  
  
 def load():
     oGui = cGui()
    
     #inutile
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Film', 'search.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    #oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Film', 'search.png', oOutputParameterHandler)
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_WORLD[0])
@@ -190,7 +190,9 @@ def showMovies(sSearch = '', page = 1):
             oOutputParameterHandler.addParameter('siteUrl', ('none'))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[0]))
             #oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[1]))            
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+            #oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('searchtext', showTitle(str(aEntry[0]),  str('none')))
+            oGui.addMovie('globalSearch', 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
            
         cConfig().finishDialog(dialog)
  
@@ -220,20 +222,24 @@ def __checkForNextPage(sHtmlContent):
  
     return False
 
-    
-def showHosters():
 
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+def showTitle(sMovieTitle, sUrl):
     
     sExtraTitle = ''
+    #si c'est une serie
+    if sUrl != 'none':
+        sExtraTitle = sUrl.split('|')[1]
+        sMovieTitle = sUrl.split('|')[0]
+      
+    #nettoyage du nom pr la recherche
+    #print 'avant ' + sMovieTitle    
 
+    #ancien decodage
     sMovieTitle = unicode(sMovieTitle, 'utf-8')#converti en unicode pour aider aux convertions
     sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
     sMovieTitle = sMovieTitle.encode("utf-8").lower() #on repasse en utf-8
-
+    
+    
     sMovieTitle = urllib.quote(sMovieTitle)
     
     sMovieTitle = re.sub('\(.+?\)',' ', sMovieTitle) #vire les tags entre parentheses
@@ -241,44 +247,16 @@ def showHosters():
     #modif venom si le titre comporte un - il doit le chercher
     sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle) #vire les caracteres a la con qui peuvent trainer
     
-    
-    sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)',' ', sMovieTitle) #vire les articles
+    #sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)',' ', sMovieTitle) #vire les articles
 
-    sMovieTitle = re.sub(' +',' ',sMovieTitle)
-    
-
-    dialog3 = xbmcgui.Dialog()
-    ret = dialog3.select('Selectionner un Moteur de Recherche',['Vstream (Fiable mais plus complexe)','Alluc (Simple mais resultats non garantis)'])
-
-    if ret == 0:
-        VstreamSearch(sMovieTitle)
-    elif ret == 1:
-        #AllucSearch(sMovieTitle + sExtraTitle)
-        #modif test prÃ©fÃ©re les accent supprimer Ã© = e
+    sMovieTitle = re.sub(' +',' ',sMovieTitle) #vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
+    #print 'apres ' + sMovieTitle
+    #modif ici
+    if sExtraTitle:
         sMovieTitle = sMovieTitle.replace('%C3%A9','e').replace('%C3%A0','a')
-        AllucSearch(sMovieTitle + sExtraTitle)
+        sMovieTitle = sMovieTitle + sExtraTitle
+    else:
+        sMovieTitle = sMovieTitle
 
-def VstreamSearch(sMovieTitle):
-    
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    
-    oHandler = cRechercheHandler()
-    oHandler.setText(sMovieTitle)
-    #oHandler.setDisp(sDisp)
-    aPlugins = oHandler.getAvailablePlugins()
-                
-    oGui.setEndOfDirectory()
-    
-def AllucSearch(sMovieTitle):
-    oGui = cGui()
-    
-    exec "from resources.sites import alluc_ee as search"
-    sUrl = 'http://www.alluc.ee/stream/lang%3Afr+' + sMovieTitle
-    #xbmc.log(str(sUrl))
-    searchUrl = "search.%s('%s')" % ('showMovies', sUrl)
-    exec searchUrl
-    
-    oGui.setEndOfDirectory()
+    return sMovieTitle
    

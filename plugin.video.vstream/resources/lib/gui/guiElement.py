@@ -271,11 +271,18 @@ class cGuiElement:
         elif sIcon == 'library.png':
             self.__sFanart = cConfig().getSetting('images_librarys')
             
+        elif sIcon == 'actor.png':
+            self.__sFanart = self.__sFanart
+            
+        elif sIcon == 'star.png':
+            self.__sFanart = self.__sFanart
+            
         elif xbmc.getInfoLabel('ListItem.Art(fanart)') != '':
             self.__sFanart = xbmc.getInfoLabel('ListItem.Art(fanart)')
             
         else :
             self.__sFanart = self.__sFanart
+        return self.__sFanart
 
     def getFanart(self):
         return self.__sFanart
