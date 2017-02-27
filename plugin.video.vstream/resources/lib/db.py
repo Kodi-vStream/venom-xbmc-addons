@@ -271,15 +271,27 @@ class cDb:
             return None
         self.dbcur.close()
 
-    def del_favorite(self, meta):
-        siteUrl = urllib.quote_plus(meta['siteurl'])
-        title = self.str_conv(meta['title'])
-        title = title.replace("'", r"''")       
-
-        sql_select = "DELETE FROM favorite WHERE siteurl = '%s' AND title = '%s'" % (siteUrl,title)
+    def del_favorite(self):
+        
+        oInputParameterHandler = cInputParameterHandler()
+        
+        if (oInputParameterHandler.exist('sCat')):
+            sql_delete = "DELETE FROM favorite WHERE cat = '%s'" % (oInputParameterHandler.getValue('sCat'))
+        
+        elif(oInputParameterHandler.exist('sMovieTitle')):
+            
+            siteUrl = oInputParameterHandler.getValue('siteUrl')
+            sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+            siteUrl = urllib.quote_plus(siteUrl)
+            title = self.str_conv(sMovieTitle)
+            title = title.replace("'", r"''")       
+            sql_delete = "DELETE FROM favorite WHERE siteurl = '%s' AND title = '%s'" % (siteUrl,title)
+        
+        else:       
+            sql_delete = "DELETE FROM favorite;"
 
         try:    
-            self.dbcur.execute(sql_select)
+            self.dbcur.execute(sql_delete)
             self.db.commit()
             cConfig().showInfo('vStream', 'Favoris supprimé')
             cConfig().update()
@@ -287,7 +299,7 @@ class cDb:
         except Exception, e:
             cConfig().log('SQL ERROR EXECUTE') 
             return False, False
-        self.dbcur.close() 
+            self.dbcur.close() 
         
     def getFav(self):
         oGui = cGui()

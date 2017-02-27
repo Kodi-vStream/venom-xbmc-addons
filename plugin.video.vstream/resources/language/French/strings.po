@@ -321,8 +321,8 @@ msgid "Mark diverses"
 msgstr "Marque-Diver"
 
 msgctxt "#30209"
-msgid "Delete Bookmark"
-msgstr "Supprimer Marque-page"
+msgid "[COLOR red]Delete Bookmark[/COLOR]"
+msgstr "[COLOR red]Supprimer Marque-page[/COLOR]"
 
 msgctxt "#30210"
 msgid "Display Bookmark"

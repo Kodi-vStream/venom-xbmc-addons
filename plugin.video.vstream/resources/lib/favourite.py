@@ -23,20 +23,8 @@ class cFav:
       
 
     def delFavourites(self):
-        
-        oInputParameterHandler = cInputParameterHandler()
-        siteUrl = oInputParameterHandler.getValue('siteUrl')
-        sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-
-        meta = {}      
-        meta['title'] = xbmc.getInfoLabel('ListItem.title')
-        meta['siteurl'] = siteUrl
-        try:
-            cDb().del_favorite(meta)
-        except:
-            pass
-        
-        return
+        cDb().del_favorite()
+        return True
   
     def getFavourites(self):
         oGui = cGui()
@@ -80,6 +68,9 @@ class cFav:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '5')
         oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Divers (' + str(compt[5]) + ')', 'mark.png', oOutputParameterHandler)
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oGui.addDir(SITE_IDENTIFIER, 'delFavourites', cConfig().getlanguage(30209), 'mark.png', oOutputParameterHandler)
         
         #A virer dans les versions future, pour le moment c'est juste pr supprimer les liens bugges
         if compt[0] > 0:
@@ -147,15 +138,20 @@ class cFav:
                     oGuiElement.setThumbnail(thumbnail)
                     oGuiElement.setFanart(fanart)
                     
-                    oGui.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
-                    
+                    #self.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
+                    oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','delFavourites',cConfig().getlanguage(30412))
+                                        
                     if (function == 'play'):
                         oGui.addHost(oGuiElement, oOutputParameterHandler)
                     else:
                         oGui.addFolder(oGuiElement, oOutputParameterHandler)
                         
                     #oGui.addFav(site, function, title, "mark.png", thumbnail, fanart, oOutputParameterHandler)
-               
+             
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('sCat', sCat)
+            oGui.addDir(SITE_IDENTIFIER, 'delFavourites', cConfig().getlanguage(30209), 'mark.png', oOutputParameterHandler)
+                 
             oGui.setEndOfDirectory()
         except: pass
         return
