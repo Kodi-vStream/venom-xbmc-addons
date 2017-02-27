@@ -51,10 +51,18 @@ grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
 
 def load():
     oGui = cGui()
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'search/movie')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche de film', 'search.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'search/tv')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchSerie', 'Recherche de serie', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'movie/popular')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Populaires', 'comments.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Populaires', 'films_comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'movie/now_playing')
@@ -62,15 +70,15 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'movie/top_rated')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films les mieux notés', 'notes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films les mieux notés', 'films_notes.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'genre/movie/list')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenreMovie', 'Films Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenreMovie', 'Films Genres', 'films_genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'tv/popular')
-    oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries Populaires', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries Populaires', 'series_comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'tv/on_the_air')
@@ -78,27 +86,19 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'tv/top_rated')
-    oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries les mieux notés', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries les mieux notés', 'series_notes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'genre/tv/list')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenreTV', 'Séries Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenreTV', 'Séries Genres', 'series_genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'person/popular')
-    oGui.addDir(SITE_IDENTIFIER, 'showActors', 'Acteurs Populaires', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showActors', 'Acteurs Populaires', 'actor.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir('topimdb', 'load', 'Top Imdb', 'films.png', oOutputParameterHandler)
-    
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'search/movie')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche de film', 'films.png', oOutputParameterHandler)
-    
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'search/tv')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchSerie', 'Recherche de serie', 'series.png', oOutputParameterHandler)
+    oGui.addDir('topimdb', 'load', 'Top Imdb', 'star.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
  
@@ -606,85 +606,6 @@ def showTitle(sMovieTitle, sUrl):
 
     return sMovieTitle
 
-def showHosters():
-
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
-    sExtraTitle = ''
-    #si c'est une serie
-    if sUrl != 'none':
-        sExtraTitle = sUrl.split('|')[1]
-        sMovieTitle = sUrl.split('|')[0]
-      
-    #nettoyage du nom pr la recherche
-    #print 'avant ' + sMovieTitle    
-
-    #ancien decodage
-    sMovieTitle = unicode(sMovieTitle, 'utf-8')#converti en unicode pour aider aux convertions
-    sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
-    sMovieTitle = sMovieTitle.encode("utf-8").lower() #on repasse en utf-8
-    
-    
-    sMovieTitle = urllib.quote(sMovieTitle)
-    
-    sMovieTitle = re.sub('\(.+?\)',' ', sMovieTitle) #vire les tags entre parentheses
-    
-    #modif venom si le titre comporte un - il doit le chercher
-    sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle) #vire les caracteres a la con qui peuvent trainer
-    
-    sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)',' ', sMovieTitle) #vire les articles
-
-    sMovieTitle = re.sub(' +',' ',sMovieTitle) #vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
-    #print 'apres ' + sMovieTitle
-    #modif ici
-    if sExtraTitle:
-        sMovieTitle = sMovieTitle.replace('%C3%A9','e').replace('%C3%A0','a')
-        VstreamSearch(sMovieTitle + sExtraTitle)
-    else:
-        VstreamSearch(sMovieTitle)    
-
-        
-def VstreamSearch(sMovieTitle):
-
-    sPluginPath = cPluginHandler().getPluginPath();
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-        
-    oOutputParameterHandler = cOutputParameterHandler()
-    
-    
-    oOutputParameterHandler.addParameter('searchtext', str(sMovieTitle))
-    oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    sParams = oOutputParameterHandler.getParameterAsUri()
-    sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, 'globalSearch', 'load', sParams)
-    xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest )
-
-def VstreamSearch_old(sMovieTitle):
-    
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    
-    oHandler = cRechercheHandler()
-    oHandler.setText(sMovieTitle)
-    #oHandler.setDisp(sDisp)
-    aPlugins = oHandler.getAvailablePlugins()
-                
-    oGui.setEndOfDirectory()
-    
-# def AllucSearch(sMovieTitle):
-    # oGui = cGui()
-    
-    # exec "from resources.sites import alluc_ee as search"
-    # sUrl = 'http://www.alluc.ee/stream/lang%3Afr+' + sMovieTitle
-    # #xbmc.log(str(sUrl))
-    # searchUrl = "search.%s('%s')" % ('showMovies', sUrl)
-    # exec searchUrl
-    
-    # oGui.setEndOfDirectory()
     
 def addMoviedb(sId, sFunction, sLabel, sIcon, sThumbnail, fanart, oOutputParameterHandler = ''):
     

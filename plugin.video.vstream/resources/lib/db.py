@@ -184,8 +184,12 @@ class cDb:
         self.dbcur.close()          
 
     def del_history(self):
-
-        sql_delete = "DELETE FROM history;"
+    
+        oInputParameterHandler = cInputParameterHandler()    
+        if (oInputParameterHandler.exist('searchtext')):
+            sql_delete = "DELETE FROM history WHERE title = '%s'" % (oInputParameterHandler.getValue('searchtext'))
+        else:       
+            sql_delete = "DELETE FROM history;"
 
         try:    
             self.dbcur.execute(sql_delete)
@@ -197,7 +201,8 @@ class cDb:
             cConfig().log('SQL ERROR DELETE') 
             return False, False
         self.dbcur.close()  
-       
+    
+    
     def del_watched(self, meta):
         site = urllib.quote_plus(meta['site'])
         sql_select = "DELETE FROM watched WHERE site = '%s'" % (site)
@@ -266,15 +271,27 @@ class cDb:
             return None
         self.dbcur.close()
 
-    def del_favorite(self, meta):
-        siteUrl = urllib.quote_plus(meta['siteurl'])
-        title = self.str_conv(meta['title'])
-        title = title.replace("'", r"''")       
-
-        sql_select = "DELETE FROM favorite WHERE siteurl = '%s' AND title = '%s'" % (siteUrl,title)
+    def del_favorite(self):
+        
+        oInputParameterHandler = cInputParameterHandler()
+        
+        if (oInputParameterHandler.exist('sCat')):
+            sql_delete = "DELETE FROM favorite WHERE cat = '%s'" % (oInputParameterHandler.getValue('sCat'))
+        
+        elif(oInputParameterHandler.exist('sMovieTitle')):
+            
+            siteUrl = oInputParameterHandler.getValue('siteUrl')
+            sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+            siteUrl = urllib.quote_plus(siteUrl)
+            title = self.str_conv(sMovieTitle)
+            title = title.replace("'", r"''")       
+            sql_delete = "DELETE FROM favorite WHERE siteurl = '%s' AND title = '%s'" % (siteUrl,title)
+        
+        else:       
+            sql_delete = "DELETE FROM favorite;"
 
         try:    
-            self.dbcur.execute(sql_select)
+            self.dbcur.execute(sql_delete)
             self.db.commit()
             cConfig().showInfo('vStream', 'Favoris supprimé')
             cConfig().update()
@@ -384,7 +401,7 @@ class cDb:
 
         title = self.str_conv(meta['title'])
         url = urllib.quote_plus(meta['url'])        
-        sIcon = meta['icon']
+        sIcon = urllib.quote_plus(meta['icon'])
         sPath = meta['path']
 
         ex = "INSERT INTO download (title, url, path, cat, icon, size, totalsize, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"

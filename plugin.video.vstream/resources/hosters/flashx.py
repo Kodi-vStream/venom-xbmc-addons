@@ -105,8 +105,8 @@ def LoadLinks(htmlcode):
             #pour test
             if '.js' not in sUrl:
                 continue
-            if 'flashx' in sUrl:
-                continue
+            #if 'flashx' in sUrl:
+                #continue
 
                 
             headers8 = {

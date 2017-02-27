@@ -454,13 +454,22 @@ class cHome:
                 oOutputParameterHandler.addParameter('searchtext', match[1])
                 oOutputParameterHandler.addParameter('disp', match[2])
                 oOutputParameterHandler.addParameter('readdb', 'False')
-                oGui.addDir('globalSearch', 'searchMovie', "- "+match[1], 'search.png', oOutputParameterHandler)
+                
+                
+                oGuiElement = cGuiElement()
+                oGuiElement.setSiteName('globalSearch')
+                oGuiElement.setFunction('searchMovie')
+                oGuiElement.setTitle("- "+match[1])
+                oGuiElement.setFileName(match[1])
+                oGuiElement.setIcon("search.png")
+                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,'cHome','delSearch', cConfig().getlanguage(30412))
+                oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
             if row:
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-                oGui.addDir(SITE_IDENTIFIER, 'delSearch', '[COLOR red]Supprimer l\'historique[/COLOR]', 'search.png', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'delSearch', cConfig().getlanguage(30413), 'search.png', oOutputParameterHandler)
 
 
         oGui.setEndOfDirectory()

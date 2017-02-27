@@ -19,9 +19,9 @@ Vstream est un addon pour xbmc qui vous permet de visionner en streaming un gran
 
 Installer le zip du repository (pour avoir les mises à jour automatique) ou installer la dernière version.
 
-[Télécharger le Repository](https://github.com/LordVenom/venom-xbmc-addons/releases/tag/Repository)
+[Télécharger le Repository](https://github.com/Kodi-vStream/venom-xbmc-addons/releases/tag/Repository)
 
-[Voir toutes les Versions](https://github.com/LordVenom/venom-xbmc-addons/releases)
+[Voir toutes les Versions](https://github.com/Kodi-vStream/venom-xbmc-addons/releases/)
 
 ## Video!
 
@@ -30,14 +30,14 @@ Installer le zip du repository (pour avoir les mises à jour automatique) ou ins
 
 ## Quoi de neuf!
 
-[Voir le changelog](https://github.com/LordVenom/venom-xbmc-addons/blob/master/plugin.video.vstream/changelog.txt)
+[Voir le changelog](https://github.com/Kodi-vStream/venom-xbmc-addons/blob/Beta/plugin.video.vstream/changelog.txt)
 
 
 ## Contribuer!
 
 Pour me proposer de nouvelles sources ou me rapporter un bug utiliser
 
-[Issues Github](https://github.com/LordVenom/venom-xbmc-addons/issues)
+[Issues Github](https://github.com/Kodi-vStream/venom-xbmc-addons/issues)
 
 [Twitter @LordVenom57](https://twitter.com/LordVenom57)
 
@@ -46,11 +46,16 @@ Pour me proposer de nouvelles sources ou me rapporter un bug utiliser
 
 Pour créer un nouvelle source utiliser le fichier avec commentaire pour vous aider.
 
-[Fichier avec commentaire](https://github.com/LordVenom/venom-xbmc-addons/blob/master/ajouter_une_source.py)
+[Fichier avec commentaire (source)](https://github.com/Kodi-vStream/venom-xbmc-addons/blob/Beta/ajouter_une_source.py)
+
+[Fichier avec commentaire (host)](https://github.com/Kodi-vStream/venom-xbmc-addons/blob/Beta/ajouter_un_hebergeur.py)
+
 
 Pour participer directement au projet
 
-[github bêta](https://github.com/LordVenom/venom-xbmc-addons-beta)
+[github bêta](https://github.com/Kodi-vStream/venom-xbmc-addons/tree/Beta)
+
+[Télécharger la bêta](https://minhaskamal.github.io/DownGit/#/home?url=https:%2F%2Fgithub.com%2FKodi-vStream%2Fvenom-xbmc-addons%2Ftree%2FBeta%2Fplugin.video.vstream)
 
 
 ## Faire un Don!

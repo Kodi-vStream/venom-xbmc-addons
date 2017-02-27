@@ -10,21 +10,21 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re,urllib,urllib2,xbmc
+import re,urllib,urllib2
  
 SITE_IDENTIFIER = 'filmsvostfr_biz'
 SITE_NAME = 'Filmsvostfr'
 SITE_DESC = 'Films/Serie/Anime'
  
-URL_MAIN = 'http://www.filmsvostfr.co/'
+URL_MAIN = 'http://www.filmsvostfr.cc/'
 
-MOVIE_NEWS = ('http://www.filmsvostfr.co/films-en-streaming', 'showMovies')
-SERIE_NEWS = ('http://www.filmsvostfr.co/series-en-streaming', 'showMovies')
-ANIM_NEWS = ('http://www.filmsvostfr.co/animes-en-streaming', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films-en-streaming', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'series-en-streaming', 'showMovies')
+ANIM_NEWS = (URL_MAIN + 'animes-en-streaming', 'showMovies')
 
 MOVIE_GENRES = (True, 'showGenre')
   
-URL_SEARCH = ('http://www.filmsvostfr.co/recherche.htm?q=', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'recherche.htm?q=', 'showMovies')
  
 def load():
     oGui = cGui()
@@ -214,18 +214,17 @@ def showEpisode():
     #resume
     sCom= ''
     if '/anime-' in sUrl:
-        sPattern = '<span>Synopsis.+?<\/span><span style=.+?>([^<]+)<\/span><\/p><center>'
+        sPattern = '<span>Synopsis.+?<\/span><span>([^<]+)<\/span><\/p>'
     else:
-        sPattern = '<span>Résumé.+?<\/span><span style=.+?>([^<]+)<\/span><\/p><div><center>'
+        sPattern = '<span>Résumé.+?<\/span><span>([^<]+)<\/span><\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sCom = aResult[1][0]
 
-    sPattern = '<span class="info"> SAISON <span style="color:#499db7;">([0-9]+)<\/span>'
-    sPattern = sPattern + '|' + 'href="/([^<>"]+?)">épisode ([0-9]+)<\/a><\/li>'
+    sPattern = '<span>(.aison *\d+.+?)<\/span>'
+    sPattern = sPattern + '|href="([^"]+)">(épisode.+?)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
-    Saison = '0'
+    SaisonNum = '0'
    
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -237,17 +236,22 @@ def showEpisode():
                 break
                         
             if aEntry[0]:
-                Saison = str(aEntry[0])
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]Saison '+ Saison + '[/COLOR]')
+                SaisonNum = oParser.getNumberFromString(aEntry[0])
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]Saison ' + SaisonNum + '[/COLOR]')
             else:
-                sTitle = sMovieTitle + ' S' + Saison + 'E' + aEntry[2]
+                if 'aison' in sMovieTitle:
+                    sTitle = sMovieTitle + aEntry[2]
+                else:
+                    sTitle = sMovieTitle + ' S' + SaisonNum + aEntry[2]
+                    
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
+                sUrl = 'http://www.filmsvostfr.cc' + aEntry[1]
                 
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + aEntry[1])
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addTV(SITE_IDENTIFIER, 'showHostersSetA', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
            
@@ -265,9 +269,14 @@ def showLinks():
     sHtmlContent = sHtmlContent.replace('HD streaming', '').replace('télécharger sur ','')
     oParser = cParser()
 
+    sPattern = '<img src="(\/images\/video-coming-soon\.jpg)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        oGui.addText2(SITE_IDENTIFIER,'[COLOR crimson]' + 'Vidéo bientôt disponible' + '[/COLOR]')
+
     #resume
     sCom= ''
-    sPattern = '<\/a>Regarder[^<>"]+?en streaming<\/h1>.+?">(.+?)<\/span>'
+    sPattern = '<span class="synopsis">([^<]+)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sCom = aResult[1][0]
@@ -287,7 +296,7 @@ def showLinks():
             sUrl = aEntry[0]
             sHost = aEntry[1]
             sLang = aEntry[2].replace(' ','')
-            sTitle = ('[COLOR coral]' + '[' + sLang + ']' + '[/COLOR]' + ' ' + sMovieTitle + ' ' + '[COLOR teal]>> ' + sHost + '[/COLOR]')
+            sTitle = ('[COLOR coral]' + '[' + sLang + ']' + '[/COLOR]' + ' ' + sMovieTitle + ' ' + '[COLOR coral]>> ' + sHost + '[/COLOR]')
 
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -308,12 +317,17 @@ def showHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     #evite redirection vers fausse video hs
-    if 'voirstream.org' in sUrl:
-        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
+    if 'filmsvostfr.vip' in sUrl:
+        sHost = 'www.filmsvostfr.vip'
+    elif 'voirstream.org' in sUrl:
+        sHost = 'www.voirstream.org'
+    
+    if 'filmsvostfr.vip' in sUrl or 'voirstream.org' in sUrl:   
+        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
         headers = {'User-Agent': UA ,
-                   'Host' : 'www.voirstream.org',
-                   'Referer': 'http://www.filmsvostfr.co/',
+                   'Host' : sHost,
+                   'Referer': URL_MAIN ,
                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                    'Content-Type': 'text/html; charset=utf-8'}
 
@@ -328,8 +342,7 @@ def showHosters():
            if 'uptobox' in sHosterUrl:
                sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/uptoboxlink\.php\?link=)', 'http://uptobox.com/' ,sHosterUrl)
            elif '1fichier' in sHosterUrl:
-                 sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/1fichierlink\.php\?link=)', 'https://1fichier.com/?' ,sHosterUrl)
-           #sHosterUrl = sHosterUrl.replace('http://www.filmsvostfr.co/uptoboxlink.php?link=','http://uptobox.com/').replace('http://www.filmsvostfr.co/1fichierlink.php?link=','https://1fichier.com/?')
+               sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/1fichierlink\.php\?link=)', 'https://1fichier.com/?' ,sHosterUrl)
 
     else:
         sHosterUrl = sUrl
@@ -343,34 +356,4 @@ def showHosters():
        
     cHosterGui().plusHoster(oGui)
 
-    oGui.setEndOfDirectory()
-
-def showHostersSetA():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    sHtmlContent = sHtmlContent.replace('HD streaming', '').replace('télécharger sur ','')
-
-    oParser = cParser()
-    
-    sPattern = '<a href="([^"]+)" target="filmPlayer" class="ilink sinactive" rel="nofollow" title="([^"]+)">.+?<span class="langue(.+?)"><\/span>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:    
-            sHosterUrl = str(aEntry[0])
-            sLang = aEntry[2].replace(' ','')
-            
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle('[' + sLang + ']' + ' ' + sMovieTitle)
-                oHoster.setDisplayName(sDisplayTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-       
-    cHosterGui().plusHoster(oGui)
     oGui.setEndOfDirectory()

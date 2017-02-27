@@ -321,8 +321,8 @@ msgid "Mark diverses"
 msgstr "Marque-Diver"
 
 msgctxt "#30209"
-msgid "Delete Bookmark"
-msgstr "Supprimer Marque-page"
+msgid "[COLOR red]Delete Bookmark[/COLOR]"
+msgstr "[COLOR red]Supprimer Marque-page[/COLOR]"
 
 msgctxt "#30210"
 msgid "Display Bookmark"
@@ -479,3 +479,11 @@ msgstr "Divers"
 msgctxt "#30411"
 msgid "Block sounds notifications"
 msgstr "Bloquer les sons des notifications"
+
+msgctxt "#30412"
+msgid "[COLOR red]Delete entry[/COLOR]"
+msgstr "[COLOR red]Supprimer l'entrée[/COLOR]"
+
+msgctxt "#30413"
+msgid "[COLOR red]Delete history[/COLOR]"
+msgstr "[COLOR red]Supprimer l'historique[/COLOR]"

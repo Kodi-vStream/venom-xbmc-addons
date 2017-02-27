@@ -288,7 +288,7 @@ def showSaisons():
 
             if aEntry[0]:
                sSaison = aEntry[0]
-               oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sSaison + '[/COLOR]') 
+               oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + sSaison + '[/COLOR]') 
             else:
                 sUrl = aEntry[1]
                 sTitle = sMovieTitle + aEntry[2].replace('Regarder','')
@@ -332,12 +332,16 @@ def showHosters():
                 
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle)   
             sHost = aEntry[3]    
-            sTitle = '[COLOR coral]' + sLang + '[/COLOR]' + ' ' + sDisplayTitle + ' ' + '[COLOR teal]>> ' + sHost + '[/COLOR]'
-            sUrl = 'http://streamay.bz/streamer/' + aEntry[2] + '/' + aEntry[1]
+            sTitle = '[COLOR coral]' + sLang + '[/COLOR]' + ' ' + sDisplayTitle + ' ' + '[COLOR coral]>> ' + sHost + '[/COLOR]'
+            if 'serie' in sUrl:
+                sUrlv = URL_MAIN + 'streamerSerie/' + aEntry[2] + '/' + aEntry[1]
+            else:    
+                sUrlv = URL_MAIN + 'streamer/' + aEntry[2] + '/' + aEntry[1]
+                
             aTitle = sMovieTitle
             
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('siteUrl', sUrlv)
             oOutputParameterHandler.addParameter('sMovieTitle', aTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             oGui.addMovie(SITE_IDENTIFIER, 'GetLink', sTitle, '', sThumbnail, '', oOutputParameterHandler)     
@@ -393,7 +397,7 @@ def showAnime():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        sUrl2 = 'http://streamay.bz/read/mepisodes/' + aResult[1][0]
+        sUrl2 = URL_MAIN + 'read/mepisodes/' + aResult[1][0]
         oRequestHandler = cRequestHandler(sUrl2)
         sHtmlContent = oRequestHandler.request()
         sPattern = '{"episodeNumber":"([^"]+)","id":"([^"]+)","manga_id":"([^"]+)"}'
@@ -408,7 +412,7 @@ def showAnime():
                    
                 sTitle = sMovieTitle + 'episode' + ' ' + aEntry[0]
                 sDisplayTitle = cUtil().DecoTitle(sTitle)   
-                sUrl3 = 'http://streamay.bz/read/mepisode/' + aEntry[2] + '/' + aEntry[0]
+                sUrl3 = URL_MAIN + 'read/mepisode/' + aEntry[2] + '/' + aEntry[0]
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl3)
@@ -453,8 +457,8 @@ def showAnimeHosters():
                 
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)   
                 sHost = aEntry[0].replace('_vostfr','')    
-                sTitle = '[COLOR coral]' + sLang + '[/COLOR]' + ' ' + sDisplayTitle + ' ' + '[COLOR teal]>> ' + sHost + '[/COLOR]'
-                sUrl = 'http://streamay.bz/streamerMEpisode/' + sEp + '/' + sMangaid + '/' + aEntry[0] 
+                sTitle = '[COLOR coral]' + sLang + '[/COLOR]' + ' ' + sDisplayTitle + ' ' + '[COLOR coral]>> ' + sHost + '[/COLOR]'
+                sUrl = URL_MAIN + 'streamerMEpisode/' + sEp + '/' + sMangaid + '/' + aEntry[0] 
                 aTitle = sMovieTitle
             
                 oOutputParameterHandler = cOutputParameterHandler()

@@ -493,7 +493,7 @@ def showHosters():
     sHtmlContent = sHtmlContent.replace('<iframe src="http://www.promoliens.net','')
     sHtmlContent = sHtmlContent.replace("<iframe src='cache_vote.php",'')
     
-    sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]|<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);<\/script>'
+    sPattern = '<div class="box"><iframe.+?src=[\'|"](.+?)[\'|"]|<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);<\/script>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -514,8 +514,7 @@ def showHosters():
             else:
                 if re.match(".+?&#[0-9]+;", aEntry[0]):#directe mais codé html
                     sHosterUrl = cUtil().unescape(aEntry[0])
-                if 'footerpub' in sHosterUrl:
-                        continue
+
                 else:#directe en clair
                     sHosterUrl = str(aEntry[0])
                 #Ces liens sont tjours des liens
