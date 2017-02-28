@@ -2,16 +2,17 @@
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler 
 from resources.lib.parser import cParser 
-from resources.lib.config import cConfig 
-from resources.lib.gui.gui import cGui 
+from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-
 import xbmcgui
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Vidlox' + ' ' + '[Nécessite Kodi 17]'
+        if not (cConfig().isKrypton() == True):
+            self.__sDisplayName = 'Vidlox' + ' ' + '[Nécessite Kodi 17]'
+        else:
+            self.__sDisplayName = 'Vidlox'        
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
@@ -46,12 +47,6 @@ class cHoster(iHoster):
         return ''
     
     def __getIdFromUrl(self, sUrl):
-        sPattern = 'https*://vidlox.tv/([^<]+)'
-        oParser = cParser()
-        aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
-            return aResult[1][0]
-
         return ''
 
     def setUrl(self, sUrl):
@@ -67,17 +62,14 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-
-        #recuperation de l'id et reformatage du lien
-        id = self.__getIdFromUrl(self.__sUrl)
-        sUrl = 'https://vidlox.tv/' + id
-
-        oRequest = cRequestHandler(sUrl)
+    
+        oParser = cParser()
+        oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
+        
         sPattern =  '([^"]+\.mp4)'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-
         if (aResult[0] == True):
             #initialisation des tableaux
             url=[]
