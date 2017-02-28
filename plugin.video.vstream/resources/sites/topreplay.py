@@ -190,15 +190,15 @@ def checkforHoster(sHosterUrl):
         elif 'rutube' in sHosterUrl:    
             return 'http://rutube.ru/play/embed/' + code.group(2)        
         elif 'vidlox' in sHosterUrl:
-            return 'http://vidlox.tv/' + code.group(2)
+            return 'https://vidlox.tv/' + code.group(2)
         elif 'streammoe' in sHosterUrl:    
             return 'https://stream.moe/embed-' + code.group(2) + '.html'
         elif 'playernaut' in sHosterUrl or 'rapidvideo' in sHosterUrl:    
             return 'https://www.raptu.com/embed/' + code.group(2) 
         elif 'dailymotion' in sHosterUrl:    
             return 'http://www.dailymotion.com/embed/video/' + code.group(2) 
-        elif 'userscloud' in sHosterUrl:
-            return 'https://userscloud.com/embed-' + code.group(2) + '.html'
+        #elif 'userscloud' in sHosterUrl:
+            #return 'https://userscloud.com/embed-' + code.group(2) + '.html' #non utilisable sans dl
         elif 'youwatch' in sHosterUrl:
             return 'http://www.youwatch.org/embed-' + code.group(2) + '.html'
         elif 'exashare' in sHosterUrl:
