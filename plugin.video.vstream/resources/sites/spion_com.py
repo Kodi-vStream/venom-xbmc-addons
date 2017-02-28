@@ -129,16 +129,14 @@ def showMovies(sSearch = ''):
             #On vire categorie image
             sCat = ''
             if aEntry[4]:
-               sCat = str(aEntry[4]) 
-            
+               sCat = str(aEntry[4])
+
             if (sCat != 'Image'):
 
                  oOutputParameterHandler = cOutputParameterHandler()
                  oOutputParameterHandler.addParameter('siteUrl', sUrlp) 
                  oOutputParameterHandler.addParameter('sMovieTitle', sTitle) 
                  oOutputParameterHandler.addParameter('sThumbnail', sPoster)
-
-            
                  oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sPoster,'', oOutputParameterHandler)
              
         cConfig().finishDialog(dialog)
@@ -208,7 +206,7 @@ def showHosters():
                 sHosterUrl = 'http:' + sHosterUrl     
                  
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            print oHoster 
+             
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
