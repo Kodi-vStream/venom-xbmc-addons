@@ -111,7 +111,7 @@ def showMovies(sSearch = ''):
      
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '')
      
-    sPattern = '<article id="(post-[0-9]+)".+?<img src="([^<>"]+?)".+?<a href="([^<>"]+?)" rel="bookmark" title="([^"<>]+?)">'
+    sPattern = '<article id="(post-[0-9]+)".+?<img src="([^<>"]+?)".+?<a href="([^<>"]+?)" rel="bookmark" title="([^"<>]+?)">.+?title="(.+?)"'
      
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -126,12 +126,20 @@ def showMovies(sSearch = ''):
             sUrlp    = str(aEntry[2]) 
             sTitle  = str(aEntry[3])
             sPoster = str(aEntry[1])
-             
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrlp) 
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle) 
-            oOutputParameterHandler.addParameter('sThumbnail', sPoster)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sPoster,'', oOutputParameterHandler)
+            #On vire categorie image
+            sCat = ''
+            if aEntry[4]:
+               sCat = str(aEntry[4]) 
+            
+            if (sCat != 'Image'):
+
+                 oOutputParameterHandler = cOutputParameterHandler()
+                 oOutputParameterHandler.addParameter('siteUrl', sUrlp) 
+                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle) 
+                 oOutputParameterHandler.addParameter('sThumbnail', sPoster)
+
+            
+                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sPoster,'', oOutputParameterHandler)
              
         cConfig().finishDialog(dialog)
             
@@ -171,7 +179,10 @@ def showHosters():
                                .replace('dai.ly','www.dailymotion.com/video')\
                                .replace('youtu.be/','www.youtube.com/watch?v=')
     oParser = cParser()
-    sPattern = '<p style=".+?"><iframe.+?src="(.+?)"'
+    
+    #prise en compte lien direct mp4
+    sPattern = '<iframe.+?src="(.+?)"'
+    #sPattern = '<p style=".+?"><iframe.+?src="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
      
     if SPION_CENSURE:
@@ -187,7 +198,7 @@ def showHosters():
     if (aResult[0] == False):
         sPattern = '<div class="video_tabs"><a href="([^<>"]+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-             
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
              
@@ -197,7 +208,7 @@ def showHosters():
                 sHosterUrl = 'http:' + sHosterUrl     
                  
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-             
+            print oHoster 
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
