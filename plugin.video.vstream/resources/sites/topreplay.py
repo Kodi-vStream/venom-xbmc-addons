@@ -196,7 +196,9 @@ def checkforHoster(sHosterUrl):
         elif 'playernaut' in sHosterUrl or 'rapidvideo' in sHosterUrl:    
             return 'https://www.raptu.com/embed/' + code.group(2) 
         elif 'dailymotion' in sHosterUrl:    
-            return 'http://www.dailymotion.com/embed/video/' + code.group(2) 
+            return 'http://www.dailymotion.com/embed/video/' + code.group(2)
+        elif 'filez' in sHosterUrl:
+            return 'http://filez.tv/embed/u=' + code.group(2)
         #elif 'userscloud' in sHosterUrl:
             #return 'https://userscloud.com/embed-' + code.group(2) + '.html' #non utilisable sans dl
         elif 'youwatch' in sHosterUrl:
