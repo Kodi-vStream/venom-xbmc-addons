@@ -13,7 +13,7 @@ from resources.lib.util import cUtil
 
 import re
  
-SITE_IDENTIFIER = 'malaisetv_com'
+SITE_IDENTIFIER = 'malaisetv'
 SITE_NAME = 'MalaiseTV.com'
 SITE_DESC = 'Les séquences les plus embarrassantes de la télévision française'
  
