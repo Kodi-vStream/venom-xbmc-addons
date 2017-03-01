@@ -25,7 +25,7 @@ FUNCTION_SEARCH = 'showMovies'
 MOVIE_NETS = ('http://', 'load')
 NETS_NEWS = (URL_MAIN + '/ajax/data.php?category=59&start=0', 'showMovies')
 NETS_GENRES = (True, 'showGenre')
- 
+
 def load(): 
     oGui = cGui() 
  
