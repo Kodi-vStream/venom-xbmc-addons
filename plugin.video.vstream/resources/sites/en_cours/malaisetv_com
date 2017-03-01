@@ -10,7 +10,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
- 
+
+import re
  
 SITE_IDENTIFIER = 'malaisetv_com'
 SITE_NAME = 'MalaiseTV.com'
@@ -18,11 +19,11 @@ SITE_DESC = 'Les séquences les plus embarrassantes de la télévision français
  
 URL_MAIN = 'http://www.malaisetv.com'
  
-URL_SEARCH = (URL_MAIN + ' A finir ', 'showMovies')
+URL_SEARCH = (URL_MAIN + '/ajax/data.php?query=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
 MOVIE_NETS = ('http://', 'load')
-NETS_NEWS = (URL_MAIN, 'showMovies')
+NETS_NEWS = (URL_MAIN + '/ajax/data.php?category=59&start=0', 'showMovies')
 NETS_GENRES = (True, 'showGenre')
  
 def load(): 
@@ -58,12 +59,12 @@ def showGenre():
     oGui = cGui()
   
     liste = []
-    liste.append( ['Top vidéo', URL_MAIN + '/le-top.html'] )
-    liste.append( ['Politique', URL_MAIN + '/politique.html'] )
-    liste.append( ['Tv', URL_MAIN + '/television.html'] )
-    liste.append( ['LipDup', URL_MAIN + '/spot-publicitaire.html'] )
-    liste.append( ['International', URL_MAIN + '/mondial.html'] )
-    liste.append( ['Divers', URL_MAIN + '/divers.html'] )
+    liste.append( ['Top vidéo', URL_MAIN + '/ajax/data.php?category=58&start=0'] )
+    liste.append( ['Politique', URL_MAIN + '/ajax/data.php?category=0&start=0'] )
+    liste.append( ['Tv', URL_MAIN + '/ajax/data.php?category=1&start=0'] )
+    liste.append( ['LipDup', URL_MAIN + '/ajax/data.php?category=2&start=0'] )
+    liste.append( ['International', URL_MAIN + '/ajax/data.php?category=3&start=0'] )
+    liste.append( ['Divers', URL_MAIN + '/ajax/data.php?category=4&start=0'] )
 
     for sTitle,sUrl in liste:
          
@@ -85,6 +86,8 @@ def showMovies(sSearch = ''):
         
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    cConfig().log(sUrl)
     
     sPattern = 'div class="imgContainer"><img alt="([^"]+)" height=".+?" src="([^"]+)"><div data-video="([^"]+)"'
      
@@ -108,7 +111,7 @@ def showMovies(sSearch = ''):
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)            
             
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage = __checkForNextPage(sUrl)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
@@ -119,10 +122,15 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory() 
  
  
-def __checkForNextPage(sHtmlContent):
-    oParser = cParser()
-    sPattern = ' a faire '
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        return aResult[1][0]
-    return False
+def __checkForNextPage(url):
+    if 'start' not in url:
+        return url + '&start=10'
+
+    sPattern = '&start=([0-9]+)'
+    aResult = re.search(sPattern,url)
+    if (aResult):
+        V1 = aResult.group(1)
+        V2 = str( int(V1) + 10)
+        url = url.replace('&start=' + V1,'&start=' + V2)
+        
+    return url
