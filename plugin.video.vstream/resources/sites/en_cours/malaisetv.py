@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-# Kodigoal
+# Kodigoal.TmpName
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -87,9 +87,9 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    cConfig().log(sUrl)
+    #cConfig().log(sUrl)
     
-    sPattern = 'div class="imgContainer"><img alt="([^"]+)" height=".+?" src="([^"]+)"><div data-video="([^"]+)"'
+    sPattern = 'div class="imgContainer"><img alt="(.+?)" height=".+?" src="([^"]+)"><div data-video="([^"]+)"'
      
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
