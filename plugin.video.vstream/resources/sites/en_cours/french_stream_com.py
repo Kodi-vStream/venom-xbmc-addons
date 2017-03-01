@@ -38,19 +38,7 @@ SERIE_VFS = (URL_MAIN +'index.php?do=cat&category=serie-en-vf-streaming', 'showM
 SERIE_VOSTFRS = (URL_MAIN +'/index.php?do=cat&category=serie-en-vostfr-streaming', 'showMovies')
 SERIE_GENRE = (True, 'showGenre')
 SERIE_HDLIGHT = (URL_MAIN + 'index.php?do=cat&category=serie-en-hd-streaming','showSeries')
- 
-ANIM_NEWS = ('http://url', 'showAnimes') #anime nouveautés
-ANIM_ANIMS = ('http://url', 'showAnimes') #anime vrac
-ANIM_VFS = ('http://url', 'showAnimes') #anime VF
-ANIM_VOSTFRS = ('http://url', 'showAnimes') #anime VOSTFR
-ANIM_MOVIES = ('http://url', 'showAnimes') #anime film
-ANIM_GENRES = (True, 'showGenre') #anime genre
- 
-DOC_DOCS = ('http://url', 'showOthers') #Documentaire
-SPORT_SPORTS = ('http://url', 'showOthers') #sport
-MOVIE_NETS = ('http://url', 'showOthers') #video du net
-REPLAYTV_REPLAYTV = ('http://url', 'showOthers') #Replay
- 
+
 def load():
     oGui = cGui()
  
@@ -340,7 +328,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
    
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a href="([^"]+)">Suivant.+?<\/a><\/div>'
+    sPattern = '<a href="([^"]+)"><b class="pprev ico">Suivant <i'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
