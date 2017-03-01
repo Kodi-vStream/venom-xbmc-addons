@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-#Venom
+# Kodigoal
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
