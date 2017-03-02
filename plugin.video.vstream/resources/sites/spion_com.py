@@ -1,15 +1,15 @@
 #-*- coding: utf-8 -*-
 #Par jojotango
-from resources.lib.gui.hoster import cHosterGui #systeme de recherche pour l'hote
-from resources.lib.handler.hosterHandler import cHosterHandler #systeme de recherche pour l'hote
-from resources.lib.gui.gui import cGui #systeme d'affichage pour xbmc
-from resources.lib.gui.guiElement import cGuiElement #systeme d'affichage pour xbmc
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler #entree des parametres
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler #sortie des parametres
-from resources.lib.handler.requestHandler import cRequestHandler #requete url
-from resources.lib.config import cConfig #config
-from resources.lib.parser import cParser #recherche de code
-#from resources.lib.util import cUtil #outils pouvant etre utiles
+from resources.lib.gui.hoster import cHosterGui
+from resources.lib.handler.hosterHandler import cHosterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.guiElement import cGuiElement
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.config import cConfig
+from resources.lib.parser import cParser
+from resources.lib.util import cUtil
  
  
 SITE_IDENTIFIER = 'spion_com'
@@ -26,9 +26,17 @@ NETS_NEWS = (URL_MAIN + 'page/1/', 'showMovies')
 NETS_GENRES = (True, 'showGenre')
  
 # True : Contenu Censuré | False : Contenu Non Censuré
-SPION_CENSURE = True  
-                         
- 
+SPION_CENSURE = True
+
+#logo censure -18ans
+LOGO_CSA = "http://a398.idata.over-blog.com/1/40/34/11/archives/0/16588469.jpg"
+
+def showCensure():
+            
+    content = "Pour activer le contenu (+18) mettre: \n[COLOR coral]SPION_CENSURE = False[/COLOR]\ndans le fichier:\n[COLOR coral]plugin.video.vstream/resources/sites/spion_com.py[/COLOR]"
+    cConfig().createDialogOK(content)
+            
+
 def load(): 
     oGui = cGui() 
  
@@ -84,7 +92,7 @@ def showGenre():
     liste.append( ['WTF?!', URL_MAIN + 'category/wtf/page/1/'] )
     liste.append( ['Zapping', URL_MAIN + 'category/zapping-web/page/1/'] )
                  
-    if SPION_CENSURE == False:
+    if (SPION_CENSURE == False):
         liste.append( ['NSFW (+18)', URL_MAIN + 'nsfw/page/1/'] )
         liste.append( ['Trash (+18)', URL_MAIN + 'category/trash-gore/page/1/'] )          
                  
@@ -108,10 +116,9 @@ def showMovies(sSearch = ''):
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-     
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '')
      
-    sPattern = '<article id="(post-[0-9]+)".+?<img src="([^<>"]+?)".+?<a href="([^<>"]+?)" rel="bookmark" title="([^"<>]+?)">'
+    sPattern = '<article id="(post-[0-9]+)".+?<img src="([^<>"]+?)".+?<a href="([^<>"]+?)" rel="bookmark" title="([^"<>]+?)">.+?title="(.+?)"'
      
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -123,16 +130,37 @@ def showMovies(sSearch = ''):
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
              
-            sUrlp    = str(aEntry[2]) 
+            sUrlp    = str(aEntry[2])
             sTitle  = str(aEntry[3])
             sPoster = str(aEntry[1])
-             
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrlp) 
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle) 
-            oOutputParameterHandler.addParameter('sThumbnail', sPoster)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sPoster,'', oOutputParameterHandler)
-             
+            
+            #categorie video
+            sCat = '[' + aEntry[4] +']'
+            
+            #si genre non affichage du sCat
+            if ('category' in sUrl) or ('nsfw/' in sUrl):
+                sDisplayTitle = cUtil().DecoTitle(sTitle)
+            else:
+                sDisplayTitle = cUtil().DecoTitle(sCat + sTitle)    
+            
+            #vire lien categorie image
+            if (sCat != '[Image]'):
+            
+                 oOutputParameterHandler = cOutputParameterHandler()
+                 oOutputParameterHandler.addParameter('siteUrl', sUrlp) 
+                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle) 
+                 oOutputParameterHandler.addParameter('sThumbnail', sPoster)
+                 
+                 if (SPION_CENSURE == True):
+                    if (sCat == '[NSFW]') or (sCat == '[Trash]'):
+                        sPoster = LOGO_CSA
+                        oGui.addMovie(SITE_IDENTIFIER, 'showCensure', sDisplayTitle, '', sPoster,'', oOutputParameterHandler)
+                    else:
+                        oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sPoster,'', oOutputParameterHandler)
+                 else:
+                     oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sPoster,'', oOutputParameterHandler)
+                
+               
         cConfig().finishDialog(dialog)
             
         sNextPage = __checkForNextPage(sHtmlContent)
@@ -148,9 +176,8 @@ def showMovies(sSearch = ''):
  
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<div class="nav-previous"><a href="([^"<>]+/[0-9]/)" class="nq_previous">'
+    sPattern = '<div class="nav-previous"><a href="([^"<>]+/[0-9]/?[^"]+)" class="nq_previous">'
     aResult = oParser.parse(sHtmlContent, sPattern)
- 
     if (aResult[0] == True):
         return aResult[1][0]
 
@@ -171,23 +198,16 @@ def showHosters():
                                .replace('dai.ly','www.dailymotion.com/video')\
                                .replace('youtu.be/','www.youtube.com/watch?v=')
     oParser = cParser()
-    sPattern = '<p style=".+?"><iframe.+?src="(.+?)"'
+    
+    #prise en compte lien direct mp4
+    sPattern = '<iframe.+?src="(.+?)"'
+    #sPattern = '<p style=".+?"><iframe.+?src="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
      
-    if SPION_CENSURE:
-        if 'content="Trash"' in sHtmlContent or 'content="NSFW"' in sHtmlContent:
-            aResult = list(aResult)
-            aResult[0] = False
-            txt = '[COLOR khaki]Pour activer le contenu (+18) mettre '\
-                    '"SPION_CENSURE = False" dans '\
-                    '/.kodi/addons/plugin.video.vstream/resources/sites/spion_com.py'\
-                    '[/COLOR]'
-            oGui.addDir(SITE_IDENTIFIER, '', txt, '', cOutputParameterHandler())
-    
     if (aResult[0] == False):
         sPattern = '<div class="video_tabs"><a href="([^<>"]+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-             
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
              

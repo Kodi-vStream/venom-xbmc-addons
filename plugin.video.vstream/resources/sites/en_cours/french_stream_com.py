@@ -28,29 +28,17 @@ MOVIE_VIEWS = ('http://url', 'showMovies') # films + plus
 MOVIE_COMMENTS = ('http://url', 'showMovies') # films + commentés
 MOVIE_NOTES = ('http://url', 'showMovies') # films mieux notés
 MOVIE_GENRES = (True, 'showGenre')
-MOVIE_VF = ('http://url', 'showMovies') # films VF
-MOVIE_VOSTFR = ('http://url', 'showMovies') # films VOSTFR
+MOVIE_VF = (URL_MAIN +'index.php?do=cat&category=vf', 'showMovies')
+MOVIE_VOSTFR = (URL_MAIN +'index.php?do=cat&category=vostfr', 'showMovies')
 MOVIE_HDLIGHT = (URL_MAIN + 'index.php?do=xfsearch&xfname=qualit&xf=HDLight','showMovies')
  
-SERIE_NEWS = ('http://french-stream.com/serie-tv-en-streaming/', 'showMovies') # serie nouveautés
-SERIE_SERIES = ('http://url', 'showSeries') # serie vrac
-SERIE_VFS = ('http://url', 'showSeries') # serie VF
-SERIE_VOSTFRS = ('http://url', 'showSeries') # serie Vostfr
+SERIE_NEWS = (URL_MAIN +'serie-tv-en-streaming/', 'showMovies')
+SERIE_SERIES = ('http://url', 'showSeries') 
+SERIE_VFS = (URL_MAIN +'index.php?do=cat&category=serie-en-vf-streaming', 'showMovies') 
+SERIE_VOSTFRS = (URL_MAIN +'/index.php?do=cat&category=serie-en-vostfr-streaming', 'showMovies')
 SERIE_GENRE = (True, 'showGenre')
 SERIE_HDLIGHT = (URL_MAIN + 'index.php?do=cat&category=serie-en-hd-streaming','showSeries')
- 
-ANIM_NEWS = ('http://url', 'showAnimes') #anime nouveautés
-ANIM_ANIMS = ('http://url', 'showAnimes') #anime vrac
-ANIM_VFS = ('http://url', 'showAnimes') #anime VF
-ANIM_VOSTFRS = ('http://url', 'showAnimes') #anime VOSTFR
-ANIM_MOVIES = ('http://url', 'showAnimes') #anime film
-ANIM_GENRES = (True, 'showGenre') #anime genre
- 
-DOC_DOCS = ('http://url', 'showOthers') #Documentaire
-SPORT_SPORTS = ('http://url', 'showOthers') #sport
-MOVIE_NETS = ('http://url', 'showOthers') #video du net
-REPLAYTV_REPLAYTV = ('http://url', 'showOthers') #Replay
- 
+
 def load():
     oGui = cGui()
  
@@ -63,6 +51,13 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautés', 'news.png', oOutputParameterHandler)
    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VF[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VF[1], 'Films VF nouveauté', 'news.png', oOutputParameterHandler)
+   
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VOSTFR[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFR[1], 'Films VOSTFR nouveauté', 'news.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -73,8 +68,12 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_HDLIGHT[1], 'Films HD-Light', 'genres.png', oOutputParameterHandler)
  
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries VF nouveauté', 'series.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries Vostfr nouveauté', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_HDLIGHT[0])
@@ -102,6 +101,7 @@ def showGenre():
     liste.append( ['Arts Martiaux',URL_MAIN + 'xfsearch/genre-1/arts+Martiaux'] )
     liste.append( ['Aventure',URL_MAIN + 'xfsearch/genre-1/aventure'] )
     liste.append( ['Biopic',URL_MAIN + 'xfsearch/genre-1/biopic'] )
+    liste.append( ['Walt Disney',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-1&xf=Walt+Disney+Animation'] )
     liste.append( ['Comedie',URL_MAIN + 'xfsearch/genre-1/comedie'] )
     liste.append( ['Comedie Dramatique',URL_MAIN + 'xfsearch/genre-1/dramatique/'] )
     liste.append( ['Comedie Musicale',URL_MAIN + 'xfsearch/genre-1/comedie-musicale/'] )
@@ -328,7 +328,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
    
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a href="([^"]+)">Suivant.+?<\/a><\/div>'
+    sPattern = '<a href="([^"]+)"><b class="pprev ico">Suivant <i'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -432,7 +432,7 @@ def serieHosters():
 
             elif aEntry[2]:
                     sPattern = '<div id="episode' + str(aEntry[3]) + '" class="fullsfeature">(.+?)<\/ul>'
-                    aResult3 = oParser.parse(sHtmlContentListFile, sPattern)
+                    aResult3 = oParser.parse(sHtmlContent, sPattern)
                     
                     #cConfig().log(sPattern)
 

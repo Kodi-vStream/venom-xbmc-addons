@@ -293,7 +293,7 @@ def showLinks():
             if dialog.iscanceled():
                 break
 
-            sUrl = aEntry[0]
+            sUrl = aEntry[0].replace('p=watchers','p=30').replace('p=16do','p=16').replace('p=the23eo','p=23') #a del si correction sur le site
             sHost = aEntry[1]
             sLang = aEntry[2].replace(' ','')
             sTitle = ('[COLOR coral]' + '[' + sLang + ']' + '[/COLOR]' + ' ' + sMovieTitle + ' ' + '[COLOR coral]>> ' + sHost + '[/COLOR]')

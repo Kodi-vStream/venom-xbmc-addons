@@ -124,9 +124,9 @@
         <setting label="30303" type="lsep"/>
         <setting type="sep"/>
         
-		<setting id="plugin_alluc_ee" type="bool" label="Alluc (recherche de sources)" default="true"/>
-		<setting visible="false" label="recherche alluc" id="search10_alluc_ee" type="bool" default="true"/>
-		
+        <setting id="plugin_alluc_ee" type="bool" label="Alluc (recherche de sources)" default="true"/>
+        <setting visible="false" label="recherche alluc" id="search10_alluc_ee" type="bool" default="true"/>
+        
         <setting visible="false" id="plugin_freebox" type="bool" label="active freebox" default="false"/>
         
         <setting id="plugin_adkami_com" type="bool" label="Adkami (Séries, Animés)" default="true"/>
@@ -174,7 +174,9 @@
         
         <setting id="plugin_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="true"/>
         <setting visible="false" id="search1_fullmoviz_org" type="bool" label="30077" default="true"/>
-		
+        
+        <setting id="plugin_gum_gum_streaming_com" type="bool" label="Gum-Gum-Streaming (Animes)" default="true"/>
+        
         <setting id="plugin_full_stream_org" type="bool" label="Full Stream (Films, Séries)" default="true"/>
     
         <setting id="plugin_kaydo_ws" type="bool" label="kaydo (Films)" default="true"/>
@@ -201,6 +203,8 @@
         <setting id="plugin_libre_stream_org" type="bool" label="Libre-stream.org (Films, séries)" default="true"/>
         <setting visible="false" id="search1_libre_stream_org" type="bool" label="30077" default="true"/>
         <setting visible="false" id="search2_libre_stream_org" type="bool" label="30089" default="true"/>
+        
+        <setting id="plugin_malaisetv" type="bool" label="malaisetv (Vidéos)" default="true"/>
         
         <setting id="plugin_mangacity_org" type="bool" label="Mangacity.org (Animes)" default="true"/>
         <setting visible="false" id="search3_mangacity_org" type="bool" label="30090" default="true"/>
@@ -230,10 +234,15 @@
         
         <setting id="plugin_regarder_films" type="bool" label="Regarder.films (Séries)" default="true"/>
         <setting visible="false" id="search2_regarder_films" type="bool" label="30089" default="true"/>
+        
+        <setting id="plugin_replay_documentaire_com" type="bool" label="Replay.Documentaire (Documentaires)" default="true"/>
+        <setting visible="false" id="search4_replay_documentaire_com" type="bool" label="30091" default="true"/>
 
         <setting id="plugin_reportagestv_com" type="bool" label="ReportagesTV (Documentaires)" default="true"/>
         <setting visible="false" id="search4_reportagestv_com" type="bool" label="30091" default="true"/>
-		
+        
+        <setting id="plugin_robindesdroits" type="bool" label="Robin Des Droits (Sports)" default="true"/>
+        
         <setting id="plugin_series_en_streaming_tv" type="bool" label="Series En Streaming.tv (Séries)" default="true"/>
         <setting visible="false" id="search2_series_en_streaming_tv" type="bool" label="30089" default="true"/>
         
