@@ -18,12 +18,13 @@ SITE_DESC = 'Replay sports'
  
 URL_MAIN = 'http://www.robindesdroits.me'
  
-URL_SEARCH = (URL_MAIN + ' ', 'showMovies')
-FUNCTION_SEARCH = 'showMovies'
+#URL_SEARCH = (URL_MAIN + ' ', 'showMovies')
+#FUNCTION_SEARCH = 'showMovies'
 
-REPLAYTV_REPLAYTV = ('http://', 'load')
-REPLAYTV_NEWS = (URL_MAIN + '/derniers-uploads/', 'showMovies')
-REPLAYTV_GENRES = (True, 'showGenre')
+#REPLAYTV_REPLAYTV = ('http://', 'load')
+#REPLAYTV_NEWS = (URL_MAIN + '/derniers-uploads/', 'showMovies')
+
+SPORT_SPORTS = (True, 'showGenre')
  
 def load(): 
     oGui = cGui() 
@@ -34,12 +35,12 @@ def load():
    #oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
      
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0]) 
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Vidéos Nouveautés', 'news.png', oOutputParameterHandler)  
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/derniers-uploads/') 
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Nouveautés', 'news.png', oOutputParameterHandler)  
      
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_GENRES[1], 'Vidéos Genres', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', 'http://')
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Genres', 'genres.png', oOutputParameterHandler)
                
     oGui.setEndOfDirectory()
  

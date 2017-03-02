@@ -10,8 +10,20 @@ Merci au contributeur de la bêta.
 - Mino60/Chataigne73/Kodigoal/Johngf/Gregwar/
 =============================================================================
 =============================================================================
-- Version 0.5.0 - 02.03.2017
+- Version 0.5.0 - 03.03.2017
 =============================================================================
+02-03-2017 -- @Kodigoal -- img
+02-03-2017 -- @Kodigoal -- create robindesdroits.py
+01-03-2017 -- @Kodigoal -- img
+01-03-2017 -- @Kodigoal -- move
+01-03-2017 -- @Kodigoal -- Update malaisetv.py
+01-03-2017 -- @TmpName -- Update malaisetv.py
+01-03-2017 -- @TmpName -- Update malaisetv.py  Ha merde du coup, comme j'ai chna Correction de la recherche et du next page, pas tout teste.
+01-03-2017 -- @TmpName -- Update and rename malaisetv_com.py to malaisetv.py
+01-03-2017 -- @TmpName -- Rename malaisetv_com to malaisetv_com.py
+01-03-2017 -- @TmpName -- Update malaisetv_com
+01-03-2017 -- @lordvenom -- img
+01-03-2017 -- @lordvenom -- deplace coco
 01-03-2017 -- @LordVenom -- Merge pull request #972 from Arias800/patch-5  Create coco_streaming_com
 01-03-2017 -- @LordVenom -- Merge pull request #971 from Arias800/patch-4  Possibilite de changer de page
 01-03-2017 -- @Arias800 -- Create coco_streaming_com
