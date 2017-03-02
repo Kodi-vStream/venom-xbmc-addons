@@ -18,22 +18,11 @@ SITE_DESC = 'Replay sports'
  
 URL_MAIN = 'http://www.robindesdroits.me'
  
-#URL_SEARCH = (URL_MAIN + ' ', 'showMovies')
-#FUNCTION_SEARCH = 'showMovies'
-
-#REPLAYTV_REPLAYTV = ('http://', 'load')
-#REPLAYTV_NEWS = (URL_MAIN + '/derniers-uploads/', 'showMovies')
-
 SPORT_SPORTS = (True, 'showGenre')
  
 def load(): 
     oGui = cGui() 
     
-    #pas de recherche
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
-   #oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/derniers-uploads/') 
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Nouveautés', 'news.png', oOutputParameterHandler)  
@@ -43,23 +32,12 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Genres', 'genres.png', oOutputParameterHandler)
                
     oGui.setEndOfDirectory()
- 
- 
-def showSearch():
-    oGui = cGui()
- 
-    sSearchText = oGui.showKeyBoard() 
-    if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText  
-        showMovies(sUrl) 
-        oGui.setEndOfDirectory()
-        return
- 
- 
+
 def showGenre():
     oGui = cGui()
   
     liste = []
+    liste.append( ['Nouveautés', URL_MAIN + '/derniers-uploads/'] )
     liste.append( ['Football', URL_MAIN + '/football/'] )
     liste.append( ['Sports US', URL_MAIN + '/sports-us/'] )
     liste.append( ['Sports Automobiles', URL_MAIN + '/sports-automobiles/'] )
