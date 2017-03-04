@@ -19,7 +19,7 @@ SITE_DESC = 'films en streaming'
  
 URL_MAIN = 'http://french-stream.com/'
  
-URL_SEARCH = ('http://french-stream.com/index.php?story='),('showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=','showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
 MOVIE_NEWS = (URL_MAIN + 'index.php?do=cat&category=film-en-streaming', 'showMovies') # films nouveautés
@@ -85,7 +85,7 @@ def showSearch():
  
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0]+sSearchText +'&do=search&subaction=search'
+        sUrl = URL_SEARCH[0]+sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return  
@@ -174,70 +174,14 @@ def showMovies(sSearch = ''):
     
     oInputParameterHandler = cInputParameterHandler()
     
-    dlenewssortby = False
-    sType = ''
-    
     if sSearch:
         sUrl = sSearch
-        
-        #partie en test
-        oInputParameterHandler = cInputParameterHandler()
-        sType = oInputParameterHandler.getValue('type')
-
-      #sPattern = 'fullstreaming">.*?<img src="(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a><\/h3>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*Regarder<\/a>'
         sPattern = 'fullstreaming">.*?<img src="(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*<span style="font-family:.+?>(.+?)<\/span>'
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
         sPattern = 'fullstreaming">.*?<img src="(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*<span style="font-family:.+?>(.+?)<\/span>'
    
-    #recuperation des tris
-    
-    # les plus noter dlenewssortby=rating&dledirection=desc&set_new_sort=dle_sort_cat&set_direction_sort=dle_direction_cat
-    # les plus vue dlenewssortby=news_read&dledirection=desc&set_new_sort=dle_sort_cat&set_direction_sort=dle_direction_cat
-    
-    #les plus commenter dlenewssortby=comm_num&dledirection=desc&set_new_sort=dle_sort_main&set_direction_sort=dle_direction_main
-    
-    if ("rating" in sUrl or "news_read" in sUrl or "comm_num" in sUrl):
-    
-        oRequestHandler = cRequestHandler(URL_MAIN + 'movie')
-        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)        
-        
-        oRequestHandler.addParameters('dledirection', 'desc')
-        oRequestHandler.addParameters('set_new_sort', 'dle_sort_cat')
-        oRequestHandler.addParameters('set_direction_sort', 'dle_direction_cat')
-        
-        
-        if ("rating" in sUrl):
-            dlenewssortby = "rating"
-        elif ("news_read" in sUrl):
-            dlenewssortby = "news_read"
-        elif ("comm_num" in sUrl):        
-            dlenewssortby = "comm_num"
-            
-        oRequestHandler.addParameters('dlenewssortby', dlenewssortby)
-
-    
-    else :
-        oRequestHandler = cRequestHandler(sUrl)
-        
-        if sType:
-            if sType == "film":
-                oRequestHandler.addParameters('catlist[]', '43')
-            if sType == "serie":
-                oRequestHandler.addParameters('catlist[]', '2')
-            if sType == "anime":
-                oRequestHandler.addParameters('catlist[]', '36')
-        
-    
-    if oInputParameterHandler.getValue('dlenewssortby'):
-    
-        dlenewssortby = oInputParameterHandler.getValue('dlenewssortby')
-        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-        oRequestHandler.addParameters('dlenewssortby', dlenewssortby)
-        oRequestHandler.addParameters('dledirection', 'desc')
-        oRequestHandler.addParameters('set_new_sort', 'dle_sort_cat')
-        oRequestHandler.addParameters('set_direction_sort', 'dle_direction_cat')
-        
+    oRequestHandler = cRequestHandler(sUrl)       
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
@@ -319,14 +263,6 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
-    # oRequestHandler = cRequestHandler(sUrl)
-    # oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-    # oRequestHandler.addParameters('login_name', 'vstream')
-    # oRequestHandler.addParameters('login_password', 'vstream')
-    # oRequestHandler.addParameters('Submit', '')
-    # oRequestHandler.addParameters('login', 'submit')
-    # sHtmlContent = oRequestHandler.request();
-    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -379,13 +315,7 @@ def serieHosters():
     
     #cConfig().log(sUrl)
     
-    oParser = cParser()
-    
-    #pour accelerer traitement
-    sPattern = '<div id="fsElementsContainer">(.+?)<div class="series-player">'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        sHtmlContentListFile = aResult[1][0]     
+    oParser = cParser()   
         
     sPattern = '<\/i> (VOSTFR|VF) *<\/div>|<a href="([^<>"]+)" target="seriePlayer" *title="([^"]+)" * data-rel="episode([0-9]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
