@@ -22,17 +22,17 @@ URL_MAIN = 'http://french-stream.com/'
 URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=','showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
-MOVIE_NEWS = (URL_MAIN + 'index.php?do=cat&category=film-en-streaming', 'showMovies') # films nouveautés
+MOVIE_NEWS = (URL_MAIN + 'index.php?do=cat&category=film-en-streaming', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 MOVIE_VF = (URL_MAIN +'index.php?do=cat&category=vf', 'showMovies')
 MOVIE_VOSTFR = (URL_MAIN +'index.php?do=cat&category=vostfr', 'showMovies')
-MOVIE_HDLIGHT = (URL_MAIN + 'index.php?do=xfsearch&xfname=qualit&xf=HDLight','showMovies')
+MOVIE_HD = (URL_MAIN + 'index.php?do=xfsearch&xfname=qualit&xf=HDLight','showMovies')
  
 SERIE_NEWS = (URL_MAIN +'serie-tv-en-streaming/', 'showMovies')
 SERIE_VFS = (URL_MAIN +'index.php?do=cat&category=serie-en-vf-streaming', 'showMovies') 
-SERIE_VOSTFRS = (URL_MAIN +'/index.php?do=cat&category=serie-en-vostfr-streaming', 'showMovies')
+SERIE_VOSTFRS = (URL_MAIN +'index.php?do=cat&category=serie-en-vostfr-streaming', 'showMovies')
 SERIE_GENRE = (True, 'showSerieGenre')
-SERIE_HDLIGHT = (URL_MAIN + 'index.php?do=cat&category=serie-en-hd-streaming','showSeries')
+SERIE_HD = (URL_MAIN + 'index.php?do=cat&category=serie-en-hd-streaming','showSeries')
 
 def load():
     oGui = cGui()
@@ -59,8 +59,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films Genre', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_HDLIGHT[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_HDLIGHT[1], 'Films HD-Light', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD-Light', 'genres.png', oOutputParameterHandler)
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
@@ -71,8 +71,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries Vostfr nouveauté', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_HDLIGHT[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries HD-Light', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_HD[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_HD[1], 'Séries HD-Light', 'series.png', oOutputParameterHandler)
              
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRE[0])
@@ -136,30 +136,30 @@ def showSerieGenre():
  
     liste = []
     liste.append( ['Action',URL_MAIN +'index.php?do=xfsearch&xfname=genre-serie&xf=Action'] )
-    liste.append( ['Animation',URL_MAIN+'/index.php?do=xfsearch&xfname=genre-serie&xf=Animation'])
+    liste.append( ['Animation',URL_MAIN+'index.php?do=xfsearch&xfname=genre-serie&xf=Animation'])
     liste.append( ['Arts Martiaux',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Arts+Martiaux'] )
     liste.append( ['Aventure',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Aventure'])
     liste.append( ['Comedie',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Comedie'])
     liste.append( ['Comedie Dramatique',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Comédie+dramatique'] )
     liste.append( ['Comedie Musicale',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Comédie+musicale'] )
     liste.append( ['Documentaire',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Documentaire'] )
-    liste.append( ['Drame',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Drame'])
-    liste.append( ['Epouvante Horreur',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Epouvante-horreur'] )
-    liste.append( ['Espionnage',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Espionnage'])
-    liste.append( ['Famille',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Famille'])
-    liste.append( ['Fantastique',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Fantastique'] )  
-    liste.append( ['Guerre',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Guerre'])
-    liste.append( ['Historique',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Historique'])
-    liste.append( ['Judiciaire',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Judidiaire'])
-    liste.append( ['Médical',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Médical'])
-    liste.append( ['Musical',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Musical'] )
-    liste.append( ['Policier',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Policier'] )
-    liste.append( ['Romance',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Romance'] )
-    liste.append( ['Science Fiction',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Science+fiction/'] )
-    liste.append( ['Soap',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Soap'] )
-    liste.append( ['Thriller',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Thriller/'] )
-    liste.append( ['Websérie',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Websérie/'] )
-    liste.append( ['Western',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Western/'] )
+    liste.append( ['Drame',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Drame'])
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Epouvante-horreur'] )
+    liste.append( ['Espionnage',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Espionnage'])
+    liste.append( ['Famille',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Famille'])
+    liste.append( ['Fantastique',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Fantastique'] )  
+    liste.append( ['Guerre',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Guerre'])
+    liste.append( ['Historique',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Historique'])
+    liste.append( ['Judiciaire',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Judidiaire'])
+    liste.append( ['Médical',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Médical'])
+    liste.append( ['Musical',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Musical'] )
+    liste.append( ['Policier',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Policier'] )
+    liste.append( ['Romance',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Romance'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Science+fiction/'] )
+    liste.append( ['Soap',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Soap'] )
+    liste.append( ['Thriller',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Thriller/'] )
+    liste.append( ['Websérie',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Websérie/'] )
+    liste.append( ['Western',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Western/'] )
        
     for sTitle,sUrl in liste:
        
@@ -240,11 +240,11 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oOutputParameterHandler.addParameter('dlenewssortby', dlenewssortby)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
+
    
 def __checkForNextPage(sHtmlContent):
     sPattern = '<a href="([^"]+)"><b class="pprev ico">Suivant <i'
