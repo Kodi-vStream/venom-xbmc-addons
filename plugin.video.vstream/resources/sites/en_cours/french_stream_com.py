@@ -23,20 +23,15 @@ URL_SEARCH = ('http://french-stream.com/index.php?story='),('showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
 MOVIE_NEWS = (URL_MAIN + 'index.php?do=cat&category=film-en-streaming', 'showMovies') # films nouveautés
-MOVIE_MOVIE = ('http://url', 'showMovies') # films vrac
-MOVIE_VIEWS = ('http://url', 'showMovies') # films + plus
-MOVIE_COMMENTS = ('http://url', 'showMovies') # films + commentés
-MOVIE_NOTES = ('http://url', 'showMovies') # films mieux notés
 MOVIE_GENRES = (True, 'showGenre')
 MOVIE_VF = (URL_MAIN +'index.php?do=cat&category=vf', 'showMovies')
 MOVIE_VOSTFR = (URL_MAIN +'index.php?do=cat&category=vostfr', 'showMovies')
 MOVIE_HDLIGHT = (URL_MAIN + 'index.php?do=xfsearch&xfname=qualit&xf=HDLight','showMovies')
  
 SERIE_NEWS = (URL_MAIN +'serie-tv-en-streaming/', 'showMovies')
-SERIE_SERIES = ('http://url', 'showSeries') 
 SERIE_VFS = (URL_MAIN +'index.php?do=cat&category=serie-en-vf-streaming', 'showMovies') 
 SERIE_VOSTFRS = (URL_MAIN +'/index.php?do=cat&category=serie-en-vostfr-streaming', 'showMovies')
-SERIE_GENRE = (True, 'showGenre')
+SERIE_GENRE = (True, 'showSerieGenre')
 SERIE_HDLIGHT = (URL_MAIN + 'index.php?do=cat&category=serie-en-hd-streaming','showSeries')
 
 def load():
@@ -78,6 +73,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_HDLIGHT[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries HD-Light', 'series.png', oOutputParameterHandler)
+             
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRE[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRE[1], 'Séries Genre', 'series.png', oOutputParameterHandler)
              
     oGui.setEndOfDirectory()
    
@@ -131,69 +130,45 @@ def showGenre():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()
+
+def showSerieGenre():
+    oGui = cGui()
  
-def AlphaSearch():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    
-    dialog = cConfig().createDialog(SITE_NAME)
-    
-    for i in range(0,36) :
-        cConfig().updateDialog(dialog, 36)
-        if dialog.iscanceled():
-            break
-        
-        if (i < 10):
-            sTitle = chr(48+i)
-        else:
-            sTitle = chr(65+i-10)
-            
+    liste = []
+    liste.append( ['Action',URL_MAIN +'index.php?do=xfsearch&xfname=genre-serie&xf=Action'] )
+    liste.append( ['Animation',URL_MAIN+'/index.php?do=xfsearch&xfname=genre-serie&xf=Animation'])
+    liste.append( ['Arts Martiaux',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Arts+Martiaux'] )
+    liste.append( ['Aventure',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Aventure'])
+    liste.append( ['Comedie',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Comedie'])
+    liste.append( ['Comedie Dramatique',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Comédie+dramatique'] )
+    liste.append( ['Comedie Musicale',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Comédie+musicale'] )
+    liste.append( ['Documentaire',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Documentaire'] )
+    liste.append( ['Drame',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Drame'])
+    liste.append( ['Epouvante Horreur',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Epouvante-horreur'] )
+    liste.append( ['Espionnage',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Espionnage'])
+    liste.append( ['Famille',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Famille'])
+    liste.append( ['Fantastique',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Fantastique'] )  
+    liste.append( ['Guerre',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Guerre'])
+    liste.append( ['Historique',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Historique'])
+    liste.append( ['Judiciaire',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Judidiaire'])
+    liste.append( ['Médical',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Médical'])
+    liste.append( ['Musical',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Musical'] )
+    liste.append( ['Policier',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Policier'] )
+    liste.append( ['Romance',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Romance'] )
+    liste.append( ['Science Fiction',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Science+fiction/'] )
+    liste.append( ['Soap',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Soap'] )
+    liste.append( ['Thriller',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Thriller/'] )
+    liste.append( ['Websérie',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Websérie/'] )
+    liste.append( ['Western',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-serie&xf=Western/'] )
+       
+    for sTitle,sUrl in liste:
+       
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + sTitle.lower() + '.html' )
-        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', '[COLOR teal] Lettre [COLOR red]'+ sTitle +'[/COLOR][/COLOR]', 'genres.png', oOutputParameterHandler)
-        
-    cConfig().finishDialog(dialog)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+       
+    oGui.setEndOfDirectory()    
     
-    oGui.setEndOfDirectory()
-        
-def AlphaDisplay():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    
-    print sUrl
-    
-    #recuperation de la page
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    oParser = cParser()
-    sPattern = '<a href="(.+?)" class="list-name">&raquo;(.+?)<\/a>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
-   
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-                
-            sTitle = aEntry[1]
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', '','', oOutputParameterHandler)
-        
-        cConfig().finishDialog(dialog)
-        
-        oGui.setEndOfDirectory()
-        
 def showMovies(sSearch = ''):
     oGui = cGui()
     
