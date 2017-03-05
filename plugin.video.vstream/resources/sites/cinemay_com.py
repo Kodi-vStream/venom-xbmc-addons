@@ -25,7 +25,6 @@ MOVIE_NEWS = (URL_MAIN , 'showMoviesNews')
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 
-SERIE_NEWS = (URL_MAIN , 'showMovies')
 SERIE_SERIES = (URL_MAIN + 'serie/', 'showMovies')
 SERIE_GENRES = (True, 'showSeriesGenre')
 
