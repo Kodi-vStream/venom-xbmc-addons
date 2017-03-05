@@ -15,7 +15,7 @@ import urllib2
 
 
 SITE_IDENTIFIER = 'filmenstreaminghd_com'
-SITE_NAME = 'filmenstreaminghd'
+SITE_NAME = 'Filmenstreaminghd'
 SITE_DESC = 'Films/Series/Animes en streaming'
 
 
