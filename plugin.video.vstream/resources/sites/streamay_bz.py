@@ -372,6 +372,9 @@ def GetLink():
                 break
             
             sHosterUrl = str(aEntry)
+            if sHosterUrl.startswith('//'):
+                sHosterUrl = 'http:' + sHosterUrl
+                
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle)  
             if (oHoster != False):

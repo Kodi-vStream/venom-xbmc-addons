@@ -13,7 +13,7 @@ from resources.lib.util import cUtil
 
 import re
  
-SITE_IDENTIFIER = 'french_stream_com'
+SITE_IDENTIFIER = 'french_stream'
 SITE_NAME = 'French-stream.com'
 SITE_DESC = 'films en streaming'
  
