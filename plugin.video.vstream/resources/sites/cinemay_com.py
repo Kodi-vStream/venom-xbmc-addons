@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-#Venom.
+#Venom.Razorex
 #rajout fonction pour listage Film Nouveauté par Kodigoal
 
 from resources.lib.gui.hoster import cHosterGui
