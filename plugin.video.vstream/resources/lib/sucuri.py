@@ -98,7 +98,7 @@ class SucurieBypass(object):
         head.append(('Accept-Encodinge', 'identity'))
         return head
         
-    def GetHtml(self,url):
+    def GetHtml(self,url,data=None):
         self.hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',url)
         self.host = re.sub(r'https*:\/\/','',self.hostComplet)
         self.url = url
@@ -106,7 +106,7 @@ class SucurieBypass(object):
         #on cherche des precedents cookies
         cookies = self.Readcookie(self.host.replace('.','_'))
 
-        htmlcontent = self.htmlrequest(url,cookies)
+        htmlcontent = self.htmlrequest(url,cookies,data)
 
         if not self.CheckIfActive(htmlcontent):
             # ok pas de protection
@@ -124,11 +124,11 @@ class SucurieBypass(object):
         self.SaveCookie(self.host.replace('.','_'),cookies)
         
         #et on recommence
-        htmlcontent = self.htmlrequest(url,cookies)
+        htmlcontent = self.htmlrequest(url,cookies,data)
         
         return htmlcontent
         
-    def htmlrequest(self,url,cookies = ''):
+    def htmlrequest(self,url,cookies,data):
         
         opener = urllib2.build_opener(NoRedirection)
         opener.addheaders = self.SetHeader()
@@ -136,7 +136,7 @@ class SucurieBypass(object):
         if cookies:
             opener.addheaders.append(('Cookie', cookies))
         
-        response = opener.open(url)
+        response = opener.open(url,data)
         htmlcontent = response.read()
         response.close()
         
