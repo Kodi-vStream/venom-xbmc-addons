@@ -12,8 +12,16 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.config import cConfig
+
 import re,urllib,urllib2,xbmc
-from urllib2 import URLError
+
+#pour sucury
+from resources.lib.sucuri import SucurieBypass
+
+class NoRedirection(urllib2.HTTPErrorProcessor):    
+    def http_response(self, request, response):
+        return response
+
 
 SITE_IDENTIFIER = 'sokrostream_biz'
 SITE_NAME = 'Sokrostream'
@@ -367,8 +375,9 @@ def showMovies(sSearch = ''):
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
     
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+    #oRequestHandler = cRequestHandler(sUrl)
+    #sHtmlContent = oRequestHandler.request()
+    sHtmlContent = SucurieBypass().GetHtml(sUrl)
 
     sHtmlContent = sHtmlContent.replace('<span class="tr-dublaj"></span>', '').replace('<span class="tr-altyazi"></span>','').replace('<small>','').replace('</small>','').replace('<span class="likeThis">','').replace('</span>','')
     
@@ -439,8 +448,10 @@ def showLinks():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+    #oRequestHandler = cRequestHandler(sUrl)
+    #sHtmlContent = oRequestHandler.request()
+    sHtmlContent = SucurieBypass().GetHtml(sUrl)
+    
     oParser = cParser()
     
     #get post vars
@@ -486,18 +497,48 @@ def showHosters():
     if '29702' in sPOST:
         sPOST = ''
     
-    #data = urllib.urlencode(sPOST)
-    request = urllib2.Request(sUrl,sPOST)
-    request.add_header('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0')
+
     sHtmlContent = ''
-    try: 
-        reponse = urllib2.urlopen(request)
-        sHtmlContent = reponse.read()
-        sHtmlContent = re.sub(r'<iframe.+?src=(.+?//www\.facebook\.com.+</iframe>)','',sHtmlContent)
-        reponse.close()
-    except URLError, e:
-        print e.read()
-        print e.reason
+
+    #utilisation de sucuri en POST
+    SBP = SucurieBypass()
+    
+    cookies = SBP.Readcookie('sokrostream_biz')
+    
+    opener = urllib2.build_opener(NoRedirection)
+    opener.addheaders = SBP.SetHeader()
+    
+    if cookies:
+        opener.addheaders.append(('Cookie', cookies))
+    
+    response = opener.open(sUrl,sPOST)
+    sHtmlContent = response.read()
+    response.close()
+    
+    if SBP.CheckIfActive(sHtmlContent):
+        
+        cConfig().log('sucuri present')
+        
+        #on cherche le nouveau cookie
+        cookies = SBP.DecryptCookie(sHtmlContent)
+
+        #on sauve le nouveau cookie
+        SBP.SaveCookie('sokrostream_biz',cookies)
+        
+        #et on recommence
+        opener2 = urllib2.build_opener(NoRedirection)
+        opener2.addheaders = SBP.SetHeader()
+        opener2.addheaders.append(('Cookie', cookies))
+        
+        response2 = opener2.open(sUrl,sPOST)
+        sHtmlContent = response2.read()
+        response2.close()
+        
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+    
+    sHtmlContent = re.sub(r'<iframe.+?src=(.+?//www\.facebook\.com.+</iframe>)','',sHtmlContent)
     
     oParser = cParser()
 
@@ -545,8 +586,10 @@ def showEpisode(): #cherche les episode de series
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    #oRequestHandler = cRequestHandler(sUrl)
+    #sHtmlContent = oRequestHandler.request()
+    sHtmlContent = SucurieBypass().GetHtml(sUrl)
+    
     #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','')
  
     sPattern = '<div class="movief2"><a href="([^<]+)" class="listefile">(.+?)<\/a><\/div>'

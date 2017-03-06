@@ -160,7 +160,7 @@ class cHosterGui:
             return cHosterHandler().getHoster('novamov')
         if (('divxstage' in sHostName) or ('cloudtime' in sHostName)):
             return cHosterHandler().getHoster('divxstage')
-        if ('raptu.com' in sHostName):
+        if (('raptu.com' in sHostName) or ('rapidvideo' in sHostName)):
             return cHosterHandler().getHoster('raptu')
         if ('watchers.to' in sHostName):
             return cHosterHandler().getHoster('watchers')
