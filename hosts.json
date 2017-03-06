@@ -592,34 +592,18 @@
     }
   },
   {
-    "name": "rapidvideo.py",
-    "path": "plugin.video.vstream/resources/hosters/rapidvideo.py",
-    "sha": "53cf9839c465366d593b4e961baa32d11a143e77",
-    "size": 3228,
-    "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/rapidvideo.py?ref=master",
-    "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/rapidvideo.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/53cf9839c465366d593b4e961baa32d11a143e77",
-    "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/rapidvideo.py",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/rapidvideo.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/53cf9839c465366d593b4e961baa32d11a143e77",
-      "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/rapidvideo.py"
-    }
-  },
-  {
     "name": "raptu.py",
     "path": "plugin.video.vstream/resources/hosters/raptu.py",
-    "sha": "50710010b87e60e49687670d79370116c407fe55",
-    "size": 2493,
+    "sha": "e49b105d9cdfad8076582930e35b203c06ecf683",
+    "size": 2999,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/raptu.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/raptu.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/50710010b87e60e49687670d79370116c407fe55",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/e49b105d9cdfad8076582930e35b203c06ecf683",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/raptu.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/raptu.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/50710010b87e60e49687670d79370116c407fe55",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/e49b105d9cdfad8076582930e35b203c06ecf683",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/raptu.py"
     }
   },
@@ -786,16 +770,16 @@
   {
     "name": "trash",
     "path": "plugin.video.vstream/resources/hosters/trash",
-    "sha": "408740b383cf7b82314fd9936fba8cdeac7244c2",
+    "sha": "3ba9078d9407a36e704f488247c58fd1753818d0",
     "size": 0,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/trash?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/tree/master/plugin.video.vstream/resources/hosters/trash",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/trees/408740b383cf7b82314fd9936fba8cdeac7244c2",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/trees/3ba9078d9407a36e704f488247c58fd1753818d0",
     "download_url": null,
     "type": "dir",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/trash?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/trees/408740b383cf7b82314fd9936fba8cdeac7244c2",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/trees/3ba9078d9407a36e704f488247c58fd1753818d0",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/tree/master/plugin.video.vstream/resources/hosters/trash"
     }
   },
