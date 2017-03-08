@@ -30,6 +30,7 @@ class cGuiElement:
         self.__Episode = ''
         self.__sIcon = self.DEFAULT_FOLDER_ICON
         self.__sFanart = self.__sRootArt+'fanart.jpg'
+        self.__sDecoColor = cConfig().getSetting('deco_color')
         
         #For meta search
         #TmdbId the movie database https://developers.themoviedb.org/
@@ -157,7 +158,7 @@ class cGuiElement:
         if string:
             sTitle = sTitle.replace(string.group(1),'')
             self.__Season = ("%02d" % int(string.group(2)))
-            sTitle = "%s [COLOR coral]S%s[/COLOR]"%(sTitle, self.__Season)
+            sTitle = "%s [COLOR %s]S%s[/COLOR]"%(sTitle, self.__sDecoColor, self.__Season)
             self.addItemValues('Season', self.__Season)
             return sTitle, True
 
@@ -169,7 +170,7 @@ class cGuiElement:
         if string:
             sTitle = sTitle.replace(string.group(1),'')
             self.__Episode = ("%02d" % int(string.group(2)))
-            sTitle = "%s [COLOR coral]E%s[/COLOR]"%(sTitle, self.__Episode)
+            sTitle = "%s [COLOR %s]E%s[/COLOR]"%(sTitle, self.__sDecoColor, self.__Episode)
             self.addItemValues('Episode', self.__Episode)
             return sTitle, True
 
@@ -179,13 +180,13 @@ class cGuiElement:
         if type(sTitle) is list:
             for i in range(len(sTitle)): 
                 
-                sTitle[i], sSaison = self.getSaisonTitre(sTitle[i])
-                sTitle[i], sEpisode = self.getEpisodeTitre(sTitle[i])
+                sTitle[i], sDeco = self.getSaisonTitre(sTitle[i])
+                sTitle[i], sDeco = self.getEpisodeTitre(sTitle[i])
 
-                if i == 0 or sSaison == True or sEpisode == True:
+                if i == 0 or sDeco == True:
                     self.__sTitle += sTitle[i]
                 else:
-                    self.__sTitle +=  " [COLOR coral]["+str(sTitle[i])+ "][/COLOR]"
+                    self.__sTitle +=  " [COLOR %s][%s][/COLOR]" % (self.__sDecoColor, sTitle[i])
         else:
             self.__sTitle = sTitle
 

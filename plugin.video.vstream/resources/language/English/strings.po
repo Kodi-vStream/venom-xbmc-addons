@@ -44,6 +44,10 @@ msgctxt "#30009"
 msgid "Use extendedinfo"
 msgstr ""
 
+msgctxt "#30010"
+msgid "Color Text note"
+msgstr ""
+
 msgctxt "#30500"
 msgid "Select"
 msgstr ""
