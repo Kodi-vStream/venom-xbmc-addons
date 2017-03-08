@@ -313,34 +313,34 @@ def ShowPapyLink():
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
     else:
-        data = sUrl.replace('http://www.film-streaming.mmfilmes.com/embed.php?f=','').replace('&c=','')
-        pdata = 'data=' + urllib.quote_plus(data)
         
-        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
-        oRequest = cRequestHandler('http://www.film-streaming.mmfilmes.com/Files/Loader.php')
-        oRequest.setRequestType(1)
-        oRequest.addHeaderEntry('User-Agent',UA)
-        oRequest.addHeaderEntry('Host','www.film-streaming.mmfilmes.com')
-        oRequest.addHeaderEntry('Referer',sUrl)
-        oRequest.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        oRequest.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
-        oRequest.addParametersLine(pdata)
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
         
-        sHtmlContent = oRequest.request()
         sHtmlContent = sHtmlContent.replace('\\','')
+        
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close() 
 
-        sPattern = '\[(.+?)\]'
+        sPattern = '"label":"([0-9p]+)"[^<>]+?"file":"([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            listurl = aResult[1][0].replace('"','').split(',http')
-            listqual = aResult[1][1].replace('"','').split(',')
+
+        if (aResult[0]):
+            listurl = []
+            listqual = []
+            
+            listurl.append(aResult[1][0][1])
+            listqual.append(aResult[1][0][0])
    
             tab = zip(listurl,listqual)
 
             for url,qual in tab:
                 sHosterUrl = url
+                
                 if not sHosterUrl.startswith('http'):
                     sHosterUrl = 'http' + sHosterUrl
+                    
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     sDisplayTitle = '[' + qual + '] ' + sMovieTitle

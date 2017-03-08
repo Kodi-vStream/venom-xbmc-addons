@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -10,10 +9,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-
 import urllib2,urllib,re
- 
- 
+
 SITE_IDENTIFIER = 'voirfilms_org'
 SITE_NAME = 'VoirFilms.org'
 SITE_DESC = 'Films et serie en streaming'
@@ -32,13 +29,8 @@ ANIM_NEWS = (URL_MAIN + 'animes/page-1', 'showMovies')
   
 URL_SEARCH = ('', 'showMovies')
 #FUNCTION_SEARCH = 'showMovies'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
-class NoRedirection(urllib2.HTTPErrorProcessor):    
-    def http_response(self, request, response):
-        return response
-        
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'
- 
 def load():
     oGui = cGui()
  
@@ -101,9 +93,9 @@ def AlphaSearch():
             sTitle = '09'
             
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + sTitle.upper() )
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + sTitle.upper())
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal] Lettre [COLOR red]'+ sTitle +'[/COLOR][/COLOR]', 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]'+ sTitle +'[/COLOR]', 'genres.png', oOutputParameterHandler)
         
     cConfig().finishDialog(dialog)
     
@@ -194,36 +186,33 @@ def showAlpha():
  
 def showMovies(sSearch = ''):
     oGui = cGui()
-   
+
     if sSearch:
         #on redecode la recherhce codé il y a meme pas une seconde par l'addon
         sSearch = urllib2.unquote(sSearch)
- 
-        query_args = { 'action' : 'recherche' , 'story' : str(sSearch) }
-        
-        data = urllib.urlencode(query_args)
-        headers = {'User-Agent' : 'Mozilla 5.10'}
-        url = URL_MAIN + 'rechercher'
-        request = urllib2.Request(url,data,headers)
-     
-        try:
-            reponse = urllib2.urlopen(request)
-        except URLError, e:
-            print e.read()
-            print e.reason
-     
-        sHtmlContent = reponse.read()
 
+        pdata = 'action=recherche&story=' + sSearch
+        
+        oRequest = cRequestHandler(URL_MAIN + 'recherche')
+        oRequest.setRequestType(1)
+        oRequest.addHeaderEntry('User-Agent',UA)
+        oRequest.addHeaderEntry('Host','www.voirfilms.co')
+        oRequest.addHeaderEntry('Referer',URL_MAIN)
+        oRequest.addHeaderEntry('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        oRequest.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        oRequest.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
+        oRequest.addParametersLine(pdata)
+        
+        sHtmlContent = oRequest.request()
+        
         sPattern = '<div class="imagefilm">.+?<img src="(.+?)".+?<a href="([^<>]+?)".+?titreunfilm" style="width:145px;"> *(.+?) *<\/div>'
  
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-   
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        
-        #sPattern = '<div class="imagefilm"> *<a href="(.+?)" title="(.+?)".+?<img src="(.+?)" alt="(.+?)"'
+
         sPattern = '<div class="imagefilm">.+?<img src="(.+?)".+?<a href="([^<>]+?)".+?titreunfilm" style="width:145px;">(.+?)<\/div>'
     
     sHtmlContent = sHtmlContent.replace('\n','')
@@ -347,11 +336,7 @@ def serieHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-    
+
     if '-saison-' in sUrl or '/anime/' in sUrl:
         sPattern = '<li class="description132"><a class="n_episode2" title=".+?" href="(.+?)">(.+?)<\/a><\/li>'
     else:
@@ -437,6 +422,6 @@ def showHostersLink():
         oHoster.setDisplayName(sDisplayTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
-                
+   
     oGui.setEndOfDirectory()
     

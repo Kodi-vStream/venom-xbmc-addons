@@ -37,8 +37,8 @@ MOVIE_GENRES = (URL_MAIN , 'showGenre')
 MOVIE_VF = (URL_MAIN + 'langues/french', 'showMovies') # films VF
 MOVIE_VOSTFR = (URL_MAIN + 'langues/vostfr', 'showMovies') # films VOSTFR
 
-SERIE_NEWS = (URL_MAIN + 'categories/series', 'showMovies') # serie nouveautés
-SERIE_SERIES = (URL_MAIN + 'categories/series', 'showMovies') # serie vrac
+SERIE_NEWS = (URL_MAIN + 'categories/series-streaming', 'showMovies') # serie nouveautés
+SERIE_SERIES = (URL_MAIN + 'categories/series-streaming', 'showMovies') # serie vrac
 SERIE_VFS = (URL_MAIN + 'series-tv/langues/french', 'showMovies') # serie VF
 SERIE_VOSTFRS = (URL_MAIN + 'series-tv/langues/vostfr', 'showMovies') # serie Vostfr
 SERIE_HD = (URL_MAIN + 'series-tv/qualites/hd-720p', 'showMovies') # serie HD
