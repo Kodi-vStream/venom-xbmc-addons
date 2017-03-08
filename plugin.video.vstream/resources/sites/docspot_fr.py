@@ -1,4 +1,6 @@
 #-*- coding: utf-8 -*-
+#site HS le 08/03/17
+return False
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
