@@ -98,17 +98,28 @@ def GetOpenloadUrl(url,referer):
     
 #Code updated with code from https://gitlab.com/iptvplayer-for-e2 
 def decodek(k):
-    d = max(2, ord(k[0]) - 55)
-    e = min(d, len(k) - 12 - 2)
-    t = k[e:e + 12]
+    y = ord(k[0]);
+    e = y - 0x32
+    d = max(2, e)
+    e = min(d, len(k) - 0x14 - 2)
+    t = k[e:e + 0x14]
+    h = 0
     g = []
-    for h in range(0, len(t), 2):
+    while h < len(t):
         f = t[h:h+2]
-        g.append(int(f, 16))
-    v = k[0:e] + k[e+12:]
+        g.append(int(f, 0x10))
+        h += 2
+    v = k[0:e] + k[e+0x14:]
     p = []
-    for h in range(0, len(v), 2):
-        p.append(chr(int(v[h:h + 2], 16) ^ g[(h / 2) % 6]))
+    h = 0
+    while h < len(v):
+        B = v[h:h + 2]
+        f = int(B, 0x10)
+        A = g[(h / 2) % 0xa]
+        f = f ^ 0x89;
+        f = f ^ A;
+        p.append(chr(f))
+        h += 2
         
     return "".join(p)
     
@@ -267,4 +278,3 @@ class cHoster(iHoster):
             return True, api_call
             
         return False, False
-        
