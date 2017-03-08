@@ -1,6 +1,5 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
 import re
@@ -63,28 +62,30 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
-    def __getMediaLinkForGuest(self):        
+    def __getMediaLinkForGuest(self):
+    
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        #sPattern = 'file: "([^"]+)"';
-        #sHtmlContent=sHtmlContent.replace('|','/')
-        #aResult = oParser.parse(sHtmlContent, sPattern)
-
-        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+        
+        #sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\)\))'
         aResult = oParser.parse(sHtmlContent, sPattern)
-
         if (aResult[0] == True):
-            sHtmlContent = cPacker().unpack(aResult[1][0])
-            sHtmlContent = sHtmlContent.replace('\\','')
+            for packed in aResult[1]:
+                sHtmlContent = cPacker().unpack(packed)
+                sHtmlContent = sHtmlContent.replace('\\','')
+                if not 'http://www.speedvid.net/hgcd06yxp6hf' in sHtmlContent:
+                    break
+                
+            sPattern = "{file:.([^']+.mp4)"
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                api_call = aResult[1][0]
 
-        sPattern = '{file:.([^"]+.mp4)'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-
-        if (aResult[0] == True):
-            api_call = aResult[1][0]
+            
+        if (api_call):
             return True, api_call
             
         return False, False
-        
