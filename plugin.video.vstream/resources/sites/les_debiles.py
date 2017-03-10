@@ -11,14 +11,13 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 
  
- 
 SITE_IDENTIFIER = 'les_debiles'
 SITE_NAME = 'LesDebiles'
 SITE_DESC = 'Vidéos drôles, du buzz, des fails et des vidéos insolites'
 
 URL_MAIN = 'http://www.lesdebiles.com'
  
-URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN , 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
 MOVIE_NETS = ('http://', 'load')
@@ -46,11 +45,10 @@ def showSearch():
  
     sSearchText = oGui.showKeyBoard() 
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText  
+        sUrl = URL_SEARCH[0] + '/' + sSearchText + '-s0-r1.html'
         showMovies(sUrl) 
         oGui.setEndOfDirectory()
         return
- 
  
 def showGenre():
     oGui = cGui()
@@ -168,6 +166,8 @@ def showHosters():
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+    else:
+        oGui.addText(SITE_IDENTIFIER, '(Video non visible, Lien Premium)')
                  
     oGui.setEndOfDirectory()
 
