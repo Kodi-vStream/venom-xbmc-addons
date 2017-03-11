@@ -44,7 +44,7 @@ SERIE_VOSTFRS = (URL_MAIN + 'series-tv/langues/vostfr', 'showMovies') # serie Vo
 SERIE_HD = (URL_MAIN + 'series-tv/qualites/hd-720p', 'showMovies') # serie HD
 SERIE_GENRES = (URL_MAIN + 'series-tv/', 'showGenre')
 
-URL_SEARCH = ('http://sokrostream.biz/search.php?slug=&slug=', 'showMovies')
+URL_SEARCH = ('http://sokrostream.biz/search.php?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
