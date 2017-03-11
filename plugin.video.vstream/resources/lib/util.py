@@ -84,9 +84,6 @@ class cUtil:
         return oDialog
         
     def DecoTitle(self, string):
-        return string
-            
-    def DecoTitle_old(self, string):
 
         #on vire ancienne deco en cas de bug
         string = re.sub('\[\/*COLOR.*?\]','',str(string))
