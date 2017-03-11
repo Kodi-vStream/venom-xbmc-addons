@@ -152,17 +152,36 @@ class cGuiElement:
     def getFunction(self):
         return self.__sFunctionName
         
-    def getSaisonTitre(self, sTitle):
-
+    def getDeco(self, sTitle):
+        
+        #recherche les () ou []
+        sTitle = re.sub('([\(|\[](?![0-9]{4}).{1,7}[\]|\)])',' [COLOR '+self.__sDecoColor+']\\1[/COLOR] ', sTitle)
+        
+        #recherche l'année
+        string = re.search('(?:([\(|\s]([0-9]{4})[\)|\s]))', sTitle)
+        if string:
+            sTitle = sTitle.replace(string.group(0),'')
+            self.__Year = str(string.group(0))
+            sTitle = "%s [COLOR %s](%s)[/COLOR]"%(sTitle, self.__sDecoColor, self.__Year)
+            self.addItemValues('Year', self.__Year)
+        
+        #recherche saison
         string = re.search('(?i)(s(?:[a-z]+son\s?)*([0-9]+))', str(sTitle))
         if string:
             sTitle = sTitle.replace(string.group(1),'')
             self.__Season = ("%02d" % int(string.group(2)))
             sTitle = "%s [COLOR %s]S%s[/COLOR]"%(sTitle, self.__sDecoColor, self.__Season)
             self.addItemValues('Season', self.__Season)
-            return sTitle, True
+          
+        #recherche episode
+        string = re.search('(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', str(sTitle))
+        if string:
+            sTitle = sTitle.replace(string.group(1),'')
+            self.__Episode = ("%02d" % int(string.group(2)))
+            sTitle = "%s [COLOR %s]E%s[/COLOR]"%(sTitle, self.__sDecoColor, self.__Episode)
+            self.addItemValues('Episode', self.__Episode)
 
-        return sTitle, False
+        return sTitle
         
     def getEpisodeTitre(self, sTitle):
   
@@ -179,16 +198,15 @@ class cGuiElement:
     def setTitle(self, sTitle):
         if type(sTitle) is list:
             for i in range(len(sTitle)): 
-                
-                sTitle[i], sDeco = self.getSaisonTitre(sTitle[i])
-                sTitle[i], sDeco = self.getEpisodeTitre(sTitle[i])
 
-                if i == 0 or sDeco == True:
+                if i == 0 :
                     self.__sTitle += sTitle[i]
                 else:
                     self.__sTitle +=  " [COLOR %s][%s][/COLOR]" % (self.__sDecoColor, sTitle[i])
         else:
+            sTitle = self.getDeco(sTitle)
             self.__sTitle = sTitle
+            xbmc.log(sTitle, xbmc.LOGNOTICE)
 
     def getTitle(self):
         return self.__sTitle
@@ -345,8 +363,8 @@ class cGuiElement:
         import unicodedata
         data = unicodedata.normalize('NFKD', data).encode('ascii','ignore')
         #cherche la saison et episode puis les balises [color]titre[/color]
-        data, saison = self.getSaisonTitre(data)
-        data, episode = self.getEpisodeTitre(data)
+        #data, saison = self.getSaisonTitre(data)
+        #data, episode = self.getEpisodeTitre(data)
         #supprimer les balises
         data=re.sub(r'\[.*\]|\(.*\)',r'',str(data))
         data=data.replace('VF','').replace('VOSTFR','').replace('FR','')
