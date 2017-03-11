@@ -10,6 +10,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
+from resources.lib.multihost import cJheberg
 import re 
  
 SITE_IDENTIFIER = 'robindesdroits'
@@ -119,25 +120,27 @@ def __showLink(url):
     oRequestHandler = cRequestHandler(url)
     sHtmlContent = oRequestHandler.request();
 
-    #recup le lien clictune pour stream Watchvideo
-    sPattern = '<a href="(http://www.clictune.+?)".+?<b>WatchVideo</b>'
+    #recup liens clictune 
+    sPattern = '<a href="(http://www.clictune.+?)".+?<b>.+?</b>'
     aResult = re.findall(sPattern,sHtmlContent)
-
     
-    #recup le lien Watchvideo sans delai X secondes
+    #recup liens sans delai X secondes
     if (aResult):
+        sLink =[]
         for aEntry in aResult:
-
+     
             sUrl = aEntry
             oRequestHandler = cRequestHandler(sUrl)
             sHtmlContent = oRequestHandler.request();
+            
             sPattern = '<b><a href\="http\:\/\/www\.clictune\.com\/link\/redirect\/\?url\=(.+?)\&id.+?">'
             aResult = re.findall(sPattern,sHtmlContent)
-
-            #decode url & retourne lien a showHosters
-            for a in aResult:
-                sUrl = cUtil().urlDecode(a)
-                return sUrl
+            
+            #decode url & retourne liens a showHosters
+            url = cUtil().urlDecode(aResult[0])
+            sLink.append(url)
+        
+        return sLink
     return False
 
 def showHosters():
@@ -148,33 +151,50 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
-    #recup lien Watchvideo par showLink()
-    link = __showLink(sUrl)
-    aResult = []
-    aResult.append(link)
+    #recup liens watchvideo&Jheberg par showLink()
+    sLink = __showLink(sUrl)
     
-    #recup lien direct mp4
-    if (aResult):
-        for aEntry in aResult:
-            sUrl = aEntry
-            oRequestHandler = cRequestHandler(sUrl)
-            sHtmlContent = oRequestHandler.request();
-            oParser = cParser()
-            sPattern = '{file:"([^"]+)"\,label:"([^"]+)"}'
-            aResult = oParser.parse(sHtmlContent, sPattern)
+    if (sLink):
+        for aEntry in sLink:
             
-            #affichage lien mp4
-            if (aResult[0] == True):
-                for aEntry in aResult[1]:
-                    sHosterUrl = str(aEntry[0])
-                    sQual = '[' + str(aEntry[1]) + ']'
-                    sDisplayTitle = cUtil().DecoTitle(sQual + sMovieTitle)
-
+            sUrl = aEntry
+            sHost = []
+            
+            if 'jheberg' in aEntry:
+                
+                aResult = cJheberg().GetUrls(sUrl)
+                if (aResult):
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Jheberg[/COLOR]')
+                    for aEntry in aResult:
+                        if 'nitroflare' not in aEntry:
+                            sHost.append(aEntry)
+            else:
+                oRequestHandler = cRequestHandler(sUrl)
+                sHtmlContent = oRequestHandler.request();
+                oParser = cParser()
+                sPattern = '{file:"([^"]+)"\,label:"([^"]+)"}'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                
+                if (aResult[0] == True):
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]WatchVideo[/COLOR]')
+                    for aEntry in aResult[1]:
+                        sHost.append(aEntry)
+                       
+            if (sHost):
+                for aEntry in sHost:
+                    
+                    if 'watchvideo' in sUrl:
+                        sHosterUrl = str(aEntry[0])
+                        sQual = '[' + str(aEntry[1]) + ']'
+                        sDisplayTitle = cUtil().DecoTitle(sQual + sMovieTitle)
+                    else:
+                        sHosterUrl = str(aEntry)
+                        sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                    
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
                     if (oHoster != False):
-
                         oHoster.setDisplayName(sDisplayTitle)
                         oHoster.setFileName(sDisplayTitle)
-                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
-
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+    
     oGui.setEndOfDirectory()
