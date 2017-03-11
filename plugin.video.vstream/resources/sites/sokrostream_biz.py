@@ -13,6 +13,8 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.config import cConfig
 
+
+
 import re,urllib,urllib2,xbmc
 
 #pour sucury
@@ -44,8 +46,11 @@ SERIE_VOSTFRS = (URL_MAIN + 'series-tv/langues/vostfr', 'showMovies') # serie Vo
 SERIE_HD = (URL_MAIN + 'series-tv/qualites/hd-720p', 'showMovies') # serie HD
 SERIE_GENRES = (URL_MAIN + 'series-tv/', 'showGenre')
 
-URL_SEARCH = ('http://sokrostream.biz/search.php?slug=&slug=', 'showMovies')
+URL_SEARCH = ('http://sokrostream.biz/search.php?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
+
+
+UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
 def load():
     oGui = cGui()
@@ -370,14 +375,49 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     if sSearch:
-      sUrl = sSearch
+        sUrl = sSearch
+        
+        #need a cookie for search
+        oRequestHandler = cRequestHandler(URL_MAIN)
+        sHtmlContent = oRequestHandler.request()
+
+        head = oRequestHandler.GetHeaders()
+        
+        c = re.search('Set-Cookie: PHPSESSID=(.+?);',str(head))
+        if c:
+            cookiesearch = 'PHPSESSID=' + c.group(1)
+
+            #on recupere les cookie cloudflare
+            oRequestHandler = cRequestHandler(sUrl)
+            sHtmlContent = oRequestHandler.request()
+            
+            from resources.lib.config import GestionCookie
+            cookies = GestionCookie().Readcookie('sokrostream_biz')
+            
+            #on ajoute les deux
+            cookies = cookies + '; ' + cookiesearch
+            
+            #xbmc.log('NEW ****' + cookies, xbmc.LOGNOTICE)
+        
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('User-Agent' , UA)
+        oRequestHandler.addHeaderEntry('Cookie',cookies)
+        oRequestHandler.addHeaderEntry('Referer',sUrl)
+        oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4')
+        oRequestHandler.addHeaderEntry('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        oRequestHandler.addHeaderEntry('Content-Type', 'text/html; charset=utf-8')
+        sHtmlContent = oRequestHandler.request()
 
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
     
-    #oRequestHandler = cRequestHandler(sUrl)
-    #sHtmlContent = oRequestHandler.request()
-    sHtmlContent = SucurieBypass().GetHtml(sUrl)
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
+        #sHtmlContent = SucurieBypass().GetHtml(sUrl)
+        
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
 
     sHtmlContent = sHtmlContent.replace('<span class="tr-dublaj"></span>', '').replace('<span class="tr-altyazi"></span>','').replace('<small>','').replace('</small>','').replace('<span class="likeThis">','').replace('</span>','')
     

@@ -10,6 +10,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
+
 import re,xbmcgui,unicodedata
 from resources.lib.dl_deprotect import DecryptDlProtect
 
@@ -207,7 +208,7 @@ def showSeries(sLoop = False):
     
     oParser = cParser()
  
-    sPattern = '<span style="color: #33cccc;[^<>"]*">(?:<strong>)*((?:Stream|Telec)[^<>]+)|>(Episode[^<]{2,12})<(?!\/a>)(.{0,10}a href="http.+?)(?:<.p|<br|<.div)'
+    sPattern = '<span style="color: #33cccc;[^<>"]*">(?:<(?:strong|b)>)*((?:Stream|Telec)[^<>]+)|>(Episode[^<]{2,12})<(?!\/a>)(.{0,10}a href="http.+?)(?:<.p|<br|<.div)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     #astuce en cas d'episode unique
@@ -224,12 +225,14 @@ def showSeries(sLoop = False):
             if dialog.iscanceled():
                 break
 
+            #langue
             if aEntry[0]:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMisc(SITE_IDENTIFIER, 'showSeries', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'series.png', sThumbnail, '', oOutputParameterHandler)
+            #episode
             else:
                 sTitle = sMovieTitle + ' ' + aEntry[1]
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
@@ -239,6 +242,7 @@ def showSeries(sLoop = False):
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+
 
         cConfig().finishDialog(dialog)
 

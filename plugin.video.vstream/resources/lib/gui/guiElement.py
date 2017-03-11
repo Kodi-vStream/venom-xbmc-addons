@@ -30,6 +30,7 @@ class cGuiElement:
         self.__Episode = ''
         self.__sIcon = self.DEFAULT_FOLDER_ICON
         self.__sFanart = self.__sRootArt+'fanart.jpg'
+        self.__sDecoColor = cConfig().getSetting('deco_color')
         
         #For meta search
         #TmdbId the movie database https://developers.themoviedb.org/
@@ -151,17 +152,70 @@ class cGuiElement:
     def getFunction(self):
         return self.__sFunctionName
         
-    def getSaisonTitre(self, sTitle):
-
-        string = re.search('(?i)(s(?:[a-z]+son\s?)*([0-9]+))', str(sTitle))
+    def TraiteTitre(self, sTitle):
+        
+        #convertion unicode
+        sTitle = sTitle.decode("utf-8")
+        
+        #recherche l'année, uniquement si entre caractere special a cause de 2001 odysse de l'espace ou k2000
+        string = re.search('([^\w ][0-9]{4}[^\w ])', sTitle)
         if string:
-            sTitle = sTitle.replace(string.group(1),'')
-            self.__Season = ("%02d" % int(string.group(2)))
-            sTitle = "%s [COLOR coral]S%s[/COLOR]"%(sTitle, self.__Season)
-            self.addItemValues('Season', self.__Season)
-            return sTitle, True
+            sTitle = sTitle.replace(string.group(0),'')
+            self.__Year = str(string.group(0)[1:5])
+            self.addItemValues('Year', self.__Year)
+        
+        #Recherche saison et episode a faire pr serie uniquement
+        if (True):
+            SXEX = ''
 
-        return sTitle, False
+            m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',sTitle,re.UNICODE)
+            if m:
+                #ok y a des episodes
+                sTitle = sTitle.replace(m.group(1),'')
+                self.__Episode = ("%02d" % int(m.group(2))) 
+                self.addItemValues('Episode', self.__Episode)
+                
+                #pr les saisons
+                m = re.search('(?i)(s(?:aison )*([0-9]+))', sTitle)
+                if m:
+                    sTitle = sTitle.replace(m.group(1),'')
+                    self.__Season = ("%02d" % int(m.group(2)))
+                    self.addItemValues('Season', self.__Season)
+            
+            else:
+                #pas d'episode mais y a t il des saisons ?
+                m = re.search('(?i)(s(?:aison )*([0-9]+))(?:$| )', sTitle)
+                if m:
+                    sTitle = sTitle.replace(m.group(1),'')
+                    self.__Season = ("%02d" % int(m.group(2)))
+                    self.addItemValues('Season', self.__Season)
+                    
+        #vire doubles espaces
+        sTitle = re.sub(' +',' ',sTitle)
+        
+        #vire espace a la fin
+        if sTitle.endswith(' '):
+            sTitle = sTitle[:-1]
+                    
+        #recherche les Tags restant : () ou []
+        sTitle = re.sub('([\(|\[].{2,12}[\]|\)])',' [COLOR '+self.__sDecoColor+']\\1[/COLOR]', sTitle)
+                    
+        #on reformate SXXEXX Titre [tag] (Annee)
+        sTitle2 = ''
+        if self.__Season:
+            sTitle2 = sTitle2 + 'S' + self.__Season
+        if self.__Episode:
+            sTitle2 = sTitle2 + 'E' + self.__Episode
+        if sTitle2:
+            sTitle2 = "[COLOR %s]%s[/COLOR] "%(self.__sDecoColor,sTitle2)
+            
+        sTitle2 = sTitle2 + sTitle
+        
+        if self.__Year:
+            sTitle2 = "%s [COLOR %s](%s)[/COLOR]"%(sTitle2,self.__sDecoColor,self.__Year)
+            
+        #on repasse en utf-8
+        return sTitle2.encode('utf-8')
         
     def getEpisodeTitre(self, sTitle):
   
@@ -169,25 +223,30 @@ class cGuiElement:
         if string:
             sTitle = sTitle.replace(string.group(1),'')
             self.__Episode = ("%02d" % int(string.group(2)))
-            sTitle = "%s [COLOR coral]E%s[/COLOR]"%(sTitle, self.__Episode)
+            sTitle = "%s [COLOR %s]E%s[/COLOR]"%(sTitle, self.__sDecoColor, self.__Episode)
             self.addItemValues('Episode', self.__Episode)
             return sTitle, True
 
         return sTitle, False
 
     def setTitle(self, sTitle):
+        #Si le titre est une liste
         if type(sTitle) is list:
             for i in range(len(sTitle)): 
-                
-                sTitle[i], sSaison = self.getSaisonTitre(sTitle[i])
-                sTitle[i], sEpisode = self.getEpisodeTitre(sTitle[i])
-
-                if i == 0 or sSaison == True or sEpisode == True:
+                if i == 0 :
                     self.__sTitle += sTitle[i]
                 else:
-                    self.__sTitle +=  " [COLOR coral]["+str(sTitle[i])+ "][/COLOR]"
+                    self.__sTitle +=  " [COLOR %s][%s][/COLOR]" % (self.__sDecoColor, sTitle[i])
+        #titre normal
         else:
+            #traitement des titres, formate les couleurs et recupere les infos
+            # mais uniquement pr les nouvelles versions de fichier site et si personne n'a choicit de couleur dans le fichier site.
+            if '[COLOR' not in sTitle:
+                #xbmc.log(sTitle, xbmc.LOGNOTICE)
+                sTitle = self.TraiteTitre(sTitle)
+            
             self.__sTitle = sTitle
+            #xbmc.log(sTitle, xbmc.LOGNOTICE)
 
     def getTitle(self):
         return self.__sTitle
@@ -344,8 +403,8 @@ class cGuiElement:
         import unicodedata
         data = unicodedata.normalize('NFKD', data).encode('ascii','ignore')
         #cherche la saison et episode puis les balises [color]titre[/color]
-        data, saison = self.getSaisonTitre(data)
-        data, episode = self.getEpisodeTitre(data)
+        #data, saison = self.getSaisonTitre(data)
+        #data, episode = self.getEpisodeTitre(data)
         #supprimer les balises
         data=re.sub(r'\[.*\]|\(.*\)',r'',str(data))
         data=data.replace('VF','').replace('VOSTFR','').replace('FR','')
@@ -562,4 +621,3 @@ class cGuiElement:
 
     def getContextItems(self):
         return self.__aContextElements
-

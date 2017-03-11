@@ -132,8 +132,8 @@ class main:
                 plugins = __import__('resources.sites.%s' % sSiteName, fromlist=[sSiteName])
                 function = getattr(plugins, sFunction)
                 function()
-            except:
-                cConfig().log('could not load site: ' + sSiteName )
+            except Exception as e:
+                cConfig().log('could not load site: ' + sSiteName + str(e))
                 return
             
 

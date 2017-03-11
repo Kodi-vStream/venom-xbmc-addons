@@ -199,7 +199,7 @@ def showLasts():
             sUrl = aEntry[0] 
             sThumb = aEntry[1].replace('=110','=360') #qualité image
             sMovieTitle = aEntry[2] + ' ' + aEntry[3]
-            sDisplayTitle = [cUtil().DecoTitle(sMovieTitle), aEntry[4]]
+            sDisplayTitle = [sMovieTitle, aEntry[4]]
 
             if not sThumb.startswith('http'):
                sThumb = URL_MAIN + sThumb[1:]
