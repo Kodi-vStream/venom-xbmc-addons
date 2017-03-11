@@ -142,7 +142,7 @@ class CloudflareBypass(object):
         if not (cookieMem == ''):
             
             cookies = cookieMem
-            xbmc.log('cookies present')
+            xbmc.log('cookies present', xbmc.LOGNOTICE)
             
             #Test PRIORITAIRE
             opener = urllib2.build_opener(NoRedirection)
@@ -163,7 +163,7 @@ class CloudflareBypass(object):
             self.HttpReponse.close()
             
             #Arf, problem, cookies not working, delete them
-            xbmc.log('Cookies Out of date')
+            xbmc.log('Cookies Out of date', xbmc.LOGNOTICE)
             self.DeleteCookie(self.host.replace('.','_'))
             
             #Get the first new cookie, we already have the new html code
@@ -193,7 +193,7 @@ class CloudflareBypass(object):
             if not CheckIfActive(htmlcontent):
                 return htmlcontent
             
-            xbmc.log("Page protegée, tout a charger")
+            xbmc.log("Page protegée, tout a charger", xbmc.LOGNOTICE)
             #cookie
             head = self.HttpReponse.headers
             if 'Set-Cookie' in head:
@@ -234,7 +234,7 @@ class CloudflareBypass(object):
                 c1 = re.findall('__cfduid=([0-9a-z]+)',cookies)
             
             if not c1 or not c2:
-                xbmc.log("Probleme protection Cloudflare : Decodage rate")
+                xbmc.log("Probleme protection Cloudflare : Decodage rate", xbmc.LOGNOTICE)
                 showInfo("Erreur", 'Probleme protection CloudFlare' , 5)
                 self.HttpReponse.close()
                 return ''
@@ -242,7 +242,7 @@ class CloudflareBypass(object):
             cookies = '__cfduid=' + c1[0] + '; cf_clearance=' + c2[0]
 
         else:
-            xbmc.log("Probleme protection Cloudflare : Cookies manquants")
+            xbmc.log("Probleme protection Cloudflare : Cookies manquants", xbmc.LOGNOTICE)
             showInfo("Erreur", 'Probleme protection CloudFlare' , 5)
             self.HttpReponse.close()
             return ''
@@ -265,7 +265,7 @@ class CloudflareBypass(object):
         head = self.HttpReponse.headers
         if CheckIfActive(htmlcontent):
             #Arf new cookie not working
-            xbmc.log("New cookie not working")
+            xbmc.log("New cookie not working", xbmc.LOGNOTICE)
             #self.DeleteCookie(self.host.replace('.','_'))
             self.HttpReponse.close()
             return ''
