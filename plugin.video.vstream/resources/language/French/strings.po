@@ -70,7 +70,7 @@ msgstr "Plugins Préférences"
 
 msgctxt "#30024"
 msgid "Host"
-msgstr "Hote"
+msgstr "Hôte"
 
 msgctxt "#30025"
 msgid "Home"
@@ -78,7 +78,7 @@ msgstr "Accueil"
 
 msgctxt "#30026"
 msgid "IPTV and TV Guid"
-msgstr "IPTV et GuideTV"
+msgstr "IPTV et Guide TV"
 
 msgctxt "#30027"
 msgid "Waiting time for player (ms)"
@@ -90,7 +90,7 @@ msgstr "Paramètre à modifier dans l'addon PVR"
 
 msgctxt "#30029"
 msgid "Play default"
-msgstr "Lecture par default"
+msgstr "Lecture par defaut"
 
 msgctxt "#30030"
 msgid "Play"
@@ -254,11 +254,11 @@ msgstr "Outil/A propos"
 
 msgctxt "#30128"
 msgid "Clear Cache Addon"
-msgstr "Clear Cache Addon"
+msgstr "Vider Cache Addon"
 
 msgctxt "#30129"
 msgid "Clear Cache Addon"
-msgstr "Clear Cache Addon"
+msgstr "Vider Cache Addon"
 
 msgctxt "#30130"
 msgid "Lists"
@@ -278,7 +278,7 @@ msgstr "Sources"
 
 msgctxt "#30145"
 msgid "Download folder"
-msgstr "Dossier de Téléchargements"
+msgstr "Dossier de Téléchargement"
 
 msgctxt "#30146"
 msgid "Show / Hide search settings"
@@ -310,7 +310,7 @@ msgstr "Aucune information"
 
 msgctxt "#30205"
 msgid "Connection Failed"
-msgstr "Connection Impossible"
+msgstr "Connexion Impossible"
 
 msgctxt "#30206"
 msgid "Mark movie"
@@ -322,7 +322,7 @@ msgstr "Marque-Série"
 
 msgctxt "#30208"
 msgid "Mark diverses"
-msgstr "Marque-Diver"
+msgstr "Marques-Diverses"
 
 msgctxt "#30209"
 msgid "[COLOR red]Delete Bookmark[/COLOR]"
@@ -338,11 +338,11 @@ msgstr "Librairie"
 
 msgctxt "#30301"
 msgid "To configure in kodi if you want them to be imported"
-msgstr "A configurer dans kodi si vous voulez qu'ils soient importes"
+msgstr "A configurer dans kodi si vous voulez qu'ils soient importés"
 
 msgctxt "#30302"
 msgid "Auto update"
-msgstr "Mise a jour a chaque ajout"
+msgstr "Mise a jour à chaque ajout"
 
 msgctxt "#30303"
 msgid "Enable/Disable"
@@ -362,7 +362,7 @@ msgstr "[COLOR khaki][COLOR khaki]Bonjour, %s[/COLOR]"
 
 msgctxt "#30307"
 msgid "Movie (%s/%s) watch for %s minute / Show watch (%s) / episode (%s/%s) watch for pour %s minute"
-msgstr "Films (%s/%s) regarder pour %s minutes / Series regardée (%s) / Episodes (%s/%s) regardés pour %s minutes"
+msgstr "Films (%s/%s) regarder pour %s minutes / Séries regardée (%s) / Episodes (%s/%s) regardés pour %s minutes"
 
 msgctxt "#30308"
 msgid "History"
@@ -370,7 +370,7 @@ msgstr "Historique"
 
 msgctxt "#30309"
 msgid "Disconnection"
-msgstr "Déconnection"
+msgstr "Déconnexion"
 
 msgctxt "#30310"
 msgid "Collection"
@@ -390,7 +390,7 @@ msgstr "Recommandé"
 
 msgctxt "#30314"
 msgid "BoxOffice"
-msgstr "BoxOffice"
+msgstr "Box-Office"
 
 msgctxt "#30315"
 msgid "Popular"
@@ -462,7 +462,7 @@ msgstr "Vue: Séries (recommandé 50-51-500-501-508) "
 
 msgctxt "#30406"
 msgid "View: Default (recommended 50-51-500) "
-msgstr "Vue: Defaut (recommandé 50-51-500) "
+msgstr "Vue: Défaut (recommandé 50-51-500) "
 
 msgctxt "#30407"
 msgid "Vue: Home (recommended 50-51-500) "
@@ -470,7 +470,7 @@ msgstr "Vue: Accueil (recommandé 50-51-500) "
 
 msgctxt "#30408"
 msgid "Enable customized view"
-msgstr "Activer vue personnaliser"
+msgstr "Activer vue personnalisée"
 
 msgctxt "#30409"
 msgid "Close"
