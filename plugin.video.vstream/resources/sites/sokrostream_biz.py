@@ -513,7 +513,7 @@ def showLinks():
             sHost = sHost.replace('Telecharger sur ','').replace('&nbsp;','')
                 
             sDisplayTitle = cUtil().DecoTitle(sLang + sMovieTitle)
-            sTitle = sDisplayTitle +  ' - [COLOR skyblue]' + sHost +'[/COLOR]'
+            sTitle = sDisplayTitle +  ' - [COLOR coral]' + sHost +'[/COLOR]'
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sUrl', sUrl)
