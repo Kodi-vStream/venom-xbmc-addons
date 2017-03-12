@@ -323,6 +323,9 @@ def showHosters(sLoop = False):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
+                
+            if 'dailymotion' in aEntry:
+                continue
             
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
