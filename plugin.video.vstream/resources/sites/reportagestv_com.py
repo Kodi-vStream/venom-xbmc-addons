@@ -110,7 +110,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'')
     
-    sPattern = '<div class="mh-loop-thumb"><a href="([^"]+)".+?<img src="([^<]+)" class="attachment.+?<h3 class="entry-title mh-loop-title">.+?rel="bookmark">([^<]+)</a></h3>.+?<div class="mh-excerpt"><p>(.+?)<a class="mh-excerpt-more"'
+    sPattern = 'class="mh-loop-thumb">.+?<img.+?src="([^<]+)" class="attachment.+?<a href="([^"]+)" rel="bookmark">([^<]+)</a>.+?<div class="mh-excerpt"><p>(.+?)<a class'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -127,9 +127,9 @@ def showMovies(sSearch = ''):
             sSin = aEntry[3].replace('&laquo;','<<').replace('&raquo;','>>')
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', aEntry[1], sSin, oOutputParameterHandler)
         
         cConfig().finishDialog(dialog)
@@ -154,9 +154,10 @@ def __checkForNextPage(sHtmlContent):
     return False
     
 def __checkForRealUrl(sHtmlContent):
-    sPattern = '<p style="text-align: center;">.+?<a href="(.+?)".+?<input type="button".+?</a>'
+    sPattern = 'center.+?<a href="(.+?)".+?<input type="button".+?</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    cConfig().log(str(aResult)) 
     if (aResult[0] == True):
         return aResult[1][0]
 
@@ -170,8 +171,9 @@ def showHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request(); 
-
+    sHtmlContent = oRequestHandler.request();
+    
+    
     sRealUrl = __checkForRealUrl(sHtmlContent)
 
     if (sRealUrl != False):
