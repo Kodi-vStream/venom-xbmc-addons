@@ -71,7 +71,10 @@ class cUtil:
 
     def urlEncode(self, sUrl):
         return urllib.quote(sUrl)
-
+    
+    def urlEncodeSafe(self, sUrl):
+        return urllib.quote(sUrl,safe='://')
+    
     def unquotePlus(self, sUrl):
         return urllib.unquote_plus(sUrl)
 
