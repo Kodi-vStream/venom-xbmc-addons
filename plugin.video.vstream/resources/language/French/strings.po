@@ -54,7 +54,7 @@ msgstr "Paramètre à modifier dans l'addon PVR"
 
 msgctxt "#30029"
 msgid "Play default"
-msgstr "Lecture par defaut"
+msgstr "Lecture par défaut"
 
 msgctxt "#30030"
 msgid "Play"
