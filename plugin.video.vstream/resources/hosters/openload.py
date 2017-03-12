@@ -116,7 +116,7 @@ def decodek(k):
         B = v[h:h + 2]
         f = int(B, 0x10)
         A = g[(h / 2) % 0xa]
-        f = f ^ 0x89;
+        f = f ^ 0x60;
         f = f ^ A;
         p.append(chr(f))
         h += 2
