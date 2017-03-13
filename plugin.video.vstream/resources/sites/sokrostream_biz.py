@@ -400,7 +400,6 @@ def showMovies(sSearch = ''):
             #xbmc.log('NEW ****' + cookies, xbmc.LOGNOTICE)
         
         oRequestHandler = cRequestHandler(sUrl)
-        oRequestHandler.addHeaderEntry('User-Agent' , UA)
         oRequestHandler.addHeaderEntry('Cookie',cookies)
         oRequestHandler.addHeaderEntry('Referer',sUrl)
         oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4')
@@ -513,7 +512,7 @@ def showLinks():
             sHost = sHost.replace('Telecharger sur ','').replace('&nbsp;','')
                 
             sDisplayTitle = cUtil().DecoTitle(sLang + sMovieTitle)
-            sTitle = sDisplayTitle +  ' - [COLOR coral]' + sHost +'[/COLOR]'
+            sTitle = sDisplayTitle +  ' - [COLOR skyblue]' + sHost +'[/COLOR]'
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sUrl', sUrl)
