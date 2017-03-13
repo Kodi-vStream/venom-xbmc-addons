@@ -71,7 +71,11 @@ class cUtil:
 
     def urlEncode(self, sUrl):
         return urllib.quote(sUrl)
-
+    
+    def urlEncodeSafe(self, sUrl):
+        #return urllib.quote(sUrl,safe=':/.+?&')
+        return urllib.quote(sUrl,safe=':/')
+    
     def unquotePlus(self, sUrl):
         return urllib.unquote_plus(sUrl)
 
@@ -84,6 +88,10 @@ class cUtil:
         return oDialog
         
     def DecoTitle(self, string):
+        return string
+        
+
+    def DecoTitle_old(self, string):
 
         #on vire ancienne deco en cas de bug
         string = re.sub('\[\/*COLOR.*?\]','',str(string))

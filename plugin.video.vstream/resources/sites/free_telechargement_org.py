@@ -1,12 +1,9 @@
 #-*- coding: utf-8 -*-
-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.config import cConfig
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.rechercheHandler import cRechercheHandler
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.favourite import cFav
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -14,13 +11,9 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.cloudflare import CloudflareBypass
 from resources.lib.cloudflare import NoRedirection
-
 from resources.lib.config import GestionCookie
 
-import urllib,re,urllib2
-import xbmcgui
-import xbmc
-import xbmcaddon,os
+import re,xbmc,xbmcgui,xbmcaddon,os
 
 PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
@@ -29,8 +22,8 @@ SITE_IDENTIFIER = 'free_telechargement_org'
 SITE_NAME = '[COLOR violet]Free-telechargement[/COLOR]' 
 SITE_DESC = 'Fichier en DDL, HD, Film et Serie' 
 
-URL_MAIN = 'http://www.free-telechargement.org/'
-URL_PROTECT = 'http://liens.free-telechargement.org/'
+URL_MAIN = 'http://www.free-telechargement.com/'
+URL_PROTECT = 'http://liens.free-telechargement.com/'
 
 #URL_SEARCH_MOVIES_SD = (URL_MAIN + '1/recherche/1.html?rech_cat=video&rech_fiche=', 'showMovies')
 #URL_SEARCH_MOVIES_HD = (URL_MAIN + '1/recherche/1.html?rech_cat=Films+HD&rech_fiche=', 'showMovies')
@@ -102,7 +95,7 @@ def load():
 
 def showMenuFilms():
     oGui = cGui()
-       
+
     oOutputParameterHandler = cOutputParameterHandler() 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oOutputParameterHandler.addParameter('type', 'film') 
@@ -114,7 +107,7 @@ def showMenuFilms():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_SD_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_SD_VIEWS[1], 'Films SD les plus vus', 'films.png', oOutputParameterHandler)  
-     
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_SD_DVDRIP[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_SD_DVDRIP[1], 'Derniers Films SD DVDRIP et BDRIP ajoutes', 'news.png', oOutputParameterHandler)  
@@ -130,7 +123,7 @@ def showMenuFilms():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_SD_CLASSIQUE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_SD_CLASSIQUE[1], 'Derniers Films SD Classiques ajoutes', 'news.png', oOutputParameterHandler)  
-     
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Derniers Films HD 720p et 1080p ajoutes', 'news.png', oOutputParameterHandler)  
@@ -150,17 +143,17 @@ def showMenuFilms():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES_HD[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES_HD[1], 'Films HD par Genre', 'genres.png', oOutputParameterHandler)
-     
+
     oGui.setEndOfDirectory()     
 
 def showMenuSeries():
     oGui = cGui()
-       
+ 
     oOutputParameterHandler = cOutputParameterHandler() 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oOutputParameterHandler.addParameter('type', 'serie') 
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de series', 'search.png', oOutputParameterHandler)
-        
+   
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SD_EN_COURS_VF[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SD_EN_COURS_VF[1], 'Séries SD VF en cours', 'news.png', oOutputParameterHandler)  
@@ -192,18 +185,18 @@ def showMenuSeries():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_HD_TERMINE_VOSTFR[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_HD_TERMINE_VOSTFR[1], 'Séries HD VOSTFR terminées', 'news.png', oOutputParameterHandler)  
-     
+
     
     oGui.setEndOfDirectory()     
     
 def showMenuMangas():
     oGui = cGui()
-       
+
     oOutputParameterHandler = cOutputParameterHandler() 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oOutputParameterHandler.addParameter('type', 'anime') 
     oGui.addDir(SITE_IDENTIFIER, 'showSearchMangas', 'Recherche d\'animes', 'search.png', oOutputParameterHandler) 
-        
+  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Derniers Mangas VF ajoutés', 'news.png', oOutputParameterHandler)  
@@ -215,16 +208,16 @@ def showMenuMangas():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Derniers Dessins Animés ajoutés', 'news.png', oOutputParameterHandler)  
-        
+   
     oGui.setEndOfDirectory()     
 
 def showMenuSpectacles():
     oGui = cGui()
-       
+ 
     oOutputParameterHandler = cOutputParameterHandler() 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
     oGui.addDir(SITE_IDENTIFIER, 'showSearchSpectacles', 'Recherche de Spectacles', 'search.png', oOutputParameterHandler) 
-        
+ 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPECTACLES[0])
     oGui.addDir(SITE_IDENTIFIER, SPECTACLES[1], 'Derniers Spectacles ajoutés', 'news.png', oOutputParameterHandler)  
@@ -233,17 +226,17 @@ def showMenuSpectacles():
     
 def showMenuEmissionsTV():
     oGui = cGui()
-       
+
     oOutputParameterHandler = cOutputParameterHandler() 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
     oGui.addDir(SITE_IDENTIFIER, 'showSearchEmissionsTV', 'Recherche d Emissions TV', 'search.png', oOutputParameterHandler) 
-        
+  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', EMISSIONS_TV[0])
     oGui.addDir(SITE_IDENTIFIER, EMISSIONS_TV[1], 'Dernieres Emissions TV', 'news.png', oOutputParameterHandler)  
     
     oGui.setEndOfDirectory()     
-           
+  
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
@@ -319,8 +312,6 @@ def showSearchResult(sSearch = ''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     
-    xbmc.log(str(oInputParameterHandler.getAllParameter()))
-            
     sUrl = sSearch
     
     HD = 0
@@ -328,7 +319,6 @@ def showSearchResult(sSearch = ''):
     
     #uniquement si c'est la premiere page
     if sSearch:
-
         sType = oInputParameterHandler.getValue('type')
         
         loop = 1
@@ -352,9 +342,7 @@ def showSearchResult(sSearch = ''):
     aResult = []
     NextPage = []
 
-     
     while (loop):
-        #xbmc.log(sUrl)
         oRequestHandler = cRequestHandler(sUrl) 
         sHtmlContent = oRequestHandler.request()
         sHtmlContent = sHtmlContent.replace('<span style="background-color: yellow;"><font color="red">','')
@@ -375,7 +363,6 @@ def showSearchResult(sSearch = ''):
                 
         loop = loop - 1
         if (loop == 1):
-            #xbmc.log('recherche HD')
             HD = len(aResult)
             if sUrl.endswith('video'):
                 sUrl = sUrl.replace('=video','=Films+HD')
@@ -429,13 +416,11 @@ def showSearchResult(sSearch = ''):
         oGui.setEndOfDirectory()        
         
 def showMovies():
-    #xbmc.log('showMovies')
-    
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')     
-        
+ 
     oRequestHandler = cRequestHandler(sUrl) 
     sHtmlContent = oRequestHandler.request()
     
@@ -446,9 +431,6 @@ def showMovies():
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
-    #xbmc.log(str(aResult))
-    
     if (aResult[0] == True):
         total = len(aResult[1])        
         for aEntry in aResult[1]:
@@ -485,7 +467,7 @@ def showMovies():
 
     #Merci de ne pas faire ça
     #xbmc.executebuiltin('Container.SetViewMode(500)')
-     
+
     oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
@@ -500,16 +482,12 @@ def __checkForNextPage(sHtmlContent):
 
 
 def showHosters():# recherche et affiche les hotes
-    #xbmc.log("showHosters")
-    
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler() 
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumbnail=oInputParameterHandler.getValue('sThumbnail')
-    
-    #cConfig().log(sUrl)
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -528,22 +506,19 @@ def showHosters():# recherche et affiche les hotes
     
     #cut de la zone des liens
     if 'Lien Premium' in sHtmlContent:
-        #xbmc.log('lien premiums')
         sPattern = 'Lien Premium(.+?)</div>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if not aResult[0]:
             return
         sHtmlContent = aResult[1][0]
-        #xbmc.log(sHtmlContent)
+
         if 'Interchangeables' in sHtmlContent:
             #cut de restes de liens non premiums
-            #xbmc.log('cut de restes de liens non premiums')
             sPattern = '--(.+?)Interchangeables'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if not aResult[0]:
                 return
             sHtmlContent = aResult[1][0]
-            #xbmc.log(sHtmlContent)
             
     else:
         sPattern = '<div id="link">(.+?)</div>'
@@ -551,13 +526,8 @@ def showHosters():# recherche et affiche les hotes
         if not aResult[0]:
             return
         sHtmlContent = aResult[1][0]
-        #xbmc.log(sHtmlContent)
-     
-    #xbmc.log(sHtmlContent)
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-    
+        sHtmlContent = sHtmlContent.replace('&nbsp;','')
+        
     if '-multi' in sHtmlContent:
         sPattern = '<a href="link.php\?lien\=([^"]+)"'
     else:
@@ -565,8 +535,6 @@ def showHosters():# recherche et affiche les hotes
    
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #xbmc.log(str(aResult))
-       
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -596,24 +564,20 @@ def showHosters():# recherche et affiche les hotes
     oGui.setEndOfDirectory()
   
 def showSeriesHosters():# recherche et affiche les hotes
-    #xbmc.log("showSeriesHosters")
-    
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler() 
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumbnail=oInputParameterHandler.getValue('sThumbnail')
-    
-    #xbmc.log(sUrl)
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #xbmc.log(sHtmlContent)
+
     oParser = cParser()
     
     #recuperation nom de la release
     sPattern = '</span> ([^<]+)</strong> :.'
     aResult1 = oParser.parse(sHtmlContent, sPattern)
-    #xbmc.log(str(aResult1))
     
     #cut de la zone des liens
     if 'Lien Premium' in sHtmlContent:
@@ -625,17 +589,13 @@ def showSeriesHosters():# recherche et affiche les hotes
     sHtmlContent = re.sub('<font color="[^"]+">','',sHtmlContent)
     sHtmlContent = re.sub('</font>','',sHtmlContent)
     #sHtmlContent = re.sub('link.php\?lien\=','',sHtmlContent)
-             
-    #xbmc.log(sHtmlContent)
     
     if '-multi' in sHtmlContent:
         sPattern = '<a href="link.php\?lien\=([^"]+)"'
     else:
         sPattern = '<b>(.+?)</b> </br> <a href="link.php\?lien\=([^"]+)" target="_blank" ><b>Cliquer ici pour Télécharger</b></a><br /><br />'
    
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    #xbmc.log(str(aResult))
-       
+    aResult = oParser.parse(sHtmlContent, sPattern) 
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -661,7 +621,6 @@ def showSeriesHosters():# recherche et affiche les hotes
     oGui.setEndOfDirectory()  
   
 def Display_protected_link():
-    #xbmc.log("Display_protected_link")
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -669,12 +628,10 @@ def Display_protected_link():
     sThumbnail=oInputParameterHandler.getValue('sThumbnail')
 
     oParser = cParser()
-    #xbmc.log(sUrl)
-    
+
     #Est ce un lien dl-protect ?
     if URL_PROTECT in sUrl:
         sHtmlContent = DecryptddlProtect(sUrl) 
-        #xbmc.log(sHtmlContent)
         if sHtmlContent:
             #Si redirection
             if sHtmlContent.startswith('http'):
@@ -693,15 +650,9 @@ def Display_protected_link():
             sUrl = 'http://' + sUrl
         aResult_dlprotect = (True, [sUrl]) 
         
-    #xbmc.log(aResult_dlprotect)
-        
-    if (aResult_dlprotect[0]):
-            
-        
-        
+    if (aResult_dlprotect[0]):  
         for aEntry in aResult_dlprotect[1]:
             sHosterUrl = aEntry
-            #xbmc.log(sHosterUrl)
             
             sTitle = sMovieTitle
             
@@ -716,17 +667,13 @@ def Display_protected_link():
     oGui.setEndOfDirectory()
 
 def DecryptddlProtect(url):
-    #xbmc.log("DecryptddlProtect")
-    
-    #xbmc.log('>>' + url)
-    
+   
     if not (url): return ''
     
     cookies = ''
     #try to get previous cookie
     cookies = GestionCookie().Readcookie('liens_free-telechargement_org')
-    #xbmc.log( 'cookie récupéré:')
-    #xbmc.log( 'Ancien' + cookies )
+
     oRequestHandler = cRequestHandler(url)
     if cookies:
         oRequestHandler.addHeaderEntry('Cookie',cookies)
@@ -746,12 +693,10 @@ def DecryptddlProtect(url):
             image = s[0]
         else:
             image = URL_PROTECT + s[0]
-            
-        #cConfig().log(image)
 
         captcha,cookies2 = get_response(image,cookies)
         cookies = cookies + '; ' +cookies2
-        #xbmc.log( 'New ' + cookies)
+
         
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.setRequestType(1)
@@ -765,8 +710,6 @@ def DecryptddlProtect(url):
         oRequestHandler.addParameters( 'ct_captcha' , captcha)
         
         sHtmlContent = oRequestHandler.request()
-        
-        #xbmc.log( sHtmlContent )
         
         if 'Code de securite incorrect' in sHtmlContent:
             cGui().showInfo("Erreur", 'Mauvais Captcha' , 5)
@@ -782,21 +725,18 @@ def DecryptddlProtect(url):
     
     return sHtmlContent
 	
-def get_response(img,cookie):    
-    #xbmc.log( "get_reponse")
-    
+def get_response(img,cookie):
     #on telecharge l'image
 
     hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',img)
     host = re.sub(r'https*:\/\/','',hostComplet)
     url = img                 
 
-
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent' , UA)
     #oRequestHandler.addHeaderEntry('Referer', url)
     oRequestHandler.addHeaderEntry('Cookie',cookie)
-      
+
     htmlcontent = oRequestHandler.request()
     
     NewCookie = oRequestHandler.GetCookies()
@@ -806,9 +746,7 @@ def get_response(img,cookie):
     downloaded_image = file(filename, "wb")
     downloaded_image.write(htmlcontent)
     downloaded_image.close()
-    
-    #cConfig().log(filename)
-           
+
     #on affiche le dialogue
     solution = ''
     try:

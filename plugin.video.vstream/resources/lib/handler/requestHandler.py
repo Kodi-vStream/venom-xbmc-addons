@@ -24,6 +24,7 @@ class cRequestHandler:
         self.__timeout = 30
         self.__bRemoveNewLines = False
         self.__bRemoveBreakLines = False
+        self.__sResponseHeader = ''
         
         self.__HeaderReturn = ''
 
@@ -59,20 +60,28 @@ class cRequestHandler:
         self.addHeaderEntry('Content-Type', mpartdata[0] )
         self.addHeaderEntry('Content-Length', len(mpartdata[1]))
 
+    #Fonction la plus fiable
     def getResponseHeader(self):
         return self.__sResponseHeader
-
+    
+    #Ce n'est pas un doublon de getResponseHeader, si il y a des doublon, l'une des deux fonctions les zappe.
+    def GetHeaders(self):
+        return self.__HeaderReturn
+        
     # url after redirects
     def getRealUrl(self):
         return self.__sRealUrl
         
-    def GetHeaders(self):
-        return self.__HeaderReturn
-        
     def GetCookies(self):
-        import re
-        if 'Set-Cookie' in self.__HeaderReturn:
-            c = self.__HeaderReturn['Set-Cookie']
+        if 'Set-Cookie' in self.__sResponseHeader:
+            import re
+            
+            #cookie_string = self.__sResponseHeader.getheaders('set-cookie')
+            #c = ''
+            #for i in cookie_string:
+            #    c = c + i + ', '
+            c = self.__sResponseHeader.getheader('set-cookie')
+            
             c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);',c)
             if c2:
                 cookies = ''
@@ -114,8 +123,8 @@ class cRequestHandler:
             oRequest = urllib2.Request(self.__sUrl)
 
         for aHeader in self.__aHeaderEntries:
-                for sHeaderKey, sHeaderValue in aHeader.items():
-                    oRequest.add_header(sHeaderKey, sHeaderValue)
+            for sHeaderKey, sHeaderValue in aHeader.items():
+                oRequest.add_header(sHeaderKey, sHeaderValue)
 
         sContent = ''
         try:
@@ -140,11 +149,8 @@ class cRequestHandler:
                 #Protected by cloudFlare ?
                 from resources.lib import cloudflare
                 if cloudflare.CheckIfActive(e.read()):
-                    if 'Set-Cookie' in e.headers:
-                        cookies = e.headers['Set-Cookie']
-                    else:
-                        cookies = ''
-                    cookies = cookies.split(';')[0]
+ 
+                    cookies = self.GetCookies()
                     
                     print 'Page protegee par cloudflare'
                     CF = cloudflare.CloudflareBypass()

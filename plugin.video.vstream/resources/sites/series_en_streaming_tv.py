@@ -199,7 +199,7 @@ def showLasts():
             sUrl = aEntry[0] 
             sThumb = aEntry[1].replace('=110','=360') #qualité image
             sMovieTitle = aEntry[2] + ' ' + aEntry[3]
-            sDisplayTitle = [sMovieTitle, aEntry[4]]
+            sDisplayTitle = ('%s %s') % (sMovieTitle, aEntry[4])
 
             if not sThumb.startswith('http'):
                sThumb = URL_MAIN + sThumb[1:]
@@ -240,7 +240,7 @@ def showHosters():
                
             sUrl2 = URL_MAIN + 'cale/' + aEntry[0]
             
-            sDisplayTitle = [cUtil().DecoTitle(sTitle), aEntry[2], aEntry[1]]
+            sDisplayTitle = ('%s %s %s') % (sTitle, aEntry[2], aEntry[1])
                 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)

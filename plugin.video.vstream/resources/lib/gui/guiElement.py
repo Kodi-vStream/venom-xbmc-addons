@@ -154,8 +154,8 @@ class cGuiElement:
         
     def TraiteTitre(self, sTitle):
         
-        #convertion unicode
-        sTitle = sTitle.decode("utf-8")
+        #convertion unicode ne fonctionne pas avec les accents
+        #sTitle = sTitle.decode("utf-8")
         
         #recherche l'année, uniquement si entre caractere special a cause de 2001 odysse de l'espace ou k2000
         string = re.search('([^\w ][0-9]{4}[^\w ])', sTitle)
@@ -168,7 +168,8 @@ class cGuiElement:
         if (True):
             SXEX = ''
 
-            m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',sTitle,re.UNICODE)
+            #m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',sTitle,re.UNICODE)
+            m = re.search('(?i)([e|é](?:[a-z]+sode\s?)*([0-9]+))', str(sTitle))
             if m:
                 #ok y a des episodes
                 sTitle = sTitle.replace(m.group(1),'')
@@ -176,6 +177,7 @@ class cGuiElement:
                 self.addItemValues('Episode', self.__Episode)
                 
                 #pr les saisons
+                xbmc.log(sTitle, xbmc.LOGNOTICE)
                 m = re.search('(?i)(s(?:aison )*([0-9]+))', sTitle)
                 if m:
                     sTitle = sTitle.replace(m.group(1),'')
@@ -198,7 +200,7 @@ class cGuiElement:
             sTitle = sTitle[:-1]
                     
         #recherche les Tags restant : () ou []
-        sTitle = re.sub('([\(|\[].{2,12}[\]|\)])',' [COLOR '+self.__sDecoColor+']\\1[/COLOR]', sTitle)
+        sTitle = re.sub('([\(|\[].+[\]|\)])',' [COLOR '+self.__sDecoColor+']\\1[/COLOR]', sTitle)
                     
         #on reformate SXXEXX Titre [tag] (Annee)
         sTitle2 = ''
@@ -207,15 +209,15 @@ class cGuiElement:
         if self.__Episode:
             sTitle2 = sTitle2 + 'E' + self.__Episode
         if sTitle2:
-            sTitle2 = "[COLOR %s]%s[/COLOR] "%(self.__sDecoColor,sTitle2)
+            sTitle2 = " [COLOR %s]%s[/COLOR] "%(self.__sDecoColor,sTitle2)
             
-        sTitle2 = sTitle2 + sTitle
+        sTitle2 = sTitle + sTitle2
         
         if self.__Year:
             sTitle2 = "%s [COLOR %s](%s)[/COLOR]"%(sTitle2,self.__sDecoColor,self.__Year)
             
-        #on repasse en utf-8
-        return sTitle2.encode('utf-8')
+        #on repasse en utf-8 encode('utf-8') ne fonctionne pas si il y a des accent dans le titre.
+        return sTitle2
         
     def getEpisodeTitre(self, sTitle):
   
