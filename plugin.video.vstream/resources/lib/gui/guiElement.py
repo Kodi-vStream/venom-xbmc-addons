@@ -177,7 +177,6 @@ class cGuiElement:
                 self.addItemValues('Episode', self.__Episode)
                 
                 #pr les saisons
-                xbmc.log(sTitle, xbmc.LOGNOTICE)
                 m = re.search('(?i)(s(?:aison )*([0-9]+))', sTitle)
                 if m:
                     sTitle = sTitle.replace(m.group(1),'')
@@ -198,9 +197,12 @@ class cGuiElement:
         #vire espace a la fin
         if sTitle.endswith(' '):
             sTitle = sTitle[:-1]
+        #et en debut
+        if sTitle.startswith(' '):
+            sTitle = sTitle[1:]
                     
         #recherche les Tags restant : () ou []
-        sTitle = re.sub('([\(|\[].+[\]|\)])',' [COLOR '+self.__sDecoColor+']\\1[/COLOR]', sTitle)
+        sTitle = re.sub('([\(|\[].+[\]|\)])','[COLOR '+self.__sDecoColor+']\\1[/COLOR]', sTitle)
                     
         #on reformate SXXEXX Titre [tag] (Annee)
         sTitle2 = ''
@@ -209,9 +211,9 @@ class cGuiElement:
         if self.__Episode:
             sTitle2 = sTitle2 + 'E' + self.__Episode
         if sTitle2:
-            sTitle2 = " [COLOR %s]%s[/COLOR] "%(self.__sDecoColor,sTitle2)
+            sTitle2 = "[COLOR %s]%s[/COLOR] "%(self.__sDecoColor,sTitle2)
             
-        sTitle2 = sTitle + sTitle2
+        sTitle2 = sTitle2 + sTitle
         
         if self.__Year:
             sTitle2 = "%s [COLOR %s](%s)[/COLOR]"%(sTitle2,self.__sDecoColor,self.__Year)
