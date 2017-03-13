@@ -151,10 +151,10 @@ class cRequestHandler:
                 if cloudflare.CheckIfActive(e.read()):
  
                     cookies = self.GetCookies()
-                    
+
                     print 'Page protegee par cloudflare'
                     CF = cloudflare.CloudflareBypass()
-                    sContent = CF.GetHtml(self.__sUrl,e.read(),cookies,sParameters)
+                    sContent = CF.GetHtml(self.__sUrl,e.read(),cookies,sParameters,oRequest.headers)
                     self.__sRealUrl,self.__HeaderReturn = CF.GetReponseInfo()
 
             if not sContent:
