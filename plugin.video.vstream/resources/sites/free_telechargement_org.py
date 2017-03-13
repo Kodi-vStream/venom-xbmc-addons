@@ -23,7 +23,7 @@ SITE_NAME = '[COLOR violet]Free-telechargement[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD, Film et Serie' 
 
 URL_MAIN = 'http://www.free-telechargement.org/'
-URL_PROTECT = 'http://liens.free-telechargement.org/'
+URL_PROTECT = 'liens.free-telechargement'
 
 #URL_SEARCH_MOVIES_SD = (URL_MAIN + '1/recherche/1.html?rech_cat=video&rech_fiche=', 'showMovies')
 #URL_SEARCH_MOVIES_HD = (URL_MAIN + '1/recherche/1.html?rech_cat=Films+HD&rech_fiche=', 'showMovies')
@@ -630,7 +630,7 @@ def Display_protected_link():
     oParser = cParser()
 
     #Est ce un lien dl-protect ?
-    if URL_PROTECT in sUrl or 'liens.free-telechargement.com' in sUrl:
+    if URL_PROTECT in sUrl:
         sHtmlContent = DecryptddlProtect(sUrl) 
         if sHtmlContent:
             #Si redirection
