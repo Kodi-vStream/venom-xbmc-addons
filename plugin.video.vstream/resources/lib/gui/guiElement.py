@@ -163,6 +163,18 @@ class cGuiElement:
             sTitle = sTitle.replace(string.group(0),'')
             self.__Year = str(string.group(0)[1:5])
             self.addItemValues('Year', self.__Year)
+            
+        #recherche une date
+        string = re.search('([\d]{2}[\/|-]\d{2}[\/|-]\d{4})', sTitle)
+        if string:
+            sTitle = sTitle.replace(string.group(0),'')
+            self.__Date = str(string.group(0))
+            sTitle = "%s (%s) " %(sTitle ,self.__Date)
+            
+        #recherche des mots partuculier
+        index = { ' vostfr ' : ' [VOSTFR] ', ' Vostfr ' : ' [VOSTFR] ', ' vf ' : ' [VF] '}
+        for cle in index:
+            sTitle=sTitle.replace(cle, index[cle])
         
         #Recherche saison et episode a faire pr serie uniquement
         if (True):
@@ -193,6 +205,8 @@ class cGuiElement:
                     
         #vire doubles espaces
         sTitle = re.sub(' +',' ',sTitle)
+        #supr les double --
+        sTitle = re.sub('- -','-',sTitle)
         
         #vire espace a la fin
         if sTitle.endswith(' '):
@@ -218,7 +232,7 @@ class cGuiElement:
         if self.__Year:
             sTitle2 = "%s [COLOR %s](%s)[/COLOR]"%(sTitle2,self.__sDecoColor,self.__Year)
             
-        #xbmc.log(sTitle2, xbmc.LOGNOTICE)
+        xbmc.log(sTitle2, xbmc.LOGNOTICE)
             
         #on repasse en utf-8 encode('utf-8') ne fonctionne pas si il y a des accent dans le titre.
         return sTitle2

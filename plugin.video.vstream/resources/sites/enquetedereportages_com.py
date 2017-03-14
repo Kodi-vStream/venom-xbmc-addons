@@ -185,7 +185,7 @@ def showMovies(sSearch = ''):
             #sTitle = unescape(str(sTitle))
             sTitle = sTitle.encode( "utf-8")
             
-            sTitle = re.sub('([0-9]+/[0-9]+/[0-9]+)','[COLOR teal]\\1[/COLOR]', str(sTitle))
+            #sTitle = re.sub('([0-9]+/[0-9]+/[0-9]+)','[COLOR teal]\\1[/COLOR]', str(sTitle))
             #sTitle = cUtil().DecoTitle(sTitle)
            
             oOutputParameterHandler = cOutputParameterHandler()
