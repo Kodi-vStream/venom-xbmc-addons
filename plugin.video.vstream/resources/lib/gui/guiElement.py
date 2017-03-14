@@ -215,8 +215,8 @@ class cGuiElement:
         if sTitle.startswith(' '):
             sTitle = sTitle[1:]
                     
-        #recherche les Tags restant : () ou []
-        sTitle = re.sub('([\(|\[].+?[\]|\)])','[COLOR '+self.__sDecoColor+']\\1[/COLOR]', sTitle)
+        #recherche les Tags restant : () ou [] sauf tag couleur
+        sTitle = re.sub('([\(|\[](?!\/*COLOR).+?[\]|\)])','[COLOR '+self.__sDecoColor+']\\1[/COLOR]', sTitle)
                     
         #on reformate SXXEXX Titre [tag] (Annee)
         sTitle2 = ''
