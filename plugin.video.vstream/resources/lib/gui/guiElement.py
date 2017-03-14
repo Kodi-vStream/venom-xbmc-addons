@@ -218,6 +218,8 @@ class cGuiElement:
         if self.__Year:
             sTitle2 = "%s [COLOR %s](%s)[/COLOR]"%(sTitle2,self.__sDecoColor,self.__Year)
             
+        #xbmc.log(sTitle2, xbmc.LOGNOTICE)
+            
         #on repasse en utf-8 encode('utf-8') ne fonctionne pas si il y a des accent dans le titre.
         return sTitle2
         
@@ -245,7 +247,7 @@ class cGuiElement:
         else:
             #traitement des titres, formate les couleurs et recupere les infos
             # mais uniquement pr les nouvelles versions de fichier site et si personne n'a choicit de couleur dans le fichier site.
-            if '[COLOR' not in sTitle:
+            if '[COLOR' not in sTitle or self.getSiteName() == 'cHosterGui':
                 #xbmc.log(sTitle, xbmc.LOGNOTICE)
                 sTitle = self.TraiteTitre(sTitle)
             
