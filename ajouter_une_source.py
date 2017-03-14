@@ -1,5 +1,8 @@
 #-*- coding: utf-8 -*-
-#Venom.
+#
+# Votre nom ou pseudo
+#
+#
 from resources.lib.gui.hoster import cHosterGui #systeme de recherche pour l'hote
 from resources.lib.handler.hosterHandler import cHosterHandler #systeme de recherche pour l'hote
 from resources.lib.gui.gui import cGui #systeme d'affichage pour xbmc
@@ -9,6 +12,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler #requete url
 from resources.lib.config import cConfig #config
 from resources.lib.parser import cParser #recherche de code
+
 #from resources.lib.util import cUtil #outils pouvant etre utiles
 
 import xbmc
@@ -25,8 +29,8 @@ URL_MAIN = 'http://le_site.org/' # url de votre source
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_NEWS = (URL_MAIN + 'url', 'showMovies') # films nouveautés
-MOVIE_MOVIE = (URL_MAIN + 'url', 'showMovies') # films vrac
+MOVIE_NEWS = (URL_MAIN , 'showMovies') # films nouveautés
+MOVIE_MOVIE = (URL_MAIN + '/news', 'showMovies') # films vrac
 MOVIE_VIEWS = (URL_MAIN + 'url', 'showMovies') # films + plus
 MOVIE_COMMENTS = (URL_MAIN + 'url', 'showMovies') # films + commentés
 MOVIE_NOTES = (URL_MAIN + 'url', 'showMovies') # films mieux notés
@@ -34,23 +38,23 @@ MOVIE_GENRES = (True, 'showGenre')
 MOVIE_VF = (URL_MAIN + 'url', 'showMovies') # films VF
 MOVIE_VOSTFR = (URL_MAIN + 'url', 'showMovies') # films VOSTFR
 
-SERIE_NEWS = (URL_MAIN + 'url', 'showSeries') # serie nouveautés
-SERIE_SERIES = (URL_MAIN + 'url', 'showSeries') # serie vrac
-SERIE_VFS = (URL_MAIN + 'url', 'showSeries') # serie VF
-SERIE_VOSTFRS = (URL_MAIN + 'url', 'showSeries') # serie Vostfr
+SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies') # serie nouveautés
+SERIE_SERIES = (URL_MAIN + 'series/', 'showMovies') # serie vrac
+SERIE_VFS = (URL_MAIN + 'series/', 'showMovies') # serie VF
+SERIE_VOSTFRS = (URL_MAIN + 'series/', 'showMovies') # serie Vostfr
 SERIE_GENRE = (True, 'showGenre')
 
-ANIM_NEWS = (URL_MAIN + 'url', 'showAnimes') #anime nouveautés
-ANIM_ANIMS = (URL_MAIN + 'url', 'showAnimes') #anime vrac
-ANIM_VFS = (URL_MAIN + 'url', 'showAnimes') #anime VF
-ANIM_VOSTFRS = (URL_MAIN + 'url', 'showAnimes') #anime VOSTFR
-ANIM_MOVIES = (URL_MAIN + 'url', 'showAnimes') #anime film
+ANIM_NEWS = (URL_MAIN + 'animes/', 'showMovies') #anime nouveautés
+ANIM_ANIMS = (URL_MAIN + 'animes', 'showMovies') #anime vrac
+ANIM_VFS = (URL_MAIN + 'animes', 'showMovies') #anime VF
+ANIM_VOSTFRS = (URL_MAIN + 'animes', 'showMovies') #anime VOSTFR
+ANIM_MOVIES = (URL_MAIN + 'animes', 'showMovies') #anime film
 ANIM_GENRES = (True, 'showGenre') #anime genre
 
-DOC_DOCS = (URL_MAIN + 'url', 'showOthers') #Documentaire
-SPORT_SPORTS = (URL_MAIN + 'url', 'showOthers') #sport
-MOVIE_NETS = (URL_MAIN + 'url', 'showOthers') #video du net
-REPLAYTV_REPLAYTV = (URL_MAIN + 'url', 'showOthers') #Replay
+DOC_DOCS = (URL_MAIN + 'url', 'showMovies') #Documentaire
+SPORT_SPORTS = (URL_MAIN + 'url', 'showMovies') #sport
+MOVIE_NETS = (URL_MAIN + 'url', 'showMovies') #video du net
+REPLAYTV_REPLAYTV = (URL_MAIN + 'url', 'showMovies') #Replay
 
 def load(): #fonction chargee automatiquement par l'addon l'index de votre navigation.
     oGui = cGui() #ouvre l'affichage
@@ -142,7 +146,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request() #requete aussi
     
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
-    #la function replace et pratique pour supprimer un code du resultat
+    #la function replace est pratique pour supprimer un code du resultat
     
     sPattern = 'class="movie movie-block"><img src="([^<]+)" alt=".+?" title="([^<]+)"/>.+?<h2 onclick="window.location.href=\'([^<]+)\'">.+?<div style="color:#F29000">.+?<div.+?>(.+?)</div>'
     #pour faire simple recherche ce bout de code dans le code source de l'url
@@ -154,10 +158,10 @@ def showMovies(sSearch = ''):
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # le plus simple et de faire un  xbmc.log(str(aResult))
+    # le plus simple et de faire un  cConfig().log(str(aResult))
     # dans le fichier log d'xbmc vous pourrez voir un array de ce que recupere le script
     # et modifier sPattern si besoin
-    xbmc.log(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
+    cConfig().log(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
     
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -182,7 +186,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail',sThumb ) #sortie du poster
 
             if '/series' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle,'', sThumb, SResume, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle,'', sThumb, SResume, oOutputParameterHandler)
                 #addTV pour sortir les series tv (identifiant, function, titre, icon, poster, description, sortie parametre)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, SResume, oOutputParameterHandler)
@@ -208,7 +212,7 @@ def __checkForNextPage(sHtmlContent): #cherche la page suivante
     oParser = cParser()
     sPattern = '<div class="navigation".+? <span.+? <a href="(.+?)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    print aResult #affiche le result dans le log
+    
     if (aResult[0] == True):
         return aResult[1][0]
 
@@ -245,6 +249,45 @@ def showHosters():# recherche et affiche les hotes
                 #affiche le lien (oGui, oHoster, url du lien, poster)
                 
     oGui.setEndOfDirectory() #fin
+    
+#Pour les series, il y a generallement une etape en plus pour la selection des episodes ou saisons.   
+def ShowSerieSaisonEpisodes():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sThumb = oInputParameterHandler.getValue('sThumbnail')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+   
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    
+    sPattern = '?????????????????????'
+
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    if (aResult[0] == True):
+        total = len(aResult[1])
+
+        dialog = cConfig().createDialog(SITE_NAME)
+        
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            
+            sTitle = sMovieTitle + str(aEntry[1])
+            sUrl2 = str(aEntry[2])
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle',sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail',sThumb )
+
+            oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle,'', sThumb, '', oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()
    
 def seriesHosters(): #cherche les episodes de series
     oGui = cGui()
@@ -271,4 +314,4 @@ def seriesHosters(): #cherche les episodes de series
                 
     oGui.setEndOfDirectory()
     
-#Voila c'est un peux brouillon mais ça devrais aider un peux, n'esiter a poser vos question et meme a partager vos source    
+#Voila c'est un peux brouillon mais ça devrait aider un peu, n'esitez pas a poser vos question et meme a partager vos sources.

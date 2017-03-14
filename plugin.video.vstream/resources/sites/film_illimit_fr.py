@@ -335,8 +335,9 @@ def ShowSpecialHosters():
    
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
-                    sDisplayTitle = '[' + qual + '] ' + sMovieTitle
-                    sDisplayTitle = cUtil().DecoTitle(sDisplayTitle)
+                    #sDisplayTitle = '[' + qual + '] ' + sMovieTitle
+                    sDisplayTitle = ('%s [%s]') % (sMovieTitle, qual)
+                    #sDisplayTitle = cUtil().DecoTitle(sDisplayTitle)
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)

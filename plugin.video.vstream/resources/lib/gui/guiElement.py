@@ -163,6 +163,18 @@ class cGuiElement:
             sTitle = sTitle.replace(string.group(0),'')
             self.__Year = str(string.group(0)[1:5])
             self.addItemValues('Year', self.__Year)
+            
+        #recherche une date
+        string = re.search('([\d]{2}[\/|-]\d{2}[\/|-]\d{4})', sTitle)
+        if string:
+            sTitle = sTitle.replace(string.group(0),'')
+            self.__Date = str(string.group(0))
+            sTitle = "%s (%s) " %(sTitle ,self.__Date)
+            
+        #recherche des mots partuculier
+        index = { ' vostfr ' : ' [VOSTFR] ', ' Vostfr ' : ' [VOSTFR] ', ' vf ' : ' [VF] '}
+        for cle in index:
+            sTitle=sTitle.replace(cle, index[cle])
         
         #Recherche saison et episode a faire pr serie uniquement
         if (True):
@@ -177,7 +189,6 @@ class cGuiElement:
                 self.addItemValues('Episode', self.__Episode)
                 
                 #pr les saisons
-                xbmc.log(sTitle, xbmc.LOGNOTICE)
                 m = re.search('(?i)(s(?:aison )*([0-9]+))', sTitle)
                 if m:
                     sTitle = sTitle.replace(m.group(1),'')
@@ -194,13 +205,18 @@ class cGuiElement:
                     
         #vire doubles espaces
         sTitle = re.sub(' +',' ',sTitle)
+        #supr les double --
+        sTitle = sTitle.replace('- -','-')
         
         #vire espace a la fin
         if sTitle.endswith(' '):
             sTitle = sTitle[:-1]
+        #et en debut
+        if sTitle.startswith(' '):
+            sTitle = sTitle[1:]
                     
-        #recherche les Tags restant : () ou []
-        sTitle = re.sub('([\(|\[].+[\]|\)])',' [COLOR '+self.__sDecoColor+']\\1[/COLOR]', sTitle)
+        #recherche les Tags restant : () ou [] sauf tag couleur
+        sTitle = re.sub('([\(|\[](?!\/*COLOR).+?[\]|\)])','[COLOR '+self.__sDecoColor+']\\1[/COLOR]', sTitle)
                     
         #on reformate SXXEXX Titre [tag] (Annee)
         sTitle2 = ''
@@ -209,12 +225,14 @@ class cGuiElement:
         if self.__Episode:
             sTitle2 = sTitle2 + 'E' + self.__Episode
         if sTitle2:
-            sTitle2 = " [COLOR %s]%s[/COLOR] "%(self.__sDecoColor,sTitle2)
+            sTitle2 = "[COLOR %s]%s[/COLOR] "%(self.__sDecoColor,sTitle2)
             
-        sTitle2 = sTitle + sTitle2
+        sTitle2 = sTitle2 + sTitle
         
         if self.__Year:
             sTitle2 = "%s [COLOR %s](%s)[/COLOR]"%(sTitle2,self.__sDecoColor,self.__Year)
+            
+        #xbmc.log(sTitle2, xbmc.LOGNOTICE)
             
         #on repasse en utf-8 encode('utf-8') ne fonctionne pas si il y a des accent dans le titre.
         return sTitle2
@@ -241,9 +259,9 @@ class cGuiElement:
                     self.__sTitle +=  " [COLOR %s][%s][/COLOR]" % (self.__sDecoColor, sTitle[i])
         #titre normal
         else:
-            #traitement des titres, formate les couleurs et recupere les infos
-            # mais uniquement pr les nouvelles versions de fichier site et si personne n'a choicit de couleur dans le fichier site.
-            if '[COLOR' not in sTitle:
+            # traitement des titres, formate les couleurs et recupere les infos
+            # Sauf si titre coloree, si c'est une partie qui est coloree la couleur restera (eg pr les hosters)
+            if not sTitle.startswith('[COLOR'):
                 #xbmc.log(sTitle, xbmc.LOGNOTICE)
                 sTitle = self.TraiteTitre(sTitle)
             

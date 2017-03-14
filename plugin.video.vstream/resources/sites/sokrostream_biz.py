@@ -400,7 +400,6 @@ def showMovies(sSearch = ''):
             #xbmc.log('NEW ****' + cookies, xbmc.LOGNOTICE)
         
         oRequestHandler = cRequestHandler(sUrl)
-        oRequestHandler.addHeaderEntry('User-Agent' , UA)
         oRequestHandler.addHeaderEntry('Cookie',cookies)
         oRequestHandler.addHeaderEntry('Referer',sUrl)
         oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4')
