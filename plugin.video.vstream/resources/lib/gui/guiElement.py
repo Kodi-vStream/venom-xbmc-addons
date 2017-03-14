@@ -259,9 +259,9 @@ class cGuiElement:
                     self.__sTitle +=  " [COLOR %s][%s][/COLOR]" % (self.__sDecoColor, sTitle[i])
         #titre normal
         else:
-            #traitement des titres, formate les couleurs et recupere les infos
-            # mais uniquement pr les nouvelles versions de fichier site et si personne n'a choicit de couleur dans le fichier site.
-            if '[COLOR' not in sTitle or self.getSiteName() == 'cHosterGui':
+            # traitement des titres, formate les couleurs et recupere les infos
+            # Sauf si titre coloree, si c'est une partie qui est coloree la couleur restera (eg pr les hosters)
+            if not sTitle.startswith('[COLOR'):
                 #xbmc.log(sTitle, xbmc.LOGNOTICE)
                 sTitle = self.TraiteTitre(sTitle)
             
