@@ -196,29 +196,43 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     sVidCode = oInputParameterHandler.getValue('sVidCode')
-    
-    if (sVidCode == False):
+
+    if sVidCode:
+        sHosterUrl = GetFinalUrl(sVidCode)
+        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        if (oHoster != False):
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+  
+    else:
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
         sPattern = '<embed *src=.+?vid=(\d+).+?function *current_video'
         aResult = re.search(sPattern,sHtmlContent,re.DOTALL)
         if (aResult):
-            sVidCode = aResult.group(1)
+            sHosterUrl = GetFinalUrl(aResult.group(1))
+        else:
+            sPattern ='<iframe.+?src="([^"]+)".+?<\/iframe>'
+            aResult = re.search(sPattern,sHtmlContent,re.DOTALL)
+            if (aResult):
+                sHosterUrl = aResult.group(1)        
 
-    sUrl = ('%swp-admin/admin-ajax.php?action=myextractXML&vid=%s' % (URL_MAIN,sVidCode))
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = 'video_id *= *"' + sVidCode + '".+?video_url *= *"([^"]+)"'
-    aResult = re.search(sPattern,sHtmlContent,re.DOTALL)
-    if (aResult):
-        sHosterUrl = aResult.group(1)
         oHoster = cHosterGui().checkHoster(sHosterUrl)
-
         if (oHoster != False):
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
- 
+  
     oGui.setEndOfDirectory()
+
+def GetFinalUrl(sVidCode):
+    sUrl = ('%swp-admin/admin-ajax.php?action=myextractXML&vid=%s' % (URL_MAIN,sVidCode))
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    sPattern = 'video_id *= *"' + sVidCode + '".+?video_url *= *"([^"]+)"'
+    aResult = re.search(sPattern,sHtmlContent,re.DOTALL)
+    if (aResult):
+        return aResult.group(1)
+ 
+    return False
