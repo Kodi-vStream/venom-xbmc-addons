@@ -206,7 +206,7 @@ class cGuiElement:
         #vire doubles espaces
         sTitle = re.sub(' +',' ',sTitle)
         #supr les double --
-        sTitle = re.sub('- -','-',sTitle)
+        sTitle = sTitle.replace('- -','-')
         
         #vire espace a la fin
         if sTitle.endswith(' '):
