@@ -232,7 +232,7 @@ class cGuiElement:
         if self.__Year:
             sTitle2 = "%s [COLOR %s](%s)[/COLOR]"%(sTitle2,self.__sDecoColor,self.__Year)
             
-        xbmc.log(sTitle2, xbmc.LOGNOTICE)
+        #xbmc.log(sTitle2, xbmc.LOGNOTICE)
             
         #on repasse en utf-8 encode('utf-8') ne fonctionne pas si il y a des accent dans le titre.
         return sTitle2
