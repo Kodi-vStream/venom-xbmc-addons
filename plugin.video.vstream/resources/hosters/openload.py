@@ -113,13 +113,15 @@ def decodek(k):
     p = []
     h = 0
     while h < len(v):
-        B = v[h:h + 2]
+        B = v[h:h + 3]
         f = int(B, 0x10)
-        A = g[(h / 2) % 0xa]
-        f = f ^ 0x60;
+        if (h / 3) % 3 == 0:
+            f = int(B, 8)
+        A = g[(h / 3) % 0xa]
+        f = f ^ 0x2F
         f = f ^ A;
         p.append(chr(f))
-        h += 2
+        h += 3
         
     return "".join(p)
     
