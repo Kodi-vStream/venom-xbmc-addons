@@ -20,10 +20,16 @@ class cFav:
         self.__sFile = cConfig().getFileFav()
         self.__sTitle = ''
         #self.__sFunctionName = ''
-      
-
-    def delFavourites(self):
+ 
+    #effacement firect par menu
+    def delFavouritesMenu(self):
         cDb().del_favorite()
+        return True 
+
+    #avec confirmation pour les autres
+    def delFavourites(self):
+        if cConfig().createDialogYesNo("Voulez vous vraiment supprimer toute cette liste"):
+            cDb().del_favorite()
         return True
   
     def getFavourites(self):
@@ -139,7 +145,7 @@ class cFav:
                     oGuiElement.setFanart(fanart)
                     
                     #self.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
-                    oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','delFavourites',cConfig().getlanguage(30412))
+                    oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','delFavouritesMenu',cConfig().getlanguage(30412))
                                         
                     if (function == 'play'):
                         oGui.addHost(oGuiElement, oOutputParameterHandler)
