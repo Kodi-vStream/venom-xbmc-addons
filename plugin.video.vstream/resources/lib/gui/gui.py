@@ -636,7 +636,7 @@ class cGui():
         oOutputParameterHandler.addParameter('readdb', 'False')
 
         sParams = oOutputParameterHandler.getParameterAsUri()
-        sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, 'cHome', 'searchMovie', sParams)
+        sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, 'globalSearch', 'globalSearch', sParams)
         xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest )
         return False
 
