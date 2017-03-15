@@ -181,6 +181,7 @@ class cFav:
         meta['cat'] = oInputParameterHandler.getValue('sCat')
         
         #ListItem.title contient des code de couleurs, sMovieTitle le titre en plus "propre"
+        #Inutile a la prochaine version, car plus de couleurs a la base.
         if oInputParameterHandler.getValue('sMovieTitle'):
             meta['title'] = oInputParameterHandler.getValue('sMovieTitle')
         else:
