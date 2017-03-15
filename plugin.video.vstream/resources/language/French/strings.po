@@ -326,11 +326,11 @@ msgstr "Marques-Diverses"
 
 msgctxt "#30209"
 msgid "[COLOR red]Delete Bookmark[/COLOR]"
-msgstr "[COLOR red]Supprimer Marque-page[/COLOR]"
+msgstr "[COLOR red]Supprimer TOUT ces Marque-pages[/COLOR]"
 
 msgctxt "#30210"
 msgid "Display Bookmark"
-msgstr "Voir Marque-page"
+msgstr "Voir Marque-pages"
 
 msgctxt "#30300"
 msgid "Library"
