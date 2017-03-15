@@ -344,12 +344,13 @@ def showLinks():
 
         for aEntry in aResult[1]:
 
-            sHoster = aEntry[1].lower()
+            sHoster = aEntry[1].lower().replace(' ','')
             sQual = aEntry[2].replace(' ','')
             sLang = aEntry[3].upper()
 
             #sTitle = sMovieTitle + '['+ sQual + '-' + sLang + '] - [COLOR skyblue]' + sHoster +'[/COLOR]'
-            sTitle = ('%s [%s] [%s] %s') % (sMovieTitle, sQual, sLang , sHoster)
+            sTitle = ('%s [%s] [%s] (%s)') % (sMovieTitle, sQual, sLang , sHoster)
+            
             sUrl = URL_MAIN + aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()

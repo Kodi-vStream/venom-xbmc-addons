@@ -170,11 +170,16 @@ class cGuiElement:
             sTitle = sTitle.replace(string.group(0),'')
             self.__Date = str(string.group(0))
             sTitle = "%s (%s) " %(sTitle ,self.__Date)
+         
+        #~ #recherche Lang
+        #~ index = { ' vostfr' : ' [VOSTFR]', ' vf' : ' [VF]', ' truefrench' : ' [TrueFrench]' }
+        #~ for cle in index:
+            #~ sTitle=sTitle.replace(cle.upper(), index[cle]).replace(cle, index[cle]).replace('(%s)' % (cle), index[cle])
             
-        #recherche des mots partuculier
-        index = { ' vostfr ' : ' [VOSTFR] ', ' Vostfr ' : ' [VOSTFR] ', '[vostfr]' : '[VOSTFR]', ' vf ' : ' [VF] ', '[vf]' : '[VF]'}
-        for cle in index:
-            sTitle=sTitle.replace(cle, index[cle])
+        #~ #recherche Qualiter
+        #~ index = { '1080i' : '(1080)', '1080p' : '(1080)', '1080I' : '(1080)', '1080P' : '(1080)', '720i' : '(720)', '720p' : '(720)', '720I' : '(720)', '720P' : '(720)' }
+        #~ for cle in index:
+            #~ sTitle=sTitle.replace(cle, index[cle]).replace('[%s]' % (cle), index[cle])
         
         #Recherche saison et episode a faire pr serie uniquement
         if (True):
@@ -202,11 +207,12 @@ class cGuiElement:
                     sTitle = sTitle.replace(m.group(1),'')
                     self.__Season = ("%02d" % int(m.group(2)))
                     self.addItemValues('Season', self.__Season)
-                    
+        
+        #supr les -
+        sTitle = sTitle.replace('-',' ')
         #vire doubles espaces
         sTitle = re.sub(' +',' ',sTitle)
-        #supr les double --
-        sTitle = sTitle.replace('- -','-')
+        
         
         #vire espace a la fin
         if sTitle.endswith(' '):
@@ -232,7 +238,7 @@ class cGuiElement:
         if self.__Year:
             sTitle2 = "%s [COLOR %s](%s)[/COLOR]"%(sTitle2,self.__sDecoColor,self.__Year)
             
-        #xbmc.log(sTitle2, xbmc.LOGNOTICE)
+        xbmc.log(sTitle2, xbmc.LOGNOTICE)
             
         #on repasse en utf-8 encode('utf-8') ne fonctionne pas si il y a des accent dans le titre.
         return sTitle2

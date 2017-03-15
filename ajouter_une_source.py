@@ -175,9 +175,17 @@ def showMovies(sSearch = ''):
             sTitle = str(aEntry[1])
             sUrl2 = str(aEntry[2])
             sThumb = str(aEntry[0])
+            sLang = str(aEntry[3])
+            sQual = str(aEntry[4])
+            sHoster = str(aEntry[5])
             SResume = ''
             
             sTitle = sTitle.replace('En streaming', '')
+            
+            #Si vous avez des information dans aEntry Qualiter lang organiser un peux vos titre exemple.
+            sTitle = ('%s (%s) [%s] (%s)') % (sTitle, sQual, sLang , sHoster)
+            #mettre les information de streaming entre [] et le reste entre () vstream s'occupe de la couleur automatiquement.
+            
             sUrl2 = URL_MAIN + sUrl2
             
             oOutputParameterHandler = cOutputParameterHandler()

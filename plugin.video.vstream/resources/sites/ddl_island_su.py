@@ -436,9 +436,10 @@ def showMovies(sSearch = ''):
                 sSaison = a[0]
                 sSaison = sSaison.replace('Saison ', 'S')
             if 'VOSTFR' in sTitle2:
-                sLang = '[vostfr]'
+                sLang = '[VOSTFR]'
             #Temp test
-            sDisplayTitle = cUtil().DecoTitle(sQual + sLang + sSaison + sTitle)
+            #sDisplayTitle = cUtil().DecoTitle(sQual + sLang + sSaison + sTitle)
+            sDisplayTitle = '%s %s %s %s' %(sSaison, sTitle, sLang, sQual)
            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl2))
@@ -513,11 +514,11 @@ def showMoviesReleases():
     
     sPattern = '<option value="([^"]+)"  id="([^"]+)"'	
     aResult = oParser.parse(sHtmlContent, sPattern)
-    print aResult
+    #print aResult
 	
     #Affichage du menu  
-    oGui.addText(SITE_IDENTIFIER,sMovieTitle)
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Releases disponibles pour ce film :[/COLOR]')
+    #oGui.addText(SITE_IDENTIFIER,sMovieTitle)
+    #oGui.addText2(SITE_IDENTIFIER,'[COLOR olive]Releases disponibles pour ce film :[/COLOR]')
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -527,7 +528,8 @@ def showMoviesReleases():
             if dialog.iscanceled():
                 break
             if ('rapidgator' not in aEntry[1]) and ('turbobit' not in aEntry[1]) and ('uploaded' not in aEntry[1]) and ('uptobox' not in aEntry[1]) :
-                sTitle = '[COLOR skyblue]' + aEntry[1]+'[/COLOR]'
+                #sTitle = '[COLOR skyblue]' + aEntry[1]+'[/COLOR]'
+                sTitle = str(aEntry[1])
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
@@ -650,9 +652,9 @@ def showHosters():# recherche et affiche les hotes
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumbnail=oInputParameterHandler.getValue('sThumbnail')
     
-    print sUrl
+    #print sUrl
     sUrl = sUrl.replace(' & ','+%26+').replace(' ','+')
-    print sUrl
+    #print sUrl
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     #print sHtmlContent
@@ -660,7 +662,7 @@ def showHosters():# recherche et affiche les hotes
     
     sPattern = '<span class=\'providers.+?\' title=\'([^\']+)\'><\/span>[^<]+?<a href=\'([^\']+)\' target=\'_blank\' title="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    print aResult
+    #print aResult
     
         
     if (aResult[0] == True):
@@ -672,7 +674,8 @@ def showHosters():# recherche et affiche les hotes
             if dialog.iscanceled():
                 break
             
-            sTitle = '[COLOR skyblue]' + aEntry[0]+ '[/COLOR] ' + sMovieTitle
+            #sTitle = '[COLOR skyblue]' + aEntry[0]+ '[/COLOR] ' + sMovieTitle
+            sTitle = '%s (%s)' %(sMovieTitle, aEntry[0])
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
