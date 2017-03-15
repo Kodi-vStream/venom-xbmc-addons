@@ -91,7 +91,7 @@ def showMovies(sSearch = ''):
             else:
                 sType = 'VOSTFR'
                 
-            sTitle =  aEntry[1] + '(' + sType + ')'
+            sTitle =  aEntry[1] + ' (' + sType + ')'
             sDisplayTitle = cUtil().DecoTitle(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
