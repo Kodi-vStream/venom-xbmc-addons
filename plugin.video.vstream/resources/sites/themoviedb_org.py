@@ -171,7 +171,6 @@ def showGenreTV():
             sTitle = sTitle.encode("utf-8")
             #sUrl = API_URL+'/genre/'+str(sId)+'/tv'
             sUrl = 'discover/tv'
-            xbmc.log(sUrl)
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('genre', str(sId))
@@ -400,7 +399,8 @@ def showSeriesEpisode():
                 sThumbnail = POSTER_URL+sThumbnail
             else: sThumbnail = ''
 
-            sTitle = '[COLOR coral]S' + sSeason + 'E' + str(sEpNumber) + '[/COLOR] - ' + sName
+            #sTitle = '[COLOR coral]S' + sSeason + 'E' + str(sEpNumber) + '[/COLOR] - ' + sName
+            sTitle = 'S%s E%s %s' % (sSeason, str(sEpNumber) , sName)
             
             sExtraTitle = ' S' + "%02d" % int(sSeason) + 'E' + "%02d" % int(sEpNumber)
 

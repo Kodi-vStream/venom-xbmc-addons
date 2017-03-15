@@ -172,7 +172,7 @@ class cGuiElement:
             sTitle = "%s (%s) " %(sTitle ,self.__Date)
             
         #recherche des mots partuculier
-        index = { ' vostfr ' : ' [VOSTFR] ', ' Vostfr ' : ' [VOSTFR] ', ' vf ' : ' [VF] '}
+        index = { ' vostfr ' : ' [VOSTFR] ', ' Vostfr ' : ' [VOSTFR] ', '[vostfr]' : '[VOSTFR]', ' vf ' : ' [VF] ', '[vf]' : '[VF]'}
         for cle in index:
             sTitle=sTitle.replace(cle, index[cle])
         
@@ -250,7 +250,7 @@ class cGuiElement:
         return sTitle, False
 
     def setTitle(self, sTitle):
-        #Si le titre est une liste
+        #Si le titre est une liste normalement n'existe plus
         if type(sTitle) is list:
             for i in range(len(sTitle)): 
                 if i == 0 :
@@ -259,10 +259,8 @@ class cGuiElement:
                     self.__sTitle +=  " [COLOR %s][%s][/COLOR]" % (self.__sDecoColor, sTitle[i])
         #titre normal
         else:
-            # traitement des titres, formate les couleurs et recupere les infos
-            # Sauf si titre coloree, si c'est une partie qui est coloree la couleur restera (eg pr les hosters)
+            # avec la derniere modif de la recherche de tag plus besoin non?
             if not sTitle.startswith('[COLOR'):
-                #xbmc.log(sTitle, xbmc.LOGNOTICE)
                 sTitle = self.TraiteTitre(sTitle)
             
             self.__sTitle = sTitle
