@@ -174,7 +174,12 @@ class cFav:
         meta['fav'] = oInputParameterHandler.getValue('sFav')
         meta['cat'] = oInputParameterHandler.getValue('sCat')
         
-        meta['title'] = xbmc.getInfoLabel('ListItem.title')
+        #ListItem.title contient des code de couleurs, sMovieTitle le titre en plus "propre"
+        if oInputParameterHandler.getValue('sMovieTitle'):
+            meta['title'] = oInputParameterHandler.getValue('sMovieTitle')
+        else:
+            meta['title'] = xbmc.getInfoLabel('ListItem.title')
+            
         meta['icon'] = xbmc.getInfoLabel('ListItem.Art(thumb)')
         meta['fanart'] =  xbmc.getInfoLabel('ListItem.Art(fanart)')
         try:
