@@ -194,7 +194,7 @@ class cGuiElement:
                 self.addItemValues('Episode', self.__Episode)
                 
                 #pr les saisons
-                m = re.search('(?i)(s(?:aison )*([0-9]+))', sTitle)
+                m = re.search('(?i)(s(?:aison +)*([0-9]+))', sTitle)
                 if m:
                     sTitle = sTitle.replace(m.group(1),'')
                     self.__Season = ("%02d" % int(m.group(2)))
@@ -202,7 +202,7 @@ class cGuiElement:
             
             else:
                 #pas d'episode mais y a t il des saisons ?
-                m = re.search('(?i)(s(?:aison )*([0-9]+))(?:$| )', sTitle)
+                m = re.search('(?i)(s(?:aison +)*([0-9]+))(?:$| )', sTitle)
                 if m:
                     sTitle = sTitle.replace(m.group(1),'')
                     self.__Season = ("%02d" % int(m.group(2)))
