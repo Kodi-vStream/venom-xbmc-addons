@@ -21,7 +21,7 @@ class cFav:
         self.__sTitle = ''
         #self.__sFunctionName = ''
  
-    #effacement firect par menu
+    #effacement direct par menu
     def delFavouritesMenu(self):
         cDb().del_favorite()
         return True 
