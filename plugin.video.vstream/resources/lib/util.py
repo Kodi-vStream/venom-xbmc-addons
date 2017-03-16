@@ -224,3 +224,15 @@ class cUtil:
             return val
         except:
             return 0
+        
+        
+#***********************          
+#Fonctions lights
+#***********************
+
+#Pour les avoir
+#from resources.lib import util
+#puis util.VSlog('test')
+
+def VSlog(e):
+    xbmc.log('\t[PLUGIN] Vstream: '+str(e), xbmc.LOGNOTICE)
