@@ -38,6 +38,7 @@ SERIE_VOSTFRS = (URL_MAIN + '/category/series-tv/serie-vostfr/', 'showMovies')
 
 ANIM_VFS = (URL_MAIN + '/category/manga-vf/', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + '/category/manga-vf/manga-vostfr/', 'showMovies')
+ANIM_ENFANTS = (URL_MAIN + '/category/dessin-anime/', 'showMovies')
 
 DOC_NEWS = (URL_MAIN + '/category/television/documentaire/', 'showMovies')
 DOC_DOCS = ('http://', 'load')
@@ -89,8 +90,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés VOSTFR', 'animes_vostfr.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/dessin-anime/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies' ,'Dessins animes', 'animes.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ENFANTS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ENFANTS[1] ,'Dessins animes', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])

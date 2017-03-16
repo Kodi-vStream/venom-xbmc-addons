@@ -56,11 +56,6 @@ class cHome:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
             oGui.addDir(SITE_IDENTIFIER, 'showAnimes', cConfig().getlanguage(30122), 'animes.png', oOutputParameterHandler)
-            
-        if (cConfig().getSetting('home_enfants') == 'true'):
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'showenfants', cConfig().getlanguage(30122), 'enfants.png', oOutputParameterHandler)
 
         if (cConfig().getSetting('home_docs') == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -264,6 +259,10 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_GENRES')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30122), cConfig().getlanguage(30105)), 'animes_genres.png', oOutputParameterHandler)
 
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'ANIM_ENFANTS')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30122), cConfig().getlanguage(30109)), 'animes_enfants.png', oOutputParameterHandler)
+        
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_ANIMS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', cConfig().getlanguage(30138), 'animes_host.png', oOutputParameterHandler)
