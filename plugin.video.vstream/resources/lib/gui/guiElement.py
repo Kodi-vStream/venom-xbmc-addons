@@ -154,6 +154,11 @@ class cGuiElement:
         
     def TraiteTitre(self, sTitle):
         
+        # Format Obligatoire a traiter via le fichier site
+        #-------------------------------------------------
+        # Episode 7 a 9 > Episode 7-9
+        # Saison 1 à ? > Saison 1-?
+        
         #convertion unicode ne fonctionne pas avec les accents
         #sTitle = sTitle.decode("utf-8")
         
@@ -186,30 +191,39 @@ class cGuiElement:
             SXEX = ''
 
             #m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',sTitle,re.UNICODE)
-            m = re.search('(?i)([e|é|É](?:[a-z]+sode\s?)*([0-9]+))', str(sTitle))
+            m = re.search('(?i)([e|é|É](?:[a-z]+sode\s?)*([0-9\-\?]+))', str(sTitle))
             if m:
                 #ok y a des episodes
                 sTitle = sTitle.replace(m.group(1),'')
-                self.__Episode = ("%02d" % int(m.group(2))) 
+                ep = m.group(2)
+                if len(ep) == 1:
+                    ep = '0' + ep
+                self.__Episode = ep
                 self.addItemValues('Episode', self.__Episode)
                 
                 #pr les saisons
-                m = re.search('(?i)(s(?:aison +)*([0-9]+))', sTitle)
+                m = re.search('(?i)(s(?:aison +)*([0-9\-\?]+))', sTitle)
                 if m:
                     sTitle = sTitle.replace(m.group(1),'')
-                    self.__Season = ("%02d" % int(m.group(2)))
+                    sa = m.group(2)
+                    if len(sa) == 1:
+                        sa = '0' + sa
+                    self.__Season = sa
                     self.addItemValues('Season', self.__Season)
             
             else:
                 #pas d'episode mais y a t il des saisons ?
-                m = re.search('(?i)(s(?:aison +)*([0-9]+))(?:$| )', sTitle)
+                m = re.search('(?i)(s(?:aison +)*([0-9\-\?]+))(?:$| )', sTitle)
                 if m:
                     sTitle = sTitle.replace(m.group(1),'')
-                    self.__Season = ("%02d" % int(m.group(2)))
+                    sa = m.group(2)
+                    if len(sa) == 1:
+                        sa = '0' + sa
+                    self.__Season = sa
                     self.addItemValues('Season', self.__Season)
         
         #supr les -
-        sTitle = sTitle.replace('-',' ')
+        #sTitle = sTitle.replace('-',' ') # A gerer dans le fichier site plutot, car il peut etre utile dans certain cas
         #vire doubles espaces
         sTitle = re.sub(' +',' ',sTitle)
         
@@ -238,7 +252,7 @@ class cGuiElement:
         if self.__Year:
             sTitle2 = "%s [COLOR %s](%s)[/COLOR]"%(sTitle2,self.__sDecoColor,self.__Year)
             
-        xbmc.log(sTitle2, xbmc.LOGNOTICE)
+        #xbmc.log('>>' + sTitle2, xbmc.LOGNOTICE)
             
         #on repasse en utf-8 encode('utf-8') ne fonctionne pas si il y a des accent dans le titre.
         return sTitle2
