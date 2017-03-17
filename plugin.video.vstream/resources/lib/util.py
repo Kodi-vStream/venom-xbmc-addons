@@ -71,11 +71,7 @@ class cUtil:
 
     def urlEncode(self, sUrl):
         return urllib.quote(sUrl)
-    
-    def urlEncodeSafe(self, sUrl):
-        #return urllib.quote(sUrl,safe=':/.+?&')
-        return urllib.quote(sUrl,safe=':/')
-    
+
     def unquotePlus(self, sUrl):
         return urllib.unquote_plus(sUrl)
 
@@ -90,8 +86,8 @@ class cUtil:
     def DecoTitle(self, string):
         return string
         
-
-    def DecoTitle_old(self, string):
+        
+    def DecoTitle2(self, string):
 
         #on vire ancienne deco en cas de bug
         string = re.sub('\[\/*COLOR.*?\]','',str(string))
@@ -224,8 +220,9 @@ class cUtil:
             return val
         except:
             return 0
-        
-        
+
+            
+            
 #***********************          
 #Fonctions lights
 #***********************
@@ -236,3 +233,51 @@ class cUtil:
 
 def VSlog(e):
     xbmc.log('\t[PLUGIN] Vstream: '+str(e), xbmc.LOGNOTICE)
+    
+def VSupdate(self):
+    xbmc.executebuiltin("Container.Refresh")
+
+def VS_show_busy_dialog():
+    xbmc.executebuiltin('ActivateWindow(busydialog)')
+
+def VS_hide_busy_dialog():
+    xbmc.executebuiltin('Dialog.Close(busydialog)')
+    while xbmc.getCondVisibility('Window.IsActive(busydialog)'):
+        xbmc.sleep(100)
+        
+def VScreateDialogOK(label):
+    oDialog = xbmcgui.Dialog()
+    oDialog.ok('vStream', label)  
+    return oDialog
+    
+def VScreateDialogYesNo(label):
+    oDialog = xbmcgui.Dialog()
+    qst = oDialog.yesno("vStream", label)
+    return qst
+    
+class VSProgessBar:
+    COUNT = 0
+    
+    def createDialog(self, sSite):
+        if 'DIALOG2' not in globals():
+            oDialog = xbmcgui.DialogProgress()
+            oDialog.create(sSite)
+            global DIALOG2
+            DIALOG2 = oDialog
+            return oDialog
+        else:
+            return DIALOG2
+
+    def updateDialog(self, dialog, total):
+        if xbmcgui.Window(10101).getProperty('search') != 'true':
+            iPercent = int(float(self.COUNT * 100) / total)
+            dialog.update(iPercent, 'Chargement: '+str(self.COUNT)+'/'+str(total))
+            self.COUNT += 1
+            
+    def finishDialog(self, dialog):
+        if xbmcgui.Window(10101).getProperty('search') != 'true':
+            dialog.close()
+            xbmc.log('\t[PLUGIN] Vstream: close dialog')
+            del dialog
+            return False
+    
