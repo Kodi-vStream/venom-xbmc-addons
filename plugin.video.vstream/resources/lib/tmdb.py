@@ -17,6 +17,8 @@ except:
 
     
 # https://developers.themoviedb.org/3
+#xbmc.log(str(year), xbmc.LOGNOTICE)
+
 class cTMDb:
     URL = "http://api.themoviedb.org/3/"
 
@@ -149,22 +151,20 @@ class cTMDb:
         meta = {}
         
         if year:
-            term = name + '&year=' + year
+            term = quote_plus(name) + '&year=' + year
         else:
-            term = name
+            term = quote_plus(name)
             
-        meta = self._call('search/'+str(type), 'query=' + quote_plus(term) + '&page=' + str(page))
+        meta = self._call('search/'+str(type), 'query=' + term + '&page=' + str(page))
         #teste sans l'année
-        if 'errors' not in meta:
-            if meta and meta['total_results'] == 0 and year:
+        if 'errors' not in meta and 'status_code' not in meta:
+            if 'total_results' in meta and meta['total_results'] == 0 and year:
                     meta = self.get_movie_idbyname(name,'')
                     
             #cherche 1 seul resultat
-            if meta and meta['total_results'] != 0 and meta['results']:
+            if 'total_results' in meta and meta['total_results'] != 0:
                 tmdb_id = meta['results'][0]['id']
                 return tmdb_id
-            else:
-                return False
         else:
             return False
             
@@ -176,26 +176,24 @@ class cTMDb:
         meta = {}
         
         if year:
-            term = name + '&year=' + year
+            term = quote_plus(name) + '&year=' + year
         else:
-            term = name
+            term = quote_plus(name)
             
-        meta = self._call('search/movie', 'query=' + quote_plus(term) + '&page=' + str(page))
+        meta = self._call('search/movie', 'query=' + term + '&page=' + str(page))
         #teste sans l'année
         if 'errors' not in meta and 'status_code' not in meta:
-            if meta and meta['total_results'] == 0 and year:
+            if 'total_results' in meta and meta['total_results'] == 0 and year:
                     meta = self.search_movie_name(name,'')
                     
             #cherche 1 seul resultat
-            if meta and meta['total_results'] != 0 and meta['results']:
-                tmdb_id = meta['results'][0]['id'] 
+            if 'total_results' in meta and meta['total_results'] != 0:
+                tmdb_id = meta['results'][0]['id']
                 #cherche toutes les infos
                 meta = self.search_movie_id(tmdb_id)
-            else:
-                meta = {}
         else:
             meta = {}
-            
+        
         return meta
      
             # Search for TV shows by title.
@@ -204,20 +202,20 @@ class cTMDb:
         meta = {}
         
         if year:
-            term = name + '&year=' + year
+            term = quote_plus(name) + '&year=' + year
         else:
-            term = name
-        meta = self._call('search/tv', 'query=' + quote_plus(term) + '&page=' + str(page))
+            term = quote_plus(name)
+            
+        meta = self._call('search/tv', 'query=' + term + '&page=' + str(page))
         if 'errors' not in meta and 'status_code' not in meta:
-            if meta and meta['total_results'] == 0 and year:
+            
+            if 'total_results' in meta and meta['total_results'] == 0 and year:
                     meta = self.search_tvshow_name(name,'')  
             #cherche 1 seul resultat
-            if meta and meta['total_results'] != 0 and meta['results']:
+            if 'total_results' in meta and meta['total_results'] != 0:
                 tmdb_id = meta['results'][0]['id'] 
                 #cherche toutes les infos
                 meta = self.search_tvshow_id(tmdb_id)
-            else:
-                meta = {}
         else:
             meta = {}
             
@@ -469,7 +467,7 @@ class cTMDb:
                     meta['s_premiered'] = s['air_date']
                     meta['s_year'] = s['air_date']
                 
-                xbmc.log(str(s['season_number'])+str(season))
+                #xbmc.log(str(s['season_number'])+str(season))
                 sql = "INSERT INTO season (imdb_id, tmdb_id, season, year, premiered, poster_path, playcount) VALUES (?, ?, ?, ?, ?, ?, ?)"
                 self.dbcur.execute(sql, (meta['imdb_id'], s['id'], s['season_number'], s['air_date'], s['air_date'], s['poster_path'], 6))
                 try:
@@ -558,7 +556,7 @@ class cTMDb:
 
     def _call(self, action, append_to_response):
         url = '%s%s?api_key=%s&%s&language=%s' % (self.URL, action, self.api_key, append_to_response, self.lang)
-        #xbmc.log(url)
+        #xbmc.log(str(url), xbmc.LOGNOTICE)
         response = urlopen(url)
         data = json.loads(response.read())
         return data
