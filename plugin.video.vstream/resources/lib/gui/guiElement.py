@@ -158,6 +158,7 @@ class cGuiElement:
         #-------------------------------------------------
         # Episode 7 a 9 > Episode 7-9
         # Saison 1 à ? > Saison 1-?
+        # Format de date > 11/22/3333 ou 11-22-3333 
         
         #convertion unicode ne fonctionne pas avec les accents
         #sTitle = sTitle.decode("utf-8")
@@ -191,7 +192,7 @@ class cGuiElement:
             SXEX = ''
 
             #m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',sTitle,re.UNICODE)
-            m = re.search('(?i)([e|é|É](?:[a-z]+sode\s?)*([0-9\-\?]+))', str(sTitle))
+            m = re.search('(?i)([e|é|É](?:[a-z]+sode\s?)*([0-9]+[0-9\-\?]*))', str(sTitle))
             if m:
                 #ok y a des episodes
                 sTitle = sTitle.replace(m.group(1),'')
@@ -202,7 +203,7 @@ class cGuiElement:
                 self.addItemValues('Episode', self.__Episode)
                 
                 #pr les saisons
-                m = re.search('(?i)(s(?:aison +)*([0-9\-\?]+))', sTitle)
+                m = re.search('(?i)(s(?:aison +)*([0-9]+[0-9\-\?]*))', sTitle)
                 if m:
                     sTitle = sTitle.replace(m.group(1),'')
                     sa = m.group(2)
@@ -213,7 +214,8 @@ class cGuiElement:
             
             else:
                 #pas d'episode mais y a t il des saisons ?
-                m = re.search('(?i)(s(?:aison +)*([0-9\-\?]+))(?:$| )', sTitle)
+                #m = re.search('(?i)(s(?:aison +)*([0-9]+[0-9\-\?]*))(?:$| )', sTitle)
+                m = re.search('(?i)(s(?:aison +)*([0-9]+[0-9\-\?]*))', sTitle)
                 if m:
                     sTitle = sTitle.replace(m.group(1),'')
                     sa = m.group(2)
@@ -225,8 +227,7 @@ class cGuiElement:
         #supr les -
         #sTitle = sTitle.replace('-',' ') # A gerer dans le fichier site plutot, car il peut etre utile dans certain cas
         #vire doubles espaces
-        sTitle = re.sub(' +',' ',sTitle)
-        
+        sTitle = re.sub(' +',' ',sTitle)      
         
         #vire espace a la fin
         if sTitle.endswith(' '):
