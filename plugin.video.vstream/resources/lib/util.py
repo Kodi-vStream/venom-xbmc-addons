@@ -257,27 +257,21 @@ def VScreateDialogYesNo(label):
     
 class VSProgessBar:
     COUNT = 0
+    oDialog = None
     
     def createDialog(self, sSite):
-        if 'DIALOG2' not in globals():
             oDialog = xbmcgui.DialogProgress()
             oDialog.create(sSite)
-            global DIALOG2
-            DIALOG2 = oDialog
-            return oDialog
-        else:
-            return DIALOG2
 
-    def updateDialog(self, dialog, total):
+    def updateDialog(self, total):
         if xbmcgui.Window(10101).getProperty('search') != 'true':
             iPercent = int(float(self.COUNT * 100) / total)
-            dialog.update(iPercent, 'Chargement: '+str(self.COUNT)+'/'+str(total))
+            oDialog.update(iPercent, 'Chargement: '+str(self.COUNT)+'/'+str(total))
             self.COUNT += 1
             
-    def finishDialog(self, dialog):
+    def finishDialog(self):
         if xbmcgui.Window(10101).getProperty('search') != 'true':
-            dialog.close()
+            oDialog.close()
             xbmc.log('\t[PLUGIN] Vstream: close dialog')
-            del dialog
-            return False
+            del oDialog
     
