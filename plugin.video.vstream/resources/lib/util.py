@@ -5,6 +5,7 @@ import xbmc
 import xbmcgui
 import htmlentitydefs
 import unicodedata
+COUNT = 0
 
 class cUtil:
 
@@ -255,23 +256,21 @@ def VScreateDialogYesNo(label):
     qst = oDialog.yesno("vStream", label)
     return qst
     
-class VSProgessBar:
-    COUNT = 0
-    oDialog = None
-    
-    def createDialog(self, sSite):
-            oDialog = xbmcgui.DialogProgress()
-            oDialog.create(sSite)
+def createDialog(sSite):
+    oDialog = xbmcgui.DialogProgress()
+    oDialog.create(sSite,None)
+    return oDialog
+   
+def updateDialog(dialog,total):#,COUNT):
+    global COUNT
+    COUNT += 1
+    if xbmcgui.Window(10101).getProperty('search') != 'true':
+        iPercent = int(float(COUNT * 100) / total)
+        dialog.update(iPercent, 'Chargement: '+str(COUNT)+'/'+str(total))
 
-    def updateDialog(self, total):
-        if xbmcgui.Window(10101).getProperty('search') != 'true':
-            iPercent = int(float(self.COUNT * 100) / total)
-            oDialog.update(iPercent, 'Chargement: '+str(self.COUNT)+'/'+str(total))
-            self.COUNT += 1
-            
-    def finishDialog(self):
-        if xbmcgui.Window(10101).getProperty('search') != 'true':
-            oDialog.close()
-            xbmc.log('\t[PLUGIN] Vstream: close dialog')
-            del oDialog
-    
+def finishDialog(dialog):
+    if xbmcgui.Window(10101).getProperty('search') != 'true':
+        dialog.close()
+        xbmc.log('\t[PLUGIN] Vstream: close dialog')
+        del dialog
+        
