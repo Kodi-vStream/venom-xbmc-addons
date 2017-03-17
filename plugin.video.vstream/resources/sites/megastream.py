@@ -318,7 +318,7 @@ def showMovies(sSearch = ''):
             #sAnnee = aEntry[3]
             sThumbnail = aEntry[0]
             if aEntry[1]:
-                sQual = '[' + aEntry[1] + ']'
+                sQual = ' [' + aEntry[1] + ']'
             siteUrl = aEntry[2]
             sTitle = aEntry[3]
             if '-films' in sUrl:

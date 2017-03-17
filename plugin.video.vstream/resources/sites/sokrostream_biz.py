@@ -518,7 +518,7 @@ def showLinks():
             
             sTitle = sLang + ' ' + sMovieTitle
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-            sTitle = sDisplayTitle +  ' - [COLOR coral]' + sHost +'[/COLOR]'
+            sTitle = sDisplayTitle +  ' [COLOR coral]' + sHost +'[/COLOR]'
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sUrl', sUrl)

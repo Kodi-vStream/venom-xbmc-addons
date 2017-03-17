@@ -326,13 +326,14 @@ def showHosters():
                 break
                 
             if 'stfr' in aEntry[1]:
-                sLang = '[' + 'Vostfr' + ']'
+                sLang = 'Vostfr'
             else:
-                sLang = '[' + 'Vf' + ']'
+                sLang = 'Vf'
                 
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle)   
             sHost = aEntry[3]    
-            sTitle = '[COLOR coral]' + sLang + '[/COLOR]' + ' ' + sDisplayTitle + ' ' + '[COLOR coral]>> ' + sHost + '[/COLOR]'
+            #sTitle = '[COLOR coral]' + sLang + '[/COLOR]' + ' ' + sDisplayTitle + ' ' + '[COLOR coral]>> ' + sHost + '[/COLOR]'
+            sTitle = '%s [%s] [COLOR coral]%s[/COLOR]' %(sDisplayTitle, sLang, sHost)
             if 'serie' in sUrl:
                 sUrlv = URL_MAIN + 'streamerSerie/' + aEntry[2] + '/' + aEntry[1]
             else:    

@@ -234,7 +234,8 @@ def showHosters():
             #Rajout lanques
             for aEntry9 in langue:
                 if aEntry9[0] == aEntry[0]:
-                    sMovieTitle2 = sMovieTitle + aEntry9[1]
+                    #sMovieTitle2 = sMovieTitle + aEntry9[1]
+                    sMovieTitle2 = '%s %s' % (sMovieTitle, aEntry9[1])
            
             sHosterUrl = str(aEntry[1])
             oHoster = cHosterGui().checkHoster(sHosterUrl)
