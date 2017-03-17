@@ -261,7 +261,7 @@ def createDialog(sSite):
     oDialog.create(sSite,None)
     return oDialog
    
-def updateDialog(dialog,total):#,COUNT):
+def updateDialog(dialog,total):
     global COUNT
     COUNT += 1
     if xbmcgui.Window(10101).getProperty('search') != 'true':
