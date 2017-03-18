@@ -271,6 +271,12 @@ def updateDialog(dialog,total):
 def finishDialog(dialog):
     if xbmcgui.Window(10101).getProperty('search') != 'true':
         dialog.close()
-        xbmc.log('\t[PLUGIN] Vstream: close dialog')
+        VSlog('close dialog')
         del dialog
         
+def VSerror(e):
+    import os,xbmcaddon
+    Path = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("path"))
+    xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % ('Vstream', ('Erreur: '+str(e)), '5000', os.path.join(Path,'resources', 'art','icon.png')))
+    VSlog('Erreur: ' + str(e))  
+    
