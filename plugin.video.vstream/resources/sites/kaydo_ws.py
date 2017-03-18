@@ -234,7 +234,10 @@ def seriesHosters():
                 sUrl = URL_MAIN+'/series/'+link+'&r=n'
                 #name = aEntry[0] + ' ('+t+')'
                 name = ('%s (%s)') % (aEntry[0], t)
-                cConfig().log(str(aEntry[0]))
+                
+                name = name.replace('Ep. ','E')
+                
+                #cConfig().log(str(aEntry[0]))
                 oOutputParameterHandler.addParameter('siteUrl', sUrl) 
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle) 
                 oOutputParameterHandler.addParameter('sThumbnail', sThumbnail) 
