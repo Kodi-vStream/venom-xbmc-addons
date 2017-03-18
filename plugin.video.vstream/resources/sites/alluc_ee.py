@@ -1,17 +1,14 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 import re
-import xbmc
-    
+ 
 SITE_IDENTIFIER = 'alluc_ee'
 SITE_NAME = '[COLOR orange]Alluc.ee[/COLOR]'
 SITE_DESC = 'Moteur de recherche alluc'
@@ -22,7 +19,6 @@ URL_SEARCH = ('http://www.alluc.ee/stream/lang%3Afr+', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
     
 def load():
-   
     oGui = cGui()
     
     oOutputParameterHandler = cOutputParameterHandler()
@@ -45,9 +41,6 @@ def Decrypt(string,key):
     import base64
     import math
     
-    #xbmc.log(string)
-    #xbmc.log(key)
-    
     s = base64.b64decode(string)
     i = 0
     sResult = ''
@@ -62,7 +55,6 @@ def Decrypt(string,key):
     return sResult
 
 def showMovies(sSearch = ''):
-    
     if sSearch:
       sUrl = sSearch
       sSearch = sSearch.replace(' ','+')
@@ -136,8 +128,6 @@ def showMovies(sSearch = ''):
             
     if not sSearch:
         oGui.setEndOfDirectory()
-           
-        
 
 def __checkForNextPage(sHtmlContent):
     sPattern = '<li><a rel="" href="\/([^<>"]+?)"(?: rel=\'next\')*>Next<\/a><\/li>'
@@ -151,67 +141,52 @@ def __checkForNextPage(sHtmlContent):
 
 def showHosters():
     oGui = cGui()
-    
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()           
-     
+
     oParser = cParser()
     
     sPattern = '\/(www\.alluc\.ee\/embed\/[a-zA-Z0-9%-_]+?)\?alt='
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
     if (aResult[0] == True):
         sUrl = 'http://' + aResult[1][0]
 
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()        
-                          
         sPattern = "decrypt\('(.+?)', *'(.+?)'\)"
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        
         if (aResult[0] == True):
-            
             sHtmlContent = Decrypt(aResult[1][0][0],aResult[1][0][1])
             
             sPattern = '<iframe.+?src=["|\'](.+?)["|\'].+?<\/iframe>'
-            
             aResult = oParser.parse(sHtmlContent, sPattern)
-            
-        else:
-            return
-            
-    
-    if (aResult[0] == True):
-        if 'alluc.ee' in aResult[1][0]: #Redirection vers hoster 
-            aEntry = aResult[1][0]
-            if not aEntry.startswith('http'):
-               sUrl = 'http:' + aEntry
 
-            oRequest = cRequestHandler(sUrl)
-            sHtmlContent = oRequest.request()
-            rH = re.search('<div class="inLink">.+?<a href="([^"]+)"',sHtmlContent,re.DOTALL)
-            if (rH):
-                sHosterUrl = rH.group(1)
-                sTitle = sMovieTitle
-        else:
-            aEntry = aResult[1]
-            sTitle = sMovieTitle
-            sHosterUrl = str(aEntry[0])
+            if 'alluc.ee' in aResult[1][0]: #Redirection vers hoster 
+                aEntry = aResult[1][0]
 
+                if not aEntry.startswith('http'):
+                    sUrl = 'http:' + aEntry
+                    oRequest = cRequestHandler(sUrl)
+                    sHtmlContent = oRequest.request()
+                    rH = re.search('<div class="inLink">.+?<a href="([^"]+)"',sHtmlContent,re.DOTALL)
+                    if (rH):
+                        sHosterUrl = rH.group(1)
+            else:
+                aEntry = aResult[1]
+                sHosterUrl = str(aEntry[0])
+                if not sHosterUrl.startswith('http'):
+                    sHosterUrl = 'http:' + sHosterUrl
+                    
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
-            oHoster.setDisplayName(sTitle)
+            oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
             
