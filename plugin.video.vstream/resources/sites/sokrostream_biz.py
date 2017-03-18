@@ -374,6 +374,8 @@ def showPlt():
 def showMovies(sSearch = ''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    
     if sSearch:
         sUrl = sSearch
         
@@ -442,13 +444,16 @@ def showMovies(sSearch = ''):
                 sTitle = aEntry[2]
             else:
                 sTitle = aEntry[2]+' ('+aEntry[3]+')'
-              
+            
+            if sMovieTitle:
+                sTitle = sMovieTitle + sTitle
+            
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             sUrl2 = str(aEntry[1])
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2 )
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
 
             if ('-saison-' in sUrl2):
@@ -510,9 +515,10 @@ def showLinks():
             sLang = '[' + aEntry[1].upper() + ']'
             sHost = aEntry[0]
             sHost = sHost.replace('Telecharger sur ','').replace('&nbsp;','')
-                
-            sDisplayTitle = cUtil().DecoTitle(sLang + sMovieTitle)
-            sTitle = sDisplayTitle +  ' - [COLOR coral]' + sHost +'[/COLOR]'
+            
+            sTitle = sLang + ' ' + sMovieTitle
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            sTitle = sDisplayTitle +  ' [COLOR coral]' + sHost +'[/COLOR]'
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sUrl', sUrl)
@@ -628,6 +634,8 @@ def showEpisode(): #cherche les episode de series
     #oRequestHandler = cRequestHandler(sUrl)
     #sHtmlContent = oRequestHandler.request()
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
+    
+    #cConfig().log(sMovieTitle)
     
     #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','')
  

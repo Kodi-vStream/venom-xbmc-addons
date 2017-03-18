@@ -154,6 +154,12 @@ class cGuiElement:
         
     def TraiteTitre(self, sTitle):
         
+        # Format Obligatoire a traiter via le fichier site
+        #-------------------------------------------------
+        # Episode 7 a 9 > Episode 7-9
+        # Saison 1 à ? > Saison 1-?
+        # Format de date > 11/22/3333 ou 11-22-3333 
+        
         #convertion unicode ne fonctionne pas avec les accents
         #sTitle = sTitle.decode("utf-8")
         
@@ -170,43 +176,58 @@ class cGuiElement:
             sTitle = sTitle.replace(string.group(0),'')
             self.__Date = str(string.group(0))
             sTitle = "%s (%s) " %(sTitle ,self.__Date)
+         
+        #~ #recherche Lang
+        #~ index = { ' vostfr' : ' [VOSTFR]', ' vf' : ' [VF]', ' truefrench' : ' [TrueFrench]' }
+        #~ for cle in index:
+            #~ sTitle=sTitle.replace(cle.upper(), index[cle]).replace(cle, index[cle]).replace('(%s)' % (cle), index[cle])
             
-        #recherche des mots partuculier
-        index = { ' vostfr ' : ' [VOSTFR] ', ' Vostfr ' : ' [VOSTFR] ', ' vf ' : ' [VF] '}
-        for cle in index:
-            sTitle=sTitle.replace(cle, index[cle])
+        #~ #recherche Qualiter
+        #~ index = { '1080i' : '(1080)', '1080p' : '(1080)', '1080I' : '(1080)', '1080P' : '(1080)', '720i' : '(720)', '720p' : '(720)', '720I' : '(720)', '720P' : '(720)' }
+        #~ for cle in index:
+            #~ sTitle=sTitle.replace(cle, index[cle]).replace('[%s]' % (cle), index[cle])
         
         #Recherche saison et episode a faire pr serie uniquement
         if (True):
             SXEX = ''
 
             #m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',sTitle,re.UNICODE)
-            m = re.search('(?i)([e|é](?:[a-z]+sode\s?)*([0-9]+))', str(sTitle))
+            m = re.search('(?i)([e|é|É](?:[a-z]+sode\s?)*([0-9]+[0-9\-\?]*))', str(sTitle))
             if m:
                 #ok y a des episodes
                 sTitle = sTitle.replace(m.group(1),'')
-                self.__Episode = ("%02d" % int(m.group(2))) 
+                ep = m.group(2)
+                if len(ep) == 1:
+                    ep = '0' + ep
+                self.__Episode = ep
                 self.addItemValues('Episode', self.__Episode)
                 
                 #pr les saisons
-                m = re.search('(?i)(s(?:aison )*([0-9]+))', sTitle)
+                m = re.search('(?i)(s(?:aison +)*([0-9]+[0-9\-\?]*))', sTitle)
                 if m:
                     sTitle = sTitle.replace(m.group(1),'')
-                    self.__Season = ("%02d" % int(m.group(2)))
+                    sa = m.group(2)
+                    if len(sa) == 1:
+                        sa = '0' + sa
+                    self.__Season = sa
                     self.addItemValues('Season', self.__Season)
             
             else:
                 #pas d'episode mais y a t il des saisons ?
-                m = re.search('(?i)(s(?:aison )*([0-9]+))(?:$| )', sTitle)
+                #m = re.search('(?i)(s(?:aison +)*([0-9]+[0-9\-\?]*))(?:$| )', sTitle)
+                m = re.search('(?i)(s(?:aison +)*([0-9]+[0-9\-\?]*))', sTitle)
                 if m:
                     sTitle = sTitle.replace(m.group(1),'')
-                    self.__Season = ("%02d" % int(m.group(2)))
+                    sa = m.group(2)
+                    if len(sa) == 1:
+                        sa = '0' + sa
+                    self.__Season = sa
                     self.addItemValues('Season', self.__Season)
-                    
+        
+        #supr les -
+        #sTitle = sTitle.replace('-',' ') # A gerer dans le fichier site plutot, car il peut etre utile dans certain cas
         #vire doubles espaces
-        sTitle = re.sub(' +',' ',sTitle)
-        #supr les double --
-        sTitle = sTitle.replace('- -','-')
+        sTitle = re.sub(' +',' ',sTitle)      
         
         #vire espace a la fin
         if sTitle.endswith(' '):
@@ -232,7 +253,7 @@ class cGuiElement:
         if self.__Year:
             sTitle2 = "%s [COLOR %s](%s)[/COLOR]"%(sTitle2,self.__sDecoColor,self.__Year)
             
-        #xbmc.log(sTitle2, xbmc.LOGNOTICE)
+        #xbmc.log('>>' + sTitle2, xbmc.LOGNOTICE)
             
         #on repasse en utf-8 encode('utf-8') ne fonctionne pas si il y a des accent dans le titre.
         return sTitle2
@@ -250,7 +271,7 @@ class cGuiElement:
         return sTitle, False
 
     def setTitle(self, sTitle):
-        #Si le titre est une liste
+        #Si le titre est une liste normalement n'existe plus
         if type(sTitle) is list:
             for i in range(len(sTitle)): 
                 if i == 0 :
@@ -259,10 +280,8 @@ class cGuiElement:
                     self.__sTitle +=  " [COLOR %s][%s][/COLOR]" % (self.__sDecoColor, sTitle[i])
         #titre normal
         else:
-            # traitement des titres, formate les couleurs et recupere les infos
-            # Sauf si titre coloree, si c'est une partie qui est coloree la couleur restera (eg pr les hosters)
+            # avec la derniere modif de la recherche de tag plus besoin non?
             if not sTitle.startswith('[COLOR'):
-                #xbmc.log(sTitle, xbmc.LOGNOTICE)
                 sTitle = self.TraiteTitre(sTitle)
             
             self.__sTitle = sTitle

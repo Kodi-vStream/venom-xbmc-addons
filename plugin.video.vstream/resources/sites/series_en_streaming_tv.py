@@ -240,7 +240,7 @@ def showHosters():
                
             sUrl2 = URL_MAIN + 'cale/' + aEntry[0]
             
-            sDisplayTitle = ('%s %s %s') % (sTitle, aEntry[2], aEntry[1])
+            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, aEntry[2], aEntry[1])
                 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)

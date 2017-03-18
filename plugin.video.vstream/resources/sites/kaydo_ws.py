@@ -171,7 +171,7 @@ def showMovies(sSearch = ''):
             sThumbnail = URL_MAIN+str(aEntry[0])
             siteUrl = URL_MAIN+str(aEntry[4])
             sCom = str(aEntry[3])
-            sTitle = ('%s %s') % (str(aEntry[1]) , str(aEntry[2]))
+            sTitle = ('%s (%s)') % (str(aEntry[1]) , str(aEntry[2]).replace(' - ', ''))
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
@@ -233,7 +233,11 @@ def seriesHosters():
                 oOutputParameterHandler = cOutputParameterHandler()
                 sUrl = URL_MAIN+'/series/'+link+'&r=n'
                 #name = aEntry[0] + ' ('+t+')'
-                name = ('%s %s') % (aEntry[0], t)
+                name = ('%s (%s)') % (aEntry[0], t)
+                
+                name = name.replace('Ep. ','E')
+                
+                #cConfig().log(str(aEntry[0]))
                 oOutputParameterHandler.addParameter('siteUrl', sUrl) 
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle) 
                 oOutputParameterHandler.addParameter('sThumbnail', sThumbnail) 

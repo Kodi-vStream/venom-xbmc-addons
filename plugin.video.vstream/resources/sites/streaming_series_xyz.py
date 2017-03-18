@@ -23,6 +23,8 @@ SERIE_SERIES = (URL_MAIN, 'showMovies')
 SERIE_NEWS = (URL_MAIN, 'showMovies')
 SERIE_GENRES = (True, 'showGenre')
 
+ANIM_ENFANTS = (URL_MAIN + 'category/dessin-anime/', 'showMovies')
+
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 

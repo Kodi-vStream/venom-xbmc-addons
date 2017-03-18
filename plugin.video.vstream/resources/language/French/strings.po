@@ -200,6 +200,10 @@ msgctxt "#30108"
 msgid "VOSTFR"
 msgstr "VOSTFR"
 
+msgctxt "#30109"
+msgid "Children"
+msgstr "Enfants"
+
 msgctxt "#30112"
 msgid "Documentary"
 msgstr "Documentaire"

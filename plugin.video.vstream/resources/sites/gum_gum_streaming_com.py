@@ -105,6 +105,12 @@ def showAnimes():
                 break
             sTitle = str(aEntry[1])
             sUrl = str(aEntry[0])
+            
+            #traitement du titre pour compatibilite
+            sTitle = sTitle.replace('(',' ').replace(')',' ').replace('-',' ')
+            sTitle = re.sub('([0-9]+) .. ([0-9\?]+)','\\1-\\2',sTitle)
+            sTitle = re.sub('([0-9]+) & ([0-9\?]+)','\\1-\\2',sTitle)
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -218,6 +224,7 @@ def showMovies():
                 break
             sTitle = str(aEntry[1])
             sUrl = str(aEntry[0])
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)

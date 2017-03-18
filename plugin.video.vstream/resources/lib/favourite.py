@@ -20,10 +20,16 @@ class cFav:
         self.__sFile = cConfig().getFileFav()
         self.__sTitle = ''
         #self.__sFunctionName = ''
-      
-
-    def delFavourites(self):
+ 
+    #effacement direct par menu
+    def delFavouritesMenu(self):
         cDb().del_favorite()
+        return True 
+
+    #avec confirmation pour les autres
+    def delFavourites(self):
+        if cConfig().createDialogYesNo("Voulez vous vraiment supprimer toute cette liste"):
+            cDb().del_favorite()
         return True
   
     def getFavourites(self):
@@ -139,7 +145,7 @@ class cFav:
                     oGuiElement.setFanart(fanart)
                     
                     #self.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
-                    oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','delFavourites',cConfig().getlanguage(30412))
+                    oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','delFavouritesMenu',cConfig().getlanguage(30412))
                                         
                     if (function == 'play'):
                         oGui.addHost(oGuiElement, oOutputParameterHandler)
@@ -174,7 +180,13 @@ class cFav:
         meta['fav'] = oInputParameterHandler.getValue('sFav')
         meta['cat'] = oInputParameterHandler.getValue('sCat')
         
-        meta['title'] = xbmc.getInfoLabel('ListItem.title')
+        #ListItem.title contient des code de couleurs, sMovieTitle le titre en plus "propre"
+        #Inutile a la prochaine version, car plus de couleurs a la base.
+        if oInputParameterHandler.getValue('sMovieTitle'):
+            meta['title'] = oInputParameterHandler.getValue('sMovieTitle')
+        else:
+            meta['title'] = xbmc.getInfoLabel('ListItem.title')
+            
         meta['icon'] = xbmc.getInfoLabel('ListItem.Art(thumb)')
         meta['fanart'] =  xbmc.getInfoLabel('ListItem.Art(fanart)')
         try:

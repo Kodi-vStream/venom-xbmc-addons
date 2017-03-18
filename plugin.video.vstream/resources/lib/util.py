@@ -5,6 +5,7 @@ import xbmc
 import xbmcgui
 import htmlentitydefs
 import unicodedata
+COUNT = 0
 
 class cUtil:
 
@@ -71,11 +72,7 @@ class cUtil:
 
     def urlEncode(self, sUrl):
         return urllib.quote(sUrl)
-    
-    def urlEncodeSafe(self, sUrl):
-        #return urllib.quote(sUrl,safe=':/.+?&')
-        return urllib.quote(sUrl,safe=':/')
-    
+
     def unquotePlus(self, sUrl):
         return urllib.unquote_plus(sUrl)
 
@@ -90,8 +87,8 @@ class cUtil:
     def DecoTitle(self, string):
         return string
         
-
-    def DecoTitle_old(self, string):
+        
+    def DecoTitle2(self, string):
 
         #on vire ancienne deco en cas de bug
         string = re.sub('\[\/*COLOR.*?\]','',str(string))
@@ -224,3 +221,62 @@ class cUtil:
             return val
         except:
             return 0
+
+            
+            
+#***********************          
+#Fonctions lights
+#***********************
+
+#Pour les avoir
+#from resources.lib import util
+#puis util.VSlog('test')
+
+def VSlog(e):
+    xbmc.log('\t[PLUGIN] Vstream: '+str(e), xbmc.LOGNOTICE)
+    
+def VSupdate(self):
+    xbmc.executebuiltin("Container.Refresh")
+
+def VS_show_busy_dialog():
+    xbmc.executebuiltin('ActivateWindow(busydialog)')
+
+def VS_hide_busy_dialog():
+    xbmc.executebuiltin('Dialog.Close(busydialog)')
+    while xbmc.getCondVisibility('Window.IsActive(busydialog)'):
+        xbmc.sleep(100)
+        
+def VScreateDialogOK(label):
+    oDialog = xbmcgui.Dialog()
+    oDialog.ok('vStream', label)  
+    return oDialog
+    
+def VScreateDialogYesNo(label):
+    oDialog = xbmcgui.Dialog()
+    qst = oDialog.yesno("vStream", label)
+    return qst
+    
+def createDialog(sSite):
+    oDialog = xbmcgui.DialogProgress()
+    oDialog.create(sSite,None)
+    return oDialog
+   
+def updateDialog(dialog,total):
+    global COUNT
+    COUNT += 1
+    if xbmcgui.Window(10101).getProperty('search') != 'true':
+        iPercent = int(float(COUNT * 100) / total)
+        dialog.update(iPercent, 'Chargement: '+str(COUNT)+'/'+str(total))
+
+def finishDialog(dialog):
+    if xbmcgui.Window(10101).getProperty('search') != 'true':
+        dialog.close()
+        VSlog('close dialog')
+        del dialog
+        
+def VSerror(e):
+    import os,xbmcaddon
+    Path = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("path"))
+    xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % ('Vstream', ('Erreur: '+str(e)), '5000', os.path.join(Path,'resources', 'art','icon.png')))
+    VSlog('Erreur: ' + str(e))  
+    

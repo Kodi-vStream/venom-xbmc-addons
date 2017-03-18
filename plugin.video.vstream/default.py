@@ -1,5 +1,3 @@
-from resources.lib.config import cConfig
-
 
 # sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources', 'lib'))
 # sys.path.append (sLibrary)
@@ -133,7 +131,7 @@ class main:
                 function = getattr(plugins, sFunction)
                 function()
             except Exception as e:
-                cConfig().log('could not load site: ' + sSiteName + str(e))
+                cConfig().log('could not load site: ' + sSiteName + ' error: ' + str(e))
                 return
             
 

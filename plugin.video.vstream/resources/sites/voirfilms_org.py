@@ -310,7 +310,8 @@ def showHosters():
                 break
             
             sHost = str(aEntry[2]).replace('&nbsp;','')
-            sTitle = '(' + str(aEntry[1]) + ') [' + sHost + '] ' + sMovieTitle
+            #sTitle = '(' + str(aEntry[1]) + ') [' + sHost + '] ' + sMovieTitle
+            sTitle = '%s [%s] [COLOR coral]%s[/COLOR]' %(sMovieTitle, str(aEntry[1]).upper(), sHost)
             sUrl = aEntry[0].replace('https://', 'http://')
             #print sUrl
             oOutputParameterHandler = cOutputParameterHandler()
