@@ -3,16 +3,13 @@
 #rajout fonction pour listage Film Nouveauté par Kodigoal
 
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-
 import re,unicodedata
 
 SITE_IDENTIFIER = 'cinemay_com'
@@ -63,7 +60,6 @@ def load():
 
 def showSearch():
     oGui = cGui()
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_MAIN + '?s='+sSearchText
@@ -212,7 +208,7 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    #sPattern = '<img class=".+?" src="([^<]+)" title="(.+?)".+?<a href="(.+?)"'
+
     sPattern = '<img class="imgpic" src="(.+?)".+?/>.+?<h3.+?><a href="(.+?)"  title=".+?">.+?<strong>(.+?)</strong></a>.+?</h3>.+?<div class="infob">.+?<p>(.+?)</p>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -334,8 +330,7 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    #sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'')
-    #sPattern = '<td><a href="\/(.+?)">(.+?)</a>.+?<span class="user-icn">'
+
     sPattern = '<td><a href="\/(.+?)">(.+?)<\/a>.+?<span class="user-icn">.+?<td>(.+?)<\/td>.+?\/cinema\/images\/([vostfren]+)\.png">'
 
     oParser = cParser()
@@ -374,18 +369,15 @@ def showHosters():
     sPattern = '<iframe src="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    print aResult
+
     if (aResult[0] == True):
 
         for aEntry in aResult[1]:
-
             sHosterUrl = str(aEntry)
- 
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-
             if (oHoster != False):
-                #sMovieTitle=re.sub(r'\[.*\]',r'',sMovieTitle)
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
