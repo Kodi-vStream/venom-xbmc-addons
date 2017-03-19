@@ -12,7 +12,7 @@ from resources.lib import util
 import re
 
 SITE_IDENTIFIER = 'ddlfrench_org'
-SITE_NAME = 'ddlfrench.org'
+SITE_NAME = 'ddlfrench'
 SITE_DESC = 'TOP REPLAY TV'
 
 URL_MAIN = 'http://ddlfrench.org/'
@@ -35,11 +35,11 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'REPLAY TV', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'REPLAY TV (Derniers ajouts)', 'replay.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'REPLAY TV par chaine', 'genres.png', oOutputParameterHandler)    
+    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'REPLAY TV (Par chaines)', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
   
