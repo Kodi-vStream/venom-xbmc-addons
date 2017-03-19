@@ -219,7 +219,7 @@ def showLinks():
             if dialog.iscanceled():
                 break
             
-            sTitle = sMovieTitle+' - '+aEntry[1]
+            sTitle = sMovieTitle+' - ('+aEntry[1] + ')'
             
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
