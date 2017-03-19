@@ -2,7 +2,6 @@
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.config import cConfig
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.rechercheHandler import cRechercheHandler
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
@@ -24,7 +23,7 @@ SITE_DESC = 'Fichier en DDL, HD, Film et Serie'
 
 URL_MAIN = 'http://www.free-telechargement.com/'
 URL_PROTECT = 'http://liens.free-telechargement.com/'
-
+URL_PROTECTBIS = 'http://liens.free-telechargement.org/'
 #URL_SEARCH_MOVIES_SD = (URL_MAIN + '1/recherche/1.html?rech_cat=video&rech_fiche=', 'showMovies')
 #URL_SEARCH_MOVIES_HD = (URL_MAIN + '1/recherche/1.html?rech_cat=Films+HD&rech_fiche=', 'showMovies')
 
@@ -630,7 +629,7 @@ def Display_protected_link():
     oParser = cParser()
 
     #Est ce un lien dl-protect ?
-    if URL_PROTECT in sUrl:
+    if URL_PROTECT in sUrl or URL_PROTECTBIS in sUrl:
         sHtmlContent = DecryptddlProtect(sUrl) 
         if sHtmlContent:
             #Si redirection
@@ -667,7 +666,7 @@ def Display_protected_link():
     oGui.setEndOfDirectory()
 
 def DecryptddlProtect(url):
-   
+
     if not (url): return ''
     
     cookies = ''
@@ -712,11 +711,11 @@ def DecryptddlProtect(url):
         sHtmlContent = oRequestHandler.request()
         
         if 'Code de securite incorrect' in sHtmlContent:
-            cGui().showInfo("Erreur", 'Mauvais Captcha' , 5)
+            cConfig().showInfo("Erreur", 'Mauvais Captcha' , 5)
             return 'rate'
         
         if 'Veuillez recopier le captcha ci-dessus' in sHtmlContent:
-            cGui().showInfo("Erreur", 'Rattage' , 5)
+            cConfig().showInfo("Erreur", 'Rattage' , 5)
             return 'rate'
             
         #si captcha reussi
@@ -760,9 +759,9 @@ def get_response(img,cookie):
         if (kb.isConfirmed()):
             solution = kb.getText()
             if solution == '':
-                cGui().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
+                cConfig().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
         else:
-            cGui().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
+            cConfig().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
     finally:
         wdlg.removeControl(img)
         wdlg.close()
