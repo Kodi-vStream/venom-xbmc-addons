@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 #Zombi.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -9,7 +8,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
-from resources.lib.util import cUtil
+from resources.lib import util
 import re
 
 SITE_IDENTIFIER = 'ddlfrench_org'
@@ -38,23 +37,21 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'REPLAY TV', 'films.png', oOutputParameterHandler)
     
-    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'REPLAY TV par chaine', 'genres.png', oOutputParameterHandler)    
-            
+
     oGui.setEndOfDirectory()
   
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = 'http://ddlfrench.org/index.php?story={'+sSearchText+'}&do=search&subaction=search'  
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return  
-    
-    
+        sUrl = 'http://ddlfrench.org/index.php?story={'+sSearchText+'}&do=search&subaction=search'  
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return  
+
 def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -77,7 +74,7 @@ def showGenres():
     liste.append( ["NRJ12","http://ddlfrench.org/nrj12"] )
     liste.append( ["RMC DECOUVERTE","http://ddlfrench.org/rmc-decouverte"] )
     liste.append( ["TNT CANALSAT","http://ddlfrench.org/tnt-canalsat"] )
-                
+
     for sTitle,sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()
@@ -105,9 +102,6 @@ def showMovies(sSearch = ''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-   
-
-
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -115,10 +109,10 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-                        
+
 
             sTitle = aEntry[1]
-            sUrl= str(aEntry[2])
+            sUrl = str(aEntry[2])
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
@@ -143,7 +137,6 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        #print aResult[1][0]
         return aResult[1][0]
 
     return False
@@ -157,10 +150,9 @@ def showHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/plugins/like.php','').replace('<iframe src="http://www.facebook.com/plugins/likebox.php','')
+    sHtmlContent = oRequestHandler.request()
+
     oParser = cParser()
-               
 
     sPattern = '<b>(.+?)2016<br' 
     sPattern = sPattern + '|' + '>E(.+?)<br'
@@ -173,24 +165,24 @@ def showHosters():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-                        
+   
             if aEntry[0]:
                oOutputParameterHandler = cOutputParameterHandler()
                oGui.addMisc(SITE_IDENTIFIER, 'showMovies','[COLOR red]'+ aEntry[0] + '[/COLOR]', 'series.png', '', '', oOutputParameterHandler)
-                        
+    
             elif aEntry[1]:
-                 oOutputParameterHandler = cOutputParameterHandler()
-                 oGui.addMisc(SITE_IDENTIFIER, 'showMovies','[COLOR red]E'+ aEntry[1] + '[/COLOR]', 'series.png', '', '', oOutputParameterHandler)
+                oOutputParameterHandler = cOutputParameterHandler()
+                oGui.addMisc(SITE_IDENTIFIER, 'showMovies','[COLOR red]E'+ aEntry[1] + '[/COLOR]', 'series.png', '', '', oOutputParameterHandler)
 
             elif aEntry[2]:
-                 sHosterUrl = str(aEntry[2])
-                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                 if (oHoster != False):
-                     oHoster.setDisplayName(sMovieTitle)
-                     oHoster.setFileName(sMovieTitle)
-                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                sHosterUrl = str(aEntry[2])
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
         cConfig().finishDialog(dialog) 
-                
+  
     oGui.setEndOfDirectory()
    
