@@ -16,7 +16,7 @@ import urllib2
 
 SITE_IDENTIFIER = 'filmenstreaminghd_com'
 SITE_NAME = 'Filmenstreaminghd'
-SITE_DESC = 'Films/Series/Animes en streaming'
+SITE_DESC = 'Films/Séries/Animés en streaming'
 
 
 URL_MAIN = 'http://www.filmenstreaminghd.com'
@@ -28,10 +28,10 @@ MOVIE_HD = (URL_MAIN + '/1080p-films', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + '/films-populaires/', 'showMovies')
 #MOVIE_COMMENTS = (URL_MAIN + 'les-plus-commentes/', 'showMovies')
 #MOVIE_NOTES = (URL_MAIN + '/films-populaires/', 'showMovies')
-MOVIE_GENRES = ('http://venom', 'showGenre')
+MOVIE_GENRES = (True, 'showGenre')
 
 SERIE_SERIES = (URL_MAIN + '/series-tv', 'showMovies')
-SERIE_GENRES = ('http://venom', 'showGenreS')
+SERIE_GENRES = (True, 'showGenreS')
 #SERIE_NEWS = (URL_MAIN + 'tv-series/', 'showMovies')
 
 ANIM_ANIMS = (URL_MAIN +'/animes', 'showMovies')
@@ -49,31 +49,31 @@ def load():
     
     # oOutputParameterHandler = cOutputParameterHandler()
     # oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautés', 'news.png', oOutputParameterHandler)
+    # oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD', 'films_hd.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus Vues', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Les plus Vues)', 'films_views.png', oOutputParameterHandler)
     
     #oOutputParameterHandler = cOutputParameterHandler()
     #oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
-    #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus Commentés', 'films.png', oOutputParameterHandler)
+    #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Les plus Commentés)', 'films_comments.png', oOutputParameterHandler)
     
     #oOutputParameterHandler = cOutputParameterHandler()
     #oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
-    #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les mieux Notés', 'films.png', oOutputParameterHandler)
+    #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Les mieux Notés)', 'films_notes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showQlt', 'Films Qualités', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showQlt', 'Films (Qualités)', 'films.png', oOutputParameterHandler)
         
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
@@ -81,15 +81,15 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Series', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Series Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animes', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
     
             
     oGui.setEndOfDirectory()
@@ -126,7 +126,7 @@ def showGenre():
     liste.append( ['Mystère',URL_MAIN + '/mystere'] )
     liste.append( ['Policier',URL_MAIN + '/policier-crime'] )
     liste.append( ['Romance',URL_MAIN + '/romance'] )
-    liste.append( ['Sciense Fiction',URL_MAIN + '/science-fiction'] )
+    liste.append( ['Science Fiction',URL_MAIN + '/science-fiction'] )
     liste.append( ['Thriller',URL_MAIN + '/thriller'] )
     liste.append( ['Western',URL_MAIN + '/western'] )
                
@@ -162,8 +162,8 @@ def showGenreS():
     liste.append( ['Mystère',URL_MAIN + '/mystere-series'] )
     liste.append( ['Policier',URL_MAIN + '/policier-crime-series'] )
     liste.append( ['Romance',URL_MAIN + '/romance-series'] )
-    liste.append( ['Sciense Fiction',URL_MAIN + '/science-fiction-series'] )
-    liste.append( ['Sciense Fiction - fantastique',URL_MAIN + '/science-Fiction-fantastique-series'] )
+    liste.append( ['Science Fiction',URL_MAIN + '/science-fiction-series'] )
+    liste.append( ['Science Fiction - fantastique',URL_MAIN + '/science-Fiction-fantastique-series'] )
     liste.append( ['Thriller',URL_MAIN + '/thriller-series'] )
     liste.append( ['Western',URL_MAIN + '/western-series'] )
                
