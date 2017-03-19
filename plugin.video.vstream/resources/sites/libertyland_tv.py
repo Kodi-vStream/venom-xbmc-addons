@@ -81,15 +81,15 @@ def typsearch():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('type', 'film')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Film', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Film', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('type', 'serie')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Serie', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Série', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('type', 'anime')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Anime', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Animé', 'animes.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory() 
     
