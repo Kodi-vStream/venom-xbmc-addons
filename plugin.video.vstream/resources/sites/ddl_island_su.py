@@ -2,18 +2,14 @@
 
 from resources.lib.config import cConfig
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.rechercheHandler import cRechercheHandler
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.favourite import cFav
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
-import urllib,re,urllib2
+import re,urllib2
 import xbmcgui
 import xbmc
 import xbmcaddon,os
@@ -482,7 +478,6 @@ def __checkForNextPage(sHtmlContent):
     return False
 
 def showLinks():
-    print 'showLinks'
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     if 'series' in sUrl:
@@ -493,14 +488,13 @@ def showLinks():
     return
 
 def showMoviesReleases():
-    xbmc.log('showMoviesReleases')
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     sCom = oInputParameterHandler.getValue('sCom')
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sUrl = sUrl.replace('.html','')
-    print sUrl
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
@@ -542,7 +536,6 @@ def showMoviesReleases():
 
 
 def ShowSaisons():
-    
     oGui = cGui()
     
     oInputParameterHandler = cInputParameterHandler()
@@ -583,15 +576,13 @@ def ShowSaisons():
     oGui.setEndOfDirectory() 
 	
 def showSeriesReleases():
-    xbmc.log('showSeriesReleases')
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     sCom = oInputParameterHandler.getValue('sCom')
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sUrl = sUrl.replace('.html','')
-    
-    xbmc.log(sUrl)
+
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -602,7 +593,7 @@ def showSeriesReleases():
     #cut de la zone des releases
     sPattern = 'Episode :</span>(.+?)>Hébergeur :'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    print aResult
+
     if aResult[0]==False:
         sPattern = 'Release :</span>(.+?)>Hébergeur :'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -644,8 +635,6 @@ def showSeriesReleases():
     oGui.setEndOfDirectory()    
 
 def showHosters():# recherche et affiche les hotes
-    print "showHosters"
-    
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler() #apelle l'entree de paramettre
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -663,8 +652,7 @@ def showHosters():# recherche et affiche les hotes
     sPattern = '<span class=\'providers.+?\' title=\'([^\']+)\'><\/span>[^<]+?<a href=\'([^\']+)\' target=\'_blank\' title="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
-    
-        
+     
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -687,7 +675,6 @@ def showHosters():# recherche et affiche les hotes
     oGui.setEndOfDirectory()
   
 def Display_protected_link():
-    print "Display_protected_link"
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -747,7 +734,7 @@ def Display_protected_link():
     oGui.setEndOfDirectory()
 
 def DecryptddlProtect(url):
-    print "DecryptddlProtect"
+
     if not (url): return ''
     
     cookies = ''
@@ -789,7 +776,7 @@ def DecryptddlProtect(url):
 
         #print sHtmlContent    
         if 'Erreur : Le code n\'est pas valide' in sHtmlContent:
-            cGui().showInfo("Erreur", 'Mauvais Captcha' , 5)
+            cConfig().showInfo("Erreur", 'Mauvais Captcha' , 5)
             return 'rate'
             
         #si captcha reussi
@@ -823,8 +810,7 @@ def Readcookie(Domain):
     
     return data
 	
-def get_response(img,cookie):    
-    print "get_reponse"
+def get_response(img,cookie):
     #on telecharge l'image
     filename  = os.path.join(PathCache,'Captcha.raw')
 
@@ -866,9 +852,9 @@ def get_response(img,cookie):
         if (kb.isConfirmed()):
             solution = kb.getText()
             if solution == '':
-                cGui().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
+                cConfig().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
         else:
-            cGui().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
+            cConfig().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
     finally:
         wdlg.removeControl(img)
         wdlg.close()
