@@ -232,6 +232,21 @@ class cUtil:
 #from resources.lib import util
 #puis util.VSlog('test')
 
+def Unquote(sUrl):
+    return urllib.unquote(sUrl)
+
+def Quote(sUrl):
+    return urllib.quote(sUrl)
+
+def UnquotePlus(sUrl):
+    return urllib.unquote_plus(sUrl)
+
+def QuotePlus(sUrl):
+    return urllib.quote_plus(sUrl)
+    
+def QuoteSafe(sUrl):
+    return urllib.quote(sUrl,safe=':/')
+
 def VSlog(e):
     xbmc.log('\t[PLUGIN] Vstream: '+str(e), xbmc.LOGNOTICE)
     
