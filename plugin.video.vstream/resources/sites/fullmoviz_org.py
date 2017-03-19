@@ -14,7 +14,7 @@ from resources.lib.util import cUtil
 import urllib
 
 SITE_IDENTIFIER = 'fullmoviz_org'
-SITE_NAME = 'FullMoviz.org'
+SITE_NAME = 'FullMoviz'
 SITE_DESC = 'Films complets en streaming et en Français sur Fullmoviz'
 
 URL_MAIN = 'http://www.fullmoviz.org/'
@@ -22,7 +22,7 @@ URL_MAIN = 'http://www.fullmoviz.org/'
 MOVIE_MOVIE = (URL_MAIN + '?p=movies&orderby=name', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + '?p=movies&orderby=date', 'showMovies')
 MOVIE_COMMENTS = (URL_MAIN + '?p=movies&orderby=comment_count', 'showMovies')
-MOVIE_GENRES = (URL_MAIN + '', 'showGenre')
+MOVIE_GENRES = (True, 'showGenre')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -36,15 +36,15 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les plus commentés', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_COMMENTS[1], 'Films (Les plus commentés)', 'films_comments.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
 
@@ -77,10 +77,10 @@ def showGenre():
     liste.append( ['Epouvante',URL_MAIN + 'category/epouvante/'] )
     liste.append( ['Familial',URL_MAIN + 'category/familial/'] )
     liste.append( ['Fantaisie',URL_MAIN + 'category/fantaisie/'] )
-    liste.append( ['Film noir',URL_MAIN + 'category/film-noir'] )
+    liste.append( ['Film noir',URL_MAIN + 'category/film-noir/'] )
     liste.append( ['Highlights',URL_MAIN + 'category/highlights/'] )
     liste.append( ['Historique',URL_MAIN + 'category/historique/'] )
-    liste.append( ['Psychologique',URL_MAIN + 'category/psychologique'] )
+    liste.append( ['Psychologique',URL_MAIN + 'category/psychologique/'] )
     liste.append( ['Romance',URL_MAIN + 'category/romance/'] )
     liste.append( ['Science-fiction',URL_MAIN + 'category/science-fiction/'] )
     liste.append( ['Thriller',URL_MAIN + 'category/thriller/'] )
@@ -91,7 +91,7 @@ def showGenre():
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
-    oGui.setEndOfDirectory() 
+    oGui.setEndOfDirectory()
     
     
 def showMovies(sSearch=''):
@@ -131,7 +131,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', sThumb)           
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, aEntry[3], oOutputParameterHandler)
          
         cConfig().finishDialog(dialog)
@@ -149,7 +149,7 @@ def showMovies(sSearch=''):
 def __checkForNextPage(sHtmlContent):
     sPattern = '<li class="next right"><a href="(.+?)".+?</a></li>'
     oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern) 
+    aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return aResult[1][0]
 
@@ -195,7 +195,7 @@ def showHosters():
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
         cConfig().finishDialog(dialog)
 
