@@ -15,7 +15,7 @@ import re,urllib
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 SITE_IDENTIFIER = 'film_illimit_fr'
-SITE_NAME = 'Film illimite'
+SITE_NAME = 'Film illimité'
 SITE_DESC = 'Films HD en streaming'
 
 URL_MAIN = 'http://official-film-illimite.net/'
@@ -43,15 +43,15 @@ def load():
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautés', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD', 'films_hd.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films par Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films (Genres)', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
@@ -77,10 +77,10 @@ def showGenre():
     liste.append( ['Animation',URL_MAIN + 'animation/'] )
     liste.append( ['Arts Martiaux',URL_MAIN + 'arts-martiaux/'] )
     liste.append( ['Biographie',URL_MAIN + 'biographique/'] )
-    liste.append( ['Comedie',URL_MAIN + 'comedie/'] )
+    liste.append( ['Comédie',URL_MAIN + 'comedie/'] )
     liste.append( ['Drame',URL_MAIN + 'drame/'] )
     liste.append( ['Epouvante Horreur',URL_MAIN + 'epouvante-horreur/'] )
-    liste.append( ['Fantastique',URL_MAIN + 'fantastique/'] )  
+    liste.append( ['Fantastique',URL_MAIN + 'fantastique/'] )
     liste.append( ['Famille',URL_MAIN + 'famille/'] )
     liste.append( ['Guerre',URL_MAIN + 'guerre/'] )
     liste.append( ['Policier',URL_MAIN + 'policier/'] )
@@ -90,7 +90,7 @@ def showGenre():
     liste.append( ['720p/1080p',URL_MAIN + '720p1080p/'] )
     liste.append( ['Mystère',URL_MAIN + 'mystere/'] )
     liste.append( ['Western',URL_MAIN + 'western/'] )
-    liste.append( ['Animes',URL_MAIN + 'mangas/'] )
+    liste.append( ['Animés',URL_MAIN + 'mangas/'] )
                
     for sTitle,sUrl in liste:
        
