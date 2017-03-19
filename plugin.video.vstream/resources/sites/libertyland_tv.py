@@ -42,15 +42,15 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautes', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautés', 'news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films Les plus vus', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films Les plus vus', 'films_views.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films Les mieux notes', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films Les mieux notés', 'films_notes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -58,11 +58,11 @@ def load():
 	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Series', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animes', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
               
     oGui.setEndOfDirectory()
 
@@ -81,15 +81,15 @@ def typsearch():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('type', 'film')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Film', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Film', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('type', 'serie')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Serie', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Série', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('type', 'anime')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Anime', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Animé', 'animes.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory() 
     
@@ -99,26 +99,34 @@ def showGenre():
     liste = []
     liste.append( ['Action',URL_MAIN + 'films/genre/action.html'] )
     liste.append( ['Animation',URL_MAIN + 'films/genre/animation.html'] )
+    liste.append( ['Arts martiaux',URL_MAIN + 'films/genre/arts-martiaux.html/'] )
     liste.append( ['Aventure',URL_MAIN + 'films/genre/aventure.html/'] )
-    liste.append( ['Biopic',URL_MAIN + 'films/genre/biopic.html'] )
+    liste.append( ['Biographie',URL_MAIN + 'films/genre/biographie.html'] )
     liste.append( ['Comedie',URL_MAIN + 'films/genre/comedie.html'] )
-    liste.append( ['Comedie Dramatique',URL_MAIN + 'films/genre/comedie-dramatique.html'] )
-    liste.append( ['Comedie Musicale',URL_MAIN + 'films/genre/comedie-musicale.html'] )
+    liste.append( ['Crime',URL_MAIN + 'films/genre/crime.html'] )
     liste.append( ['Drame',URL_MAIN + 'films/genre/drame.html'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'films/genre/horreur.html'] ) 
     liste.append( ['Espionnage',URL_MAIN + 'films/genre/espionnage.html'] )
-    liste.append( ['Famille',URL_MAIN + 'films/genre/famille.html'] )
     liste.append( ['Fantastique',URL_MAIN + 'films/genre/fantastique.html'] )  
     liste.append( ['Guerre',URL_MAIN + 'films/genre/guerre.html'] )
-    liste.append( ['Historique',URL_MAIN + 'films/genre/historique.html'] )
-    liste.append( ['Judiciaire',URL_MAIN + 'films/genre/historique.html'] )
-    liste.append( ['Medical',URL_MAIN + 'films/genre/musical.html'] )
+    liste.append( ['Histoire',URL_MAIN + 'films/genre/histoire.html'] )
+    liste.append( ['Horreur',URL_MAIN + 'films/genre/horreur.html'] ) 
+    liste.append( ['Musical',URL_MAIN + 'films/genre/musical.html'] )
     liste.append( ['Policier',URL_MAIN + 'films/genre/policier.html'] )
-    liste.append( ['Peplum',URL_MAIN + 'films/genre/peplum.html'] )
     liste.append( ['Romance',URL_MAIN + 'films/genre/romance.html'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'films/genre/science-fiction.html'] )
+    liste.append( ['Science-Fiction',URL_MAIN + 'films/genre/science-fiction.html'] )
+    liste.append( ['Sport',URL_MAIN + 'films/genre/sport.html'] )
     liste.append( ['Thriller',URL_MAIN + 'films/genre/thriller.html'] )
     liste.append( ['Western',URL_MAIN + 'films/genre/western.html'] )
+	#la suite fonctionnent mais n'est pas répertorié dans le moteur de genre du site
+    liste.append( ['Biopic',URL_MAIN + 'films/genre/biopic.html'] )
+    liste.append( ['Comedie Dramatique',URL_MAIN + 'films/genre/comedie-dramatique.html'] )
+    liste.append( ['Comedie Musicale',URL_MAIN + 'films/genre/comedie-musicale.html'] )
+    liste.append( ['Famille',URL_MAIN + 'films/genre/famille.html'] )
+    liste.append( ['Historique',URL_MAIN + 'films/genre/historique.html'] )
+    liste.append( ['Judiciaire',URL_MAIN + 'films/genre/judiciaire.html'] )
+    liste.append( ['Médical',URL_MAIN + 'films/genre/medical.html'] )
+    liste.append( ['Péplum',URL_MAIN + 'films/genre/peplum.html'] )
+
                 
     for sTitle,sUrl in liste:
         
