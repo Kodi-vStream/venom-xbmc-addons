@@ -77,7 +77,7 @@ def showGenre():
     liste.append( ['Animation',URL_MAIN + 'animation/'] )
     liste.append( ['Arts Martiaux',URL_MAIN + 'arts-martiaux/'] )
     liste.append( ['Biographie',URL_MAIN + 'biographique/'] )
-    liste.append( ['Comedie',URL_MAIN + 'comedie/'] )
+    liste.append( ['Comédie',URL_MAIN + 'comedie/'] )
     liste.append( ['Drame',URL_MAIN + 'drame/'] )
     liste.append( ['Epouvante Horreur',URL_MAIN + 'epouvante-horreur/'] )
     liste.append( ['Fantastique',URL_MAIN + 'fantastique/'] )
@@ -90,7 +90,7 @@ def showGenre():
     liste.append( ['720p/1080p',URL_MAIN + '720p1080p/'] )
     liste.append( ['Mystère',URL_MAIN + 'mystere/'] )
     liste.append( ['Western',URL_MAIN + 'western/'] )
-    liste.append( ['Animes',URL_MAIN + 'mangas/'] )
+    liste.append( ['Animés',URL_MAIN + 'mangas/'] )
                
     for sTitle,sUrl in liste:
        
