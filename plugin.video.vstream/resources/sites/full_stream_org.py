@@ -2,9 +2,7 @@
 #Venom.
 #11/03/2016
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -111,7 +109,6 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        #sSearchText = cUtil().urlEncode(sSearchText)
         sUrl = URL_SEARCH[0] + sSearchText  
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -168,7 +165,7 @@ def showGenre():
     liste.append( ['En VOSTFR',URL_MAIN + 'xfsearch/VOSTFR/'] )
     liste.append( ['En VFSTF',URL_MAIN + 'xfsearch/VFSTF/'] )
     #liste.append( ['Derniers ajouts',URL_MAIN + 'lastnews/'] )
-               
+
     for sTitle,sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()
@@ -207,9 +204,7 @@ def AlphaDisplay():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    
-    print sUrl
-    
+
     #recuperation de la page
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -217,7 +212,6 @@ def AlphaDisplay():
     oParser = cParser()
     sPattern = '<a href="(.+?)" class="list-name">&raquo;(.+?)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
    
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -389,15 +383,7 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
-    # oRequestHandler = cRequestHandler(sUrl)
-    # oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-    # oRequestHandler.addParameters('login_name', 'vstream')
-    # oRequestHandler.addParameters('login_password', 'vstream')
-    # oRequestHandler.addParameters('Submit', '')
-    # oRequestHandler.addParameters('login', 'submit')
-    # sHtmlContent = oRequestHandler.request();
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
