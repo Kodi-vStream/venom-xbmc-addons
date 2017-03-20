@@ -11,7 +11,7 @@ import re
 
 
 SITE_IDENTIFIER = 'frenchddl_com'
-SITE_NAME = '[COLOR violet]FrenchDLL.com[/COLOR]'
+SITE_NAME = '[COLOR violet]FrenchDDL[/COLOR]'
 SITE_DESC = 'films en ddl'
 
 URL_MAIN = 'http://www.frenchddl.com/'
@@ -30,7 +30,7 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films', 'films.png', oOutputParameterHandler)
 
-    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Genres', 'films_genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
