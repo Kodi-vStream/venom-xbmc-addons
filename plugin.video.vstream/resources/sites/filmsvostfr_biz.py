@@ -1,9 +1,7 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -22,13 +20,13 @@ MOVIE_MOVIES = (URL_MAIN + 'films-en-streaming', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films-en-streaming', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
-SERIE_MOVIES = (URL_MAIN + 'series-en-streaming', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'series-en-streaming', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'series-en-streaming', 'showMovies')
-SERIE_GENRES = (True, 'showSerieGenres')
+SERIE_GENRES = ('http://seriegenre', 'showSerieGenres')
 
 ANIM_ANIMS = (URL_MAIN + 'animes-en-streaming', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'animes-en-streaming', 'showMovies')
-ANIM_GENRES = (True, 'showAnimGenres')
+ANIM_GENRES = ('http://animgenre', 'showSerieGenres')
   
 URL_SEARCH = (URL_MAIN + 'recherche.htm?q=', 'showMovies')
  
@@ -120,7 +118,7 @@ def showMovieGenres():
     liste.append( ['Opéra',URL_MAIN + '27_1_opera.html'] )
     liste.append( ['Concert',URL_MAIN + '28_1_concert.html'] )
     liste.append( ['Non Classé',URL_MAIN + '26_1_bollywood.html'] )
-               
+ 
     for sTitle,sUrl in liste:
        
         oOutputParameterHandler = cOutputParameterHandler()
@@ -131,98 +129,53 @@ def showMovieGenres():
 
 def showSerieGenres():
     oGui = cGui()
- 
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    if 'serie' in sUrl:
+        code = 'series'
+    else:
+        code = 'animes' 
+    
     liste = []
-    liste.append( ['Aventure',URL_MAIN + 'series/aventure.html'] )
-    liste.append( ['Action',URL_MAIN + 'series/action.html'] )
-    liste.append( ['Comédie',URL_MAIN + 'series/comedie.html'] )
-    liste.append( ['Drame',URL_MAIN + 'series/drame.html'] )
-    liste.append( ['Animation',URL_MAIN + 'series/animation.html'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'series/arts-martiaux.html'] )
-    liste.append( ['Thriller',URL_MAIN + 'series/thriller.html'] )
-    liste.append( ['Biopic',URL_MAIN + 'series/biopic.html'] )
-    liste.append( ['Policier',URL_MAIN + 'series/policier.html'] )
-    liste.append( ['Romance',URL_MAIN + 'series/romance.html'] )
-    liste.append( ['Comédie dramatique',URL_MAIN + 'series/comedie-dramatique.html'] )
-    liste.append( ['Documentaire',URL_MAIN + 'series/documentaire.html'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'series/science-fiction.html'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'series/epouvante-horreur.html'] )
-    liste.append( ['Western',URL_MAIN + 'series/western.html'] )
-    liste.append( ['Espionnage',URL_MAIN + 'series/espionnage.html'] )
-    liste.append( ['Fantastique',URL_MAIN + 'series/fantastique.html'] )  
-    liste.append( ['Guerre',URL_MAIN + 'series/guerre.html'] )
-    liste.append( ['Historique',URL_MAIN + 'series/historique.html'] )
-    liste.append( ['Musical',URL_MAIN + 'series/musical.html'] )
-    liste.append( ['Divers',URL_MAIN + 'series/divers.html'] )
-    liste.append( ['Comédie Musicale',URL_MAIN + 'series/comedie_musicale.html'] )
-    liste.append( ['Famille',URL_MAIN + 'series/famille.html'] )
+    liste.append( ['Aventure',URL_MAIN + code + '/aventure.html'] )
+    liste.append( ['Action',URL_MAIN + code + '/action.html'] )
+    liste.append( ['Comédie',URL_MAIN + code + '/comedie.html'] )
+    liste.append( ['Drame',URL_MAIN + code + '/drame.html'] )
+    liste.append( ['Animation',URL_MAIN + code + '/animation.html'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + code + '/arts-martiaux.html'] )
+    liste.append( ['Thriller',URL_MAIN + code + '/thriller.html'] )
+    liste.append( ['Biopic',URL_MAIN + code + '/biopic.html'] )
+    liste.append( ['Policier',URL_MAIN + code + '/policier.html'] )
+    liste.append( ['Romance',URL_MAIN + code + '/romance.html'] )
+    liste.append( ['Comédie dramatique',URL_MAIN + code + '/comedie-dramatique.html'] )
+    liste.append( ['Documentaire',URL_MAIN + code + '/documentaire.html'] )
+    liste.append( ['Science Fiction',URL_MAIN + code + '/science-fiction.html'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + code + '/epouvante-horreur.html'] )
+    liste.append( ['Western',URL_MAIN + code + '/western.html'] )
+    liste.append( ['Espionnage',URL_MAIN + code + '/espionnage.html'] )
+    liste.append( ['Fantastique',URL_MAIN + code + '/fantastique.html'] )  
+    liste.append( ['Guerre',URL_MAIN + code + '/guerre.html'] )
+    liste.append( ['Historique',URL_MAIN + code + '/historique.html'] )
+    liste.append( ['Musical',URL_MAIN + code + '/musical.html'] )
+    liste.append( ['Divers',URL_MAIN + code + '/divers.html'] )
+    liste.append( ['Comédie Musicale',URL_MAIN + code + '/comedie_musicale.html'] )
+    liste.append( ['Famille',URL_MAIN + code + '/famille.html'] )
     
     for sTitle,sUrl in liste:
        
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'series_genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
 
-def showAnimGenres():
-    oGui = cGui()
- 
-    liste = []
-    liste.append( ['Aventure',URL_MAIN + 'animes/aventure.html'] )
-    liste.append( ['Action',URL_MAIN + 'animes/action.html'] )
-    liste.append( ['Comédie',URL_MAIN + 'animes/comedie.html'] )
-    liste.append( ['Drame',URL_MAIN + 'animes/drame.html'] )
-    liste.append( ['Animation',URL_MAIN + 'animes/animation.html'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'animes/arts-martiaux.html'] )
-    liste.append( ['Thriller',URL_MAIN + 'animes/thriller.html'] )
-    liste.append( ['Biopic',URL_MAIN + 'animes/biopic.html'] )
-    liste.append( ['Policier',URL_MAIN + 'animes/policier.html'] )
-    liste.append( ['Romance',URL_MAIN + 'animes/romance.html'] )
-    liste.append( ['Comédie dramatique',URL_MAIN + 'animes/comedie-dramatique.html'] )
-    liste.append( ['Documentaire',URL_MAIN + 'animes/documentaire.html'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'animes/science-fiction.html'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'animes/epouvante-horreur.html'] )
-    liste.append( ['Western',URL_MAIN + 'animes/western.html'] )
-    liste.append( ['Espionnage',URL_MAIN + 'animes/espionnage.html'] )
-    liste.append( ['Fantastique',URL_MAIN + 'animes/fantastique.html'] )  
-    liste.append( ['Guerre',URL_MAIN + 'animes/guerre.html'] )
-    liste.append( ['Historique',URL_MAIN + 'animes/historique.html'] )
-    liste.append( ['Musical',URL_MAIN + 'animes/musical.html'] )
-    liste.append( ['Divers',URL_MAIN + 'animes/divers.html'] )
-    liste.append( ['Comédie Musicale',URL_MAIN + 'animes/comedie_musicale.html'] )
-    liste.append( ['Famille',URL_MAIN + 'animes/famille.html'] )
-    
-    for sTitle,sUrl in liste:
-       
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'animes_genres.png', oOutputParameterHandler)
-    
-    oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):
     oGui = cGui()
     
     if sSearch:
         sUrl = sSearch
-        # UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'
-                                         
-        # oRequestHandler = cRequestHandler(URL_MAIN +'search.php')
-        # oRequestHandler.setRequestType(1)
-        # oRequestHandler.addHeaderEntry('User-Agent' , UA)
-        # oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-        # oRequestHandler.addHeaderEntry('Accept' , 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-        # oRequestHandler.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
-        # oRequestHandler.addHeaderEntry('Referer','http://www.filmsvostfr.co/search.php')
-        
-        # oRequestHandler.addParameters( 't' , sSearch)
-        # oRequestHandler.addParameters( 'R_token' , 'U7OJA8L3qwr9DuqYANPWI9k3hGXqoSTp6DdaUuDi')
-        
-        # sHtmlContent = oRequestHandler.request()
 
-
-        # sUrl = 'http://www.filmsvostfr.co/search.php'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
