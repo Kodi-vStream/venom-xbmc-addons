@@ -184,7 +184,7 @@ def showMovies(sSearch = ''):
             
             #Si vous avez des information dans aEntry Qualiter lang organiser un peux vos titre exemple.
             #Si vous pouvez la langue et la Qualite en MAJ ".upper()" vostfr.upper() = VOSTFR
-            sTitle = ('%s (%s) [%s] [COLOR coral]%s[/COLOR]') % (sTitle, sQual, sLang.upper() , sHoster)
+            sTitle = ('%s [%s] (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sQual, sLang.upper() , sHoster)
             #mettre les information de streaming entre [] et le reste entre () vstream s'occupe de la couleur automatiquement.
             
             sUrl2 = URL_MAIN + sUrl2
