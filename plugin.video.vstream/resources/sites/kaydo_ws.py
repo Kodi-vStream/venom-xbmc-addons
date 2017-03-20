@@ -1,17 +1,14 @@
 #-*- coding: utf-8 -*-
 #Venom & johngf.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.player import cPlayer
-import re,urllib2,urllib,xbmc,base64
+import re,xbmc,base64
 
 #copie du site http://www.film-streaming.co/
 #copie du site http://www.streaming-club.com/
@@ -44,7 +41,7 @@ def Decode(chain):
     chain = 'M'.join(chain.split('7A4c1Y9T8c'))
     chain = 'V'.join(chain.split('8A5d1YX84A428s'))
     chain = ''.join(chain.split('$'))
-    #cConfig().log(str(base64.b64decode(chain)))
+
     return base64.b64decode(chain) 
     
 def load():
@@ -81,7 +78,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Toutes les Series', 'series.png', oOutputParameterHandler)
-           
+
     oGui.setEndOfDirectory()
  
  
@@ -123,7 +120,7 @@ def showGenre():
     liste.append( ['Sciense Fiction',URL_MAIN + 'genre.php?g=Science%20fiction'] )
     liste.append( ['Thriller',URL_MAIN + 'genre.php?g=Thriller'] )
     liste.append( ['Western',URL_MAIN + 'genre.php?g=Western'] )
-               
+
     for sTitle,sUrl in liste:
        
         oOutputParameterHandler = cOutputParameterHandler()
@@ -148,15 +145,10 @@ def showMovies(sSearch = ''):
         sUrl += '?r=n'
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
-    # fh = open('C:\\test.txt', "w")
-    # fh.write(sHtmlContent)
-    # fh.close()
 
-    #sPattern = '<div class="box"> *<img src="([^"]+)" width=".+?" height=".+?">.+?<h2>([^<]+)</h2>.+?<p.*?>([^<]+)</p>.+?ref="([^"]+)">'
 
     sPattern = '<img src="([^"]+?)" width=".+?<h2>(.+?)</h2>.*?<h3>(.+?)</h3>.+?<p>([^<]+)</p><a class="btn.+?href="(.+?)"'
-        
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -237,7 +229,6 @@ def seriesHosters():
                 
                 name = name.replace('Ep. ','E')
                 
-                #cConfig().log(str(aEntry[0]))
                 oOutputParameterHandler.addParameter('siteUrl', sUrl) 
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle) 
                 oOutputParameterHandler.addParameter('sThumbnail', sThumbnail) 
@@ -245,7 +236,7 @@ def seriesHosters():
                 oGui.addTV(SITE_IDENTIFIER, 'showHosters', name, 'series.png', sThumbnail, sUrl, oOutputParameterHandler)
 
 
-    oGui.setEndOfDirectory() #fin
+    oGui.setEndOfDirectory()
          
 def __checkForNextPage(sHtmlContent):
     sPattern = 'class="pagination">.*?<li class="active">.+?<li><a href="(.+?)"'
@@ -282,8 +273,7 @@ def showHosters():
     else:
         BA = False
 
-    #sPattern = '{file:"([^\"]+?)"'
-    #sPattern = '{file:"([^"]+)",label:"([^"]+)"'
+
     sPattern = '<script>function(.+?)</script>'
     aResult = re.search(sPattern,sHtmlContent)
     sHtmlContent = aResult.group(1).replace('return de("$")','') #serie
@@ -301,7 +291,7 @@ def showHosters():
                 if sId:
                     chaine = sId.group(1)
                     vUrl = base64.b64decode(chaine + "==")
-                    #cConfig().log(str(vUrl))
+
                     if 't411.li' in vUrl:
                         continue
                     elif 'uptobox' in vUrl:
@@ -310,7 +300,7 @@ def showHosters():
                         sHosterUrl = vUrl
                     else:
                         sHosterUrl = url
-                        #cConfig().log(str(sHosterUrl))
+
             else:
                 sHosterUrl = url
 
@@ -328,4 +318,4 @@ def showHosters():
                 oHoster2.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster2, sHosterUrl2, '') 
                   
-        oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
