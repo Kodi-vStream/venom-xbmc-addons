@@ -60,7 +60,7 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('type2', 0)
     oOutputParameterHandler.addParameter('title', 'Animés')
-    oGui.addDir(SITE_IDENTIFIER, 'showLanggenre', 'Animés Genre', 'animes_genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showLanggenre', 'Animés (Genres)', 'animes_genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
@@ -80,7 +80,7 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('type2', 1)
     oOutputParameterHandler.addParameter('title', 'Séries')
-    oGui.addDir(SITE_IDENTIFIER, 'showLanggenre', 'Séries Genre', 'series_genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showLanggenre', 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
 
@@ -111,13 +111,13 @@ def showLang():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 1)
     oOutputParameterHandler.addParameter('type2', sType2)
-    oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle+' A-Z VF', 'lang.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle+' A-Z VF', 'fr.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 2)
     oOutputParameterHandler.addParameter('type2', sType2)
-    oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle+' A-Z VOSTFR', 'lang.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle+' A-Z VOSTFR', 'vostfr.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
     
@@ -132,19 +132,19 @@ def showLanggenre():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 0)
     oOutputParameterHandler.addParameter('type2', sType2)
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', sTitle+' Genre', 'lang.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', sTitle+'Genres', 'lang.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 1)
     oOutputParameterHandler.addParameter('type2', sType2)
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', sTitle+' Genre VF', 'lang.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', sTitle+'Genre VF', 'vf.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 2)
     oOutputParameterHandler.addParameter('type2', sType2)
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', sTitle+' Genre VOSTFR', 'lang.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', sTitle+'Genre VOSTFR', 'vostfr.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
         
