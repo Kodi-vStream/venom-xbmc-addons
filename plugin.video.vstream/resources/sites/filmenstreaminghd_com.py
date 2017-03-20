@@ -1,9 +1,7 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -23,16 +21,14 @@ URL_MAIN = 'http://www.filmenstreaminghd.com'
 
 
 MOVIE_MOVIE = (URL_MAIN + '/films', 'showMovies')
-#MOVIE_NEWS = (URL_MAIN + '/derniers-ajoutes' , 'showMovies')
+
 MOVIE_HD = (URL_MAIN + '/1080p-films', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + '/films-populaires/', 'showMovies')
-#MOVIE_COMMENTS = (URL_MAIN + 'les-plus-commentes/', 'showMovies')
-#MOVIE_NOTES = (URL_MAIN + '/films-populaires/', 'showMovies')
+
 MOVIE_GENRES = (True, 'showGenre')
 
 SERIE_SERIES = (URL_MAIN + '/series-tv', 'showMovies')
 SERIE_GENRES = (True, 'showGenreS')
-#SERIE_NEWS = (URL_MAIN + 'tv-series/', 'showMovies')
 
 ANIM_ANIMS = (URL_MAIN +'/animes', 'showMovies')
 
@@ -46,11 +42,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD', 'films_hd.png', oOutputParameterHandler)
@@ -59,14 +51,6 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Les plus Vues)', 'films_views.png', oOutputParameterHandler)
     
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
-    #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Les plus Commentés)', 'films_comments.png', oOutputParameterHandler)
-    
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
-    #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Les mieux Notés)', 'films_notes.png', oOutputParameterHandler)
-    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
@@ -74,7 +58,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oGui.addDir(SITE_IDENTIFIER, 'showQlt', 'Films (Qualités)', 'films.png', oOutputParameterHandler)
-        
+ 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
@@ -90,8 +74,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
-    
-            
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -101,13 +84,10 @@ def showSearch():
     if (sSearchText != False):
         showMovies(str(sSearchText))
         oGui.setEndOfDirectory()
-        return  
-    
+        return
     
 def showGenre():
     oGui = cGui()
-    #oInputParameterHandler = cInputParameterHandler()
-    #sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
     liste.append( ['Action',URL_MAIN+ '/action'] )
@@ -129,7 +109,7 @@ def showGenre():
     liste.append( ['Science Fiction',URL_MAIN + '/science-fiction'] )
     liste.append( ['Thriller',URL_MAIN + '/thriller'] )
     liste.append( ['Western',URL_MAIN + '/western'] )
-               
+ 
     for sTitle,sUrl in liste:
        
         oOutputParameterHandler = cOutputParameterHandler()
@@ -141,8 +121,6 @@ def showGenre():
     
 def showGenreS():
     oGui = cGui()
-    #oInputParameterHandler = cInputParameterHandler()
-    #sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
     liste.append( ['Action',URL_MAIN+ '/action-series'] )    
@@ -177,8 +155,6 @@ def showGenreS():
     
 def showQlt():
     oGui = cGui()
-    #oInputParameterHandler = cInputParameterHandler()
-    #sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
     liste.append( ['1080p',URL_MAIN + '/1080p-films'] )   
@@ -213,7 +189,7 @@ def showMovies(sSearch = ''):
     oInputParameterHandler = cInputParameterHandler()
     
     sUrl = oInputParameterHandler.getValue('siteUrl')
-            
+ 
     if sSearch:
     
         oRequestHandler = cRequestHandler('http://www.filmenstreaminghd.com/recherche/')
@@ -223,8 +199,6 @@ def showMovies(sSearch = ''):
         sHtmlContent = oRequestHandler.request()
 
     else:
-    
-    
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
@@ -293,8 +267,6 @@ def showSeries():
     oParser = cParser()
     sPattern = '<span class="pikon" style="background-image: url\(/sistem/inc/part_ikon/(.+?).png\);"></span>(.+?)<span|class="partsec.+?" id="([^"]+?)".+?</i>([^<]+?)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    #print aResult    
     
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -385,27 +357,15 @@ def showHosters():
 
     postdata = 'pid=' + sPid
     
-    # headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0' }
-    # request = urllib2.Request(sUrl,postdata,headers)
-    # reponse = urllib2.urlopen(request)
-    # sHtmlContent = reponse.read()
-    # reponse.close()
-    
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
     oRequestHandler.addParameters('pid', sPid)
     sHtmlContent = oRequestHandler.request()
-    
-    # fh = open('D:\\test.txt', "w")
-    # fh.write(sHtmlContent)
-    # fh.close()
-    
+
     sPattern = '<ifram[^<>]+? src=[\'"]([^\'"]+?)[\'"]'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    
-     
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
