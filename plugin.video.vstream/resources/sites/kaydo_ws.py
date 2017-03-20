@@ -182,23 +182,24 @@ def showMovies():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     
-    #modif url par Gregwar  
-    if '?' in sUrl:
-        sUrl += '&r=n'
-    else:
-        sUrl += '?r=n'
+    # modif url par Gregwar  
+    # # if '?' in sUrl:
+        # # sUrl += '&r=n'
+    # # else:
+        # # sUrl += '?r=n'
         
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    if 'serie' in sUrl or 'genre' in sUrl:
-        sPattern = '<img src="([^"]+?)" width=".+?<h2>(.+?)</h2>.*?<h3>(.+?)</h3>.+?<p>([^<]+)</p><a class="btn.+?href="(.+?)"'
-    else:
-        sPattern = '<img src="([^"]+)" width=".+?<a href="([^"]+)">.+?title="(.+?)".+?data-tooltip="Synopsis *: *([^<]+)">.+?<h3>(.+?)</h3>'
+    
+    sPattern1 = '<img src="([^"]+?)" width=".+?<h2>(.+?)</h2>.*?<h3>(.+?)</h3>.+?<p>([^<]+)</p><a class="btn.+?href="(.+?)"'
+
+    sPattern2 = '<img src="([^"]+)" width=".+?<a href="([^"]+)">.+?title="(.+?)".+?data-tooltip="Synopsis *: *([^<]+)">.+?<h3>(.+?)</h3>'
 
     oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
+    aResult = oParser.parse(sHtmlContent, sPattern2)
+    if not (aResult[0] == True):
+        aResult = oParser.parse(sHtmlContent, sPattern1)
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -207,7 +208,7 @@ def showMovies():
             if dialog.iscanceled():
                 break
 
-            if 'serie' in sUrl or 'genre' in sUrl:
+            if not sUrl.startswith('http://www.kaydo.ws/series.php') and 'serie' in sUrl or 'genre' in sUrl:
                 sThumbnail = URL_MAIN+str(aEntry[0])
                 siteUrl = URL_MAIN+str(aEntry[4])
                 sCom = str(aEntry[3])
