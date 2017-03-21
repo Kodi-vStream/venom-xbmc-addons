@@ -1,17 +1,15 @@
 #-*- coding: utf-8 -*-
 # Par chataigne73
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.config import cConfig
-import re, urllib, urllib2
-import xbmc
+import re,urllib2
+
 
 SITE_IDENTIFIER = 'libertyland_tv'
 SITE_NAME = 'Libertyland'
@@ -63,7 +61,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
-              
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -159,8 +157,7 @@ def showMovies(sSearch = ''):
             scategorie = 'films'
         
         sPOST = 'categorie=' + scategorie + '&mot_search=' + sSearch.replace(URL_SEARCH[0],'')    
-        #sPOST = urllib.urllib.quote_plus(sPOST)
-        
+
         request = urllib2.Request(URL_SEARCH[0],sPOST)
         request.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:22.0) Gecko/20100101 Firefox/22.0')
         request.add_header('Content-Type', 'application/x-www-form-urlencoded')
@@ -282,10 +279,6 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()    
-    
     oParser = cParser()
     
     #sPattern = 'src="http:\/\/www\.libertyland\.tv\/v2\/hebergeur\/[^<>]+?"> ([^<>]+?) <font style=\'color:#f00\'>(.+?)<\/font><\/h4>.+?data-fancybox-type="ajax" href="(.+?)" class="fancybox fancybox\.iframe">'
@@ -315,7 +308,6 @@ def showLinks():
                 sLang = cUtil().removeHtmlTags(sLang)
                 
                 sTitle = ' (' + sLang + '/' + aEntry[3] + ')' + ' - [COLOR skyblue]' + sPlayer +'[/COLOR] ' + sMovieTitle
-                #sDisplayTitle = cUtil().DecoTitle(sTitle)
                 
                 #test de doublon
                 if sUrlLink not in listdoublon:
@@ -341,9 +333,6 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
-    #import xbmc
-    #xbmc.log(sUrl)
-    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
@@ -357,9 +346,6 @@ def showHosters():
             sHosterUrl = str(aEntry)
             if sHosterUrl.startswith('//'):
                 sHosterUrl = 'http:' + sHosterUrl
-            
-            #import xbmc
-            #xbmc.log(sHosterUrl)
             
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
@@ -431,14 +417,12 @@ def seriesLinks():
     sPattern = 'Choisissez une langue(.+?)<div class="blogmetas" *>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if not (aResult[0] == True):
-        xbmc.log('erreur de regex')
-        #sHtmlContent = ''
+        print 'erreur de regex'
+
     else:
         sHtmlContent =  aResult[1][0]
     
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
+
 
     sPattern = 'data-fancybox-type="ajax" href="(.+?)" class="fancybox fancybox\.iframe">.+?Regarder sur:<\/span> <b>(.+?)<\/b> *<\/a> *<\/p> *<\/td><td data-title="Langue" class="[^"]+">(.+?)<\/td> *<td data-title="Qualité" class="separateur[^"]+">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
