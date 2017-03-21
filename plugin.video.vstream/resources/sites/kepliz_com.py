@@ -47,11 +47,11 @@ def load():
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautés', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
@@ -59,7 +59,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'index.php?option=com_content&view=category&id=3')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Spectacle', 'doc.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Spectacles', 'doc.png', oOutputParameterHandler)  
     
     oGui.setEndOfDirectory()
  
@@ -80,7 +80,7 @@ def showGenre():
     liste.append( ['A l affiche',URL_MAIN + 'index.php?option=com_content&view=category&id=29'] )
     liste.append( ['Action',URL_MAIN + 'index.php?option=com_content&view=category&id=1'] )
     liste.append( ['Aventure',URL_MAIN + 'index.php?option=com_content&view=category&id=4'] )
-    liste.append( ['Comedie',URL_MAIN + 'index.php?option=com_content&view=category&id=6'] )
+    liste.append( ['Comédie',URL_MAIN + 'index.php?option=com_content&view=category&id=6'] )
     liste.append( ['Drame',URL_MAIN + 'index.php?option=com_content&view=category&id=7'] )
     liste.append( ['Epouvante Horreur',URL_MAIN + 'index.php?option=com_content&view=category&id=9'] ) 
     liste.append( ['Fantastique',URL_MAIN + 'index.php?option=com_content&view=category&id=8'] )  
