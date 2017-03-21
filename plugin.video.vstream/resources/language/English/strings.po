@@ -494,3 +494,11 @@ msgstr ""
 
 msgctxt "#30413"
 msgid "[COLOR red]Delete history[/COLOR]"
+
+msgctxt "#30414"
+msgid "[COLOR gold]Full series search[/COLOR]"
+msgstr ""
+
+msgctxt "#30415"
+msgid "[COLOR gold]Full season search[/COLOR]"
+msgstr ""
