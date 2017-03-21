@@ -192,7 +192,7 @@ class cGuiElement:
             SXEX = ''
 
             #m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',sTitle,re.UNICODE)
-            m = re.search('(?i)([e|é|É](?:[a-z]+sode\s?)*([0-9]+[0-9\-\?]*))', str(sTitle))
+            m = re.search('(?i)(?:^|[^a-z])([eéÉ](?:[a-z]+sode\s?)*([0-9]+[0-9\-\?]*))', str(sTitle))
             if m:
                 #ok y a des episodes
                 sTitle = sTitle.replace(m.group(1),'')
