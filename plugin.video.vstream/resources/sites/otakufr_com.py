@@ -133,7 +133,7 @@ def showAlpha():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN) + Link)
             oOutputParameterHandler.addParameter('AZ', sLetter)
-            oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Lettre - [B][COLOR coral]' + sLetter + '[/COLOR][/B]', 'animes.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Lettre - [COLOR coral]' + sLetter + '[/COLOR]', 'animes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
         

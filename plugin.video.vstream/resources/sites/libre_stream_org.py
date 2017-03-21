@@ -1,9 +1,7 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -64,7 +62,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIE[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIE[1], 'Series Liste Complete', 'series.png', oOutputParameterHandler)    
-             
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -128,7 +126,7 @@ def showQlt():
     liste.append( ['R5',URL_MAIN + 'quality/R5/'] )
     liste.append( ['Cam Rip',URL_MAIN + 'quality/camrip/'] )
     liste.append( ['TS',URL_MAIN + 'quality/ts/'] )
-                
+  
     for sTitle,sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()
@@ -174,8 +172,7 @@ def AlphaDisplay():
     oParser = cParser()
     sPattern = '<a href="([^<>"]+?)">([^<>"]+?)<\/a><br\/>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
-   
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -285,8 +282,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('http://creative.rev2pub.com','')
-               
-        
+
     sPattern = '<iframe.+?src=[\'"]([^<>\'"]+?)[\'"]'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -309,7 +305,7 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
     
         cConfig().finishDialog(dialog)
-                
+
     oGui.setEndOfDirectory()
     
 def seriesHosters():
@@ -321,7 +317,7 @@ def seriesHosters():
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-               
+
     oParser = cParser()          
     sPattern = '<div class="e-number">.+?<iframe src="(.+?)".+?class="episode-id">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
