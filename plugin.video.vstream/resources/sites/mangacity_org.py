@@ -1,9 +1,7 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -12,8 +10,6 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import urllib2,urllib,re
 import unicodedata
-import xbmc
-#import sets
 
 def DecryptMangacity(chain):
     oParser = cParser()
@@ -143,8 +139,8 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Anime VOSTFR', 'films.png', oOutputParameterHandler)   
-            
-    oGui.setEndOfDirectory() #ferme l'affichage
+  
+    oGui.setEndOfDirectory() 
 
 def showSearch():
     oGui = cGui()
@@ -157,7 +153,7 @@ def showSearch():
         return  
     
     
-def showGenre(): #affiche les genres
+def showGenre(): 
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
@@ -281,10 +277,8 @@ def showMovies(sSearch = ''):
         sSearch = urllib.quote_plus(sSearch).upper() #passe en majuscule et remplace espace par +
 
         url = URL_MAIN + 'resultat+' + sSearch + '.html'
-        #xbmc.log(url)
 
-        headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0',
-        'Referer' : URL_MAIN}
+        headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0','Referer' : URL_MAIN}
         request = urllib2.Request(url,None,headers)
         reponse = urllib2.urlopen(request)
         
@@ -303,15 +297,11 @@ def showMovies(sSearch = ''):
     if 'HTML/JavaScript Encoder' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
 
-    #fh = open('c:\\manga.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
         
     sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=\'*(.+?)\'* class=.button'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #aResult = re.findall(sPattern, sHtmlContent)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -337,7 +327,7 @@ def showMovies(sSearch = ''):
             #sPicture = sPicture.encode('ascii', 'ignore').decode('ascii')
             #sPicture = sPicture.replace('[Streaming] - ','')
             sPicture = str(URL_MAIN) + str(sPicture)
-            #print sPicture
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN) + str(aEntry[2]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
@@ -389,14 +379,11 @@ def showEpisode():
     
     if 'HTML/JavaScript Encoder' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
-    
-    #fh = open('c:\\manga.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
+
     
     oParser = cParser()
     
-    #xbmc.log(sUrl)
+
     
     #On fait 2 passage pr accelerer le parsing regex
     # sPattern = '<div class="&#105;&#110;&#110;&#101;&#114;">(.+?)<footer id="footer">'
@@ -407,7 +394,6 @@ def showEpisode():
     
     sPattern = 'class=\'button light\' [^>]+"><headline11>(.+?)<\/headline11><\/a>|<a href="*([^"]+)"* title="([^"]+)"[^>]+style="*text-decoration:none;"*>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #xbmc.log(str(aResult))
    
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -509,7 +495,6 @@ def showHosters():
             if not aEntry[0]:
                 sHosterUrl = DecryptMangacity(aEntry[2])
                 sHosterUrl = sHosterUrl.replace('\\','')
-                #xbmc.log( 'Decrypte :' + sHosterUrl)
             #adresse directe  
             else:
                 if re.match(".+?&#[0-9]+;", aEntry[0]):#directe mais codé html
@@ -528,8 +513,6 @@ def showHosters():
             #Si aucun lien on arrette ici
             if not (sHosterUrl):
                 continue
-            
-            #xbmc.log( 'brut :' + str(sHosterUrl)) 
 
             #si openload code
             if 'openload2.php' in sHosterUrl:
@@ -546,7 +529,6 @@ def showHosters():
             sPattern = '(http:\/\/www.ianime.tv\/[0-9a-zA-Z_-]+\.asx)'
             aResult = oParser.parse(sHosterUrl, sPattern)
             if aResult[0] :
-                #xbmc.log( 'Lien Aasx :' + str(sHosterUrl)) 
                 #on telecharge la page
                 oRequestHandler = cRequestHandler(sHosterUrl )
                 oRequestHandler.addHeaderEntry('Referer',sUrl)
@@ -583,7 +565,6 @@ def showHosters():
                     sHosterUrl = sHosterUrl.replace('http://tinyurl.com/lr6ytvj/','http://netu.tv/')
                 #On va chercher le vrai lien
                 else:
-                    xbmc.log(sHosterUrl)
                     
                     class NoRedirection(urllib2.HTTPErrorProcessor):    
                         def http_response(self, request, response):
@@ -638,12 +619,8 @@ def showHosters():
                 sHtmlContent = ICDecode(sHtmlContent)
                 
                 sHosterUrl = ExtractLink(sHtmlContent)
-            
-            #xbmc.log( 'final :' + str(sHosterUrl)) 
-            
-            #oHoster = __checkHoster(sHosterUrl)
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
 
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
                 oHoster.setDisplayName(sDisplayTitle)
