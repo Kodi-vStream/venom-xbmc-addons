@@ -1,19 +1,15 @@
 #-*- coding: utf-8 -*-
 #Par jojotango
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
- 
- 
+
 SITE_IDENTIFIER = 'spion_com'
-SITE_NAME = 'Spi0n.com'
+SITE_NAME = 'Spi0n'
 SITE_DESC = 'Toute l\'actualité insolite du web est chaque jour sur Spi0n.com'
  
 URL_MAIN = 'http://www.spi0n.com/'
@@ -135,16 +131,12 @@ def showMovies(sSearch = ''):
             sPoster = str(aEntry[1])
             
             #categorie video
-            sCat = '[' + aEntry[4] +']'
+            sCat = str(aEntry[4])
             
-            #si genre non affichage du sCat
-            if ('category' in sUrl) or ('nsfw/' in sUrl):
-                sDisplayTitle = cUtil().DecoTitle(sTitle)
-            else:
-                sDisplayTitle = cUtil().DecoTitle(sCat + sTitle)    
+            sDisplayTitle = ('%s') % (sTitle)  
             
             #vire lien categorie image
-            if (sCat != '[Image]'):
+            if (sCat != 'Image'):
             
                  oOutputParameterHandler = cOutputParameterHandler()
                  oOutputParameterHandler.addParameter('siteUrl', sUrlp) 
@@ -152,7 +144,7 @@ def showMovies(sSearch = ''):
                  oOutputParameterHandler.addParameter('sThumbnail', sPoster)
                  
                  if (SPION_CENSURE == True):
-                    if (sCat == '[NSFW]') or (sCat == '[Trash]'):
+                    if (sCat == 'NSFW') or (sCat == 'Trash'):
                         sPoster = LOGO_CSA
                         oGui.addMovie(SITE_IDENTIFIER, 'showCensure', sDisplayTitle, '', sPoster,'', oOutputParameterHandler)
                     else:
@@ -215,13 +207,12 @@ def showHosters():
             # Certains URL "dailymotion" sont écrits : //www.dailymotion.com
             if sHosterUrl[:4] != 'http':
                 sHosterUrl = 'http:' + sHosterUrl     
-                 
+               
             oHoster = cHosterGui().checkHoster(sHosterUrl)
              
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
-                 
-    oGui.setEndOfDirectory()
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
+    oGui.setEndOfDirectory()
