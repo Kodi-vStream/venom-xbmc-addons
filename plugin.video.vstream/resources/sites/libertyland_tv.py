@@ -1,34 +1,33 @@
 #-*- coding: utf-8 -*-
 # Par chataigne73
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.config import cConfig
-import re, urllib, urllib2
-import xbmc
+import re,urllib2
+
 
 SITE_IDENTIFIER = 'libertyland_tv'
 SITE_NAME = 'Libertyland'
-SITE_DESC = 'Les films et series recentes en streaming et en telechargement'
+SITE_DESC = 'Les films et séries récentes en streaming et en téléchargement'
 
 URL_MAIN = 'http://libertyland.co/'
 
 URL_SEARCH = (URL_MAIN + 'v2/recherche/', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_NEWS = (URL_MAIN + 'films/nouveautes/', 'showMovies') # films nouveautés
+MOVIE_NEWS = (URL_MAIN + 'films/nouveautes/', 'showMovies') # films (Derniers ajouts)
 MOVIE_VIEWS = (URL_MAIN + 'films/plus-vus-mois/', 'showMovies') # films + plus
 MOVIE_NOTES = (URL_MAIN + 'films/les-mieux-notes/', 'showMovies') # films mieux notés
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (True, 'showMovieGenres')
 MOVIE_VOSTFR = (URL_MAIN + 'films/films-vostfr/', 'showMovies') # films VOSTFR
 
 SERIE_SERIES = (URL_MAIN + 'series/', 'showMovies')
+SERIE_GENRES = (True, 'showSerieGenres')
 
 ANIM_ANIMS = (URL_MAIN + 'v2/mangas/', 'showMovies')
 
@@ -42,28 +41,32 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautes', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films Les plus vus', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vues)', 'films_views.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films Les mieux notes', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'films_notes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films Genre', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
 	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Series', 'series.png', oOutputParameterHandler)
-    
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animes', 'series.png', oOutputParameterHandler)
-              
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -81,53 +84,94 @@ def typsearch():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('type', 'film')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Film', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Film', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('type', 'serie')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Serie', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Série', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('type', 'anime')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Anime', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Animé', 'animes.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory() 
     
-def showGenre():
+def showMovieGenre():
     oGui = cGui()
  
     liste = []
     liste.append( ['Action',URL_MAIN + 'films/genre/action.html'] )
     liste.append( ['Animation',URL_MAIN + 'films/genre/animation.html'] )
+    liste.append( ['Arts martiaux',URL_MAIN + 'films/genre/arts-martiaux.html/'] )
     liste.append( ['Aventure',URL_MAIN + 'films/genre/aventure.html/'] )
-    liste.append( ['Biopic',URL_MAIN + 'films/genre/biopic.html'] )
-    liste.append( ['Comedie',URL_MAIN + 'films/genre/comedie.html'] )
-    liste.append( ['Comedie Dramatique',URL_MAIN + 'films/genre/comedie-dramatique.html'] )
-    liste.append( ['Comedie Musicale',URL_MAIN + 'films/genre/comedie-musicale.html'] )
+    liste.append( ['Biographie',URL_MAIN + 'films/genre/biographie.html'] )
+    liste.append( ['Comédie',URL_MAIN + 'films/genre/comedie.html'] )
+    liste.append( ['Crime',URL_MAIN + 'films/genre/crime.html'] )
     liste.append( ['Drame',URL_MAIN + 'films/genre/drame.html'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'films/genre/horreur.html'] ) 
     liste.append( ['Espionnage',URL_MAIN + 'films/genre/espionnage.html'] )
-    liste.append( ['Famille',URL_MAIN + 'films/genre/famille.html'] )
-    liste.append( ['Fantastique',URL_MAIN + 'films/genre/fantastique.html'] )  
+    liste.append( ['Fantastique',URL_MAIN + 'films/genre/fantastique.html'] )
     liste.append( ['Guerre',URL_MAIN + 'films/genre/guerre.html'] )
-    liste.append( ['Historique',URL_MAIN + 'films/genre/historique.html'] )
-    liste.append( ['Judiciaire',URL_MAIN + 'films/genre/historique.html'] )
-    liste.append( ['Medical',URL_MAIN + 'films/genre/musical.html'] )
+    liste.append( ['Histoire',URL_MAIN + 'films/genre/histoire.html'] )
+    liste.append( ['Horreur',URL_MAIN + 'films/genre/horreur.html'] )
+    liste.append( ['Musical',URL_MAIN + 'films/genre/musical.html'] )
     liste.append( ['Policier',URL_MAIN + 'films/genre/policier.html'] )
-    liste.append( ['Peplum',URL_MAIN + 'films/genre/peplum.html'] )
     liste.append( ['Romance',URL_MAIN + 'films/genre/romance.html'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'films/genre/science-fiction.html'] )
+    liste.append( ['Science-Fiction',URL_MAIN + 'films/genre/science-fiction.html'] )
+    liste.append( ['Sport',URL_MAIN + 'films/genre/sport.html'] )
     liste.append( ['Thriller',URL_MAIN + 'films/genre/thriller.html'] )
     liste.append( ['Western',URL_MAIN + 'films/genre/western.html'] )
+	#la suite fonctionnent mais n'est pas répertorié dans le moteur de genre du site
+    liste.append( ['Biopic',URL_MAIN + 'films/genre/biopic.html'] )
+    liste.append( ['Comédie Dramatique',URL_MAIN + 'films/genre/comedie-dramatique.html'] )
+    liste.append( ['Comédie Musicale',URL_MAIN + 'films/genre/comedie-musicale.html'] )
+    liste.append( ['Famille',URL_MAIN + 'films/genre/famille.html'] )
+    liste.append( ['Historique',URL_MAIN + 'films/genre/historique.html'] )
+    liste.append( ['Judiciaire',URL_MAIN + 'films/genre/judiciaire.html'] )
+    liste.append( ['Médical',URL_MAIN + 'films/genre/medical.html'] )
+    liste.append( ['Péplum',URL_MAIN + 'films/genre/peplum.html'] )
+
                 
     for sTitle,sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'films_genres.png', oOutputParameterHandler)
        
-    oGui.setEndOfDirectory() 
+    oGui.setEndOfDirectory()
 
+def showSerieGenres():
+    oGui = cGui()
+ 
+    liste = []
+    liste.append( ['Action',URL_MAIN + 'v2/series/genre/action.html'] )
+    liste.append( ['Animé',URL_MAIN + 'v2/series/genre/anime.html'] )
+    liste.append( ['Aventure',URL_MAIN + 'v2/series/genre/aventure.html/'] )
+    liste.append( ['Comédie',URL_MAIN + 'v2/series/genre/comedie.html'] )
+    liste.append( ['DC Comics',URL_MAIN + 'v2/series/genre/dc-comics.html'] )
+    liste.append( ['Documentaire',URL_MAIN + 'v2/series/genre/documentaire.html'] )
+    liste.append( ['Drama',URL_MAIN + 'v2/series/genre/drama.html'] )
+    liste.append( ['Drame',URL_MAIN + 'v2/series/genre/drame.html'] )
+    liste.append( ['Emission TV',URL_MAIN + 'v2/series/genre/emission-tv'] )
+    liste.append( ['Epouvante-Horreur',URL_MAIN + 'v2/series/genre/epouvante-horreur.html'] )
+    liste.append( ['Fantastique',URL_MAIN + 'v2/series/genre/fantastique.html'] )
+    liste.append( ['Gore',URL_MAIN + 'v2/series/genre/gore.html'] )
+    liste.append( ['Guerre',URL_MAIN + 'v2/series/genre/guerre.html'] )
+    liste.append( ['Historique',URL_MAIN + 'v2/series/genre/historique.html'] )
+    liste.append( ['Mystère',URL_MAIN + 'v2/series/genre/mystere.html'] )
+    liste.append( ['Policier',URL_MAIN + 'v2/series/genre/policier.html'] )
+    liste.append( ['Romance',URL_MAIN + 'v2/series/genre/romance.html'] )
+    liste.append( ['Science-Fiction',URL_MAIN + 'v2/series/genre/science-fiction.html'] )
+    liste.append( ['Série TV',URL_MAIN + 'v2/series/genre/serie-tv.html'] )
+    liste.append( ['Thriller',URL_MAIN + 'v2/series/genre/thriller.html'] )
+    liste.append( ['Télé-réalité',URL_MAIN + 'v2/series/genre/tele-realite.html'] )
+                
+    for sTitle,sUrl in liste:
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'series_genres.png', oOutputParameterHandler)
+       
+    oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -150,9 +194,8 @@ def showMovies(sSearch = ''):
         else:#tout le reste
             scategorie = 'films'
         
-        sPOST = 'categorie=' + scategorie + '&mot_search=' + sSearch.replace(URL_SEARCH[0],'')    
-        #sPOST = urllib.urllib.quote_plus(sPOST)
-        
+        sPOST = 'categorie=' + scategorie + '&mot_search=' + sSearch.replace(URL_SEARCH[0],'')
+
         request = urllib2.Request(URL_SEARCH[0],sPOST)
         request.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:22.0) Gecko/20100101 Firefox/22.0')
         request.add_header('Content-Type', 'application/x-www-form-urlencoded')
@@ -219,7 +262,7 @@ def showMovies(sSearch = ''):
             if '/series/' in sUrl or '/series/' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             elif '/mangas' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)               
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             
@@ -254,9 +297,9 @@ def ReformatUrl(link):
         f = link.split('/')[-1]
         return '/'.join(link.split('/')[:-1])+ '/streaming/' + f.replace('-telecharger','')
     if ('/v2/' in link) and ('/streaming/' in link):
-        return link.replace('/v2/','/')   
+        return link.replace('/v2/','/')
     if '/v2/' in link:
-        return link.replace('/v2/','/streaming/')   
+        return link.replace('/v2/','/streaming/')
     return link
     
     
@@ -273,10 +316,6 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()    
     
     oParser = cParser()
     
@@ -307,7 +346,6 @@ def showLinks():
                 sLang = cUtil().removeHtmlTags(sLang)
                 
                 sTitle = ' (' + sLang + '/' + aEntry[3] + ')' + ' - [COLOR skyblue]' + sPlayer +'[/COLOR] ' + sMovieTitle
-                #sDisplayTitle = cUtil().DecoTitle(sTitle)
                 
                 #test de doublon
                 if sUrlLink not in listdoublon:
@@ -319,11 +357,11 @@ def showLinks():
                 oOutputParameterHandler.addParameter('sUrl', sUrlLink)
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)             
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
     
         cConfig().finishDialog(dialog)
 
-    oGui.setEndOfDirectory()  
+    oGui.setEndOfDirectory()
  
  
 def showHosters():
@@ -332,9 +370,6 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('sUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
-    #import xbmc
-    #xbmc.log(sUrl)
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -350,15 +385,12 @@ def showHosters():
             if sHosterUrl.startswith('//'):
                 sHosterUrl = 'http:' + sHosterUrl
             
-            #import xbmc
-            #xbmc.log(sHosterUrl)
-            
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
                 
     oGui.setEndOfDirectory()
  
@@ -390,7 +422,7 @@ def showSaisons():
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMisc(SITE_IDENTIFIER, 'showSaisons', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'series.png', sThumbnail, '', oOutputParameterHandler)                
+                oGui.addMisc(SITE_IDENTIFIER, 'showSaisons', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'series.png', sThumbnail, '', oOutputParameterHandler)
             else:
                 sTitle = sMovieTitle + ' '+ aEntry[1].replace(',','')
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
@@ -398,7 +430,7 @@ def showSaisons():
                 oOutputParameterHandler.addParameter('sUrl', aEntry[2])
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMovie(SITE_IDENTIFIER, 'seriesLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)             
+                oGui.addMovie(SITE_IDENTIFIER, 'seriesLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
     
         cConfig().finishDialog(dialog)
 
@@ -423,14 +455,12 @@ def seriesLinks():
     sPattern = 'Choisissez une langue(.+?)<div class="blogmetas" *>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if not (aResult[0] == True):
-        xbmc.log('erreur de regex')
-        #sHtmlContent = ''
+        print 'erreur de regex'
+
     else:
         sHtmlContent =  aResult[1][0]
     
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
+
 
     sPattern = 'data-fancybox-type="ajax" href="(.+?)" class="fancybox fancybox\.iframe">.+?Regarder sur:<\/span> <b>(.+?)<\/b> *<\/a> *<\/p> *<\/td><td data-title="Langue" class="[^"]+">(.+?)<\/td> *<td data-title="Qualité" class="separateur[^"]+">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -487,7 +517,7 @@ def seriesLinks():
             oOutputParameterHandler.addParameter('sUrl', sUrlLink)
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)             
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)      
     
         cConfig().finishDialog(dialog)
     else:

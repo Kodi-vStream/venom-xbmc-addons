@@ -14,7 +14,7 @@ import urllib,re,urllib2
 import base64,sys,xbmc
 
 SITE_IDENTIFIER = 'tvrex_net' 
-SITE_NAME = 'Tvrex.net'
+SITE_NAME = 'Tvrex'
 SITE_DESC = 'NBA Live/Replay'
 
 URL_MAIN = 'http://tvrex.net'
@@ -273,21 +273,27 @@ def showHosters():
 
     
     if 'reddit' in sUrl:
-        sPattern = '<a href="(http://nbastreams.+?)">(.+?)</a>'
-        sPattern2 = '<a href="(http.+?eplstream.+?)">(.+?)</a>'
-        sPattern3 = '<a href="(http.+?youtu.+?)">(.+?)</a>'     
+        
+        sPattern = '<td><a href="(http.+?nbastreams.+?)">(.+?)</a></td>'
+        sPattern2 = '<td><a href="(http.+?yoursportsinhd.+?)">(.+?)</a></td>'
+        sPattern3 = '<td><a href="(http.+?247hd.+?)"><strong>.+?</strong>(.+?)</a></td>'
+    
         aResult = []
         aResult1 = re.findall(sPattern,sHtmlContent)
         aResult2 = re.findall(sPattern2,sHtmlContent)
         aResult3 = re.findall(sPattern3,sHtmlContent)
-        aResult = aResult1 + aResult2 +aResult3
+        aResult = aResult1 + aResult3 + aResult2
         
         sDisplay ='[COLOR olive]Streaming disponibles:[/COLOR]'         
    
     else:
-
+        aResult =[]
         sPattern = '<a href="(https://open.+?)" target="_blank">(.+?)</a>'
-        aResult = re.findall(sPattern,sHtmlContent)
+        sPattern2 = 'src="(http.+?raptu.co.+?)"'
+        aResult1 = re.findall(sPattern,sHtmlContent)
+        aResult2 = re.findall(sPattern2,sHtmlContent)
+        aResult = aResult1 + aResult2
+        
         sDisplay = '[COLOR olive]Qualités disponibles:[/COLOR]'   
     
     
@@ -296,24 +302,29 @@ def showHosters():
     
     if (aResult):
         for aEntry in aResult:
-            
+            print aEntry[0]
             if 'reddit' in sUrl:
                 sThumbnail = base64.b64decode(Logo_Nba)
                 sHosterUrl = aEntry[0]
 
-                if ('eplstream' in aEntry[0]):
-                    sTitle = '[EPLstreams] ' + aEntry[1]
-                if ('nbastream' in aEntry[0]):
-                    sTitle = '[NBAstreamspw] ' + aEntry[1]
-                if ('youtu' in aEntry[0]):
-                      sTitle = '[NBA] Youtube HD'
-                      
+                if ('yoursport' in aEntry[0]):
+                    sTitle = ('[%s] %s') % ('YourSportinHD', str(aEntry[1]))
+                elif ('nbastream' in aEntry[0]):
+                      sTitle = ('[%s] %s') % ('NBAstreamspw', str(aEntry[1]))
+                elif ('247hd' in aEntry[0]):
+                      sTitle = ('[%s] %s') % ('247HD', str(aEntry[1]))
+
             else:
-                sTitle = aEntry[1]
-                sHosterUrl = aEntry[0]
-            
-            #cherche&joue m3u8 epl/nbastreamspw via showLive&play__
-            if 'streams' in sTitle:
+  
+                if ('raptu' in aEntry):
+                    sTitle = ('[%s]') % ('720p') 
+                    sHosterUrl = aEntry
+                else:
+                    sTitle = ('[%s]') % (str(aEntry[1]))
+                    sHosterUrl = aEntry[0]
+       
+#cherche&joue m3u8 epl/nbastreamspw via showLive&play__
+            if 'reddit' in sUrl:
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sHosterUrl) 
@@ -365,24 +376,26 @@ def showLive():
       #recup lien m3u8 lecture ok - parfois geo ip ou k.o si secu
       sPattern = 'player.html\#(.+?)"'
       sPattern2 = 'stream1 = "(http://.+?)"'
+      sPattern3 = 'src: "(.+?m3u8.+?)"'
       aResult =[]
       aResult1 = re.findall(sPattern,sHtmlContent)
       aResult2 = re.findall(sPattern2,sHtmlContent)
-      aResult = aResult1 + aResult2
+      aResult3 = re.findall(sPattern3,sHtmlContent)
+      aResult = aResult1 + aResult2 +aResult3
       #xbmc.log('NBASTREAMPW - m3u8 :' +str(aResult))
       
       if (aResult):
           for m3u8 in aResult:  
               sUrl = m3u8
           
-          sDisplayTitle = sTitle + '[COLOR skyblue]' + '  Lien Direct' + '[/COLOR]'
+              sDisplayTitle = sTitle + '[COLOR skyblue]' + '  Lien Direct' + '[/COLOR]'
 
-          oOutputParameterHandler = cOutputParameterHandler()
-          oOutputParameterHandler.addParameter('siteUrl', sUrl)
-          oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-          oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+              oOutputParameterHandler = cOutputParameterHandler()
+              oOutputParameterHandler.addParameter('siteUrl', sUrl)
+              oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+              oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
-          oGui.addMovie(SITE_IDENTIFIER, 'play__', sDisplayTitle, '', sThumbnail, sUrl, oOutputParameterHandler)
+              oGui.addMovie(SITE_IDENTIFIER, 'play__', sDisplayTitle, '', sThumbnail, sUrl, oOutputParameterHandler)
      
       else:
 

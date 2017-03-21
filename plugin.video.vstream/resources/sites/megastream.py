@@ -2,9 +2,7 @@
 #Venom.
 #
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -188,7 +186,7 @@ def showGenreSerie():
     liste.append( ['TV', URL_MAIN + 'accueil-series/tv'] )
     liste.append( ['Thriller', URL_MAIN + 'accueil-series/thriller'] )
     liste.append( ['Western', URL_MAIN + 'accueil-series/western'] )
-               
+
     for sTitle,sUrl in liste:
        
         oOutputParameterHandler = cOutputParameterHandler()
@@ -237,8 +235,6 @@ def resultSearch(sSearch):
         
     sUrl = "http://mega-stream.fr/recherche"
     
-    #oInputParameterHandler.getAllParameter()
-    #sSearch = urllib.unquote(sSearch)
 
     post_data = {'search' : sSearch }
         

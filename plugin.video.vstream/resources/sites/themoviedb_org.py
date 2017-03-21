@@ -315,13 +315,17 @@ def showSeriesSaison():
         sFanart = ''
     
     oGui = cGui()
+    
+    #recherche la serie complete
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', sMovieTitle)
+    oOutputParameterHandler.addParameter('type', 'serie')
+    oOutputParameterHandler.addParameter('searchtext', sMovieTitle)
+    
+    oGui.addDir('globalSearch', 'globalSearch', cConfig().getlanguage(30414), 'searchtmdb.png', oOutputParameterHandler)
+    #fin
    
-    # oRequestHandler = cRequestHandler(sUrl)
-    # oRequestHandler.addParameters('api_key', API_KEY)
-    # oRequestHandler.addParameters('language', 'fr')
 
-    # sHtmlContent = oRequestHandler.request()
-    # result = json.loads(sHtmlContent)
     result = grab.getUrl(sUrl)
     
     total = len(result)
@@ -375,12 +379,16 @@ def showSeriesEpisode():
     
     oGui = cGui()
    
-    # oRequestHandler = cRequestHandler(sUrl)
-    # oRequestHandler.addParameters('api_key', API_KEY)
-    # oRequestHandler.addParameters('language', 'fr')
+    #recherche saison complete    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', sMovieTitle)
+    oOutputParameterHandler.addParameter('type', 'serie')
+    search = '%s S%02d' % (sMovieTitle, int(sSeason))
+    oOutputParameterHandler.addParameter('searchtext', search)
 
-    # sHtmlContent = oRequestHandler.request()
-    # result = json.loads(sHtmlContent)
+    oGui.addDir('globalSearch', 'globalSearch', cConfig().getlanguage(30415), 'searchtmdb.png', oOutputParameterHandler)
+    #fin
+    
     result = grab.getUrl(sUrl)
     
     total = len(result)

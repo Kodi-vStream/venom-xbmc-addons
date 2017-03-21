@@ -1,15 +1,13 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-import xbmc, re
+import re
 
 
 SITE_IDENTIFIER = 'frenchddl_com'
@@ -34,10 +32,9 @@ def load():
 
     oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Genres', 'films_genres.png', oOutputParameterHandler)
 
-    #xbmc.executebuiltin('Container.SetViewMode(500)')
     oGui.setEndOfDirectory()
 
-def showSearch(): #function de recherche
+def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
@@ -47,7 +44,7 @@ def showSearch(): #function de recherche
         oGui.setEndOfDirectory()
         return
 
-def showGenres(): #affiche les genres
+def showGenres():
     oGui = cGui()
 
     oRequestHandler = cRequestHandler(URL_MAIN)
@@ -123,7 +120,6 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-    #tPassage en mode vignette sauf en cas de recherche globale
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -168,11 +164,10 @@ def showHosters():
             sSize = str(aEntry[4]).upper()
             sDisplay = '[COLOR teal]['+sType+']['+sLang+']['+sType+']['+sSize+'][/COLOR]'
 
-            oHoster = cHosterGui().checkHoster(sHosterUrl) #recherche l'hote dans l'addon
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                oHoster.setDisplayName(sDisplay) #nom affiche
-                oHoster.setFileName(sMovieTitle) # idem
+                oHoster.setDisplayName(sDisplay)
+                oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-                #affiche le lien (oGui, oHoster, url du lien, poster)
 
-    oGui.setEndOfDirectory() #fin
+    oGui.setEndOfDirectory() 

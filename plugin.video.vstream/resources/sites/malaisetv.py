@@ -1,16 +1,13 @@
 #-*- coding: utf-8 -*-
 # Kodigoal.TmpName
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-
 import re
  
 SITE_IDENTIFIER = 'malaisetv'
@@ -40,7 +37,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'Videos Genres', 'genres.png', oOutputParameterHandler)
-               
+
     oGui.setEndOfDirectory()
  
  
@@ -53,8 +50,7 @@ def showSearch():
         showMovies(sUrl) 
         oGui.setEndOfDirectory()
         return
- 
- 
+
 def showGenre():
     oGui = cGui()
   
@@ -67,13 +63,13 @@ def showGenre():
     liste.append( ['Divers', URL_MAIN + '/ajax/data.php?category=4&start=0'] )
 
     for sTitle,sUrl in liste:
-         
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler) 
-               
+ 
     oGui.setEndOfDirectory()
-         
+
  
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -87,17 +83,13 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    #cConfig().log(sUrl)
     
     sPattern = 'div class="imgContainer"><img alt="(.+?)" height=".+?" src="([^"]+)"><div data-video="([^"]+)"'
-     
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
-        
         for aEntry in aResult[1]:
-            
             sHosterUrl   = str(aEntry[2])
             sThumbnail = str(aEntry[1])
             
@@ -105,18 +97,16 @@ def showMovies(sSearch = ''):
             sTitle = sTitle.replace('Image prévisionnelle: ', '')
             
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-             
             if (oHoster != False):
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)            
-            
+
         sNextPage = __checkForNextPage(sUrl)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]',
-                        'next.png',  oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]','next.png',  oOutputParameterHandler)
  
     if not sSearch:
         oGui.setEndOfDirectory() 

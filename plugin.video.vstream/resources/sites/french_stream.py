@@ -1,9 +1,7 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -73,11 +71,11 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_HD[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_HD[1], 'Séries HD-Light', 'series.png', oOutputParameterHandler)
-             
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRE[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRE[1], 'Séries Genre', 'series.png', oOutputParameterHandler)
-             
+
     oGui.setEndOfDirectory()
    
 def showSearch():
@@ -270,7 +268,6 @@ def showHosters():
     sPattern = '<i class="fa fa-play-circle-o"></i>([^<]+)</div>|<a href="([^<>"]+)" title="([^<]+)" target="seriePlayer".+?>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -312,11 +309,9 @@ def serieHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
-    #cConfig().log(sUrl)
-    
+
     oParser = cParser()   
-        
+
     sPattern = '<\/i> (VOSTFR|VF) *<\/div>|<a href="([^<>"]+)" target="seriePlayer" *title="([^"]+)" * data-rel="episode([0-9]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -338,8 +333,7 @@ def serieHosters():
             elif aEntry[2]:
                     sPattern = '<div id="episode' + str(aEntry[3]) + '" class="fullsfeature">(.+?)<\/ul>'
                     aResult3 = oParser.parse(sHtmlContent, sPattern)
-                    
-                    #cConfig().log(sPattern)
+
 
                     if (aResult3[0] == True):
                         sPattern = '<a href="([^<>"]+?)" target="seriePlayer"'
@@ -358,6 +352,6 @@ def serieHosters():
                                     oHoster.setFileName(sMovieTitle2)
                                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)              
 
-    cConfig().finishDialog(dialog)
+        cConfig().finishDialog(dialog)
                 
     oGui.setEndOfDirectory()

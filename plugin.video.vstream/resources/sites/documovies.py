@@ -6,8 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
-from resources.lib.util import cUtil
+from resources.lib import util
 import re
 
 SITE_IDENTIFIER = 'documovies'
@@ -50,7 +49,7 @@ def showSearch():
         sHowResultSearch(str(sSearchText)) 
         oGui.setEndOfDirectory()
         return  
-    
+
 def showGenres():
     oGui = cGui()
     oParser = cParser()
@@ -69,7 +68,7 @@ def showGenres():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-       
+
     oGui.setEndOfDirectory() 
 
 def sHowResultSearch(sSearch = ''):
@@ -86,23 +85,17 @@ def sHowResultSearch(sSearch = ''):
     sPattern = '<a class="link_image" *href="([^"]+)" *title="([^"]+)".+?<img src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-                    
             sUrl = aEntry[0]
             sTitle = aEntry[1]
             sTitle = re.sub('Permalink to(?: -| )','',sTitle)
             sTitle = sTitle.decode("utf-8")
-            sTitle = cUtil().unescape(sTitle).encode("utf-8")
+            sTitle = util.cUtil().unescape(sTitle).encode("utf-8")
             if sTitle.startswith(' '):
                 sTitle = sTitle[1:]
-                    
+
             sThumb = aEntry[2]
-            sThumb = cUtil().urlEncodeSafe(sThumb)
+            sThumb = util.QuoteSafe(sThumb)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -110,8 +103,7 @@ def sHowResultSearch(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
             oOutputParameterHandler.addParameter('sVidCode', False)
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumb, '', oOutputParameterHandler)
-                
-        cConfig().finishDialog(dialog)
+
         sNextPage = __checkForNextPage2(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -134,13 +126,7 @@ def showMovies():
     sPattern = 'class="video_play".+?<a href="([^"]+)".+?<img src="([^"]+)".+?title="(.+?)" *(?:data|>).+?flashvars="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-                
             sUrl = aEntry[0]
             sThumb = aEntry[1]
             if '?w=' in sThumb or '?resize=' in sThumb:
@@ -148,8 +134,7 @@ def showMovies():
             if '.wp.com/' in sThumb:
                 sThumb = re.sub('http://.+?.wp.com/','http://',sThumb)
 
-                
-            sThumb = cUtil().urlEncodeSafe(sThumb)    
+            sThumb = util.QuoteSafe(sThumb)    
             sTitle = aEntry[2]
             sCode = re.sub('(.+?vid=)','',aEntry[3])
 
@@ -159,9 +144,7 @@ def showMovies():
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
             oOutputParameterHandler.addParameter('sVidCode', sCode)
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumb, '', oOutputParameterHandler)
-
-        cConfig().finishDialog(dialog)
-            
+  
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()

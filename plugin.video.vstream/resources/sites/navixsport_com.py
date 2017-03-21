@@ -1,16 +1,14 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-import base64,sys
-import urllib,re,urllib2
+import base64
+import re,urllib2
 
 
 SITE_IDENTIFIER = 'navixsport_com'
@@ -75,7 +73,7 @@ def showLive():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NHL)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', sLive + 'NHL Games', 'tv.png', oOutputParameterHandler)
-            
+
     oGui.setEndOfDirectory()
   
     
@@ -84,7 +82,7 @@ def showMovies(sSearch = ''):
     oGui = cGui()
 
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Programme des Matchs[/COLOR]')
-            
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     
@@ -92,17 +90,13 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     
     sPattern = '<a href="([^"]+)"><li id=".+?" ><div>(.+?)</div><img src="([^"]+)".+?<img src=".+?".+?<img src="([^"]+)".+?</li></a>'
-    
-    
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    
     if (aResult[0] == True):
         
         for aEntry in aResult[1]:
-          
-            
+
             #Recup Nom Team
             sUrl2 = URL_MAIN + aEntry[0]
             sTitle = aEntry[2] + '[COLOR gray]' +  ' vs ' + '[/COLOR]' + aEntry[3]
@@ -138,7 +132,6 @@ def showMovies(sSearch = ''):
 
             
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
-               
             
     else:
         oGui.addText(SITE_IDENTIFIER, '(Aucune diffusion prévue pour le moment)')
@@ -195,12 +188,8 @@ def showHosters():
     
     if (url):
             sHosterUrl = url
-        
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-       
             if (oHoster != False):
-            
-            
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sMovieTitle2)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')

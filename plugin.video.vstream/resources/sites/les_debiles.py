@@ -1,16 +1,13 @@
 #-*- coding: utf-8 -*-
 #Kodigoal
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 
- 
 SITE_IDENTIFIER = 'les_debiles'
 SITE_NAME = 'LesDebiles'
 SITE_DESC = 'Vidéos drôles, du buzz, des fails et des vidéos insolites'
@@ -30,9 +27,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-     
-      
-     
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'Vidéos Catégories', 'genres.png', oOutputParameterHandler)
@@ -97,9 +92,7 @@ def showMovies(sSearch = ''):
             sUrl    = str(aEntry[1])
             sTitle  = str(aEntry[2])
             sThumbnail = str(aEntry[0])
-            
-            
-               
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle) 
@@ -161,7 +154,6 @@ def showHosters():
                 sHosterUrl = 'http:' + sHosterUrl     
                  
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-             
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
@@ -170,4 +162,3 @@ def showHosters():
         oGui.addText(SITE_IDENTIFIER, '(Video non visible, Lien Premium)')
                  
     oGui.setEndOfDirectory()
-

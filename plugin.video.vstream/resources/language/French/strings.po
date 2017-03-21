@@ -495,3 +495,11 @@ msgstr "[COLOR red]Supprimer l'entrée[/COLOR]"
 msgctxt "#30413"
 msgid "[COLOR red]Delete history[/COLOR]"
 msgstr "[COLOR red]Supprimer l'historique[/COLOR]"
+
+msgctxt "#30414"
+msgid "[COLOR gold]Full series search[/COLOR]"
+msgstr "[COLOR gold]Recherche série complète[/COLOR]"
+
+msgctxt "#30415"
+msgid "[COLOR gold]Full season search[/COLOR]"
+msgstr "[COLOR gold]Recherche saison complète[/COLOR]"

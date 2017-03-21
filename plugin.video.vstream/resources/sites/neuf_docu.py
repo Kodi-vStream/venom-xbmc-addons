@@ -1,9 +1,7 @@
 #-*- coding: utf-8 -*-
 #Par jojotango
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -129,10 +127,6 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
 
     #sPattern = '<h2><a href="([^<]+)" rel="bookmark" title="[^"]+">([^<]+)<\/a>.+?" src="([^<]+)" \/>.+?<\/p><p style[^<>]+>(.+?)<\/p>'
     sPattern = 'class="attachment-medium aligncenter" src="([^<]+)" \/><div class="data"><h2 class="entry-title" ><a href="([^<]+)"  rel="bookmark" title=".+?">([^<]+)<\/a><\/h2><p class="entry-meta"><p>(.+?)<\/p>'
