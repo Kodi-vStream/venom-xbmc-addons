@@ -11,7 +11,7 @@ from resources.lib.util import cUtil
 import re
  
 SITE_IDENTIFIER = 'malaisetv'
-SITE_NAME = 'MalaiseTV.com'
+SITE_NAME = 'MalaiseTV'
 SITE_DESC = 'Les séquences les plus embarrassantes de la télévision française'
  
 URL_MAIN = 'http://www.malaisetv.com'
@@ -21,37 +21,36 @@ FUNCTION_SEARCH = 'showMovies'
  
 MOVIE_NETS = ('http://', 'load')
 NETS_NEWS = (URL_MAIN + '/ajax/data.php?category=59&start=0', 'showMovies')
-NETS_GENRES = (True, 'showGenre')
+NETS_GENRES = (True, 'showGenres')
 
 def load(): 
     oGui = cGui() 
  
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
      
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', NETS_NEWS[0]) 
-    oGui.addDir(SITE_IDENTIFIER, NETS_NEWS[1], 'Videos Nouveautes', 'news.png', oOutputParameterHandler)  
+    oOutputParameterHandler.addParameter('siteUrl', NETS_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, NETS_NEWS[1], 'Vidéos (Derniers ajouts)', 'news.png', oOutputParameterHandler)
      
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'Videos Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'Vidéos (Genres)', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
- 
- 
+
 def showSearch():
     oGui = cGui()
  
-    sSearchText = oGui.showKeyBoard() 
+    sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText  
         showMovies(sUrl) 
         oGui.setEndOfDirectory()
         return
 
-def showGenre():
+def showGenres():
     oGui = cGui()
   
     liste = []
@@ -66,7 +65,7 @@ def showGenre():
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler) 
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
  
     oGui.setEndOfDirectory()
 
