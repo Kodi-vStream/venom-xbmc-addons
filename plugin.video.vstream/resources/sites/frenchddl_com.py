@@ -19,6 +19,8 @@ URL_MAIN = 'http://www.frenchddl.com/'
 URL_SEARCH = ('http://www.frenchddl.com/index.php?Query=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
+MOVIE_MOVIE = (URL_MAIN , 'showMovies')
+MOVIE_GENRES = (True, 'showGenres')
 
 def load():
     oGui = cGui()
@@ -27,10 +29,13 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
 
-    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -148,7 +153,6 @@ def showHosters():
     sHtmlContent = sHtmlContent.decode('iso-8859-1').encode('utf8') # Site en latin1
 
     oParser = cParser()
-    #sPattern = '<a href="([^"]+?)" rel=\'nofollow\' target=\'_blank\'.+?>T.+?<td align=\'center\' class=\'TextLink\'>(.+?)</td>.*?<td align=\'center\' class=\'TextLink\'>(.+?)</td>.*?<td align=\'center\' class=\'TextLink\'>(.+?)</td>.*?<td align=\'center\' class=\'TextLink\'>(.+?)</td>'
     sPattern = '<a href="([^"]+?)".+?>T.+?<td align=\'center\' class=\'TextLink\'>(.+?)</td>.*?<td align=\'center\' class=\'TextLink\'>(.+?)</td>.*?<td align=\'center\' class=\'TextLink\'>(.+?)</td>.*?<td align=\'center\' class=\'TextLink\'>(.+?)</td>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -170,4 +174,4 @@ def showHosters():
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
-    oGui.setEndOfDirectory() 
+    oGui.setEndOfDirectory()
