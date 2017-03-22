@@ -10,7 +10,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.player import cPlayer
-import urllib,re,urllib2
+import re,urllib2
 import base64,sys,xbmc
 
 SITE_IDENTIFIER = 'tvrex_net' 
@@ -302,7 +302,7 @@ def showHosters():
     
     if (aResult):
         for aEntry in aResult:
-            print aEntry[0]
+            
             if 'reddit' in sUrl:
                 sThumbnail = base64.b64decode(Logo_Nba)
                 sHosterUrl = aEntry[0]
@@ -350,11 +350,10 @@ def showHosters():
 
 #recuperation lien m3u8 nbastreamspw & play
 
-UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
-
 #UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Chrome/47.0'
+#headers = { 'User-Agent' : UA }
 
-headers = { 'User-Agent' : UA }
+UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
 
 def showLive():
    
@@ -365,10 +364,12 @@ def showLive():
       sThumbnail = oInputParameterHandler.getValue('sThumbnail')  
       
       try:
-         request = urllib2.Request(sUrl,None,headers)
-         reponse = urllib2.urlopen(request)
-         sHtmlContent = reponse.read()
-         reponse.close()
+         
+         request = urllib2.Request(sUrl)
+         request.add_header('User-agent', UA)
+         response = urllib2.urlopen(request)
+         sHtmlContent = response.read()
+         response.close()
       except urllib2.HTTPError:
                               sHtmlContent = ''
                               pass
@@ -377,11 +378,13 @@ def showLive():
       sPattern = 'player.html\#(.+?)"'
       sPattern2 = 'stream1 = "(http://.+?)"'
       sPattern3 = 'src: "(.+?m3u8.+?)"'
+      sPattern4 = "source: '(.+?m3u8.+?)'"
       aResult =[]
       aResult1 = re.findall(sPattern,sHtmlContent)
       aResult2 = re.findall(sPattern2,sHtmlContent)
       aResult3 = re.findall(sPattern3,sHtmlContent)
-      aResult = aResult1 + aResult2 +aResult3
+      aResult4 = re.findall(sPattern4,sHtmlContent)
+      aResult = aResult1 + aResult2 + aResult4 + aResult3
       #xbmc.log('NBASTREAMPW - m3u8 :' +str(aResult))
       
       if (aResult):
