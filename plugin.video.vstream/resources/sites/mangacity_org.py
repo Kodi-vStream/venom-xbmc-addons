@@ -97,13 +97,13 @@ def ICDecode(html):
 #------------------------------------------------------------------------------------    
     
 SITE_IDENTIFIER = 'mangacity_org'
-SITE_NAME = 'MangaCity.org - ianime.tv'
-SITE_DESC = 'Anime en streaming'
+SITE_NAME = 'MangaCity - ianime'
+SITE_DESC = 'Animés en streaming'
 
 URL_MAIN = 'http://www.ianime.tv/'
 
 ANIM_ANIMS = (URL_MAIN + 'animes.php?liste=SHOWALPHA', 'ShowAlpha')
-ANIM_GENRES = (True, 'showGenre')
+ANIM_GENRES = (True, 'showGenres')
 ANIM_NEWS = (URL_MAIN + 'nouveautees.html', 'showMovies')
 
 ANIM_VFS = (URL_MAIN + 'listing_vf.php', 'ShowAlpha2')
@@ -122,23 +122,23 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animes Nouveaute', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Liste Animes', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Anime Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'animes_genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animes VF', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés VF', 'animes_vf.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Anime VOSTFR', 'films.png', oOutputParameterHandler)   
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés VOSTFR', 'animes_vostfr.png', oOutputParameterHandler)
   
     oGui.setEndOfDirectory() 
 
@@ -153,7 +153,7 @@ def showSearch():
         return  
     
     
-def showGenre(): 
+def showGenres(): 
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
@@ -259,7 +259,6 @@ def ShowAlpha(url = None):
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
-        
     
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -297,7 +296,6 @@ def showMovies(sSearch = ''):
     if 'HTML/JavaScript Encoder' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
 
-        
     sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=\'*(.+?)\'* class=.button'
     
     oParser = cParser()
@@ -383,7 +381,6 @@ def showEpisode():
     
     oParser = cParser()
     
-
     
     #On fait 2 passage pr accelerer le parsing regex
     # sPattern = '<div class="&#105;&#110;&#110;&#101;&#114;">(.+?)<footer id="footer">'
@@ -431,7 +428,6 @@ def showEpisode():
 
 
     oGui.setEndOfDirectory()
-
 
 def ExtractLink(html):
     final = ''
@@ -627,6 +623,6 @@ def showHosters():
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
-        cConfig().finishDialog(dialog) 
+        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
