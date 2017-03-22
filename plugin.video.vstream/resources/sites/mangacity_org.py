@@ -105,7 +105,6 @@ URL_MAIN = 'http://www.ianime.tv/'
 ANIM_ANIMS = (URL_MAIN + 'animes.php?liste=SHOWALPHA', 'ShowAlpha')
 ANIM_GENRES = (True, 'showGenres')
 ANIM_NEWS = (URL_MAIN + 'nouveautees.html', 'showMovies')
-
 ANIM_VFS = (URL_MAIN + 'listing_vf.php', 'ShowAlpha2')
 ANIM_VOSTFRS = (URL_MAIN + 'listing_vostfr.php', 'ShowAlpha2')
 
@@ -151,7 +150,6 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return  
-    
     
 def showGenres(): 
     oGui = cGui()
@@ -217,8 +215,6 @@ def ShowAlpha2():
     
     if (aResult[0] == True):
         ShowAlpha( str(URL_MAIN) + aResult[1][0])
-
-
 
 def ShowAlpha(url = None):
     oGui = cGui()
@@ -377,10 +373,8 @@ def showEpisode():
     
     if 'HTML/JavaScript Encoder' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
-
     
-    oParser = cParser()
-    
+    oParser = cParser()    
     
     #On fait 2 passage pr accelerer le parsing regex
     # sPattern = '<div class="&#105;&#110;&#110;&#101;&#114;">(.+?)<footer id="footer">'
