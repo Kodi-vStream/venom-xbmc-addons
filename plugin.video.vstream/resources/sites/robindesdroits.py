@@ -1,9 +1,7 @@
 #-*- coding: utf-8 -*-
 #Kodigoal
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -76,31 +74,28 @@ def showMovies(sSearch = ''):
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
-         
+        
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
-             
+            
             sUrl    = str(aEntry[0])
-            sTitle  = str(aEntry[2])
             sThumbnail = str(aEntry[1])
+            sTitle  = (' %s ') % (str(aEntry[2]))
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl) 
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle) 
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-                 
-                 
+
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail,'', oOutputParameterHandler)
                 
-               
-        cConfig().finishDialog(dialog)
+            cConfig().finishDialog(dialog)
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]',
-                        'next.png',  oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png',  oOutputParameterHandler)
  
     if not sSearch:
         oGui.setEndOfDirectory() 
@@ -129,7 +124,7 @@ def __showLink(url):
         sLink =[]
         for aEntry in aResult:
      
-            sUrl = aEntry
+            sUrl = str(aEntry)
             oRequestHandler = cRequestHandler(sUrl)
             sHtmlContent = oRequestHandler.request();
             
@@ -154,20 +149,29 @@ def showHosters():
     #recup liens watchvideo&Jheberg par showLink()
     sLink = __showLink(sUrl)
     
+    #si vidéos découpées en X parties
+    count = 0
+    count2 = 0
+    
     if (sLink):
         for aEntry in sLink:
             
-            sUrl = aEntry
+            sUrl = str(aEntry)
             sHost = []
             
             if 'jheberg' in aEntry:
                 
                 aResult = cJheberg().GetUrls(sUrl)
                 if (aResult):
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Jheberg[/COLOR]')
+                    if (count >0):
+                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Jheberg (suite partie vidéo)[/COLOR]')
+                    else:
+                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Jheberg[/COLOR]')
+                    count= count +1
                     for aEntry in aResult:
                         if 'nitroflare' not in aEntry:
                             sHost.append(aEntry)
+                    
             else:
                 oRequestHandler = cRequestHandler(sUrl)
                 sHtmlContent = oRequestHandler.request();
@@ -176,25 +180,29 @@ def showHosters():
                 aResult = oParser.parse(sHtmlContent, sPattern)
                 
                 if (aResult[0] == True):
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]WatchVideo[/COLOR]')
+                    if (count2 >0):
+                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]WatchVideo (suite partie vidéo)[/COLOR]')
+                    else:
+                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]WatchVideo[/COLOR]')
+                    count2 = count2 +1
                     for aEntry in aResult[1]:
                         sHost.append(aEntry)
                        
             if (sHost):
+               
                 for aEntry in sHost:
-                    
                     if 'watchvideo' in sUrl:
                         sHosterUrl = str(aEntry[0])
-                        sQual = '[' + str(aEntry[1]) + ']'
-                        sDisplayTitle = cUtil().DecoTitle(sQual + sMovieTitle)
+                        sQual = str(aEntry[1])
+                        sDisplayTitle = ('[%s] %s') % (sQual, sMovieTitle)
                     else:
                         sHosterUrl = str(aEntry)
-                        sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                        sDisplayTitle = (' %s ') % (sMovieTitle)
                     
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
                     if (oHoster != False):
                         oHoster.setDisplayName(sDisplayTitle)
                         oHoster.setFileName(sDisplayTitle)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-    
+               
     oGui.setEndOfDirectory()
