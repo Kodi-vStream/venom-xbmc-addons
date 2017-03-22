@@ -89,7 +89,7 @@ def showMovies(sSearch = ''):
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail,'', oOutputParameterHandler)
                 
-            cConfig().finishDialog(dialog)
+        cConfig().finishDialog(dialog)
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
