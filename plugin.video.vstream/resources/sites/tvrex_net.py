@@ -305,8 +305,8 @@ def showHosters():
             
             if 'reddit' in sUrl:
                 sThumbnail = base64.b64decode(Logo_Nba)
-                sHosterUrl = aEntry[0]
-
+                sHosterUrl = str(aEntry[0])
+                
                 if ('yoursport' in aEntry[0]):
                     sTitle = ('[%s] %s') % ('YourSportinHD', str(aEntry[1]))
                 elif ('nbastream' in aEntry[0]):
@@ -327,7 +327,7 @@ def showHosters():
             if 'reddit' in sUrl:
 
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sHosterUrl) 
+                oOutputParameterHandler.addParameter('siteUrl',sHosterUrl) 
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
                 
@@ -348,12 +348,7 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 
-#recuperation lien m3u8 nbastreamspw & play
-
-#UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Chrome/47.0'
-#headers = { 'User-Agent' : UA }
-
-UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
+#recuperation lien nba stream m3u8 & play
 
 def showLive():
    
@@ -363,10 +358,16 @@ def showLive():
       sTitle = oInputParameterHandler.getValue('sMovieTitle')
       sThumbnail = oInputParameterHandler.getValue('sThumbnail')  
       
+      #fix lien nbastreamspw
+      sUrl = sUrl.replace('&amp;', '&')
+      
+      UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
+
       try:
          
          request = urllib2.Request(sUrl)
          request.add_header('User-agent', UA)
+         
          response = urllib2.urlopen(request)
          sHtmlContent = response.read()
          response.close()
@@ -388,8 +389,8 @@ def showLive():
       #xbmc.log('NBASTREAMPW - m3u8 :' +str(aResult))
       
       if (aResult):
-          for m3u8 in aResult:  
-              sUrl = m3u8
+          for aEntry in aResult:  
+              sUrl = aEntry
           
               sDisplayTitle = sTitle + '[COLOR skyblue]' + '  Lien Direct' + '[/COLOR]'
 
