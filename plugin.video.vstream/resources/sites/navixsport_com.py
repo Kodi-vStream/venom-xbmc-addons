@@ -12,7 +12,7 @@ import re,urllib2
 
 
 SITE_IDENTIFIER = 'navixsport_com'
-SITE_NAME = 'Navixsport.com'
+SITE_NAME = 'Navixsport'
 SITE_DESC = 'live stream sports'
 
 URL_MAIN = 'http://www.navixsport.com/'
@@ -29,11 +29,9 @@ NHL = URL_MAIN + 'matches.php?league=nhl'
 
 sLive = '[COLOR coral][Live] [/COLOR]'
 
-
 UA = '|User-Agent=Mozilla/5.0 (Linux; Android 6.0.1; Nexus 6P Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.83 Mobile Safari/537.36'
 
 headers = { 'User-Agent' : UA }
-
 
 def load():
     
@@ -41,10 +39,9 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Live Sports', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Live Sports', 'sport.png', oOutputParameterHandler)
   
     oGui.setEndOfDirectory()
-
 
 def showLive():
 
@@ -64,7 +61,7 @@ def showLive():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_A)
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', sLive + 'Serie A', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', sLive + 'Série A', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', LIGUE_CHAMPION)
@@ -76,7 +73,6 @@ def showLive():
 
     oGui.setEndOfDirectory()
   
-    
 def showMovies(sSearch = ''):
    
     oGui = cGui()
@@ -130,7 +126,6 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle2', str(sMovieTitle2))
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
-            
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
             
     else:
@@ -138,7 +133,6 @@ def showMovies(sSearch = ''):
     
     if not sSearch:
         oGui.setEndOfDirectory()
-
 
 def showHosters():
     oGui = cGui()
@@ -148,11 +142,9 @@ def showHosters():
     sMovieTitle2 = oInputParameterHandler.getValue('sMovieTitle2')
     sThumbnail  = oInputParameterHandler.getValue('sThumbnail')
 
-    
     oGui.addText(SITE_IDENTIFIER, sMovieTitle)
 
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles:[/COLOR]')
-    
     
     if '[Live' in sMovieTitle:  
        
@@ -180,12 +172,10 @@ def showHosters():
            s = base64.b64decode(bypass)
            url = s + UA
            
-   
     else:
         url = ''
         oGui.addText(SITE_IDENTIFIER, '(Live non disponible avant le début du match)')
 
-    
     if (url):
             sHosterUrl = url
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -194,5 +184,4 @@ def showHosters():
                 oHoster.setFileName(sMovieTitle2)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
             
-                
     oGui.setEndOfDirectory()
