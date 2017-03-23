@@ -1,8 +1,9 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.gui.guiElement import cGuiElement
+from resources.lib.player import cPlayer
 import re
-import xbmc
 
 SITE_IDENTIFIER = 'cBA'
 SITE_NAME = 'BA'
@@ -25,9 +26,22 @@ class cShowBA:
         list = re.findall('<a href="\/watch\?v=([^"<>]+)" class=',sHtmlContent)
         if list:
             url = 'http://www.youtube.com/watch?v=' + list[0]
-            xbmc.log(url)
-            url = 'plugin://plugin.video.youtube/play/?video_id=%s' % list[0]
+            exec "from resources.hosters.youtube import cHoster" 
+            hote = cHoster()
+            hote.setUrl(url)
+            api_call = hote.getMediaLink()[1]
+            if not api_call:
+                return
+                
+            oGuiElement = cGuiElement()
+            oGuiElement.setSiteName(SITE_IDENTIFIER)
+            oGuiElement.setTitle(self.search.replace('+',' '))
+            oGuiElement.setMediaUrl(api_call)
+            oGuiElement.setThumbnail(oGuiElement.getIcon())
             
-            xbmc.executebuiltin('PlayMedia('+ url + ')')
-              
+            oPlayer = cPlayer()
+            oPlayer.clearPlayList()
+            oPlayer.addItemToPlaylist(oGuiElement)
+            oPlayer.startPlayer()
+
         return
