@@ -1,15 +1,18 @@
+#-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.util import cUtil
-from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-import xbmcaddon
+from resources.lib.parser import cParser 
+import re,xbmcgui,urllib
+
+URL_MAIN = 'http://keepvid.com/?url='
 
 class cHoster(iHoster):
 
     def __init__(self):
         self.__sDisplayName = 'Youtube'
-	self.__sFileName = self.__sDisplayName
+        self.__sFileName = self.__sDisplayName
+        self.__sHD = ''
 
     def getDisplayName(self):
         return  self.__sDisplayName
@@ -18,13 +21,19 @@ class cHoster(iHoster):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
 
     def setFileName(self, sFileName):
-	self.__sFileName = sFileName
-
+        self.__sFileName = sFileName
+        
     def getFileName(self):
-	return self.__sFileName
+        return self.__sFileName
 
     def getPluginIdentifier(self):
         return 'youtube'
+        
+    def setHD(self, sHD):
+        self.__sHD = ''
+        
+    def getHD(self):
+        return self.__sHD
 
     def isDownloadable(self):
         return True
@@ -33,62 +42,63 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
-        
+        return ''
+    
     def __getIdFromUrl(self, sUrl):
-        sPattern = "http://.+?/.+?/([^<]+)"
-        oParser = cParser()
-        aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
-            return aResult[1][0]
-
         return ''
 
     def setUrl(self, sUrl):
-        
-        if 'plugin' not in sUrl:
-            self.__sUrl = sUrl
-            self.__sUrl = self.__sUrl.replace('http:', '')
-            self.__sUrl = self.__sUrl.replace('https:', '')
-            self.__sUrl = self.__sUrl.replace('//', '')
-            self.__sUrl = self.__sUrl.replace('www.youtube.com', '')
-            self.__sUrl = self.__sUrl.replace('www.youtube-nocookie.com', '')
-            self.__sUrl = self.__sUrl.replace('youtu.be/', '')
-            self.__sUrl = self.__sUrl.replace('/embed/', '')
-            self.__sUrl = self.__sUrl.replace('/watch?v=', '')
-            self.__sUrl = str(self.__sUrl)
-        else:
-            self.__sUrl = sUrl            
+        self.__sUrl = str(sUrl)
 
     def checkUrl(self, sUrl):
         return True
 
-    def getUrl(self):
-        return self.__sUrl
-
+    def __getUrl(self, sUrl):
+        return
+    
     def getMediaLink(self):
-        if 'plugin'  in self.__sUrl:
-            return self.__getMediaLinkForPluging()
-        else:
-            return self.__getMediaLinkForGuest()
+        return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+        oParser = cParser()
         
-        if xbmcaddon.Addon('plugin.video.youtube'):
-            videoID = self.__sUrl
+        sUrl = urllib.quote_plus(self.__sUrl)
+        
+        oRequest = cRequestHandler('%s%s' % (URL_MAIN,sUrl))
+        sHtmlContent = oRequest.request()
+
+        sPattern = 'Full Video<\/dt>(.+?)Video Only<\/dt><dd>'
+        sHtmlContent2 = re.search(sPattern,sHtmlContent,re.DOTALL)
+        if not sHtmlContent2:
+            return False,False
             
-            #api_call = 'plugin://plugin.video.youtube/?action=play_video&videoid='+videoID
-            api_call = 'plugin://plugin.video.youtube/play/?video_id='+videoID
+        oParser = cParser()
+        
+        sPattern = '<a href="([^"]+)".+?alt=""/>([^<]+)<\/span>' 
+        aResult = oParser.parse(sHtmlContent2.group(1),sPattern)
+
+        if (aResult[0] == True):
+            # initialisation des tableaux
+            url=[]
+            qua=[]
+            # Replissage des tableaux
+            for i in aResult[1]:
+                b = re.sub('&title=.+','',i[0]) #testé xx fois ok
+                #xbmc.log(str(b))
+                url.append(str(b))
+                qua.append(str(i[1]))   
+            # Si une seule url
+            if len(url) == 1:
+                api_call = url[0]
+            # si plus de une
+            elif len(url) > 1:
+            # Afichage du tableau
+                dialog2 = xbmcgui.Dialog()
+                ret = dialog2.select('Select Quality',qua)
+                if (ret > -1):
+                    api_call = url[ret]
+
+        if (api_call):
             return True, api_call
-        else:
-            cGui().showInfo(self.__sDisplayName, 'Vous devez installer l\'addon video youtube' , 5)
-            return False, False
             
-    def __getMediaLinkForPluging(self):
-        
-        if xbmcaddon.Addon('plugin.video.youtube'):
-            return True, self.__sUrl
-        else:
-            cGui().showInfo(self.__sDisplayName, 'Vous devez installer l\'addon video youtube' , 5)
-            return False, False
-        
+        return False, False
