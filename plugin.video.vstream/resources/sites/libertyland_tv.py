@@ -96,7 +96,7 @@ def typsearch():
     
     oGui.setEndOfDirectory() 
     
-def showMovieGenre():
+def showMovieGenres():
     oGui = cGui()
  
     liste = []
