@@ -38,6 +38,7 @@ def showSearch():
         return  
 
 def Decrypt(string,key):
+
     import base64
     import math
     
@@ -51,7 +52,7 @@ def Decrypt(string,key):
         sChar = chr(sChar)
         sResult = sResult + sChar
         i = i +1
- 
+
     return sResult
 
 def showMovies(sSearch = ''):
@@ -141,7 +142,7 @@ def __checkForNextPage(sHtmlContent):
 
 def showHosters():
     oGui = cGui()
-
+    sHosterUrl = ''
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -152,42 +153,39 @@ def showHosters():
 
     oParser = cParser()
     
-    sPattern = '\/(www\.alluc\.ee\/embed\/[a-zA-Z0-9%-_]+?)\?alt='
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        sUrl = 'http://' + aResult[1][0]
+    sPattern = "<div class=\"linktitleurl\">.+?decrypt\('(.+?)', *'(.+?)' *\)\)"
+    aResult = re.search(sPattern,sHtmlContent,re.DOTALL)
 
-        oRequestHandler = cRequestHandler(sUrl)
-        sHtmlContent = oRequestHandler.request()
+    if aResult:
+        sHosterUrl = Decrypt(aResult.group(1),aResult.group(2))
 
-        sPattern = "decrypt\('(.+?)', *'(.+?)'\)"
+    else:
+        sPattern = '\/(www\.alluc\.ee\/embed\/[a-zA-Z0-9%-_]+?)\?alt='
         aResult = oParser.parse(sHtmlContent, sPattern)
+
         if (aResult[0] == True):
-            sHtmlContent = Decrypt(aResult[1][0][0],aResult[1][0][1])
-            
-            sPattern = '<iframe.+?src=["|\'](.+?)["|\'].+?<\/iframe>'
+            sUrl = 'http://' + aResult[1][0]
+
+            oRequestHandler = cRequestHandler(sUrl)
+            sHtmlContent = oRequestHandler.request()
+        
+            sPattern = "decrypt\('(.+?)', *'(.+?)'\)"
             aResult = oParser.parse(sHtmlContent, sPattern)
-
-            if 'alluc.ee' in aResult[1][0]: #Redirection vers hoster 
-                aEntry = aResult[1][0]
-
-                if not aEntry.startswith('http'):
-                    sUrl = 'http:' + aEntry
-                    oRequest = cRequestHandler(sUrl)
-                    sHtmlContent = oRequest.request()
-                    rH = re.search('<div class="inLink">.+?<a href="([^"]+)"',sHtmlContent,re.DOTALL)
-                    if (rH):
-                        sHosterUrl = rH.group(1)
-            else:
-                aEntry = aResult[1]
-                sHosterUrl = str(aEntry[0])
-                if not sHosterUrl.startswith('http'):
-                    sHosterUrl = 'http:' + sHosterUrl
-                    
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
-            oHoster.setDisplayName(sMovieTitle)
-            oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+            if (aResult[0] == True):
+                sHtmlContent = Decrypt(aResult[1][0][0],aResult[1][0][1])
             
+                sPattern = '<iframe.+?src=["|\'](.+?)["|\'].+?<\/iframe>'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                if (aResult[0] == True):
+                    aEntry = aResult[1]
+                    sTitle = sMovieTitle
+                    sHosterUrl = str(aEntry[0])
+        
+    oHoster = cHosterGui().checkHoster(sHosterUrl)
+    if (oHoster != False):
+        oHoster.setDisplayName(sMovieTitle)
+        oHoster.setFileName(sMovieTitle)
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+
     oGui.setEndOfDirectory()
+

@@ -192,7 +192,7 @@ class cGuiElement:
             SXEX = ''
 
             #m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',sTitle,re.UNICODE)
-            m = re.search('(?i)([e|é|É](?:[a-z]+sode\s?)*([0-9]+[0-9\-\?]*))', str(sTitle))
+            m = re.search('(?i)(?:^|[^a-z])([eéÉ](?:[a-z]+sode\s?)*([0-9]+(?:\-[0-9\?]+)*))', str(sTitle))
             if m:
                 #ok y a des episodes
                 sTitle = sTitle.replace(m.group(1),'')
@@ -203,7 +203,7 @@ class cGuiElement:
                 self.addItemValues('Episode', self.__Episode)
                 
                 #pr les saisons
-                m = re.search('(?i)(s(?:aison +)*([0-9]+[0-9\-\?]*))', sTitle)
+                m = re.search('(?i)(s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle)
                 if m:
                     sTitle = sTitle.replace(m.group(1),'')
                     sa = m.group(2)
@@ -215,7 +215,7 @@ class cGuiElement:
             else:
                 #pas d'episode mais y a t il des saisons ?
                 #m = re.search('(?i)(s(?:aison +)*([0-9]+[0-9\-\?]*))(?:$| )', sTitle)
-                m = re.search('(?i)(s(?:aison +)*([0-9]+[0-9\-\?]*))', sTitle)
+                m = re.search('(?i)(s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle)
                 if m:
                     sTitle = sTitle.replace(m.group(1),'')
                     sa = m.group(2)

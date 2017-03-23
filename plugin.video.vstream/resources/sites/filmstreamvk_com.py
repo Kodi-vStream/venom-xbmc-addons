@@ -23,7 +23,7 @@ MOVIE_GENRES = (True, 'showGenre')
 SERIE_SERIES = (URL_MAIN + 'serie', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'serie', 'showMovies')
 
-ANIM_ANIMS = ('http://', 'load')
+ANIM_ANIMS = (URL_MAIN + 'manga', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'manga', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
@@ -35,6 +35,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -49,13 +53,21 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
     
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Série (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)
-
+    
     oGui.setEndOfDirectory()
 
 def showMoviesSearch():
@@ -307,7 +319,7 @@ def showHostersSerie():
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','')
 
-    sPattern = 'onclick="lecteur_serie\([0-9]+,\'(http[^<>]+?)\'\);">'
+    sPattern = 'onclick="lecteur_serie\([0-9]+,\'([^<>]+?)\'\);">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -324,7 +336,9 @@ def showHostersSerie():
                 break
 
             sHosterUrl = str(aEntry)
-
+            if not sHosterUrl.startswith('http'):
+               sHosterUrl = 'http:' + str(aEntry)
+            
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):

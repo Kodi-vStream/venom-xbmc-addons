@@ -3,6 +3,7 @@ import re
 import urllib
 import xbmc
 import xbmcgui
+import xbmcaddon
 import htmlentitydefs
 import unicodedata
 COUNT = 0
@@ -290,8 +291,8 @@ def finishDialog(dialog):
         del dialog
         
 def VSerror(e):
-    import os,xbmcaddon
-    Path = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("path"))
+    import os
+    Path = VStranslatePath(path)
     xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % ('Vstream', ('Erreur: '+str(e)), '5000', os.path.join(Path,'resources', 'art','icon.png')))
     VSlog('Erreur: ' + str(e))  
     
@@ -307,3 +308,7 @@ def VSshowInfo(sTitle, sDescription, iSeconds=0,sound = True):
     #    sound = False
 
     xbmcgui.Dialog().notification(str(sTitle), str(sDescription),self.__sIcon,iSeconds,sound)
+    
+def VStranslatePath(location):
+    #Note, location = (author, changelog, description, disclaimer, fanart, icon, id, name, path,profile, stars, summary, type, version)
+    return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo(location))

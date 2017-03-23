@@ -1,9 +1,7 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -15,7 +13,7 @@ import re,xbmcgui,urllib,unicodedata
 SITE_IDENTIFIER = 'streamay_bz'
 SITE_NAME = 'Streamay.bz'
 SITE_DESC = 'films en streaming'
-URL_MAIN = 'http://streamay.bz/'
+URL_MAIN = 'https://streamay.bz/'
 
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/recents', 'showMovies')
@@ -91,7 +89,7 @@ def showNumBoard(sDefaultNum=''):
 def selectAnn():
     oGui = cGui()
     newNum = showNumBoard()
-    sUrl = 'http://streamay.bz/films/annee/' + newNum
+    sUrl = URL_MAIN + 'films/annee/' + newNum
     return sUrl
 
 def showGenre():
@@ -150,11 +148,11 @@ def showResultSearch(sSearch = ''):
     post_data = {'k' : sSearch}
     data = urllib.urlencode(post_data)
     
-    oRequest = cRequestHandler('http://streamay.bz/search')
+    oRequest = cRequestHandler(URL_MAIN + 'search')
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent',UA)
     oRequest.addParametersLine(data)
-        
+ 
     sHtmlContent = oRequest.request()
 
     sHtmlContent = unicode(sHtmlContent,'utf-8')

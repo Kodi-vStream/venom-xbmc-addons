@@ -5,7 +5,7 @@ Sommaire: **[A Propos](#a-propos)** | **[Image](#image)** | **[Installer](#insta
 
 ## A Propos!
 
-Vstream est un addon pour xbmc qui vous permet de visionner en streaming un grand nombre de source video (comme la télévision, les films, les series, les mangas, les documentaires, ect..) il vous est même possible de télécharger certaine source, de les mettre en favoris ou de voir la bande annonce. Le tout depuis XBMC et 100% français.
+Vstream est un addon pour xbmc qui vous permet de visionner en streaming un grand nombre de sources video (comme la télévision, les films, les séries, les mangas, les documentaires, etc..) il vous est même possible de télécharger certaine source, de les mettre en favoris ou de voir la bande annonce. Le tout depuis XBMC et 100% français.
 
 ## Image!
 
@@ -17,7 +17,7 @@ Vstream est un addon pour xbmc qui vous permet de visionner en streaming un gran
 
 ## Installer!
 
-Installer le zip du repository (pour avoir les mises à jour automatique) ou installer la dernière version.
+Installez le zip du repository (pour avoir les mises à jour automatiques) ou installez la dernière version.
 
 [Télécharger le Repository](https://github.com/Kodi-vStream/venom-xbmc-addons/releases/tag/Repository)
 
@@ -35,7 +35,7 @@ Installer le zip du repository (pour avoir les mises à jour automatique) ou ins
 
 ## Contribuer!
 
-Pour me proposer de nouvelles sources ou me rapporter un bug utiliser
+Pour me proposer de nouvelles sources ou me rapporter un bug, utilisez :
 
 [Issues Github](https://github.com/Kodi-vStream/venom-xbmc-addons/issues)
 
@@ -44,7 +44,7 @@ Pour me proposer de nouvelles sources ou me rapporter un bug utiliser
 [Google+ LordVenom57](https://plus.google.com/+LordVenom57/posts)
 
 
-Pour créer un nouvelle source utiliser le fichier avec commentaire pour vous aider.
+Pour créer un nouvelle source, utilisez le fichier avec commentaire pour vous aider.
 
 [Fichier avec commentaire (source)](https://github.com/Kodi-vStream/venom-xbmc-addons/blob/Beta/ajouter_une_source.py)
 

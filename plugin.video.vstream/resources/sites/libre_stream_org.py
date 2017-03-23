@@ -18,7 +18,7 @@ URL_MAIN = 'http://libre-stream.com/'
 
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (True, 'showGenres')
 
 SERIE_SERIE = (URL_MAIN + 'liste-des-series/', 'AlphaSearch')
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
@@ -37,31 +37,31 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genre', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showQlt', 'Films Qualités', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showQlt', 'Films (Qualités)', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries Nouveautés', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries VF', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries VF', 'series_vf.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries VOSTFR', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries VOSTFR', 'series_vostfr.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIE[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIE[1], 'Series Liste Complete', 'series.png', oOutputParameterHandler)    
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIE[1], 'Séries', 'series.png', oOutputParameterHandler)    
 
     oGui.setEndOfDirectory()
 
@@ -75,7 +75,7 @@ def showSearch():
         oGui.setEndOfDirectory()
         return  
     
-def showGenre():
+def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -86,25 +86,28 @@ def showGenre():
     liste.append( ['Arts Martiaux',URL_MAIN + 'films/arts-martiaux'] )
     liste.append( ['Aventure',URL_MAIN + 'films/aventure'] )
     liste.append( ['Biopic',URL_MAIN + 'films/biopic'] )
-    liste.append( ['Comedie',URL_MAIN + 'films/comedie'] )
-    liste.append( ['Comedie Dramatique',URL_MAIN + 'films/comedie-dramatique'] )
-    liste.append( ['Comedie Musicale',URL_MAIN + 'films/comedie-musicale'] )
+    liste.append( ['Comédie',URL_MAIN + 'films/comedie'] )
+    liste.append( ['Comédie Dramatique',URL_MAIN + 'films/comedie-dramatique'] )
+    liste.append( ['Comédie Musicale',URL_MAIN + 'films/comedie-musicale'] )
     liste.append( ['Disney',URL_MAIN + 'films/disney'] )
     liste.append( ['Divers',URL_MAIN + 'films/divers'] )    
     liste.append( ['Documentaire',URL_MAIN + 'films/documentaire'] )
     liste.append( ['Drame',URL_MAIN + 'films/drame'] )
     liste.append( ['Epouvante Horreur',URL_MAIN + 'films/horreur'] ) 
     liste.append( ['Espionnage',URL_MAIN + 'films/espionnage'] )
-    liste.append( ['Famille',URL_MAIN + 'film/famille'] )
-    liste.append( ['Fantastique',URL_MAIN + 'film/fantastique'] )  
-    liste.append( ['Guerre',URL_MAIN + 'film/guerre'] )
-    liste.append( ['Historique',URL_MAIN + 'film/historique'] )
-    liste.append( ['Musical',URL_MAIN + 'film/musical'] )
-    liste.append( ['Policier',URL_MAIN + 'film/policier'] )
-    liste.append( ['Romance',URL_MAIN + 'film/romance'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'film/science-fiction'] )
-    liste.append( ['Spectacle',URL_MAIN + 'film/spectacles'] )
-    liste.append( ['Thriller',URL_MAIN + 'film/triller'] )
+    liste.append( ['Famille',URL_MAIN + 'films/famille'] )
+    liste.append( ['Fantastique',URL_MAIN + 'films/fantastique'] )  
+    liste.append( ['Guerre',URL_MAIN + 'films/guerre'] )
+    liste.append( ['Historiques',URL_MAIN + 'films/historique'] )
+    liste.append( ['Horreur',URL_MAIN + 'films/horreur'] )
+    liste.append( ['Musicale',URL_MAIN + 'films/musical'] )
+    liste.append( ['Policier',URL_MAIN + 'films/policier'] )
+    liste.append( ['Romance',URL_MAIN + 'films/romance'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'films/science-fiction'] )
+    liste.append( ['Spectacles',URL_MAIN + 'films/spectacles'] )
+    liste.append( ['Thriller',URL_MAIN + 'films/triller'] )
+    liste.append( ['Western',URL_MAIN + 'films/western'] )
+
                 
     for sTitle,sUrl in liste:
         
