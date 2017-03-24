@@ -1,27 +1,25 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re,xbmc
+import re
  
 SITE_IDENTIFIER = 'regarder_films'
 SITE_NAME = 'Regarder-films-gratuit'
 SITE_DESC = 'Streaming ou Telechargement films series mangas gratuitement et sans limite. Des films en exclusivite en qualite DVD a regarder ou telecharger'
  
-URL_MAIN = 'http://www.regarder-film-gratuit.com/'
+URL_MAIN = 'http://www.regarder-film-gratuit.eu/'
 
 SERIE_SERIES = (URL_MAIN + 'liste-de-series/', 'showAlpha')
 SERIE_NEWS = (URL_MAIN + 'category/series/', 'showSeries')
  
-URL_SEARCH = ('http://www.regarder-film-gratuit.com/?s=', 'showSeries')
+URL_SEARCH = ('http://www.regarder-film-gratuit.eu/?s=', 'showSeries')
 FUNCTION_SEARCH = 'showSeries'
  
 def load():
@@ -161,7 +159,7 @@ def showSeries(sSearch = ''):
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    #sHtmlContent = sHtmlContent.replace('<strong>Téléchargement VOSTFR','').replace('<strong>Téléchargement VF','').replace('<strong>Téléchargement','')
+
     if 'streamzz' in sUrl:
         sPattern = '<li><a href="(http:..streamzzz.com\/page[^<]+)" title=".+?">([^<]+)<.a><.li>'
     else:
@@ -223,10 +221,10 @@ def serieHosters():
     sHtmlContent = oRequestHandler.request()
     
     oParser = cParser()
-    
+
     #recuperation thumb
     sThumbnail = ''
-    sPattern = '<p><img src="([^"]+)" alt=".+?" class=".+?[0-9]+"'
+    sPattern = '<p><img src="([^"]+)" *alt=".+?".+?><\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         sThumbnail = aResult[1][0]
@@ -234,9 +232,9 @@ def serieHosters():
     if 'streamzz' in sUrl: 
         sPattern = '<a href="([^<>"]+?)" target="_blank"><img'
     else:    
-        sPattern = '<p><a href="([^"<>]+?)" target="_blank"><br\/>\s*<img src="http:\/\/www\.regarder-film-gratuit\.com'
+        sPattern = '<span id=.+?<stron.+?((?:VF|VOSTFR|VO)).+?trong>|<p><a href="([^"]+)".+?target="_blank">'
     aResult = oParser.parse(sHtmlContent, sPattern)
-     
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -244,15 +242,19 @@ def serieHosters():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
+                
+            if aEntry[0]:
+                sLang = aEntry[0].replace('&#8230;','').replace(':','')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + sLang + '[/COLOR]')
+            else:
+                sHosterUrl = aEntry[1]
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
            
-            sHosterUrl = str(aEntry)
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-           
-            if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-                oHoster.setDisplayName(sDisplayTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)        
+                if (oHoster != False):
+                    sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)        
    
         cConfig().finishDialog(dialog)
  
