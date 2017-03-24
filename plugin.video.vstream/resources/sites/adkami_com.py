@@ -16,8 +16,8 @@ httplib.HTTPConnection._http_vsn = 10
 httplib.HTTPConnection._http_vsn_str = 'HTTP/1.0'
 
 SITE_IDENTIFIER = 'adkami_com'
-SITE_NAME = 'Adkami.com'
-SITE_DESC = 'Bienvenue sur ADkami.com. un site Anime (Manga) en streaming.'
+SITE_NAME = 'Adkami'
+SITE_DESC = 'Bienvenue sur ADkami.com. un site Animés (Manga)/Série en streaming.'
 
 URL_MAIN = 'http://www.adkami.com'
 
