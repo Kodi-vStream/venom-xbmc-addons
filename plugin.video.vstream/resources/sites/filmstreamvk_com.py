@@ -11,14 +11,14 @@ from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'filmstreamvk_com'
 SITE_NAME = 'Filmstreamvk'
-SITE_DESC = 'Film Streaming & Série Streaming uniquement sur Netu'
+SITE_DESC = 'Films & Série en Streaming uniquement sur Netu'
 
 URL_MAIN = 'http://filmstreamvk.com/'
 
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'les-plus-vues-films', 'showMovies')
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (True, 'showGenres')
 
 SERIE_SERIES = (URL_MAIN + 'serie', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'serie', 'showMovies')
@@ -50,7 +50,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
@@ -83,7 +83,7 @@ def showMoviesSearch():
         oGui.setEndOfDirectory()
         return
 
-def showGenre():
+def showGenres():
     oGui = cGui()
 
     liste = []
@@ -157,7 +157,6 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    
     sPattern = '<div class="moviefilm"><a href=".+?".+?<img src="([^<"]+)".+?<a href="([^<]+)">([^<]+)<\/a>'
 
     oParser = cParser()
@@ -200,7 +199,6 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-        
 def __checkForNextPage(sHtmlContent):
     sPattern = '<span class=\'current\'>.+?</span><a class="page larger" href="(.+?)">'
     oParser = cParser()
@@ -212,7 +210,6 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
-    
 def showLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -362,7 +359,6 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','')
-
 
     sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]'
     oParser = cParser()
