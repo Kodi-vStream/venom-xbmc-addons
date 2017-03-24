@@ -121,7 +121,7 @@ def showMovies(sSearch = ''):
     
     elif 'category/2016' in sUrl:
 
-        sPattern = '<a href="([^"]+)">([^<]+)</a></h2><div class="post-meta clearfix">'
+        sPattern = '<a href="([^"]+)">([^<]+)</a></h2>'
 
     else:
 
@@ -283,7 +283,7 @@ def showHosters():
         
         aResult =[]
         sPattern = '<a href="(https://open[^"]+)" target="_blank">([^<]+)</a>'
-        sPattern2 = 'data-lazy-src="(http.+?raptu\.co[^"]+)"'
+        sPattern2 = '(?:data\-lazy\-src|src)="(http.+?raptu\.co[^"]+)"'
         sPattern3 = '<a href="(http://youwa[^"]+)" target="_blank">'
         aResult1 = re.findall(sPattern,sHtmlContent)
         aResult2 = re.findall(sPattern2,sHtmlContent)
