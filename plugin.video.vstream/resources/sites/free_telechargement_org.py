@@ -19,7 +19,7 @@ UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/20080924
 
 SITE_IDENTIFIER = 'free_telechargement_org' 
 SITE_NAME = '[COLOR violet]Free-telechargement[/COLOR]' 
-SITE_DESC = 'Fichier en DDL, HD, Film et Serie' 
+SITE_DESC = 'Fichiers en DDL, HD, Films et Série' 
 
 URL_MAIN = 'http://www.free-telechargement.com/'
 URL_PROTECT = 'http://liens.free-telechargement.com/'
@@ -76,7 +76,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Series', 'series.png', oOutputParameterHandler)       
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Séries', 'series.png', oOutputParameterHandler)       
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -97,51 +97,47 @@ def showMenuFilms():
 
     oOutputParameterHandler = cOutputParameterHandler() 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oOutputParameterHandler.addParameter('type', 'film') 
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de films', 'search.png', oOutputParameterHandler) 
-
-    oOutputParameterHandler = cOutputParameterHandler() 
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de films', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_SD_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_SD_VIEWS[1], 'Films SD les plus vus', 'films.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_SD_VIEWS[1], 'Films SD (Les plus vus)', 'films_views.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_SD_DVDRIP[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_SD_DVDRIP[1], 'Derniers Films SD DVDRIP et BDRIP ajoutes', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_SD_DVDRIP[1], 'Films SD DVDRIP & BDRIP (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_SD_CAM[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_SD_CAM[1], 'Derniers Films SD CAM et DVDScr ajoutes', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_SD_CAM[1], 'Films SD CAM & DVDScr (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)  
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_SD_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_SD_VOSTFR[1], 'Derniers Films SD VOSTFR ajoutes', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_SD_VOSTFR[1], 'Films SD VOSTFR (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)  
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_SD_CLASSIQUE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_SD_CLASSIQUE[1], 'Derniers Films SD Classiques ajoutes', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_SD_CLASSIQUE[1], 'Films SD Classiques (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)  
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Derniers Films HD 720p et 1080p ajoutes', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD 720p & 1080p (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)  
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_3D[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_3D[1], 'Derniers Films en 3D ajoutes', 'news.png', oOutputParameterHandler) 
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_3D[1], 'Films 3D (Derniers ajouts)', 'films_news.png', oOutputParameterHandler) 
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD_VIEWS[1], 'Films HD les plus vus', 'films.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD_VIEWS[1], 'Films HD (Les plus vu)s', 'films_views.png', oOutputParameterHandler)  
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES_SD[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES_SD[1], 'Films SD par Genre', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES_SD[1], 'Films SD (Genres)', 'films_genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES_HD[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES_HD[1], 'Films HD par Genre', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES_HD[1], 'Films HD (Genres)', 'films_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()     
 
@@ -150,42 +146,40 @@ def showMenuSeries():
  
     oOutputParameterHandler = cOutputParameterHandler() 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oOutputParameterHandler.addParameter('type', 'serie') 
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de series', 'search.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SD_EN_COURS_VF[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SD_EN_COURS_VF[1], 'Séries SD VF en cours', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SD_EN_COURS_VF[1], 'Séries SD VF en cours', 'series_news.png', oOutputParameterHandler)  
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SD_EN_COURS_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SD_EN_COURS_VOSTFR[1], 'Séries SD VOSTFR en cours', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SD_EN_COURS_VOSTFR[1], 'Séries SD VOSTFR en cours', 'series_news.png', oOutputParameterHandler)  
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SD_TERMINE_VF[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SD_TERMINE_VF[1], 'Séries SD VF terminées', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SD_TERMINE_VF[1], 'Séries SD VF terminées', 'series_news.png', oOutputParameterHandler)  
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SD_TERMINE_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SD_TERMINE_VOSTFR[1], 'Séries SD VOSTFR terminées', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SD_TERMINE_VOSTFR[1], 'Séries SD VOSTFR terminées', 'series_vostfr.png', oOutputParameterHandler)  
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_HD_EN_COURS_VF[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_HD_EN_COURS_VF[1], 'Séries HD VF en cours', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, SERIE_HD_EN_COURS_VF[1], 'Séries HD VF en cours', 'series_vf.png', oOutputParameterHandler)  
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_HD_EN_COURS_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_HD_EN_COURS_VOSTFR[1], 'Séries HD VOSTFR en cours', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, SERIE_HD_EN_COURS_VOSTFR[1], 'Séries HD VOSTFR en cours', 'series_vostfr.png', oOutputParameterHandler)  
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_HD_TERMINE_VF[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_HD_TERMINE_VF[1], 'Séries HD VF terminées', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, SERIE_HD_TERMINE_VF[1], 'Séries HD VF terminées', 'series_vf.png', oOutputParameterHandler)  
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_HD_TERMINE_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_HD_TERMINE_VOSTFR[1], 'Séries HD VOSTFR terminées', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, SERIE_HD_TERMINE_VOSTFR[1], 'Séries HD VOSTFR terminées', 'series_vostfr.png', oOutputParameterHandler)  
 
-    
     oGui.setEndOfDirectory()     
     
 def showMenuMangas():
@@ -193,20 +187,19 @@ def showMenuMangas():
 
     oOutputParameterHandler = cOutputParameterHandler() 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oOutputParameterHandler.addParameter('type', 'anime') 
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchMangas', 'Recherche d\'animes', 'search.png', oOutputParameterHandler) 
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchMangas', 'Recherche d\'animés', 'search.png', oOutputParameterHandler) 
   
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Derniers Mangas VF ajoutés', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Mangas VF (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)  
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Derniers Mangas VOSTFR ajoutés', 'news.png', oOutputParameterHandler) 
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Mangas VOSTFR (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler) 
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Derniers Dessins Animés ajoutés', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Dessins Animés (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)  
    
     oGui.setEndOfDirectory()     
 
@@ -219,7 +212,7 @@ def showMenuSpectacles():
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPECTACLES[0])
-    oGui.addDir(SITE_IDENTIFIER, SPECTACLES[1], 'Derniers Spectacles ajoutés', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, SPECTACLES[1], 'Spectacles (Derniers ajouts)', 'news.png', oOutputParameterHandler)  
     
     oGui.setEndOfDirectory()         
     
@@ -228,11 +221,11 @@ def showMenuEmissionsTV():
 
     oOutputParameterHandler = cOutputParameterHandler() 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchEmissionsTV', 'Recherche d Emissions TV', 'search.png', oOutputParameterHandler) 
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchEmissionsTV', 'Recherche émissions TV', 'search.png', oOutputParameterHandler) 
   
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', EMISSIONS_TV[0])
-    oGui.addDir(SITE_IDENTIFIER, EMISSIONS_TV[1], 'Dernieres Emissions TV', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, EMISSIONS_TV[1], 'Dernières émissions TV', 'tv.png', oOutputParameterHandler)  
     
     oGui.setEndOfDirectory()     
   
