@@ -287,7 +287,6 @@ def updateDialog(dialog,total):
 def finishDialog(dialog):
     if xbmcgui.Window(10101).getProperty('search') != 'true':
         dialog.close()
-        VSlog('close dialog')
         del dialog
         
 def VSerror(e):
