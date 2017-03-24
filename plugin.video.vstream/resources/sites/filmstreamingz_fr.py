@@ -24,7 +24,7 @@ MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'les-plus-vus/', 'showMovies')
 MOVIE_COMMENTS = (URL_MAIN + 'les-plus-commentes-2/', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'les-mieux-notes-2/', 'showMovies')
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (True, 'showGenres')
 
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
@@ -69,10 +69,8 @@ def showMoviesSearch():
         oGui.setEndOfDirectory()
         return
 
-def showGenre():
+def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
 
