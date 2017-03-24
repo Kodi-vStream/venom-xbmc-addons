@@ -14,7 +14,7 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'filmstreamingz_fr'
-SITE_NAME = 'Filmstreaming.cc'
+SITE_NAME = 'FilmStreaming'
 SITE_DESC = 'Film Streaming'
 
 URL_MAIN = 'http://filmstreaming.cc/'
@@ -24,7 +24,7 @@ MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'les-plus-vus/', 'showMovies')
 MOVIE_COMMENTS = (URL_MAIN + 'les-plus-commentes-2/', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'les-mieux-notes-2/', 'showMovies')
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (True, 'showGenres')
 
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
@@ -35,27 +35,27 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Films Recherche', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautés', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films Les Plus Vus', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les Plus Vus)', 'films_views.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_COMMENTS[1], 'Films Les Plus Commentés', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_COMMENTS[1], 'Films (Les Plus Commentés)', 'films_comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films Les Mieux Notés', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les Mieux Notés)', 'films_notes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -69,10 +69,8 @@ def showMoviesSearch():
         oGui.setEndOfDirectory()
         return
 
-def showGenre():
+def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
 
@@ -81,7 +79,7 @@ def showGenre():
     liste.append( ['Animation',URL_MAIN + 'category/animation/'] )
     liste.append( ['Arts Martiaux',URL_MAIN + 'category/arts-martiaux/'] )
     liste.append( ['Aventure',URL_MAIN + 'category/aventure/'] )
-    liste.append( ['Comedie',URL_MAIN + 'category/comedie/'] )
+    liste.append( ['Comédie',URL_MAIN + 'category/comedie/'] )
     liste.append( ['Documentaire',URL_MAIN + 'category/documentaire/'] )
     liste.append( ['Drame',URL_MAIN + 'category/drame/'] )
     liste.append( ['Espionnage',URL_MAIN + 'category/espionnage/'] )
@@ -155,7 +153,6 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     sPattern = '<span class=\'current\'>.+?</span><a class="page larger" href="(.+?)">'
     oParser = cParser()
@@ -166,7 +163,6 @@ def __checkForNextPage(sHtmlContent):
         return sUrl
 
     return False
-
 
 def showHosters():
     oGui = cGui()
