@@ -12,7 +12,7 @@ import re
 import unicodedata
  
 SITE_IDENTIFIER = 'enquetedereportages_com'
-SITE_NAME = 'Enquetedereportages.com'
+SITE_NAME = 'En quête de reportages'
 SITE_DESC = 'replay tv'
  
 URL_MAIN = 'http://enquetedereportages.com/'
@@ -40,15 +40,15 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Nouveautés', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Nouveautés', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir(SITE_IDENTIFIER, 'DocGenre', 'Documentaire Genres', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'DocGenre', 'Documentaire (Genres)', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir(SITE_IDENTIFIER, 'ReplayTV', 'Replay Genres', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'ReplayTV', 'Replay (Genres)', 'genres.png', oOutputParameterHandler)
  
     oGui.setEndOfDirectory()
     
@@ -57,7 +57,7 @@ def DocGenre():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://enquetedereportages.com/category/documentaire/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://enquetedereportages.com/category/reportage/')
