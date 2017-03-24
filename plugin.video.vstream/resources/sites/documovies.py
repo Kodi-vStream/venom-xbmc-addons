@@ -30,11 +30,11 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires Derniers ajouts', 'doc.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires (Derniers ajouts)', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_GENRES[1], 'Documentaires Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, DOC_GENRES[1], 'Documentaires (Genres)', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN+'videos/?playid=27')
