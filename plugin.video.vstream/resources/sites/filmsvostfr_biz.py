@@ -12,7 +12,7 @@ import re,urllib,urllib2
  
 SITE_IDENTIFIER = 'filmsvostfr_biz'
 SITE_NAME = 'Filmsvostfr'
-SITE_DESC = 'Films/Série/Animé'
+SITE_DESC = 'Films/Séries/Animés'
  
 URL_MAIN = 'http://www.filmsvostfr.cc/'
 
@@ -22,11 +22,11 @@ MOVIE_GENRES = (True, 'showMovieGenres')
 
 SERIE_SERIES = (URL_MAIN + 'series-en-streaming', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'series-en-streaming', 'showMovies')
-SERIE_GENRES = ('http://seriegenre', 'showSerieGenres')
+SERIE_GENRES = ('http://seriegenre', 'showGenres')
 
 ANIM_ANIMS = (URL_MAIN + 'animes-en-streaming', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'animes-en-streaming', 'showMovies')
-ANIM_GENRES = ('http://animgenre', 'showSerieGenres')
+ANIM_GENRES = ('http://animgenre', 'showGenres')
   
 URL_SEARCH = (URL_MAIN + 'recherche.htm?q=', 'showMovies')
  
@@ -127,7 +127,7 @@ def showMovieGenres():
        
     oGui.setEndOfDirectory()
 
-def showSerieGenres():
+def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -168,7 +168,6 @@ def showSerieGenres():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
-
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -222,7 +221,6 @@ def showMovies(sSearch = ''):
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', sThumbnail,'', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
-            
  
         cConfig().finishDialog(dialog)
            
@@ -355,7 +353,6 @@ def showLinks():
             sLang = aEntry[2].replace(' ','')
             #sTitle = ('[COLOR coral]' + '[' + sLang + ']' + '[/COLOR]' + ' ' + sMovieTitle + ' ' + '(' + sHost + ')')
             sTitle = '%s [%s] (%s)' % (sMovieTitle, sLang, sHost)
-
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
