@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
-#Venom.Razorex
-#rajout fonction pour listage Film Nouveauté par Kodigoal
+#Venom.Kodigoal.Razorex
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -14,16 +13,16 @@ import re,unicodedata
 
 SITE_IDENTIFIER = 'cinemay_com'
 SITE_NAME = 'Cinemay'
-SITE_DESC = 'films et series en streaming'
+SITE_DESC = 'Films et séries en streaming'
 
 URL_MAIN = 'http://www.cinemay.com/'
 
 MOVIE_NEWS = (URL_MAIN , 'showMoviesNews')
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (True, 'showGenres')
 
 SERIE_SERIES = (URL_MAIN + 'serie/', 'showMovies')
-SERIE_GENRES = (True, 'showSeriesGenre')
+SERIE_GENRES = (True, 'showSeriesGenres')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -35,7 +34,6 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
-    #rajout listage film nouveauté
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
@@ -46,7 +44,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
@@ -67,7 +65,7 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
        
-def showGenre():
+def showGenres():
     oGui = cGui()
 
     liste = []
@@ -104,11 +102,11 @@ def showGenre():
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'films_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
-def showSeriesGenre():
+def showSeriesGenres():
     oGui = cGui()
 
     liste = []
