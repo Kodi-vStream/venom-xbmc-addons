@@ -716,9 +716,7 @@ class cGui():
         xbmc.executebuiltin( 'Container.Refresh' )
 
     def viewBA(self):
-        oGuiElement = cGuiElement()
         oInputParameterHandler = cInputParameterHandler()
-
         sFileName = oInputParameterHandler.getValue('sFileName')
 
         from resources.lib.ba import cShowBA
