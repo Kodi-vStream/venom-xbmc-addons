@@ -113,20 +113,15 @@ def showMovies(sSearch = ''):
         
         oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Live NBA Game (@Reddit)[/COLOR]' + '[COLOR gray]' + '  [ Heure Locale ET : ' + '[/COLOR]' +TimeUTC+ '[COLOR gray]' + ' ]' + '[/COLOR]')
     
-    
-    elif '?s=' in sUrl:
-        
-        sPattern = '<a href="([^"]+)"><img src="[^"]+" data-hidpi="(.+?)\?.+?" alt="(.+?)"'
-
-    
     elif 'category/2016' in sUrl:
 
         sPattern = '<a href="([^"]+)">([^<]+)</a></h2>'
-
+    
     else:
+        
+        sPattern = '<a href="([^"]+)">(?:\s*|)<img src="[^"]+" data-hidpi="(.+?)\?.+?" alt="([^"]+)"(?:width=".+?"|)'
 
-        sPattern = '<a href="([^"]+)">\s*<img src="[^"]+" data-hidpi="(.+?)\?.+?" alt="(.+?)" width=".+?"'
-
+    
     sDateReplay = ''
     sDate = ''
     
@@ -189,7 +184,7 @@ def showMovies(sSearch = ''):
                   pass  
 
             try:
-               if ('category/2016' in sUrl) or ('?s=' in sUrl):
+               if ('category/2016' in sUrl) or ('?s=' in sUrl) or ('search/' in sUrl):
                    
                    if 'Game' in sTitle:
                        sTitle2 = sTitle.split(":")
@@ -282,13 +277,12 @@ def showHosters():
     else:
         
         aResult =[]
-        sPattern = '<a href="(https://open[^"]+)" target="_blank">([^<]+)</a>'
+        sPattern = '<a href="(https?://(?:wstream|youwa|openlo)[^"]+)" target="_blank">(?:([^<]+)</a>|)'
         sPattern2 = '(?:data\-lazy\-src|src)="(http.+?raptu\.co[^"]+)"'
-        sPattern3 = '<a href="(http://youwa[^"]+)" target="_blank">'
+        
         aResult1 = re.findall(sPattern,sHtmlContent)
         aResult2 = re.findall(sPattern2,sHtmlContent)
-        aResult3 = re.findall(sPattern3,sHtmlContent)
-        aResult = aResult1 + aResult2 + aResult3
+        aResult = aResult1 + aResult2
         
         sDisplay = '[COLOR olive]Qualités disponibles:[/COLOR]'   
     
@@ -319,18 +313,23 @@ def showHosters():
                 oGui.addMovie(SITE_IDENTIFIER, 'showLiveHosters', sTitle, '', sThumbnail, sHosterUrl, oOutputParameterHandler)
             
             else: #Replay
-  
+                
+                if (aEntry[0]):
+                    sHosterUrl = str(aEntry[0])
+                
                 if ('raptu' in aEntry):
                     sTitle = ('[%s]') % ('720p') 
-                    sHosterUrl = aEntry
+                    sHosterUrl = str(aEntry)
 
-                elif ('youwatch' in aEntry):
-
-                    sTitle = ('[%s]') % ('540p') 
-                    sHosterUrl = aEntry
+                elif ('youwatch' in aEntry[0]):
+                      sTitle = ('[%s]') % ('540p') 
+                      
+                elif ('wstream' in aEntry[0]):
+                      sTitle = ('[%s]') % ('720p') 
+                     
                 else:
                     sTitle = ('[%s]') % (str(aEntry[1]))
-                    sHosterUrl = aEntry[0]
+                    
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
