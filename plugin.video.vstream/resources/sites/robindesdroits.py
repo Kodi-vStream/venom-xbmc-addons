@@ -9,6 +9,7 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.multihost import cJheberg
+from resources.lib.multihost import cMultiup
 import re 
  
 SITE_IDENTIFIER = 'robindesdroits'
@@ -146,7 +147,7 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
-    #recup liens watchvideo&Jheberg et liens direct raptu&uptobox par showLink()
+    #recup liens watchvideo&Jheberg&Multiup et liens direct raptu&uptobox par showLink()
     sLink = __showLink(sUrl)
     
     #si vidéos découpées en X parties
@@ -172,22 +173,36 @@ def showHosters():
                     for aEntry in aResult:
                         if 'nitroflare' not in aEntry:
                             sHost.append(aEntry)
-                    
+                       
+            elif 'multiup' in aEntry:
+                 
+                 aResult = cMultiup().GetUrls(sUrl)
+                 if (aResult):
+                     if (count >0):
+                         oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via Multiup (suite partie vidéo)[/COLOR]')
+                     else:
+                         oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via Multiup[/COLOR]')
+                     count= count +1
+                     for aEntry in aResult:
+                         if 'nitroflare' not in aEntry:
+                             sHost.append(aEntry)
+                             
+
             elif 'watchvideo' in sUrl:
-                oRequestHandler = cRequestHandler(sUrl)
-                sHtmlContent = oRequestHandler.request();
-                oParser = cParser()
-                sPattern = '{file:"([^"]+)"\,label:"([^"]+)"}'
-                aResult = oParser.parse(sHtmlContent, sPattern)
+                  oRequestHandler = cRequestHandler(sUrl)
+                  sHtmlContent = oRequestHandler.request();
+                  oParser = cParser()
+                  sPattern = '{file:"([^"]+)"\,label:"([^"]+)"}'
+                  aResult = oParser.parse(sHtmlContent, sPattern)
                 
-                if (aResult[0] == True):
-                    if (count2 >0):
-                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via WatchVideo (suite partie vidéo)[/COLOR]')
-                    else:
-                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via WatchVideo[/COLOR]')
-                    count2 = count2 +1
-                    for aEntry in aResult[1]:
-                        sHost.append(aEntry)
+                  if (aResult[0] == True):
+                      if (count2 >0):
+                          oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via WatchVideo (suite partie vidéo)[/COLOR]')
+                      else:
+                          oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via WatchVideo[/COLOR]')
+                      count2 = count2 +1
+                      for aEntry in aResult[1]:
+                          sHost.append(aEntry)
             
             #si liens directs raptu&uptobox
             else:
