@@ -70,6 +70,8 @@ http://benbenradio2.free.fr/benbenradio2.m3u
 http://www.best-radio.net/streams/64.m3u
 #EXTINF:-1 tvg-logo="radio.png", BFM 
 http://viphttpplayers.yacast.net/V4/bfm/bfm.m3u
+#EXTINF:-1 tvg-logo="radio.png", BFM Business
+http://bfmbusiness.cdn.dvmr.fr/bfmbusiness
 #EXTINF:-1 tvg-logo="radio.png", Bide et Musique 
 http://www.bide-et-musique.com/playlist-hq.m3u
 #EXTINF:-1 tvg-logo="radio.png", Booster FM 
@@ -492,6 +494,8 @@ http://str2.creacast.com:80/mfm3.m3u
 http://str2.creacast.com:80/mfm4.m3u 
 #EXTINF:-1 tvg-logo="radio.png", MKM Radio 
 http://www.mkmradio.com/MKMRADIO.m3u 
+#EXTINF:-1 tvg-logo="radio.png", Mouv'
+http://direct.mouv.fr/live/mouv-midfi.mp3R.C.F.
 #EXTINF:-1 tvg-logo="radio.png", Music Hitz FM 
 http://www.musichitzfm.com/listen/winamp-192.m3u 
 #EXTINF:-1 tvg-logo="radio.png", [COLOR red]N[/COLOR]
@@ -527,7 +531,7 @@ http://mp3.live.tv-radio.com/nostalgie_soul_legend/all/nos_173540.mp3
 #EXTINF:-1 tvg-logo="radio.png", Nostalgie Top 100 
 http://mp3.live.tv-radio.com/nostalgie_top_100/all/nos_180225.mp3 
 #EXTINF:-1 tvg-logo="radio.png", NRJ 
-http://mp3.live.tv-radio.com/nrj/all/nrj_113225.mp3 
+http://185.52.127.163/fr/30001/mp3_128.mp3?origine=fluxradios
 #EXTINF:-1 tvg-logo="radio.png", NRJ @ Work 
 http://mp3.live.tv-radio.com/nrj_at_work/all/nrj_143400.mp3 
 #EXTINF:-1 tvg-logo="radio.png", NRJ by Disney 
@@ -622,6 +626,8 @@ http://www.paris-one.com/pls/radio_deeper.pls
 http://www.paris-one.com/pls/radio_trance.pls 
 #EXTINF:-1 tvg-logo="radio.png", Paris One Dance 
 http://www.paris-one.com/pls/radio_dance.pls 
+#EXTINF:-1 tvg-logo="radio.png", Phare FM 
+http://str0.creacast.com/pharefm
 #EXTINF:-1 tvg-logo="radio.png", Puls Radio 
 http://www.pulsradio.com/pls/puls-adsl.m3u 
 #EXTINF:-1 tvg-logo="radio.png", Puls Radio Version 8.0 
@@ -785,3 +791,26 @@ http://mp3.live.tv-radio.com/rire_100_live/all/rir_124257.mp3
 http://mp3.live.tv-radio.com/rire_100_nouveaux_talents/all/rir_153424.mp3
 #EXTINF:-1 tvg-logo="radio.png", Rires & Chansons 100% Sketches
 http://mp3.live.tv-radio.com/rire_100_s
+#EXTINF:-1 tvg-logo="radio.png", RMC
+http://aifae8cah8.lb.vip.cdn.dvmr.fr/rmcinfo
+#EXTINF:-1 tvg-logo="radio.png", RTL
+http://streaming.radio.rtl.fr/rtl-1-44-96
+#EXTINF:-1 tvg-logo="radio.png", RTL 2
+http://streaming.radio.rtl2.fr/rtl2-1-48-192
+
+#EXTINF:-1 tvg-logo="radio.png", [COLOR red]S[/COLOR]
+http://
+#EXTINF:-1 tvg-logo="radio.png", Skyrock
+http://icecast.skyrock.net/s/natio_mp3_128k
+
+#EXTINF:-1 tvg-logo="radio.png", [COLOR red]T[/COLOR]
+http://
+#EXTINF:-1 tvg-logo="radio.png", TSF Jazz
+http://tsfjazz.ice.infomaniak.ch/tsfjazz-high.mp3
+
+#EXTINF:-1 tvg-logo="radio.png", [COLOR red]V[/COLOR]
+http://
+#EXTINF:-1 tvg-logo="radio.png", Virgin Radio
+http://vr-live-mp3-128.scdn.arkena.com/virginradio.mp3
+#EXTINF:-1 tvg-logo="radio.png", Voltage
+http://start-voltage.ice.infomaniak.ch/start-voltage-high.mp3
