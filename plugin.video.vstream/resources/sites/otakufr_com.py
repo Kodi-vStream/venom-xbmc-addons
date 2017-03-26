@@ -11,8 +11,8 @@ from resources.lib.util import cUtil
 import urllib,re
 
 SITE_IDENTIFIER = 'otakufr_com'  
-SITE_NAME = 'Otakufr.com' 
-SITE_DESC = 'OtakuFR animes en streaming et telechargement'
+SITE_NAME = 'OtakuFR' 
+SITE_DESC = 'OtakuFR animés en streaming et téléchargement'
 
 URL_MAIN = 'http://otakufr.com'
 URL_SEARCH = (URL_MAIN + '/anime-list/search/', 'showMovies')
@@ -31,15 +31,15 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animes Nouveautés', 'animes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animes (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_POPULAR[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_POPULAR[1], 'Animes Populaire', 'animes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_POPULAR[1], 'Animés (Populaire)', 'animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Anime VOSTFR', 'animes.png', oOutputParameterHandler) 
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'animes_vostfr.png', oOutputParameterHandler) 
             
     oGui.setEndOfDirectory()
 
