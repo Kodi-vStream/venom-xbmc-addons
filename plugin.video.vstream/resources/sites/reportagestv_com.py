@@ -11,7 +11,7 @@ from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 
 SITE_IDENTIFIER = 'reportagestv_com'
-SITE_NAME = 'ReportagesTV.com'
+SITE_NAME = 'Reportages TV'
 SITE_DESC = 'Reportages TV - Replay des reportages télé français en streaming.'
 
 URL_MAIN = 'http://www.reportagestv.com/'
@@ -23,7 +23,6 @@ DOC_GENRES = (True, 'showGenre')
 URL_SEARCH = ('http://www.reportagestv.com/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-
 def load():
     oGui = cGui()
 
@@ -33,7 +32,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Nouveautés', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Derniers ajouts', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_GENRES[0])
@@ -61,7 +60,7 @@ def showGenre():
       
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Emmisions', 'doc.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Emissions', 'doc.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory() 
 
@@ -74,7 +73,6 @@ def showSearch():
             showMovies(sUrl)
             oGui.setEndOfDirectory()
             return  
-    
 
 def showGenre():
     oGui = cGui()
@@ -143,7 +141,6 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     sPattern = "<span class='page-numbers current'>.+?<a class='page-numbers' href='(.+?)'>.+?</a>"
     oParser = cParser()
@@ -172,7 +169,6 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    
     
     sRealUrl = __checkForRealUrl(sHtmlContent)
 
@@ -203,4 +199,3 @@ def showHosters():
         cConfig().finishDialog(dialog) 
                 
     oGui.setEndOfDirectory()
-    
