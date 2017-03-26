@@ -9,7 +9,7 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 
 SITE_IDENTIFIER = 'les_debiles'
-SITE_NAME = 'LesDebiles'
+SITE_NAME = 'Les Débiles'
 SITE_DESC = 'Vidéos drôles, du buzz, des fails et des vidéos insolites'
 
 URL_MAIN = 'http://www.lesdebiles.com'
@@ -33,7 +33,6 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'Vidéos Catégories', 'genres.png', oOutputParameterHandler)
                
     oGui.setEndOfDirectory()
- 
  
 def showSearch():
     oGui = cGui()
@@ -64,7 +63,6 @@ def showGenre():
                
     oGui.setEndOfDirectory()
          
- 
 def showMovies(sSearch = ''):
     oGui = cGui()
      
@@ -99,7 +97,6 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail,'', oOutputParameterHandler)
                 
-               
         cConfig().finishDialog(dialog)
             
         sNextPage = __checkForNextPage(sHtmlContent)
@@ -112,7 +109,6 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory() 
  
- 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<a href="([^"]+)">&gt;&gt;</a></li>.+?<div class="clear"></div>'
@@ -122,8 +118,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-     
- 
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler() 
