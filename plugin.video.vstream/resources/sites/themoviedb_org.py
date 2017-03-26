@@ -350,7 +350,9 @@ def showSeriesSaison():
             oOutputParameterHandler.addParameter('sId', sId)
             oOutputParameterHandler.addParameter('sSeason', str(SSeasonNum))
             oOutputParameterHandler.addParameter('sFanart', str(sFanart))
-            oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)           
+            oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
+
+            cConfig().log(sUrl)
             
             oGui.addTVDB(SITE_IDENTIFIER, 'showSeriesEpisode', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
             
@@ -592,25 +594,29 @@ def showTitle(sMovieTitle, sUrl):
     sMovieTitle = unicode(sMovieTitle, 'utf-8')#converti en unicode pour aider aux convertions
     sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
     sMovieTitle = sMovieTitle.encode("utf-8").lower() #on repasse en utf-8
-    
-    
+       
     sMovieTitle = urllib.quote(sMovieTitle)
     
     sMovieTitle = re.sub('\(.+?\)',' ', sMovieTitle) #vire les tags entre parentheses
     
     #modif venom si le titre comporte un - il doit le chercher
     sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle) #vire les caracteres a la con qui peuvent trainer
+    #Mais on le vire si entre 2 espaces
+    sMovieTitle=sMovieTitle.replace(' - ','')
     
     #sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)',' ', sMovieTitle) #vire les articles
 
     sMovieTitle = re.sub(' +',' ',sMovieTitle) #vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
     #print 'apres ' + sMovieTitle
-    #modif ici
-    if sExtraTitle:
-        sMovieTitle = sMovieTitle.replace('%C3%A9','e').replace('%C3%A0','a')
-        sMovieTitle = sMovieTitle + sExtraTitle
-    else:
-        sMovieTitle = sMovieTitle
+    
+    #je pense pas que ce soir utile car la fonction de le ligne 595 vire les accent, a tester
+    sMovieTitle = sMovieTitle.replace('%C3%A9','e').replace('%C3%A0','a')
+    
+    if (False):
+        if sExtraTitle:
+            sMovieTitle = sMovieTitle + sExtraTitle
+        else:
+            sMovieTitle = sMovieTitle
 
     return sMovieTitle
 
