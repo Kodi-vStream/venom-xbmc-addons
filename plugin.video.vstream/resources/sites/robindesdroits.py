@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-#Kodigoal
+#Venom.kodigoal
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -146,13 +146,14 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
-    #recup liens watchvideo&Jheberg par showLink()
+    #recup liens watchvideo&Jheberg et liens direct raptu&uptobox par showLink()
     sLink = __showLink(sUrl)
     
     #si vidéos découpées en X parties
     count = 0
     count2 = 0
-    
+    count3 = 0
+ 
     if (sLink):
         for aEntry in sLink:
             
@@ -164,15 +165,15 @@ def showHosters():
                 aResult = cJheberg().GetUrls(sUrl)
                 if (aResult):
                     if (count >0):
-                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Jheberg (suite partie vidéo)[/COLOR]')
+                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via Jheberg (suite partie vidéo)[/COLOR]')
                     else:
-                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Jheberg[/COLOR]')
+                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via Jheberg[/COLOR]')
                     count= count +1
                     for aEntry in aResult:
                         if 'nitroflare' not in aEntry:
                             sHost.append(aEntry)
                     
-            else:
+            elif 'watchvideo' in sUrl:
                 oRequestHandler = cRequestHandler(sUrl)
                 sHtmlContent = oRequestHandler.request();
                 oParser = cParser()
@@ -181,13 +182,20 @@ def showHosters():
                 
                 if (aResult[0] == True):
                     if (count2 >0):
-                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]WatchVideo (suite partie vidéo)[/COLOR]')
+                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via WatchVideo (suite partie vidéo)[/COLOR]')
                     else:
-                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]WatchVideo[/COLOR]')
+                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via WatchVideo[/COLOR]')
                     count2 = count2 +1
                     for aEntry in aResult[1]:
                         sHost.append(aEntry)
-                       
+            
+            #si liens directs raptu&uptobox
+            else:
+                if (count3 == 0):
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens divers[/COLOR]')
+                count3 = count3 +1
+                sHost.append(aEntry)
+           
             if (sHost):
                
                 for aEntry in sHost:
