@@ -11,7 +11,7 @@ from resources.lib.util import cUtil
 import re
  
 SITE_IDENTIFIER = 'malaisetv'
-SITE_NAME = 'MalaiseTV'
+SITE_NAME = 'Malaise TV'
 SITE_DESC = 'Les séquences les plus embarrassantes de la télévision française'
  
 URL_MAIN = 'http://www.malaisetv.com'
@@ -69,7 +69,6 @@ def showGenres():
  
     oGui.setEndOfDirectory()
 
- 
 def showMovies(sSearch = ''):
     oGui = cGui()
      
@@ -81,7 +80,6 @@ def showMovies(sSearch = ''):
         
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
     
     sPattern = 'div class="imgContainer"><img alt="(.+?)" height=".+?" src="([^"]+)"><div data-video="([^"]+)"'
 
@@ -109,7 +107,6 @@ def showMovies(sSearch = ''):
  
     if not sSearch:
         oGui.setEndOfDirectory() 
- 
  
 def __checkForNextPage(url):
     if 'start' not in url:
