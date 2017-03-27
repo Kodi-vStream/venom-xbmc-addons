@@ -57,8 +57,6 @@ def showSearch():
         
 def showGenre():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
 
