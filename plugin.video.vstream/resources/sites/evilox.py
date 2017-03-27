@@ -104,7 +104,7 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             
             sTitle = unicode(aEntry[2], 'latin-1')
-            sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode("unicode_escape")
+            sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
             sTitle = ('%s') % (sTitle)
 
             sUrl    = str(aEntry[0])
