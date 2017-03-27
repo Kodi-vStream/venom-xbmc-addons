@@ -14,14 +14,14 @@ from resources.lib.util import cUtil
 import urllib,urllib2,xbmc
 
 SITE_IDENTIFIER = 'streaming_series_xyz'
-SITE_NAME = 'Streaming-series.xyz'
-SITE_DESC = 'Serie Streaming'
+SITE_NAME = 'Streaming-Séries XYZ'
+SITE_DESC = 'Séries en Streaming'
 
 URL_MAIN = 'http://www.streaming-series.xyz/'
 
 SERIE_SERIES = (URL_MAIN, 'showMovies')
 SERIE_NEWS = (URL_MAIN, 'showMovies')
-SERIE_GENRES = (True, 'showGenre')
+SERIE_GENRES = (True, 'showGenres')
 
 ANIM_ENFANTS = (URL_MAIN + 'category/dessin-anime/', 'showMovies')
 
@@ -68,7 +68,7 @@ def ProtectstreamBypass(url):
         #Test de fonctionnement
         aResult = oParser.parse(data, sPattern)
         if aResult[0]:
-            cGui().showInfo("Erreur", 'Lien encore protege' , 5) 
+            cGui().showInfo("Erreur", 'Lien encore protegé' , 5) 
             return ''
         
         #recherche du lien embed
@@ -90,18 +90,17 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSeriesSearch', 'Series Recherche', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSeriesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Series Nouveautés', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Serie Genres', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showSeriesSearch():
     oGui = cGui()
@@ -112,25 +111,20 @@ def showSeriesSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
-    
 
-
-def showGenre():
+def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-
     liste.append( ['Action',URL_MAIN + 'category/action/'] )
     liste.append( ['Animation',URL_MAIN + 'category/animation/'] )
     liste.append( ['Arts Martiaux',URL_MAIN + 'category/arts-martiaux/'] )
     liste.append( ['Aventure',URL_MAIN + 'category/aventure/'] )
-    liste.append( ['Comedie',URL_MAIN + 'category/comedie/'] )
+    liste.append( ['Comédie',URL_MAIN + 'category/comedie/'] )
     liste.append( ['Biopic',URL_MAIN + 'category/biopic/'] )
     liste.append( ['Classique',URL_MAIN + 'category/classique/'] )
-    liste.append( ['Dessin animes',URL_MAIN + 'category/dessin-anime/'] )
-    liste.append( ['Documentaire',URL_MAIN + 'category/documentaire/'] )
+    liste.append( ['Dessin animés',URL_MAIN + 'category/dessin-anime/'] )
+    liste.append( ['Documentaires',URL_MAIN + 'category/documentaire/'] )
     liste.append( ['Drame',URL_MAIN + 'category/drame/'] )
     liste.append( ['Espionnage',URL_MAIN + 'category/espionnage/'] )
     liste.append( ['Famille',URL_MAIN + 'category/famille/'] )
@@ -140,12 +134,12 @@ def showGenre():
     liste.append( ['Epouvante-Horreur',URL_MAIN + 'category/horreur/'] )
     liste.append( ['Musical',URL_MAIN + 'category/musical/'] )
     liste.append( ['Policier',URL_MAIN + 'category/policier/'] )
-    liste.append( ['Peplum',URL_MAIN + 'category/peplum/'] )
+    liste.append( ['Péplum',URL_MAIN + 'category/peplum/'] )
     liste.append( ['Romance',URL_MAIN + 'category/romance/'] )
     liste.append( ['Science-Fiction',URL_MAIN + 'category/science-fiction/'] )
     liste.append( ['Spectacle',URL_MAIN + 'category/spectacle/'] )
     liste.append( ['Thriller',URL_MAIN + 'category/thriller/'] )
-    liste.append( ['Web serie',URL_MAIN + 'category/webserie/'] )
+    liste.append( ['Web séries',URL_MAIN + 'category/webserie/'] )
     liste.append( ['Western',URL_MAIN + 'category/western/'] )
 
     for sTitle,sUrl in liste:
@@ -194,7 +188,6 @@ def showMovies(sSearch = ''):
  
             oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
 
-
         cConfig().finishDialog(dialog)
 
         sNextPage = __checkForNextPage(sHtmlContent)
@@ -242,7 +235,6 @@ def showSeries():
 
     oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     sPattern = '<span class=\'current\'>.+?</span><a class="page larger" href="(.+?)">'
     oParser = cParser()
@@ -253,7 +245,6 @@ def __checkForNextPage(sHtmlContent):
         return sUrl
 
     return False
-
 
 def showHosters():
     oGui = cGui()
@@ -297,7 +288,6 @@ def showHosters():
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
-
 
 def serieHosters():
     oGui = cGui()
