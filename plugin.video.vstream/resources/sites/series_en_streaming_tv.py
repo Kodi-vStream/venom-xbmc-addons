@@ -13,8 +13,8 @@ from resources.lib.packer import cPacker
 import urllib2,urllib,re,unicodedata
 
 SITE_IDENTIFIER = 'series_en_streaming_tv'
-SITE_NAME = 'Series-en-streaming.tv'
-SITE_DESC = 'Serie en streaming'
+SITE_NAME = 'Séries en Streaming'
+SITE_DESC = 'Séries en Streaming'
  
 URL_MAIN = 'http://www.series-en-streaming.tv/'
 
@@ -45,11 +45,11 @@ def load():
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Series Nouveautés', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Series Liste complete', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries (Liste complète)', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -170,7 +170,6 @@ def showMovies(sSearch = ''):
            
     if not sSearch:
         oGui.setEndOfDirectory()
-        
         
 def showLasts():
     oGui = cGui()
