@@ -13,7 +13,7 @@ from resources.lib.multihost import cMultiup
 import re 
  
 SITE_IDENTIFIER = 'robindesdroits'
-SITE_NAME = 'RobindesDroits'
+SITE_NAME = 'Robin des Droits'
 SITE_DESC = 'Replay sports'
  
 URL_MAIN = 'http://www.robindesdroits.me'
@@ -53,8 +53,7 @@ def showGenre():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler) 
                
     oGui.setEndOfDirectory()
-         
- 
+
 def showMovies(sSearch = ''):
     oGui = cGui()
      
@@ -100,8 +99,7 @@ def showMovies(sSearch = ''):
  
     if not sSearch:
         oGui.setEndOfDirectory() 
- 
- 
+
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<a class="next page-numbers" href="([^"]+)"'
@@ -187,7 +185,6 @@ def showHosters():
                          if 'nitroflare' not in aEntry:
                              sHost.append(aEntry)
                              
-
             elif 'watchvideo' in sUrl:
                   oRequestHandler = cRequestHandler(sUrl)
                   sHtmlContent = oRequestHandler.request();
