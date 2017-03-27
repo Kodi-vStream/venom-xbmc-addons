@@ -15,13 +15,12 @@ import re,urllib2,urllib,xbmc
 
  
 SITE_IDENTIFIER = 'serie_streaming_watch'
-SITE_NAME = 'Serie.streaming.watch'
-SITE_DESC = 'Serie et Anime en Streaming'
+SITE_NAME = 'Serie-Streaming WATCH'
+SITE_DESC = 'Séries & Animés en Streaming'
 
 #meme fichiers que http://dpstreaming.watch
 URL_MAIN = 'http://serie-streaming.watch/'
 
- 
 SERIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
 
@@ -29,8 +28,7 @@ ANIM_ENFANTS = (URL_MAIN + 'category/series/dessin-anime/', 'showMovies')
  
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
- 
- 
+
 def load():
     oGui = cGui()
    
@@ -40,11 +38,11 @@ def load():
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Series Nouveautees', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Series (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Serie Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
            
     oGui.setEndOfDirectory()
  
@@ -157,7 +155,6 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-             
     if not sSearch:
         oGui.setEndOfDirectory() 
                 
@@ -170,7 +167,6 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
  
     return False 
-   
 
 def ShowEpisode():
     oGui = cGui()
@@ -207,7 +203,6 @@ def ShowEpisode():
  
     oGui.setEndOfDirectory()
 
-    
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -271,7 +266,6 @@ def serieHosters():
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
     oGui.setEndOfDirectory()
-
 
 def ProtectstreamBypass(url):
     
