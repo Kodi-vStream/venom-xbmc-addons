@@ -163,6 +163,10 @@ class cGuiElement:
         #convertion unicode ne fonctionne pas avec les accents
         #sTitle = sTitle.decode("utf-8")
         
+        #ok bon ben si pas unicode pas le choix
+        sTitle = sTitle.replace('Épisode','episode')
+        sTitle = sTitle.replace('épisode','episode')
+        
         #recherche l'année, uniquement si entre caractere special a cause de 2001 odysse de l'espace ou k2000
         string = re.search('([^\w ][0-9]{4}[^\w ])', sTitle)
         if string:
@@ -192,7 +196,7 @@ class cGuiElement:
             SXEX = ''
 
             #m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',sTitle,re.UNICODE)
-            m = re.search('(?i)(?:^|[^a-z])([eéÉ](?:[a-z]+sode\s?)*([0-9]+(?:[\-\.][0-9\?]+)*))', str(sTitle))
+            m = re.search('(?i)(?:^|[^a-z])(e(?:pisode\s?)*([0-9]+(?:[\-\.][0-9\?]+)*))', str(sTitle))
             if m:
                 #ok y a des episodes
                 sTitle = sTitle.replace(m.group(1),'')
