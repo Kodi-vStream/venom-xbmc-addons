@@ -13,7 +13,7 @@ from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'replay_documentaire_com'
-SITE_NAME = 'replay-documentaire.com'
+SITE_NAME = 'replay-documentaire'
 SITE_DESC = 'Revoir très facilement tous vos documentaires en replay streaming'
 
 URL_MAIN = 'http://www.replay-documentaire.com/'
@@ -40,7 +40,6 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
     
-    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://frenchstream.org/les-plus-vues')
     oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Documentaires Genres', 'genres.png', oOutputParameterHandler)    
@@ -55,7 +54,6 @@ def showSearch():
             showMovies(sUrl)
             oGui.setEndOfDirectory()
             return  
-    
     
 def showGenres():
     oGui = cGui()
@@ -76,7 +74,6 @@ def showGenres():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
-
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -117,7 +114,6 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     sPattern = 'id="tie-next-page"> <a href="([^<]+)">'
     oParser = cParser()
@@ -127,7 +123,6 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-    
 
 def showHosters():
     oGui = cGui()
@@ -140,7 +135,6 @@ def showHosters():
     sHtmlContent = oRequestHandler.request();
     #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/plugins/like.php','').replace('<iframe src="http://www.facebook.com/plugins/likebox.php','')
                
-        
     sPattern = 'data-lazy-src="([^<]+)/.*?.mp4" scrolling="no"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -166,4 +160,3 @@ def showHosters():
         cConfig().finishDialog(dialog) 
                 
     oGui.setEndOfDirectory()
-    
