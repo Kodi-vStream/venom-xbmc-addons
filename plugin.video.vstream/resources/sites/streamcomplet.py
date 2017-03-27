@@ -14,16 +14,14 @@ from resources.lib.player import cPlayer
 from resources.lib.packer import cPacker
 import re, urllib, urllib2
 
- 
 SITE_IDENTIFIER = 'streamcomplet'
-SITE_NAME = 'Streamcomplet.com'
+SITE_NAME = 'StreamComplet'
 SITE_DESC = 'Streaming Gratuit de 4891 Films Complets en VF'
  
 URL_MAIN = 'http://streamcomplet.com/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
-
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (True, 'showGenres')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -33,17 +31,16 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Recherche Films', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
     
-            
     oGui.setEndOfDirectory()
 
 def showMoviesSearch():
@@ -55,12 +52,9 @@ def showMoviesSearch():
             showMovies(sUrl)
             oGui.setEndOfDirectory()
             return  
-            
-                 
-def showGenre():
+
+def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
     liste.append( ['Action',URL_MAIN + 'film/action/'] )
@@ -127,7 +121,6 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     sPattern = '<span class=\'current\'>.+?</span><a class="page larger" href="(.+?)">'
     oParser = cParser()
@@ -138,8 +131,7 @@ def __checkForNextPage(sHtmlContent):
         return sUrl
 
     return False
-    
-    
+
 def showHosters():
 
     oInputParameterHandler = cInputParameterHandler()
@@ -198,4 +190,4 @@ def showHosters():
                        oHoster.setFileName(sMovieTitle)
                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
                      
-            oGui.setEndOfDirectory()     
+            oGui.setEndOfDirectory()
