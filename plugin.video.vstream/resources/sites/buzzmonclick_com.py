@@ -11,8 +11,8 @@ from resources.lib.util import cUtil
 import re,unicodedata
 
 SITE_IDENTIFIER = 'buzzmonclick_com'
-SITE_NAME = 'buzzmonclick'
-SITE_DESC = 'Films & Série en Streaming de qualité entièrement gratuit. Tout les meilleurs streaming en illimité.'
+SITE_NAME = 'BuzzMonClick'
+SITE_DESC = 'Films & Séries en Streaming de qualité entièrement gratuit. Tout les meilleurs streaming en illimité.'
  
 URL_MAIN = 'http://buzzmonclick.com/category/replay-tv/'
 
@@ -53,7 +53,6 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://buzzmonclick.com/category/replay-tv/tele-realite/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Télé-Réalité', 'tv.png', oOutputParameterHandler)
 
- 
     oGui.setEndOfDirectory()
   
 def showMoviesSearch():
@@ -136,9 +135,7 @@ def showMovies(sSearch = ''):
  
     if not sSearch:
         oGui.setEndOfDirectory()
- 
- 
- 
+
 def __checkForNextPage(sHtmlContent):
     sPattern = '<span class=\'current\'>.+?href="(.+?)"'
     oParser = cParser()
