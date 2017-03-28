@@ -232,7 +232,16 @@ class cUtil:
 #Pour les avoir
 #from resources.lib import util
 #puis util.VSlog('test')
-
+def isKrypton():
+    try: 
+        version = xbmc.getInfoLabel('system.buildversion')
+        if version[0:2] >= "17":
+            return True  
+        else:
+            return False
+    except:
+        return False
+    
 def Unquote(sUrl):
     return urllib.unquote(sUrl)
 
@@ -271,7 +280,12 @@ def VScreateDialogYesNo(label):
     oDialog = xbmcgui.Dialog()
     qst = oDialog.yesno("vStream", label)
     return qst
-    
+
+def VScreateDialogSelect(label):
+    oDialog = xbmcgui.Dialog()
+    ret = oDialog.select('Select Quality', label)  
+    return ret
+
 def createDialog(sSite):
     oDialog = xbmcgui.DialogProgress()
     oDialog.create(sSite,None)
