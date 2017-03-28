@@ -13,28 +13,23 @@ import urllib2
 
 
 SITE_IDENTIFIER = 'filmenstreaminghd_com'
-SITE_NAME = 'Filmenstreaminghd'
+SITE_NAME = 'FilmEnStreamingHD'
 SITE_DESC = 'Films/Séries/Animés en streaming'
-
 
 URL_MAIN = 'http://www.filmenstreaminghd.com'
 
-
 MOVIE_MOVIE = (URL_MAIN + '/films', 'showMovies')
-
 MOVIE_HD = (URL_MAIN + '/1080p-films', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + '/films-populaires/', 'showMovies')
-
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (True, 'showMovieGenres')
 
 SERIE_SERIES = (URL_MAIN + '/series-tv', 'showMovies')
-SERIE_GENRES = (True, 'showGenreS')
+SERIE_GENRES = (True, 'showSerieGenres')
 
 ANIM_ANIMS = (URL_MAIN +'/animes', 'showMovies')
 
 URL_SEARCH = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
-
 
 def load():
     oGui = cGui()
@@ -69,7 +64,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
@@ -86,7 +81,7 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
     
-def showGenre():
+def showMovieGenres():
     oGui = cGui()
  
     liste = []
@@ -114,12 +109,11 @@ def showGenre():
        
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'films_genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()
     
-    
-def showGenreS():
+def showSerieGenres():
     oGui = cGui()
  
     liste = []
@@ -149,7 +143,7 @@ def showGenreS():
        
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'series_genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()
     
@@ -182,8 +176,7 @@ def showQlt():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
         
     oGui.setEndOfDirectory()
-        
-    
+
 def showMovies(sSearch = ''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -276,7 +269,6 @@ def showSeries():
             if dialog.iscanceled():
                 break
             
-                
             sTitle = sMovieTitle
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             sDisplayTitle = sDisplayTitle + '[COLOR teal] >> ' + aEntry[3] +' [/COLOR]'
@@ -294,7 +286,8 @@ def showSeries():
     
         cConfig().finishDialog(dialog)
 
-    oGui.setEndOfDirectory()  
+    oGui.setEndOfDirectory()
+
 def __checkForNextPage(sHtmlContent):
     
     sPattern = '<a class="sonraki-sayfa" href="(?:/.+?/|)(.+?)"'
@@ -304,8 +297,7 @@ def __checkForNextPage(sHtmlContent):
         return  aResult[1][0]
 
     return False
-    
-  
+
 def showLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -316,7 +308,6 @@ def showLinks():
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
     
     oParser = cParser()
     sPattern = '<a class="partsec" id="([^"]+)".+?</span>([^<]+)<span'
