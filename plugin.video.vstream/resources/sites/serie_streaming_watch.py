@@ -1,9 +1,7 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -15,7 +13,7 @@ import re,urllib2,urllib,xbmc
 
  
 SITE_IDENTIFIER = 'serie_streaming_watch'
-SITE_NAME = 'Serie-Streaming WATCH'
+SITE_NAME = 'Serie-Streaming-Watch'
 SITE_DESC = 'Séries & Animés en Streaming'
 
 #meme fichiers que http://dpstreaming.watch
@@ -110,15 +108,9 @@ def showMovies(sSearch=''):
         else:
             sPattern = '<div class="video">.+?<a href="([^"]+)">.+?<img class="izimg" src="([^"]+)".+?title="([^"]+)"'
     
-    #xbmc.log(sUrl)
-    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-    
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
  
@@ -137,7 +129,6 @@ def showMovies(sSearch=''):
             sThumbnail = str(aEntry[1])
             if not sThumbnail.startswith('http'):
                   sThumbnail = URL_MAIN + sThumbnail
-            #print sThumbnail
  
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
@@ -251,8 +242,7 @@ def serieHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     sHosterUrl = ProtectstreamBypass(sUrl)
- 
-    #oHoster = __checkHoster(sHosterUrl)
+
     oHoster = cHosterGui().checkHoster(sHosterUrl)
 
     if (oHoster != False):
