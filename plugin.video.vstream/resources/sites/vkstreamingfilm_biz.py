@@ -13,18 +13,14 @@ from resources.lib.util import cUtil
 import re,urllib2,urllib
  
 SITE_IDENTIFIER = 'vkstreamingfilm_biz'
-SITE_NAME = 'Vkstreamingfilm.biz'
+SITE_NAME = 'Vk Streaming Film'
 SITE_DESC = 'Film en Streaming HD'
  
 URL_MAIN = 'http://vkstreamingfilm.biz'
 
-#MOVIE_MOVIE = ('http://www.vkstreamingfilm.biz/films/', 'showMovies') 
-#MOVIE_NEWS = ('http://www.vkstreamingfilm.biz/films/', 'showMovies')
 MOVIE_MOVIE = ('http://www.vkstreamingfilm.biz/', 'showMovies') 
 MOVIE_NEWS = ('http://www.vkstreamingfilm.biz/', 'showMovies')
-
-
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (True, 'showGenres')
  
 URL_SEARCH = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -45,11 +41,11 @@ def load():
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautees', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genre', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
            
     oGui.setEndOfDirectory()
  
@@ -62,37 +58,36 @@ def showSearch():
         oGui.setEndOfDirectory()
         return  
  
-def showGenre():
+def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['Action','http://www.vkstreamingfilm.biz/films/action/'] )
-    liste.append( ['Animation','http://www.vkstreamingfilm.biz/films/animation/'] )
-    liste.append( ['Arts Martiaux','http://www.vkstreamingfilm.biz/films/arts-martiaux/'] )
-    liste.append( ['Aventure','http://www.vkstreamingfilm.biz/films/aventure/'] )
-    liste.append( ['Biographique','http://www.vkstreamingfilm.biz/films/biographique/'] )
-    liste.append( ['Comedie','http://www.vkstreamingfilm.biz/films/comedie/'] )
-    liste.append( ['Danse','http://www.vkstreamingfilm.biz/films/comedie/'] )
-    liste.append( ['Documentaire','http://www.vkstreamingfilm.biz/films/documentaire/'] )
-    liste.append( ['Drame','http://www.vkstreamingfilm.biz/films/drame/'] )
-    liste.append( ['Epouvante-Horreur','http://www.vkstreamingfilm.biz/films/epouvante-horreur/'] )
-    liste.append( ['Espionnage','http://www.vkstreamingfilm.biz/films/espionnage/'] )
-    liste.append( ['Fantastique','http://www.vkstreamingfilm.biz/films/fantastique/'] )
-    liste.append( ['Famille','http://www.vkstreamingfilm.biz/films/famille/'] )
-    liste.append( ['Divers','http://www.vkstreamingfilm.biz/films/divers/'] )
-    liste.append( ['Guerre','http://www.vkstreamingfilm.biz/films/guerre/'] )
-    liste.append( ['Historique','http://www.vkstreamingfilm.biz/films/historique/'] )
-    liste.append( ['Musical','http://www.vkstreamingfilm.biz/films/musical/'] )
-    liste.append( ['Peplum','http://www.vkstreamingfilm.biz/films/peplum/'] )
-    liste.append( ['Polcicier','http://www.vkstreamingfilm.biz/films/policier/'] )
-    liste.append( ['Romance','http://www.vkstreamingfilm.biz/films/Romance/'] )
-    liste.append( ['Science-Fiction','http://www.vkstreamingfilm.biz/films/science-fiction/'] )
-    liste.append( ['Spectacle','http://www.vkstreamingfilm.biz/films/spectacle/'] )
-    liste.append( ['Sport','http://www.vkstreamingfilm.biz/films/sport/'] )
-    liste.append( ['Thriller','http://www.vkstreamingfilm.biz/films/thriller/'] )
-    liste.append( ['Western','http://www.vkstreamingfilm.biz/films/western/'] )
+    liste.append( ['Action',URL_MAIN + '/films/action/'] )
+    liste.append( ['Animation',URL_MAIN + '/films/animation/'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + '/films/arts-martiaux/'] )
+    liste.append( ['Aventure',URL_MAIN + '/films/aventure/'] )
+    liste.append( ['Biographique',URL_MAIN + '/films/biographique/'] )
+    liste.append( ['Comédie',URL_MAIN + '/films/comedie/'] )
+    liste.append( ['Comédie dramatique',URL_MAIN + '/films/comedie-dramatique/'] )
+    liste.append( ['Danse',URL_MAIN + '/films/danse/'] )
+    liste.append( ['Divers',URL_MAIN + '/films/divers/'] )
+    liste.append( ['Documentaire',URL_MAIN + '/films/documentaire/'] )
+    liste.append( ['Drame',URL_MAIN + '/films/drame/'] )
+    liste.append( ['Epouvante-Horreur',URL_MAIN + '/films/epouvante-horreur/'] )
+    liste.append( ['Espionnage',URL_MAIN + '/films/espionnage/'] )
+    liste.append( ['Fantastique',URL_MAIN + '/films/fantastique/'] )
+    liste.append( ['Famille',URL_MAIN + '/films/famille/'] )
+    liste.append( ['Guerre',URL_MAIN + '/films/guerre/'] )
+    liste.append( ['Historique',URL_MAIN + '/films/historique/'] )
+    liste.append( ['Musical',URL_MAIN + '/films/musical/'] )
+    liste.append( ['Péplum',URL_MAIN + '/films/peplum/'] )
+    liste.append( ['Policier',URL_MAIN + '/films/policier/'] )
+    liste.append( ['Romance',URL_MAIN + '/films/Romance/'] )
+    liste.append( ['Science-Fiction',URL_MAIN + '/films/science-fiction/'] )
+    liste.append( ['Spectacle',URL_MAIN + '/films/spectacle/'] )
+    liste.append( ['Sport',URL_MAIN + '/films/sport/'] )
+    liste.append( ['Thriller',URL_MAIN + '/films/thriller/'] )
+    liste.append( ['Western',URL_MAIN + '/films/western/'] )
                
     for sTitle,sUrl in liste:
        
@@ -175,8 +170,7 @@ def showMovies(sSearch=''):
  
     if not sSearch:
         oGui.setEndOfDirectory()
-         
- 
+
 def __checkForNextPage(sHtmlContent):
    
     sPattern = '<div class="navigation">(?:<a href="http:[^<>]+?">[0-9]+<\/a> )*<span>[0-9]+<\/span> <a href="(.+?)">'
