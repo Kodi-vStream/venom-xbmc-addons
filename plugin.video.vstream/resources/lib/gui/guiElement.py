@@ -231,7 +231,8 @@ class cGuiElement:
         #supr les -
         #sTitle = sTitle.replace('-',' ') # A gerer dans le fichier site plutot, car il peut etre utile dans certain cas
         #vire doubles espaces
-        sTitle = re.sub(' +',' ',sTitle)      
+        sTitle = re.sub(' +',' ',sTitle)
+        sTitle = sTitle.replace('()','') 
         
         #vire espace a la fin
         if sTitle.endswith(' '):
@@ -239,9 +240,9 @@ class cGuiElement:
         #et en debut
         if sTitle.startswith(' '):
             sTitle = sTitle[1:]
-                    
+      
         #recherche les Tags restant : () ou [] sauf tag couleur
-        sTitle = re.sub('([\(|\[](?!\/*COLOR).+?[\]|\)])','[COLOR '+self.__sDecoColor+']\\1[/COLOR]', sTitle)
+        sTitle = re.sub('([\(|\[](?!\/*COLOR)[^\)\(\]\[]+?[\]|\)])','[COLOR '+self.__sDecoColor+']\\1[/COLOR]', sTitle)
                     
         #on reformate SXXEXX Titre [tag] (Annee)
         sTitle2 = ''
