@@ -1,9 +1,7 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -14,7 +12,7 @@ from resources.lib.util import cUtil
 import urllib,urllib2,xbmc
 
 SITE_IDENTIFIER = 'streaming_series_xyz'
-SITE_NAME = 'Streaming-Séries XYZ'
+SITE_NAME = 'Streaming-Séries-Xyz'
 SITE_DESC = 'Séries en Streaming'
 
 URL_MAIN = 'http://www.streaming-series.xyz/'
@@ -298,7 +296,6 @@ def serieHosters():
 
     sHosterUrl = ProtectstreamBypass(sUrl)
  
-    #oHoster = __checkHoster(sHosterUrl)
     oHoster = cHosterGui().checkHoster(sHosterUrl)
 
     if (oHoster != False):
