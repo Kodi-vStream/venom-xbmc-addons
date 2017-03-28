@@ -58,7 +58,9 @@ class cHosterGui:
         #oOutputParameterHandler.addParameter('sFav', 'play')
         #oOutputParameterHandler.addParameter('sCat', '4')
         
-        oGui.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
+        #existe dans le menu krypton 17
+        if not cConfig().isKrypton():
+            oGui.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
         
         #context playlit menu
         oContext = cContextElement()

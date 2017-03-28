@@ -353,6 +353,9 @@ class cGui():
 
     #affiche les liens playable
     def addHost(self, oGuiElement, oOutputParameterHandler=''):
+        
+        if cConfig().isKrypton():
+            cGui.CONTENT = 'movies'
 
         if oOutputParameterHandler.getValue('siteUrl'):
             sSiteUrl = oOutputParameterHandler.getValue('siteUrl')
