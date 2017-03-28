@@ -59,7 +59,7 @@ class cHosterGui:
         #oOutputParameterHandler.addParameter('sCat', '4')
         
         #existe dans le menu krypton 17
-        if not cConfig().isKrypton():
+        if not util.isKrypton():
             oGui.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
         
         #context playlit menu
