@@ -268,7 +268,7 @@ def showHosters():
     
     if 'reddit' in sUrl:
         
-        sPattern = '(?:<td>|)<a href="(http.+?(?:nbastreams|yoursportsinhd|247hd).+?)">(?:<strong>.+?</strong>|)([^<]+)</a></td>'
+        sPattern = '(?:<td>|)<a href="(http.+?(?:nbastreams|eplstream|yoursportsinhd|247hd).+?)">(?:<strong>.+?</strong>|)([^<]+)</a></td>'
         
         aResult = re.findall(sPattern,sHtmlContent)
         
@@ -302,9 +302,11 @@ def showHosters():
                     sTitle = ('[%s] %s') % ('YourSportinHD', str(aEntry[1]))
                 elif ('nbastream' in aEntry[0]):
                       sTitle = ('[%s] %s') % ('NBAstreamspw', str(aEntry[1]))
+                elif ('eplstream' in aEntry[0]):
+                      sTitle = ('[%s] %s') % ('EPLstreams', str(aEntry[1]))
                 elif ('247hd' in aEntry[0]):
                       sTitle = ('[%s] %s') % ('247HD', str(aEntry[1]))
-
+                
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl',sHosterUrl) 
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
