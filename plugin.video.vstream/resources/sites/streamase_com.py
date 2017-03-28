@@ -23,8 +23,8 @@ import xbmcaddon,os
 PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
 
 SITE_IDENTIFIER = 'streamase_com' 
-SITE_NAME = '[COLOR violet]Streamase.com[/COLOR]' 
-SITE_DESC = 'Fichier en Streaming et en DDL, HD' 
+SITE_NAME = '[COLOR violet]Streamase[/COLOR]' 
+SITE_DESC = 'Fichiers en Streaming et en DDL, HD' 
 
 #film
 URL_MAIN = 'http://streamase.com/'
@@ -40,7 +40,6 @@ MANGA_GENRES = (True, 'showGenreMangas')
 URL_MAIN_SERIE = 'http://serie.streamase.com/'
 SERIE_NEWS = (URL_MAIN_SERIE + 'index.php?do=lastnews/' , 'showMovies')
 SERIE_GENRES = (True, 'showGenreSeries')
-
 
 URL_FAV = URL_MAIN + 'favorites/'
 
@@ -61,7 +60,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Series', 'series.png', oOutputParameterHandler)       
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Séries', 'series.png', oOutputParameterHandler)       
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -93,11 +92,11 @@ def showMenuFilms():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Derniers Films ajoutes', 'news.png', oOutputParameterHandler)    
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)    
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films par Genre', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
     
@@ -107,15 +106,15 @@ def showMenuSeries():
     oOutputParameterHandler = cOutputParameterHandler() 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oOutputParameterHandler.addParameter('type', 'serie') 
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de serie', 'search.png', oOutputParameterHandler) 
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de série', 'search.png', oOutputParameterHandler) 
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Derniers series ajoutees', 'news.png', oOutputParameterHandler)    
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)    
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Series par Genre', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
     
@@ -133,14 +132,13 @@ def showMenuMangas():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MANGA_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MANGA_NEWS[1], 'Derniers Mangas ajoutes', 'news.png', oOutputParameterHandler)    
+    oGui.addDir(SITE_IDENTIFIER, MANGA_NEWS[1], 'Mangas (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)    
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MANGA_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MANGA_GENRES[1], 'Mangas par Genre', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MANGA_GENRES[1], 'Mangas (Genres)', 'animes_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showSearch():
     oGui = cGui()
@@ -204,7 +202,6 @@ def showGenre(basePath):
        
     oGui.setEndOfDirectory()
 
-
 def login():
     oGui = cGui()
     name = oGui.showKeyBoard()
@@ -227,11 +224,9 @@ def login():
         #save cookies
         GestionCookie().SaveCookie('streamase.com',cookies)
     
-    
     oGui.setEndOfDirectory()
     return     
 
-    
 def showMovies(sSearch = ''):
     #xbmc.log('showMovies')
     
@@ -297,7 +292,6 @@ def showMovies(sSearch = ''):
         sHtmlContent = oRequestHandler.request()
         #xbmc.log(sHtmlContent)
       
-    
     sCom = ''
     sQual = ''
     sYear = ''
@@ -356,7 +350,6 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
         
     return False
-
 
 def showHosters():# recherche et affiche les hotes
     #xbmc.log("showHosters")
