@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -12,7 +11,7 @@ from resources.lib.util import cUtil
 from resources.lib.config import cConfig
 from resources.lib.player import cPlayer
 from resources.lib.packer import cPacker
-import re, urllib, urllib2
+import re
 
 SITE_IDENTIFIER = 'streamcomplet'
 SITE_NAME = 'StreamComplet'
