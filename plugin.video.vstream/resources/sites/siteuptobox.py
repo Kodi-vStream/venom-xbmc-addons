@@ -12,7 +12,7 @@ from resources.lib.handler.premiumHandler import cPremiumHandler
 import xbmc,xbmcgui,urllib,urllib2,re,random,mimetypes,string
 
 SITE_IDENTIFIER = 'siteuptobox' 
-SITE_NAME = '[COLOR dodgerblue]' + 'Votre Compte Uptobox' + '[/COLOR]'
+SITE_NAME = '[COLOR dodgerblue]' + 'VotreCompteUptobox' + '[/COLOR]'
 SITE_DESC = 'Fichiers sur compte Uptobox'
 URL_MAIN = 'https://uptobox.com/'
 BURL = 'https://uptobox.com/?op=my_files' 
