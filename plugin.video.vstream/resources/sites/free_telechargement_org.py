@@ -17,9 +17,9 @@ import re,xbmc,xbmcgui,xbmcaddon,os
 PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
-SITE_IDENTIFIER = 'free_telechargement_org' 
-SITE_NAME = '[COLOR violet]Free-telechargement[/COLOR]' 
-SITE_DESC = 'Fichiers en DDL, HD, Films et Série' 
+SITE_IDENTIFIER = 'free_telechargement_org'
+SITE_NAME = '[COLOR violet]Free-Téléchargement[/COLOR]'
+SITE_DESC = 'Fichiers en DDL, HD, Films, Séries, Mangas Etc...'
 
 URL_MAIN = 'http://www.free-telechargement.com/'
 URL_PROTECT = 'http://liens.free-telechargement.com/'
@@ -29,11 +29,8 @@ URL_PROTECTBIS = 'http://liens.free-telechargement.org/'
 
 #URL_SEARCH_SERIE_SD = (URL_MAIN + '1/recherche1/1.html?rech_cat=serie&rech_fiche=', 'showMovies')
 #URL_SEARCH_SERIE_HD = (URL_MAIN + '1/recherche1/1.html?rech_cat=seriehd&rech_fiche=', 'showMovies')
-
-
 URL_SEARCH_EMISSIONS_TV = (URL_MAIN, 'showMovies')
 URL_SEARCH_SPECTACLES = (URL_MAIN, 'showMovies')
-
 
 URL_SEARCH = (URL_MAIN + '1/recherche/1.html?rech_fiche=', 'showSearchResult')
 FUNCTION_SEARCH = 'showSearchResult'
@@ -130,7 +127,7 @@ def showMenuFilms():
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD_VIEWS[1], 'Films HD (Les plus vu)s', 'films_views.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD_VIEWS[1], 'Films HD (Les plus vus)', 'films_views.png', oOutputParameterHandler)  
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES_SD[0])
@@ -148,7 +145,7 @@ def showMenuSeries():
     oOutputParameterHandler = cOutputParameterHandler() 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oOutputParameterHandler.addParameter('type', 'serie')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de series', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de séries', 'search.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SD_EN_COURS_VF[0])
@@ -192,18 +189,19 @@ def showMenuMangas():
     oOutputParameterHandler.addParameter('type', 'anime')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchMangas', 'Recherche d\'animés', 'search.png', oOutputParameterHandler) 
   
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Mangas VF (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)  
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Mangas VOSTFR (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler) 
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Dessins Animés (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)  
-   
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Dessins Animés (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Mangas VF (Derniers ajouts)', 'animes_vf.png', oOutputParameterHandler)  
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Mangas VOSTFR (Derniers ajouts)', 'animes_vostfr.png', oOutputParameterHandler) 
+
     oGui.setEndOfDirectory()     
 
 def showMenuSpectacles():
@@ -265,7 +263,6 @@ def showGenreMoviesSD():
 def showGenreMoviesHD(): 
     showGenre("Films+BluRay+720p+et+1080p/")
 
-
 def showGenre(basePath): 
     oGui = cGui()
     
@@ -300,9 +297,7 @@ def showGenre(basePath):
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)    
        
     oGui.setEndOfDirectory()
-    
-    
-    
+
 def showSearchResult(sSearch = ''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -364,7 +359,6 @@ def showSearchResult(sSearch = ''):
             if sUrl.endswith('serie'):
                 sUrl = sUrl.replace('=serie','=seriehd')
         
-            
     if (aResult):
         total = len(aResult)
         i = 0
@@ -475,7 +469,6 @@ def __checkForNextPage(sHtmlContent):
         
     return False
 
-
 def showHosters():# recherche et affiche les hotes
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler() 
@@ -528,7 +521,6 @@ def showHosters():# recherche et affiche les hotes
     else:
         sPattern = '<b>(.+?)<\/b>.+?<a href="link.php\?lien\=([^"]+)" target="_blank" *><b>Cliquer ici pour Télécharger'
    
-
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -651,7 +643,6 @@ def Display_protected_link():
             
             sTitle = sMovieTitle
             
-            
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
@@ -692,7 +683,6 @@ def DecryptddlProtect(url):
         captcha,cookies2 = get_response(image,cookies)
         cookies = cookies + '; ' +cookies2
 
-        
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('User-Agent' , UA)
