@@ -161,17 +161,11 @@ class cGuiElement:
         # Format de date > 11/22/3333 ou 11-22-3333 
         
         #convertion unicode ne fonctionne pas avec les accents
-        #sTitle = sTitle.decode("utf-8")
-        #sTitle = unicode(sTitle,'utf-8')
+        
         try:
-            sTitle = unicode(sTitle,'utf-8')
+            sTitle = sTitle.decode("utf-8")
         except:
             pass
-        
-        #ok bon ben si pas unicode pas le choix
-        #sTitle = sTitle.replace('Épisode','episode')
-        #sTitle = sTitle.replace('épisode','episode')
-        print sTitle.encode('utf-8')
         
         #recherche l'année, uniquement si entre caractere special a cause de 2001 odysse de l'espace ou k2000
         string = re.search('([^\w ][0-9]{4}[^\w ])', sTitle)
@@ -202,10 +196,7 @@ class cGuiElement:
             SXEX = ''
 
             #m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',sTitle,re.UNICODE)
-            #m = re.search('(?i)(?:^|[^a-z])(e(?:pisode\s?)*([0-9]+(?:[\-\.][0-9\?]+)*))', str(sTitle))
-            #m = re.search( ur'(?i)(?:^|[^a-z])(\w(?:pisode\s?)*([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle, re.UNICODE)
-            #m = re.search('(?i)(?:^|[^a-z])((?:e|\xe9|\xc9)(?:[\w]+sode\s?)*([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle, re.UNICODE)
-            m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',sTitle,re.UNICODE)
+            m = re.search(ur'(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle,re.UNICODE)
             if m:
                 #ok y a des episodes
                 sTitle = sTitle.replace(m.group(1),'')
@@ -216,7 +207,7 @@ class cGuiElement:
                 self.addItemValues('Episode', self.__Episode)
                 
                 #pr les saisons
-                m = re.search('(?i)(s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle)
+                m = re.search(ur'(?i)(s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle,re.UNICODE)
                 if m:
                     sTitle = sTitle.replace(m.group(1),'')
                     sa = m.group(2)
@@ -228,7 +219,7 @@ class cGuiElement:
             else:
                 #pas d'episode mais y a t il des saisons ?
                 #m = re.search('(?i)(s(?:aison +)*([0-9]+[0-9\-\?]*))(?:$| )', sTitle)
-                m = re.search('(?i)(s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle)
+                m = re.search(ur'(?i)(s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle,re.UNICODE)
                 if m:
                     sTitle = sTitle.replace(m.group(1),'')
                     sa = m.group(2)
@@ -240,7 +231,8 @@ class cGuiElement:
         #supr les -
         #sTitle = sTitle.replace('-',' ') # A gerer dans le fichier site plutot, car il peut etre utile dans certain cas
         #vire doubles espaces
-        sTitle = re.sub(' +',' ',sTitle)      
+        sTitle = re.sub(' +',' ',sTitle)
+        sTitle = sTitle.replace('()','') 
         
         #vire espace a la fin
         if sTitle.endswith(' '):
@@ -248,9 +240,9 @@ class cGuiElement:
         #et en debut
         if sTitle.startswith(' '):
             sTitle = sTitle[1:]
-                    
+      
         #recherche les Tags restant : () ou [] sauf tag couleur
-        sTitle = re.sub('([\(|\[](?!\/*COLOR).+?[\]|\)])','[COLOR '+self.__sDecoColor+']\\1[/COLOR]', sTitle)
+        sTitle = re.sub(ur'([\(|\[](?!\/*COLOR)[^\)\(\]\[]+?[\]|\)])','[COLOR '+self.__sDecoColor+']\\1[/COLOR]', sTitle)
                     
         #on reformate SXXEXX Titre [tag] (Annee)
         sTitle2 = ''
@@ -267,10 +259,9 @@ class cGuiElement:
             sTitle2 = "%s [COLOR %s](%s)[/COLOR]"%(sTitle2,self.__sDecoColor,self.__Year)
             
         #xbmc.log('>>' + sTitle2, xbmc.LOGNOTICE)
-        sTitle2 = sTitle2.encode('utf-8')
             
-        #on repasse en utf-8 encode('utf-8') ne fonctionne pas si il y a des accent dans le titre.
-        return sTitle2
+        #on repasse en utf-8
+        return sTitle2.encode('utf-8')
         
     def getEpisodeTitre(self, sTitle):
   
@@ -294,9 +285,9 @@ class cGuiElement:
                     self.__sTitle +=  " [COLOR %s][%s][/COLOR]" % (self.__sDecoColor, sTitle[i])
         #titre normal
         else:
-            # Function retourner en arriere decotitle is back
-            #if not sTitle.startswith('[COLOR'):
-                #sTitle = self.TraiteTitre(sTitle)
+            # avec la derniere modif de la recherche de tag plus besoin non?
+            if not sTitle.startswith('[COLOR'):
+                sTitle = self.TraiteTitre(sTitle)
             
             self.__sTitle = sTitle
             #xbmc.log(sTitle, xbmc.LOGNOTICE)
