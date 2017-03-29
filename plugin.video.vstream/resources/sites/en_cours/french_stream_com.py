@@ -22,17 +22,17 @@ URL_MAIN = 'http://french-stream.com/'
 URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=','showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
-MOVIE_NEWS = (URL_MAIN + 'index.php?do=cat&category=film-en-streaming', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film-en-streaming/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenre')
-MOVIE_VF = (URL_MAIN +'index.php?do=cat&category=vf', 'showMovies')
-MOVIE_VOSTFR = (URL_MAIN +'index.php?do=cat&category=vostfr', 'showMovies')
-MOVIE_HD = (URL_MAIN + 'index.php?do=xfsearch&xfname=qualit&xf=HDLight','showMovies')
+MOVIE_VF = (URL_MAIN +'film-en-streaming/vf/', 'showMovies')
+MOVIE_VOSTFR = (URL_MAIN +'film-en-streaming/vostfr/', 'showMovies')
+MOVIE_HD = (URL_MAIN + 'film-en-streaming/hd-vf/','showMovies')
  
 SERIE_NEWS = (URL_MAIN +'serie-tv-en-streaming/', 'showMovies')
-SERIE_VFS = (URL_MAIN +'index.php?do=cat&category=serie-en-vf-streaming', 'showMovies') 
-SERIE_VOSTFRS = (URL_MAIN +'index.php?do=cat&category=serie-en-vostfr-streaming', 'showMovies')
+SERIE_VFS = (URL_MAIN +'serie-tv-en-streaming/serie-en-vf-streaming/', 'showMovies') 
+SERIE_VOSTFRS = (URL_MAIN +'serie-tv-en-streaming/serie-en-vostfr-streaming/', 'showMovies')
 SERIE_GENRE = (True, 'showSerieGenre')
-SERIE_HD = (URL_MAIN + 'index.php?do=cat&category=serie-en-hd-streaming','showSeries')
+SERIE_HD = (URL_MAIN + 'serie-tv-en-streaming/serie-en-hd-streaming/','showSeries')
 
 def load():
     oGui = cGui()
