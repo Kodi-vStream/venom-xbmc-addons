@@ -85,11 +85,11 @@ class cUtil:
         oDialog.create(sName)
         return oDialog
         
-    def DecoTitle(self, string):
+    def DecoTitle2(self, string):
         return string
         
         
-    def DecoTitle2(self, string):
+    def DecoTitle(self, string):
 
         #on vire ancienne deco en cas de bug
         string = re.sub('\[\/*COLOR.*?\]','',str(string))
