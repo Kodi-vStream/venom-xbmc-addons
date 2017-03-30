@@ -10,10 +10,10 @@ from resources.lib.util import cUtil
 from resources.lib.config import cConfig
 
 SITE_IDENTIFIER = 'streaming_series_org'
-SITE_NAME = 'Streaming-Series'
-SITE_DESC = 'Film en streaming, regarder film en direct, streaming vf regarder film gratuitement sur Frenchstream.org'
+SITE_NAME = 'Streaming-Séries'
+SITE_DESC = 'Séries en streaming vf gratuitement sur Streaming-Séries'
 
-URL_MAIN = 'http://streaming-series.tv/'
+URL_MAIN = 'http://www.streamingseries.info/'
 
 SERIE_SERIES = (URL_MAIN, 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'series-les-plus-vues/', 'showMovies')
@@ -28,23 +28,23 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showSerieSearch', 'Recherche Séries', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSerieSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries Nouveautés', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'SERIE_SERIES[1]', 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries Les plus Vues', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus Vues)', 'series_views.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENTS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries Les plus Commentés', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENTS[1], 'Séries (Les plus Commentés)', 'series_comments.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NOTES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries Les mieux Notés', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Séries (Les mieux Notés)', 'series_notes.png', oOutputParameterHandler)
  
     oGui.setEndOfDirectory()
  
@@ -58,35 +58,33 @@ def showSerieSearch():
             oGui.setEndOfDirectory()
             return
             
-def showGenre():
+def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['Action','http://streamingfilms.fr/category/action/'] )
-    liste.append( ['Afro','http://streamingfilms.fr/category/afro/'] )
-    liste.append( ['Animation','http://streamingfilms.fr/category/animation/'] )
-    liste.append( ['Arts Martiaux','http://streamingfilms.fr/category/arts-martiaux/'] )
-    liste.append( ['Aventure','http://streamingfilms.fr/category/aventure/'] )
-    liste.append( ['Comedie','http://streamingfilms.fr/category/comedie/'] )
-    liste.append( ['Disny','http://streamingfilms.fr/category/disneyy/'] )
-    liste.append( ['Documentaire','http://streamingfilms.fr/category/documentaire/'] )
-    liste.append( ['Drame','http://streamingfilms.fr/category/drame/'] )  
-    liste.append( ['Espionage','http://streamingfilms.fr/category/espionnage/'] )
-    liste.append( ['Famille','http://streamingfilms.fr/category/famille/'] ) 
-    liste.append( ['Fantastique','http://streamingfilms.fr/category/fantastique/'] ) 
-    liste.append( ['Guerre','http://streamingfilms.fr/category/guerre/'] )
-    liste.append( ['Historique','http://streamingfilms.fr/category/historique/'] )         
-    liste.append( ['Horreur','http://streamingfilms.fr/category/horreur/'] )
-    liste.append( ['Musical','http://streamingfilms.fr/category/musical/'] ) 
-    liste.append( ['Non classé','http://streamingfilms.fr/category/non-classe/'] )  
-    liste.append( ['Policier','http://streamingfilms.fr/category/policier/'] )
-    liste.append( ['Romance','http://streamingfilms.fr/category/romance/'] )
-    liste.append( ['Science fiction','http://streamingfilms.fr/category/science-fiction/'] )
-    liste.append( ['Spectacle','http://streamingfilms.fr/category/spectacle/'] )
-    liste.append( ['Thriller','http://streamingfilms.fr/category/thriller/'] )
-    liste.append( ['Western','http://streamingfilms.fr/category/western/'] )
+    liste.append( ['Action',URL_MAIN + '/category/action/'] )
+    liste.append( ['Afro',URL_MAIN + '/category/afro/'] )
+    liste.append( ['Animation',URL_MAIN + '/category/animation/'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + '/category/arts-martiaux/'] )
+    liste.append( ['Aventure',URL_MAIN + '/category/aventure/'] )
+    liste.append( ['Comédie',URL_MAIN + '/category/comedie/'] )
+    liste.append( ['Disney',URL_MAIN + '/category/disney/'] )
+    liste.append( ['Documentaire',URL_MAIN + '/category/documentaire/'] )
+    liste.append( ['Drame',URL_MAIN + '/category/drame/'] )  
+    liste.append( ['Espionnage',URL_MAIN + '/category/espionnage/'] )
+    liste.append( ['Famille',URL_MAIN + '/category/famille/'] ) 
+    liste.append( ['Fantastique',URL_MAIN + '/category/fantastique/'] ) 
+    liste.append( ['Guerre',URL_MAIN + '/category/guerre/'] )
+    liste.append( ['Historique',URL_MAIN + '/category/historique/'] )         
+    liste.append( ['Horreur',URL_MAIN + '/category/horreur/'] )
+    liste.append( ['Musical',URL_MAIN + '/category/musical/'] ) 
+    liste.append( ['Non classé',URL_MAIN + '/category/non-classe/'] )  
+    liste.append( ['Policier',URL_MAIN + '/category/policier/'] )
+    liste.append( ['Romance',URL_MAIN + '/category/romance/'] )
+    liste.append( ['Science fiction',URL_MAIN + '/category/science-fiction/'] )
+    liste.append( ['Spectacle',URL_MAIN + '/category/spectacle/'] )
+    liste.append( ['Thriller',URL_MAIN + '/category/thriller/'] )
+    liste.append( ['Western',URL_MAIN + '/category/western/'] )
                
     for sTitle,sUrl in liste:
         
@@ -95,8 +93,7 @@ def showGenre():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()  
-    
-        
+
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
@@ -186,7 +183,6 @@ def showSeries():
 
     oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     sPattern = '<span class=\'current\'>.+?</span><a class="page larger" href="(.+?)">'
     oParser = cParser()
@@ -195,7 +191,6 @@ def __checkForNextPage(sHtmlContent):
         sUrl = aResult[1][0]
         return sUrl
     return False
-
 
 def showHosters():
     oGui = cGui()
