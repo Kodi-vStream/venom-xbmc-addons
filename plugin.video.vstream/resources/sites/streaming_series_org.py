@@ -17,8 +17,8 @@ URL_MAIN = 'http://www.streamingseries.info/'
 
 SERIE_SERIES = (URL_MAIN, 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'series-les-plus-vues/', 'showMovies')
-SERIE_COMMENTS = (URL_MAIN + 'en-cok-yorumlananlar/', 'showMovies')
-SERIE_NOTES = (URL_MAIN + 'en-cok-begenilenler/', 'showMovies')
+SERIE_COMMENTS = (URL_MAIN + 'series-les-plus-commentees/', 'showMovies')
+SERIE_NOTES = (URL_MAIN + 'series-les-plus-aimees/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
