@@ -32,5 +32,14 @@ class cParser:
         if (len(aMatches) > 0):
             return aMatches[0]
         return 0
+        
+    def titleParse(self, sHtmlContent, sPattern):
+        sHtmlContent = self.__replaceSpecialCharacters(str(sHtmlContent))
+        aMatches = re.compile(sPattern, re.IGNORECASE)
+        try: 
+            [m.groupdict() for m in aMatches.finditer(sHtmlContent)]              
+            return True, m.groupdict()
+        except:
+            return False, sHtmlContent
 
 

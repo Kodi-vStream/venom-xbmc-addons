@@ -232,10 +232,13 @@ class cGuiElement:
         #sTitle = sTitle.replace('-',' ') # A gerer dans le fichier site plutot, car il peut etre utile dans certain cas
         #vire doubles espaces
         sTitle = re.sub(' +',' ',sTitle)
-        sTitle = sTitle.replace('()','') 
+        sTitle = sTitle.replace('()','').replace('- -','-')  
         
         #vire espace a la fin
         if sTitle.endswith(' '):
+            sTitle = sTitle[:-1]
+        #vire les derniers -
+        if sTitle.endswith('-'):
             sTitle = sTitle[:-1]
         #et en debut
         if sTitle.startswith(' '):
