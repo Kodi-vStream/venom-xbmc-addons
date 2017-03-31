@@ -38,8 +38,8 @@ class cParser:
         aMatches = re.compile(sPattern, re.IGNORECASE)
         try: 
             [m.groupdict() for m in aMatches.finditer(sHtmlContent)]              
-            return True, m.groupdict()
+            return m.groupdict()
         except:
-            return False, sHtmlContent
+            return {'title': sHtmlContent}
 
 
