@@ -19,7 +19,7 @@ SITE_DESC = 'Films HD en streaming'
 URL_MAIN = 'http://official-film-illimite.net/'
 
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
-MOVIE_HD = (URL_MAIN + '720p1080p/', 'showMovies')
+MOVIE_HD = (URL_MAIN + 'films/streaming-720p-streaming-1080p/', 'showMovies')
 #MOVIE_MOVIE = (True, 'showAlpha')
 MOVIE_GENRES = (True, 'showGenre')
 
@@ -219,6 +219,7 @@ def showHosters():
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
                 
@@ -274,6 +275,8 @@ def serieHosters():
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+    print aResult
+    
     if (aResult[0] == True):
         i = 1
         for aEntry in aResult[1]: 
@@ -299,8 +302,13 @@ def ShowSpecialHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
-    data = sUrl.replace('http://official-film-illimite.net/Jwplayer_plugins_official-film-illimite.net/embed.php?f=','').replace('&c=','')
+    #data = sUrl.replace('http://official-film-illimite.net/Jwplayer_plugins_official-film-illimite.net/embed.php?f=','').replace('&c=','')
+    data = re.sub('(.+?f=)','', sUrl)
+    data = data.replace('&c=','')
     pdata = 'data=' + urllib.quote_plus(data)
+    
+    #exemple url
+    #http://official-film-illimite.net/Jwplayer_plugins_official-film-illimite.net/QbtbycmTz7dQ8vJSvvDPzMWP9C3YLLzDrZZzccRVFTRCcmYBE3K9T4hQ6eDMpSUARd4ZJM8eYWYzh7jAjancPcrxYdWUhuFJ5cSqCqsLJADsddpAWWGkn8jGfuLRzcvy.php?f=JCrtLCbsN7OiLhPR4FZzDROzDKeGwROTNROo4fx/JfAOb08obQpKrdMRAnHKBeZGYzrYbRrve9QJDnrsAA==&c=', 
 
     if 'official-film-illimite' in sUrl:
         oRequest = cRequestHandler('http://official-film-illimite.net/Jwplayer_plugins_official-film-illimite.net/Htplugins/Loader.php')
@@ -333,8 +341,8 @@ def ShowSpecialHosters():
    
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
-                    #sDisplayTitle = '[' + qual + '] ' + sMovieTitle
-                    sDisplayTitle = ('%s [%s]') % (sMovieTitle, qual)
+                    sDisplayTitle = '[' + qual + '] ' + sMovieTitle
+                    #sDisplayTitle = sMovieTitle
                     #sDisplayTitle = cUtil().DecoTitle(sDisplayTitle)
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle)
