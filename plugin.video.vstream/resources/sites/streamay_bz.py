@@ -94,6 +94,8 @@ def selectAnn():
 
 def showGenres():
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     
     liste = []
     liste.append( ['Action',sUrl + 'genre/action'] )
@@ -110,7 +112,7 @@ def showGenres():
     liste.append( ['Documentaire',sUrl + 'genre/documentaire'] )
     liste.append( ['Drame',sUrl + 'genre/drame'] )
     liste.append( ['Drama',sUrl + 'genre/drama'] )
-    liste.append( ['Epouvante Horreur',sUrl + 'genre/epouvante-horreur'] ) 
+    liste.append( ['Epouvante Horreur',sUrl + 'genre/epouvante-horreur'] )
     liste.append( ['Espionnage',sUrl + 'genre/espionnage'] )
     liste.append( ['Famille',sUrl + 'genre/famille'] )
     liste.append( ['Fantastique',sUrl + 'genre/fantastique'] )  
