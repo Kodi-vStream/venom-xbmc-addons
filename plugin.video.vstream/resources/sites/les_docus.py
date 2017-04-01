@@ -5,7 +5,6 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 
 SITE_IDENTIFIER = 'les_docus'
@@ -139,18 +138,13 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #sPattern = '<div class="post-header"><a href="([^"<]+)" title="([^"<]+)">.+? src="([^"<]+)".+?<\/a><p style="[^<>"]+?">(.+?)<\/p>'
 
     sPattern = '<div class="post-header"><a *href="([^"]+)" title="([^"]+)">.+?<noscript><img.+?src="([^"]+)".+?<p *style.+?>([^<]+)<\/p>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
 
             sTitle = aEntry[1]
             sTitle = sTitle.replace('&laquo;','<<').replace('&raquo;','>>').replace('&nbsp;','')
@@ -160,8 +154,6 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
 
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png',  aEntry[2],  aEntry[3], oOutputParameterHandler)
-
-        cConfig().finishDialog(dialog)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -194,21 +186,21 @@ def showHosters():
     sHtmlContent = oRequestHandler.request();
 
     oParser = cParser()
-    sPattern = '<iframe.+?src="(.+?)"'
+    sPattern = '<noscript><iframe.+?src="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == False):
+    if not (aResult[0] == True):
         sPattern = 'data-video_id="(.+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
+        if (aResult[0] == True):
+            sHosterUrl = 'https://www.youtube.com/embed/' + aResult[1][0]
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+    else:                      
         for aEntry in aResult[1]:
-
             sHosterUrl = str(aEntry)
-            if len(sHosterUrl) == 11:
-                # URL youtube + id de la vidéo
-                sHosterUrl = 'https://www.youtube.com/embed/' + sHosterUrl
-
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
