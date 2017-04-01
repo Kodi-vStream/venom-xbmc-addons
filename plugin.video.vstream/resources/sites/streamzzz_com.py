@@ -13,32 +13,86 @@ from resources.lib.util import cUtil
 import re,urllib,xbmc
 import unicodedata
 SITE_IDENTIFIER = 'streamzzz_com'
-SITE_NAME = 'streamzzz.com'
-SITE_DESC = 'Streaming series'
+SITE_NAME = 'Streamzzz'
+SITE_DESC = 'Streaming séries'
 
-URL_MAIN = 'http://streamzzz.com/'
+URL_MAIN = 'http://streamzzz.online/'
 
-SERIE_SERIES = (URL_MAIN, 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+FUNCTION_SEARCH = 'showMovies'
+
+SERIE_SERIES = (URL_MAIN + 'tvshows/', 'showMovies')
 SERIE_NEWS = (URL_MAIN, 'showSerieNews')
-
-#SERIE_VFS = ('http://www.telecharger-films.ws/telecharger-serie/series-fr/', 'showMovies')
-#SERIE_VOSTFRS = ('http://www.telecharger-films.ws/telecharger-serie/sries-vostfr/', 'showMovies')
-
-#MOVIE_GENRES = (True, 'showGenre')
+#SERIE_GENRES = (True, 'showGenres')
 
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries liste complete', 'series.png',oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler) 
+
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries Nouveautés', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png',oOutputParameterHandler)
+
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    #oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
- 
+
+def showSearch():
+    oGui = cGui()
+
+    sSearchText = oGui.showKeyBoard()
+    if (sSearchText != False):
+        sUrl = URL_SEARCH[0] + sSearchText
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return  
+
+def showGenres():
+    oGui = cGui()
+    
+    liste = []
+    liste.append( ['Action',URL_MAIN + 'genre/action/'] )
+    liste.append( ['Action & Aventure',URL_MAIN + 'genre/action-aventure/'] )
+    liste.append( ['Animation',URL_MAIN + 'genre/animation/'] )
+    liste.append( ['Aventure',URL_MAIN + 'genre/aventure/'] )
+    liste.append( ['Biopic',URL_MAIN + 'genre/biopic/'] )
+    liste.append( ['Comédie',URL_MAIN + 'genre/comedie/'] )
+    liste.append( ['Crime',URL_MAIN + 'genre/crime/'] )
+    liste.append( ['Documentaire',URL_MAIN + 'genre/documentaire/'] )
+    liste.append( ['Drame',URL_MAIN + 'genre/drame/'] )
+    liste.append( ['Familial',URL_MAIN + 'genre/familial/'] )
+    liste.append( ['Fantastique',URL_MAIN + 'genre/fantastique/'] )
+    liste.append( ['Histoire',URL_MAIN + 'genre/histoire/'] )
+    liste.append( ['Horreur',URL_MAIN + 'genre/horreur/'] )
+    liste.append( ['Musical',URL_MAIN + 'genre/musical/'] )
+    liste.append( ['Mystère',URL_MAIN + 'genre/mystere/'] )
+    liste.append( ['Mystery',URL_MAIN + 'genre/mystery/'] )
+    liste.append( ['Romance',URL_MAIN + 'genre/romance/'] )
+    liste.append( ['Sci-fi & Fantasy',URL_MAIN + 'genre/sci-fi-fantasy/'] )
+    liste.append( ['Science-Fiction',URL_MAIN + 'genre/science-fiction/'] )
+    liste.append( ['Science-Fiction & Fantastique',URL_MAIN + 'genre/science-fiction-fantastique/'] )
+    liste.append( ['Suspense',URL_MAIN + 'genre/suspense/'] )
+    liste.append( ['Thriller',URL_MAIN + 'genre/thriller/'] )
+    liste.append( ['War & politics',URL_MAIN + 'genre/war-politics/'] )
+    liste.append( ['Western',URL_MAIN + 'genre/western/'] )
+    
+    for sTitle,sUrl in liste:
+    
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'series_genres.png', oOutputParameterHandler)
+    
+    oGui.setEndOfDirectory() 
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -47,7 +101,6 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-   
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
@@ -136,7 +189,6 @@ def showSeries(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     sPattern = '<a class="pagination-next" href="(.+?)">.+?</a>'
     oParser = cParser()
@@ -168,7 +220,7 @@ def serieHosters():
 
     else:
         oRequestHandler = cRequestHandler(sUrl)
-        sHtmlContent = oRequestHandler.request()   
+        sHtmlContent = oRequestHandler.request()
         oParser = cParser()
         sPattern = '<a href="([^<>"]+?)" target="_blank"><img'
         aResult = oParser.parse(sHtmlContent, sPattern)
