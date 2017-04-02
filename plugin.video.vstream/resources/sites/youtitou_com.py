@@ -137,7 +137,9 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sHosterUrl = str(aEntry)
-
+            if sHosterUrl.startswith('//'):
+               sHosterUrl = 'https:' + sHosterUrl
+               
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
@@ -164,6 +166,9 @@ def showEdu():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sHosterUrl = aEntry[1]
+            if sHosterUrl.startswith('//'):
+               sHosterUrl = 'https:' + sHosterUrl
+               
             sId = sHosterUrl.rsplit('/', 1)[1]
             sTitle = aEntry[0]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
