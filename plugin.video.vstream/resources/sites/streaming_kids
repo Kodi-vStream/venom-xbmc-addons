@@ -11,8 +11,10 @@ from resources.lib.util import cUtil
 import urllib2,urllib,re,xbmc
 import unicodedata,htmlentitydefs
 
-SITE_IDENTIFIER = 'streaming_kids'
-SITE_NAME = 'Streaming-kids' 
+
+
+SITE_IDENTIFIER = 'streaming_kids_com'
+SITE_NAME = 'Streaming-kids.com' 
 SITE_DESC = 'Jeunesse Films' 
 
 URL_MAIN = 'http://streaming-kids.com/'
@@ -21,7 +23,6 @@ URL_SEARCH = ('http://www.fullmoviz.org/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = ('http://streaming-kids.com/film-animation-en-streaming', 'showMovies')
-NEXT_PAGE = ('http://streaming-kids.com/film-animation-en-streaming/page/')
 
 def load():
     oGui = cGui() 
@@ -128,7 +129,7 @@ def showMovies(sSearch = ''):
             
         cConfig().finishDialog(dialog)
            
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage = __checkForNextPage(sUrl)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
@@ -138,12 +139,14 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory() 
 
 	
-def __checkForNextPage(sHtmlContent):
-    sPattern = '<li class="" id="page_.+?"><a href="([^<]+)" rel.+?>'
+def __checkForNextPage(sUrl):
+    if '/page/' not in sUrl:
+        return sUrl + '/page/2'
     oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    aResult = oParser.parse(sUrl, '^(.+?)\/page\/([0-9]+)')
     if (aResult[0] == True):
-        return str(NEXT_PAGE) + str(aResult[1][0])
+        cConfig().log(str(aResult[1][0][0]) + '/page/' + str(int (aResult[1][0][1])+1))
+        return str(aResult[1][0][0]) + '/page/' + str(int (aResult[1][0][1])+1)
  
     return False
    
