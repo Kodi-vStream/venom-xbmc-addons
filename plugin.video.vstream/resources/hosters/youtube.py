@@ -2,8 +2,10 @@
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
-from resources.lib.parser import cParser 
-import re,xbmcgui,urllib
+from resources.lib.parser import cParser
+from resources.lib import util
+import re
+import json
 
 URL_MAIN = 'http://keepvid.com/?url='
 
@@ -57,12 +59,66 @@ class cHoster(iHoster):
         return
     
     def getMediaLink(self):
-        return self.__getMediaLinkForGuest()
-
-    def __getMediaLinkForGuest(self):
-        oParser = cParser()
+        first_test = self.__getMediaLinkForGuest2()
+        if first_test != False:
+            return first_test
+        else:
+            return self.__getMediaLinkForGuest()
         
-        sUrl = urllib.quote_plus(self.__sUrl)
+    def __getMediaLinkForGuest2(self):
+    
+        oRequestHandler = cRequestHandler(self.__sUrl)
+        sHtml = oRequestHandler.request()
+
+        try:
+            #note doit etre '{'sHtmlcontent'}'  | 18 premier '{'
+            player_conf = sHtml[18 + sHtml.find("ytplayer.config = "):sHtml.find(";ytplayer.load =")]
+            bracket_count = 0
+            for i, char in enumerate(player_conf):
+                if char == "{":
+                    bracket_count += 1
+                elif char == "}":
+                    bracket_count -= 1
+                    if bracket_count == 0:
+                        break
+            else:
+                util.VSlog("Cannot get JSON from HTML")
+
+            index = i + 1
+            data = json.loads(player_conf[:index])
+
+        except Exception as e:
+            util.VSlog("Cannot decode JSON: {0}"+str(e))
+
+
+        stream_map = parse_stream_map(data["args"]["url_encoded_fmt_stream_map"])
+
+        if not (stream_map == False):
+            video_urls = zip(stream_map["url"],stream_map["quality"])
+            # initialisation des tableaux
+            url=[]
+            qua=[]
+            # Replissage des tableaux
+            for i in video_urls:
+                url.append(str(i[0]))
+                qua.append(str(i[1]))   
+            # Si une seule url
+            if len(url) == 1:
+                return True, url[0]
+            # si plus de une
+            elif len(url) > 1:
+            # Afichage du tableau
+                ret = util.VScreateDialogSelect(qua)
+                if (ret > -1):
+                    return True, url[ret]
+        else:
+            return False
+            
+    def __getMediaLinkForGuest(self):
+
+        oParser = cParser()
+ 
+        sUrl = util.QuotePlus(self.__sUrl)
         
         oRequest = cRequestHandler('%s%s' % (URL_MAIN,sUrl))
         sHtmlContent = oRequest.request()
@@ -71,12 +127,9 @@ class cHoster(iHoster):
         sHtmlContent2 = re.search(sPattern,sHtmlContent,re.DOTALL)
         if not sHtmlContent2:
             return False,False
-            
-        oParser = cParser()
         
         sPattern = '<a href="([^"]+)".+?alt=""/>([^<]+)<\/span>' 
         aResult = oParser.parse(sHtmlContent2.group(1),sPattern)
-
         if (aResult[0] == True):
             # initialisation des tableaux
             url=[]
@@ -84,7 +137,6 @@ class cHoster(iHoster):
             # Replissage des tableaux
             for i in aResult[1]:
                 b = re.sub('&title=.+','',i[0]) #testé xx fois ok
-                #xbmc.log(str(b))
                 url.append(str(b))
                 qua.append(str(i[1]))   
             # Si une seule url
@@ -93,8 +145,7 @@ class cHoster(iHoster):
             # si plus de une
             elif len(url) > 1:
             # Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
+                ret = util.VScreateDialogSelect(qua)
                 if (ret > -1):
                     api_call = url[ret]
 
@@ -102,3 +153,27 @@ class cHoster(iHoster):
             return True, api_call
             
         return False, False
+        
+    
+def parse_stream_map(sHtml):
+    if 'signature' in sHtml:
+        videoinfo = {"itag": [],
+                     "url": [],
+                     "quality": [],
+                     "fallback_host": [],
+                     "s": [],
+                     "type": [] }
+
+        # Split individual videos
+        videos = sHtml.split(",")
+        # Unquote the characters and split to parameters
+        videos = [video.split("&") for video in videos]
+        for video in videos:
+            for kv in video:
+                key, value = kv.split("=")
+                videoinfo.get(key, []).append(util.Unquote(value))
+
+        return videoinfo
+        
+    else:
+        return False
