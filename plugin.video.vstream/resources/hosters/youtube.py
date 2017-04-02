@@ -1,5 +1,11 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+# type
+# https://www.youtube.com/embed/etc....        
+# https://www.youtube.com/watch?v=etc... 
+# http://www.youtube-nocookie.com/v/etc...
+# https://youtu.be/etc...
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
@@ -50,7 +56,10 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
+        self.__sUrl = sUrl
+        self.__sUrl = self.__sUrl.rsplit('/', 1)[1]
+        self.__sUrl = self.__sUrl.replace('watch?v=', '')
+        self.__sUrl = 'https://www.youtube.com/watch?v=' + str(self.__sUrl)
 
     def checkUrl(self, sUrl):
         return True
