@@ -19,7 +19,7 @@ import re, urllib, urllib2
 import xbmc
 
 SITE_IDENTIFIER = 'tv_streaming_ch'
-SITE_NAME = 'Tv-streaming.ch'
+SITE_NAME = 'Tv-streaming'
 SITE_DESC = 'Film/Serie/Documentaire/Anime en streaming'
 
 #URL_MAIN = 'http://tv-streaming.ch'
@@ -29,7 +29,7 @@ URL_MAIN = 'http://www.tv-streaming-serie.xyz/'
 
 MOVIE_MOVIE = (URL_MAIN + '/category/films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + '/category/films/', 'showMovies')
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (True, 'showGenres')
 
 SERIE_SERIES = (URL_MAIN + '/category/series-tv/', 'showMovies')
 SERIE_NEWS = (URL_MAIN + '/category/series-tv/', 'showMovies')
@@ -59,23 +59,23 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'films_news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'films_genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series Nouveautés', 'series_news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series VF', 'series_vf.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF)', 'series_vf.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series VOSTFR', 'series_vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries (VOSTFR)', 'series_vostfr.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/sitcoms/')
@@ -83,15 +83,15 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés VF', 'animes_vf.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF)', 'animes_vf.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés VOSTFR', 'animes_vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'animes_vostfr.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ENFANTS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ENFANTS[1] ,'Dessins animes', 'animes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ENFANTS[1] ,'Dessins animés', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
@@ -122,7 +122,7 @@ def ReplayTV():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/television/tv-realite/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'TV realite', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'TV réalité', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/television/spectacles/')
@@ -138,17 +138,15 @@ def ReplayTV():
             
     oGui.setEndOfDirectory()        
     
-def showGenre():
+def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
     liste.append( ['Action',URL_MAIN + '/category/films/action-streaming/'] )
     liste.append( ['Animation',URL_MAIN + '/category/films/animation-streaming/'] )
     liste.append( ['Arts Martiaux',URL_MAIN + '/category/films/arts-martiaux/'] )
     liste.append( ['Aventure',URL_MAIN + '/category/films/aventure-streaming/'] )
-    liste.append( ['Comedie',URL_MAIN + '/category/films/comedie-streaming/'] )
+    liste.append( ['Comédie',URL_MAIN + '/category/films/comedie-streaming/'] )
     liste.append( ['Drame',URL_MAIN + '/category/films/drame-streaming/'] )
     liste.append( ['Espionnage',URL_MAIN + '/category/films/espionnage-streaming/'] )   
     liste.append( ['Fantastique',URL_MAIN + '/category/films/fantastique/'] )

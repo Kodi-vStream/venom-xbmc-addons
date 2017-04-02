@@ -11,18 +11,18 @@ from resources.lib.util import cUtil
 import re,xbmcgui,urllib,unicodedata
 
 SITE_IDENTIFIER = 'streamay_bz'
-SITE_NAME = 'Streamay.bz'
-SITE_DESC = 'films en streaming'
+SITE_NAME = 'Streamay'
+SITE_DESC = 'Films/ Séries & Mangas en streaming'
 URL_MAIN = 'https://streamay.bz/'
 
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/recents', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'films?p=populaire', 'showMovies')
-MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenre')
+MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
 
 SERIE_SERIE = (URL_MAIN + 'series/alphabet', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
-SERIE_GENRES = (URL_MAIN + 'series/', 'showGenre')
+SERIE_GENRES = (URL_MAIN + 'series/', 'showGenres')
 
 ANIM_ANIMS = (URL_MAIN + 'mangas', 'showMovies')
 
@@ -38,35 +38,35 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Nouveautés', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films Les plus vues', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'films_views.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films Genre', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://parannee')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Années', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Par Années)', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Series Nouveautés', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIE[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIE[1], 'Series Liste Complete', 'series.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIE[1], 'Séries', 'series.png', oOutputParameterHandler)  
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Series Genre', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animes', 'animes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -92,7 +92,7 @@ def selectAnn():
     sUrl = URL_MAIN + 'films/annee/' + newNum
     return sUrl
 
-def showGenre():
+def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -103,16 +103,16 @@ def showGenre():
     liste.append( ['Arts Martiaux',sUrl + 'genre/arts-martiaux'] )
     liste.append( ['Aventure',sUrl + 'genre/aventure'] )
     liste.append( ['Biopic',sUrl + 'genre/biopic'] )
-    liste.append( ['Comedie',sUrl + 'genre/comedie'] )
-    liste.append( ['Comedie Dramatique',sUrl + 'genre/comedie-dramatique'] )
-    liste.append( ['Comedie Musicale',sUrl + 'genre/comedie-musicale'] )
+    liste.append( ['Comédie',sUrl + 'genre/comedie'] )
+    liste.append( ['Comédie Dramatique',sUrl + 'genre/comedie-dramatique'] )
+    liste.append( ['Comédie Musicale',sUrl + 'genre/comedie-musicale'] )
     liste.append( ['Crime',sUrl + 'genre/crime'] )
     liste.append( ['Dessin Animé',sUrl + 'genre/dessin-anime'] )
     liste.append( ['Divers',sUrl + 'genre/divers'] )
     liste.append( ['Documentaire',sUrl + 'genre/documentaire'] )
     liste.append( ['Drame',sUrl + 'genre/drame'] )
     liste.append( ['Drama',sUrl + 'genre/drama'] )
-    liste.append( ['Epouvante Horreur',sUrl + 'genre/epouvante-horreur'] ) 
+    liste.append( ['Epouvante Horreur',sUrl + 'genre/epouvante-horreur'] )
     liste.append( ['Espionnage',sUrl + 'genre/espionnage'] )
     liste.append( ['Famille',sUrl + 'genre/famille'] )
     liste.append( ['Fantastique',sUrl + 'genre/fantastique'] )  
@@ -123,7 +123,7 @@ def showGenre():
     liste.append( ['Médical',sUrl + 'genre/medical'] )
     liste.append( ['Musical',sUrl + 'genre/musical'] )
     liste.append( ['Policier',sUrl + 'genre/policier'] )
-    liste.append( ['Peplum',sUrl + 'genre/peplum'] )
+    liste.append( ['Péplum',sUrl + 'genre/peplum'] )
     liste.append( ['Romance',sUrl + 'genre/romance'] )
     liste.append( ['Science Fiction',sUrl + 'genre/science-fiction'] )
     liste.append( ['Soap',sUrl + 'genre/soap'] )
@@ -300,7 +300,6 @@ def showSaisons():
         cConfig().finishDialog(dialog)
            
     oGui.setEndOfDirectory()
-        
 
 def showHosters():
     oGui = cGui()

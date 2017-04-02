@@ -11,14 +11,12 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
     
 SITE_IDENTIFIER = 'videobuzzy_com'
-SITE_NAME = 'Videobuzzy.com'
-SITE_DESC = 'Selection des vidéos les plus populaires de Videobuzzy'
+SITE_NAME = 'Videobuzzy'
+SITE_DESC = 'Sélection des vidéos les plus populaires de Videobuzzy'
 
 URL_MAIN = 'http://www.videobuzzy.com/'
 
 MOVIE_NETS = ('http://www.videobuzzy.com/top-video.php', 'showMovies')
-
-MOVIE_NETS = ('http://', 'load')
 NETS_NEWS =  ('http://www.videobuzzy.com/top-video.php', 'showMovies')
 NETS_GENRES = (True, 'load')
 
@@ -42,9 +40,8 @@ def load():
     liste.append( ["Télévision","http://www.videobuzzy.com/Television.htm"] )
     liste.append( ["Music","http://www.videobuzzy.com/Musique.htm"] )
     liste.append( ["Sport","http://www.videobuzzy.com/Sport.htm"] )
-    liste.append( ["Cinema","http://www.videobuzzy.com/Cinema.htm"] )
+    liste.append( ["Cinéma","http://www.videobuzzy.com/Cinema.htm"] )
     
-                
     for sTitle,sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()
@@ -62,7 +59,6 @@ def showSearch():
             showMovies(sUrl)
             oGui.setEndOfDirectory()
             return  
-    
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -106,7 +102,6 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     sPattern = '<span class="current">.+?</span><a href="(.+?)" title=\'.+?\'>.+?</a>'
     
@@ -118,7 +113,6 @@ def __checkForNextPage(sHtmlContent):
 
     return False
     
-
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -128,8 +122,7 @@ def showHosters():
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-               
-        
+    
     sPattern = 'file: "(.+?)", label: "(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -154,4 +147,3 @@ def showHosters():
         cConfig().finishDialog(dialog) 
                 
     oGui.setEndOfDirectory()
-    

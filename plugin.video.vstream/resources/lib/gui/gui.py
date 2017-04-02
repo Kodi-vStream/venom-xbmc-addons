@@ -353,6 +353,9 @@ class cGui():
 
     #affiche les liens playable
     def addHost(self, oGuiElement, oOutputParameterHandler=''):
+        
+        if cConfig().isKrypton():
+            cGui.CONTENT = 'movies'
 
         if oOutputParameterHandler.getValue('siteUrl'):
             sSiteUrl = oOutputParameterHandler.getValue('siteUrl')
@@ -716,9 +719,7 @@ class cGui():
         xbmc.executebuiltin( 'Container.Refresh' )
 
     def viewBA(self):
-        oGuiElement = cGuiElement()
         oInputParameterHandler = cInputParameterHandler()
-
         sFileName = oInputParameterHandler.getValue('sFileName')
 
         from resources.lib.ba import cShowBA

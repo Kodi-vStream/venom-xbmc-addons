@@ -13,7 +13,7 @@ import xbmc,xbmcgui,urllib,urllib2,re,random,mimetypes,string
 
 SITE_IDENTIFIER = 'siteuptobox' 
 SITE_NAME = '[COLOR dodgerblue]' + 'VotreCompteUptobox' + '[/COLOR]'
-SITE_DESC = 'fichier sur compte uptobox'
+SITE_DESC = 'Fichiers sur compte Uptobox'
 URL_MAIN = 'https://uptobox.com/'
 BURL = 'https://uptobox.com/?op=my_files' 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
@@ -47,7 +47,6 @@ def load():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://Dossier/')
             oGui.addDir(SITE_IDENTIFIER, 'showFolder', 'MesDossiers', 'genres.png', oOutputParameterHandler)    
-     
 
     oGui.setEndOfDirectory()
     

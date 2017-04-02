@@ -1,9 +1,7 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -11,7 +9,7 @@ from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 
 SITE_IDENTIFIER = 'reportagestv_com'
-SITE_NAME = 'ReportagesTV.com'
+SITE_NAME = 'Reportages TV'
 SITE_DESC = 'Reportages TV - Replay des reportages télé français en streaming.'
 
 URL_MAIN = 'http://www.reportagestv.com/'
@@ -23,7 +21,6 @@ DOC_GENRES = (True, 'showGenre')
 URL_SEARCH = ('http://www.reportagestv.com/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-
 def load():
     oGui = cGui()
 
@@ -33,7 +30,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Nouveautés', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Derniers ajouts', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_GENRES[0])
@@ -41,29 +38,6 @@ def load():
 
     oGui.setEndOfDirectory()
 
-def showGenre():
-   
-    oGui = cGui()
- 
-    liste = []
-    liste.append( ["Reportage","http://www.reportagestv.com/"] )
-    liste.append( ["Canal+","http://www.reportagestv.com/category/canal-plus/"] )
-    liste.append( ["D8","http://www.reportagestv.com/category/d8/"] )
-    liste.append( ["France 2","http://www.reportagestv.com/category/france-2/"] )
-    liste.append( ["TF1","http://www.reportagestv.com/category/tf1/"] )
-    liste.append( ["TMC","http://www.reportagestv.com/category/tmc/"] )    
-                
-    for sTitle,sUrl in liste:
-        
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'doc.png', oOutputParameterHandler)
-      
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Emmisions', 'doc.png', oOutputParameterHandler)
-    
-    oGui.setEndOfDirectory() 
 
 def showSearch():
     oGui = cGui()
@@ -74,12 +48,14 @@ def showSearch():
             showMovies(sUrl)
             oGui.setEndOfDirectory()
             return  
-    
 
 def showGenre():
     oGui = cGui()
  
     liste = []
+    liste.append( ["Espionnage","http://www.reportagestv.com/category/espionnage/"] )
+    liste.append( ["Grand-Banditisme","http://www.reportagestv.com/category/grand-ganditisme/"] )
+    liste.append( ["Mafias","http://www.reportagestv.com/category/mafias/"] ) 
     liste.append( ['Canal+ - Nouvelle Vie','http://www.reportagestv.com/category/canal-plus/nouvelle-vie/'] )
     liste.append( ['Canal+ - Spécial Investigation','http://www.reportagestv.com/category/canal-plus/special-investigation/'] )
     liste.append( ['D8 - Au coeur de l\'Enquête','http://www.reportagestv.com/category/d8/au-coeur-de-lenquete/'] )
@@ -89,7 +65,12 @@ def showGenre():
     liste.append( ['TF1 - Appels d\'Urgence','http://www.reportagestv.com/category/tf1/appels-durgence/'] )
     liste.append( ['TF1 - Sept à Huit','http://www.reportagestv.com/category/tf1/sept-a-huit/'] )
     liste.append( ['TMC - 90 Enquêtes','http://www.reportagestv.com/category/tmc/90-enquetes/'] )
-                
+    liste.append( ["Canal+","http://www.reportagestv.com/category/canal-plus/"] )
+    liste.append( ["D8","http://www.reportagestv.com/category/d8/"] )
+    liste.append( ["France 2","http://www.reportagestv.com/category/france-2/"] )
+    liste.append( ["TF1","http://www.reportagestv.com/category/tf1/"] )
+    liste.append( ["TMC","http://www.reportagestv.com/category/tmc/"] ) 
+
     for sTitle,sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()
@@ -116,24 +97,16 @@ def showMovies(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-            
-            sTitle = aEntry[2].replace('&laquo;','<<').replace('&raquo;','>>')
+            sTitle = aEntry[2].replace('&laquo;','<<').replace('&raquo;','>>').replace('&nbsp;','')
             sSin = aEntry[3].replace('&laquo;','<<').replace('&raquo;','>>')
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', aEntry[1], sSin, oOutputParameterHandler)
-        
-        cConfig().finishDialog(dialog)
-            
+            oOutputParameterHandler.addParameter('sThumbnail', aEntry[0])
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', aEntry[0], sSin, oOutputParameterHandler)
+ 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -142,7 +115,6 @@ def showMovies(sSearch = ''):
 
     if not sSearch:
         oGui.setEndOfDirectory()
-
 
 def __checkForNextPage(sHtmlContent):
     sPattern = "<span class='page-numbers current'>.+?<a class='page-numbers' href='(.+?)'>.+?</a>"
@@ -173,7 +145,6 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     
-    
     sRealUrl = __checkForRealUrl(sHtmlContent)
 
     if (sRealUrl != False):
@@ -183,24 +154,16 @@ def showHosters():
     sPattern = '<iframe.+?src="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-
-            aEntry = aEntry.replace('//', 'http://')
             sHosterUrl = str(aEntry)
+            if sHosterUrl.startswith('//'):
+                sHosterUrl = 'http:' + sHosterUrl
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-
-        cConfig().finishDialog(dialog) 
-                
+  
     oGui.setEndOfDirectory()
-    

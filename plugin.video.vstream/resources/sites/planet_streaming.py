@@ -12,15 +12,14 @@ import re
 
 SITE_IDENTIFIER = 'planet_streaming'
 SITE_NAME = 'Planet Streaming'
-SITE_DESC = 'Film de 1900 jusqu à 2016, contient du HD'
+SITE_DESC = 'Films de 1900 jusqu à 2016, contient du HD'
 
 URL_MAIN = 'http://www.planet-streaming.com/'
  
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'regarder-film/', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'xfsearch/hd/', 'showMovies')
- 
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (True, 'showGenres')
  
 URL_SEARCH = ('' , 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -34,22 +33,21 @@ def load():
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautes', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD', 'top.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD', 'films_hd.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Tout Les Films', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genre', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
            
     oGui.setEndOfDirectory()
- 
  
 def showSearch():
     oGui = cGui()
@@ -60,33 +58,31 @@ def showSearch():
         oGui.setEndOfDirectory()
         return 
 
-def showGenre():
+def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
     liste.append( ['Animation',URL_MAIN + 'regarder-film/animation/'] )    
     liste.append( ['Action',URL_MAIN + 'regarder-film/action/'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'regarder-film/arts-martiaux/"'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'regarder-film/arts-martiaux/'] )
     liste.append( ['Aventure',URL_MAIN + 'regarder-film/aventure/'] )
     liste.append( ['Biopic',URL_MAIN + 'regarder-film/biopic/'] )
-    liste.append( ['Comedie Musicale',URL_MAIN + 'regarder-film/comedie-musicale/'] )
-    liste.append( ['Comedie',URL_MAIN + 'regarder-film/comedie/'] )
-    liste.append( ['Comedie Dramatique',URL_MAIN + 'regarder-film/comedie-dramatique/e'] )
+    liste.append( ['Comédie',URL_MAIN + 'regarder-film/comedie/'] )
+    liste.append( ['Comédie Dramatique',URL_MAIN + 'regarder-film/comedie-dramatique/'] )
+    liste.append( ['Comédie Musicale',URL_MAIN + 'regarder-film/comedie-musicale/'] )
     liste.append( ['Documentaire',URL_MAIN + 'regarder-film/documentaire/'] )
     liste.append( ['Drame',URL_MAIN + 'regarder-film/drame/'] )
     liste.append( ['Epouvante Horreur',URL_MAIN + 'regarder-film/epouvante-horreur/'] )
-    liste.append( ['Espionage',URL_MAIN + 'regarder-film/espionnage/'] )  
+    liste.append( ['Espionnage',URL_MAIN + 'regarder-film/espionnage/'] )  
     liste.append( ['Fantastique',URL_MAIN + 'regarder-film/fantastique/'] )
     liste.append( ['Famille',URL_MAIN + 'regarder-film/famille/'] )
     liste.append( ['Guerre',URL_MAIN + 'regarder-film/guerre/'] )
     liste.append( ['Historique',URL_MAIN + 'regarder-film/historique/'] )
     liste.append( ['Musical',URL_MAIN + 'regarder-film/musical/'] )
-    liste.append( ['Peplum',URL_MAIN + 'regarder-film/peplum/'] )
-    liste.append( ['Policier',URL_MAIN + 'regarder-film/policier/r'] )
+    liste.append( ['Péplum',URL_MAIN + 'regarder-film/peplum/'] )
+    liste.append( ['Policier',URL_MAIN + 'regarder-film/policier/'] )
     liste.append( ['Romance',URL_MAIN + 'regarder-film/romance/'] )
-    liste.append( ['Sciense Fiction',URL_MAIN + 'regarder-film/science-fiction/'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'regarder-film/science-fiction/'] )
     liste.append( ['Thriller',URL_MAIN + 'regarder-film/thriller/'] )
     liste.append( ['Western',URL_MAIN + 'regarder-film/western/'] )
     liste.append( ['Divers',URL_MAIN + 'regarder-film/divers//'] )
@@ -135,7 +131,6 @@ def showMovies(sSearch = ''):
     
     oParser = cParser()  
     
-    #sPattern = '<div class="fullstream fullstreaming">\s*<img src="([^><"]+)"[^<>]+alt="([^"<>]+)".+?<h3 class="mov-title"><a href="([^><"]+)">.+?<strong>Version<\/strong>(.+?)<hr'
     sPattern = '<div class="fullstream fullstreaming">\s*<img src="([^><"]+)"[^<>]+alt="([^"<>]+)".+?<h3 class="mov-title"><a href="([^><"]+)">.+?<strong>(?:Qualité|Version)(.+?)<\/*strong>'
     
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -172,7 +167,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
             if '/seriestv/' in sUrl or 'saison' in siteUrl or re.match('.+?saison [0-9]+',sTitle,re.IGNORECASE):
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumbnail,'', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, 'series.png', sThumbnail,'', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
            

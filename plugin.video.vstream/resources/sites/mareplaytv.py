@@ -11,7 +11,7 @@ from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'mareplaytv'
-SITE_NAME = 'MaReplayTV'
+SITE_NAME = 'Ma Replay TV'
 SITE_DESC = 'Replay TV Divers: peu de sources'
 
 URL_MAIN = 'http://mareplaytv.com/'
@@ -22,7 +22,6 @@ FUNCTION_SEARCH = 'showMovies'
 REPLAYTV_GENRES = (True, 'showGenre')
 REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
 REPLAYTV_REPLAYTV = (URL_MAIN + 'videos/', 'showMovies')
-
 
 def load():
     oGui = cGui()
@@ -55,7 +54,6 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
-
 def showGenre():
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
@@ -83,7 +81,6 @@ def showGenre():
 
     oGui.setEndOfDirectory()
 
-
 def showMovies(sSearch = ''):
 
     oGui = cGui()
@@ -100,7 +97,6 @@ def showMovies(sSearch = ''):
     else:
         sPattern = '<div class="item-img"> *<a title="([^"]+)" href="([^"]+)"><img.+?src="([^"]+)"'
 
-    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -128,8 +124,7 @@ def showMovies(sSearch = ''):
             sTitle = sTitle.replace(',','')
             sTitle = sTitle.replace('Vidéo','')
             sTitle = re.sub('(?:du )*([0-9]+ [a-zA-Zéèû]+ [0-9]{4})','[\\1]', sTitle)
-            
-            
+
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
             oOutputParameterHandler = cOutputParameterHandler()
@@ -150,7 +145,6 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<span class=.page-numbers current.>[0-9]+<\/span><\/li><li><a class=.page-numbers. href=["\']([^"\']+)["\']>[0-9]+<'
@@ -167,14 +161,12 @@ def showEpisode():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
-    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
     sPattern = '<a href="([^"<]+tape=.+?)">(\d+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
     
     #Si pas plusieurs liens on affiche direct les hosts.
     if (aResult[0] == False):
@@ -187,7 +179,6 @@ def showEpisode():
 
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
-
 
             sTitle =  '(' + aEntry[1] + ')' + sMovieTitle
             sUrl = str(aEntry[0])

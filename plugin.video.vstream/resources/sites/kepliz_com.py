@@ -14,7 +14,7 @@ import unicodedata,htmlentitydefs
 #Je garde le nom kepliz pour pas perturber
 SITE_IDENTIFIER = 'kepliz_com'
 SITE_NAME = 'Kepliz'
-SITE_DESC = 'Film en streaming'
+SITE_DESC = 'Films en streaming'
 #URL_HOST = 'http://www.grudal.com/'
 URL_HOST = 'http://www.ozporo.com/'
 URL_MAIN = 'URL_MAIN'
@@ -28,7 +28,7 @@ HOSTPATTERN = '"link":"([^"]+?)","label":"([^"]+?)"'
 
 #pour l'addon
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (True, 'showGenres')
 MOVIE_HD = (URL_MAIN, 'showMovies')
 
 
@@ -72,24 +72,23 @@ def showSearch():
         oGui.setEndOfDirectory()
         return  
    
-   
-def showGenre():
+def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['A l affiche',URL_MAIN + 'index.php?option=com_content&view=category&id=29'] )
+    liste.append( ['A l\'affiche',URL_MAIN + 'index.php?option=com_content&view=category&id=29'] )
     liste.append( ['Action',URL_MAIN + 'index.php?option=com_content&view=category&id=1'] )
+    liste.append( ['Animation',URL_MAIN + 'index.php?option=com_content&view=category&id=2'] )
     liste.append( ['Aventure',URL_MAIN + 'index.php?option=com_content&view=category&id=4'] )
     liste.append( ['Comédie',URL_MAIN + 'index.php?option=com_content&view=category&id=6'] )
+    liste.append( ['Documentaires',URL_MAIN + 'index.php?option=com_content&view=category&id=26'] )
     liste.append( ['Drame',URL_MAIN + 'index.php?option=com_content&view=category&id=7'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'index.php?option=com_content&view=category&id=9'] ) 
-    liste.append( ['Fantastique',URL_MAIN + 'index.php?option=com_content&view=category&id=8'] )  
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'index.php?option=com_content&view=category&id=9'] )
+    liste.append( ['Fantastique',URL_MAIN + 'index.php?option=com_content&view=category&id=8'] )
     liste.append( ['Policier',URL_MAIN + 'index.php?option=com_content&view=category&id=10'] )
     liste.append( ['Science Fiction',URL_MAIN + 'index.php?option=com_content&view=category&id=11'] )
+    liste.append( ['Spectacle',URL_MAIN + 'index.php?option=com_content&view=category&id=3'] )
     liste.append( ['Thriller',URL_MAIN + 'index.php?option=com_content&view=category&id=12'] )
-    liste.append( ['Animation',URL_MAIN + 'index.php?option=com_content&view=category&id=2'] )
-    liste.append( ['Documentaires',URL_MAIN + 'index.php?option=com_content&view=category&id=26'] )  
-    liste.append( ['Spectacle',URL_MAIN + 'index.php?option=com_content&view=category&id=3'] ) 
                 
     for sTitle,sUrl in liste:
         
@@ -235,7 +234,7 @@ def showHosters():
             
             oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle, sThumb, sThumb, sComm, oOutputParameterHandler)
             
-    #Fomat rare
+    #Format rare
     if not sLink:
         sPattern = FRAMEPATTERN2
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -292,7 +291,6 @@ def showHostersLink():
             if dialog.iscanceled():
                 break
 
-
             sLink = aEntry[0]
             Squality = aEntry[1]
             sTitle = sMovieTitle.replace(' [HD]','')
@@ -347,7 +345,6 @@ def showHostersLink2():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-
 
             sLink = aEntry[0].replace('\/','/')
             Squality = aEntry[1]

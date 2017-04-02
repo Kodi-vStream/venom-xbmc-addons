@@ -11,14 +11,14 @@ from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'filmstreamvk_com'
 SITE_NAME = 'Filmstreamvk'
-SITE_DESC = 'Film Streaming & Série Streaming uniquement sur Netu'
+SITE_DESC = 'Films & Série en Streaming uniquement sur Netu'
 
 URL_MAIN = 'http://filmstreamvk.com/'
 
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'les-plus-vues-films', 'showMovies')
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (True, 'showGenres')
 
 SERIE_SERIES = (URL_MAIN + 'serie', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'serie', 'showMovies')
@@ -37,10 +37,6 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
 
@@ -50,20 +46,12 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
-    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Série (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
-
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)
@@ -83,7 +71,7 @@ def showMoviesSearch():
         oGui.setEndOfDirectory()
         return
 
-def showGenre():
+def showGenres():
     oGui = cGui()
 
     liste = []
@@ -157,7 +145,6 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    
     sPattern = '<div class="moviefilm"><a href=".+?".+?<img src="([^<"]+)".+?<a href="([^<]+)">([^<]+)<\/a>'
 
     oParser = cParser()
@@ -200,7 +187,6 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-        
 def __checkForNextPage(sHtmlContent):
     sPattern = '<span class=\'current\'>.+?</span><a class="page larger" href="(.+?)">'
     oParser = cParser()
@@ -212,7 +198,6 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
-    
 def showLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -319,7 +304,7 @@ def showHostersSerie():
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','')
 
-    sPattern = 'onclick="lecteur_serie\([0-9]+,\'([^<>]+?)\'\);">'
+    sPattern = 'onclick="lecteur_serie\([0-9]+,\'((?:http|\/)[^<>]+?)\'\);">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -362,7 +347,6 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','')
-
 
     sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]'
     oParser = cParser()

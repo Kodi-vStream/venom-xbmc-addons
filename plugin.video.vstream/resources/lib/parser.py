@@ -11,7 +11,7 @@ class cParser:
         return False, aMatches
 
     def __replaceSpecialCharacters(self, sString):
-        return sString.replace('\\/','/').replace('&amp;','&').replace('\xc9','E').replace('&#8211;', '-').replace('&#038;', '&').replace('&rsquo;','\'').replace('\r','').replace('\n','').replace('\t','').replace('&#039;',"'")
+        return sString.replace('\\/','/').replace('&amp;','&').replace('\xc9','E').replace('&#8211;', '-').replace('&#038;', '&').replace('&rsquo;','\'').replace('\r','').replace('\n','').replace('\t','').replace('&#039;',"'").replace('&quot;','"').replace('&gt;','>').replace('&lt;','<')
 
     def parse(self, sHtmlContent, sPattern, iMinFoundValue = 1):
         sHtmlContent = self.__replaceSpecialCharacters(str(sHtmlContent))
@@ -32,5 +32,14 @@ class cParser:
         if (len(aMatches) > 0):
             return aMatches[0]
         return 0
+        
+    def titleParse(self, sHtmlContent, sPattern):
+        sHtmlContent = self.__replaceSpecialCharacters(str(sHtmlContent))
+        aMatches = re.compile(sPattern, re.IGNORECASE)
+        try: 
+            [m.groupdict() for m in aMatches.finditer(sHtmlContent)]              
+            return m.groupdict()
+        except:
+            return {'title': sHtmlContent}
 
 

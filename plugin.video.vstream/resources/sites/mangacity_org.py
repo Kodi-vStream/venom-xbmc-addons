@@ -177,7 +177,7 @@ def showGenres():
             if dialog.iscanceled():
                 break
             
-            sGenre = cUtil().unescape(aEntry[1])
+            sGenre = cUtil().unescape(aEntry[1]).decode("latin-1").encode("utf-8")
             Link = cUtil().unescape(aEntry[0])
             
             #sGenre = unicode(sGenre,'iso-8859-1')

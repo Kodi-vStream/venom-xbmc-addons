@@ -103,7 +103,11 @@ class cFav:
 
             for data in row:
 
-                title = data[1]
+                try:
+                    title = data[1].encode('utf-8')
+                except:
+                    title = data[1]
+                                        
                 siteurl = urllib.unquote_plus(data[2])
                 site = data[3]
                 function = data[4]

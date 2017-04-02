@@ -12,7 +12,7 @@ from resources.lib import util
 import re
 
 SITE_IDENTIFIER = 'ddlfrench_org'
-SITE_NAME = 'ddlfrench'
+SITE_NAME = 'Ddlfrench'
 SITE_DESC = 'TOP REPLAY TV'
 
 URL_MAIN = 'http://ddlfrench.org/'
@@ -83,7 +83,6 @@ def showGenres():
        
     oGui.setEndOfDirectory() 
 
-
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
@@ -95,8 +94,7 @@ def showMovies(sSearch = ''):
    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-   
-
+    
     #sPattern = "<div class='mediathumb'>.*?<a href='([^<]+)' title='([^<]+)'>.*?<img src='([^<]+)' alt='(.+?)'>.*?</a>"
     sPattern = '<div class="mov-i img-box"><img src="([^<]+)" alt="([^<]+)" /><div class="mov-mask flex-col ps-link" data-link="([^<]+)"><span'
 
@@ -109,7 +107,6 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-
 
             sTitle = aEntry[1]
             sUrl = str(aEntry[2])
@@ -131,7 +128,6 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     sPattern = 'class="pnext"><a href="([^<]+)"><span'
     oParser = cParser()
@@ -141,7 +137,6 @@ def __checkForNextPage(sHtmlContent):
 
     return False
     
-
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -185,4 +180,3 @@ def showHosters():
         cConfig().finishDialog(dialog) 
   
     oGui.setEndOfDirectory()
-   

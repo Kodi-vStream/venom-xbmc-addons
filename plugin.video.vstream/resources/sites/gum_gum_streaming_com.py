@@ -13,7 +13,7 @@ from resources.lib.parser import cParser
 import xbmc, re
 
 SITE_IDENTIFIER = 'gum_gum_streaming_com'
-SITE_NAME = 'Gum-Gum-Streaming.org'
+SITE_NAME = 'Gum-Gum-Streaming'
 SITE_DESC = 'Animés VF/VOSTFR'
 
 URL_MAIN = 'http://gum-gum-streaming.com/'
@@ -24,32 +24,30 @@ ANIM_VFS = (URL_MAIN+'vf', 'showAnimes')
 ANIM_VOSTFRS = (URL_MAIN+'vostfr', 'showAnimes')
 ANIM_MOVIES = (URL_MAIN+'films', 'showMovies')
 
-
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Nouveautés', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)
 
     #oOutputParameterHandler = cOutputParameterHandler()
     #oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    #oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Tous', 'animes.png', oOutputParameterHandler)
+    #oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'VF', 'animes_vf.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF)', 'animes_vf.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'VOSTFR', 'animes_vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'animes_vostfr.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_MOVIES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_MOVIES[1], 'Films', 'animes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showNews():
     oGui = cGui()
@@ -83,7 +81,6 @@ def showNews():
 
         cConfig().finishDialog(dialog)
     oGui.setEndOfDirectory()
-
 
 def showAnimes():
     oGui = cGui()
@@ -120,7 +117,6 @@ def showAnimes():
 
         cConfig().finishDialog(dialog)
     oGui.setEndOfDirectory()
-
 
 def showEpisodes():
     oGui = cGui()
@@ -203,7 +199,6 @@ def showEpisodes():
 
     oGui.setEndOfDirectory()
 
-
 def showMovies():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -236,7 +231,6 @@ def showMovies():
         cConfig().finishDialog(dialog)
     oGui.setEndOfDirectory()
 
-
 def showMovieList():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -265,7 +259,6 @@ def showMovieList():
         cConfig().finishDialog(dialog)
     oGui.setEndOfDirectory()
 
-
 def showHosters():
     oGui = cGui()
 
@@ -285,7 +278,7 @@ def showHosters():
                 sHosterUrl = 'http:' + sHosterUrl
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                oHoster.setDisplayName(sTitle)  # nom affiche
+                oHoster.setDisplayName(sTitle)  #nom affiche
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
     oGui.setEndOfDirectory()

@@ -97,42 +97,42 @@ def GetOpenloadUrl(url,referer):
     return url
     
 #Code updated with code from https://gitlab.com/iptvplayer-for-e2 
-def decodek(k):
-    y = ord(k[0]);
-    e = y - 0x37
-    d = max(2, e)
-    e = min(d, len(k) - 0x24 - 2)
-    t = k[e:e + 0x24]
-    h = 0
-    g = []
-    while h < len(t):
-        f = t[h:h+3]
-        g.append(int(f, 0x8))
-        h += 3
-    v = k[0:e] + k[e+0x24:]
-    p = []
-    i = 0
-    h = 0
-    while h < len(v):
-        B = v[h:h + 2]
-        C = v[h:h + 3]
-        f = int(B, 0x10)
-        h += 0x2
- 
-        if (i % 3) == 0:
-            f = int(C, 8)
-            h += 1
-        elif i % 2 == 0 and i != 0 and ord(v[i-1]) < 0x3c:
-            f = int(C, 0xa)
-            h += 1
-
-        A = g[i % 0xc]
-        f = f ^ 0xd5;
-        f = f ^ A;
-        p.append(chr(f))
-        i += 1
-
-    return "".join(p)
+def decodek(enc):
+    decoded = ''
+    try:
+        a = enc[0:24]
+        b = []
+        for i in range(0, len(a), 8):
+            b.append(int(a[i:i + 8] or '0', 16))
+        enc = enc[24:]
+        j = 0
+        k = 0
+        while j < len(enc):
+            c = 128
+            d = 0
+            e = 0
+            f = 0
+            _more = True
+            while _more:
+                if j + 1 >= len(enc):
+                    c = 143
+                f = int(enc[j:j + 2] or '0', 16)
+                j += 2
+                d += (f & 127) << e
+                e += 7
+                _more = f >= c
+            g = d ^ b[k % 3]
+            for i in range(4):
+                char_dec = (g >> 8 * i) & (c + 127)
+                char = chr(char_dec)
+                if char != '#':
+                    decoded += char
+            k += 1
+    except Exception:
+        return ''
+                
+    return decoded
+            
     
 class cHoster(iHoster):
 
@@ -244,7 +244,7 @@ class cHoster(iHoster):
         if not (code):
             return False,False
             
-        aResult = oParser.parse(code, "window.r='([^']+)';")
+        aResult = oParser.parse(code, "window..='([^']+)';")
         if (aResult[0]):
             ID = aResult[1][0]
             

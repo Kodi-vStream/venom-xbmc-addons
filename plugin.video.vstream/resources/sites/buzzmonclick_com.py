@@ -11,8 +11,8 @@ from resources.lib.util import cUtil
 import re,unicodedata
 
 SITE_IDENTIFIER = 'buzzmonclick_com'
-SITE_NAME = 'buzzmonclick.com'
-SITE_DESC = 'Film Streaming & Serie Streaming: Regardez films et series de qualité entièrement gratuit. Tout les meilleurs streaming en illimité.'
+SITE_NAME = 'BuzzMonClick'
+SITE_DESC = 'Films & Séries en Streaming de qualité entièrement gratuit. Tout les meilleurs streaming en illimité.'
  
 URL_MAIN = 'http://buzzmonclick.com/category/replay-tv/'
 
@@ -35,7 +35,7 @@ def load():
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Replay TV', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Replay TV', 'replay.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://buzzmonclick.com/category/replay-tv/divertissement/')
@@ -47,13 +47,12 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://buzzmonclick.com/category/replay-tv/series-tv/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://buzzmonclick.com/category/replay-tv/tele-realite/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Télé-Réalité', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Télé-Réalité', 'tv.png', oOutputParameterHandler)
 
- 
     oGui.setEndOfDirectory()
   
 def showMoviesSearch():
@@ -94,8 +93,6 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
    
-    #sPattern = 'data-id="[0-9]+" title="([^<]+)" href="([^<]+)"><span class="clip"><img src="([^<]+)" alt="'
-    #sPattern = '<a class="clip-link".+? title="(.+?)" href="([^"]+)".*?<img.*?src="([^"]+)".+?<p class="entry-summary">([^<]+)</p>'
     sPattern ='<div id="(post-[0-9]+)".+?<a class="clip-link".+?title="([^<]+)" href="([^<]+)"><span class="clip"><img src="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -138,9 +135,7 @@ def showMovies(sSearch = ''):
  
     if not sSearch:
         oGui.setEndOfDirectory()
- 
- 
- 
+
 def __checkForNextPage(sHtmlContent):
     sPattern = '<span class=\'current\'>.+?href="(.+?)"'
     oParser = cParser()

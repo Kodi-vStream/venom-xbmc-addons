@@ -11,7 +11,7 @@ from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'libre_stream_org'
-SITE_NAME = 'Libre-stream.com'
+SITE_NAME = 'Libre-stream'
 SITE_DESC = 'films en streaming, vk streaming, youwatch, vimple , streaming hd , streaming 720p , streaming sans limite'
 
 URL_MAIN = 'http://libre-stream.com/'
@@ -41,7 +41,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -53,11 +53,11 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries VF', 'series_vf.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (VF)', 'series_vf.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries VOSTFR', 'series_vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (VOSTFR)', 'series_vostfr.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIE[0])
@@ -73,8 +73,8 @@ def showSearch():
         sUrl = URL_SEARCH[0] + sSearchText  
         showMovies(sUrl)
         oGui.setEndOfDirectory()
-        return  
-    
+        return
+
 def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -108,7 +108,6 @@ def showGenres():
     liste.append( ['Thriller',URL_MAIN + 'films/triller'] )
     liste.append( ['Western',URL_MAIN + 'films/western'] )
 
-                
     for sTitle,sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()
@@ -250,10 +249,8 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
            
-    
         cConfig().finishDialog(dialog)
         
-
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -262,7 +259,6 @@ def showMovies(sSearch = ''):
 
     if not sSearch:
         oGui.setEndOfDirectory()
-
 
 def __checkForNextPage(sHtmlContent):
     sPattern = '<a href="([^<>""]+?)"><i class="fa fa-angle-right"></i></a>'
@@ -274,7 +270,6 @@ def __checkForNextPage(sHtmlContent):
 
     return False
     
-
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
