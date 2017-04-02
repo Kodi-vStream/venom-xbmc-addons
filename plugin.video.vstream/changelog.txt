@@ -12,6 +12,23 @@ Merci au contributeur de la bêta.
 =============================================================================
 - Version 0.5.1 - 02.04.2017
 =============================================================================
+02-04-2017 -- @Lord Venom -- Merge pull request #1107 from Arias800/patch-8  Besoin d'aide pour le changement de page
+02-04-2017 -- @johngf -- Update youtube.py
+02-04-2017 -- @Arias800 -- Update streaming_kids
+02-04-2017 -- @TmpName -- Update mangacity_org.py
+02-04-2017 -- @Arias800 -- Update and rename streaming_kids_com to streaming_kids
+01-04-2017 -- @johngf -- Update les_docus.py
+01-04-2017 -- @Arias800 -- Besoin d'aide changement de page
+01-04-2017 -- @Arias800 -- Besoin d'aide pour le next page
+01-04-2017 -- @Lord Venom -- Merge pull request #1100 from razorex/patch-68  Update streamay_bz.py
+01-04-2017 -- @Lord Venom -- Merge pull request #1103 from razorex/patch-70  Update ajouter_une_source.py
+01-04-2017 -- @Lord Venom -- Merge pull request #1104 from razorex/patch-71  Update french_stream_com.py
+01-04-2017 -- @Lord Venom -- Merge pull request #1105 from razorex/patch-72  Update kepliz_com.py
+31-03-2017 -- @razorex -- Update kepliz_com.py
+31-03-2017 -- @razorex -- Update french_stream_com.py  Correction des menus
+31-03-2017 -- @razorex -- Update ajouter_une_source.py
+31-03-2017 -- @razorex -- Update streamay_bz.py
+31-03-2017 -- @LordVenom -- Changelog 0.5.1
 31-03-2017 -- @LordVenom -- parse title
 31-03-2017 -- @LordVenom -- correction regex
 31-03-2017 -- @johngf -- Update parser.py
