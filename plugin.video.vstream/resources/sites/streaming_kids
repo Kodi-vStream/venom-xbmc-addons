@@ -11,8 +11,8 @@ from resources.lib.util import cUtil
 import urllib2,urllib,re,xbmc
 import unicodedata,htmlentitydefs
 
-SITE_IDENTIFIER = 'streaming_kids_com'
-SITE_NAME = 'Streaming-kids.com' 
+SITE_IDENTIFIER = 'streaming_kids'
+SITE_NAME = 'Streaming-kids' 
 SITE_DESC = 'Jeunesse Films' 
 
 URL_MAIN = 'http://streaming-kids.com/'
