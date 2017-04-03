@@ -17,30 +17,27 @@ from resources.lib.dl_deprotect import DecryptDlProtect
 #clone de dpstreaming.tv
 
 SITE_IDENTIFIER = 'streamingk_com'
-SITE_NAME = 'Streamingk.com'
-SITE_DESC = 'Film Streaming & Serie Streaming: Regardez films et series de qualité entièrement gratuit. Tout les meilleurs streaming en illimité.'
+SITE_NAME = 'StreamingK'
+SITE_DESC = 'Films, Série & Mangas en streaming. Tout les meilleurs streaming en illimité.'
 
-URL_MAIN = 'http://streamingk.com'
+URL_MAIN = 'http://streamingk.com/'
 
-MOVIE_NEWS = ('http://streamingk.com/category/films/', 'showMovies')
-MOVIE_MOVIE = ('http://streamingk.com/category/films/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'category/films/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'category/films/', 'showMovies')
+MOVIE_GENRES = (True, 'showGenres')
 
-MOVIE_GENRES = (True, 'showGenre')
+SERIE_SERIES = (URL_MAIN + 'category/series-tv/', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'category/series-tv/', 'showMovies')
 
-SERIE_SERIES = ('http://streamingk.com/category/series-tv/', 'showMovies')
-SERIE_NEWS = ('http://streamingk.com/category/series-tv/', 'showMovies')
+ANIM_ANIMS = (URL_MAIN + 'category/mangas/', 'showMovies')
+ANIM_NEWS = (URL_MAIN + 'category/mangas/', 'showMovies')
 
-ANIM_ANIMS = ('http://streamingk.com/category/mangas/', 'showMovies')
-ANIM_NEWS = ('http://streamingk.com/category/mangas/', 'showMovies')
+REPLAYTV_REPLAYTV = (URL_MAIN + 'category/emissions-tv/', 'showMovies')
 
-REPLAYTV_REPLAYTV = ('http://streamingk.com/category/emissions-tv/', 'showMovies')
+#SPORT_SPORTS = (URL_MAIN + 'category/sport/', 'showMovies')
 
-#SPORT_SPORTS = ('http://streamingk.com/category/sport/', 'showMovies')
-
-URL_SEARCH = ('http://streamingk.com/?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
-
-
 
 def load(): 
     oGui = cGui()
@@ -51,23 +48,23 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films Nouveautés', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films Genres', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Series Nouveautés', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animes Nouveautés', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Emissions TV', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Emissions TV', 'replay.png', oOutputParameterHandler)
     
     # oOutputParameterHandler = cOutputParameterHandler()
     # oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
@@ -84,42 +81,40 @@ def showMoviesSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
-    
 
-def showGenre():
+def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-
-    liste.append( ['Action','http://streamingk.com/category/films/action/'] )
-    liste.append( ['Emission TV','http://streamingk.com/category/emissions-tv/'] )
-    liste.append( ['Animation','http://streamingk.com/category/films/animation/'] )
-    liste.append( ['Arts Martiaux','http://streamingk.com/category/films/arts-martiaux/'] )
-    liste.append( ['Aventure','http://streamingk.com/category/films/aventure-films/'] )
-    liste.append( ['Comedie','http://streamingk.com/category/films/comedie/'] )
-    liste.append( ['Documentaire','http://streamingk.com/category/documentaire/'] )
-    liste.append( ['Drame','http://streamingk.com/category/films/drame/'] )
-    liste.append( ['Espionnage','http://streamingk.com/category/films/espionnage/'] )
-    liste.append( ['Famille','http://streamingk.com/category/films/famille/'] )
-    liste.append( ['Fantastique','http://streamingk.com/category/films/fantastique/'] )
-    liste.append( ['Guerre','http://streamingk.com/category/films/guerre/'] )
-    liste.append( ['Historique','http://streamingk.com/category/films/historique/'] )
-    liste.append( ['Epouvante-Horreur','http://streamingk.com/category/films/horreur/'] )
-    liste.append( ['Musical','http://streamingk.com/category/films/musical/'] )
-    liste.append( ['Policier','http://streamingk.com/category/films/policier/'] )
-    liste.append( ['Romance','http://streamingk.com/category/films/romance/'] )
-    liste.append( ['Science-Fiction','http://streamingk.com/category/films/science-fiction/'] )
-    liste.append( ['Spectacle','http://streamingk.com/category/films/spectacle/'] )
-    liste.append( ['Thriller','http://streamingk.com/category/films/thriller/'] )
-    liste.append( ['Western','http://streamingk.com/category/films/western/'] )
+    liste.append( ['Action',URL_MAIN + 'category/films/action/'] )
+    liste.append( ['Emission TV',URL_MAIN + 'category/emissions-tv/'] )
+    liste.append( ['Animation',URL_MAIN + 'category/films/animation/'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'category/films/arts-martiaux/'] )
+    liste.append( ['Aventure',URL_MAIN + 'category/films/aventure-films/'] )
+    liste.append( ['Comédie',URL_MAIN + 'category/films/comedie/'] )
+    liste.append( ['Documentaire',URL_MAIN + 'category/documentaire/'] )
+    liste.append( ['Drame',URL_MAIN + 'category/films/drame/'] )
+    liste.append( ['Espionnage',URL_MAIN + 'category/films/espionnage/'] )
+    liste.append( ['Famille',URL_MAIN + 'category/films/famille/'] )
+    liste.append( ['Fantastique',URL_MAIN + 'category/films/fantastique/'] )
+    liste.append( ['Guerre',URL_MAIN + 'category/films/guerre/'] )
+    liste.append( ['Historique',URL_MAIN + 'category/films/historique/'] )
+    liste.append( ['Epouvante-Horreur',URL_MAIN + 'category/films/horreur/'] )
+    liste.append( ['Musical',URL_MAIN + 'category/films/musical/'] )
+    liste.append( ['Policier',URL_MAIN + 'category/films/policier/'] )
+    liste.append( ['Romance',URL_MAIN + 'category/films/romance/'] )
+    liste.append( ['Science-Fiction',URL_MAIN + 'category/films/science-fiction/'] )
+    liste.append( ['Spectacle',URL_MAIN + 'category/films/spectacle/'] )
+    liste.append( ['Thriller',URL_MAIN + 'category/films/thriller/'] )
+    liste.append( ['Western',URL_MAIN + 'category/films/western/'] )
 
     for sTitle,sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'films_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -243,11 +238,9 @@ def showSeries(sLoop = False):
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
 
-
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
-
 
 def __checkForNextPage(sHtmlContent):
     sPattern = '<span class=\'current\'>.+?</span><a class="page larger" href="(.+?)">'
@@ -259,7 +252,6 @@ def __checkForNextPage(sHtmlContent):
         return sUrl
 
     return False
-
 
 def showHosters(sLoop = False):
     oGui = cGui()
@@ -316,9 +308,7 @@ def showHosters(sLoop = False):
 
         cConfig().finishDialog(dialog)
 
-
     oGui.setEndOfDirectory()
-
 
 def serieHosters():
     oGui = cGui()
