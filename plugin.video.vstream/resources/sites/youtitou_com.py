@@ -9,7 +9,7 @@ from resources.lib.parser import cParser
 import re
 
 SITE_IDENTIFIER = 'youtitou_com'
-SITE_NAME = 'You[COLOR green]Titou[/COLOR]'
+SITE_NAME = 'YouTitou'
 SITE_DESC = 'Plus de 900 dessins animés gratuits classés par âge'
 
 URL_MAIN = 'http://www.youtitou.com/'
