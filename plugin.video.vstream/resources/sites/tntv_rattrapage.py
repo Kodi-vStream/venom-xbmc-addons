@@ -13,17 +13,15 @@ from resources.lib.util import cUtil
 import re,unicodedata
 
 SITE_IDENTIFIER = 'tntv_rattrapage'
-SITE_NAME = 'Tntv-rattrapage.overblog.com'
+SITE_NAME = 'Tn tv rattrapage'
 SITE_DESC = 'Replay TV'
 
-URL_MAIN = 'http://tntv-rattrapage.overblog.com'
+URL_MAIN = 'http://tntv-rattrapage.overblog.com/'
 
 REPLAYTV_NEWS = ('http://tntv-rattrapage.overblog.com/', 'showMovies')
-
 REPLAYTV_REPLAYTV = ('xyz', 'showGenre')
 
-URL_SEARCH = ('http://tntv-rattrapage.overblog.com/search/','showMovies')
-
+URL_SEARCH = (URL_MAIN + 'search/','showMovies')
 
 #FUNCTION_SEARCH = 'showMovies'
 
@@ -36,15 +34,14 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Nouvelle Emission', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Nouvelles Emissions', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'xyz')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Emission par Categorie', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Emissions par Catégories', 'tv.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
 
- 
 def showSearch():
     oGui = cGui()
 
@@ -123,7 +120,6 @@ def showGenre():
                 oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()
-    
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -185,7 +181,6 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
     sPattern = 'class="ob-page ob-page-current ".+?href="(.+?)".+?class="ob-page ob-page-link ob-page-next"'
     oParser = cParser()
@@ -205,7 +200,6 @@ def showHoster():
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
     
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
@@ -242,7 +236,6 @@ def showHoster():
             sTitle = sMovieTitle
             if aEntry[2]:
                 sTitle = sTitle + 'Ep ' + aEntry[2]
-
 
             sHosterUrl = sUrl
             oHoster = cHosterGui().checkHoster(sHosterUrl)
