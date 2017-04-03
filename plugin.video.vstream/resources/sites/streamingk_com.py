@@ -17,7 +17,7 @@ from resources.lib.dl_deprotect import DecryptDlProtect
 #clone de dpstreaming.tv
 
 SITE_IDENTIFIER = 'streamingk_com'
-SITE_NAME = 'Streaming[COLOR red]K[/COLOR]'
+SITE_NAME = 'StreamingK'
 SITE_DESC = 'Films, Série & Mangas en streaming. Tout les meilleurs streaming en illimité.'
 
 URL_MAIN = 'http://streamingk.com/'
