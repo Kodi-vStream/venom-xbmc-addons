@@ -148,8 +148,8 @@ def showMovies(sSearch = '', page = 1):
         sUrl = sSearch
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
-    if URL_SEARCH[0] in sSearch:
-        bGlobal_Search = True
+    #if URL_SEARCH[0] in sSearch:
+        #bGlobal_Search = True
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
@@ -157,8 +157,7 @@ def showMovies(sSearch = '', page = 1):
     
     #sPattern = 'class="lister-item.*?<img\salt="(.*?)".*?loadlate="(.*?\.jpg)".*?class="lister-item-index.*?>(.*?)</span>.*?class="lister-item-year.*?>\((\d+)\)</span.*?title="Users rated this (.*?\/10)'
     
-    sPattern  ='class="lister-item-image.+?<img\salt="([^"]+)".+?loadlate="([^"]+)".+?class="lister-item-index.+?>([^<]+)</span>.+?class="lister-item-year.+?>([^<]+)</span.+?title="Users rated this(.+?)-'
-		
+    sPattern  ='class="lister-item-image.+?<img\salt="([^"]+)".+?loadlate="([^"]+)".+?class="lister-item-index.+?>([^<]+)</span>.+?class="lister-item-year.+?>([^<]+)</span.+?title="Users rated this(.+?)\s'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -176,10 +175,10 @@ def showMovies(sSearch = '', page = 1):
             #sTitle = unescape(str(aEntry[1]))
             #sTitle = sTitle.encode( "utf-8")
 
-            sTitle = ('[COLOR azure]%s [/COLOR]%s [COLOR beige]%s [/COLOR][COLOR fuchsia]%s[/COLOR]') % (aEntry[2], aEntry[0], aEntry[3], aEntry[4])
+            sTitle = ('%s %s %s [COLOR fuchsia]%s[/COLOR]') % (aEntry[2], aEntry[0], aEntry[3], aEntry[4])
             sMovieTitle=re.sub('(\[.*\])','', sTitle)
             sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle)
-            sTitle2=re.sub('(.*)(\[.*\])','\\1 [COLOR orange]\\2[/COLOR]', sTitle)
+            #sTitle2=re.sub('(.*)(\[.*\])','\\1 [COLOR orange]\\2[/COLOR]', sTitle)
             sThumbnail = aEntry[1].replace('UX67', 'UX328').replace('UY98', 'UY492').replace('67','0').replace('98','0')
             
             #sCom = unicode(aEntry[3], 'utf-8')#converti en unicode
