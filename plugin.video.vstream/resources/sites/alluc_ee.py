@@ -10,7 +10,7 @@ from resources.lib.parser import cParser
 import re
  
 SITE_IDENTIFIER = 'alluc_ee'
-SITE_NAME = '[COLOR orange]Alluc.ee[/COLOR]'
+SITE_NAME = 'Alluc.ee'
 SITE_DESC = 'Moteur de recherche alluc'
 
 URL_MAIN = 'http://www.alluc.ee/'
