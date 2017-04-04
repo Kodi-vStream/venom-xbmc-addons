@@ -11,7 +11,7 @@ import re
 
 
 SITE_IDENTIFIER = 'frenchddl_com'
-SITE_NAME = '[COLOR violet]FrenchDDL[/COLOR]'
+SITE_NAME = 'FrenchDDL'
 SITE_DESC = 'films en ddl'
 
 URL_MAIN = 'http://www.frenchddl.com/'
