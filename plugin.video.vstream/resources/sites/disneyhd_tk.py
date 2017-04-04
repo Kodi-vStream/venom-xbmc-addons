@@ -9,7 +9,7 @@ from resources.lib.parser import cParser
 import re
 
 SITE_IDENTIFIER = 'disneyhd_tk'
-SITE_NAME = 'DisneyHD.tk'
+SITE_NAME = 'Disney HD'
 SITE_DESC = 'Disney HD: Tous les films Disney en streaming'
 
 URL_MAIN = 'http://disneyhd.tk/index.php'
@@ -125,7 +125,6 @@ def showMovies():
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'animes_enfants.png',sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showHosters():
     oGui = cGui()
