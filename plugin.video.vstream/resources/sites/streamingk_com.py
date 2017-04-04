@@ -1,15 +1,12 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+from resources.lib import util
 
 import re,xbmcgui,unicodedata
 from resources.lib.dl_deprotect import DecryptDlProtect
@@ -34,7 +31,6 @@ ANIM_NEWS = (URL_MAIN + 'category/mangas/', 'showMovies')
 
 REPLAYTV_REPLAYTV = (URL_MAIN + 'category/emissions-tv/', 'showMovies')
 
-#SPORT_SPORTS = (URL_MAIN + 'category/sport/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -65,10 +61,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Emissions TV', 'replay.png', oOutputParameterHandler)
-    
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
-    # oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Sport', 'series.png', oOutputParameterHandler)   
+
 
     oGui.setEndOfDirectory()
 
@@ -130,10 +123,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     #Meilleure resolution sthumbnail
     sHtmlContent = sHtmlContent.replace('119x125','125x160')
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-    
+
     #Magouille pour virer les 3 ligne en trop en cas de recherche
     if sSearch:
         sHtmlContent = sHtmlContent.replace('quelle-est-votre-serie-preferee','<>')
@@ -146,15 +136,15 @@ def showMovies(sSearch = ''):
     
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        dialog = util.createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
+            util.updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
                 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),aEntry[2]) == 0:
+                if util.cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),aEntry[2]) == 0:
                     continue
 
             sTitle = aEntry[2]
@@ -163,7 +153,7 @@ def showMovies(sSearch = ''):
             sTitle = sTitle.replace(' [Complète]','')
             sTitle = sTitle.replace(' [Complete]','')
             
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            sDisplayTitle = util.cUtil().DecoTitle(sTitle)
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
@@ -176,7 +166,7 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        util.finishDialog(dialog)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -214,9 +204,9 @@ def showSeries(sLoop = False):
     
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        dialog = util.createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
+            util.updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
 
@@ -230,7 +220,7 @@ def showSeries(sLoop = False):
             #episode
             else:
                 sTitle = sMovieTitle + ' ' + aEntry[1]
-                sDisplayTitle = cUtil().DecoTitle(sTitle)
+                sDisplayTitle = util.cUtil().DecoTitle(sTitle)
                 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
@@ -238,7 +228,7 @@ def showSeries(sLoop = False):
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        util.finishDialog(dialog)
 
     oGui.setEndOfDirectory()
 
@@ -291,9 +281,9 @@ def showHosters(sLoop = False):
         
     if (len(aResult) > 0):
         total = len(aResult)
-        dialog = cConfig().createDialog(SITE_NAME)
+        dialog = util.createDialog(SITE_NAME)
         for aEntry in aResult:
-            cConfig().updateDialog(dialog, total)
+            util.updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
 
@@ -301,12 +291,12 @@ def showHosters(sLoop = False):
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                sDisplayTitle = util.cUtil().DecoTitle(sMovieTitle)
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
-        cConfig().finishDialog(dialog)
+        util.finishDialog(dialog)
 
     oGui.setEndOfDirectory()
 
@@ -362,10 +352,10 @@ def serieHosters():
     #affichage
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        dialog = util.createDialog(SITE_NAME)
         index = 1
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
+            util.updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
                 
@@ -378,11 +368,11 @@ def serieHosters():
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(sTitle)
+                sDisplayTitle = util.cUtil().DecoTitle(sTitle)
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
-        cConfig().finishDialog(dialog)
+        util.finishDialog(dialog)
 
     oGui.setEndOfDirectory()
