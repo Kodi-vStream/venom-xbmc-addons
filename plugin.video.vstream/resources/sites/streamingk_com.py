@@ -7,6 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib import util
+from resources.lib.config import cConfig
 
 import re,xbmcgui,unicodedata
 from resources.lib.dl_deprotect import DecryptDlProtect
@@ -136,9 +137,10 @@ def showMovies(sSearch = ''):
     
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = util.createDialog(SITE_NAME)
+        #plante la recherche global dialog = util.createDialog(SITE_NAME)
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            util.updateDialog(dialog, total)
+            cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
                 
@@ -166,7 +168,7 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
 
-        util.finishDialog(dialog)
+        cConfig().finishDialog(dialog)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
