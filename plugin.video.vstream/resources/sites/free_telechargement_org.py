@@ -18,7 +18,7 @@ PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonI
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
 SITE_IDENTIFIER = 'free_telechargement_org'
-SITE_NAME = 'Free-Téléchargement'
+SITE_NAME = '[COLOR violet]Free-Téléchargement[/COLOR]'
 SITE_DESC = 'Fichiers en DDL, HD, Films, Séries, Mangas Etc...'
 
 URL_MAIN = 'http://www.free-telechargement.com/'
