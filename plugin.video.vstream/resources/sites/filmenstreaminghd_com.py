@@ -18,15 +18,15 @@ SITE_DESC = 'Films/Séries/Animés en streaming'
 
 URL_MAIN = 'http://www.filmenstreaminghd.com/'
 
-MOVIE_MOVIE = (URL_MAIN + '/films', 'showMovies')
-MOVIE_HD = (URL_MAIN + '/1080p-films', 'showMovies')
-MOVIE_VIEWS = (URL_MAIN + '/films-populaires/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'films', 'showMovies')
+MOVIE_HD = (URL_MAIN + '1080p-films', 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'films-populaires/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
-SERIE_SERIES = (URL_MAIN + '/series-tv', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'series-tv', 'showMovies')
 SERIE_GENRES = (True, 'showSerieGenres')
 
-ANIM_ANIMS = (URL_MAIN +'/animes', 'showMovies')
+ANIM_ANIMS = (URL_MAIN +'animes', 'showMovies')
 
 URL_SEARCH = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -151,8 +151,8 @@ def showQlt():
     oGui = cGui()
  
     liste = []
-    liste.append( ['1080p',URL_MAIN + '/1080p-films'] )   
-    liste.append( ['720p',URL_MAIN + '/720p-films'] )
+    liste.append( ['1080p',URL_MAIN + '1080p-films'] )   
+    liste.append( ['720p',URL_MAIN + '720p-films'] )
     # liste.append( ['BDRip',URL_MAIN + 'qualites/BDRip/'] )
     # liste.append( ['BRRip',URL_MAIN + 'qualites/BRRip/'] )
     # liste.append( ['CAMRip',URL_MAIN + 'qualites/CAMRip/'] )
