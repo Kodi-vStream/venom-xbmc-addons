@@ -18,7 +18,7 @@ import xbmcaddon,os
 PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
 
 SITE_IDENTIFIER = 'streamase_com' 
-SITE_NAME = '[COLOR violet]Streamase[/COLOR]' 
+SITE_NAME = 'Streamase' 
 SITE_DESC = 'Fichiers en Streaming et en DDL, HD' 
 
 #film
