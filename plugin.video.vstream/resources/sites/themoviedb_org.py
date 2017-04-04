@@ -22,7 +22,7 @@ try:    import json
 except: import simplejson as json
 
 SITE_IDENTIFIER = 'themoviedb_org'
-SITE_NAME = 'TheMovieDB'
+SITE_NAME = '[COLOR orange]TheMovieDB[/COLOR]'
 SITE_DESC = 'Base de données video.'
 
 #doc de l'api http://docs.themoviedb.apiary.io/
@@ -70,7 +70,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'movie/top_rated')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Les mieux notés)', 'films_notes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Les mieux notés)', 'films_notes.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'genre/movie/list')
@@ -86,7 +86,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'tv/top_rated')
-    oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries 5es mieux notés)', 'series_notes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries (Les mieux notés)', 'series_notes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'genre/tv/list')
