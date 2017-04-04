@@ -57,9 +57,9 @@ def showGenres():
     liste = []
     liste.append( ['Animaux', URL_MAIN + 'videos/animaux/'] )
     liste.append( ['Automoto', URL_MAIN + 'videos/automoto/'] )
-    liste.append( ['Avions', URL_MAIN + 'video/avions/'] )
+    liste.append( ['Avions', URL_MAIN + 'videos/avions/'] )
     liste.append( ['Crash', URL_MAIN + 'videos/crash/'] )
-    liste.append( ['Dédicaces', URL_MAIN + 'video/dedicaces/'] )
+    liste.append( ['Dédicaces', URL_MAIN + 'videos/dedicaces/'] )
     liste.append( ['Gags', URL_MAIN + 'videos/gags/'] )
     liste.append( ['Jeux', URL_MAIN + 'videos/jeux/'] )
     liste.append( ['Ludiques', URL_MAIN + 'videos/ludiques/'] )
