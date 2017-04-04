@@ -15,13 +15,13 @@ SITE_IDENTIFIER = 'evilox'
 SITE_NAME = 'Evilox'
 SITE_DESC = 'Vidéos drôles, du buzz, des fails et des vidéos insolites'
 
-URL_MAIN = 'http://fr.evilox.com'
+URL_MAIN = 'http://fr.evilox.com/'
  
 URL_SEARCH = (URL_MAIN , 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
 MOVIE_NETS = ('http://', 'load')
-NETS_NEWS = (URL_MAIN + '/videos/', 'showMovies')
+NETS_NEWS = (URL_MAIN + 'videos/', 'showMovies')
 NETS_GENRES = (True, 'showGenres')
  
 def load(): 
@@ -55,20 +55,19 @@ def showGenres():
     oGui = cGui()
   
     liste = []
-    
-    liste.append( ['Animaux', URL_MAIN + '/videos/animaux/'] )
-    liste.append( ['Automoto', URL_MAIN + '/videos/automoto/'] )
-    liste.append( ['Avions', URL_MAIN + '/video/avions/'] )
-    liste.append( ['Crash', URL_MAIN + '/videos/crash/'] )
-    liste.append( ['Dedicaces', URL_MAIN + '/video/dedicaces/'] )
-    liste.append( ['Gags', URL_MAIN + '/videos/gags/'] )
-    liste.append( ['Jeux', URL_MAIN + '/videos/jeux/'] )
-    liste.append( ['Ludiques', URL_MAIN + '/videos/ludiques/'] )
-    liste.append( ['People', URL_MAIN + '/videos/people/'] )
-    liste.append( ['Pubs', URL_MAIN + '/videos/pubs/'] )
-    liste.append( ['Sport', URL_MAIN + '/videos/sport/'] )
-    liste.append( ['Travail', URL_MAIN + '/videos/travail/'] )
-    liste.append( ['Zapping', URL_MAIN + '/videos/zapping/'] )
+    liste.append( ['Animaux', URL_MAIN + 'videos/animaux/'] )
+    liste.append( ['Automoto', URL_MAIN + 'videos/automoto/'] )
+    liste.append( ['Avions', URL_MAIN + 'videos/avions/'] )
+    liste.append( ['Crash', URL_MAIN + 'videos/crash/'] )
+    liste.append( ['Dédicaces', URL_MAIN + 'videos/dedicaces/'] )
+    liste.append( ['Gags', URL_MAIN + 'videos/gags/'] )
+    liste.append( ['Jeux', URL_MAIN + 'videos/jeux/'] )
+    liste.append( ['Ludiques', URL_MAIN + 'videos/ludiques/'] )
+    liste.append( ['People', URL_MAIN + 'videos/people/'] )
+    liste.append( ['Pubs', URL_MAIN + 'videos/pubs/'] )
+    liste.append( ['Sport', URL_MAIN + 'videos/sport/'] )
+    liste.append( ['Travail', URL_MAIN + 'videos/travail/'] )
+    liste.append( ['Zapping', URL_MAIN + 'videos/zapping/'] )
     
     for sTitle,sUrl in liste:
          
@@ -95,7 +94,6 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-   
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -130,7 +128,7 @@ def showMovies(sSearch = ''):
  
     if not sSearch:
         oGui.setEndOfDirectory() 
- 
+
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = "<a href='([^']+)'>Suivante[^<>]+</a></span>"
