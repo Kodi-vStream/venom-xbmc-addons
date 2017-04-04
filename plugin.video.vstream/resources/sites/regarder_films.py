@@ -12,14 +12,14 @@ import re
  
 SITE_IDENTIFIER = 'regarder_films'
 SITE_NAME = 'Regarder-films-gratuit'
-SITE_DESC = 'Streaming ou Telechargement films series mangas gratuitement et sans limite. Des films en exclusivite en qualite DVD a regarder ou telecharger'
+SITE_DESC = 'Streaming ou Téléchargement de Séries & Mangas.'
  
 URL_MAIN = 'http://www.regarder-film-gratuit.eu/'
 
-SERIE_SERIES = (URL_MAIN + 'liste-de-series/', 'showAlpha')
 SERIE_NEWS = (URL_MAIN + 'category/series/', 'showSeries')
+SERIE_SERIES = (URL_MAIN + 'liste-de-series/', 'showAlpha')
  
-URL_SEARCH = ('http://www.regarder-film-gratuit.eu/?s=', 'showSeries')
+URL_SEARCH = (URL_MAIN + '?s=', 'showSeries')
 FUNCTION_SEARCH = 'showSeries'
  
 def load():
@@ -30,13 +30,13 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Liste Series', 'series.png',oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries Nouveautés', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
     
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series_az.png',oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
  
 def showSearch():
@@ -71,7 +71,7 @@ def showAlpha():
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('AZ', sLetter)
-            oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Lettre - [COLOR coral]' + sLetter + '[/COLOR]', 'series.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Lettre - [COLOR coral]' + sLetter + '[/COLOR]', 'series_az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory() 
     
@@ -98,7 +98,7 @@ def showAZ():
                oOutputParameterHandler = cOutputParameterHandler()
                oOutputParameterHandler.addParameter('siteUrl', sUrl)
                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-               oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'series.png', oOutputParameterHandler)
+               oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'series_az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory() 
     
@@ -137,9 +137,9 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
             if '/series-tv/' in sUrl or 'saison' in aEntry[0]:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, 'tv.png', '', '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, 'tv.png', '', '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
        
         cConfig().finishDialog(dialog)
  
@@ -156,7 +156,6 @@ def showSeries(sSearch = ''):
       sUrl = oInputParameterHandler.getValue('siteUrl')
       sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
-   
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
 
@@ -201,8 +200,7 @@ def showSeries(sSearch = ''):
  
     if not sSearch:
         oGui.setEndOfDirectory()
- 
- 
+
 def __checkForNextPage(sHtmlContent):
     sPattern = '<a class="nextpostslink" rel="next" href="(.+?)">..<'
     aResult = re.findall(sPattern,sHtmlContent,re.UNICODE)
@@ -210,7 +208,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[0]
  
     return False
-       
+
 def serieHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
