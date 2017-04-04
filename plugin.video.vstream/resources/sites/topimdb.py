@@ -21,7 +21,7 @@ try:    import json
 except: import simplejson as json
  
 SITE_IDENTIFIER = 'topimdb'
-SITE_NAME = 'Top 1000 IMDb'
+SITE_NAME = '[COLOR orange]Top 1000 IMDb[/COLOR]'
 SITE_DESC = 'Base de données vidéos.'
  
  
