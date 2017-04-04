@@ -1,29 +1,24 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+from resources.lib import util 
 import re,unicodedata
 
 SITE_IDENTIFIER = 'tntv_rattrapage'
 SITE_NAME = 'Tn tv rattrapage'
 SITE_DESC = 'Replay TV'
 
-URL_MAIN = 'http://tntv-rattrapage.overblog.com/'
+URL_MAIN = 'http://tntv-rattrapage.overblog.com'
 
 REPLAYTV_NEWS = ('http://tntv-rattrapage.overblog.com/', 'showMovies')
 REPLAYTV_REPLAYTV = ('xyz', 'showGenre')
 
 URL_SEARCH = (URL_MAIN + 'search/','showMovies')
-
-#FUNCTION_SEARCH = 'showMovies'
 
 def load():
     oGui = cGui()
@@ -39,7 +34,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'xyz')
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Emissions par Catégories', 'tv.png', oOutputParameterHandler)
-            
+  
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -47,7 +42,6 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        #sSearchText = cUtil().urlEncode(sSearchText)
         sUrl = URL_SEARCH[0] + sSearchText+'/'
  
         showMovies(sUrl)
@@ -98,11 +92,7 @@ def showGenre():
                 
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
-        
+
         if (aResult[0] == True):
             tmp = aResult[1][0]
             sPattern = 'class="NavElement-link" href="(.+?)">(.+?)<\/a>'
@@ -114,7 +104,7 @@ def showGenre():
             for aEntry in aResult[1]:
                 sTitle = aEntry[1]
                 sUrl = aEntry[0]
-           
+                
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl)
                 oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
@@ -132,21 +122,18 @@ def showMovies(sSearch = ''):
     sUrl = sUrl.replace(' ','%20')
    
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    #sHtmlContent = sHtmlContent.replace('direct','')
+    sHtmlContent = oRequestHandler.request()
 
     sPattern = '<img class="PostPreview-coverImage" src="(.+?)" alt="(.+?)".+?<p class="PostPreview-snippet">(.+?)</p>.+?<a class="PostPreview-link" href="(.+?)"'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-    #print aResult
-    
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        dialog = util.createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
+            util.updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
 
@@ -164,13 +151,11 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
 
-            #if '[direct]' in aEntry[1]:
-                #oGui.addMovie(SITE_IDENTIFIER, 'showMovies', sTitle, aEntry[0], aEntry[2], oOutputParameterHandler)
-            #else:
+
             if not '[direct]' in aEntry[1]:
                 oGui.addTV(SITE_IDENTIFIER, 'showHoster', sTitle, '', aEntry[0], aEntry[2], oOutputParameterHandler)
             
-        cConfig().finishDialog(dialog)
+        util.finishDialog(dialog)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -194,16 +179,13 @@ def showHoster():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    #sUrl = sUrl.replace("\'", '').replace('')', '')
+
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
+
 
     sPattern = '<a (?:sl-processed="1" )*(?:class="episode-number" )*href="#itsthetable1" on[cC]lick="(.+?)_player\( *\'(.+?)\' *\);">(?:<span class="ep-numb">(.+?)<\/span>)*'
     
@@ -211,12 +193,7 @@ def showHoster():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             if 'exashare' in aEntry[0]:
                 sUrl = 'http://www.exashare.com/embed-' + str(aEntry[1]) + '-624x360.html'
@@ -243,7 +220,5 @@ def showHoster():
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
-    
-        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
