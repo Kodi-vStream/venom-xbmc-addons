@@ -62,7 +62,7 @@ def showGenres():
     
     liste = []
     liste.append( ['Action',URL_MAIN + 'genre/action/'] )
-    liste.append( ['Action & Aventure',URL_MAIN + 'genre/action-aventure/'] )
+    liste.append( ['Action & Aventure',URL_MAIN + 'genre/action-adventure/'] )
     liste.append( ['Animation',URL_MAIN + 'genre/animation/'] )
     liste.append( ['Aventure',URL_MAIN + 'genre/aventure/'] )
     liste.append( ['Biopic',URL_MAIN + 'genre/biopic/'] )
