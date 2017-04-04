@@ -12,7 +12,7 @@ import re
  
 SITE_IDENTIFIER = 'regarder_films'
 SITE_NAME = 'Regarder-films-gratuit'
-SITE_DESC = 'Streaming ou Téléchargement de Séries & Mangas gratuitement et sans limite.'
+SITE_DESC = 'Streaming ou Téléchargement de Séries & Mangas.'
  
 URL_MAIN = 'http://www.regarder-film-gratuit.eu/'
 
