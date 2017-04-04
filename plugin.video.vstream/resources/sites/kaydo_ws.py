@@ -17,7 +17,7 @@ import re,xbmc,base64
 
 
 SITE_IDENTIFIER = 'kaydo_ws'
-SITE_NAME = 'Kaydo (beta)'
+SITE_NAME = 'Kaydo'
 SITE_DESC = 'Site de streaming en HD 720p 100% Gratuit'
 
 URL_MAIN = 'http://www.kaydo.ws/'
