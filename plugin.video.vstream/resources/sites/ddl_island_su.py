@@ -113,15 +113,15 @@ def showMenuFilms():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_SD_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_SD_VIEWS[1], 'Films SD (Les plus vues)', 'films_views.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_SD_VIEWS[1], 'Films SD (Les plus vus)', 'films_views.png', oOutputParameterHandler)  
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD_VIEWS[1], 'Films HD (Les plus vues)', 'films_views.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD_VIEWS[1], 'Films HD (Les plus vus)', 'films_views.png', oOutputParameterHandler)  
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_3D_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_3D_VIEWS[1], 'Films 3D (Les plus vues)', 'films_views.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_3D_VIEWS[1], 'Films 3D (Les plus vus)', 'films_views.png', oOutputParameterHandler)  
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP[0])
@@ -223,7 +223,7 @@ def showMenuEmissionsTV():
         
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', EMISSIONS_TV[0])
-    oGui.addDir(SITE_IDENTIFIER, EMISSIONS_TV[1], 'Emissions TV (Derniers ajouts)', 'news.png', oOutputParameterHandler)  
+    oGui.addDir(SITE_IDENTIFIER, EMISSIONS_TV[1], 'Emissions TV (Derniers ajouts)', 'tv.png', oOutputParameterHandler)  
     
     oGui.setEndOfDirectory()     
            
