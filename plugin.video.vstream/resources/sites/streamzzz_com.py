@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'streamzzz_com'
 SITE_NAME = 'Streamzzz'
 SITE_DESC = 'Streaming séries'
 
-URL_MAIN = 'http://streamzzz.online/'
+URL_MAIN = 'http://streamzzz.com/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
