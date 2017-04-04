@@ -21,7 +21,7 @@ URL_MAIN = 'http://official-film-illimite.net/'
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_HD = (URL_MAIN + 'films/streaming-720p-streaming-1080p/', 'showMovies')
 #MOVIE_MOVIE = (True, 'showAlpha')
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (True, 'showGenres')
 
 SERIE_NEWS = (URL_MAIN + 'serie-tv/', 'showMovies')
 SERIE_HD = (URL_MAIN + 'serie-tv/', 'showMovies')
@@ -41,7 +41,7 @@ def load():
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
@@ -49,14 +49,14 @@ def load():
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
- 
+
 def showSearch():
     oGui = cGui()
  
@@ -66,8 +66,8 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return 
-   
-def showGenre():
+
+def showGenres():
     oGui = cGui()
  
     liste = []
@@ -190,7 +190,7 @@ def showMovies(sSearch = ''):
  
     if not sSearch:
         oGui.setEndOfDirectory()
-   
+
 def __checkForNextPage(sUrl):
     if '/page/' in sUrl:
         sPattern = "\/page\/([0-9]+)\/"
