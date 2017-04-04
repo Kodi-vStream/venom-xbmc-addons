@@ -35,7 +35,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png',oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series_az.png',oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
  
@@ -71,7 +71,7 @@ def showAlpha():
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('AZ', sLetter)
-            oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Lettre - [COLOR coral]' + sLetter + '[/COLOR]', 'series.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Lettre - [COLOR coral]' + sLetter + '[/COLOR]', 'series_az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory() 
     
@@ -98,7 +98,7 @@ def showAZ():
                oOutputParameterHandler = cOutputParameterHandler()
                oOutputParameterHandler.addParameter('siteUrl', sUrl)
                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-               oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'series.png', oOutputParameterHandler)
+               oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'series_az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory() 
     
@@ -137,9 +137,9 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
             if '/series-tv/' in sUrl or 'saison' in aEntry[0]:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, 'tv.png', '', '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, 'tv.png', '', '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
        
         cConfig().finishDialog(dialog)
  
