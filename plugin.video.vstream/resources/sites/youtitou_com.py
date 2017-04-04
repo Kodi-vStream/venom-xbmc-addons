@@ -9,51 +9,50 @@ from resources.lib.parser import cParser
 import re
 
 SITE_IDENTIFIER = 'youtitou_com'
-SITE_NAME = 'youtitou.com'
+SITE_NAME = 'YouTitou'
 SITE_DESC = 'Plus de 900 dessins animés gratuits classés par âge'
 
-URL_MAIN = 'http://www.youtitou.com'
-
+URL_MAIN = 'http://www.youtitou.com/'
 
 ANIM_ENFANTS = ('http://', 'load')
 
-AGE_2A4ANS = (URL_MAIN + '/pages/dessins-animes-2-a-4-ans/jolies-histoires-pour-enfants-de-2-a-4-ans.html', 'showMovies')
-VIDEO_EDU2_4 = (URL_MAIN + '/pages/dessins-animes-2-a-4-ans/videos-educatives-pour-enfant-de-2-a-4-ans.html', 'showEdu')
+AGE_2A4ANS = (URL_MAIN + 'pages/dessins-animes-2-a-4-ans/jolies-histoires-pour-enfants-de-2-a-4-ans.html', 'showMovies')
+VIDEO_EDU2_4 = (URL_MAIN + 'pages/dessins-animes-2-a-4-ans/videos-educatives-pour-enfant-de-2-a-4-ans.html', 'showEdu')
  
-AGE_4A6ANS = (URL_MAIN + '/pages/dessins-animes-4-a-6-ans/dessins-animes-pour-enfants-de-4-a-6-ans.html', 'showMovies')
-VIDEO_EDU4_6 = (URL_MAIN + '/pages/dessins-animes-4-a-6-ans/videos-educatives-pour-enfants-de-4-a-6-ans.html', 'showEdu')
+AGE_4A6ANS = (URL_MAIN + 'pages/dessins-animes-4-a-6-ans/dessins-animes-pour-enfants-de-4-a-6-ans.html', 'showMovies')
+VIDEO_EDU4_6 = (URL_MAIN + 'pages/dessins-animes-4-a-6-ans/videos-educatives-pour-enfants-de-4-a-6-ans.html', 'showEdu')
 
-AGE_6A8ANS = (URL_MAIN + '/pages/dessins-animes-6-a-8-ans/dessins-animes-pour-enfants-de-6-a-8-ans.html', 'showMovies')
-VIDEO_EDU6_8 = (URL_MAIN + '/pages/dessins-animes-6-a-8-ans/videos-educatives-pour-enfants-de-6-a-8-ans.html', 'showEdu')
+AGE_6A8ANS = (URL_MAIN + 'pages/dessins-animes-6-a-8-ans/dessins-animes-pour-enfants-de-6-a-8-ans.html', 'showMovies')
+VIDEO_EDU6_8 = (URL_MAIN + 'pages/dessins-animes-6-a-8-ans/videos-educatives-pour-enfants-de-6-a-8-ans.html', 'showEdu')
 
-COMPIL = (URL_MAIN + '/videos/compilations-longues/', 'showEpisode')
+COMPIL = (URL_MAIN + 'videos/compilations-longues/', 'showEpisode')
  
 def load(): 
     oGui = cGui()
  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', AGE_2A4ANS[0])
-    oGui.addDir(SITE_IDENTIFIER, AGE_2A4ANS[1], 'Dessins animés 2 a 4 ans', 'animes_enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, AGE_2A4ANS[1], 'Dessins animés 2 à 4 ans', 'animes_enfants.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', VIDEO_EDU2_4[0])
-    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU2_4[1], 'Videos éducative 2 a 4 ans', 'animes_enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU2_4[1], 'Videos éducative 2 à 4 ans', 'animes_enfants.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', AGE_4A6ANS[0])
-    oGui.addDir(SITE_IDENTIFIER, AGE_4A6ANS[1], 'Dessins animés 4 a 6 ans', 'animes_enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, AGE_4A6ANS[1], 'Dessins animés 4 à 6 ans', 'animes_enfants.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', VIDEO_EDU4_6[0])
-    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU4_6[1], 'Videos éducative 4 a 6 ans', 'animes_enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU4_6[1], 'Videos éducative 4 à 6 ans', 'animes_enfants.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', AGE_6A8ANS[0])
-    oGui.addDir(SITE_IDENTIFIER, AGE_6A8ANS[1], 'Dessins animés 6 a 8 ans', 'animes_enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, AGE_6A8ANS[1], 'Dessins animés 6 à 8 ans', 'animes_enfants.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', VIDEO_EDU6_8[0])
-    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU6_8[1], 'Videos éducative 6 a 8 ans', 'animes_enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU6_8[1], 'Videos éducative 6 à 8 ans', 'animes_enfants.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', COMPIL[0])
@@ -178,6 +177,3 @@ def showEdu():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl,'https://i.ytimg.com/vi/'+sId+'/mqdefault.jpg')
   
     oGui.setEndOfDirectory()
-
-
-

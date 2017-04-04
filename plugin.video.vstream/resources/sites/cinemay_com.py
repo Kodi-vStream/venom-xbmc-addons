@@ -19,10 +19,10 @@ URL_MAIN = 'http://www.cinemay.com/'
 
 MOVIE_NEWS = (URL_MAIN , 'showMoviesNews')
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
-MOVIE_GENRES = (True, 'showGenres')
+MOVIE_GENRES = (True, 'showMovieGenres')
 
 SERIE_SERIES = (URL_MAIN + 'serie/', 'showMovies')
-SERIE_GENRES = (True, 'showSeriesGenres')
+SERIE_GENRES = (True, 'showSerieGenres')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -36,7 +36,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
   
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
@@ -65,7 +65,7 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
        
-def showGenres():
+def showMovieGenres():
     oGui = cGui()
 
     liste = []
@@ -106,7 +106,7 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-def showSeriesGenres():
+def showSerieGenres():
     oGui = cGui()
 
     liste = []

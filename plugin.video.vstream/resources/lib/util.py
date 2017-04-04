@@ -286,6 +286,7 @@ def VScreateDialogSelect(label):
     ret = oDialog.select('Select Quality', label)  
     return ret
 
+#doucle creation si recherche global
 def createDialog(sSite):
     oDialog = xbmcgui.DialogProgress()
     oDialog.create(sSite,None)
@@ -325,3 +326,7 @@ def VSshowInfo(sTitle, sDescription, iSeconds=0,sound = True):
 def VStranslatePath(location):
     #Note, location = (author, changelog, description, disclaimer, fanart, icon, id, name, path,profile, stars, summary, type, version)
     return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo(location))
+    
+def VSlang(lang):
+    #util.VSlang(30003)
+    return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang))

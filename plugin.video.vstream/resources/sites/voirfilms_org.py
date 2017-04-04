@@ -12,7 +12,7 @@ from resources.lib.util import cUtil
 import urllib2,urllib,re
 
 SITE_IDENTIFIER = 'voirfilms_org'
-SITE_NAME = 'VoirFilms.org'
+SITE_NAME = 'VoirFilms'
 SITE_DESC = 'Films & Séries en Streaming'
  
 URL_MAIN = 'http://www.voirfilms.co/'
