@@ -217,8 +217,8 @@ def showMovies(sSearch = ''):
             sCom = aEntry[4].decode("utf-8")
             sCom = cUtil().unescape(sCom).encode("utf-8")
             sCom = cUtil().removeHtmlTags(sCom)
-            sUrl2 = URL_MAIN + '/' + aEntry[0]
-            sThumb = URL_MAIN + '/' + aEntry[2]
+            sUrl2 = URL_MAIN  + aEntry[0]
+            sThumb = URL_MAIN + aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
