@@ -468,9 +468,10 @@ class cTMDb:
                     meta['s_year'] = s['air_date']
                 
                 #xbmc.log(str(s['season_number'])+str(season))
-                sql = "INSERT INTO season (imdb_id, tmdb_id, season, year, premiered, poster_path, playcount) VALUES (?, ?, ?, ?, ?, ?, ?)"
-                self.dbcur.execute(sql, (meta['imdb_id'], s['id'], s['season_number'], s['air_date'], s['air_date'], s['poster_path'], 6))
                 try:
+                    sql = "INSERT INTO season (imdb_id, tmdb_id, season, year, premiered, poster_path, playcount) VALUES (?, ?, ?, ?, ?, ?, ?)"
+                    self.dbcur.execute(sql, (meta['imdb_id'], s['id'], s['season_number'], s['air_date'], s['air_date'], s['poster_path'], 6))
+                   
                     self.db.commit() 
                     cConfig().log('SQL INSERT Successfully') 
                 except Exception, e:

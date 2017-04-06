@@ -365,8 +365,8 @@ msgid "[COLOR khaki]Hello, %s[/COLOR]"
 msgstr "[COLOR khaki][COLOR khaki]Bonjour, %s[/COLOR]"
 
 msgctxt "#30307"
-msgid "Movie (%s/%s) watch for %s minute / Show watch (%s) / episode (%s/%s) watch for pour %s minute"
-msgstr "Films (%s/%s) regarder pour %s minutes / Séries regardée (%s) / Episodes (%s/%s) regardés pour %s minutes"
+msgid "Movie (%s/%s) watch / Show watch (%s) / episode (%s/%s) watch"
+msgstr "Films (%s/%s) regardés / Séries regardées (%s) / Episodes (%s/%s) regardés"
 
 msgctxt "#30308"
 msgid "History"

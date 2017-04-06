@@ -365,7 +365,7 @@ msgid "[COLOR khaki]Hello, %s[/COLOR]"
 msgstr ""
 
 msgctxt "#30307"
-msgid "Movie (%s/%s) watch for %s minute / Show watch (%s) / episode (%s/%s) watch for pour %s minute"
+msgid "Movie (%s/%s) watch / Show watch (%s) / episode (%s/%s) watch"
 msgstr ""
 
 msgctxt "#30308"
