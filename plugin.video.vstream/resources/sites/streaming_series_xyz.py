@@ -12,10 +12,10 @@ from resources.lib.util import cUtil
 import urllib,urllib2,xbmc
 
 SITE_IDENTIFIER = 'streaming_series_xyz'
-SITE_NAME = 'Streaming-Séries-Xyz'
+SITE_NAME = 'Streaming-Series.cx'
 SITE_DESC = 'Séries en Streaming'
 
-URL_MAIN = 'http://www.streaming-series.xyz/'
+URL_MAIN = 'http://www.streaming-series.cx/'
 
 SERIE_SERIES = (URL_MAIN, 'showMovies')
 SERIE_NEWS = (URL_MAIN, 'showMovies')
@@ -118,26 +118,33 @@ def showGenres():
     liste.append( ['Animation',URL_MAIN + 'category/animation/'] )
     liste.append( ['Arts Martiaux',URL_MAIN + 'category/arts-martiaux/'] )
     liste.append( ['Aventure',URL_MAIN + 'category/aventure/'] )
-    liste.append( ['Comédie',URL_MAIN + 'category/comedie/'] )
     liste.append( ['Biopic',URL_MAIN + 'category/biopic/'] )
     liste.append( ['Classique',URL_MAIN + 'category/classique/'] )
+    liste.append( ['Comédie',URL_MAIN + 'category/comedie/'] )
+    liste.append( ['Comédie dramatique',URL_MAIN + 'category/comedie-dramatique/'] )
+    liste.append( ['Comédie musicale',URL_MAIN + 'category/comedie-musicale/'] )
     liste.append( ['Dessin animés',URL_MAIN + 'category/dessin-anime/'] )
+    liste.append( ['Divers',URL_MAIN + 'category/divers/'] )
     liste.append( ['Documentaires',URL_MAIN + 'category/documentaire/'] )
+    liste.append( ['Drama',URL_MAIN + 'category/drama/'] )
     liste.append( ['Drame',URL_MAIN + 'category/drame/'] )
+    liste.append( ['Epouvante-Horreur',URL_MAIN + 'category/epouvante-horreur/'] )
     liste.append( ['Espionnage',URL_MAIN + 'category/espionnage/'] )
+    liste.append( ['Expérimental',URL_MAIN + 'category/experimental/'] )
     liste.append( ['Famille',URL_MAIN + 'category/famille/'] )
     liste.append( ['Fantastique',URL_MAIN + 'category/fantastique/'] )
     liste.append( ['Guerre',URL_MAIN + 'category/guerre/'] )
     liste.append( ['Historique',URL_MAIN + 'category/historique/'] )
-    liste.append( ['Epouvante-Horreur',URL_MAIN + 'category/horreur/'] )
+    liste.append( ['Judiciaire',URL_MAIN + 'category/judiciaire/'] )
+    liste.append( ['Médical',URL_MAIN + 'category/medical/'] )
     liste.append( ['Musical',URL_MAIN + 'category/musical/'] )
-    liste.append( ['Policier',URL_MAIN + 'category/policier/'] )
     liste.append( ['Péplum',URL_MAIN + 'category/peplum/'] )
+    liste.append( ['Policier',URL_MAIN + 'category/policier/'] )
     liste.append( ['Romance',URL_MAIN + 'category/romance/'] )
-    liste.append( ['Science-Fiction',URL_MAIN + 'category/science-fiction/'] )
-    liste.append( ['Spectacle',URL_MAIN + 'category/spectacle/'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'category/science-fiction/'] )
+    liste.append( ['soap',URL_MAIN + 'category/soap/'] )
     liste.append( ['Thriller',URL_MAIN + 'category/thriller/'] )
-    liste.append( ['Web séries',URL_MAIN + 'category/webserie/'] )
+    liste.append( ['Websérie',URL_MAIN + 'category/webserie/'] )
     liste.append( ['Western',URL_MAIN + 'category/western/'] )
 
     for sTitle,sUrl in liste:
@@ -162,7 +169,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
 
-    sPattern = '<div class="moviefilm">.+?<img src="([^<>"]+)".+?<a href="([^<>"]+?)">(.+?)<\/a>'
+    sPattern = '<div class="moviefilm">.+?<img src="([^<>"]+)" alt="([^<>"]+?)".+?/>.+?<a href="(.+?)".+?></a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -175,12 +182,12 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            sTitle = aEntry[2].replace(' Streaming','')
+            sTitle = aEntry[1].replace(' Streaming','')
             
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
  
