@@ -14,13 +14,12 @@ import re,urllib
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 SITE_IDENTIFIER = 'film_illimit_fr'
 SITE_NAME = 'Film illimité'
-SITE_DESC = 'Films HD en streaming'
+SITE_DESC = 'Films, Séries HD en streaming'
 
 URL_MAIN = 'http://official-film-illimite.net/'
 
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_HD = (URL_MAIN + 'films/streaming-720p-streaming-1080p/', 'showMovies')
-#MOVIE_MOVIE = (True, 'showAlpha')
 MOVIE_GENRES = (True, 'showGenres')
 
 SERIE_NEWS = (URL_MAIN + 'serie-tv/', 'showMovies')
@@ -34,10 +33,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    #oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films A-Z', 'news.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -71,24 +66,33 @@ def showGenres():
     oGui = cGui()
  
     liste = []
-    liste.append( ['Action/Aventure',URL_MAIN + 'action-aventure/'] )
-    liste.append( ['Animation',URL_MAIN + 'animation/'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'arts-martiaux/'] )
-    liste.append( ['Biographie',URL_MAIN + 'biographique/'] )
-    liste.append( ['Comédie',URL_MAIN + 'comedie/'] )
-    liste.append( ['Drame',URL_MAIN + 'drame/'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'epouvante-horreur/'] )
-    liste.append( ['Fantastique',URL_MAIN + 'fantastique/'] )
-    liste.append( ['Famille',URL_MAIN + 'famille/'] )
-    liste.append( ['Guerre',URL_MAIN + 'guerre/'] )
-    liste.append( ['Policier',URL_MAIN + 'policier/'] )
-    liste.append( ['Romance',URL_MAIN + 'romance/'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'science-fiction/'] )
-    liste.append( ['Thriller/Suspense',URL_MAIN + 'thrillersuspense/'] )
-    liste.append( ['720p/1080p',URL_MAIN + '720p1080p/'] )
-    liste.append( ['Mystère',URL_MAIN + 'mystere/'] )
-    liste.append( ['Western',URL_MAIN + 'western/'] )
-    liste.append( ['Animés',URL_MAIN + 'mangas/'] )
+    liste.append( ['Ultra-HD',URL_MAIN + 'ultra-hd/'] )
+    liste.append( ['720p/1080p',URL_MAIN + 'films/streaming-720p-streaming-1080p/'] )
+    liste.append( ['Action / Aventure',URL_MAIN + 'films/action-aventure/'] )
+    liste.append( ['Animation',URL_MAIN + 'films/animation/'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'films/arts-martiaux/'] )
+    liste.append( ['Biographie',URL_MAIN + 'films/biographique/'] )
+    liste.append( ['Comédie',URL_MAIN + 'films/comedie/'] )
+    liste.append( ['Crime / Gangster',URL_MAIN + 'films/Crime / Gangster/'] )
+    liste.append( ['Documentaire',URL_MAIN + 'films/documentaire/'] )
+    liste.append( ['Drame',URL_MAIN + 'films/drame/'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'films/epouvante-horreur/'] )
+    liste.append( ['Etranger',URL_MAIN + 'films/etranger/'] )
+    liste.append( ['Famille',URL_MAIN + 'films/famille/'] )
+    liste.append( ['Fantastique',URL_MAIN + 'films/fantastique/'] )
+    liste.append( ['Guerre',URL_MAIN + 'films/guerre/'] )
+    liste.append( ['Histoire',URL_MAIN + 'films/histoire/'] )
+    liste.append( ['Musique / Danse',URL_MAIN + 'films/musiquedanse/'] )
+    liste.append( ['Mystère',URL_MAIN + 'films/mystere/'] )
+    liste.append( ['Policier',URL_MAIN + 'films/policier/'] )
+    liste.append( ['Romance',URL_MAIN + 'films/romance/'] )
+    liste.append( ['Science-fiction',URL_MAIN + 'films/science-fiction/'] )
+    liste.append( ['Sport',URL_MAIN + 'films/sport/'] )
+    liste.append( ['Suspense / Thriller',URL_MAIN + 'films/thrillersuspense/'] )
+    liste.append( ['Téléfilm',URL_MAIN + 'films/telefilm/'] )
+    liste.append( ['VOSTFR',URL_MAIN + 'films/vostfr/'] )
+    liste.append( ['Western',URL_MAIN + 'films/western/'] )
+
  
     for sTitle,sUrl in liste:
        
@@ -97,34 +101,7 @@ def showGenres():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()
-    
-def showAlpha():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    
-    dialog = cConfig().createDialog(SITE_NAME)
 
-    for i in range(0,27) :
-        cConfig().updateDialog(dialog, 27)
-        if dialog.iscanceled():
-            break
-        
-        sTitle = chr(64+i)
-        sUrl = URL_MAIN + 'film-de-a-a-z/lettre-' + chr(96+i) + '/'
-        
-        if sTitle == '@':
-            sTitle= '[0-9]'
-            sUrl = URL_MAIN + 'film-de-a-a-z/0-9/'
-          
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oGui.addTV(SITE_IDENTIFIER, 'showMovies','[COLOR teal] Lettre [COLOR red]'+ sTitle +'[/COLOR][/COLOR]','', '', '', oOutputParameterHandler)
-        
-    cConfig().finishDialog(dialog)
-    
-    oGui.setEndOfDirectory()
- 
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
@@ -192,7 +169,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sUrl):
-    if '/page/' in sUrl:
+    if 'page' or 'films' in sUrl:
         sPattern = "\/page\/([0-9]+)\/"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
