@@ -68,7 +68,7 @@ def showGenres():
     liste = []
     liste.append( ['Ultra-HD',URL_MAIN + 'ultra-hd/'] )
     liste.append( ['720p/1080p',URL_MAIN + 'films/streaming-720p-streaming-1080p/'] )
-    liste.append( ['Action/Aventure',URL_MAIN + 'films/action-aventure/'] )
+    liste.append( ['Action / Aventure',URL_MAIN + 'films/action-aventure/'] )
     liste.append( ['Animation',URL_MAIN + 'films/animation/'] )
     liste.append( ['Arts Martiaux',URL_MAIN + 'films/arts-martiaux/'] )
     liste.append( ['Biographie',URL_MAIN + 'films/biographique/'] )
