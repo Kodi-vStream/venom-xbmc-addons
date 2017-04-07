@@ -169,7 +169,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sUrl):
-    if '/page/' in sUrl:
+    if 'page' or 'films' in sUrl:
         sPattern = "\/page\/([0-9]+)\/"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
