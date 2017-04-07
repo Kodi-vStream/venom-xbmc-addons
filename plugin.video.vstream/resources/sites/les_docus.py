@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-
+import re
 SITE_IDENTIFIER = 'les_docus'
 SITE_NAME = 'Les docus'
 SITE_DESC = 'Documentaires reportages et vidéos en streaming en francais.'
@@ -183,10 +183,11 @@ def showHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
+    sHtmlContent = re.sub('<iframe.+?src="(.+?amazon.+?)".+?</iframe>','',sHtmlContent)
 
     oParser = cParser()
-    sPattern = '<noscript><iframe.+?src="(.+?)"'
+    sPattern = '<iframe.+?src="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if not (aResult[0] == True):
         sPattern = 'data-video_id="(.+?)"'
@@ -199,7 +200,7 @@ def showHosters():
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
     else:                      
-        for aEntry in aResult[1]:
+        for aEntry in list(set(aResult[1])):
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
