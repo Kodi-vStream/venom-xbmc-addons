@@ -14,13 +14,12 @@ import re,urllib
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 SITE_IDENTIFIER = 'film_illimit_fr'
 SITE_NAME = 'Film illimité'
-SITE_DESC = 'Films HD en streaming'
+SITE_DESC = 'Films, Séries HD en streaming'
 
 URL_MAIN = 'http://official-film-illimite.net/'
 
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_HD = (URL_MAIN + 'films/streaming-720p-streaming-1080p/', 'showMovies')
-#MOVIE_MOVIE = (True, 'showAlpha')
 MOVIE_GENRES = (True, 'showGenres')
 
 SERIE_NEWS = (URL_MAIN + 'serie-tv/', 'showMovies')
@@ -34,10 +33,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    #oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films A-Z', 'news.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -106,34 +101,7 @@ def showGenres():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()
-    
-def showAlpha():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    
-    dialog = cConfig().createDialog(SITE_NAME)
 
-    for i in range(0,27) :
-        cConfig().updateDialog(dialog, 27)
-        if dialog.iscanceled():
-            break
-        
-        sTitle = chr(64+i)
-        sUrl = URL_MAIN + 'film-de-a-a-z/lettre-' + chr(96+i) + '/'
-        
-        if sTitle == '@':
-            sTitle= '[0-9]'
-            sUrl = URL_MAIN + 'film-de-a-a-z/0-9/'
-          
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oGui.addTV(SITE_IDENTIFIER, 'showMovies','[COLOR teal] Lettre [COLOR red]'+ sTitle +'[/COLOR][/COLOR]','', '', '', oOutputParameterHandler)
-        
-    cConfig().finishDialog(dialog)
-    
-    oGui.setEndOfDirectory()
- 
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
