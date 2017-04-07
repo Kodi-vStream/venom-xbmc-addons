@@ -57,18 +57,18 @@ def showGenres():
  
     liste = []
     liste.append( ['Action',URL_MAIN + 'film/action/'] )
-    liste.append( ['Thriller',URL_MAIN + 'film/thriller/'] )
-    liste.append( ['Drame',URL_MAIN + 'film/drame/'] )
-    liste.append( ['Comedie',URL_MAIN + 'film/comedie/'] )        
     liste.append( ['Animation',URL_MAIN + 'film/animation/'] )
-    liste.append( ['Policier',URL_MAIN + 'film/policier/'] )
-    liste.append( ['Fiction',URL_MAIN + 'film/fiction/'] )  
-    liste.append( ['Horreur',URL_MAIN + 'film/horreur/'] )
-    liste.append( ['Historique',URL_MAIN + 'film/historique/'] ) 
+    liste.append( ['Aventure',URL_MAIN + 'film/aventure/'] )
+    liste.append( ['Comédie',URL_MAIN + 'film/comedie/'] )
+    liste.append( ['Drame',URL_MAIN + 'film/drame/'] )
+    liste.append( ['Fiction',URL_MAIN + 'film/fiction/'] )
     liste.append( ['Guerre',URL_MAIN + 'film/guerre/'] )
-    liste.append( ['Aventure',URL_MAIN + 'film/aventure/'] ) 
-    liste.append( ['Musique',URL_MAIN + 'film/musique/'] ) 
-    liste.append( ['Romance',URL_MAIN + 'film/romance/'] )                             
+    liste.append( ['Historique',URL_MAIN + 'film/historique/'] )
+    liste.append( ['Horreur',URL_MAIN + 'film/horreur/'] )
+    liste.append( ['Musique',URL_MAIN + 'film/musique/'] )
+    liste.append( ['Policier',URL_MAIN + 'film/policier/'] )
+    liste.append( ['Romance',URL_MAIN + 'film/romance/'] )
+    liste.append( ['Thriller',URL_MAIN + 'film/thriller/'] )
                
     for sTitle,sUrl in liste:
         
