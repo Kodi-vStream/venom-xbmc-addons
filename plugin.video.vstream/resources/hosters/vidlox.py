@@ -9,7 +9,7 @@ class cHoster(iHoster):
 
     def __init__(self):
         if not (util.isKrypton() == True):
-            self.__sDisplayName = 'Vidlox' + ' ' + '[Nécessite Kodi 17]'
+            self.__sDisplayName = '(Windows\Android Nécessite Kodi17)' + ' ' + 'Vidlox'
         else:
             self.__sDisplayName = 'Vidlox'        
         self.__sFileName = self.__sDisplayName
