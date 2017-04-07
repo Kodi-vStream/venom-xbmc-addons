@@ -381,9 +381,9 @@ class cTMDb:
                 sql_select = sql_select + " AND tvshow.year = %s" % year
                 
             if season:
-                sql_select = sql_select + "and season.season = '%s'" % season
+                sql_select = sql_select + " AND season.season = '%s'" % season
             
-        #xbmc.log(str(sql_select))
+        #print sql_select
         try:
             self.dbcur.execute(sql_select)            
             matchedrow = self.dbcur.fetchone()
