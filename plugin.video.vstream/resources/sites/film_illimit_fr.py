@@ -175,7 +175,7 @@ def __checkForNextPage(sUrl):
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
             newpage = str(int(aResult[1][0]) + 1)
-            return sUrl.replace('page' + aResult[1][0],'page' + newpage)
+            return sUrl.replace('/page/' + aResult[1][0],'/page/' + newpage)
  
     return sUrl + 'page/2/'
  
