@@ -157,7 +157,7 @@ class cTrakt:
                 oOutputParameterHandler.addParameter('siteUrl', 'https://')
                 oGui.addText(SITE_IDENTIFIER, (cConfig().getlanguage(30306)) % (sUsername), oOutputParameterHandler)
 
-            sTitle = (cConfig().getlanguage(30307)) % (result2['movies']['plays'], result2['movies']['watched'], result2['movies']['minutes'], result2['shows']['watched'], result2['episodes']['plays'], result2['episodes']['watched'], result2['episodes']['minutes'])
+            sTitle = (cConfig().getlanguage(30307)) % (result2['movies']['plays'], result2['movies']['watched'], result2['shows']['watched'], result2['episodes']['plays'], result2['episodes']['watched'])
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oGui.addText(SITE_IDENTIFIER, '[COLOR white]'+sTitle+'[/COLOR]', oOutputParameterHandler)
@@ -328,6 +328,8 @@ class cTrakt:
         total = len(result)
         sKey = 0
         sFunction = 'getLoad'
+        sId = SITE_IDENTIFIER
+        searchtext = ''
         if (total > 0):
             dialog = cConfig().createDialog(SITE_NAME)
             for i in result:
@@ -346,6 +348,9 @@ class cTrakt:
                         sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                         cTrakt.CONTENT = '1'
                         sFunction = 'showHosters'
+                        sId = 'globalSearch'
+                    
+                    searchtext = ('%s') % (sTitle.encode("utf-8"))
                         
                     if sYear:
                         sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
@@ -358,6 +363,7 @@ class cTrakt:
                 #commun
                     sAction, sType, sWatched_at  = i['action'], i['type'], i['watched_at']
                     sFunction = 'showHosters'
+                    sId = 'globalSearch'
                     #2016-11-16T09:21:18.000Z
                     sDate = datetime.datetime(*(time.strptime(sWatched_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                     if 'episode' in i:
@@ -371,6 +377,7 @@ class cTrakt:
 
                     sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode("unicode_escape")
                     sTitle.encode("utf-8")
+                    searchtext = ('%s') % (sTitle.encode("utf-8"))
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), sExtra)
                     sTitle = ('[COLOR white]%s - %s %s[/COLOR] - %s %s') % (sDate, sAction, sType, sTitle, sExtra )
 
@@ -379,6 +386,7 @@ class cTrakt:
                     #commun
                     sType, sListed_at  = i['type'], i['listed_at']
                     sFunction = 'showHosters'
+                    sId = 'globalSearch'
                     #2016-11-16T09:21:18.000Z
                     sDate = datetime.datetime(*(time.strptime(sListed_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                     if  'show' in i:
@@ -396,6 +404,7 @@ class cTrakt:
 
                     sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode("unicode_escape")
                     sTitle.encode("utf-8")
+                    searchtext = ('%s') % (sTitle.encode("utf-8"))
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), sExtra)
                     sTitle = ('[COLOR white]%s - %s[/COLOR] - %s %s') % (sDate, sType, sTitle, sExtra )
 
@@ -413,9 +422,11 @@ class cTrakt:
                         sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
                         cTrakt.CONTENT = '1'
                         sFunction = 'showHosters'
+                        sId = 'globalSearch'
 
                     sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode("unicode_escape")
                     sTitle.encode("utf-8")
+                    searchtext = ('%s') % (sTitle.encode("utf-8"))
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), sYear)
                     sTitle = ('[COLOR white]%s - %s Lectures[/COLOR] - %s (%s)') % (sDate, sPlays, sTitle, sYear )
 
@@ -423,12 +434,14 @@ class cTrakt:
                 #commun
                     sWatcher_count, sPlay_count, sCollected_count = i['watcher_count'], i['play_count'], i['collected_count']
                     sFunction = 'showHosters'
+                    sId = 'globalSearch'
                     if  'show' in i:
                         sTrakt, sTitle, sImdb, sTmdb, sYear = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year']
                         cTrakt.CONTENT = '2'
                     else:
                         sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
                         cTrakt.CONTENT = '1'
+                    searchtext = ('%s') % (sTitle.encode("utf-8"))
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                     sTitle = ('Spectateur [COLOR white](%s)[/COLOR] - Collection [COLOR white](%s)[/COLOR] - %s - (%s)') % (int(sPlay_count), int(sCollected_count), sTitle.encode("utf-8"), int(sYear))
 
@@ -445,10 +458,12 @@ class cTrakt:
                         cTrakt.CONTENT = '1'
 
                     sDate = datetime.datetime(*(time.strptime(sFirst_aired, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y')
+                    searchtext = ('%s') % (sTitle.encode("utf-8"))
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), sYear)
                     sTitle = ('[COLOR white]%s[/COLOR] - %s (S%02dE%02d)') % (sDate, sTitle.encode('utf-8').decode('ascii','ignore'), sSaison,sEpisode)
 
                     sFunction = 'showHosters'
+                    sId = 'globalSearch'
                     
                 elif 'search' in sUrl:
                     if  'show' in i:
@@ -459,9 +474,11 @@ class cTrakt:
                         sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
                         cTrakt.CONTENT = '1'
                         sFunction = 'showHosters'
+                        sId = 'globalSearch'
 
                     sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode("unicode_escape")
                     sTitle.encode("utf-8")
+                    searchtext = ('%s') % (sTitle.encode("utf-8"))
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), sYear)
                     sTitle = ('%s (%s)') % ( sTitle, sYear )
                     
@@ -471,16 +488,20 @@ class cTrakt:
                     else :
                         cTrakt.CONTENT = '1'
                     sTrakt, sTitle, sYear, sImdb, sTmdb = i['ids']['trakt'], i['title'], i['year'], i['ids']['imdb'], i['ids']['tmdb']
+                    searchtext = ('%s') % (sTitle.encode("utf-8"))
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                     sTitle = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                     sFunction = 'showHosters'
+                    sId = 'globalSearch'
 
                 elif 'boxoffice' in sUrl:
                         sTrakt, sTitle, sYear, sImdb, sTmdb, sRevenue = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['year'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['revenue']
                         cTrakt.CONTENT = '1'
+                        searchtext = ('%s') % (sTitle.encode("utf-8"))
                         sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                         sTitle = ('Revenues [COLOR white](%s)[/COLOR] - %s - (%s)') % (sRevenue, sTitle.encode("utf-8"), int(sYear))
                         sFunction = 'showHosters'
+                        sId = 'globalSearch'
 
 
                 else: return
@@ -489,7 +510,8 @@ class cTrakt:
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('file', sFile)
                 oOutputParameterHandler.addParameter('key', sKey)
-                self.getFolder(oGui, sTitle, sFile, sFunction, sImdb, sTmdb, oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('searchtext', searchtext)
+                self.getFolder(oGui, sId, sTitle, sFile, sFunction, sImdb, sTmdb, oOutputParameterHandler)
                 sKey += 1
                 
             cConfig().finishDialog(dialog)
@@ -509,6 +531,7 @@ class cTrakt:
         sUrl = oInputParameterHandler.getValue('siteUrl')
         sFile = oInputParameterHandler.getValue('file')
         sKey = oInputParameterHandler.getValue('key')
+        searchtext = oInputParameterHandler.getValue('searchtext')
 
         oGui = cGui()
 
@@ -543,7 +566,8 @@ class cTrakt:
                 oOutputParameterHandler.addParameter('sNum', sNum)
                 oOutputParameterHandler.addParameter('file', sFile)
                 oOutputParameterHandler.addParameter('title', sTitle2)
-                self.getFolder(oGui, sTitle2, sFile, 'getBepisodes', '','' ,oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('searchtext', searchtext)
+                self.getFolder(oGui, SITE_IDENTIFIER, sTitle2, sFile, 'getBepisodes', '','' ,oOutputParameterHandler)
                 sNum += 1
 
         oGui.setEndOfDirectory()
@@ -557,6 +581,7 @@ class cTrakt:
         sFile = oInputParameterHandler.getValue('file')
         sKey = oInputParameterHandler.getValue('key')
         sNum = oInputParameterHandler.getValue('sNum')
+        searchtext = oInputParameterHandler.getValue('searchtext')
 
         oGui = cGui()
         cTrakt.CONTENT = '2'
@@ -597,16 +622,17 @@ class cTrakt:
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('file', sFile)
                 #oOutputParameterHandler.addParameter('Key', skey)
-                self.getFolder(oGui, sTitle2, sFile, 'showHosters', '', '', oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('searchtext', searchtext)
+                self.getFolder(oGui, 'globalSearch', sTitle2, sFile, 'showHosters', '', '', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
         return
 
-    def getFolder(self, oGui, sTitle, sFile, sFunction, sImdb, sTmdb, oOutputParameterHandler):
+    def getFolder(self, oGui, sId, sTitle, sFile, sFunction, sImdb, sTmdb, oOutputParameterHandler):
 
         oGuiElement = cGuiElement()
 
-        oGuiElement.setSiteName(SITE_IDENTIFIER)
+        oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
         oGuiElement.setTitle(sTitle)
         oGuiElement.setFileName(sFile)

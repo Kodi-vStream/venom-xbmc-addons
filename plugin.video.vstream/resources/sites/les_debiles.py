@@ -74,12 +74,13 @@ def showMovies(sSearch = ''):
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+    sHtmlContent = sHtmlContent.replace('&gt;&gt;' , 'suivante')
+
     sPattern = '<img class="imageitem" src="([^"]+)".+?<h2 class="titleitem"><a href="([^"]+)">(.+?)</a>'
      
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
+    
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -111,7 +112,7 @@ def showMovies(sSearch = ''):
  
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<a href="([^"]+)">&gt;&gt;</a></li>.+?<div class="clear"></div>'
+    sPattern = '<a href="([^"]+)">suivante</a></li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if (aResult[0] == True):

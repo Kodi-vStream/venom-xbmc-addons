@@ -649,9 +649,9 @@ def showHosters():# recherche et affiche les hotes
     #print sHtmlContent
     oParser = cParser()
     
-    sPattern = '<span class=\'providers.+?\' title=\'([^\']+)\'><\/span>[^<]+?<a href=\'([^\']+)\' target=\'_blank\' title="([^"]+)"'
+    sPattern = '<span class=\'providers.+?\' title=\'([^\']+)\'>.+?<a href=\'([^\']+)\' target=\'_blank\' title="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
+    
      
     if (aResult[0] == True):
         total = len(aResult[1])

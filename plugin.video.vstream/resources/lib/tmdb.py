@@ -381,9 +381,9 @@ class cTMDb:
                 sql_select = sql_select + " AND tvshow.year = %s" % year
                 
             if season:
-                sql_select = sql_select + "and season.season = '%s'" % season
+                sql_select = sql_select + " AND season.season = '%s'" % season
             
-        #xbmc.log(str(sql_select))
+        #print sql_select
         try:
             self.dbcur.execute(sql_select)            
             matchedrow = self.dbcur.fetchone()
@@ -468,9 +468,10 @@ class cTMDb:
                     meta['s_year'] = s['air_date']
                 
                 #xbmc.log(str(s['season_number'])+str(season))
-                sql = "INSERT INTO season (imdb_id, tmdb_id, season, year, premiered, poster_path, playcount) VALUES (?, ?, ?, ?, ?, ?, ?)"
-                self.dbcur.execute(sql, (meta['imdb_id'], s['id'], s['season_number'], s['air_date'], s['air_date'], s['poster_path'], 6))
                 try:
+                    sql = "INSERT INTO season (imdb_id, tmdb_id, season, year, premiered, poster_path, playcount) VALUES (?, ?, ?, ?, ?, ?, ?)"
+                    self.dbcur.execute(sql, (meta['imdb_id'], s['id'], s['season_number'], s['air_date'], s['air_date'], s['poster_path'], 6))
+                   
                     self.db.commit() 
                     cConfig().log('SQL INSERT Successfully') 
                 except Exception, e:

@@ -16,6 +16,7 @@ SITE_DESC = 'Séries en streaming vf gratuitement sur Streaming-Séries'
 URL_MAIN = 'http://www.streamingseries.info/'
 
 SERIE_SERIES = (URL_MAIN, 'showMovies')
+SERIE_NEWS = (URL_MAIN, 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'series-les-plus-vues/', 'showMovies')
 SERIE_COMMENTS = (URL_MAIN + 'series-les-plus-commentees/', 'showMovies')
 SERIE_NOTES = (URL_MAIN + 'series-les-plus-aimees/', 'showMovies')
@@ -36,7 +37,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus Vues)', 'series_views.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus Vues)', 'films_views.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENTS[0])
