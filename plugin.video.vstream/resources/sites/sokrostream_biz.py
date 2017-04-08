@@ -166,7 +166,7 @@ def showPys():
     liste.append( ['Canadien',URL_MAIN + 'pays/canadien'] )
     liste.append( ['Espagnol',URL_MAIN + 'pays/espagnol'] )
     liste.append( ['Francais',URL_MAIN + 'pays/francais'] )
-    liste.append( ['Italien',URL_MAIN + 'pays/italien/'] )
+    liste.append( ['Italien',URL_MAIN + 'pays/italien'] )
     liste.append( ['Japonnais',URL_MAIN + 'pays/japonnais'] )
     liste.append( ['Norvegien',URL_MAIN + 'pays/norvegien'] )
     
