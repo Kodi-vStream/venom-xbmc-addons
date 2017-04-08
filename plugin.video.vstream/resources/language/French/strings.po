@@ -178,7 +178,7 @@ msgstr "Derniers ajouts"
 
 msgctxt "#30102"
 msgid "Most seeing"
-msgstr "Les plus Vues"
+msgstr "Les plus Vus"
 
 msgctxt "#30103"
 msgid "Most commented"
@@ -206,15 +206,15 @@ msgstr "Enfants"
 
 msgctxt "#30112"
 msgid "Documentary"
-msgstr "Documentaire"
+msgstr "Documentaires"
 
 msgctxt "#30113"
 msgid "Sport"
-msgstr "Sport"
+msgstr "Sports"
 
 msgctxt "#30114"
 msgid "Web Video"
-msgstr "Vidéo du net"
+msgstr "Vidéos du net"
 
 msgctxt "#30115"
 msgid "Television"
