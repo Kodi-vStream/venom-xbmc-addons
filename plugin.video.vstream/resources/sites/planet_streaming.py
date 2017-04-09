@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'planet_streaming'
 SITE_NAME = 'Planet Streaming'
 SITE_DESC = 'Films de 1900 jusqu à 2016, contient du HD'
 
-URL_MAIN = 'http://www.planet-streaming.com/'
+URL_MAIN = 'http://www.voirfilms.planet-streaming.com/'
  
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'regarder-film/', 'showMovies')
@@ -37,7 +37,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD', 'films_hd.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films (HD)', 'films_hd.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
@@ -62,30 +62,32 @@ def showGenres():
     oGui = cGui()
  
     liste = []
-    liste.append( ['Animation',URL_MAIN + 'regarder-film/animation/'] )    
-    liste.append( ['Action',URL_MAIN + 'regarder-film/action/'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'regarder-film/arts-martiaux/'] )
-    liste.append( ['Aventure',URL_MAIN + 'regarder-film/aventure/'] )
-    liste.append( ['Biopic',URL_MAIN + 'regarder-film/biopic/'] )
-    liste.append( ['Comédie',URL_MAIN + 'regarder-film/comedie/'] )
-    liste.append( ['Comédie Dramatique',URL_MAIN + 'regarder-film/comedie-dramatique/'] )
-    liste.append( ['Comédie Musicale',URL_MAIN + 'regarder-film/comedie-musicale/'] )
-    liste.append( ['Documentaire',URL_MAIN + 'regarder-film/documentaire/'] )
-    liste.append( ['Drame',URL_MAIN + 'regarder-film/drame/'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'regarder-film/epouvante-horreur/'] )
-    liste.append( ['Espionnage',URL_MAIN + 'regarder-film/espionnage/'] )  
-    liste.append( ['Fantastique',URL_MAIN + 'regarder-film/fantastique/'] )
-    liste.append( ['Famille',URL_MAIN + 'regarder-film/famille/'] )
-    liste.append( ['Guerre',URL_MAIN + 'regarder-film/guerre/'] )
-    liste.append( ['Historique',URL_MAIN + 'regarder-film/historique/'] )
-    liste.append( ['Musical',URL_MAIN + 'regarder-film/musical/'] )
-    liste.append( ['Péplum',URL_MAIN + 'regarder-film/peplum/'] )
-    liste.append( ['Policier',URL_MAIN + 'regarder-film/policier/'] )
-    liste.append( ['Romance',URL_MAIN + 'regarder-film/romance/'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'regarder-film/science-fiction/'] )
-    liste.append( ['Thriller',URL_MAIN + 'regarder-film/thriller/'] )
-    liste.append( ['Western',URL_MAIN + 'regarder-film/western/'] )
-    liste.append( ['Divers',URL_MAIN + 'regarder-film/divers//'] )
+    liste.append( ['HD/HQ',URL_MAIN + 'xfsearch/hd'] )
+    liste.append( ['Action',URL_MAIN + 'action'] )
+    liste.append( ['Animation',URL_MAIN + 'animation'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'arts-martiaux'] )
+    liste.append( ['Aventure',URL_MAIN + 'aventure'] )
+    liste.append( ['Biopic',URL_MAIN + 'biopic'] )
+    liste.append( ['Comédie',URL_MAIN + 'comedie'] )
+    liste.append( ['Comédie Dramatique',URL_MAIN + 'comedie-dramatique'] )
+    liste.append( ['Comédie Musicale',URL_MAIN + 'comedie-musicale'] )
+    liste.append( ['Documentaire',URL_MAIN + 'documentaire'] )
+    liste.append( ['Drame',URL_MAIN + 'drame'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'epouvante-horreur'] )
+    liste.append( ['Famille',URL_MAIN + 'famille'] )
+    liste.append( ['Fantastique',URL_MAIN + 'fantastique'] )
+    liste.append( ['Guerre',URL_MAIN + 'guerre'] )
+    liste.append( ['Historique',URL_MAIN + 'historique'] )
+    liste.append( ['Musical',URL_MAIN + 'musical'] )
+    liste.append( ['Policier',URL_MAIN + 'policier'] )
+    liste.append( ['Romance',URL_MAIN + 'romance'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'science-fiction'] )
+    liste.append( ['Thriller',URL_MAIN + 'thriller'] )
+    liste.append( ['Western',URL_MAIN + 'western'] )
+	   #la suite fonctionne mais pas de menu sur le site
+    liste.append( ['Espionnage',URL_MAIN + 'espionnage'] )
+    liste.append( ['Péplum',URL_MAIN + 'peplum'] )
+    liste.append( ['Divers',URL_MAIN + 'divers'] )
                
     for sTitle,sUrl in liste:
        
@@ -108,9 +110,8 @@ def showMovies(sSearch = ''):
         
         oRequestHandler = cRequestHandler(URL_MAIN)
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-        #oRequestHandler.addParameters('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:22.0) Gecko/20100101 Firefox/22.0')
         oRequestHandler.addParameters('Content-Type', 'application/x-www-form-urlencoded')
-        oRequestHandler.addParameters('Referer', 'http://www.planet-streaming.com/')
+        oRequestHandler.addParameters('Referer', 'http://www.voirfilms.planet-streaming.com/')
         oRequestHandler.addParameters('do', 'search')
         oRequestHandler.addParameters('subaction', 'search')
         oRequestHandler.addParameters('story', sSearch)
