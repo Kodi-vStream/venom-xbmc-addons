@@ -20,34 +20,34 @@ import xbmc
 
 SITE_IDENTIFIER = 'tv_streaming_ch'
 SITE_NAME = 'Tv-streaming'
-SITE_DESC = 'Film/Serie/Documentaire/Anime en streaming'
+SITE_DESC = 'Films/Séries/Documentaires/Animés en streaming'
 
 #URL_MAIN = 'http://tv-streaming.ch'
 #clone de http://streaming-serie.co
 #URL_MAIN = 'http://www.la-tele-du-web.tv'
 URL_MAIN = 'http://www.tv-streaming-serie.xyz/'
 
-MOVIE_MOVIE = (URL_MAIN + '/category/films/', 'showMovies')
-MOVIE_NEWS = (URL_MAIN + '/category/films/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'category/films', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'category/films', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
-SERIE_SERIES = (URL_MAIN + '/category/series-tv/', 'showMovies')
-SERIE_NEWS = (URL_MAIN + '/category/series-tv/', 'showMovies')
-SERIE_VFS = (URL_MAIN + '/category/series-tv/serie-vf/', 'showMovies')
-SERIE_VOSTFRS = (URL_MAIN + '/category/series-tv/serie-vostfr/', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'category/series-tv', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'category/series-tv', 'showMovies')
+SERIE_VFS = (URL_MAIN + 'category/series-tv/serie-vf', 'showMovies')
+SERIE_VOSTFRS = (URL_MAIN + 'category/series-tv/serie-vostfr', 'showMovies')
 
-ANIM_VFS = (URL_MAIN + '/category/manga-vf/', 'showMovies')
-ANIM_VOSTFRS = (URL_MAIN + '/category/manga-vf/manga-vostfr/', 'showMovies')
-ANIM_ENFANTS = (URL_MAIN + '/category/dessin-anime/', 'showMovies')
+ANIM_VFS = (URL_MAIN + 'category/manga-vf', 'showMovies')
+ANIM_VOSTFRS = (URL_MAIN + 'category/manga-vf/manga-vostfr', 'showMovies')
+ANIM_ENFANTS = (URL_MAIN + 'category/dessin-anime', 'showMovies')
 
-DOC_NEWS = (URL_MAIN + '/category/television/documentaire/', 'showMovies')
+DOC_NEWS = (URL_MAIN + 'category/television/documentaire', 'showMovies')
 DOC_DOCS = ('http://', 'load')
 
-SPORT_SPORTS = (URL_MAIN + '/category/sport/', 'showMovies')
+SPORT_SPORTS = (URL_MAIN + '/category/sport', 'showMovies')
 
 REPLAYTV_REPLAYTV = ('http://', 'ReplayTV')
 
-URL_SEARCH = (URL_MAIN + '/?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -121,20 +121,20 @@ def ReplayTV():
     oGui = cGui()
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/television/tv-realite/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/television/tv-realite')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'TV réalité', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/television/spectacles/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Spectacle', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/television/spectacles')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Spectacles', 'tv.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/television/emission-tv/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Emission TV', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/television/emission-tv')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Emissions TV', 'tv.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/television/documentaire/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaire', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/television/documentaire')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires', 'tv.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()        
     
@@ -142,20 +142,24 @@ def showGenres():
     oGui = cGui()
  
     liste = []
-    liste.append( ['Action',URL_MAIN + '/category/films/action-streaming/'] )
-    liste.append( ['Animation',URL_MAIN + '/category/films/animation-streaming/'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + '/category/films/arts-martiaux/'] )
-    liste.append( ['Aventure',URL_MAIN + '/category/films/aventure-streaming/'] )
-    liste.append( ['Comédie',URL_MAIN + '/category/films/comedie-streaming/'] )
-    liste.append( ['Drame',URL_MAIN + '/category/films/drame-streaming/'] )
-    liste.append( ['Espionnage',URL_MAIN + '/category/films/espionnage-streaming/'] )   
-    liste.append( ['Fantastique',URL_MAIN + '/category/films/fantastique/'] )
-    liste.append( ['Guerre',URL_MAIN + '/category/films/guerre-streaming/'] )
-    liste.append( ['Historique',URL_MAIN + '/category/films/historique-streaming/'] )
-    liste.append( ['Horreur',URL_MAIN + '/category/films/epouvante-horreur/'] )
-    liste.append( ['Musical',URL_MAIN + '/category/films/musical/'] )
-    liste.append( ['Policier',URL_MAIN + '/category/films/policier/'] )
-    liste.append( ['Thriller',URL_MAIN + '/category/films/thriller/'] )
+    liste.append( ['Action',URL_MAIN + 'category/films/action'] )
+    liste.append( ['Animation',URL_MAIN + 'category/films/animation-streaming'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'category/films/arts-martiaux'] )
+    liste.append( ['Aventure',URL_MAIN + 'category/films/aventure'] )
+    liste.append( ['Comédie',URL_MAIN + 'category/films/comedie'] )
+    liste.append( ['Drame',URL_MAIN + 'category/films/drame'] )
+    liste.append( ['Epouvante-Horreur',URL_MAIN + 'category/films/epouvante-horreur'] )
+    liste.append( ['Espionnage',URL_MAIN + 'category/films/espionnage'] )   
+    liste.append( ['Fantastique',URL_MAIN + 'category/films/fantastique'] )
+    liste.append( ['Famille',URL_MAIN + 'category/films/famille'] )
+    liste.append( ['Guerre',URL_MAIN + 'category/films/guerre'] )
+    liste.append( ['Historique',URL_MAIN + 'category/films/historique-streaming'] )
+    liste.append( ['Musical',URL_MAIN + 'category/films/musical'] )
+    liste.append( ['Policier',URL_MAIN + 'category/films/policier'] )
+    liste.append( ['Science-fiction',URL_MAIN + 'category/films/science-fiction'] )
+    liste.append( ['Romance',URL_MAIN + 'category/films/romance'] )
+    liste.append( ['Thriller',URL_MAIN + 'category/films/thriller'] )
+    liste.append( ['Western',URL_MAIN + 'category/films/western'] )
                 
     for sTitle,sUrl in liste:
         
