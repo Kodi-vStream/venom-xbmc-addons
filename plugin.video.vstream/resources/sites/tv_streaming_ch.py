@@ -121,20 +121,20 @@ def ReplayTV():
     oGui = cGui()
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/television/tv-realite/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/television/tv-realite')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'TV réalité', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/television/spectacles/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Spectacle', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/television/spectacles')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Spectacles', 'tv.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/television/emission-tv/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Emission TV', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/television/emission-tv')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Emissions TV', 'tv.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/television/documentaire/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaire', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/television/documentaire')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires', 'tv.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()        
     
