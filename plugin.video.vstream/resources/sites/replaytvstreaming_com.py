@@ -175,7 +175,7 @@ def showHosters():
             
             sTitle = ('%s') % (str(aEntry[2]))
             
-            if (sTest != sTitle):
+            if not ('Lecteur' in sTitle) and (sTest != sTitle): 
                 oGui.addText(SITE_IDENTIFIER,'[COLOR olive]' + sTitle + '[/COLOR]')
                 sTest = sTitle
             
