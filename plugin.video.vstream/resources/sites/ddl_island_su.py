@@ -33,7 +33,6 @@ URL_SEARCH_SPECTACLES = ('http://www.ddl-island.su/recherche.php?categorie=2&rec
 
 
 URL_SEARCH = (URL_MAIN + 'index.php?q=', 'showMovies')
-
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_SD = (URL_MAIN + 'telechargement/films-1.html&order=2', 'showMovies') # derniers films en SD
@@ -61,7 +60,6 @@ SERIES_HD_VIEWS = (URL_MAIN + 'telechargement/series-tv-6.html&order=3', 'showMo
 SERIES_TOP = (URL_MAIN +'telechargement-top-series', 'showMovies') # derniers films en 3D
 SERIES_GENRES_SD = (True, 'showGenreSeriesSD')
 SERIES_GENRES_HD = (True, 'showGenreSeriesHD')
-
 
 def load():
     oGui = cGui()
@@ -322,22 +320,28 @@ def showGenre(basePath):
     liste.append( ['Espionnage',URL_MAIN + 'telechargement+13/' + basePath] ) 
     liste.append( ['Famille',URL_MAIN + 'telechargement+31/' + basePath] ) 
     liste.append( ['Fantastique',URL_MAIN + 'telechargement+16/' + basePath] ) 
+    liste.append( ['Football',URL_MAIN + 'telechargement+32/' + basePath] ) 
     liste.append( ['Guerre',URL_MAIN + 'telechargement+22/' + basePath] ) 
     liste.append( ['Historique',URL_MAIN + 'telechargement+21/' + basePath] ) 
     liste.append( ['Horreur',URL_MAIN + 'telechargement+15/' + basePath] ) 
     liste.append( ['Humour',URL_MAIN + 'telechargement+44/' + basePath] ) 
     liste.append( ['Jeunesse',URL_MAIN + 'telechargement+19/' + basePath] ) 
     liste.append( ['Judiciaire',URL_MAIN + 'telechargement+67/' + basePath] ) 
+    liste.append( ['Karaté',URL_MAIN + 'telechargement+23/' + basePath] ) 
     liste.append( ['Manga',URL_MAIN + 'telechargement+58/' + basePath] ) 
     liste.append( ['Médical',URL_MAIN + 'telechargement+47/' + basePath] ) 
     liste.append( ['Musical',URL_MAIN + 'telechargement+10/' + basePath] ) 
     liste.append( ['Mystère',URL_MAIN + 'telechargement+26/' + basePath] ) 
     liste.append( ['Péplum',URL_MAIN + 'telechargement+54/' + basePath] ) 
     liste.append( ['Policier',URL_MAIN + 'telechargement+2/' + basePath] ) 
+    liste.append( ['Reportage',URL_MAIN + 'telechargement+57/' + basePath] ) 
     liste.append( ['Romance',URL_MAIN + 'telechargement+6/' + basePath] ) 
     liste.append( ['Science fiction',URL_MAIN + 'telechargement+7/' + basePath] ) 
+    liste.append( ['Sketches',URL_MAIN + 'telechargement+14/' + basePath] ) 
     liste.append( ['Spectacle',URL_MAIN + 'telechargement+39/' + basePath] ) 
     liste.append( ['Sport',URL_MAIN + 'telechargement+68/' + basePath] ) 
+    liste.append( ['Suspense',URL_MAIN + 'telechargement+42/' + basePath] ) 
+    liste.append( ['Téléréalité',URL_MAIN + 'telechargement+18/' + basePath] ) 
     liste.append( ['Thriller',URL_MAIN + 'telechargement+8/' + basePath] ) 
     liste.append( ['Western',URL_MAIN + 'telechargement+11/' + basePath] ) 
                 
