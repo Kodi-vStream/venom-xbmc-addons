@@ -20,7 +20,7 @@ SITE_DESC = 'Séries & Animés en Streaming'
 URL_MAIN = 'http://serie-streaming.watch/'
 
 SERIE_NEWS = (URL_MAIN, 'showMovies')
-MOVIE_GENRES = (True, 'showGenres')
+SERIE_GENRES = (True, 'showGenres')
 
 ANIM_ENFANTS = (URL_MAIN + 'category/series/dessin-anime/', 'showMovies')
  
@@ -39,8 +39,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Series (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
            
     oGui.setEndOfDirectory()
  
