@@ -33,7 +33,7 @@ DOC_NEWS = (URL_MAIN + 'category/television/documentaire', 'showMovies')
 
 SPORT_SPORTS = (URL_MAIN + 'category/sport', 'showMovies')
 
-REPLAY_TV = (True, 'ReplayTV')
+REPLAYTV_GENRES = (True, 'ReplayTV')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -86,8 +86,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', REPLAY_TV[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAY_TV[1] ,'Replay TV', 'replay.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_GENRES[1] ,'Replay TV (Genres)', 'replay.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
