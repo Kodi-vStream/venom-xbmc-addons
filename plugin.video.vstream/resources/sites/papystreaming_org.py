@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-#johngf.
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui 
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler 
@@ -8,7 +8,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig 
 from resources.lib.parser import cParser 
 from resources.lib.util import cUtil 
-import re,urllib
+import re,urllib,base64
 
 SITE_IDENTIFIER = 'papystreaming_org'  
 SITE_NAME = 'Papystreaming' 
@@ -29,6 +29,8 @@ URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH2 = (URL_MAIN + '?s=', 'showSeries')
 FUNCTION_SEARCH = 'showMovies'
 #serie et film melangé sur certaine fonction tri obligatoire qui bloque l'optimisation
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
+headers = { 'User-Agent' : UA }
 
 def load():
     oGui = cGui()
@@ -268,13 +270,13 @@ def ShowPapyLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     oParser = cParser()
-    
+
     if 'papystreaming' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
         sHtmlContent = sHtmlContent.replace('http://www.film-streaming.mmfilmes.com/embed2.php?f=','')
-  
-        sPattern = '<iframe.+?src="(http.+?)"'  
+
+        sPattern = "var links = *'(.+?)';"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             if 'mmfilmes' in aResult[1][0]:
@@ -285,11 +287,23 @@ def ShowPapyLink():
                 oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
                 oGui.addMisc(SITE_IDENTIFIER, 'ShowPapyLink', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler) 
             else:
-                sHosterUrl = aResult[1][0]
+                sHtmlContent = base64.b64decode(aResult[1][0])
+                sPattern = '"src":"([^"]+)",.+?"label":"(\d+)"'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                if (aResult[0] == True):                
+                    link2 = aResult[1][0][0]
+                    sLabel = aResult[1][0][1]
 
+                    import urllib2
+                    req = urllib2.Request(link2,None,headers)
+                    req.add_header('Referer', sUrl)
+                    response = urllib2.urlopen(req)
+                    sHosterUrl = response.geturl()
+                    response.close()
+ 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
-                    sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                    sDisplayTitle = cUtil().DecoTitle(sMovieTitle + '[' + sLabel + ']')
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
