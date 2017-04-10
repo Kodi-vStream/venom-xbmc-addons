@@ -18,9 +18,7 @@ SITE_DESC = 'TOP REPLAY TV'
 URL_MAIN = 'http://ddlfrench.org/'
 
 REPLAYTV_NEWS = ('http://ddlfrench.org/', 'showMovies')
-
 REPLAYTV_REPLAYTV = ('http://', 'load')
-
 REPLAYTV_GENRES = (True, 'showGenres')
 
 URL_SEARCH = ('', 'showMovies')
@@ -38,8 +36,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'REPLAY TV (Derniers ajouts)', 'replay.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'REPLAY TV (Par chaines)', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_GENRES[1], 'REPLAY TV (Par chaines)', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
   
@@ -58,28 +56,28 @@ def showGenres():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ["TF1","http://ddlfrench.org/tf1"] )
-    liste.append( ["France2","http://ddlfrench.org/france2"] )
-    liste.append( ["France3","http://ddlfrench.org/france3"] )
-    liste.append( ["France4","http://ddlfrench.org/france4"] )
-    liste.append( ["France5","http://ddlfrench.org/france5"] )
-    liste.append( ["FranceO","http://ddlfrench.org/franceo"] )
-    liste.append( ["ARTE","http://ddlfrench.org/arte"] )
-    liste.append( ["M6","http://ddlfrench.org/m6"] )
-    liste.append( ["CANAL+","http://ddlfrench.org/canal-plus"] )
-    liste.append( ["D8","http://ddlfrench.org/d8"] )
-    liste.append( ["W9","http://ddlfrench.org/w9"] )
-    liste.append( ["TMC","http://ddlfrench.org/tmc"] )
-    liste.append( ["NT1","http://ddlfrench.org/nt1"] )
-    liste.append( ["NRJ12","http://ddlfrench.org/nrj12"] )
-    liste.append( ["RMC DECOUVERTE","http://ddlfrench.org/rmc-decouverte"] )
-    liste.append( ["TNT CANALSAT","http://ddlfrench.org/tnt-canalsat"] )
+    liste.append( ['TF1',URL_MAIN + 'tf1'] )
+    liste.append( ['France 2',URL_MAIN + 'france2'] )
+    liste.append( ['France 3',URL_MAIN + 'france3'] )
+    liste.append( ['France 4',URL_MAIN + 'france4'] )
+    liste.append( ['France 5',URL_MAIN + 'france5'] )
+    liste.append( ['France O',URL_MAIN + 'franceo'] )
+    liste.append( ['ARTE',URL_MAIN + 'arte'] )
+    liste.append( ['M6',URL_MAIN + 'm6'] )
+    liste.append( ['W9',URL_MAIN + 'w9'] )
+    liste.append( ['TMC',URL_MAIN + 'tmc'] )
+    liste.append( ['NT1',URL_MAIN + 'nt1'] )
+    liste.append( ['NRJ12',URL_MAIN + 'nrj12'] )
+    liste.append( ['RMC DECOUVERTE',URL_MAIN + 'rmc-decouverte'] )
+    liste.append( ['C8',URL_MAIN + 'c8'] )
+    liste.append( ['CANAL+',URL_MAIN + 'canal-plus'] )
+    liste.append( ['TNT CANALSAT',URL_MAIN + 'tnt-canalsat'] )
 
     for sTitle,sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'tv.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
 
