@@ -35,7 +35,6 @@ DOC_DOCS = ('http://', 'load')
 SPORT_SPORTS = (URL_MAIN + 'category/sport', 'showMovies')
 
 REPLAYTV_GENRES = (True, 'ReplayTV')
-REPLAYTV_REPLAYTV = ('http://', 'load')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
