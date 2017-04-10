@@ -1,30 +1,19 @@
 #-*- coding: utf-8 -*-
 #Venom.
-
-#Cloudflare protection
-#https://raw.githubusercontent.com/daniel-lundin/dreamfilm-xbmc/master/cloudflare.py
-#https://gist.github.com/Rainbowed/8917670
-
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.config import cConfig
-import re, urllib, urllib2
-import xbmc
+import re, urllib
 
 SITE_IDENTIFIER = 'tv_streaming_ch'
 SITE_NAME = 'Tv-streaming'
 SITE_DESC = 'Films/Séries/Documentaires/Animés en streaming'
 
-#URL_MAIN = 'http://tv-streaming.ch'
-#clone de http://streaming-serie.co
-#URL_MAIN = 'http://www.la-tele-du-web.tv'
 URL_MAIN = 'http://www.tv-streaming-serie.xyz/'
 
 MOVIE_MOVIE = (URL_MAIN + 'category/films', 'showMovies')
@@ -43,7 +32,7 @@ ANIM_ENFANTS = (URL_MAIN + 'category/dessin-anime', 'showMovies')
 DOC_NEWS = (URL_MAIN + 'category/television/documentaire', 'showMovies')
 DOC_DOCS = ('http://', 'load')
 
-SPORT_SPORTS = (URL_MAIN + '/category/sport', 'showMovies')
+SPORT_SPORTS = (URL_MAIN + 'category/sport', 'showMovies')
 
 REPLAYTV_REPLAYTV = ('http://', 'ReplayTV')
 
@@ -177,17 +166,10 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-   
-    #xbmc.log(sUrl)
-     
-    sHtmlContent = ''
       
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-      
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
+
     
     sPattern = '<div.*?class="moviefilm"> *<a.*?href="([^<]+)">.*?<img.*?src="([^<]+)" alt="(.+?)".+?>'
     
@@ -247,18 +229,11 @@ def showSeries(sLoop = False):
         
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #sHtmlContent = sHtmlContent.replace('<strong>Téléchargement VOSTFR','').replace('<strong>Téléchargement VF','').replace('<strong>Téléchargement','')
- 
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
- 
+
     sPattern = '<a *href="([^<]+)"><span>.+?<font class="">(.+?)<\/font><\/font>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    #print aResult
 
     #astuce en cas d'episode unique
     if (aResult[0] == False) and (sLoop == False):
@@ -316,9 +291,7 @@ def showHosters(sLoop = False):
     sPattern = '<iframe.+?src="(http[^<>]+?)" [^<>]+?><\/iframe>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    #print aResult
-     
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
