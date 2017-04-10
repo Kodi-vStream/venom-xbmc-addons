@@ -12,7 +12,7 @@ import re, urllib
 
 SITE_IDENTIFIER = 'tv_streaming_ch'
 SITE_NAME = 'Tv-streaming'
-SITE_DESC = 'Films/Séries/Documentaires/Animés en streaming'
+SITE_DESC = 'Films/Séries/Animés/Documentaires/ReplayTV en streaming'
 
 URL_MAIN = 'http://www.tv-streaming-serie.xyz/'
 
@@ -30,10 +30,12 @@ ANIM_VOSTFRS = (URL_MAIN + 'category/manga-vf/manga-vostfr', 'showMovies')
 ANIM_ENFANTS = (URL_MAIN + 'category/dessin-anime', 'showMovies')
 
 DOC_NEWS = (URL_MAIN + 'category/television/documentaire', 'showMovies')
+DOC_DOCS = ('http://', 'load')
 
 SPORT_SPORTS = (URL_MAIN + 'category/sport', 'showMovies')
 
 REPLAYTV_GENRES = (True, 'ReplayTV')
+REPLAYTV_REPLAYTV = ('http://', 'load')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
