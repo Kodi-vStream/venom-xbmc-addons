@@ -12,7 +12,7 @@ import re, urllib
 
 SITE_IDENTIFIER = 'tv_streaming_ch'
 SITE_NAME = 'Tv-streaming'
-SITE_DESC = 'Films/Séries/Documentaires/Animés en streaming'
+SITE_DESC = 'Films/Séries/Animés/Documentaires/ReplayTV en streaming'
 
 URL_MAIN = 'http://www.tv-streaming-serie.xyz/'
 
@@ -34,7 +34,7 @@ DOC_DOCS = ('http://', 'load')
 
 SPORT_SPORTS = (URL_MAIN + 'category/sport', 'showMovies')
 
-REPLAYTV_REPLAYTV = ('http://', 'ReplayTV')
+REPLAYTV_GENRES = (True, 'ReplayTV')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -87,8 +87,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1] ,'Replay TV', 'replay.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_GENRES[1] ,'Replay TV (Genres)', 'replay.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
@@ -108,24 +108,29 @@ def showSearch():
 
 def ReplayTV():
     oGui = cGui()
-    
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/television/tv-realite')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'TV réalité', 'search.png', oOutputParameterHandler)
-    
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/television/spectacles')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Spectacles', 'tv.png', oOutputParameterHandler)
-    
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/television/emission-tv')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Emissions TV', 'tv.png', oOutputParameterHandler)
-    
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/television/documentaire')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires', 'tv.png', oOutputParameterHandler)
-            
-    oGui.setEndOfDirectory()        
+ 
+    liste = []
+    liste.append( ['Animaux',URL_MAIN + 'category/television/animaux'] )
+    liste.append( ['Concert',URL_MAIN + 'category/television/concert'] )
+    liste.append( ['Documentaires',URL_MAIN + 'category/television/documentaire'] )
+    liste.append( ['Emissions TV',URL_MAIN + 'category/television/emission-tv'] )
+    liste.append( ['Historique',URL_MAIN + 'category/television/historique'] )
+    liste.append( ['Journal',URL_MAIN + 'category/television/journal'] )
+    liste.append( ['Karaoké',URL_MAIN + 'category/television/karaoke'] )
+    liste.append( ['Météo',URL_MAIN + 'category/television/meteo'] )
+    liste.append( ['Spécial',URL_MAIN + 'category/television/special'] )
+    liste.append( ['TV réalité',URL_MAIN + 'category/television/tv-realite'] )
+    liste.append( ['One Man Show',URL_MAIN + 'category/television/one-man-sohw'] )
+    liste.append( ['Rétro',URL_MAIN + 'category/television/retro'] )
+    liste.append( ['Rétro Souvenir',URL_MAIN + 'category/television/retro-souvenir'] )
+                
+    for sTitle,sUrl in liste:
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'tv.png', oOutputParameterHandler)
+       
+    oGui.setEndOfDirectory()
     
 def showGenres():
     oGui = cGui()
