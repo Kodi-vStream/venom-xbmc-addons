@@ -20,7 +20,7 @@ URL_MAIN = 'http://www.filmenstreaminghd.com/'
 
 MOVIE_MOVIE = (URL_MAIN + 'films', 'showMovies')
 MOVIE_HD = (URL_MAIN + '1080p-films', 'showMovies')
-MOVIE_VIEWS = (URL_MAIN + 'films-populaires/', 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'films-populaires', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
 SERIE_SERIES = (URL_MAIN + 'series-tv', 'showMovies')
@@ -44,7 +44,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Les plus Vus)', 'films_views.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus Vus)', 'films_views.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -153,21 +153,6 @@ def showQlt():
     liste = []
     liste.append( ['1080p',URL_MAIN + '1080p-films'] )   
     liste.append( ['720p',URL_MAIN + '720p-films'] )
-    # liste.append( ['BDRip',URL_MAIN + 'qualites/BDRip/'] )
-    # liste.append( ['BRRip',URL_MAIN + 'qualites/BRRip/'] )
-    # liste.append( ['CAMRip',URL_MAIN + 'qualites/CAMRip/'] )
-    # liste.append( ['DVDRip',URL_MAIN + 'qualites/DVDRip/'] )
-    # liste.append( ['DVDSCR',URL_MAIN + 'qualites/DVDSCR/'] )
-    # liste.append( ['HDRip',URL_MAIN + 'qualites/HDRip/'] )
-    # liste.append( ['HDTV',URL_MAIN + 'qualites/HDTV/'] )
-    # liste.append( ['PDTV',URL_MAIN + 'qualites/PDTV/'] )
-    # liste.append( ['R6',URL_MAIN + 'qualites/R6/'] )
-    # liste.append( ['TS MD',URL_MAIN + 'qualites/ts-md/'] )
-    # liste.append( ['TVRip',URL_MAIN + 'qualites/TVRip/'] )
-    # liste.append( ['VHSRip',URL_MAIN + 'qualites/VHSRip/'] )
-    # liste.append( ['VOBRIP',URL_MAIN + 'qualites/VOBRIP/'] )
-    # liste.append( ['WEB-DL',URL_MAIN + 'qualites/web-dl/'] )
-    # liste.append( ['WEBRIP',URL_MAIN + 'qualites/WEBRIP/'] )
     
     for sTitle,sUrl in liste:
         
@@ -227,9 +212,9 @@ def showMovies(sSearch = ''):
             
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
-            if '/series-tv' in sUrl or 'saison' in sUrl2:
+            if 'series-tv' in sUrl or 'saison' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle,'series.png', sThumb, sCom, oOutputParameterHandler)
-            elif '/animes' in sUrl:
+            elif 'animes' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle,'animes.png', sThumb, sCom, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, 'films.png', sThumb, sCom, oOutputParameterHandler)           
