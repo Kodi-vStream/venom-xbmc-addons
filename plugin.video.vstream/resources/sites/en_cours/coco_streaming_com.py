@@ -12,36 +12,36 @@ from resources.lib.parser import cParser #recherche de code
 #from resources.lib.util import cUtil #outils pouvant etre utiles
  
 SITE_IDENTIFIER = 'coco_streaming_com' #identifant (nom de votre fichier) remplacez les espaces et les . par _ AUCUN CARACTERE SPECIAL
-SITE_NAME = 'Coco-streaming.com' # nom que xbmc affiche
-SITE_DESC = 'films en streaming, vk streaming, youwatch, vimple , streaming hd , streaming 720p , streaming sans limite' #description courte de votre source
+SITE_NAME = 'Coco-streaming' # nom que xbmc affiche
+SITE_DESC = 'Films & Séries en streaming.' #description courte de votre source
  
-URL_MAIN = 'http://coco-stream.com' # url de votre source
+URL_MAIN = 'http://coco-stream.com/' # url de votre source
  
-URL_SEARCH = ('http://coco-stream.com/films-en-streaming?search=', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'films-en-streaming?search=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
-MOVIE_NEWS = ('http://coco-stream.com', 'showMovies') 
-MOVIE_MOVIE = ('http://coco-stream.com/films-en-streaming', 'showMovies')
+MOVIE_NEWS = (URL_MAIN, 'showMovies') 
+MOVIE_MOVIE = (URL_MAIN + 'films-en-streaming', 'showMovies')
 MOVIE_VIEWS = ('http://url', 'showMovies')
 MOVIE_COMMENTS = ('http://url', 'showMovies')
 MOVIE_NOTES = ('http://url', 'showMovies') 
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (True, 'showGenres')
 MOVIE_VF = ('http://url', 'showMovies') 
 MOVIE_VOSTFR = ('http://url', 'showMovies') 
-MOVIE_CULTE = ('http://coco-stream.com/films-culte-en-streaming','showMovies')
+MOVIE_CULTE = (URL_MAIN + 'films-culte-en-streaming','showMovies')
  
 SERIE_NEWS = ('http://url', 'showSeries') # serie nouveautés
-SERIE_SERIES = ('http://coco-stream.com/series-en-streaming', 'showSeries') # serie vrac
+SERIE_SERIES = (URL_MAIN + 'series-en-streaming', 'showSeries') # serie vrac
 SERIE_VFS = ('http://url', 'showSeries') # serie VF
 SERIE_VOSTFRS = ('http://url', 'showSeries') # serie Vostfr
-SERIE_GENRE = (True, 'showGenre')
+SERIE_GENRES = (True, 'showGenres')
  
 ANIM_NEWS = ('http://url', 'showAnimes') #anime nouveautés
 ANIM_ANIMS = ('http://url', 'showAnimes') #anime vrac
 ANIM_VFS = ('http://url', 'showAnimes') #anime VF
 ANIM_VOSTFRS = ('http://url', 'showAnimes') #anime VOSTFR
 ANIM_MOVIES = ('http://url', 'showAnimes') #anime film
-ANIM_GENRES = (True, 'showGenre') #anime genre
+ANIM_GENRES = (True, 'showGenres') #anime genre
  
 DOC_DOCS = ('http://url', 'showOthers') #Documentaire
 SPORT_SPORTS = ('http://url', 'showOthers') #sport
@@ -53,21 +53,19 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
- 
-   
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER,MOVIE_NEWS[1], 'Films Nouveautés', 'news.png', oOutputParameterHandler)
- 
-   
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films en vrac', 'genres.png', oOutputParameterHandler)
-   
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_CULTE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE[1], 'Films cultes ', 'genres.png', oOutputParameterHandler)
-   
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE[1], 'Films cultes', 'genres.png', oOutputParameterHandler)
+    
     oGui.setEndOfDirectory()
  
 def showSearch():
@@ -81,7 +79,7 @@ def showSearch():
         return  
    
    
-def showGenre(): #affiche les genres
+def showGenres(): #affiche les genres
     oGui = cGui()
     
     liste = []
@@ -90,9 +88,9 @@ def showGenre(): #affiche les genres
     liste.append( ['Arts Martiaux','http://full-streaming.org/arts-martiaux/'] )
     liste.append( ['Aventure','http://full-streaming.org/aventure/'] )
     liste.append( ['Biopic','http://full-streaming.org/biopic/'] )
-    liste.append( ['Comedie','http://full-streaming.org/comedie/'] )
-    liste.append( ['Comedie Dramatique','http://full-streaming.org/comedie-dramatique/'] )
-    liste.append( ['Comedie Musicale','http://full-streaming.org/comedie-musicale/'] )
+    liste.append( ['Comédie','http://full-streaming.org/comedie/'] )
+    liste.append( ['Comédie Dramatique','http://full-streaming.org/comedie-dramatique/'] )
+    liste.append( ['Comédie Musicale','http://full-streaming.org/comedie-musicale/'] )
     liste.append( ['Documentaire','http://full-streaming.org/documentaire/'] )
     liste.append( ['Drame','http://full-streaming.org/drame/'] )
     liste.append( ['Epouvante Horreur','http://full-streaming.org/epouvante-horreur/'] )
@@ -104,7 +102,7 @@ def showGenre(): #affiche les genres
     liste.append( ['Historique','http://full-streaming.org/historique/'] )
     liste.append( ['Musical','http://full-streaming.org/musical/'] )
     liste.append( ['Policier','http://full-streaming.org/policier/'] )
-    liste.append( ['Peplum','http://full-streaming.org/peplum/'] )
+    liste.append( ['Péplum','http://full-streaming.org/peplum/'] )
     liste.append( ['Romance','http://full-streaming.org/romance/'] )
     liste.append( ['Science Fiction','http://full-streaming.org/science-fiction/'] )
     liste.append( ['Spectacle','http://full-streaming.org/spectacle/'] )
@@ -156,11 +154,11 @@ def showMovies(sSearch = ''):
            
             sTitle = aEntry[0]
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://coco-stream.com'+aEntry[0])
+            oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[0])) #sortie du titre
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2])) #sortie du poster
  
-            if '/series' in sUrl:
+            if 'series' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle,'', aEntry[0], aEntry[2], oOutputParameterHandler)
 
             else:
