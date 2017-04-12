@@ -155,7 +155,7 @@ def showHosters():
  
     if (sLink):
         for aEntry in sLink:
-            
+            print sLink
             sUrl = str(aEntry)
             sHost = []
             
@@ -173,8 +173,11 @@ def showHosters():
                             sHost.append(aEntry)
                        
             elif 'multiup' in aEntry:
+                 #modif temp org en eu
+                 aEntry.replace('http://www.multiup.org/fr/download','http://www.multiup.eu/fr/mirror').replace('http://www.multiup.eu/fr/download','http://www.multiup.eu/fr/mirror')
                  
                  aResult = cMultiup().GetUrls(sUrl)
+                 
                  if (aResult):
                      if (count >0):
                          oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via Multiup (suite partie vidéo)[/COLOR]')
