@@ -155,7 +155,7 @@ def showHosters():
  
     if (sLink):
         for aEntry in sLink:
-            print sLink
+           
             sUrl = str(aEntry)
             sHost = []
             
