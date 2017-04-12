@@ -76,7 +76,8 @@ class cFav:
         oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Divers (' + str(compt[5]) + ')', 'mark.png', oOutputParameterHandler)
         
         oOutputParameterHandler = cOutputParameterHandler()
-        oGui.addDir(SITE_IDENTIFIER, 'delFavourites', cConfig().getlanguage(30209), 'mark.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('sAll', 'true')
+        oGui.addDir(SITE_IDENTIFIER, 'delFavourites', cConfig().getlanguage(30209), 'trash.png', oOutputParameterHandler)
         
         #A virer dans les versions future, pour le moment c'est juste pr supprimer les liens bugges
         if compt[0] > 0:
@@ -160,7 +161,7 @@ class cFav:
              
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sCat', sCat)
-            oGui.addDir(SITE_IDENTIFIER, 'delFavourites', cConfig().getlanguage(30209), 'mark.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'delFavourites', cConfig().getlanguage(30211), 'trash.png', oOutputParameterHandler)
                  
             oGui.setEndOfDirectory()
         except: pass
