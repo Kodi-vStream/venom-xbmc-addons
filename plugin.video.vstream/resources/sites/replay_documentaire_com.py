@@ -84,8 +84,9 @@ def showMovies(sSearch = ''):
         sUrl = oInputParameterHandler.getValue('siteUrl')
    
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    sPattern = '>([^<]+)</a></h2><p class="post-meta">.*?<a href="([^<]+)"> <img.*?src="([^<]+)" class="attachment-tie-medium size-tie-medium wp-post-image" alt=".*?"/> <span class="fa overlay-icon"></span> </a></div><div class="entry"><p>([^<]+)</p> <a class="more-link"'
+    sHtmlContent = oRequestHandler.request() 
+    
+    sPattern = '<a class="img-holder" href="([^"]+)" title="([^"]+)" style="background-image: url\(([^\)]+)\);"><\/a>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -98,10 +99,10 @@ def showMovies(sSearch = ''):
                 break
             
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[0], 'doc.png', aEntry[2], aEntry[3], oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', aEntry[1], 'doc.png', aEntry[2], "", oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
             

@@ -156,6 +156,8 @@ class cHosterGui:
                 return tmp
 
         #Gestion classique
+        if ('facebook' in sHostName):
+            return self.getHoster('facebook')
         if (('novamov' in sHostName) or ('auroravid' in sHostName)):
             return self.getHoster('novamov')
         if (('divxstage' in sHostName) or ('cloudtime' in sHostName)):

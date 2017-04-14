@@ -336,6 +336,10 @@ msgctxt "#30210"
 msgid "Display Bookmark"
 msgstr ""
 
+msgctxt "#30211"
+msgid "[COLOR red]Clear this category[/COLOR]"
+msgstr ""
+
 msgctxt "#30300"
 msgid "Library"
 msgstr ""

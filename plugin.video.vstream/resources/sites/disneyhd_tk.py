@@ -20,7 +20,9 @@ ANIM_ENFANTS = ('http://', 'load')
 URL_SEARCH = ('', 'sHowResultSearch')
 FUNCTION_SEARCH = 'sHowResultSearch'
 
-sPattern1 = '<a href="([^"]+)"><img src="([^"]+)" alt="(.+?)"/>'
+#sPattern1 = '<a href="([^"]+)"><img src="([^"]+)" alt="(.+?)"/>'
+
+sPattern1 = '<a href="([^"]+)"><img.+?src="([^"]+)" alt="(.+?)".+?>'
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 

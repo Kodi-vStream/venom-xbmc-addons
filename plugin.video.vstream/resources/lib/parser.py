@@ -42,4 +42,13 @@ class cParser:
         except:
             return {'title': sHtmlContent}
 
+    def abParse(self,sHtmlContent,start,end,startoffset=''):
+        #usage oParser.abParse(sHtmlContent,"start","end")
+        #startoffset (int) décale le début pour ne pas prendre en compte start dans le résultat final si besoin
+        #usage2 oParser.abParse(sHtmlContent,"start","end",6)
+        #ex youtube.py
+        if startoffset:
+            return sHtmlContent[startoffset + sHtmlContent.find(start):sHtmlContent.find(end)]
+        else:
+            return sHtmlContent[sHtmlContent.find(start):sHtmlContent.find(end)]
 

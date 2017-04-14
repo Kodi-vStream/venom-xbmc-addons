@@ -33,7 +33,6 @@ URL_SEARCH_SPECTACLES = ('http://www.ddl-island.su/recherche.php?categorie=2&rec
 
 
 URL_SEARCH = (URL_MAIN + 'index.php?q=', 'showMovies')
-
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_SD = (URL_MAIN + 'telechargement/films-1.html&order=2', 'showMovies') # derniers films en SD
@@ -61,7 +60,6 @@ SERIES_HD_VIEWS = (URL_MAIN + 'telechargement/series-tv-6.html&order=3', 'showMo
 SERIES_TOP = (URL_MAIN +'telechargement-top-series', 'showMovies') # derniers films en 3D
 SERIES_GENRES_SD = (True, 'showGenreSeriesSD')
 SERIES_GENRES_HD = (True, 'showGenreSeriesHD')
-
 
 def load():
     oGui = cGui()
@@ -322,22 +320,28 @@ def showGenre(basePath):
     liste.append( ['Espionnage',URL_MAIN + 'telechargement+13/' + basePath] ) 
     liste.append( ['Famille',URL_MAIN + 'telechargement+31/' + basePath] ) 
     liste.append( ['Fantastique',URL_MAIN + 'telechargement+16/' + basePath] ) 
+    liste.append( ['Football',URL_MAIN + 'telechargement+32/' + basePath] ) 
     liste.append( ['Guerre',URL_MAIN + 'telechargement+22/' + basePath] ) 
     liste.append( ['Historique',URL_MAIN + 'telechargement+21/' + basePath] ) 
     liste.append( ['Horreur',URL_MAIN + 'telechargement+15/' + basePath] ) 
     liste.append( ['Humour',URL_MAIN + 'telechargement+44/' + basePath] ) 
     liste.append( ['Jeunesse',URL_MAIN + 'telechargement+19/' + basePath] ) 
     liste.append( ['Judiciaire',URL_MAIN + 'telechargement+67/' + basePath] ) 
+    liste.append( ['Karaté',URL_MAIN + 'telechargement+23/' + basePath] ) 
     liste.append( ['Manga',URL_MAIN + 'telechargement+58/' + basePath] ) 
     liste.append( ['Médical',URL_MAIN + 'telechargement+47/' + basePath] ) 
     liste.append( ['Musical',URL_MAIN + 'telechargement+10/' + basePath] ) 
     liste.append( ['Mystère',URL_MAIN + 'telechargement+26/' + basePath] ) 
     liste.append( ['Péplum',URL_MAIN + 'telechargement+54/' + basePath] ) 
     liste.append( ['Policier',URL_MAIN + 'telechargement+2/' + basePath] ) 
+    liste.append( ['Reportage',URL_MAIN + 'telechargement+57/' + basePath] ) 
     liste.append( ['Romance',URL_MAIN + 'telechargement+6/' + basePath] ) 
     liste.append( ['Science fiction',URL_MAIN + 'telechargement+7/' + basePath] ) 
+    liste.append( ['Sketches',URL_MAIN + 'telechargement+14/' + basePath] ) 
     liste.append( ['Spectacle',URL_MAIN + 'telechargement+39/' + basePath] ) 
     liste.append( ['Sport',URL_MAIN + 'telechargement+68/' + basePath] ) 
+    liste.append( ['Suspense',URL_MAIN + 'telechargement+42/' + basePath] ) 
+    liste.append( ['Téléréalité',URL_MAIN + 'telechargement+18/' + basePath] ) 
     liste.append( ['Thriller',URL_MAIN + 'telechargement+8/' + basePath] ) 
     liste.append( ['Western',URL_MAIN + 'telechargement+11/' + basePath] ) 
                 
@@ -842,21 +846,69 @@ def get_response(img,cookie):
     #on affiche le dialogue
     solution = ''
     try:
-        img = xbmcgui.ControlImage(450, 0, 400, 130, filename)
-        wdlg = xbmcgui.WindowDialog()
-        wdlg.addControl(img)
-        wdlg.show()
-        #xbmc.sleep(3000)
-        kb = xbmc.Keyboard('', 'Tapez les Lettres/chiffres de l\'image', False)
-        kb.doModal()
-        if (kb.isConfirmed()):
-            solution = kb.getText()
-            if solution == '':
-                cConfig().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
-        else:
-            cConfig().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
+        #affichage du dialog perso   
+        class XMLDialog(xbmcgui.WindowXMLDialog):
+            """
+            Dialog class that asks user about rating of movie.
+            """
+            def __init__(self, *args, **kwargs):
+                xbmcgui.WindowXMLDialog.__init__( self )
+                pass
+
+            def onInit(self):
+                #image captcha
+                self.getControl(1).setImage(filename)
+
+            def onClick(self, controlId):
+                if controlId == 20:
+                    #button edit
+                    solution = self.getControl(5000).getText()
+                    xbmcgui.Window(10101).setProperty('captcha', str(solution))
+                    self.close()
+                    return
+                elif controlId == 30:
+                    #button fermer
+                    self.close()
+                    return
+                #self.close()
+
+            def onFocus(self, controlId):
+                self.controlId = controlId
+                
+            def _close_dialog( self ):
+                self.close()
+
+            def onAction( self, action ):
+                #touche return 61448
+                if action.getId() in ( 9, 10, 11, 30, 92, 216, 247, 257, 275, 61467):
+                    self.close()
+                    
+          
+        wd = XMLDialog('DialogCaptcha.xml', cConfig().getAddonPath(), 'default', '720p')
+        wd.doModal()
+        del wd
     finally:
-        wdlg.removeControl(img)
-        wdlg.close()
+        
+        solution = xbmcgui.Window(10101).getProperty('captcha')
+        if solution == '':
+            cConfig().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
+        
+    #try:
+        #img = xbmcgui.ControlImage(450, 0, 400, 130, filename)
+        #wdlg = xbmcgui.WindowDialog()
+        #wdlg.addControl(img)
+        #wdlg.show()
+        ##xbmc.sleep(3000)
+        #kb = xbmc.Keyboard('', 'Tapez les Lettres/chiffres de l\'image', False)
+        #kb.doModal()
+        #if (kb.isConfirmed()):
+            #solution = kb.getText()
+            #if solution == '':
+                #cConfig().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
+        #else:
+            #cConfig().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
+    #finally:
+        #wdlg.removeControl(img)
+        #wdlg.close()
         
     return solution

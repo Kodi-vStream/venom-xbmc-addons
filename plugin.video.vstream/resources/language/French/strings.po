@@ -178,7 +178,7 @@ msgstr "Derniers ajouts"
 
 msgctxt "#30102"
 msgid "Most seeing"
-msgstr "Les plus Vues"
+msgstr "Les plus Vus"
 
 msgctxt "#30103"
 msgid "Most commented"
@@ -206,15 +206,15 @@ msgstr "Enfants"
 
 msgctxt "#30112"
 msgid "Documentary"
-msgstr "Documentaire"
+msgstr "Documentaires"
 
 msgctxt "#30113"
 msgid "Sport"
-msgstr "Sport"
+msgstr "Sports"
 
 msgctxt "#30114"
 msgid "Web Video"
-msgstr "Vidéo du net"
+msgstr "Vidéos du net"
 
 msgctxt "#30115"
 msgid "Television"
@@ -330,11 +330,15 @@ msgstr "Marques-Diverses"
 
 msgctxt "#30209"
 msgid "[COLOR red]Delete Bookmark[/COLOR]"
-msgstr "[COLOR red]Supprimer TOUT ces Marque-pages[/COLOR]"
+msgstr "[COLOR red]Supprimer TOUT[/COLOR]"
 
 msgctxt "#30210"
 msgid "Display Bookmark"
 msgstr "Voir Marque-page"
+
+msgctxt "#30211"
+msgid "[COLOR red]Clear this category[/COLOR]"
+msgstr "[COLOR red]Vider cette catégorie[/COLOR]"
 
 msgctxt "#30300"
 msgid "Library"

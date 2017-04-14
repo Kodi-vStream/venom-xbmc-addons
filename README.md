@@ -66,7 +66,4 @@ Pour participer directement au projet
 [![PayPayl](https://img.shields.io/badge/Paypal-CB-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NG5VVH8BMNLBJ)
 
 
-[![Beerpay](https://beerpay.io/LordVenom/venom-xbmc-addons/badge.svg?style=beer)](https://beerpay.io/LordVenom/venom-xbmc-addons)
-
-
 Bon Film ++

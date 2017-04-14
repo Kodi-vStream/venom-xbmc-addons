@@ -152,6 +152,61 @@ class cGuiElement:
     def getFunction(self):
         return self.__sFunctionName
         
+    def RangeTitre(self, string):
+        
+        string['color'] = self.__sDecoColor
+        sText = '' 
+        
+        try:
+            #season return 03
+            string['season'] = int(string['season'])
+            sText += '[COLOR {color}]S{season:02d}[/COLOR] '
+        except: pass
+        try:
+            #episode return 02
+            string['episode'] = int(string['episode'])
+            sText += '[COLOR {color}]E{episode:02d}[/COLOR] '
+        except:pass
+        try:
+            #debut de ligne pour plage de serie ou saison
+            string['start']
+            sText += '[COLOR {color}]{start}[/COLOR] '
+        except:pass
+        try:  
+            string['title']  
+            sText += '{title}'
+        except:pass
+        try:
+            #qual pour qualiter
+            string['qual']
+            sText += ' ({qual}) '
+        except:pass
+        try:
+            string['year'] = int(string['year'])
+            sText += ' ({year:04d})'
+        except:pass
+        try:
+            string['date']
+            sText += ' ({date})'
+            #print t['date'][6:10]
+        except:pass
+        try:
+            #fin de ligne pour genre ou info diverse
+            string['end']
+            sText += ' [COLOR {color}]({end})[/COLOR]'
+        except:pass
+        try:
+            string['host']
+            sText += ' [COLOR teal]({host})[/COLOR]'
+            #print t['date'][6:10]
+        except:pass
+            
+        try: 
+            sText = sText.format(**string)
+            return sText
+        except:
+            config().log("format du titre incorrecte" + string)
+        
     def TraiteTitre(self, sTitle):
         
         # Format Obligatoire a traiter via le fichier site
@@ -279,13 +334,9 @@ class cGuiElement:
         return sTitle, False
 
     def setTitle(self, sTitle):
-        #Si le titre est une liste normalement n'existe plus
-        if type(sTitle) is list:
-            for i in range(len(sTitle)): 
-                if i == 0 :
-                    self.__sTitle += sTitle[i]
-                else:
-                    self.__sTitle +=  " [COLOR %s][%s][/COLOR]" % (self.__sDecoColor, sTitle[i])
+        #Si le titre est un dict en bêta
+        if type(sTitle) is dict:
+            self.__sTitle = self.RangeTitle(sTitle)
         #titre normal
         else:
             # avec la derniere modif de la recherche de tag plus besoin non?

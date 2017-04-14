@@ -278,7 +278,7 @@ class cDb:
         if (oInputParameterHandler.exist('sCat')):
             sql_delete = "DELETE FROM favorite WHERE cat = '%s'" % (oInputParameterHandler.getValue('sCat'))
         
-        elif(oInputParameterHandler.exist('sMovieTitle')):
+        if(oInputParameterHandler.exist('sMovieTitle')):
             
             siteUrl = oInputParameterHandler.getValue('siteUrl')
             sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -287,7 +287,7 @@ class cDb:
             title = title.replace("'", r"''")       
             sql_delete = "DELETE FROM favorite WHERE siteurl = '%s' AND title = '%s'" % (siteUrl,title)
         
-        else:       
+        if(oInputParameterHandler.exist('sAll')):      
             sql_delete = "DELETE FROM favorite;"
 
         try:    

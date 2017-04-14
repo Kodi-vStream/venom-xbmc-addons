@@ -48,7 +48,7 @@ class cMultiup:
         
     def GetUrls(self,url):
 
-        NewUrl = url.replace('http://www.multiup.org/fr/download','http://www.multiup.org/fr/mirror')
+        NewUrl = url.replace('http://www.multiup.org/fr/download','http://www.multiup.eu/fr/mirror').replace('http://www.multiup.eu/fr/download','http://www.multiup.eu/fr/mirror')
         
         sHtmlContent = GetHtml(NewUrl)
         

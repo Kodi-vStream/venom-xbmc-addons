@@ -305,23 +305,20 @@ def finishDialog(dialog):
         del dialog
         
 def VSerror(e):
-    import os
-    Path = VStranslatePath(path)
-    xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % ('Vstream', ('Erreur: '+str(e)), '5000', os.path.join(Path,'resources', 'art','icon.png')))
+    xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % ('Vstream', ('Erreur: '+str(e)), '5000', xbmcgui.NOTIFICATION_ERROR))
     VSlog('Erreur: ' + str(e))  
     
 def VSshowInfo(sTitle, sDescription, iSeconds=0,sound = True):
-
     if (iSeconds == 0):
-            iSeconds = 1000
+        iSeconds = 1000
     else:
-            iSeconds = iSeconds * 1000
-            
+        iSeconds = iSeconds * 1000
+ 
     # On ne peut pas aller voir si l'option est activee car on doit recharger la classe cConfig > aussi lourd a executer
     #if self.getSetting('Block_Noti_sound') == 'true':
     #    sound = False
 
-    xbmcgui.Dialog().notification(str(sTitle), str(sDescription),self.__sIcon,iSeconds,sound)
+    xbmcgui.Dialog().notification(str(sTitle), str(sDescription),xbmcgui.NOTIFICATION_INFO,iSeconds,sound)
     
 def VStranslatePath(location):
     #Note, location = (author, changelog, description, disclaimer, fanart, icon, id, name, path,profile, stars, summary, type, version)

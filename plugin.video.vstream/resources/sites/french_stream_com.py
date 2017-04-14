@@ -1,16 +1,13 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-
 import re
  
 SITE_IDENTIFIER = 'french_stream_com'
@@ -206,8 +203,8 @@ def showMovies(sSearch = ''):
                 sThumb = URL_MAIN[:-1] + sThumb
                 
             #Bon petit modif pr corriger nom, apparement le regex a tendance a chnager
-            if sThumb.startswith('/IMG/french-stream.php?'):
-                sThumb = sThumb.replace('/IMG/french-stream.php?src=','')
+            if sThumb.startswith('/IMG/') or sThumb.startswith('/img/'):
+                sThumb = sThumb.replace('/IMG/french-stream.php?src=','').replace('/img/french-stream.com.php?src=','')
                 sThumb = sThumb.split('&')[0]
 
             #if sSearch:
@@ -308,7 +305,6 @@ def serieHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    #cConfig().log(sUrl)
     
     oParser = cParser()   
         
@@ -333,8 +329,7 @@ def serieHosters():
             elif aEntry[2]:
                     sPattern = '<div id="episode' + str(aEntry[3]) + '" class="fullsfeature">(.+?)<\/ul>'
                     aResult3 = oParser.parse(sHtmlContent, sPattern)
-                    
-                    #cConfig().log(sPattern)
+
 
                     if (aResult3[0] == True):
                         sPattern = '<a href="([^<>"]+?)" target="seriePlayer"'

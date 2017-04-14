@@ -176,13 +176,16 @@ def showHosters():
 
         else:
             oGui = cGui()
-            sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+            sHtmlContent = oParser.abParse(sHtmlContent,"<script>","</script><script>")
+
+            sPattern = 'eval\s*\(\s*function(?:.|\s)+?{}\)\)'
             aResult = oParser.parse(sHtmlContent,sPattern)
             if (aResult[0] == True):
                 sHtmlContent = cPacker().unpack(aResult[1][0])
-                code = re.search('var code="([^"]+)"',sHtmlContent)
+                sHtmlContent = sHtmlContent.replace('\\','')
+                code = re.search('(https://openload.+?embed\/.+?\/)',sHtmlContent)
                 if code:
-                   sHosterUrl  = 'https://openload.co/embed/' + code.group(1)
+                   sHosterUrl  = code.group(1)
                    oHoster = cHosterGui().checkHoster(sHosterUrl)
                    if (oHoster != False):
                        oHoster.setDisplayName(sMovieTitle)
