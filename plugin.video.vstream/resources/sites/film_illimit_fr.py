@@ -73,7 +73,7 @@ def showGenres():
     liste.append( ['Arts Martiaux',URL_MAIN + 'films/arts-martiaux/'] )
     liste.append( ['Biographie',URL_MAIN + 'films/biographique/'] )
     liste.append( ['Comédie',URL_MAIN + 'films/comedie/'] )
-    liste.append( ['Crime / Gangster',URL_MAIN + 'films/Crime / Gangster/'] )
+    liste.append( ['Crime / Gangster',URL_MAIN + 'films/crimegangster/'] )
     liste.append( ['Documentaire',URL_MAIN + 'films/documentaire/'] )
     liste.append( ['Drame',URL_MAIN + 'films/drame/'] )
     liste.append( ['Epouvante Horreur',URL_MAIN + 'films/epouvante-horreur/'] )
