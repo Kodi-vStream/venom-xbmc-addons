@@ -15,13 +15,13 @@ import re,urllib2,urllib
 SITE_IDENTIFIER = 'vkstreamingfilm_biz'
 SITE_NAME = 'Vk Streaming Film'
 SITE_DESC = 'Film en Streaming HD'
- 
-URL_MAIN = 'http://vkstreamingfilm.biz'
 
-MOVIE_MOVIE = ('http://www.vkstreamingfilm.biz/', 'showMovies') 
-MOVIE_NEWS = ('http://www.vkstreamingfilm.biz/', 'showMovies')
+URL_MAIN = 'http://vkstreamingfilm.biz/'
+
+MOVIE_MOVIE = (URL_MAIN, 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'lastnews', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
- 
+
 URL_SEARCH = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
@@ -31,76 +31,76 @@ def DecoTitle(string):
     #pr les saisons
     string = re.sub('(?i)(.*)(saison [0-9]+)','\\1[COLOR coral]\\2[/COLOR]', str(string))
     return string
- 
+
 def load():
     oGui = cGui()
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
- 
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
-   
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
-           
+    
     oGui.setEndOfDirectory()
- 
+
 def showSearch():
     oGui = cGui()
- 
+
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         showMovies(sSearchText)
         oGui.setEndOfDirectory()
-        return  
- 
+        return
+
 def showGenres():
     oGui = cGui()
- 
+
     liste = []
-    liste.append( ['Action',URL_MAIN + '/films/action/'] )
-    liste.append( ['Animation',URL_MAIN + '/films/animation/'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + '/films/arts-martiaux/'] )
-    liste.append( ['Aventure',URL_MAIN + '/films/aventure/'] )
-    liste.append( ['Biographique',URL_MAIN + '/films/biographique/'] )
-    liste.append( ['Comédie',URL_MAIN + '/films/comedie/'] )
-    liste.append( ['Comédie dramatique',URL_MAIN + '/films/comedie-dramatique/'] )
-    liste.append( ['Danse',URL_MAIN + '/films/danse/'] )
-    liste.append( ['Divers',URL_MAIN + '/films/divers/'] )
-    liste.append( ['Documentaire',URL_MAIN + '/films/documentaire/'] )
-    liste.append( ['Drame',URL_MAIN + '/films/drame/'] )
-    liste.append( ['Epouvante-Horreur',URL_MAIN + '/films/epouvante-horreur/'] )
-    liste.append( ['Espionnage',URL_MAIN + '/films/espionnage/'] )
-    liste.append( ['Fantastique',URL_MAIN + '/films/fantastique/'] )
-    liste.append( ['Famille',URL_MAIN + '/films/famille/'] )
-    liste.append( ['Guerre',URL_MAIN + '/films/guerre/'] )
-    liste.append( ['Historique',URL_MAIN + '/films/historique/'] )
-    liste.append( ['Musical',URL_MAIN + '/films/musical/'] )
-    liste.append( ['Péplum',URL_MAIN + '/films/peplum/'] )
-    liste.append( ['Policier',URL_MAIN + '/films/policier/'] )
-    liste.append( ['Romance',URL_MAIN + '/films/Romance/'] )
-    liste.append( ['Science-Fiction',URL_MAIN + '/films/science-fiction/'] )
-    liste.append( ['Spectacle',URL_MAIN + '/films/spectacle/'] )
-    liste.append( ['Sport',URL_MAIN + '/films/sport/'] )
-    liste.append( ['Thriller',URL_MAIN + '/films/thriller/'] )
-    liste.append( ['Western',URL_MAIN + '/films/western/'] )
+    liste.append( ['Action',URL_MAIN + 'films/action'] )
+    liste.append( ['Animation',URL_MAIN + 'films/animation'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'films/arts-martiaux'] )
+    liste.append( ['Aventure',URL_MAIN + 'films/aventure'] )
+    liste.append( ['Biographique',URL_MAIN + 'films/biographique'] )
+    liste.append( ['Comédie',URL_MAIN + 'films/comedie'] )
+    liste.append( ['Comédie dramatique',URL_MAIN + 'films/comedie-dramatique'] )
+    liste.append( ['Danse',URL_MAIN + 'films/danse'] )
+    liste.append( ['Divers',URL_MAIN + 'films/divers'] )
+    liste.append( ['Documentaire',URL_MAIN + 'films/documentaire'] )
+    liste.append( ['Drame',URL_MAIN + 'films/drame'] )
+    liste.append( ['Epouvante-Horreur',URL_MAIN + 'films/epouvante-horreur'] )
+    liste.append( ['Espionnage',URL_MAIN + 'films/espionnage'] )
+    liste.append( ['Fantastique',URL_MAIN + 'films/fantastique'] )
+    liste.append( ['Famille',URL_MAIN + 'films/famille'] )
+    liste.append( ['Guerre',URL_MAIN + 'films/guerre'] )
+    liste.append( ['Historique',URL_MAIN + 'films/historique'] )
+    liste.append( ['Musical',URL_MAIN + 'films/musical'] )
+    liste.append( ['Péplum',URL_MAIN + 'films/peplum'] )
+    liste.append( ['Policier',URL_MAIN + 'films/policier'] )
+    liste.append( ['Romance',URL_MAIN + 'films/Romance'] )
+    liste.append( ['Science-Fiction',URL_MAIN + 'films/science-fiction'] )
+    liste.append( ['Spectacle',URL_MAIN + 'films/spectacle'] )
+    liste.append( ['Sport',URL_MAIN + 'films/sport'] )
+    liste.append( ['Thriller',URL_MAIN + 'films/thriller'] )
+    liste.append( ['Western',URL_MAIN + 'films/western'] )
                
     for sTitle,sUrl in liste:
-       
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-       
+
     oGui.setEndOfDirectory()
-   
+
 def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
-        #on redecode la recherhce codé il y a meme pas une seconde par l'addon
+        #on redecode la recherche codé il y a meme pas une seconde par l'addon
         sSearch = urllib2.unquote(sSearch)
        
         query_args = { 'do' : 'search' , 'subaction' : 'search' , 'story' : str(sSearch) , 'x' : '0', 'y' : '0'}
@@ -130,8 +130,6 @@ def showMovies(sSearch=''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
  
-    #print aResult
- 
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -143,15 +141,11 @@ def showMovies(sSearch=''):
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch,aEntry[1]) == 0:
-                    continue                
-           
-            #sTitle = aEntry[2].decode('latin-1').encode("utf-8")
-            #sThumbnail = 'http:'+str(aEntry[2])
-            #sUrl = URL_MAIN+str(aEntry[1])
+                    continue
            
             sThumbnail = str(aEntry[0])
             if not 'http://www.vkstreamingfilm' in sThumbnail:
-                  sThumbnail = 'http://www.vkstreamingfilm.fr' + sThumbnail
+                  sThumbnail = 'http://www.vkstreamingfilm.biz' + sThumbnail
             #print sThumbnail
  
             oOutputParameterHandler = cOutputParameterHandler()
