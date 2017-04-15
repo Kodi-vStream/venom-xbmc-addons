@@ -856,22 +856,38 @@ def get_response(img,cookie):
                 pass
 
             def onInit(self):
-                #image captcha
+                #image background captcha
                 self.getControl(1).setImage(filename)
-
+                #image petit captcha memory fail
+                self.getControl(2).setImage(filename)
+                self.getControl(2).setVisible(False)
+                #Focus clavier
+                self.setFocus(self.getControl(21))
+                
+            
             def onClick(self, controlId):
                 if controlId == 20:
-                    #button edit
-                    solution = self.getControl(5000).getText()
+                    #button Valider
+                    solution = self.getControl(5000).getLabel()
                     xbmcgui.Window(10101).setProperty('captcha', str(solution))
                     self.close()
                     return
+                
                 elif controlId == 30:
                     #button fermer
                     self.close()
                     return
-                #self.close()
-
+                
+                elif controlId == 21:
+                    #button clavier
+                    self.getControl(2).setVisible(True)
+                    kb = xbmc.Keyboard(self.getControl(5000).getLabel(), '', False)
+                    kb.doModal()
+                    
+                    if (kb.isConfirmed()):
+                        self.getControl(5000).setLabel(kb.getText())
+                        self.getControl(2).setVisible(False)
+                    
             def onFocus(self, controlId):
                 self.controlId = controlId
                 
@@ -880,7 +896,7 @@ def get_response(img,cookie):
 
             def onAction( self, action ):
                 #touche return 61448
-                if action.getId() in ( 9, 10, 11, 30, 92, 216, 247, 257, 275, 61467):
+                if action.getId() in ( 9, 10, 11, 30, 92, 216, 247, 257, 275, 61467,61448):
                     self.close()
                     
           
