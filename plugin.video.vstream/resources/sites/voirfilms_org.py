@@ -23,7 +23,7 @@ MOVIE_GENRES = (True, 'showGenres')
 
 SERIE_SERIES = (URL_MAIN + 'series/alphabet/', 'showAlpha')
 SERIE_NEWS = (URL_MAIN + 'series/page-1', 'showMovies')
-#SERIE_GENRES = (URL_MAIN + 'series', 'showGenres')
+SERIE_GENRES = (URL_MAIN + 'series', 'showGenres')
 
 ANIM_ANIMS = (URL_MAIN + 'animes/alphabet/', 'AlphaSearch')
 ANIM_NEWS = (URL_MAIN + 'animes/page-2', 'showMovies')#ne prend pas a partir de la page 1???
@@ -59,9 +59,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
     
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
-    #oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
         
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
@@ -272,9 +272,9 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', sPicture)
  
-            if '/series/' in aEntry[1]:
+            if 'serie' in aEntry[1]:
                 oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, sPicture, sPicture, '', oOutputParameterHandler)
-            elif '/animes/' in aEntry[1]:
+            elif 'anime' in aEntry[1]:
                 oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, sPicture, sPicture, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, sPicture, sPicture, '', oOutputParameterHandler)
@@ -282,12 +282,11 @@ def showMovies(sSearch = ''):
         cConfig().finishDialog(dialog)
            
         if not sSearch:
-            sNextPage = __checkForNextPage(sHtmlContent)#cherche la page suivante
+            sNextPage = __checkForNextPage(sHtmlContent)
             if (sNextPage != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]' , oOutputParameterHandler)
-                #Ajoute une entrer pour le lien Next | pas de addMisc pas de poster et de description inutile donc
  
     if not sSearch:
         oGui.setEndOfDirectory()
