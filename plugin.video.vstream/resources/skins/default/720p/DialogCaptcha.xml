@@ -26,6 +26,14 @@
 				<width></width>
 				<height></height>
                 <fadetime>200</fadetime>
+     </control>
+            <control type="image" id="2">
+                <posx>300</posx>
+                <posy>0</posy>
+				<width>215</width>
+				<height>80</height>
+                <fadetime>200</fadetime>
+
 			</control>
             <control type="image">
                 <posx>0</posx>
@@ -61,27 +69,44 @@
                         <font>font12_title</font>                       
                         <height>40</height>
                         <width>400</width>
-						<label>Tapez les Lettres/chiffres de l'image:</label>
+					  <label>Tapez les Lettres/chiffres de l'image:</label>
                         <texturenofocus colordiffuse="4DFAFAFA">black-back.png</texturenofocus>
                         <texturefocus colordiffuse="BFFAFAFA">black-back.png</texturefocus>
                         <disabledcolor>FFFFFFFF</disabledcolor>
                         <enable>false</enable>
 					</control>
-                    <control type="edit" id="5000">
-                        <description>My First edit control</description>
-                        <width>200</width>
-                        <height>40</height>
-                        <visible>true</visible>
+
+                    
+                    <control type="button" id="5000">
+						<description>affichage captcha</description>
+                        <textoffsetx>5</textoffsetx>
+                        <align>center</align>
                         <aligny>center</aligny>
-                        <label></label>
-                        <font>font14</font>
-                        <textoffsetx>10</textoffsetx>
-                        <texturenofocus colordiffuse="4DFAFAFA">black-back.png</texturenofocus>
+                        <font>font14</font>                       
+                        <height>40</height>
+                        <width>200</width>
+						<label></label>
+                        <texturenofocus colordiffuse="  AAFAFAFA">black-back.png</texturenofocus>
                         <texturefocus colordiffuse="BFFAFAFA">black-back.png</texturefocus>
-                        <pulseonselect>no</pulseonselect>
-                    </control>
-					<control type="button" id="20">
-						<description>Valid</description>
+                        <disabledcolor>FFFFFFFF</disabledcolor>
+                        <enable>false</enable>
+                        
+					</control>
+                    <control type="button" id="21">
+						<description>icone clavier</description>
+                        
+                                               
+                        <height>40</height>
+                        <width>40</width>
+						<label></label>
+                        <texturenofocus colordiffuse="E5E5E5E5">clavier.png</texturenofocus>
+                        <texturefocus colordiffuse="FFFFFFFF">clavier.png</texturefocus>
+                        
+                        
+					</control>
+                    
+				             	<control type="button" id="20">
+						<description>Valider</description>
                         <textoffsetx>5</textoffsetx>
                         <align>center</align>
                         <aligny>center</aligny>
@@ -89,7 +114,7 @@
                         <height>40</height>
                         <width>200</width>
 						<label>Valider</label>
-                       <texturenofocus colordiffuse="4DFAFAFA">black-back.png</texturenofocus>
+                        <texturenofocus colordiffuse="4DFAFAFA">black-back.png</texturenofocus>
                         <texturefocus colordiffuse="BFFAFAFA">black-back.png</texturefocus>
 					</control>
                     <control type="button" id="30">
