@@ -25,6 +25,7 @@ ANIM_ANIMS = ('http://www.adkami.com/video?recherche=&version=0&type2=0', 'showM
 ANIM_VFS = ('http://www.adkami.com/video?recherche=&version=1&type2=0', 'showMovies')
 ANIM_VOSTFRS = ('http://www.adkami.com/video?recherche=&version=2&type2=0', 'showMovies')
 
+SERIE_SERIES = ('http://www.adkami.com/video?recherche=&version=0&type2=1', 'showMovies')
 SERIE_VFS = ('http://www.adkami.com/video?recherche=&version=1&type2=1', 'showMovies')
 SERIE_VOSTFRS = ('http://www.adkami.com/video?recherche=&version=2&type2=1', 'showMovies')
 
@@ -60,7 +61,11 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('type2', 0)
     oOutputParameterHandler.addParameter('title', 'Animés')
-    oGui.addDir(SITE_IDENTIFIER, 'showLanggenre', 'Animés (Genres)', 'animes_genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showLangGenre', 'Animés (Genres)', 'animes_genres.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
@@ -80,7 +85,7 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('type2', 1)
     oOutputParameterHandler.addParameter('title', 'Séries')
-    oGui.addDir(SITE_IDENTIFIER, 'showLanggenre', 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showLangGenre', 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
 
@@ -120,9 +125,8 @@ def showLang():
     oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle + ' A-Z (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
-    
-    
-def showLanggenre():
+
+def showLangGenre():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sType2 = oInputParameterHandler.getValue('type2')
@@ -185,7 +189,7 @@ def showGenre():
     liste.append( ['Dark Fantasy','http://www.adkami.com/video?recherche=&genre3=8&type2='+str(sType2)+'&version='+str(sVersion)] )
     liste.append( ['Drame','http://www.adkami.com/video?recherche=&genre3=9&type2='+str(sType2)+'&version='+str(sVersion)] )
     liste.append( ['Ecchi','http://www.adkami.com/video?recherche=&genre3=10&type2='+str(sType2)+'&version='+str(sVersion)] )
-    liste.append( ['Educatif','http://www.adkami.com/video?recherche=&genre3=11&type2='+str(sType2)+'&version='+str(sVersion)] )
+    liste.append( ['Éducatif','http://www.adkami.com/video?recherche=&genre3=11&type2='+str(sType2)+'&version='+str(sVersion)] )
     liste.append( ['Énigme & Policier','http://www.adkami.com/video?recherche=&genre3=12&type2='+str(sType2)+'&version='+str(sVersion)] )
     liste.append( ['Épique & Héroique','http://www.adkami.com/video?recherche=&genre3=13&type2='+str(sType2)+'&version='+str(sVersion)] )
     liste.append( ['Espace & Sci-Fiction','http://www.adkami.com/video?recherche=&genre3=14&type2='+str(sType2)+'&version='+str(sVersion)] )
