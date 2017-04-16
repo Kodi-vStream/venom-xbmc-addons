@@ -21,12 +21,12 @@ SITE_DESC = 'Bienvenue sur ADKami un site Animés (Mangas) & Séries en streamin
 
 URL_MAIN = 'http://www.adkami.com'
 
+ANIM_ANIMS = ('http://www.adkami.com/video?recherche=&version=0&type2=0', 'showMovies')
 ANIM_VFS = ('http://www.adkami.com/video?recherche=&version=1&type2=0', 'showMovies')
 ANIM_VOSTFRS = ('http://www.adkami.com/video?recherche=&version=2&type2=0', 'showMovies')
+
 SERIE_VFS = ('http://www.adkami.com/video?recherche=&version=1&type2=1', 'showMovies')
 SERIE_VOSTFRS = ('http://www.adkami.com/video?recherche=&version=2&type2=1', 'showMovies')
-
-ANIM_ANIMS = ('http://www.adkami.com/video?recherche=&version=0&type2=0', 'showMovies')
 
 URL_SEARCH = ('http://www.adkami.com/video?recherche=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
