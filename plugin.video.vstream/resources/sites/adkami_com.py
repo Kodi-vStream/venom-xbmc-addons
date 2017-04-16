@@ -17,7 +17,7 @@ httplib.HTTPConnection._http_vsn_str = 'HTTP/1.0'
 
 SITE_IDENTIFIER = 'adkami_com'
 SITE_NAME = 'ADKami'
-SITE_DESC = 'Bienvenue sur ADKami un site Animés (Manga)/Séries en streaming.'
+SITE_DESC = 'Bienvenue sur ADKami un site Animés (Mangas) & Séries en streaming.'
 
 URL_MAIN = 'http://www.adkami.com'
 
@@ -111,13 +111,13 @@ def showLang():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 1)
     oOutputParameterHandler.addParameter('type2', sType2)
-    oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle  + ' A-Z VF', 'vf.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle  + ' A-Z (VF)', 'vf.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 2)
     oOutputParameterHandler.addParameter('type2', sType2)
-    oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle + ' A-Z VOSTFR', 'vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle + ' A-Z (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
     
