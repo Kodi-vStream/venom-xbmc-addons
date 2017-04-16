@@ -257,7 +257,7 @@
         
         <setting id="plugin_papystreaming_org" type="bool" label="Papystreaming (Films,Séries)" default="true"/>
         
-        <setting id="plugin_planet_streaming" type="bool" label="planet streaming (Films/Séries)" default="true"/>
+        <setting id="plugin_planet_streaming" type="bool" label="planet streaming (Films, Séries)" default="true"/>
         <setting visible="false" id="search1_planet_streaming" type="bool" label="30077" default="true"/>
         
         <setting id="plugin_regarder_films" type="bool" label="Regarder.films (Séries)" default="true"/>
