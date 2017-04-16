@@ -16,8 +16,8 @@ httplib.HTTPConnection._http_vsn = 10
 httplib.HTTPConnection._http_vsn_str = 'HTTP/1.0'
 
 SITE_IDENTIFIER = 'adkami_com'
-SITE_NAME = 'Adkami'
-SITE_DESC = 'Bienvenue sur ADkami.com. un site Animés (Manga)/Série en streaming.'
+SITE_NAME = 'ADKami'
+SITE_DESC = 'Bienvenue sur ADKami un site Animés (Manga)/Séries en streaming.'
 
 URL_MAIN = 'http://www.adkami.com'
 
@@ -105,19 +105,19 @@ def showLang():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 0)
     oOutputParameterHandler.addParameter('type2', sType2)
-    oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle+' A-Z', 'lang.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle + ' A-Z', 'lang.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 1)
     oOutputParameterHandler.addParameter('type2', sType2)
-    oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle+' A-Z VF', 'fr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle  + ' A-Z VF', 'vf.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 2)
     oOutputParameterHandler.addParameter('type2', sType2)
-    oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle+' A-Z VOSTFR', 'vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle + ' A-Z VOSTFR', 'vostfr.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
     
@@ -132,19 +132,19 @@ def showLanggenre():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 0)
     oOutputParameterHandler.addParameter('type2', sType2)
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', sTitle+'Genres', 'lang.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', sTitle + ' Genres', 'lang.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 1)
     oOutputParameterHandler.addParameter('type2', sType2)
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', sTitle+'Genre VF', 'vf.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', sTitle + ' Genre VF', 'vf.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('version', 2)
     oOutputParameterHandler.addParameter('type2', sType2)
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', sTitle+'Genre VOSTFR', 'vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenre', sTitle + ' Genre VOSTFR', 'vostfr.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
         
