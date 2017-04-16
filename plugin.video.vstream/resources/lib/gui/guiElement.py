@@ -152,7 +152,7 @@ class cGuiElement:
     def getFunction(self):
         return self.__sFunctionName
         
-    def RangeTitre(self, string):
+    def RangeTitle(self, string):
         
         string['color'] = self.__sDecoColor
         sText = '' 
@@ -180,6 +180,11 @@ class cGuiElement:
             #qual pour qualiter
             string['qual']
             sText += ' ({qual}) '
+        except:pass
+        try:
+            #qual pour qualiter
+            string['lang']
+            sText += ' ({lang}) '
         except:pass
         try:
             string['year'] = int(string['year'])
