@@ -16,9 +16,9 @@ SITE_DESC = 'Sélection des vidéos les plus populaires de Videobuzzy'
 
 URL_MAIN = 'http://www.videobuzzy.com/'
 
-MOVIE_NETS = (URL_MAIN + 'top-video.php', 'showMovies')
+MOVIE_NETS = (URL_MAIN , 'showMovies')
 NETS_NEWS =  (URL_MAIN + 'top-video.php', 'showMovies')
-NETS_GENRES = (True, 'load')
+NETS_GENRES = (True, 'showGenres')
 
 #URL_SEARCH = ('http://www.notre-ecole.net/?s=', 'showMovies')
 #FUNCTION_SEARCH = 'showMovies'
@@ -31,6 +31,29 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
  
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NETS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NETS[1], 'Vidéos du net', 'buzz.png',oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', NETS_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'Vidéos du net (Genres)', 'genres.png',oOutputParameterHandler)
+
+    oGui.setEndOfDirectory() 
+
+def showSearch():
+    oGui = cGui()
+
+    sSearchText = oGui.showKeyBoard()
+    if (sSearchText != False):
+            sUrl = 'http://www.videobuzzy.com/'+sSearchText  
+            showMovies(sUrl)
+            oGui.setEndOfDirectory()
+            return
+
+def showGenres():
+    oGui = cGui()
+
     liste = []
     liste.append( ['Galerie',URL_MAIN + 'galerie.htm'] )
     liste.append( ['Football',URL_MAIN + 'football.htm'] )
@@ -45,22 +68,12 @@ def load():
     liste.append( ['Top Vidéo',URL_MAIN + 'top-video.php'] )
 
     for sTitle,sUrl in liste:
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'doc.png', oOutputParameterHandler)
-       
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory() 
-
-def showSearch():
-    oGui = cGui()
-
-    sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
-            sUrl = 'http://www.videobuzzy.com/'+sSearchText  
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return  
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -92,9 +105,9 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[2], aEntry[3], oOutputParameterHandler)
-        
+
         cConfig().finishDialog(dialog)
-           
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -114,7 +127,7 @@ def __checkForNextPage(sHtmlContent):
         return URL_MAIN + aResult[1][0]
 
     return False
-    
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
