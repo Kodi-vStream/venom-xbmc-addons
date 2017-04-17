@@ -343,12 +343,12 @@
         <setting visible="false" id="search2_voirfilms_org" type="bool" label="30089" default="true"/>
         <setting visible="false" id="search3_voirfilms_org" type="bool" label="30090" default="true"/>
         
+        <setting id="plugin_youtitou_com" type="bool" label="YouTitou (Animés)" default="true"/>
+        <setting visible="false" id="search3_youtitou_com" type="bool" label="30090" default="true"/>
+        
         <setting id="plugin_zone_telechargement_eu" type="bool" label="Zone Téléchargement.ru (Films, séries)" default="true"/>
         <setting visible="false" id="search1_zone_telechargement_eu" type="bool" label="30077" default="true"/>
         <setting visible="false" id="search2_zone_telechargement_eu" type="bool" label="30089" default="true"/>
-        
-        <setting id="plugin_youtitou_com" type="bool" label="YouTitou (Animés)" default="true"/>
-        <setting visible="false" id="search3_youtitou_com" type="bool" label="30090" default="true"/>
         
         <setting id="plugin_zone_telechargement_ws" type="bool" label="Zone Téléchargement.ws (Films,Séries,Animés,Documentaires)" default="true"/>
         <setting visible="false" id="search1_zone_telechargement_ws" type="bool" label="30077" default="true"/>
