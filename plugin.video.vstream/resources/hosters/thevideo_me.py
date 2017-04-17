@@ -75,22 +75,27 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+        
         oParser = cParser()
         
-        sPattern = "var mpri_Key='([^']+)';(.+?)<\/script>"
+        sPattern = "var lets_play_a_game='([^']+)'"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if not (aResult[0]):
             return False , False
             
-        key = aResult[1][0][0]
-        code = cPacker().unpack(aResult[1][0][1])
-
-        sPattern = "rc=.+?\/(.+?)\\\\'\.concat"
-        r = re.search(sPattern,code)
-        if not (r):
+        key = aResult[1][0]
+            
+        sPattern = "'rc=[^<>]+?\/(.+?)'\.concat"
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if not (aResult[0]):
             return False , False
             
-        url2 = 'http://thevideo.me/' + r.group(1) + '/' + key       
+        ee = aResult[1][0]
+            
+        url2 = 'http://thevideo.me/' + ee + '/' + key       
 
         oRequest = cRequestHandler(url2)
         sHtmlContent2 = oRequest.request()
@@ -100,7 +105,7 @@ class cHoster(iHoster):
         r2 = re.search(sPattern,code)
         if not (r2):
             return False , False
-        
+            
         sPattern = '{"file":"([^"]+)","label":"(\d+p)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
