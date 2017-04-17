@@ -228,10 +228,6 @@ msgctxt "#30117"
 msgid "Television Replay"
 msgstr "Télévision Replay"
 
-msgctxt "#30160"
-msgid "Quality HD"
-msgstr "Qualité HD"
-
 msgctxt "#30120"
 msgid "Movies"
 msgstr "Films"
@@ -299,6 +295,10 @@ msgstr "Plugins on/off (3/3)"
 msgctxt "#30201"
 msgid "Add to playlist"
 msgstr "Ajouter à la playlist"
+
+msgctxt "#30160"
+msgid "Quality HD"
+msgstr "Qualité HD"
 
 msgctxt "#30202"
 msgid "Download"
