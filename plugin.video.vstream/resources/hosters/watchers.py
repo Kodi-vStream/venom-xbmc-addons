@@ -8,6 +8,8 @@ from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
 import re,xbmcgui
 
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0'
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -76,9 +78,15 @@ class cHoster(iHoster):
         sPattern =  '{file:"(http.+?m3u8)"}' #sPattern = '{file:"([^"]+)",label:"(\d+)"}'
         aResult = oParser.parse(sHtmlContent,sPattern)
         if (aResult[0] == True):
-            m3url = aResult[1][0] 
+            m3url = aResult[1][0]
             oRequest = cRequestHandler(m3url)
+            oRequest.addHeaderEntry('User-Agent',UA)
+            oRequest.addHeaderEntry('Referer','http://watchers.to/player7/jwplayer.flash.swf')
             sHtmlContent = oRequest.request()
+
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
    
         sPattern =  ',RESOLUTION=(.+?),.+?(http.+?m3u8)' 
         aResult = oParser.parse(sHtmlContent,sPattern)
@@ -101,9 +109,11 @@ class cHoster(iHoster):
                 if (ret > -1):
                     api_call = url[ret]
                     
-        #api_call = api_call + '|User-Agent=' + UA ne fonctionne pas a partir des fichiers mp4 (video de 3 minutes) meme sur firefox
+        # ne fonctionne pas a partir des fichiers mp4 (video de 3 minutes) meme sur firefox ???      
+        api_call = api_call + '|User-Agent='+ UA
+        api_call = api_call + '&Referer=http://watchers.to/player7/jwplayer.flash.swf'
+        
         if (api_call):
             return True, api_call
             
         return False, False
-

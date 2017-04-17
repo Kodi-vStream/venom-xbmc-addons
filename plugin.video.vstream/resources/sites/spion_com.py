@@ -37,20 +37,19 @@ def load():
     oGui = cGui() 
  
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-     
+    
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', NETS_NEWS[0]) 
-    oGui.addDir(SITE_IDENTIFIER, NETS_NEWS[1], 'Videos Nouveautes', 'news.png', oOutputParameterHandler)  
-     
+    oOutputParameterHandler.addParameter('siteUrl', NETS_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, NETS_NEWS[1], 'Vidéos (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'Videos Genres', 'genres.png', oOutputParameterHandler)
-               
+    oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'Vidéos (Genres)', 'genres.png', oOutputParameterHandler)
+    
     oGui.setEndOfDirectory()
- 
- 
+
 def showSearch():
     oGui = cGui()
  
@@ -60,47 +59,46 @@ def showSearch():
         showMovies(sUrl) 
         oGui.setEndOfDirectory()
         return
- 
- 
+
 def showGenre():
     oGui = cGui()
   
     liste = []
-    liste.append( ['Actualite', URL_MAIN + 'category/actualite/page/1/'] )
-    liste.append( ['Animaux', URL_MAIN + 'category/animaux/page/1/'] )
-    liste.append( ['Art', URL_MAIN + 'category/art-technique/page/1/'] )
-    liste.append( ['Danse', URL_MAIN + 'category/danse/page/1/'] )
-    liste.append( ['Experience', URL_MAIN + 'category/experiences/'] )
-    liste.append( ['Fake', URL_MAIN + 'category/fake-trucage/page/1/'] )
-    liste.append( ['Guerre', URL_MAIN + 'category/guerre-militaire/page/1/'] )
-    liste.append( ['Humour', URL_MAIN + 'category/humour-comedie/page/1/'] )
-    liste.append( ['Internet', URL_MAIN + 'category/siteweb-internet/page/1/'] )
-    liste.append( ['Jeux Video', URL_MAIN + 'category/jeuxvideo-consoles/page/1/'] )
-    liste.append( ['Musique', URL_MAIN + 'category/musique/page/1/'] ) 
-    liste.append( ['Non Classe', URL_MAIN + 'category/non-classe/page/1/'] )
-    liste.append( ['Owned', URL_MAIN + 'category/owned/page/1/'] )
-    liste.append( ['Pub', URL_MAIN + 'category/publicite-marque/page/1/'] )
-    liste.append( ['Santé', URL_MAIN + 'category/sante-corps/page/1/'] )  
-    liste.append( ['Sport', URL_MAIN + 'category/sport/page/1/'] )
-    liste.append( ['Technologie', URL_MAIN + 'category/technologie-innovations/page/1/'] )
-    liste.append( ['Transport', URL_MAIN + 'category/auto-transport/page/1/'] )
-    liste.append( ['TV & Cinema', URL_MAIN + 'category/tv-cinema/page/1/'] )
-    liste.append( ['WTF?!', URL_MAIN + 'category/wtf/page/1/'] )
-    liste.append( ['Zapping', URL_MAIN + 'category/zapping-web/page/1/'] )
-                 
+    liste.append( ['Actualité', URL_MAIN + 'category/actualite/'] )
+    liste.append( ['Animaux', URL_MAIN + 'category/animaux/'] )
+    liste.append( ['Art', URL_MAIN + 'category/art-technique/'] )
+    liste.append( ['Danse', URL_MAIN + 'category/danse/'] )
+    liste.append( ['Expérience', URL_MAIN + 'category/experiences/'] )
+    liste.append( ['Fake', URL_MAIN + 'category/fake-trucage/'] )
+    liste.append( ['Guerre', URL_MAIN + 'category/guerre-militaire/'] )
+    liste.append( ['Humour', URL_MAIN + 'category/humour-comedie/'] )
+    liste.append( ['Internet', URL_MAIN + 'category/siteweb-internet/'] )
+    liste.append( ['Jeux Vidéo', URL_MAIN + 'category/jeuxvideo-consoles/'] )
+    liste.append( ['Musique', URL_MAIN + 'category/musique/'] )
+    liste.append( ['Non Classé', URL_MAIN + 'category/non-classe/'] )
+    liste.append( ['Owned', URL_MAIN + 'category/owned/'] )
+    liste.append( ['Pub', URL_MAIN + 'category/publicite-marque/'] )
+    liste.append( ['Rewind', URL_MAIN + 'category/rewind/'] )
+    liste.append( ['Santé', URL_MAIN + 'category/sante-corps/'] )
+    liste.append( ['Sport', URL_MAIN + 'category/sport/'] )
+    liste.append( ['Technologie', URL_MAIN + 'category/technologie-innovations/'] )
+    liste.append( ['Transport', URL_MAIN + 'category/auto-transport/'] )
+    liste.append( ['TV & Cinéma', URL_MAIN + 'category/tv-cinema/'] )
+    liste.append( ['WTF?!', URL_MAIN + 'category/wtf/'] )
+    liste.append( ['Zapping', URL_MAIN + 'category/zapping-web/'] )
+
     if (SPION_CENSURE == False):
-        liste.append( ['NSFW (+18)', URL_MAIN + 'nsfw/page/1/'] )
-        liste.append( ['Trash (+18)', URL_MAIN + 'category/trash-gore/page/1/'] )          
-                 
+        liste.append( ['NSFW (+18)', URL_MAIN + 'nsfw/'] )
+        liste.append( ['Trash (+18)', URL_MAIN + 'category/trash-gore/'] )     
+
     for sTitle,sUrl in liste:
-         
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler) 
-               
+
     oGui.setEndOfDirectory()
-         
- 
+
 def showMovies(sSearch = ''):
     oGui = cGui()
      
@@ -159,13 +157,11 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]',
-                        'next.png',  oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]',                        'next.png',  oOutputParameterHandler)
  
     if not sSearch:
         oGui.setEndOfDirectory() 
- 
- 
+
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<div class="nav-previous"><a href="([^"<>]+/[0-9]/?[^"]+)" class="nq_previous">'
@@ -174,8 +170,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-     
- 
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler() 

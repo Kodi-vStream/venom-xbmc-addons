@@ -16,9 +16,9 @@ SITE_DESC = 'Sélection des vidéos les plus populaires de Videobuzzy'
 
 URL_MAIN = 'http://www.videobuzzy.com/'
 
-MOVIE_NETS = ('http://www.videobuzzy.com/top-video.php', 'showMovies')
-NETS_NEWS =  ('http://www.videobuzzy.com/top-video.php', 'showMovies')
-NETS_GENRES = (True, 'load')
+MOVIE_NETS = (URL_MAIN , 'showMovies')
+NETS_NEWS =  (URL_MAIN + 'top-video.php', 'showMovies')
+NETS_GENRES = (True, 'showGenres')
 
 #URL_SEARCH = ('http://www.notre-ecole.net/?s=', 'showMovies')
 #FUNCTION_SEARCH = 'showMovies'
@@ -31,23 +31,14 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
  
-    liste = []
-    liste.append( ["Top Vidéo","http://www.videobuzzy.com/top-video.php"] )
-    liste.append( ["Insolite","http://www.videobuzzy.com/Insolite.htm"] )
-    liste.append( ["Football","http://www.videobuzzy.com/Football.htm"] )
-    liste.append( ["Humour","http://www.videobuzzy.com/Humour.htm"] )
-    liste.append( ["Animaux","http://www.videobuzzy.com/Animaux.htm"] )
-    liste.append( ["Télévision","http://www.videobuzzy.com/Television.htm"] )
-    liste.append( ["Music","http://www.videobuzzy.com/Musique.htm"] )
-    liste.append( ["Sport","http://www.videobuzzy.com/Sport.htm"] )
-    liste.append( ["Cinéma","http://www.videobuzzy.com/Cinema.htm"] )
-    
-    for sTitle,sUrl in liste:
-        
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'doc.png', oOutputParameterHandler)
-       
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NETS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NETS[1], 'Vidéos du net', 'buzz.png',oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', NETS_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'Vidéos du net (Genres)', 'genres.png',oOutputParameterHandler)
+
     oGui.setEndOfDirectory() 
 
 def showSearch():
@@ -58,7 +49,31 @@ def showSearch():
             sUrl = 'http://www.videobuzzy.com/'+sSearchText  
             showMovies(sUrl)
             oGui.setEndOfDirectory()
-            return  
+            return
+
+def showGenres():
+    oGui = cGui()
+
+    liste = []
+    liste.append( ['Galerie',URL_MAIN + 'galerie.htm'] )
+    liste.append( ['Football',URL_MAIN + 'football.htm'] )
+    liste.append( ['Humour',URL_MAIN + 'humour.htm'] )
+    liste.append( ['Animaux',URL_MAIN + 'animaux.htm'] )
+    liste.append( ['Insolite',URL_MAIN + 'insolite.htm'] )
+    liste.append( ['Télévision',URL_MAIN + 'television.htm'] )
+    liste.append( ['Musique',URL_MAIN + 'musique.htm'] )
+    liste.append( ['Sport',URL_MAIN + 'sport.htm'] )
+    liste.append( ['Cinéma',URL_MAIN + 'cinema.htm'] )
+    #liste.append( ['Bref.',URL_MAIN + 'BREF-tous-les-episodes-de-la-serie-de-canal-+-4902.news'] )
+    liste.append( ['Top Vidéo',URL_MAIN + 'top-video.php'] )
+
+    for sTitle,sUrl in liste:
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory() 
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -90,9 +105,9 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[2], aEntry[3], oOutputParameterHandler)
-        
+
         cConfig().finishDialog(dialog)
-           
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -109,10 +124,10 @@ def __checkForNextPage(sHtmlContent):
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         print aResult[1][0]
-        return URL_MAIN+aResult[1][0]
+        return URL_MAIN + aResult[1][0]
 
     return False
-    
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -137,7 +152,7 @@ def showHosters():
                 break
             
             sHosterUrl = str(aEntry[0])
-            sTitle = sMovieTitle+' | '+aEntry[1]
+            sTitle = sMovieTitle + ' | ' + aEntry[1]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sTitle)
