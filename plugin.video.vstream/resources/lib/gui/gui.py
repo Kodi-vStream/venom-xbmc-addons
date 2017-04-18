@@ -174,21 +174,11 @@ class cGui():
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
+    #utiliser oGui.addText(SITE_IDENTIFIER)
     def addNone(self, sId):
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction('load')
-        oGuiElement.setTitle('[COLOR= red]'+cConfig().getlanguage(30204)+'[/COLOR]')
-        oGuiElement.setIcon('none.png')
-        oGuiElement.setThumbnail(oGuiElement.getIcon())
-        oGuiElement.setMeta(0)
+        return self.addText(sId)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        #oOutputParameterHandler.addParameter('siteUrl', 'none')
-
-        self.addFolder(oGuiElement, oOutputParameterHandler)
-
-    #utiliser addText2
+    #utiliser addText
     #add text 1 un outpout alors qu'il et renitialiser
     def addText_old(self, sId, sLabel,oOutputParameterHandler = ''):
         oGuiElement = cGuiElement()
