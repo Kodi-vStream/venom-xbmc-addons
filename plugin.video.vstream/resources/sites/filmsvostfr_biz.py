@@ -327,7 +327,7 @@ def showLinks():
     sPattern = '<img src="(\/images\/video-coming-soon\.jpg)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        oGui.addText2(SITE_IDENTIFIER,'[COLOR crimson]' + 'Vidéo bientôt disponible' + '[/COLOR]')
+        oGui.addText(SITE_IDENTIFIER,'[COLOR crimson]' + 'Vidéo bientôt disponible' + '[/COLOR]')
 
     #resume
     sCom= ''

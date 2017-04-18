@@ -190,7 +190,7 @@ class cGui():
 
     #utiliser addText2
     #add text 1 un outpout alors qu'il et renitialiser
-    def addText(self, sId, sLabel,oOutputParameterHandler = ''):
+    def addText_old(self, sId, sLabel,oOutputParameterHandler = ''):
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction('DoNothing')
@@ -205,7 +205,7 @@ class cGui():
         self.addFolder(oGuiElement, oOutputParameterHandler)
      
      
-    def addText2(self, sId, sLabel, sIcon='none.png'):
+    def addText(self, sId, sLabel='[COLOR= red]'+cConfig().getlanguage(30204)+'[/COLOR]', sIcon='none.png'):
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction('DoNothing')
