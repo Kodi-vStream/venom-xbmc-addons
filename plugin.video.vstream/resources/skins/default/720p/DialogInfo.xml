@@ -453,40 +453,43 @@
 					<label>$INFO[Window(Home).Property(ListItem.rating)]</label>
 					<visible>!IsEmpty(Window(Home).Property(ListItem.rating))</visible>
 				</control>
+
                 <control type="list" id="50">
 					<left>40</left>
-					<top>-290</top>
+					<top>-400</top>
 					<width>1080</width>
-					<height>500</height>
+					<height>700</height>
 					<onleft>9000</onleft>
 					<onright>61</onright>
 					<onup>61</onup>
 					<ondown>9000</ondown>
                     <align>left</align>
-                    <autoscroll time="2000" delay="2000" repeat="5000">True</autoscroll>
+                    <autoscroll time="2000" delay="2000" repeat="2000">True</autoscroll>
 					<orientation>horizontal</orientation>
        
 
 					<itemlayout height="40" width="140">
                         <control type="image">
                             <left>0</left>
-							<top>345</top>
+							<top>455</top>
 							<width>120</width>
 							<height>120</height>
 							<texture fallback="actor.png">$INFO[ListItem.icon]</texture>
                             <aspectratio align="center" aligny="center">scale</aspectratio>
 						</control>
+                        
                         <control type="image">
                             <left>0</left>
-							<top>445</top>
+							<top>555</top>
 							<width>120</width>
 							<height>20</height>
 							<texture colordiffuse="4DFAFAFA">black-back.png</texture>
 						</control>
+                       
 						<control type="label">
 							<description>Actor and Role</description>
 							<left>5</left>
-							<top>444</top>
+							<top>555</top>
 							<width>110</width>
 							<height>20</height>
 							<font>font12</font>
@@ -497,37 +500,56 @@
 							<label>$INFO[ListItem.Label]</label>
 						</control>
 					</itemlayout>
-					<focusedlayout height="40" width="125">
 
+					<focusedlayout height="555" width="140">
+
+        
                         <control type="image">
                             <left>0</left>
-							<top>15</top>
-							<width>210</width>
-							<height>255</height>
+							<top>0</top>
+							<width>240</width>
+							<height>300</height>
 							<texture colordiffuse="BFFAFAFA">black-back.png</texture>
-
           <animation effect="fade" start="10" time="400" easing="in" condition="Control.IsVisible(20)">Conditional</animation>
-           <animation effect="slide" start="0,50" time="300" center="auto"  condition="Control.IsVisible(50)">Conditional</animation>
+          <animation effect="slide" start="0,80" time="300" center="auto"  condition="Control.IsVisible(50)">Conditional</animation>
+          
 						</control>
 
-                        <control type="image">
+                      <control type="image">
                             <left>5</left>
-							<top>20</top>
-							<width>200</width>
-							<height>200</height>
+							<top>5</top>
+							<width>230</width>
+							<height>230</height>
 							<texture fallback="actor.png">$INFO[ListItem.icon]</texture>
                             <aspectratio align="center" aligny="center">scale</aspectratio>
-          <animation effect="fade" start="10" time="600" easing="in" condition="Control.IsVisible(20)">Conditional</animation>
-           <animation effect="slide" start="0,50" time="300" center="auto"  condition="Control.IsVisible(50)">Conditional</animation>
+          <animation effect="fade" start="10" time="500" easing="in" condition="Control.IsVisible(20)">Conditional</animation>
+           <animation effect="slide" start="0,80" time="300" center="auto" condition="Control.IsVisible(50)">Conditional</animation>
          </control>
-                        
-						<control type="label">
-							<description>Actor and Role</description>
-							<left>5</left>
-							<top>220</top>
-							<width>200</width>
+                       <control type="image">
+                            <left>0</left>
+							<top>455</top>
+							<width>120</width>
+							<height>120</height>
+							<texture fallback="actor.png">$INFO[ListItem.icon]</texture>
+                            <aspectratio align="center" aligny="center">scale</aspectratio>
+          
+         </control>
+
+                       <control type="image">
+                            <left>0</left>
+							<top>555</top>
+							<width>120</width>
 							<height>20</height>
-							<font>font12</font>
+							<texture colordiffuse="4DFAFAFA">black-back.png</texture>
+						           
+						</control> 
+						<control type="label">
+							<description>Actor label</description>
+							<left>5</left>
+							<top>243</top>
+							<width>240</width>
+							<height>20</height>
+							<font>font13_title</font>
 							<align>center</align>
 							<aligny>center</aligny>
 							<selectedcolor>white</selectedcolor>
@@ -535,15 +557,15 @@
 							<label>$INFO[ListItem.Label]</label>
 
           <animation effect="fade" start="10" time="400" easing="in" condition="Control.IsVisible(20)">Conditional</animation>
-          <animation effect="slide" start="0,50" time="300" center="auto"  condition="Control.IsVisible(50)">Conditional</animation>
+          <animation effect="slide" start="0,80" time="300" center="auto"  condition="Control.IsVisible(50)">Conditional</animation>
 						</control>
                         <control type="label">
-							<description>Actor and Role</description>
+							<description>Role label2</description>
 							<left>5</left>
-							<top>235</top>
-							<width>200</width>
-							<height>40</height>
-							<font>font12</font>
+							<top>271</top>
+							<width>240</width>
+							<height>20</height>
+							<font>font13_title</font>
           <scroll>true</scroll>
           <scrollsuffix>   -   </scrollsuffix>
 							<align>center</align>
@@ -552,7 +574,20 @@
                             <onclick>noop</onclick>
 							<label>$INFO[ListItem.Label2, $LOCALIZE[20347] ,]</label>
           <animation effect="fade" start="10" time="400" easing="in" condition="Control.IsVisible(20)">Conditional</animation>
-           <animation effect="slide" start="0,50" time="300" center="auto"  condition="Control.IsVisible(50)">Conditional</animation>
+           <animation effect="slide" start="0,80" time="300" center="auto"  condition="Control.IsVisible(50)">Conditional</animation>
+						</control>
+	                       <control type="label">
+							<description>Actor label bas doubler </description>
+							<left>5</left>
+							<top>555</top>
+							<width>110</width>
+							<height>20</height>
+							<font>font12</font>
+							<align>center</align>
+							<aligny>center</aligny>
+							<selectedcolor>white</selectedcolor>
+          <scroll>false</scroll>                
+							<label>$INFO[ListItem.Label]</label>
 						</control>
 					</focusedlayout>
 				</control>
