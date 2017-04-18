@@ -37,6 +37,66 @@
                 <fadetime>200</fadetime>
 				<texture colordiffuse="B3FAFAFA" border="10">black-back.png</texture>
 			</control>
+            
+            
+            <control type="group"> 
+                <visible>Control.IsVisible(50)</visible>
+      
+                <visible>!Container(50).OnNext+!Container(50).OnPrevious</visible>
+                    <left>40</left>
+					<top>100</top>
+					<width>240</width>
+					<height>300</height>
+                    <align>left</align>     
+
+                    
+                <!-- <animation type="Conditional" condition="true" reversible="true">-->
+                <animation type="visible" reversible="false">
+                    <effect type="slide" start="-400,0" end="0,0" time="800" tween="back" easing="out"/>
+                    <effect type="fade" start="0" end="100" time="800" delay="100"/>
+                </animation>
+
+
+
+                <!--<animation type="WindowClose">
+                    <effect type="slide" start="0,0" end="-400,0" time="800" tween="back" easing="in"/>
+                    <effect type="fade" start="100" end="0" time="800" delay="400"/>
+                </animation> -->          
+
+                <control type="image">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>240</width>
+                    <height>300</height>
+                    <texture colordiffuse="BFFAFAFA">black-back.png</texture>  
+                </control>
+
+                <control type="image">
+                    <left>5</left>
+                    <top>5</top>
+                    <width>230</width>
+                    <height>230</height>
+                    <texture fallback="actor.png">$INFO[Container(50).ListItem.Icon]</texture>
+                    <aspectratio align="center" aligny="center">scale</aspectratio>
+                </control>
+                
+                <control type="label">
+                    <description>Role label2</description>
+                    <left>5</left>
+                    <top>240</top>
+                    <width>230</width>
+                    <height>60</height>
+                    <font>font13_title</font>
+                    <scroll>true</scroll>
+                    <scrollsuffix>   -   </scrollsuffix>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <selectedcolor>white</selectedcolor>
+                    <onclick>noop</onclick>
+                    <label>$INFO[Container(50).ListItem.Label][CR]$INFO[Container(50).ListItem.Label2, $LOCALIZE[20347] ,]</label>
+                </control>
+            
+            </control>
 
             <!--<control type="image">
                 <posx>0</posx>
@@ -129,9 +189,9 @@
 						<scrolltime>200</scrolltime>
                         <orientation>horizontal</orientation>
                         
-						<itemlayout width="1040" height="30">
+						<itemlayout width="1080" height="30">
 							<control type="label">
-								<width>1040</width>
+								<width>1080</width>
 								<height>30</height>
 								<font>font13</font>
 								<align>left</align>
@@ -139,11 +199,12 @@
 								<textcolor>white</textcolor>
 								<selectedcolor>selected</selectedcolor>
 								<info>ListItem.Label</info>
+                                <scroll>true</scroll>
 							</control>
 						</itemlayout>
-						<focusedlayout width="1040" height="30">
+						<focusedlayout width="1080" height="30">
 							<control type="label">
-								<width>1040</width>
+								<width>1080</width>
 								<height>30</height>
 								<font>font13</font>
 								<align>left</align>
@@ -151,6 +212,7 @@
 								<textcolor>white</textcolor>
 								<selectedcolor>selected</selectedcolor>
 								<info>ListItem.Label</info>
+                                <scroll>true</scroll>
 							</control>
 						</focusedlayout>
 						<content>
@@ -428,10 +490,10 @@
 				</control>-->
 				<control type="textbox" id="400">
 					<description>Description Value for Movies</description>
-                    <top>55</top>
+                    <top>60</top>
 					<left>40</left>
 					<width>1080</width>
-					<height>120</height>
+					<height>115</height>
 					<font>font13</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -454,21 +516,21 @@
 					<visible>!IsEmpty(Window(Home).Property(ListItem.rating))</visible>
 				</control>
 
-                <control type="list" id="50">
+                <control type="wraplist" id="50">
 					<left>40</left>
 					<top>-400</top>
 					<width>1080</width>
 					<height>700</height>
-					<onleft>9000</onleft>
-					<onright>61</onright>
-					<onup>61</onup>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>9000</onup>
 					<ondown>9000</ondown>
                     <align>left</align>
-                    <autoscroll time="2000" delay="2000" repeat="2000">True</autoscroll>
+                    <autoscroll time="4000" delay="4000" repeat="2000">!Control.HasFocus(50)</autoscroll>
 					<orientation>horizontal</orientation>
        
 
-					<itemlayout height="40" width="140">
+					<itemlayout height="120" width="130">
                         <control type="image">
                             <left>0</left>
 							<top>455</top>
@@ -501,82 +563,26 @@
 						</control>
 					</itemlayout>
 
-					<focusedlayout height="555" width="140">
-
-        
+					<focusedlayout height="120" width="130">
+                       
                         <control type="image">
-                            <left>0</left>
-							<top>0</top>
-							<width>240</width>
-							<height>300</height>
-							<texture colordiffuse="BFFAFAFA">black-back.png</texture>
-          <animation effect="fade" start="10" time="400" easing="in" condition="Control.IsVisible(20)">Conditional</animation>
-          <animation effect="slide" start="0,80" time="300" center="auto"  condition="Control.IsVisible(50)">Conditional</animation>
-          
-						</control>
-
-                      <control type="image">
-                            <left>5</left>
-							<top>5</top>
-							<width>230</width>
-							<height>230</height>
-							<texture fallback="actor.png">$INFO[ListItem.icon]</texture>
-                            <aspectratio align="center" aligny="center">scale</aspectratio>
-          <animation effect="fade" start="10" time="500" easing="in" condition="Control.IsVisible(20)">Conditional</animation>
-           <animation effect="slide" start="0,80" time="300" center="auto" condition="Control.IsVisible(50)">Conditional</animation>
-         </control>
-                       <control type="image">
                             <left>0</left>
 							<top>455</top>
 							<width>120</width>
 							<height>120</height>
 							<texture fallback="actor.png">$INFO[ListItem.icon]</texture>
                             <aspectratio align="center" aligny="center">scale</aspectratio>
-          
-         </control>
+                        </control>
 
-                       <control type="image">
+                        <control type="image">
                             <left>0</left>
-							<top>555</top>
+							<top>455</top>
 							<width>120</width>
-							<height>20</height>
-							<texture colordiffuse="4DFAFAFA">black-back.png</texture>
-						           
+							<height>120</height>
+							<texture colordiffuse="BFFAFAFA">black-back.png</texture>    
 						</control> 
-						<control type="label">
-							<description>Actor label</description>
-							<left>5</left>
-							<top>243</top>
-							<width>240</width>
-							<height>20</height>
-							<font>font13_title</font>
-							<align>center</align>
-							<aligny>center</aligny>
-							<selectedcolor>white</selectedcolor>
-                            <onclick>noop</onclick>
-							<label>$INFO[ListItem.Label]</label>
-
-          <animation effect="fade" start="10" time="400" easing="in" condition="Control.IsVisible(20)">Conditional</animation>
-          <animation effect="slide" start="0,80" time="300" center="auto"  condition="Control.IsVisible(50)">Conditional</animation>
-						</control>
+                        
                         <control type="label">
-							<description>Role label2</description>
-							<left>5</left>
-							<top>271</top>
-							<width>240</width>
-							<height>20</height>
-							<font>font13_title</font>
-          <scroll>true</scroll>
-          <scrollsuffix>   -   </scrollsuffix>
-							<align>center</align>
-							<aligny>center</aligny>
-							<selectedcolor>white</selectedcolor>
-                            <onclick>noop</onclick>
-							<label>$INFO[ListItem.Label2, $LOCALIZE[20347] ,]</label>
-          <animation effect="fade" start="10" time="400" easing="in" condition="Control.IsVisible(20)">Conditional</animation>
-           <animation effect="slide" start="0,80" time="300" center="auto"  condition="Control.IsVisible(50)">Conditional</animation>
-						</control>
-	                       <control type="label">
 							<description>Actor label bas doubler </description>
 							<left>5</left>
 							<top>555</top>
@@ -586,9 +592,10 @@
 							<align>center</align>
 							<aligny>center</aligny>
 							<selectedcolor>white</selectedcolor>
-          <scroll>false</scroll>                
+                            <scroll>false</scroll>                
 							<label>$INFO[ListItem.Label]</label>
 						</control>
+                        
 					</focusedlayout>
 				</control>
 				<control type="grouplist" id="9000">
