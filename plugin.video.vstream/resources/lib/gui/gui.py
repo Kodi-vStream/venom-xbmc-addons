@@ -123,20 +123,21 @@ class cGui():
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
-    def addFav(self, sId, sFunction, sLabel, sIcon, sThumbnail, fanart, oOutputParameterHandler = ''):
-        cGui.CONTENT = "files"
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sLabel)
-        oGuiElement.setIcon(sIcon)
-        oGuiElement.setMeta(0)
-        oGuiElement.setThumbnail(sThumbnail)
-        oGuiElement.setFanart(fanart)
+    #non utiliser le 18/04
+    #def addFav(self, sId, sFunction, sLabel, sIcon, sThumbnail, fanart, oOutputParameterHandler = ''):
+        #cGui.CONTENT = "files"
+        #oGuiElement = cGuiElement()
+        #oGuiElement.setSiteName(sId)
+        #oGuiElement.setFunction(sFunction)
+        #oGuiElement.setTitle(sLabel)
+        #oGuiElement.setIcon(sIcon)
+        #oGuiElement.setMeta(0)
+        #oGuiElement.setThumbnail(sThumbnail)
+        #oGuiElement.setFanart(fanart)
 
-        self.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
+        #self.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
 
-        self.addFolder(oGuiElement, oOutputParameterHandler)
+        #self.addFolder(oGuiElement, oOutputParameterHandler)
 
 
     def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler = ''):
