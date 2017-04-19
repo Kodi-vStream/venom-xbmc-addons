@@ -24,12 +24,12 @@ SITE_DESC = 'Fichier en DDL, HD'
 URL_MAIN = 'http://www.ddl-island.su/'
 URL_PROTECT = 'http://protect.ddl-island.su'
 
-URL_SEARCH_MOVIES = ('http://www.ddl-island.su/recherche.php?categorie=99&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
-URL_SEARCH_SERIES = ('http://www.ddl-island.su/recherche.php?categorie=98&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
-URL_SEARCH_ANIMES = ('http://www.ddl-island.su/recherche.php?categorie=5&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
-URL_SEARCH_MANGAS = ('http://www.ddl-island.su/recherche.php?categorie=3&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
-URL_SEARCH_EMISSIONS_TV = ('http://www.ddl-island.su/recherche.php?categorie=17&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
-URL_SEARCH_SPECTACLES = ('http://www.ddl-island.su/recherche.php?categorie=2&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'recherche.php?categorie=99&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'recherche.php?categorie=98&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
+URL_SEARCH_ANIMES = (URL_MAIN + 'recherche.php?categorie=5&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
+URL_SEARCH_MANGAS = (URL_MAIN + 'recherche.php?categorie=3&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
+URL_SEARCH_EMISSIONS_TV = (URL_MAIN + 'recherche.php?categorie=17&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
+URL_SEARCH_SPECTACLES = (URL_MAIN + 'recherche.php?categorie=2&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
 
 
 URL_SEARCH = (URL_MAIN + 'index.php?q=', 'showMovies')
@@ -74,8 +74,8 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMenuDessinsAnimes', 'Dessins Animés', 'animes.png', oOutputParameterHandler)    
-   
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuDessinsAnimes', 'Dessins Animés', 'animes.png', oOutputParameterHandler)
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuMangas', 'Mangas', 'animes.png', oOutputParameterHandler)    
@@ -214,17 +214,17 @@ def showMenuSpectacles():
     
 def showMenuEmissionsTV():
     oGui = cGui()
-       
+    
     oOutputParameterHandler = cOutputParameterHandler() 
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchEmissionsTV', 'Recherche d Emissions TV', 'search.png', oOutputParameterHandler) 
-        
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchEmissionsTV', 'Recherche d\'émissions TV', 'search.png', oOutputParameterHandler) 
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', EMISSIONS_TV[0])
     oGui.addDir(SITE_IDENTIFIER, EMISSIONS_TV[1], 'Emissions TV (Derniers ajouts)', 'tv.png', oOutputParameterHandler)  
     
     oGui.setEndOfDirectory()     
-           
+
 def showSearchMovies(): 
     oGui = cGui()
     sSearchText = oGui.showKeyBoard() 
@@ -344,7 +344,7 @@ def showGenre(basePath):
     liste.append( ['Téléréalité',URL_MAIN + 'telechargement+18/' + basePath] ) 
     liste.append( ['Thriller',URL_MAIN + 'telechargement+8/' + basePath] ) 
     liste.append( ['Western',URL_MAIN + 'telechargement+11/' + basePath] ) 
-                
+    
     for sTitle,sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()
@@ -374,7 +374,7 @@ def showMovies(sSearch = ''):
         #partie en test
         oInputParameterHandler = cInputParameterHandler()
         sType = oInputParameterHandler.getValue('type') 
-      
+
         if sType:
             if sType == "film":
                 sUrl = sUrl.replace(URL_SEARCH[0], URL_SEARCH_MOVIES[0])
