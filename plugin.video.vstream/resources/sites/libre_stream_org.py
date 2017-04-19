@@ -16,13 +16,13 @@ SITE_DESC = 'films en streaming, vk streaming, youwatch, vimple , streaming hd ,
 
 URL_MAIN = 'http://libre-stream.com/'
 
-MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
-MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'films', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
-SERIE_SERIE = (URL_MAIN + 'liste-des-series/', 'AlphaSearch')
-SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
-SERIE_VFS = (URL_MAIN + 'series/version-francaise/', 'showMovies')
+SERIE_SERIE = (URL_MAIN + 'liste-des-series', 'AlphaSearch')
+SERIE_NEWS = (URL_MAIN + 'series', 'showMovies')
+SERIE_VFS = (URL_MAIN + 'series/version-francaise', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'series/vostfr', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?q=', 'showMovies')
@@ -48,6 +48,10 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showQlt', 'Films (Qualités)', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIE[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIE[1], 'Séries', 'series.png', oOutputParameterHandler)    
+    
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
     
@@ -59,10 +63,6 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (VOSTFR)', 'series_vostfr.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIE[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIE[1], 'Séries', 'series.png', oOutputParameterHandler)    
-
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -81,7 +81,7 @@ def showGenres():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['Action',URL_MAIN + 'films/action/'] )
+    liste.append( ['Action',URL_MAIN + 'films/action'] )
     liste.append( ['Animation',URL_MAIN + 'films/animation'] )
     liste.append( ['Arts Martiaux',URL_MAIN + 'films/arts-martiaux'] )
     liste.append( ['Aventure',URL_MAIN + 'films/aventure'] )
@@ -122,12 +122,12 @@ def showQlt():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['HD',URL_MAIN + 'films-hd/'] )
-    liste.append( ['DvdRip',URL_MAIN + 'quality/dvdrip/'] )
-    liste.append( ['BdRip',URL_MAIN + 'quality/bdrip/'] )
-    liste.append( ['R5',URL_MAIN + 'quality/R5/'] )
-    liste.append( ['Cam Rip',URL_MAIN + 'quality/camrip/'] )
-    liste.append( ['TS',URL_MAIN + 'quality/ts/'] )
+    liste.append( ['HD',URL_MAIN + 'films-hd'] )
+    liste.append( ['DvdRip',URL_MAIN + 'quality/dvdrip'] )
+    liste.append( ['BdRip',URL_MAIN + 'quality/bdrip'] )
+    liste.append( ['R5',URL_MAIN + 'quality/R5'] )
+    liste.append( ['Cam Rip',URL_MAIN + 'quality/camrip'] )
+    liste.append( ['TS',URL_MAIN + 'quality/ts'] )
   
     for sTitle,sUrl in liste:
         
@@ -157,7 +157,7 @@ def AlphaSearch():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + sTitle.lower() + '.html' )
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', '[COLOR teal] Lettre [COLOR red]'+ sTitle +'[/COLOR][/COLOR]', 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', '[COLOR teal] Lettre [COLOR red]'+ sTitle +'[/COLOR][/COLOR]', 'series_az.png', oOutputParameterHandler)
         
     cConfig().finishDialog(dialog)
     
