@@ -80,10 +80,10 @@ def showSearch():
         showMovies(str(sSearchText))
         oGui.setEndOfDirectory()
         return
-    
+
 def showMovieGenres():
     oGui = cGui()
- 
+
     liste = []
     liste.append( ['Action',URL_MAIN+ 'action'] )
     liste.append( ['Animation',URL_MAIN + 'animation'] )
@@ -104,18 +104,20 @@ def showMovieGenres():
     liste.append( ['Science Fiction',URL_MAIN + 'science-fiction'] )
     liste.append( ['Thriller',URL_MAIN + 'thriller'] )
     liste.append( ['Western',URL_MAIN + 'western'] )
- 
+    liste.append( ['Top IMDB',URL_MAIN + 'top-imdb'] )
+    liste.append( ['IMDB 7 Plus',URL_MAIN + 'imdb-7-plus'] )
+    
     for sTitle,sUrl in liste:
-       
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'films_genres.png', oOutputParameterHandler)
-       
+
     oGui.setEndOfDirectory()
-    
+
 def showSerieGenres():
     oGui = cGui()
- 
+
     liste = []
     liste.append( ['Action',URL_MAIN+ 'action-series'] )    
     liste.append( ['Action-Aventure',URL_MAIN + 'action-adventure-series'] )
@@ -138,20 +140,20 @@ def showSerieGenres():
     liste.append( ['Science Fiction - fantastique',URL_MAIN + 'science-Fiction-fantastique-series'] )
     liste.append( ['Thriller',URL_MAIN + 'thriller-series'] )
     liste.append( ['Western',URL_MAIN + 'western-series'] )
-               
+    
     for sTitle,sUrl in liste:
-       
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'series_genres.png', oOutputParameterHandler)
-       
+
     oGui.setEndOfDirectory()
     
 def showQlt():
     oGui = cGui()
- 
+
     liste = []
-    liste.append( ['1080p',URL_MAIN + '1080p-films'] )   
+    liste.append( ['1080p',URL_MAIN + '1080p-films'] )
     liste.append( ['720p',URL_MAIN + '720p-films'] )
     
     for sTitle,sUrl in liste:
@@ -167,10 +169,10 @@ def showMovies(sSearch = ''):
     oInputParameterHandler = cInputParameterHandler()
     
     sUrl = oInputParameterHandler.getValue('siteUrl')
- 
+
     if sSearch:
     
-        oRequestHandler = cRequestHandler('http://www.filmenstreaminghd.com/recherche/')
+        oRequestHandler = cRequestHandler(URL_MAIN + 'recherche/')
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
         oRequestHandler.addParameters('query', sSearch)
         oRequestHandler.addParameters('submit=Valider', 'Valider')
