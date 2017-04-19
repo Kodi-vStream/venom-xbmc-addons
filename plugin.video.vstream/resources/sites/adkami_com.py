@@ -17,15 +17,16 @@ httplib.HTTPConnection._http_vsn_str = 'HTTP/1.0'
 
 SITE_IDENTIFIER = 'adkami_com'
 SITE_NAME = 'ADKami'
-SITE_DESC = 'Bienvenue sur ADKami.com. un site Animés Manga & Série en streaming.'
+SITE_DESC = 'Bienvenue sur ADKami un site Animés Manga & Série en streaming.'
 
 URL_MAIN = 'http://www.adkami.com/'
 
+ANIM_ANIMS = (URL_MAIN + 'video?recherche=&version=0&type2=0', 'showMovies')
 ANIM_VFS = (URL_MAIN + 'video?recherche=&version=1&type2=0', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'video?recherche=&version=2&type2=0', 'showMovies')
-ANIM_ANIMS = (URL_MAIN + 'video?recherche=&version=0&type2=0', 'showMovies')
 ANIM_GENRES = (URL_MAIN + 'video?recherche=&type2=0', 'showMovies')
 
+SERIE_SERIES = (URL_MAIN + 'video?recherche=&version=0&type2=1', 'showMovies')
 SERIE_VFS = (URL_MAIN + 'video?recherche=&version=1&type2=1', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'video?recherche=&version=2&type2=1', 'showMovies')
 SERIE_GENRES = (URL_MAIN + 'video?recherche=&type2=1', 'showMovies')
@@ -63,6 +64,10 @@ def load():
     oOutputParameterHandler.addParameter('type2', 0)
     oOutputParameterHandler.addParameter('title', 'Animés')
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Animés (Genres)', 'animes_genres.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
@@ -149,7 +154,7 @@ def showSearch():
 #    oGui.addDir(SITE_IDENTIFIER, 'showGenre', sTitle+'Genre VOSTFR', 'vostfr.png', oOutputParameterHandler)
 #       
 #    oGui.setEndOfDirectory() 
-        
+
 def showAZ():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -187,7 +192,7 @@ def showGenre():
     liste.append( ['Dark Fantasy',URL_MAIN + 'video?recherche=&genre3=8&type2='+str(sType2)] )
     liste.append( ['Drame',URL_MAIN + 'video?recherche=&genre3=9&type2='+str(sType2)] )
     liste.append( ['Ecchi',URL_MAIN + 'video?recherche=&genre3=10&type2='+str(sType2)] )
-    liste.append( ['Educatif',URL_MAIN + 'video?recherche=&genre3=11&type2='+str(sType2)] )
+    liste.append( ['Éducatif',URL_MAIN + 'video?recherche=&genre3=11&type2='+str(sType2)] )
     liste.append( ['Énigme & Policier',URL_MAIN + 'video?recherche=&genre3=12&type2='+str(sType2)] )
     liste.append( ['Épique & Héroique',URL_MAIN + 'video?recherche=&genre3=13&type2='+str(sType2)] )
     liste.append( ['Espace & Sci-Fiction',URL_MAIN + 'video?recherche=&genre3=14&type2='+str(sType2)] )
@@ -210,7 +215,7 @@ def showGenre():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-       
+
     oGui.setEndOfDirectory() 
 
 def showMoviesAZ():
@@ -218,7 +223,7 @@ def showMoviesAZ():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sAZ = oInputParameterHandler.getValue('AZ')
-   
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sPattern = '<li><a href="([^<]+)">.+?<span class="bold">(.+?)</span></p>'
@@ -250,7 +255,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-   
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sPattern = '<li><a href="([^<]+)">.+?<span class="bold">(.+?)</span></p>'
@@ -282,7 +287,7 @@ def showEpisode():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-   
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
@@ -344,10 +349,8 @@ def showEpisode():
                     oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                     oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle , 'films.png',sThumb, sComm, oOutputParameterHandler)
-           
-        
-            cConfig().finishDialog(dialog)
 
+            cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
 
