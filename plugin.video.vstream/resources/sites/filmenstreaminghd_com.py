@@ -199,7 +199,7 @@ def showMovies(sSearch = ''):
             
             sTitle = aEntry[3]
             if aEntry[1]:
-                sTitle = sTitle + '[' + aEntry[1]  + '] ' 
+                sTitle = sTitle + ' [' + aEntry[1]  + '] '
                 
             sCom = aEntry[4].decode("utf-8")
             sCom = cUtil().unescape(sCom).encode("utf-8")
