@@ -16,14 +16,14 @@ SITE_DESC = 'films en streaming, vk streaming, youwatch, vimple , streaming hd ,
 
 URL_MAIN = 'http://libre-stream.com/'
 
-MOVIE_MOVIE = (URL_MAIN + 'films', 'showMovies')
-MOVIE_NEWS = (URL_MAIN + 'films', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
-SERIE_SERIE = (URL_MAIN + 'liste-des-series', 'AlphaSearch')
-SERIE_NEWS = (URL_MAIN + 'series', 'showMovies')
-SERIE_VFS = (URL_MAIN + 'series/version-francaise', 'showMovies')
-SERIE_VOSTFRS = (URL_MAIN + 'series/vostfr', 'showMovies')
+SERIE_SERIE = (URL_MAIN + 'liste-des-series/', 'AlphaSearch')
+SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
+SERIE_VFS = (URL_MAIN + 'series/version-francaise/', 'showMovies')
+SERIE_VOSTFRS = (URL_MAIN + 'series/vostfr/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -81,32 +81,32 @@ def showGenres():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['Action',URL_MAIN + 'films/action'] )
-    liste.append( ['Animation',URL_MAIN + 'films/animation'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'films/arts-martiaux'] )
-    liste.append( ['Aventure',URL_MAIN + 'films/aventure'] )
-    liste.append( ['Biopic',URL_MAIN + 'films/biopic'] )
-    liste.append( ['Comédie',URL_MAIN + 'films/comedie'] )
-    liste.append( ['Comédie Dramatique',URL_MAIN + 'films/comedie-dramatique'] )
-    liste.append( ['Comédie Musicale',URL_MAIN + 'films/comedie-musicale'] )
-    liste.append( ['Disney',URL_MAIN + 'films/disney'] )
-    liste.append( ['Divers',URL_MAIN + 'films/divers'] )    
-    liste.append( ['Documentaire',URL_MAIN + 'films/documentaire'] )
-    liste.append( ['Drame',URL_MAIN + 'films/drame'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'films/horreur'] ) 
-    liste.append( ['Espionnage',URL_MAIN + 'films/espionnage'] )
-    liste.append( ['Famille',URL_MAIN + 'films/famille'] )
-    liste.append( ['Fantastique',URL_MAIN + 'films/fantastique'] )  
-    liste.append( ['Guerre',URL_MAIN + 'films/guerre'] )
-    liste.append( ['Historiques',URL_MAIN + 'films/historique'] )
-    liste.append( ['Horreur',URL_MAIN + 'films/horreur'] )
-    liste.append( ['Musicale',URL_MAIN + 'films/musical'] )
-    liste.append( ['Policier',URL_MAIN + 'films/policier'] )
-    liste.append( ['Romance',URL_MAIN + 'films/romance'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'films/science-fiction'] )
-    liste.append( ['Spectacles',URL_MAIN + 'films/spectacles'] )
-    liste.append( ['Thriller',URL_MAIN + 'films/triller'] )
-    liste.append( ['Western',URL_MAIN + 'films/western'] )
+    liste.append( ['Action',URL_MAIN + 'films/action/'] )
+    liste.append( ['Animation',URL_MAIN + 'films/animation/'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'films/arts-martiaux/'] )
+    liste.append( ['Aventure',URL_MAIN + 'films/aventure/'] )
+    liste.append( ['Biopic',URL_MAIN + 'films/biopic/'] )
+    liste.append( ['Comédie',URL_MAIN + 'films/comedie/'] )
+    liste.append( ['Comédie Dramatique',URL_MAIN + 'films/comedie-dramatique/'] )
+    liste.append( ['Comédie Musicale',URL_MAIN + 'films/comedie-musicale/'] )
+    liste.append( ['Disney',URL_MAIN + 'films/disney/'] )
+    liste.append( ['Divers',URL_MAIN + 'films/divers/'] )    
+    liste.append( ['Documentaire',URL_MAIN + 'films/documentaire/'] )
+    liste.append( ['Drame',URL_MAIN + 'films/drame/'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'films/horreur/'] ) 
+    liste.append( ['Espionnage',URL_MAIN + 'films/espionnage/'] )
+    liste.append( ['Famille',URL_MAIN + 'films/famille/'] )
+    liste.append( ['Fantastique',URL_MAIN + 'films/fantastique/'] )  
+    liste.append( ['Guerre',URL_MAIN + 'films/guerre/'] )
+    liste.append( ['Historiques',URL_MAIN + 'films/historique/'] )
+    liste.append( ['Horreur',URL_MAIN + 'films/horreur/'] )
+    liste.append( ['Musicale',URL_MAIN + 'films/musical/'] )
+    liste.append( ['Policier',URL_MAIN + 'films/policier/'] )
+    liste.append( ['Romance',URL_MAIN + 'films/romance/'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'films/science-fiction/'] )
+    liste.append( ['Spectacles',URL_MAIN + 'films/spectacles/'] )
+    liste.append( ['Thriller',URL_MAIN + 'films/triller/'] )
+    liste.append( ['Western',URL_MAIN + 'films/western/'] )
 
     for sTitle,sUrl in liste:
         
@@ -122,12 +122,12 @@ def showQlt():
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['HD',URL_MAIN + 'films-hd'] )
-    liste.append( ['DvdRip',URL_MAIN + 'quality/dvdrip'] )
-    liste.append( ['BdRip',URL_MAIN + 'quality/bdrip'] )
-    liste.append( ['R5',URL_MAIN + 'quality/R5'] )
-    liste.append( ['Cam Rip',URL_MAIN + 'quality/camrip'] )
-    liste.append( ['TS',URL_MAIN + 'quality/ts'] )
+    liste.append( ['HD',URL_MAIN + 'films-hd/'] )
+    liste.append( ['DvdRip',URL_MAIN + 'quality/dvdrip/'] )
+    liste.append( ['BdRip',URL_MAIN + 'quality/bdrip/'] )
+    liste.append( ['R5',URL_MAIN + 'quality/R5/'] )
+    liste.append( ['Cam Rip',URL_MAIN + 'quality/camrip/'] )
+    liste.append( ['TS',URL_MAIN + 'quality/ts/'] )
   
     for sTitle,sUrl in liste:
         
