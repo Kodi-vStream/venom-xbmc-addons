@@ -23,7 +23,7 @@ class cHoster(iHoster):
         return self.__sFileName
 
     def getPluginIdentifier(self):
-        return 'kvid'
+        return 'hdvid'
         
     def setHD(self, sHD):
         self.__sHD = ''
