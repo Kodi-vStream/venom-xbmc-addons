@@ -145,7 +145,7 @@ def showMovies(sSearch=''):
            
             sThumbnail = str(aEntry[0])
             if not 'http://www.vkstreamingfilm' in sThumbnail:
-                  sThumbnail = URL_MAIN + sThumbnail
+                  sThumbnail = URL_MAIN[:-1] + sThumbnail
             #print sThumbnail
  
             oOutputParameterHandler = cOutputParameterHandler()
