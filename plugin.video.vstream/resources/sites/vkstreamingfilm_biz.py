@@ -107,7 +107,7 @@ def showMovies(sSearch=''):
        
         data = urllib.urlencode(query_args)
         headers = {'User-Agent' : 'Mozilla 5.10'}
-        url = 'http://www.vkstreamingfilm.biz/index.php?do=search=' + sSearch
+        url = URL_MAIN + 'index.php?do=search=' + sSearch
         request = urllib2.Request(url,data,headers)
      
         try:
@@ -145,7 +145,7 @@ def showMovies(sSearch=''):
            
             sThumbnail = str(aEntry[0])
             if not 'http://www.vkstreamingfilm' in sThumbnail:
-                  sThumbnail = 'http://www.vkstreamingfilm.biz' + sThumbnail
+                  sThumbnail = URL_MAIN[:-1] + sThumbnail
             #print sThumbnail
  
             oOutputParameterHandler = cOutputParameterHandler()
