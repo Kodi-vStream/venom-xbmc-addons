@@ -26,10 +26,12 @@ MOVIE_QLT = (True, 'showQlt')
 
 SERIE_SERIES = (URL_MAIN + 'series-tv', 'showMovies')
 SERIE_GENRES = (True, 'showSerieGenres')
+SERIE_ANNEES = (URL_MAIN + 'series-tv', 'showAnnees')
 
 ANIM_ANIMS = (URL_MAIN +'animes', 'showMovies')
 ANIM_GENRES = (True, 'showAnimeGenres')
 ANIM_THEMES = (True, 'showAnimeThemes')
+ANIM_ANNEES = (URL_MAIN + 'animes', 'showAnnees')
 
 URL_SEARCH = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -70,6 +72,10 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par Années)', 'series.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
     
@@ -80,6 +86,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_THEMES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_THEMES[1], 'Animés (Thèmes)', 'animes_genres.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANNEES[1], 'Animés (Par Années)', 'animes.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
 
@@ -130,7 +140,7 @@ def showSerieGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action',URL_MAIN+ 'action-series'] )    
+    liste.append( ['Action',URL_MAIN + 'action-series'] )    
     liste.append( ['Action-Aventure',URL_MAIN + 'action-adventure-series'] )
     liste.append( ['Animation',URL_MAIN + 'animation-series'] )
     liste.append( ['Aventure',URL_MAIN + 'aventure-series'] )
@@ -164,7 +174,7 @@ def showAnimeGenres():
     oGui = cGui()
     
     liste = []
-    liste.append( ['Action',URL_MAIN+ 'action-animes'] )    
+    liste.append( ['Action',URL_MAIN + 'action-animes'] )    
     liste.append( ['Animation',URL_MAIN + 'animation-animes'] )
     liste.append( ['Aventure',URL_MAIN + 'aventure-animes'] )
     liste.append( ['Biographie',URL_MAIN + 'biographie-animes'] )    
@@ -200,7 +210,7 @@ def showAnimeThemes():
     oGui = cGui()
     
     liste = []
-    liste.append( ['Aliens',URL_MAIN+ 'aliens-animes-themes'] )    
+    liste.append( ['Aliens',URL_MAIN + 'aliens-animes-themes'] )    
     liste.append( ['Amitié',URL_MAIN + 'amitie-animes-themes'] )
     liste.append( ['Apprentissage',URL_MAIN + 'apprentissage-animes-themes'] )
     liste.append( ['Arts Martiaux',URL_MAIN + 'arts-martiaux-animes-themes'] )    
@@ -246,6 +256,45 @@ def showAnimeThemes():
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'animes_genres.png', oOutputParameterHandler)
         
+    oGui.setEndOfDirectory()
+
+def showAnnees():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    if 'animes' in sUrl:
+        code = '-animes'
+    else:
+        code = '-series'
+
+    liste = []
+    #liste.append( ['2017',URL_MAIN + '2017' + code] )
+    liste.append( ['2016',URL_MAIN + '2016' + code] )
+    liste.append( ['2015',URL_MAIN + '2015' + code] )
+    liste.append( ['2014',URL_MAIN + '2014' + code] )
+    liste.append( ['2013',URL_MAIN + '2013' + code] )
+    liste.append( ['2012',URL_MAIN + '2012' + code] )
+    liste.append( ['2011',URL_MAIN + '2011' + code] )
+    liste.append( ['2010',URL_MAIN + '2010' + code] )
+    liste.append( ['2009',URL_MAIN + '2009' + code] )
+    liste.append( ['2008',URL_MAIN + '2008' + code] )
+    liste.append( ['2007',URL_MAIN + '2007' + code] )
+    liste.append( ['2006',URL_MAIN + '2006' + code] )
+    liste.append( ['2005',URL_MAIN + '2005' + code] )
+    liste.append( ['2004',URL_MAIN + '2004' + code] )
+    liste.append( ['2003',URL_MAIN + '2003' + code] )    
+    liste.append( ['2002',URL_MAIN + '2002' + code] )
+    liste.append( ['2001',URL_MAIN + '2001' + code] )
+    liste.append( ['2000',URL_MAIN + '2000' + code] )
+    liste.append( ['1900-1999',URL_MAIN + '1900-1999' + code] )
+               
+    for sTitle,sUrl in liste:
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 def showQlt():
