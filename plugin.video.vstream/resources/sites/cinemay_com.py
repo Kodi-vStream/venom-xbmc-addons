@@ -17,8 +17,8 @@ SITE_DESC = 'Films et séries en streaming'
 
 URL_MAIN = 'http://www.cinemay.com/'
 
-MOVIE_NEWS = (URL_MAIN , 'showMoviesNews')
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN , 'showMoviesNews')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
 SERIE_SERIES = (URL_MAIN + 'serie/', 'showMovies')
@@ -35,13 +35,13 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
-  
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
-
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
@@ -60,7 +60,7 @@ def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_MAIN + '?s='+sSearchText
+        sUrl = URL_MAIN + '?s=' + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -270,7 +270,7 @@ def showSeries():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
- 
+
     sPattern = '<ul class="css-tabs_series skin3">(.+?)</ul><div class="css-panes_series skin3">(.+?)</div></div>'
 
     oParser = cParser()
