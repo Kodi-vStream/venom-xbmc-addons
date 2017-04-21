@@ -415,7 +415,7 @@ def showSeries():
             oOutputParameterHandler.addParameter('sPid', aEntry[2])
             
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER,  '[COLOR red]'+aEntry[0]+' - '+aEntry[1]+'[/COLOR]', oOutputParameterHandler)
+                oGui.addText(SITE_IDENTIFIER,  '[COLOR red]'+aEntry[0]+' - '+aEntry[1]+'[/COLOR]')
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)             
     

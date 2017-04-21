@@ -45,7 +45,7 @@ class cFav:
         sTitle = '[COLOR khaki]Vous avez %s marque page[/COLOR]' % (len(row))
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://')
-        oGui.addText(SITE_IDENTIFIER, sTitle, oOutputParameterHandler)
+        oGui.addText(SITE_IDENTIFIER, sTitle)
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '1')
