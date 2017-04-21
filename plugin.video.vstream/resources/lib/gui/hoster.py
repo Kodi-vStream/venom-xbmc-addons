@@ -188,8 +188,10 @@ class cHosterGui:
             return self.getHoster('vk')   
         if ('megawatch' in sHostName):
             return self.getHoster('megawatch')
-        if ('vidto' in sHostName):
+        if ('vidto.me' in sHostName):
             return self.getHoster('vidto')
+        if ('vidtodo.com' in sHostName):
+            return self.getHoster('vidtodo')
         if ('vidzi' in sHostName):
             return self.getHoster('vidzi')
         if ('cloudy' in sHostName):
