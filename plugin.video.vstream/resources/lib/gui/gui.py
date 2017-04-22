@@ -192,6 +192,7 @@ class cGui():
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
+    #non utiliser depuis le 22/04
     def addMovieDB(self, sId, sFunction, sLabel, sIcon, sThumbnail, sFanart, oOutputParameterHandler = ''):
 
         cGui.CONTENT = "movies"
@@ -211,6 +212,7 @@ class cGui():
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
+    #non utiliser 22/04
     def addTVDB(self, sId, sFunction, sLabel, sIcon, sThumbnail, sFanart, oOutputParameterHandler = ''):
 
         cGui.CONTENT = "tvshows"
