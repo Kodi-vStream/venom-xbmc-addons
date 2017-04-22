@@ -5,6 +5,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.util import cUtil
+from resources.lib.player import cPlayer
 from resources.lib.gui.guiElement import cGuiElement
 
 import xbmcvfs
@@ -121,11 +122,6 @@ class cLibrary:
         f.write(str(content))
         f.close()
         
-       
-    def getLibrary_old(self):
-        
-        xbmc.executebuiltin("Container.Update(special://userdata/addon_data/plugin.video.vstream/)")
-        
     def getLibrary(self):
         
         oGui = cGui()
@@ -172,20 +168,33 @@ class cLibrary:
             elif '.strm' in file:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('sFile', sFolder + file)
+                oOutputParameterHandler.addParameter('site', SITE_IDENTIFIER)
                 
                 sTitle = file.split('.')[0]
             
                 oGuiElement = cGuiElement()
                 oGuiElement.setFunction('')
                 oGuiElement.setTitle(sTitle)
-                #oGuiElement.setIcon('download.png')
-                #oGuiElement.setFanart(cConfig().getRootArt()+'download_fanart.jpg')
                 oGuiElement.setMeta(0)
-                #oGuiElement.setThumbnail(thumbnail)
+                oGuiElement.setFunction('ReadFile')
                 
                 #menu contextuel
-                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cLibrary','cLibrary','Delfile','Supprimer ce fichiert')
+                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cLibrary','cLibrary','Delfile','Supprimer ce fichier')
                 
                 oGui.addFolder(oGuiElement, oOutputParameterHandler)
           
-        oGui.setEndOfDirectory()
+        oGui.setEndOfDirectory()       
+        
+    def ReadFile(self):
+        oInputParameterHandler = cInputParameterHandler()
+        sFile = oInputParameterHandler.getValue('sFile')
+        sTitle = oInputParameterHandler.getValue('title')
+
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(SITE_IDENTIFIER)
+        oGuiElement.setMediaUrl(sFile)
+        oGuiElement.setTitle(sTitle)
+        
+        oPlayer = cPlayer()
+
+        xbmc.Player().play(sFile)
