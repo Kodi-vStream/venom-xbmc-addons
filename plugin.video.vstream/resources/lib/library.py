@@ -152,12 +152,12 @@ class cLibrary:
             
         xbmc.executebuiltin("CleanLibrary(video)")
     
-    def ShowContent(self):
+    def ShowContent_old(self):
         oInputParameterHandler = cInputParameterHandler()
         sFolder = oInputParameterHandler.getValue('folder')
         xbmc.executebuiltin("Container.Update(" + sFolder + ")")
         
-    def ShowContent_old(self):
+    def ShowContent(self):
         oInputParameterHandler = cInputParameterHandler()
         sFolder = oInputParameterHandler.getValue('folder')
         
@@ -188,5 +188,4 @@ class cLibrary:
                 
                 oGui.addFolder(oGuiElement, oOutputParameterHandler)
           
-        oGui.setEndOfDirectory()       
-        
+        oGui.setEndOfDirectory()
