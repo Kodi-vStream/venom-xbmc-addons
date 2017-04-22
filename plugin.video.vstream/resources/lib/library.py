@@ -195,6 +195,15 @@ class cLibrary:
         oGuiElement.setMediaUrl(sFile)
         oGuiElement.setTitle(sTitle)
         
-        oPlayer = cPlayer()
-
-        xbmc.Player().play(sFile)
+        if False:
+            oPlayer = cPlayer()
+            
+            if not (sys.argv[ 1 ] == '-1'):
+                oPlayer.run(oGuiElement, sTitle, sFile)
+            else:
+                oPlayer.clearPlayList()
+                oPlayer.addItemToPlaylist(oGuiElement)
+                oPlayer.startPlayer()
+            
+        else:
+            xbmc.Player().play(sFile)
