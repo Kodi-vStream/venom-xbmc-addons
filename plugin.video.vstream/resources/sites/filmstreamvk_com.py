@@ -138,7 +138,7 @@ def showMovies(sSearch = ''):
     if sSearch:
         sUrl = sSearch
         sUrl = sUrl.replace('%20','+')
-      
+
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
         
@@ -233,7 +233,7 @@ def showLinks():
             if dialog.iscanceled():
                 break
             
-            sTitle = sMovieTitle+' - ('+aEntry[1] + ')'
+            sTitle = sMovieTitle + ' (' + aEntry[1] + ')'
             
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
@@ -277,7 +277,7 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]'+ sTitle +'[/COLOR]', 'host.png', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]' + sTitle + '[/COLOR]', 'host.png', oOutputParameterHandler)
             else:
                 sTitle = sMovieTitle + ' episode ' + aEntry[2]
                 
