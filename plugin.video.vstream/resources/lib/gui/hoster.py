@@ -188,8 +188,10 @@ class cHosterGui:
             return self.getHoster('vk')   
         if ('megawatch' in sHostName):
             return self.getHoster('megawatch')
-        if ('vidto' in sHostName):
+        if ('vidto.me' in sHostName):
             return self.getHoster('vidto')
+        if ('vidtodo.com' in sHostName):
+            return self.getHoster('vidtodo')
         if ('vidzi' in sHostName):
             return self.getHoster('vidzi')
         if ('cloudy' in sHostName):
@@ -326,6 +328,12 @@ class cHosterGui:
             return self.getHoster('kvid')
         if ('estream' in sHostName):
             return self.getHoster('estream')
+        if ('hdvid' in sHostName):
+            return self.getHoster('hdvid')
+        if ('streamango' in sHostName):
+            return self.getHoster('streamango')
+        if ('vidabc' in sHostName):
+            return self.getHoster('vidabc')
         
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):

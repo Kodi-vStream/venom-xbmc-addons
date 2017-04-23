@@ -5,6 +5,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.util import cUtil
+from resources.lib.player import cPlayer
 from resources.lib.gui.guiElement import cGuiElement
 
 import xbmcvfs
@@ -77,15 +78,15 @@ class cLibrary:
             sTitle = cUtil().CleanName(sTitle)
             
             try:
-                #print folder
                 #creer un dossier aussi pour les films sinon mauvais affichage
+                #A tester avec le nouveau systeme ?
                 
-                folder2 = folder + '/' + sTitle + '/'
+                #folder = folder + '/' + sTitle + '/'
                 
-                if not os.path.exists(folder2):
-                    os.mkdir(folder2)
+                #if not os.path.exists(folder):
+                #    os.mkdir(folder)
                     
-                self.MakeFile(folder2,sTitle,sLink)
+                self.MakeFile(folder,sTitle,sLink)
                 cConfig().showInfo('vStream', 'Element rajouté a la librairie')
                 xbmc.executebuiltin('UpdateLibrary(video, '+ folder + ')')
             except:
@@ -121,11 +122,6 @@ class cLibrary:
         f.write(str(content))
         f.close()
         
-       
-    def getLibrary_old(self):
-        
-        xbmc.executebuiltin("Container.Update(special://userdata/addon_data/plugin.video.vstream/)")
-        
     def getLibrary(self):
         
         oGui = cGui()
@@ -148,16 +144,19 @@ class cLibrary:
         
         runClean = xbmcgui.Dialog().yesno("Fichier supprime","Voulez vous mettre a jour la librairie maintenant (non conseille)")
         if(not runClean):
+            cConfig().update()
             return
             
         xbmc.executebuiltin("CleanLibrary(video)")
+        cConfig().update()
+
     
-    def ShowContent(self):
+    def ShowContent_old(self):
         oInputParameterHandler = cInputParameterHandler()
         sFolder = oInputParameterHandler.getValue('folder')
         xbmc.executebuiltin("Container.Update(" + sFolder + ")")
         
-    def ShowContent_old(self):
+    def ShowContent(self):
         oInputParameterHandler = cInputParameterHandler()
         sFolder = oInputParameterHandler.getValue('folder')
         
@@ -172,21 +171,42 @@ class cLibrary:
             elif '.strm' in file:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('sFile', sFolder + file)
+                oOutputParameterHandler.addParameter('site', SITE_IDENTIFIER)
                 
                 sTitle = file.split('.')[0]
             
                 oGuiElement = cGuiElement()
                 oGuiElement.setFunction('')
                 oGuiElement.setTitle(sTitle)
-                #oGuiElement.setIcon('download.png')
-                #oGuiElement.setFanart(cConfig().getRootArt()+'download_fanart.jpg')
                 oGuiElement.setMeta(0)
-                #oGuiElement.setThumbnail(thumbnail)
+                oGuiElement.setFunction('ReadFile')
                 
                 #menu contextuel
-                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cLibrary','cLibrary','Delfile','Supprimer ce fichiert')
+                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cLibrary','cLibrary','Delfile','Supprimer ce fichier')
                 
                 oGui.addFolder(oGuiElement, oOutputParameterHandler)
           
         oGui.setEndOfDirectory()       
         
+    def ReadFile(self):
+        oInputParameterHandler = cInputParameterHandler()
+        sFile = oInputParameterHandler.getValue('sFile')
+        sTitle = oInputParameterHandler.getValue('title')
+
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(SITE_IDENTIFIER)
+        oGuiElement.setMediaUrl(sFile)
+        oGuiElement.setTitle(sTitle)
+        
+        if False:
+            oPlayer = cPlayer()
+            
+            if not (sys.argv[ 1 ] == '-1'):
+                oPlayer.run(oGuiElement, sTitle, sFile)
+            else:
+                oPlayer.clearPlayList()
+                oPlayer.addItemToPlaylist(oGuiElement)
+                oPlayer.startPlayer()
+            
+        else:
+            xbmc.Player().play(sFile)

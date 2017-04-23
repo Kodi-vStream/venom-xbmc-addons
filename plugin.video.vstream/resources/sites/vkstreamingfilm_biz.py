@@ -62,32 +62,32 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action',URL_MAIN + 'films/action'] )
-    liste.append( ['Animation',URL_MAIN + 'films/animation'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'films/arts-martiaux'] )
-    liste.append( ['Aventure',URL_MAIN + 'films/aventure'] )
-    liste.append( ['Biographique',URL_MAIN + 'films/biographique'] )
-    liste.append( ['Comédie',URL_MAIN + 'films/comedie'] )
-    liste.append( ['Comédie dramatique',URL_MAIN + 'films/comedie-dramatique'] )
-    liste.append( ['Danse',URL_MAIN + 'films/danse'] )
-    liste.append( ['Divers',URL_MAIN + 'films/divers'] )
-    liste.append( ['Documentaire',URL_MAIN + 'films/documentaire'] )
-    liste.append( ['Drame',URL_MAIN + 'films/drame'] )
-    liste.append( ['Epouvante-Horreur',URL_MAIN + 'films/epouvante-horreur'] )
-    liste.append( ['Espionnage',URL_MAIN + 'films/espionnage'] )
-    liste.append( ['Fantastique',URL_MAIN + 'films/fantastique'] )
-    liste.append( ['Famille',URL_MAIN + 'films/famille'] )
-    liste.append( ['Guerre',URL_MAIN + 'films/guerre'] )
-    liste.append( ['Historique',URL_MAIN + 'films/historique'] )
-    liste.append( ['Musical',URL_MAIN + 'films/musical'] )
-    liste.append( ['Péplum',URL_MAIN + 'films/peplum'] )
-    liste.append( ['Policier',URL_MAIN + 'films/policier'] )
-    liste.append( ['Romance',URL_MAIN + 'films/Romance'] )
-    liste.append( ['Science-Fiction',URL_MAIN + 'films/science-fiction'] )
-    liste.append( ['Spectacle',URL_MAIN + 'films/spectacle'] )
-    liste.append( ['Sport',URL_MAIN + 'films/sport'] )
-    liste.append( ['Thriller',URL_MAIN + 'films/thriller'] )
-    liste.append( ['Western',URL_MAIN + 'films/western'] )
+    liste.append( ['Action',URL_MAIN + 'films/action/'] )
+    liste.append( ['Animation',URL_MAIN + 'films/animation/'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'films/arts-martiaux/'] )
+    liste.append( ['Aventure',URL_MAIN + 'films/aventure/'] )
+    liste.append( ['Biographique',URL_MAIN + 'films/biographique/'] )
+    liste.append( ['Comédie',URL_MAIN + 'films/comedie/'] )
+    liste.append( ['Comédie dramatique',URL_MAIN + 'films/comedie-dramatique/'] )
+    liste.append( ['Danse',URL_MAIN + 'films/danse/'] )
+    liste.append( ['Divers',URL_MAIN + 'films/divers/'] )
+    liste.append( ['Documentaire',URL_MAIN + 'films/documentaire/'] )
+    liste.append( ['Drame',URL_MAIN + 'films/drame/'] )
+    liste.append( ['Epouvante-Horreur',URL_MAIN + 'films/epouvante-horreur/'] )
+    liste.append( ['Espionnage',URL_MAIN + 'films/espionnage/'] )
+    liste.append( ['Fantastique',URL_MAIN + 'films/fantastique/'] )
+    liste.append( ['Famille',URL_MAIN + 'films/famille/'] )
+    liste.append( ['Guerre',URL_MAIN + 'films/guerre/'] )
+    liste.append( ['Historique',URL_MAIN + 'films/historique/'] )
+    liste.append( ['Musical',URL_MAIN + 'films/musical/'] )
+    liste.append( ['Péplum',URL_MAIN + 'films/peplum/'] )
+    liste.append( ['Policier',URL_MAIN + 'films/policier/'] )
+    liste.append( ['Romance',URL_MAIN + 'films/Romance/'] )
+    liste.append( ['Science-Fiction',URL_MAIN + 'films/science-fiction/'] )
+    liste.append( ['Spectacle',URL_MAIN + 'films/spectacle/'] )
+    liste.append( ['Sport',URL_MAIN + 'films/sport/'] )
+    liste.append( ['Thriller',URL_MAIN + 'films/thriller/'] )
+    liste.append( ['Western',URL_MAIN + 'films/western/'] )
                
     for sTitle,sUrl in liste:
 
@@ -107,7 +107,7 @@ def showMovies(sSearch=''):
        
         data = urllib.urlencode(query_args)
         headers = {'User-Agent' : 'Mozilla 5.10'}
-        url = 'http://www.vkstreamingfilm.biz/index.php?do=search=' + sSearch
+        url = URL_MAIN + 'index.php?do=search=' + sSearch
         request = urllib2.Request(url,data,headers)
      
         try:
@@ -145,7 +145,7 @@ def showMovies(sSearch=''):
            
             sThumbnail = str(aEntry[0])
             if not 'http://www.vkstreamingfilm' in sThumbnail:
-                  sThumbnail = 'http://www.vkstreamingfilm.biz' + sThumbnail
+                  sThumbnail = URL_MAIN[:-1] + sThumbnail
             #print sThumbnail
  
             oOutputParameterHandler = cOutputParameterHandler()

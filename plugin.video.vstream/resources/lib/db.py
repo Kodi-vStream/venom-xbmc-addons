@@ -300,57 +300,58 @@ class cDb:
             cConfig().log('SQL ERROR EXECUTE') 
             return False, False
         self.dbcur.close() 
-        
-    def getFav(self):
-        oGui = cGui()
-        fav_db = self.__sFile
+      
+    #non utiliser le 18/04
+    #def getFav(self):
+        #oGui = cGui()
+        #fav_db = self.__sFile
 
-        oInputParameterHandler = cInputParameterHandler()
-        if (oInputParameterHandler.exist('sCat')):
-            sCat = oInputParameterHandler.getValue('sCat')
-        else:
-            sCat = '5'
+        #oInputParameterHandler = cInputParameterHandler()
+        #if (oInputParameterHandler.exist('sCat')):
+            #sCat = oInputParameterHandler.getValue('sCat')
+        #else:
+            #sCat = '5'
 
-        if os.path.exists(fav_db): 
-            watched = eval( open(fav_db).read() )
+        #if os.path.exists(fav_db): 
+            #watched = eval( open(fav_db).read() )
 
-            items = []
-            item = []
-            for result in watched:
+            #items = []
+            #item = []
+            #for result in watched:
 
-                sUrl = result
-                sFunction =  watched[result][0]
-                sId = watched[result][1]
-                try:
-                    sTitle = watched[result][2]
-                except:
-                    sTitle = sId+' - '+urllib.unquote_plus(sUrl)
+                #sUrl = result
+                #sFunction =  watched[result][0]
+                #sId = watched[result][1]
+                #try:
+                    #sTitle = watched[result][2]
+                #except:
+                    #sTitle = sId+' - '+urllib.unquote_plus(sUrl)
 
-                try:
-                    sCategorie = watched[result][3]
-                except:
-                    sCategorie = '5'
+                #try:
+                    #sCategorie = watched[result][3]
+                #except:
+                    #sCategorie = '5'
 
-                items.append([sId, sFunction, sUrl])
-                item.append(result)
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sThumbnail', 'False')
+                #items.append([sId, sFunction, sUrl])
+                #item.append(result)
+                #oOutputParameterHandler = cOutputParameterHandler()
+                #oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                #oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                #oOutputParameterHandler.addParameter('sThumbnail', 'False')
                 
-                if (sFunction == 'play'):
-                    oHoster = cHosterGui().checkHoster(sUrl)
-                    oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
-                    oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
-                    oOutputParameterHandler.addParameter('sMediaUrl', sUrl)
+                #if (sFunction == 'play'):
+                    #oHoster = cHosterGui().checkHoster(sUrl)
+                    #oOutputParameterHandler.addParameter('sHosterIdentifier', oHoster.getPluginIdentifier())
+                    #oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
+                    #oOutputParameterHandler.addParameter('sMediaUrl', sUrl)
 
-                if (sCategorie == sCat):
-                    oGui.addFav(sId, sFunction, sTitle, 'mark.png', sUrl, oOutputParameterHandler)
+                #if (sCategorie == sCat):
+                    #oGui.addFav(sId, sFunction, sTitle, 'mark.png', sUrl, oOutputParameterHandler)
                
             
-            oGui.setEndOfDirectory()
-        else: return
-        return items
+            #oGui.setEndOfDirectory()
+        #else: return
+        #return items
 
 
     def writeFavourites(self):

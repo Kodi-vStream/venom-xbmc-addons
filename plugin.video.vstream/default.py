@@ -209,7 +209,7 @@ def searchGlobal():
     dialog = cConfig().createDialog("vStream")
     xbmcgui.Window(10101).setProperty('search', 'true')
     
-    oGui.addText2('globalSearch', '[COLOR khaki]%s: %s[/COLOR]' % (cConfig().getlanguage(30076), sSearchText), 'none.png')
+    oGui.addText('globalSearch', '[COLOR khaki]%s: %s[/COLOR]' % (cConfig().getlanguage(30076), sSearchText), 'none.png')
     
     for count, plugin in enumerate(aPlugins):
     
@@ -219,7 +219,7 @@ def searchGlobal():
             break
         
         #nom du site
-        oGui.addText2(plugin['identifier'], '%s. [COLOR olive]%s[/COLOR]' % ((count+1), plugin['name']), 'sites/%s.png' % (plugin['identifier']))
+        oGui.addText(plugin['identifier'], '%s. [COLOR olive]%s[/COLOR]' % ((count+1), plugin['name']), 'sites/%s.png' % (plugin['identifier']))
         #recherche import
         _pluginSearch(plugin, sSearchText)
       

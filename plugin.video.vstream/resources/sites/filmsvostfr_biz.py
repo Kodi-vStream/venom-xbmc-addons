@@ -187,7 +187,7 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False):
-        oGui.addNone(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
    
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -327,7 +327,7 @@ def showLinks():
     sPattern = '<img src="(\/images\/video-coming-soon\.jpg)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        oGui.addText2(SITE_IDENTIFIER,'[COLOR crimson]' + 'Vidéo bientôt disponible' + '[/COLOR]')
+        oGui.addText(SITE_IDENTIFIER,'[COLOR crimson]' + 'Vidéo bientôt disponible' + '[/COLOR]')
 
     #resume
     sCom= ''

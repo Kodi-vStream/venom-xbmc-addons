@@ -123,20 +123,21 @@ class cGui():
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
-    def addFav(self, sId, sFunction, sLabel, sIcon, sThumbnail, fanart, oOutputParameterHandler = ''):
-        cGui.CONTENT = "files"
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sLabel)
-        oGuiElement.setIcon(sIcon)
-        oGuiElement.setMeta(0)
-        oGuiElement.setThumbnail(sThumbnail)
-        oGuiElement.setFanart(fanart)
+    #non utiliser le 18/04
+    #def addFav(self, sId, sFunction, sLabel, sIcon, sThumbnail, fanart, oOutputParameterHandler = ''):
+        #cGui.CONTENT = "files"
+        #oGuiElement = cGuiElement()
+        #oGuiElement.setSiteName(sId)
+        #oGuiElement.setFunction(sFunction)
+        #oGuiElement.setTitle(sLabel)
+        #oGuiElement.setIcon(sIcon)
+        #oGuiElement.setMeta(0)
+        #oGuiElement.setThumbnail(sThumbnail)
+        #oGuiElement.setFanart(fanart)
 
-        self.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
+        #self.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
 
-        self.addFolder(oGuiElement, oOutputParameterHandler)
+        #self.addFolder(oGuiElement, oOutputParameterHandler)
 
 
     def addDir(self, sId, sFunction, sLabel, sIcon, oOutputParameterHandler = ''):
@@ -173,38 +174,12 @@ class cGui():
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
+    #utiliser oGui.addText(SITE_IDENTIFIER)
     def addNone(self, sId):
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction('load')
-        oGuiElement.setTitle('[COLOR= red]'+cConfig().getlanguage(30204)+'[/COLOR]')
-        oGuiElement.setIcon('none.png')
-        oGuiElement.setThumbnail(oGuiElement.getIcon())
-        oGuiElement.setMeta(0)
+        return self.addText(sId)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        #oOutputParameterHandler.addParameter('siteUrl', 'none')
-
-        self.addFolder(oGuiElement, oOutputParameterHandler)
-
-    #utiliser addText2
-    #add text 1 un outpout alors qu'il et renitialiser
-    def addText(self, sId, sLabel,oOutputParameterHandler = ''):
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction('DoNothing')
-        oGuiElement.setTitle(sLabel)
-        oGuiElement.setIcon('none.png')
-        oGuiElement.setThumbnail(oGuiElement.getIcon())
-        oGuiElement.setMeta(0)
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        #oOutputParameterHandler.addParameter('siteUrl', 'none')
-
-        self.addFolder(oGuiElement, oOutputParameterHandler)
      
-     
-    def addText2(self, sId, sLabel, sIcon='none.png'):
+    def addText(self, sId, sLabel='[COLOR= red]'+cConfig().getlanguage(30204)+'[/COLOR]', sIcon='none.png'):
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction('DoNothing')
@@ -217,6 +192,7 @@ class cGui():
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
+    #non utiliser depuis le 22/04
     def addMovieDB(self, sId, sFunction, sLabel, sIcon, sThumbnail, sFanart, oOutputParameterHandler = ''):
 
         cGui.CONTENT = "movies"
@@ -236,6 +212,7 @@ class cGui():
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
+    #non utiliser 22/04
     def addTVDB(self, sId, sFunction, sLabel, sIcon, sThumbnail, sFanart, oOutputParameterHandler = ''):
 
         cGui.CONTENT = "tvshows"

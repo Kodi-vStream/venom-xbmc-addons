@@ -155,12 +155,12 @@ class cTrakt:
                 sUsername = result['username']
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'https://')
-                oGui.addText(SITE_IDENTIFIER, (cConfig().getlanguage(30306)) % (sUsername), oOutputParameterHandler)
+                oGui.addText(SITE_IDENTIFIER, (cConfig().getlanguage(30306)) % (sUsername))
 
             sTitle = (cConfig().getlanguage(30307)) % (result2['movies']['plays'], result2['movies']['watched'], result2['shows']['watched'], result2['episodes']['plays'], result2['episodes']['watched'])
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
-            oGui.addText(SITE_IDENTIFIER, '[COLOR white]'+sTitle+'[/COLOR]', oOutputParameterHandler)
+            oGui.addText(SITE_IDENTIFIER, '[COLOR white]'+sTitle+'[/COLOR]')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')

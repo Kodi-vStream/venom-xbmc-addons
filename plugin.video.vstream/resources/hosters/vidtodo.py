@@ -2,12 +2,12 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
-import re,time,xbmcgui
+import time
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Vidto'
+        self.__sDisplayName = 'Vidtodo'
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
@@ -23,7 +23,7 @@ class cHoster(iHoster):
         return self.__sFileName
 
     def getPluginIdentifier(self):
-        return 'vidto'
+        return 'vidtodo'
 
     def isDownloadable(self):
         return True
@@ -37,12 +37,11 @@ class cHoster(iHoster):
     def __getIdFromUrl(self):
         return ''
 
-    def setUrl(self, sUrl):       
-        self.__sUrl = sUrl.replace('http://vidto.me/', '')
+    def setUrl(self, sUrl):
+        self.__sUrl = str(sUrl)  
         self.__sUrl = self.__sUrl.replace('embed-', '')
-        self.__sUrl= re.sub(r'\-.*\.html','',self.__sUrl)
-        self.__sUrl = 'http://vidto.me/' + str(self.__sUrl)
-
+        self.__sUrl = self.__sUrl.replace('.html', '')
+        
     def checkUrl(self, sUrl):
         return True
 
@@ -53,15 +52,16 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-
+        oParser = cParser()
+        
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-
+        
         sPattern =  '<input type="hidden" name="([^"]+)" value="([^"]+)"'
-        oParser = cParser()
+
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True): 
-            time.sleep(7)
+            time.sleep(3)
             oRequest = cRequestHandler(self.__sUrl)
             oRequest.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
             for aEntry in aResult[1]:
@@ -69,31 +69,14 @@ class cHoster(iHoster):
 
             oRequest.addParameters('referer', self.__sUrl)
             sHtmlContent = oRequest.request()
-            sHtmlContent = sHtmlContent.replace('file:""','')
-            
+
             sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                 sHtmlContent = cPacker().unpack(aResult[1][0])
-                sPattern =  ',file:"([^"]+)"}'
+                sPattern =  '{file:"([^"]+(?<!smil))"}'
                 aResult = oParser.parse(sHtmlContent, sPattern)
                 if (aResult[0] == True):
                     return True, aResult[1][0]
-            else:
-                sPattern = '{file:"([^"]+)",label:"(\d+p)"}'            
-                aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0] == True):
-                    url=[]
-                    qua=[]
-                for i in aResult[1]:
-                    url.append(str(i[0]))
-                    qua.append(str(i[1]))   
-      
-                if len(url) == 1:
-                    return True,url[0]
-
-                elif len(url) > 1:
-                    return True, url[0] #240p de nos jours serieux dialog choix inutile max vue 360p pour le moment
-
+        
         return False, False
-

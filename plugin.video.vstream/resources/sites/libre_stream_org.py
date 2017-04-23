@@ -23,7 +23,7 @@ MOVIE_GENRES = (True, 'showGenres')
 SERIE_SERIE = (URL_MAIN + 'liste-des-series/', 'AlphaSearch')
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 SERIE_VFS = (URL_MAIN + 'series/version-francaise/', 'showMovies')
-SERIE_VOSTFRS = (URL_MAIN + 'series/vostfr', 'showMovies')
+SERIE_VOSTFRS = (URL_MAIN + 'series/vostfr/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -40,12 +40,16 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oGui.addDir(SITE_IDENTIFIER, 'showQlt', 'Films (Qualités)', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIE[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIE[1], 'Séries', 'series.png', oOutputParameterHandler)    
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
@@ -59,10 +63,6 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (VOSTFR)', 'series_vostfr.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIE[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIE[1], 'Séries', 'series.png', oOutputParameterHandler)    
-
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -82,31 +82,31 @@ def showGenres():
  
     liste = []
     liste.append( ['Action',URL_MAIN + 'films/action/'] )
-    liste.append( ['Animation',URL_MAIN + 'films/animation'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'films/arts-martiaux'] )
-    liste.append( ['Aventure',URL_MAIN + 'films/aventure'] )
-    liste.append( ['Biopic',URL_MAIN + 'films/biopic'] )
-    liste.append( ['Comédie',URL_MAIN + 'films/comedie'] )
-    liste.append( ['Comédie Dramatique',URL_MAIN + 'films/comedie-dramatique'] )
-    liste.append( ['Comédie Musicale',URL_MAIN + 'films/comedie-musicale'] )
-    liste.append( ['Disney',URL_MAIN + 'films/disney'] )
-    liste.append( ['Divers',URL_MAIN + 'films/divers'] )    
-    liste.append( ['Documentaire',URL_MAIN + 'films/documentaire'] )
-    liste.append( ['Drame',URL_MAIN + 'films/drame'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'films/horreur'] ) 
-    liste.append( ['Espionnage',URL_MAIN + 'films/espionnage'] )
-    liste.append( ['Famille',URL_MAIN + 'films/famille'] )
-    liste.append( ['Fantastique',URL_MAIN + 'films/fantastique'] )  
-    liste.append( ['Guerre',URL_MAIN + 'films/guerre'] )
-    liste.append( ['Historiques',URL_MAIN + 'films/historique'] )
-    liste.append( ['Horreur',URL_MAIN + 'films/horreur'] )
-    liste.append( ['Musicale',URL_MAIN + 'films/musical'] )
-    liste.append( ['Policier',URL_MAIN + 'films/policier'] )
-    liste.append( ['Romance',URL_MAIN + 'films/romance'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'films/science-fiction'] )
-    liste.append( ['Spectacles',URL_MAIN + 'films/spectacles'] )
-    liste.append( ['Thriller',URL_MAIN + 'films/triller'] )
-    liste.append( ['Western',URL_MAIN + 'films/western'] )
+    liste.append( ['Animation',URL_MAIN + 'films/animation/'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'films/arts-martiaux/'] )
+    liste.append( ['Aventure',URL_MAIN + 'films/aventure/'] )
+    liste.append( ['Biopic',URL_MAIN + 'films/biopic/'] )
+    liste.append( ['Comédie',URL_MAIN + 'films/comedie/'] )
+    liste.append( ['Comédie Dramatique',URL_MAIN + 'films/comedie-dramatique/'] )
+    liste.append( ['Comédie Musicale',URL_MAIN + 'films/comedie-musicale/'] )
+    liste.append( ['Disney',URL_MAIN + 'films/disney/'] )
+    liste.append( ['Divers',URL_MAIN + 'films/divers/'] )    
+    liste.append( ['Documentaire',URL_MAIN + 'films/documentaire/'] )
+    liste.append( ['Drame',URL_MAIN + 'films/drame/'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'films/horreur/'] ) 
+    liste.append( ['Espionnage',URL_MAIN + 'films/espionnage/'] )
+    liste.append( ['Famille',URL_MAIN + 'films/famille/'] )
+    liste.append( ['Fantastique',URL_MAIN + 'films/fantastique/'] )  
+    liste.append( ['Guerre',URL_MAIN + 'films/guerre/'] )
+    liste.append( ['Historiques',URL_MAIN + 'films/historique/'] )
+    liste.append( ['Horreur',URL_MAIN + 'films/horreur/'] )
+    liste.append( ['Musicale',URL_MAIN + 'films/musical/'] )
+    liste.append( ['Policier',URL_MAIN + 'films/policier/'] )
+    liste.append( ['Romance',URL_MAIN + 'films/romance/'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'films/science-fiction/'] )
+    liste.append( ['Spectacles',URL_MAIN + 'films/spectacles/'] )
+    liste.append( ['Thriller',URL_MAIN + 'films/triller/'] )
+    liste.append( ['Western',URL_MAIN + 'films/western/'] )
 
     for sTitle,sUrl in liste:
         
@@ -157,7 +157,7 @@ def AlphaSearch():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + sTitle.lower() + '.html' )
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', '[COLOR teal] Lettre [COLOR red]'+ sTitle +'[/COLOR][/COLOR]', 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', '[COLOR teal] Lettre [COLOR red]'+ sTitle +'[/COLOR][/COLOR]', 'series_az.png', oOutputParameterHandler)
         
     cConfig().finishDialog(dialog)
     
