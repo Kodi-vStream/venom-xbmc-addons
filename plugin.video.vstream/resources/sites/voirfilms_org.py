@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'voirfilms_org'
 SITE_NAME = 'VoirFilms'
 SITE_DESC = 'Films, Séries & Animés en Streaming'
  
-URL_MAIN = 'http://www.voirfilms.co/'
+URL_MAIN = 'http://www.voirfilms.biz/'
 
 MOVIE_MOVIE = (URL_MAIN + 'alphabet', 'showAlpha')
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming', 'showMovies')
@@ -408,7 +408,7 @@ def showHostersLink():
     #On recupere la redirection
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-agent',UA)
-    oRequestHandler.addHeaderEntry('Referer','http://www.voirfilms.co/')
+    oRequestHandler.addHeaderEntry('Referer',URL_MAIN)
     sHtmlContent = oRequestHandler.request()
     redirection_target = oRequestHandler.getRealUrl() 
     
@@ -420,8 +420,8 @@ def showHostersLink():
     #    redirection_target = response.headers['Location']
     #response.close()
     
-    #xbmc.log('red > ' + redirection_target)
-    #xbmc.log('cod > ' + sHtmlContent)
+    #cConfig().log('red > ' + redirection_target)
+    #cConfig().log('cod > ' + sHtmlContent)
     
     #attention fake redirection
     #sUrl = redirection_target
