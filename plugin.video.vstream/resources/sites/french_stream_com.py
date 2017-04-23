@@ -91,13 +91,13 @@ def showMovieGenres():
     oGui = cGui()
  
     liste = []
-    liste.append( ['Action',URL_MAIN + 'xfsearch/genre-1/action'] )
-    liste.append( ['Animation',URL_MAIN +'xfsearch/genre-1/animation'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'xfsearch/genre-1/arts+Martiaux'] )
-    liste.append( ['Aventure',URL_MAIN + 'xfsearch/genre-1/aventure'] )
-    liste.append( ['Biopic',URL_MAIN + 'xfsearch/genre-1/biopic'] )
+    liste.append( ['Action',URL_MAIN + 'xfsearch/genre-1/action/'] )
+    liste.append( ['Animation',URL_MAIN +'xfsearch/genre-1/animation/'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'xfsearch/genre-1/arts+Martiaux/'] )
+    liste.append( ['Aventure',URL_MAIN + 'xfsearch/genre-1/aventure/'] )
+    liste.append( ['Biopic',URL_MAIN + 'xfsearch/genre-1/biopic/'] )
     liste.append( ['Walt Disney',URL_MAIN + '/index.php?do=xfsearch&xfname=genre-1&xf=Walt+Disney+Animation'] )
-    liste.append( ['Comédie',URL_MAIN + 'xfsearch/genre-1/comedie'] )
+    liste.append( ['Comédie',URL_MAIN + 'xfsearch/genre-1/comedie/'] )
     liste.append( ['Comédie Dramatique',URL_MAIN + 'xfsearch/genre-1/dramatique/'] )
     liste.append( ['Comédie Musicale',URL_MAIN + 'xfsearch/genre-1/comedie-musicale/'] )
     liste.append( ['Documentaire',URL_MAIN + 'xfsearch/genre-1/documentaire/'] )
@@ -131,31 +131,30 @@ def showSerieGenres():
     oGui = cGui()
  
     liste = []
-    liste.append( ['Action',URL_MAIN +'index.php?do=xfsearch&xfname=genre-serie&xf=Action'] )
-    liste.append( ['Animation',URL_MAIN+'index.php?do=xfsearch&xfname=genre-serie&xf=Animation'])
-    liste.append( ['Arts Martiaux',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Arts+Martiaux'] )
-    liste.append( ['Aventure',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Aventure'])
-    liste.append( ['Comédie',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Comedie'])
-    liste.append( ['Comédie Dramatique',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Comédie+dramatique'] )
-    liste.append( ['Comédie Musicale',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Comédie+musicale'] )
-    liste.append( ['Documentaire',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Documentaire'] )
-    liste.append( ['Drame',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Drame'])
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Epouvante-horreur'] )
-    liste.append( ['Espionnage',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Espionnage'])
-    liste.append( ['Famille',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Famille'])
-    liste.append( ['Fantastique',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Fantastique'] )  
-    liste.append( ['Guerre',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Guerre'])
-    liste.append( ['Historique',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Historique'])
-    liste.append( ['Judiciaire',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Judidiaire'])
-    liste.append( ['Médical',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Médical'])
-    liste.append( ['Musical',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Musical'] )
-    liste.append( ['Policier',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Policier'] )
-    liste.append( ['Romance',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Romance'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Science+fiction/'] )
-    liste.append( ['Soap',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Soap'] )
-    liste.append( ['Thriller',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Thriller/'] )
-    liste.append( ['Web-série',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Websérie/'] )
-    liste.append( ['Western',URL_MAIN + 'index.php?do=xfsearch&xfname=genre-serie&xf=Western/'] )
+    liste.append( ['Action',URL_MAIN +'xfsearch/genre-serie/Action/'] )
+    liste.append( ['Animation',URL_MAIN+'xfsearch/genre-serie/Animation/'])
+    liste.append( ['Arts Martiaux',URL_MAIN + 'xfsearch/genre-serie/Arts+Martiaux/'] )
+    liste.append( ['Aventure',URL_MAIN + 'xfsearch/genre-serie/Aventure/'])
+    liste.append( ['Comédie',URL_MAIN + 'xfsearch/genre-serie/Comedie/'])
+    liste.append( ['Comédie Dramatique',URL_MAIN + 'xfsearch/genre-serie/Comédie+dramatique/'] )
+    liste.append( ['Comédie Musicale',URL_MAIN + 'xfsearch/genre-serie/Comédie+musicale/'] )
+    liste.append( ['Documentaire',URL_MAIN + 'xfsearch/genre-serie/Documentaire/'] )
+    liste.append( ['Drame',URL_MAIN + 'xfsearch/genre-serie/Drame/'])
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'xfsearch/genre-serie/Epouvante-horreur/'] )
+    liste.append( ['Espionnage',URL_MAIN + 'xfsearch/genre-serie/Espionnage/'])
+    liste.append( ['Famille',URL_MAIN + 'xfsearch/genre-serie/Famille/'])
+    liste.append( ['Fantastique',URL_MAIN + 'xfsearch/genre-serie/Fantastique/'] )  
+    liste.append( ['Guerre',URL_MAIN + 'xfsearch/genre-serie/Guerre/'])
+    liste.append( ['Historique',URL_MAIN + 'xfsearch/genre-serie/Historique/'])
+    liste.append( ['Judiciaire',URL_MAIN + 'xfsearch/genre-serie/Judidiaire/'])
+    liste.append( ['Médical',URL_MAIN + 'xfsearch/genre-serie/Médical/'])
+    liste.append( ['Musical',URL_MAIN + 'xfsearch/genre-serie/Musical/'] )
+    liste.append( ['Policier',URL_MAIN + 'xfsearch/genre-serie/Policier/'] )
+    liste.append( ['Romance',URL_MAIN + 'xfsearch/genre-serie/Romance/'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'xfsearch/genre-serie/Science+fiction/'] )
+    liste.append( ['Soap',URL_MAIN + 'xfsearch/genre-serie/Soap/'] )
+    liste.append( ['Thriller',URL_MAIN + 'xfsearch/genre-serie/Thriller/'] )
+    liste.append( ['Western',URL_MAIN + 'xfsearch/genre-serie/Western/'] )
        
     for sTitle,sUrl in liste:
        
@@ -277,7 +276,7 @@ def showHosters():
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'host.png', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR red]' + str(aEntry[0]) + '[/COLOR]', 'host.png', oOutputParameterHandler)
 
             sHosterUrl = str(aEntry[1])
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -324,7 +323,7 @@ def serieHosters():
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'host.png', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR red]' + str(aEntry[0]) + '[/COLOR]', 'host.png', oOutputParameterHandler)
 
             elif aEntry[2]:
                     sPattern = '<div id="episode' + str(aEntry[3]) + '" class="fullsfeature">(.+?)<\/ul>'
@@ -337,7 +336,7 @@ def serieHosters():
 
                         if (aResult2[0] == True):
                             for aEntry2 in aResult2[1]:
-                                sMovieTitle2 = str(sMovieTitle) + ' '+  str(aEntry[2])
+                                sMovieTitle2 = str(sMovieTitle) + ' ' +  str(aEntry[2])
                                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle2)
                                 
                                 sHosterUrl = aEntry2
