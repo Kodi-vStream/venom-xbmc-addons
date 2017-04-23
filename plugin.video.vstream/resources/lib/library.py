@@ -78,15 +78,15 @@ class cLibrary:
             sTitle = cUtil().CleanName(sTitle)
             
             try:
-                #print folder
                 #creer un dossier aussi pour les films sinon mauvais affichage
+                #A tester avec le nouveau systeme ?
                 
-                folder2 = folder + '/' + sTitle + '/'
+                #folder = folder + '/' + sTitle + '/'
                 
-                if not os.path.exists(folder2):
-                    os.mkdir(folder2)
+                #if not os.path.exists(folder):
+                #    os.mkdir(folder)
                     
-                self.MakeFile(folder2,sTitle,sLink)
+                self.MakeFile(folder,sTitle,sLink)
                 cConfig().showInfo('vStream', 'Element rajouté a la librairie')
                 xbmc.executebuiltin('UpdateLibrary(video, '+ folder + ')')
             except:
@@ -144,9 +144,12 @@ class cLibrary:
         
         runClean = xbmcgui.Dialog().yesno("Fichier supprime","Voulez vous mettre a jour la librairie maintenant (non conseille)")
         if(not runClean):
+            cConfig().update()
             return
             
         xbmc.executebuiltin("CleanLibrary(video)")
+        cConfig().update()
+
     
     def ShowContent_old(self):
         oInputParameterHandler = cInputParameterHandler()
