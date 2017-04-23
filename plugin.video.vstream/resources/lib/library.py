@@ -60,6 +60,8 @@ class cLibrary:
         sFileName = oInputParameterHandler.getValue('sFileName')
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         
+        sMediaUrl = urllib.quote(sMediaUrl)
+        
         #print oInputParameterHandler.getAllParameter()
         
         sLink = 'plugin://plugin.video.vstream/?function=play&site=cHosterGui&sFileName=' + sFileName + '&sMediaUrl=' + sMediaUrl + '&sHosterIdentifier=' + sHosterIdentifier
