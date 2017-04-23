@@ -294,12 +294,8 @@ class cGuiElement:
         sTitle = re.sub(' +',' ',sTitle)
         sTitle = sTitle.replace('()','').replace('- -','-')  
         
-        #vire espace a la fin
-        if sTitle.endswith(' '):
-            sTitle = sTitle[:-1]
-        #vire les derniers -
-        if sTitle.endswith('-'):
-            sTitle = sTitle[:-1]
+        #vire espace a la fin et les - (attention, il y a 2 tirets differents meme si invisible a l'oeuil nu et un est en unicode)
+        sTitle = re.sub(ur'[- –]+$','',sTitle)
         #et en debut
         if sTitle.startswith(' '):
             sTitle = sTitle[1:]
