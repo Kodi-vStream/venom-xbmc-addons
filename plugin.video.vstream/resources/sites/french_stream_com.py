@@ -362,8 +362,6 @@ def serieHosters():
                 sHosterUrl = aEntry[1]
                 sHosterName = ''
                 
-                cConfig().log(sHosterUrl)
-                
                 if '9animeonline' in sHosterUrl:
                     sHosterName = 'Google'
 
