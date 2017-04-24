@@ -200,6 +200,12 @@ def showMovies(sSearch = ''):
             
             sTitle = str(aEntry[2])
             sUrl2 = aEntry[0]
+            
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sSearch,sTitle) == 0:
+                    continue
+            
             if 'http' in aEntry[1]:
                 sThumbnail=aEntry[1]
             else:
