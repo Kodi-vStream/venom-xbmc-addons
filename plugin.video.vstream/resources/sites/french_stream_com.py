@@ -294,6 +294,33 @@ def showHosters():
 
     oGui.setEndOfDirectory()
     
+def Showlink():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    
+    if '9animeonline' in sUrl:
+        oRequest = cRequestHandler(sUrl)
+        sHtmlContent = oRequest.request()
+        
+        sPattern = 'file: "([^"]+)"'
+        aResult = re.findall(sPattern,sHtmlContent)
+        if (aResult):
+            sUrl = aResult[0]
+            
+    oHoster = cHosterGui().checkHoster(sUrl)
+
+    if (oHoster != False):
+        sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+        
+        oHoster.setDisplayName(sDisplayTitle)
+        oHoster.setFileName(sMovieTitle)
+        cHosterGui().showHoster(oGui, oHoster, sUrl, sThumbnail)
+                
+    oGui.setEndOfDirectory()
+    
 def serieHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -304,10 +331,13 @@ def serieHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
     
     oParser = cParser()   
         
-    sPattern = '<\/i> (VOSTFR|VF) *<\/div>|<a href="([^<>"]+)" target="seriePlayer" *title="([^"]+)" * data-rel="episode([0-9]+)"'
+    sPattern = '<\/i> (VOSTFR|VF) *<\/div>|<a class="fstab" href="([^"]+)" *id="gGotop" *target="seriePlayer".+?<\/i>\s+([^<>]+?)\s+<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -325,27 +355,29 @@ def serieHosters():
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR red]' + str(aEntry[0]) + '[/COLOR]', 'host.png', oOutputParameterHandler)
 
-            elif aEntry[2]:
-                    sPattern = '<div id="episode' + str(aEntry[3]) + '" class="fullsfeature">(.+?)<\/ul>'
-                    aResult3 = oParser.parse(sHtmlContent, sPattern)
+            elif aEntry[1]:
 
+                sTitle = str(sMovieTitle) + ' ' +  str(aEntry[2])
+                
+                sHosterUrl = aEntry[1]
+                sHosterName = ''
+                
+                cConfig().log(sHosterUrl)
+                
+                if '9animeonline' in sHosterUrl:
+                    sHosterName = 'Google'
 
-                    if (aResult3[0] == True):
-                        sPattern = '<a href="([^<>"]+?)" target="seriePlayer"'
-                        aResult2 = oParser.parse(aResult3[1][0], sPattern)
-
-                        if (aResult2[0] == True):
-                            for aEntry2 in aResult2[1]:
-                                sMovieTitle2 = str(sMovieTitle) + ' ' +  str(aEntry[2])
-                                sDisplayTitle = cUtil().DecoTitle(sMovieTitle2)
-                                
-                                sHosterUrl = aEntry2
-                                oHoster = cHosterGui().checkHoster(sHosterUrl)
-                        
-                                if (oHoster != False):
-                                    oHoster.setDisplayName(sDisplayTitle)
-                                    oHoster.setFileName(sMovieTitle2)
-                                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)              
+                else:              
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+                    sHosterName = str(oHoster.getDisplayName())
+                    
+                sDisplayTitle = sTitle + '[' + sHosterName + ']' 
+            
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+                oGui.addTV(SITE_IDENTIFIER, 'Showlink', sDisplayTitle, '', sThumbnail,'', oOutputParameterHandler)       
 
     cConfig().finishDialog(dialog)
                 
