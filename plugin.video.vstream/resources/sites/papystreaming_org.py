@@ -16,14 +16,14 @@ SITE_DESC = 'Films & Séries en streaming'
 
 URL_MAIN = 'http://papystreaming.org/'
 
-MOVIE_MOVIE = (URL_MAIN + 'film-streaming/' , 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'film-streaming/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'nouveaux-films/','showMovies')
 MOVIE_COMMENTS = (URL_MAIN + 'populaire/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'de-visite/', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'de-vote/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
-SERIE_SERIES = (URL_MAIN + 'series-streaming/' , 'showSeries')
+SERIE_SERIES = (URL_MAIN + 'series-streaming/', 'showSeries')
 SERIE_COMMENTS = (URL_MAIN + 'populaire/', 'showSeries')
 SERIE_VIEWS = (URL_MAIN + 'de-visite/', 'showSeries')
 SERIE_NOTES = (URL_MAIN + 'de-vote/', 'showSeries')
