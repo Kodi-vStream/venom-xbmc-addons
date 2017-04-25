@@ -19,8 +19,9 @@ URL_MAIN = 'http://libre-stream.com/'
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
+MOVIE_QLT = (True, 'showQlt')
 
-SERIE_SERIE = (URL_MAIN + 'liste-des-series/', 'AlphaSearch')
+SERIE_SERIES = (URL_MAIN + 'liste-des-series/', 'AlphaSearch')
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 SERIE_VFS = (URL_MAIN + 'series/version-francaise/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'series/vostfr/', 'showMovies')
@@ -44,12 +45,12 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showQlt', 'Films (Qualités)', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_QLT[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_QLT[1], 'Films (Qualités)', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIE[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIE[1], 'Séries', 'series.png', oOutputParameterHandler)    
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)    
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
@@ -77,9 +78,7 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
- 
+    	
     liste = []
     liste.append( ['Action',URL_MAIN + 'films/action/'] )
     liste.append( ['Animation',URL_MAIN + 'films/animation/'] )
@@ -118,9 +117,7 @@ def showGenres():
 
 def showQlt():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
- 
+     
     liste = []
     liste.append( ['HD',URL_MAIN + 'films-hd/'] )
     liste.append( ['DvdRip',URL_MAIN + 'quality/dvdrip/'] )
@@ -128,7 +125,7 @@ def showQlt():
     liste.append( ['R5',URL_MAIN + 'quality/R5/'] )
     liste.append( ['Cam Rip',URL_MAIN + 'quality/camrip/'] )
     liste.append( ['TS',URL_MAIN + 'quality/ts/'] )
-  
+    
     for sTitle,sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()
