@@ -152,7 +152,7 @@ def showSerieGenres():
 
     liste = []
     liste.append( ['Action',URL_MAIN + 'action-series'] )    
-    liste.append( ['Action-Aventure',URL_MAIN + 'action-adventure-series'] )
+    liste.append( ['Action & Aventure',URL_MAIN + 'action-adventure-series'] )
     liste.append( ['Animation',URL_MAIN + 'animation-series'] )
     liste.append( ['Aventure',URL_MAIN + 'aventure-series'] )
     liste.append( ['Biographie',URL_MAIN + 'biographie-series'] )    
@@ -169,7 +169,7 @@ def showSerieGenres():
     liste.append( ['Policier',URL_MAIN + 'policier-crime-series'] )
     liste.append( ['Romance',URL_MAIN + 'romance-series'] )
     liste.append( ['Science Fiction',URL_MAIN + 'science-fiction-series'] )
-    liste.append( ['Science Fiction - fantastique',URL_MAIN + 'science-Fiction-fantastique-series'] )
+    liste.append( ['Science Fiction & fantastique',URL_MAIN + 'science-Fiction-fantastique-series'] )
     liste.append( ['Thriller',URL_MAIN + 'thriller-series'] )
     liste.append( ['Western',URL_MAIN + 'western-series'] )
     
