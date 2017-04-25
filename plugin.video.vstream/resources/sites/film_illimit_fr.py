@@ -40,7 +40,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD', 'films_hd.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films (HD)', 'films_hd.png', oOutputParameterHandler)
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -54,26 +54,26 @@ def load():
 
 def showSearch():
     oGui = cGui()
- 
+
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_MAIN + '?s='+sSearchText 
+        sUrl = URL_MAIN + '?s=' + sSearchText 
         showMovies(sUrl)
         oGui.setEndOfDirectory()
-        return 
+        return
 
 def showGenres():
     oGui = cGui()
- 
+    
     liste = []
     liste.append( ['Ultra-HD',URL_MAIN + 'ultra-hd/'] )
     liste.append( ['720p/1080p',URL_MAIN + 'films/streaming-720p-streaming-1080p/'] )
-    liste.append( ['Action / Aventure',URL_MAIN + 'films/action-aventure/'] )
+    liste.append( ['Action/Aventure',URL_MAIN + 'films/action-aventure/'] )
     liste.append( ['Animation',URL_MAIN + 'films/animation/'] )
     liste.append( ['Arts Martiaux',URL_MAIN + 'films/arts-martiaux/'] )
     liste.append( ['Biographie',URL_MAIN + 'films/biographique/'] )
     liste.append( ['Comédie',URL_MAIN + 'films/comedie/'] )
-    liste.append( ['Crime / Gangster',URL_MAIN + 'films/crimegangster/'] )
+    liste.append( ['Crime/Gangster',URL_MAIN + 'films/crimegangster/'] )
     liste.append( ['Documentaire',URL_MAIN + 'films/documentaire/'] )
     liste.append( ['Drame',URL_MAIN + 'films/drame/'] )
     liste.append( ['Epouvante Horreur',URL_MAIN + 'films/epouvante-horreur/'] )
@@ -82,24 +82,23 @@ def showGenres():
     liste.append( ['Fantastique',URL_MAIN + 'films/fantastique/'] )
     liste.append( ['Guerre',URL_MAIN + 'films/guerre/'] )
     liste.append( ['Histoire',URL_MAIN + 'films/histoire/'] )
-    liste.append( ['Musique / Danse',URL_MAIN + 'films/musiquedanse/'] )
+    liste.append( ['Musique/Danse',URL_MAIN + 'films/musiquedanse/'] )
     liste.append( ['Mystère',URL_MAIN + 'films/mystere/'] )
     liste.append( ['Policier',URL_MAIN + 'films/policier/'] )
     liste.append( ['Romance',URL_MAIN + 'films/romance/'] )
     liste.append( ['Science-fiction',URL_MAIN + 'films/science-fiction/'] )
     liste.append( ['Sport',URL_MAIN + 'films/sport/'] )
-    liste.append( ['Suspense / Thriller',URL_MAIN + 'films/thrillersuspense/'] )
+    liste.append( ['Suspense/Thriller',URL_MAIN + 'films/thrillersuspense/'] )
     liste.append( ['Téléfilm',URL_MAIN + 'films/telefilm/'] )
     liste.append( ['VOSTFR',URL_MAIN + 'films/vostfr/'] )
     liste.append( ['Western',URL_MAIN + 'films/western/'] )
-
- 
+    
     for sTitle,sUrl in liste:
        
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-       
+        
     oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):
@@ -118,11 +117,11 @@ def showMovies(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
-   
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
-       
+
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total) #dialog
             if dialog.iscanceled():
@@ -155,7 +154,6 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
             
- 
         cConfig().finishDialog(dialog)
            
         if not sSearch:
@@ -164,7 +162,7 @@ def showMovies(sSearch = ''):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]' , oOutputParameterHandler)
- 
+
     if not sSearch:
         oGui.setEndOfDirectory()
 
@@ -176,12 +174,12 @@ def __checkForNextPage(sUrl):
         if (aResult[0] == True):
             newpage = str(int(aResult[1][0]) + 1)
             return sUrl.replace('/page/' + aResult[1][0],'/page/' + newpage)
- 
+
     return sUrl + 'page/2/'
- 
+
 def showHosters():
     oGui = cGui()
-   
+    
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -235,9 +233,9 @@ def showHosters():
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-       
+
     oGui.setEndOfDirectory()
-    
+
 def serieHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -269,7 +267,7 @@ def serieHosters():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oGui.addTV(SITE_IDENTIFIER, 'ShowSpecialHosters', sDisplayTitle, '', sThumbnail,'', oOutputParameterHandler)
-       
+
     oGui.setEndOfDirectory()
 
 def ShowSpecialHosters():
@@ -315,7 +313,7 @@ def ShowSpecialHosters():
                 sHosterUrl = url
                 if not sHosterUrl.startswith('http'):
                     sHosterUrl = 'http' + sHosterUrl
-   
+
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     sDisplayTitle = '[' + qual + '] ' + sMovieTitle
