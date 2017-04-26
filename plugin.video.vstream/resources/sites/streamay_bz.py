@@ -20,7 +20,7 @@ MOVIE_NEWS = (URL_MAIN + 'films/recents', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'films?p=populaire', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
 
-SERIE_SERIE = (URL_MAIN + 'series/alphabet', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'series/alphabet', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 SERIE_GENRES = (URL_MAIN + 'series/', 'showGenres')
 
@@ -57,8 +57,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIE[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIE[1], 'Séries', 'series.png', oOutputParameterHandler)  
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)  
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
@@ -137,7 +137,7 @@ def showGenres():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-       
+
     oGui.setEndOfDirectory()
     
 def showResultSearch(sSearch = ''):
@@ -152,7 +152,7 @@ def showResultSearch(sSearch = ''):
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent',UA)
     oRequest.addParametersLine(data)
- 
+
     sHtmlContent = oRequest.request()
 
     sHtmlContent = unicode(sHtmlContent,'utf-8')
@@ -160,7 +160,6 @@ def showResultSearch(sSearch = ''):
     sHtmlContent = sHtmlContent.encode("utf-8")
     sHtmlContent = sHtmlContent.replace("\n","")
     sHtmlContent = re.sub('"img":"([^"]+)","synopsis":"([^"]+)"','"synopsis":"\g<2>","img":"\g<1>"',sHtmlContent) #pattern en ordre img et syn inversé parfois
-
 
     sPattern = '{"result":{"id":".+?","title":"([^"]+)",.+?(?:"story"|"synopsis"):"(.+?)",*.+?(?:"img"|"banner"):"([^"]+)",.+?,"url":"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -216,7 +215,7 @@ def showMovies():
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<a href="([^"]+)" class="mv">.+?<img src="([^"]+)" alt="">.+?<span>([^<>]+)<\/span>.+?<\/span>(.+?)<\/p>'
- 
+
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -273,7 +272,7 @@ def showSaisons():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
-   
+
     sPattern = '<a class="head an choseSaison">(.+?)<\/a>|<a class="item" href="([^"]+)">.+?<span class="epitoto">(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -296,7 +295,7 @@ def showSaisons():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
                 oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
- 
+
         cConfig().finishDialog(dialog)
            
     oGui.setEndOfDirectory()
