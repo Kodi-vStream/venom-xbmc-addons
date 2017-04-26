@@ -19,6 +19,7 @@ MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/recents', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'films?p=populaire', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
+MOVIE_ANNEES = (URL_MAIN + 'films/annees/', 'showMovies')
 
 SERIE_SERIES = (URL_MAIN + 'series/alphabet', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
@@ -31,7 +32,7 @@ FUNCTION_SEARCH = 'showResultSearch'
 
 def load():
     oGui = cGui()
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
@@ -49,8 +50,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://parannee')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Par Années)', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
@@ -58,8 +59,8 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)  
-
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
@@ -67,7 +68,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
-
+	
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -77,15 +78,15 @@ def showSearch():
         sUrl = URL_SEARCH[0] + sSearchText  
         showResultSearch(sUrl)
         oGui.setEndOfDirectory()
-        return  
-        
+        return
+
 def showNumBoard(sDefaultNum=''):
     dialog = xbmcgui.Dialog()
     numboard = dialog.numeric(0, 'Entrer une année ex: 2005', sDefaultNum)
     if numboard != None:
        return numboard
     return False
-    
+
 def selectAnn():
     oGui = cGui()
     newNum = showNumBoard()
@@ -137,9 +138,9 @@ def showGenres():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-
+       
     oGui.setEndOfDirectory()
-    
+
 def showResultSearch(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
@@ -152,7 +153,7 @@ def showResultSearch(sSearch = ''):
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent',UA)
     oRequest.addParametersLine(data)
-
+ 
     sHtmlContent = oRequest.request()
 
     sHtmlContent = unicode(sHtmlContent,'utf-8')
@@ -160,6 +161,7 @@ def showResultSearch(sSearch = ''):
     sHtmlContent = sHtmlContent.encode("utf-8")
     sHtmlContent = sHtmlContent.replace("\n","")
     sHtmlContent = re.sub('"img":"([^"]+)","synopsis":"([^"]+)"','"synopsis":"\g<2>","img":"\g<1>"',sHtmlContent) #pattern en ordre img et syn inversé parfois
+
 
     sPattern = '{"result":{"id":".+?","title":"([^"]+)",.+?(?:"story"|"synopsis"):"(.+?)",*.+?(?:"img"|"banner"):"([^"]+)",.+?,"url":"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -199,14 +201,14 @@ def showResultSearch(sSearch = ''):
 
     if not sSearch:
         oGui.setEndOfDirectory()
-        
+
 def showMovies():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     oParser = cParser()
     
-    if 'parannee' in sUrl:
+    if 'annee' in sUrl:
         sUrl = selectAnn()
     else:
         sUrl = sUrl
@@ -215,7 +217,7 @@ def showMovies():
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<a href="([^"]+)" class="mv">.+?<img src="([^"]+)" alt="">.+?<span>([^<>]+)<\/span>.+?<\/span>(.+?)<\/p>'
-
+ 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -261,7 +263,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-    
+
 def showSaisons():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -272,7 +274,7 @@ def showSaisons():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
-
+   
     sPattern = '<a class="head an choseSaison">(.+?)<\/a>|<a class="item" href="([^"]+)">.+?<span class="epitoto">(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -295,7 +297,7 @@ def showSaisons():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
                 oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
-
+ 
         cConfig().finishDialog(dialog)
            
     oGui.setEndOfDirectory()
@@ -346,7 +348,7 @@ def showHosters():
         cConfig().finishDialog(dialog)
                 
     oGui.setEndOfDirectory()
-    
+
 def GetLink():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -382,7 +384,7 @@ def GetLink():
         cConfig().finishDialog(dialog)
                 
     oGui.setEndOfDirectory()
-    
+
 def showAnime():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -425,7 +427,7 @@ def showAnime():
             cConfig().finishDialog(dialog)
                 
     oGui.setEndOfDirectory()
-    
+
 def showAnimeHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
