@@ -27,7 +27,7 @@ SITE_DESC = 'Base de données video.'
 
 #doc de l'api http://docs.themoviedb.apiary.io/
 
-URL_MAIN = 'https://api.themoviedb.org/'
+URL_MAIN = 'https://www.themoviedb.org/'
 
 API_KEY = '92ab39516970ab9d86396866456ec9b6'
 API_VERS = '3'
@@ -66,7 +66,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'movie/top_rated')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Les mieux notés)', 'films_notes.png', oOutputParameterHandler)
-   
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'genre/movie/list')
     oGui.addDir(SITE_IDENTIFIER, 'showGenreMovie', 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
@@ -129,7 +129,7 @@ def showGenreMovie():
             sId, sTitle = i['id'], i['name']
 
             sTitle = sTitle.encode("utf-8")
-            sUrl = 'genre/'+str(sId)+'/movies'
+            sUrl = 'genre/' + str(sId) + '/movies'
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', str(sTitle), 'genres.png', oOutputParameterHandler)
@@ -168,7 +168,7 @@ def showMovies(sSearch = ''):
         iPage = oInputParameterHandler.getValue('page')
     
     if sSearch:
-        result = grab.getUrl('search/movie', '', 'query='+sSearch)
+        result = grab.getUrl('search/movie', '', 'query=' + sSearch)
         sUrl = ''
         
     else:
@@ -219,7 +219,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('page', iNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page '+str(iNextPage)+' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
             
     #test pr chnagement mode
@@ -235,7 +235,7 @@ def showSeries(sSearch=''):
         iPage = oInputParameterHandler.getValue('page')
         
     if sSearch:
-        result = grab.getUrl('search/tv', '', 'query='+sSearch)
+        result = grab.getUrl('search/tv', '', 'query=' + sSearch)
         sUrl = ''
         
     else:
@@ -256,7 +256,7 @@ def showSeries(sSearch=''):
         for i in result['results']:
             sId, sTitle, sOtitle, sThumbnail, sFanart = i['id'], i['name'], i['original_name'], i['poster_path'], i['backdrop_path']
             if sThumbnail:
-                sThumbnail = POSTER_URL+sThumbnail
+                sThumbnail = POSTER_URL + sThumbnail
             else:
                 sThumbnail = '' 
                 
@@ -300,7 +300,7 @@ def showSeries(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('page', iNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page '+str(iNextPage)+' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     #test pr chnagement mode
     #xbmc.executebuiltin('Container.SetViewMode(500)')         
@@ -435,14 +435,14 @@ def showSeriesEpisode():
             sExtraTitle = ' S' + "%02d" % int(sSeason) + 'E' + "%02d" % int(sEpNumber)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sMovieTitle+ '|' + sExtraTitle) #Pour compatibilite Favoris
+            oOutputParameterHandler.addParameter('siteUrl', sMovieTitle + '|' + sExtraTitle) #Pour compatibilite Favoris
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oOutputParameterHandler.addParameter('sTmdbId', sTmdbId)
             oOutputParameterHandler.addParameter('sSeason', sSeason)
             oOutputParameterHandler.addParameter('sEpisode', str(sEpNumber))
             oOutputParameterHandler.addParameter('type', 'serie')
-            oOutputParameterHandler.addParameter('searchtext', showTitle(sMovieTitle,  sMovieTitle+ '|' + sExtraTitle))
+            oOutputParameterHandler.addParameter('searchtext', showTitle(sMovieTitle,  sMovieTitle + '|' + sExtraTitle))
             
             #oGui.addTVDB('globalSearch', 'showHosters', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
             
@@ -558,7 +558,7 @@ def showActors():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('page', iNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showActors', '[COLOR teal]Page '+str(iNextPage)+' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showActors', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -586,7 +586,7 @@ def showFilmActor():
             sId = i['id']
                                            
             try:
-                sThumbnail = POSTER_URL+i['poster_path']
+                sThumbnail = POSTER_URL + i['poster_path']
             except: 
                 sThumbnail = ''
 
