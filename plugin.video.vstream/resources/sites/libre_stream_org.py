@@ -224,11 +224,9 @@ def showMovies(sSearch = ''):
                     continue
             
             sMovieTitle = str(aEntry[1])
-                
-            #Si recherche et trop de resultat, on nettoye
-            #if sSearch and total > 4:
-            #    if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH[0],''),sMovieTitle) == 0:
-            #        continue
+            sThumb = aEntry[0] 
+            if sThumb.startswith('/'):
+                sThumb = URL_MAIN[:-1] + sThumb
 
             if '/films/' in sUrl:
                 sMovieTitle = sMovieTitle + ' [' + str(aEntry[3]) + ']'
@@ -239,12 +237,12 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
 
             if '/series/' in sUrl or '-saison-' in aEntry[2]:
-                oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sDisplayTitle,'', aEntry[0], '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sDisplayTitle,'', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
            
         cConfig().finishDialog(dialog)
         
