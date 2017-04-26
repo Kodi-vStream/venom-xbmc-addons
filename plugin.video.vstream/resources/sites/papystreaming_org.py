@@ -16,14 +16,17 @@ SITE_DESC = 'Films & Séries en streaming'
 
 URL_MAIN = 'http://papystreaming.org/'
 
-MOVIE_MOVIE = (URL_MAIN + 'film-streaming/' , 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'film-streaming/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'nouveaux-films/','showMovies')
 MOVIE_COMMENTS = (URL_MAIN + 'populaire/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'de-visite/', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'de-vote/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
-SERIE_SERIES = (URL_MAIN + 'series-streaming/' , 'showSeries')
+SERIE_SERIES = (URL_MAIN + 'series-streaming/', 'showSeries')
+SERIE_COMMENTS = (URL_MAIN + 'populaire/', 'showSeries')
+SERIE_VIEWS = (URL_MAIN + 'de-visite/', 'showSeries')
+SERIE_NOTES = (URL_MAIN + 'de-vote/', 'showSeries')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH2 = (URL_MAIN + '?s=', 'showSeries')
@@ -37,11 +40,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMSearch', 'Recherche film', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMSearch', 'Recherche Film', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSSearch', 'Recherche série', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSSearch', 'Recherche Série', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -62,7 +65,7 @@ def showMenuFilms():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (derniers ajouts)', 'films_news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
@@ -75,10 +78,10 @@ def showMenuFilms():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'films_notes.png', oOutputParameterHandler)
-   
+    
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
     
@@ -90,44 +93,46 @@ def showMenuSeries():
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler) 
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'populaire/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries (Les plus commentés)', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENTS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENTS[1], 'Séries (Les plus commentées)', 'series_comments.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'de-visite/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries (Les plus vues)', 'series_views.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus vues)', 'series_views.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'de-vote/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries (Les mieux notés)', 'series_notes.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NOTES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Séries (Les mieux notées)', 'series_notes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
     
 def showGenres():
     oGui = cGui()
- 
+    
     liste = []
     liste.append( ['Action',URL_MAIN + 'category/action/'] )
-    liste.append( ['Action_Aventure',URL_MAIN + 'category/action-adventure/'] )
     liste.append( ['Animation',URL_MAIN + 'category/animation/'] )
     liste.append( ['Aventure',URL_MAIN + 'category/aventure/'] )
     liste.append( ['Comédie',URL_MAIN + 'category/comedie/'] )
     liste.append( ['Crime',URL_MAIN + 'category/crime/'] )
     liste.append( ['Documentaire',URL_MAIN + 'category/documentaire/'] )
     liste.append( ['Drame',URL_MAIN + 'category/drame/'] )
+    liste.append( ['Etranger',URL_MAIN + 'category/etranger/'] )
     liste.append( ['Familial',URL_MAIN + 'category/familial/'] )
     liste.append( ['Fantastique',URL_MAIN + 'category/fantastique/'] )  
     liste.append( ['Guerre',URL_MAIN + 'category/guerre/'] )
     liste.append( ['Histoire',URL_MAIN + 'category/histoire/'] )
-    liste.append( ['Horreur',URL_MAIN + 'category/horreur/'] )   
+    liste.append( ['Horreur',URL_MAIN + 'category/papystreaming_horreur/'] )   
     liste.append( ['Musique',URL_MAIN + 'category/musique/'] )        
     liste.append( ['Mystère',URL_MAIN + 'category/mystere/'] )
     liste.append( ['Romance',URL_MAIN + 'category/romance/'] )
-    liste.append( ['Science_Fiction',URL_MAIN + 'category/science-fiction/'] )
-    liste.append( ['Science_Fiction_Fantastique',URL_MAIN + 'category/science-fiction-fantastique/'] )
+    liste.append( ['Science-Fiction',URL_MAIN + 'category/science-fiction/'] )
+    liste.append( ['Soap',URL_MAIN + 'category/soap/'] )
+    liste.append( ['Sport',URL_MAIN + 'category/Sport/'] )
+    liste.append( ['Téléfilm',URL_MAIN + 'category/telefilm/'] )
     liste.append( ['Thriller',URL_MAIN + 'category/thriller/'] )
     liste.append( ['Western',URL_MAIN + 'category/western/'] )
-  
+    
     for sTitle,sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()
@@ -260,7 +265,7 @@ def showHosters():
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-       
+
     oGui.setEndOfDirectory()
 
 def ShowPapyLink():
@@ -300,14 +305,14 @@ def ShowPapyLink():
                     response = urllib2.urlopen(req)
                     sHosterUrl = response.geturl()
                     response.close()
- 
+
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     sDisplayTitle = cUtil().DecoTitle(sMovieTitle + '[' + sLabel + ']')
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-       
+
     elif 'belike.pw' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
@@ -344,7 +349,7 @@ def ShowPapyLink():
             
             listurl.append(aResult[1][0][1])
             listqual.append(aResult[1][0][0])
-   
+
             tab = zip(listurl,listqual)
 
             for url,qual in tab:
@@ -406,7 +411,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('sSyn', sSyn)
             oOutputParameterHandler.addParameter('sFilter', sFilter)
             oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, '', sThumbnail, sSyn, oOutputParameterHandler)
- 
+
         cConfig().finishDialog(dialog)
            
     oGui.setEndOfDirectory()
@@ -446,7 +451,7 @@ def showEpisodes():
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sSyn, oOutputParameterHandler)
- 
+
         cConfig().finishDialog(dialog)
            
     oGui.setEndOfDirectory()    
