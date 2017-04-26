@@ -49,15 +49,15 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'search/movie')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche de film', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchMovie', 'Recherche de Film', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'search/tv')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchSerie', 'Recherche de serie', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchSerie', 'Recherche de Série', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'movie/popular')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films Populaires', 'films_comments.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Populaires)', 'films_comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'movie/now_playing')
@@ -73,7 +73,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'tv/popular')
-    oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries Populaires', 'series_comments.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries (Populaires)', 'series_comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'tv/on_the_air')
@@ -96,7 +96,7 @@ def load():
     oGui.addDir('topimdb', 'load', 'Top Imdb', 'star.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
- 
+
 def showSearchMovie():
     oGui = cGui()
 
@@ -133,7 +133,7 @@ def showGenreMovie():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', str(sTitle), 'genres.png', oOutputParameterHandler)
-           
+
     oGui.setEndOfDirectory()
 
 def showGenreTV():
@@ -156,9 +156,8 @@ def showGenreTV():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('genre', str(sId))
             oGui.addDir(SITE_IDENTIFIER, 'showSeries', str(sTitle), 'genres.png', oOutputParameterHandler)
-           
+
     oGui.setEndOfDirectory()
-        
 
 def showMovies(sSearch = ''):
     
@@ -227,8 +226,7 @@ def showMovies(sSearch = ''):
     #xbmc.executebuiltin('Container.SetViewMode(500)') 
             
     oGui.setEndOfDirectory()
-    
-    
+
 def showSeries(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
     
@@ -335,7 +333,6 @@ def showSeriesSaison():
     
     oGui.addDir('globalSearch', 'globalSearch', cConfig().getlanguage(30414), 'searchtmdb.png', oOutputParameterHandler)
     #fin
-   
 
     result = grab.getUrl(sUrl)
     
@@ -386,7 +383,6 @@ def showSeriesSaison():
     #xbmc.executebuiltin('Container.SetViewMode(500)')         
             
     oGui.setEndOfDirectory() 
-    
 
 def showSeriesEpisode():
     
@@ -405,7 +401,7 @@ def showSeriesEpisode():
         sFanart = ''
     
     oGui = cGui()
-   
+
     #recherche saison complete    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sMovieTitle)
@@ -465,14 +461,11 @@ def showSeriesEpisode():
             
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
             
-
     #test pr chnagement mode
     #xbmc.executebuiltin('Container.SetViewMode(50)')         
             
     oGui.setEndOfDirectory()
-    
-  
-    
+
 def showActors():
     oGui = cGui()
     
@@ -482,7 +475,6 @@ def showActors():
     iPage = 1
     if (oInputParameterHandler.exist('page')):
         iPage = oInputParameterHandler.getValue('page')
-   
 
     result = grab.getUrl(sUrl, iPage)
     
@@ -490,7 +482,7 @@ def showActors():
 
     if (total > 0):
         for i in result['results']:
- 
+
             sName, sThumbnail = i['name'], i['profile_path']
             
             if sThumbnail:
@@ -579,8 +571,7 @@ def showFilmActor():
     iPage = 1
     if (oInputParameterHandler.exist('page')):
         iPage = oInputParameterHandler.getValue('page')
-   
-    
+
     result = grab.getUrl(sUrl, iPage)
     
     total = len(result)
@@ -624,7 +615,6 @@ def showFilmActor():
             
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
             
-                
          #pas de paramettre de page   
         # if (iPage > 0):
             # iNextPage = int(iPage) + 1
@@ -634,7 +624,6 @@ def showFilmActor():
             # oGui.addDir(SITE_IDENTIFIER, 'showFilmActor', '[COLOR teal]Page '+str(iNextPage)+' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-    
 
 def __checkForNextPage(sHtmlContent):
     sPattern = "<span class='page-numbers current'>.+?</span><a class='page-numbers' href='([^<]+)'>.+?</a>"
@@ -653,7 +642,7 @@ def showTitle(sMovieTitle, sUrl):
     if sUrl != 'none':
         sExtraTitle = sUrl.split('|')[1]
         sMovieTitle = sUrl.split('|')[0]
-      
+
     #nettoyage du nom pr la recherche
 
     #ancien decodage
