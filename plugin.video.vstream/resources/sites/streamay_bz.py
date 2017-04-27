@@ -19,15 +19,17 @@ MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/recents', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'films?p=populaire', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
-MOVIE_ANNEES = (URL_MAIN + 'films/annee/', 'showMovies')
+MOVIE_ANNEES = (URL_MAIN + 'films?y=', 'showMovies')
 MOVIE_PAYS = (True, 'showPays')
 
 SERIE_SERIES = (URL_MAIN + 'series/alphabet', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 SERIE_GENRES = (URL_MAIN + 'series/', 'showGenres')
+SERIE_ANNEES = (URL_MAIN + 'series?y=', 'showMovies')
 
 ANIM_ANIMS = (URL_MAIN + 'mangas/', 'showMovies')
 ANIM_GENRES = (URL_MAIN + 'mangas/', 'showGenres')
+ANIM_ANNEES = (URL_MAIN + 'mangas/annee/', 'showMovies')
 
 URL_SEARCH = ('', 'showResultSearch')
 FUNCTION_SEARCH = 'showResultSearch'
@@ -35,6 +37,9 @@ FUNCTION_SEARCH = 'showResultSearch'
 def load():
     oGui = cGui()
     
+def load():
+    oGui = cGui()
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
@@ -54,30 +59,39 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'films.png', oOutputParameterHandler)
-    
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_PAYS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_PAYS[1], 'Films (Par Pays)', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
-    
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
-    
+	
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par Années)', 'films.png', oOutputParameterHandler)
+	
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
-    
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'series_genres.png', oOutputParameterHandler)
+	
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANNEES[1], 'Animés (Par Années)', 'animes.png', oOutputParameterHandler)
+
     
     oGui.setEndOfDirectory()
 
@@ -97,10 +111,22 @@ def showNumBoard(sDefaultNum=''):
        return numboard
     return False
 
-def selectAnn():
+def selectMovieAnnees():
     oGui = cGui()
     newNum = showNumBoard()
     sUrl = MOVIE_ANNEES[0] + newNum
+    return sUrl
+	
+def selectSerieAnnees():
+    oGui = cGui()
+    newNum = showNumBoard()
+    sUrl = SERIE_ANNEES[0] + newNum
+    return sUrl
+
+def selectAnimAnnees():
+    oGui = cGui()
+    newNum = showNumBoard()
+    sUrl = ANIM_ANNEES[0] + newNum
     return sUrl
 
 def showGenres():
@@ -236,8 +262,12 @@ def showMovies():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     oParser = cParser()
 
-    if '/annee/' in sUrl:
-        sUrl = selectAnn()
+    if 'films?y=' in sUrl:
+        sUrl = selectMovieAnnees()
+    elif 'series?y=' in sUrl:
+        sUrl = selectSerieAnnees()
+    elif 'mangas/annee/' in sUrl:
+        sUrl = selectAnimAnnees()
     else:
         sUrl = sUrl
 
@@ -245,7 +275,7 @@ def showMovies():
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<a href="([^"]+)" class="mv">.+?<img src="([^"]+)" alt="">.+?<span>([^<>]+)<\/span>.+?<\/span>(.+?)<\/p>'
- 
+
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
