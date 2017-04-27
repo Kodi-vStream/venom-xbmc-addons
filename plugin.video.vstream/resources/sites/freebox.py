@@ -11,6 +11,7 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
 from resources.lib.config import cConfig
+from resources.lib.epg import cePg
 
 import re, urllib2, urllib, os, time, unicodedata
 import xbmc, xbmcgui
@@ -131,9 +132,42 @@ def showWeb():
             oOutputParameterHandler.addParameter('siteUrl', url2)
             oOutputParameterHandler.addParameter('sMovieTitle', str(track.title))
             oOutputParameterHandler.addParameter('sThumbnail', str(sRootArt + '/tv/' + sThumb))
-            oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt+'/tv/'+sThumb, oOutputParameterHandler)    
+            
+            #oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt+'/tv/'+sThumb, oOutputParameterHandler) 
+            
+            oGuiElement = cGuiElement()
+            oGuiElement.setSiteName(SITE_IDENTIFIER)
+            oGuiElement.setFunction('play__')
+            oGuiElement.setTitle(track.title)
+            oGuiElement.setFileName(track.title)
+            oGuiElement.setIcon('tv.png')
+            oGuiElement.setMeta(0)
+            oGuiElement.setThumbnail(sRootArt+'/tv/'+sThumb)
+            oGuiElement.setDirectTvFanart()
+            oGuiElement.setCat(6)
+            
+            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,SITE_IDENTIFIER,'direct_epg','Guide tv Direct')
+            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,SITE_IDENTIFIER,'soir_epg','Guide tv Soir')
+            oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+            oGui.addFolder(oGuiElement, oOutputParameterHandler)
   
     oGui.setEndOfDirectory()
+    
+    
+def direct_epg():
+    oGuiElement = cGuiElement()
+    oInputParameterHandler = cInputParameterHandler()
+    #aParams = oInputParameterHandler.getAllParameter()
+    #print aParams
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sCom = cePg().get_epg(sTitle,'direct')
+
+def soir_epg():
+    oGuiElement = cGuiElement()
+    oInputParameterHandler = cInputParameterHandler()
+
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sCom = cePg().get_epg(sTitle,'soir')
 
 # def showLibreMenu():
     # oGui = cGui()
@@ -455,33 +489,3 @@ def GetRealUrl(chain):
 def openwindows():
     xbmc.executebuiltin( "ActivateWindow(%d, return)" % ( 10601, ) )
     return
-    
-def GetLibreTVFile(Webfile):
-    
-    PathCache = cConfig().getSettingCache()
-    Name = os.path.join(PathCache,'LibreTV'+ time.strftime("%d%m") +'.m3u')
-
-    try:
-        #ckeck if file exist
-        file = open(Name,'r')
-        file.close()
-    except:
-        #delete old file
-        files = os.listdir(PathCache)
-        for file in files:
-            if 'LibreTV' in file:
-                os.remove(os.path.join(PathCache,file))
-                
-        #download new file
-        inf = urllib.urlopen(Webfile)
-        line = inf.read()
-        
-        #save it
-        file = open(Name,'w')
-        file.write(line)
-        
-        #clear
-        file.close()
-        inf.close()
-
-    return Name
