@@ -19,7 +19,7 @@ MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/recents', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'films?p=populaire', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
-MOVIE_ANNEES = (URL_MAIN + 'films/annees/', 'showMovies')
+MOVIE_ANNEES = (URL_MAIN + 'films/annee/', 'showMovies')
 MOVIE_PAYS = (True, 'showPays')
 
 SERIE_SERIES = (URL_MAIN + 'series/alphabet', 'showMovies')
@@ -240,7 +240,7 @@ def showMovies():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     oParser = cParser()
 
-    if 'annee' in sUrl:
+    if '/annee/' in sUrl:
         sUrl = selectAnn()
     else:
         sUrl = sUrl
