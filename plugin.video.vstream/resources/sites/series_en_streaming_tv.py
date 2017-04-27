@@ -13,13 +13,13 @@ from resources.lib.packer import cPacker
 import urllib2,urllib,re,unicodedata
 
 SITE_IDENTIFIER = 'series_en_streaming_tv'
-SITE_NAME = 'Séries en Streaming'
+SITE_NAME = 'Séries-en-Streaming'
 SITE_DESC = 'Séries en Streaming'
  
 URL_MAIN = 'http://www.series-en-streaming.tv/'
 
-SERIE_NEWS = ('http://www.series-en-streaming.tv/ajouts/', 'showLasts')
-SERIE_SERIES = ('http://www.series-en-streaming.tv/search/', 'AlphaSearch')
+SERIE_SERIES = (URL_MAIN + 'search/', 'AlphaSearch')
+SERIE_NEWS = (URL_MAIN + 'ajouts/', 'showLasts')
 
 URL_SEARCH = (URL_MAIN + 'search/', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -42,15 +42,15 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-   
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
-   
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries (Liste complète)', 'series.png', oOutputParameterHandler)
-
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
+    
     oGui.setEndOfDirectory()
 
 def AlphaSearch():
@@ -71,7 +71,7 @@ def AlphaSearch():
             sTitle = chr(64+i)
             
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://www.series-en-streaming.tv/search/')
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'search/')
         oOutputParameterHandler.addParameter('sLetter', sTitle)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', '[COLOR teal] Lettre [COLOR red]'+ sTitle +'[/COLOR][/COLOR]', 'genres.png', oOutputParameterHandler)
@@ -304,7 +304,7 @@ def ShowSaisons():
     sPattern = '<img.+?src="([^"]+)" alt=".+?" width=".+?">'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        img = 'http://www.series-en-streaming.tv' + aResult[1][0]
+        img = URL_MAIN[:-1] + aResult[1][0]
 
         
     sPattern = '<a href="([^<>]+?)" class="seasonLink">([^<>]+?)<\/a>'
@@ -361,7 +361,7 @@ def showEpisode():
                 
             sUrl = aEntry[0]
             if not URL_MAIN in sUrl:
-               sUrl = 'http://www.series-en-streaming.tv' + sUrl
+               sUrl = URL_MAIN[:-1] + sUrl
 
             sTitle = sMovieTitle + ' ' + aEntry[2]
             sThumb = URL_MAIN + 'images/?src=' + aEntry[1]
