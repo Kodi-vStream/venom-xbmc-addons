@@ -320,9 +320,14 @@ def VSshowInfo(sTitle, sDescription, iSeconds=0,sound = True):
 
     xbmcgui.Dialog().notification(str(sTitle), str(sDescription),xbmcgui.NOTIFICATION_INFO,iSeconds,sound)
     
-def VStranslatePath(location):
-    #Note, location = (author, changelog, description, disclaimer, fanart, icon, id, name, path,profile, stars, summary, type, version)
+def VStranslatePathAddon(location):
+    #Note, location = (author,changelog,description,disclaimer,fanart,icon,id,name,path,profile,stars,summary,type,version)
+    #ex util.VStranslatePathAddon("profile")
     return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo(location))
+    
+def VStranslatePath(location):
+    #ex util.VStranslatePath("special://logpath/") > http://kodi.wiki/view/Special_protocol
+    return xbmc.translatePath(location)
     
 def VSlang(lang):
     #util.VSlang(30003)

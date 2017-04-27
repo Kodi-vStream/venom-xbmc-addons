@@ -1,16 +1,12 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.config import cConfig
-from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.util import cUtil
-from resources.lib.player import cPlayer
-from resources.lib.gui.guiElement import cGuiElement
 
 import xbmcvfs
-
-import os,unicodedata,re,sys
+import os,re
 import urllib,re
 import xbmc,xbmcgui
 
@@ -44,8 +40,6 @@ class cLibrary:
     def setLibrary(self):
         oInputParameterHandler = cInputParameterHandler()
         
-        #sCat = oInputParameterHandler.getValue('sCat')
-        #pas encore fiable comme methode
         dialog = xbmcgui.Dialog()
         ret = dialog.select('Selectionner une categorie',['Film','Serie'])
         if ret == 0:
@@ -60,14 +54,12 @@ class cLibrary:
         sFileName = oInputParameterHandler.getValue('sFileName')
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         
-        #print oInputParameterHandler.getAllParameter()
+        sMediaUrl = urllib.quote(sMediaUrl)
         
         sLink = 'plugin://plugin.video.vstream/?function=play&site=cHosterGui&sFileName=' + sFileName + '&sMediaUrl=' + sMediaUrl + '&sHosterIdentifier=' + sHosterIdentifier
         
         sTitle = sFileName        
-        #sTitle = xbmc.getInfoLabel('ListItem.title')
-        #meta['icon'] = xbmc.getInfoLabel('ListItem.Art(thumb)')
-        #meta['fanart'] =  xbmc.getInfoLabel('ListItem.Art(fanart)')
+
         
         folder = self.__sMovieFolder
         
@@ -78,17 +70,14 @@ class cLibrary:
             sTitle = cUtil().CleanName(sTitle)
             
             try:
-                #creer un dossier aussi pour les films sinon mauvais affichage
-                #A tester avec le nouveau systeme ?
+                # folder = folder + '/' + sTitle + '/'
                 
-                #folder = folder + '/' + sTitle + '/'
-                
-                #if not os.path.exists(folder):
-                #    os.mkdir(folder)
+                # if not os.path.exists(folder):
+                    # os.mkdir(folder)
                     
                 self.MakeFile(folder,sTitle,sLink)
                 cConfig().showInfo('vStream', 'Element rajouté a la librairie')
-                xbmc.executebuiltin('UpdateLibrary(video, '+ folder + ')')
+                #xbmc.executebuiltin('UpdateLibrary(video, '+ folder + ')')
             except:
                 cConfig().showInfo('Erreur', 'Rajout impossible')
             
@@ -111,7 +100,7 @@ class cLibrary:
                 
                 self.MakeFile(folder2,sTitle,sLink)
                 cConfig().showInfo('vStream', 'Element rajouté a la librairie')
-                xbmc.executebuiltin('UpdateLibrary(video, '+ folder + ')')
+                #xbmc.executebuiltin('UpdateLibrary(video, '+ folder + ')')
             except:
                 cConfig().showInfo('Erreur', 'Rajout impossible')
 
@@ -121,20 +110,10 @@ class cLibrary:
         f = open(stream, 'w')
         f.write(str(content))
         f.close()
-        
+
     def getLibrary(self):
-        
-        oGui = cGui()
+        xbmc.executebuiltin("Container.Update(special://userdata/addon_data/plugin.video.vstream/)")
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('folder', self.__sMovieFolder)
-        oGui.addDir(SITE_IDENTIFIER, 'ShowContent', 'Films', 'library.png', oOutputParameterHandler)
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('folder', self.__sTVFolder)
-        oGui.addDir(SITE_IDENTIFIER, 'ShowContent', 'Series', 'library.png', oOutputParameterHandler)
-          
-        oGui.setEndOfDirectory()
         
     def Delfile(self):
         oInputParameterHandler = cInputParameterHandler()
@@ -144,69 +123,12 @@ class cLibrary:
         
         runClean = xbmcgui.Dialog().yesno("Fichier supprime","Voulez vous mettre a jour la librairie maintenant (non conseille)")
         if(not runClean):
-            cConfig().update()
             return
             
         xbmc.executebuiltin("CleanLibrary(video)")
-        cConfig().update()
-
     
-    def ShowContent_old(self):
-        oInputParameterHandler = cInputParameterHandler()
-        sFolder = oInputParameterHandler.getValue('folder')
-        xbmc.executebuiltin("Container.Update(" + sFolder + ")")
-        
     def ShowContent(self):
         oInputParameterHandler = cInputParameterHandler()
         sFolder = oInputParameterHandler.getValue('folder')
-        
-        oGui = cGui()
+        xbmc.executebuiltin("Container.Update(" + sFolder + ")")
 
-        files = os.listdir(sFolder)
-        for file in files:
-            if os.path.isdir(sFolder + file):
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('folder', sFolder + file + '/')
-                oGui.addDir(SITE_IDENTIFIER, 'ShowContent', file, 'download.png', oOutputParameterHandler)
-            elif '.strm' in file:
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('sFile', sFolder + file)
-                oOutputParameterHandler.addParameter('site', SITE_IDENTIFIER)
-                
-                sTitle = file.split('.')[0]
-            
-                oGuiElement = cGuiElement()
-                oGuiElement.setFunction('')
-                oGuiElement.setTitle(sTitle)
-                oGuiElement.setMeta(0)
-                oGuiElement.setFunction('ReadFile')
-                
-                #menu contextuel
-                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cLibrary','cLibrary','Delfile','Supprimer ce fichier')
-                
-                oGui.addFolder(oGuiElement, oOutputParameterHandler)
-          
-        oGui.setEndOfDirectory()       
-        
-    def ReadFile(self):
-        oInputParameterHandler = cInputParameterHandler()
-        sFile = oInputParameterHandler.getValue('sFile')
-        sTitle = oInputParameterHandler.getValue('title')
-
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(SITE_IDENTIFIER)
-        oGuiElement.setMediaUrl(sFile)
-        oGuiElement.setTitle(sTitle)
-        
-        if False:
-            oPlayer = cPlayer()
-            
-            if not (sys.argv[ 1 ] == '-1'):
-                oPlayer.run(oGuiElement, sTitle, sFile)
-            else:
-                oPlayer.clearPlayList()
-                oPlayer.addItemToPlaylist(oGuiElement)
-                oPlayer.startPlayer()
-            
-        else:
-            xbmc.Player().play(sFile)

@@ -82,7 +82,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-   
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request() 
     
@@ -116,12 +116,15 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = 'id="tie-next-page"> <a href="([^<]+)">'
+    #sPattern = 'id="tie-next-page"> <a href="([^<]+)">'
+    sPattern = '<link rel="next" href="([^"]+)"/>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        #print aResult[1][0]
-        return aResult[1][0]
+        url = aResult[1][0]
+        if url.startswith('//'):
+           url = 'http:' + url
+        return url
 
     return False
 
