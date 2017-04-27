@@ -95,7 +95,7 @@ def showNumBoard(sDefaultNum=''):
 def selectAnn():
     oGui = cGui()
     newNum = showNumBoard()
-    sUrl = URL_MAIN + 'films/annee/' + newNum
+    sUrl = MOVIE_ANNEES[0] + newNum
     return sUrl
 
 def showGenres():
