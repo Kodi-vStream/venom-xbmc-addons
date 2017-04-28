@@ -434,7 +434,7 @@ msgstr "Marquer comme regardé"
 
 msgctxt "#30323"
 msgid "Add watchlist"
-msgstr "Marquer a surveiller"
+msgstr "Marquer à surveiller"
 
 msgctxt "#30330"
 msgid "Search"
