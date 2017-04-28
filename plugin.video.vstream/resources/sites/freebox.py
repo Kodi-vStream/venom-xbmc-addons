@@ -24,6 +24,7 @@ URL_MAIN = 'http://mafreebox.freebox.fr/freeboxtv/playlist.m3u'
 URL_FREE = 'https://annuel.framapad.org/p/vstream/export/txt'
 URL_WEB = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/repo/resources/webtv2.m3u'
 URL_RADIO = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/repo/resources/radio.m3u'
+URL_TV = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/Beta/repo/resources/tv.xml'
 
 URL_LIBRETV = 'http://libretv.me/Liste-m3u/token_Tj1CRNSd/add_item.dat'
 
@@ -47,13 +48,17 @@ def load():
     linktv = cConfig().getSetting('pvr-view')
     oGui = cGui()
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'load', '[COLOR khaki]Pour Modifier ou  Ajouter des chaînes à FramaPad https://annuel.framapad.org/p/vstream [/COLOR]', 'tv.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+    #oGui.addDir(SITE_IDENTIFIER, 'load', '[COLOR khaki]Pour Modifier ou  Ajouter des chaînes à FramaPad https://annuel.framapad.org/p/vstream [/COLOR]', 'tv.png', oOutputParameterHandler)
 
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', URL_FREE)
+    #oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'FramaPad (Bêta)', 'tv.png', oOutputParameterHandler)
+    
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_FREE)
-    oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'FramaPad (Bêta)', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_TV)
+    oGui.addDir(SITE_IDENTIFIER, 'showTV', 'Télévision (Bêta)', 'tv.png', oOutputParameterHandler)
 
     # oOutputParameterHandler = cOutputParameterHandler()
     # oOutputParameterHandler.addParameter('siteUrl', URL_SFR)
@@ -194,42 +199,55 @@ def soir_epg():
     # oGui.setEndOfDirectory()
 
     
-# def showLibre():
-    # oGui = cGui()
-    # oInputParameterHandler = cInputParameterHandler()
-    # sUrl = oInputParameterHandler.getValue('siteUrl')
-    # sOrder = oInputParameterHandler.getValue('sOrder')
+def showTV():
     
-    # oRequestHandler = cRequestHandler(sUrl)
-    # sHtmlContent = oRequestHandler.request()
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
 
-    # oParser = cParser()
-    # sPattern = '<url>([^<>]+?)</url><title>([^<>]+?)</title><order>' + sOrder + '</order><icon>(.+?)</icon>'
-    # aResult = oParser.parse(sHtmlContent, sPattern)
+    oParser = cParser()
+    #sPattern = '<url>([^<>]+?)</url><title>([^<>]+?)</title><order>' + sOrder + '</order><icon>(.+?)</icon>'
+    sPattern = '<title>(.+?)</title><link>(.+?)</link>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
     
-    # if (aResult[0] == True):
-        # total = len(aResult[1])
-        # dialog = cConfig().createDialog(SITE_NAME)
-        # for aEntry in aResult[1]:
-            # cConfig().updateDialog(dialog, total)
-            # if dialog.iscanceled():
-                # break
-                
-            # sTitle = aEntry[1]
-            # sDate = aEntry[2]
-            # sDate = '[' + sDate.split('/')[1] + '/' + sDate.split('/')[0] +'] '
-            # sTitle = sDate + sTitle
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
             
-            # sDisplayTitle = cUtil().DecoTitle(sTitle)
+            if dialog.iscanceled():
+                break
 
-            # oOutputParameterHandler = cOutputParameterHandler()
-            # oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
-            # oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            # oGui.addDirectTV(SITE_IDENTIFIER, 'showLibretv', sDisplayTitle, 'libretv.png' , '', oOutputParameterHandler)    
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
+            oOutputParameterHandler.addParameter('sMovieTitle', aEntry[0])
+            oOutputParameterHandler.addParameter('sThumbnail', str('tv.png'))
+            oOutputParameterHandler.addParameter('sThumbnail', str(sRootArt + '/tv.png'))
+             
+            oGuiElement = cGuiElement()
+            oGuiElement.setSiteName(SITE_IDENTIFIER)
+            oGuiElement.setFunction('play__')
+            oGuiElement.setTitle(aEntry[0])
+            oGuiElement.setFileName(aEntry[0])
+            oGuiElement.setIcon('tv.png')
+            oGuiElement.setMeta(0)
+            #oGuiElement.setThumbnail('tv.png')
+            oGuiElement.setDirectTvFanart()
+            oGuiElement.setCat(6)
+            
+            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,SITE_IDENTIFIER,'direct_epg','Guide tv Direct')
+            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,SITE_IDENTIFIER,'soir_epg','Guide tv Soir')
+            oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+            oGui.addFolder(oGuiElement, oOutputParameterHandler)
         
-        # cConfig().finishDialog(dialog)
+        cConfig().finishDialog(dialog)
         
-        # oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
     
 # def showLibretv():
     # oGui = cGui()
