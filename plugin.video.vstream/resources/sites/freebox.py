@@ -217,7 +217,11 @@ def showTV():
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         
-        for aEntry in aResult[1]:
+        #affiche par ordre al
+        
+        string = sorted(aResult[1], key=lambda t: t[0].strip().capitalize())
+        
+        for aEntry in string:
             cConfig().updateDialog(dialog, total)
             
             if dialog.iscanceled():
