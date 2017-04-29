@@ -305,8 +305,8 @@ def finishDialog(dialog):
         del dialog
         
 def VSerror(e):
-    xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % ('Vstream', ('Erreur: '+str(e)), '5000', xbmcgui.NOTIFICATION_ERROR))
-    VSlog('Erreur: ' + str(e))  
+    xbmcgui.Dialog().notification('Vstream','Erreur: '+str(e),xbmcgui.NOTIFICATION_ERROR,2000)
+    VSlog('Erreur: ' + str(e)) 
     
 def VSshowInfo(sTitle, sDescription, iSeconds=0,sound = True):
     if (iSeconds == 0):
