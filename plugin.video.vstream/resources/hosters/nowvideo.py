@@ -1,12 +1,9 @@
 #coding: utf-8
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-
 import re,xbmcgui
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
@@ -40,28 +37,6 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
-    def __getIdFromUrl(self,sUrl):
-        sPattern = 'v=([^<]+)'
-        oParser = cParser()
-        aResult = oParser.parse(self.__sUrl, sPattern)
-        if (aResult[0] == True):
-            return aResult[1][0]
-
-        return ''
-        
-    def __modifyUrl(self, sUrl):
-        if (sUrl.startswith('http://')):
-            oRequestHandler = cRequestHandler(sUrl)
-            oRequestHandler.request()
-            sRealUrl = oRequestHandler.getRealUrl()
-            self.__sUrl = sRealUrl
-            return self.__getIdFromUrl()
-
-        return sUrl;
-        
-    def __getKey(self):
-        return ''
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
@@ -86,45 +61,34 @@ class cHoster(iHoster):
         
         oParser = cParser()
 
-        id = self.__getIdFromUrl(self.__sUrl)
-        
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
         # 1 er lecteur
-        r = re.search('var fkzd="([^"]+)"', sHtmlContent)
-        if (r):
-            surl = 'http://www.nowvideo.sx/api/player.api.php?key=' + r.group(1) +'&file=' + id
-            oRequest = cRequestHandler(surl)
-            sHtmlContent = oRequest.request()
-            r2 = re.search('url=([^&]+)', sHtmlContent)
-            if (r2):
-                api_call = r2.group(1)
-                
-        #second lecteur
-        sPattern = '<source src="([^"]+)" type=\'([^"\']+)\'>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        if (aResult[0] == True):
-            #initialisation des tableaux
-            url=[]
-            qua=[]
-        
-            #Replissage des tableaux
-            for i in aResult[1]:
-                url.append(str(i[0]))
-                qua.append(str(i[1]))
-                
-            #Si au moins 1 url
-            if (url):
-            #Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
-                if (ret > -1):
-                    api_call = url[ret]
-                    
-        api_call = api_call + '|User-Agent=' + UA        
-        if (api_call):
-            return True, api_call
+        sDash = re.search("player.src.+?src: *'([^']+)", sHtmlContent,re.DOTALL)
+        if (sDash):
+            return True, sDash.group(1) 
+        else:
+            #second lecteur
+            sPattern = '<source src="([^"]+)" type=\'([^"\']+)\'>'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+               #initialisation des tableaux
+                url=[]
+                qua=[]
+               #Replissage des tableaux
+                for i in aResult[1]:
+                   url.append(str(i[0]))
+                   qua.append(str(i[1]))
+                #Si au moins 1 url
+                if (url):
+                #Afichage du tableau
+                    dialog2 = xbmcgui.Dialog()
+                    ret = dialog2.select('Select Quality',qua)
+                    if (ret > -1):
+                        api_call = url[ret]
+    
+            if (api_call):
+                return True, api_call + '|User-Agent=' + UA  
 
-        return False , False
+            return False , False
