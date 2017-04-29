@@ -101,7 +101,6 @@ class cPlayer(xbmc.Player):
         #1 er mode de lecture
         elif (player_conf == '0'):
             self.play(sUrl,item)
-            xbmcplugin.endOfDirectory(sPluginHandle, True, False, False)
             VSlog('Player use Play() method')
         #2 eme mode non utilise
         elif (player_conf == 'neverused'):
@@ -130,7 +129,7 @@ class cPlayer(xbmc.Player):
        
         while self.isPlaying() and not self.forcestop:
         #while not xbmc.abortRequested:
-            try: 
+            try:
                self.currentTime = self.getTime()
                self.totalTime = self.getTotalTime()
                
@@ -144,6 +143,12 @@ class cPlayer(xbmc.Player):
         if not self.playBackStoppedEventReceived:
             self.onPlayBackStopped()
         
+        #Uniquement avec la lecture avec play()
+        if (player_conf == '0'):
+            r = xbmcplugin.addDirectoryItem(handle=sPluginHandle,url=sUrl,listitem=item,isFolder=False)
+            #xbmcplugin.endOfDirectory(sPluginHandle, True, False, False)
+            return r
+            
         VSlog('Closing player')
 
     #fonction light servant par exmple pour visualiser les DL ou les chaines de TV
