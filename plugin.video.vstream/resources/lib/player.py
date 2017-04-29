@@ -106,7 +106,7 @@ class cPlayer(xbmc.Player):
         #2 eme mode non utilise
         elif (player_conf == 'neverused'):
             xbmc.executebuiltin( "PlayMedia("+sUrl+")" )
-            cConfig().log('Player use PlayMedia() method')
+            VSlog('Player use PlayMedia() method')
         #3 eme mode (defaut)
         else:
             xbmcplugin.setResolvedUrl(sPluginHandle, True, item)
