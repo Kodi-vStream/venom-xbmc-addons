@@ -7,8 +7,9 @@ from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
 from resources.lib.db import cDb
 from resources.lib.util import VSlog,isKrypton,VSerror
+
 import xbmc, xbmcgui, xbmcplugin
-import xbmcaddon,xbmcvfs
+
 import time
 
 #pour les sous titres
@@ -73,17 +74,8 @@ class cPlayer(xbmc.Player):
 
         meta = {'label': sTitle, 'title': sTitle}
         item = xbmcgui.ListItem(path=sUrl, iconImage="DefaultVideo.png",  thumbnailImage=self.sThumbnail)
-        
         item.setInfo( type="Video", infoLabels= meta )
         
-        #lien dash
-        if sUrl.endswith('.mpd'):
-            if isKrypton() == True:
-                cConfig().setSetting("playerPlay",'2')
-                self.enable_addon("inputstream.adaptive")
-            else:
-                VSerror('Nécessite kodi 17 minimum')
-                return
         #Sous titres
         if (self.Subtitles_file):
             try:
@@ -95,19 +87,26 @@ class cPlayer(xbmc.Player):
                 
         player_conf = cConfig().getSetting("playerPlay")
 
+        #Si lien dash, methode prioritaire
+        if sUrl.endswith('.mpd'):
+            if isKrypton() == True:
+                self.enable_addon("inputstream.adaptive")
+                item.setProperty('inputstreamaddon','inputstream.adaptive')
+                item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
+                xbmcplugin.setResolvedUrl(sPluginHandle, True, listitem=item)
+                VSlog('Player use inputstream addon')
+            else:
+                VSerror('Nécessite kodi 17 minimum')
+                return
         #1 er mode de lecture
-        if (player_conf == '0'):
+        elif (player_conf == '0'):
             self.play(sUrl,item)
             xbmcplugin.endOfDirectory(sPluginHandle, True, False, False)
             VSlog('Player use Play() method')
-        #2 eme mode dash
-        elif (player_conf == '2'):
-            item.setProperty('inputstreamaddon','inputstream.adaptive')
-            item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
-            xbmcplugin.setResolvedUrl(sPluginHandle, True, listitem=item)
-            VSlog('Player use inputstream addon')
-            #remet settings par defaut
-            cConfig().setSetting("playerPlay",'1')
+        #2 eme mode non utilise
+        elif (player_conf == 'neverused'):
+            xbmc.executebuiltin( "PlayMedia("+sUrl+")" )
+            cConfig().log('Player use PlayMedia() method')
         #3 eme mode (defaut)
         else:
             xbmcplugin.setResolvedUrl(sPluginHandle, True, item)
@@ -268,16 +267,16 @@ class cPlayer(xbmc.Player):
             return False
             
     def enable_addon(self,addon):
-        import json
-        sCheck = {'jsonrpc': '2.0','id': 1,'method': 'Addons.GetAddonDetails','params': {'addonid':'inputstream.adaptive','properties': ['enabled']}}
-        response = xbmc.executeJSONRPC(json.dumps(sCheck))
-        data = json.loads(response)
-        if not 'error' in data.keys():
-            if data['result']['addon']['enabled'] == False:
-                do_json = '{"jsonrpc":"2.0","id":1,"method":"Addons.SetAddonEnabled","params":{"addonid":"inputstream.adaptive","enabled":true}}'
-                query = xbmc.executeJSONRPC(do_json)
-                VSlog("Activation d'inputstream.adaptive")
-            else:
-                VSlog('inputstream.adaptive déjà activé')
-                
-                
+        #import json
+        #sCheck = {'jsonrpc': '2.0','id': 1,'method': 'Addons.GetAddonDetails','params': {'addonid':'inputstream.adaptive','properties': ['enabled']}}
+        #response = xbmc.executeJSONRPC(json.dumps(sCheck))
+        #data = json.loads(response)
+        #if not 'error' in data.keys():      
+        #if data['result']['addon']['enabled'] == False:
+        
+        if xbmc.getCondVisibility('System.HasAddon(inputstream.adaptive)') == 0:
+            do_json = '{"jsonrpc":"2.0","id":1,"method":"Addons.SetAddonEnabled","params":{"addonid":"inputstream.adaptive","enabled":true}}'
+            query = xbmc.executeJSONRPC(do_json)
+            VSlog("Activation d'inputstream.adaptive")
+        else:
+            VSlog('inputstream.adaptive déjà activé')
