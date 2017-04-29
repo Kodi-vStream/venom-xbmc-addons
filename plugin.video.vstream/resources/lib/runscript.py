@@ -237,6 +237,7 @@ class cClear:
         return
 
     def ClearDir(self, dir, clearNested = False):
+        dir = dir.decode("utf8")
         for the_file in os.listdir(dir):
             file_path = os.path.join(dir, the_file)
             if clearNested and os.path.isdir(file_path):
@@ -248,8 +249,8 @@ class cClear:
                 except Exception, e: print str(e)
                     
     def ClearDir2(self, dir, clearNested = False):
-
-            try:os.unlink(dir)
-            except Exception, e: print str(e)
+        dir = dir.decode("utf8")
+        try:os.unlink(dir)
+        except Exception, e: print str(e)
 
 cClear()
