@@ -103,9 +103,9 @@ class cRechercheHandler:
                 cRechercheHandler.Count += 1
                 Count = cRechercheHandler.Count
                 if (Count == 1):
-                    oGui.addText2(sName, '[COLOR khaki]%s: %s[/COLOR]' % (cConfig().getlanguage(30076), sText), 'none.png')
+                    oGui.addText(sName, '[COLOR khaki]%s: %s[/COLOR]' % (cConfig().getlanguage(30076), sText), 'none.png')
                     
-                oGui.addText2(sName, '%s. [COLOR olive]%s[/COLOR]' % (Count, sDisplayname), 'sites/%s.png' % (sName))
+                oGui.addText(sName, '%s. [COLOR olive]%s[/COLOR]' % (Count, sDisplayname), 'sites/%s.png' % (sName))
 
                 sUrl = sSearch[0]+sText
                 searchUrl = "%s.%s('%s')" % (sName, sSearch[1], sUrl)
