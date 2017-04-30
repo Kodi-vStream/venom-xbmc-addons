@@ -6,20 +6,20 @@ import xbmcgui
 import xbmcaddon
 
 DIALOG2 = None
-PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
-
 
 #-----------------------
 #     Cookies gestion
 #------------------------
     
 class GestionCookie():
+    PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile")).decode("utf-8")
+    
     def DeleteCookie(self,Domain):
-        file = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
-        os.remove(os.path.join(PathCache,file))
+        file = os.path.join(self.PathCache,'Cookie_'+ str(Domain) +'.txt')
+        os.remove(os.path.join(self.PathCache,file))
     
     def SaveCookie(self,Domain,data):
-        Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
+        Name = os.path.join(self.PathCache,'Cookie_'+ str(Domain) +'.txt')
 
         #save it
         file = open(Name,'w')
@@ -28,7 +28,7 @@ class GestionCookie():
         file.close()
         
     def Readcookie(self,Domain):
-        Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
+        Name = os.path.join(self.PathCache,'Cookie_'+ str(Domain) +'.txt')
         
         try:
             file = open(Name,'r')
@@ -84,7 +84,7 @@ class cConfig():
             self.__oId = self.__oSettings.getAddonInfo("id")
             self.__oPath = self.__oSettings.getAddonInfo("path")
             self.__oName = self.__oSettings.getAddonInfo("name")
-            self.__oCache = xbmc.translatePath(self.__oSettings.getAddonInfo("profile"))
+            self.__oCache = xbmc.translatePath(self.__oSettings.getAddonInfo("profile")).decode("utf-8")
             self.__sRootArt = os.path.join(self.__oPath, 'resources' , 'art', '')
             self.__sIcon = os.path.join(self.__oPath,'resources', 'art','icon.png')
             self.__sFanart = os.path.join(self.__oPath,'resources','art','fanart.jpg')
