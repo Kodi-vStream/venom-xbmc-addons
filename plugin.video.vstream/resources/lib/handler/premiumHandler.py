@@ -47,10 +47,10 @@ class cPremiumHandler:
     
     def DeleteCookie(self,Domain):
         file = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
-        os.remove(os.path.join(PathCache,file))
+        os.remove(os.path.join(PathCache,file).decode("utf-8"))
     
     def SaveCookie(self,Domain,data):
-        Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
+        Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt').decode("utf-8")
 
         #save it
         file = open(Name,'w')
@@ -59,7 +59,7 @@ class cPremiumHandler:
         file.close()
         
     def Readcookie(self,Domain):
-        Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')        
+        Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt').decode("utf-8")     
         try:
             file = open(Name,'r')
             data = file.read()
