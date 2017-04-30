@@ -11,6 +11,7 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
 from resources.lib.config import cConfig
+from resources.lib.epg import cePg
 
 import re, urllib2, urllib, os, time, unicodedata
 import xbmc, xbmcgui
@@ -23,6 +24,7 @@ URL_MAIN = 'http://mafreebox.freebox.fr/freeboxtv/playlist.m3u'
 URL_FREE = 'https://annuel.framapad.org/p/vstream/export/txt'
 URL_WEB = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/repo/resources/webtv2.m3u'
 URL_RADIO = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/repo/resources/radio.m3u'
+URL_TV = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/Beta/repo/resources/tv.xml'
 
 URL_LIBRETV = 'http://libretv.me/Liste-m3u/token_Tj1CRNSd/add_item.dat'
 
@@ -46,13 +48,21 @@ def load():
     linktv = cConfig().getSetting('pvr-view')
     oGui = cGui()
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'load', '[COLOR khaki]Pour Modifier ou  Ajouter des chaînes à FramaPad https://annuel.framapad.org/p/vstream [/COLOR]', 'tv.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+    #oGui.addDir(SITE_IDENTIFIER, 'load', '[COLOR khaki]Pour Modifier ou  Ajouter des chaînes à FramaPad https://annuel.framapad.org/p/vstream [/COLOR]', 'tv.png', oOutputParameterHandler)
 
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', URL_FREE)
+    #oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'FramaPad (Bêta)', 'tv.png', oOutputParameterHandler)
+    
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_FREE)
-    oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'FramaPad (Bêta)', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_TV)
+    oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Télévision (A-Z) (Bêta)', 'tv.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_TV)
+    oGui.addDir(SITE_IDENTIFIER, 'showTV', 'Télévision (Bêta)', 'tv.png', oOutputParameterHandler)
 
     # oOutputParameterHandler = cOutputParameterHandler()
     # oOutputParameterHandler.addParameter('siteUrl', URL_SFR)
@@ -131,9 +141,42 @@ def showWeb():
             oOutputParameterHandler.addParameter('siteUrl', url2)
             oOutputParameterHandler.addParameter('sMovieTitle', str(track.title))
             oOutputParameterHandler.addParameter('sThumbnail', str(sRootArt + '/tv/' + sThumb))
-            oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt+'/tv/'+sThumb, oOutputParameterHandler)    
+            
+            #oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt+'/tv/'+sThumb, oOutputParameterHandler) 
+            
+            oGuiElement = cGuiElement()
+            oGuiElement.setSiteName(SITE_IDENTIFIER)
+            oGuiElement.setFunction('play__')
+            oGuiElement.setTitle(track.title)
+            oGuiElement.setFileName(track.title)
+            oGuiElement.setIcon('tv.png')
+            oGuiElement.setMeta(0)
+            oGuiElement.setThumbnail(sRootArt+'/tv/'+sThumb)
+            oGuiElement.setDirectTvFanart()
+            oGuiElement.setCat(6)
+            
+            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,SITE_IDENTIFIER,'direct_epg','Guide tv Direct')
+            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,SITE_IDENTIFIER,'soir_epg','Guide tv Soir')
+            oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+            oGui.addFolder(oGuiElement, oOutputParameterHandler)
   
     oGui.setEndOfDirectory()
+    
+    
+def direct_epg():
+    oGuiElement = cGuiElement()
+    oInputParameterHandler = cInputParameterHandler()
+    #aParams = oInputParameterHandler.getAllParameter()
+    #print aParams
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sCom = cePg().get_epg(sTitle,'direct')
+
+def soir_epg():
+    oGuiElement = cGuiElement()
+    oInputParameterHandler = cInputParameterHandler()
+
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sCom = cePg().get_epg(sTitle,'soir')
 
 # def showLibreMenu():
     # oGui = cGui()
@@ -159,43 +202,85 @@ def showWeb():
 
     # oGui.setEndOfDirectory()
 
+def showAZ():
     
-# def showLibre():
-    # oGui = cGui()
-    # oInputParameterHandler = cInputParameterHandler()
-    # sUrl = oInputParameterHandler.getValue('siteUrl')
-    # sOrder = oInputParameterHandler.getValue('sOrder')
+    import string
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     
-    # oRequestHandler = cRequestHandler(sUrl)
-    # sHtmlContent = oRequestHandler.request()
-
-    # oParser = cParser()
-    # sPattern = '<url>([^<>]+?)</url><title>([^<>]+?)</title><order>' + sOrder + '</order><icon>(.+?)</icon>'
-    # aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    # if (aResult[0] == True):
-        # total = len(aResult[1])
-        # dialog = cConfig().createDialog(SITE_NAME)
-        # for aEntry in aResult[1]:
-            # cConfig().updateDialog(dialog, total)
-            # if dialog.iscanceled():
-                # break
-                
-            # sTitle = aEntry[1]
-            # sDate = aEntry[2]
-            # sDate = '[' + sDate.split('/')[1] + '/' + sDate.split('/')[0] +'] '
-            # sTitle = sDate + sTitle
+    for i in string.digits:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('AZ', i)
+        oGui.addDir(SITE_IDENTIFIER, 'showTV', i, 'az.png', oOutputParameterHandler)  
             
-            # sDisplayTitle = cUtil().DecoTitle(sTitle)
+    for i in string.ascii_uppercase:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('AZ', i)
+        oGui.addDir(SITE_IDENTIFIER, 'showTV', i, 'az.png', oOutputParameterHandler)
+       
+    oGui.setEndOfDirectory() 
+    
+def showTV():
+    
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
 
-            # oOutputParameterHandler = cOutputParameterHandler()
-            # oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
-            # oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            # oGui.addDirectTV(SITE_IDENTIFIER, 'showLibretv', sDisplayTitle, 'libretv.png' , '', oOutputParameterHandler)    
+    oParser = cParser()
+    #sPattern = '<url>([^<>]+?)</url><title>([^<>]+?)</title><order>' + sOrder + '</order><icon>(.+?)</icon>'
+    sPattern = '<title>(.+?)</title><link>(.+?)</link>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         
-        # cConfig().finishDialog(dialog)
+        #affiche par 
+        if (oInputParameterHandler.exist('AZ')):
+            sAZ = oInputParameterHandler.getValue('AZ')
+            string = filter(lambda t: t[0].strip().capitalize().startswith(sAZ), aResult[1])
+        else :
+            string = sorted(aResult[1], key=lambda t: t[0].strip().capitalize())
         
-        # oGui.setEndOfDirectory()
+        
+        for aEntry in string:
+            cConfig().updateDialog(dialog, total)
+            
+            if dialog.iscanceled():
+                break
+                
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
+            oOutputParameterHandler.addParameter('sMovieTitle', aEntry[0])
+            oOutputParameterHandler.addParameter('sThumbnail', str('tv.png'))
+            oOutputParameterHandler.addParameter('sThumbnail', str(sRootArt + '/tv.png'))
+             
+            oGuiElement = cGuiElement()
+            oGuiElement.setSiteName(SITE_IDENTIFIER)
+            oGuiElement.setFunction('play__')
+            oGuiElement.setTitle(aEntry[0])
+            oGuiElement.setFileName(aEntry[0])
+            oGuiElement.setIcon('tv.png')
+            oGuiElement.setMeta(0)
+            #oGuiElement.setThumbnail('tv.png')
+            oGuiElement.setDirectTvFanart()
+            oGuiElement.setCat(6)
+            
+            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,SITE_IDENTIFIER,'direct_epg','Guide tv Direct')
+            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,SITE_IDENTIFIER,'soir_epg','Guide tv Soir')
+            oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+            oGui.addFolder(oGuiElement, oOutputParameterHandler)
+        
+        cConfig().finishDialog(dialog)
+        
+    oGui.setEndOfDirectory()
     
 # def showLibretv():
     # oGui = cGui()
@@ -455,33 +540,3 @@ def GetRealUrl(chain):
 def openwindows():
     xbmc.executebuiltin( "ActivateWindow(%d, return)" % ( 10601, ) )
     return
-    
-def GetLibreTVFile(Webfile):
-    
-    PathCache = cConfig().getSettingCache()
-    Name = os.path.join(PathCache,'LibreTV'+ time.strftime("%d%m") +'.m3u')
-
-    try:
-        #ckeck if file exist
-        file = open(Name,'r')
-        file.close()
-    except:
-        #delete old file
-        files = os.listdir(PathCache)
-        for file in files:
-            if 'LibreTV' in file:
-                os.remove(os.path.join(PathCache,file))
-                
-        #download new file
-        inf = urllib.urlopen(Webfile)
-        line = inf.read()
-        
-        #save it
-        file = open(Name,'w')
-        file.write(line)
-        
-        #clear
-        file.close()
-        inf.close()
-
-    return Name

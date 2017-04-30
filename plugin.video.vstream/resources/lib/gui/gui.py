@@ -8,7 +8,6 @@ from resources.lib.db import cDb
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
-from resources.lib.epg import cePg
 from resources.lib.parser import cParser
 
 import xbmc,sys
@@ -232,23 +231,6 @@ class cGui():
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
-    def addDirectTV(self, sId, sFunction, sLabel, sIcon, sThumbnail, oOutputParameterHandler = ''):
-
-        oGuiElement = cGuiElement()
-        oGuiElement.setSiteName(sId)
-        oGuiElement.setFunction(sFunction)
-        oGuiElement.setTitle(sLabel)
-        oGuiElement.setIcon(sIcon)
-        oGuiElement.setMeta(0)
-        oGuiElement.setThumbnail(sThumbnail)
-        oGuiElement.setDirectTvFanart()
-        oGuiElement.setCat(6)
-
-        self.createContexMenuEpg(oGuiElement, oOutputParameterHandler)
-        self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
-
-        self.addFolder(oGuiElement, oOutputParameterHandler)
-
     #afficher les liens non playable
     def addFolder(self, oGuiElement, oOutputParameterHandler=''):
     
@@ -461,31 +443,6 @@ class cGui():
 
     def createContexMenuSettings(self, oGuiElement, oOutputParameterHandler= ''):
         self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'globalParametre','globalParametre','opensetting','[COLOR teal]'+cConfig().getlanguage(30023)+'[/COLOR]')
-
-    
-    
-    
-    def createContexMenuEpg(self, oGuiElement, oOutputParameterHandler= ''):
-
-        oContext = cContextElement()
-        oContext.setFile('cGui')
-        oContext.setSiteName('cGui')
-        oContext.setFunction('direct_epg')
-        oContext.setTitle('Guide tv direct')
-
-        oContext.setOutputParameterHandler(oOutputParameterHandler)
-
-        oGuiElement.addContextItem(oContext)
-
-        oContext = cContextElement()
-        oContext.setFile('cGui')
-        oContext.setSiteName('cGui')
-        oContext.setFunction('soir_epg')
-        oContext.setTitle('Guide tv soir')
-
-        oContext.setOutputParameterHandler(oOutputParameterHandler)
-
-        oGuiElement.addContextItem(oContext)
 
 
     def __createContextMenu(self, oGuiElement, oListItem):
@@ -727,21 +684,6 @@ class cGui():
             sCleanTitle = re.sub('(?i)[S|E][0-9]+', '',sCleanTitle)
 
         ui = cConfig().WindowsBoxes(sTitle,sCleanTitle, sMeta,sYear)
-
-    def direct_epg(self):
-        oGuiElement = cGuiElement()
-        oInputParameterHandler = cInputParameterHandler()
-        #aParams = oInputParameterHandler.getAllParameter()
-        #print aParams
-        sTitle = oInputParameterHandler.getValue('sMovieTitle')
-        sCom = cePg().get_epg(sTitle,'direct')
-
-    def soir_epg(self):
-        oGuiElement = cGuiElement()
-        oInputParameterHandler = cInputParameterHandler()
-
-        sTitle = oInputParameterHandler.getValue('sMovieTitle')
-        sCom = cePg().get_epg(sTitle,'soir')
 
     def __createItemUrl(self, oGuiElement, oOutputParameterHandler=''):
         if (oOutputParameterHandler == ''):

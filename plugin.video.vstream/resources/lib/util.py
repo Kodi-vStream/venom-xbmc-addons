@@ -6,7 +6,9 @@ import xbmcgui
 import xbmcaddon
 import htmlentitydefs
 import unicodedata
+
 COUNT = 0
+DIALOG2 = None
 
 class cUtil:
 
@@ -286,27 +288,38 @@ def VScreateDialogSelect(label):
     ret = oDialog.select('Select Quality', label)  
     return ret
 
-#doucle creation si recherche global
 def createDialog(sSite):
-    oDialog = xbmcgui.DialogProgress()
-    oDialog.create(sSite,None)
-    return oDialog
+    if DIALOG2 == None:
+        oDialog = xbmcgui.DialogProgress()
+        oDialog.create(sSite)
+        global DIALOG2
+        DIALOG2 = oDialog
+        return oDialog
+    else:
+        return DIALOG2
+
    
 def updateDialog(dialog,total):
-    global COUNT
-    COUNT += 1
     if xbmcgui.Window(10101).getProperty('search') != 'true':
-        iPercent = int(float(COUNT * 100) / total)
-        dialog.update(iPercent, 'Chargement: '+str(COUNT)+'/'+str(total))
+       global COUNT
+       COUNT += 1
+       iPercent = int(float(COUNT * 100) / total)
+       dialog.update(iPercent, 'Chargement: '+str(COUNT)+'/'+str(total))
 
 def finishDialog(dialog):
     if xbmcgui.Window(10101).getProperty('search') != 'true':
-        dialog.close()
-        del dialog
-        
+       dialog.close()
+       del dialog
+    
+def updateDialogSearch(dialog, total, site):
+    global COUNT
+    COUNT += 1
+    iPercent = int(float(COUNT * 100) / total)
+    dialog.update(iPercent, 'Chargement: '+str(site))
+    
 def VSerror(e):
-    xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % ('Vstream', ('Erreur: '+str(e)), '5000', xbmcgui.NOTIFICATION_ERROR))
-    VSlog('Erreur: ' + str(e))  
+    xbmcgui.Dialog().notification('Vstream','Erreur: '+str(e),xbmcgui.NOTIFICATION_ERROR,2000)
+    VSlog('Erreur: ' + str(e))
     
 def VSshowInfo(sTitle, sDescription, iSeconds=0,sound = True):
     if (iSeconds == 0):
@@ -323,12 +336,12 @@ def VSshowInfo(sTitle, sDescription, iSeconds=0,sound = True):
 def VStranslatePathAddon(location):
     #Note, location = (author,changelog,description,disclaimer,fanart,icon,id,name,path,profile,stars,summary,type,version)
     #ex util.VStranslatePathAddon("profile")
-    return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo(location))
+    return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo(location)).decode("utf-8")
     
 def VStranslatePath(location):
     #ex util.VStranslatePath("special://logpath/") > http://kodi.wiki/view/Special_protocol
-    return xbmc.translatePath(location)
+    return xbmc.translatePath(location).decode("utf-8")
     
 def VSlang(lang):
     #util.VSlang(30003)
-    return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang))
+    return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang)).decode("utf-8")
