@@ -28,7 +28,7 @@ class cTMDb:
         self.lang = lang
         self.poster = 'https://image.tmdb.org/t/p/%s' % cConfig().getSetting('poster_tmdb')
         self.fanart = 'https://image.tmdb.org/t/p/%s'  % cConfig().getSetting('backdrop_tmdb')
-        self.cache = cConfig().getFileCache()
+        self.cache = cConfig().getFileCache().decode("utf-8")
         
         try:
             if not os.path.exists(self.cache):
