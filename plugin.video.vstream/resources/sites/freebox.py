@@ -58,6 +58,10 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_TV)
+    oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Télévision (A-Z) (Bêta)', 'tv.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_TV)
     oGui.addDir(SITE_IDENTIFIER, 'showTV', 'Télévision (Bêta)', 'tv.png', oOutputParameterHandler)
 
     # oOutputParameterHandler = cOutputParameterHandler()
@@ -198,6 +202,27 @@ def soir_epg():
 
     # oGui.setEndOfDirectory()
 
+def showAZ():
+    
+    import string
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    for i in string.digits:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('AZ', i)
+        oGui.addDir(SITE_IDENTIFIER, 'showTV', i, 'az.png', oOutputParameterHandler)  
+            
+    for i in string.ascii_uppercase:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('AZ', i)
+        oGui.addDir(SITE_IDENTIFIER, 'showTV', i, 'az.png', oOutputParameterHandler)
+       
+    oGui.setEndOfDirectory() 
     
 def showTV():
     
@@ -217,16 +242,20 @@ def showTV():
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         
-        #affiche par ordre al
+        #affiche par 
+        if (oInputParameterHandler.exist('AZ')):
+            sAZ = oInputParameterHandler.getValue('AZ')
+            string = filter(lambda t: t[0].strip().capitalize().startswith(sAZ), aResult[1])
+        else :
+            string = sorted(aResult[1], key=lambda t: t[0].strip().capitalize())
         
-        string = sorted(aResult[1], key=lambda t: t[0].strip().capitalize())
         
         for aEntry in string:
             cConfig().updateDialog(dialog, total)
             
             if dialog.iscanceled():
                 break
-
+                
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', aEntry[0])
