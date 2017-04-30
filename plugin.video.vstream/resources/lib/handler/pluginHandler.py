@@ -56,7 +56,7 @@ class cPluginHandler:
         oConfig = cConfig()
 
         sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/art/')
+        sFolder = os.path.join(sFolder, 'resources/art/').decode("utf-8")
        
         sFolder = sFolder.replace('\\', '/')
         return sFolder
@@ -65,7 +65,7 @@ class cPluginHandler:
         oConfig = cConfig()
 
         sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/sites')
+        sFolder = os.path.join(sFolder, 'resources/sites').decode("utf-8")
 
         # xbox hack        
         sFolder = sFolder.replace('\\', '/')
@@ -101,7 +101,7 @@ class cPluginHandler:
         oConfig = cConfig()
 
         sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/sites')
+        sFolder = os.path.join(sFolder, 'resources/sites').decode("utf-8")
 
         # xbox hack        
         sFolder = sFolder.replace('\\', '/')
