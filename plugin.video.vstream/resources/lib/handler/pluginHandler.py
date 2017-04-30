@@ -65,7 +65,7 @@ class cPluginHandler:
         oConfig = cConfig()
 
         sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/sites').decode("utf-8")
+        sFolder = os.path.join(sFolder, 'resources/sites')
 
         # xbox hack        
         sFolder = sFolder.replace('\\', '/')
@@ -101,7 +101,7 @@ class cPluginHandler:
         oConfig = cConfig()
 
         sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/sites').decode("utf-8")
+        sFolder = os.path.join(sFolder, 'resources/sites')
 
         # xbox hack        
         sFolder = sFolder.replace('\\', '/')
@@ -113,7 +113,6 @@ class cPluginHandler:
         for sFileName in aFileNames:
             cConfig().log("Load Plugin " + str(sFileName))
 
-            # wir versuchen das plugin zu importieren
             aPlugin = self.__importPlugin(sFileName)
             if (aPlugin[0] != False):
                 sSiteName = aPlugin[0]
