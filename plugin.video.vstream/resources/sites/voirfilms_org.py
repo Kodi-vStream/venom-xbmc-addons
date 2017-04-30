@@ -99,7 +99,7 @@ def AlphaSearch():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + sTitle.upper())
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]'+ sTitle +'[/COLOR]', 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]'+ sTitle +'[/COLOR]', 'az.png', oOutputParameterHandler)
         
     cConfig().finishDialog(dialog)
     
@@ -199,7 +199,7 @@ def showAlpha():
        
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'az.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]'+ sTitle +'[/COLOR]', 'az.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()
  
