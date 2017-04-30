@@ -177,7 +177,7 @@ class cRechercheHandler:
         except: pass
 
         sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/sites').decode("utf-8")
+        sFolder = os.path.join(sFolder, 'resources/sites')
 
         # xbox hack
         sFolder = sFolder.replace('\\', '/')
