@@ -514,16 +514,16 @@
   {
     "name": "nowvideo.py",
     "path": "plugin.video.vstream/resources/hosters/nowvideo.py",
-    "sha": "eb28add4385d83ede9d682fb8b5f0931751836d3",
-    "size": 3766,
+    "sha": "6ab377a753d3ea5416d58b6a08c9dee9855a5881",
+    "size": 2807,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/nowvideo.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/nowvideo.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/eb28add4385d83ede9d682fb8b5f0931751836d3",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/6ab377a753d3ea5416d58b6a08c9dee9855a5881",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/nowvideo.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/nowvideo.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/eb28add4385d83ede9d682fb8b5f0931751836d3",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/6ab377a753d3ea5416d58b6a08c9dee9855a5881",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/nowvideo.py"
     }
   },
