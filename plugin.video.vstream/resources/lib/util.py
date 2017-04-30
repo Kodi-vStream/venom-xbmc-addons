@@ -336,12 +336,12 @@ def VSshowInfo(sTitle, sDescription, iSeconds=0,sound = True):
 def VStranslatePathAddon(location):
     #Note, location = (author,changelog,description,disclaimer,fanart,icon,id,name,path,profile,stars,summary,type,version)
     #ex util.VStranslatePathAddon("profile")
-    return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo(location))
+    return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo(location)).decode("utf-8")
     
 def VStranslatePath(location):
     #ex util.VStranslatePath("special://logpath/") > http://kodi.wiki/view/Special_protocol
-    return xbmc.translatePath(location)
+    return xbmc.translatePath(location).decode("utf-8")
     
 def VSlang(lang):
     #util.VSlang(30003)
-    return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang))
+    return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang)).decode("utf-8")
