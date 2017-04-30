@@ -192,6 +192,10 @@ msgctxt "#30105"
 msgid "Genre"
 msgstr "Genres"
 
+msgctxt "#30106"
+msgid "By Years"
+msgstr "Par Années"
+
 msgctxt "#30107"
 msgid "VF"
 msgstr "VF"
