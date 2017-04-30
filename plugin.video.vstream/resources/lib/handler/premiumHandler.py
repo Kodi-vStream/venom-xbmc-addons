@@ -3,13 +3,13 @@
 from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
 from resources.lib.parser import cParser
+from resources.lib.config import GestionCookie
 
 import urllib2,urllib
 import xbmc
 import xbmcaddon
 import re,os
 
-PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 headers = { 'User-Agent' : UA }
 
@@ -40,36 +40,9 @@ class cPremiumHandler:
     def getPassword(self):
         sPassword = cConfig().getSetting('hoster_' + str(self.__sHosterIdentifier) + '_password')
         return sPassword
-
-    #-----------------------
-    #     Cookies gestion
-    #------------------------
-    
-    def DeleteCookie(self,Domain):
-        file = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
-        os.remove(os.path.join(PathCache,file).decode("utf-8"))
-    
-    def SaveCookie(self,Domain,data):
-        Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt').decode("utf-8")
-
-        #save it
-        file = open(Name,'w')
-        file.write(data)
-
-        file.close()
-        
-    def Readcookie(self,Domain):
-        Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt').decode("utf-8")     
-        try:
-            file = open(Name,'r')
-            data = file.read()
-            file.close()
-        except:
-            return ''       
-        return data
         
     def AddCookies(self):
-        cookies = self.Readcookie(self.__sHosterIdentifier)
+        cookies = GestionCookie().Readcookie(self.__sHosterIdentifier)
         return 'Cookie=' + cookies
         
     def Checklogged(self,code):
@@ -189,7 +162,7 @@ class cPremiumHandler:
                     cookies = cookies + cook[0] + '=' + cook[1]+ ';'
 
         #save cookie
-        self.SaveCookie(self.__sHosterIdentifier,cookies)
+        GestionCookie().SaveCookie(self.__sHosterIdentifier,cookies)
         
         cGui().showInfo(self.__sDisplayName, 'Authentification reussie' , 5)
         cConfig().log( 'Auhentification reussie' )
@@ -217,14 +190,14 @@ class cPremiumHandler:
         return sHtmlContent
         
     def GetHtml(self,url,data = None):
-        cookies = self.Readcookie(self.__sHosterIdentifier)
+        cookies = GestionCookie().Readcookie(self.__sHosterIdentifier)
         
         #aucun ne marche sans cookies
         if (cookies== '') and not (self.__LoginTry) and self.__Ispremium:
             self.Authentificate()
             if not (self.isLogin):
                 return ''
-            cookies = self.Readcookie(self.__sHosterIdentifier)           
+            GestionCookie().Readcookie(self.__sHosterIdentifier)          
         
         sHtmlContent = self.GetHtmlwithcookies(url,data,cookies)
         
@@ -237,7 +210,7 @@ class cPremiumHandler:
             xbmc.log('Cookies non valables')
             self.Authentificate()
             if (self.isLogin):
-                cookies = self.Readcookie(self.__sHosterIdentifier)
+                cookies = GestionCookie().Readcookie(self.__sHosterIdentifier)
                 sHtmlContent = self.GetHtmlwithcookies(url,data,cookies)
             else:
                 return ''
