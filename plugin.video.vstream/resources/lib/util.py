@@ -6,7 +6,9 @@ import xbmcgui
 import xbmcaddon
 import htmlentitydefs
 import unicodedata
+
 COUNT = 0
+DIALOG2 = None
 
 class cUtil:
 
@@ -286,27 +288,38 @@ def VScreateDialogSelect(label):
     ret = oDialog.select('Select Quality', label)  
     return ret
 
-#doucle creation si recherche global
 def createDialog(sSite):
-    oDialog = xbmcgui.DialogProgress()
-    oDialog.create(sSite,None)
-    return oDialog
+    if DIALOG2 == None:
+        oDialog = xbmcgui.DialogProgress()
+        oDialog.create(sSite)
+        global DIALOG2
+        DIALOG2 = oDialog
+        return oDialog
+    else:
+        return DIALOG2
+
    
 def updateDialog(dialog,total):
-    global COUNT
-    COUNT += 1
     if xbmcgui.Window(10101).getProperty('search') != 'true':
-        iPercent = int(float(COUNT * 100) / total)
-        dialog.update(iPercent, 'Chargement: '+str(COUNT)+'/'+str(total))
+       global COUNT
+       COUNT += 1
+       iPercent = int(float(COUNT * 100) / total)
+       dialog.update(iPercent, 'Chargement: '+str(COUNT)+'/'+str(total))
 
 def finishDialog(dialog):
     if xbmcgui.Window(10101).getProperty('search') != 'true':
-        dialog.close()
-        del dialog
-        
+       dialog.close()
+       del dialog
+    
+def updateDialogSearch(dialog, total, site):
+    global COUNT
+    COUNT += 1
+    iPercent = int(float(COUNT * 100) / total)
+    dialog.update(iPercent, 'Chargement: '+str(site))
+    
 def VSerror(e):
     xbmcgui.Dialog().notification('Vstream','Erreur: '+str(e),xbmcgui.NOTIFICATION_ERROR,2000)
-    VSlog('Erreur: ' + str(e)) 
+    VSlog('Erreur: ' + str(e))
     
 def VSshowInfo(sTitle, sDescription, iSeconds=0,sound = True):
     if (iSeconds == 0):
