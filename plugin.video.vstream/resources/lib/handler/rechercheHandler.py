@@ -153,7 +153,7 @@ class cRechercheHandler:
         oConfig = cConfig()
 
         sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/art/')
+        sFolder = os.path.join(sFolder, 'resources/art/').decode("utf-8")
 
         sFolder = sFolder.replace('\\', '/')
         return sFolder

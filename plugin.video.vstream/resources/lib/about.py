@@ -83,7 +83,7 @@ class cAbout:
     def getRootPath(self, folder):
         sMath = cConfig().getAddonPath().replace('plugin.video.vstream', '') 
         
-        sFolder = os.path.join(sMath, folder)
+        sFolder = os.path.join(sMath, folder).decode("utf-8")
         # xbox hack        
         sFolder = sFolder.replace('\\', '/')
         return sFolder
@@ -120,9 +120,6 @@ class cAbout:
                         rootpath = self.getRootPath(i['path'])
                         
                         if (self.size(rootpath) != i['size']):
-                            #print i['name']
-                            #print self.size(rootpath)
-                            #print i['size']
                             sDown = sDown+1
                             break #Si on en trouve un, pas besoin de tester les autres.
                             

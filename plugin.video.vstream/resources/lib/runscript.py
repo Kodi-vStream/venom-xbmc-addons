@@ -7,6 +7,8 @@ import sys, os
 import urllib, urllib2
 import sqlite3
 
+from util import VStranslatePath
+
 sLibrary = xbmc.translatePath(cConfig().getAddonPath())
 sys.path.append (sLibrary) 
 
@@ -60,16 +62,16 @@ class cClear:
                 cached_fav = cConfig().getFileFav()
                 cached_DB = cConfig().getFileDB()
                 cached_Cache = cConfig().getFileCache()
-                self.ClearDir2(xbmc.translatePath(cached_fav),True)
-                self.ClearDir2(xbmc.translatePath(cached_DB),True)
-                self.ClearDir2(xbmc.translatePath(cached_Cache),True)
+                self.ClearDir2(VStranslatePath(cached_fav),True)
+                self.ClearDir2(VStranslatePath(cached_DB),True)
+                self.ClearDir2(VStranslatePath(cached_Cache),True)
                 xbmc.executebuiltin("XBMC.Notification(Clear Addon Cache,Successful,5000,"")")
             return
 
         elif (env == 'xbmc'):
             dialog = xbmcgui.Dialog()
             if dialog.yesno('vStream', 'Êtes-vous sûr ?','','','Non', 'Oui'):
-                self.ClearDir(xbmc.translatePath('special://temp/'),True)
+                self.ClearDir(VStranslatePath('special://temp/'),True)
                 xbmc.executebuiltin("XBMC.Notification(Clear XBMC Cache,Successful,5000,"")")
             return
 
@@ -77,7 +79,7 @@ class cClear:
             dialog = xbmcgui.Dialog()
             if dialog.yesno('vStream', 'Êtes-vous sûr ?','','','Non', 'Oui'):
                 xbmc.executebuiltin("XBMC.Notification(Clear .fi Files ,Successful,2000,"")")
-                path = xbmc.translatePath('special://temp/')
+                path = VStranslatePath('special://temp/')
                 filenames = next(os.walk(path))[2]
                 for i in filenames:
                     if ".fi" in i:
@@ -87,7 +89,7 @@ class cClear:
         elif (env == 'uplog'):
             dialog = xbmcgui.Dialog()
             if dialog.yesno('vStream', 'Êtes-vous sûr ?','','','Non', 'Oui'):
-                path = xbmc.translatePath('special://logpath/')
+                path = VStranslatePath('special://logpath/')
                 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
                 headers = { 'User-Agent' : UA }
                 filenames = next(os.walk(path))[2]
@@ -137,7 +139,7 @@ class cClear:
                     listitems = []    
                     oPluginHandler = cPluginHandler()
                     aPlugins = oPluginHandler.getSearchPlugins()
-                    #aPlugins = ['Adkami.com', u'adkami_com', 'Bienvenue sur ADkami.com.']
+
                     for aPlugin in aPlugins:
                         #teste si deja dans le dsip
                         sPluginSettingsName = sDips+'_' +aPlugin[1]
@@ -208,19 +210,19 @@ class cClear:
             dialog = xbmcgui.Dialog()
             if dialog.yesno('vStream', 'Êtes-vous sûr ? Ceci effacera toutes les thumbnails ','','','Non', 'Oui'):
                 xbmc.executebuiltin("XBMC.Notification(Clear Thumbnails ,Successful,2000,"")")
-                path = xbmc.translatePath('special://userdata/Thumbnails/')
-                path2 = xbmc.translatePath('special://userdata/Database/')
+                path = VStranslatePath('special://userdata/Thumbnails/')
+                path2 = VStranslatePath('special://userdata/Database/')
                 for i in os.listdir(path):
-                    folders = os.path.join(path, i)
+                    folders = os.path.join(path, i).encode('utf-8')
                     if os.path.isdir(folders):
                         p = next(os.walk(folders))[2]
                         for x in p:
-                            os.remove(os.path.join(folders, x))
+                            os.remove(os.path.join(folders, x).encode('utf-8'))
                        
                 filenames = next(os.walk(path2))[2]
                 for x in filenames:
                     if "exture" in x:
-                        con = sqlite3.connect(os.path.join(path2, x))
+                        con = sqlite3.connect(os.path.join(path2, x).encode('utf-8'))
                         cursor = con.cursor()
                         cursor.execute("DELETE FROM texture")
                         con.commit()
@@ -238,7 +240,7 @@ class cClear:
         except:
             pass
         for the_file in os.listdir(dir):
-            file_path = os.path.join(dir, the_file)
+            file_path = os.path.join(dir, the_file).encode('utf-8')
             if clearNested and os.path.isdir(file_path):
                 self.ClearDir(file_path, clearNested)
                 try: os.rmdir(file_path)

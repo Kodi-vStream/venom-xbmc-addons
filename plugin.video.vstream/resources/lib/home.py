@@ -91,7 +91,7 @@ class cHome:
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('cFav', 'getFavourites', '[COLOR teal]'+cConfig().getlanguage(30210)+'[/COLOR]', 'mark.png', oOutputParameterHandler)
+        oGui.addDir('cFav', 'getFavourites', '[COLOR teal]' + cConfig().getlanguage(30210) + '[/COLOR]', 'mark.png', oOutputParameterHandler)
         
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -100,7 +100,7 @@ class cHome:
         if (cConfig().getSetting('home_update') == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'showUpdate', '[COLOR green]Mise a jour disponible[/COLOR]', 'update.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showUpdate', '[COLOR green]Mise à jour disponible[/COLOR]', 'update.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
         if (cConfig().getSetting("active-view") == 'true'):
@@ -195,6 +195,10 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_GENRES')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30120), cConfig().getlanguage(30105)), 'films_genres.png', oOutputParameterHandler)
 
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_ANNEES')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30120), cConfig().getlanguage(30106)), 'films.png', oOutputParameterHandler)
+        
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_VF')
         # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '[COLOR '+color_films+']'+cConfig().getlanguage(30134)+'[/COLOR]', 'films_vf.png', oOutputParameterHandler)
@@ -224,6 +228,10 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'SERIE_GENRES')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30121), cConfig().getlanguage(30105)), 'series_genres.png', oOutputParameterHandler)
 
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'SERIE_ANNEES')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30121), cConfig().getlanguage(30106)), 'series.png', oOutputParameterHandler)
+        
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'SERIE_VFS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30121), cConfig().getlanguage(30107)), 'series_vf.png', oOutputParameterHandler)

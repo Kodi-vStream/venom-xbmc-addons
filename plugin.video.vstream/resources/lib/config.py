@@ -84,7 +84,7 @@ class cConfig():
             self.__oId = self.__oSettings.getAddonInfo("id")
             self.__oPath = self.__oSettings.getAddonInfo("path")
             self.__oName = self.__oSettings.getAddonInfo("name")
-            self.__oCache = xbmc.translatePath(self.__oSettings.getAddonInfo("profile")).decode("utf-8")
+            self.__oCache = xbmc.translatePath(self.__oSettings.getAddonInfo("profile"))
             self.__sRootArt = os.path.join(self.__oPath, 'resources' , 'art', '')
             self.__sIcon = os.path.join(self.__oPath,'resources', 'art','icon.png')
             self.__sFanart = os.path.join(self.__oPath,'resources','art','fanart.jpg')

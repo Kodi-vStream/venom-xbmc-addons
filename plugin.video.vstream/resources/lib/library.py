@@ -18,19 +18,19 @@ SITE_NAME = 'Library'
 class cLibrary:
 
     def __init__(self):
-        self.__sMovieFolder = xbmc.translatePath(cConfig().getSetting('Library_folder_Movies'))
-        self.__sTVFolder = xbmc.translatePath(cConfig().getSetting('Library_folder_TVs'))
+        self.__sMovieFolder = xbmc.translatePath(cConfig().getSetting('Library_folder_Movies')).decode("utf-8")
+        self.__sTVFolder = xbmc.translatePath(cConfig().getSetting('Library_folder_TVs')).decode("utf-8")
         
         if not self.__sMovieFolder:
             PathCache = cConfig().getSettingCache()
-            self.__sMovieFolder = os.path.join(PathCache,'Movies\\')
+            self.__sMovieFolder = os.path.join(PathCache,'Movies\\').decode("utf-8")
             cConfig().setSetting('Library_folder_Movies',self.__sMovieFolder)
         if not xbmcvfs.exists(self.__sMovieFolder):
                 xbmcvfs.mkdir(self.__sMovieFolder)
                 
         if not self.__sTVFolder:
             PathCache = cConfig().getSettingCache()
-            self.__sTVFolder = os.path.join(PathCache,'TVs\\')
+            self.__sTVFolder = os.path.join(PathCache,'TVs\\').decode("utf-8")
             cConfig().setSetting('Library_folder_TVs',self.__sTVFolder)
         if not xbmcvfs.exists(self.__sTVFolder):
                 xbmcvfs.mkdir(self.__sTVFolder)
@@ -131,4 +131,3 @@ class cLibrary:
         oInputParameterHandler = cInputParameterHandler()
         sFolder = oInputParameterHandler.getValue('folder')
         xbmc.executebuiltin("Container.Update(" + sFolder + ")")
-

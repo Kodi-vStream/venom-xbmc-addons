@@ -56,7 +56,7 @@ class cPluginHandler:
         oConfig = cConfig()
 
         sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/art/')
+        sFolder = os.path.join(sFolder, 'resources/art/').decode("utf-8")
        
         sFolder = sFolder.replace('\\', '/')
         return sFolder
@@ -113,7 +113,6 @@ class cPluginHandler:
         for sFileName in aFileNames:
             cConfig().log("Load Plugin " + str(sFileName))
 
-            # wir versuchen das plugin zu importieren
             aPlugin = self.__importPlugin(sFileName)
             if (aPlugin[0] != False):
                 sSiteName = aPlugin[0]
