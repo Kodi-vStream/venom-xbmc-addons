@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from config import cConfig
-from util import isKrypton,VStranslatePath
+
 import xbmc, xbmcgui, xbmcaddon
 import sys, os
 import urllib, urllib2
@@ -77,11 +77,7 @@ class cClear:
             dialog = xbmcgui.Dialog()
             if dialog.yesno('vStream', 'Êtes-vous sûr ?','','','Non', 'Oui'):
                 xbmc.executebuiltin("XBMC.Notification(Clear .fi Files ,Successful,2000,"")")
-                if isKrypton() == True:
-                    path = VStranslatePath('special://temp/archive_cache/')
-                else:
-                    path = VStranslatePath('special://temp/')
-                    
+                path = xbmc.translatePath('special://temp/')
                 filenames = next(os.walk(path))[2]
                 for i in filenames:
                     if ".fi" in i:
@@ -237,7 +233,10 @@ class cClear:
         return
 
     def ClearDir(self, dir, clearNested = False):
-        dir = dir.decode("utf8")
+        try:
+            dir = dir.decode("utf8")
+        except:
+            pass
         for the_file in os.listdir(dir):
             file_path = os.path.join(dir, the_file)
             if clearNested and os.path.isdir(file_path):
@@ -249,7 +248,10 @@ class cClear:
                 except Exception, e: print str(e)
                     
     def ClearDir2(self, dir, clearNested = False):
-        dir = dir.decode("utf8")
+        try:
+            dir = dir.decode("utf8")
+        except:
+            pass
         try:os.unlink(dir)
         except Exception, e: print str(e)
 
