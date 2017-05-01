@@ -197,7 +197,7 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_ANNEES')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30120), cConfig().getlanguage(30106)), 'films.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30120), cConfig().getlanguage(30106)), 'films_annees.png', oOutputParameterHandler)
         
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_VF')
@@ -230,7 +230,7 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'SERIE_ANNEES')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30121), cConfig().getlanguage(30106)), 'series.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30121), cConfig().getlanguage(30106)), 'series_annees.png', oOutputParameterHandler)
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'SERIE_VFS')
