@@ -239,17 +239,17 @@ def showTV():
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if (aResult[0] == True):
-        total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         
         #affiche par 
         if (oInputParameterHandler.exist('AZ')):
             sAZ = oInputParameterHandler.getValue('AZ')
             string = filter(lambda t: t[0].strip().capitalize().startswith(sAZ), aResult[1])
+            string = sorted(string, key=lambda t: t[0].strip().capitalize())
         else :
             string = sorted(aResult[1], key=lambda t: t[0].strip().capitalize())
         
-        
+        total = len(string)
         for aEntry in string:
             cConfig().updateDialog(dialog, total)
             
