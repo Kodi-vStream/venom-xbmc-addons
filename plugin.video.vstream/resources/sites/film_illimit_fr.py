@@ -29,11 +29,11 @@ URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
  
 def load():
     oGui = cGui()
- 
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-   
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
@@ -41,7 +41,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films (HD)', 'films_hd.png', oOutputParameterHandler)
-   
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
@@ -49,7 +49,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries', 'series.png', oOutputParameterHandler)
-
+    
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -87,6 +87,8 @@ def showGenres():
     liste.append( ['Policier',URL_MAIN + 'films/policier/'] )
     liste.append( ['Romance',URL_MAIN + 'films/romance/'] )
     liste.append( ['Science-fiction',URL_MAIN + 'films/science-fiction/'] )
+    liste.append( ['Spectacle (FR)',URL_MAIN + 'spectacle/francais-spectacle/'] )
+    liste.append( ['Spectacle (VOSTFR)',URL_MAIN + 'spectacle/vostfr-spectacle/'] )
     liste.append( ['Sport',URL_MAIN + 'films/sport/'] )
     liste.append( ['Suspense/Thriller',URL_MAIN + 'films/thrillersuspense/'] )
     liste.append( ['Téléfilm',URL_MAIN + 'films/telefilm/'] )
