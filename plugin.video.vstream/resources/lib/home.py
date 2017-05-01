@@ -268,6 +268,10 @@ class cHome:
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30122), cConfig().getlanguage(30105)), 'animes_genres.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'ANIM_ANNEES')
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30122), cConfig().getlanguage(30106)), 'animes_annees.png', oOutputParameterHandler)
+        
+        oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_ENFANTS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30122), cConfig().getlanguage(30109)), 'animes_enfants.png', oOutputParameterHandler)
         
