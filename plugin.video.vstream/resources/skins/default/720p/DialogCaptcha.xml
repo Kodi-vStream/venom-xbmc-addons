@@ -37,7 +37,7 @@
 				<width>215</width>
 				<height>80</height>
                 <fadetime>200</fadetime>
-                <animation effect="fade" start="0" time="400" condition="Control.IsVisible(2)" reversible="true">Conditional</animation>          
+                <animation effect="fade" start="0" time="400" condition="Window.IsActive(VirtualKeyboard)" reversible="true">Conditional</animation>          
 			</control>
             
             <control type="image">
