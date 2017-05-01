@@ -1,7 +1,4 @@
 #EXTM3U
-
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]Chiffres[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", 100 % 
 http://gisv3.tv-radio.com/station/centpourcent-mp3/centpourcent-mp3-128k.m3u
 #EXTINF:-1 tvg-logo="radio.png", 102FM
@@ -14,8 +11,6 @@ http://www.4uradios.com/4urocknmetal.m3u
 http://213.186.61.62:9000/listen.pls
 #EXTINF:-1 tvg-logo="radio.png", 77 FM
 http://www.77fm.net/77FM.m3u
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]A[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", Accent 4
 http://str0.creacast.com:900/listen.pls
 #EXTINF:-1 tvg-logo="radio.png", Activ radio 
@@ -52,8 +47,6 @@ http://listen.radionomy.com/alwadj.m3u
 http://alwadj.jimdo.com/?logout=1 
 #EXTINF:-1 tvg-logo="radio.png", Aufilduson80s 
 http://listen.radionomy.com/aufilduson80s
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]B[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", BBC Radio 1 
 http://bbc.co.uk/radio/listen/live/r1.asx 
 #EXTINF:-1 tvg-logo="radio.png", BBC Radio 1 
@@ -82,8 +75,6 @@ http://www.boosterfm.net/liveb80/listenb80.m3u
 http://listen.radionomy.com/bsb31.m3u 
 #EXTINF:-1 tvg-logo="radio.png", BSB 100% Hits des Clubs 
 http://listen.radionomy.com/bsbradio.m3u 
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]C[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png",  C9 Radio 
 http://streaming.c9radio.eu/listen.m3u 
 #EXTINF:-1 tvg-logo="radio.png",  CambosFM 
@@ -146,8 +137,6 @@ http://213.186.39.130:8000/zione
 http://broadcast.infomaniak.ch/rsr-couleur3-high.mp3.pls 
 #EXTINF:-1 tvg-logo="radio.png",  Cristal FM 
 http://cristalsite.no-ip.biz/default.m3u 
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]D[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png",  Demoiselle FM 
 http://213.186.61.62:8800/listen.pls 
 #EXTINF:-1 tvg-logo="radio.png",  Difé Radio 
@@ -158,8 +147,6 @@ http://91.121.156.212:8200/listen.pls
 http://88.191.24.237:8080/radio.mp3 
 #EXTINF:-1 tvg-logo="radio.png",  Divergence FM 
 http://divergence-fm.org:8008/divergence.mp3.m3u 
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]E[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png",  ECN 
 http://gisv3.tv-radio.com/station/ecn/ecn-20k.asx
 #EXTINF:-1 tvg-logo="radio.png",  EFM
@@ -182,8 +169,6 @@ http://vipicecast.yacast.net/europe1.m3u
 http://vipicecast.yacast.net/europe1sport.m3u
 #EXTINF:-1 tvg-logo="radio.png", Evasion
 http://87.98.138.91/stream.mp3
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]F[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", Febradio
 http://febradio.vestaradio.com/listen.m3u
 #EXTINF:-1 tvg-logo="radio.png", FG America
@@ -331,8 +316,6 @@ http://ns1.futuradios.net/dance-thd.m3u
 http://ns1.futuradios.net/futuradios-thd.m3u 
 #EXTINF:-1 tvg-logo="radio.png", Futuradio - Sweet 
 http://ns1.futuradios.net/sweet-thd.m3u 
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]G[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", Génération Disco Funk 
 http://www.generationdiscofunk.com/v3/pls/stream02/hd.m3u 
 #EXTINF:-1 tvg-logo="radio.png", Génération Do 
@@ -345,8 +328,6 @@ http://91.121.169.50:7000/listen.pls
 http://www.urban-radio.com/128.m3u 
 #EXTINF:-1 tvg-logo="radio.png", Graph'Hit 
 http://ghstreaming.utc.fr/playlists/grafhit.mp3.m3u 
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]H[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", Happy FM 
 http://88.191.44.54:8008/listen.pls 
 #EXTINF:-1 tvg-logo="radio.png", Hit-Generation -100% Club 
@@ -371,10 +352,8 @@ http://www.hotmixradio.fr/stream/hotmix.m3u
 http://www.hotmixradio.fr/stream/hotmixrock.m3u 
 #EXTINF:-1 tvg-logo="radio.png", House Nation Radio 
 http://srv9.votreradio.com:8006/listen.pls 
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]I[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", Ici et Maintenant 
-http://radio.rim952.fr:8001/stream.ogg http://radio.rim952.fr:8000/stream.mp3 http://radio.rim952.fr:8002/stream3.mp3 (bas débit) 
+http://radio.rim952.fr:8001/stream.ogg http://radio.rim952.fr:8000/stream.mp3
 #EXTINF:-1 tvg-logo="radio.png", idFM 98.0 
 http://88.191.12.229/live/idfm_pls_bq.pls 
 #EXTINF:-1 tvg-logo="radio.png", Imagine La Webradio 
@@ -391,8 +370,6 @@ http://broadcast.infomaniak.net/infoconcert-alternative-high.mp3.pls
 http://broadcast.infomaniak.net/infoconcert-francolive-high.mp3.pls 
 #EXTINF:-1 tvg-logo="radio.png", Info Concert Memory Live 
 http://broadcast.infomaniak.net/infoconcert-memorylive-high.mp3.pls 
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]J[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", Jazz Radio 
 http://www.jazzradio.fr/frequencejazz-high.m3u 
 #EXTINF:-1 tvg-logo="radio.png", Jeunzradio 
@@ -401,9 +378,6 @@ http://streaming.radionomy.com:8000/JeunZ-RADIO.m3u
 http://www.tv-radio.com/station/jordanne_fm_mp3/jordanne_fm_mp3-96k.m3u 
 #EXTINF:-1 tvg-logo="radio.png", Js Dj Radio 
 http://streaming.radionomy.com:8000/Js-Dj-RaDio.m3u 
-
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]K[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", Kif Cool 
 http://www.kifradio.com/cool/kifcool256.m3u 
 #EXTINF:-1 tvg-logo="radio.png", Kif Radio 
@@ -414,8 +388,6 @@ http://www.kifradio.com/kifusa.m3u
 http://gisv3.tv-radio.com/station/kissfm-mp3/kissfm-mp3-128k.m3u 
 #EXTINF:-1 tvg-logo="radio.png", Kiss FM Dance 
 http://gisv3.tv-radio.com/station/kissdance-mp3/kissdance-mp3-128k.m3u 
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]L[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", La Grosse Radio (Rock) 
 http://www.lagrosseradio.com/son/stream/192.m3u 
 #EXTINF:-1 tvg-logo="radio.png", La Radio de sebb 
@@ -436,8 +408,6 @@ http://srv9.votreradio.com/PLAYERS/player_53.m3u
 http://www.Live9.fr/ecoute/192.m3u 
 #EXTINF:-1 tvg-logo="radio.png", Lyon 1ere 
 http://broadcast.infomaniak.net:80/lyon1ere-high.mp3 
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]M[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", M2 80 
 http://live.m2stream.fr/m280-128.mp3 
 #EXTINF:-1 tvg-logo="radio.png", M2 90 
@@ -498,8 +468,6 @@ http://www.mkmradio.com/MKMRADIO.m3u
 http://direct.mouv.fr/live/mouv-midfi.mp3R.C.F.
 #EXTINF:-1 tvg-logo="radio.png", Music Hitz FM 
 http://www.musichitzfm.com/listen/winamp-192.m3u 
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]N[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", Nostalgie 
 http://mp3.live.tv-radio.com/nostalgie/all/nos_113812.mp3 
 #EXTINF:-1 tvg-logo="radio.png", Nostalgie ABBA 
@@ -596,9 +564,6 @@ http://mp3.live.tv-radio.com/nrj_black_eyed_peas/all/nrj_161845.mp3
 http://mp3.live.tv-radio.com/nrj_usher/all/nrj_142337.mp3 
 #EXTINF:-1 tvg-logo="radio.png", NTI 
 http://www.tv-radio.com/station/nti-mp3/nti-mp3-128k.m3u 
-
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]O[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", ODS Radio 
 http://broadcast.infomaniak.ch/ods-high.mp3.pls 
 #EXTINF:-1 tvg-logo="radio.png", Otaradio 
@@ -611,9 +576,6 @@ http://ouifm2.impek.com/listen.pls
 http://ouifm3.impek.com/listen.pls 
 #EXTINF:-1 tvg-logo="radio.png", Oxyradio 
 http://www.oxyradio.net/listen/oxyradio.pls 
-
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]P[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", Pacifique FM 
 http://r15919.ovh.net:9510/listen.pls 
 #EXTINF:-1 tvg-logo="radio.png", Paris One Club 
@@ -636,9 +598,6 @@ http://www.pulsradio.com/pls/pulsV80-adsl.m3u
 http://www.pulsradio.com/pls/pulsV90-adsl.m3u 
 #EXTINF:-1 tvg-logo="radio.png", Puls Radio Version Trance 
 http://www.pulsradio.com/pls/pulstrance-adsl.m3u 
-
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]R[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", R'Courchevel
 http://www.laradiostation.fr:8888/listen.pls 
 #EXTINF:-1 tvg-logo="radio.png", Radio 666
@@ -797,19 +756,10 @@ http://aifae8cah8.lb.vip.cdn.dvmr.fr/rmcinfo
 http://streaming.radio.rtl.fr/rtl-1-44-96
 #EXTINF:-1 tvg-logo="radio.png", RTL 2
 http://streaming.radio.rtl2.fr/rtl2-1-48-192
-
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]S[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", Skyrock
 http://icecast.skyrock.net/s/natio_mp3_128k
-
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]T[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", TSF Jazz
 http://tsfjazz.ice.infomaniak.ch/tsfjazz-high.mp3
-
-#EXTINF:-1 tvg-logo="radio.png", [COLOR red]V[/COLOR]
-http://
 #EXTINF:-1 tvg-logo="radio.png", Virgin Radio
 http://vr-live-mp3-128.scdn.arkena.com/virginradio.mp3
 #EXTINF:-1 tvg-logo="radio.png", Voltage

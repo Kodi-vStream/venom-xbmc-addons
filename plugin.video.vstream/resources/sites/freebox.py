@@ -48,33 +48,18 @@ def load():
     linktv = cConfig().getSetting('pvr-view')
     oGui = cGui()
 
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    #oGui.addDir(SITE_IDENTIFIER, 'load', '[COLOR khaki]Pour Modifier ou  Ajouter des chaînes à FramaPad https://annuel.framapad.org/p/vstream [/COLOR]', 'tv.png', oOutputParameterHandler)
-
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', URL_FREE)
-    #oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'FramaPad (Bêta)', 'tv.png', oOutputParameterHandler)
+    #~ oOutputParameterHandler = cOutputParameterHandler()
+    #~ oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+    #~ oGui.addDir(SITE_IDENTIFIER, 'load', '[COLOR khaki]Installer plugin.video.f4mTester pour lire ci dessous[/COLOR]', 'tv.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_TV)
-    oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Télévision (A-Z) (Bêta)', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Télévision (A-Z) (Bêta) (f4mTester only)', 'tv.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_TV)
-    oGui.addDir(SITE_IDENTIFIER, 'showTV', 'Télévision (Bêta)', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showTV', 'Télévision (Bêta) (f4mTester only)', 'tv.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', URL_SFR)
-    # oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Sfr TV', 'tv.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', URL_ORANGE)
-    # oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Orange TV', 'tv.png', oOutputParameterHandler)
-    
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', URL_BG)
-    # oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Bouygues TV', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_WEB)
@@ -82,38 +67,14 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
+    oGui.addDir(SITE_IDENTIFIER, 'showAZRadio', 'Radio du web (A-Z) (Bêta)', 'tv.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
     oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Radio du web', 'tv.png', oOutputParameterHandler)
-    
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    # oGui.addDir(SITE_IDENTIFIER, 'load', '[COLOR khaki]Tu veux voir ta chaîne sur Libretv.me alors partage ta chaîne![/COLOR]', 'libretv.png', oOutputParameterHandler)
-    
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', URL_LIBRETV)
-    # oGui.addDir(SITE_IDENTIFIER, 'showLibreMenu', 'Libretv.me', 'libretv.png', oOutputParameterHandler)
-
 
     oGui.setEndOfDirectory()
 
-
-
-def showBox():
-    oGui = cGui()
-
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    playlist = parseM3U(sUrl)
-
-    for track in playlist:
-           
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', str(track.path))
-        oOutputParameterHandler.addParameter('sMovieTitle', str(track.title))
-        oGui.addDir(SITE_IDENTIFIER, 'play__', track.title, 'tv.png', oOutputParameterHandler)
-    
-  
-    oGui.setEndOfDirectory()
 
 def showWeb():
     oGui = cGui()
@@ -122,6 +83,14 @@ def showWeb():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     playlist = parseWebM3U(sUrl)
+    
+    if (oInputParameterHandler.exist('AZ')):
+        sAZ = oInputParameterHandler.getValue('AZ')
+        string = filter(lambda t: t.title.strip().capitalize().startswith(sAZ), playlist)
+        playlist = sorted(string, key=lambda t: t.title.strip().capitalize())
+    else :
+        playlist = sorted(playlist, key=lambda t: t.title.strip().capitalize())
+    
     
     if not playlist:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -178,30 +147,6 @@ def soir_epg():
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sCom = cePg().get_epg(sTitle,'soir')
 
-# def showLibreMenu():
-    # oGui = cGui()
-    
-    # oInputParameterHandler = cInputParameterHandler()
-    # sUrl = oInputParameterHandler.getValue('siteUrl')
-    
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    # oOutputParameterHandler.addParameter('sOrder', '2')
-    # oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Aujourd\'hui', 'libretv.png', oOutputParameterHandler)
-    
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    # oOutputParameterHandler.addParameter('sOrder', '1')
-    # oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Ce mois-ci', 'libretv.png', oOutputParameterHandler)
-    
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    # oOutputParameterHandler.addParameter('sOrder', '0')
-    # oGui.addDir(SITE_IDENTIFIER, 'showLibre', 'Anterieur', 'libretv.png', oOutputParameterHandler)
-
-
-    # oGui.setEndOfDirectory()
-
 def showAZ():
     
     import string
@@ -221,6 +166,29 @@ def showAZ():
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('AZ', i)
         oGui.addDir(SITE_IDENTIFIER, 'showTV', i, 'az.png', oOutputParameterHandler)
+       
+    oGui.setEndOfDirectory() 
+    
+    
+def showAZRadio():
+    
+    import string
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    for i in string.digits:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('AZ', i)
+        oGui.addDir(SITE_IDENTIFIER, 'showWeb', i, 'az.png', oOutputParameterHandler)  
+            
+    for i in string.ascii_uppercase:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('AZ', i)
+        oGui.addDir(SITE_IDENTIFIER, 'showWeb', i, 'az.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory() 
     
