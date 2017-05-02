@@ -17,7 +17,7 @@ SITE_DESC = 'TOP REPLAY TV'
 
 URL_MAIN = 'http://ddlfrench.org/'
 
-REPLAYTV_NEWS = ('http://ddlfrench.org/', 'showMovies')
+REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
 REPLAYTV_REPLAYTV = ('http://', 'load')
 REPLAYTV_GENRES = (True, 'showGenres')
 
@@ -45,16 +45,16 @@ def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = 'http://ddlfrench.org/index.php?story={'+sSearchText+'}&do=search&subaction=search'  
+        sUrl = URL_MAIN + 'index.php?story={' + sSearchText + '}&do=search&subaction=search'  
         showMovies(sUrl)
         oGui.setEndOfDirectory()
-        return  
+        return
 
 def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
- 
+    
     liste = []
     liste.append( ['TF1',URL_MAIN + 'tf1'] )
     liste.append( ['France 2',URL_MAIN + 'france2'] )
@@ -78,18 +78,18 @@ def showGenres():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'tv.png', oOutputParameterHandler)
-       
+        
     oGui.setEndOfDirectory() 
 
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
       #sUrl = sSearch
-      sUrl = 'http://ddlfrench.org/index.php?story={'+sSearch+'}&do=search&subaction=search'  
+      sUrl = URL_MAIN + 'index.php?story={' + sSearch + '}&do=search&subaction=search'  
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-   
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
@@ -158,7 +158,7 @@ def showHosters():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-   
+
             if aEntry[0]:
                oOutputParameterHandler = cOutputParameterHandler()
                oGui.addMisc(SITE_IDENTIFIER, 'showMovies','[COLOR red]'+ aEntry[0] + '[/COLOR]', 'series.png', '', '', oOutputParameterHandler)
@@ -176,5 +176,5 @@ def showHosters():
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
         cConfig().finishDialog(dialog) 
-  
+
     oGui.setEndOfDirectory()
