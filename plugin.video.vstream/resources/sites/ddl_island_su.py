@@ -9,12 +9,13 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
+from resources.lib.config import GestionCookie
+
 import re,urllib2
 import xbmcgui
 import xbmc
 import xbmcaddon,os
 
-PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
 SITE_IDENTIFIER = 'ddl_island_su' 
@@ -743,7 +744,7 @@ def DecryptddlProtect(url):
     
     cookies = ''
     #try to get previous cookie
-    cookies = Readcookie('protect_ddl_island.su')
+    cookies = GestionCookie().Readcookie('protect_ddl_island.su')
     
     oRequestHandler = cRequestHandler(url)
     if cookies:
@@ -753,14 +754,14 @@ def DecryptddlProtect(url):
     #Si ca demande le captcha
     if 'value="Submit form"' in sHtmlContent:
         if cookies:
-            DeleteCookie('protect_ddl_island.su')
+            GestionCookie().DeleteCookie('protect_ddl_island.su')
             oRequestHandler = cRequestHandler(url)
             sHtmlContent = oRequestHandler.request()
             
         cookies = oRequestHandler.GetCookies()
         
         #save cookies
-        SaveCookie('protect_ddl_island.su',cookies)
+        GestionCookie().SaveCookie('protect_ddl_island.su',cookies)
 
         s = re.findall('<img id="captcha" src="([^<>"]+?)"',sHtmlContent)
         if URL_PROTECT in s[0]:
@@ -785,38 +786,15 @@ def DecryptddlProtect(url):
             
         #si captcha reussi
         #save cookies
-        SaveCookie('protect_ddl_island.su',cookies)        
+        GestionCookie().SaveCookie('protect_ddl_island.su',cookies)        
     
     return sHtmlContent  
 
-def DeleteCookie(Domain):
-    file = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
-    os.remove(os.path.join(PathCache,file))
-    
-def SaveCookie(Domain,data):
-    Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
-
-    #save it
-    file = open(Name,'w')
-    file.write(data)
-
-    file.close()
-    
-def Readcookie(Domain):
-    Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
-    
-    try:
-        file = open(Name,'r')
-        data = file.read()
-        file.close()
-    except:
-        return ''
-    
-    return data
 	
 def get_response(img,cookie):
     #on telecharge l'image
-    filename  = os.path.join(PathCache,'Captcha.raw')
+    PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
+    filename  = os.path.join(PathCache,'Captcha.raw').decode("utf-8")
 
     headers2 = {
         'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0',
