@@ -147,7 +147,7 @@ def showHosters():
     
     #recup liens watchvideo&Jheberg&Multiup et liens direct raptu&uptobox par showLink()
     sLink = __showLink(sUrl)
-    print sLink
+    
     #si vidéos découpées en X parties
     count = 0
     count2 = 0
