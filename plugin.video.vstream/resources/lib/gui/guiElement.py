@@ -509,7 +509,7 @@ class cGuiElement:
         data=data.replace('VF','').replace('VOSTFR','').replace('FR','')
         #data=re.sub(r'[0-9]+?',r'',str(data))
         data=data.replace('-','')
-        #data=data.replace('-','').replace('Saison','').replace('saison','').replace('Season','').replace('Episode','').replace('episode','')
+        data=data.replace('-','').replace('Saison','').replace('saison','').replace('Season','').replace('Episode','').replace('episode','')
         data = re.sub('[^%s]' % string.ascii_lowercase, ' ', data.lower())
         #data = urllib.quote_plus(data)
         
