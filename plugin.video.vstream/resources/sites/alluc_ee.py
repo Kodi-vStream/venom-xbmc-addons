@@ -15,9 +15,9 @@ SITE_DESC = 'Moteur de recherche alluc'
 
 URL_MAIN = 'http://www.alluc.ee/'
 
-URL_SEARCH = ('http://www.alluc.ee/stream/lang%3Afr+', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'stream/lang%3Afr+', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
-    
+
 def load():
     oGui = cGui()
     
@@ -32,7 +32,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_MAIN+ 'stream/lang%3Afr+' + sSearchText
+        sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return  
@@ -46,12 +46,12 @@ def Decrypt(string,key):
     i = 0
     sResult = ''
     while i < len(s):
-        sChar = s[i:i+1]
-        sKeyChar = key[int(i%len(key)):int(i%len(key)+1)]
+        sChar = s[i:i + 1]
+        sKeyChar = key[int(i%len(key)):int(i%len(key) + 1)]
         sChar = int(math.floor(ord(sChar) - ord(sKeyChar)))
         sChar = chr(sChar)
         sResult = sResult + sChar
-        i = i +1
+        i = i + 1
 
     return sResult
 
@@ -77,7 +77,6 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
-        
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -136,7 +135,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return URL_MAIN+aResult[1][0]
+        return URL_MAIN + aResult[1][0]
 
     return False
 
@@ -188,4 +187,3 @@ def showHosters():
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
     oGui.setEndOfDirectory()
-
