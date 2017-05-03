@@ -7,10 +7,11 @@ import sys, os
 import urllib, urllib2
 import sqlite3
 
-from util import VStranslatePath
+sLibrary = xbmc.translatePath(cConfig().getAddonPath()).decode("utf-8")
+sys.path.append (sLibrary)
 
-sLibrary = xbmc.translatePath(cConfig().getAddonPath())
-sys.path.append (sLibrary) 
+from resources.lib.util import VStranslatePath
+
 
 SITE_IDENTIFIER = 'runscript'
 SITE_NAME = 'runscript'

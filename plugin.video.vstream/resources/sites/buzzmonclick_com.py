@@ -12,15 +12,15 @@ import re,unicodedata
 
 SITE_IDENTIFIER = 'buzzmonclick_com'
 SITE_NAME = 'BuzzMonClick'
-SITE_DESC = 'Films & Séries en Streaming de qualité entièrement gratuit. Tout les meilleurs streaming en illimité.'
+SITE_DESC = 'Films & Séries en Streaming de qualité entièrement gratuit.'
  
 URL_MAIN = 'http://buzzmonclick.com/category/replay-tv/'
 
-REPLAYTV_NEWS = ('http://buzzmonclick.com/category/replay-tv/', 'showMovies')
-
+REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
 REPLAYTV_REPLAYTV = ('http://', 'load')
+REPLAYTV_GENRES = (True, 'showGenres')
 
-DOC_NEWS = ('http://buzzmonclick.com/category/replay-tv/documentaires/', 'showMovies')
+DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies')
 DOC_DOCS = ('http://', 'load')
 
 URL_SEARCH = ('http://buzzmonclick.com/?s=', 'showMovies')
@@ -28,52 +28,53 @@ FUNCTION_SEARCH = 'showMovies'
  
 def load():
     oGui = cGui()
- 
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
- 
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Replay TV', 'replay.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://buzzmonclick.com/category/replay-tv/divertissement/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Divertissement', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'divertissement/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Divertissement', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://buzzmonclick.com/category/replay-tv/infos-magazine/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Info/Magazines', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'infos-magazine/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Infos/Magazines', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://buzzmonclick.com/category/replay-tv/series-tv/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series-tv/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries-TV', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://buzzmonclick.com/category/replay-tv/tele-realite/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'tele-realite/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Télé-Réalité', 'tv.png', oOutputParameterHandler)
-
+	
     oGui.setEndOfDirectory()
-  
+
 def showMoviesSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = 'http://buzzmonclick.com/?s='+sSearchText
+        sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
- 
-def showGenre():
+
+def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['divertissement','http://buzzmonclick.com/category/replay-tv/divertissement/'] )
-    liste.append( ['infos','http://buzzmonclick.com/category/replay-tv/infos-magazine/page/2/'] )
-    liste.append( ['series','http://buzzmonclick.com/category/replay-tv/series-tv/'] )
-    liste.append( ['tele realite','http://buzzmonclick.com/category/replay-tv/tele-realite/'] )
+    liste.append( ['Documentaires',URL_MAIN + 'documentaires/'] )
+    liste.append( ['Divertissement',URL_MAIN + 'divertissement/'] )
+    liste.append( ['Infos/Magazines',URL_MAIN + 'infos-magazine/'] )
+    liste.append( ['Séries-TV',URL_MAIN + 'series-tv/'] )
+    liste.append( ['Télé-Réalité',URL_MAIN + 'tele-realite/'] )
 
     for sTitle,sUrl in liste:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -93,7 +94,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
    
-    sPattern ='<div id="(post-[0-9]+)".+?<a class="clip-link".+?title="([^<]+)" href="([^<]+)"><span class="clip"><img src="([^"]+)"'
+    sPattern ='<div id="(post-[0-9]+)".+?<a class="clip-link".+?title="([^<]+)" href="([^<]+)">.+?<img src="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):

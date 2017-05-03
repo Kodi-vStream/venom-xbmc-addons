@@ -237,7 +237,7 @@
         
         <setting id="plugin_malaisetv" type="bool" label="Malaise tv (Vidéos)" default="true"/>
         
-        <setting id="plugin_mangacity_org" type="bool" label="Mangacity (Animés)" default="true"/>
+        <setting id="plugin_mangacity_org" type="bool" label="Ianime (Animés)" default="true"/>
         <setting visible="false" id="search3_mangacity_org" type="bool" label="30090" default="true"/>
         
         <setting id="plugin_mareplaytv" type="bool" label="Mareplay TV (Replay)" default="true"/>
@@ -265,6 +265,9 @@
         
         <setting id="plugin_replay_documentaire_com" type="bool" label="Replay-Documentaire (Documentaires)" default="true"/>
         <setting visible="false" id="search4_replay_documentaire_com" type="bool" label="30091" default="true"/>
+        
+        <setting id="plugin_replaytvstreaming_com" type="bool" label="ReplayTVstreaming (ReplayTV)" default="true"/>
+        <setting visible="false" id="search4_replaytvstreaming_com" type="bool" label="30091" default="true"/>
 
         <setting id="plugin_reportagestv_com" type="bool" label="Reportages TV (Documentaires)" default="true"/>
         <setting visible="false" id="search4_reportagestv_com" type="bool" label="30091" default="true"/>

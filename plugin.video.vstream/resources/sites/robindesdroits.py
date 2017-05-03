@@ -174,9 +174,9 @@ def showHosters():
                        
             elif 'multiup' in aEntry:
                  #modif temp org en eu
-                 aEntry.replace('http://www.multiup.org/fr/download','http://www.multiup.eu/fr/mirror').replace('http://www.multiup.eu/fr/download','http://www.multiup.eu/fr/mirror')
+                 NewUrl = sUrl.replace('http://www.multiup.org/fr/download','http://www.multiup.eu/fr/mirror').replace('http://www.multiup.eu/fr/download','http://www.multiup.eu/fr/mirror').replace('http://www.multiup.org/download', 'http://www.multiup.eu/fr/mirror')
                  
-                 aResult = cMultiup().GetUrls(sUrl)
+                 aResult = cMultiup().GetUrls(NewUrl)
                  
                  if (aResult):
                      if (count >0):

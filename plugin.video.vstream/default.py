@@ -1,14 +1,6 @@
-
-# sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources', 'lib'))
-# sys.path.append (sLibrary)
-# sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources', 'lib', 'gui'))
-# sys.path.append (sLibrary)
-# sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources', 'lib', 'handler'))
-# sys.path.append (sLibrary)
-# sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources','sites'))
-# sys.path.append (sLibrary)
-# sLibrary            = xbmc.translatePath(os.path.join(cConfig().getAddonPath(), 'resources','hosters'))
-# sys.path.append (sLibrary)
+#-*- coding: utf-8 -*-
+#Venom.
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 
 from resources.lib.statistic import cStatistic
 from resources.lib.gui.hoster import cHosterGui
@@ -27,26 +19,20 @@ import xbmc, xbmcgui, sys
 
 class main:
     def __init__(self):
-        #print 'Debug 0'
         self.parseUrl()
         cDb()._create_tables()
 
     def parseUrl(self):
 
-        #print sys.argv
+        #xbmc.log(str(sys.argv), xbmc.LOGNOTICE)
 
-        #print 'Debug 1'
         oInputParameterHandler = cInputParameterHandler()
-        #print 'Debug 2'
         if (oInputParameterHandler.exist('function')):
-            #print 'Debug 3'
             sFunction = oInputParameterHandler.getValue('function')
         else:
-            #print 'Debug 4'
             cConfig().log('call load methode')
             sFunction = "load"
 
-        #print 'Debug 5'
         if (sFunction=='DoNothing'):
             return
 
@@ -134,8 +120,6 @@ class main:
                 cConfig().log('could not load site: ' + sSiteName + ' error: ' + str(e))
                 return
             
-
-
 def isHosterGui(sSiteName, sFunction):
     if (sSiteName == 'cHosterGui'):
         oHosterGui = cHosterGui()
@@ -264,6 +248,3 @@ def _pluginSearch(plugin, sSearchText):
         cConfig().log(plugin['identifier']+': search failed')
         
 main()
-
-#import vstream
-#vstream.run()

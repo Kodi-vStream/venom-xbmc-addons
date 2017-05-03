@@ -7,7 +7,7 @@ import xbmc, xbmcgui, xbmcaddon
 import xbmcvfs
 import sys, datetime, time, os
 
-sLibrary = xbmc.translatePath(cConfig().getAddonPath())
+sLibrary = xbmc.translatePath(cConfig().getAddonPath()).decode("utf-8")
 sys.path.append (sLibrary) 
 
 from resources.lib.handler.requestHandler import cRequestHandler
