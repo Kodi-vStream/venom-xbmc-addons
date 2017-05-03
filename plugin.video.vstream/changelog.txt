@@ -12,6 +12,36 @@ Merci au contributeur de la bêta.
 =============================================================================
 - Version 0.5.2 - 02.05.2017
 =============================================================================
+03-05-2017 -- @Lord Venom -- Merge pull request #1283 from razorex/patch-179  Update enquetedereportages_com.py
+03-05-2017 -- @Lord Venom -- Merge pull request #1282 from razorex/patch-178  Update documovies.py
+03-05-2017 -- @Lord Venom -- Merge pull request #1280 from razorex/patch-177  Update ddl_island_su.py
+03-05-2017 -- @razorex -- Update enquetedereportages_com.py
+03-05-2017 -- @razorex -- Update documovies.py  modif regex des genres et de nextPage
+03-05-2017 -- @razorex -- Update ddl_island_su.py
+02-05-2017 -- @Kodigoal -- multihost.py  Fix multiup url redirection
+02-05-2017 -- @Kodigoal -- oops
+02-05-2017 -- @Kodigoal -- robindesdroits.py  Fix multiup url
+02-05-2017 -- @TmpName -- Update ddl_island_su.py
+02-05-2017 -- @Lord Venom -- Merge pull request #1278 from razorex/patch-176  Update ddlfrench_org.py
+02-05-2017 -- @Lord Venom -- Merge pull request #1275 from razorex/patch-174  Update cinemay_com.py
+02-05-2017 -- @Lord Venom -- Merge pull request #1274 from razorex/patch-173  Update adkami_com.py
+02-05-2017 -- @Lord Venom -- Merge pull request #1273 from razorex/patch-172  Update alluc_ee.py
+02-05-2017 -- @Lord Venom -- Merge pull request #1272 from razorex/patch-171  Update buzzmonclick_com.py
+02-05-2017 -- @Lord Venom -- Merge pull request #1271 from razorex/patch-170  Update voirfilms_org.py
+02-05-2017 -- @Lord Venom -- Merge pull request #1270 from razorex/patch-168  Update streamay_bz.py
+02-05-2017 -- @Lord Venom -- Merge pull request #1269 from razorex/patch-167  Update sokrostream_biz.py
+02-05-2017 -- @Lord Venom -- Merge pull request #1268 from razorex/patch-166  Update filmenstreaminghd_com.py
+02-05-2017 -- @Lord Venom -- Merge pull request #1266 from razorex/patch-163  Update film_illimit_fr.py
+02-05-2017 -- @LordVenom -- debug serie
+02-05-2017 -- @razorex -- Update ddlfrench_org.py
+02-05-2017 -- @razorex -- Update cinemay_com.py  retrait du tiret dans le titre des séries et modif menu recherche
+02-05-2017 -- @razorex -- Update adkami_com.py  suppression du tiret dans le titre + petit remise en forme (typo)
+02-05-2017 -- @razorex -- Update alluc_ee.py
+02-05-2017 -- @razorex -- Update buzzmonclick_com.py  intégration URL_MAIN et ajout du menu genre
+01-05-2017 -- @Kodigoal -- DialogCaptcha.xml  Fix anim fade petit captcha ouverture/fermeture clavier
+01-05-2017 -- @razorex -- Update voirfilms_org.py  recherche par années
+01-05-2017 -- @razorex -- Update streamay_bz.py  icones années
+01-05-2017 -- @razorex -- Update sokrostream_biz.py  appel des icones
 01-05-2017 -- @LordVenom -- img annees
 01-05-2017 -- @LordVenom -- sort tv
 30-04-2017 -- @TmpName -- Update default.py
