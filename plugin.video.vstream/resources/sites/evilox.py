@@ -11,24 +11,25 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
 import unicodedata
+
 SITE_IDENTIFIER = 'evilox'
 SITE_NAME = 'Evilox'
 SITE_DESC = 'Vidéos drôles, du buzz, des fails et des vidéos insolites'
 
 URL_MAIN = 'http://fr.evilox.com/'
- 
+
 URL_SEARCH = (URL_MAIN , 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
- 
+
 MOVIE_NETS = ('http://', 'load')
 NETS_NEWS = (URL_MAIN + 'videos/', 'showMovies')
 NETS_GENRES = (True, 'showGenres')
- 
-def load(): 
-    oGui = cGui() 
- 
+
+def load():
+    oGui = cGui()
+
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') 
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -38,22 +39,22 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'Vidéos (Genres)', 'genres.png', oOutputParameterHandler)
-               
+
     oGui.setEndOfDirectory()
- 
+
 def showSearch():
     oGui = cGui()
- 
-    sSearchText = oGui.showKeyBoard() 
+
+    sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText 
-        showMovies(sUrl) 
+        sUrl = URL_SEARCH[0] + sSearchText
+        showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
- 
+
 def showGenres():
     oGui = cGui()
-  
+
     liste = []
     liste.append( ['Animaux', URL_MAIN + 'videos/animaux/'] )
     liste.append( ['Automoto', URL_MAIN + 'videos/automoto/'] )
@@ -70,16 +71,16 @@ def showGenres():
     liste.append( ['Zapping', URL_MAIN + 'videos/zapping/'] )
     
     for sTitle,sUrl in liste:
-         
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler) 
-               
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
-         
+
 def showMovies(sSearch = ''):
     oGui = cGui()
-     
+
     if sSearch:
       sUrl = sSearch
     else:
@@ -89,7 +90,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    sPattern = "<div class='m2'><div ><a href='(.+?)'><div style='.+?image:url\((.+?)\);position:relative;' class='.+?' alt='(.+?)' id='.+?'.+?<span class='videoduree'>([^<]+)</span></div>"
+    sPattern = "<div class='m2'>.+?<a href='(.+?)'><div style='.+?image:url\((.+?)\);position:relative;' class='.+?' alt='(.+?)' id='.+?'.+?<span class='videoduree'>([^<]+)</span>"
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -97,7 +98,7 @@ def showMovies(sSearch = ''):
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
-         
+        
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
             
@@ -113,25 +114,24 @@ def showMovies(sSearch = ''):
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle) 
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail,'', oOutputParameterHandler)
-                
-        cConfig().finishDialog(dialog)
             
+        cConfig().finishDialog(dialog)
+        
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]',
-                        'next.png',  oOutputParameterHandler)
- 
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png',  oOutputParameterHandler)
+
     if not sSearch:
-        oGui.setEndOfDirectory() 
+        oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = "<a href='([^']+)'>Suivante[^<]+</a></span>"
+    sPattern = "<a href='([^']+)'>Suivante[^<]+</a>"
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if (aResult[0] == True):
@@ -142,12 +142,12 @@ def __checkForNextPage(sHtmlContent):
 def showHosters():
     oGui = cGui()
     
-    oInputParameterHandler = cInputParameterHandler() 
-    sUrl = oInputParameterHandler.getValue('siteUrl') 
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-     
-    oRequestHandler = cRequestHandler(sUrl) 
+    
+    oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     
     oParser = cParser()
@@ -175,5 +175,5 @@ def showHosters():
     
     else:
         return
-                 
+
     oGui.setEndOfDirectory()
