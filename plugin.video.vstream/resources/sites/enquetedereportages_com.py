@@ -10,25 +10,22 @@ from resources.lib.parser import cParser
 from resources.lib import util
 import re
 import unicodedata
- 
+
 SITE_IDENTIFIER = 'enquetedereportages_com'
 SITE_NAME = 'En quête de reportages'
 SITE_DESC = 'replay tv'
- 
+
 URL_MAIN = 'http://enquetedereportages.com/'
 
-DOC_NEWS = ('http://enquetedereportages.com', 'showMovies')
-DOC_GENRES = ('http://', 'DocGenre')
-
+DOC_NEWS = (URL_MAIN, 'showMovies')
 DOC_DOCS =('http://', 'load')
+DOC_GENRES = (True, 'DocGenres')
 
-REPLAYTV_NEWS = ('http://enquetedereportages.com', 'showMovies')
-
+REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
 REPLAYTV_REPLAYTV = ('http://', 'load')
- 
 REPLAYTV_GENRES = (True, 'ReplayTV')
 
-URL_SEARCH = ('http://enquetedereportages.com/?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
 def load():
@@ -43,24 +40,24 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Nouveautés', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir(SITE_IDENTIFIER, 'DocGenre', 'Documentaire (Genres)', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', DOC_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_GENRES[1], 'Documentaires (Genres)', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir(SITE_IDENTIFIER, 'ReplayTV', 'Replay (Genres)', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_GENRES[1], 'Replay (Genres)', 'genres.png', oOutputParameterHandler)
  
     oGui.setEndOfDirectory()
     
-def DocGenre():
+def DocGenres():
     oGui = cGui()
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://enquetedereportages.com/category/documentaire/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/documentaire/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://enquetedereportages.com/category/reportage/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/reportage/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Reportages', 'tv.png', oOutputParameterHandler)
   
     oGui.setEndOfDirectory()  
@@ -68,73 +65,64 @@ def DocGenre():
 def ReplayTV():
 
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-	
-    liste.append( ['Discovery','http://enquetedereportages.com/category/discovery-channel/'] )
-    liste.append( ['Emission','http://enquetedereportages.com/category/emission/'] )    
-    liste.append( ['France2','http://enquetedereportages.com/category/france-2/'] )
-    liste.append( ['France3','http://enquetedereportages.com/category/france-3/'] )
-    
-    liste.append( ['France4','http://enquetedereportages.com/category/france-4/'] )
-    liste.append( ['FranceO','http://enquetedereportages.com/category/france-o/'] )    
-    liste.append( ['M6','http://enquetedereportages.com/category/m6/'] )
-    liste.append( ['NRJ12','http://enquetedereportages.com/category/nrj12/'] )
-    liste.append( ['NT1','http://enquetedereportages.com/category/nt1/'] )
-    
-    liste.append( ['RMC','http://enquetedereportages.com/category/rmc-decouvertes/'] )
-    liste.append( ['SportMeca','http://enquetedereportages.com/category/sports-meca/'] )    
-    liste.append( ['TF1','http://enquetedereportages.com/category/tf1/'] )
-    liste.append( ['TMC','http://enquetedereportages.com/category/tmc/'] )
-    liste.append( ['W9','http://enquetedereportages.com/category/w9/'] )
-    liste.append( ['Autre','http://enquetedereportages.com/category/uncategorized/'] )
+    liste.append( ['Discovery',URL_MAIN + 'category/discovery-channel/'] )
+    liste.append( ['Emission',URL_MAIN + 'category/emission/'] )
+    liste.append( ['France2',URL_MAIN + 'category/france-2/'] )
+    liste.append( ['France3',URL_MAIN + 'category/france-3/'] )
+    liste.append( ['France4',URL_MAIN + 'category/france-4/'] )
+    liste.append( ['FranceO',URL_MAIN + 'category/france-o/'] )
+    liste.append( ['M6',URL_MAIN + 'category/m6/'] )
+    liste.append( ['NRJ12',URL_MAIN + 'category/nrj12/'] )
+    liste.append( ['NT1',URL_MAIN + 'category/nt1/'] )
+    liste.append( ['RMC',URL_MAIN + 'category/rmc-decouvertes/'] )
+    liste.append( ['SportMeca',URL_MAIN + 'category/sports-meca/'] )
+    liste.append( ['TF1',URL_MAIN + 'category/tf1/'] )
+    liste.append( ['TMC',URL_MAIN + 'category/tmc/'] )
+    liste.append( ['W9',URL_MAIN + 'category/w9/'] )
+    liste.append( ['Autre',URL_MAIN + 'category/uncategorized/'] )
 
     for sTitle,sUrl in liste:
- 
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
- 
+
     oGui.setEndOfDirectory()
  
 def showMoviesSearch():
     oGui = cGui()
- 
+
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False and sSearchText != 'bad'): #le mot bad seul fait planté kodi
-        sUrl = 'http://enquetedereportages.com/?s='+sSearchText
+        sUrl = URL_MAIN + '?s=' + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
 
 def showGenre():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-	
-    liste.append( ['Infrarouge','http://enquetedereportages.com/category/documentaire/infrarouge/'] )
-    liste.append( ['Arte','http://enquetedereportages.com/category/documentaire/arte/'] )    
-    liste.append( ['France4','http://enquetedereportages.com/category/documentaire/france-4-documentaire/'] )
-    liste.append( ['France5','http://enquetedereportages.com/category/france-5/'] )
+    liste.append( ['Infrarouge',URL_MAIN + 'category/documentaire/infrarouge/'] )
+    liste.append( ['Arte',URL_MAIN + 'category/documentaire/arte/'] )
+    liste.append( ['France4',URL_MAIN + 'category/documentaire/france-4-documentaire/'] )
+    liste.append( ['France5',URL_MAIN + 'category/france-5/'] )
+    liste.append( ['13eme-rue',URL_MAIN + 'category/reportage/13eme-rue/'] )
+    liste.append( ['23eme',URL_MAIN + 'category/reportage/23eme/'] )
+    liste.append( ['6ter',URL_MAIN + 'category/reportage/6ter/'] )
+    liste.append( ['Canal+',URL_MAIN + 'category/reportage/canal/'] )
+    liste.append( ['D8',URL_MAIN + 'category/reportage/d8/'] )
     
-    liste.append( ['13eme-rue','http://enquetedereportages.com/category/reportage/13eme-rue/'] )
-    liste.append( ['23eme','http://enquetedereportages.com/category/reportage/23eme/'] )    
-    liste.append( ['6ter','http://enquetedereportages.com/category/reportage/6ter/'] )
-    liste.append( ['Canal+','http://enquetedereportages.com/category/reportage/canal/'] )
-    liste.append( ['D8','http://enquetedereportages.com/category/reportage/d8/'] )
-
     for sTitle,sUrl in liste:
- 
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
- 
+
     oGui.setEndOfDirectory()
- 
+
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
@@ -142,7 +130,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
- 
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -157,33 +145,31 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
- 
+
             sTitle = unicode(aEntry[1], 'utf-8')#converti en unicode
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
             #sTitle = unescape(str(sTitle))
             sTitle = sTitle.encode( "utf-8")
-            
+
             #sTitle = re.sub('([0-9]+/[0-9]+/[0-9]+)','[COLOR teal]\\1[/COLOR]', str(sTitle))
-           
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             sTitle = sTitle.replace('http://enquetedereportages.com/','')
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', aEntry[2], aEntry[3], oOutputParameterHandler)
- 
+
         cConfig().finishDialog(dialog)
- 
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
- 
+
     if not sSearch:
         oGui.setEndOfDirectory()
- 
- 
- 
+
 def __checkForNextPage(sHtmlContent):
 
     sPattern = "class='page-numbers current'>.+?<a class='page-numbers' href='(.+?)'>"
@@ -194,8 +180,7 @@ def __checkForNextPage(sHtmlContent):
         return sUrl
  
     return False
- 
- 
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -217,7 +202,7 @@ def showHosters():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
- 
+
             sHosterUrl = str(aEntry)
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -225,7 +210,7 @@ def showHosters():
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
- 
+
         cConfig().finishDialog(dialog)
- 
+
     oGui.setEndOfDirectory()
