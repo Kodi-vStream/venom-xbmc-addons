@@ -259,7 +259,7 @@ def serieHosters():
         for aEntry in aResult[1]: 
         
             sUrl = str(aEntry)
-            sTitle = sMovieTitle + 'episode ' + str(i)
+            sTitle = '%s episode %s' % (sMovieTitle, str(i))
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
             i = i + 1
