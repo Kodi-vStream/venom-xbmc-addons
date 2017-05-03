@@ -15,8 +15,8 @@ SITE_DESC = 'Documovies référence les meilleurs films documentaires disponible
 
 URL_MAIN = 'http://fr.documovies.net/'
 
-DOC_NEWS = ('http://fr.documovies.net/', 'showMovies')
-DOC_GENRES = ('http://fr.documovies.net/', 'showGenres')
+DOC_NEWS = (URL_MAIN, 'showMovies')
+DOC_GENRES = (True, 'showGenres')
 DOC_DOCS = ('http://', 'load')
 URL_SEARCH = ('', 'sHowResultSearch')
 FUNCTION_SEARCH = 'sHowResultSearch'
@@ -37,7 +37,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, DOC_GENRES[1], 'Documentaires (Genres)', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN+'videos/?playid=27')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'videos/?playid=27')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires Sélection', 'doc.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
@@ -46,9 +46,9 @@ def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sHowResultSearch(str(sSearchText)) 
+        sHowResultSearch(str(sSearchText))
         oGui.setEndOfDirectory()
-        return  
+        return
 
 def showGenres():
     oGui = cGui()
@@ -58,7 +58,7 @@ def showGenres():
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('<a title="Accueil"','')
 
-    sPattern = '<a title="([^"]+)" href="([^"]+)">.+?<\/a><\/li>'
+    sPattern = '<a title="([^"]+)" href="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -69,7 +69,7 @@ def showGenres():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory() 
+    oGui.setEndOfDirectory()
 
 def sHowResultSearch(sSearch = ''):
     oGui = cGui()
@@ -108,7 +108,7 @@ def sHowResultSearch(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'sHowResultSearch', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)  
+            oGui.addDir(SITE_IDENTIFIER, 'sHowResultSearch', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -122,7 +122,6 @@ def showMovies():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    #sPattern = 'class="video_play".+?<a href="([^"]+)".+?<img src="([^"]+)".+?title="(.+?)" *data.+?flashvars="([^"]+)"'
     sPattern = 'class="video_play".+?<a href="([^"]+)".+?<img src="([^"]+)".+?title="(.+?)" *(?:data|>).+?flashvars="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -134,7 +133,7 @@ def showMovies():
             if '.wp.com/' in sThumb:
                 sThumb = re.sub('http://.+?.wp.com/','http://',sThumb)
 
-            sThumb = util.QuoteSafe(sThumb)    
+            sThumb = util.QuoteSafe(sThumb)
             sTitle = aEntry[2]
             sCode = re.sub('(.+?vid=)','',aEntry[3])
 
@@ -144,7 +143,7 @@ def showMovies():
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
             oOutputParameterHandler.addParameter('sVidCode', sCode)
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumb, '', oOutputParameterHandler)
-  
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -153,24 +152,23 @@ def showMovies():
 
     oGui.setEndOfDirectory()
 
-
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class="next page-numbers".+?href="(.+?)">(?:&raquo;|>>)<\/a></div>'
+    sPattern = '<a class="next page-numbers".+?href="(.+?)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return URL_MAIN[:-1] + aResult[1][0]
 
     return False
-    
+
 def __checkForNextPage2(sHtmlContent):
     sPattern = '<span class="(?:page-numbers current|current)">\d+<\/span>.+?href="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return aResult[1][0]
- 
-    return False    
+
+    return False
 
 def showHosters():
     oGui = cGui()
@@ -187,7 +185,7 @@ def showHosters():
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-  
+
     else:
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
@@ -199,14 +197,14 @@ def showHosters():
             sPattern ='<iframe.+?src="([^"]+)".+?<\/iframe>'
             aResult = re.search(sPattern,sHtmlContent,re.DOTALL)
             if (aResult):
-                sHosterUrl = aResult.group(1)        
+                sHosterUrl = aResult.group(1)
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
             oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-  
+
     oGui.setEndOfDirectory()
 
 def GetFinalUrl(sVidCode):
@@ -217,5 +215,5 @@ def GetFinalUrl(sVidCode):
     aResult = re.search(sPattern,sHtmlContent,re.DOTALL)
     if (aResult):
         return aResult.group(1)
- 
+
     return False
