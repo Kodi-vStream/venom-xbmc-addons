@@ -361,15 +361,20 @@ def showHosters():
     else:
         BA = False
 
-    sPattern = '<script>function(.+?)</script>'
-    aResult = re.search(sPattern,sHtmlContent)
+    sPattern = '<script>\s*function\shh(.+?)</script>'
+    aResult = re.search(sPattern,sHtmlContent, re.DOTALL)
+    
     sHtmlContent = aResult.group(1).replace('return de("$")','') #serie
     #redirection sur hdstream pour les new videos
     sPattern = '"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    sMTitle = xbmc.getInfoLabel('ListItem.title')
+    
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             url = Decode(str(aEntry))
+
             if 'manifest.mpd' in url:
                 continue
                 
@@ -387,13 +392,17 @@ def showHosters():
                         sHosterUrl = vUrl
                     else:
                         sHosterUrl = url
+                        if '-hd' in url:
+                            sMTitle = '%s [HD]' %(xbmc.getInfoLabel('ListItem.title'))
+                        if '-md' in url:
+                            sMTitle = '%s [MD]' %(xbmc.getInfoLabel('ListItem.title'))
 
             else:
                 sHosterUrl = url
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)       
             if (oHoster != False):            
-                oHoster.setDisplayName(xbmc.getInfoLabel('ListItem.title'))
+                oHoster.setDisplayName(sMTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
             

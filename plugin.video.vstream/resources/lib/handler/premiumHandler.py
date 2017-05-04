@@ -50,6 +50,12 @@ class cPremiumHandler:
             if '//uptobox.com/?op=logout">Logout</a>' in code:
                 return True
         return False
+        
+    def CheckCookie(self):
+        cookies = GestionCookie().Readcookie(self.__sHosterIdentifier)
+        if cookies != '':
+            return True
+        return False
 
     def Authentificate(self):
 
@@ -113,7 +119,7 @@ class cPremiumHandler:
                 #login denied
                 cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
             else:
-                cConfig().log( "debug" + str(getattr(e, "code", None)))
+                cConfig().log("debug" + str(getattr(e, "code", None)))
                 cConfig().log("debug" + str(getattr(e, "reason", None)))
 
             self.isLogin = False
@@ -197,7 +203,7 @@ class cPremiumHandler:
             self.Authentificate()
             if not (self.isLogin):
                 return ''
-            GestionCookie().Readcookie(self.__sHosterIdentifier)          
+            cookies = GestionCookie().Readcookie(self.__sHosterIdentifier)          
         
         sHtmlContent = self.GetHtmlwithcookies(url,data,cookies)
         
@@ -207,7 +213,7 @@ class cPremiumHandler:
         
         #Les cookies ne sont plus valables, mais on teste QUE si la personne n'a pas essaye de s'authentifier
         if not(self.Checklogged(sHtmlContent)) and not self.__LoginTry and self.__Ispremium :
-            xbmc.log('Cookies non valables')
+            cConfig().log('Cookies non valables')
             self.Authentificate()
             if (self.isLogin):
                 cookies = GestionCookie().Readcookie(self.__sHosterIdentifier)

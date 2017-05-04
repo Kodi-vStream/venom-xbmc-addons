@@ -11,7 +11,6 @@ from resources.lib.config import cConfig
 import re, urllib
 import urllib2
 
-
 SITE_IDENTIFIER = 'filmenstreaminghd_com'
 SITE_NAME = 'FilmEnStreamingHD'
 SITE_DESC = 'Films, Séries & Animés en streaming'
@@ -30,7 +29,7 @@ SERIE_GENRES = (True, 'showSerieGenres')
 SERIE_ANNEES = (URL_MAIN + 'series-tv', 'showAnnees')
 SERIE_PAYS = (True, 'showPays')
 
-ANIM_ANIMS = (URL_MAIN +'animes', 'showMovies')
+ANIM_ANIMS = (URL_MAIN + 'animes', 'showMovies')
 ANIM_GENRES = (True, 'showAnimeGenres')
 ANIM_THEMES = (True, 'showAnimeThemes')
 ANIM_ANNEES = (URL_MAIN + 'animes', 'showAnnees')
@@ -500,8 +499,8 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             sUrl = re.sub('\/page-[0-9]','',sUrl)
-            oOutputParameterHandler.addParameter('siteUrl', sUrl+'/'+sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl + '/' + sNextPage)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -531,7 +530,7 @@ def showSeries():
 
             sTitle = sMovieTitle
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-            sDisplayTitle = sDisplayTitle + '[COLOR teal] >> ' + aEntry[3] +' [/COLOR]'
+            sDisplayTitle = sDisplayTitle + '[COLOR teal] >> ' + aEntry[3] + '[/COLOR]'
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
@@ -540,7 +539,7 @@ def showSeries():
             oOutputParameterHandler.addParameter('sPid', aEntry[2])
 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER,  '[COLOR red]'+aEntry[0]+' - '+aEntry[1]+'[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER,  '[COLOR red]' + aEntry[1] + aEntry[0] + '[/COLOR]')
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)             
 
@@ -571,7 +570,6 @@ def showLinks():
 
     oParser = cParser()
     sPattern = '<a class="partsec" id="([^"]+)".+?</span>([^<]+)<span'
-    #sPattern='<div id="burayaclass".+?onclick="getirframe\(\'(.+?)\',\'(.+?)\'\)".+?<div class="col-md-4.+?<p>(.+?)</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -584,7 +582,7 @@ def showLinks():
 
             sTitle = sMovieTitle
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-            sDisplayTitle = sDisplayTitle + '[COLOR teal] >> ' + aEntry[1] +' [/COLOR]'
+            sDisplayTitle = sDisplayTitle + '[COLOR teal] >> ' + aEntry[1] + ' [/COLOR]'
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl',  sUrl)

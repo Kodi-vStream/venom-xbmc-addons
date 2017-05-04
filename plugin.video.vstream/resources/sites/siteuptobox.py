@@ -9,6 +9,9 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.config import cConfig
 from resources.lib.handler.premiumHandler import cPremiumHandler
+
+from resources.lib.config import GestionCookie
+
 import xbmc,xbmcgui,urllib,urllib2,re,random,mimetypes,string
 
 SITE_IDENTIFIER = 'siteuptobox' 
@@ -26,7 +29,7 @@ def load():
     if (cConfig().getSetting('hoster_uptobox_username') == '') and (cConfig().getSetting('hoster_uptobox_password') == ''):
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]'+ 'Nécessite Un Compte Uptobox Premium ou Gratuit' + '[/COLOR]')
     else:
-        if (oPremiumHandler.Readcookie('uptobox') != ''):
+        if (GestionCookie().Readcookie('uptobox') != ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
             oGui.addDir(SITE_IDENTIFIER, 'showFile', 'MesFichiers', 'genres.png', oOutputParameterHandler)
@@ -145,14 +148,14 @@ def AddmyAccount():
     Upurl = 'https://uptobox.com/?op=my_files&add_my_acc=' + sId
 
     oPremiumHandler = cPremiumHandler('uptobox')
-    if (oPremiumHandler.Readcookie('uptobox') != ''):
+    if (GestionCookie().Readcookie('uptobox') != ''):
 
-        cookies = oPremiumHandler.Readcookie('uptobox')
+        cookies = GestionCookie().Readcookie('uptobox')
         sHtmlContent = oPremiumHandler.GetHtmlwithcookies(Upurl,None,cookies)
         if (len(sHtmlContent) > 25):
 
             oPremiumHandler.Authentificate()
-            cookies = oPremiumHandler.Readcookie('uptobox')
+            cookies = GestionCookie().Readcookie('uptobox')
             sHtmlContent = oPremiumHandler.GetHtmlwithcookies(Upurl,None,cookies)
 
     else:
@@ -175,7 +178,7 @@ def UptomyAccount():
     oPremiumHandler = cPremiumHandler('uptobox')
          
     sHtmlContent = oPremiumHandler.GetHtml(URL_MAIN)
-    cookies = oPremiumHandler.Readcookie('uptobox')
+    cookies = GestionCookie().Readcookie('uptobox')
   
     aResult = re.search('<div id="div_url".+?action="([^"]+)".+?name="sess_id" value="([^"]+)".+?name="srv_tmp_url" value="([^"]+)"',sHtmlContent,re.DOTALL)
     if (aResult):
