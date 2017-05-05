@@ -52,8 +52,6 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
     
     liste = []
     liste.append( ['TF1',URL_MAIN + 'tf1'] )
@@ -93,7 +91,6 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    #sPattern = "<div class='mediathumb'>.*?<a href='([^<]+)' title='([^<]+)'>.*?<img src='([^<]+)' alt='(.+?)'>.*?</a>"
     sPattern = '<div class="mov-i img-box"><img src="([^<]+)" alt="([^<]+)" /><div class="mov-mask flex-col ps-link" data-link="([^<]+)"><span'
 
     oParser = cParser()
@@ -121,7 +118,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
