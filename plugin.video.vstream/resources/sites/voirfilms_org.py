@@ -356,7 +356,8 @@ def showMovies(sSearch = ''):
         sHtmlContent = oRequest.request()
         
         sPattern = '<div class="imagefilm">.+?<img src="(.+?)".+?<a href="([^<>]+?)".+?titreunfilm" style="width:145px;"> *(.+?) *<\/div>'
- 
+        type = '1'
+		
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
