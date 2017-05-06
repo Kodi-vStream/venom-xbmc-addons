@@ -74,7 +74,6 @@ class cHoster(iHoster):
         HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0',
                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}
 
-        # baseUrl ='http://ok.ru/videoembed/259470133858'
         req = urllib2.Request(web_url, headers=HEADERS)
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
