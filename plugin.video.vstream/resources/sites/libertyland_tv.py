@@ -372,7 +372,7 @@ def showLinks():
                 sLang = aEntry[2].replace('French','VF')
                 sLang = cUtil().removeHtmlTags(sLang)
                 
-                sTitle = ' (' + sLang + '/' + aEntry[3] + ')' + ' - [COLOR skyblue]' + sPlayer +'[/COLOR] ' + sMovieTitle
+                sTitle = ' (' + sLang + '/' + aEntry[3] + ')' + ' - [COLOR skyblue]' + sPlayer + '[/COLOR] ' + sMovieTitle
                 
                 #test de doublon
                 if sUrlLink not in listdoublon:
