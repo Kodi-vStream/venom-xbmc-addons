@@ -9,14 +9,13 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 import re
 
-
 SITE_IDENTIFIER = 'frenchddl_com'
 SITE_NAME = '[COLOR violet]FrenchDDL[/COLOR]'
 SITE_DESC = 'films en ddl'
 
 URL_MAIN = 'http://www.frenchddl.com/'
 
-URL_SEARCH = ('http://www.frenchddl.com/index.php?Query=', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?Query=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_MOVIE = (URL_MAIN , 'showMovies')
@@ -24,19 +23,19 @@ MOVIE_GENRES = (True, 'showGenres')
 
 def load():
     oGui = cGui()
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
-
+	
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -66,7 +65,7 @@ def showGenres():
             title = aEntry[1].replace('&eacute;', 'é')
             liste.append( [title,URL_MAIN + aEntry[0]] )
 
-    for sTitle,sUrl in liste:#boucle
+    for sTitle,sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -84,7 +83,7 @@ def showMovies(sSearch = ''):
       
         if URL_SEARCH[0] in sSearch:
             bGlobal_Search = True
-      
+    
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -123,7 +122,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
 
     if not sSearch:
@@ -139,7 +138,6 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-
 
 def showHosters():
     oGui = cGui()
@@ -166,7 +164,7 @@ def showHosters():
             sType = str(aEntry[2]).upper()
             sFmt = str(aEntry[3]).upper()
             sSize = str(aEntry[4]).upper()
-            sDisplay = '[COLOR teal]['+sType+']['+sLang+']['+sType+']['+sSize+'][/COLOR]'
+            sDisplay = '[COLOR teal][' + sType + '][' + sLang + '][' + sType + '][' + sSize + '][/COLOR]'
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
