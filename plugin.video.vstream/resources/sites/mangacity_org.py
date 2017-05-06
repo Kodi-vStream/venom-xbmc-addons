@@ -31,6 +31,13 @@ def DecryptMangacity(chain):
         d = d.replace('%3B', ';')
         
     return d
+    
+def FullUnescape(code):
+    sPattern = '<script type="text\/javascript">document\.write\(unescape\(".+?"\)\);<\/script>'
+    aResult = re.findall(sPattern,code)
+    if aResult:
+        return urllib.unquote(aResult[0])
+    return code
 
 def ICDecode(html):
     
@@ -162,6 +169,9 @@ def showGenres():
 
     if 'HTML/JavaScript Encoder' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
+        
+    if sHtmlContent.startswith('<script type="text/javascript">'):
+        sHtmlContent = FullUnescape(sHtmlContent)
     
     sPattern = '<center><a href="(.+?)" onmouseover="this.style.color.+?>(.+?)</a>'
     
@@ -202,12 +212,15 @@ def ShowAlpha2():
     sType = 'VF'
     if 'vostfr' in sUrl:
         sType = 'VOSTFR'
-
+    
     oRequestHandler = cRequestHandler(sUrl2)
     sHtmlContent = oRequestHandler.request()
     
     if 'HTML/JavaScript Encoder' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
+    
+    if sHtmlContent.startswith('<script type="text/javascript">'):
+        sHtmlContent = FullUnescape(sHtmlContent)
     
     oParser = cParser()
     sPattern = '<a href=\'(listing_(?:vf|vostfr)\.php\?affichage=[^<>"]+?)\' class=\'button black pastel light\' alt="Voir la liste des animes en ' + sType + '"'
@@ -287,7 +300,7 @@ def showMovies(sSearch = ''):
     
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        #sHtmlContent = DecryptMangacity(sHtmlContent)
+        #sHtmlContent = DecryptMangacity(sHtmlContent)    
     
     if 'HTML/JavaScript Encoder' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
@@ -462,6 +475,12 @@ def showHosters():
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    cConfig().log(sUrl)
+    
+    #fh = open('c:\\html.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
     
     if 'HTML/JavaScript Encoder' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
