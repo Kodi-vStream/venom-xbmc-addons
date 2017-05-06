@@ -28,10 +28,12 @@ HOSTPATTERN = '"link":"([^"]+?)","label":"([^"]+?)"'
 
 #pour l'addon
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_HD = (URL_MAIN, 'showMovies')
 
-
+ANIM_NEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=2&Itemid=2', 'showMovies')
+ANIM_ANIMS = (URL_MAIN + 'index.php?option=com_content&view=category&id=2&Itemid=2', 'showMovies')
 DOC_NEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=26', 'showMovies')
 DOC_DOCS = ('http://', 'load')
 
@@ -54,6 +56,10 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
     
@@ -70,8 +76,8 @@ def showSearch():
     if (sSearchText != False):
         showMovies(sSearchText)
         oGui.setEndOfDirectory()
-        return  
-   
+        return
+
 def showGenres():
     oGui = cGui()
 
@@ -166,7 +172,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sMainUrl + sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
  
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -177,9 +183,9 @@ def __checkForNextPage(sHtmlContent):
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return aResult[1][0]
- 
+
     return False
- 
+
 def showHosters():
     oGui = cGui()
    
