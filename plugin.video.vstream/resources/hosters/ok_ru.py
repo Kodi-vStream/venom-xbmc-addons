@@ -4,8 +4,8 @@ from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 import re,urllib2, urllib
 import xbmcgui
-import time
-import random
+import json
+from resources.lib.util import cUtil
 
 class cHoster(iHoster):
 
@@ -69,62 +69,40 @@ class cHoster(iHoster):
         v = self.getHostAndIdFromUrl(self.__sUrl)
         sId = v[1]
         sHost = v[0]
-        web_url = 'http://' + sHost + '/dk?cmd=videoPlayerMetadata&mid=' + sId
-        
-        #bidouille en plus
-        #a = int(time.time())
-        #b = random.random()
-        #web_url = web_url + '&rnd=' + str(a) + str(b)
-        
-        #print web_url
-        
-        HEADERS = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:42.0) Gecko/20100101 Firefox/42.0',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        }
+        web_url = 'http://' + sHost + '/videoembed/' + sId
 
-        
-        #oRequest = cRequestHandler(web_url)
-        #sHtmlContent = oRequest.request()
+        HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0',
+                   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}
 
         req = urllib2.Request(web_url, headers=HEADERS)
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
         response.close()
-            
-        sHtmlContent = sHtmlContent.decode('unicode-escape')
-        sHtmlContent = sHtmlContent.encode("utf-8")
-        
-        sPattern = '"name":"([^"]+?)","url":"(.+?)"'
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        #print aResult
-        
-        api_call = False
 
-        if (aResult[0] == True):
-            #initialisation des tableaux
-            url=[]
-            qua=[]
-            
-            #Replissage des tableaux
-            for i in aResult[1]:
-                url.append(str(i[1]))
-                qua.append(str(i[0]))
-                
-            #Si au moins 1 url
+        oParser = cParser()
+
+        sHtmlContent = oParser.abParse(sHtmlContent,'data-options=','" data-player-container',14)
+        sHtmlContent = cUtil().removeHtmlTags(sHtmlContent)
+        sHtmlContent = cUtil().unescape(sHtmlContent)
+
+        page = json.loads(sHtmlContent)
+        page = json.loads(page['flashvars']['metadata'])
+
+        if page:
+            url = []
+            qua = []
+            for x in page['videos']:
+                url.append(x['url'])
+                qua.append(x['name'])
+
+            # Si au moins 1 url
             if (url):
-            #Afichage du tableau
+            # Afichage du tableau
                 dialog2 = xbmcgui.Dialog()
                 ret = dialog2.select('Select Quality',qua)
                 if (ret > -1):
                     api_call = url[ret]
-                    
-        
-        #time.sleep( 5 )        
-        
-        #print api_call
+
         
         if (api_call):
             api_call = '%s|User-Agent=%s&Accept=%s' % (api_call, HEADERS['User-Agent'], HEADERS['Accept'])
