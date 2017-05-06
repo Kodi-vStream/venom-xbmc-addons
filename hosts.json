@@ -530,16 +530,16 @@
   {
     "name": "ok_ru.py",
     "path": "plugin.video.vstream/resources/hosters/ok_ru.py",
-    "sha": "bc0094fe63cedec6702c6b74b0f6e031d2a2853c",
-    "size": 3881,
+    "sha": "f80b8b3058e017c66d3768ef960e41160e90ecec",
+    "size": 3373,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/ok_ru.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/ok_ru.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/bc0094fe63cedec6702c6b74b0f6e031d2a2853c",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/f80b8b3058e017c66d3768ef960e41160e90ecec",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/ok_ru.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/ok_ru.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/bc0094fe63cedec6702c6b74b0f6e031d2a2853c",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/f80b8b3058e017c66d3768ef960e41160e90ecec",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/ok_ru.py"
     }
   },
