@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+from resources.lib.util import cUtil,VSlog
 import urllib2,urllib,re
 import unicodedata
 
@@ -476,9 +476,8 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    cConfig().log(sUrl)
-    
-    #fh = open('c:\\html.txt', "w")
+    #cConfig().log(sUrl)
+    #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
     
@@ -488,32 +487,56 @@ def showHosters():
     sHtmlContent = sHtmlContent.replace('<iframe src="http://www.promoliens.net','')
     sHtmlContent = sHtmlContent.replace("<iframe src='cache_vote.php",'')
     
-    sPattern = '<div class="box"><iframe.+?src=[\'|"](.+?)[\'|"]|<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);<\/script>'
+    list_url = []
     oParser = cParser()
+    
+    #1 er methode
+    sPattern = '<div class="box"><iframe.+?src=[\'|"](.+?)[\'|"]'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            if re.match(".+?&#[0-9]+;", aEntry):#directe mais codé html
+                sHosterUrl = cUtil().unescape(aEntry)
+
+            else:#directe en clair
+                sHosterUrl = str(aEntry)
+                
+            #Ces liens sont tjours des liens
+            if (not sHosterUrl.startswith( 'http' )) and (len(sHosterUrl) > 2) :
+                sHosterUrl = URL_MAIN + sHosterUrl
+                
+            list_url.append(sHosterUrl)
+            
+    #2 eme methode
+    sPattern = '<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);<\/script>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            #si url cryptee mangacity algo
+            sHosterUrl = DecryptMangacity(aEntry[1])
+            sHosterUrl = sHosterUrl.replace('\\','')
+            list_url.append(sHosterUrl)
+            
+    #3 eme methode
+    sPattern = 'document\.write\(unescape\("(%3c%69%66%72%61%6d%65%20%69%64%3d%27%76%69%64%65%6f%5f%66%72%61%6d%65%27.+?)"\)\);'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            tmp = urllib.unquote(aEntry)
+            sPattern2 = 'src="([^"]+)"'
+            aResult = re.findall(sPattern2,tmp)
+            if aResult:
+                list_url.append(aResult[0])          
+
+    if len(list_url) > 0:
+        total = len(list_url)
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in list_url:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
 
-            #si url cryptee mangacity algo
-            if not aEntry[0]:
-                sHosterUrl = DecryptMangacity(aEntry[2])
-                sHosterUrl = sHosterUrl.replace('\\','')
-            #adresse directe  
-            else:
-                if re.match(".+?&#[0-9]+;", aEntry[0]):#directe mais codé html
-                    sHosterUrl = cUtil().unescape(aEntry[0])
-
-                else:#directe en clair
-                    sHosterUrl = str(aEntry[0])
-                #Ces liens sont tjours des liens
-                if (not sHosterUrl.startswith( 'http' )) and (len(sHosterUrl) > 2) :
-                    sHosterUrl = URL_MAIN + sHosterUrl
+            sHosterUrl = aEntry
                     
             #Dans le cas ou l'adresse n'est pas directe,on cherche a l 'extraire
             if not (sHosterUrl[:4] == 'http'):
@@ -560,20 +583,29 @@ def showHosters():
             #redirection tinyurl
             if 'tinyurl' in sHosterUrl:
                 #Lien deja connu ?
-                if 'http://tinyurl.com/h7c9sr7' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/h7c9sr7/','http://vidwatch.me/')
-                if 'http://tinyurl.com/jxblgl5' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/jxblgl5/','http://streamin.to/')
-                if 'http://tinyurl.com/q44uiep' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/q44uiep/','https://openload.co/')
-                if 'http://tinyurl.com/jp3fg5x' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/jp3fg5x/','http://allmyvideos.net/')
-                if 'http://tinyurl.com/hymuk2f' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/hymuk2f/','http://youwatch.org/')
-                elif 'http://tinyurl.com/lr6ytvj' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('http://tinyurl.com/lr6ytvj/','http://netu.tv/')
+                if '://tinyurl.com/h7c9sr7' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/h7c9sr7/','://vidwatch.me/')
+                elif '://tinyurl.com/jxblgl5' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/jxblgl5/','://streamin.to/')
+                elif '://tinyurl.com/q44uiep' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/q44uiep/','://openload.co/')
+                elif '://tinyurl.com/jp3fg5x' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/jp3fg5x/','://allmyvideos.net/')
+                elif '://tinyurl.com/kqhtvlv' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/kqhtvlv/','://openload.co/embed/')
+                elif '://tinyurl.com/hymuk2f' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/hymuk2f/','://youwatch.org/')
+                elif '://tinyurl.com/lr6ytvj' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/lr6ytvj/','://netu.tv/')
+                elif '://tinyurl.com/kojastd' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/kojastd/','://www.rapidvideo.com/embed/')
+                elif '://tinyurl.com/l3tjslm' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/l3tjslm/','://hqq.tv/player/')
+                    
                 #On va chercher le vrai lien
                 else:
+                    
+                    VSlog('Decodage lien tinyurl : ' + str(sHosterUrl))
                     
                     class NoRedirection(urllib2.HTTPErrorProcessor):    
                         def http_response(self, request, response):
