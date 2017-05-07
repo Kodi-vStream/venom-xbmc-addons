@@ -15,23 +15,23 @@ import re,xbmc,base64
 #copie du site http://www.hd-stream.in/
 #copie du site http://www.kaydo.ws/
 
-
 SITE_IDENTIFIER = 'kaydo_ws'
 SITE_NAME = 'Kaydo'
 SITE_DESC = 'Site de streaming en HD 720p 100% Gratuit'
 
 URL_MAIN = 'http://www.kaydo.ws/'
- 
+
 MOVIE_NEWS = (URL_MAIN + 'films.php', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films.php', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'populaires.php', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'best-rating.php', 'showMovies')
 MOVIE_TOP = (URL_MAIN + 'top-films.php', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'films.php', 'showMovies')
-MOVIE_GENRES = (True, 'showGenres')
+MOVIE_GENRES = (True, 'showMovieGenres')
 
 SERIE_NEWS = (URL_MAIN + 'last-added-series.php', 'showMovies')
 SERIE_SERIES = (URL_MAIN + 'series.php', 'showMovies')
+SERIE_GENRES = (True, 'showSerieGenres')
  
 URL_SEARCH = (URL_MAIN + 'search.php?q=', 'sHowResultSearch')
 FUNCTION_SEARCH = 'sHowResultSearch'
@@ -79,6 +79,10 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
 
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
+    
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -137,14 +141,12 @@ def sHowResultSearch(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-def showGenres():
+def showMovieGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
-    liste.append( ['Animation',URL_MAIN + 'genre.php?g=Animation'] )    
     liste.append( ['Action',URL_MAIN + 'genre.php?g=Action'] )
+    liste.append( ['Animation',URL_MAIN + 'genre.php?g=Animation'] )    
     liste.append( ['Arts Martiaux',URL_MAIN + 'genre.php?g=Arts%20Martiaux'] )
     liste.append( ['Aventure',URL_MAIN + 'genre.php?g=Aventure'] )
     liste.append( ['Biopic',URL_MAIN + 'genre.php?g=Biopic'] )
@@ -164,6 +166,32 @@ def showGenres():
     liste.append( ['Science Fiction',URL_MAIN + 'genre.php?g=Science%20fiction'] )
     liste.append( ['Thriller',URL_MAIN + 'genre.php?g=Thriller'] )
     liste.append( ['Western',URL_MAIN + 'genre.php?g=Western'] )
+
+    for sTitle,sUrl in liste:
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+       
+    oGui.setEndOfDirectory()
+
+def showSerieGenres():
+    oGui = cGui()
+ 
+    liste = []
+    liste.append( ['Action',URL_MAIN + 'series.php?g=Action'] )
+    liste.append( ['Animation',URL_MAIN + 'series.php?g=Animation'] )    
+    liste.append( ['Aventure',URL_MAIN + 'series.php?g=Aventure'] )
+    liste.append( ['Comédie',URL_MAIN + 'series.php?g=Com%C3%A9die'] )
+    liste.append( ['Drame',URL_MAIN + 'series.php?g=Drame'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'series.php?g=Epouvante-horreur'] )
+    liste.append( ['Fantastique',URL_MAIN + 'series.php?g=Fantastique'] )
+    liste.append( ['Historique',URL_MAIN + 'series.php?g=Historique'] )
+    liste.append( ['Judiciaire',URL_MAIN + 'series.php?g=Judiciaire'] )
+    liste.append( ['Policier',URL_MAIN + 'series.php?g=Policier'] )
+    liste.append( ['Romance',URL_MAIN + 'series.php?g=Romance'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'series.php?g=Science%20fiction'] )
+    liste.append( ['Thriller',URL_MAIN + 'series.php?g=Thriller'] )
 
     for sTitle,sUrl in liste:
 
@@ -205,15 +233,15 @@ def showMovies():
             if dialog.iscanceled():
                 break
 
-            if not sUrl.startswith('http://www.kaydo.ws/series.php') and 'serie' in sUrl or 'genre' in sUrl:
-                sThumbnail = URL_MAIN+str(aEntry[0])
-                siteUrl = URL_MAIN+str(aEntry[4])
+            if not sUrl.startswith(URL_MAIN + 'series.php') and 'serie' in sUrl or 'genre' in sUrl:
+                sThumbnail = URL_MAIN + str(aEntry[0])
+                siteUrl = URL_MAIN + str(aEntry[4])
                 sCom = str(aEntry[3])
                 sTitle = ('%s (%s)') % (str(aEntry[1]) , str(aEntry[2]).replace(' - COMP', 'COMP'))
                 title = aEntry[1]
             else:
-                sThumbnail = URL_MAIN+str(aEntry[0])
-                siteUrl = URL_MAIN+str(aEntry[1])
+                sThumbnail = URL_MAIN + str(aEntry[0])
+                siteUrl = URL_MAIN + str(aEntry[1])
                 sCom = str(aEntry[3])
                 sTitle = ('%s (%s)') % (str(aEntry[2]) , str(aEntry[4]))
                 title = aEntry[2]
@@ -235,10 +263,21 @@ def showMovies():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]' , oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
     
+def __checkForNextPage(sHtmlContent):
+    sPattern = 'class="pagination">.*?<li class="active">.+?<li><a href="(.+?)"'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    if (aResult[0] == True):
+        sUrl = URL_MAIN + aResult[1][0]
+        return sUrl
+ 
+    return False
+
 def showSeries():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -260,20 +299,20 @@ def showSeries():
             if dialog.iscanceled():
                 break
 
-            sThumbnail = URL_MAIN+str(aEntry[0])
-            siteUrl = URL_MAIN+str(aEntry[2])
+            sThumbnail = URL_MAIN + str(aEntry[0])
+            siteUrl = URL_MAIN + str(aEntry[2])
             sCom = str(aEntry[4])
             sTitle = ('%s (%s) (%s)') % (sMovieTitle , str(aEntry[1].replace(' COMP', 'COMP')), str(aEntry[4]))
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)     
-            oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'series.png', sThumbnail, '', oOutputParameterHandler) 
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'series.png', sThumbnail, '', oOutputParameterHandler)
             
-        cConfig().finishDialog(dialog)  
+        cConfig().finishDialog(dialog)
         
-    oGui.setEndOfDirectory()            
+    oGui.setEndOfDirectory()
 
 def seriesHosters():
 
@@ -288,7 +327,7 @@ def seriesHosters():
         sUrl += '&r=n'
     else:
         sUrl += '?r=n'
-    oRequestHandler = cRequestHandler(sUrl+'&ep=0')
+    oRequestHandler = cRequestHandler(sUrl + '&ep=0')
     sHtmlContent = oRequestHandler.request();
 
     oParser = cParser()
@@ -318,27 +357,16 @@ def seriesHosters():
                 
                 name = name.replace('Ep. ','E')
                 
-                oOutputParameterHandler.addParameter('siteUrl', sUrl) 
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle) 
-                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail) 
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
                 oGui.addTV(SITE_IDENTIFIER, 'showHosters', name, 'series.png', sThumbnail, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
-def __checkForNextPage(sHtmlContent):
-    sPattern = 'class="pagination">.*?<li class="active">.+?<li><a href="(.+?)"'
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    if (aResult[0] == True):
-        sUrl = URL_MAIN+aResult[1][0]     
-        return sUrl 
- 
-    return False
-
 def showHosters():
-   
+
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -361,20 +389,15 @@ def showHosters():
     else:
         BA = False
 
-    sPattern = '<script>\s*function\shh(.+?)</script>'
-    aResult = re.search(sPattern,sHtmlContent, re.DOTALL)
-    
+    sPattern = '<script>function(.+?)</script>'
+    aResult = re.search(sPattern,sHtmlContent)
     sHtmlContent = aResult.group(1).replace('return de("$")','') #serie
     #redirection sur hdstream pour les new videos
     sPattern = '"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    sMTitle = xbmc.getInfoLabel('ListItem.title')
-    
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             url = Decode(str(aEntry))
-
             if 'manifest.mpd' in url:
                 continue
                 
@@ -392,26 +415,22 @@ def showHosters():
                         sHosterUrl = vUrl
                     else:
                         sHosterUrl = url
-                        if '-hd' in url:
-                            sMTitle = '%s [HD]' %(xbmc.getInfoLabel('ListItem.title'))
-                        if '-md' in url:
-                            sMTitle = '%s [MD]' %(xbmc.getInfoLabel('ListItem.title'))
 
             else:
                 sHosterUrl = url
 
-            oHoster = cHosterGui().checkHoster(sHosterUrl)       
-            if (oHoster != False):            
-                oHoster.setDisplayName(sMTitle)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(xbmc.getInfoLabel('ListItem.title'))
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
             
         if (BA != False):
             sHosterUrl2 = str(BA)
             oHoster2 = cHosterGui().checkHoster(sHosterUrl2)
-            if (oHoster2 != False):            
+            if (oHoster2 != False):
                 oHoster2.setDisplayName(sMovieTitle + '[COLOR coral]' + (' [Bande Annonce] ') + '[/COLOR]')
                 oHoster2.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster2, sHosterUrl2, '') 
+                cHosterGui().showHoster(oGui, oHoster2, sHosterUrl2, '')
                   
     oGui.setEndOfDirectory()
