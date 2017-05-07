@@ -5,14 +5,14 @@ from resources.lib.parser import cParser
 from resources.lib.config import cConfig 
 from resources.lib.gui.gui import cGui 
 from resources.hosters.hoster import iHoster
-
-import xbmcgui
-
+from resources.lib.util import cUtil,VScreateDialogSelect
+import json
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'tune'
+        self.__sDisplayName = 'Tune'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
@@ -50,7 +50,6 @@ class cHoster(iHoster):
         sPattern = 'vid=([0-9]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-
         if (aResult[0] == True):
             return aResult[1][0]
 
@@ -69,44 +68,44 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+        oParser = cParser()
 
-        #recuperation de l'id et reformatage du lien
         id = self.__getIdFromUrl(self.__sUrl)
+        
         sUrl = 'https://embed.tune.pk/play/' + id  + '?autoplay=&ssl=yes&inline=true'
 
         oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
-        sPattern =  '"file":"(.+?)".+?"label":(\d+)'
-        oParser = cParser()
+
+        sPattern = "var requestURL *= *'([^']+)'"
         aResult = oParser.parse(sHtmlContent, sPattern)
-
         if (aResult[0] == True):
-            #initialisation des tableaux
-            url=[]
-            qua=[]
-            api_call = ''
+            vUrl = aResult[1][0]
+            oRequest = cRequestHandler(vUrl)
+            sHtmlContent = oRequest.request()
 
-            #Replissage des tableaux
-            for i in aResult[1]:
-                url.append(str(i[0]))
-                qua.append(str(i[1]))
+            sHtmlContent = cUtil().removeHtmlTags(sHtmlContent)
+            sHtmlContent = cUtil().unescape(sHtmlContent)
 
-            #Si une seule url
-            if len(url) == 1:
-                api_call = url[0]
-            #si plus de une
-            elif len(url) > 1:
-                #Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
-                if (ret > -1):
-                    api_call = url[ret]
-                else: 
-                    return False, False
-     
-            
+            content = json.loads(sHtmlContent)
+            content = content["data"]["details"]["player"]
+            if content:
+                url = []
+                qua = []
+                for x in content['sources']:
+                    url.append(x['file'])
+                    qua.append(repr(x['label']))
+
+                if len(url) == 1:
+                    api_call = url[0]
+
+                elif len(url) > 1:
+                    ret = VScreateDialogSelect(qua)
+                    if (ret > -1):
+                        api_call = url[ret]
+
             if (api_call):
-                return True, api_call 
+                return True, api_call + '|User-Agent=' + UA 
 
             return False, False
 
