@@ -13,7 +13,7 @@ import re,xbmcgui,urllib,unicodedata
 SITE_IDENTIFIER = 'streamay_bz'
 SITE_NAME = 'Streamay'
 SITE_DESC = 'Films/ Séries & Mangas en streaming'
-URL_MAIN = 'https://streamay.bz/'
+URL_MAIN = 'http://streamay.ws/'
 
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/recents', 'showMovies')
