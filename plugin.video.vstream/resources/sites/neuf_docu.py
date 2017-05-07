@@ -19,7 +19,7 @@ URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 DOC_NEWS = (URL_MAIN, 'showMovies')
-DOC_GENRES = (True, 'showGenre')
+DOC_GENRES = (True, 'showGenres')
 DOC_DOCS = ('http://', 'load')
 
 def load():
@@ -39,7 +39,6 @@ def load():
 
     oGui.setEndOfDirectory()
 
-
 def showSearch():
     oGui = cGui()
 
@@ -50,8 +49,7 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
-
-def showGenre():
+def showGenres():
     oGui = cGui()
     liste = []
     liste.append( ['[COLOR teal]CATEGORIES[/COLOR]', ''] )
@@ -116,7 +114,6 @@ def showGenre():
 
     oGui.setEndOfDirectory()
 
-
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
@@ -159,11 +156,10 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
-
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -173,7 +169,6 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-
 
 def showHosters():
     oGui = cGui()
