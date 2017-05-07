@@ -16,18 +16,18 @@ SITE_DESC = 'Films/Séries/Animés'
 
 URL_MAIN = 'http://www.filmsvostfr.cc/'
 
-MOVIE_MOVIES = (URL_MAIN + 'films-en-streaming', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films-en-streaming', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'films-en-streaming', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 MOVIE_ANNEES = (True, 'showMovieAnnees')
 
-SERIE_SERIES = (URL_MAIN + 'series-en-streaming', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'series-en-streaming', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'series-en-streaming', 'showMovies')
 SERIE_GENRES = ('http://seriegenre', 'showGenres')
 SERIE_ANNEES = (True, 'showSerieAnnees')
 
-ANIM_ANIMS = (URL_MAIN + 'animes-en-streaming', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'animes-en-streaming', 'showMovies')
+ANIM_ANIMS = (URL_MAIN + 'animes-en-streaming', 'showMovies')
 ANIM_GENRES = ('http://animgenre', 'showGenres')
 ANIM_ANNEES = (True, 'showAnimeAnnees')
 
@@ -45,8 +45,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
 	
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIES[1], 'Films', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
 	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
