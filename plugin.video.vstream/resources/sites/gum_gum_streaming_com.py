@@ -19,10 +19,10 @@ SITE_DESC = 'Animés VF/VOSTFR'
 URL_MAIN = 'http://gum-gum-streaming.com/'
 
 ANIM_NEWS = (URL_MAIN, 'showNews')
-#ANIM_ANIMS = (URL_MAIN, '')
-ANIM_VFS = (URL_MAIN+'vf', 'showAnimes')
-ANIM_VOSTFRS = (URL_MAIN+'vostfr', 'showAnimes')
-ANIM_MOVIES = (URL_MAIN+'films', 'showMovies')
+ANIM_ANIMS = (URL_MAIN, 'showNews')
+ANIM_VFS = (URL_MAIN + 'vf', 'showAnimes')
+ANIM_VOSTFRS = (URL_MAIN + 'vostfr', 'showAnimes')
+ANIM_MOVIES = (URL_MAIN + 'films', 'showMovies')
 
 def load():
     oGui = cGui()
@@ -278,7 +278,7 @@ def showHosters():
                 sHosterUrl = 'http:' + sHosterUrl
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                oHoster.setDisplayName(sTitle)  #nom affiche
+                oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
     oGui.setEndOfDirectory()
