@@ -1,11 +1,8 @@
-from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import re,urllib2, urllib
-import xbmcgui
+import urllib2
 import json
-from resources.lib.util import cUtil
+from resources.lib.util import cUtil,VScreateDialogSelect
 
 class cHoster(iHoster):
 
@@ -87,7 +84,6 @@ class cHoster(iHoster):
 
         page = json.loads(sHtmlContent)
         page = json.loads(page['flashvars']['metadata'])
-
         if page:
             url = []
             qua = []
@@ -98,8 +94,7 @@ class cHoster(iHoster):
             # Si au moins 1 url
             if (url):
             # Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
+                ret = VScreateDialogSelect(qua)
                 if (ret > -1):
                     api_call = url[ret]
 
@@ -110,7 +105,3 @@ class cHoster(iHoster):
             return True,api_call
             
         return False, False
-
-        
-#http://www.tubeoffline.com/download-Odnoklassniki-videos.php#.Vc4giJf-QZQ
-
