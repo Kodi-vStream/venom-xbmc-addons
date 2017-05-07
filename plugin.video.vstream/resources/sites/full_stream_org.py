@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 #Venom.
-#11/03/2016
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -109,10 +108,10 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText  
+        sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
-        return  
+        return
 
 def getPremiumUser():
     sUrl = URL_MAIN
@@ -131,9 +130,7 @@ def getPremiumUser():
 
 def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
- 
+	
     liste = []
     liste.append( ['HD/HQ',URL_MAIN + 'quality/Haute-qualit%C3%A9/'] )
     liste.append( ['Action',URL_MAIN + 'action/'] )
@@ -145,7 +142,7 @@ def showGenres():
     liste.append( ['Comédie Dramatique',URL_MAIN + 'comedie-dramatique/'] )
     liste.append( ['Comédie Musicale',URL_MAIN + 'comedie-musicale/'] )
     liste.append( ['Drame',URL_MAIN + 'drame/'] )
-    liste.append( ['Documentaire',URL_MAIN + 'documentaire/'] ) 
+    liste.append( ['Documentaire',URL_MAIN + 'documentaire/'] )
     liste.append( ['Famille',URL_MAIN + 'famille/'] )
     liste.append( ['Fantastique',URL_MAIN + 'fantastique/'] )
     liste.append( ['Guerre',URL_MAIN + 'guerre/'] )
@@ -155,7 +152,7 @@ def showGenres():
     liste.append( ['Policier',URL_MAIN + 'policier/'] )
     liste.append( ['Romance',URL_MAIN + 'romance/'] )
     liste.append( ['Science-Fiction',URL_MAIN + 'science-fiction/'] )
-    liste.append( ['Spectacles Scetchs',URL_MAIN + 'spectacles/'] )
+    liste.append( ['Spectacles Sketchs',URL_MAIN + 'spectacles/'] )
     liste.append( ['Thriller',URL_MAIN + 'thriller/'] )
     liste.append( ['Walt Disney',URL_MAIN + 'film/Walt+Disney/'] )
     liste.append( ['Western',URL_MAIN + 'western/'] )
@@ -165,11 +162,11 @@ def showGenres():
     #liste.append( ['Derniers ajouts',URL_MAIN + 'lastnews/'] )
 
     for sTitle,sUrl in liste:
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-       
+
     oGui.setEndOfDirectory() 
     
 def AlphaSearch():
@@ -190,9 +187,9 @@ def AlphaSearch():
             sTitle = chr(65+i-10)
             
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + sTitle.lower() + '.html' )
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + sTitle.lower() + '.html')
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', '[COLOR teal] Lettre [COLOR red]'+ sTitle +'[/COLOR][/COLOR]', 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', '[COLOR teal] Lettre [COLOR red]' + sTitle + '[/COLOR][/COLOR]', 'genres.png', oOutputParameterHandler)
         
     cConfig().finishDialog(dialog)
     
@@ -358,7 +355,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oOutputParameterHandler.addParameter('dlenewssortby', dlenewssortby)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -400,7 +397,7 @@ def showHosters():
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'host.png', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR red]' + str(aEntry[0]) + '[/COLOR]', 'host.png', oOutputParameterHandler)
 
             sHosterUrl = str(aEntry[1])
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -452,7 +449,7 @@ def serieHosters():
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'host.png', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR red]' + str(aEntry[0]) + '[/COLOR]', 'host.png', oOutputParameterHandler)
                 
             elif aEntry[1]:
                 sHosterUrl = str(aEntry[1])
@@ -476,7 +473,7 @@ def serieHosters():
 
                         if (aResult2[0] == True):
                             for aEntry2 in aResult2[1]:
-                                sMovieTitle2 = str(sMovieTitle) + ' '+  str(aEntry[3])
+                                sMovieTitle2 = str(sMovieTitle) + ' ' + str(aEntry[3])
                                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle2)
                                 
                                 sHosterUrl = aEntry2
@@ -488,5 +485,5 @@ def serieHosters():
                                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)              
 
         cConfig().finishDialog(dialog)
-                
+
     oGui.setEndOfDirectory()
