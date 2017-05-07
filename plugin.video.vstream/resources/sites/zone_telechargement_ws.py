@@ -25,7 +25,7 @@ SITE_IDENTIFIER = 'zone_telechargement_ws'
 SITE_NAME = '[COLOR violet]Zone-Telechargement.ws[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_MAIN = 'http://www.zone-telechargement.ws/'
+URL_MAIN = 'https://www.zone-telechargement.ws/'
 
 URL_SEARCH = (URL_MAIN, 'showMovies')
 FUNCTION_SEARCH = 'showMovies'

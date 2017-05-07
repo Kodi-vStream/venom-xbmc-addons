@@ -19,7 +19,7 @@ URL_MAIN = 'http://www.fullmoviz.org/'
 MOVIE_MOVIE = (URL_MAIN + '?p=movies&orderby=name', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + '?p=movies&orderby=date', 'showMovies')
 MOVIE_COMMENTS = (URL_MAIN + '?p=movies&orderby=comment_count', 'showMovies')
-MOVIE_GENRES = (True, 'showGenre')
+MOVIE_GENRES = (True, 'showGenres')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -41,26 +41,22 @@ def load():
    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
 
-    
 def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_MAIN + '?s='+sSearchText
+        sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
-        return  
+        return
 
- 
-def showGenre():
+def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
  
     liste = []
     liste.append( ['Action',URL_MAIN + 'category/action/'] )
@@ -81,16 +77,15 @@ def showGenre():
     liste.append( ['Romance',URL_MAIN + 'category/romance/'] )
     liste.append( ['Science-fiction',URL_MAIN + 'category/science-fiction/'] )
     liste.append( ['Thriller',URL_MAIN + 'category/thriller/'] )
-                
+
     for sTitle,sUrl in liste:
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-       
+
     oGui.setEndOfDirectory()
-    
-    
+
 def showMovies(sSearch=''):
     oGui = cGui()
     if sSearch:
@@ -98,7 +93,7 @@ def showMovies(sSearch=''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-   
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#46;', '')
@@ -137,11 +132,10 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]' , oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
-
 
 def __checkForNextPage(sHtmlContent):
     sPattern = '<li class="next right"><a href="(.+?)".+?</a></li>'
@@ -151,7 +145,6 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-    
 
 def showHosters():
     oGui = cGui()

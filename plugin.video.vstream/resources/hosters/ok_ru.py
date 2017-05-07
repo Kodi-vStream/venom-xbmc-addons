@@ -45,7 +45,7 @@ class cHoster(iHoster):
         return '';
         
     def getHostAndIdFromUrl(self, sUrl):
-        sPattern = 'http:\/\/((?:(?:ok)|(?:odnoklassniki))\.ru)\/.+?\/([0-9]+)'
+        sPattern = 'https*:\/\/((?:(?:ok)|(?:odnoklassniki))\.ru)\/.+?\/([0-9]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
