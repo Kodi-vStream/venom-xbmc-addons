@@ -397,7 +397,7 @@ def showMovies(sSearch = ''):
                 sPicture = URL_MAIN + sPicture
           
             if not 'http' in sUrl:
-                sUrl = URL_MAIN + sUrl
+                sUrl = URL_MAIN[:-1] + sUrl
            
             #not found better way
             #sTitle = unicode(sTitle, errors='replace')
