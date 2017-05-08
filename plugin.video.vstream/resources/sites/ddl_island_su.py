@@ -884,7 +884,7 @@ def get_response(img,cookie):
     #finnnnn
         
     try:
-        img = xbmcgui.ControlImage(450, 0, 400, 130, filename)
+        img = xbmcgui.ControlImage(450, 0, 400, 130, filename.encode("utf-8"))
         wdlg = xbmcgui.WindowDialog()
         wdlg.addControl(img)
         wdlg.show()
