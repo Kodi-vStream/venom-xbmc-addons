@@ -26,11 +26,6 @@ URL_MAIN = 'http://streamase.com/'
 MOVIE_NEWS = (URL_MAIN + 'lastnews/' , 'showMovies')
 MOVIE_GENRES = (True, 'showGenreMovies')
 
-#animes
-URL_MAIN_MANGA = 'http://manga.streamase.com/'
-MANGA_NEWS = (URL_MAIN_MANGA + 'index.php?do=lastnews/' , 'showMovies')
-MANGA_GENRES = (True, 'showGenreMangas')
-
 #serie
 URL_MAIN_SERIE = 'http://serie.streamase.com/'
 SERIE_NEWS = (URL_MAIN_SERIE + 'index.php?do=lastnews/' , 'showMovies')
@@ -56,10 +51,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Séries', 'series.png', oOutputParameterHandler)
-   
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMenuMangas', 'Mangas', 'animes.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory() 
 
@@ -111,25 +102,6 @@ def showMenuSeries():
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-    
-def showMenuMangas():
-    
-    oGui = cGui()
-    
-    oOutputParameterHandler = cOutputParameterHandler() 
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oOutputParameterHandler.addParameter('type', 'anime')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche de mangas', 'search.png', oOutputParameterHandler) 
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MANGA_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MANGA_NEWS[1], 'Mangas (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)
-    
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MANGA_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MANGA_GENRES[1], 'Mangas (Genres)', 'animes_genres.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
 
 def showSearch():
     oGui = cGui()
@@ -148,9 +120,6 @@ def showFavorites():
         
 def showGenreMovies():
     showGenre(URL_MAIN)
-    
-def showGenreMangas():
-    showGenre(URL_MAIN_MANGA)
     
 def showGenreSeries():
     showGenre(URL_MAIN_SERIE)
@@ -234,8 +203,6 @@ def showMovies(sSearch = ''):
         if sType:
             if sType == "serie":
                 Url_Search = URL_MAIN_SERIE
-            elif sType == "anime":
-                Url_Search = URL_MAIN_MANGA
             else:
                 Url_Search = URL_MAIN
         
