@@ -203,8 +203,6 @@ def showMovies(sSearch = ''):
         if sType:
             if sType == "serie":
                 Url_Search = URL_MAIN_SERIE
-            elif sType == "anime":
-                Url_Search = URL_MAIN_MANGA
             else:
                 Url_Search = URL_MAIN
         
