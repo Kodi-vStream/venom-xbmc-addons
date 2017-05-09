@@ -824,7 +824,7 @@ def get_response(img,cookie):
     
     cConfig().log(filename)
     
-    if (False):
+    if (True):
         ####nouveau captcha
         try:
             ##affichage du dialog perso   
