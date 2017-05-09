@@ -22,34 +22,32 @@ URL_MAIN = 'http://mega-stream.fr/'
 MOVIE_NEWS = (URL_MAIN +'accueil-films', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN +'accueil-films', 'showMovies')
 MOVIE_HD = (URL_MAIN +'accueil-films', 'showMovies')
-MOVIE_GENRES = (URL_MAIN +'accueil-films', 'showGenre')
+MOVIE_GENRES = (URL_MAIN +'accueil-films', 'showGenres')
 
+SERIE_NEWS = (URL_MAIN +'accueil-series', 'showMovies')
 SERIE_SERIES = (URL_MAIN +'accueil-series', 'showMovies')
 SERIE_HD = (URL_MAIN +'accueil-series', 'showMovies')
-#SERIE_GENRES = (URL_MAIN +'accueil-series', 'showGenre') #pas de genre serie actif
+#SERIE_GENRES = (URL_MAIN +'accueil-series', 'showGenres') #pas de genre serie actif
 
+ANIM_NEWS = (URL_MAIN +'accueil-mangas', 'showMovies')
 ANIM_ANIMS = (URL_MAIN +'accueil-mangas', 'showMovies')
 ANIM_HD = (URL_MAIN +'accueil-mangas', 'showMovies')
-ANIM_GENRES = (URL_MAIN + 'accueil-mangas', 'showGenre')
+ANIM_GENRES = (URL_MAIN + 'accueil-mangas', 'showGenres')
  
 URL_SEARCH = ('', 'resultSearch')
 FUNCTION_SEARCH = 'resultSearch'
-   
+
 def load():
     oGui = cGui()
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'fonctions/recherche.php')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
-   
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
-       
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
@@ -69,28 +67,28 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'animes_genres.png', oOutputParameterHandler)
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'top-films')
     oGui.addDir(SITE_IDENTIFIER, 'showTop', 'Top-100-Films', 'films.png', oOutputParameterHandler)
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'top-series')
     oGui.addDir(SITE_IDENTIFIER, 'showTop', 'Top-100-Séries', 'series.png', oOutputParameterHandler)
+	
     oGui.setEndOfDirectory()
- 
- 
+
 def showSearch():
     oGui = cGui()
- 
+
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sSearchText = sSearchText
         resultSearch(sSearchText)
         oGui.setEndOfDirectory()
         return
-       
-def showGenre():
+
+def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -101,7 +99,7 @@ def showGenre():
         code = 'accueil-series/'
     else:
         code = 'accueil-mangas/'
- 
+
     liste = []
     liste.append( ['Action', URL_MAIN + code + 'action'] )
     liste.append( ['Animation', URL_MAIN + code + 'animation'] )
@@ -155,7 +153,7 @@ def showGenre():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()
- 
+
 def resultSearch(sSearch):
     
     oGui = cGui()
@@ -176,7 +174,7 @@ def resultSearch(sSearch):
     sHtmlContent = response.read()
     response.close()
     
-    sPattern = '<div class="movie-img img-box">\s*<img.+?src="([^"]+)".+?<a href="([^"]+)"[^<>]+>([^<>]+)<\/a>.+?<span[^<>]+>([^<>]+)<\/span>'
+    sPattern = '<div class="movie-img img-box">\s*<img.+?src="([^"]+)".+?<a href="([^"]+)"[^<>]+>.+?-([^<>]+)<\/a>.+?<span[^<>]+>([^<>]+)<\/span>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -191,7 +189,7 @@ def resultSearch(sSearch):
 
             sQual = ""
             if aEntry[3]:
-                sQual = '[' + aEntry[3] + '] '
+                sQual = ' [' + aEntry[3] + ']'
             siteUrl = aEntry[1]
             sThumbnail = aEntry[0]
             sTitle = aEntry[2]
@@ -210,7 +208,6 @@ def resultSearch(sSearch):
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
         
         cConfig().finishDialog(dialog)
-      
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -256,23 +253,22 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             if '-mangas' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'films.png', sThumbnail, sCom, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'animes.png', sThumbnail, sCom, oOutputParameterHandler)
             elif '-serie' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'films.png', sThumbnail, sCom, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'series.png', sThumbnail, sCom, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumbnail, sCom, oOutputParameterHandler)
            
         cConfig().finishDialog(dialog)
- 
-        #Affichage page suivante
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]' , oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
  
     oGui.setEndOfDirectory()
-    
+
 def __checkForNextPage(sHtmlContent):
     
     sPattern = '<span class="pnext"><a href="([^"]+)"'
@@ -282,7 +278,7 @@ def __checkForNextPage(sHtmlContent):
     if (aResult[0] == True):
         sUrl = aResult[1][0]     
         return sUrl 
- 
+
     return False
 
 def showEpisode():
@@ -309,7 +305,7 @@ def showEpisode():
 
             if aEntry[0]:
                 sSaison = aEntry[1]
-                oGui.addText(SITE_IDENTIFIER, '[COLOR olive]'+ sSaison+ '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR olive]' + sSaison + '[/COLOR]')
                 
             else:
                 sTitle = sMovieTitle + ' ' + sSaison + ' ' + aEntry[3]
@@ -322,7 +318,7 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog) 
+        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
 
@@ -355,7 +351,7 @@ def showHosters():
             
             sQual = aEntry[2]
             sLang = aEntry[1]
-            sDisplayTitle = '[' + sQual + '/' + sLang + ']' + sMovieTitle
+            sDisplayTitle =  sMovieTitle + ' [' + sQual + '/' + sLang + ']'
             sDisplayTitle = cUtil().DecoTitle(sDisplayTitle)
             
             url = ''
@@ -365,7 +361,7 @@ def showHosters():
 
             sHosterUrl = url
             oHoster = cHosterGui().checkHoster(sHosterUrl)
- 
+
             if (oHoster != False):
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
@@ -384,7 +380,7 @@ def showTop():
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
     
-    sPattern = '<li class="tops-item">.+?<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)"'
+    sPattern = '<li class="tops-item"><a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
    
