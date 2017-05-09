@@ -1,8 +1,14 @@
+#-*- coding: utf-8 -*-
+#https://www.cloudy.ec/embed.php?id=etc...
+#http://www.cloudy.ec/v/etc...
+#
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-import urllib,xbmc
+from resources.lib.util import VSlog,VScreateDialogSelect
+
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
 
 class cHoster(iHoster):
 
@@ -43,31 +49,15 @@ class cHoster(iHoster):
 
         return ''
         
-    def __modifyUrl(self, sUrl):
-        return sUrl;
-        
-    def __getKey(self):
-        
-        oRequestHandler = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequestHandler.request()
-
-        oParser = cParser()
-        sPattern = 'key: "(.+?)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-
-        if (aResult[0] == True):
-            return urllib.quote_plus(aResult[1][0].replace('.', '%2E'))
-
-        return ''
-
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace('https://www.cloudy.ec/', '')
+        self.__sUrl = self.__sUrl.rsplit('/', 1)[1]
         self.__sUrl = self.__sUrl.replace('embed.php?id=', '')
         self.__sUrl = 'https://www.cloudy.ec/embed.php?id=' + str(self.__sUrl)
         #Patch en attendant kodi V17
         self.__sUrl = self.__sUrl.replace('https','http')
-
+        VSlog(self.__sUrl)
+        
     def checkUrl(self, sUrl):
         return True
 
@@ -78,25 +68,31 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
-        Key = self.__getKey()
-        File = urllib.quote_plus(';' + self.__getIdFromUrl())
-   
-        api_call = 'http://www.cloudy.ec/api/player.api.php?user=undefined&codes=1&file=' + File + '&pass=undefined&key=' + Key
-        
-        oRequest = cRequestHandler(api_call)
+    
+        oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
         oParser = cParser()
-        sPattern =  'url=(.+?)&title='
+        sPattern =  '<source src="([^"]+)" type=\'(.+?)\'>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
         if (aResult[0] == True):
-            stream_url = urllib.unquote(aResult[1][0])
-            stream_url = stream_url + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
-            return True, stream_url
-        else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
-            return False, False
-        
+            url = []
+            qua = []
+            for x in aResult[1]:
+                url.append(x[0])
+                qua.append(x[1])
+
+            #Si une seule url
+            if len(url) == 1:
+                api_call = url[0]
+            #si plus de une
+            elif len(url) > 1:
+            #Afichage du tableau
+                ret = VScreateDialogSelect(qua)
+                if (ret > -1):
+                    api_call = url[ret]
+                    
+        if (api_call):
+            return True, api_call + '|User-Agent=' + UA 
+            
         return False, False
