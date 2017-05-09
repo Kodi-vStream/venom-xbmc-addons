@@ -301,10 +301,10 @@ def VSDialogSelectQual(list_qual,list_url):
     return ''
 
 def createDialog(sSite):
+    global DIALOG2
     if DIALOG2 == None:
         oDialog = xbmcgui.DialogProgress()
         oDialog.create(sSite)
-        global DIALOG2
         DIALOG2 = oDialog
         return oDialog
     else:
