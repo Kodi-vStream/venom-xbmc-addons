@@ -527,6 +527,10 @@ def showMoviesReleases():
             if ('rapidgator' not in aEntry[1]) and ('turbobit' not in aEntry[1]) and ('uploaded' not in aEntry[1]) and ('uptobox' not in aEntry[1]) :
                 #sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR]'
                 sTitle = str(aEntry[1])
+                
+                sTitle = sTitle.decode("iso-8859-1",'ignore')
+                sTitle = sTitle.encode("utf-8",'ignore')
+                
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
@@ -818,6 +822,8 @@ def get_response(img,cookie):
     #on affiche le dialogue
     solution = ''
     
+    cConfig().log(filename)
+    
     ####nouveau captchaa
     try:
         ##affichage du dialog perso   
@@ -831,9 +837,9 @@ def get_response(img,cookie):
 
             def onInit(self):
                 #image background captcha
-                self.getControl(1).setImage(filename)
+                self.getControl(1).setImage(filename.encode("utf-8"))
                 #image petit captcha memory fail
-                self.getControl(2).setImage(filename)
+                self.getControl(2).setImage(filename.encode("utf-8"))
                 self.getControl(2).setVisible(False)
                 ##Focus clavier
                 self.setFocus(self.getControl(21))
@@ -874,7 +880,7 @@ def get_response(img,cookie):
                 if action.getId() in ( 9, 10, 11, 30, 92, 216, 247, 257, 275, 61467,61448):
                     self.close()
 
-        wd = XMLDialog('DialogCaptcha.xml', cConfig().getAddonPath(), 'default', '720p')
+        wd = XMLDialog('DialogCaptcha.xml', cConfig().getAddonPath().decode("utf-8"), 'default', '720p')
         wd.doModal()
         del wd
     finally:
@@ -883,7 +889,6 @@ def get_response(img,cookie):
         if solution == '':
             cConfig().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
 
-    #finnnnn
     #ancien Captcha   
     #try:
         #img = xbmcgui.ControlImage(450, 0, 400, 130, filename.encode("utf-8"))
