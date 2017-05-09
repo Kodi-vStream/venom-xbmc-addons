@@ -341,17 +341,17 @@ def showMovies(sSearch = ''):
         #on redecode la recherhce codé il y a meme pas une seconde par l'addon
         sSearch = urllib2.unquote(sSearch)
 
-        pdata = 'action=recherche&story=' + sSearch
+        #pdata = 'action=recherche&story=' + sSearch
         
-        oRequest = cRequestHandler(URL_MAIN + 'recherche')
-        oRequest.setRequestType(1)
+        oRequest = cRequestHandler(URL_MAIN + 'recherche?story=' + sSearch)
+        #oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent',UA)
-        oRequest.addHeaderEntry('Host','www.voirfilms.co')
+        oRequest.addHeaderEntry('Host','www.voirfilms.biz')
         oRequest.addHeaderEntry('Referer',URL_MAIN)
         oRequest.addHeaderEntry('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         oRequest.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
-        oRequest.addParametersLine(pdata)
+        #oRequest.addParametersLine(pdata)
         
         sHtmlContent = oRequest.request()
         
