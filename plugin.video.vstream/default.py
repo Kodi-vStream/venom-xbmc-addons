@@ -118,8 +118,8 @@ class main:
                 function()
             except Exception as e:
                 cConfig().log('could not load site: ' + sSiteName + ' error: ' + str(e))
-                exc_type, exc_obj, exc_tb = sys.exc_info()
-                cConfig().log('Ligne : ' + str(exc_tb.tb_lineno))
+                import traceback
+                traceback.print_exc()
                 return
             
 def isHosterGui(sSiteName, sFunction):
