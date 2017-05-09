@@ -288,11 +288,23 @@ def VScreateDialogSelect(label):
     ret = oDialog.select('Select Quality', label)  
     return ret
 
+def VSDialogSelectQual(list_qual,list_url):
+    if len(list_url) == 0:
+        return ''
+    if len(list_url) == 1:
+        return list_url[0]
+        
+    oDialog = xbmcgui.Dialog()
+    ret = oDialog.select('Select Quality', list_qual)
+    if ret > -1:
+        return list_url[ret]
+    return ''
+
 def createDialog(sSite):
+    global DIALOG2
     if DIALOG2 == None:
         oDialog = xbmcgui.DialogProgress()
         oDialog.create(sSite)
-        global DIALOG2
         DIALOG2 = oDialog
         return oDialog
     else:

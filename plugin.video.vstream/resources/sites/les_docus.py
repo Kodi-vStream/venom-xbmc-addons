@@ -16,7 +16,7 @@ URL_MAIN = 'http://www.les-docus.com/'
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-DOC_GENRES = (True, 'showGenre')
+DOC_GENRES = (True, 'showGenres')
 
 DOC_NEWS = (URL_MAIN, 'showMovies')
 DOC_DOCS = ('http://', 'load')
@@ -49,7 +49,7 @@ def showSearch():
         return
 
 
-def showGenre():
+def showGenres():
     oGui = cGui()
 
     liste = []
@@ -126,7 +126,6 @@ def showGenre():
 
     oGui.setEndOfDirectory()
 
-
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
@@ -137,7 +136,6 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
 
     sPattern = '<div class="post-header">.+?href="([^"]+)" title="([^"]+)">.+?<noscript><img.+?src="([^"]+)".+?<p *style.+?>([^<]+)<\/p>'
 
@@ -159,11 +157,10 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
-
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -173,7 +170,6 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-
 
 def showHosters():
     oGui = cGui()

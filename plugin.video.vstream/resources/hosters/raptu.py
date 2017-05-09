@@ -49,7 +49,8 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace('www.rapidvideo.com','www.raptu.com')
+        #Ne marche pas systematiquement
+        #self.__sUrl = self.__sUrl.replace('www.rapidvideo.com','www.raptu.com')
         
     def checkUrl(self, sUrl):
         return True
@@ -68,16 +69,21 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
         
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+        
         #pour lien rapidvideo modif en raptu
-        sPattern = '<input type="hidden" value="(\d+)" name="block">'
-        aResult = oParser.parse(sHtmlContent,sPattern)
-        if (aResult[0] == True):
-            oRequest = cRequestHandler(sUrl)
-            oRequest.setRequestType(1)
-            oRequest.addParametersLine('confirm.x=74&confirm.y=35&block=1')
-            sHtmlContent = oRequest.request()
+        #sPattern = '<input type="hidden" value="(\d+)" name="block">'
+        #aResult = oParser.parse(sHtmlContent,sPattern)
+        #if (aResult[0] == True):
+        #    cConfig().log('Modif rapidvideo > raptu')
+        #    oRequest = cRequestHandler(sUrl)
+        #    oRequest.setRequestType(1)
+        #    oRequest.addParametersLine('confirm.x=74&confirm.y=35&block=1')
+        #    sHtmlContent = oRequest.request()
 
-        sPattern = '{"file":"([^"]+)","label":"(\d+p)"' #risque de soucis par la suite on verra
+        sPattern = '{"file":"([^"]+)","label":"([^"]+)"'
         aResult = oParser.parse(sHtmlContent,sPattern)
         if (aResult[0] == True):
             #initialisation des tableaux

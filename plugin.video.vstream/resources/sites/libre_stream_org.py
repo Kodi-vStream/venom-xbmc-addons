@@ -12,7 +12,7 @@ import re
 
 SITE_IDENTIFIER = 'libre_stream_org'
 SITE_NAME = 'Libre-stream'
-SITE_DESC = 'films en streaming, vk streaming, youwatch, vimple , streaming hd , streaming 720p , streaming sans limite'
+SITE_DESC = 'Films & Séries en streaming, vk streaming, youwatch, vimple, streaming hd, streaming 720p, streaming sans limite'
 
 URL_MAIN = 'http://libre-stream.com/'
 
@@ -49,12 +49,12 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_QLT[1], 'Films (Qualités)', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)    
-    
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
@@ -71,7 +71,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText  
+        sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -89,13 +89,13 @@ def showGenres():
     liste.append( ['Comédie Dramatique',URL_MAIN + 'films/comedie-dramatique/'] )
     liste.append( ['Comédie Musicale',URL_MAIN + 'films/comedie-musicale/'] )
     liste.append( ['Disney',URL_MAIN + 'films/disney/'] )
-    liste.append( ['Divers',URL_MAIN + 'films/divers/'] )    
+    liste.append( ['Divers',URL_MAIN + 'films/divers/'] )
     liste.append( ['Documentaire',URL_MAIN + 'films/documentaire/'] )
     liste.append( ['Drame',URL_MAIN + 'films/drame/'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'films/horreur/'] ) 
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'films/horreur/'] )
     liste.append( ['Espionnage',URL_MAIN + 'films/espionnage/'] )
     liste.append( ['Famille',URL_MAIN + 'films/famille/'] )
-    liste.append( ['Fantastique',URL_MAIN + 'films/fantastique/'] )  
+    liste.append( ['Fantastique',URL_MAIN + 'films/fantastique/'] )
     liste.append( ['Guerre',URL_MAIN + 'films/guerre/'] )
     liste.append( ['Historiques',URL_MAIN + 'films/historique/'] )
     liste.append( ['Horreur',URL_MAIN + 'films/horreur/'] )
@@ -108,16 +108,16 @@ def showGenres():
     liste.append( ['Western',URL_MAIN + 'films/western/'] )
 
     for sTitle,sUrl in liste:
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-       
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'films_genres.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory() 
 
 def showQlt():
     oGui = cGui()
-     
+    
     liste = []
     liste.append( ['HD',URL_MAIN + 'films-hd/'] )
     liste.append( ['DvdRip',URL_MAIN + 'quality/dvdrip/'] )
@@ -131,7 +131,7 @@ def showQlt():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'films.png', oOutputParameterHandler)
-       
+
     oGui.setEndOfDirectory()
 
 def AlphaSearch():
@@ -154,12 +154,12 @@ def AlphaSearch():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl + sTitle.lower() + '.html' )
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', '[COLOR teal] Lettre [COLOR red]'+ sTitle +'[/COLOR][/COLOR]', 'series_az.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', '[COLOR teal] Lettre [COLOR red]' + sTitle + '[/COLOR][/COLOR]', 'series_az.png', oOutputParameterHandler)
         
     cConfig().finishDialog(dialog)
     
     oGui.setEndOfDirectory()
-        
+
 def AlphaDisplay():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -179,7 +179,7 @@ def AlphaDisplay():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-                
+
             sTitle = aEntry[1]
             sDisplayTitle = cUtil().DecoTitle(sTitle)
 
@@ -189,7 +189,7 @@ def AlphaDisplay():
             oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sDisplayTitle, '', '','', oOutputParameterHandler)
         
         cConfig().finishDialog(dialog)
-        
+
         oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):
@@ -199,7 +199,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-   
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -207,7 +207,7 @@ def showMovies(sSearch = ''):
     sPattern = '<div class="libre-movie libre-movie-block">.+?data-src="(.+?)".+?title="(.+?)".+?<h2 onclick="window.location.href=\'(.+?)\'">'
     if '/films/' in sUrl:
         sPattern = sPattern + '.+?<div class="maskquality (.+?)">'
-        
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -224,13 +224,13 @@ def showMovies(sSearch = ''):
                     continue
             
             sMovieTitle = str(aEntry[1])
-            sThumb = aEntry[0] 
+            sThumb = aEntry[0]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
             if '/films/' in sUrl:
                 sMovieTitle = sMovieTitle + ' [' + str(aEntry[3]) + ']'
-                
+
             sTitle = cUtil().DecoTitle(sMovieTitle)
             sDisplayTitle = cUtil().DecoTitle(sTitle)
 
@@ -243,14 +243,14 @@ def showMovies(sSearch = ''):
                 oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sDisplayTitle,'', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-           
+
         cConfig().finishDialog(dialog)
-        
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -264,7 +264,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-    
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -275,7 +275,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('http://creative.rev2pub.com','')
-
+	
     sPattern = '<iframe.+?src=[\'"]([^<>\'"]+?)[\'"]'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -295,7 +295,7 @@ def showHosters():
             if (oHoster != False):
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
     
         cConfig().finishDialog(dialog)
 
@@ -310,8 +310,8 @@ def seriesHosters():
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    oParser = cParser()          
+	
+    oParser = cParser()
     sPattern = '<div class="e-number">.+?<iframe src="(.+?)".+?class="episode-id">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -331,8 +331,8 @@ def seriesHosters():
             if (oHoster != False):
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
     
         cConfig().finishDialog(dialog)
-                
+
     oGui.setEndOfDirectory()

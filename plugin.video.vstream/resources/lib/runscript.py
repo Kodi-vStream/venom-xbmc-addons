@@ -98,7 +98,7 @@ class cClear:
                     if 'kodi.log' in i:
                         post_data = {}
                         cUrl = 'http://slexy.org/index.php/submit'
-                        logop = open(path + i,'r')
+                        logop = open(path + i,'rb')
                         result = logop.read()
                         logop.close()
                         post_data['raw_paste'] = result

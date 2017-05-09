@@ -263,7 +263,7 @@ def showLinks():
                 break
                 
             filter = aEntry[1].lower()    
-            if 'brightcove' in filter or 'purevid' in filter or 'rapidvideo' in filter: #rapidvideo a del pour kodi17
+            if 'brightcove' in filter or 'purevid' in filter or 'videomega' in filter:
                 continue
                 
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle)

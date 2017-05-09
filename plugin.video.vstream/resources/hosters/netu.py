@@ -19,6 +19,10 @@ import base64
 try:    import json
 except: import simplejson as json
     
+
+#UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
+UA = 'Mozilla/6.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/8.0 Mobile/10A5376e Safari/8536.25'
+    
 def GetIp():
     if (False):
         oRequest = cRequestHandler('http://hqq.tv/player/ip.php?type=json')
@@ -135,16 +139,6 @@ class cHoster(iHoster):
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
-        
-    #def GetIP(self):
-    #    req = urllib2.Request('http://hqq.tv/player/ip.php?type=json')
-    #    response = urllib2.urlopen(req)  
-    #    data = response.read()
-    #    response.close()
-    #    result = json.loads(data)
-    #    ip =  result[u'ip']
-    #    ip = urllib.quote(ip)
-    #    return ip
 
     def __getMediaLinkForGuest(self):
     
@@ -154,8 +148,6 @@ class cHoster(iHoster):
         
         self.__sUrl = 'http://hqq.tv/player/embed_player.php?vid=' + id + '&autoplay=no'
 
-        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
-        #UA = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us)'
         headers = {'User-Agent': UA ,
                    'Host' : 'hqq.tv',
                    'Referer': 'http://hqq.tv/',
@@ -184,8 +176,6 @@ class cHoster(iHoster):
             data = unwise.unwise_process(code_crypt.group(1))
         else:
             cConfig().log('prb1')
-
-        #xbmc.log('data :' + data)
             
         if data:
             
@@ -196,8 +186,6 @@ class cHoster(iHoster):
             _pass = ''
             
             url2 = "http://hqq.tv/sec/player/embed_player.php?iss="+iss+"&vid="+vid+"&at="+at+"&autoplayed=yes&referer=on&http_referer="+http_referer+"pass="+_pass+"&embed_from=&need_captcha=0"
-            
-            #cConfig().log(url2)
             
             req = urllib2.Request(url2,None,headers)
             
@@ -211,12 +199,8 @@ class cHoster(iHoster):
                 data = e.read()
 
             data = urllib.unquote(data)
-            
+
             data = DecodeAllThePage(data)
-            
-            #fh = open('c:\\netu2.txt', "w")
-            #fh.write(data)
-            #fh.close()
 
             at = re.search(r'var\s*at\s*=\s*"([^"]*?)"', data)
             
@@ -229,8 +213,6 @@ class cHoster(iHoster):
             m = re.search(r' vid: "([a-zA-Z0-9]+)"}', data)
             if m:
                 id = m.group(1)
-            
-            #id = '9QQrbdts6wNA'
             
             if vid_server and vid_link and at:
 
@@ -261,11 +243,9 @@ class cHoster(iHoster):
                     list_url = _decode2(file_url.group(1).replace('\\', ''))
 
                 #xbmc.log(list_url)
-
-                #Now faut tout remettre dans l'ordre
-                #plus besoin maintenant
-                #url = re.search(r'(^.+)secip(.+?\/)(http.+$)', list_url)
-                #list_url = url.group(3) + '/secip' + url.group(2) + url.group(1)
+                
+                #Hack, je sais pas si ca va durer longtemps, mais indispensable sur certains fichiers
+                list_url = list_url.replace("?socket", ".mp4.m3u8")
                 
             else:
                 cConfig().log('prb2')
@@ -275,7 +255,7 @@ class cHoster(iHoster):
         #api_call = list_url.replace('?socket=','.mp4Frag1Num0.ts')
         
         #use a fake headers
-        Header = 'User-Agent=Mozilla/5.0 (iPhone; CPU iPhone OS 5_0_1 like Mac OS X)'
+        Header = 'User-Agent=' + UA
         api_call = api_call + '|' + Header
         
         #print api_call
