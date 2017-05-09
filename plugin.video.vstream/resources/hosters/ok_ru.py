@@ -1,3 +1,6 @@
+#coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 import urllib2
@@ -80,7 +83,7 @@ class cHoster(iHoster):
 
         sHtmlContent = oParser.abParse(sHtmlContent,'data-options=','" data-player-container',14)
         sHtmlContent = cUtil().removeHtmlTags(sHtmlContent)
-        sHtmlContent = cUtil().unescape(sHtmlContent)
+        sHtmlContent = cUtil().unescape(sHtmlContent.decode('utf-8'))
 
         page = json.loads(sHtmlContent)
         page = json.loads(page['flashvars']['metadata'])
