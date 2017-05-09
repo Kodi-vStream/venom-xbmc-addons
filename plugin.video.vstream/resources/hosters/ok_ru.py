@@ -83,7 +83,7 @@ class cHoster(iHoster):
 
         sHtmlContent = oParser.abParse(sHtmlContent,'data-options=','" data-player-container',14)
         sHtmlContent = cUtil().removeHtmlTags(sHtmlContent)
-        sHtmlContent = cUtil().unescape(sHtmlContent.decode('utf-8'))
+        sHtmlContent = cUtil().unescape(sHtmlContent)#.decode('utf-8'))
 
         page = json.loads(sHtmlContent)
         page = json.loads(page['flashvars']['metadata'])
