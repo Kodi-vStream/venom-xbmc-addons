@@ -14,71 +14,70 @@ SITE_DESC = 'Reportages TV - Replay des reportages télé français en streaming
 
 URL_MAIN = 'http://www.reportagestv.com/'
 
-DOC_NEWS = ('http://www.reportagestv.com/', 'showMovies')
+DOC_NEWS = (URL_MAIN, 'showMovies')
 DOC_DOCS = ('http://', 'load')
-DOC_GENRES = (True, 'showGenre')
+DOC_GENRES = (True, 'showGenres')
 
-URL_SEARCH = ('http://www.reportagestv.com/?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
     oGui = cGui()
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Derniers ajouts', 'news.png', oOutputParameterHandler)
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_GENRES[1], 'Genres', 'genres.png', oOutputParameterHandler)
-
+	
     oGui.setEndOfDirectory()
-
 
 def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = 'http://www.reportagestv.com/?s='+sSearchText 
+            sUrl = URL_SEARCH[0] + sSearchText
             showMovies(sUrl)
             oGui.setEndOfDirectory()
-            return  
+            return
 
-def showGenre():
+def showGenres():
     oGui = cGui()
- 
+	
     liste = []
-    liste.append( ["Espionnage","http://www.reportagestv.com/category/espionnage/"] )
-    liste.append( ["Grand-Banditisme","http://www.reportagestv.com/category/grand-ganditisme/"] )
-    liste.append( ["Mafias","http://www.reportagestv.com/category/mafias/"] ) 
-    liste.append( ['Canal+ - Nouvelle Vie','http://www.reportagestv.com/category/canal-plus/nouvelle-vie/'] )
-    liste.append( ['Canal+ - Spécial Investigation','http://www.reportagestv.com/category/canal-plus/special-investigation/'] )
-    liste.append( ['D8 - Au coeur de l\'Enquête','http://www.reportagestv.com/category/d8/au-coeur-de-lenquete/'] )
-    liste.append( ['D8 - En quête d\'Actualité','http://www.reportagestv.com/category/d8/en-quete-dactualite/'] )
-    liste.append( ['France 2 - Apocalypse la 1ère guerre mondiale','http://www.reportagestv.com/category/france-2/apocalypse-la-1-ere-guerre-mondiale/'] )
-    liste.append( ['France 2 - Envoyé Spécial','http://www.reportagestv.com/category/france-2/envoye-special/'] )
-    liste.append( ['TF1 - Appels d\'Urgence','http://www.reportagestv.com/category/tf1/appels-durgence/'] )
-    liste.append( ['TF1 - Sept à Huit','http://www.reportagestv.com/category/tf1/sept-a-huit/'] )
-    liste.append( ['TMC - 90 Enquêtes','http://www.reportagestv.com/category/tmc/90-enquetes/'] )
-    liste.append( ["Canal+","http://www.reportagestv.com/category/canal-plus/"] )
-    liste.append( ["D8","http://www.reportagestv.com/category/d8/"] )
-    liste.append( ["France 2","http://www.reportagestv.com/category/france-2/"] )
-    liste.append( ["TF1","http://www.reportagestv.com/category/tf1/"] )
-    liste.append( ["TMC","http://www.reportagestv.com/category/tmc/"] ) 
-
+    liste.append( ['Espionnage',URL_MAIN + 'category/espionnage/'] )
+    liste.append( ['Grand-Banditisme',URL_MAIN + 'category/grand-ganditisme/'] )
+    liste.append( ['Mafias',URL_MAIN + 'category/mafias/'] ) 
+    liste.append( ['TF1',URL_MAIN + 'category/tf1/'] )
+    liste.append( ['TF1 - Appels d\'Urgence',URL_MAIN + 'category/tf1/appels-durgence/'] )
+    liste.append( ['TF1 - Sept à Huit',URL_MAIN + 'category/tf1/sept-a-huit/'] )
+    liste.append( ['France 2',URL_MAIN + 'category/france-2/'] )
+    liste.append( ['France 2 - Apocalypse la 1ère guerre mondiale',URL_MAIN + 'category/france-2/apocalypse-la-1-ere-guerre-mondiale/'] )
+    liste.append( ['France 2 - Envoyé Spécial',URL_MAIN + 'category/france-2/envoye-special/'] )
+    liste.append( ['Canal+',URL_MAIN + 'category/canal-plus/'] )
+    liste.append( ['Canal+ - Nouvelle Vie',URL_MAIN + 'category/canal-plus/nouvelle-vie/'] )
+    liste.append( ['Canal+ - Spécial Investigation',URL_MAIN + 'category/canal-plus/special-investigation/'] )
+    liste.append( ['D8 - Au coeur de l\'Enquête',URL_MAIN + 'category/d8/au-coeur-de-lenquete/'] )
+    liste.append( ['D8 - En quête d\'Actualité',URL_MAIN + 'category/d8/en-quete-dactualite/'] )
+    liste.append( ['D8',URL_MAIN + 'category/d8/'] )
+    liste.append( ['TMC',URL_MAIN + 'category/tmc/'] ) 
+    liste.append( ['TMC - 90 Enquêtes',URL_MAIN + 'category/tmc/90-enquetes/'] )
+	
     for sTitle,sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'doc.png', oOutputParameterHandler)
-       
-    oGui.setEndOfDirectory() 
-    
+		
+    oGui.setEndOfDirectory()
+
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
@@ -86,7 +85,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-   
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'')
@@ -106,12 +105,12 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', aEntry[0])
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', aEntry[0], sSin, oOutputParameterHandler)
- 
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -124,7 +123,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-    
+
 def __checkForRealUrl(sHtmlContent):
     sPattern = 'center.+?<a href="(.+?)".+?<input type="button".+?</a>'
     oParser = cParser()
@@ -165,5 +164,5 @@ def showHosters():
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-  
+
     oGui.setEndOfDirectory()
