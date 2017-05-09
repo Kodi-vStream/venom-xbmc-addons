@@ -199,10 +199,10 @@ class cConfig():
         return qst
         
     def createDialog(self, sSite):
+	global DIALOG2
         if DIALOG2 == None:
             oDialog = xbmcgui.DialogProgress()
             oDialog.create(sSite)
-            global DIALOG2
             DIALOG2 = oDialog
             return oDialog
         else: return DIALOG2
