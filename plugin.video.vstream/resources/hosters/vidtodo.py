@@ -3,7 +3,6 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
 import time
-
 class cHoster(iHoster):
 
     def __init__(self):
@@ -52,11 +51,12 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        oParser = cParser()
+        api_call = ''
         
+        oParser = cParser()
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+
         sPattern =  '<input type="hidden" name="([^"]+)" value="([^"]+)"'
 
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -70,13 +70,22 @@ class cHoster(iHoster):
             oRequest.addParameters('referer', self.__sUrl)
             sHtmlContent = oRequest.request()
 
-            sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+            sPattern = '{file: *"([^"]+(?<!smil))"}'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
-                sHtmlContent = cPacker().unpack(aResult[1][0])
-                sPattern =  '{file:"([^"]+(?<!smil))"}'
+                api_call = aResult[1][0]
+    
+            else:
+                sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
                 aResult = oParser.parse(sHtmlContent, sPattern)
                 if (aResult[0] == True):
-                    return True, aResult[1][0]
-        
+                    sHtmlContent = cPacker().unpack(aResult[1][0])
+                    sPattern = '{file: *"([^"]+(?<!smil))"}'
+                    aResult = oParser.parse(sHtmlContent, sPattern)
+                    if (aResult[0] == True):
+                        api_call = aResult[1][0]
+
+        if (api_call):
+            return True, api_call
+            
         return False, False
