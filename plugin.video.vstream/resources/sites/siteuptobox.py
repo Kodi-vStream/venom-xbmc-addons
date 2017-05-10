@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'siteuptobox'
 SITE_NAME = '[COLOR dodgerblue]' + 'VotreCompteUptobox' + '[/COLOR]'
 SITE_DESC = 'Fichiers sur compte Uptobox'
 URL_MAIN = 'https://uptobox.com/'
-BURL = 'https://uptobox.com/?op=my_files' 
+BURL = URL_MAIN + '?op=my_files' 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
 headers = { 'User-Agent' : UA }
 
@@ -27,32 +27,32 @@ def load():
     oPremiumHandler = cPremiumHandler('uptobox')
     
     if (cConfig().getSetting('hoster_uptobox_username') == '') and (cConfig().getSetting('hoster_uptobox_password') == ''):
-        oGui.addText(SITE_IDENTIFIER, '[COLOR red]'+ 'Nécessite Un Compte Uptobox Premium ou Gratuit' + '[/COLOR]')
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + 'Nécessite Un Compte Uptobox Premium ou Gratuit' + '[/COLOR]')
     else:
         if (GestionCookie().Readcookie('uptobox') != ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-            oGui.addDir(SITE_IDENTIFIER, 'showFile', 'MesFichiers', 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showFile', 'Mes Fichiers', 'genres.png', oOutputParameterHandler)
     
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://Dossier/')
-            oGui.addDir(SITE_IDENTIFIER, 'showFolder', 'MesDossiers', 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showFolder', 'Mes Dossiers', 'genres.png', oOutputParameterHandler)
         else:
             Connection = oPremiumHandler.Authentificate()
             if (Connection == False):
-                xbmcgui.Dialog().notification('Info connexion', 'Connexion refusé', xbmcgui.NOTIFICATION_ERROR,2000,False)
+                xbmcgui.Dialog().notification('Info connexion', 'Connexion refusée', xbmcgui.NOTIFICATION_ERROR,2000,False)
                 return
                 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-            oGui.addDir(SITE_IDENTIFIER, 'showFile', 'MesFichiers', 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showFile', 'Mes Fichiers', 'genres.png', oOutputParameterHandler)
     
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://Dossier/')
-            oGui.addDir(SITE_IDENTIFIER, 'showFolder', 'MesDossiers', 'genres.png', oOutputParameterHandler)    
+            oGui.addDir(SITE_IDENTIFIER, 'showFolder', 'Mes Dossiers', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-    
+
 def showFile():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -76,7 +76,7 @@ def showFile():
             if dialog.iscanceled():
                 break
 
-            sTitle = aEntry[1] + ' ' + '[' + aEntry[2] + ']'
+            sTitle = aEntry[1] + ' [' + aEntry[2] + ']'
             sHosterUrl = aEntry[0]
             
             sDisplayTitle = cUtil().DecoTitle(sTitle)
@@ -87,14 +87,15 @@ def showFile():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl,'')
                 
         cConfig().finishDialog(dialog)
+		
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showFile', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showFile', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
             
     oGui.setEndOfDirectory()
-    
+
 def __checkForNextPage(sHtmlContent):
     sPattern = "<a href='([^']+)'>(?:Next|Suivant).+?<\/a>"
     oParser = cParser()
@@ -103,7 +104,7 @@ def __checkForNextPage(sHtmlContent):
         return URL_MAIN + aResult[1][0]
  
     return False
-    
+
 def showFolder():
     oGui = cGui()
     oPremiumHandler = cPremiumHandler('uptobox')
@@ -124,7 +125,7 @@ def showFolder():
             sTitle = aEntry[1]
             sUrl = aEntry[0]
             if not sUrl.startswith('https'):
-               sUrl = 'https://uptobox.com/' + sUrl
+               sUrl = URL_MAIN + sUrl
                
             sDisplayTitle = cUtil().DecoTitle(sTitle)  
             oOutputParameterHandler = cOutputParameterHandler()
@@ -135,17 +136,17 @@ def showFolder():
         cConfig().finishDialog(dialog)
         
     oGui.setEndOfDirectory()
-       
+
 def AddmyAccount():
     if (cConfig().getSetting('hoster_uptobox_username') == '') and (cConfig().getSetting('hoster_uptobox_password') == ''):
         return 
     oInputParameterHandler = cInputParameterHandler()
     sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
 
-    sId = sMediaUrl.replace('https://uptobox.com/','')
+    sId = sMediaUrl.replace(URL_MAIN,'')
     sId = sMediaUrl.replace('http://uptobox.com/','')
           
-    Upurl = 'https://uptobox.com/?op=my_files&add_my_acc=' + sId
+    Upurl = URL_MAIN + '?op=my_files&add_my_acc=' + sId
 
     oPremiumHandler = cPremiumHandler('uptobox')
     if (GestionCookie().Readcookie('uptobox') != ''):
