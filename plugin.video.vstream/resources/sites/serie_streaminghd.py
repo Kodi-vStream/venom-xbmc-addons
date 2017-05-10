@@ -187,7 +187,7 @@ def showHosters():
             total = len(aResult[1]) 
             dialog = cConfig().createDialog(SITE_NAME)
             
-            oGui.addText(SITE_IDENTIFIER,'[COLOR red]' 'VOSTFR' '[/COLOR]')
+            oGui.addText(SITE_IDENTIFIER,'[COLOR red]VOSTFR[/COLOR]')
             
             for aEntry in aResult[1]:
                 cConfig().updateDialog(dialog, total)
@@ -215,9 +215,9 @@ def showHosters():
                 #update total dialog si liens vostfr puis vf
                 total3 = total + total2
                 dialog = cConfig().createDialog(SITE_NAME)
-            
-                oGui.addText(SITE_IDENTIFIER,'[COLOR red]' 'VF' '[/COLOR]')
-            
+		
+                oGui.addText(SITE_IDENTIFIER,'[COLOR red]VF[/COLOR]')
+		
                 for aEntry in aResult[1]:
                     cConfig().updateDialog(dialog, total3)
                     if dialog.iscanceled():
