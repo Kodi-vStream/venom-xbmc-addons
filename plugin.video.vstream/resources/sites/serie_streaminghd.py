@@ -23,36 +23,36 @@ SERIE_VOSTFRS = (URL_MAIN + 'regarder-series/vostfr-hd/', 'showMovies')
 
 URL_SEARCH = ('' , 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
-   
+
 def load():
     oGui = cGui()
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
- 
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF)', 'series_vf.png', oOutputParameterHandler)
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries (VOSTFR)', 'series_vostfr.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
- 
+
 def showSearch():
     oGui = cGui()
- 
+
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         showMovies(sSearchText)
         oGui.setEndOfDirectory()
-        return 
+        return
 
 def showGenres():
     oGui = cGui()
@@ -66,7 +66,6 @@ def showGenres():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()
-    
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -75,13 +74,13 @@ def showMovies(sSearch = ''):
     if sSearch:
         
         sType = oInputParameterHandler.getValue('type')
-
+		
         sUrl = URL_SEARCH[0]
         
         oRequestHandler = cRequestHandler(URL_MAIN)
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
         oRequestHandler.addParameters('Content-Type', 'application/x-www-form-urlencoded')
-        oRequestHandler.addParameters('Referer','http://www.serie-streaminghd.com/')
+        oRequestHandler.addParameters('Referer',URL_MAIN)
         oRequestHandler.addParameters('do', 'search')
         oRequestHandler.addParameters('subaction', 'search')
         oRequestHandler.addParameters('story', sSearch)
@@ -101,10 +100,10 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
     
-    oParser = cParser()  
+    oParser = cParser()
     
     sPattern = '<div class="fullstream fullstreaming"><img src="([^"]+)".+?alt="([^"]+)".+?<h3 class="mov-title"><a href="([^"]+)'
-
+	
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if (aResult[0] == True):
@@ -129,7 +128,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, 'series.png', sThumbnail, '', oOutputParameterHandler)
            
         cConfig().finishDialog(dialog)
  
@@ -138,10 +137,10 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]' , oOutputParameterHandler)
- 
+
     if not sSearch:
         oGui.setEndOfDirectory()
-         
+
 def __checkForNextPage(sHtmlContent):
     
     sPattern = '<a href="([^<>"]+)">Suivant &#8594;<\/a>'
@@ -149,9 +148,9 @@ def __checkForNextPage(sHtmlContent):
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if (aResult[0] == True):
-        sUrl = aResult[1][0]     
+        sUrl = aResult[1][0]
         return sUrl 
- 
+
     return False
 
 def showHosters():
@@ -160,12 +159,12 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
+	
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
     oParser = cParser()
-   
+    
     #On separe liens vostfr - vf
     sPattern = '<div class="VOSTFR-tab">(.+?)<div class="VF-tab">'
     sPattern2 ='<div class="VF-tab">(.+?)<div id="fsElementsContainer">'
@@ -188,7 +187,7 @@ def showHosters():
             total = len(aResult[1]) 
             dialog = cConfig().createDialog(SITE_NAME)
             
-            oGui.addText(SITE_IDENTIFIER,'[COLOR red]' 'VOSTFR' + '[/COLOR]')
+            oGui.addText(SITE_IDENTIFIER,'[COLOR red]' 'VOSTFR' '[/COLOR]')
             
             for aEntry in aResult[1]:
                 cConfig().updateDialog(dialog, total)
@@ -205,7 +204,6 @@ def showHosters():
                     oHoster.setFileName(sMovieTitle2)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
-    
     #Liens VF                 
     if (aResult2[0] == True):
         
@@ -218,7 +216,7 @@ def showHosters():
                 total3 = total + total2
                 dialog = cConfig().createDialog(SITE_NAME)
             
-                oGui.addText(SITE_IDENTIFIER,'[COLOR red]' 'VF' + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER,'[COLOR red]' 'VF' '[/COLOR]')
             
                 for aEntry in aResult[1]:
                     cConfig().updateDialog(dialog, total3)
@@ -238,5 +236,4 @@ def showHosters():
 
     cConfig().finishDialog(dialog)
 
-                
     oGui.setEndOfDirectory()
