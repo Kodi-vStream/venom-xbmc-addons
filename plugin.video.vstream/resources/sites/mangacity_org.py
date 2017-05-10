@@ -100,43 +100,55 @@ def ICDecode(html):
         j = j - 1
 
     return str(r)
-    
+
 #------------------------------------------------------------------------------------    
-    
+
 SITE_IDENTIFIER = 'mangacity_org'
 SITE_NAME = 'I anime'
 SITE_DESC = 'Animés en streaming'
 
 URL_MAIN = 'http://www.ianime.tv/'
 
-ANIM_ANIMS = (URL_MAIN + 'animes.php?liste=SHOWALPHA', 'ShowAlpha')
-ANIM_GENRES = (True, 'showGenres')
+MOVIE_MOVIE = (URL_MAIN + 'films.php?liste=SHOWALPHA', 'ShowAlpha')
+MOVIE_GENRES = (URL_MAIN + 'films.php?liste=SHOWALPHA', 'showGenres')
+
+SERIE_SERIES = (URL_MAIN + 'series.php?liste=SHOWALPHA', 'ShowAlpha')
+
 ANIM_NEWS = (URL_MAIN + 'nouveautees.html', 'showMovies')
+ANIM_ANIMS = (URL_MAIN + 'animes.php?liste=SHOWALPHA', 'ShowAlpha')
 ANIM_VFS = (URL_MAIN + 'listing_vf.php', 'ShowAlpha2')
 ANIM_VOSTFRS = (URL_MAIN + 'listing_vostfr.php', 'ShowAlpha2')
+ANIM_GENRES = (URL_MAIN + 'animes.php?liste=SHOWALPHA', 'showGenres')
 
 URL_SEARCH = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-
 def load():
     oGui = cGui()
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
+	
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'animes_genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
@@ -145,7 +157,11 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'animes_vostfr.png', oOutputParameterHandler)
-  
+	
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'animes_genres.png', oOutputParameterHandler)
+    
     oGui.setEndOfDirectory() 
 
 def showSearch():
@@ -156,20 +172,20 @@ def showSearch():
         sUrl = sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
-        return  
-    
-def showGenres(): 
+        return
+
+def showGenres():
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = URL_MAIN + 'animes.php?liste=SHOWALPHA'
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     if 'HTML/JavaScript Encoder' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
-        
+
     if sHtmlContent.startswith('<script type="text/javascript">'):
         sHtmlContent = FullUnescape(sHtmlContent)
     
@@ -263,7 +279,7 @@ def ShowAlpha(url = None):
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN) + Link)
-            oGui.addTV(SITE_IDENTIFIER, 'showMovies', 'Lettre - [B][COLOR red]' + sLetter + '[/COLOR][/B]', '', '', '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showMovies', 'Lettre [B][COLOR red]' + sLetter + '[/COLOR][/B]', '', '', '', oOutputParameterHandler)
  
         cConfig().finishDialog(dialog)
 
@@ -341,10 +357,12 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', sPicture)
 
             if '?manga=' in aEntry[2]:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, sPicture, sPicture, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, sPicture, sPicture, 'animes.png', oOutputParameterHandler)
+            elif '?serie=' in aEntry[2]:
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, sPicture, sPicture, 'series.png', oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sPicture, sPicture, '', oOutputParameterHandler)
- 
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sPicture, sPicture, 'films.png', oOutputParameterHandler)
+
         cConfig().finishDialog(dialog)
         
         if sSearch:
@@ -354,11 +372,11 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
-    
+
 def __checkForNextPage(sHtmlContent,sUrl):
     oParser = cParser()
     
@@ -380,7 +398,7 @@ def showEpisode():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumbnail')
-   
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
@@ -398,7 +416,7 @@ def showEpisode():
     
     sPattern = 'class=\'button light\' [^>]+"><headline11>(.+?)<\/headline11><\/a>|<a href="*([^"]+)"* title="([^"]+)"[^>]+style="*text-decoration:none;"*>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-   
+    
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -423,7 +441,7 @@ def showEpisode():
             if aEntry[0]:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]'+str(aEntry[0])+'[/COLOR]', 'animes.png', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]' + str(aEntry[0]) + '[/COLOR]', 'animes.png', oOutputParameterHandler)
             
             else: 
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -432,7 +450,6 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('sThumbnail', sThumb)
                 oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sThumb, '', oOutputParameterHandler)
         cConfig().finishDialog(dialog)
-
 
     oGui.setEndOfDirectory()
 
@@ -445,26 +462,26 @@ def ExtractLink(html):
     aResult = re.findall(sPattern,html)
     if aResult:
         final = aResult[0]
-        
+
     sPattern = 'encodeURI\("(.+?)"\)'
     aResult = re.findall(sPattern,html)
     if aResult:
         final = aResult[0]
-        
+
     sPattern = "'file': '(.+?)',"
     aResult = oParser.parse(html, sPattern)
     if aResult[0] == True:
         final = aResult[1][0]
-            
+
     #nouveau codage
     if ';&#' in final:
         final = cUtil().unescape(final)
-        
+
     if (not final.startswith( 'http' )) and (len(final) > 2) :
         final = URL_MAIN + final
-        
+
     return final
-    
+
 def showHosters():
     oGui = cGui()
     
@@ -489,7 +506,7 @@ def showHosters():
     
     list_url = []
     oParser = cParser()
-    
+
     #1 er methode
     sPattern = '<div class="box"><iframe.+?src=[\'|"](.+?)[\'|"]'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -506,7 +523,7 @@ def showHosters():
                 sHosterUrl = URL_MAIN + sHosterUrl
                 
             list_url.append(sHosterUrl)
-            
+
     #2 eme methode
     sPattern = '<script>eval\(unescape\((.+?)\); eval\(unescape\((.+?)\);<\/script>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -516,7 +533,7 @@ def showHosters():
             sHosterUrl = DecryptMangacity(aEntry[1])
             sHosterUrl = sHosterUrl.replace('\\','')
             list_url.append(sHosterUrl)
-            
+
     #3 eme methode
     sPattern = 'document\.write\(unescape\("(%3c%69%66%72%61%6d%65%20%69%64%3d%27%76%69%64%65%6f%5f%66%72%61%6d%65%27.+?)"\)\);'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -538,11 +555,11 @@ def showHosters():
 
             sHosterUrl = aEntry
                     
-            #Dans le cas ou l'adresse n'est pas directe,on cherche a l 'extraire
+            #Dans le cas ou l'adresse n'est pas directe,on cherche a l'extraire
             if not (sHosterUrl[:4] == 'http'):
                 sHosterUrl = ExtractLink(sHosterUrl)
-                
-            #Si aucun lien on arrette ici
+
+            #Si aucun lien on arrete ici
             if not (sHosterUrl):
                 continue
 
@@ -643,12 +660,12 @@ def showHosters():
                 sHtmlContent = oRequestHandler.request()
                 
                 sHtmlContent = ICDecode(sHtmlContent)
-                    
+				
                 sPattern = 'src=[\'"]([^\'"]+)[\'"]'
                 aResult = oParser.parse(sHtmlContent, sPattern)
                 if aResult[0]:
                     sHosterUrl = aResult[1][0]
-                    
+
             #Derniere en date
             sPattern = '(http:\/\/www\.ianime\.tv\/[a-z\.]+&[\w-]+\.htm)'
             aResult = oParser.parse(sHosterUrl, sPattern)
