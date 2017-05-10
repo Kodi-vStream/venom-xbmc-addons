@@ -9,26 +9,22 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 
-
-
 SITE_IDENTIFIER = 'replaytvstreaming_com'
-SITE_NAME = 'ReplayTVstreaming'
+SITE_NAME = 'Replay Tv Streaming'
 SITE_DESC = 'Replay TV'
 
-URL_MAIN = 'http://replaytvstreaming.com'
+URL_MAIN = 'https://replaytvstreaming.com/'
 
-REPLAYTV_NEWS = ('http://replaytvstreaming.com', 'showMovies')
-
+REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
 REPLAYTV_REPLAYTV = ('http://', 'load')
-
 REPLAYTV_GENRES = (True, 'showGenres')
 
-URL_SEARCH = (URL_MAIN + '/index.php?do=search&subaction=search&story=', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
     oGui = cGui()
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
@@ -38,33 +34,33 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Replay (Derniers ajouts)', 'replay.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Replay (Genres)', 'genres.png', oOutputParameterHandler)
-
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_GENRES[1], 'Replay (Genres)', 'genres.png', oOutputParameterHandler)
+	
     oGui.setEndOfDirectory()
-  
+
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sSearchText = sSearchText.replace(' ', '+')
         
-        sUrl = URL_SEARCH[0]  + sSearchText
+        sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
-        return  
+        return
 
 def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
- 
+	
     liste = []
-    liste.append( ["Emissions et Magazines", URL_MAIN + "/emission-magazine"] )
-    liste.append( ["Documentaires", URL_MAIN + "/documentaire"] )
-    liste.append( ["Spectacles", URL_MAIN + "/spectacle"] )
-    liste.append( ["Sports", URL_MAIN + "/sport"] )
-    liste.append( ["Téléfilms Fiction", URL_MAIN + "/telefilm-fiction"] )
+    liste.append( ["Emissions et Magazines", URL_MAIN + "emission-magazine"] )
+    liste.append( ["Documentaires", URL_MAIN + "documentaire"] )
+    liste.append( ["Spectacles", URL_MAIN + "spectacle"] )
+    liste.append( ["Sports", URL_MAIN + "sport"] )
+    liste.append( ["Téléfilms Fiction", URL_MAIN + "telefilm-fiction"] )
 
     for sTitle,sUrl in liste:
         
@@ -78,7 +74,7 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
        sUrl = sSearch
-      
+    
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -119,7 +115,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -132,7 +128,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-    
+
 def showLinks(page, video):
 
     sUrl = 'http://replaytvstreaming.com/engine/ajax/re_video_part.php?block=video&page=' + page + '&id=' + video
@@ -142,7 +138,6 @@ def showLinks(page, video):
 
     url  = sHtmlContent
     return url
-
 
 def showHosters():
     oGui = cGui()
@@ -157,7 +152,7 @@ def showHosters():
     oParser = cParser()
 
     sPattern = '<div id="video_[0-9]+" class="epizode re_poleta.+?" data-re_idnews="([^"]+)" data-re_xfn="video" data-re_page="([^"]+)">(.+?)</div>'
-    
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     sTest = ''
@@ -185,6 +180,6 @@ def showHosters():
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
-        cConfig().finishDialog(dialog) 
-  
+        cConfig().finishDialog(dialog)
+
     oGui.setEndOfDirectory()
