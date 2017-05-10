@@ -9,7 +9,7 @@ from resources.lib.parser import cParser
 from resources.lib import util
 
 SITE_IDENTIFIER = 'replay_documentaire_com'
-SITE_NAME = 'replay-documentaire'
+SITE_NAME = 'Replay-documentaire'
 SITE_DESC = 'Revoir très facilement tous vos documentaires en replay streaming'
 
 URL_MAIN = 'http://www.replay-documentaire.com/'
@@ -27,7 +27,7 @@ FUNCTION_SEARCH = 'showMovies'
 
 def load():
     oGui = cGui()
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
@@ -37,20 +37,20 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://doc')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Documentaires Genres', 'genres.png', oOutputParameterHandler)    
-  
+    oOutputParameterHandler.addParameter('siteUrl', DOC_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_GENRES[1], 'Documentaires (Genres)', 'genres.png', oOutputParameterHandler)
+	
     oGui.setEndOfDirectory()
-  
+
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = 'http://replay-streaming.com/?s='+sSearchText  
+        sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
-        return  
-    
+        return
+
 def showGenres():
     oGui = cGui()
     oParser = cParser()
@@ -69,7 +69,7 @@ def showGenres():
                 break
                 
             sTitle = aEntry[1].replace('&prime;','')
-            sUrl = URL_MAIN +'catégories/'+ sTitle.replace(' ','-')
+            sUrl = URL_MAIN + 'catégories/' + sTitle.replace(' ','-')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -78,7 +78,7 @@ def showGenres():
         util.finishDialog(dialog)
         
     oGui.setEndOfDirectory()
-    
+
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
@@ -117,7 +117,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
     else:
         util.VSshowInfo('Vstream','Aucune vidéos',2)
         return
@@ -170,5 +170,5 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
         util.finishDialog(dialog) 
-   
+
     oGui.setEndOfDirectory()
