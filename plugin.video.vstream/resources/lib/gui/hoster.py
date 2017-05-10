@@ -21,9 +21,9 @@ class cHosterGui:
     # step 1 - bGetRedirectUrl in ein extra optionsObject verpacken
     def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl = False):
         
-        #oInputParameterHandler = cInputParameterHandler()
-        #aParams = oInputParameterHandler.getAllParameter()
-        
+        oInputParameterHandler = cInputParameterHandler()
+        sMovieTitle = oInputParameterHandler.getValue('title')
+                
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)
         #oGuiElement.setFunction('showHosterMenu')
@@ -367,6 +367,7 @@ class cHosterGui:
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
         sFileName = oInputParameterHandler.getValue('sFileName')
+        sTitle = oInputParameterHandler.getValue('title')
         #sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
         if (bGetRedirectUrl == 'True'):            
@@ -389,7 +390,8 @@ class cHosterGui:
                 oGuiElement = cGuiElement()
                 oGuiElement.setSiteName(self.SITE_NAME)
                 oGuiElement.setMediaUrl(aLink[1])
-                oGuiElement.setTitle(oHoster.getFileName())
+                oGuiElement.setTitle(sTitle)
+                #oGuiElement.setTitle(oHoster.getFileName())
                 oGuiElement.getInfoLabel()
                 
                 oPlayer = cPlayer()

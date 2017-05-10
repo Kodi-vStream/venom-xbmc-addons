@@ -21,8 +21,13 @@ class cGuiElement:
         self.__sTmdb = ''
         self.__sMediaUrl = ''
         self.__sSiteUrl = ''
+        #contient le titre qui seras colorer
         self.__sTitle = ''
+        #contient le titre propre
+        self.__sCleanTitle = ''
+        #vide
         self.__sTitleSecond = ''
+        #contient le titre modifier pour BDD
         self.__sFileName = ''
         self.__sDescription = ''
         self.__sThumbnail = ''
@@ -335,6 +340,9 @@ class cGuiElement:
         return sTitle, False
 
     def setTitle(self, sTitle):
+        self.__sTitle = sTitle
+            
+    def setTitle_old(self, sTitle):
         #Si le titre est un dict en bêta
         if type(sTitle) is dict:
             self.__sTitle = self.RangeTitle(sTitle)
@@ -347,7 +355,19 @@ class cGuiElement:
             self.__sTitle = sTitle
             #xbmc.log(sTitle, xbmc.LOGNOTICE)
 
+
     def getTitle(self):
+
+        sTitle = self.__sTitle
+        if type(sTitle) is dict:
+            sTitle = self.RangeTitle(sTitle)
+        #titre normal
+        else: 
+            if not sTitle.startswith('[COLOR'):
+                sTitle = self.TraiteTitre(sTitle)
+        return sTitle
+        
+    def getCleanTitle(self):
         return self.__sTitle
 
     def setTitleSecond(self, sTitleSecond):
