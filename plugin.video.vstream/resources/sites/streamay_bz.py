@@ -12,23 +12,23 @@ import re,xbmcgui,urllib,unicodedata
 
 SITE_IDENTIFIER = 'streamay_bz'
 SITE_NAME = 'Streamay'
-SITE_DESC = 'Films/ Séries & Mangas en streaming'
+SITE_DESC = 'Films, Séries & Mangas en streaming'
 URL_MAIN = 'http://streamay.ws/'
 
-MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/recents', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'films', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'films?p=populaire', 'showMovies')
-MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
+MOVIE_GENRES = (URL_MAIN + 'films', 'showGenres')
 MOVIE_ANNEES = (URL_MAIN + 'films?y=', 'showMovies')
 MOVIE_PAYS = (True, 'showPays')
 
+SERIE_NEWS = (URL_MAIN + 'series', 'showMovies')
 SERIE_SERIES = (URL_MAIN + 'series/alphabet', 'showMovies')
-SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
-SERIE_GENRES = (URL_MAIN + 'series/', 'showGenres')
+SERIE_GENRES = (URL_MAIN + 'series', 'showGenres')
 SERIE_ANNEES = (URL_MAIN + 'series?y=', 'showMovies')
 
-ANIM_ANIMS = (URL_MAIN + 'mangas/', 'showMovies')
-ANIM_GENRES = (URL_MAIN + 'mangas/', 'showGenres')
+ANIM_ANIMS = (URL_MAIN + 'mangas', 'showMovies')
+ANIM_GENRES = (URL_MAIN + 'mangas', 'showGenres')
 ANIM_ANNEES = (URL_MAIN + 'mangas/annee/', 'showMovies')
 
 URL_SEARCH = ('', 'showResultSearch')
@@ -95,7 +95,7 @@ def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText  
+        sUrl = URL_SEARCH[0] + sSearchText
         showResultSearch(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -162,7 +162,7 @@ def showGenres():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory() 
+    oGui.setEndOfDirectory()
 
 def showPays():
     oGui = cGui()
@@ -227,7 +227,7 @@ def showResultSearch(sSearch = ''):
             sTitle = aEntry[0]
             sTitle = cUtil().removeHtmlTags(sTitle)
             sSyn = aEntry[1]
-            sUrl = aEntry[3] 
+            sUrl = aEntry[3]
             sThumb = URL_MAIN + 'cdn/img/' + aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -247,7 +247,7 @@ def showResultSearch(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -305,7 +305,7 @@ def showMovies():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -341,7 +341,7 @@ def showSaisons():
 
             if aEntry[0]:
                sSaison = aEntry[0]
-               oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + sSaison + '[/COLOR]') 
+               oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + sSaison + '[/COLOR]')
             else:
                 sUrl = aEntry[1]
                 sTitle = sMovieTitle + aEntry[2].replace('Regarder','')
@@ -382,7 +382,7 @@ def showHosters():
             else:
                 sLang = 'Vf'
                 
-            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)   
+            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
             sHost = aEntry[3]    
             #sTitle = '[COLOR coral]' + sLang + '[/COLOR]' + ' ' + sDisplayTitle + ' ' + '[COLOR coral]>> ' + sHost + '[/COLOR]'
             sTitle = '%s [%s] [COLOR coral]%s[/COLOR]' %(sDisplayTitle, sLang, sHost)
@@ -397,7 +397,7 @@ def showHosters():
             oOutputParameterHandler.addParameter('siteUrl', sUrlv)
             oOutputParameterHandler.addParameter('sMovieTitle', aTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            oGui.addMovie(SITE_IDENTIFIER, 'GetLink', sTitle, '', sThumbnail, '', oOutputParameterHandler)     
+            oGui.addMovie(SITE_IDENTIFIER, 'GetLink', sTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
                 
@@ -429,11 +429,11 @@ def GetLink():
                 sHosterUrl = 'http:' + sHosterUrl
                 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)  
+            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
             if (oHoster != False):
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
         cConfig().finishDialog(dialog)
                 
@@ -476,10 +476,10 @@ def showAnime():
                 oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
                 oOutputParameterHandler.addParameter('sMangaid', aEntry[2])
                 oOutputParameterHandler.addParameter('sEp', aEntry[0])
-                oGui.addMovie(SITE_IDENTIFIER, 'showAnimeHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)     
+                oGui.addMovie(SITE_IDENTIFIER, 'showAnimeHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
 
             cConfig().finishDialog(dialog)
-                
+
     oGui.setEndOfDirectory()
 
 def showAnimeHosters():
@@ -511,7 +511,7 @@ def showAnimeHosters():
                 else:
                     sLang = '[' + 'Vf' + ']'
                 
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)   
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
                 sHost = aEntry[0].replace('_vostfr','')    
                 sTitle = '[COLOR coral]' + sLang + '[/COLOR]' + ' ' + sDisplayTitle + ' ' + '[COLOR coral]>> ' + sHost + '[/COLOR]'
                 sUrl = URL_MAIN + 'streamerMEpisode/' + sEp + '/' + sMangaid + '/' + aEntry[0] 
@@ -521,8 +521,8 @@ def showAnimeHosters():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', aTitle)
                 oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-                oGui.addMovie(SITE_IDENTIFIER, 'GetLink', sTitle, '', sThumbnail, '', oOutputParameterHandler)     
+                oGui.addMovie(SITE_IDENTIFIER, 'GetLink', sTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
-                
+
     oGui.setEndOfDirectory()
