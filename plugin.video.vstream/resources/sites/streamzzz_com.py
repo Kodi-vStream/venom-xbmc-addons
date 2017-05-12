@@ -98,6 +98,7 @@ def showGenres():
     liste.append( ['Horreur',URL_MAIN + 'genre/horreur/'] )
     liste.append( ['Kids',URL_MAIN + 'genre/kids/'] )
     liste.append( ['Musical',URL_MAIN + 'genre/musical/'] )
+    liste.append( ['Musique',URL_MAIN + 'genre/musique/'] )
     liste.append( ['Mystère',URL_MAIN + 'genre/mystere/'] )
     liste.append( ['Mystery',URL_MAIN + 'genre/mystery/'] )
     liste.append( ['Romance',URL_MAIN + 'genre/romance/'] )
@@ -161,53 +162,11 @@ def showList():
 def showAnnees():
     oGui = cGui()
 	
-    liste = []
-    liste.append( ['2017',URL_MAIN + 'release/2017/'] )
-    liste.append( ['2016',URL_MAIN + 'release/2016/'] )
-    liste.append( ['2015',URL_MAIN + 'release/2015/'] )
-    liste.append( ['2014',URL_MAIN + 'release/2014/'] )
-    liste.append( ['2013',URL_MAIN + 'release/2013/'] )
-    liste.append( ['2012',URL_MAIN + 'release/2012/'] )
-    liste.append( ['2011',URL_MAIN + 'release/2011/'] )
-    liste.append( ['2010',URL_MAIN + 'release/2010/'] )
-    liste.append( ['2009',URL_MAIN + 'release/2009/'] )
-    liste.append( ['2008',URL_MAIN + 'release/2008/'] )
-    liste.append( ['2007',URL_MAIN + 'release/2007/'] )
-    liste.append( ['2006',URL_MAIN + 'release/2006/'] )
-    liste.append( ['2005',URL_MAIN + 'release/2005/'] )
-    liste.append( ['2004',URL_MAIN + 'release/2004/'] )
-    liste.append( ['2003',URL_MAIN + 'release/2003/'] )
-    liste.append( ['2002',URL_MAIN + 'release/2002/'] )
-    liste.append( ['2001',URL_MAIN + 'release/2001/'] )
-    liste.append( ['2000',URL_MAIN + 'release/2000/'] )
-    liste.append( ['1999',URL_MAIN + 'release/1999/'] )
-    liste.append( ['1998',URL_MAIN + 'release/1998/'] )
-    liste.append( ['1997',URL_MAIN + 'release/1997/'] )
-    liste.append( ['1996',URL_MAIN + 'release/1996/'] )
-    liste.append( ['1995',URL_MAIN + 'release/1995/'] )
-    liste.append( ['1994',URL_MAIN + 'release/1994/'] )
-    liste.append( ['1993',URL_MAIN + 'release/1993/'] )
-    liste.append( ['1992',URL_MAIN + 'release/1992/'] )
-    liste.append( ['1991',URL_MAIN + 'release/1991/'] )
-    liste.append( ['1990',URL_MAIN + 'release/1990/'] )
-    liste.append( ['1989',URL_MAIN + 'release/1989/'] )
-    liste.append( ['1986',URL_MAIN + 'release/1986/'] )
-    liste.append( ['1984',URL_MAIN + 'release/1984/'] )
-    liste.append( ['1983',URL_MAIN + 'release/1983/'] )
-    liste.append( ['1978',URL_MAIN + 'release/1978/'] )
-    liste.append( ['1971',URL_MAIN + 'release/1971/'] )
-    liste.append( ['1970',URL_MAIN + 'release/1970/'] )
-    liste.append( ['1968',URL_MAIN + 'release/1968/'] )
-    liste.append( ['1966',URL_MAIN + 'release/1966/'] )
-    liste.append( ['1965',URL_MAIN + 'release/1965/'] )
-    liste.append( ['1964',URL_MAIN + 'release/1964/'] )
-    liste.append( ['1963',URL_MAIN + 'release/1963/'] )
-	
-    for sTitle,sUrl in liste:
-        
+    for i in reversed (xrange(1963, 2018)):
+        Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'series_annees.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'release/' + Year + '/')
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'series_annees.png', oOutputParameterHandler)
         
     oGui.setEndOfDirectory()
 
@@ -260,7 +219,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
