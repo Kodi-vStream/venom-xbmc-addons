@@ -13,16 +13,16 @@ from resources.lib.util import cUtil
 import re,unicodedata
 
 SITE_IDENTIFIER = 'tntv_rattrapage'
-SITE_NAME = 'Tntv-rattrapage.overblog.com'
+SITE_NAME = 'Tntv-rattrapage'
 SITE_DESC = 'Replay TV'
 
-URL_MAIN = 'http://tntv-rattrapage.overblog.com'
+URL_MAIN = 'http://tntv-rattrapage.overblog.com/'
 
-REPLAYTV_NEWS = ('http://tntv-rattrapage.overblog.com/', 'showMovies')
+REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
+REPLAYTV_REPLAYTV = ('http://', 'load')
+REPLAYTV_GENRES = ('xyz', 'showGenre')
 
-REPLAYTV_REPLAYTV = ('xyz', 'showGenre')
-
-URL_SEARCH = ('http://tntv-rattrapage.overblog.com/search/','showMovies')
+URL_SEARCH = (URL_MAIN + 'search/','showMovies')
 
 
 #FUNCTION_SEARCH = 'showMovies'
@@ -36,26 +36,25 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Nouvelle Emission', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Nouvelles Emissions', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'xyz')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Emission par Categorie', 'genres.png', oOutputParameterHandler)
-            
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_GENRES[1], 'Emissions par Catégories', 'genres.png', oOutputParameterHandler)
+	
     oGui.setEndOfDirectory()
 
- 
 def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         #sSearchText = cUtil().urlEncode(sSearchText)
-        sUrl = URL_SEARCH[0] + sSearchText+'/'
+        sUrl = URL_SEARCH[0] + sSearchText + '/'
  
         showMovies(sUrl)
         oGui.setEndOfDirectory()
-        return  
+        return
 
 def showGenre():
     oGui = cGui()
@@ -66,12 +65,12 @@ def showGenre():
     
     if sUrl == 'xyz':
         liste.append( ['Chaines','1'] )
-        liste.append( ['Telerealites','2'] )
+        liste.append( ['Téléréalités','2'] )
         liste.append( ['Divertissement','3'] )
-        liste.append( ['Info et magazine','4'] )
+        liste.append( ['Infos et magazines','4'] )
         liste.append( ['Sport','5'] )
-        liste.append( ['Serie VF','http://tntv-rattrapage.overblog.com/tag/series%20vf/'] )
-        liste.append( ['Serie VOSTFR','http://tntv-rattrapage.overblog.com/tag/series%20vostfr/'] )
+        liste.append( ['Série VF',URL_MAIN + 'tag/series%20vf/'] )
+        liste.append( ['Série VOSTFR',URL_MAIN + 'tag/series%20vostfr/'] )
                
         for sTitle,sUrl2 in liste:
            
@@ -119,11 +118,10 @@ def showGenre():
                 sUrl = aEntry[0]
            
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl)
+                oOutputParameterHandler.addParameter('siteUrl', URL_MAIN[:-1] + sUrl)
                 oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
        
     oGui.setEndOfDirectory()
-    
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -185,21 +183,20 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
-
 
 def __checkForNextPage(sHtmlContent):
     sPattern = 'class="ob-page ob-page-current ".+?href="(.+?)".+?class="ob-page ob-page-link ob-page-next"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return str(URL_MAIN) + aResult[1][0]
+        return str(URL_MAIN[:-1]) + aResult[1][0]
 
     return False
-    
+
 def showHoster():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -248,14 +245,13 @@ def showHoster():
             if aEntry[2]:
                 sTitle = sTitle + 'Ep ' + aEntry[2]
 
-
             sHosterUrl = sUrl
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)         
-    
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
