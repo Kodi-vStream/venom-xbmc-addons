@@ -11,52 +11,53 @@ from resources.lib.util import cUtil
 from resources.lib.multihost import cJheberg
 from resources.lib.multihost import cMultiup
 import re 
- 
+
 SITE_IDENTIFIER = 'robindesdroits'
 SITE_NAME = 'Robin des Droits'
 SITE_DESC = 'Replay sports'
- 
-URL_MAIN = 'http://www.robindesdroits.me'
- 
-SPORT_SPORTS = (True, 'showGenre')
- 
+
+URL_MAIN = 'http://www.robindesdroits.me/'
+
+SPORT_SPORTS = (True, 'showGenres')
+SPORT_NEWS = (URL_MAIN + 'derniers-uploads/', 'showMovies')
+
 def load(): 
     oGui = cGui() 
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/derniers-uploads/') 
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Nouveautés', 'news.png', oOutputParameterHandler)  
-     
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_NEWS[0]) 
+    oGui.addDir(SITE_IDENTIFIER, SPORT_NEWS[1], 'Nouveautés', 'news.png', oOutputParameterHandler)
+    
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Genres', 'genres.png', oOutputParameterHandler)
-               
+    oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
+    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Genres', 'genres.png', oOutputParameterHandler)
+	
     oGui.setEndOfDirectory()
 
-def showGenre():
+def showGenres():
     oGui = cGui()
-  
+	
     liste = []
-    liste.append( ['Nouveautés', URL_MAIN + '/derniers-uploads/'] )
-    liste.append( ['Football', URL_MAIN + '/football/'] )
-    liste.append( ['Sports US', URL_MAIN + '/sports-us/'] )
-    liste.append( ['Sports Automobiles', URL_MAIN + '/sports-automobiles/'] )
-    liste.append( ['Rugby', URL_MAIN + '/rugby/'] )
-    liste.append( ['Tennis', URL_MAIN + '/tennis/'] )
-    liste.append( ['Autres Sports', URL_MAIN + '/autres-sports/'] )
-    liste.append( ['Divers', URL_MAIN + '/divers/'] )
-                 
+    liste.append( ['Nouveautés', URL_MAIN + 'derniers-uploads/'] )
+    liste.append( ['Football', URL_MAIN + 'football/'] )
+    liste.append( ['Sports US', URL_MAIN + 'sports-us/'] )
+    liste.append( ['Sports Automobiles', URL_MAIN + 'sports-automobiles/'] )
+    liste.append( ['Rugby', URL_MAIN + 'rugby/'] )
+    liste.append( ['Tennis', URL_MAIN + 'tennis/'] )
+    liste.append( ['Autres Sports', URL_MAIN + 'autres-sports/'] )
+    liste.append( ['Divers', URL_MAIN + 'divers/'] )
+	
     for sTitle,sUrl in liste:
-         
+	
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler) 
-               
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+		
     oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):
     oGui = cGui()
-     
+	
     if sSearch:
       sUrl = sSearch
     else:
@@ -68,7 +69,7 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     
     sPattern = '<div class="mh-loop-thumb"><a href="([^"]+)"><img src=".+?" style="background:url\(\'(.+?)\'\).+?rel="bookmark">(.+?)</a></h3>'
-
+	
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -83,20 +84,20 @@ def showMovies(sSearch = ''):
             sTitle  = (' %s ') % (str(aEntry[2]))
             
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl) 
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle) 
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-
+			
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail,'', oOutputParameterHandler)
-                
+			
         cConfig().finishDialog(dialog)
-            
+		
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png',  oOutputParameterHandler)
- 
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+
     if not sSearch:
         oGui.setEndOfDirectory() 
 
@@ -113,7 +114,7 @@ def __showLink(url):
     
     oRequestHandler = cRequestHandler(url)
     sHtmlContent = oRequestHandler.request();
-
+	
     #recup liens clictune 
     sPattern = '<a href="(http://www.clictune.+?)".+?<b>.+?</b>'
     aResult = re.findall(sPattern,sHtmlContent)
@@ -122,7 +123,7 @@ def __showLink(url):
     if (aResult):
         sLink =[]
         for aEntry in aResult:
-     
+		
             sUrl = str(aEntry)
             oRequestHandler = cRequestHandler(sUrl)
             sHtmlContent = oRequestHandler.request();
@@ -140,8 +141,8 @@ def __showLink(url):
 def showHosters():
     oGui = cGui()
     
-    oInputParameterHandler = cInputParameterHandler() 
-    sUrl = oInputParameterHandler.getValue('siteUrl') 
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
@@ -152,7 +153,7 @@ def showHosters():
     count = 0
     count2 = 0
     count3 = 0
- 
+
     if (sLink):
         for aEntry in sLink:
            

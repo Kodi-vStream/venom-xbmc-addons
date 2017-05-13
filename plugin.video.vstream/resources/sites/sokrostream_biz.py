@@ -37,7 +37,7 @@ MOVIE_VOSTFR = (URL_MAIN + 'langues/vostfr', 'showMovies')
 MOVIE_COMMENTS = (URL_MAIN + 'les-films-les-plus-commentes-2', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'films-les-mieux-notes-2', 'showMovies')
 MOVIE_GENRES = (URL_MAIN , 'showGenres')
-MOVIE_ANNEES = (URL_MAIN , 'showAnnees')
+MOVIE_ANNEES = (URL_MAIN , 'showMovieAnnees')
 MOVIE_LANG = (URL_MAIN , 'showLang')
 MOVIE_QLT = (URL_MAIN , 'showQlt')
 MOVIE_PAYS = (URL_MAIN , 'showPays')
@@ -49,7 +49,7 @@ SERIE_VFS = (URL_MAIN + 'series-tv/langues/french', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'series-tv/langues/vostfr', 'showMovies')
 SERIE_HD = (URL_MAIN + 'series-tv/qualites/hd-720p', 'showMovies')
 SERIE_GENRES = (URL_MAIN + 'series-tv/', 'showGenres')
-SERIE_ANNEES = (URL_MAIN + 'series-tv/', 'showAnnees')
+SERIE_ANNEES = (URL_MAIN + 'series-tv/', 'showSerieAnnees')
 SERIE_LANG = (URL_MAIN + 'series-tv/', 'showLang')
 SERIE_QLT = (URL_MAIN + 'series-tv/', 'showQlt')
 SERIE_PAYS = (URL_MAIN + 'series-tv/', 'showPays')
@@ -226,123 +226,25 @@ def showPays():
         
     oGui.setEndOfDirectory()
 
-def showAnnees():
+def showMovieAnnees():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 	
-    liste = []
-    liste.append( ['2017',sUrl + 'annees/2017'] )
-    liste.append( ['2016',sUrl + 'annees/2016'] )
-    liste.append( ['2015',sUrl + 'annees/2015'] )
-    liste.append( ['2014',sUrl + 'annees/2014'] )
-    liste.append( ['2013',sUrl + 'annees/2013'] )
-    liste.append( ['2012',sUrl + 'annees/2012'] )
-    liste.append( ['2011',sUrl + 'annees/2011'] )
-    liste.append( ['2010',sUrl + 'annees/2010'] )
-    liste.append( ['2009',sUrl + 'annees/2009'] )
-    liste.append( ['2008',sUrl + 'annees/2008'] )
-    liste.append( ['2007',sUrl + 'annees/2007'] )
-    liste.append( ['2006',sUrl + 'annees/2006'] )
-    liste.append( ['2005',sUrl + 'annees/2005'] )
-    liste.append( ['2004',sUrl + 'annees/2004'] )
-    liste.append( ['2003',sUrl + 'annees/2003'] )
-    liste.append( ['2002',sUrl + 'annees/2002'] )
-    liste.append( ['2001',sUrl + 'annees/2001'] )
-    liste.append( ['2000',sUrl + 'annees/2000'] )
-    liste.append( ['1999',sUrl + 'annees/1999'] )
-    liste.append( ['1998',sUrl + 'annees/1998'] )
-    liste.append( ['1997',sUrl + 'annees/1997'] )
-    liste.append( ['1996',sUrl + 'annees/1996'] )
-    liste.append( ['1995',sUrl + 'annees/1995'] )
-    liste.append( ['1994',sUrl + 'annees/1994'] )
-    liste.append( ['1993',sUrl + 'annees/1993'] )
-    liste.append( ['1992',sUrl + 'annees/1992'] )
-    liste.append( ['1991',sUrl + 'annees/1991'] )
-    liste.append( ['1990',sUrl + 'annees/1990'] )
-    liste.append( ['1989',sUrl + 'annees/1989'] )
-    liste.append( ['1988',sUrl + 'annees/1988'] )
-    liste.append( ['1987',sUrl + 'annees/1987'] )
-    liste.append( ['1986',sUrl + 'annees/1986'] )
-    liste.append( ['1985',sUrl + 'annees/1985'] )
-    liste.append( ['1984',sUrl + 'annees/1984'] )
-    liste.append( ['1983',sUrl + 'annees/1983'] )
-    liste.append( ['1982',sUrl + 'annees/1982'] )
-    liste.append( ['1981',sUrl + 'annees/1981'] )
-    liste.append( ['1980',sUrl + 'annees/1980'] )
-    liste.append( ['1979',sUrl + 'annees/1979'] )
-    liste.append( ['1978',sUrl + 'annees/1978'] )
-    liste.append( ['1977',sUrl + 'annees/1977'] )
-    liste.append( ['1976',sUrl + 'annees/1976'] )
-    liste.append( ['1975',sUrl + 'annees/1975'] )
-    liste.append( ['1974',sUrl + 'annees/1974'] )
-    liste.append( ['1973',sUrl + 'annees/1973'] )
-    liste.append( ['1972',sUrl + 'annees/1972'] )
-    liste.append( ['1971',sUrl + 'annees/1971'] )
-    liste.append( ['1970',sUrl + 'annees/1970'] )
-    liste.append( ['1969',sUrl + 'annees/1969'] )
-    liste.append( ['1968',sUrl + 'annees/1968'] )
-    liste.append( ['1967',sUrl + 'annees/1967'] )
-    liste.append( ['1966',sUrl + 'annees/1966'] )
-    liste.append( ['1965',sUrl + 'annees/1965'] )
-    liste.append( ['1964',sUrl + 'annees/1964'] )
-    liste.append( ['1963',sUrl + 'annees/1963'] )
-    liste.append( ['1962',sUrl + 'annees/1962'] )
-    liste.append( ['1961',sUrl + 'annees/1961'] )
-    liste.append( ['1960',sUrl + 'annees/1960'] )
-    liste.append( ['1959',sUrl + 'annees/1959'] )
-    liste.append( ['1958',sUrl + 'annees/1958'] )
-    liste.append( ['1957',sUrl + 'annees/1957'] )
-    liste.append( ['1956',sUrl + 'annees/1956'] )
-    liste.append( ['1955',sUrl + 'annees/1955'] )
-    liste.append( ['1954',sUrl + 'annees/1954'] )
-    liste.append( ['1953',sUrl + 'annees/1953'] )
-    liste.append( ['1952',sUrl + 'annees/1952'] )
-    liste.append( ['1951',sUrl + 'annees/1951'] )
-    liste.append( ['1950',sUrl + 'annees/1950'] )
-    liste.append( ['1949',sUrl + 'annees/1949'] )
-    liste.append( ['1948',sUrl + 'annees/1948'] )
-    liste.append( ['1947',sUrl + 'annees/1947'] )
-    liste.append( ['1946',sUrl + 'annees/1946'] )
-    liste.append( ['1945',sUrl + 'annees/1945'] )
-    liste.append( ['1944',sUrl + 'annees/1944'] )
-    liste.append( ['1943',sUrl + 'annees/1943'] )
-    liste.append( ['1942',sUrl + 'annees/1942'] )
-    liste.append( ['1941',sUrl + 'annees/1941'] )
-    liste.append( ['1940',sUrl + 'annees/1940'] )
-    liste.append( ['1939',sUrl + 'annees/1939'] )
-    liste.append( ['1938',sUrl + 'annees/1938'] )
-    liste.append( ['1937',sUrl + 'annees/1937'] )
-    liste.append( ['1936',sUrl + 'annees/1936'] )
-    liste.append( ['1935',sUrl + 'annees/1935'] )
-    liste.append( ['1934',sUrl + 'annees/1934'] )
-    liste.append( ['1933',sUrl + 'annees/1933'] )
-    liste.append( ['1932',sUrl + 'annees/1932'] )
-    liste.append( ['1931',sUrl + 'annees/1931'] )
-    liste.append( ['1930',sUrl + 'annees/1930'] )
-    liste.append( ['1929',sUrl + 'annees/1929'] )
-    liste.append( ['1928',sUrl + 'annees/1928'] )
-    liste.append( ['1927',sUrl + 'annees/1927'] )
-    liste.append( ['1926',sUrl + 'annees/1926'] )
-    liste.append( ['1925',sUrl + 'annees/1925'] )
-    liste.append( ['1924',sUrl + 'annees/1924'] )
-    #liste.append( ['1923',sUrl + 'annees/1923'] )
-    liste.append( ['1922',sUrl + 'annees/1922'] )
-    liste.append( ['1921',sUrl + 'annees/1921'] )
-    liste.append( ['1920',sUrl + 'annees/1920'] )
-    liste.append( ['1919',sUrl + 'annees/1919'] )
-    liste.append( ['1918',sUrl + 'annees/1918'] )
-    liste.append( ['1917',sUrl + 'annees/1917'] )
-    #liste.append( ['1916',sUrl + 'annees/1916'] )
-    liste.append( ['1915',sUrl + 'annees/1915'] )
-    liste.append( ['1914',sUrl + 'annees/1914'] )
-    liste.append( ['1913',sUrl + 'annees/1913'] )
-	
-    for sTitle,sUrl in liste:
-        
+    for i in reversed (xrange(1913, 2018)):
+        Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'annees.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annees/' + Year)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'films_annees.png', oOutputParameterHandler)
+        
+    oGui.setEndOfDirectory()
+
+def showSerieAnnees():
+    oGui = cGui()
+	
+    for i in reversed (xrange(1940, 2018)):
+        Year = str(i)
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series-tv/annees/' + Year)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'series_annees.png', oOutputParameterHandler)
         
     oGui.setEndOfDirectory()
 
@@ -534,7 +436,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
             
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -547,6 +449,48 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
+
+def showEpisode():
+
+    oGui = cGui()
+    
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+
+    #oRequestHandler = cRequestHandler(sUrl)
+    #sHtmlContent = oRequestHandler.request()
+    sHtmlContent = SucurieBypass().GetHtml(sUrl)
+    
+    #cConfig().log(sMovieTitle)
+    
+    #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','')
+ 
+    sPattern = '<div class="movief2"><a href="([^<]+)" class="listefile">(.+?)<\/a><\/div>'
+    
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
+            sTitle = sMovieTitle + ' ' + aEntry[1]
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)            
+
+        cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()
 
 def showLinks():
     oGui = cGui()
@@ -576,17 +520,17 @@ def showLinks():
             if dialog.iscanceled():
                 break
 
-            sLang = '[' + aEntry[1].upper() + ']'
+            sLang = ' [' + aEntry[1].upper() + ']'
             sHost = aEntry[0]
             sHost = sHost.replace('Telecharger sur ','').replace('&nbsp;','')
             
-            sTitle = sLang + ' ' + sMovieTitle
+            sTitle = sMovieTitle + sLang
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-            sTitle = sDisplayTitle +  ' [COLOR coral]' + sHost +'[/COLOR]'
+            sTitle = sDisplayTitle + ' [COLOR coral]' + sHost + '[/COLOR]'
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sUrl', sUrl)
-            oOutputParameterHandler.addParameter('sPOST', str(aEntry[2]+'='+aEntry[3]))
+            oOutputParameterHandler.addParameter('sPOST', str(aEntry[2] + '=' + aEntry[3]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)             
@@ -682,46 +626,4 @@ def showHosters():
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
                 
-    oGui.setEndOfDirectory()
-
-def showEpisode():
-
-    oGui = cGui()
-    
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
-    #oRequestHandler = cRequestHandler(sUrl)
-    #sHtmlContent = oRequestHandler.request()
-    sHtmlContent = SucurieBypass().GetHtml(sUrl)
-    
-    #cConfig().log(sMovieTitle)
-    
-    #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','')
- 
-    sPattern = '<div class="movief2"><a href="([^<]+)" class="listefile">(.+?)<\/a><\/div>'
-    
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-
-            sTitle = sMovieTitle + ' ' + aEntry[1]
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)            
-
-        cConfig().finishDialog(dialog)
-
     oGui.setEndOfDirectory()

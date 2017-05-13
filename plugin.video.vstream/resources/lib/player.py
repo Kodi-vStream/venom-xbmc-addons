@@ -71,10 +71,14 @@ class cPlayer(xbmc.Player):
         self.currentTime = 0
     
         sPluginHandle = cPluginHandler().getPluginHandle()
+        
+        oGui = cGui()
+        item = oGui.createListItem(oGuiElement)
+        item.setPath(oGuiElement.getMediaUrl())
 
-        meta = {'label': sTitle, 'title': sTitle}
-        item = xbmcgui.ListItem(path=sUrl, iconImage="DefaultVideo.png",  thumbnailImage=self.sThumbnail)
-        item.setInfo( type="Video", infoLabels= meta )
+        #meta = {'label': oGuiElement.getTitle(), 'title': oGuiElement.getTitle()}
+        #item = xbmcgui.ListItem(path=sUrl, iconImage="DefaultVideo.png",  thumbnailImage=self.sThumbnail)
+        #item.setInfo( type="Video", infoLabels= meta )
         
         #Sous titres
         if (self.Subtitles_file):

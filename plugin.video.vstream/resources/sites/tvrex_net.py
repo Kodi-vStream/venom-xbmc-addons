@@ -79,16 +79,28 @@ def ReplayTV():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REDDIT)
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Live NBA Games (beta)', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Live NBA Games (beta)', 'tv.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://')
+    oGui.addDir(SITE_IDENTIFIER, 'showLiveNbatv', 'Live 24/24 Chaine NBA TV (beta)', 'tv.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/nba/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA Games', 'search.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/nba-replays/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA Games', 'tv.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/2017-nba-playoffs/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA 2017 Playoffs', 'tv.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/2016-nba-playoffs/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA 2016 Playoffs', 'tv.png', oOutputParameterHandler)
     
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/nba-replays/all-star-weekend/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA All Star Weekend', 'tv.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 
@@ -113,7 +125,7 @@ def showMovies(sSearch = ''):
         
         oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Live NBA Game (@Reddit)[/COLOR]' + '[COLOR gray]' + '  [ Heure Locale ET : ' + '[/COLOR]' +TimeUTC+ '[COLOR gray]' + ' ]' + '[/COLOR]')
     
-    elif 'category/2016' in sUrl:
+    elif 'category/201' in sUrl:
 
         sPattern = '<a href="([^"]+)">([^<]+)</a></h2>'
     
@@ -158,7 +170,7 @@ def showMovies(sSearch = ''):
             #listage replay&search
             else:
                 
-                if ('category/2016' in sUrl):
+                if ('category/201' in sUrl):
                      
                      sTitle = str(aEntry[1])
                      sUrl2 = str(aEntry[0])
@@ -184,7 +196,7 @@ def showMovies(sSearch = ''):
                   pass  
 
             try:
-               if ('category/2016' in sUrl) or ('?s=' in sUrl) or ('search/' in sUrl):
+               if ('category/201' in sUrl) or ('?s=' in sUrl) or ('search/' in sUrl):
                    
                    if 'Game' in sTitle:
                        sTitle2 = sTitle.split(":")
@@ -278,7 +290,7 @@ def showHosters():
         
         aResult =[]
         sPattern = '<a href="(https?://(?:wstream|youwa|openlo)[^"]+)" target="_blank">(?:([^<]+)</a>|)'
-        sPattern2 = '(?:data\-lazy\-src|src)="(http.+?raptu\.co[^"]+)"'
+        sPattern2 = '(?:data\-lazy\-src|src)="(http.+?(?:openload|raptu)\.co[^"]+)"'
         
         aResult1 = re.findall(sPattern,sHtmlContent)
         aResult2 = re.findall(sPattern2,sHtmlContent)
@@ -299,7 +311,7 @@ def showHosters():
                 sHosterUrl = str(aEntry[0]).replace('&amp;', '&')
                 
                 if ('yoursport' in aEntry[0]):
-                    sTitle = ('[%s] %s') % ('YourSportinHD', str(aEntry[1]))
+                    sTitle = ('[%s] %s') % ('YourSportsinHD', str(aEntry[1]))
                 elif ('nbastream' in aEntry[0]):
                       sTitle = ('[%s] %s') % ('NBAstreamspw', str(aEntry[1]))
                 elif ('eplstream' in aEntry[0]):
@@ -323,6 +335,10 @@ def showHosters():
                     sTitle = ('[%s]') % ('720p') 
                     sHosterUrl = str(aEntry)
 
+                elif ('openload' in aEntry):
+                    sTitle = ('[%s]') % ('720p') 
+                    sHosterUrl = str(aEntry)
+                
                 elif ('youwatch' in aEntry[0]):
                       sTitle = ('[%s]') % ('540p') 
                       
@@ -347,6 +363,34 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 
+#Live 24/24 chaine nbatv
+
+def showLiveNbatv():
+
+    oGui = cGui()
+    
+    sThumbnail = base64.b64decode(Logo_Nba)
+    sUrl = [('aHR0cDovL3d3dy4yNDdoZC5wdy9uYmEucGhwP2V4dGlkPTEmdmlldz1OQkFUVg=='), ('aHR0cDovL3lzaWhkLm1lL25iYXR2Lw==')]
+    
+    for aEntry in sUrl:
+
+        sUrl = base64.b64decode(aEntry)   
+        if '247hd' in sUrl:
+            sTitle = ('[%s] %s') % ('247HD', 'NBA TV')
+        else:
+            sTitle = ('[%s] %s') % ('YourSportsinHD', 'NBA TV')
+   
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl',sUrl) 
+        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+
+        oGui.addMovie(SITE_IDENTIFIER, 'showLiveHosters', sTitle, '', sThumbnail, sUrl, oOutputParameterHandler)
+
+    
+    oGui.setEndOfDirectory()
+
+
 #recuperation lecture m3u8 nba livestream - ok sauf si geo ip ou lien secu ou regex a maj
 
 def showLiveHosters():
@@ -358,7 +402,7 @@ def showLiveHosters():
       sThumbnail = oInputParameterHandler.getValue('sThumbnail')  
       
       UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
-
+      
       try:
          
          request = urllib2.Request(sUrl)

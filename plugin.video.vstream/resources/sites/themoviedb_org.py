@@ -105,7 +105,7 @@ def showSearchMovie():
         showMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
-        
+
 def showSearchSerie():
     oGui = cGui()
 
@@ -114,7 +114,7 @@ def showSearchSerie():
         showSeries(sSearchText)
         oGui.setEndOfDirectory()
         return
-        
+
 def showGenreMovie():
     oGui = cGui()
 
@@ -182,12 +182,12 @@ def showMovies(sSearch = ''):
         for i in result['results']:
             sId, sTitle, sOtitle, sThumbnail, sFanart = i['id'], i['title'], i['original_title'], i['poster_path'], i['backdrop_path']
             if sThumbnail:
-                sThumbnail = POSTER_URL+sThumbnail
+                sThumbnail = POSTER_URL + sThumbnail
             else: sThumbnail = ''
 
             sTitle = sTitle.encode("utf-8")
             if sFanart:
-                sFanart = FANART_URL+sFanart
+                sFanart = FANART_URL + sFanart
             else : sFanart = ''
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -219,7 +219,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('page', iNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
 
             
     #test pr chnagement mode
@@ -261,7 +261,7 @@ def showSeries(sSearch=''):
                 sThumbnail = '' 
                 
             if sFanart:
-                sFanart = FANART_URL+sFanart
+                sFanart = FANART_URL + sFanart
             else : sFanart = ''
 
             sTitle = sTitle.encode("utf-8")
@@ -300,7 +300,7 @@ def showSeries(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('page', iNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
 
     #test pr chnagement mode
     #xbmc.executebuiltin('Container.SetViewMode(500)')         
@@ -426,7 +426,7 @@ def showSeriesEpisode():
                 sName = sMovieTitle
             
             if sThumbnail:
-                sThumbnail = POSTER_URL+sThumbnail
+                sThumbnail = POSTER_URL + sThumbnail
             else: sThumbnail = ''
 
             #sTitle = '[COLOR coral]S' + sSeason + 'E' + str(sEpNumber) + '[/COLOR] - ' + sName
@@ -486,7 +486,7 @@ def showActors():
             sName, sThumbnail = i['name'], i['profile_path']
             
             if sThumbnail:
-                sThumbnail = POSTER_URL+sThumbnail
+                sThumbnail = POSTER_URL + sThumbnail
             else: sThumbnail = ''
                     
             oOutputParameterHandler = cOutputParameterHandler()
@@ -497,7 +497,7 @@ def showActors():
             
             oOutputParameterHandler.addParameter('siteUrl', 'person/' + str(i['id']) + '/movie_credits')
             #oGui.addMovieDB(SITE_IDENTIFIER, 'showFilmActor', '[COLOR red]'+str(sName)+'[/COLOR]', '', sThumbnail, '', oOutputParameterHandler)
-            sTitle = '[COLOR red]'+str(sName)+'[/COLOR]'
+            sTitle = '[COLOR red]' + str(sName) + '[/COLOR]'
             
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(SITE_IDENTIFIER)
@@ -558,7 +558,7 @@ def showActors():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('page', iNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showActors', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showActors', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

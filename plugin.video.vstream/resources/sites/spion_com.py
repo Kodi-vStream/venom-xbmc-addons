@@ -28,14 +28,13 @@ SPION_CENSURE = True
 LOGO_CSA = "http://a398.idata.over-blog.com/1/40/34/11/archives/0/16588469.jpg"
 
 def showCensure():
-            
+
     content = "Pour activer le contenu (+18) mettre: \n[COLOR coral]SPION_CENSURE = False[/COLOR]\ndans le fichier:\n[COLOR coral]plugin.video.vstream/resources/sites/spion_com.py[/COLOR]"
     cConfig().createDialogOK(content)
-            
 
 def load(): 
-    oGui = cGui() 
- 
+    oGui = cGui()
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
@@ -52,17 +51,17 @@ def load():
 
 def showSearch():
     oGui = cGui()
- 
-    sSearchText = oGui.showKeyBoard() 
+
+    sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText  
+        sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl) 
         oGui.setEndOfDirectory()
         return
 
 def showGenre():
     oGui = cGui()
-  
+	
     liste = []
     liste.append( ['Actualité', URL_MAIN + 'category/actualite/'] )
     liste.append( ['Animaux', URL_MAIN + 'category/animaux/'] )
@@ -89,7 +88,7 @@ def showGenre():
 
     if (SPION_CENSURE == False):
         liste.append( ['NSFW (+18)', URL_MAIN + 'nsfw/'] )
-        liste.append( ['Trash (+18)', URL_MAIN + 'category/trash-gore/'] )     
+        liste.append( ['Trash (+18)', URL_MAIN + 'category/trash-gore/'] )
 
     for sTitle,sUrl in liste:
 
@@ -101,7 +100,7 @@ def showGenre():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
-     
+    
     if sSearch:
       sUrl = sSearch
     else:
@@ -111,9 +110,9 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '')
-     
+    
     sPattern = '<article id="(post-[0-9]+)".+?<img src="([^<>"]+?)".+?<a href="([^<>"]+?)" rel="bookmark" title="([^"<>]+?)">.+?title="(.+?)"'
-     
+    
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -124,14 +123,14 @@ def showMovies(sSearch = ''):
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
              
-            sUrlp    = str(aEntry[2])
+            sUrlp   = str(aEntry[2])
             sTitle  = str(aEntry[3])
             sPoster = str(aEntry[1])
             
             #categorie video
             sCat = str(aEntry[4])
             
-            sDisplayTitle = ('%s') % (sTitle)  
+            sDisplayTitle = ('%s') % (sTitle)
             
             #vire lien categorie image
             if (sCat != 'Image'):
@@ -157,8 +156,8 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]',                        'next.png',  oOutputParameterHandler)
- 
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+
     if not sSearch:
         oGui.setEndOfDirectory() 
 
@@ -173,8 +172,8 @@ def __checkForNextPage(sHtmlContent):
 
 def showHosters():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler() 
-    sUrl = oInputParameterHandler.getValue('siteUrl') 
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
      
@@ -197,14 +196,14 @@ def showHosters():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-             
+            
             sHosterUrl = str(aEntry)
             # Certains URL "dailymotion" sont écrits : //www.dailymotion.com
             if sHosterUrl[:4] != 'http':
                 sHosterUrl = 'http:' + sHosterUrl     
-               
+            
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-             
+            
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
