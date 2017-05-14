@@ -156,15 +156,15 @@ def showMovies(sSearch = ''):
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'replay.png',  sThumb,  '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
+		
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
-
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -182,18 +182,18 @@ def checkforHoster(sHosterUrl):
         if 'openload' in sHosterUrl:
             return 'https://openload.co/embed/' + code.group(2) 
         elif 'netu' in sHosterUrl:
-            return 'http://hqq.tv/player/embed_player.php?vid=' + code.group(2)  
+            return 'http://hqq.tv/player/embed_player.php?vid=' + code.group(2)
         elif 'allvid' in sHosterUrl:    
             return 'http://allvid.ch/embed-' + code.group(2) + '.html'
         elif 'easyvid' in sHosterUrl:    
-            return 'http://easyvid.org/embed-' + code.group(2) + '.html'            
+            return 'http://easyvid.org/embed-' + code.group(2) + '.html'
         elif 'rutube' in sHosterUrl:    
-            return 'http://rutube.ru/play/embed/' + code.group(2)        
+            return 'http://rutube.ru/play/embed/' + code.group(2)
         elif 'vidlox' in sHosterUrl:
             return 'https://vidlox.tv/' + code.group(2)
         elif 'streammoe' in sHosterUrl:    
             return 'https://stream.moe/embed-' + code.group(2) + '.html'
-        elif 'playernaut' in sHosterUrl or 'rapidvideo' in sHosterUrl:    
+        elif 'playernaut' in sHosterUrl or 'rapidvideo' in sHosterUrl:
             return 'https://www.raptu.com/embed/' + code.group(2) 
         elif 'dailymotion' in sHosterUrl:    
             return 'http://www.dailymotion.com/embed/video/' + code.group(2)
@@ -204,22 +204,22 @@ def checkforHoster(sHosterUrl):
         elif 'youwatch' in sHosterUrl:
             return 'http://www.youwatch.org/embed-' + code.group(2) + '.html'
         elif 'exashare' in sHosterUrl:
-            return 'http://exashare.com/embed-' + code.group(2) + '.html'    
+            return 'http://exashare.com/embed-' + code.group(2) + '.html'
         elif 'estream' in sHosterUrl:
-            return 'https://estream.to/' + code.group(2) + '.html' 
+            return 'https://estream.to/' + code.group(2) + '.html'
         elif 'uptostream' in sHosterUrl:
-            return 'https://uptostream.com/' + code.group(2)    
+            return 'https://uptostream.com/' + code.group(2)
         elif 'mail.ru' in sHosterUrl:
-            code = re.search('\/mail\.ru.+?embed\/([^"]+)',sHosterUrl) 
+            code = re.search('\/mail\.ru.+?embed\/([^"]+)',sHosterUrl)
             if code:
-                return 'http://my.mail.ru/video/embed/' + code.group(1)  
+                return 'http://my.mail.ru/video/embed/' + code.group(1)
     else:
         if 'uptobox' in sHosterUrl:
             code = re.search('/plyr/.+?//uptobox.com/([^"]+)',sHosterUrl)
             if code:
                 return 'https://uptobox.com/' + code.group(1)
-    
-def showHosters(): 
+
+def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -251,7 +251,7 @@ def showHosters():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'replay.png',  sThumb,  '', oOutputParameterHandler)
-    else:        
+    else:
         #1
         sPattern = '<option value="([^"]+)"'
         aResult1 = re.findall(sPattern, sHtmlContent)
