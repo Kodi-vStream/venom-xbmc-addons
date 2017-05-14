@@ -32,6 +32,7 @@ FUNCTION_SEARCH = 'showMovies'
 MOVIE_NEWS = (URL_MAIN , 'showMovies') #films (derniers ajouts)
 MOVIE_MOVIE = (URL_MAIN + 'url', 'showMovies') #films vrac
 MOVIE_GENRES = (True, 'showGenres') #films genres
+MOVIE_ANNEES = (True, 'showMovieAnnees') #films (par années)
 MOVIE_VIEWS = (URL_MAIN + 'url', 'showMovies') #films (les plus vus)
 MOVIE_COMMENTS = (URL_MAIN + 'url', 'showMovies') #films (les plus commentés)
 MOVIE_NOTES = (URL_MAIN + 'url', 'showMovies') #films (les mieux notés)
@@ -41,6 +42,7 @@ MOVIE_VOSTFR = (URL_MAIN + 'url', 'showMovies') #films VOSTFR
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies') #séries (derniers ajouts)
 SERIE_SERIES = (URL_MAIN + 'series/', 'showMovies') #séries vrac
 SERIE_GENRES = (True, 'showGenres') #séries genres
+SERIE_ANNEES = (True, 'showSerieAnnees') #séries (par années)
 SERIE_VFS = (URL_MAIN + 'series/', 'showMovies') #séries VF
 SERIE_VOSTFRS = (URL_MAIN + 'series/', 'showMovies') #séries Vostfr
 
@@ -58,7 +60,7 @@ REPLAYTV_REPLAYTV = (URL_MAIN + 'url', 'showMovies') #Replay
 
 def load(): #fonction chargee automatiquement par l'addon l'index de votre navigation.
     oGui = cGui() #ouvre l'affichage
-
+	
     oOutputParameterHandler = cOutputParameterHandler() #appelle la fonction pour sortir un parametre
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/') # sortie du parametres siteUrl n'oubliez pas la Majuscule
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler) 
@@ -80,25 +82,28 @@ def load(): #fonction chargee automatiquement par l'addon l'index de votre navig
     #showGenres n'a pas besoin d'une url pour cette methode 
     
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'films_annees.png', oOutputParameterHandler)
+	
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'films_views.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_COMMENTS[1], 'Films (Les plus commentés)', 'films_comments.png', oOutputParameterHandler)
-    oOutputParameterHandler = cOutputParameterHandler()
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'films_notes.png', oOutputParameterHandler)
-        
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VF[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VF[1], 'Films VF', 'films_vf.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VF[1], 'Films (VF)', 'films_vf.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFR[1], 'Films VOSTFR', 'films_vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFR[1], 'Films (VOSTFR)', 'films_vostfr.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
@@ -113,12 +118,16 @@ def load(): #fonction chargee automatiquement par l'addon l'index de votre navig
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par Années)', 'series_annees.png', oOutputParameterHandler)
+	
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries VF ', 'series_vf.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF) ', 'series_vf.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries VOSTFR', 'series_vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries (VOSTFR)', 'series_vostfr.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory() #ferme l'affichage
 
@@ -130,12 +139,12 @@ def showSearch(): #fonction de recherche
         sUrl = URL_SEARCH[0] + sSearchText #modifie l'url de recherche
         showMovies(sUrl) #appelle la fonction qui pourra lire la page de resultats
         oGui.setEndOfDirectory()
-        return  
-    
-    
+        return
+
+
 def showGenres(): #affiche les genres
     oGui = cGui()
- 
+    
     #juste a entrer les categories et les liens qui vont bien
     liste = []
     liste.append( ['Action',URL_MAIN + 'action/'] )
@@ -148,7 +157,7 @@ def showGenres(): #affiche les genres
     liste.append( ['Comédie Musicale',URL_MAIN + 'comedie-musicale/'] )
     liste.append( ['Documentaire',URL_MAIN + 'documentaire/'] )
     liste.append( ['Drame',URL_MAIN + 'drame/'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'epouvante-horreur/'] ) 
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'epouvante-horreur/'] )
     liste.append( ['Erotique',URL_MAIN + 'erotique'] )
     liste.append( ['Espionnage',URL_MAIN + 'espionnage/'] )
     liste.append( ['Famille',URL_MAIN + 'famille/'] )
@@ -171,8 +180,32 @@ def showGenres(): #affiche les genres
         oOutputParameterHandler.addParameter('siteUrl', sUrl) #sortie de l'url en parametre
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
         #ajouter un dossier vers la fonction showMovies avec le titre de chaque categorie.
-       
+
     oGui.setEndOfDirectory() 
+
+
+def showMovieAnnees():
+    oGui = cGui()
+	
+    for i in reversed (xrange(1913, 2018)):
+        Year = str(i)
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee-' + Year)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
+        
+    oGui.setEndOfDirectory()
+
+
+def showSerieAnnees():
+    oGui = cGui()
+	
+    for i in reversed (xrange(1936, 2018)):
+        Year = str(i)
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee-' + Year)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
+        
+    oGui.setEndOfDirectory()
 
 
 def showMovies(sSearch = ''):
@@ -182,7 +215,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl') #recupere l'url sortie en parametre
-   
+    
     oRequestHandler = cRequestHandler(sUrl) #envoye une requete a l'url
     sHtmlContent = oRequestHandler.request() #requete aussi
     
@@ -251,7 +284,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
             #Ajoute une entree pour le lien Next | pas de addMisc pas de poster et de description inutile donc
 
     if not sSearch:
@@ -267,7 +300,7 @@ def __checkForNextPage(sHtmlContent): #cherche la page suivante
         return aResult[1][0]
 
     return False
-    
+
 
 def showHosters(): #recherche et affiche les hotes
     oGui = cGui() #ouvre l'affichage
@@ -295,12 +328,12 @@ def showHosters(): #recherche et affiche les hotes
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle) #nom affiche
                 oHoster.setFileName(sMovieTitle) # idem
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
                 #affiche le lien (oGui, oHoster, url du lien, poster)
                 
     oGui.setEndOfDirectory() #fin
-    
-#Pour les series, il y a generalement une etape en plus pour la selection des episodes ou saisons.   
+
+#Pour les series, il y a generalement une etape en plus pour la selection des episodes ou saisons.
 def ShowSerieSaisonEpisodes():
     oGui = cGui()
 
@@ -308,7 +341,7 @@ def ShowSerieSaisonEpisodes():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumbnail')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-   
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
@@ -338,7 +371,7 @@ def ShowSerieSaisonEpisodes():
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
-   
+
 def seriesHosters(): #cherche les episodes de series
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -360,8 +393,8 @@ def seriesHosters(): #cherche les episodes de series
             if (oHoster != False):
                 oHoster.setDisplayName(aEntry[1])
                 oHoster.setFileName(aEntry[1])
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
                 
     oGui.setEndOfDirectory()
-    
+
 #Voila c'est un peux brouillon mais ça devrait aider un peu, n'hesitez pas a poser vos question et meme a partager vos sources.
