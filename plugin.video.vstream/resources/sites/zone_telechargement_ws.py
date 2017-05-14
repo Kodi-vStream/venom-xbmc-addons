@@ -160,7 +160,7 @@ def showGenre(basePath):
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)    
-       
+    
     oGui.setEndOfDirectory() 
 
 def showMovies(sSearch = ''):
@@ -175,7 +175,6 @@ def showMovies(sSearch = ''):
         query_args = ( ( 'do' , 'search' ) , ('subaction' , 'search' ) , ('story' , sSearch ))
         data = urllib.urlencode(query_args)
         request = urllib2.Request(URL_SEARCH[0],data,headers)
-        #sPattern = '<img src="([^"]+)" alt=".+?" title="([^"]+)"  />.+?<a href="([^"]+)" >Suite et Telecharger...</a>'  
         sPattern = '<div style="height:[0-9]{3}px;"> *<a href="([^"]+)" *><img class="[^"]+?" data-newsid="[^"]+?" src="([^<"]+)".+?<div class="[^"]+?" style="[^"]+?"> *<a href="[^"]+?" *> ([^<]+?)<'
          
     else:
@@ -220,11 +219,11 @@ def showMovies(sSearch = ''):
             
             oGui.addMisc(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
             
-        sNextPage = __checkForNextPage(sHtmlContent)#cherche la page suivante
+        sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -271,12 +270,12 @@ def showMoviesLinks(sHtmlContent,sUrl):
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     #print sUrl
-   
+    
     oParser = cParser()
     
     sCom=''
     #Affichage du menu  
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]'+'Qualités disponibles pour ce film :'+'[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]' + 'Qualités disponibles pour ce film :' + '[/COLOR]')
 
     #on recherche d'abord la qualité courante
     sPattern = '<div style="[^"]+?"> *Qualité (.+?)<\/div><center>'
@@ -287,7 +286,7 @@ def showMoviesLinks(sHtmlContent,sUrl):
     if (aResult[0]):
         sQual = aResult[1][0]
 
-    sTitle = sMovieTitle +  ' - [COLOR skyblue]' + sQual +'[/COLOR]'
+    sTitle = sMovieTitle + ' [COLOR skyblue]' + sQual + '[/COLOR]'
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -309,9 +308,9 @@ def showMoviesLinks(sHtmlContent,sUrl):
             if dialog.iscanceled():
                 break
 
-            sTitle = sMovieTitle +  ' - [COLOR skyblue]' + aEntry[1]+ aEntry[2]+'[/COLOR]'
+            sTitle = sMovieTitle + ' [COLOR skyblue]' + aEntry[1] + aEntry[2] + '[/COLOR]'
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://www.zone-telechargement.ws'+aEntry[0])
+            oOutputParameterHandler.addParameter('siteUrl', URL_MAIN[:-1] + aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sCom, oOutputParameterHandler)             
@@ -338,7 +337,7 @@ def showSeriesLinks(sHtmlContent,sUrl):
     #print aResult
     if (aResult[0]):
         sMovieTitle = aResult[1][0][0]+aResult[1][0][1]
-      
+    
     oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualités disponibles pour cette saison :[/COLOR]')
     
     #on recherche d'abord la qualité courante
@@ -350,7 +349,7 @@ def showSeriesLinks(sHtmlContent,sUrl):
     if (aResult[1]):
         sQual = aResult[1][0]
 
-    sDisplayTitle = cUtil().DecoTitle(sMovieTitle) +  ' - [COLOR skyblue]' + sQual + '[/COLOR]'
+    sDisplayTitle = cUtil().DecoTitle(sMovieTitle) + ' [COLOR skyblue]' + sQual + '[/COLOR]'
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -374,9 +373,9 @@ def showSeriesLinks(sHtmlContent,sUrl):
             if dialog.iscanceled():
                 break
             
-            sDisplayTitle = cUtil().DecoTitle(sMovieTitle) +  ' - [COLOR skyblue]' + aEntry[1]+aEntry[2]+'[/COLOR]'
+            sDisplayTitle = cUtil().DecoTitle(sMovieTitle) + ' [COLOR skyblue]' + aEntry[1] + aEntry[2] + '[/COLOR]'
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'https://www.zone-telechargement.ws/telecharger-series'+aEntry[0])
+            oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'telecharger-series' + aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
@@ -396,9 +395,9 @@ def showSeriesLinks(sHtmlContent,sUrl):
     
         for aEntry in aResult2[1]:
 
-            sTitle = '[COLOR skyblue]' + aEntry[1]+aEntry[2]+aEntry[3]+aEntry[4]+'[/COLOR]'
+            sTitle = '[COLOR skyblue]' + aEntry[1] + aEntry[2] + aEntry[3] + aEntry[4] + '[/COLOR]'
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'https://www.zone-telechargement.ws/telecharger-series'+aEntry[0])
+            oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'telecharger-series' + aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))            
             oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, 'series.png', sThumbnail, '', oOutputParameterHandler)
@@ -439,7 +438,7 @@ def showHosters():# recherche et affiche les hotes
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]'+str(aResult[1])+'[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aResult[1]) + '[/COLOR]')
         sHtmlContent = CutNonPremiumlinks(sHtmlContent)
         #print sHtmlContent
     oParser = cParser()
@@ -463,7 +462,7 @@ def showHosters():# recherche et affiche les hotes
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]'+str(aEntry[0])+'[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
                 
             #elif aEntry[1]:
                 #oOutputParameterHandler = cOutputParameterHandler()
@@ -476,13 +475,13 @@ def showHosters():# recherche et affiche les hotes
                     #oGui.addText(SITE_IDENTIFIER, '[COLOR red]'+str(aEntry[1])+'[/COLOR]')
                     
             else:
-                sTitle = '[COLOR skyblue]' + aEntry[1]+ '[/COLOR] ' + sMovieTitle
+                sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR] ' + sMovieTitle
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', aEntry[2])
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumbnail, '', oOutputParameterHandler)
-   
+
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
@@ -505,7 +504,7 @@ def showSeriesHosters():# recherche et affiche les hotes
     #Pour les series on fait l'inverse des films on vire les liens premiums
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent or 'premium' in sHtmlContent:
         sHtmlContent = CutPremiumlinks(sHtmlContent)
-   
+    
     oParser = cParser()
     
     sPattern = '<div style="font-weight:bold;color:[^"]+?">([^<]+)</div>|<a target="_blank" href="([^"]+?)">([^<]+)<'
@@ -527,9 +526,9 @@ def showSeriesHosters():# recherche et affiche les hotes
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 if 'Télécharger' in aEntry[0]:
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]'+str(aEntry[0])+'[/COLOR]')
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]' + str(aEntry[0]) + '[/COLOR]')
                 else:
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]'+str(aEntry[0])+'[/COLOR]')
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
             else:
                 sName = aEntry[2]
                 sName = sName.replace('Télécharger','')
@@ -543,7 +542,7 @@ def showSeriesHosters():# recherche et affiche les hotes
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
-   
+
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
@@ -606,7 +605,7 @@ def Display_protected_link():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
                         
     oGui.setEndOfDirectory()
-    
+
 def CutQual(sHtmlContent):
     oParser = cParser()
     sPattern = '<h3>Qualités également disponibles pour cette saison:</h3>(.+?)</div>'
@@ -627,7 +626,7 @@ def CutSais(sHtmlContent):
     if (aResult[0]):
         return aResult[1][0]
     return ''
-    
+
 def CutNonPremiumlinks(sHtmlContent):
     oParser = cParser()
     sPattern = 'Lien Premium(.+?)Publie le '
@@ -638,7 +637,7 @@ def CutNonPremiumlinks(sHtmlContent):
 
     #Si ca marche pas on renvois le code complet
     return sHtmlContent
-    
+
 def CutPremiumlinks(sHtmlContent):
     oParser = cParser()
     
@@ -715,7 +714,7 @@ def DecryptDlProtecte(url):
         return ''
     cookies = ''
     for cook in c2:
-        cookies = cookies + cook[0] + '=' + cook[1]+ ';'
+        cookies = cookies + cook[0] + '=' + cook[1] + ';'
         
     print cookies
 
@@ -744,5 +743,5 @@ def DecryptDlProtecte(url):
     reponse.close()
     
     return sHtmlContent
-        
+	
     return ''
