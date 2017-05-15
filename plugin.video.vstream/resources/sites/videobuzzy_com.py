@@ -24,13 +24,13 @@ NETS_GENRES = (True, 'showGenres')
 #FUNCTION_SEARCH = 'showMovies'
     
 def load():
-   
+    
     oGui = cGui()
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
- 
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NETS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NETS[1], 'Vidéos du net', 'buzz.png',oOutputParameterHandler)
@@ -46,7 +46,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = 'http://www.videobuzzy.com/'+sSearchText  
+            sUrl = URL_MAIN + sSearchText
             showMovies(sUrl)
             oGui.setEndOfDirectory()
             return
@@ -82,7 +82,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-   
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
 
@@ -112,7 +112,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -160,5 +160,5 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
         cConfig().finishDialog(dialog) 
-                
+
     oGui.setEndOfDirectory()
