@@ -24,7 +24,7 @@ MOVIE_GENRES = (True, 'showGenres')
 
 URL_SEARCH = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
- 
+
 def DecoTitle(string):
     #pr les tag
     string = re.sub('([\[\(].{1,7}[\)\]])','[COLOR coral]\\1[/COLOR]', str(string))
@@ -160,7 +160,7 @@ def showMovies(sSearch=''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
  
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -175,14 +175,14 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
  
     return False
-   
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
- 
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
    
@@ -204,7 +204,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         langue = aResult[1]
- 
+
     sPattern = '<div class="fstory-video-block" id="(.+?)">.+?<iframe.+?src=[\'|"](.+?)[\'|"]'
     aResult = oParser.parse(sHtmlContent, sPattern)
    
@@ -217,7 +217,7 @@ def showHosters():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
- 
+
             sMovieTitle2 = sMovieTitle
             #Rajout lanques
             for aEntry9 in langue:
@@ -229,12 +229,12 @@ def showHosters():
             oHoster = cHosterGui().checkHoster(sHosterUrl)
            
             sMovieTitle2 = cUtil().DecoTitle(sMovieTitle2)
-       
+
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle2)
                 oHoster.setFileName(sMovieTitle2)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
- 
+
         cConfig().finishDialog(dialog)
- 
+
         oGui.setEndOfDirectory()
