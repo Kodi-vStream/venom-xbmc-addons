@@ -12,7 +12,7 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 import xbmc
 import re
-from resources.lib.util import cUtil #outils pouvant etre utiles
+from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'zone_telechargement_eu'
 SITE_NAME = '[COLOR violet]Zone-Telechargement.ru (Kodi V17)[/COLOR]'
@@ -20,7 +20,7 @@ SITE_DESC = 'Films en DDL et streaming'
 
 URL_MAIN = 'https://www.zone-telechargement.ru/'
 
-URL_SEARCH = ('https://www.zone-telechargement.ru/?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -30,29 +30,28 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'https://www.zone-telechargement.ru/films/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'https://www.zone-telechargement.ru/series/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries', 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'https://www.zone-telechargement.ru/trending/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'trending/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Tendances', 'views.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', 'https://www.zone-telechargement.ru/ratings/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'ratings/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Evaluations', 'films_comments.png', oOutputParameterHandler)
 
     oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Genres', 'films_genres.png', oOutputParameterHandler)
 
-    oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Année de sortie', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showYears', 'Année de sortie', 'annees.png', oOutputParameterHandler)
 
-    
     oGui.setEndOfDirectory()
 
 def showGenres():
     oGui = cGui()
 
-    oRequestHandler = cRequestHandler('https://www.zone-telechargement.ru/')
+    oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<li class="cat-item.+?<a href="(.+?)">(.+?)</a>.+?</li>'
@@ -75,7 +74,7 @@ def showGenres():
 def showYears():
     oGui = cGui()
 
-    oRequestHandler = cRequestHandler('https://www.zone-telechargement.ru/')
+    oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request() 
 
     sPattern = '<a href="(https://www.zone-telechargement.ru/release/(\d+?)/)">.+?</a>'
@@ -131,16 +130,16 @@ def showMovies(sSearch = '', page = 1):
         dialog = cConfig().createDialog(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total) #dialog update
+            cConfig().updateDialog(dialog, total)
 
             sTitle = aEntry[2]
             sUrl = aEntry[1]
             sThumbnail = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl) #sortie de l'url
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle) #sortie du titre
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail) #sortie du poster
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
             result = re.search('ru/series', sUrl)
             if result:
@@ -154,7 +153,7 @@ def showMovies(sSearch = '', page = 1):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -190,13 +189,13 @@ def showSeriesHosters():
             if len(parts) == 2:
                 sNumber = 'S%02dE%02d' % (int(parts[0]), int(parts[1]))
             sTitle = aEntry[3]
-            sDisplayTitle = '[COLOR yellow]['+sNumber+'][/COLOR] '+sTitle
+            sDisplayTitle = '[COLOR yellow][' + sNumber + '][/COLOR] ' + sTitle
 
             oOutputParameterHandler = cOutputParameterHandler()
-            title = sMovieTitle+' ['+sNumber+'] '+sTitle
-            oOutputParameterHandler.addParameter('siteUrl', sUrl) #sortie de l'url
-            oOutputParameterHandler.addParameter('sMovieTitle', title) #sortie du titre
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail) #sortie du poster
+            title = sMovieTitle + ' [' + sNumber + '] ' + sTitle
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', title)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sUrl, oOutputParameterHandler)
 
@@ -226,7 +225,7 @@ def showHosters():
             sLang = aEntry[3]
             sSize = aEntry[4]
 
-            sDisplayTitle = '[COLOR teal]['+sType+']['+sLang+']['+sSize+'] '+sHoster+'[/COLOR]'
+            sDisplayTitle = '[COLOR teal][' + sType + '][' + sLang + '][' + sSize + '] ' + sHoster + '[/COLOR]'
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sUrl', sUrl)
