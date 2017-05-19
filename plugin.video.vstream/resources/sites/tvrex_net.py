@@ -21,10 +21,10 @@ URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 SPORT_SPORTS = ('http://', 'ReplayTV')
-REPLAYTV_GENRES = (True, 'showGenres')
 
 Logo_Reddit = 'aHR0cHM6Ly9iLnRodW1icy5yZWRkaXRtZWRpYS5jb20va1c5ZFNqRFlzUDhGbEJYeUUyemJaaEFCaXM5eS0zVHViSWtic0JfUDlBay5wbmc='
 Logo_Nba = 'aHR0cDovL3d3dy5vZmZpY2lhbHBzZHMuY29tL2ltYWdlcy90aHVtYnMvSS1sb3ZlLXRoaXMtZ2FtZS1uYmEtbG9nby1wc2Q2MDQwNy5wbmc='
+
 
 def load():
     
@@ -39,6 +39,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Live/Replay NBA Games', 'news.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
+
 
 def showSearch():
     
@@ -102,8 +103,8 @@ def ReplayTV():
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA All Star Week-end', 'tv.png', oOutputParameterHandler)
 	
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_GENRES[1], 'Replay NBA (Par États/Équipes)', 'sport.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'Replay NBA (Par États/Équipes)', 'sport.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
 
