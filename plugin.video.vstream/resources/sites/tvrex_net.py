@@ -36,7 +36,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Live/Replay NBA Games', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Live/Replay NBA Games', 'sport.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
 
@@ -171,7 +171,7 @@ def showMovies(sSearch = ''):
         
         sPattern = 'utm_name=nbastreams".+?>Game Thread:(.+?)</a>.+?<ul class=".+?"><li class=".+?"><a href="(.+?)"'
         
-        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Live NBA Game (@Reddit)[/COLOR]' + '[COLOR gray]' + '  [ Heure Locale ET : ' + '[/COLOR]' + TimeUTC + '[COLOR gray]' + ' ]' + '[/COLOR]')
+        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Live NBA Game (@Reddit)[/COLOR]' + '[COLOR gray]' + '  [ Heure Locale EST : ' + '[/COLOR]' + TimeUTC + '[COLOR gray]' + ' ]' + '[/COLOR]')
     
     elif 'category/201' in sUrl:
         sPattern = '<a href="([^"]+)">([^<]+)</a></h2>'
