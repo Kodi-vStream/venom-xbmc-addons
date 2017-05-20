@@ -23,7 +23,7 @@ SITE_DESC = 'Fichiers en Streaming et en DDL, HD'
 
 #film
 URL_MAIN = 'https://streamase.com/'
-MOVIE_NEWS = (URL_MAIN + 'lastnews/' , 'showMovies')
+MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_MOVIE = (True, 'showMenuFilms')
 MOVIE_GENRES = (True, 'showMovieGenres')
 MOVIE_ANNEES = (True, 'showMovieAnnees')
