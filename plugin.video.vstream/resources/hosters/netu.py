@@ -164,11 +164,7 @@ class cHoster(iHoster):
         except urllib2.URLError, e:
             #xbmc.log( e.read())
             #xbmc.log(e.reason)
-            html = e.read()
-                        
-        #fh = open('c:\\netu1.txt', "w")
-        #fh.write(html)
-        #fh.close()
+            html = e.read()                   
 
         data = ''
         code_crypt = re.search('(;eval\(function\(w,i,s,e\){.+?\)\);)\s*<', html, re.DOTALL)
@@ -177,11 +173,15 @@ class cHoster(iHoster):
         else:
             cConfig().log('prb1')
             
+        #fh = open('c:\\netu1.txt', "w")
+        #fh.write(data)
+        #fh.close()           
+            
         if data:
             
             iss = GetIp()
             vid = re.search('var vid *= *"([^"]+)";', data, re.DOTALL).group(1)
-            at = re.search('var at = "([^"]+)";', data, re.DOTALL).group(1)
+            at = re.search('var at *= *"([^"]+)";', data, re.DOTALL).group(1)
             http_referer = re.search('var http_referer *= *"([^"]+)";', data, re.DOTALL).group(1)
             _pass = ''
             
