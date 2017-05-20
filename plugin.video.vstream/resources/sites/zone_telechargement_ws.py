@@ -16,7 +16,7 @@ from resources.lib.util import cUtil
 import urllib,re,urllib2
 import xbmcgui
 import xbmc
-from resources.lib.dl_deprotect import DecryptDlProtect
+#from resources.lib.dl_deprotect import DecryptDlProtect
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
 headers = { 'User-Agent' : UA }
@@ -558,6 +558,30 @@ def Display_protected_link():
     oParser = cParser()
 
     #xbmc.log(sUrl)
+
+    code = {
+        '123455600123455602123455610123455615': 'http://uptobox.com/',
+        '1234556001234556071234556111234556153': 'http://turbobit.net/',
+        '123455600123455605123455615': 'http://ul.to/',
+        '123455600123455608123455610123455615': 'http://nitroflare.com/',
+        '123455601123455603123455610123455615123455617': 'https://1fichier.com/?',
+        '123455600123455606123455611123455615': 'http://rapidgator.net/'
+    }
+
+    for k in code:
+        match = re.search(k+'(.+)$', sUrl)
+        if match:
+            sHosterUrl = code[k] + match.group(1)
+            sHosterUrl = sHosterUrl.replace('123455615', '/')
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            sTitle = sMovieTitle 
+            if (oHoster != False):
+                sDisplayTitle = cUtil().DecoTitle(sTitle)
+                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setFileName(sTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+            oGui.setEndOfDirectory()
+            return
     
     #Est ce un lien dl-protect ?
     if 'dl-protecte' in sUrl:
@@ -661,7 +685,7 @@ def CutPremiumlinks(sHtmlContent):
 
 def DecryptDlProtecte(url):
     #xbmc.log('DecryptDlProtecte')
-    
+ 
     if not (url): return ''
     #print url
     headers = {
