@@ -389,8 +389,9 @@ def showHosters():
     else:
         BA = False
 
-    sPattern = '<script>function(.+?)</script>'
-    aResult = re.search(sPattern,sHtmlContent)
+    sPattern = '<script>\s*function(.+?)</script>'
+    aResult = re.search(sPattern,sHtmlContent,re.DOTALL)
+    
     sHtmlContent = aResult.group(1).replace('return de("$")','') #serie
     #redirection sur hdstream pour les new videos
     sPattern = '"([^"]+)"'
