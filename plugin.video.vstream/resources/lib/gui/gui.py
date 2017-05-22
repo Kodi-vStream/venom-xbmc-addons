@@ -650,7 +650,9 @@ class cGui():
         else:
             cDb().insert_watched(meta)
 
-        xbmc.executebuiltin( 'Container.Refresh' )
+        #xbmc.executebuiltin( 'Container.Refresh' )
+        from resources.lib import util
+        util.VSshowInfo('Marquer vu/Non vu', sTitle)
 
     def viewBA(self):
         oInputParameterHandler = cInputParameterHandler()
@@ -698,7 +700,7 @@ class cGui():
 
         sPluginPath = cPluginHandler().getPluginPath();
         
-        print oGuiElement.getCleanTitle()
+        #print oGuiElement.getCleanTitle()
 
         if (len(oGuiElement.getFunction()) == 0):
             sItemUrl = '%s?site=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), urllib.quote_plus(oGuiElement.getCleanTitle()), sParams)
