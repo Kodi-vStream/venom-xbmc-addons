@@ -145,6 +145,24 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sHosterUrl = str(aEntry)
+            if '//goo.gl' in sHosterUrl:
+                import urllib2
+                try:
+                    class NoRedirection(urllib2.HTTPErrorProcessor):    
+                        def http_response(self, request, response):
+                            return response
+                    
+                    url8 = sHosterUrl.replace('https','http')
+                    
+                    opener = urllib2.build_opener(NoRedirection)
+                    opener.addheaders.append (('User-Agent', UA))
+                    opener.addheaders.append (('Connection', 'keep-alive'))
+            
+                    HttpReponse = opener.open(url8)
+                    sHosterUrl = HttpReponse.headers['Location']
+                    sHosterUrl = sHosterUrl.replace('https','http')
+                except:
+                    pass
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
