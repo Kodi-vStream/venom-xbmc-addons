@@ -151,7 +151,7 @@ def showHosters():
     sHtmlContent = sHtmlContent.decode('iso-8859-1').encode('utf8') # Site en latin1
 
     oParser = cParser()
-    sPattern = '<a href="([^"]+?)".+?>T.+?<td align=\'center\' class=\'TextLink\'>(.+?)</td>.*?<td align=\'center\' class=\'TextLink\'>(.+?)</td>.*?<td align=\'center\' class=\'TextLink\'>(.+?)</td>.*?<td align=\'center\' class=\'TextLink\'>(.+?)</td>'
+    sPattern = '<a href="([^"]+?)" rel=\'nofollow\'.+?>T.+?<td align=\'center\' class=\'TextLink\'>(.+?)</td>.*?<td align=\'center\' class=\'TextLink\'>(.+?)</td>.*?<td align=\'center\' class=\'TextLink\'>(.+?)</td>.*?<td align=\'center\' class=\'TextLink\'>(.+?)</td>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     oGui.addText(SITE_IDENTIFIER,'[COLOR olive]' + sMovieTitle + '[/COLOR]')
