@@ -79,11 +79,11 @@ def ReplayTV():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REDDIT)
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Live NBA Games (beta)', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Live NBA Games (bêta)', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir(SITE_IDENTIFIER, 'showLiveNbatv', 'Live 24/24 Chaine NBA TV (beta)', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showLiveNbatv', 'Live 24/24 Chaine NBA TV (bêta)', 'tv.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/nba-replays/')
@@ -323,51 +323,51 @@ def showHosters():
     if sDateReplay:
        sMovieTitle = sMovieTitle + '[COLOR teal]' + ' / ' + sDateReplay +'[/COLOR]'
 
+    sLink = []
     
-    if 'reddit' in sUrl:
+    if 'reddit' in sUrl: #Live
         
-        sPattern = '(?:<td>|)<a href="(http.+?(?:nbastreams|eplstream|yoursportsinhd|247hd).+?)">(?:<strong>.+?</strong>|)([^<]+)</a></td>'
+        sPattern = '(?:<td>|)<a href="(http.+?(?:nbastreams|eplstream|yoursportsinhd|247hd).+?)">(?:<strong>.+?</strong>|)([^<]+)</a>(?:.+?Chrome.+?|)</td>'
         
-        aResult = re.findall(sPattern,sHtmlContent)
+        sLink = re.findall(sPattern,sHtmlContent)
         
-        sDisplay ='[COLOR olive]Streaming disponibles:[/COLOR]'         
-   
-    else:
-        sLink = []
-        aResult =[]
+        sDisplay ='[COLOR olive]Streaming disponibles:[/COLOR]'
+                
+    else: #Replay
         
         sPattern = '<a href="(https?://(?:wstream|youwa|openlo)[^"]+)" target="_blank">(?:([^<]+)</a>|)'
         sPattern2 = '(?:data\-lazy\-src|src)="(http.+?(?:openload|raptu)\.co[^"]+)"'
         
         aResult1 = re.findall(sPattern,sHtmlContent)
         aResult2 = re.findall(sPattern2,sHtmlContent)
-        aResult = aResult1 + aResult2
-        sLink = aResult
+        sLink = aResult1 + aResult2
         
-        #si lien video non embed (raptu/openload)
+        #Test si lien video non embed (raptu/openload)
         sPattern3 = '<p>(?:Download/Watch from.+?\:|FULL GAME REPLAY.+?\:) <a href="([^"]+)" target="_blank"'
         aResult3 = re.findall(sPattern3,sHtmlContent)
         
-        sDisplay = '[COLOR olive]Qualités disponibles:[/COLOR]'   
+        #recup lien video non embed 
+        if (aResult3):
+       
+            for aEntry in aResult3:
+        
+                sUrl = str(aEntry)
+      
+                oRequestHandler = cRequestHandler(sUrl)
+                sHtmlContent = oRequestHandler.request();
+                sHtmlContent = sHtmlContent.replace(' rel="nofollow"', '')
+         
+                aResult4 = re.findall(sPattern2,sHtmlContent)
+                sLink = sLink + aResult4
+            
+
+        sDisplay = '[COLOR olive]Qualités disponibles:[/COLOR]'
     
-    
+
     oGui.addText(SITE_IDENTIFIER,sMovieTitle)
     oGui.addText(SITE_IDENTIFIER,sDisplay)
     
-    #recup lien video non embed
-    if (aResult3):
-       
-        for aEntry in aResult3:
-        
-            sUrl = str(aEntry)
-      
-            oRequestHandler = cRequestHandler(sUrl)
-            sHtmlContent = oRequestHandler.request();
-            sHtmlContent = sHtmlContent.replace(' rel="nofollow"', '')
-         
-            aResult4 = re.findall(sPattern2,sHtmlContent)
-            sLink = sLink + aResult4
-            
+    
     #affichage final des liens
     if (sLink):
 
@@ -459,7 +459,7 @@ def showLiveNbatv():
     oGui.setEndOfDirectory()
 
 
-#recuperation lecture m3u8 nba livestream - ok sauf si geo ip ou lien secu ou regex a maj
+#recuperation lecture m3u8 nba livestream - ok sauf si geoIP (USA) ou lien secu ou regex a maj
 
 def showLiveHosters():
    
@@ -489,9 +489,18 @@ def showLiveHosters():
       
       if (aResult):
           for aEntry in aResult:
-              #playoff2017 live ok avec UA ipad 
-              sHosterUrl = aEntry + '|User-Agent=Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B367 Safari/531.21.1'
               
+              #si streamer utilise chrome extention
+              if '#http' in aEntry:
+                  sUrl2 = aEntry.split('#')
+                  sHosterUrl = sUrl2[1]
+              else:
+                  sHosterUrl = aEntry
+              
+              #live ok avec UA ipad sauf si geoIP usa
+              sHosterUrl = sHosterUrl + '|User-Agent=Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B367 Safari/531.21.1'
+              
+
               oHoster = cHosterGui().checkHoster('m3u8')
               oHoster.setDisplayName(sTitle)
               oHoster.setFileName(sTitle)
