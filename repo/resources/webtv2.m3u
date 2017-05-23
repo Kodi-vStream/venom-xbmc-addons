@@ -36,10 +36,10 @@ http://nrj-apple-live.adaptive.level3.net/apple/nrj/nrj/nrj12hi.m3u8
 http://hls-live-m1-l3.canal-plus.com/live/hls/d17-clair-v3-sd-andr7/and-sd-clair/index.m3u8
 
 #EXTINF:-1 tvg-id="6TER.kazer.org" tvg-name="6TER" tvg-logo="6ter.png" group-title="Group 22",6Ter
-https://sslhls.m6tv.cdn.sfr.net/hls-live/livepkgr/_definst_/six_ter_hls_aes/six_ter_hls_aes_856.m3u8
+http://xc.cobra-iptv.com:25461/live/irankanalen/irankanalen/1391.ts
 
 #EXTINF:-1 tvg-id="NU23.kazer.org" tvg-name="Numéro 23" tvg-logo="n23.png" group-title="Group 23",Numéro 23
-http://stream-04.vty.dailymotion.com/41/dm/1/x13p3qi/live.isml/events(live-1481528675)/live-audio=128000-video=1200000.m3u8
+http://www.q7t1.com:8000/live/dona/dona/171.ts
 
 #EXTINF:-1 tvg-id="FRA1.kazer.org" tvg-name="France O" tvg-logo="franceo.png" group-title="Group 65",France O
 [REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_O%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
@@ -48,10 +48,10 @@ http://stream-04.vty.dailymotion.com/41/dm/1/x13p3qi/live.isml/events(live-14815
 http://hls-live-m6-l3.canal-plus.com/live/hls/itele-clair-hd-andr7/and-hd-clair/itele-clair-hd-video=3400000-audio_AACL_fra_96000_127=96000.m3u8
 
 #EXTINF:-1 tvg-id="BFM1.kazer.org" tvg-name="BFM TV" tvg-logo="bfm.png" group-title="Group 103",BFM TV
-http://bfmlive2-i.akamaihd.net/hls/live/214427/bfmtv/04.m3u8
+http://xc.cobra-iptv.com:25461/live/irankanalen/irankanalen/1398.ts
 
 #EXTINF:-1 tvg-id="CHE1.kazer.org" tvg-name="Cherie25" tvg-logo="cherie25.png" group-title="Group 100",Cherie25
-rtmp://iptv.livetv.tn/live/ch5053?code=ea3050dac0b8133
+http://xc.cobra-iptv.com:25461/live/irankanalen/irankanalen/1399.ts
 
 #EXTINF:-1 tvg-id="TVA1.kazer.org" tvg-name="Teva" tvg-logo="teva.png" group-title="Group 101",Teva
 rtmp://iptv.livetv.tn/live/ch944?code=ea3050dac0b8133
@@ -111,34 +111,34 @@ rtmp://str81.creacast.com:80/weo/high
 http://esioslive6-i.akamaihd.net/hls/live/202892/AL_P_ESP1_FR_FRA/playlist.m3u8
 
 #EXTINF:-1 tvg-id="CAN4.kazer.org" tvg-name="Canal + Decale" tvg-logo="canaldecale.png" group-title="", CANAL + DECALE
-rtmp://aymeniptv1.xcamd.com/live/ch930?code=c0917a61ab383d8
+http://ns3005761.ip-151-80-36.eu:8000/live/korisnik/korisnik/229.ts
 
 #EXTINF:-1 tvg-id="" tvg-name="Canal + Xtra" tvg-logo="canalextra.png" group-title="",CANAL + XTRA
 rtmp://aymeniptv1.xcamd.com/live/ch800?code=c0917a61ab383d8
 
 #EXTINF:-1 tvg-id="CIN21.kazer.org" tvg-name="Cine Emotion" tvg-logo="cineemotion.png" group-title="",CINE EMOTION
-rtmp://iptv.livetv.tn/live/ch921?code=ea3050dac0b8133
+http://ns3005761.ip-151-80-36.eu:8000/live/korisnik/korisnik/235.ts
 
 #EXTINF:-1 tvg-id="CIN22.kazer.org" tvg-name="Cine Frisson" tvg-logo="cinefrisson.png" group-title="",CINE + FRISSON
-rtmp://iptv.livetv.tn/live/ch941?code=ea3050dac0b8133
+http://ns3005761.ip-151-80-36.eu:8000/live/korisnik/korisnik/233.ts
 
 #EXTINF:-1 tvg-id="CIN23.kazer.org" tvg-name="Cine Premier" tvg-logo="cinepremier.png" group-title="",CINE + PREMIER
-rtmp://iptv.livetv.tn/live/ch920?code=ea3050dac0b8133
+http://ns3005761.ip-151-80-36.eu:8000/live/korisnik/korisnik/232.ts
 
 #EXTINF:-1 tvg-id="CO11.kazer.org" tvg-name="Comedie+" tvg-logo="comedie.png" group-title="",COMEDIE +
-rtmp://iptv.livetv.tn/live/ch978?code=ea3050dac0b8133
+http://www.q7t1.com:8000/live/dona/dona/872.ts
 
 #EXTINF:-1 tvg-id="" tvg-name="Ocs Chocs" tvg-logo="chocs.png" group-title="",OCS CHOCS HD
-rtmp://iptv.livetv.tn/live/ch960?code=ea3050dac0b8133
+http://ns3005761.ip-151-80-36.eu:8000/live/korisnik/korisnik/244.ts
 
 #EXTINF:-1 tvg-id="" tvg-name="Ocs City" tvg-logo="cityhd.png" group-title="",OCS CITY HD
-rtmp://iptv.livetv.tn/live/ch824?code=ea3050dac0b8133
+http://ns3005761.ip-151-80-36.eu:8000/live/korisnik/korisnik/243.ts
 
 #EXTINF:-1 tvg-id="" tvg-name="Ocs Geants" tvg-logo="geants.png" group-title="",OCS GEANTS HD
-rtmp://iptv.livetv.tn/live/ch5045?code=ea3050dac0b8133
+http://ns3005761.ip-151-80-36.eu:8000/live/korisnik/korisnik/242.ts
 
 #EXTINF:-1 tvg-id="" tvg-name="Planete +" tvg-logo="planeteplus.png" group-title="",PLANETE+ CI HD
-rtmp://iptv.livetv.tn/live/ch917?code=ea3050dac0b8133
+http://www.q7t1.com:8000/live/dona/dona/221.ts
 
 #EXTINF:-1 tvg-id="" tvg-name="DisneyHd" tvg-logo="disneyhd.png" group-title="",DISNEY HD
 rtmp://iptv.livetv.tn/live/ch861?code=ea3050dac0b8133
@@ -156,10 +156,10 @@ rtmp://iptv.livetv.tn/live/ch1023?code=ea3050dac0b8133
 rtmp://iptv.livetv.tn/live/ch311?code=ea3050dac0b8133
 
 #EXTINF:0,CANAL + SPORT
-rtmp://aymeniptv1.xcamd.com/live/ch916?code=c0917a61ab383d8
+http://www.q7t1.com:8000/live/dona/dona/205.ts
 
 #EXTINF:0,BFM SPORT
-http://rmc-i.akamaihd.net/hls/live/218333/876630703001/BFMSPORT/master-3.m3u8
+http://xc.cobra-iptv.com:25461/live/irankanalen/irankanalen/2916.ts
 
 #EXTINF:0,EQUIPE TV
 http://stream-01.vty.dailymotion.com/14/dm/1/x2lefik/live.isml/live.m3u8?t=2016-01-01T00:00:00.000&e=1481717618&st=hdXZPkEENkWSWr_e_Z3qeA#cell=lvty&p2p=p5&comment=QOEP2P
@@ -171,7 +171,7 @@ rtmp://iptv.livetv.tn/live/ch1027?code=ea3050dac0b8133
 rtmp://aymeniptv1.xcamd.com/live/ch803?code=c0917a61ab383d8
 
 #EXTINF:0,EUROSPORT 1
-rtmp://aymeniptv1.xcamd.com/live/ch915?code=c0917a61ab383d8
+http://www.q7t1.com:8000/live/dona/dona/206.ts
 
 #EXTINF:0 tvg-logo="beinsport1.png",BEING SPORT 1
 rtmp://iptv.livetv.tn/live/ch507?code=ea3050dac0b8133
