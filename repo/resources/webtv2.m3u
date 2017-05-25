@@ -69,7 +69,7 @@ http://mobile.ktotv.com/live/KTO_Layer1.m3u8
 http://bfmlive-i.akamaihd.net/hls/live/214272/bfmbusiness/01.m3u8
 
 #EXTINF:-1 tvg-id="BFM1.kazer.org" tvg-name="BFM TV" tvg-logo="bfm.png" group-title="Group 113",BFM TV
-http://stream-05.vty.dailymotion.com/03/dm/1/xgz4t1/live.isml/live.m3u8?e=1481717339&st=a1XpjcKpecGgX2oqjn4q0A#cell=lvty&comment=QOEP2P
+http://ns3005761.ip-151-80-36.eu:8000/live/korisnik/korisnik/218.ts
 
 #EXTINF:-1 tvg-id="GUL1.kazer.org" tvg-name="Gulli" tvg-logo="gulli.png" group-title="Group 165",Gulli
 [REGEX]file: '([^']+master.m3u8)'[URL]http://replay.gulli.fr/jwplayer/embedstreamtv
@@ -168,16 +168,16 @@ http://stream-01.vty.dailymotion.com/14/dm/1/x2lefik/live.isml/live.m3u8?t=2016-
 rtmp://iptv.livetv.tn/live/ch1027?code=ea3050dac0b8133
 
 #EXTINF:0,EQUIDA LIVE
-rtmp://aymeniptv1.xcamd.com/live/ch803?code=c0917a61ab383d8
+http://xc.cobra-iptv.com:25461/live/irankanalen/irankanalen/112.ts
 
 #EXTINF:0,EUROSPORT 1
 http://www.q7t1.com:8000/live/dona/dona/206.ts
 
 #EXTINF:0 tvg-logo="beinsport1.png",BEING SPORT 1
-rtmp://iptv.livetv.tn/live/ch507?code=ea3050dac0b8133
+http://xc.cobra-iptv.com:25461/live/irankanalen/irankanalen/1419.ts
 
 #EXTINF:0 tvg-logo="beinsport2.png",BEING SPORT 2
-rtmp://iptv.livetv.tn/live/ch508?code=ea3050dac0b8133
+http://xc.cobra-iptv.com:25461/live/irankanalen/irankanalen/1420.ts
 
 #EXTINF:0 tvg-logo="beinsport3.png",BEING SPORT 3
-rtmp://iptv.livetv.tn/live/ch906?code=ea3050dac0b8133
+http://xc.cobra-iptv.com:25461/live/irankanalen/irankanalen/1421.ts
