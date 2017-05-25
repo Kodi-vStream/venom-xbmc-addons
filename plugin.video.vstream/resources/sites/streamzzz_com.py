@@ -81,41 +81,21 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
+    oParser = cParser()
     
-    liste = []
-    liste.append( ['Action',URL_MAIN + 'genre/action/'] )
-    liste.append( ['Action & Aventure',URL_MAIN + 'genre/action-adventure/'] )
-    liste.append( ['Animation',URL_MAIN + 'genre/animation/'] )
-    liste.append( ['Aventure',URL_MAIN + 'genre/aventure/'] )
-    liste.append( ['Biopic',URL_MAIN + 'genre/biopic/'] )
-    liste.append( ['Comédie',URL_MAIN + 'genre/comedie/'] )
-    liste.append( ['Crime',URL_MAIN + 'genre/crime/'] )
-    liste.append( ['Documentaire',URL_MAIN + 'genre/documentaire/'] )
-    liste.append( ['Drame',URL_MAIN + 'genre/drame/'] )
-    liste.append( ['Familial',URL_MAIN + 'genre/familial/'] )
-    liste.append( ['Fantastique',URL_MAIN + 'genre/fantastique/'] )
-    liste.append( ['Histoire',URL_MAIN + 'genre/histoire/'] )
-    liste.append( ['Horreur',URL_MAIN + 'genre/horreur/'] )
-    liste.append( ['Kids',URL_MAIN + 'genre/kids/'] )
-    liste.append( ['Musical',URL_MAIN + 'genre/musical/'] )
-    liste.append( ['Musique',URL_MAIN + 'genre/musique/'] )
-    liste.append( ['Mystère',URL_MAIN + 'genre/mystere/'] )
-    liste.append( ['Mystery',URL_MAIN + 'genre/mystery/'] )
-    liste.append( ['Romance',URL_MAIN + 'genre/romance/'] )
-    liste.append( ['Sci-fi & Fantasy',URL_MAIN + 'genre/sci-fi-fantasy/'] )
-    liste.append( ['Science-Fiction',URL_MAIN + 'genre/science-fiction/'] )
-    liste.append( ['Science-Fiction & Fantastique',URL_MAIN + 'genre/science-fiction-fantastique/'] )
-    liste.append( ['Soap',URL_MAIN + 'genre/soap/'] )
-    liste.append( ['Suspense',URL_MAIN + 'genre/suspense/'] )
-    liste.append( ['Thriller',URL_MAIN + 'genre/thriller/'] )
-    liste.append( ['War & politics',URL_MAIN + 'genre/war-politics/'] )
-    liste.append( ['Western',URL_MAIN + 'genre/western/'] )
+    oRequestHandler = cRequestHandler(URL_MAIN)
+    sHtmlContent = oRequestHandler.request()
 
-    for sTitle,sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'series_genres.png', oOutputParameterHandler)
+    sPattern = '<li class="cat-item cat-item.+?"><a href="([^<]+)" >([^<]+)</a>.+?<i>([^<]+)</i>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            sTitle = aEntry[1] + ' (' + (aEntry[2]) + ')'
+            sUrl = aEntry[0]
+        
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -161,13 +141,28 @@ def showList():
 
 def showAnnees():
     oGui = cGui()
+    
+    sStart = '<ul class="year scrolling">'
+    sEnd = '</div>	<div class="content">'
 	
-    for i in reversed (xrange(1963, 2018)):
-        Year = str(i)
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'release/' + Year + '/')
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'series_annees.png', oOutputParameterHandler)
-        
+    oParser = cParser()
+    
+    oRequestHandler = cRequestHandler(URL_MAIN)
+    sHtmlContent = oRequestHandler.request()
+
+    sHtmlContent = oParser.abParse(sHtmlContent,sStart,sEnd)
+
+    sPattern = '<li><a href="([^"]+)">(.+?)</a>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            sUrl = aEntry[0]
+            sTitle = aEntry[1]
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'annees.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):
@@ -297,12 +292,12 @@ def showLinks():
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
 
-            sTitle = sMovieTitle + str(aEntry[1]) + ' [' + str(aEntry[2]) + '] [' + str(aEntry[3]) + ']'
+            sTitle = sMovieTitle + ' [' + str(aEntry[2]) + '/' + str(aEntry[3]) + '] ' + '[COLOR violet]' + str(aEntry[1]) + '[/COLOR]'
             sUrl2 = str(aEntry[0])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle',sTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle',sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail',sThumb )
 
             oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle,'', sThumb, '', oOutputParameterHandler)
