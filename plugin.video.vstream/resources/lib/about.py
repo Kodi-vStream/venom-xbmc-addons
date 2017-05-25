@@ -47,7 +47,7 @@ class cAbout:
                 #test les fichier pour mise a jour
                 self.checkupdate()
             else:
-                cConfig().log('Prochaine verification de MAJ le : ' + str(time_sleep + time_now) )
+                cConfig().log('Prochaine verification de MAJ le : ' + str(time_sleep + time_service) )
                 #Pas besoin de memoriser la date, a cause du cache kodi > pas fiable.
         return
       
@@ -109,86 +109,82 @@ class cAbout:
     
     
     def checkupdate(self):
-                      
-            #dialog = cConfig().showInfo("vStream", "Cherche les mises a jour")            
-            result = self.resultGit()          
-            sDown = 0
-            
-            if result:
-                for i in result:
-                    try: 
-                        rootpath = self.getRootPath(i['path'])
+                  
+        #dialog = cConfig().showInfo("vStream", "Cherche les mises a jour")            
+        result = self.resultGit()          
+        sDown = 0
+        
+        if result:
+            for i in result:
+                try: 
+                    rootpath = self.getRootPath(i['path'])
+                    
+                    if (self.size(rootpath) != i['size']):
+                        sDown = sDown+1
+                        break #Si on en trouve un, pas besoin de tester les autres.
                         
-                        if (self.size(rootpath) != i['size']):
-                            sDown = sDown+1
-                            break #Si on en trouve un, pas besoin de tester les autres.
-                            
-                    except:
-                        pass
-                 
-                if (sDown != 0):
-                    cConfig().setSetting('home_update', str('true')) 
-                    cConfig().setSetting('service_time', str(datetime.datetime.now()))
-                    dialog = cConfig().showInfo("vStream", "Mise à jour disponible")   
-                else:
-                    #cConfig().showInfo('vStream', 'Fichier a jour')
-                    cConfig().setSetting('service_time', str(datetime.datetime.now()))
-                    cConfig().setSetting('home_update', str('false'))
-                
-            return
-    
-    def checkdownload(self):
-
-            result = self.resultGit()
-            total = len(result)
-            dialog = cConfig().createDialog('Update')
-            site = []
-            sdown = 0
-
-            if result: 
-                
-                for i in result:
-                    cConfig().updateDialog(dialog, total)
-                   
-                    try:
-                        rootpath = self.getRootPath(i['path'])
-                        
-                        if (self.size(rootpath) != i['size']):
-                            try:
-                                self.__download(i['download_url'], rootpath)
-                                site.append("[COLOR green]"+i['name'].encode("utf-8")+"[/COLOR]")
-                                sdown = sdown+1
-                            except:
-                                site.append("[COLOR red]"+i['name'].encode("utf-8")+"[/COLOR]")
-                                sdown = sdown+1
-                                pass
-                    except:
-                        pass
-                 
-                cConfig().finishDialog(dialog)
-                sContent = "Fichier mise à jour %s / %s \n %s" %  (sdown, total, site)
-                #self.TextBoxes('vStream mise à Jour', sContent)
-                
+                except:
+                    cConfig().log('Erreur durant verification MAJ' )
+                    return
+             
+            if (sDown != 0):
+                cConfig().setSetting('home_update', str('true')) 
+                cConfig().setSetting('service_time', str(datetime.datetime.now()))
+                dialog = cConfig().showInfo("vStream", "Mise à jour disponible")   
+            else:
+                #cConfig().showInfo('vStream', 'Fichier a jour')
                 cConfig().setSetting('service_time', str(datetime.datetime.now()))
                 cConfig().setSetting('home_update', str('false'))
-                #cConfig().setSetting('service_last', str(datetime.datetime.now()))
+            
+        return
+
+    def checkdownload(self):
+
+        result = self.resultGit()
+        total = len(result)
+        dialog = cConfig().createDialog('Update')
+        site = []
+        sdown = 0
+
+        if result: 
+            
+            for i in result:
+                cConfig().updateDialog(dialog, total)
+
+                rootpath = self.getRootPath(i['path'])
                 
-                fin = cConfig().createDialogOK(sContent)
-                cConfig().update()
-            return
+                if (self.size(rootpath) != i['size']):
+                    try:
+                        self.__download(i['download_url'], rootpath)
+                        site.append("[COLOR green]"+i['name'].encode("utf-8")+"[/COLOR]")
+                        sdown = sdown+1
+                    except:
+                        site.append("[COLOR red]"+i['name'].encode("utf-8")+"[/COLOR]")
+                        sdown = sdown+1
+                        pass
+
+            cConfig().finishDialog(dialog)
+            sContent = "Fichier mise à jour %s / %s \n %s" %  (sdown, total, site)
+            #self.TextBoxes('vStream mise à Jour', sContent)
+            
+            cConfig().setSetting('service_time', str(datetime.datetime.now()))
+            cConfig().setSetting('home_update', str('false'))
+            #cConfig().setSetting('service_last', str(datetime.datetime.now()))
+            
+            fin = cConfig().createDialogOK(sContent)
+            cConfig().update()
+        return
             
     def __download(self, WebUrl, RootUrl):
-        try:
-            inf = urllib.urlopen(WebUrl)
-            f = xbmcvfs.File(RootUrl, 'w')
-            #save it
-            line = inf.read()         
-            f.write(line)
-            
-            inf.close()
-            f.close()
-        except:
-            pass
+        inf = urllib.urlopen(WebUrl)
+        f = xbmcvfs.File(RootUrl, 'w')
+        #save it
+        line = inf.read()         
+        f.write(line)
+        
+        inf.close()
+        f.close()
+
         return
         
             
