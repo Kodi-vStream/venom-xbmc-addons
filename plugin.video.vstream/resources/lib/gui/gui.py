@@ -255,20 +255,14 @@ class cGui():
             if value:
                 callback(value)
 
-        oListItem = self.createListItem(oGuiElement)
+        if cGui.CONTENT == "movies" or cGui.CONTENT == "tvshows":
+            oListItem = self.createListItem(oGuiElement)
+        else :
+            oListItem = self.createFolderListItem(oGuiElement)
+            
         oListItem.setProperty("IsPlayable", "false")
 
-        #affiche tag HD
-        if '1080' in oGuiElement.getTitle():
-            oListItem.addStreamInfo('video', { 'aspect': '1.78', 'width':1920 ,'height' : 1080 })
-        elif '720' in oGuiElement.getTitle():
-            oListItem.addStreamInfo('video', { 'aspect': '1.50', 'width':1280 ,'height' : 720 })
-        elif '2160'in oGuiElement.getTitle():
-            oListItem.addStreamInfo('video', { 'aspect': '1.78', 'width':3840 ,'height' : 2160 })
-        #oListItem.addStreamInfo('audio', {'language': 'fr'})       
 
-        # if oGuiElement.getMeta():
-            # oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
 
 
         sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)
@@ -299,12 +293,25 @@ class cGui():
         xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=True)
 
 
+    #listitem pour films series avec meta ect..
     def createListItem(self, oGuiElement):
 
         oListItem = xbmcgui.ListItem(oGuiElement.getTitle(), oGuiElement.getTitleSecond(), iconImage=oGuiElement.getIcon(), thumbnailImage=oGuiElement.getThumbnail())
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
         oListItem.setThumbnailImage(oGuiElement.getThumbnail())
         #oListItem.setIconImage(oGuiElement.getIcon())
+        
+                #affiche tag HD
+        if '1080' in oGuiElement.getTitle():
+            oListItem.addStreamInfo('video', { 'aspect': '1.78', 'width':1920 ,'height' : 1080 })
+        elif '720' in oGuiElement.getTitle():
+            oListItem.addStreamInfo('video', { 'aspect': '1.50', 'width':1280 ,'height' : 720 })
+        elif '2160'in oGuiElement.getTitle():
+            oListItem.addStreamInfo('video', { 'aspect': '1.78', 'width':3840 ,'height' : 2160 })
+        #oListItem.addStreamInfo('audio', {'language': 'fr'})       
+
+        # if oGuiElement.getMeta():
+            # oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
 
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey in aProperties.keys():
@@ -312,6 +319,16 @@ class cGui():
 
         return oListItem
 
+    #listitem pour dossiers sans meta sans info.
+    def createFolderListItem(self, oGuiElement):
+
+        oListItem = xbmcgui.ListItem(label=oGuiElement.getTitle())
+        oListItem.setArt({'icon': oGuiElement.getIcon(), 'thumb': oGuiElement.getThumbnail(), 'fanart': oGuiElement.getFanart()})
+        
+
+        return oListItem
+        
+        
     #affiche les liens playable
     def addHost(self, oGuiElement, oOutputParameterHandler=''):
         
@@ -533,6 +550,9 @@ class cGui():
         xbmcplugin.setPluginCategory(iHandler, "")
         xbmcplugin.setContent(iHandler, cGui.CONTENT)
         xbmcplugin.addSortMethod(iHandler, xbmcplugin.SORT_METHOD_NONE)
+        
+        print "endofdirectory"
+        print iHandler
 
         xbmcplugin.endOfDirectory(iHandler, succeeded=True, cacheToDisc=True)
         #reglage vue
