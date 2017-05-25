@@ -18,12 +18,24 @@ SITE_NAME = 'About'
 
 class cAbout:       
             
-    def size(self, filepath):
-        file=open(filepath)
-        Content = file.read()
-        file.close()
+    #retourne True si les 2 fichiers sont present mais pas avec les meme tailles
+    def checksize(self, filepath,size):
+        try:
+            file=open(filepath)
+            Content = file.read()
+            file.close()
 
-        return len(Content)
+            if len(Content) == size:
+                #ok fichier existe et meme taille
+                return False
+            #fichier existe mais pas la meme taille 
+            return True
+        except:
+            #fichier n'existe pas
+            return False
+
+        #au cas ou ....
+        return False
         
     
     def getUpdate(self):
@@ -119,7 +131,7 @@ class cAbout:
                 try: 
                     rootpath = self.getRootPath(i['path'])
                     
-                    if (self.size(rootpath) != i['size']):
+                    if self.checksize(rootpath,i['size']):
                         sDown = sDown+1
                         break #Si on en trouve un, pas besoin de tester les autres.
                         
@@ -153,7 +165,7 @@ class cAbout:
 
                 rootpath = self.getRootPath(i['path'])
                 
-                if (self.size(rootpath) != i['size']):
+                if self.checksize(rootpath,i['size']):
                     try:
                         self.__download(i['download_url'], rootpath)
                         site.append("[COLOR green]"+i['name'].encode("utf-8")+"[/COLOR]")
