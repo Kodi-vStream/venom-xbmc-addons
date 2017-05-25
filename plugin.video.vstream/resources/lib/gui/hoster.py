@@ -170,8 +170,8 @@ class cHosterGui:
             return self.getHoster('videoweed')
         if ('youwatch' in sHostName):
             return self.getHoster('youwatch')
-        #if ('turbovid' in sHostName):
-        #    return self.getHoster('turbovid')
+        if ('vidoza.' in sHostName):
+            return self.getHoster('vidoza')
         if (('youtube' in sHostName) or ('youtu.be' in sHostName)):
             return self.getHoster('youtube')
         if ('rutube' in sHostName):
