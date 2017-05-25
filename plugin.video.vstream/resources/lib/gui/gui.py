@@ -46,6 +46,7 @@ class cGui():
     SITE_NAME = 'cGui'
     CONTENT = 'files'
     searchResults = []
+
     
     if cConfig().isKrypton():
         CONTENT = 'addons'
@@ -100,6 +101,7 @@ class cGui():
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
+        cGui.CONTENT = "movies"
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction(sFunction)
@@ -531,7 +533,8 @@ class cGui():
         xbmcplugin.setPluginCategory(iHandler, "")
         xbmcplugin.setContent(iHandler, cGui.CONTENT)
         xbmcplugin.addSortMethod(iHandler, xbmcplugin.SORT_METHOD_NONE)
-        xbmcplugin.endOfDirectory(iHandler, True)
+
+        xbmcplugin.endOfDirectory(iHandler, succeeded=True, cacheToDisc=True)
         #reglage vue
         #50 = liste / 51 grande liste / 500 icone / 501 gallerie / 508 fanart /
         if (cConfig().getSetting("active-view") == 'true'):
