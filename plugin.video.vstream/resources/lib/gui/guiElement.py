@@ -494,7 +494,7 @@ class cGuiElement:
             watched = {}
             #sTitle = self.getTitle()
             #sId = self.getSiteName()
-            watched_db = os.path.join(cConfig().getSettingCache(), "watched.db" ).decode("utf-8")
+            watched_db = os.path.join(cConfig().getSettingCache(), "watched.db" )
             
             if not os.path.exists(watched_db):
                 file(watched_db, "w").write("%r" % watched) 
