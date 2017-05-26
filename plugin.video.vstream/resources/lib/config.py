@@ -88,9 +88,9 @@ class cConfig():
             self.__sRootArt = os.path.join(self.__oPath, 'resources' , 'art', '')
             self.__sIcon = os.path.join(self.__oPath,'resources', 'art','icon.png')
             self.__sFanart = os.path.join(self.__oPath,'resources','art','fanart.jpg')
-            self.__sFileFav = os.path.join(self.__oCache,'favourite.db')
-            self.__sFileDB = os.path.join(self.__oCache,'vstream.db')
-            self.__sFileCache = os.path.join(self.__oCache,'video_cache.db')
+            self.__sFileFav = os.path.join(self.__oCache,'favourite.db').decode("utf-8")
+            self.__sFileDB = os.path.join(self.__oCache,'vstream.db').decode("utf-8")
+            self.__sFileCache = os.path.join(self.__oCache,'video_cache.db').decode("utf-8")
 
 
     def isDharma(self):
