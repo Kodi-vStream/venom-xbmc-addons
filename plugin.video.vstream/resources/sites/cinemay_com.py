@@ -13,7 +13,7 @@ import re,unicodedata
 
 SITE_IDENTIFIER = 'cinemay_com'
 SITE_NAME = 'Cinemay'
-SITE_DESC = 'Films et séries en streaming'
+SITE_DESC = 'Films & Séries en streaming'
 
 URL_MAIN = 'http://www.cinemay.com/'
 
@@ -64,7 +64,7 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
-       
+
 def showMovieGenres():
     oGui = cGui()
 
@@ -108,43 +108,21 @@ def showMovieGenres():
 
 def showSerieGenres():
     oGui = cGui()
+    oParser = cParser()
+    
+    oRequestHandler = cRequestHandler(URL_MAIN + 'serie/')
+    sHtmlContent = oRequestHandler.request()
 
-    liste = []
-    liste.append( ['Action',URL_MAIN + 'cat/action-3/'] )
-    liste.append( ['Animation',URL_MAIN + 'cat/animation/'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'cat/arts-martiaux-2/'] )
-    liste.append( ['Aventure',URL_MAIN + 'cat/aventure/'] )
-    liste.append( ['Comédie',URL_MAIN + 'cat/comedie/'] )
-    liste.append( ['Comédie Dramatique',URL_MAIN + 'cat/comedie-dramatique/'] )
-    liste.append( ['Documentaire',URL_MAIN + 'cat/documentaire/'] )
-    liste.append( ['Drame',URL_MAIN + 'cat/drame/'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'cat/epouvante-horreur/'] )
-    liste.append( ['Erotique',URL_MAIN + 'cat/erotique/'] )
-    liste.append( ['Espionnage',URL_MAIN + 'cat/espionnage/'] )
-    liste.append( ['Fantastique',URL_MAIN + 'cat/fantastique/'] )
-    liste.append( ['Guerre',URL_MAIN + 'cat/guerre/'] )
-    liste.append( ['Historique',URL_MAIN + 'cat/historique-2/'] )
-    liste.append( ['Judiciaire',URL_MAIN + 'cat/judiciaire/'] )
-    liste.append( ['Manga',URL_MAIN + 'cat/manga/'] )
-    liste.append( ['Médical',URL_MAIN + 'cat/medical/'] )
-    liste.append( ['Musical',URL_MAIN + 'cat/musical-comedie/'] )
-    liste.append( ['Mystères',URL_MAIN + 'cat/mysteres/'] )
-    liste.append( ['Péplum',URL_MAIN + 'cat/peplum/'] )
-    liste.append( ['Policier',URL_MAIN + 'cat/policier/'] )
-    liste.append( ['Romance',URL_MAIN + 'cat/romance-2/'] )
-    liste.append( ['Science_Fiction',URL_MAIN + 'cat/science-fiction/'] )
-    liste.append( ['Soap',URL_MAIN + 'cat/soap/'] )
-    liste.append( ['Spectacle',URL_MAIN + 'cat/spectacle-2/'] )
-    liste.append( ['Sport',URL_MAIN + 'cat/sport-2/'] )
-    liste.append( ['Télé Réalité',URL_MAIN + 'cat/tele-realite/'] )
-    liste.append( ['Thriller',URL_MAIN + 'cat/thriller/'] )
-    liste.append( ['Western',URL_MAIN + 'cat/western-2/'] )
-
-    for sTitle,sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'series_genres.png', oOutputParameterHandler)
+    sPattern = '<li class="cat-item cat-item.+?"><a href="([^<]+)" >([^<]+)</a>([^<]+)</li>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            sTitle = aEntry[1] + (aEntry[2])
+            sUrl = aEntry[0]
+        
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'series_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -165,7 +143,7 @@ def showMoviesNews():
     #regex pour listage films sur la partie decoupée
     sHtmlContent = aResult
 
-    sPattern = '<img class="imgpic" src="(.+?)".+?/>.+?<h3.+?><a href="(.+?)"  title=".+?">.+?<strong>(.+?)</strong></a>.+?</h3>.+?<div class="infob">.+?<p>(.+?)</p>'
+    sPattern = '<img class="imgpic" src="(.+?)" title="(.+?)".+?<a href="(.+?)".+?<p>(.+?)</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -177,20 +155,21 @@ def showMoviesNews():
                 break
 
             #encode/decode pour affichage des accents
-            sTitle = unicode(aEntry[2].replace('streaming','').replace('Streaming',''), 'utf-8')
-
+            sTitle = unicode(aEntry[1], 'utf-8')
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode("unicode_escape")
             sTitle = sTitle.encode("latin-1")
-
+			
+            sThumb = aEntry[0]
+            sUrl = aEntry[2]
             sCom = aEntry[3]
             sCom = sCom.decode("unicode_escape").encode("latin-1")
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, aEntry[0], aEntry[0], sCom, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sCom, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -207,7 +186,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
 
-    sPattern = '<img class="imgpic" src="(.+?)".+?/>.+?<h3.+?><a href="(.+?)"  title=".+?">.+?<strong>(.+?)</strong></a>.+?</h3>.+?<div class="infob">.+?<p>(.+?)</p>'
+    sPattern = '<img class="imgpic" src="(.+?)" title="(.+?)".+?<a href="(.+?)".+?<p>(.+?)</p>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -224,20 +203,25 @@ def showMovies(sSearch=''):
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),aEntry[2]) == 0:
                     continue
 
-            sTitle = aEntry[2].replace('streaming','').replace('Streaming','')
-
+            if URL_MAIN in aEntry[0]:
+                sThumb = aEntry[0]
+            else:
+	         sThumb = URL_MAIN[:-1] + aEntry[0]
+			
+            sTitle = aEntry[1].replace('&#8217;','\'').replace('&#8230;','...')
+            sUrl = aEntry[2]
             sCom = aEntry[3]
             #sCom = sCom.decode("utf-8", "ignore")
             sCom = sCom.decode("unicode_escape").encode("latin-1")
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
             if '/serie/' in sUrl or '/serie/' in aEntry[1]:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, aEntry[0], aEntry[0], sCom , oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', sThumb, sCom , oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, aEntry[0], aEntry[0], sCom, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sCom, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -251,7 +235,7 @@ def showMovies(sSearch=''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<span class=\'current\'>.+?</span><a class="page larger" href="(.+?)">.+?</a>'
+    sPattern = '<a class="nextpostslink" rel="next" href="(.+?)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -300,19 +284,19 @@ def showSeries():
             if aEntry[0]:
                 sSaison = aEntry[0]
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
                 oGui.addDir(SITE_IDENTIFIER, 'showSeries', '[COLOR red]' + str(aEntry[0]) + '[/COLOR]', 'host.png', oOutputParameterHandler)
 
             else:
                 sTitle = sMovieTitle + ' ' + sSaison + aEntry[2]
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)        
+                oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -341,15 +325,15 @@ def showLinks():
             sQual = aEntry[2].replace(' ','')
             sLang = aEntry[3].upper()
 
-            #sTitle = sMovieTitle + '['+ sQual + '-' + sLang + '] - [COLOR skyblue]' + sHoster +'[/COLOR]'
+            #sTitle = sMovieTitle + '[' + sQual + '-' + sLang + '] - [COLOR skyblue]' + sHoster + '[/COLOR]'
             sTitle = ('%s [%s] [%s] (%s)') % (sMovieTitle, sQual, sLang , sHoster)
             
             sUrl = URL_MAIN + aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
