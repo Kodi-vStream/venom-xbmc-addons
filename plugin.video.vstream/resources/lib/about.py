@@ -93,9 +93,10 @@ class cAbout:
         
 
     def getRootPath(self, folder):
-        sMath = cConfig().getAddonPath().replace('plugin.video.vstream', '') 
+        sMath = cConfig().getAddonPath().replace('plugin.video.vstream', '').decode("utf-8")
         
-        sFolder = os.path.join(sMath, folder).decode("utf-8")
+        sFolder = os.path.join(sMath , folder)
+        
         # xbox hack        
         sFolder = sFolder.replace('\\', '/')
         return sFolder
