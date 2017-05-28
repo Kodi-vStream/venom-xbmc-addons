@@ -301,7 +301,15 @@ def Showlink():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
+    
+    if 'sibeol.com' in sUrl:
+        oRequest = cRequestHandler(sUrl)
+        sHtmlContent = oRequest.request()
+        sPattern = 'sources:.+?{"type":".+?","label":.+?,"file":"([^"]+)"}'
+        aResult = re.findall(sPattern,sHtmlContent)
+        if (aResult):
+            sUrl = aResult[0]
+            
     if '9animeonline' in sUrl:
         oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
@@ -331,14 +339,14 @@ def serieHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
     
     oParser = cParser()
     
-    sPattern = '<\/i> (VOSTFR|VF) *<\/div>|<a class="fstab" href="([^"]+)" *id="gGotop" *target="seriePlayer".+?<\/i>\s+([^<>]+?)\s+<\/a>'
+    sPattern = '<\/i> (VOSTFR|VF) *<\/div>|<a class="fs.+?" href="([^"]+)" *id="gGotop" *target="seriePlayer".+?<\/i>\s+([^<>]+?)\s+<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -363,7 +371,7 @@ def serieHosters():
                 sHosterUrl = aEntry[1]
                 sHosterName = ''
 
-                if '9animeonline' in sHosterUrl:
+                if '9animeonline' in sHosterUrl or 'sibeol.com' in sHosterUrl:
                     sHosterName = 'Google'
 
                 else:              
@@ -378,6 +386,9 @@ def serieHosters():
                 oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
                 oGui.addTV(SITE_IDENTIFIER, 'Showlink', sDisplayTitle, '', sThumbnail,'', oOutputParameterHandler)
 
-    cConfig().finishDialog(dialog)
-
+        cConfig().finishDialog(dialog)
+    else:
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]indisponible[/COLOR]')
+        
     oGui.setEndOfDirectory()
+    
