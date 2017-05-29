@@ -41,7 +41,7 @@ def Decode(chain):
     chain = 'M'.join(chain.split('7A4c1Y9T8c'))
     chain = 'V'.join(chain.split('8A5d1YX84A428s'))
     chain = ''.join(chain.split('$'))
-
+    
     return base64.b64decode(chain) 
     
 def load():
@@ -373,11 +373,13 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail  = oInputParameterHandler.getValue('sThumbnail')
    
-   #modif url par Gregwar  
-    if '?' in sUrl:
-        sUrl += '&r=n'
-    else:
-        sUrl += '?r=n'
+    #modif url par Gregwar
+    if 'r=n' not in sUrl:
+        if '?' in sUrl:
+            sUrl += '&r=n'
+        else:
+            sUrl += '?r=n'
+        
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
      
@@ -389,13 +391,14 @@ def showHosters():
     else:
         BA = False
 
-    sPattern = '<script>\s*function(.+?)</script>'
+    sPattern = '<script>\s*function [a-zA-Z]{2}\(\)(.+?)</script>'
     aResult = re.search(sPattern,sHtmlContent,re.DOTALL)
     
     sHtmlContent = aResult.group(1).replace('return de("$")','') #serie
     #redirection sur hdstream pour les new videos
     sPattern = '"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             url = Decode(str(aEntry))
