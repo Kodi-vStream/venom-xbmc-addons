@@ -257,13 +257,11 @@ class cGui():
 
         if cGui.CONTENT == "movies" or cGui.CONTENT == "tvshows":
             oListItem = self.createListItem(oGuiElement)
+            isFolder = False
         else :
             oListItem = self.createFolderListItem(oGuiElement)
+            isFolder = True
             
-        oListItem.setProperty("IsPlayable", "false")
-
-
-
 
         sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)
 
@@ -290,7 +288,7 @@ class cGui():
 
         sPluginHandle = cPluginHandler().getPluginHandle();
 
-        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=True)
+        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=isFolder)
 
 
     #listitem pour films series avec meta ect..
@@ -729,7 +727,10 @@ class cGui():
         if (len(oGuiElement.getFunction()) == 0):
             sItemUrl = '%s?site=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), urllib.quote_plus(oGuiElement.getCleanTitle()), sParams)
         else:
-            sItemUrl = '%s?site=%s&function=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), oGuiElement.getFunction(), urllib.quote_plus(oGuiElement.getCleanTitle()), sParams)
+            if cGui.CONTENT == "movies" or cGui.CONTENT == "tvshows":
+                sItemUrl = '%s?site=%s&reload=true&function=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), oGuiElement.getFunction(), urllib.quote_plus(oGuiElement.getCleanTitle()), sParams)
+            else: 
+                sItemUrl = '%s?site=%s&function=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), oGuiElement.getFunction(), urllib.quote_plus(oGuiElement.getCleanTitle()), sParams)
 
         #print sItemUrl
         return sItemUrl
