@@ -386,16 +386,16 @@
   {
     "name": "kaydo_ws.py",
     "path": "plugin.video.vstream/resources/sites/kaydo_ws.py",
-    "sha": "8aae09d44ac0d593751a984a2e9a1c0f6f1f37be",
-    "size": 18134,
+    "sha": "5ec4929ec96661f706c359825b3c636c1af37239",
+    "size": 18209,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/kaydo_ws.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/kaydo_ws.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/8aae09d44ac0d593751a984a2e9a1c0f6f1f37be",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/5ec4929ec96661f706c359825b3c636c1af37239",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/kaydo_ws.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/kaydo_ws.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/8aae09d44ac0d593751a984a2e9a1c0f6f1f37be",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/5ec4929ec96661f706c359825b3c636c1af37239",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/kaydo_ws.py"
     }
   },
@@ -450,16 +450,16 @@
   {
     "name": "libertyland_tv.py",
     "path": "plugin.video.vstream/resources/sites/libertyland_tv.py",
-    "sha": "d0516871291e64942108b554a86dcb4e05d7befa",
-    "size": 23918,
+    "sha": "0a6ba616272106925b7c0594831283baab7a93e5",
+    "size": 20670,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/libertyland_tv.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/libertyland_tv.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/d0516871291e64942108b554a86dcb4e05d7befa",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/0a6ba616272106925b7c0594831283baab7a93e5",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/libertyland_tv.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/libertyland_tv.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/d0516871291e64942108b554a86dcb4e05d7befa",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/0a6ba616272106925b7c0594831283baab7a93e5",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/libertyland_tv.py"
     }
   },
