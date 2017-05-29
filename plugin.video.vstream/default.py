@@ -108,6 +108,12 @@ class main:
                 return
             #if (isAboutGui(sSiteName, sFunction) == True):
                 #return
+            
+            sReload = oInputParameterHandler.getValue('reload')
+            
+            if sReload: 
+                url = sys.argv[2].replace('&reload=true', '')
+                return xbmc.executebuiltin('Container.Update(%s%s)' % (sys.argv[0], url))
 
             #charge sites
             try:
