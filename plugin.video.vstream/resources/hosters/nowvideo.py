@@ -89,6 +89,6 @@ class cHoster(iHoster):
                         api_call = url[ret]
     
             if (api_call):
-                return True, api_call + '|User-Agent=' + UA  
+                return True, api_call #+ '|User-Agent=' + UA  
 
             return False , False
