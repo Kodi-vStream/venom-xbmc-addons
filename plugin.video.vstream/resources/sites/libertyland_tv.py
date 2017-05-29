@@ -348,11 +348,11 @@ def showLinks():
     sHtmlContent = oRequestHandler.request()
     
     if '/films' in sUrl:
-        type = 'films'
+        stype = 'films'
     elif 'saison' in sUrl or 'episode' in sUrl:
-        type = 'series'
+        stype = 'series'
     else:
-        type = 'mangas'
+        stype = 'mangas'
         
     sUrl2 = sUrl.rsplit('/', 1)[1]
     idMov = re.sub('-.+','',sUrl2)
@@ -377,7 +377,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            oOutputParameterHandler.addParameter('type', type)
+            oOutputParameterHandler.addParameter('type', stype)
             oOutputParameterHandler.addParameter('idMov', idMov)
             oOutputParameterHandler.addParameter('idHeb', idHeb)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
@@ -393,17 +393,17 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
-    type = oInputParameterHandler.getValue('type')
+    stype = oInputParameterHandler.getValue('type')
     idHeb = oInputParameterHandler.getValue('idHeb')
     
     #film
     if (oInputParameterHandler.exist('idMov')):
         idMov = oInputParameterHandler.getValue('idMov')
-        pdata = 'id='+idHeb+'&id_movie='+idMov+'&type='+type
+        pdata = 'id='+idHeb+'&id_movie='+idMov+'&type='+stype
         pUrl = 'http://liencaptcha.com/getStreamingMovie.php'
     else:
         #serie pas d'idmov   
-        pdata = 'id='+idHeb+'&type='+type
+        pdata = 'id='+idHeb+'&type='+stype
         pUrl= 'http://liencaptcha.com/getStreamingEpisode.php'
         
     oRequest = cRequestHandler(pUrl)
