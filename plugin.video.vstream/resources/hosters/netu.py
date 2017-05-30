@@ -10,6 +10,7 @@ from resources.lib.config import cConfig
 
 from resources.lib import unwise
 from resources.lib.util import cUtil
+from resources.lib.util import VSlog
 
 import urllib, urllib2
 
@@ -20,8 +21,8 @@ try:    import json
 except: import simplejson as json
     
 
-#UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
-UA = 'Mozilla/6.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/8.0 Mobile/10A5376e Safari/8536.25'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
+#UA = 'Mozilla/6.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/8.0 Mobile/10A5376e Safari/8536.25'
     
 def GetIp():
     if (False):
@@ -107,7 +108,7 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.replace('http://hqq.tv/watch_video.php?v=','http://hqq.tv/player/embed_player.php?vid=')       
     
     def __getIdFromUrl(self):
-        sPattern = 'https*:..hqq.tv.player.embed_player.php\?vid=([0-9A-Z]+)'
+        sPattern = 'https*:..hqq.tv.player.embed_player.php\?vid=([0-9A-Za-z]+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
         
@@ -147,12 +148,16 @@ class cHoster(iHoster):
         id = self.__getIdFromUrl()
         
         self.__sUrl = 'http://hqq.tv/player/embed_player.php?vid=' + id + '&autoplay=no'
+        
+        #VSlog( self.__sUrl )
 
         headers = {'User-Agent': UA ,
-                   'Host' : 'hqq.tv',
+                   #'Host' : 'hqq.tv',
                    'Referer': 'http://hqq.tv/',
                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                   'Content-Type': 'text/html; charset=utf-8'}
+                   #'Accept-Encoding':'gzip, deflate, br',
+                   #'Content-Type': 'text/html; charset=utf-8'
+                   }
         
         player_url = self.__sUrl
         
@@ -162,30 +167,38 @@ class cHoster(iHoster):
             html = response.read()
             response.close()
         except urllib2.URLError, e:
-            #xbmc.log( e.read())
-            #xbmc.log(e.reason)
-            html = e.read()                   
+            VSlog( e.read())
+            VSlog(e.reason)
+            html = e.read()
+            
+        #VSlog('**' + str(response.geturl()))
+        Host = 'https://hqq.watch/'
+            
+        #fh = open('c:\\netu1.txt', "w")
+        #fh.write(html)
+        #fh.close()  
 
         data = ''
         code_crypt = re.search('(;eval\(function\(w,i,s,e\){.+?\)\);)\s*<', html, re.DOTALL)
         if code_crypt:
             data = unwise.unwise_process(code_crypt.group(1))
         else:
-            cConfig().log('prb1')
-            
-        #fh = open('c:\\netu1.txt', "w")
-        #fh.write(data)
-        #fh.close()           
+            cConfig().log('prb1')       
             
         if data:
+            
+            http_referer = ''
+            _pass = ''
             
             iss = GetIp()
             vid = re.search('var vid *= *"([^"]+)";', data, re.DOTALL).group(1)
             at = re.search('var at *= *"([^"]+)";', data, re.DOTALL).group(1)
-            http_referer = re.search('var http_referer *= *"([^"]+)";', data, re.DOTALL).group(1)
-            _pass = ''
+            r = re.search('var http_referer *= *"([^"]+)";', data, re.DOTALL)
+            if r:
+                http_referer = r.group(1)
             
-            url2 = "http://hqq.tv/sec/player/embed_player.php?iss="+iss+"&vid="+vid+"&at="+at+"&autoplayed=yes&referer=on&http_referer="+http_referer+"pass="+_pass+"&embed_from=&need_captcha=0"
+            url2 = Host + "sec/player/embed_player.php?iss="+iss+"&vid="+vid+"&at="+at+"&autoplayed=yes&referer=on&http_referer="+http_referer+"&pass="+_pass+"&embed_from=&need_captcha=0"
+            #VSlog( url2 )
             
             req = urllib2.Request(url2,None,headers)
             
@@ -194,9 +207,13 @@ class cHoster(iHoster):
                 data = response.read()
                 response.close()
             except urllib2.URLError, e:
-                #xbmc.log( e.read())
-                #xbmc.log(e.reason)
+                VSlog( e.read())
+                VSlog(e.reason)
                 data = e.read()
+                
+            #fh = open('c:\\netu3.txt', "w")
+            #fh.write(data)
+            #fh.close() 
 
             data = urllib.unquote(data)
 
@@ -223,7 +240,7 @@ class cHoster(iHoster):
 
                 headers['x-requested-with'] = 'XMLHttpRequest'
 
-                req = urllib2.Request("http://hqq.tv/player/get_md5.php?" + urllib.urlencode(get_data),None,headers)
+                req = urllib2.Request(Host + "/player/get_md5.php?" + urllib.urlencode(get_data),None,headers)
                 try:
                     response = urllib2.urlopen(req)
                 except urllib2.URLError, e:
