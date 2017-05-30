@@ -80,6 +80,12 @@ class main:
             if (isTrakt(sSiteName, sFunction) == True):
                 return
                 
+            sReload = oInputParameterHandler.getValue('reload')
+            
+            if sReload: 
+                url = sys.argv[2].replace('&reload=true', '')
+                return xbmc.executebuiltin('Container.Update(%s%s)' % (sys.argv[0], url))
+                
             if sSiteName == 'globalSearch':
                 searchGlobal()
                 return
@@ -108,12 +114,6 @@ class main:
                 return
             #if (isAboutGui(sSiteName, sFunction) == True):
                 #return
-            
-            sReload = oInputParameterHandler.getValue('reload')
-            
-            if sReload: 
-                url = sys.argv[2].replace('&reload=true', '')
-                return xbmc.executebuiltin('Container.Update(%s%s)' % (sys.argv[0], url))
 
             #charge sites
             try:
@@ -184,10 +184,23 @@ def isTrakt(sSiteName, sFunction):
 def searchGlobal():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sSearchText = oInputParameterHandler.getValue('searchtext')
-    sReadDB = oInputParameterHandler.getValue('readdb')
-    sDisp = oInputParameterHandler.getValue('disp')
+    
+    if oInputParameterHandler.getValue('searchtext'):
+        sSearchText = oInputParameterHandler.getValue('searchtext')
+    else:
+        sSearchText = xbmcgui.Window(10101).getProperty('search_text')
+    
+    
+    if oInputParameterHandler.getValue('disp'):
+        sDisp = oInputParameterHandler.getValue('disp')
+    else:
+        sDisp = xbmcgui.Window(10101).getProperty('search_disp')
 
+    if oInputParameterHandler.getValue('readdb'):
+        sReadDB = oInputParameterHandler.getValue('readdb')
+    else:
+        sReadDB = xbmcgui.Window(10101).getProperty('search_readdb')
+        
     oHandler = cRechercheHandler()
     sSearchText = oHandler.setText(sSearchText)
     oHandler.setDisp(sDisp)
@@ -200,6 +213,9 @@ def searchGlobal():
     
     dialog = cConfig().createDialog("vStream")
     xbmcgui.Window(10101).setProperty('search', 'true')
+    xbmcgui.Window(10101).setProperty('search_disp', oHandler.getDisp())
+    xbmcgui.Window(10101).setProperty('search_readdb', oHandler.getRead())
+    xbmcgui.Window(10101).setProperty('search_text', oHandler.getText())
     
     oGui.addText('globalSearch', '[COLOR khaki]%s: %s[/COLOR]' % (cConfig().getlanguage(30076), sSearchText), 'none.png')
     
@@ -233,8 +249,7 @@ def searchGlobal():
             #xbmc.log('%s (%s) - %s (%s)' % (middle, result['guiElement'].getFileName(), cConfig().getSetting('search_ord'), sSearchText),  xbmc.LOGNOTICE)
             if middle > int(cConfig().getSetting('search_ord')):
                 continue
-            
-            
+
         oGui.addFolder(result['guiElement'],result['params'])
         #xbmc.log('%s - %s' % (middle,old_label),  xbmc.LOGNOTICE)
         

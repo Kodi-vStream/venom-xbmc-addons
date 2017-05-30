@@ -43,6 +43,8 @@ FANART_URL = 'https://image.tmdb.org/t/p/w1280'
 
 grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
 
+xbmcgui.Window(10101).clearProperty('search_disp')
+
 
 def load():
     oGui = cGui()
@@ -191,7 +193,7 @@ def showMovies(sSearch = ''):
             else : sFanart = ''
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str('none'))
+            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oOutputParameterHandler.addParameter('sTmdbId', i['id'])
@@ -203,7 +205,7 @@ def showMovies(sSearch = ''):
             oGuiElement = cGuiElement()
             oGuiElement.setTmdbId(i['id'])
             oGuiElement.setSiteName('globalSearch')
-            oGuiElement.setFunction('showHosters')
+            oGuiElement.setFunction('searchMovie')
             oGuiElement.setTitle(sTitle)
             oGuiElement.setFileName(sTitle)
             oGuiElement.setIcon('films.png')
