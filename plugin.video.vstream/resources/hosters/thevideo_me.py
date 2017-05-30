@@ -1,15 +1,12 @@
-#coding: utf-8
+#-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-
-import re,urllib2
-import xbmcgui,xbmc
-
+from resources.lib.util import VScreateDialogSelect
 from resources.lib.packer import cPacker
+import re
 
 class cHoster(iHoster):
 
@@ -74,11 +71,7 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
-        
+
         oParser = cParser()
         
         sPattern = "var lets_play_a_game='([^']+)'"
@@ -104,9 +97,9 @@ class cHoster(iHoster):
         sPattern = '"vt=([^"]+)'
         r2 = re.search(sPattern,code)
         if not (r2):
-            return False , False
+            return False,False
             
-        sPattern = '{"file":"([^"]+)","label":"(\d+p)"'
+        sPattern = '{"file":"([^"]+)","label":"(.+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True):
@@ -119,16 +112,16 @@ class cHoster(iHoster):
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
                 
-            #Si au moins 1 url
-            if (url):
+            #Si  1 url
+            if len(url) == 1:
+                api_call = url[0]
             #Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
+            elif len(url) > 1:
+                ret = VScreateDialogSelect(qua)
                 if (ret > -1):
                     api_call = url[ret]
-                    api_call = api_call + '?direct=false&ua=1&vt=' + r2.group(1)
 
         if (api_call):
-            return True, api_call
+            return True, api_call + '?direct=false&ua=1&vt=' + r2.group(1)
             
         return False, False
