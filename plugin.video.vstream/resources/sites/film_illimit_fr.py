@@ -193,7 +193,7 @@ def showMovies(sSearch = ''):
         cConfig().finishDialog(dialog)
            
         if not sSearch:
-            sNextPage = __checkForNextPage(sUrl)
+            sNextPage = __checkForNextPage(sHtmlContent)
             if (sNextPage != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
@@ -202,16 +202,15 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-def __checkForNextPage(sUrl):
-    if 'page' or 'films' in sUrl:
-        sPattern = "\/page\/([0-9]+)\/"
-        oParser = cParser()
-        aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
-            newpage = str(int(aResult[1][0]) + 1)
-            return sUrl.replace('/page/' + aResult[1][0],'/page/' + newpage)
+def __checkForNextPage(sHtmlContent):
+    sPattern = '<link rel="next" href="(.+?)"/>'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+	
+    if (aResult[0] == True):
+        return  aResult[1][0]
 
-    return sUrl + 'page/2/'
+    return False
 
 def showHosters():
     oGui = cGui()
