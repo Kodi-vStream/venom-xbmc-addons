@@ -6,7 +6,7 @@ from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
 import re,xbmcgui
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
 
 class cHoster(iHoster):
 
@@ -89,6 +89,6 @@ class cHoster(iHoster):
                         api_call = url[ret]
     
             if (api_call):
-                return True, api_call #+ '|User-Agent=' + UA  
+                return True, api_call + '|User-Agent=' + UA  
 
             return False , False
