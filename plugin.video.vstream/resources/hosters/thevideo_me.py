@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#http://www.video.tt/embed/xxx
+#http://thevideo.me/embed-xxx-xxx.html
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import cConfig
@@ -38,12 +40,6 @@ class cHoster(iHoster):
 
     def isDownloadable(self):
         return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return '';
         
     def __getIdFromUrl(self,sUrl):
         sPattern = 'http://www.thevideo.me/embed-([^\.]+)'
@@ -54,14 +50,10 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
+        self.__sUrl = sUrl.replace('video.tt/embed/', 'thevideo.me/embed-')
+        if not self.__sUrl.endswith('.html'):
+           self.__sUrl = self.__sUrl + '.html'
 
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return
-        
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
