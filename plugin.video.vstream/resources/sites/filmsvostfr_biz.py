@@ -397,7 +397,7 @@ def showLinks():
                 break
 
             sUrl = aEntry[0].replace('p=watchers','p=30').replace('p=16do','p=16').replace('p=the23eo','p=23').replace('p=the24','p=24') #a del si correction sur le site
-	    if sUrl.endswith('&c='): #vide
+            if sUrl.endswith('&c='): #vide
                 continue
 		
             sHost = aEntry[1]
