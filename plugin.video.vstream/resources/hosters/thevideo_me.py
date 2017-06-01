@@ -4,7 +4,6 @@
 #http://thevideo.me/embed-xxx-xxx.html
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 from resources.lib.util import VScreateDialogSelect
 from resources.lib.packer import cPacker
