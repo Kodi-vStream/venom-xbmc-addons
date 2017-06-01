@@ -234,8 +234,6 @@ class cHosterGui:
             return self.getHoster('googlevideo')
         if ('googleusercontent' in sHostName):
             return self.getHoster('googlevideo')
-        if ('video.tt' in sHostName):
-            return self.getHoster('videott')
         if ('playreplay' in sHostName):
             return self.getHoster('playreplay')
         if ('streamin.to' in sHostName):
@@ -254,8 +252,8 @@ class cHosterGui:
             return self.getHoster('openload')
         if ('oload.co' in sHostName):
             return self.getHoster('openload')
-        if ('thevideo.me' in sHostName):
-            return self.getHoster('thevideo_me')    
+        if (('thevideo.me' in sHostName) or ('video.tt' in sHostName)):
+            return self.getHoster('thevideo_me')  
         if ('vid.me' in sHostName):
             return self.getHoster('vidme')
         if ('zstream' in sHostName):
