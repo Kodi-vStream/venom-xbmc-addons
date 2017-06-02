@@ -206,9 +206,13 @@ def showHosters():
 	
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
 	
     oParser = cParser()
-    sPattern = '<span class="lg">(.+?)<\/span>|<span class="myLecteur">Lecteur ([a-z]+) *:<\/span> <a href="([^"]+)"'
+    sPattern = '<span class="lg">(.+?)<\/span>|<span class="myLecteur">Lecteur (?:<b>)*([a-z]+)(?:<\/b>)* *:<\/span> <a href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
    
     if (aResult[0] == True):
