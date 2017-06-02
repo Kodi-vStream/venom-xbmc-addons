@@ -140,8 +140,7 @@ def showAnnees():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-        sSearch = sSearch.replace(' ','+')
-        sUrl = sSearch
+        sUrl = sSearch.replace(' ','+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -175,6 +174,11 @@ def showMovies(sSearch = ''):
             sTitle = sName + ' [' + aEntry[3] + ']'
             sUrl2 = aEntry[0]
             sThumbnail = aEntry[1]
+            
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),sName) == 0:
+                    continue
             
             if sThumbnail.startswith('//'):
                 sThumbnail = 'http:' + sThumbnail
@@ -254,7 +258,13 @@ def showHosters():
                     pass
             
             if 'official-film-illimite' in sHosterUrl:
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                
+                #La vostfr n'existe que pour ce hoster
+                if '.srt' in sHosterUrl or 'VOSTFR' in sHosterUrl:
+                    sDisplayTitle = cUtil().DecoTitle(sMovieTitle + ' [VOSTFR]')
+                else:
+                    sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                    
                 sDisplayTitle = sDisplayTitle + ' [COLOR skyblue]Google[/COLOR]'
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
@@ -359,4 +369,3 @@ def ShowSpecialHosters():
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
     oGui.setEndOfDirectory()
-    
