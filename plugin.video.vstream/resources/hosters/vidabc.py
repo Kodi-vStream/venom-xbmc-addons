@@ -1,12 +1,9 @@
-from resources.lib.handler.requestHandler import cRequestHandler 
-from resources.lib.config import cConfig 
+#-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
-
 from resources.lib.packer import cPacker
-
 import re
-
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0'
 
 class cHoster(iHoster):
 
@@ -39,44 +36,24 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return True
 
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
-    
-    def __getIdFromUrl(self, sUrl):
-        return ''
-
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return
     
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
-        api_call = False
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+
         sPattern = "type='text\/javascript'>(eval\(function\(p,a,c,k,e,d\){.+?\)\)\))"
         aResult = re.findall(sPattern,sHtmlContent)
         if (aResult):
             sHtmlContent = cPacker().unpack(aResult[0])
 
-        r2 = re.search('file:"([^"]+.m3u8)"', sHtmlContent)
-        if (r2):
-            api_call = r2.group(1)
- 
+        api_call = re.search('file: *"([^"]+(?<!m3u8))"', sHtmlContent)
         if (api_call):
-            return True, api_call 
+            return True, api_call.group(1)
 
         return False, False

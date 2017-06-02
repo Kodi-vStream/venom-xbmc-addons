@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'voirfilms_org'
 SITE_NAME = 'VoirFilms'
 SITE_DESC = 'Films, Séries & Animés en Streaming'
  
-URL_MAIN = 'http://www.voirfilms.biz/'
+URL_MAIN = 'http://www.voirfilms.la/'
 
 MOVIE_MOVIE = (URL_MAIN + 'alphabet', 'showAlpha')
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming', 'showMovies')
@@ -248,7 +248,7 @@ def showMovies(sSearch = ''):
         oRequest = cRequestHandler(URL_MAIN + 'recherche?story=' + sSearch)
         #oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent',UA)
-        oRequest.addHeaderEntry('Host','www.voirfilms.biz')
+        oRequest.addHeaderEntry('Host','www.voirfilms.la')
         oRequest.addHeaderEntry('Referer',URL_MAIN)
         oRequest.addHeaderEntry('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
@@ -265,6 +265,7 @@ def showMovies(sSearch = ''):
         sUrl = oInputParameterHandler.getValue('siteUrl')
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
+        
         if 'animes/' in sUrl:
             sPattern = '<div class="imagefilm">.+?<a href="([^<>]+?)".+?<img src="(.+?)".+?titreunfilm" style="width:145px;">(.+?)<\/div>'
             type = '2'
@@ -317,7 +318,7 @@ def showMovies(sSearch = ''):
 
             if '/serie' in aEntry[1]:
                 oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, sPicture, sPicture, '', oOutputParameterHandler)
-            elif '/anime' in aEntry[1]:
+            elif 'anime' in aEntry[1]:
                 oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, sPicture, sPicture, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, sPicture, sPicture, '', oOutputParameterHandler)
@@ -358,8 +359,8 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a href="([^<>"]+?)" target="filmPlayer".+?class="([a-zA-Z]+)L"><\/span> *<\/div><span class="gras">.+?>(.+?)<\/span>'
-
+    #sPattern = '<a href="([^<>"]+?)" target="filmPlayer".+?class="([a-zA-Z]+)L"><\/span> *<\/div><span class="gras">.+?>(.+?)<\/span>'
+    sPattern='<span style=".+?" class="(.+?)"><\/span>.+?<a href=".+?" data-src="(.+?)" target="filmPlayer" class=.+?<span class="(.+?)"><\/span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -371,13 +372,13 @@ def showHosters():
             if dialog.iscanceled():
                 break
 
-            sHost = str(aEntry[2]).replace('&nbsp;','')
+            sHost = aEntry[2]
+            sLang = aEntry[0].replace('L','')
             #sTitle = '(' + str(aEntry[1]) + ') [' + sHost + '] ' + sMovieTitle
-            sTitle = '%s [%s] [COLOR coral]%s[/COLOR]' %(sMovieTitle, str(aEntry[1]).upper(), sHost)
-            sUrl = aEntry[0].replace('https://', 'http://')
-            #print sUrl
+            sTitle = '[%s] %s [COLOR coral]%s[/COLOR]' %(sLang.upper(),sMovieTitle,sHost)
+
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
+            oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
@@ -398,12 +399,15 @@ def serieHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    sHtmlContent = sHtmlContent.replace("\n","")
+    sHtmlContent = sHtmlContent.replace("\r\t","")
 
     if '-saison-' in sUrl or '/anime/' in sUrl:
         sPattern = '<li class="description132"><a class="n_episode2" title=".+?" href="(.+?)">(.+?)<\/a><\/li>'
     else:
         sMovieTitle = ''
-        sPattern = '<div class="unepetitesaisons"> +<a href="(.+?)" title="(.+?)"> +<div class="saisonimage">'
+        sPattern = '<div class="unepetitesaisons"><a href="(.+?)" title="(.+?)"><div class="saisonimage">'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)

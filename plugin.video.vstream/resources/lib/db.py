@@ -48,7 +48,7 @@ class cDb:
         sql_create2 = "DROP TABLE history"
         
         ''' Create table '''
-        sql_create = "CREATE TABLE IF NOT EXISTS history ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""disp TEXT, ""icone TEXT, ""isfolder TEXT, ""level TEXT, ""lastwatched TIMESTAMP "");"
+        sql_create = "CREATE TABLE IF NOT EXISTS history ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""disp TEXT, ""icone TEXT, ""isfolder TEXT, ""level TEXT, ""lastwatched TIMESTAMP "", ""UNIQUE(title)"");"
         self.dbcur.execute(sql_create)
         
         sql_create = "CREATE TABLE IF NOT EXISTS resume ("" addon_id integer PRIMARY KEY AUTOINCREMENT, ""title TEXT, ""hoster TEXT, ""point TEXT, ""UNIQUE(title, hoster)"");"
@@ -86,14 +86,18 @@ class cDb:
         title = self.str_conv(urllib.unquote(meta['title']))
         disp = meta['disp']
         icon = 'icon.png'
-        ex = "INSERT INTO history (title, disp, icone) VALUES (?, ?, ?)"
-        self.dbcur.execute(ex, (title,disp,icon))
-
-        try:
+        
+        try:        
+            ex = "INSERT INTO history (title, disp, icone) VALUES (?, ?, ?)"
+            self.dbcur.execute(ex, (title,disp,icon))
             self.db.commit() 
-            cConfig().log('SQL INSERT history Successfully') 
+            cConfig().log('SQL INSERT history Successfully')
         except Exception, e:
-            #print ('************* Error attempting to insert into %s cache table: %s ' % (table, e))
+            if 'UNIQUE constraint failed' in e.message:
+                ex = "UPDATE history set title = '%s', disp = '%s', icone= '%s' WHERE title = '%s'" % (title, disp, icon, title)
+                self.dbcur.execute(ex)
+                self.db.commit() 
+                cConfig().log('SQL UPDATE history Successfully')
             cConfig().log('SQL ERROR INSERT') 
             pass
         self.db.close()

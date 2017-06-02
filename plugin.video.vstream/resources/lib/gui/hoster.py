@@ -176,8 +176,8 @@ class cHosterGui:
             return self.getHoster('youtube')
         if ('rutube' in sHostName):
             return self.getHoster('rutube')
-        if ('exashare' in sHostName):
-            return self.getHoster('exashare')
+        #if ('exashare' in sHostName):
+            #return self.getHoster('exashare')
         if ('nowvideo' in sHostName):
             return self.getHoster('nowvideo')
         if ('vk.com' in sHostName):
@@ -234,8 +234,6 @@ class cHosterGui:
             return self.getHoster('googlevideo')
         if ('googleusercontent' in sHostName):
             return self.getHoster('googlevideo')
-        if ('video.tt' in sHostName):
-            return self.getHoster('videott')
         if ('playreplay' in sHostName):
             return self.getHoster('playreplay')
         if ('streamin.to' in sHostName):
@@ -254,8 +252,8 @@ class cHosterGui:
             return self.getHoster('openload')
         if ('oload.co' in sHostName):
             return self.getHoster('openload')
-        if ('thevideo.me' in sHostName):
-            return self.getHoster('thevideo_me')    
+        if (('thevideo.me' in sHostName) or ('video.tt' in sHostName)):
+            return self.getHoster('thevideo_me')  
         if ('vid.me' in sHostName):
             return self.getHoster('vidme')
         if ('zstream' in sHostName):
@@ -266,8 +264,8 @@ class cHosterGui:
             return self.getHoster('letwatch')
         if ('easyvid' in sHostName):
             return self.getHoster('easyvid')
-        if (('allvid' in sHostName) or ('coo5shaine' in sHostName)):
-            return self.getHoster('allvid')
+        #if (('allvid' in sHostName) or ('coo5shaine' in sHostName)):
+            #return self.getHoster('allvid')
         if ('www.amazon' in sHostName):
             return self.getHoster('amazon')
         if ('filepup' in sHostName):

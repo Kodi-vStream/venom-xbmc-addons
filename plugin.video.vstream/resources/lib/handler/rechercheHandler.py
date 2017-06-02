@@ -58,6 +58,9 @@ class cRechercheHandler:
 
     def setRead(self, sRead):
         self.__sRead = sRead
+        
+    def getRead(self):
+        return self.__sRead
 
     def getDisp(self):
         return self.__sDisp

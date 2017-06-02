@@ -1,5 +1,6 @@
-from resources.lib.handler.requestHandler import cRequestHandler 
-from resources.lib.config import cConfig 
+#-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 import re
 
@@ -34,23 +35,8 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return True
 
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
-    
-    def __getIdFromUrl(self, sUrl):
-        return ''
-
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return
     
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()

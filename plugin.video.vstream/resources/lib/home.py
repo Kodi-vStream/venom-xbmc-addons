@@ -313,6 +313,8 @@ class cHome:
 
 
     def showSearch(self):
+        
+        xbmcgui.Window(10101).clearProperty('search_text')
 
         oGui = cGui()
 
