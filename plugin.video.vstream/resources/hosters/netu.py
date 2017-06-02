@@ -1,25 +1,13 @@
 #-*- coding: utf-8 -*-
-# From Anonymous author modified by Tmpname
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-
 from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
-from resources.lib.config import cConfig
-
 from resources.lib import unwise
-from resources.lib.util import cUtil
-from resources.lib.util import VSlog
-
+from resources.lib.util import cUtil,VSlog
 import urllib, urllib2
-
 import re
 import base64
-
-try:    import json
-except: import simplejson as json
-    
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
 #UA = 'Mozilla/6.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/8.0 Mobile/10A5376e Safari/8536.25'
@@ -33,8 +21,8 @@ def GetIp():
     else:
         import random
         for x in xrange(1,100):
-          ip = "192.168."
-          ip += ".".join(map(str, (random.randint(0, 255) for _ in range(2))))
+            ip = "192.168."
+            ip += ".".join(map(str, (random.randint(0, 255) for _ in range(2))))
         ip = base64.b64encode(ip)
 
     return ip
@@ -96,10 +84,10 @@ class cHoster(iHoster):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
 
     def setFileName(self, sFileName):
-	self.__sFileName = sFileName
+	    self.__sFileName = sFileName
 
     def getFileName(self):
-	return self.__sFileName
+	    return self.__sFileName
     
     def setUrl(self, sUrl):
         self.__sUrl = sUrl.replace('https','http')
@@ -115,28 +103,12 @@ class cHoster(iHoster):
         if (aResult[0] == True):
             return aResult[1][0]
         return ''
-        
-    def __modifyUrl(self, sUrl):          
-        return
-
 
     def getPluginIdentifier(self):
         return 'netu'
 
     def isDownloadable(self):
         return False
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return '';
-
-    def checkUrl(self, sUrl):
-        return True
-
-    def getUrl(self):
-        return self.__sUrl
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
@@ -148,8 +120,6 @@ class cHoster(iHoster):
         id = self.__getIdFromUrl()
         
         self.__sUrl = 'http://hqq.tv/player/embed_player.php?vid=' + id + '&autoplay=no'
-        
-        #VSlog( self.__sUrl )
 
         headers = {'User-Agent': UA ,
                    #'Host' : 'hqq.tv',
@@ -161,32 +131,26 @@ class cHoster(iHoster):
         
         player_url = self.__sUrl
         
-        req = urllib2.Request(player_url, None, headers)
+        req = urllib2.Request(player_url,None,headers)
         try:
             response = urllib2.urlopen(req)
             html = response.read()
             response.close()
         except urllib2.URLError, e:
-            VSlog( e.read())
+            VSlog(e.read())
             VSlog(e.reason)
             html = e.read()
-            
-        #VSlog('**' + str(response.geturl()))
+
         Host = 'https://hqq.watch/'
-            
-        #fh = open('c:\\netu1.txt', "w")
-        #fh.write(html)
-        #fh.close()  
 
         data = ''
         code_crypt = re.search('(;eval\(function\(w,i,s,e\){.+?\)\);)\s*<', html, re.DOTALL)
         if code_crypt:
             data = unwise.unwise_process(code_crypt.group(1))
         else:
-            cConfig().log('prb1')       
+            VSlog('prb1')       
             
         if data:
-            
             http_referer = ''
             _pass = ''
             
@@ -207,13 +171,9 @@ class cHoster(iHoster):
                 data = response.read()
                 response.close()
             except urllib2.URLError, e:
-                VSlog( e.read())
+                VSlog(e.read())
                 VSlog(e.reason)
                 data = e.read()
-                
-            #fh = open('c:\\netu3.txt', "w")
-            #fh.write(data)
-            #fh.close() 
 
             data = urllib.unquote(data)
 
@@ -235,8 +195,6 @@ class cHoster(iHoster):
 
                 #get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '0/','b':'1','vid':id} #,'iss':'MzEuMz'
                 get_data = {'server_1': vid_server, 'link_1': vid_link, 'at': at.group(1), 'adb': '0/','b':'1','vid':id}
-                
-                #xbmc.log(str(get_data))
 
                 headers['x-requested-with'] = 'XMLHttpRequest'
 
@@ -244,28 +202,23 @@ class cHoster(iHoster):
                 try:
                     response = urllib2.urlopen(req)
                 except urllib2.URLError, e:
-                    cConfig().log(str(e.read()))
-                    cConfig().log(str(e.reason))
+                    VSlog(str(e.read()))
+                    VSlog(str(e.reason))
                     
                 data = response.read()
+                VSlog(data)
                 response.close()
-                
-                #fh = open('c:\\netu3.txt', "w")
-                #fh.write(data)
-                #fh.close()
-                
+
                 file_url = re.search(r'"file"\s*:\s*"([^"]*?)"', data)
                
                 if file_url:
                     list_url = _decode2(file_url.group(1).replace('\\', ''))
 
-                #xbmc.log(list_url)
-                
                 #Hack, je sais pas si ca va durer longtemps, mais indispensable sur certains fichiers
                 list_url = list_url.replace("?socket", ".mp4.m3u8")
                 
             else:
-                cConfig().log('prb2')
+                VSlog('prb2')
                 
         
         api_call = list_url
@@ -275,8 +228,7 @@ class cHoster(iHoster):
         Header = 'User-Agent=' + UA
         api_call = api_call + '|' + Header
         
-        #print api_call
-        
+
         if not (api_call == False):
             return True, api_call          
             
@@ -297,8 +249,6 @@ def DecodeAllThePage(html):
         r = re.search(r'unescape\("([^"]+)"\)', html, re.DOTALL | re.UNICODE)
         if not r:
             break
-            
-        #cConfig().log('unescape')
         
         tmp = cUtil().unescape(r.group(1))
         html = html[:r.start()] + tmp + html[r.end():]
@@ -310,8 +260,6 @@ def DecodeAllThePage(html):
         r = re.search(r'(;eval\(function\(w,i,s,e\){.+?\)\);)\s*<', html, re.DOTALL | re.UNICODE)
         if not r:
             break
-        
-        #cConfig().log('unwise')
         
         tmp = data = unwise.unwise_process(r.group(1))
         html = html[:r.start()] + tmp + html[r.end():]
