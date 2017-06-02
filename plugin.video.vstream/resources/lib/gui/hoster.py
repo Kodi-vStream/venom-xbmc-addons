@@ -176,8 +176,8 @@ class cHosterGui:
             return self.getHoster('youtube')
         if ('rutube' in sHostName):
             return self.getHoster('rutube')
-        if ('exashare' in sHostName):
-            return self.getHoster('exashare')
+        #if ('exashare' in sHostName):
+            #return self.getHoster('exashare')
         if ('nowvideo' in sHostName):
             return self.getHoster('nowvideo')
         if ('vk.com' in sHostName):
@@ -264,8 +264,8 @@ class cHosterGui:
             return self.getHoster('letwatch')
         if ('easyvid' in sHostName):
             return self.getHoster('easyvid')
-        if (('allvid' in sHostName) or ('coo5shaine' in sHostName)):
-            return self.getHoster('allvid')
+        #if (('allvid' in sHostName) or ('coo5shaine' in sHostName)):
+            #return self.getHoster('allvid')
         if ('www.amazon' in sHostName):
             return self.getHoster('amazon')
         if ('filepup' in sHostName):
