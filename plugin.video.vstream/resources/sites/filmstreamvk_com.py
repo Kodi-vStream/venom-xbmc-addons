@@ -11,7 +11,7 @@ from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'filmstreamvk_com'
 SITE_NAME = 'Filmstreamvk'
-SITE_DESC = 'Films, Série & Mangas en Streaming'
+SITE_DESC = 'Films, Séries & Mangas en Streaming'
 
 URL_MAIN = 'http://filmstreamvk.ws/'
 
@@ -50,7 +50,7 @@ def load():
 	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Série (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
