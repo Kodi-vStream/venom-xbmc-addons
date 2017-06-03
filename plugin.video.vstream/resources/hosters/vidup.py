@@ -2,11 +2,10 @@
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
-from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
-import xbmcgui,re
+from resources.lib.util import VScreateDialogSelect
+import re
 
 class cHoster(iHoster):
 
@@ -38,12 +37,6 @@ class cHoster(iHoster):
 
     def isDownloadable(self):
         return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
     
     def __getIdFromUrl(self, sUrl):
         sPattern = 'https*://vidup.me/([^<]+)'
@@ -68,12 +61,6 @@ class cHoster(iHoster):
         self.__sUrl = re.sub('(-\d+x\d+\.html)','',self.__sUrl)
         self.__sUrl = self.__sUrl.replace('embed-', '')
 
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return
-    
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
@@ -122,8 +109,7 @@ class cHoster(iHoster):
             #si plus de une
             elif len(url) > 1:
             #Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
+                ret = VScreateDialogSelect(qua)
                 if (ret > -1):
                     stream_url = url[ret]
 
