@@ -186,7 +186,7 @@ def showGenres():
     liste.append( ['Guerre',sUrl + 'genre/guerre'] )
     liste.append( ['Historique',sUrl + 'genre/historique'] )
     liste.append( ['Judiciaire',sUrl + 'genre/judiciaire'] )
-    liste.append( ['Médical',sUrl + 'genre/musical'] )
+    liste.append( ['Médical',sUrl + 'genre/medical'] )
     liste.append( ['Policier',sUrl + 'genre/policier'] )
     liste.append( ['Péplum',sUrl + 'genre/peplum'] )
     liste.append( ['Romance',sUrl + 'genre/romance'] )
