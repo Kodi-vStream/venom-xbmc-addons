@@ -416,8 +416,7 @@ def showHosters():
         sHosterUrl = vUrl 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
-            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-            oHoster.setDisplayName(sDisplayTitle)
+            oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
  
