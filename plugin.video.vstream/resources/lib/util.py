@@ -363,10 +363,17 @@ def VSlang(lang):
     #util.VSlang(30003)
     return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang)).decode("utf-8")
     
-def VSshowYear(sUrl,endswithslash = ''):
+def VSshowYear(sUrl,start = '',end = '',endswithslash = ''):
+    if start and end:
+        fstart = start
+        fend = end
+    else:
+        fstart = 1936
+        fend = 2018
+        
     lstYear = []
     lstUrl = []
-    for i in reversed(xrange(1936,2018)):
+    for i in reversed(xrange(fstart,fend)):
         lstYear.append(str(i))   
         lstUrl.append(sUrl+str(i)+endswithslash)
    
@@ -377,4 +384,3 @@ def VSshowYear(sUrl,endswithslash = ''):
         xbmcplugin.endOfDirectory(int(sys.argv[1]),True,False,False)
         xbmc.sleep(500) #sleep obligatoire
         xbmc.executebuiltin("Action(Back)") #back evite erreur du au clic sur un dossier qui mene nulle part
-        
