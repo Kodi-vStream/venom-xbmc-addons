@@ -6,6 +6,7 @@ import xbmcgui
 import xbmcaddon
 import htmlentitydefs
 import unicodedata
+import sys,xbmcplugin
 
 COUNT = 0
 DIALOG2 = None
@@ -283,9 +284,13 @@ def VScreateDialogYesNo(label):
     qst = oDialog.yesno("vStream", label)
     return qst
 
-def VScreateDialogSelect(label):
+def VScreateDialogSelect(label,sTitle=''):
     oDialog = xbmcgui.Dialog()
-    ret = oDialog.select('Select Quality', label)  
+    if sTitle:
+        ret = oDialog.select(sTitle, label)
+    else:
+        ret = oDialog.select('Sélectionner une qualité', label)
+        
     return ret
 
 def VSDialogSelectQual(list_qual,list_url):
@@ -295,7 +300,7 @@ def VSDialogSelectQual(list_qual,list_url):
         return list_url[0]
         
     oDialog = xbmcgui.Dialog()
-    ret = oDialog.select('Select Quality', list_qual)
+    ret = oDialog.select('Sélectionner une qualité', list_qual)
     if ret > -1:
         return list_url[ret]
     return ''
@@ -357,3 +362,19 @@ def VStranslatePath(location):
 def VSlang(lang):
     #util.VSlang(30003)
     return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang)).decode("utf-8")
+    
+def VSshowYear(sUrl):
+    lstYear = []
+    lstUrl = []
+    for i in reversed(xrange(1936,2018)):
+        lstYear.append(str(i))   
+        lstUrl.append(sUrl+str(i)+'/')
+        
+    ret = VScreateDialogSelect(lstYear,sTitle='Sélectionner une année')
+    if (ret > -1):
+        return lstUrl[ret]
+    else:
+        xbmcplugin.endOfDirectory(int(sys.argv[1]),True,False,False)
+        xbmc.sleep(500) #sleep obligatoire
+        xbmc.executebuiltin("Action(Back)") #back evite erreur du au clic sur un dossier qui mene nulle part
+        
