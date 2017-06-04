@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+from resources.lib.util import cUtil,VSshowYear
 
 SITE_IDENTIFIER = 'streamiz_co'
 SITE_NAME = 'Streamiz'
@@ -18,7 +18,7 @@ MOVIE_NEWS = (URL_MAIN + 'recemment-ajoute/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'les-plus-vus/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
-MOVIE_ANNEES = (True, 'showAnnees')
+MOVIE_ANNEES = (URL_MAIN + 'annee/', 'showYear')
 
 URL_SEARCH = ('https://api.streamiz.co/movies/search/?query=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -83,39 +83,22 @@ def showGenres():
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
-def showAnnees():
-    oGui = cGui()
     
-    sStart = '<div class="nav_menu years" v-show="years_menu" v-cloak>'
-    sEnd = '<div class="search_nav">'
-	
-    oParser = cParser()
-    
-    oRequestHandler = cRequestHandler(URL_MAIN)
-    sHtmlContent = oRequestHandler.request()
-
-    sHtmlContent = oParser.abParse(sHtmlContent,sStart,sEnd)
-
-    sPattern = '<a href="([^"]+)">(.+?)</a>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-            sUrl = aEntry[0]
-            sTitle = aEntry[1]
-            
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'annees.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-def showMovies(sSearch = ''):
+def showYear():
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sCheck = VSshowYear(sUrl)
+    if not sCheck == None:
+        showMovies(yearUrl = sCheck)
+        
+def showMovies(sSearch = '',yearUrl = ''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     
     if sSearch:
         sUrl = sSearch
+    elif yearUrl:
+        sUrl = yearUrl      
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
         
