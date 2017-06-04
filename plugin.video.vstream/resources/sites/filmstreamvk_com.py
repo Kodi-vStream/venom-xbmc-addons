@@ -11,9 +11,9 @@ from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'filmstreamvk_com'
 SITE_NAME = 'Filmstreamvk'
-SITE_DESC = 'Films & Série en Streaming uniquement sur Netu'
+SITE_DESC = 'Films, Séries & Mangas en Streaming'
 
-URL_MAIN = 'http://filmstreamvk.com/'
+URL_MAIN = 'http://filmstreamvk.ws/'
 
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -31,26 +31,26 @@ FUNCTION_SEARCH = 'showMovies'
 
 def load(): 
     oGui = cGui()
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les Plus Vus)', 'films_views.png', oOutputParameterHandler)
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Série (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
@@ -75,53 +75,59 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action',URL_MAIN + 'category/action/'] )
-    liste.append( ['Animation',URL_MAIN + 'category/animation/'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'category/arts-martiaux/'] )
-    liste.append( ['Aventure',URL_MAIN + 'category/aventure/'] )
-    liste.append( ['Bande annonce',URL_MAIN + 'category/bande-annonce/'] )
-    liste.append( ['Biographie',URL_MAIN + 'category/biography/'] )
-    liste.append( ['Biopic',URL_MAIN + 'category/biopic/'] )
-    liste.append( ['Capes et épées',URL_MAIN + 'category/capes-et-epees/'] )
-    liste.append( ['Comédie',URL_MAIN + 'category/comedie/'] )
-    liste.append( ['Comédie dramatique',URL_MAIN + 'category/comedie-dramatique/'] )
-    liste.append( ['Comédie musicale',URL_MAIN + 'category/comedie-musicale/'] )
-    liste.append( ['Concert',URL_MAIN + 'category/concert/'] )
-    liste.append( ['Crime',URL_MAIN + 'category/crime/'] )
-    liste.append( ['Days (TV)',URL_MAIN + 'category/days-tv/'] )
-    liste.append( ['Divers',URL_MAIN + 'category/divers/'] )
-    liste.append( ['Documentaire',URL_MAIN + 'category/documentaire/'] )
-    liste.append( ['Drame',URL_MAIN + 'category/drame/'] )
-    liste.append( ['Enigme',URL_MAIN + 'category/enigme/'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'category/epouvante-horreur/'] )
-    liste.append( ['Espionnage',URL_MAIN + 'category/espionnage/'] )
-    liste.append( ['Exclues',URL_MAIN + 'category/exclues/'] )
-    liste.append( ['Famille',URL_MAIN + 'category/famille/'] )
-    liste.append( ['Fantastique',URL_MAIN + 'category/fantastique/'] )
-    liste.append( ['Fantasy',URL_MAIN + 'category/fantasy/'] )
-    liste.append( ['Film récompensé',URL_MAIN + 'category/film-recompense/'] )
-    liste.append( ['Guerre',URL_MAIN + 'category/guerre/'] )
-    liste.append( ['Histoire vraie',URL_MAIN + 'category/histoire-vraie/'] )
-    liste.append( ['Historique',URL_MAIN + 'category/historique/'] )
-    liste.append( ['Horreur',URL_MAIN + 'category/horreur/'] )
-    liste.append( ['Judiciaire',URL_MAIN + 'category/judiciaire/'] )
-    liste.append( ['Musical',URL_MAIN + 'category/musical/'] )
-    liste.append( ['Mystery',URL_MAIN + 'category/mystery/'] )
-    liste.append( ['Non classé',URL_MAIN + 'category/non-classe/'] )
-    liste.append( ['Péplum',URL_MAIN + 'category/peplum/'] )
-    liste.append( ['Pixar',URL_MAIN + 'category/pixar/'] )
-    liste.append( ['Policier',URL_MAIN + 'category/policier/'] )
-    liste.append( ['Romance',URL_MAIN + 'category/romance/'] )
-    liste.append( ['Science-Fiction',URL_MAIN + 'category/science-fiction/'] )
-    liste.append( ['Série',URL_MAIN + 'category/serie/'] )
-    liste.append( ['Spectacle',URL_MAIN + 'category/spectacle/'] )
-    liste.append( ['Sport',URL_MAIN + 'category/sport/'] )
-    liste.append( ['Sport event',URL_MAIN + 'category/sport-event/'] )
-    liste.append( ['Survival',URL_MAIN + 'category/survival/'] )
-    liste.append( ['Thriller',URL_MAIN + 'category/thriller/'] )
-    liste.append( ['Top films',URL_MAIN + 'category/exclues/top-films/'] )
-    liste.append( ['Walt Disney',URL_MAIN + 'category/walt-disney/'] )
-    liste.append( ['Western',URL_MAIN + 'category/western/'] )
+    liste.append( ['Action',URL_MAIN + 'category/action'] )
+    liste.append( ['Animation',URL_MAIN + 'category/animation'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'category/arts-martiaux'] )
+    liste.append( ['Aventure',URL_MAIN + 'category/aventure'] )
+    liste.append( ['Bande annonce',URL_MAIN + 'category/bande-annonce'] )
+    liste.append( ['Biographie',URL_MAIN + 'category/biography'] )
+    liste.append( ['Biopic',URL_MAIN + 'category/biopic'] )
+    liste.append( ['Capes et épées',URL_MAIN + 'category/capes-et-epees'] )
+    liste.append( ['Comédie',URL_MAIN + 'category/comedie'] )
+    liste.append( ['Comédie dramatique',URL_MAIN + 'category/comedie-dramatique'] )
+    liste.append( ['Comédie musicale',URL_MAIN + 'category/comedie-musicale'] )
+    liste.append( ['Concert',URL_MAIN + 'category/concert'] )
+    liste.append( ['Crime',URL_MAIN + 'category/crime'] )
+    liste.append( ['Days (TV)',URL_MAIN + 'category/days-tv'] )
+    liste.append( ['Divers',URL_MAIN + 'category/divers'] )
+    liste.append( ['Documentaire',URL_MAIN + 'category/documentaire'] )
+    liste.append( ['Drame',URL_MAIN + 'category/drame'] )
+    liste.append( ['Enigme',URL_MAIN + 'category/enigme'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'category/epouvante-horreur'] )
+    liste.append( ['Espionnage',URL_MAIN + 'category/espionnage'] )
+    liste.append( ['Exclues',URL_MAIN + 'category/exclues'] )
+    liste.append( ['Famille',URL_MAIN + 'category/famille'] )
+    liste.append( ['Fantastique',URL_MAIN + 'category/fantastique'] )
+    liste.append( ['Fantasy',URL_MAIN + 'category/fantasy'] )
+    liste.append( ['Film récompensé',URL_MAIN + 'category/film-recompense'] )
+    liste.append( ['Golden Time',URL_MAIN + 'category/golden-time'] )
+    liste.append( ['Guerre',URL_MAIN + 'category/guerre'] )
+    liste.append( ['Gugure! Kokkuri-san',URL_MAIN + 'category/gugure-kokkuri-san'] )
+    liste.append( ['Histoire vraie',URL_MAIN + 'category/histoire-vraie'] )
+    liste.append( ['Historique',URL_MAIN + 'category/historique'] )
+    liste.append( ['Horreur',URL_MAIN + 'category/horreur'] )
+    liste.append( ['Judiciaire',URL_MAIN + 'category/judiciaire'] )
+    liste.append( ['Love Live!',URL_MAIN + 'category/love-live'] )
+    liste.append( ['Musical',URL_MAIN + 'category/musical'] )
+    liste.append( ['Mystery',URL_MAIN + 'category/mystery'] )
+    liste.append( ['Naruto Shippuden Kai',URL_MAIN + 'category/naruto-shippuden-kai'] )
+    liste.append( ['Non classé',URL_MAIN + 'category/non-classe'] )
+    liste.append( ['Péplum',URL_MAIN + 'category/peplum'] )
+    liste.append( ['Pixar',URL_MAIN + 'category/pixar'] )
+    liste.append( ['Policier',URL_MAIN + 'category/policier'] )
+    liste.append( ['Romance',URL_MAIN + 'category/romance'] )
+    liste.append( ['Science-Fiction',URL_MAIN + 'category/science-fiction'] )
+    liste.append( ['Série',URL_MAIN + 'category/serie'] )
+    liste.append( ['Souryo to Majiwaru Shikiyoku no Yoru ni',URL_MAIN + 'category/souryo-to-majiwaru-shikiyoku-no-yoru-ni'] )
+    liste.append( ['Spectacle',URL_MAIN + 'category/spectacle'] )
+    liste.append( ['Sport',URL_MAIN + 'category/sport'] )
+    liste.append( ['Sport event',URL_MAIN + 'category/sport-event'] )
+    liste.append( ['Survival',URL_MAIN + 'category/survival'] )
+    liste.append( ['Thriller',URL_MAIN + 'category/thriller'] )
+    liste.append( ['Tokyo Ravens',URL_MAIN + 'category/tokyo-ravens'] )
+    liste.append( ['Top films',URL_MAIN + 'category/exclues/top-films'] )
+    liste.append( ['Walt Disney',URL_MAIN + 'category/walt-disney'] )
+    liste.append( ['Western',URL_MAIN + 'category/western'] )
 
     for sTitle,sUrl in liste:
 
@@ -162,19 +168,19 @@ def showMovies(sSearch = ''):
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),aEntry[2]) == 0:
                     continue
                 
-            sTitle = aEntry[2]
-            
+            sThumb = aEntry[0]
+            sTitle = aEntry[2].replace('&#8217;', '\'')
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-            
+            sUrl = aEntry[1]
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
             
             if '/serie/' in aEntry[1] or '/manga/' in aEntry[1]:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', aEntry[0], '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -234,13 +240,13 @@ def showLinks():
                 break
             
             sTitle = sMovieTitle + ' (' + aEntry[1] + ')'
-            
             sDisplayTitle = cUtil().DecoTitle(sTitle)
+            sUrl2 = aEntry[0]
             
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
@@ -276,17 +282,17 @@ def showEpisode():
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
                 oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]' + sTitle + '[/COLOR]', 'host.png', oOutputParameterHandler)
             else:
                 sTitle = sMovieTitle + ' episode ' + aEntry[2]
-                
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
+                sUrl2 = aEntry[1]
                 
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
                 oGui.addTV(SITE_IDENTIFIER, 'showHostersSerie', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)

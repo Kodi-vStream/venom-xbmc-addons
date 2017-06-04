@@ -84,10 +84,10 @@ class cHoster(iHoster):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
 
     def setFileName(self, sFileName):
-	    self.__sFileName = sFileName
+	self.__sFileName = sFileName
 
     def getFileName(self):
-	    return self.__sFileName
+	return self.__sFileName
     
     def setUrl(self, sUrl):
         self.__sUrl = sUrl.replace('https','http')

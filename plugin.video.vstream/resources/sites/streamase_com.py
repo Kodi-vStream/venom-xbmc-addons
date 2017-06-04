@@ -280,6 +280,8 @@ def showMovies(sSearch = ''):
                 oRequestHandler.addHeaderEntry('Cookie',cookies)
             
             sHtmlContent = oRequestHandler.request()
+            
+            sSearch = ''
             #xbmc.log(sHtmlContent)
         else:
             sUrl = Url_Search + 'index.php?do=search'
@@ -337,6 +339,12 @@ def showMovies(sSearch = ''):
                 sThumbnail=aEntry[2]
             else:
                 sThumbnail=URL_MAIN + aEntry[2]
+                
+                
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sSearch,sTitle) == 0:
+                    continue
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(sUrl2)) 

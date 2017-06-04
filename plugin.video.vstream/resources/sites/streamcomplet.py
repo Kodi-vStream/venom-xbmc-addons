@@ -47,10 +47,10 @@ def showMoviesSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = URL_SEARCH[0] + sSearchText
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return
+        sUrl = URL_SEARCH[0] + sSearchText
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return
 
 def showGenres():
     oGui = cGui()
@@ -102,6 +102,11 @@ def showMovies(sSearch = ''):
                 break
 
             sTitle = aEntry[2]
+            
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),sTitle) == 0:
+                    continue
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))

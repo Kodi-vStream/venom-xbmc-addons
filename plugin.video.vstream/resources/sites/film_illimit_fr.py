@@ -23,6 +23,7 @@ MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_MOVIE = (URL_MAIN , 'showMovies')
 MOVIE_HD = (URL_MAIN + 'films/streaming-720p-streaming-1080p/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
+MOVIE_ANNEES = (True, 'showAnnees')
 
 SERIE_NEWS = (URL_MAIN + 'serie-tv/', 'showMovies')
 SERIE_SERIES = (URL_MAIN + 'serie-tv/', 'showMovies')
@@ -49,6 +50,10 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
     
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'films_annees.png', oOutputParameterHandler)
+	  
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
@@ -106,11 +111,36 @@ def showGenres():
         
     oGui.setEndOfDirectory()
 
+def showAnnees():
+    oGui = cGui()
+    
+    sStart = '<div class="filter-content-slider">'
+    sEnd = '<div class="filter-slide filter-slide-down">'
+	
+    oParser = cParser()
+    
+    oRequestHandler = cRequestHandler(URL_MAIN)
+    sHtmlContent = oRequestHandler.request()
+	
+    sHtmlContent = oParser.abParse(sHtmlContent,sStart,sEnd)
+	
+    sPattern = '<a href="([^"]+)">(.+?)</a>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            sUrl = URL_MAIN[:-1] + aEntry[0]
+            sTitle = aEntry[1]
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'films_annees.png', oOutputParameterHandler)
+			
+    oGui.setEndOfDirectory()
+
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-        sSearch = sSearch.replace(' ','+')
-        sUrl = sSearch
+        sUrl = sSearch.replace(' ','+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -132,7 +162,7 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
                 
-            sName = aEntry[2].replace(' en Streaming HD','')
+            sName = aEntry[2].replace(' Streaming Ultra-HD','').replace(' Streaming Full-HD','')
             sName = sName.replace(' Streaming HD','')
             sName = sName.decode('utf8')
             sName = cUtil().unescape(sName)
@@ -145,13 +175,18 @@ def showMovies(sSearch = ''):
             sUrl2 = aEntry[0]
             sThumbnail = aEntry[1]
             
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),sName) == 0:
+                    continue
+            
             if sThumbnail.startswith('//'):
                 sThumbnail = 'http:' + sThumbnail
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(sUrl2))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sName)
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
             if re.match('.+?saison [0-9]+',sTitle,re.IGNORECASE):
@@ -162,7 +197,7 @@ def showMovies(sSearch = ''):
         cConfig().finishDialog(dialog)
            
         if not sSearch:
-            sNextPage = __checkForNextPage(sUrl)
+            sNextPage = __checkForNextPage(sHtmlContent)
             if (sNextPage != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
@@ -171,16 +206,15 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-def __checkForNextPage(sUrl):
-    if 'page' or 'films' in sUrl:
-        sPattern = "\/page\/([0-9]+)\/"
-        oParser = cParser()
-        aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
-            newpage = str(int(aResult[1][0]) + 1)
-            return sUrl.replace('/page/' + aResult[1][0],'/page/' + newpage)
+def __checkForNextPage(sHtmlContent):
+    sPattern = '<link rel="next" href="(.+?)"/>'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+	
+    if (aResult[0] == True):
+        return  aResult[1][0]
 
-    return sUrl + 'page/2/'
+    return False
 
 def showHosters():
     oGui = cGui()
@@ -224,7 +258,13 @@ def showHosters():
                     pass
             
             if 'official-film-illimite' in sHosterUrl:
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                
+                #La vostfr n'existe que pour ce hoster
+                if '.srt' in sHosterUrl or 'VOSTFR' in sHosterUrl:
+                    sDisplayTitle = cUtil().DecoTitle(sMovieTitle + ' [VOSTFR]')
+                else:
+                    sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+                    
                 sDisplayTitle = sDisplayTitle + ' [COLOR skyblue]Google[/COLOR]'
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
@@ -268,9 +308,9 @@ def serieHosters():
             i = i + 1
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             oGui.addTV(SITE_IDENTIFIER, 'ShowSpecialHosters', sDisplayTitle, '', sThumbnail,'', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -329,4 +369,3 @@ def ShowSpecialHosters():
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
     oGui.setEndOfDirectory()
-    

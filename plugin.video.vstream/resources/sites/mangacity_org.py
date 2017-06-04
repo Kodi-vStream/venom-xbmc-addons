@@ -259,6 +259,13 @@ def ShowAlpha(url = None):
     
     if 'HTML/JavaScript Encoder' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
+        
+    if sHtmlContent.startswith('<script type="text/javascript">'):
+        sHtmlContent = FullUnescape(sHtmlContent)
+
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
 
     sPattern = "<a href='([^<>]+?)' class='button (?:red )*light'><headline6>(?:<font color='black'>)*([A-Z#])(?:<\/font>)*<\/headline6><\/a>"
     
@@ -320,6 +327,9 @@ def showMovies(sSearch = ''):
     
     if 'HTML/JavaScript Encoder' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
+        
+    if sHtmlContent.startswith('<script type="text/javascript">'):
+        sHtmlContent = FullUnescape(sHtmlContent)
 
     sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=\'*(.+?)\'* class=.button'
     
@@ -540,10 +550,10 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             tmp = urllib.unquote(aEntry)
-            sPattern2 = 'src="([^"]+)"'
+            sPattern2 = 'src=["\']([^"\']+)["\']'
             aResult = re.findall(sPattern2,tmp)
             if aResult:
-                list_url.append(aResult[0])          
+                list_url.append(aResult[0])
 
     if len(list_url) > 0:
         total = len(list_url)
@@ -618,6 +628,12 @@ def showHosters():
                     sHosterUrl = sHosterUrl.replace('://tinyurl.com/kojastd/','://www.rapidvideo.com/embed/')
                 elif '://tinyurl.com/l3tjslm' in sHosterUrl:
                     sHosterUrl = sHosterUrl.replace('://tinyurl.com/l3tjslm/','://hqq.tv/player/')
+                elif '://tinyurl.com/n34gtt7' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/n34gtt7/','://vidlox.tv/')
+                elif '://tinyurl.com/kdo4xuk' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/kdo4xuk/','://watchers.to/')
+                elif '://tinyurl.com/kjvlplm' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/kjvlplm/','://streamango.com/')
                     
                 #On va chercher le vrai lien
                 else:
