@@ -87,7 +87,7 @@ def showGenres():
 def showYear():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sCheck = VSshowYear(sUrl)
+    sCheck = VSshowYear(sUrl,endswithslash = '/')
     if not sCheck == None:
         showMovies(yearUrl = sCheck)
         
