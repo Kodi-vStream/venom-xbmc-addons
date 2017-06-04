@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+from resources.lib.util import cUtil,VSshowYear
 from resources.lib.config import cConfig
 import re,xbmcgui,urllib2
 
@@ -19,21 +19,21 @@ URL_MAIN = 'http://www.skstream.co/'
 MOVIE_NEWS = (URL_MAIN + 'films', 'showMovies')
 MOVIE_MOVIE = ('http://films', 'showMenuMovies')
 MOVIE_GENRES = (MOVIE_NEWS[0] , 'showGenres')
-MOVIE_ANNEES = (MOVIE_NEWS[0] + '-produit-en-' , 'showMovies')
+MOVIE_ANNEES = (MOVIE_NEWS[0] + '-produit-en-' , 'showYear')
 MOVIE_QLT = (MOVIE_NEWS[0] , 'showQlt')
 MOVIE_PAYS = ('http://films', 'showPays')
 
 SERIE_NEWS = (URL_MAIN + 'series', 'showMovies')
 SERIE_SERIES = ('http://series', 'showMenuSeries')
 SERIE_GENRES = (SERIE_NEWS[0], 'showGenres')
-SERIE_ANNEES = (SERIE_NEWS[0] + '-sortie-en-', 'showMovies')
+SERIE_ANNEES = (SERIE_NEWS[0] + '-sortie-en-', 'showYear')
 SERIE_QLT = (SERIE_NEWS[0], 'showQlt')
 SERIE_PAYS = ('http://series', 'showPays')
 
 ANIM_NEWS = (URL_MAIN + 'mangas' , 'showMovies')
 ANIM_ANIMS = ('http://mangas', 'showMenuMangas')
 ANIM_GENRES = (ANIM_NEWS[0], 'showGenres')
-ANIM_ANNEES = (ANIM_NEWS[0]+ '-sortie-en-', 'showMovies')
+ANIM_ANNEES = (ANIM_NEWS[0]+ '-sortie-en-', 'showYear')
 ANIM_QLT = (ANIM_NEWS[0], 'showQlt')
 ANIM_PAYS = ('http://mangas', 'showPays')
 
@@ -231,43 +231,30 @@ def showQlt():
         
     oGui.setEndOfDirectory()
 
-def showNumBoard(sDefaultNum=''):
-    dialog = xbmcgui.Dialog()
-    numboard = dialog.numeric(0, 'Entrer une année ex: 2005', sDefaultNum)
-    if numboard != None:
-       return numboard
-    return False
-    
-def selectAnnees(sUrl):
-    oGui = cGui()
-    newNum = showNumBoard()
-    fsUrl = sUrl + newNum
-    return fsUrl
-    
-def showMovies(sSearch = ''):
-    oGui = cGui()
+def showYear():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    oParser = cParser()
-
-    if 'films-produit-en' in sUrl:
-        sUrl = selectAnnees(sUrl)
-    elif 'series-sortie-en' in sUrl:
-        sUrl = selectAnnees(sUrl)
-    elif 'mangas-sortie-en' in sUrl:
-        sUrl = selectAnnees(sUrl)
-    else:
-        sUrl = sUrl
+    sCheck = VSshowYear(sUrl)
+    if not sCheck == None:
+        showMovies(yearUrl = sCheck)
     
+def showMovies(sSearch = '',yearUrl = ''):
+    oGui = cGui()
+
     if sSearch:
         sUrl = sSearch
-        
+    elif yearUrl:
+        sUrl = yearUrl    
+    else:
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+ 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
 
     sPattern = '<a class="unfilm" *HREF="([^"]+)">.+?title="(.+?)".+?src="([^"]+)">'
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent,sPattern)
     if (aResult[0] == True):     
         for aEntry in aResult[1]:
