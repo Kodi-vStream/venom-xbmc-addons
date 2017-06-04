@@ -16,6 +16,9 @@ from resources.lib.util import cUtil
 import urllib,re,urllib2
 import xbmcgui
 import xbmc
+import random
+
+
 #from resources.lib.dl_deprotect import DecryptDlProtect
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
@@ -557,31 +560,33 @@ def Display_protected_link():
 
     oParser = cParser()
 
-    #xbmc.log(sUrl)
+    #cConfig().log(sUrl)
 
-    code = {
-        '123455600123455602123455610123455615': 'http://uptobox.com/',
-        '1234556001234556071234556111234556153': 'http://turbobit.net/',
-        '123455600123455605123455615': 'http://ul.to/',
-        '123455600123455608123455610123455615': 'http://nitroflare.com/',
-        '123455601123455603123455610123455615123455617': 'https://1fichier.com/?',
-        '123455600123455606123455611123455615': 'http://rapidgator.net/'
-    }
+    #Ne marche pas
+    if (False):
+        code = {
+            '123455600123455602123455610123455615': 'http://uptobox.com/',
+            '1234556001234556071234556111234556153': 'http://turbobit.net/',
+            '123455600123455605123455615': 'http://ul.to/',
+            '123455600123455608123455610123455615': 'http://nitroflare.com/',
+            '123455601123455603123455610123455615123455617': 'https://1fichier.com/?',
+            '123455600123455606123455611123455615': 'http://rapidgator.net/'
+        }
 
-    for k in code:
-        match = re.search(k+'(.+)$', sUrl)
-        if match:
-            sHosterUrl = code[k] + match.group(1)
-            sHosterUrl = sHosterUrl.replace('123455615', '/')
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            sTitle = sMovieTitle 
-            if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(sTitle)
-                oHoster.setDisplayName(sDisplayTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-            oGui.setEndOfDirectory()
-            return
+        for k in code:
+            match = re.search(k+'(.+)$', sUrl)
+            if match:
+                sHosterUrl = code[k] + match.group(1)
+                sHosterUrl = sHosterUrl.replace('123455615', '/')
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                sTitle = sMovieTitle 
+                if (oHoster != False):
+                    sDisplayTitle = cUtil().DecoTitle(sTitle)
+                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setFileName(sTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                oGui.setEndOfDirectory()
+                return
     
     #Est ce un lien dl-protect ?
     if 'dl-protecte' in sUrl:
@@ -684,78 +689,102 @@ def CutPremiumlinks(sHtmlContent):
     return sHtmlContent    
 
 def DecryptDlProtecte(url):
-    #xbmc.log('DecryptDlProtecte')
+        
+    cConfig().log('DecryptDlProtecte : ' + url)
  
-    if not (url): return ''
-    #print url
-    headers = {
-    'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0',
+    if not (url):
+        return ''
+        
+    url=url.replace('https','http')
+
+    headersBase = {
+    'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0',
     'Referer' : url ,
-    'Origin' : 'https://www.dl-protecte.com',
-    #'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    #'Origin' : 'https://www.dl-protecte.com',
+    'Accept' : 'application/json, text/javascript, */*; q=0.01',
     'Accept-Language': 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4',
     #'Pragma' : '',
-    #'Accept-Charset' : '',
-    #'Content-Type' : 'application/x-www-form-urlencoded',
+    #'Accept-Charset' : ''
     }
-    url2 = 'https://www.dl-protecte.com/php/Qaptcha.jquery.php'
+    url2 = 'http://www.dl-protecte.com/php/Qaptcha.jquery.php'
     
-    query_args = ( ( 'action' , 'qaptcha' ) , ('qaptcha_key' , 'YnJYHKk4xYUUu4uWQdxxuH@JEJ2yrmJS' ) )
+    #Make random key
+    s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN_-#@";
+    RandomKey = ''.join(random.choice(s) for i in range(32))
+    
+    query_args = ( ( 'action' , 'qaptcha' ) , ('qaptcha_key' , RandomKey ) )
     data = urllib.urlencode(query_args)
     
-    request = urllib2.Request(url2,data,headers)
+    #Creation Header
+    headers1 = dict(headersBase)
+    headers1.update({'X-Requested-With':'XMLHttpRequest'})
+    headers1.update({'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'})
     
+    #Requete
+    request = urllib2.Request(url2,data,headers1)
     try: 
         reponse = urllib2.urlopen(request,timeout = 5)
     except urllib2.URLError, e:
         cGui().showInfo("Erreur", 'Site Dl-Protecte HS' , 5)
-        print e.read()
-        print e.reason
+        cConfig().log( e.read() )
+        cConfig().log( e.reason )
         return ''
     except urllib2.HTTPError, e:
         cGui().showInfo("Erreur", 'Site Dl-Protecte HS' , 5)
-        print e.read()
-        print e.reason
+        cConfig().log( e.read() )
+        cConfig().log( e.reason )
         return ''
     except timeout:
-        print 'timeout'
+        cConfig().log('timeout')
         cGui().showInfo("Erreur", 'Site Dl-Protecte HS' , 5)
         return ''
     
-    sHtmlContent = reponse.read()
-    #print sHtmlContent
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
+    sHtmlContent = reponse.read() 
       
     #Recuperatioen et traitement cookies ???
     cookies=reponse.info()['Set-Cookie']
-    print cookies
     c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);',cookies)
-
     if not c2:
-        print 'Probleme de cookies'
+        cConfig().log( 'Probleme de cookies' )
         return ''
     cookies = ''
     for cook in c2:
         cookies = cookies + cook[0] + '=' + cook[1] + ';'
         
-    print cookies
-
     reponse.close()
     
-    #tempo necessaire
+    if not '"error":false' in sHtmlContent:
+        cConfig().log( 'Captcha rate' )
+        cConfig().log( sHtmlContent )
+        return
+    
+    #Creation Header
+    headers2 = dict(headersBase)
+    
+    #tempo pas necessaire
     #cGui().showInfo("Patientez", 'Decodage en cours' , 2)
     #xbmc.sleep(1000)
         
-    query_args = ( ( 'YnJYHKk4xYUUu4uWQdxxuH@JEJ2yrmJS' , '' ) , ('submit' , 'Valider' ) )
-    data = urllib.urlencode(query_args)
+    #Ancienne methode avec POST
+    #query_args = ( ( 'YnJYHKk4xYUUu4uWQdxxuH@JEJ2yrmJS' , '' ) , ('submit' , 'Valider' ) )
+    #data = urllib.urlencode(query_args)
+    
+    #Nouvelle methode avec multipart
+    multipart_form_data = { RandomKey : '', 'submit' : 'Valider'  }
+    data, headersMulti = encode_multipart(multipart_form_data, {})
+    headers2.update(headersMulti)
         
     #rajout des cookies
-    headers.update({'Cookie': cookies})
+    headers2.update({'Cookie': cookies})
+    
+    #Modifications
+    headers2.update({'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'})
 
-    request = urllib2.Request(url,data,headers)
-
+    #cConfig().log( headers2)
+    #cConfig().log( data )
+    
+    #Requete
+    request = urllib2.Request(url,data,headers2)
     try: 
         reponse = urllib2.urlopen(request)
     except urllib2.URLError, e:
@@ -763,9 +792,92 @@ def DecryptDlProtecte(url):
         print e.reason
         
     sHtmlContent = reponse.read()
-    #print sHtmlContent
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
+
     reponse.close()
     
     return sHtmlContent
-	
-    return ''
+
+#******************************************************************************
+#from http://code.activestate.com/recipes/578668-encode-multipart-form-data-for-uploading-files-via/
+
+"""Encode multipart form data to upload files via POST."""
+
+def encode_multipart(fields, files, boundary=None):
+    r"""Encode dict of form fields and dict of files as multipart/form-data.
+    Return tuple of (body_string, headers_dict). Each value in files is a dict
+    with required keys 'filename' and 'content', and optional 'mimetype' (if
+    not specified, tries to guess mime type or uses 'application/octet-stream').
+
+    >>> body, headers = encode_multipart({'FIELD': 'VALUE'},
+    ...                                  {'FILE': {'filename': 'F.TXT', 'content': 'CONTENT'}},
+    ...                                  boundary='BOUNDARY')
+    >>> print('\n'.join(repr(l) for l in body.split('\r\n')))
+    '--BOUNDARY'
+    'Content-Disposition: form-data; name="FIELD"'
+    ''
+    'VALUE'
+    '--BOUNDARY'
+    'Content-Disposition: form-data; name="FILE"; filename="F.TXT"'
+    'Content-Type: text/plain'
+    ''
+    'CONTENT'
+    '--BOUNDARY--'
+    ''
+    >>> print(sorted(headers.items()))
+    [('Content-Length', '193'), ('Content-Type', 'multipart/form-data; boundary=BOUNDARY')]
+    >>> len(body)
+    193
+    """
+    
+    import mimetypes
+    import random
+    import string
+    
+    _BOUNDARY_CHARS = string.digits + string.ascii_letters   
+    
+    def escape_quote(s):
+        return s.replace('"', '\\"')
+
+    if boundary is None:
+        boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(30))
+    lines = []
+
+    for name, value in fields.items():
+        lines.extend((
+            '--{0}'.format(boundary),
+            'Content-Disposition: form-data; name="{0}"'.format(escape_quote(name)),
+            '',
+            str(value),
+        ))
+
+    for name, value in files.items():
+        filename = value['filename']
+        if 'mimetype' in value:
+            mimetype = value['mimetype']
+        else:
+            mimetype = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
+        lines.extend((
+            '--{0}'.format(boundary),
+            'Content-Disposition: form-data; name="{0}"; filename="{1}"'.format(
+                    escape_quote(name), escape_quote(filename)),
+            'Content-Type: {0}'.format(mimetype),
+            '',
+            value['content'],
+        ))
+
+    lines.extend((
+        '--{0}--'.format(boundary),
+        '',
+    ))
+    body = '\r\n'.join(lines)
+
+    headers = {
+        'Content-Type': 'multipart/form-data; boundary={0}'.format(boundary),
+        'Content-Length': str(len(body)),
+    }
+
+    return (body, headers)
