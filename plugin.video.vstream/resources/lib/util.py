@@ -363,13 +363,13 @@ def VSlang(lang):
     #util.VSlang(30003)
     return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang)).decode("utf-8")
     
-def VSshowYear(sUrl):
+def VSshowYear(sUrl,endswithslash = ''):
     lstYear = []
     lstUrl = []
     for i in reversed(xrange(1936,2018)):
         lstYear.append(str(i))   
-        lstUrl.append(sUrl+str(i)+'/')
-        
+        lstUrl.append(sUrl+str(i)+endswithslash)
+   
     ret = VScreateDialogSelect(lstYear,sTitle='Sélectionner une année')
     if (ret > -1):
         return lstUrl[ret]
