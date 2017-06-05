@@ -30,7 +30,6 @@ SERIE_NEWS = (URL_MAIN + 'category/series-tv/', 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'most-viewed/', 'showMovies')
 SERIE_COMMENTS = (URL_MAIN + 'most-popular/', 'showMovies')
 SERIE_NOTES = (URL_MAIN + 'most-like/', 'showMovies')
-SERIE_LIST = (URL_MAIN + 'category/series-tv/series-streaming-vf/', 'showList')
 SERIE_VFS = (URL_MAIN + 'category/series-tv/series-streaming-vf/', 'showMovies')
 SERIE_VOSTFR = (URL_MAIN + 'series-tv/series-streaming-vostfr/', 'showMovies')
 
@@ -74,8 +73,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Séries (Les mieux Notés)', 'series_notes.png', oOutputParameterHandler)
 	
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste)', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries (Liste)', 'series.png', oOutputParameterHandler)
 	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
@@ -132,8 +131,8 @@ def showGenres():
     liste.append( ['Thriller',URL_MAIN + 'category/films/thriller/'] )
     liste.append( ['Western',URL_MAIN + 'category/films/western/'] )
     liste.append( ['VOSTFR',URL_MAIN + 'category/films/vostfr-films/'] )
-    liste.append( ['BLURAY 1080p/720p',URL_MAIN + 'category/films/bluray-3d/'] )
-    liste.append( ['BLURAY 3D',URL_MAIN + 'category/films/western/'] )
+    liste.append( ['BLURAY 1080p/720p',URL_MAIN + 'category/films/bluray-1080p-720p/'] )
+    liste.append( ['BLURAY 3D',URL_MAIN + 'category/films/bluray-3d/'] )
     liste.append( ['Emissions TV',URL_MAIN + 'category/emissions-tv/'] )
 
     for sTitle,sUrl in liste:
@@ -322,12 +321,14 @@ def showHosters(sLoop = False):
     aResult2 = re.findall( sPattern, sHtmlContent)
 
     #3eme version
-    sPattern = '<a class="large.+?href="([^<>"]+?)" target="_blank">'
+    sPattern = '<a class="large.+?href="([^<>"]+?)" target="(?:_blank|vid)"'
     aResult3 = re.findall( sPattern, sHtmlContent)
 
     #fusion des resultats
     aResult = []
-    aResult = aResult1 + aResult2 + aResult3
+    aResult = list(set( aResult1 + aResult2 + aResult3 ))
+    
+    cConfig().log(str(aResult))
         
     #Si il y a rien a afficher c'est peut etre une serie
     if (len(aResult) == 0) and (sLoop == False):
