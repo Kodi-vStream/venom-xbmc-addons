@@ -328,7 +328,7 @@ def showHosters(sLoop = False):
     aResult = []
     aResult = list(set( aResult1 + aResult2 + aResult3 ))
     
-    cConfig().log(str(aResult))
+    #cConfig().log(str(aResult))
         
     #Si il y a rien a afficher c'est peut etre une serie
     if (len(aResult) == 0) and (sLoop == False):
