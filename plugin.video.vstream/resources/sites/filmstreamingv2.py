@@ -12,13 +12,19 @@ from resources.lib.config import cConfig
 import re
 
 SITE_IDENTIFIER = 'filmstreamingv2'
-SITE_NAME = 'Filmstreamingv2'
+SITE_NAME = 'Films Streaming V2'
 SITE_DESC = 'Film streaming (Version 2) - Premier site de streaming film VF en HD'
  
 URL_MAIN = 'http://www.filmstreamingv2.com/'
 
-MOVIE_NEWS = (URL_MAIN+'xfsearch/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'xfsearch/', 'showMovies')
+MOVIE_SAGAS = (URL_MAIN + 'les-sagas-de-films.html', 'showMoviesHtml')
+MOVIE_MARVEL = (URL_MAIN + 'telecharger-les-films-de-lunivers-marvel.html', 'showMoviesHtml')
+MOVIE_JAMESB = (URL_MAIN + 'integrale-james-bond-films-collection-complete.html', 'showMoviesHtml')
+MOVIE_TOP = (URL_MAIN + 'top-250-imdb.html', 'showMoviesHtml')
 MOVIE_GENRES = (True, 'showGenres')
+
+ANIM_ENFANTS = (URL_MAIN + 'les-films-disney-en-streaming.html', 'showMoviesHtml')
 
 URL_SEARCH = (URL_MAIN + '?do=search&mode=advanced&subaction=search&titleonly=3&story=')
 FUNCTION_SEARCH = 'showMovies'
@@ -35,8 +41,28 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_SAGAS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_SAGAS[1], 'Films (Sagas)', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MARVEL[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MARVEL[1], 'Films (Marvel)', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_JAMESB[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_JAMESB[1], 'Films (Saga James Bond)', 'films.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP[1], 'Films (Top 250 IMDB)', 'star.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ENFANTS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ENFANTS[1], 'Les Walt Disney', 'animes_enfants.png', oOutputParameterHandler)
     
     oGui.setEndOfDirectory()
 
@@ -52,7 +78,7 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
- 
+	
     liste = []
     liste.append( ['Action',URL_MAIN + 'xfsearch/action'] )
     liste.append( ['Animation',URL_MAIN + 'xfsearch/animation'] )
@@ -63,12 +89,12 @@ def showGenres():
     liste.append( ['Drame',URL_MAIN + 'xfsearch/drame'] )
     liste.append( ['Famille',URL_MAIN + 'xfsearch/famille'] )
     liste.append( ['Fantastique',URL_MAIN + 'xfsearch/fantastique'] )
-    liste.append( ['Fiction',URL_MAIN + 'xfsearch/fiction'] )
     liste.append( ['Historique',URL_MAIN + 'xfsearch/historique'] )
     liste.append( ['Horreur',URL_MAIN + 'xfsearch/horreur'] )
     liste.append( ['Musical',URL_MAIN + 'xfsearch/musical'] )
     liste.append( ['Policier',URL_MAIN + 'xfsearch/policier'] )
     liste.append( ['Romance',URL_MAIN + 'xfsearch/romance'] )
+    liste.append( ['Science fiction',URL_MAIN + 'xfsearch/fiction'] )
     liste.append( ['Thriller',URL_MAIN + 'xfsearch/thriller'] )
     liste.append( ['Western',URL_MAIN + 'xfsearch/western'] )
                
@@ -77,14 +103,14 @@ def showGenres():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-       
+        
     oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+	
     if sSearch:
         sUrl = URL_SEARCH + sSearch
-        
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -104,19 +130,18 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-            sQual = aEntry[2]
-            sQual = ' ('+ sQual + ')'
-            sTitle = aEntry[1]
-            sDisplayTitle = cUtil().DecoTitle(sTitle + sQual)
-            sThumbnail = str(aEntry[0])
-            if 'uploads/posts' in sThumbnail:
-                sThumbnail = URL_MAIN + sThumbnail
+            sQual = ' (' + aEntry[2] + ')'
+            sTitle = aEntry[1] + sQual
+            sUrl = aEntry[3]
+            sThumb = aEntry[0]
+            if not 'http' in sThumb:
+                sThumb = URL_MAIN[:-1] + sThumb
             
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[3]))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail',sThumbnail )
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
             
         cConfig().finishDialog(dialog)
 
@@ -142,8 +167,81 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
-def showHosters():
+def showMoviesHtml():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '<li class="tops-item"><a href="([^<]+)">.+?<img src="([^<]+)" alt="(.+?)"/>'
+	
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+            sTitle = aEntry[2]
+            sUrl2 = aEntry[0]
+            sThumb = aEntry[1]
+            if not 'http' in sThumb:
+                sThumb = URL_MAIN[:-1] + sThumb
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+			
+            if '/les-sagas-' in sUrl:
+			    oGui.addMovie(SITE_IDENTIFIER, 'showSagas', sTitle, '', sThumb, '', oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+    oGui.setEndOfDirectory()
+
+def showSagas():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '<span style="color:.+?">([^<]+)</span>.+?<a href="([^<]+)">.+?<img src="(.+?)".+?>'
+    
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+	
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+            sTitle = aEntry[0]
+            sUrl = aEntry[1]
+            sThumb = aEntry[2]
+            if not 'http' in sThumb:
+                sThumb = URL_MAIN[:-1] + sThumb
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+			
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+    oGui.setEndOfDirectory()
+
+def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -152,7 +250,6 @@ def showHosters():
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
     oParser = cParser()
 
     sPattern = '<iframe.+?src="([^"]+)"'
@@ -161,12 +258,11 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sHosterUrl = str(aEntry)
-            sHosterUrl = sHosterUrl.replace('//ok.ru','https://ok.ru')   
+            sHosterUrl = sHosterUrl.replace('//ok.ru','https://ok.ru')
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
             
-             
     oGui.setEndOfDirectory()
