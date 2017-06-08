@@ -50,7 +50,7 @@ msgstr "Couleur texte information"
 
 msgctxt "#30500"
 msgid "Select"
-msgstr "Séléctionner"
+msgstr "Sélectionner"
 
 msgctxt "#30501"
 msgid "Name"
@@ -166,11 +166,11 @@ msgstr "Choix Multiples"
 
 msgctxt "#30093"
 msgid "Select Search Engine"
-msgstr "Selectionner un Moteur de Recherche"
+msgstr "Sélectionner un Moteur de Recherche"
 
 msgctxt "#30094"
 msgid "Select your Sources"
-msgstr "Selectionner vos Sources"
+msgstr "Sélectionner vos Sources"
 
 msgctxt "#30101"
 msgid "News"
