@@ -276,8 +276,6 @@ def ShowPapyLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     oParser = cParser()
-    
-    cConfig().log(sUrl)
 
     if 'papystreaming' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
@@ -294,14 +292,24 @@ def ShowPapyLink():
             #req.add_header('Referer', sUrl)
             response = urllib2.urlopen(req)
             sHosterUrl = response.geturl()
-            response.close()            
+            response.close()
             
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle )
-                oHoster.setDisplayName(sDisplayTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+            #lien youtube mais non resolvable, convertion
+            sPattern = 'docid=([a-zA-Z0-9]+)'
+            aResult = oParser.parse(sHosterUrl, sPattern)
+            if (aResult[0] == True):
+                sHosterUrl = 'https://drive.google.com/' + aResult[1][0]
+            
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    sDisplayTitle = cUtil().DecoTitle(sMovieTitle )
+                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+            else:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]Lien vidéo Non gere[/COLOR]')
+        else:
+            oGui.addText(SITE_IDENTIFIER, '[COLOR red]Lien vidéo Non gere[/COLOR]')
 
     elif 'belike.pw' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
