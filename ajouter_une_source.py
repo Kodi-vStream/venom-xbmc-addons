@@ -215,33 +215,6 @@ def showSerieAnnees():
     oGui.setEndOfDirectory()
 
 
-def showAnimesAnnees():#recuperer automatiquement par regex
-    oGui = cGui()
-    
-    sStart = '<h3>Année de sortie <span class="icon-sort">'#regex de debut de selection
-    sEnd = '<h3>Qualité <span class="icon-sort">'#regex de fin de selection
-	
-    oParser = cParser()
-    
-    oRequestHandler = cRequestHandler(URL_MAIN)
-    sHtmlContent = oRequestHandler.request()
-
-    sHtmlContent = oParser.abParse(sHtmlContent,sStart,sEnd)
-
-    sPattern = '<li><a href="([^"]+)">(.+?)</a>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-            sUrl = aEntry[0]
-            sTitle = aEntry[1]
-            
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'annees.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-
 def showMovies(sSearch = ''):
     oGui = cGui() #ouvre l'affichage
     if sSearch: #si une url et envoyer directement grace a la fonction showSearch
