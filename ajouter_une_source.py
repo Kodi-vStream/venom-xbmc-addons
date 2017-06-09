@@ -19,8 +19,8 @@ import xbmc
 
 #Si vous créez une source et la deposez dans le dossier "sites" elle sera directement visible sous xbmc
 
-SITE_IDENTIFIER = 'full_streaming_org' #identifant (nom de votre fichier) remplacez les espaces et les . par _ AUCUN CARACTERE SPECIAL
-SITE_NAME = 'Full-Streaming.org' #nom que xbmc affiche
+SITE_IDENTIFIER = 'ajouter_une_source' #identifant (nom de votre fichier) remplacez les espaces et les . par _ AUCUN CARACTERE SPECIAL
+SITE_NAME = 'ajouter_une_source' #nom que xbmc affiche
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent' #description courte de votre source
 
 URL_MAIN = 'http://le_site.org/' #url de votre source
@@ -29,29 +29,36 @@ URL_MAIN = 'http://le_site.org/' #url de votre source
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
+# menu films existant dans l'acceuil (Home)
 MOVIE_NEWS = (URL_MAIN , 'showMovies') #films (derniers ajouts)
 MOVIE_MOVIE = (URL_MAIN + 'url', 'showMovies') #films vrac
-MOVIE_GENRES = (True, 'showGenres') #films genres
-MOVIE_ANNEES = (True, 'showMovieAnnees') #films (par années)
+MOVIE_HD = (URL_MAIN + 'url', 'showMovies') #films HD
 MOVIE_VIEWS = (URL_MAIN + 'url', 'showMovies') #films (les plus vus)
 MOVIE_COMMENTS = (URL_MAIN + 'url', 'showMovies') #films (les plus commentés)
 MOVIE_NOTES = (URL_MAIN + 'url', 'showMovies') #films (les mieux notés)
+MOVIE_GENRES = (True, 'showGenres') #films genres
+MOVIE_ANNEES = (True, 'showMovieAnnees') #films (par années)
+#menu supplementaire non gerer par l'acceuil
 MOVIE_VF = (URL_MAIN + 'url', 'showMovies') #films VF
 MOVIE_VOSTFR = (URL_MAIN + 'url', 'showMovies') #films VOSTFR
 
+# menu serie existant dans l'acceuil (Home)
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies') #séries (derniers ajouts)
+SERIE_HD = (URL_MAIN + 'series/', 'showMovies') #séries HD
 SERIE_SERIES = (URL_MAIN + 'series/', 'showMovies') #séries vrac
 SERIE_GENRES = (True, 'showGenres') #séries genres
 SERIE_ANNEES = (True, 'showSerieAnnees') #séries (par années)
 SERIE_VFS = (URL_MAIN + 'series/', 'showMovies') #séries VF
 SERIE_VOSTFRS = (URL_MAIN + 'series/', 'showMovies') #séries Vostfr
 
+
 ANIM_NEWS = (URL_MAIN + 'animes/', 'showMovies') #animés (derniers ajouts)
 ANIM_ANIMS = (URL_MAIN + 'animes', 'showMovies') #animés vrac
 ANIM_GENRES = (True, 'showGenres') #anime genres
+ANIM_ANNEES = (True, 'showAnimesAnnees') #anime (par années)
 ANIM_VFS = (URL_MAIN + 'animes', 'showMovies') #animés VF
 ANIM_VOSTFRS = (URL_MAIN + 'animes', 'showMovies') #animés VOSTFR
-ANIM_MOVIES = (URL_MAIN + 'animes', 'showMovies') #animés film
+ANIM_ENFANTS = (URL_MAIN + 'animes', 'showMovies')
 
 DOC_DOCS = (URL_MAIN + 'url', 'showMovies') #Documentaire
 SPORT_SPORTS = (URL_MAIN + 'url', 'showMovies') #sport
@@ -73,8 +80,8 @@ def load(): #fonction chargee automatiquement par l'addon l'index de votre navig
     #ici la function showMovies a besoin d'une url ici le racourci MOVIE_NEWS
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIES[1], 'Films', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -184,7 +191,7 @@ def showGenres(): #affiche les genres
     oGui.setEndOfDirectory() 
 
 
-def showMovieAnnees():
+def showMovieAnnees():#creer une liste inversée d'annees
     oGui = cGui()
 	
     for i in reversed (xrange(1913, 2018)):
@@ -397,4 +404,4 @@ def seriesHosters(): #cherche les episodes de series
                 
     oGui.setEndOfDirectory()
 
-#Voila c'est un peux brouillon mais ça devrait aider un peu, n'hesitez pas a poser vos question et meme a partager vos sources.
+#Voila c'est un peux brouillon mais ça devrait aider un peu, n'hesitez pas a poser vos questions et meme a partager vos sources.
