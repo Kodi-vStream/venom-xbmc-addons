@@ -295,7 +295,7 @@ def ShowPapyLink():
             response.close()
             
             #lien youtube mais non resolvable, convertion
-            sPattern = 'docid=([a-zA-Z0-9]+)'
+            sPattern = 'docid=([\w-]+)'
             aResult = oParser.parse(sHosterUrl, sPattern)
             if (aResult[0] == True):
                 sHosterUrl = 'https://drive.google.com/' + aResult[1][0]
