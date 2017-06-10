@@ -331,7 +331,7 @@ def Showlink():
             
             #lien youtube mais non resolvable, convertion
             if 'docid' in sUrl:
-                sPattern = 'docid=([a-zA-Z0-9]+)'
+                sPattern = 'docid=([\w-]+)'
                 aResult = re.findall(sPattern,sUrl)
                 if (aResult):
                     sUrl = 'https://drive.google.com/' + aResult[0]
