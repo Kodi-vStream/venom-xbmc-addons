@@ -291,7 +291,7 @@
         
         <setting id="plugin_streamase_com" type="bool" label="Streamase (Films, Séries, Animés)" default="true"/>
         <setting visible="false" id="search1_streamase_com" type="bool" label="30077" default="true"/>
-        <setting visible="false" id="searché_streamase_com" type="bool" label="30089" default="true"/>
+        <setting visible="false" id="search2_streamase_com" type="bool" label="30089" default="true"/>
         <setting visible="false" id="search3_streamase_com" type="bool" label="30090" default="true"/>
         
         <setting id="plugin_streamay_bz" type="bool" label="Streamay (Films, Séries, Animés)" default="true"/>
