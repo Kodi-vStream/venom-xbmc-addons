@@ -318,7 +318,24 @@ def Showlink():
         aResult = re.findall(sPattern,sHtmlContent)
         if (aResult):
             sUrl = aResult[0]
-
+            
+    if 'belike.pw' in sUrl:
+        
+        oRequest = cRequestHandler(sUrl)
+        sHtmlContent = oRequest.request()
+        
+        sPattern = 'src="([^"]+)"'
+        aResult = re.findall(sPattern,sHtmlContent)
+        if (aResult):
+            sUrl = aResult[0]
+            
+            #lien youtube mais non resolvable, convertion
+            if 'docid' in sUrl:
+                sPattern = 'docid=([\w-]+)'
+                aResult = re.findall(sPattern,sUrl)
+                if (aResult):
+                    sUrl = 'https://drive.google.com/' + aResult[0]
+            
     oHoster = cHosterGui().checkHoster(sUrl)
 
     if (oHoster != False):
@@ -371,20 +388,22 @@ def serieHosters():
                 sHosterUrl = aEntry[1]
                 sHosterName = ''
 
-                if '9animeonline' in sHosterUrl or 'sibeol.com' in sHosterUrl:
+                if '9animeonline' in sHosterUrl or 'sibeol.com' in sHosterUrl or 'belike.pw' in sHosterUrl:
                     sHosterName = 'Google'
 
                 else:              
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    sHosterName = str(oHoster.getDisplayName())
+                    if (oHoster != False):
+                        sHosterName = str(oHoster.getDisplayName())
 
-                sDisplayTitle = sTitle + '[' + sHosterName + ']'
+                if sHosterName:
+                    sDisplayTitle = sTitle + '[' + sHosterName + ']'
 
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-                oGui.addTV(SITE_IDENTIFIER, 'Showlink', sDisplayTitle, '', sThumbnail,'', oOutputParameterHandler)
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+                    oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                    oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+                    oGui.addTV(SITE_IDENTIFIER, 'Showlink', sDisplayTitle, '', sThumbnail,'', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
     else:

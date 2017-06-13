@@ -22,8 +22,8 @@ SITE_NAME = '[COLOR violet]Free-Téléchargement[/COLOR]'
 SITE_DESC = 'Fichiers en DDL, HD, Films, Séries, Mangas Etc...'
 
 URL_MAIN = 'http://www.free-telechargement.com/'
-URL_PROTECT = 'http://liens.free-telechargement.com/'
-URL_PROTECTBIS = 'http://liens.free-telechargement.org/'
+URL_PROTECT = 'http://liens.free-telechargement.'
+
 #URL_SEARCH_MOVIES_SD = (URL_MAIN + '1/recherche/1.html?rech_cat=video&rech_fiche=', 'showMovies')
 #URL_SEARCH_MOVIES_HD = (URL_MAIN + '1/recherche/1.html?rech_cat=Films+HD&rech_fiche=', 'showMovies')
 
@@ -631,7 +631,7 @@ def Display_protected_link():
     oParser = cParser()
 	
     #Est ce un lien dl-protect ?
-    if URL_PROTECT in sUrl or URL_PROTECTBIS in sUrl:
+    if URL_PROTECT in sUrl:
         sHtmlContent = DecryptddlProtect(sUrl)
         if sHtmlContent:
             #Si redirection
@@ -669,7 +669,11 @@ def Display_protected_link():
 def DecryptddlProtect(url):
 
     if not (url): return ''
-    
+        
+    #Get host
+    tmp = url.split('/')
+    host = tmp[0] + '//' + tmp[2] + '/'
+
     cookies = ''
     #try to get previous cookie
     cookies = GestionCookie().Readcookie('liens_free-telechargement_org')
@@ -689,10 +693,10 @@ def DecryptddlProtect(url):
             sHtmlContent = oRequestHandler.request()
             
         s = re.findall('src=".\/([^<>"]+?)" alt="CAPTCHA Image"',sHtmlContent)
-        if URL_PROTECT in s[0]:
+        if host in s[0]:
             image = s[0]
         else:
-            image = URL_PROTECT + s[0]
+            image = host + s[0]
 
         captcha,cookies2 = get_response(image,cookies)
         cookies = cookies + '; ' + cookies2

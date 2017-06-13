@@ -280,39 +280,36 @@ def ShowPapyLink():
     if 'papystreaming' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        sHtmlContent = sHtmlContent.replace('http://www.film-streaming.mmfilmes.com/embed2.php?f=','')
-
-        sPattern = "var links = *'(.+?)';"
+        
+        sPattern = 'src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            if 'mmfilmes' in aResult[1][0]:
-                sDisplayTitle = sMovieTitle + ' [COLOR skyblue]PapyLink[/COLOR]'
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', aResult[1][0])
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-                oGui.addMisc(SITE_IDENTIFIER, 'ShowPapyLink', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
-            else:
-                sHtmlContent = base64.b64decode(aResult[1][0])
-                sPattern = '"src":"([^"]+)",.+?"label":"(\d+)"'
-                aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0] == True):
-                    link2 = aResult[1][0][0]
-                    sLabel = aResult[1][0][1]
-
-                    import urllib2
-                    req = urllib2.Request(link2,None,headers)
-                    req.add_header('Referer', sUrl)
-                    response = urllib2.urlopen(req)
-                    sHosterUrl = response.geturl()
-                    response.close()
-
+            sUrl = aResult[1][0]
+            
+            #get redirected url
+            import urllib2
+            req = urllib2.Request(sUrl,None,headers)
+            #req.add_header('Referer', sUrl)
+            response = urllib2.urlopen(req)
+            sHosterUrl = response.geturl()
+            response.close()
+            
+            #lien youtube mais non resolvable, convertion
+            sPattern = 'docid=([\w-]+)'
+            aResult = oParser.parse(sHosterUrl, sPattern)
+            if (aResult[0] == True):
+                sHosterUrl = 'https://drive.google.com/' + aResult[1][0]
+            
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
-                    sDisplayTitle = cUtil().DecoTitle(sMovieTitle + '[' + sLabel + ']')
+                    sDisplayTitle = cUtil().DecoTitle(sMovieTitle )
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+            else:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]Lien vidéo Non gere[/COLOR]')
+        else:
+            oGui.addText(SITE_IDENTIFIER, '[COLOR red]Lien vidéo Non gere[/COLOR]')
 
     elif 'belike.pw' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
