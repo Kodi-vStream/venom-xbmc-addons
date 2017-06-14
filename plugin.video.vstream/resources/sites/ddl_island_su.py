@@ -448,7 +448,10 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             oOutputParameterHandler.addParameter('sCom', sCom)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
+            if 'series' in sUrl2:
+                oGui.addTV(SITE_IDENTIFIER, 'showSeriesReleases', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showMoviesReleases', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
 
         sNextPage = __checkForNextPage(sHtmlContent)#cherche la page suivante
         if (sNextPage != False):
@@ -479,16 +482,6 @@ def __checkForNextPage(sHtmlContent):
             return URL_MAIN + id + aResult[1][0]
 
     return False
-
-def showLinks():
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    if 'series' in sUrl:
-        showSeriesReleases()
-    else:
-        showMoviesReleases()
-
-    return
 
 def showMoviesReleases():
     oInputParameterHandler = cInputParameterHandler()
@@ -575,7 +568,7 @@ def ShowSaisons():
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oOutputParameterHandler.addParameter('sCom', sCom)
-            oGui.addMovie(SITE_IDENTIFIER, 'showSeriesReleases', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showSeriesReleases', sTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -633,7 +626,7 @@ def showSeriesReleases():
                 oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sCom, oOutputParameterHandler)             
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sCom, oOutputParameterHandler)             
 
         cConfig().finishDialog(dialog)
 
@@ -672,7 +665,7 @@ def showHosters():
             oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
