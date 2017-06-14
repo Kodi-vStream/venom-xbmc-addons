@@ -99,16 +99,18 @@ class cFav:
         else:
             sCat = '5'
         
-        try:
-            row = cDb().get_favorite()
+        row = cDb().get_favorite()
 
-            for data in row:
+        for data in row:
 
-                try:
-                    title = data[1].encode('utf-8')
-                except:
-                    title = data[1]
-                                        
+            try:
+                title = data[1].encode('utf-8')
+            except:
+                title = data[1]
+                
+                
+            try:
+                                    
                 siteurl = urllib.unquote_plus(data[2])
                 site = data[3]
                 function = data[4]
@@ -158,13 +160,16 @@ class cFav:
                         oGui.addFolder(oGuiElement, oOutputParameterHandler)
                         
                     #oGui.addFav(site, function, title, "mark.png", thumbnail, fanart, oOutputParameterHandler)
+                
+            except:
+                oGui.addDir(SITE_IDENTIFIER, 'DoNothing', '[COLOR red]ERROR[/COLOR]', 'films.png', oOutputParameterHandler)
+         
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('sCat', sCat)
+        oGui.addDir(SITE_IDENTIFIER, 'delFavourites', cConfig().getlanguage(30211), 'trash.png', oOutputParameterHandler)
              
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('sCat', sCat)
-            oGui.addDir(SITE_IDENTIFIER, 'delFavourites', cConfig().getlanguage(30211), 'trash.png', oOutputParameterHandler)
-                 
-            oGui.setEndOfDirectory()
-        except: pass
+        oGui.setEndOfDirectory()
+
         return
         
     def setFavorite(self):
