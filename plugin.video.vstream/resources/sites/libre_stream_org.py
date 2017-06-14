@@ -21,7 +21,7 @@ MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_QLT = (True, 'showQlt')
 
-SERIE_SERIES = (URL_MAIN + 'liste-des-series/', 'AlphaSearch')
+#SERIE_SERIES = (URL_MAIN + 'liste-des-series/', 'AlphaSearch')
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
 SERIE_VFS = (URL_MAIN + 'series/version-francaise/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'series/vostfr/', 'showMovies')
@@ -52,9 +52,10 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
+    #En panne au 14/06
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
+    #oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
