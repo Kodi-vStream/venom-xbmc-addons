@@ -46,7 +46,6 @@ class cGui():
     SITE_NAME = 'cGui'
     CONTENT = 'files'
     searchResults = []
-
     
     if cConfig().isKrypton():
         CONTENT = 'addons'
@@ -101,6 +100,7 @@ class cGui():
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
+    
         cGui.CONTENT = "movies"
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
@@ -234,11 +234,10 @@ class cGui():
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
     #afficher les liens non playable
-    def addFolder(self, oGuiElement, oOutputParameterHandler=''):
-            
+    def addFolder(self, oGuiElement, oOutputParameterHandler='',_isFolder=True):
+    
         #recherche append les reponses
         if  xbmcgui.Window(10101).getProperty('search') == 'true':
-
             import copy
             cGui.searchResults.append({'guiElement':oGuiElement,'params':copy.deepcopy(oOutputParameterHandler)})
             return
@@ -256,13 +255,21 @@ class cGui():
             if value:
                 callback(value)
 
-        if cGui.CONTENT == "movies" or cGui.CONTENT == "tvshows":
-            oListItem = self.createListItem(oGuiElement)
-            isFolder = False
-        else :
-            oListItem = self.createFolderListItem(oGuiElement)
-            isFolder = True
-            
+        oListItem = self.createListItem(oGuiElement)
+        oListItem.setProperty("IsPlayable", "false")
+
+        #affiche tag HD
+        if '1080' in oGuiElement.getTitle():
+            oListItem.addStreamInfo('video', { 'aspect': '1.78', 'width':1920 ,'height' : 1080 })
+        elif '720' in oGuiElement.getTitle():
+            oListItem.addStreamInfo('video', { 'aspect': '1.50', 'width':1280 ,'height' : 720 })
+        elif '2160'in oGuiElement.getTitle():
+            oListItem.addStreamInfo('video', { 'aspect': '1.78', 'width':3840 ,'height' : 2160 })
+        #oListItem.addStreamInfo('audio', {'language': 'fr'})       
+
+        # if oGuiElement.getMeta():
+            # oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
+
 
         sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)
 
@@ -289,28 +296,15 @@ class cGui():
 
         sPluginHandle = cPluginHandler().getPluginHandle();
 
-        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=isFolder)
+        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=_isFolder)
 
 
-    #listitem pour films series avec meta ect..
     def createListItem(self, oGuiElement):
 
         oListItem = xbmcgui.ListItem(oGuiElement.getTitle(), oGuiElement.getTitleSecond(), iconImage=oGuiElement.getIcon(), thumbnailImage=oGuiElement.getThumbnail())
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
         oListItem.setThumbnailImage(oGuiElement.getThumbnail())
         #oListItem.setIconImage(oGuiElement.getIcon())
-        
-                #affiche tag HD
-        if '1080' in oGuiElement.getTitle():
-            oListItem.addStreamInfo('video', { 'aspect': '1.78', 'width':1920 ,'height' : 1080 })
-        elif '720' in oGuiElement.getTitle():
-            oListItem.addStreamInfo('video', { 'aspect': '1.50', 'width':1280 ,'height' : 720 })
-        elif '2160'in oGuiElement.getTitle():
-            oListItem.addStreamInfo('video', { 'aspect': '1.78', 'width':3840 ,'height' : 2160 })
-        #oListItem.addStreamInfo('audio', {'language': 'fr'})       
-
-        # if oGuiElement.getMeta():
-            # oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
 
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey in aProperties.keys():
@@ -318,16 +312,6 @@ class cGui():
 
         return oListItem
 
-    #listitem pour dossiers sans meta sans info.
-    def createFolderListItem(self, oGuiElement):
-
-        oListItem = xbmcgui.ListItem(label=oGuiElement.getTitle())
-        oListItem.setArt({'icon': oGuiElement.getIcon(), 'thumb': oGuiElement.getThumbnail(), 'fanart': oGuiElement.getFanart()})
-        
-
-        return oListItem
-        
-        
     #affiche les liens playable
     def addHost(self, oGuiElement, oOutputParameterHandler=''):
         
@@ -549,9 +533,7 @@ class cGui():
         xbmcplugin.setPluginCategory(iHandler, "")
         xbmcplugin.setContent(iHandler, cGui.CONTENT)
         xbmcplugin.addSortMethod(iHandler, xbmcplugin.SORT_METHOD_NONE)
-
         xbmcplugin.endOfDirectory(iHandler, succeeded=True, cacheToDisc=True)
-        
         #reglage vue
         #50 = liste / 51 grande liste / 500 icone / 501 gallerie / 508 fanart /
         if (ForceViewMode):
@@ -673,9 +655,7 @@ class cGui():
         else:
             cDb().insert_watched(meta)
 
-        #xbmc.executebuiltin( 'Container.Refresh' )
-        from resources.lib import util
-        util.VSshowInfo('Marquer vu/Non vu', sTitle)
+        xbmc.executebuiltin( 'Container.Refresh' )
 
     def viewBA(self):
         oInputParameterHandler = cInputParameterHandler()
@@ -722,16 +702,11 @@ class cGui():
 
 
         sPluginPath = cPluginHandler().getPluginPath();
-        
-        #print oGuiElement.getCleanTitle()
 
         if (len(oGuiElement.getFunction()) == 0):
             sItemUrl = '%s?site=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), urllib.quote_plus(oGuiElement.getCleanTitle()), sParams)
         else:
-            if cGui.CONTENT == "movies" or cGui.CONTENT == "tvshows":
-                sItemUrl = '%s?site=%s&reload=true&function=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), oGuiElement.getFunction(), urllib.quote_plus(oGuiElement.getCleanTitle()), sParams)
-            else: 
-                sItemUrl = '%s?site=%s&function=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), oGuiElement.getFunction(), urllib.quote_plus(oGuiElement.getCleanTitle()), sParams)
+            sItemUrl = '%s?site=%s&function=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), oGuiElement.getFunction(), urllib.quote_plus(oGuiElement.getCleanTitle()), sParams)
 
         #print sItemUrl
         return sItemUrl
