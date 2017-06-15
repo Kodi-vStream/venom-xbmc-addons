@@ -65,7 +65,7 @@ msgid "Plugins on/off (1/3)"
 msgstr ""
 
 msgctxt "#30023"
-msgid "Plugins Preferences"
+msgid "[COLOR teal]Plugins Preferences[/COLOR]"
 msgstr ""
 
 msgctxt "#30024"
@@ -337,7 +337,7 @@ msgid "[COLOR red]Delete Bookmark[/COLOR]"
 msgstr ""
 
 msgctxt "#30210"
-msgid "Display Bookmark"
+msgid "[COLOR teal]Display Bookmark[/COLOR]"
 msgstr ""
 
 msgctxt "#30211"
@@ -509,4 +509,16 @@ msgstr ""
 
 msgctxt "#30415"
 msgid "[COLOR gold]Full season search[/COLOR]"
+msgstr ""
+
+msgctxt "#30416"
+msgid "[COLOR azure]Search History[/COLOR]"
+msgstr ""
+
+msgctxt "#30417"
+msgid "[COLOR orange]Search on Alluc_ee[/COLOR]"
+msgstr ""
+
+msgctxt "#30418"
+msgid "[COLOR green]Update available[/COLOR]"
 msgstr ""
