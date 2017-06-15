@@ -460,7 +460,7 @@ class cGui():
         self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','delFavouritesMenu','[COLOR red]'+cConfig().getlanguage(30209)+'[/COLOR]')
 
     def createContexMenuSettings(self, oGuiElement, oOutputParameterHandler= ''):
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'globalParametre','globalParametre','opensetting','[COLOR teal]'+cConfig().getlanguage(30023)+'[/COLOR]')
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'globalParametre','globalParametre','opensetting',cConfig().getlanguage(30023))
 
 
     def __createContextMenu(self, oGuiElement, oListItem):
@@ -481,7 +481,7 @@ class cGui():
         oContextItem = cContextElement()
         oContextItem.setFile('cFav')
         oContextItem.setSiteName('cFav')
-        oContextItem.setTitle('[COLOR teal]'+cConfig().getlanguage(30210)+'[/COLOR]')
+        oContextItem.setTitle(cConfig().getlanguage(30210))
         oContextItem.setFunction('getFavourites')
         oOutputParameterHandler = oContextItem.getOutputParameterHandler()
         sParams = oOutputParameterHandler.getParameterAsUri()
