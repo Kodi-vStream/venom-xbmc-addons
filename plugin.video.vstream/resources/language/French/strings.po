@@ -145,7 +145,7 @@ msgid "Custom search 4"
 msgstr "Recherche personnalisée 4"
 
 msgctxt "#30088"
-msgid "Visual Search"
+msgid "Visual search"
 msgstr "Recherche visuelle"
 
 msgctxt "#30089"
@@ -174,35 +174,35 @@ msgstr "Sélectionner vos Sources"
 
 msgctxt "#30101"
 msgid "News"
-msgstr "Derniers Ajouts"
+msgstr "Derniers ajouts"
 
 msgctxt "#30102"
 msgid "Most seeing"
-msgstr "Les plus Vus"
+msgstr "Les plus vus"
 
 msgctxt "#30103"
 msgid "Most commented"
-msgstr "Les plus Commentés"
+msgstr "Les plus commentés"
 
 msgctxt "#30104"
 msgid "Top rated"
-msgstr "Les mieux Notés"
+msgstr "Les mieux notés"
 
 msgctxt "#30105"
 msgid "Genre"
 msgstr "Genres"
 
 msgctxt "#30106"
-msgid "By Years"
-msgstr "Par Années"
+msgid "Years"
+msgstr "Années"
 
 msgctxt "#30107"
-msgid "VF"
-msgstr "VF"
+msgid "Vf"
+msgstr "Vf"
 
 msgctxt "#30108"
-msgid "VOSTFR"
-msgstr "VOSTFR"
+msgid "Vostfr"
+msgstr "Vostfr"
 
 msgctxt "#30109"
 msgid "Children"
@@ -217,12 +217,12 @@ msgid "Sport"
 msgstr "Sports"
 
 msgctxt "#30114"
-msgid "Web Video"
+msgid "Web video"
 msgstr "Vidéos du net"
 
 msgctxt "#30115"
-msgid "Television/Radio"
-msgstr "Télévision/Radio"
+msgid "Television Radio"
+msgstr "Télévision radio"
 
 msgctxt "#30116"
 msgid "All the sources"
@@ -230,7 +230,7 @@ msgstr "Toutes les sources"
 
 msgctxt "#30117"
 msgid "Television Replay"
-msgstr "Télévision Replay"
+msgstr "Télévision replay"
 
 msgctxt "#30120"
 msgid "Movies"
@@ -513,8 +513,8 @@ msgid "[COLOR gold]Full season search[/COLOR]"
 msgstr "[COLOR gold]Recherche saison complète[/COLOR]"
 
 msgctxt "#30416"
-msgid "[COLOR azure]Search History[/COLOR]"
-msgstr "[COLOR azure]Historique de Recherche[/COLOR]"
+msgid "[COLOR azure]Search history[/COLOR]"
+msgstr "[COLOR azure]Historique de recherche[/COLOR]"
 
 msgctxt "#30417"
 msgid "[COLOR orange]Search on Alluc_ee[/COLOR]"
