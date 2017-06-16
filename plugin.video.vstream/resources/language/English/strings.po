@@ -145,7 +145,7 @@ msgid "Custom search 4"
 msgstr ""
 
 msgctxt "#30088"
-msgid "Visual Search"
+msgid "Visual search"
 msgstr ""
 
 msgctxt "#30089"
@@ -193,15 +193,15 @@ msgid "Genre"
 msgstr ""
 
 msgctxt "#30106"
-msgid "By Years"
+msgid "Years"
 msgstr ""
 
 msgctxt "#30107"
-msgid "VF"
+msgid "Vf"
 msgstr ""
 
 msgctxt "#30108"
-msgid "VOSTFR"
+msgid "Vostfr"
 msgstr ""
 
 msgctxt "#30109"
@@ -217,11 +217,11 @@ msgid "Sport"
 msgstr ""
 
 msgctxt "#30114"
-msgid "Web Video"
+msgid "Web video"
 msgstr ""
 
 msgctxt "#30115"
-msgid "Television/Radio"
+msgid "Television radio"
 msgstr ""
 
 msgctxt "#30116"
@@ -229,7 +229,7 @@ msgid "All the sources"
 msgstr ""
 
 msgctxt "#30117"
-msgid "Television Replay"
+msgid "Television replay"
 msgstr ""
 
 msgctxt "#30120"
@@ -512,7 +512,7 @@ msgid "[COLOR gold]Full season search[/COLOR]"
 msgstr ""
 
 msgctxt "#30416"
-msgid "[COLOR azure]Search History[/COLOR]"
+msgid "[COLOR azure]Search history[/COLOR]"
 msgstr ""
 
 msgctxt "#30417"
