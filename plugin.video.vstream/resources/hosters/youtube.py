@@ -131,23 +131,22 @@ class cHoster(iHoster):
         
         oRequest = cRequestHandler('%s%s' % (URL_MAIN,sUrl))
         sHtmlContent = oRequest.request()
-
-        sPattern = 'Full Video<\/dt>(.+?)Video Only<\/dt><dd>'
-        sHtmlContent2 = re.search(sPattern,sHtmlContent,re.DOTALL)
-        if not sHtmlContent2:
+        
+        sHtmlContent1 = oParser.abParse(sHtmlContent,'>Download Pro</a></td>','<table class="result-table video-only"')
+        if not sHtmlContent1:
             return False,False
         
-        sPattern = '<a href="([^"]+)".+?alt=""/>([^<]+)<\/span>' 
-        aResult = oParser.parse(sHtmlContent2.group(1),sPattern)
+        sPattern = '<td class="al".+?">(.+?)</td>.+?<a href="([^"]+)"' 
+        aResult = oParser.parse(sHtmlContent1,sPattern)
         if (aResult[0] == True):
             # initialisation des tableaux
             url=[]
             qua=[]
             # Replissage des tableaux
             for i in aResult[1]:
-                b = re.sub('&title=.+','',i[0]) #testé xx fois ok
+                b = re.sub('&title=.+','',i[1]) #testé xx fois ok
                 url.append(str(b))
-                qua.append(str(i[1]))   
+                qua.append(str(i[0]))   
             # Si une seule url
             if len(url) == 1:
                 api_call = url[0]

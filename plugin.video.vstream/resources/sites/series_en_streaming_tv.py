@@ -91,7 +91,7 @@ def AlphaDisplay():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<a href=\'\.\.\/(serie\/.+?)\'>(' + sLetter + '[^<>]+?)<\/a><br>'
+    sPattern = '<a href=\'\.\.\/(serie\/[^\']+?)\'>(' + sLetter + '[^<>]+?)<\/a><br>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
