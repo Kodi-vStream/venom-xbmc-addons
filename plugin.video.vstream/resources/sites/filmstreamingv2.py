@@ -12,12 +12,12 @@ from resources.lib.config import cConfig
 import re
 
 SITE_IDENTIFIER = 'filmstreamingv2'
-SITE_NAME = 'Films Streaming V2'
+SITE_NAME = '[COLOR violet]Films Streaming V2[/COLOR]'
 SITE_DESC = 'Film streaming (Version 2) - Premier site de streaming film VF en HD'
  
 URL_MAIN = 'http://www.filmstreamingv2.com/'
 
-MOVIE_NEWS = (URL_MAIN + 'xfsearch/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
 MOVIE_SAGAS = (URL_MAIN + 'les-sagas-de-films.html', 'showMoviesHtml')
 MOVIE_MARVEL = (URL_MAIN + 'telecharger-les-films-de-lunivers-marvel.html', 'showMoviesHtml')
 MOVIE_JAMESB = (URL_MAIN + 'integrale-james-bond-films-collection-complete.html', 'showMoviesHtml')
@@ -248,6 +248,7 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
+    #recherche des liens de streaming
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
@@ -256,6 +257,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     print aResult
     if (aResult[0] == True):
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + 'Liens Streaming :' + '[/COLOR]')
         for aEntry in aResult[1]:
             sHosterUrl = str(aEntry)
             sHosterUrl = sHosterUrl.replace('//ok.ru','https://ok.ru')
@@ -264,5 +266,85 @@ def showHosters():
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+    
+    #recherche des liens de telechargement
+    sUrl = sUrl + '#example'
+    sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
+
+    sPattern = '<div id="download-quality-([^"]+)"></div><p class="download-size">Taille du fichier: <span class="download-filesize">([^<]+)</span></p>|<a class="download-torrent leta-[^"]+" target="_blank" href="([^"]+)" rel="external noopener noreferrer">([^>]+)</a>'
+    
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    print aResult
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + 'Liens Download :' + '[/COLOR]')
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            #print aEntry
+            if dialog.iscanceled():
+                break
             
+            if aEntry[0]:
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                oGui.addText(SITE_IDENTIFIER, '[COLOR olive]' + str(aEntry[0]) + ' (' + str(aEntry[1]) + ')' + '[/COLOR]')
+                
+            else:
+                sDisplayTitle = aEntry[3]
+                
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', aEntry[2])
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+                oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+
+        
+        
+        
+    oGui.setEndOfDirectory()
+
+def Display_protected_link():
+    #xbmc.log('Display_protected_link')
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sThumbnail=oInputParameterHandler.getValue('sThumbnail')
+
+    oParser = cParser()
+
+    
+    #Est ce un lien ushort-links ?
+    if 'ushort-links' in sUrl:
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request() 
+        
+        if sHtmlContent:
+            sPattern = '<a id="download" href="(.+?)"'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            sHosterUrl = aResult[1][0]
+            #print sHosterUrl
+            
+            sTitle = sMovieTitle
+            
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                sDisplayTitle = cUtil().DecoTitle(sTitle)
+                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setFileName(sTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+            
+        else:
+            oDialog = cConfig().createDialogOK('Erreur décryptage du lien')
+            aResult_dlprotecte = (False, False)
+
+    
+            
+                        
     oGui.setEndOfDirectory()
