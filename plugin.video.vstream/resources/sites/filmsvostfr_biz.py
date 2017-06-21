@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'filmsvostfr_biz'
 SITE_NAME = 'Filmsvostfr'
 SITE_DESC = 'Films/Séries/Animés'
 
-URL_MAIN = 'http://www.filmsvostfr.cc/'
+URL_MAIN = 'http://www.filmsvostfr.xyz/'
 
 MOVIE_NEWS = (URL_MAIN + 'films-en-streaming', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films-en-streaming', 'showMovies')
@@ -45,10 +45,6 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
 	
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
-	
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
 	
@@ -59,10 +55,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
-	
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
 	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
@@ -76,10 +68,6 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)
 	
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
-    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_GENRES[1], 'Animés (Genres)', 'animes_genres.png', oOutputParameterHandler)
@@ -147,34 +135,34 @@ def showGenres():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     if 'serie' in sUrl:
-        code = 'series'
+        code = 'series/'
     else:
-        code = 'animes'
+        code = 'animes/'
     
     liste = []
-    liste.append( ['Action',URL_MAIN + code + '/action.html'] )
-    liste.append( ['Animation',URL_MAIN + code + '/animation.html'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + code + '/arts-martiaux.html'] )
-    liste.append( ['Aventure',URL_MAIN + code + '/aventure.html'] )
-    liste.append( ['Biopic',URL_MAIN + code + '/biopic.html'] )
-    liste.append( ['Comédie',URL_MAIN + code + '/comedie.html'] )
-    liste.append( ['Comédie dramatique',URL_MAIN + code + '/comedie-dramatique.html'] )
-    liste.append( ['Comédie Musicale',URL_MAIN + code + '/comedie_musicale.html'] )
-    liste.append( ['Divers',URL_MAIN + code + '/divers.html'] )
-    liste.append( ['Documentaire',URL_MAIN + code + '/documentaire.html'] )
-    liste.append( ['Drame',URL_MAIN + code + '/drame.html'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + code + '/epouvante-horreur.html'] )
-    liste.append( ['Espionnage',URL_MAIN + code + '/espionnage.html'] )
-    liste.append( ['Famille',URL_MAIN + code + '/famille.html'] )
-    liste.append( ['Fantastique',URL_MAIN + code + '/fantastique.html'] )
-    liste.append( ['Guerre',URL_MAIN + code + '/guerre.html'] )
-    liste.append( ['Historique',URL_MAIN + code + '/historique.html'] )
-    liste.append( ['Musical',URL_MAIN + code + '/musical.html'] )
-    liste.append( ['Policier',URL_MAIN + code + '/policier.html'] )
-    liste.append( ['Romance',URL_MAIN + code + '/romance.html'] )
-    liste.append( ['Science Fiction',URL_MAIN + code + '/science-fiction.html'] )
-    liste.append( ['Thriller',URL_MAIN + code + '/thriller.html'] )
-    liste.append( ['Western',URL_MAIN + code + '/western.html'] )
+    liste.append( ['Action',URL_MAIN + code + 'action.html'] )
+    liste.append( ['Animation',URL_MAIN + code + 'animation.html'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + code + 'arts-martiaux.html'] )
+    liste.append( ['Aventure',URL_MAIN + code + 'aventure.html'] )
+    liste.append( ['Biopic',URL_MAIN + code + 'biopic.html'] )
+    liste.append( ['Comédie',URL_MAIN + code + 'comedie.html'] )
+    liste.append( ['Comédie dramatique',URL_MAIN + code + 'comedie-dramatique.html'] )
+    liste.append( ['Comédie Musicale',URL_MAIN + code + 'comedie_musicale.html'] )
+    liste.append( ['Divers',URL_MAIN + code + 'divers.html'] )
+    liste.append( ['Documentaire',URL_MAIN + code + 'documentaire.html'] )
+    liste.append( ['Drame',URL_MAIN + code + 'drame.html'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + code + 'epouvante-horreur.html'] )
+    liste.append( ['Espionnage',URL_MAIN + code + 'espionnage.html'] )
+    liste.append( ['Famille',URL_MAIN + code + 'famille.html'] )
+    liste.append( ['Fantastique',URL_MAIN + code + 'fantastique.html'] )
+    liste.append( ['Guerre',URL_MAIN + code + 'guerre.html'] )
+    liste.append( ['Historique',URL_MAIN + code + 'historique.html'] )
+    liste.append( ['Musical',URL_MAIN + code + 'musical.html'] )
+    liste.append( ['Policier',URL_MAIN + code + 'policier.html'] )
+    liste.append( ['Romance',URL_MAIN + code + 'romance.html'] )
+    liste.append( ['Science Fiction',URL_MAIN + code + 'science-fiction.html'] )
+    liste.append( ['Thriller',URL_MAIN + code + 'thriller.html'] )
+    liste.append( ['Western',URL_MAIN + code + 'western.html'] )
     
     for sTitle,sUrl in liste:
         
@@ -191,7 +179,7 @@ def showMovieAnnees():
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films-produit-en-' + Year)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'films_annees.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
         
     oGui.setEndOfDirectory()
 
@@ -202,7 +190,7 @@ def showSerieAnnees():
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series-produit-en-' + Year)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'series_annees.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
         
     oGui.setEndOfDirectory()
 
@@ -213,7 +201,7 @@ def showAnimeAnnees():
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'animes-produit-en-' + Year)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'animes_annees.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
         
     oGui.setEndOfDirectory()
 
@@ -258,9 +246,9 @@ def showMovies(sSearch = ''):
                sThumbnail = URL_MAIN + sThumbnail
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
             if '/serie' in sUrl:
@@ -348,12 +336,12 @@ def showEpisode():
                     sTitle = sMovieTitle + ' S' + SaisonNum + aEntry[2]
                     
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
-                sUrl = 'http://www.filmsvostfr.cc' + aEntry[1]
+                sUrl = URL_MAIN[:-1] + aEntry[1]
                 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
                 oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
@@ -384,7 +372,7 @@ def showLinks():
     if (aResult[0] == True):
         sCom = aResult[1][0]
 
-    sPattern = '<a href="([^"]+)" target="filmPlayer" class="ilink sinactive" rel="nofollow" title="([^"]+)">.+?<span class="langue(.+?)"><\/span>'
+    sPattern = '<a href="([^"]+)" class="sinactive ilink v"" rel="nofollow" title="([^"]+)">.+?<span class="quality" title="(.+?)">.+?<span class="langue" title="(.+?)">'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -401,9 +389,10 @@ def showLinks():
                 continue
 		
             sHost = aEntry[1]
-            sLang = aEntry[2].replace(' ','')
+            sQual = aEntry[2]
+            sLang = aEntry[3]
             #sTitle = ('[COLOR coral]' + '[' + sLang + ']' + '[/COLOR]' + ' ' + sMovieTitle + ' ' + '(' + sHost + ')')
-            sTitle = '%s [%s] (%s)' % (sMovieTitle, sLang, sHost)
+            sTitle = '%s [%s] [%s] (%s)' % (sMovieTitle, sLang, sQual, sHost)
 			
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
