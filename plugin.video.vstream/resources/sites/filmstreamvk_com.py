@@ -177,7 +177,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
             
-            if '/serie/' in aEntry[1] or '/manga/' in aEntry[1]:
+            if '/serie/' in aEntry[1] or '/manga/' in aEntry[1] or '/series/' in aEntry[1]:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
@@ -213,6 +213,8 @@ def showLinks():
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    #cConfig().log(sUrl)
     
     oParser = cParser()
     ListeUrl = []

@@ -21,7 +21,7 @@ SITE_IDENTIFIER = 'free_telechargement_org'
 SITE_NAME = '[COLOR violet]Free-Téléchargement[/COLOR]'
 SITE_DESC = 'Fichiers en DDL, HD, Films, Séries, Mangas Etc...'
 
-URL_MAIN = 'http://www.free-telechargement.com/'
+URL_MAIN = 'http://www.free-telechargement.co/'
 URL_PROTECT = 'http://liens.free-telechargement.'
 
 #URL_SEARCH_MOVIES_SD = (URL_MAIN + '1/recherche/1.html?rech_cat=video&rech_fiche=', 'showMovies')

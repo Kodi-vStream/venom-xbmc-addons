@@ -220,7 +220,12 @@ def showMovies(sSearch = ''):
 
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             
-            oGui.addMisc(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+            if '-series' in sUrl2 or '-animes' in sUrl2:
+                oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+                
+            
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -242,28 +247,8 @@ def __checkForNextPage(sHtmlContent):
         
     return False
 
-def showLinks():
 
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    
-    #on recupere la vraie url
-    sUrl = oRequestHandler.getRealUrl()
-    
-    #Bon ici, grosse bataille, c'est un film ou une serie ?
-    #On peut utiliser l'url redirigée ou cette astuce en test
-    
-    if '-series' in sUrl:
-        showSeriesLinks(sHtmlContent,sUrl)
-    else:
-        showMoviesLinks(sHtmlContent,sUrl)
-    
-    return
-
-def showMoviesLinks(sHtmlContent,sUrl):
+def showMoviesLinks():
     #xbmc.log('mode film')
     
     oGui = cGui()
@@ -271,6 +256,10 @@ def showMoviesLinks(sHtmlContent,sUrl):
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
 
     #print sUrl
     
@@ -322,16 +311,20 @@ def showMoviesLinks(sHtmlContent,sUrl):
 
     oGui.setEndOfDirectory()
 
-def showSeriesLinks(sHtmlContent,sUrl):
+def showSeriesLinks():
     #xbmc.log('mode serie')
     
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     
-    #print sUrl
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
 
+    #cConfig().log(sUrl)
+    
     oParser = cParser()
     
     #Mise àjour du titre
@@ -403,7 +396,7 @@ def showSeriesLinks(sHtmlContent,sUrl):
             oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'telecharger-series' + aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))            
-            oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, 'series.png', sThumbnail, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, 'series.png', sThumbnail, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()    
 

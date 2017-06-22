@@ -7,8 +7,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil,VSshowYear
-import re,urllib,unicodedata
+from resources.lib.util import cUtil
+import re,xbmcgui,urllib,unicodedata
 
 SITE_IDENTIFIER = 'streamay_bz'
 SITE_NAME = 'Streamay'
@@ -19,17 +19,17 @@ MOVIE_NEWS = (URL_MAIN + 'films/recents', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'films?p=populaire', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films', 'showGenres')
-MOVIE_ANNEES = (URL_MAIN + 'films?y=', 'showYear')
+MOVIE_ANNEES = (URL_MAIN + 'films?y=', 'showMovies')
 MOVIE_PAYS = (True, 'showPays')
 
 SERIE_NEWS = (URL_MAIN + 'series', 'showMovies')
 SERIE_SERIES = (URL_MAIN + 'series/alphabet', 'showMovies')
 SERIE_GENRES = (URL_MAIN + 'series', 'showGenres')
-SERIE_ANNEES = (URL_MAIN + 'series?y=', 'showYear')
+SERIE_ANNEES = (URL_MAIN + 'series?y=', 'showMovies')
 
 ANIM_ANIMS = (URL_MAIN + 'mangas', 'showMovies')
 ANIM_GENRES = (URL_MAIN + 'mangas', 'showGenres')
-ANIM_ANNEES = (URL_MAIN + 'mangas/annee/', 'showYear')
+ANIM_ANNEES = (URL_MAIN + 'mangas/annee/', 'showMovies')
 
 URL_SEARCH = ('', 'showResultSearch')
 FUNCTION_SEARCH = 'showResultSearch'
@@ -99,14 +99,32 @@ def showSearch():
         showResultSearch(sUrl)
         oGui.setEndOfDirectory()
         return
-        
-def showYear():
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sCheck = VSshowYear(sUrl)
-    if not sCheck == None:
-        showMovies(yearUrl = sCheck)
-        
+
+def showNumBoard(sDefaultNum=''):
+    dialog = xbmcgui.Dialog()
+    numboard = dialog.numeric(0, 'Entrer une année ex: 2005', sDefaultNum)
+    if numboard != None:
+       return numboard
+    return False
+
+def selectMovieAnnees():
+    oGui = cGui()
+    newNum = showNumBoard()
+    sUrl = MOVIE_ANNEES[0] + newNum
+    return sUrl
+	
+def selectSerieAnnees():
+    oGui = cGui()
+    newNum = showNumBoard()
+    sUrl = SERIE_ANNEES[0] + newNum
+    return sUrl
+
+def selectAnimAnnees():
+    oGui = cGui()
+    newNum = showNumBoard()
+    sUrl = ANIM_ANNEES[0] + newNum
+    return sUrl
+
 def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -234,23 +252,27 @@ def showResultSearch(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-def showMovies(yearUrl = ''):
+def showMovies():
     oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    oParser = cParser()
 
-    if yearUrl:
-        sUrl = yearUrl
+    if 'films?y=' in sUrl:
+        sUrl = selectMovieAnnees()
+    elif 'series?y=' in sUrl:
+        sUrl = selectSerieAnnees()
+    elif 'mangas/annee/' in sUrl:
+        sUrl = selectAnimAnnees()
     else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-        
+        sUrl = sUrl
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    oParser = cParser()
-    
+
     sPattern = '<a href="([^"]+)" class="mv">.+?<img src="([^"]+)" alt="">.+?<span>([^<>]+)<\/span>.+?<\/span>(.+?)<\/p>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
