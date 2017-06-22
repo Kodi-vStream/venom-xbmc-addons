@@ -46,6 +46,10 @@ class cGui():
     SITE_NAME = 'cGui'
     CONTENT = 'files'
     searchResults = []
+    #modif 22/06
+    Menu = []
+    listing = []
+
     
     if cConfig().isKrypton():
         CONTENT = 'addons'
@@ -295,16 +299,19 @@ class cGui():
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
 
         sPluginHandle = cPluginHandler().getPluginHandle();
-
-        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=_isFolder)
+        #modif 22/06
+        #xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=_isFolder)
+        self.listing.append((sItemUrl, oListItem, _isFolder))
 
 
     def createListItem(self, oGuiElement):
 
-        oListItem = xbmcgui.ListItem(oGuiElement.getTitle(), oGuiElement.getTitleSecond(), iconImage=oGuiElement.getIcon(), thumbnailImage=oGuiElement.getThumbnail())
+        oListItem = xbmcgui.ListItem(oGuiElement.getTitle())
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
-        oListItem.setThumbnailImage(oGuiElement.getThumbnail())
+        #oListItem.setThumbnailImage(oGuiElement.getThumbnail())
         #oListItem.setIconImage(oGuiElement.getIcon())
+        
+        oListItem.setArt({'thumb': oGuiElement.getThumbnail(), 'icon': oGuiElement.getIcon(),'fanart': oGuiElement.getFanart() })
 
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey in aProperties.keys():
@@ -529,7 +536,11 @@ class cGui():
         return oListItem
 
     def setEndOfDirectory(self, ForceViewMode = False):
+            
         iHandler = cPluginHandler().getPluginHandle()
+        #modif 22/06
+        xbmcplugin.addDirectoryItems(iHandler, self.listing, len(self.listing))
+
         xbmcplugin.setPluginCategory(iHandler, "")
         xbmcplugin.setContent(iHandler, cGui.CONTENT)
         xbmcplugin.addSortMethod(iHandler, xbmcplugin.SORT_METHOD_NONE)

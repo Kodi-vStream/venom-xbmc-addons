@@ -685,7 +685,7 @@ class cGuiElement:
         self.__aItemValues['Title'] = self.getTitle()
         self.__aItemValues['Plot'] = self.getDescription()
         self.__aItemValues['Playcount'] = self.getWatched()
-        self.addItemProperties('fanart_image', self.__sFanart)
+        #self.addItemProperties('fanart_image', self.__sFanart)
         
          # - Video Values:
         # - genre : string (Comedy)
