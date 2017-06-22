@@ -202,7 +202,7 @@ class cHoster(iHoster):
             #headers2 = headers
             #headers2['Host'] = self.GetHost(web_url)
             
-            xbmc.log('Test sur : ' + web_url)
+            cConfig().log('Test sur : ' + web_url)
             request = urllib2.Request(web_url,None,headers)
       
             redirection_target = ''
@@ -212,23 +212,26 @@ class cHoster(iHoster):
                 reponse = urllib2.urlopen(request)
                 sHtmlContent = reponse.read()
                 reponse.close()
-                #disabled
                 if not (reponse.geturl() == web_url) and not (reponse.geturl() == ''):
                     redirection_target = reponse.geturl()
                 else:
+                    redirection_target = web_url
                     break
             except urllib2.URLError, e:
                 if (e.code == 301) or  (e.code == 302):
                     redirection_target = e.headers['Location']
-         
+                #cConfig().log(str(e.code))
+                #cConfig().log(str(e.read()))
             #pas de redirection on annulle
             if not (redirection_target):
+                cConfig().log('1')
                 return False
                 
             web_url = redirection_target
             
             if 'embed' in redirection_target and NoEmbed:
                 #rattage, on a prit la mauvaise url
+                cConfig().log('2')
                 return False
             
             MaxRedirection = MaxRedirection - 1
