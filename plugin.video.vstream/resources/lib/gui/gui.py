@@ -47,7 +47,6 @@ class cGui():
     CONTENT = 'files'
     searchResults = []
     #modif 22/06
-    Menu = []
     listing = []
 
     
