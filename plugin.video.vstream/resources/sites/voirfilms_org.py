@@ -360,7 +360,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     #sPattern = '<a href="([^<>"]+?)" target="filmPlayer".+?class="([a-zA-Z]+)L"><\/span> *<\/div><span class="gras">.+?>(.+?)<\/span>'
-    sPattern='<span style=".+?" class="(.+?)"><\/span>.+?<a href=".+?" data-src="(.+?)" target="filmPlayer" class=.+?<span class="(.+?)"><\/span>'
+    sPattern='class="([vostfrL]+)"><\/span>.+?<a href="[^"]+" data-src="(.+?)" target="filmPlayer" class=.+?<span class="([^"]+)"><\/span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 

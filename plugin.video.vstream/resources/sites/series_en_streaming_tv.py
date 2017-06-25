@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'series_en_streaming_tv'
 SITE_NAME = 'Séries-en-Streaming'
 SITE_DESC = 'Séries en Streaming'
 
-URL_MAIN = 'http://www.series-en-streaming.tv/'
+URL_MAIN = 'http://www.seriefr.eu/'
 
 SERIE_NEWS = (URL_MAIN + 'ajouts/', 'showLasts')
 SERIE_SERIES = (URL_MAIN + 'search/', 'AlphaSearch')
@@ -290,7 +290,7 @@ def showEpisode():
                 break
                 
             sUrl = aEntry[0]
-            if not URL_MAIN in sUrl:
+            if not sUrl.startswith('http'):
                sUrl = URL_MAIN[:-1] + sUrl
 
             sTitle = sMovieTitle + ' ' + aEntry[2]
@@ -318,6 +318,8 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    
+    cConfig().log(sUrl)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()

@@ -11,6 +11,33 @@ from resources.lib.util import cUtil,VSlog
 import urllib2,urllib,re
 import unicodedata
 
+
+#Make random url
+from random import choice
+s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN";
+RandomKey = ''.join(choice(s) for i in range(32))
+
+
+SITE_IDENTIFIER = 'mangacity_org'
+SITE_NAME = 'I anime'
+SITE_DESC = 'Animés en streaming'
+
+URL_MAIN = 'http://www.ianime.tv/'
+
+MOVIE_MOVIE = (URL_MAIN + 'films.php?liste=' + RandomKey , 'ShowAlpha')
+MOVIE_GENRES = (URL_MAIN + 'films.php?liste=' + RandomKey , 'showGenres')
+
+SERIE_SERIES = (URL_MAIN + 'series.php?liste=' + RandomKey , 'ShowAlpha')
+
+ANIM_NEWS = (URL_MAIN + 'nouveautees.html', 'showMovies')
+ANIM_ANIMS = (URL_MAIN + 'animes.php?liste=' + RandomKey, 'ShowAlpha')
+ANIM_VFS = (URL_MAIN + 'listing_vf.php', 'ShowAlpha2')
+ANIM_VOSTFRS = (URL_MAIN + 'listing_vostfr.php', 'ShowAlpha2')
+ANIM_GENRES = (URL_MAIN + 'animes.php?liste=' + RandomKey , 'showGenres')
+
+URL_SEARCH = ('', 'showMovies')
+FUNCTION_SEARCH = 'showMovies'
+
 def DecryptMangacity(chain):
     oParser = cParser()
     sPattern = '(.+?),\[(.+?)\],\[(.+?)\]\)'
@@ -103,25 +130,6 @@ def ICDecode(html):
 
 #------------------------------------------------------------------------------------    
 
-SITE_IDENTIFIER = 'mangacity_org'
-SITE_NAME = 'I anime'
-SITE_DESC = 'Animés en streaming'
-
-URL_MAIN = 'http://www.ianime.tv/'
-
-MOVIE_MOVIE = (URL_MAIN + 'films.php?liste=SHOWALPHA', 'ShowAlpha')
-MOVIE_GENRES = (URL_MAIN + 'films.php?liste=SHOWALPHA', 'showGenres')
-
-SERIE_SERIES = (URL_MAIN + 'series.php?liste=SHOWALPHA', 'ShowAlpha')
-
-ANIM_NEWS = (URL_MAIN + 'nouveautees.html', 'showMovies')
-ANIM_ANIMS = (URL_MAIN + 'animes.php?liste=SHOWALPHA', 'ShowAlpha')
-ANIM_VFS = (URL_MAIN + 'listing_vf.php', 'ShowAlpha2')
-ANIM_VOSTFRS = (URL_MAIN + 'listing_vostfr.php', 'ShowAlpha2')
-ANIM_GENRES = (URL_MAIN + 'animes.php?liste=SHOWALPHA', 'showGenres')
-
-URL_SEARCH = ('', 'showMovies')
-FUNCTION_SEARCH = 'showMovies'
 
 def load():
     oGui = cGui()
@@ -223,7 +231,7 @@ def ShowAlpha2():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     
-    sUrl2 = URL_MAIN + 'animes.php?liste=SHOWALPHA'
+    sUrl2 = URL_MAIN + 'animes.php?liste=' + RandomKey
     
     sType = 'VF'
     if 'vostfr' in sUrl:

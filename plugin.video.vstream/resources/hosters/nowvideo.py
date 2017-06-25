@@ -4,7 +4,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-from resources.lib.util import VScreateDialogSelect
+from resources.lib.util import VScreateDialogSelect,VSlog
 import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
@@ -42,10 +42,14 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
         
-        sPattern =  'http:\/\/(?:www.|embed.)nowvideo.[a-z]{2}\/(?:video\/|embed.+?\?.*?v=)([0-9a-z]+)' 
+        sPattern =  'http:\/\/(?:www.|embed.)*nowvideo.[a-z]{2}\/(?:video\/|embed.+?\?.*?v=)([0-9a-z]+)' 
         oParser = cParser()
-        aResult = oParser.parse(sUrl, sPattern)        
-        self.__sUrl = 'http://embed.nowvideo.sx/embed.php?v=' + str(aResult[1][0])
+        aResult = oParser.parse(sUrl, sPattern)
+        if aResult[1]:
+            self.__sUrl = 'http://embed.nowvideo.sx/embed.php?v=' + str(aResult[1][0])
+        else:
+            VSlog('ID error')
+            
 
     def checkUrl(self, sUrl):
         return True
@@ -59,11 +63,14 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
         
         api_call = ''
-        
         oParser = cParser()
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
+        
+        fh = open('c:\\test.txt', "w")
+        fh.write(sHtmlContent)
+        fh.close()
 
         # 1 er lecteur
         sDash = re.search("player.src.+?src: *'([^']+)", sHtmlContent,re.DOTALL)

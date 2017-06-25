@@ -202,17 +202,17 @@ class cHoster(iHoster):
             #headers2 = headers
             #headers2['Host'] = self.GetHost(web_url)
             
-            xbmc.log('Test sur : ' + web_url)
+            cConfig().log(str(MaxRedirection) + ' Test sur : ' + web_url)
             request = urllib2.Request(web_url,None,headers)
       
-            redirection_target = ''
+            redirection_target = web_url
         
             try:
                 #ok ca a enfin marche
                 reponse = urllib2.urlopen(request)
                 sHtmlContent = reponse.read()
                 reponse.close()
-                #disabled
+
                 if not (reponse.geturl() == web_url) and not (reponse.geturl() == ''):
                     redirection_target = reponse.geturl()
                 else:
@@ -220,15 +220,16 @@ class cHoster(iHoster):
             except urllib2.URLError, e:
                 if (e.code == 301) or  (e.code == 302):
                     redirection_target = e.headers['Location']
-         
-            #pas de redirection on annulle
-            if not (redirection_target):
-                return False
+                else:
+                    #cConfig().log(str(e.code))
+                    #cConfig().log(str(e.read()))
+                    return False
                 
             web_url = redirection_target
             
             if 'embed' in redirection_target and NoEmbed:
                 #rattage, on a prit la mauvaise url
+                cConfig().log('2')
                 return False
             
             MaxRedirection = MaxRedirection - 1
@@ -236,7 +237,7 @@ class cHoster(iHoster):
         return sHtmlContent       
 
     def __getIdFromUrl(self, sUrl):
-        sPattern = "https*://((?:www.|play.)?flashx.tv)/(?:playvid-)?(?:embed-)?(?:embed.+?=)?([0-9a-zA-Z]+)?(?:.html)?"
+        sPattern = "https*:\/\/((?:www.|play.)?flashx.tv)\/(?:playvid-)?(?:embed-)?(?:embed.+?=)?(-*[0-9a-zA-Z]+)?(?:.html)?"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -254,6 +255,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = 'http://' + self.GetHost(sUrl) + '/embed.php?c=' + self.__getIdFromUrl(sUrl)
+        
 
     def checkUrl(self, sUrl):
         return True
@@ -302,9 +304,12 @@ class cHoster(iHoster):
  
         #on recupere l'ID
         sId = self.__getIdFromUrl(self.__sUrl)
+        if sId == '':
+            cConfig().log("Id prb")
+            return False,False
         
         #on ne garde que les chiffres
-        sId = re.sub(r'-.+', '', sId)
+        #sId = re.sub(r'-.+', '', sId)
         
         #on cherche la vraie url
         sHtmlContent = self.GetRedirectHtml(self.__sUrl,sId)        
@@ -316,7 +321,7 @@ class cHoster(iHoster):
         #sPattern = '(<[^<>]+(?:"visibility:hidden"|"opacity: 0;")><a )*href="(http:\/\/www\.flashx[^"]+)'
         sPattern = 'href=["\'](https*:\/\/www\.flashx[^"\']+)'
         AllUrl = re.findall(sPattern,sHtmlContent,re.DOTALL)
-        xbmc.log(str(AllUrl))
+        cConfig().log(str(AllUrl))
 
         #Disabled for the moment
         if (False):
@@ -330,22 +335,18 @@ class cHoster(iHoster):
                 return False,False
         else:
             web_url = AllUrl[0]
-            
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
         
         #Requests to unlock video
         LoadLinks(sHtmlContent)
         if not UnlockUrl():
-            xbmc.log('No special unlock url')
+            cConfig().log('No special unlock url')
             return False,False
                
         #get the page
         sHtmlContent = self.GetRedirectHtml(web_url,sId,True)
         
         if sHtmlContent == False:
-            xbmc.log('Passage en mode barbare')
+            cConfig().log('Passage en mode barbare')
             #ok ca a rate on passe toutes les url de AllUrl
             for i in AllUrl:
                 if not i == web_url:
@@ -354,13 +355,14 @@ class cHoster(iHoster):
                         break    
 
         if not sHtmlContent:
-            return False,False             
-            
-        #A t on le lien code directement?
-        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
-        aResult = re.findall(sPattern,sHtmlContent)
-        if not aResult:
-            xbmc.log("page bloquée")
+            return False,False
+
+        #fh = open('c:\\test2.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()     
+
+        if 'reload the page!' in sHtmlContent:
+            cConfig().log("page bloquée")
             
             #On recupere la bonne url
             sGoodUrl = web_url
@@ -390,27 +392,27 @@ class cHoster(iHoster):
             
             #et on re-recupere la page
             sHtmlContent = self.GetRedirectHtml(sGoodUrl,sId)
-                
-            #et on recherche le lien code
+            
+        #desactive pr le moment
+        if (False):
+         
+            #A t on le lien code directement?
             sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
             aResult = re.findall(sPattern,sHtmlContent)
-
+                    
+            if (aResult):
+                cConfig().log( "lien code")
                 
-        if (aResult):
-            xbmc.log( "lien code")
-            
-            AllPacked = re.findall('(eval\(function\(p,a,c,k.*?)\s+<\/script>',sHtmlContent,re.DOTALL)
-            if AllPacked:
-                for i in AllPacked:
-                    sUnpacked = cPacker().unpack(i)
-                    sHtmlContent = sUnpacked
-                    #xbmc.log(sHtmlContent)
-                    if "file" in sHtmlContent:
-                        break
-            else:
-                return False,False           
-            
-            xbmc.log(sHtmlContent)
+                AllPacked = re.findall('(eval\(function\(p,a,c,k.*?)\s+<\/script>',sHtmlContent,re.DOTALL)
+                if AllPacked:
+                    for i in AllPacked:
+                        sUnpacked = cPacker().unpack(i)
+                        sHtmlContent = sUnpacked
+                        #xbmc.log(sHtmlContent)
+                        if "file" in sHtmlContent:
+                            break
+                else:
+                    return False,False
   
         #decodage classique
         sPattern = '{file:"([^",]+)",label:"([^"<>,]+)"}'
