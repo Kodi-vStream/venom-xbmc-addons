@@ -240,8 +240,7 @@ def __checkForNextPage(sHtmlContent):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        sNext = aResult[1][0]
-        return sNext
+        return aResult[1][0]
 
     return False
 
