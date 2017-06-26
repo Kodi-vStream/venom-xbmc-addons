@@ -124,8 +124,8 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        sUrl = aResult[1][0]
-        return sUrl
+        return aResult[1][0]
+
     return False
 
 def showSeries():
