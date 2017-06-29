@@ -103,7 +103,7 @@ class cHoster(iHoster):
         #xbmc.log("Nbre d'url : " + str(len(TabUrl)))
         
         #on essait de situer le code
-        sPattern = '<script src="\/assets\/js\/video-js\/video\.js\.ol\.js"(.+)*'
+        sPattern = '<script src="\/assets\/js\/video-js\/video\.js.+?.js"(.+)*'
 
         aResult = re.findall(sPattern,sHtmlContent1, re.DOTALL)
         if (aResult):
