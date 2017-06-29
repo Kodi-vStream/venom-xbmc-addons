@@ -14,7 +14,8 @@ SITE_IDENTIFIER = 'libre_stream_org'
 SITE_NAME = 'Libre-stream'
 SITE_DESC = 'Films & Séries en streaming, vk streaming, youwatch, vimple, streaming hd, streaming 720p, streaming sans limite'
 
-URL_MAIN = 'http://libre-stream.com/'
+#URL_MAIN = 'http://libre-stream.com/'
+URL_MAIN = 'http://ls-streaming.com/'
 
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
