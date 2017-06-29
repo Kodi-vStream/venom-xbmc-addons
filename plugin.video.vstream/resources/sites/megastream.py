@@ -33,7 +33,7 @@ ANIM_NEWS = (URL_MAIN +'accueil-mangas', 'showMovies')
 ANIM_ANIMS = (URL_MAIN +'accueil-mangas', 'showMovies')
 ANIM_HD = (URL_MAIN +'accueil-mangas', 'showMovies')
 ANIM_GENRES = (URL_MAIN + 'accueil-mangas', 'showGenres')
- 
+
 URL_SEARCH = ('', 'resultSearch')
 FUNCTION_SEARCH = 'resultSearch'
 
@@ -145,7 +145,7 @@ def showGenres():
     liste.append( ['Tragédie', URL_MAIN + code + 'trageie'] )
     liste.append( ['Télé-réalité', URL_MAIN + code + 'tele-realite'] )
     liste.append( ['Western', URL_MAIN + code + 'western'] )
-               
+	
     for sTitle,sUrl in liste:
        
         oOutputParameterHandler = cOutputParameterHandler()
@@ -160,10 +160,9 @@ def resultSearch(sSearch):
     oInputParameterHandler = cInputParameterHandler()
         
     sUrl = "http://mega-stream.fr/recherche"
-    
 
     post_data = {'search' : sSearch }
-        
+	
     UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'
     headers = {'User-Agent': UA ,
                'Host' : 'mega-stream.fr'}
@@ -218,7 +217,6 @@ def showMovies(sSearch = ''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
-        
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
@@ -276,8 +274,7 @@ def __checkForNextPage(sHtmlContent):
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if (aResult[0] == True):
-        sUrl = aResult[1][0]     
-        return sUrl 
+        return aResult[1][0]
 
     return False
 
@@ -336,7 +333,6 @@ def showHosters():
     sPattern = '<div id="(lecteur_[0-9]+)">.+?data-tnetnoc-crs="([^"]+)"'
     tablink = re.findall(sPattern,sHtmlContent, re.DOTALL)
 
-
     #le classique
     sPattern = '<a href="#(lecteur_[0-9]+)".+?title="([^"]+)"\/> *([^<>]+)<\/a'
     aResult = re.findall(sPattern,sHtmlContent, re.DOTALL)
@@ -367,7 +363,7 @@ def showHosters():
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
-        cConfig().finishDialog(dialog) 
+        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
 
