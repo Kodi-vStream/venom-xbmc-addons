@@ -10,6 +10,8 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
+from resources.lib import util
+
 import unicodedata
 
 SITE_IDENTIFIER = 'evilox'
@@ -47,7 +49,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
+        sUrl = sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -82,13 +84,18 @@ def showMovies(sSearch = ''):
     oGui = cGui()
 
     if sSearch:
-      sUrl = sSearch
+        oRequestHandler = cRequestHandler(URL_MAIN)
+        oRequestHandler.setRequestType(1)
+        oRequestHandler.addParameters('search',sSearch)
+        oRequestHandler.addParameters('type_new','')
+        #oRequestHandler.addHeaderEntry('Cookie',cookies))
+        sHtmlContent = oRequestHandler.request()
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
     
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
     
     sPattern = "<div class='m2'>.+?<a href='(.+?)'><div style='.+?image:url\((.+?)\);position:relative;' class='.+?' alt='(.+?)' id='.+?'.+?<span class='videoduree'>([^<]+)</span>"
 
@@ -105,6 +112,11 @@ def showMovies(sSearch = ''):
             sTitle = unicode(aEntry[2], 'latin-1')
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
             sTitle = ('%s') % (sTitle)
+            
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 2:
+                if util.cUtil().CheckOccurence(sSearch,sTitle) == 0:
+                    continue
 
             sUrl    = str(aEntry[0])
             sThumbnail = str(aEntry[1])
