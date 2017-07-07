@@ -11,7 +11,7 @@ from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'libre_stream_org'
-SITE_NAME = 'Libre-stream'
+SITE_NAME = 'Libre-Streaming'
 SITE_DESC = 'Films & Séries en streaming, vk streaming, youwatch, vimple, streaming hd, streaming 720p, streaming sans limite'
 
 #URL_MAIN = 'http://libre-stream.com/'
@@ -32,7 +32,7 @@ FUNCTION_SEARCH = 'showMovies'
 
 def load():
     oGui = cGui()
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
@@ -44,7 +44,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_QLT[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_QLT[1], 'Films (Qualités)', 'films.png', oOutputParameterHandler)
@@ -206,9 +206,11 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<div class="libre-movie libre-movie-block">.+?data-src="(.+?)".+?title="(.+?)".+?<h2 onclick="window.location.href=\'(.+?)\'">'
-    if '/films/' in sUrl:
+    sPattern = '<div class="libre-movie libre-movie-block">.+?data-src="(.+?)".+?title="(.+?)".+?<h2 onclick="window.location.href=\'(.+?)\'">.+?<span class="maskhr">Synopsis.+?</span>(.+?)</div>'
+    if '/films' in sUrl:
         sPattern = sPattern + '.+?<div class="maskquality (.+?)">'
+    if '/series' in sUrl:
+        sPattern = sPattern + '.+?>Séries</a>.+?<a href=".+?">(.+?)</a>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -226,25 +228,34 @@ def showMovies(sSearch = ''):
                     continue
             
             sMovieTitle = str(aEntry[1])
+            sSyn = str(aEntry[3])
             sThumb = aEntry[0]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
-            if '/films/' in sUrl:
-                sMovieTitle = sMovieTitle + ' [' + str(aEntry[3]) + ']'
+            if '/films' in sUrl:
+                sQual = str(aEntry[4])
+                #on supprime [VOSTFR], [HD 720p] et DVDRIP du titre car affiche en tant que qualite sinon doublons
+                sMovieTitle = sMovieTitle.replace('[VOSTFR]', '').replace('[HD 720p]', '').replace('DVDRIP ', '')
+                sMovieTitle = sMovieTitle + ' [' + sQual + ']'
 
-            sTitle = cUtil().DecoTitle(sMovieTitle)
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            if '/series/' in sUrl:
+                if not '/vostfr/' in sUrl and not '/version-francaise/' in sUrl:
+                    sLang = str(aEntry[4])
+                    sLang = sLang.replace('Version Française', 'VF')
+                    sMovieTitle = sMovieTitle + ' [' + sLang + ']'
+
+            sTitle = sMovieTitle
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
 
             if '/series/' in sUrl or '-saison-' in aEntry[2]:
-                oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sDisplayTitle,'', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle,'', sThumb, sSyn, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sSyn, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
