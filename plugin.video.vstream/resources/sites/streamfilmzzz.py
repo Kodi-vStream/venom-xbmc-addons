@@ -134,7 +134,7 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             
             sThumb = str(aEntry[0])
-            sTitle = str(aEntry[1])
+            sTitle = str(aEntry[1]).replace('&#8217;', '\'').replace('&#8230;', '!')
             sUrl = str(aEntry[2])
             sResume = str(aEntry[3])
             
