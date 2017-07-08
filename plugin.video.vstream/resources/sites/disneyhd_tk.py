@@ -12,15 +12,13 @@ SITE_IDENTIFIER = 'disneyhd_tk'
 SITE_NAME = 'Disney HD'
 SITE_DESC = 'Disney HD: Tous les films Disney en streaming'
 
-URL_MAIN = 'http://disneyhd.tk/index.php'
-URL_LISTE = 'http://disneyhd.tk/liste_mosaique.php'
+URL_MAIN = 'http://disneyhd.tk/'
+URL_LISTE = URL_MAIN + 'liste_mosaique.php'
 
 ANIM_ENFANTS = ('http://', 'load')
 
 URL_SEARCH = ('', 'sHowResultSearch')
 FUNCTION_SEARCH = 'sHowResultSearch'
-
-#sPattern1 = '<a href="([^"]+)"><img src="([^"]+)" alt="(.+?)"/>'
 
 sPattern1 = '<a href="([^"]+)"><img.+?src="([^"]+)" alt="(.+?)".+?>'
 
@@ -28,18 +26,18 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
 def load():
     oGui = cGui()
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'index.php')
     oOutputParameterHandler.addParameter('filtre', 'ajouts')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Ajouts récents', 'animes_enfants.png', oOutputParameterHandler)
-
+	
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'index.php')
     oOutputParameterHandler.addParameter('filtre', 'nouveautes')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Nouveautés', 'animes_enfants.png', oOutputParameterHandler)
     
@@ -54,7 +52,7 @@ def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sHowResultSearch(str(sSearchText)) 
+        sHowResultSearch(str(sSearchText))
         oGui.setEndOfDirectory()
         return
    
@@ -62,11 +60,11 @@ def sHowResultSearch(sSearch = ''):
     oGui = cGui()
     
     pdata = 'requete=' + sSearch
-    oRequest = cRequestHandler('http://disneyhd.tk/search.php')
+    oRequest = cRequestHandler(URL_MAIN + 'search.php')
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent',UA)
     oRequest.addHeaderEntry('Host','disneyhd.tk')
-    oRequest.addHeaderEntry('Referer','http://disneyhd.tk/index.php')
+    oRequest.addHeaderEntry('Referer',URL_MAIN + 'index.php')
     oRequest.addHeaderEntry('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
     oRequest.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
     oRequest.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
@@ -79,18 +77,18 @@ def sHowResultSearch(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sUrl = 'http://disneyhd.tk/' + aEntry[0]
-            sThumb = 'http://disneyhd.tk/' + aEntry[1]
+            sUrl = URL_MAIN + aEntry[0]
+            sThumb = URL_MAIN + aEntry[1]
             sTitle = aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'animes_enfants.png',sThumb, '', oOutputParameterHandler) 
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'animes_enfants.png',sThumb, '', oOutputParameterHandler)
 
     if not sSearch:
-        oGui.setEndOfDirectory() 
+        oGui.setEndOfDirectory()
     
 def showMovies():
     oGui = cGui()
@@ -109,15 +107,15 @@ def showMovies():
     elif 'nouveautes' in sFiltre:
         sPattern = '<i>Dernières sorties.+?</i>(.+?)<div id="pieddepage">'
         sHtmlContent = re.search(sPattern,sHtmlContent,re.DOTALL)
-        aResult = oParser.parse(sHtmlContent.group(1), sPattern1) 
+        aResult = oParser.parse(sHtmlContent.group(1), sPattern1)
     else:
         aResult = oParser.parse(sHtmlContent, sPattern1)
         aResult[1].sort()
         
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sUrl = 'http://disneyhd.tk/' + aEntry[0]
-            sThumb = 'http://disneyhd.tk/' + aEntry[1]
+            sUrl = URL_MAIN + aEntry[0]
+            sThumb = URL_MAIN + aEntry[1]
             sTitle = aEntry[2].replace('streaming','')
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -148,7 +146,7 @@ def showHosters():
             if '//goo.gl' in sHosterUrl:
                 import urllib2
                 try:
-                    class NoRedirection(urllib2.HTTPErrorProcessor):    
+                    class NoRedirection(urllib2.HTTPErrorProcessor):
                         def http_response(self, request, response):
                             return response
                     
