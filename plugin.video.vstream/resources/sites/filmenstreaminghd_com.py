@@ -380,7 +380,10 @@ def showAnnees():
     liste.append( ['2002',URL_MAIN + '2002' + code] )
     liste.append( ['2001',URL_MAIN + '2001' + code] )
     liste.append( ['2000',URL_MAIN + '2000' + code] )
-    liste.append( ['1900-1999',URL_MAIN + '1900-1999' + code] )
+    if 'animes' in sUrl:
+        liste.append( ['1990-1999',URL_MAIN + '1990-1999' + code] )
+    else:
+        liste.append( ['1900-1999',URL_MAIN + '1900-1999' + code] )
                
     for sTitle,sUrl in liste:
 
@@ -476,8 +479,8 @@ def showMovies(sSearch = ''):
             sCom = aEntry[4].decode("utf-8")
             sCom = cUtil().unescape(sCom).encode("utf-8")
             sCom = cUtil().removeHtmlTags(sCom)
-            sUrl2 = URL_MAIN  + aEntry[0]
-            sThumb = URL_MAIN + aEntry[2]
+            sUrl2 = URL_MAIN[:-1]  + aEntry[0]
+            sThumb = URL_MAIN[:-1] + aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
