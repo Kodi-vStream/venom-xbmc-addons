@@ -134,7 +134,7 @@ def showMovies(sSearch = ''):
             sTitle = aEntry[1] + sQual
             sUrl = aEntry[3]
             sThumb = aEntry[0]
-            if not 'http' in sThumb:
+            if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
             
             oOutputParameterHandler = cOutputParameterHandler()
@@ -189,7 +189,7 @@ def showMoviesHtml():
             sTitle = aEntry[2]
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
-            if not 'http' in sThumb:
+            if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
             
             oOutputParameterHandler = cOutputParameterHandler()
@@ -228,7 +228,7 @@ def showSagas():
             sTitle = aEntry[0]
             sUrl = aEntry[1]
             sThumb = aEntry[2]
-            if not 'http' in sThumb:
+            if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
             
             oOutputParameterHandler = cOutputParameterHandler()
