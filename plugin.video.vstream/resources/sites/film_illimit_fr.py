@@ -322,19 +322,19 @@ def ShowSpecialHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     
-    #data = sUrl.replace('http://official-film-illimite.net/Jwplayer_plugins_official-film-illimite.net/embed.php?f=','').replace('&c=','')
+    #cConfig().log(sUrl)
+    
     data = re.sub('(.+?f=)','', sUrl)
     data = data.replace('&c=','')
     pdata = 'data=' + urllib.quote_plus(data)
     
-    #exemple url
-    #http://official-film-illimite.net/Jwplayer_plugins_official-film-illimite.net/QbtbycmTz7dQ8vJSvvDPzMWP9C3YLLzDrZZzccRVFTRCcmYBE3K9T4hQ6eDMpSUARd4ZJM8eYWYzh7jAjancPcrxYdWUhuFJ5cSqCqsLJADsddpAWWGkn8jGfuLRzcvy.php?f=JCrtLCbsN7OiLhPR4FZzDROzDKeGwROTNROo4fx/JfAOb08obQpKrdMRAnHKBeZGYzrYbRrve9QJDnrsAA==&c=', 
-
-    if 'official-film-illimite' in sUrl:
-        oRequest = cRequestHandler('http://official-film-illimite.net/Jwplayer_plugins_official-film-illimite.net/Htplugins/Loader.php')
+    
+    cConfig().log(sUrl)
+    if 'fr-land.me' in sUrl:
+        oRequest = cRequestHandler('http://fr-land.me/Htplugins/Loader.php')
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent',UA)
-        oRequest.addHeaderEntry('Host','official-film-illimite.net')
+        #oRequest.addHeaderEntry('Host','official-film-illimite.net')
         oRequest.addHeaderEntry('Referer',sUrl)
         oRequest.addHeaderEntry('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
@@ -343,7 +343,11 @@ def ShowSpecialHosters():
         
         sHtmlContent = oRequest.request()
         sHtmlContent = sHtmlContent.replace('\\','')
-
+                
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+        
         sPattern = '\[(.+?)\]'
 
         oParser = cParser()

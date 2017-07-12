@@ -51,12 +51,15 @@ class cHoster(iHoster):
         
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.rsplit('/', 1)[1]
-        self.__sUrl = self.__sUrl.replace('embed.php?id=', '')
-        self.__sUrl = 'https://www.cloudy.ec/embed.php?id=' + str(self.__sUrl)
-        #Patch en attendant kodi V17
-        self.__sUrl = self.__sUrl.replace('https','http')
-        VSlog(self.__sUrl)
+        oParser = cParser()
+        sPattern =  'id=([a-zA-Z0-9]+)'
+        aResult = oParser.parse(self.__sUrl, sPattern)
+        if (aResult[0] == True):
+            self.__sUrl = 'https://www.cloudy.ec/embed.php?id=' + aResult[1][0] + '&playerPage=1'
+            #Patch en attendant kodi V17
+            self.__sUrl = self.__sUrl.replace('https','http')
+        else:
+            VSlog(self.__sUrl)
         
     def checkUrl(self, sUrl):
         return True

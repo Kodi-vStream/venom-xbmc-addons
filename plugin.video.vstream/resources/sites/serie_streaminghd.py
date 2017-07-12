@@ -17,7 +17,7 @@ SITE_DESC = 'Séries en streaming vf, vostfr'
 URL_MAIN = 'http://www.serie-streaminghd.com/'
  
 SERIE_NEWS = (URL_MAIN, 'showMovies')
-SERIE_MOVIE = (URL_MAIN, 'showMovies')
+SERIE_SERIES = (URL_MAIN, 'showMovies')
 SERIE_VFS = (URL_MAIN + 'regarder-series/vf-hd/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'regarder-series/vostfr-hd/', 'showMovies')
 

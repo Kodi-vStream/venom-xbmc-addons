@@ -116,7 +116,7 @@ def __showLink(url):
     sHtmlContent = oRequestHandler.request();
 	
     #recup liens clictune 
-    sPattern = '<a href="(http://www.clictune.+?)".+?<b>.+?</b>'
+    sPattern = '<a href="(http://www.clictune.+?)"'
     aResult = re.findall(sPattern,sHtmlContent)
     
     #recup liens sans delai X secondes
@@ -134,7 +134,7 @@ def __showLink(url):
             #decode url & retourne liens a showHosters
             url = cUtil().urlDecode(aResult[0])
             sLink.append(url)
-        
+            
         return sLink
     return False
 
@@ -156,13 +156,14 @@ def showHosters():
 
     if (sLink):
         for aEntry in sLink:
-           
+            
             sUrl = str(aEntry)
             sHost = []
             
             if 'jheberg' in aEntry:
                 
                 aResult = cJheberg().GetUrls(sUrl)
+                
                 if (aResult):
                     if (count >0):
                         oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via Jheberg (suite partie vidéo)[/COLOR]')
