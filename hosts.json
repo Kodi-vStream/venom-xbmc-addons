@@ -50,16 +50,16 @@
   {
     "name": "cloudy.py",
     "path": "plugin.video.vstream/resources/hosters/cloudy.py",
-    "sha": "7c73893969e8e5712bb98cc5ce1ed15f161d3e64",
-    "size": 2833,
+    "sha": "971f6151da1ad144abb818529d6fd0bdf030cf1b",
+    "size": 2919,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/cloudy.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/cloudy.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/7c73893969e8e5712bb98cc5ce1ed15f161d3e64",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/971f6151da1ad144abb818529d6fd0bdf030cf1b",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/cloudy.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/cloudy.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/7c73893969e8e5712bb98cc5ce1ed15f161d3e64",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/971f6151da1ad144abb818529d6fd0bdf030cf1b",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/cloudy.py"
     }
   },
