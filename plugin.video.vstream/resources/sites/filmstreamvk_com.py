@@ -34,7 +34,7 @@ def load():
 	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -58,15 +58,12 @@ def load():
     
     oGui.setEndOfDirectory()
 
-def showMoviesSearch():
+def showSearch():
     oGui = cGui()
-    
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = sUrl + sSearchText
+        sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -170,7 +167,6 @@ def showMovies(sSearch = ''):
                 
             sThumb = aEntry[0]
             sTitle = aEntry[2].replace('&#8217;', '\'')
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
             sUrl = aEntry[1]
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -178,7 +174,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
             
             if '/serie/' in aEntry[1] or '/manga/' in aEntry[1] or '/series/' in aEntry[1]:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
 
@@ -241,14 +237,15 @@ def showLinks():
                 break
             
             sTitle = sMovieTitle + ' (' + aEntry[1] + ')'
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            if 'pisode' in aEntry[1]:
+                sTitle = sMovieTitle
             sUrl2 = aEntry[0]
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -287,14 +284,13 @@ def showEpisode():
                 oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]' + sTitle + '[/COLOR]', 'host.png', oOutputParameterHandler)
             else:
                 sTitle = sMovieTitle + ' episode ' + aEntry[2]
-                sDisplayTitle = cUtil().DecoTitle(sTitle)
                 sUrl2 = aEntry[1]
                 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-                oGui.addTV(SITE_IDENTIFIER, 'showHostersSerie', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showHostersSerie', sTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -334,8 +330,7 @@ def showHostersSerie():
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
@@ -371,8 +366,7 @@ def showHosters():
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
