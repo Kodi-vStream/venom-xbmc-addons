@@ -22,7 +22,7 @@ except: import simplejson as json
 
 SITE_IDENTIFIER = 'topimdb'
 SITE_NAME = '[COLOR orange]Top 1000 IMDb[/COLOR]'
-SITE_DESC = 'Base de donnÃ©es vidÃ©os.'
+SITE_DESC = 'Base de donnees videos.'
 
 
 URL_MAIN = 'http://imdb.com/'
