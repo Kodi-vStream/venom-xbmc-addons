@@ -23,7 +23,7 @@ MOVIE_COMMENTS = (URL_MAIN + 'populaire-hd/', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'de-vote/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
-SERIE_NEWS = (URL_MAIN + 'series-streaming-hd/', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'series-streaming-hd/', 'showSeries')
 SERIE_SERIES = (URL_MAIN + 'series-streaming-hd/', 'showSeries')
 SERIE_COMMENTS = (URL_MAIN + 'populaire-hd/', 'showSeries')
 #SERIE_VIEWS = (URL_MAIN + 'de-visite/', 'showSeries')
