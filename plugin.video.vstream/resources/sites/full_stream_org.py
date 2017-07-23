@@ -38,6 +38,53 @@ ANIM_VOSTFRS = (URL_MAIN + 'mangas/mangas-vostfr/', 'showMovies')
 URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&titleonly=3&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
+def DecodeURL(data):
+    
+    oParser = cParser()
+    sPattern = '([a-z0-9A-Z]{2})\(\'([^\']*)\'\)'
+    aResult = oParser.parse(data, sPattern)
+    
+    if not aResult[0]:
+        return ''
+    
+    f = aResult[1][0][0]
+    d = aResult[1][0][1]
+    
+    url = ''
+    
+    if f == 'f1':
+        url = "http://www.flashx.tv/embed-"+d+".html"
+
+    if f == 'f2':
+        url = d
+
+    if f == 'f3':
+        url = "https://openload.co/embed/"+d
+
+    if f == 'f4':
+        url = "https://vidoza.net/embed-"+d+".html"
+
+    if f == 'f5':
+        url = "http://estream.to/embed-"+d+".html"
+
+    if f == 'f6':
+        url = "http://vidlox.tv/embed-"+d+".html"
+
+    if f == 'f7':
+        url = "http://watchers.to/embed-"+d+".html"
+
+    if f == 'f8':
+        url = "http://mystream.la/embed-"+d+".html"
+
+    if f == 'AA':
+        url = "https://streamango.com/embed/"+d
+
+    if f == 'BB':
+        url = "http://easyvid.org/embed-"+d+"-600x360.html"
+        
+    return url
+
+
 def load():
     oGui = cGui()
     
@@ -130,7 +177,7 @@ def getPremiumUser():
 
 def showGenres():
     oGui = cGui()
-	
+    
     liste = []
     liste.append( ['HD/HQ',URL_MAIN + 'quality/Haute-qualit%C3%A9/'] )
     liste.append( ['Action',URL_MAIN + 'action/'] )
@@ -346,7 +393,7 @@ def showMovies(sSearch = ''):
             elif '/mangas/' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, sCom, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sCom, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHostersFilm', sDisplayTitle, '', sThumb, sCom, oOutputParameterHandler)
         
         cConfig().finishDialog(dialog)
 
@@ -369,7 +416,7 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
-def showHosters():
+def showHostersFilm():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -378,6 +425,56 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    #cConfig().log(sUrl)
+
+    sPattern = '<i class="fa fa-play-circle-o"><\/i>([^<]+)<\/div>|<a onclick="([^;]+);" title="Regarder ([^"]+)"'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+                
+            if aEntry[0]:
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR red]' + str(aEntry[0]) + '[/COLOR]', 'host.png', oOutputParameterHandler)
+
+            else:
+                sHosterUrl = DecodeURL(str(aEntry[1]))
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+            
+                if (oHoster != False):         
+                    try:
+                        oHoster.setHD(sHosterUrl)
+                    except: pass
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+
+        cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()
+    
+def showHostersSerie():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    
+    cConfig().log(sUrl)
 
     #sPattern = '<a href="([^<]+)" target="filmPlayer" class="ilink sinactive"><img alt="(.+?)"'
     sPattern = '<i class="fa fa-play-circle-o"></i>([^<]+)</div>|<a href="([^<>"]+)" title="([^<]+)" target="seriePlayer".+?>'
