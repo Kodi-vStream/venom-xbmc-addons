@@ -321,16 +321,16 @@ msgid "Connection Failed"
 msgstr "Connexion Impossible"
 
 msgctxt "#30206"
-msgid "Mark movie"
-msgstr "Marque-Film"
+msgid "Mark view/Not view"
+msgstr "Marquer vu/Non vu"
 
 msgctxt "#30207"
-msgid "Mark Serie"
-msgstr "Marque-Série"
+msgid "Bookmarks"
+msgstr "Marque-pages"
 
 msgctxt "#30208"
-msgid "Mark diverses"
-msgstr "Marques-Diverses"
+msgid "Information"
+msgstr "Informations"
 
 msgctxt "#30209"
 msgid "[COLOR red]Delete Bookmark[/COLOR]"

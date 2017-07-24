@@ -321,15 +321,15 @@ msgid "Connection Failed"
 msgstr ""
 
 msgctxt "#30206"
-msgid "Mark movie"
+msgid "Mark view/Not view"
 msgstr ""
 
 msgctxt "#30207"
-msgid "Mark Serie"
+msgid "Bookmarks"
 msgstr ""
 
 msgctxt "#30208"
-msgid "Mark diverses"
+msgid "Information"
 msgstr ""
 
 msgctxt "#30209"

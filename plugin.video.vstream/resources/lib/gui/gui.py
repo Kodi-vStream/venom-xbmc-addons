@@ -280,8 +280,8 @@ class cGui():
         if (oGuiElement.getMeta() > 0):
             if cGui.CONTENT == "movies":
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuba(oGuiElement, oOutputParameterHandler)
+                #self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
+                #self.createContexMenuba(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
@@ -289,8 +289,8 @@ class cGui():
 
             elif cGui.CONTENT == "tvshows":
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuba(oGuiElement, oOutputParameterHandler)
+                #self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
+                #self.createContexMenuba(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
@@ -342,8 +342,9 @@ class cGui():
 
         xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=False)
 
+    #Marquer vu/Non vu
     def createContexMenuWatch(self, oGuiElement, oOutputParameterHandler= ''):
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'setWatched','[COLOR azure]Marquer vu/Non vu[/COLOR]')
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'setWatched', cConfig().getlanguage(30206))
 
     def createContexMenuPageSelect(self, oGuiElement, oOutputParameterHandler):
         #sSiteUrl = oGuiElement.getSiteName()
@@ -372,12 +373,13 @@ class cGui():
         oGuiElement.addContextItem(oContext)
 
 
+    #marque page
     def createContexMenuFav(self, oGuiElement, oOutputParameterHandler= ''):
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
         oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
 
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','setFavorite','[COLOR teal]Marque-Page[/COLOR]')
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','setFavorite', cConfig().getlanguage(30207))
 
     def createContexMenuTrakt(self, oGuiElement, oOutputParameterHandler= ''):
         #pas de menu si pas de meta.
@@ -390,7 +392,7 @@ class cGui():
 
         sType = cGui.CONTENT.replace('tvshows', 'shows')
         oOutputParameterHandler.addParameter('sType', sType)
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cTrakt','cTrakt','getAction','[COLOR teal]Trakt[/COLOR]')
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cTrakt','cTrakt','getAction','Trakt')
 
     def createContexMenuDownload(self, oGuiElement, oOutputParameterHandler= '', status = '0'):
 
@@ -409,6 +411,7 @@ class cGui():
             self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','ResetDownload','Reset')
 
 
+    #Information
     def createContexMenuinfo(self, oGuiElement, oOutputParameterHandler= ''):
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -417,7 +420,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
 
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewinfo','[COLOR azure]Information[/COLOR]')
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewinfo',cConfig().getlanguage(30208))
 
     def createContexMenuba(self, oGuiElement, oOutputParameterHandler= ''):
 
@@ -468,16 +471,17 @@ class cGui():
             oListItem.addContextMenuItems(aContextMenus, True)
 
         #Ajout de voir marque page
-        oContextItem = cContextElement()
-        oContextItem.setFile('cFav')
-        oContextItem.setSiteName('cFav')
-        oContextItem.setTitle(cConfig().getlanguage(30210))
-        oContextItem.setFunction('getFavourites')
-        oOutputParameterHandler = oContextItem.getOutputParameterHandler()
-        sParams = oOutputParameterHandler.getParameterAsUri()
-        sTest = '%s?site=%s&function=%s&contextFav=true&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-        aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.Container.Update(%s)" % (sTest,),)]
-        oListItem.addContextMenuItems(aContextMenus)
+        #supprimer le 24/07
+        # oContextItem = cContextElement()
+        # oContextItem.setFile('cFav')
+        # oContextItem.setSiteName('cFav')
+        # oContextItem.setTitle(cConfig().getlanguage(30210))
+        # oContextItem.setFunction('getFavourites')
+        # oOutputParameterHandler = oContextItem.getOutputParameterHandler()
+        # sParams = oOutputParameterHandler.getParameterAsUri()
+        # sTest = '%s?site=%s&function=%s&contextFav=true&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
+        # aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.Container.Update(%s)" % (sTest,),)]
+        # oListItem.addContextMenuItems(aContextMenus)
 
         #Menu speciaux si metadata
         #supprimer depuis la recherche interne de bande annonce
@@ -667,6 +671,7 @@ class cGui():
 
         xbmc.executebuiltin( 'Container.Refresh' )
 
+    #24/07 plus utiliser passe par la popup information voir cConfig WindowsBoxes id 11
     def viewBA(self):
         oInputParameterHandler = cInputParameterHandler()
         sFileName = oInputParameterHandler.getValue('sFileName')
