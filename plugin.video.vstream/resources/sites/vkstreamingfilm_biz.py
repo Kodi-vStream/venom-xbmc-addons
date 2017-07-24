@@ -11,12 +11,12 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re,urllib2,urllib
- 
+
 SITE_IDENTIFIER = 'vkstreamingfilm_biz'
 SITE_NAME = 'Vk Streaming Film'
 SITE_DESC = 'Film en Streaming HD'
 
-URL_MAIN = 'http://www.vkstreamingfilm.biz/'
+URL_MAIN = 'http://www.vkstreamingfilm.co/'
 
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'lastnews', 'showMovies')
@@ -110,13 +110,13 @@ def showMovies(sSearch=''):
             print e.reason
      
         sHtmlContent = reponse.read()
+        sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)".*?<a href="(.*?)" title'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-    
-    sPattern = '<div class="img-block border-2">.*?<img src="(.*?)".*?>.*?<p class="text">(.+?)<br>.+?<h5><a href="([^"]+)".+?>(.+?)</a>'
+        sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)\sstreaming".*?<a href="(.*?)" title'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -131,12 +131,11 @@ def showMovies(sSearch=''):
                 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch, aEntry[3]) == 0:
+                if cUtil().CheckOccurence(sSearch, aEntry[1]) == 0:
                     continue
            
-            sTitle = str(aEntry[3])
+            sTitle = str(aEntry[1])
             sUrl2 = str(aEntry[2])
-            sSyn = str(aEntry[1])
             sThumb = str(aEntry[0])
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
@@ -144,9 +143,9 @@ def showMovies(sSearch=''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle',sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumb)            
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sSyn, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
            
         cConfig().finishDialog(dialog)
  
