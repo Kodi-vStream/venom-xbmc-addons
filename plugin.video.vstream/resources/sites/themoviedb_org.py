@@ -180,9 +180,10 @@ def showMovies(sSearch = ''):
     oGui = cGui()
 
     total = len(result)
+    
     if (total > 0):
         for i in result['results']:
-            sId, sTitle, sOtitle, sThumbnail, sFanart = i['id'], i['title'], i['original_title'], i['poster_path'], i['backdrop_path']
+            sId, sTitle, sOtitle, sThumbnail, sFanart, sDesc = i['id'], i['title'], i['original_title'], i['poster_path'], i['backdrop_path'], i['overview']
             if sThumbnail:
                 sThumbnail = POSTER_URL + sThumbnail
             else: sThumbnail = ''
@@ -213,6 +214,7 @@ def showMovies(sSearch = ''):
             oGuiElement.setThumbnail(sThumbnail)
             oGuiElement.setFanart(sFanart)
             oGuiElement.setCat(7)
+            oGuiElement.setDescription(sDesc)
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
@@ -256,7 +258,7 @@ def showSeries(sSearch=''):
 
     if (total > 0):
         for i in result['results']:
-            sId, sTitle, sOtitle, sThumbnail, sFanart = i['id'], i['name'], i['original_name'], i['poster_path'], i['backdrop_path']
+            sId, sTitle, sOtitle, sThumbnail, sFanart, sDesc = i['id'], i['name'], i['original_name'], i['poster_path'], i['backdrop_path'], i['overview']
             if sThumbnail:
                 sThumbnail = POSTER_URL + sThumbnail
             else:
@@ -294,6 +296,7 @@ def showSeries(sSearch=''):
             oGuiElement.setThumbnail(sThumbnail)
             oGuiElement.setFanart(sFanart)
             oGuiElement.setCat(7)
+            oGuiElement.setDescription(sDesc)
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
