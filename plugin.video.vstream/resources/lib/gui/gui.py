@@ -49,10 +49,10 @@ class cGui():
     #modif 22/06
     listing = []
 
-    
+
     if cConfig().isKrypton():
         CONTENT = 'addons'
-    
+
 
     def addMovie(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
         cGui.CONTENT = "movies"
@@ -86,11 +86,11 @@ class cGui():
         oGuiElement.setDescription(sDesc)
         oGuiElement.setTvFanart()
         oGuiElement.setCat(2)
-        
+
         # if oOutputParameterHandler.getValue('season'):
             # sSeason = oOutputParameterHandler.getValue('season')
             # oGuiElement.addItemValues('Season', sSeason)
-            
+
         # if oOutputParameterHandler.getValue('episode'):
             # sSeason = oOutputParameterHandler.getValue('episode')
             # oGuiElement.addItemValues('Episode', sSeason)
@@ -103,7 +103,7 @@ class cGui():
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
-    
+
         cGui.CONTENT = "movies"
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
@@ -155,7 +155,7 @@ class cGui():
         oGuiElement.setDirFanart(sIcon)
 
         oOutputParameterHandler.addParameter('sFav', sFunction)
-        
+
         #context paramettre
         if (cConfig().isKrypton() == True):
             self.createContexMenuSettings(oGuiElement, oOutputParameterHandler)
@@ -182,7 +182,7 @@ class cGui():
     def addNone(self, sId):
         return self.addText(sId)
 
-     
+
     def addText(self, sId, sLabel='[COLOR= red]'+cConfig().getlanguage(30204)+'[/COLOR]', sIcon='none.png'):
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
@@ -238,7 +238,7 @@ class cGui():
 
     #afficher les liens non playable
     def addFolder(self, oGuiElement, oOutputParameterHandler='',_isFolder=True):
-    
+
         #recherche append les reponses
         if  xbmcgui.Window(10101).getProperty('search') == 'true':
             import copy
@@ -254,7 +254,7 @@ class cGui():
         }
 
         for sParam, callback in params.iteritems():
-            value = oOutputParameterHandler.getValue(sParam)          
+            value = oOutputParameterHandler.getValue(sParam)
             if value:
                 callback(value)
 
@@ -268,7 +268,7 @@ class cGui():
             oListItem.addStreamInfo('video', { 'aspect': '1.50', 'width':1280 ,'height' : 720 })
         elif '2160'in oGuiElement.getTitle():
             oListItem.addStreamInfo('video', { 'aspect': '1.78', 'width':3840 ,'height' : 2160 })
-        #oListItem.addStreamInfo('audio', {'language': 'fr'})       
+        #oListItem.addStreamInfo('audio', {'language': 'fr'})
 
         # if oGuiElement.getMeta():
             # oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
@@ -294,7 +294,7 @@ class cGui():
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
-        
+
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
 
         sPluginHandle = cPluginHandler().getPluginHandle();
@@ -309,7 +309,7 @@ class cGui():
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
         #oListItem.setThumbnailImage(oGuiElement.getThumbnail())
         #oListItem.setIconImage(oGuiElement.getIcon())
-        
+
         oListItem.setArt({'thumb': oGuiElement.getThumbnail(), 'icon': oGuiElement.getIcon(),'fanart': oGuiElement.getFanart() })
 
         aProperties = oGuiElement.getItemProperties()
@@ -320,7 +320,7 @@ class cGui():
 
     #affiche les liens playable
     def addHost(self, oGuiElement, oOutputParameterHandler=''):
-        
+
         if cConfig().isKrypton():
             cGui.CONTENT = 'movies'
 
@@ -387,7 +387,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sTmdbId', oGuiElement.getTmdbId())
         #ajout de filename netoyage deja fait
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
-        
+
         sType = cGui.CONTENT.replace('tvshows', 'shows')
         oOutputParameterHandler.addParameter('sType', sType)
         self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cTrakt','cTrakt','getAction','[COLOR teal]Trakt[/COLOR]')
@@ -535,7 +535,7 @@ class cGui():
         return oListItem
 
     def setEndOfDirectory(self, ForceViewMode = False):
-            
+
         iHandler = cPluginHandler().getPluginHandle()
         #modif 22/06
         xbmcplugin.addDirectoryItems(iHandler, self.listing, len(self.listing))

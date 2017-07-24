@@ -88,11 +88,11 @@ class cHome:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir('globalSources', 'showSources', cConfig().getlanguage(30116), 'host.png', oOutputParameterHandler)
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir('cFav', 'getFavourites', '[COLOR teal]' + cConfig().getlanguage(30210) + '[/COLOR]', 'mark.png', oOutputParameterHandler)
-        
+
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         # oGui.addDir('globalParametre', 'showSources', '[COLOR teal]'+cConfig().getlanguage(30023)+'[/COLOR]', 'param.png', oOutputParameterHandler)
@@ -198,7 +198,7 @@ class cHome:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_ANNEES')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30120), cConfig().getlanguage(30106)), 'films_annees.png', oOutputParameterHandler)
-        
+
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_VF')
         # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '[COLOR '+color_films+']'+cConfig().getlanguage(30134)+'[/COLOR]', 'films_vf.png', oOutputParameterHandler)
@@ -231,7 +231,7 @@ class cHome:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'SERIE_ANNEES')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30121), cConfig().getlanguage(30106)), 'series_annees.png', oOutputParameterHandler)
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'SERIE_VFS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30121), cConfig().getlanguage(30107)), 'series_vf.png', oOutputParameterHandler)
@@ -262,7 +262,7 @@ class cHome:
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30122), cConfig().getlanguage(30108)), 'animes_vostfr.png', oOutputParameterHandler)
 
         #non utiliser ANIM_MOVIES
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_GENRES')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30122), cConfig().getlanguage(30105)), 'animes_genres.png', oOutputParameterHandler)
@@ -270,11 +270,11 @@ class cHome:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_ANNEES')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30122), cConfig().getlanguage(30106)), 'animes_annees.png', oOutputParameterHandler)
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_ENFANTS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (cConfig().getlanguage(30122), cConfig().getlanguage(30109)), 'animes_enfants.png', oOutputParameterHandler)
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_ANIMS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', cConfig().getlanguage(30138), 'animes_host.png', oOutputParameterHandler)
@@ -311,58 +311,95 @@ class cHome:
 
         oGui.setEndOfDirectory()
 
+    def showSearchText(self):
+        oGui = cGui()
+        oInputParameterHandler = cInputParameterHandler()
+        sDisp = oInputParameterHandler.getValue('disp')
+        sType = oInputParameterHandler.getValue('type')
+
+        sText = oGui.showKeyBoard()
+        sSearchText = urllib.quote(sText)
+        if not sSearchText:
+            return False
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oOutputParameterHandler.addParameter('searchtext', sSearchText)
+        oOutputParameterHandler.addParameter('disp', sDisp)
+        oOutputParameterHandler.addParameter('type', sType)
+        oOutputParameterHandler.addParameter('readdb', 'True')
+        oGui.addDir('globalSearch', 'none', '%s: %s' % (cConfig().getlanguage(30076), sSearchText), 'search.png', oOutputParameterHandler)
+        oGui.setEndOfDirectory()
 
     def showSearch(self):
-        
+
         xbmcgui.Window(10101).clearProperty('search_text')
 
         oGui = cGui()
 
+        #affiche le texte de recherche si exist
+        oInputParameterHandler = cInputParameterHandler()
+        sSearchText = False
+        sSite = False
+
+
+        if oInputParameterHandler.exist('searchtext'):
+            sSearchText = oInputParameterHandler.getValue('searchtext')
+            oGui.addText('globalSearch', '[COLOR khaki]%s: %s[/COLOR]' % (cConfig().getlanguage(30076), sSearchText), 'none.png')
+            sSite = 'globalSearch'
+        else:
+            sSite = 'cHome'
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oOutputParameterHandler.addParameter('searchtext', sSearchText)
         oOutputParameterHandler.addParameter('disp', 'search1')
         oOutputParameterHandler.addParameter('type', cConfig().getSetting('search1_type'))
         oOutputParameterHandler.addParameter('readdb', 'True')
         sLabel1 = cConfig().getlanguage(30077)+": "+cConfig().getSetting('search1_label')
-        oGui.addDir('globalSearch', 'searchMovie', sLabel1, 'search.png', oOutputParameterHandler)
+        oGui.addDir(sSite, 'showSearchText', sLabel1, 'search.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oOutputParameterHandler.addParameter('searchtext', sSearchText)
         oOutputParameterHandler.addParameter('disp', 'search2')
         oOutputParameterHandler.addParameter('type', cConfig().getSetting('search2_type'))
         oOutputParameterHandler.addParameter('readdb', 'True')
         sLabel2 = cConfig().getlanguage(30089)+": "+cConfig().getSetting('search2_label')
-        oGui.addDir('globalSearch', 'searchMovie', sLabel2, 'search.png', oOutputParameterHandler)
+        oGui.addDir(sSite, 'showSearchText', sLabel2, 'search.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oOutputParameterHandler.addParameter('searchtext', sSearchText)
         oOutputParameterHandler.addParameter('disp', 'search3')
         oOutputParameterHandler.addParameter('type', cConfig().getSetting('search3_type'))
         oOutputParameterHandler.addParameter('readdb', 'True')
         sLabel3 = cConfig().getlanguage(30090)+": "+cConfig().getSetting('search3_label')
-        oGui.addDir('globalSearch', 'searchMovie', sLabel3, 'search.png', oOutputParameterHandler)
+        oGui.addDir(sSite, 'showSearchText', sLabel3, 'search.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oOutputParameterHandler.addParameter('searchtext', sSearchText)
         oOutputParameterHandler.addParameter('disp', 'search4')
         oOutputParameterHandler.addParameter('type', cConfig().getSetting('search4_type'))
         oOutputParameterHandler.addParameter('readdb', 'True')
         sLabel4 = cConfig().getlanguage(30091)+": "+cConfig().getSetting('search4_label')
-        oGui.addDir('globalSearch', 'searchMovie', sLabel4, 'search.png', oOutputParameterHandler)
+        oGui.addDir(sSite, 'showSearchText', sLabel4, 'search.png', oOutputParameterHandler)
+
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        # oOutputParameterHandler.addParameter('searchtext', sSearchText)
+        # oOutputParameterHandler.addParameter('disp', 'search5')
+        # oOutputParameterHandler.addParameter('type', '')
+        # oOutputParameterHandler.addParameter('readdb', 'True')
+        # sLabel5 = ('%s: %s') % (cConfig().getlanguage(30076), cConfig().getlanguage(30092))
+        # oGui.addDir('globalSearch', 'searchMovie', sLabel5, 'search.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oOutputParameterHandler.addParameter('disp', 'search5')
-        oOutputParameterHandler.addParameter('type', '')
-        oOutputParameterHandler.addParameter('readdb', 'True')
-        sLabel5 = ('%s: %s') % (cConfig().getlanguage(30076), cConfig().getlanguage(30092))
-        oGui.addDir('globalSearch', 'searchMovie', sLabel5, 'search.png', oOutputParameterHandler)
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oOutputParameterHandler.addParameter('searchtext', sSearchText)
         oOutputParameterHandler.addParameter('disp', 'search10')
         oOutputParameterHandler.addParameter('readdb', 'True')
-        oGui.addDir('globalSearch', 'searchMovie', '[COLOR orange]Recherche: Alluc_ee[/COLOR]', 'search.png', oOutputParameterHandler)
+        oGui.addDir(sSite, 'showSearchText', '[COLOR orange]Recherche: Alluc_ee[/COLOR]', 'search.png', oOutputParameterHandler)
 
         #history
         if (cConfig().getSetting("history-view") == 'true'):
@@ -383,8 +420,8 @@ class cHome:
                 oOutputParameterHandler.addParameter('searchtext', match[1])
                 oOutputParameterHandler.addParameter('disp', match[2])
                 oOutputParameterHandler.addParameter('readdb', 'False')
-                
-                
+
+
                 oGuiElement = cGuiElement()
                 oGuiElement.setSiteName('globalSearch')
                 oGuiElement.setFunction('searchMovie')
@@ -417,10 +454,10 @@ class cHome:
 
     def callpluging(self):
         oGui = cGui()
-        
+
         oInputParameterHandler = cInputParameterHandler()
         sSiteUrl = oInputParameterHandler.getValue('siteUrl')
-        
+
         oPluginHandler = cSiteHandler()
         aPlugins = oPluginHandler.getAvailablePlugins(sSiteUrl)
         for aPlugin in aPlugins:
@@ -435,7 +472,7 @@ class cHome:
                 pass
 
         oGui.setEndOfDirectory()
-     
+
     #plus utiliser depuis le 16/03/2017
     def __callpluging(self, sVar, sIcon):
         oGui = cGui()
