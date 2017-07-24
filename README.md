@@ -25,7 +25,7 @@ Installez le zip du repository (pour avoir les mises à jour automatiques) ou in
 
 ## Video!
 
-[![Video d'installation](http://img.youtube.com/vi/1uS5gbd8jpE/0.jpg)](https://www.youtube.com/watch?v=1uS5gbd8jpE)
+[![Video d'installation](http://img.youtube.com/vi/dId6TN9WPlQ/0.jpg)](https://www.youtube.com/watch?v=dId6TN9WPlQ)
 
 
 ## Quoi de neuf!
