@@ -21,17 +21,17 @@ SITE_DESC = 'Bienvenue sur ADKami un site Animés Manga & Série en streaming.'
 
 URL_MAIN = 'http://www.adkami.com/'
 
-ANIM_ANIMS = (URL_MAIN + 'video?recherche=&version=0&type2=0', 'showMovies')
-ANIM_VFS = (URL_MAIN + 'video?recherche=&version=1&type2=0', 'showMovies')
-ANIM_VOSTFRS = (URL_MAIN + 'video?recherche=&version=2&type2=0', 'showMovies')
-ANIM_GENRES = (URL_MAIN + 'video?recherche=&type2=0', 'showMovies')
+ANIM_ANIMS = (URL_MAIN + 'video?search=&n=0&t=0', 'showMovies')
+ANIM_VFS = (URL_MAIN + 'video?search=&n=1&t=0', 'showMovies')
+ANIM_VOSTFRS = (URL_MAIN + 'video?search=&n=2&t=0', 'showMovies')
+ANIM_GENRES = (URL_MAIN + 'video?search=&t=0', 'showMovies')
 
-SERIE_SERIES = (URL_MAIN + 'video?recherche=&version=0&type2=1', 'showMovies')
-SERIE_VFS = (URL_MAIN + 'video?recherche=&version=1&type2=1', 'showMovies')
-SERIE_VOSTFRS = (URL_MAIN + 'video?recherche=&version=2&type2=1', 'showMovies')
-SERIE_GENRES = (URL_MAIN + 'video?recherche=&type2=1', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'video?search=&n=0&t=1', 'showMovies')
+SERIE_VFS = (URL_MAIN + 'video?search=&n=1&t=1', 'showMovies')
+SERIE_VOSTFRS = (URL_MAIN + 'video?search=&n=2&t=1', 'showMovies')
+SERIE_GENRES = (URL_MAIN + 'video?search=&t=1', 'showMovies')
 
-URL_SEARCH = (URL_MAIN + 'video?recherche=', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'video?search=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -258,7 +258,7 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<li><a href="([^<]+)">.+?<span class="bold">(.+?)</span></p>'
+    sPattern = '<span class="top"><a href="([^"]+)"><span class="title">([^<>]+)<\/span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -272,7 +272,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-            if 'type2=1' in sUrl:
+            if 't=1' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', aEntry[1], 'series.png', '', '', oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', aEntry[1], 'animes.png', '', '', oOutputParameterHandler)
@@ -324,7 +324,7 @@ def showEpisode():
     else:
         
         #sPattern = '<li style.+?>(.+?)</li>|<li title=""><a href="([^<]+)">([^<]+)</a></li>'
-        sPattern = '<li style.+?>(.+?)<.li>|<li title="[^>]*?"><a href="(http:\/\/www.adkami.com.+?)".*?>([^<]+)<.a><.li>'
+        sPattern = '<li class="saison">([^<>]+)</li>|<a href="(https:\/\/www\.adkami\.com[^"]+)" title="">([^<>]+)<\/a><\/li>'
         
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
@@ -362,8 +362,11 @@ def showHosters():
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    #cConfig().log(sUrl)
 
-    sPattern = '</div><iframe.+?src="(.+?)"|<a rel="nofollow" target="_back" href="([^"]+)" [^<>]+">[^<>]+Redirection<\/a>'
+    #sPattern = '</div><iframe.+?src="(.+?)"|<a rel="nofollow" target="_back" href="([^"]+)" [^<>]+">[^<>]+Redirection<\/a>'
+    sPattern = '<div class="video-video"><iframe[^<>]+src="([^"]+)"|<a rel="nofollow" target="_back" href="([^"]+)" [^<>]+">[^<>]+Redirection<\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
