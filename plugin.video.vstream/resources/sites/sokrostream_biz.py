@@ -27,7 +27,7 @@ SITE_IDENTIFIER = 'sokrostream_biz'
 SITE_NAME = 'Sokrostream'
 SITE_DESC = 'Films & Séries en streaming en vf et Vostfr'
 
-URL_MAIN = 'http://sokrostream.cc/'
+URL_MAIN = 'http://sokrostream.ws/'
 
 MOVIE_NEWS = (URL_MAIN + 'categories/films', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'categories/films', 'showMovies')
