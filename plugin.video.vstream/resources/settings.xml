@@ -30,58 +30,22 @@
         <setting id="accueil-view" type="number" label="30407" default="500" enable="eq(-2,true)"/>
         <setting id="movie-view" type="number" label="30404" default="500" enable="eq(-3,true)"/>
         <setting id="serie-view" type="number" label="30405" default="500" enable="eq(-4,true)"/>
-    </category>
 
-    <category label="30025">
-        <setting label="30025" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="home_cherches" type="bool" label="Recherches" default="true"/>
-        <setting label="Recherches: Image" type="image" id="images_cherches" default="special://home/addons/plugin.video.vstream/resources/art/search_fanart.jpg"/>
-
-        <setting type="sep"/>
-        <setting id="home_cherchev" type="bool" label="Recherches Visuelles" default="true"/>
-        <setting label="Recherches visuelles: Image" type="image" id="images_cherchev" default="special://home/addons/plugin.video.vstream/resources/art/vsearch_fanart.jpg"/>
-
-        <setting type="sep"/>
-        <setting id="home_tvs" type="bool" label="Télévisions" default="true"/>
-        <setting label="Télévisions: Image" type="image" id="images_tvs" default="special://home/addons/plugin.video.vstream/resources/art/tv_fanart.jpg"/>
-
-        <setting type="sep"/>
-        <setting id="home_replaytvs" type="bool" label="Télévisions Replays" default="true"/>
-        <setting label="Télévisions Replays: Image" type="image" id="images_replaytvs" default="special://home/addons/plugin.video.vstream/resources/art/replay_fanart.jpg"/>
-
-        <setting type="sep"/>
-        <setting id="home_films" type="bool" label="Films" default="true"/>
-        <setting label="Films: Image" type="image" id="images_films" default="special://home/addons/plugin.video.vstream/resources/art/films_fanart.jpg"/>
-
-        <setting type="sep"/>
-        <setting id="home_series" type="bool" label="Séries" default="true"/>
-        <setting label="Séries: Image" type="image" id="images_series" default="special://home/addons/plugin.video.vstream/resources/art/series_fanart.jpg"/>
-
-        <setting type="sep"/>
-        <setting id="home_anims" type="bool" label="Animés" default="true"/>
-        <setting label="Animés: Image" type="image" id="images_anims" default="special://home/addons/plugin.video.vstream/resources/art/animes_fanart.jpg"/>
-
-        <setting type="sep"/>
-        <setting id="home_docs" type="bool" label="Documentaires" default="true"/>
-        <setting label="Documentaires: Images" type="image" id="images_docs" default="special://home/addons/plugin.video.vstream/resources/art/doc_fanart.jpg"/>
-
-        <setting type="sep"/>
-        <setting id="home_sports" type="bool" label="Sports" default="true"/>
-        <setting label="Sports: Image" type="image" id="images_sports" default="special://home/addons/plugin.video.vstream/resources/art/sport_fanart.jpg"/>
-
-        <setting type="sep"/>
-        <setting id="home_videos" type="bool" label="Vidéos" default="true"/>
-        <setting label="Vidéos: Image" type="image" id="images_videos" default="special://home/addons/plugin.video.vstream/resources/art/buzz_fanart.jpg"/>
-
+        <!--utilisation masquer de chemin pour les fanart -->
+        <setting  visible="false" label="Recherches: Image" type="image" id="images_cherches" default="special://home/addons/plugin.video.vstream/resources/art/search_fanart.jpg"/>
+        <setting  visible="false" label="Recherches visuelles: Image" type="image" id="images_cherchev" default="special://home/addons/plugin.video.vstream/resources/art/vsearch_fanart.jpg"/>
+        <setting  visible="false" label="Télévisions: Image" type="image" id="images_tvs" default="special://home/addons/plugin.video.vstream/resources/art/tv_fanart.jpg"/>
+        <setting  visible="false" label="Télévisions Replays: Image" type="image" id="images_replaytvs" default="special://home/addons/plugin.video.vstream/resources/art/replay_fanart.jpg"/>
+        <setting  visible="false" label="Films: Image" type="image" id="images_films" default="special://home/addons/plugin.video.vstream/resources/art/films_fanart.jpg"/>
+        <setting  visible="false" label="Séries: Image" type="image" id="images_series" default="special://home/addons/plugin.video.vstream/resources/art/series_fanart.jpg"/>
+        <setting  visible="false" label="Animés: Image" type="image" id="images_anims" default="special://home/addons/plugin.video.vstream/resources/art/animes_fanart.jpg"/>
+        <setting  visible="false" label="Documentaires: Images" type="image" id="images_docs" default="special://home/addons/plugin.video.vstream/resources/art/doc_fanart.jpg"/>
+        <setting  visible="false" label="Sports: Image" type="image" id="images_sports" default="special://home/addons/plugin.video.vstream/resources/art/sport_fanart.jpg"/>
+        <setting  visible="false" label="Vidéos: Image" type="image" id="images_videos" default="special://home/addons/plugin.video.vstream/resources/art/buzz_fanart.jpg"/>
         <setting visible="false" label="Images Fav" type="image" id="images_marks" default="special://home/addons/plugin.video.vstream/resources/art/mark_fanart.jpg"/>
-
         <setting visible="false" label="Images sources" type="image" id="images_hosts" default="special://home/addons/plugin.video.vstream/resources/art/host_fanart.jpg"/>
-
         <setting visible="false" label="Images update" type="image" id="images_updates" default="special://home/addons/plugin.video.vstream/resources/art/update_fanart.jpg"/>
-
         <setting visible="false" label="Images download" type="image" id="images_downloads" default="special://home/addons/plugin.video.vstream/resources/art/download_fanart.jpg"/>
-
         <setting visible="false" label="Images library" type="image" id="images_librarys" default="special://home/addons/plugin.video.vstream/resources/art/library_fanart.jpg"/>
 
     </category>
