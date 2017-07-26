@@ -114,7 +114,7 @@ def load(): #fonction chargee automatiquement par l'addon l'index de votre navig
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (derniers ajouts)', 'series_news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
@@ -251,6 +251,8 @@ def showMovies(sSearch = ''):
         
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total) #dialog update
+            if dialog.iscanceled():
+                break
             
             #L'array affiche vos info dans l'orde de sPattern en commencant a 0
             sTitle = str(aEntry[1])
@@ -364,6 +366,8 @@ def ShowSerieSaisonEpisodes():
         
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             sTitle = sMovieTitle + str(aEntry[1])
             sUrl2 = str(aEntry[2])

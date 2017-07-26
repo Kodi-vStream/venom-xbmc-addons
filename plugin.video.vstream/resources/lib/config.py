@@ -10,14 +10,14 @@ DIALOG2 = None
 #-----------------------
 #     Cookies gestion
 #------------------------
-    
+
 class GestionCookie():
     PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile")).decode("utf-8")
-    
+
     def DeleteCookie(self,Domain):
         file = os.path.join(self.PathCache,'Cookie_'+ str(Domain) +'.txt')
         os.remove(os.path.join(self.PathCache,file))
-    
+
     def SaveCookie(self,Domain,data):
         Name = os.path.join(self.PathCache,'Cookie_'+ str(Domain) +'.txt')
 
@@ -26,28 +26,28 @@ class GestionCookie():
         file.write(data)
 
         file.close()
-        
+
     def Readcookie(self,Domain):
         Name = os.path.join(self.PathCache,'Cookie_'+ str(Domain) +'.txt')
-        
+
         try:
             file = open(Name,'r')
             data = file.read()
             file.close()
         except:
             return ''
-        
+
         return data
-        
+
     def AddCookies(self):
         cookies = self.Readcookie(self.__sHosterIdentifier)
         return 'Cookie=' + cookies
-        
+
 
 #-------------------------------
 #     Configuration gestion
 #-------------------------------
-        
+
 class cConfig():
 
     COUNT = 0
@@ -56,20 +56,20 @@ class cConfig():
 
     def __check(self):
         try:
-            import xbmcaddon           
-            self.__bIsDharma = True            
+            import xbmcaddon
+            self.__bIsDharma = True
         except ImportError:
             self.__bIsDharma = False
-            
-        try: 
+
+        try:
             version = xbmc.getInfoLabel('system.buildversion')
             if version[0:2] >= "17":
-                self.__bIsKrypton = True  
+                self.__bIsKrypton = True
             else :
                 self.__bIsKrypton = False
         except:
             self.__bIsKrypton = False
-                
+
 
     def __init__(self):
         self.__check()
@@ -95,16 +95,16 @@ class cConfig():
 
     def isDharma(self):
         return self.__bIsDharma
-        
+
     def isKrypton(self):
         return self.__bIsKrypton
 
     def getPluginId(self):
         return 'plugin.video.vstream'
-        
+
     def getAddonId(self):
         return self.__oId
-    
+
     def getSettingCache(self):
         return self.__oCache
 
@@ -116,13 +116,13 @@ class cConfig():
 
     def getAddonVersion(self):
         return self.__oVersion
-    
+
     def getFileFav(self):
         return self.__sFileFav
-    
+
     def getFileDB(self):
         return self.__sFileDB
-        
+
     def getFileCache(self):
         return self.__sFileCache
 
@@ -145,11 +145,11 @@ class cConfig():
         if (self.__bIsDharma):
             return self.__oSettings.getSetting(sName)
         else:
-            try:                
+            try:
                 return xbmcplugin.getSetting(sName)
             except:
 		return ''
-        
+
     def html_decode(self, s):
         htmlCodes = [
         ["'", "&#39;"],
@@ -173,11 +173,11 @@ class cConfig():
         if (self.__bIsDharma):
             return self.__aLanguage(sCode).encode("utf-8")
         else:
-            try:		
+            try:
 		return xbmc.getLocalizedString(sCode).encode("utf-8")
             except:
 		return ''
-        
+
     def showKeyBoard(self, sDefaultText=''):
         keyboard = xbmc.Keyboard(sDefaultText)
         keyboard.doModal()
@@ -190,14 +190,14 @@ class cConfig():
 
     def createDialogOK(self, label):
         oDialog = xbmcgui.Dialog()
-        oDialog.ok('vStream', label)  
+        oDialog.ok('vStream', label)
         return oDialog
-        
+
     def createDialogYesNo(self, label):
         oDialog = xbmcgui.Dialog()
         qst = oDialog.yesno("vStream", label)
         return qst
-        
+
     def createDialog(self, sSite):
 	global DIALOG2
         if DIALOG2 == None:
@@ -212,7 +212,7 @@ class cConfig():
             iPercent = int(float(cConfig.COUNT * 100) / total)
             dialog.update(iPercent, 'Chargement: '+str(cConfig.COUNT)+'/'+str(total))
             cConfig.COUNT += 1
-        
+
     def updateDialogSearch(self, dialog, total, site):
         iPercent = int(float(cConfig.COUNT * 100) / total)
         dialog.update(iPercent, 'Chargement: '+str(site))
@@ -239,7 +239,7 @@ class cConfig():
 
         if self.getSetting('Block_Noti_sound') == 'true':
             sound = False
-            
+
         xbmcgui.Dialog().notification(str(sTitle), str(sDescription),self.__sIcon,iSeconds,sound)
         #xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds, self.__sIcon))
 
@@ -253,7 +253,7 @@ class cConfig():
         xbmc.executebuiltin('Dialog.Close(busydialog)')
         while xbmc.getCondVisibility('Window.IsActive(busydialog)'):
             xbmc.sleep(100)
-        
+
     def error(self, e):
         xbmc.executebuiltin("Notification(%s,%s,%s,%s)" % ('Vstream', ('Erreur: '+str(e)), '10000', self.__sIcon))
         xbmc.log('\t[PLUGIN] Vstream Erreur: '+str(e))
@@ -261,7 +261,7 @@ class cConfig():
 
     def log(self, e):
         xbmc.log('\t[PLUGIN] Vstream: '+str(e), xbmc.LOGNOTICE)
-    
+
     def openerror(self):
         xbmc.executebuiltin( "ActivateWindow(10147)" )
         self.win = xbmcgui.Window(10147)
@@ -270,10 +270,10 @@ class cConfig():
         for text in cConfig().ERROR:
             text = text.replace(',', '\n')
             value += '\n'+text+'\n'
-        
+
         self.win.getControl(1).setLabel("vStream popup Erreur")
         self.win.getControl(5).setText(str(value))
-        
+
     def TextBoxes(self, heading, anounce):
         class TextBox():
             # constants
@@ -302,7 +302,7 @@ class cConfig():
         TextBox()
 
     def WindowsBoxes(self, sTitle, sFileName, num,year = ''):
-    
+
         #Presence de l'addon ExtendedInfo ?
         try:
             if (xbmcaddon.Addon('script.extendedinfo') and self.getSetting('extendedinfo-view') == 'true'):
@@ -316,14 +316,14 @@ class cConfig():
                     return
         except:
             pass
-        
+
         #Sinon on gere par Vstream via la lib TMDB
         if num == "1":
             try:
                 from resources.lib.tmdb import cTMDb
                 grab = cTMDb(api_key=self.getSetting('api_tmdb'))
                 meta = grab.get_meta('movie',sFileName)
-            except:         
+            except:
                 pass
         elif num == "2":
             try:
@@ -337,13 +337,13 @@ class cConfig():
         if (not meta['imdb_id']):
             #dialog par defaut
             #xbmc.executebuiltin("Action(Info)")
-            
+
             #fenetre d'erreur
             self.showInfo('Vstream', self.getlanguage(30204))
-            
+
             return
-                
-        #affichage du dialog perso   
+
+        #affichage du dialog perso
         class XMLDialog(xbmcgui.WindowXMLDialog):
             """
             Dialog class that asks user about rating of movie.
@@ -361,7 +361,7 @@ class cConfig():
                 # self.close()
 
             def onInit(self):
-                #par default le resumer#                    
+                #par default le resumer#
                 self.getControl(50).setVisible(False)
                 self.getControl(50).reset()
                 listitems = []
@@ -386,10 +386,10 @@ class cConfig():
                         xbmcgui.Window(10000).setProperty(property, meta[e].encode('utf-8'))
                     else:
                         xbmcgui.Window(10000).setProperty(property, str(meta[e]))
-                
-                
 
-                
+
+
+
                 #description
                 #self.getControl(400).setText(meta['plot'])
 
@@ -403,6 +403,10 @@ class cConfig():
                     self.getControl(400).setVisible(True)
                     return
                 elif controlId == 11:
+                    from resources.lib.ba import cShowBA
+                    cBA = cShowBA()
+                    cBA.SetSearch(sFileName)
+                    cBA.SearchBA()
                     self.close()
                     return
                 elif controlId == 30:
@@ -412,14 +416,14 @@ class cConfig():
 
             def onFocus(self, controlId):
                 self.controlId = controlId
-                
+
             def _close_dialog( self ):
                 self.close()
 
             def onAction( self, action ):
                 if action.getId() in ( 9, 10, 11, 30, 92, 216, 247, 257, 275, 61467, 61448, ):
                     self.close()
-          
+
         wd = XMLDialog('DialogInfo.xml', self.__oPath.decode("utf-8") , 'default', '720p')
         wd.doModal()
         del wd

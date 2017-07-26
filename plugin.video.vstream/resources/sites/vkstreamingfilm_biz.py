@@ -11,12 +11,12 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re,urllib2,urllib
- 
+
 SITE_IDENTIFIER = 'vkstreamingfilm_biz'
 SITE_NAME = 'Vk Streaming Film'
 SITE_DESC = 'Film en Streaming HD'
 
-URL_MAIN = 'http://vkstreamingfilm.biz/'
+URL_MAIN = 'http://www.vkstreamingfilm.co/'
 
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_NEWS = (URL_MAIN + 'lastnews', 'showMovies')
@@ -24,13 +24,6 @@ MOVIE_GENRES = (True, 'showGenres')
 
 URL_SEARCH = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
-
-def DecoTitle(string):
-    #pr les tag
-    string = re.sub('([\[\(].{1,7}[\)\]])','[COLOR coral]\\1[/COLOR]', str(string))
-    #pr les saisons
-    string = re.sub('(?i)(.*)(saison [0-9]+)','\\1[COLOR coral]\\2[/COLOR]', str(string))
-    return string
 
 def load():
     oGui = cGui()
@@ -117,16 +110,14 @@ def showMovies(sSearch=''):
             print e.reason
      
         sHtmlContent = reponse.read()
-        sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)" class="img-poster border-2 shadow-dark7" width="151" height="215".*?<a href="(http://www.vkstreamingfilm.*?)" title'
+        sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)".*?<a href="(.*?)" title'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)\sstreaming".*?<a href="(http://www.vkstreamingfilm.*?)" title'
-       
-    sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '')
-   
+        sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)\sstreaming".*?<a href="(.*?)" title'
+    
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
  
@@ -140,19 +131,21 @@ def showMovies(sSearch=''):
                 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch,aEntry[1]) == 0:
+                if cUtil().CheckOccurence(sSearch, aEntry[1]) == 0:
                     continue
            
-            sThumbnail = str(aEntry[0])
-            if not 'vkstreamingfilm' in sThumbnail:
-                  sThumbnail = URL_MAIN[:-1] + sThumbnail
-            #print sThumbnail
+            sTitle = str(aEntry[1])
+            sUrl2 = str(aEntry[2])
+            sThumb = str(aEntry[0])
+            if sThumb.startswith('/'):
+                sThumb = URL_MAIN[:-1] + sThumb
  
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
-            oOutputParameterHandler.addParameter('sMovieTitle',str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)            
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', aEntry[1], '', sThumbnail, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle',sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
            
         cConfig().finishDialog(dialog)
  
@@ -189,26 +182,25 @@ def showHosters():
     oParser = cParser()
    
     #Recuperation qualitee
-    qualite = ''
+    sQual = ''
     sPattern = '<b>QualitÃ© :<\/b><\/span> +?<p class="text">([^<>()|]+)(?:\(.+?\))*[ |]*.+?<\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
-        qualite = ' [' + aResult[1][0] + ']'
-        qualite = qualite.replace('VF','')
-        qualite = qualite.replace('VOSTFR','')
-        qualite = qualite.replace(' ]',']')
+        sQual = ' [' + aResult[1][0] + ']'
+        sQual = sQual.replace('VF','').replace('VOSTFR','')
+        sQual = sQual.replace(' ]',']')
    
     #Recup langue
-    langue = ''
+    sLang = ''
     sPattern = '<a href="#(video[0-9]+?)" title=".+?" class="border-3"><span>.+?(\[.+?\])<\/span><\/a><\/li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
-        langue = aResult[1]
+        sLang = aResult[1]
 
     sPattern = '<div class="fstory-video-block" id="(.+?)">.+?<iframe.+?src=[\'|"](.+?)[\'|"]'
     aResult = oParser.parse(sHtmlContent, sPattern)
    
-    sMovieTitle = sMovieTitle + qualite
+    sMovieTitle = sMovieTitle + sQual
    
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -219,16 +211,15 @@ def showHosters():
                 break
 
             sMovieTitle2 = sMovieTitle
-            #Rajout lanques
-            for aEntry9 in langue:
+            #Rajout langue
+            for aEntry9 in sLang:
                 if aEntry9[0] == aEntry[0]:
-                    #sMovieTitle2 = sMovieTitle + aEntry9[1]
                     sMovieTitle2 = '%s %s' % (sMovieTitle, aEntry9[1])
            
             sHosterUrl = str(aEntry[1])
             oHoster = cHosterGui().checkHoster(sHosterUrl)
            
-            sMovieTitle2 = cUtil().DecoTitle(sMovieTitle2)
+            sMovieTitle2 = sMovieTitle2
 
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle2)

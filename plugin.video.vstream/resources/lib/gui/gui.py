@@ -49,10 +49,10 @@ class cGui():
     #modif 22/06
     listing = []
 
-    
+
     if cConfig().isKrypton():
         CONTENT = 'addons'
-    
+
 
     def addMovie(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
         cGui.CONTENT = "movies"
@@ -86,11 +86,11 @@ class cGui():
         oGuiElement.setDescription(sDesc)
         oGuiElement.setTvFanart()
         oGuiElement.setCat(2)
-        
+
         # if oOutputParameterHandler.getValue('season'):
             # sSeason = oOutputParameterHandler.getValue('season')
             # oGuiElement.addItemValues('Season', sSeason)
-            
+
         # if oOutputParameterHandler.getValue('episode'):
             # sSeason = oOutputParameterHandler.getValue('episode')
             # oGuiElement.addItemValues('Episode', sSeason)
@@ -103,7 +103,7 @@ class cGui():
         self.addFolder(oGuiElement, oOutputParameterHandler)
 
     def addMisc(self, sId, sFunction, sLabel, sIcon, sThumbnail, sDesc, oOutputParameterHandler = ''):
-    
+
         cGui.CONTENT = "movies"
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
@@ -155,7 +155,7 @@ class cGui():
         oGuiElement.setDirFanart(sIcon)
 
         oOutputParameterHandler.addParameter('sFav', sFunction)
-        
+
         #context paramettre
         if (cConfig().isKrypton() == True):
             self.createContexMenuSettings(oGuiElement, oOutputParameterHandler)
@@ -182,7 +182,7 @@ class cGui():
     def addNone(self, sId):
         return self.addText(sId)
 
-     
+
     def addText(self, sId, sLabel='[COLOR= red]'+cConfig().getlanguage(30204)+'[/COLOR]', sIcon='none.png'):
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
@@ -238,7 +238,7 @@ class cGui():
 
     #afficher les liens non playable
     def addFolder(self, oGuiElement, oOutputParameterHandler='',_isFolder=True):
-    
+
         #recherche append les reponses
         if  xbmcgui.Window(10101).getProperty('search') == 'true':
             import copy
@@ -254,7 +254,7 @@ class cGui():
         }
 
         for sParam, callback in params.iteritems():
-            value = oOutputParameterHandler.getValue(sParam)          
+            value = oOutputParameterHandler.getValue(sParam)
             if value:
                 callback(value)
 
@@ -268,7 +268,7 @@ class cGui():
             oListItem.addStreamInfo('video', { 'aspect': '1.50', 'width':1280 ,'height' : 720 })
         elif '2160'in oGuiElement.getTitle():
             oListItem.addStreamInfo('video', { 'aspect': '1.78', 'width':3840 ,'height' : 2160 })
-        #oListItem.addStreamInfo('audio', {'language': 'fr'})       
+        #oListItem.addStreamInfo('audio', {'language': 'fr'})
 
         # if oGuiElement.getMeta():
             # oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
@@ -280,8 +280,8 @@ class cGui():
         if (oGuiElement.getMeta() > 0):
             if cGui.CONTENT == "movies":
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuba(oGuiElement, oOutputParameterHandler)
+                #self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
+                #self.createContexMenuba(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
@@ -289,12 +289,12 @@ class cGui():
 
             elif cGui.CONTENT == "tvshows":
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuba(oGuiElement, oOutputParameterHandler)
+                #self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
+                #self.createContexMenuba(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
-        
+
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
 
         sPluginHandle = cPluginHandler().getPluginHandle();
@@ -309,7 +309,7 @@ class cGui():
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
         #oListItem.setThumbnailImage(oGuiElement.getThumbnail())
         #oListItem.setIconImage(oGuiElement.getIcon())
-        
+
         oListItem.setArt({'thumb': oGuiElement.getThumbnail(), 'icon': oGuiElement.getIcon(),'fanart': oGuiElement.getFanart() })
 
         aProperties = oGuiElement.getItemProperties()
@@ -320,7 +320,7 @@ class cGui():
 
     #affiche les liens playable
     def addHost(self, oGuiElement, oOutputParameterHandler=''):
-        
+
         if cConfig().isKrypton():
             cGui.CONTENT = 'movies'
 
@@ -342,8 +342,9 @@ class cGui():
 
         xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=False)
 
+    #Marquer vu/Non vu
     def createContexMenuWatch(self, oGuiElement, oOutputParameterHandler= ''):
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'setWatched','[COLOR azure]Marquer vu/Non vu[/COLOR]')
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'setWatched', cConfig().getlanguage(30206))
 
     def createContexMenuPageSelect(self, oGuiElement, oOutputParameterHandler):
         #sSiteUrl = oGuiElement.getSiteName()
@@ -372,12 +373,13 @@ class cGui():
         oGuiElement.addContextItem(oContext)
 
 
+    #marque page
     def createContexMenuFav(self, oGuiElement, oOutputParameterHandler= ''):
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
         oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
 
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','setFavorite','[COLOR teal]Marque-Page[/COLOR]')
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','setFavorite', cConfig().getlanguage(30207))
 
     def createContexMenuTrakt(self, oGuiElement, oOutputParameterHandler= ''):
         #pas de menu si pas de meta.
@@ -387,10 +389,10 @@ class cGui():
         oOutputParameterHandler.addParameter('sTmdbId', oGuiElement.getTmdbId())
         #ajout de filename netoyage deja fait
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
-        
+
         sType = cGui.CONTENT.replace('tvshows', 'shows')
         oOutputParameterHandler.addParameter('sType', sType)
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cTrakt','cTrakt','getAction','[COLOR teal]Trakt[/COLOR]')
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cTrakt','cTrakt','getAction','Trakt')
 
     def createContexMenuDownload(self, oGuiElement, oOutputParameterHandler= '', status = '0'):
 
@@ -409,6 +411,7 @@ class cGui():
             self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','ResetDownload','Reset')
 
 
+    #Information
     def createContexMenuinfo(self, oGuiElement, oOutputParameterHandler= ''):
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -417,7 +420,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
 
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewinfo','[COLOR azure]Information[/COLOR]')
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewinfo',cConfig().getlanguage(30208))
 
     def createContexMenuba(self, oGuiElement, oOutputParameterHandler= ''):
 
@@ -468,16 +471,17 @@ class cGui():
             oListItem.addContextMenuItems(aContextMenus, True)
 
         #Ajout de voir marque page
-        oContextItem = cContextElement()
-        oContextItem.setFile('cFav')
-        oContextItem.setSiteName('cFav')
-        oContextItem.setTitle(cConfig().getlanguage(30210))
-        oContextItem.setFunction('getFavourites')
-        oOutputParameterHandler = oContextItem.getOutputParameterHandler()
-        sParams = oOutputParameterHandler.getParameterAsUri()
-        sTest = '%s?site=%s&function=%s&contextFav=true&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-        aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.Container.Update(%s)" % (sTest,),)]
-        oListItem.addContextMenuItems(aContextMenus)
+        #supprimer le 24/07
+        # oContextItem = cContextElement()
+        # oContextItem.setFile('cFav')
+        # oContextItem.setSiteName('cFav')
+        # oContextItem.setTitle(cConfig().getlanguage(30210))
+        # oContextItem.setFunction('getFavourites')
+        # oOutputParameterHandler = oContextItem.getOutputParameterHandler()
+        # sParams = oOutputParameterHandler.getParameterAsUri()
+        # sTest = '%s?site=%s&function=%s&contextFav=true&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
+        # aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.Container.Update(%s)" % (sTest,),)]
+        # oListItem.addContextMenuItems(aContextMenus)
 
         #Menu speciaux si metadata
         #supprimer depuis la recherche interne de bande annonce
@@ -535,7 +539,7 @@ class cGui():
         return oListItem
 
     def setEndOfDirectory(self, ForceViewMode = False):
-            
+
         iHandler = cPluginHandler().getPluginHandle()
         #modif 22/06
         xbmcplugin.addDirectoryItems(iHandler, self.listing, len(self.listing))
@@ -667,6 +671,7 @@ class cGui():
 
         xbmc.executebuiltin( 'Container.Refresh' )
 
+    #24/07 plus utiliser passe par la popup information voir cConfig WindowsBoxes id 11
     def viewBA(self):
         oInputParameterHandler = cInputParameterHandler()
         sFileName = oInputParameterHandler.getValue('sFileName')

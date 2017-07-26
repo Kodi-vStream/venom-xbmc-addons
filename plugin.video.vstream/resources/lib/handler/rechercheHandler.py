@@ -32,9 +32,10 @@ class cRechercheHandler:
 
     def setText(self, sText):
         if not sText:
-            oGui = cGui()
-            sSearchText = oGui.showKeyBoard()
-            sText = urllib.quote(sSearchText)
+            # oGui = cGui()
+            # sSearchText = oGui.showKeyBoard()
+            # sText = urllib.quote(sSearchText)
+            return False
         self.__sText = sText
         return self.__sText
 
@@ -44,21 +45,21 @@ class cRechercheHandler:
 
     def setDisp(self, sDisp):
         if not sDisp:
-            disp = ['search1','search2','search3','search4','search5','search10'] #modif
-            dialog2 = xbmcgui.Dialog()
-            dialog_select = [cConfig().getSetting('search1_label'), cConfig().getSetting('search2_label'), cConfig().getSetting('search3_label'), cConfig().getSetting('search4_label'), cConfig().getlanguage(30092),'Recherche Alluc_ee']#modif
-
-            ret = dialog2.select(cConfig().getlanguage(30093),dialog_select)
-
-            if ret > -1:
-                sDisp = disp[ret]
-                
+            # disp = ['search1','search2','search3','search4','search5','search10'] #modif
+            # dialog2 = xbmcgui.Dialog()
+            # dialog_select = [cConfig().getSetting('search1_label'), cConfig().getSetting('search2_label'), cConfig().getSetting('search3_label'), cConfig().getSetting('search4_label'), cConfig().getlanguage(30092),'Recherche Alluc_ee']#modif
+            #
+            # ret = dialog2.select(cConfig().getlanguage(30093),dialog_select)
+            #
+            # if ret > -1:
+            #     sDisp = disp[ret]
+            return False
         self.__sDisp = sDisp
         return self.__sDisp
 
     def setRead(self, sRead):
         self.__sRead = sRead
-        
+
     def getRead(self):
         return self.__sRead
 
@@ -107,7 +108,7 @@ class cRechercheHandler:
                 Count = cRechercheHandler.Count
                 if (Count == 1):
                     oGui.addText(sName, '[COLOR khaki]%s: %s[/COLOR]' % (cConfig().getlanguage(30076), sText), 'none.png')
-                    
+
                 oGui.addText(sName, '%s. [COLOR olive]%s[/COLOR]' % (Count, sDisplayname), 'sites/%s.png' % (sName))
 
                 sUrl = sSearch[0]+sText
@@ -120,7 +121,7 @@ class cRechercheHandler:
                 return False, False
         else:
             return False, False
-            
+
     def __importPlugin(self, sName, sLabel):
         pluginData = {}
         oConfig = cConfig()
@@ -136,14 +137,14 @@ class cRechercheHandler:
             try:
 
                 plugin = __import__('resources.sites.%s' % sName, fromlist=[sName])
-                
+
                 pluginData['identifier'] = plugin.SITE_IDENTIFIER
                 pluginData['name'] = plugin.SITE_NAME
                 pluginData['search'] = plugin.URL_SEARCH
-                 
+
             except Exception, e:
                 cConfig().log("cant import plugin: " + str(sName))
-            
+
         return pluginData
 
 
@@ -187,13 +188,13 @@ class cRechercheHandler:
         cConfig().log("Sites Folder: " + sFolder)
 
         aFileNames = self.__getFileNamesFromFolder(sFolder)
-  
+
         aPlugins = []
         for sFileName in aFileNames:
             aPlugin = self.__importPlugin(sFileName, sLabel)
             if aPlugin:
                 aPlugins.append(aPlugin)
-        
+
         #multiselect
         if sLabel == 'search5':
             multi = []
