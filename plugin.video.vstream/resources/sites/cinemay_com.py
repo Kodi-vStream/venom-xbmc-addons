@@ -203,21 +203,20 @@ def showMovies(sSearch=''):
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),aEntry[2]) == 0:
                     continue
 
-            if URL_MAIN in aEntry[0]:
-                sThumb = aEntry[0]
-            else:
-	         sThumb = URL_MAIN[:-1] + aEntry[0]
+            sThumb = aEntry[0]
+            if sThumb.startswith('/'):
+                sThumb = URL_MAIN[:-1] + sThumb
 			
             sTitle = aEntry[1].replace('&#8217;','\'').replace('&#8230;','...')
             sUrl = aEntry[2]
             sCom = aEntry[3]
-            #sCom = sCom.decode("utf-8", "ignore")
             sCom = sCom.decode("unicode_escape").encode("latin-1")
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+			
             if '/serie/' in sUrl or '/serie/' in aEntry[1]:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', sThumb, sCom , oOutputParameterHandler)
             else:
@@ -265,9 +264,9 @@ def showSeries():
     newList = ''
     for index, item in enumerate(list):
         item2 = list2[index]
-        newList+=( item + item2)
+        newList+=(item + item2)
         
-    sPattern = '<a href="#">([^<]+)</a>|<li class="bordred"><small><em>.+?</em></small>.+?<a href="([^<]+)" class="link_series_epi">([^<]+)</a></li>'
+    sPattern = '<a href="#">([^<]+)</a>|<li class="bordred"><small><em>.+?</em></small>.+?<a href="([^<]+)" class="link_series_epi">([^<]+)</a>'
 
     oParser = cParser()
     aResult = oParser.parse(newList, sPattern)
@@ -280,22 +279,19 @@ def showSeries():
             if dialog.iscanceled():
                 break
 
-            if aEntry[0]:
-                sSaison = aEntry[0]
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-                oGui.addDir(SITE_IDENTIFIER, 'showSeries', '[COLOR red]' + str(aEntry[0]) + '[/COLOR]', 'host.png', oOutputParameterHandler)
+            sSaison = str(aEntry[0])
+            sUrl = str(aEntry[1])
+            sTitle =  str(aEntry[2]) + ' ' + sMovieTitle
 
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+
+            if sSaison:
+                oGui.addText(SITE_IDENTIFIER,  '[COLOR red]' + sSaison + '[/COLOR]')
             else:
-                sTitle = sMovieTitle + ' ' + sSaison + aEntry[2]
-                sDisplayTitle = cUtil().DecoTitle(sTitle)
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -324,7 +320,6 @@ def showLinks():
             sQual = aEntry[2].replace(' ','')
             sLang = aEntry[3].upper()
 
-            #sTitle = sMovieTitle + '[' + sQual + '-' + sLang + '] - [COLOR skyblue]' + sHoster + '[/COLOR]'
             sTitle = ('%s [%s] [%s] (%s)') % (sMovieTitle, sQual, sLang , sHoster)
             
             sUrl = URL_MAIN + aEntry[0]
