@@ -157,19 +157,6 @@ class cHome:
 
         oGui.setEndOfDirectory()
 
-    def showTV(self):
-        oGui = cGui()
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('freebox', 'load', 'Télévision Box', 'tv.png', oOutputParameterHandler)
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('chaine_tv', 'load', 'Tv du net', 'tv.png', oOutputParameterHandler)
-
-        oGui.setEndOfDirectory()
-
     def showMovies(self):
         oGui = cGui()
         oConfig = cConfig()
