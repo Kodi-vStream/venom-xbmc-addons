@@ -309,8 +309,8 @@ msgid "Download"
 msgstr "Télécharger"
 
 msgctxt "#30203"
-msgid "Mark source"
-msgstr "Marque-Source"
+msgid "Webradio"
+msgstr "Radio du web"
 
 msgctxt "#30204"
 msgid "No informations"

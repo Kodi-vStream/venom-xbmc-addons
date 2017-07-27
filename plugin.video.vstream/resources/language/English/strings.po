@@ -309,7 +309,7 @@ msgid "Download"
 msgstr ""
 
 msgctxt "#30203"
-msgid "Mark source"
+msgid "Webradio"
 msgstr ""
 
 msgctxt "#30204"
