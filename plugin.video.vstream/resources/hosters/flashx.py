@@ -221,8 +221,8 @@ class cHoster(iHoster):
                 if (e.code == 301) or  (e.code == 302):
                     redirection_target = e.headers['Location']
                 else:
-                    #cConfig().log(str(e.code))
-                    #cConfig().log(str(e.read()))
+                    cConfig().log(str(e.code))
+                    cConfig().log(str(e.read()))
                     return False
                 
             web_url = redirection_target
@@ -335,6 +335,8 @@ class cHoster(iHoster):
                 return False,False
         else:
             web_url = AllUrl[0]
+            
+        web_url = AllUrl[1]
         
         #Requests to unlock video
         LoadLinks(sHtmlContent)
@@ -359,7 +361,8 @@ class cHoster(iHoster):
 
         #fh = open('c:\\test2.txt', "w")
         #fh.write(sHtmlContent)
-        #fh.close()     
+        #fh.close()
+        cConfig().log('Page obtenue')
 
         if 'reload the page!' in sHtmlContent:
             cConfig().log("page bloquée")
@@ -416,6 +419,7 @@ class cHoster(iHoster):
   
         #decodage classique
         sPattern = '{file:"([^",]+)",label:"([^"<>,]+)"}'
+        sPattern = '{src: *\'([^"\',]+)\'.+?label: *\'([^"<>,\']+)\''
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         api_call = ''
