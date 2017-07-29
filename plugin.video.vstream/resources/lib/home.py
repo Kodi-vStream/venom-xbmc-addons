@@ -37,9 +37,13 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir('themoviedb_org', 'load', oConfig.getlanguage(30088), 'searchtmdb.png', oOutputParameterHandler)
 
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        # oGui.addDir('freebox', 'load', oConfig.getlanguage(30115), 'tv.png', oOutputParameterHandler)
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('freebox', 'load', oConfig.getlanguage(30115), 'tv.png', oOutputParameterHandler)
+        oGui.addDir('freebox', 'load', oConfig.getlanguage(30203), 'tv.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -87,7 +91,7 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('cFav', 'getFavourites', '[COLOR teal]' + oConfig.getlanguage(30210) + '[/COLOR]', 'mark.png', oOutputParameterHandler)
+        oGui.addDir('cFav', 'getFavourites', oConfig.getlanguage(30210), 'mark.png', oOutputParameterHandler)
 
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -150,19 +154,6 @@ class cHome:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_NETS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', oConfig.getlanguage(30138), 'host.png', oOutputParameterHandler)
-
-        oGui.setEndOfDirectory()
-
-    def showTV(self):
-        oGui = cGui()
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('freebox', 'load', 'Télévision Box', 'tv.png', oOutputParameterHandler)
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('chaine_tv', 'load', 'Tv du net', 'tv.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 

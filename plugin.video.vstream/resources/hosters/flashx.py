@@ -335,6 +335,8 @@ class cHoster(iHoster):
                 return False,False
         else:
             web_url = AllUrl[0]
+            
+        web_url = AllUrl[1]
         
         #Requests to unlock video
         LoadLinks(sHtmlContent)
@@ -359,7 +361,8 @@ class cHoster(iHoster):
 
         #fh = open('c:\\test2.txt', "w")
         #fh.write(sHtmlContent)
-        #fh.close()     
+        #fh.close()
+        cConfig().log('Page obtenue')
 
         if 'reload the page!' in sHtmlContent:
             cConfig().log("page bloquée")
@@ -416,6 +419,7 @@ class cHoster(iHoster):
   
         #decodage classique
         sPattern = '{file:"([^",]+)",label:"([^"<>,]+)"}'
+        sPattern = '{src: *\'([^"\',]+)\'.+?label: *\'([^"<>,\']+)\''
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         api_call = ''
