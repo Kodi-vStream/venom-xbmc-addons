@@ -221,8 +221,8 @@ class cHoster(iHoster):
                 if (e.code == 301) or  (e.code == 302):
                     redirection_target = e.headers['Location']
                 else:
-                    cConfig().log(str(e.code))
-                    cConfig().log(str(e.read()))
+                    #cConfig().log(str(e.code))
+                    #cConfig().log(str(e.read()))
                     return False
                 
             web_url = redirection_target
