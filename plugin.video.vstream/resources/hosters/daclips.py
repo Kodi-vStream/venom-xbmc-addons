@@ -13,7 +13,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -32,16 +32,15 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def __getIdFromUrl(self,sUrl):
         sPattern = 'http://daclips.in/embed-([^<]+)-'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
         if (aResult[0] == True):
             return aResult[1][0]
-
         return ''
-        
+
     def __getKey(self):
         return ''
 
@@ -72,7 +71,7 @@ class cHoster(iHoster):
         if (aResult[0] == True):
             oRequest.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
             for aEntry in aResult[1]:
-                oRequest.addParameters(aEntry[0], aEntry[1])     
+                oRequest.addParameters(aEntry[0], aEntry[1])
             oRequest.addParameters('referer', url)
             sHtmlContent = oRequest.request()
             r2 = re.search('file: "([^"]+)",', sHtmlContent)
