@@ -32,7 +32,7 @@ def ASCIIDecode(string):
                 #ok c'est de l'unicode, pas du ascii
                 return ''
             c = chr(cc)
-            i+=5     
+            i+=5
         ret = ret + c
         i = i + 1
 
@@ -42,16 +42,16 @@ def GetHtml(url,headers):
     request = urllib2.Request(url,None,headers)
     reponse = urllib2.urlopen(request)
     sCode = reponse.read()
-    reponse.close()                
+    reponse.close()
     return sCode
-    
+
 def UnlockUrl():
     headers9 = {
     'User-Agent': UA,
     'Referer':'https://www.flashx.tv/dl?playthis'
     }
     code = GetHtml('https://www.flashx.tv/js/code.js',headers9)
-    aResult = re.search("!= null\){\s*\$.get\('(.+?)', *{(.+?): *'(.+?)'}",code,re.DOTALL)
+    aResult = re.search("!= null\){\s*\$.get\('(.+?)', *{(.+?): *'(.+?)'}", code, re.DOTALL)
     if aResult:
         url = aResult.group(1)+ '?' + aResult.group(2) + '=' + aResult.group(3)
         #xbmc.log(url)
@@ -59,13 +59,12 @@ def UnlockUrl():
         return True
     return False
 
-
 def LoadLinks(htmlcode):
         xbmc.log('Scan des liens')
     
         host = 'https://www.flashx.tv'
         sPattern ='[\("\'](https*:)*(\/[^,"\'\)\s]+)[\)\'"]'
-        aResult = re.findall(sPattern,htmlcode,re.DOTALL)
+        aResult = re.findall(sPattern, htmlcode, re.DOTALL)
 
         #xbmc.log(str(aResult))
         for http,urlspam in aResult:
@@ -108,7 +107,6 @@ def LoadLinks(htmlcode):
             #if 'flashx' in sUrl:
                 #continue
 
-                
             headers8 = {
             'User-Agent': UA,
             'Referer':'https://www.flashx.tv/dl?playthis'
@@ -118,7 +116,7 @@ def LoadLinks(htmlcode):
                 request = urllib2.Request(sUrl,None,headers8)
                 reponse = urllib2.urlopen(request)
                 sCode = reponse.read()
-                reponse.close()                
+                reponse.close()
                 xbmc.log('Worked ' + sUrl)
             except urllib2.HTTPError, e:
                 if not e.geturl() == sUrl:
@@ -129,10 +127,10 @@ def LoadLinks(htmlcode):
                         'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
                         'Accept-Encoding':'gzip, deflate, br'
                         }
-                        request = urllib2.Request(e.geturl().replace('https','http'),None,headers9)
+                        request = urllib2.Request(e.geturl().replace('https', 'http'), None, headers9)
                         reponse = urllib2.urlopen(request)
                         sCode = reponse.read()
-                        reponse.close()                
+                        reponse.close()
                         xbmc.log('Worked ' + sUrl)
                     except urllib2.HTTPError, e:
                         xbmc.log(str(e.code))
@@ -145,7 +143,7 @@ def LoadLinks(htmlcode):
                     xbmc.log('>>' + e.geturl())
                     xbmc.log(e.read())
         
-        xbmc.log('fin des unlock')   
+        xbmc.log('fin des unlock')
 
 class cHoster(iHoster):
 
@@ -158,7 +156,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -183,7 +181,7 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def GetRedirectHtml(self,web_url,sId,NoEmbed = False):
         
         headers = {
@@ -228,13 +226,13 @@ class cHoster(iHoster):
             web_url = redirection_target
             
             if 'embed' in redirection_target and NoEmbed:
-                #rattage, on a prit la mauvaise url
+                #rattage, on a pris la mauvaise url
                 cConfig().log('2')
                 return False
             
             MaxRedirection = MaxRedirection - 1
             
-        return sHtmlContent       
+        return sHtmlContent
 
     def __getIdFromUrl(self, sUrl):
         sPattern = "https*:\/\/((?:www.|play.)?flashx.tv)\/(?:playvid-)?(?:embed-)?(?:embed.+?=)?(-*[0-9a-zA-Z]+)?(?:.html)?"
@@ -244,7 +242,7 @@ class cHoster(iHoster):
             return aResult[1][0][1]
 
         return ''
-        
+
     def GetHost(self,sUrl):
         oParser = cParser()
         sPattern = 'https*:\/\/(.+?)\/'
@@ -255,7 +253,6 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = 'http://' + self.GetHost(sUrl) + '/embed.php?c=' + self.__getIdFromUrl(sUrl)
-        
 
     def checkUrl(self, sUrl):
         return True
@@ -265,7 +262,7 @@ class cHoster(iHoster):
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
-        
+
     def CheckGoodUrl(self,url):
         
         xbmc.log('test de ' + url)
@@ -312,7 +309,7 @@ class cHoster(iHoster):
         #sId = re.sub(r'-.+', '', sId)
         
         #on cherche la vraie url
-        sHtmlContent = self.GetRedirectHtml(self.__sUrl,sId)        
+        sHtmlContent = self.GetRedirectHtml(self.__sUrl, sId)
         
         #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent)
@@ -345,16 +342,16 @@ class cHoster(iHoster):
             return False,False
                
         #get the page
-        sHtmlContent = self.GetRedirectHtml(web_url,sId,True)
+        sHtmlContent = self.GetRedirectHtml(web_url, sId, True)
         
         if sHtmlContent == False:
             cConfig().log('Passage en mode barbare')
             #ok ca a rate on passe toutes les url de AllUrl
             for i in AllUrl:
                 if not i == web_url:
-                    sHtmlContent = self.GetRedirectHtml(i,sId,True)
+                    sHtmlContent = self.GetRedirectHtml(i, sId, True)
                     if sHtmlContent:
-                        break    
+                        break
 
         if not sHtmlContent:
             return False,False
@@ -406,7 +403,7 @@ class cHoster(iHoster):
             if (aResult):
                 cConfig().log( "lien code")
                 
-                AllPacked = re.findall('(eval\(function\(p,a,c,k.*?)\s+<\/script>',sHtmlContent,re.DOTALL)
+                AllPacked = re.findall('(eval\(function\(p,a,c,k.*?)\s+<\/script>', sHtmlContent, re.DOTALL)
                 if AllPacked:
                     for i in AllPacked:
                         sUnpacked = cPacker().unpack(i)
@@ -431,7 +428,7 @@ class cHoster(iHoster):
             url=[]
             qua=[]
         
-            #Replissage des tableaux
+            #Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
@@ -441,9 +438,9 @@ class cHoster(iHoster):
                 api_call = url[0]
             #si plus de une
             elif len(url) > 1:
-            #Afichage du tableau
+            #Affichage du tableau
                 dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
+                ret = dialog2.select('Select Quality', qua)
                 if (ret > -1):
                     api_call = url[ret]
 
