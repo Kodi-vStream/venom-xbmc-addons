@@ -14,7 +14,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -33,11 +33,11 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def __getIdFromUrl(self):
         return ''
 
-    def setUrl(self, sUrl):       
+    def setUrl(self, sUrl):
         self.__sUrl = sUrl.replace('http://vidto.me/', '')
         self.__sUrl = self.__sUrl.replace('embed-', '')
         self.__sUrl= re.sub(r'\-.*\.html','',self.__sUrl)
@@ -60,7 +60,7 @@ class cHoster(iHoster):
         sPattern =  '<input type="hidden" name="([^"]+)" value="([^"]+)"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True): 
+        if (aResult[0] == True):
             time.sleep(7)
             oRequest = cRequestHandler(self.__sUrl)
             oRequest.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
@@ -80,14 +80,14 @@ class cHoster(iHoster):
                 if (aResult[0] == True):
                     return True, aResult[1][0]
             else:
-                sPattern = '{file:"([^"]+)",label:"(\d+p)"}'            
+                sPattern = '{file:"([^"]+)",label:"(\d+p)"}'
                 aResult = oParser.parse(sHtmlContent, sPattern)
                 if (aResult[0] == True):
                     url=[]
                     qua=[]
                 for i in aResult[1]:
                     url.append(str(i[0]))
-                    qua.append(str(i[1]))   
+                    qua.append(str(i[1]))
       
                 if len(url) == 1:
                     return True,url[0]
@@ -96,4 +96,3 @@ class cHoster(iHoster):
                     return True, url[0] #240p de nos jours serieux dialog choix inutile max vue 360p pour le moment
 
         return False, False
-
