@@ -18,7 +18,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -43,7 +43,7 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return '';
-        
+
     def __getIdFromUrl(self, sUrl):
         return ''
 
@@ -67,10 +67,9 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        sPattern = '((?:h|s)d)_src:"([^"]+)"' 
+        sPattern = '((?:h|s)d)_src:"([^"]+)"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
 
         if (aResult[0] == True):
             for aEntry in aResult[1]:
@@ -82,7 +81,7 @@ class cHoster(iHoster):
                 api_call = url[0]
             # si plus de une
             elif len(url) > 1:
-            # Afichage du tableau
+            # Affichage du tableau
                 ret = util.VScreateDialogSelect(qua)
                 if (ret > -1):
                     api_call = url[ret]
