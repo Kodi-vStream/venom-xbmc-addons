@@ -74,14 +74,14 @@ def _decode2(file_url):
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'netu'
+        self.__sDisplayName = 'Netu'
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
 	self.__sFileName = sFileName
@@ -93,7 +93,7 @@ class cHoster(iHoster):
         self.__sUrl = sUrl.replace('https','http')
         self.__sUrl = sUrl.replace('http://netu.tv/','http://hqq.tv/')
         self.__sUrl = self.__sUrl.replace('http://waaw.tv/','http://hqq.tv/')
-        self.__sUrl = self.__sUrl.replace('http://hqq.tv/watch_video.php?v=','http://hqq.tv/player/embed_player.php?vid=')       
+        self.__sUrl = self.__sUrl.replace('http://hqq.tv/watch_video.php?v=','http://hqq.tv/player/embed_player.php?vid=')
     
     def __getIdFromUrl(self):
         sPattern = 'https*:..hqq.tv.player.embed_player.php\?vid=([0-9A-Za-z]+)'
@@ -161,7 +161,7 @@ class cHoster(iHoster):
             if r:
                 http_referer = r.group(1)
             
-            url2 = Host + "sec/player/embed_player.php?iss="+iss+"&vid="+vid+"&at="+at+"&autoplayed=yes&referer=on&http_referer="+http_referer+"&pass="+_pass+"&embed_from=&need_captcha=0"
+            url2 = Host + "sec/player/embed_player.php?iss=" + iss + "&vid=" + vid + "&at=" + at + "&autoplayed=yes&referer=on&http_referer=" + http_referer + "&pass=" + _pass + "&embed_from=&need_captcha=0"
             #VSlog( url2 )
             
             req = urllib2.Request(url2,None,headers)
@@ -219,7 +219,6 @@ class cHoster(iHoster):
                 
             else:
                 VSlog('prb2')
-                
         
         api_call = list_url
         #api_call = list_url.replace('?socket=','.mp4Frag1Num0.ts')
@@ -227,10 +226,9 @@ class cHoster(iHoster):
         #use a fake headers
         Header = 'User-Agent=' + UA
         api_call = api_call + '|' + Header
-        
 
         if not (api_call == False):
-            return True, api_call          
+            return True, api_call
             
         return False, False
 
