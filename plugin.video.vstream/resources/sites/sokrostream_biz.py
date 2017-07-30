@@ -186,7 +186,7 @@ def showGenres():
     liste.append( ['Guerre',sUrl + 'genre/guerre'] )
     liste.append( ['Historique',sUrl + 'genre/historique'] )
     liste.append( ['Judiciaire',sUrl + 'genre/judiciaire'] )
-    liste.append( ['Médical',sUrl + 'genre/medical'] )
+    liste.append( ['Médical',sUrl + 'genre/musical'] )
     liste.append( ['Policier',sUrl + 'genre/policier'] )
     liste.append( ['Péplum',sUrl + 'genre/peplum'] )
     liste.append( ['Romance',sUrl + 'genre/romance'] )
@@ -343,35 +343,42 @@ def showMovies(sSearch = ''):
     if sSearch:
         sUrl = sSearch
         
-        #need a cookie for search
-        oRequestHandler = cRequestHandler(URL_MAIN)
-        sHtmlContent = oRequestHandler.request()
-
-        head = oRequestHandler.GetHeaders()
-        
-        c = re.search('Set-Cookie: PHPSESSID=(.+?);',str(head))
-        if c:
-            cookiesearch = 'PHPSESSID=' + c.group(1)
-
-            #on recupere les cookie cloudflare
-            oRequestHandler = cRequestHandler(sUrl)
+        #Desactive pr le moment , mais on garde car ca bouge souvent
+        if False:
+            #need a cookie for search
+            oRequestHandler = cRequestHandler(URL_MAIN)
             sHtmlContent = oRequestHandler.request()
 
-            from resources.lib.config import GestionCookie
-            cookies = GestionCookie().Readcookie('sokrostream_biz')
+            head = oRequestHandler.GetHeaders()
+            
+            c = re.search('Set-Cookie: PHPSESSID=(.+?);',str(head))
+            if c:
+                cookiesearch = 'PHPSESSID=' + c.group(1)
 
-            #on ajoute les deux
-            cookies = cookies + '; ' + cookiesearch
+                #on recupere les cookie cloudflare
+                oRequestHandler = cRequestHandler(sUrl)
+                sHtmlContent = oRequestHandler.request()
 
-            #xbmc.log('NEW ****' + cookies, xbmc.LOGNOTICE)
-        
-        oRequestHandler = cRequestHandler(sUrl)
-        oRequestHandler.addHeaderEntry('Cookie',cookies)
-        oRequestHandler.addHeaderEntry('Referer',sUrl)
-        oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4')
-        oRequestHandler.addHeaderEntry('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-        oRequestHandler.addHeaderEntry('Content-Type', 'text/html; charset=utf-8')
-        sHtmlContent = oRequestHandler.request()
+                from resources.lib.config import GestionCookie
+                cookies = GestionCookie().Readcookie('sokrostream_biz')
+
+                #on ajoute les deux
+                cookies = cookies + '; ' + cookiesearch
+
+                #xbmc.log('NEW ****' + cookies, xbmc.LOGNOTICE)
+            
+            oRequestHandler = cRequestHandler(sUrl)
+            oRequestHandler.addHeaderEntry('Cookie',cookies)
+            oRequestHandler.addHeaderEntry('Referer',sUrl)
+            oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4')
+            oRequestHandler.addHeaderEntry('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+            oRequestHandler.addHeaderEntry('Content-Type', 'text/html; charset=utf-8')
+            sHtmlContent = oRequestHandler.request()
+            
+        else:
+            oRequestHandler = cRequestHandler(sUrl)
+            oRequestHandler.addHeaderEntry('Referer',sUrl)
+            sHtmlContent = oRequestHandler.request()
 
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -380,9 +387,9 @@ def showMovies(sSearch = ''):
         sHtmlContent = oRequestHandler.request()
         #sHtmlContent = SucurieBypass().GetHtml(sUrl)
         
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
+    fh = open('c:\\test.txt', "w")
+    fh.write(sHtmlContent)
+    fh.close()
 
     sHtmlContent = sHtmlContent.replace('<span class="tr-dublaj"></span>', '').replace('<span class="tr-altyazi"></span>','').replace('<small>','').replace('</small>','').replace('<span class="likeThis">','').replace('</span>','')
 
