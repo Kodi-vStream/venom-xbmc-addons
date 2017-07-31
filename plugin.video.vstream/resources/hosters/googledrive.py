@@ -19,7 +19,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -44,7 +44,7 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def __getIdFromUrl(self, sUrl):
         #sPattern = '\/([a-zA-Z0-9-_]{20,40})\/'
         sPattern = 'drive.google.+?([a-zA-Z0-9-_]{20,40})'
@@ -76,7 +76,7 @@ class cHoster(iHoster):
         #xbmc.log(sUrl)
         
         req = urllib2.Request(sUrl)
-        response = urllib2.urlopen(req)  
+        response = urllib2.urlopen(req)
         sHtmlContent = response.read()
         Headers = response.headers
         response.close()
@@ -87,7 +87,7 @@ class cHoster(iHoster):
         if c2:
             cookies = ''
             for cook in c2:
-                cookies = cookies + cook[0] + '=' + cook[1]+ ';'  
+                cookies = cookies + cook[0] + '=' + cook[1] + ';'
                 
         #xbmc.log(cookies)
 
@@ -126,7 +126,7 @@ class cHoster(iHoster):
         elif len(url) > 1:
         #Afichage du tableau
             dialog2 = xbmcgui.Dialog()
-            ret = dialog2.select('Select Quality',qua)
+            ret = dialog2.select('Select Quality', qua)
             if (ret > -1):
                 api_call = url[ret]
         
