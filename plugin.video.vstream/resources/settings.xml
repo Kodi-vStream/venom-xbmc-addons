@@ -99,6 +99,11 @@
         <setting id="plugin_buzzmonclick_com" type="bool" label="BuzzMonClick (Replay TV, Documentaires)" default="true"/>
         <setting visible="false" id="search4_buzzmonclick_com" type="bool" label="30091" default="true"/>
 
+        <setting id="plugin_cinemavf" type="bool" label="Cinemavf (Films, Séries, Animés)" default="true"/>
+        <setting visible="false" id="search1_cinemavf" type="bool" label="30077" default="true"/>
+        <setting visible="false" id="search2_cinemavf" type="bool" label="30089" default="true"/>
+        <setting visible="false" id="search3_cinemavf" type="bool" label="30090" default="true"/>
+
         <setting id="plugin_cinemay_com" type="bool" label="Cinemay (Films, Séries)" default="true"/>
         <setting visible="false" id="search1_cinemay_com" type="bool" label="30077" default="true"/>
         <setting visible="false" id="search2_cinemay_com" type="bool" label="30089" default="true"/>
