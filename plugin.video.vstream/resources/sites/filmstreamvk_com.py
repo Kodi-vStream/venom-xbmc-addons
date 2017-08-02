@@ -20,8 +20,8 @@ MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'les-plus-vues-films', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
-SERIE_SERIES = (URL_MAIN + 'serie', 'showMovies')
-SERIE_NEWS = (URL_MAIN + 'serie', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'series', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'series', 'showMovies')
 
 ANIM_ANIMS = (URL_MAIN + 'manga', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'manga', 'showMovies')
@@ -29,7 +29,7 @@ ANIM_NEWS = (URL_MAIN + 'manga', 'showMovies')
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-def load(): 
+def load():
     oGui = cGui()
 	
     oOutputParameterHandler = cOutputParameterHandler()
@@ -173,7 +173,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
             
-            if '/serie/' in aEntry[1] or '/manga/' in aEntry[1] or '/series/' in aEntry[1]:
+            if '/series/' in sUrl or '/manga/' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
@@ -239,10 +239,10 @@ def showLinks():
             sTitle = sMovieTitle + ' (' + aEntry[1] + ')'
             if 'pisode' in aEntry[1]:
                 sTitle = sMovieTitle
-            sUrl2 = aEntry[0]
+            sUrl = aEntry[0]
             
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
@@ -250,7 +250,7 @@ def showLinks():
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
-        
+
 def showEpisode():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -276,18 +276,13 @@ def showEpisode():
             if aEntry[0]:
                 sTitle = aEntry[0].decode("utf8")
                 sTitle = cUtil().unescape(sTitle).encode("utf8")
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sTitle + '[/COLOR]')
+            else:
+                sTitle = sMovieTitle + ' episode ' + aEntry[2]
+                sUrl = aEntry[1]
                 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-                oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]' + sTitle + '[/COLOR]', 'host.png', oOutputParameterHandler)
-            else:
-                sTitle = sMovieTitle + ' episode ' + aEntry[2]
-                sUrl2 = aEntry[1]
-                
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
                 oGui.addTV(SITE_IDENTIFIER, 'showHostersSerie', sTitle, '', sThumbnail, '', oOutputParameterHandler)
@@ -305,9 +300,14 @@ def showHostersSerie():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','')
+    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/', '')
 
-    sPattern = 'onclick="lecteur_serie\([0-9]+,\'((?:http|\/)[^<>]+?)\'\);">'
+    #deux pattern pour supprimer les doublons hoster dans les series
+    if '/manga/' in sUrl:
+        sPattern = 'onclick="lecteur_.+?\([0-9]+,\'((?:http|\/)[^<>]+?)\'\);" class="bb">'
+    else:
+        sPattern = 'class="bb".+?onclick="lecteur_.+?\([0-9]+,\'((?:http|\/)[^<>]+?)\'\);">'
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -324,8 +324,8 @@ def showHostersSerie():
                 break
 
             sHosterUrl = str(aEntry)
-            if not sHosterUrl.startswith('http'):
-               sHosterUrl = 'http:' + str(aEntry)
+            if sHosterUrl.startswith('/'):
+                sHosterUrl = 'http:' + sHosterUrl
             
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
@@ -348,7 +348,7 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','')
+    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/', '')
 
     sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]'
     oParser = cParser()
