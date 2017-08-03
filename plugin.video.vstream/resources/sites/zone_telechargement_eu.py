@@ -1,6 +1,9 @@
 #-*- coding: utf-8 -*-
 #Venom.
 #
+return False
+
+#recherche buguer non de site changer hoster series mort
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -18,7 +21,7 @@ SITE_IDENTIFIER = 'zone_telechargement_eu'
 SITE_NAME = '[COLOR violet]Zone-Telechargement.ru (Kodi V17)[/COLOR]'
 SITE_DESC = 'Films en DDL et streaming'
 
-URL_MAIN = 'https://www.zone-telechargement.ru/'
+URL_MAIN = 'https://www.zonetelechargement.su/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -33,8 +36,8 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries', 'tv.png', oOutputParameterHandler)
+    #oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/')
+    #oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'trending/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Tendances', 'views.png', oOutputParameterHandler)
@@ -75,7 +78,7 @@ def showYears():
     oGui = cGui()
 
     oRequestHandler = cRequestHandler(URL_MAIN)
-    sHtmlContent = oRequestHandler.request() 
+    sHtmlContent = oRequestHandler.request()
 
     sPattern = '<a href="(https://www.zone-telechargement.ru/release/(\d+?)/)">.+?</a>'
 
@@ -120,7 +123,7 @@ def showMovies(sSearch = '', page = 1):
 
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
 
-    sPattern = '<article.+?<img src="(.+?)".+?<a href="(.+?)">(.+?)</a>.+?</article>'
+    sPattern = '<article.+?<img src="(.+?)".+?<a href="(.+?)">(.+?)</a>.+?<div class="texto">(.+?)<div.+?</article>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -135,17 +138,17 @@ def showMovies(sSearch = '', page = 1):
             sTitle = aEntry[2]
             sUrl = aEntry[1]
             sThumbnail = aEntry[0]
+            sDesc = aEntry[3]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
-            result = re.search('ru/series', sUrl)
-            if result:
-                oGui.addMovie(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', sThumbnail, sUrl, oOutputParameterHandler)
+            if '/series' in sUrl:
+                oGui.addMovie(SITE_IDENTIFIER, 'showSeriesHosters', sTitle, '', sThumbnail, sDesc, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sUrl, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sDesc, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -160,7 +163,7 @@ def showMovies(sSearch = '', page = 1):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'href="([^"]+?)"><span class="icon-chevron-right'
+    sPattern = '<span class="current">.+?<a href="([^"]+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return aResult[1][0]
@@ -212,9 +215,10 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<tr id=.+?<td><a .+?href="(.+?)".+?</td>.*?<td><img.+?>(.+?)</td>.*?<td>(.+?)</td>.*?<td>(.+?)</td>.*?<td>(.+?)</td>.+?</tr>'
+    #sPattern = '<tr id=.+?<td><a .+?href="(.+?)".+?</td>.*?<td><img.+?>(.+?)</td>.*?<td>(.+?)</td>.*?<td>(.+?)</td>.*?<td>(.+?)</td>.+?</tr>'
+    sPattern = '<tr id=.+?<td.+?href="(.+?)".+?</td>.*?<td><img.+?>(.+?)</td>.*?<td>(.+?)</td>.*?<td>(.+?)</td>.*?<td>(.+?)</td>.+?</tr>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     oGui.addText(SITE_IDENTIFIER,'[COLOR olive]' + sMovieTitle + '[/COLOR]')
 
     if (aResult[0] == True):
@@ -225,7 +229,7 @@ def showHosters():
             sLang = aEntry[3]
             sSize = aEntry[4]
 
-            sDisplayTitle = '[COLOR teal][' + sType + '][' + sLang + '][' + sSize + '] ' + sHoster + '[/COLOR]'
+            sDisplayTitle = '[' + sType + '][' + sLang + '][' + sSize + '] ' + sHoster
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sUrl', sUrl)
@@ -234,7 +238,7 @@ def showHosters():
             oGui.addMisc(SITE_IDENTIFIER, 'decodeLink', sDisplayTitle, '', '', '', oOutputParameterHandler)
     else:
         oGui.addText(SITE_IDENTIFIER,'[COLOR red]Pas de liens disponibles[/COLOR]')
-            
+
     oGui.setEndOfDirectory()
 
 def decodeLink():
