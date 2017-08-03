@@ -92,17 +92,17 @@ class cHosterGui:
             oGuiElement.addContextItem(oContext)
         #Upload menu
         if cInputParameterHandler().getValue('site') != 'siteuptobox' and cConfig().getSetting('hoster_uptobox_premium') == 'true' and oHoster.getPluginIdentifier() == 'uptobox' or oHoster.getPluginIdentifier() == 'uptostream':
-            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'siteuptobox','siteuptobox','AddmyAccount','[COLOR dodgerblue]Ajouter à mon compte Uptobox[/COLOR]')
+            oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteuptobox', 'siteuptobox', 'AddmyAccount', '[COLOR dodgerblue]Ajouter à mon compte Uptobox[/COLOR]')
 
         #Upload url vers upto
         if cConfig().getSetting('hoster_uptobox_premium') == 'true' and oHoster.getPluginIdentifier() == 'onefichier' or oHoster.getPluginIdentifier() == 'uplea':
-            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'siteuptobox','siteuptobox','UptomyAccount','[COLOR dodgerblue]Ajouter à mon compte Uptobox[/COLOR]')
+            oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteuptobox', 'siteuptobox', 'UptomyAccount', '[COLOR dodgerblue]Ajouter à mon compte Uptobox[/COLOR]')
 
         #context FAV menu
         oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
 
         #context Library menu
-        oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cLibrary','cLibrary','setLibrary','[COLOR teal]Ajouter a la librairie[/COLOR]')
+        oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cLibrary', 'cLibrary', 'setLibrary', '[COLOR teal]Ajouter à la librairie[/COLOR]')
 
         #bug
         oGui.addHost(oGuiElement, oOutputParameterHandler)
@@ -116,17 +116,16 @@ class cHosterGui:
 
         sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
-        #formatage pour recheche serie
+        #formatage pour recherche serie
         sMovieTitle = util.cUtil().FormatSerie(sMovieTitle)
-        #nettoyage pour la recherhce
+        #nettoyage pour la recherche
         sMovieTitle = util.cUtil().CleanName(sMovieTitle)
 
-        sUrl = "http://www.alluc.ee/stream/lang%3Afr+"+sMovieTitle
+        sUrl = "http://www.alluc.ee/stream/lang%3Afr+" + sMovieTitle
         oOutputParameterHandler = cOutputParameterHandler()
 
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir('alluc_ee', 'showMovies', 'Plus', 'search.png', oOutputParameterHandler)
-
 
     def checkHoster(self, sHosterUrl):
 
@@ -142,7 +141,6 @@ class cHosterGui:
             sHostName = sHosterUrl.split('/')[2]
         except:
             sHostName = sHosterUrl
-
 
         #L'user a active l'url resolver ?
         if cConfig().getSetting('UserUrlResolver') == 'true':
@@ -202,7 +200,7 @@ class cHosterGui:
             return self.getHoster('filetrip')
         if ('uptostream' in sHostName):
             return self.getHoster('uptostream')
-        if (('dailymotion' in sHostName) or (('dai.ly' in sHostName))):
+        if (('dailymotion' in sHostName) or ('dai.ly' in sHostName)):
             return self.getHoster('dailymotion')
         if ('filez.' in sHostName):
             return self.getHoster('filez')
@@ -405,11 +403,11 @@ class cHosterGui:
                 oPlayer.run(oGuiElement, oHoster.getFileName(), aLink[1])
                 return
             else:
-                cConfig().error("Fichier introuvable ")
+                cConfig().error("Fichier introuvable")
                 return
 
         except:
-            cConfig().error("Fichier introuvable ")
+            cConfig().error("Fichier introuvable")
             return
 
         oGui.setEndOfDirectory()
@@ -422,7 +420,6 @@ class cHosterGui:
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         bGetRedirectUrl = oInputParameterHandler.getValue('bGetRedirectUrl')
         sFileName = oInputParameterHandler.getValue('sFileName')
-
 
         if (bGetRedirectUrl == 'True'):
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
@@ -444,7 +441,6 @@ class cHosterGui:
             oPlayer.addItemToPlaylist(oGuiElement)
             oGui.showInfo('Playlist', str(oHoster.getFileName()), 5)
             return
-
 
         oGui.setEndOfDirectory()
 
