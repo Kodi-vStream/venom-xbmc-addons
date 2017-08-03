@@ -334,6 +334,8 @@ class cHosterGui:
             return self.getHoster('vidabc')
         if ('vshare' in sHostName):
             return self.getHoster('vshare')
+        #if ('cloudvid' in sHostName):
+            #return self.getHoster('cloudvid')
 
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
