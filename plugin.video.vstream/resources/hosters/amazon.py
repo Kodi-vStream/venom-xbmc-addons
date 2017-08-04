@@ -17,7 +17,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -36,16 +36,15 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def __getIdFromUrl(self, sUrl):
         sPattern = '\/share\/(.+?)\?'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
             return aResult[1][0]
+        return ''
 
-        return ''       
-       
     def __getKey(self):
         return ''
 
@@ -79,9 +78,9 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
         
         if (aResult[0] == True):
-            id = aResult[1][0]            
+            id = aResult[1][0]
                    
-            url2 = 'https://www.amazon.fr/drive/v1/nodes/' + id + '/children?customerId=&resourceVersion=V2&ContentType=JSON&limit=200&sort=%5B%22kind+DESC%22%2C+%22name+ASC%22%5D&tempLink=true&shareId=' + sId      
+            url2 = 'https://www.amazon.fr/drive/v1/nodes/' + id + '/children?customerId=&resourceVersion=V2&ContentType=JSON&limit=200&sort=%5B%22kind+DESC%22%2C+%22name+ASC%22%5D&tempLink=true&shareId=' + sId
 
             oRequest = cRequestHandler(url2)
             sHtmlContent = oRequest.request()

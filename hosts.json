@@ -226,16 +226,16 @@
   {
     "name": "flashx.py",
     "path": "plugin.video.vstream/resources/hosters/flashx.py",
-    "sha": "797dff0931341aaf3042f2e0a689afa2a6027055",
-    "size": 14473,
+    "sha": "0b40be2d0bc472eb94712c248059ac12409841a0",
+    "size": 14617,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/flashx.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/flashx.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/797dff0931341aaf3042f2e0a689afa2a6027055",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/0b40be2d0bc472eb94712c248059ac12409841a0",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/flashx.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/flashx.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/797dff0931341aaf3042f2e0a689afa2a6027055",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/0b40be2d0bc472eb94712c248059ac12409841a0",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/flashx.py"
     }
   },

@@ -1,16 +1,16 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.parser import cParser
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-from resources.lib import util
-import re,urllib
+from resources.lib.parser import cParser
+from resources.lib.packer import cPacker
+import re,xbmcgui
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Facebook'
+        self.__sDisplayName = 'Cloudvid.co'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
@@ -18,7 +18,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -27,7 +27,7 @@ class cHoster(iHoster):
         return self.__sFileName
 
     def getPluginIdentifier(self):
-        return 'facebook'
+        return 'cloudvid'
 
     def setHD(self, sHD):
         self.__sHD = ''
@@ -36,13 +36,13 @@ class cHoster(iHoster):
         return self.__sHD
 
     def isDownloadable(self):
-        return True
+        return False
 
     def isJDownloaderable(self):
-        return True
+        return False
 
     def getPattern(self):
-        return '';
+        return ''
 
     def __getIdFromUrl(self, sUrl):
         return ''
@@ -53,40 +53,35 @@ class cHoster(iHoster):
     def checkUrl(self, sUrl):
         return True
 
-    def getUrl(self):
-        return self.__sUrl
+    def __getUrl(self, media_id):
+        return
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
 
-        qua =[]
-        url = []
-        api_call = ''
+        sUrl = self.__sUrl
 
-        oRequest = cRequestHandler(self.__sUrl)
+        oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
-        sPattern = '((?:h|s)d)_src:"([^"]+)"'
+        if 'File was deleted' in sHtmlContent:
+            return False,False
+
         oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+        aResult = oParser.parse(sHtmlContent,sPattern)
 
         if (aResult[0] == True):
-            for aEntry in aResult[1]:
-                qua.append(str(aEntry[0]))
-                url.append(str(aEntry[1]))
-                
-            # Si une seule url
-            if len(url) == 1:
-                api_call = url[0]
-            # si plus de une
-            elif len(url) > 1:
-            # Affichage du tableau
-                ret = util.VScreateDialogSelect(qua)
-                if (ret > -1):
-                    api_call = url[ret]
+            sHtmlContent = cPacker().unpack(aResult[1][0])
+
+        sPattern = '{sources:\["(http.+?mp4)"\]'
+        aResult = oParser.parse(sHtmlContent,sPattern)
+
+        if (aResult[0] == True):
+            api_call = aResult[1][0] #pas de choix qualité trouvé pour le moment
 
         if (api_call):
             return True, api_call
 
-        return False , False
+        return False, False

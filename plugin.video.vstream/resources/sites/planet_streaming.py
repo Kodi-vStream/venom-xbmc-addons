@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'planet_streaming'
 SITE_NAME = 'Planet Streaming'
 SITE_DESC = 'Films de 1900 jusqu à 2016, contient du HD'
 
-URL_MAIN = 'http://www.voirfilms.planet-streaming.com/'
+URL_MAIN = 'http://www.2017.planet-streaming.com/'
 
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'regarder-film/', 'showMovies')

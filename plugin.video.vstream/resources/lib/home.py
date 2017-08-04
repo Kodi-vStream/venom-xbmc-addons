@@ -313,8 +313,7 @@ class cHome:
         sDisp = oInputParameterHandler.getValue('disp')
         sType = oInputParameterHandler.getValue('type')
 
-        sText = oGui.showKeyBoard()
-        sSearchText = urllib.quote(sText)
+        sSearchText = oGui.showKeyBoard()
         if not sSearchText:
             return False
         oOutputParameterHandler = cOutputParameterHandler()

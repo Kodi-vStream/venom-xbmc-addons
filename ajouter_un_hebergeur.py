@@ -32,7 +32,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     #facultatif mais a laisser pour compatibilitee
     def setFileName(self, sFileName):
@@ -114,7 +114,7 @@ class cHoster(iHoster):
             #api_call = api_call + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
             return True, api_call
         else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
+            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable', 5)
         
         return False, False
 

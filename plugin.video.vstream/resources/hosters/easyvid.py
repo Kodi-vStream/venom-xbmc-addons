@@ -14,7 +14,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -33,10 +33,10 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def __getIdFromUrl(self):
         return ''
-        
+
     def __modifyUrl(self, sUrl):
         return '';
 
@@ -57,7 +57,7 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         if 'File was deleted' in sHtmlContent:
-            return False,False  
+            return False,False
 
         api_call = ''
         
@@ -81,7 +81,7 @@ class cHoster(iHoster):
                 #initialisation des tableaux
                     url=[]
                     qua=[]
-                #Replissage des tableaux
+                #Remplissage des tableaux
                     for i in aResult[1]:
                         url.append(str(i[0]))
                         qua.append(str(i[1]))
@@ -90,9 +90,9 @@ class cHoster(iHoster):
                         api_call = url[0]
                 #si plus de une
                     elif len(url) > 1:
-                #Afichage du tableau
+                #Affichage du tableau
                         dialog2 = xbmcgui.Dialog()
-                        ret = dialog2.select('Select Quality',qua)
+                        ret = dialog2.select('Select Quality', qua)
                         if (ret > -1):
                             api_call = url[ret]
 

@@ -12,7 +12,7 @@ import re
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'thevideo.me'
+        self.__sDisplayName = 'TheVideo'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
@@ -20,7 +20,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -39,7 +39,7 @@ class cHoster(iHoster):
 
     def isDownloadable(self):
         return True
-        
+
     def __getIdFromUrl(self,sUrl):
         sPattern = 'http://www.thevideo.me/embed-([^\.]+)'
         oParser = cParser()
@@ -79,7 +79,7 @@ class cHoster(iHoster):
             
         ee = aResult[1][0]
             
-        url2 = 'http://thevideo.me/' + ee + '/' + key       
+        url2 = 'http://thevideo.me/' + ee + '/' + key
 
         oRequest = cRequestHandler(url2)
         sHtmlContent2 = oRequest.request()
@@ -98,7 +98,7 @@ class cHoster(iHoster):
             url=[]
             qua=[]
         
-            #Replissage des tableaux
+            #Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
@@ -106,7 +106,7 @@ class cHoster(iHoster):
             #Si  1 url
             if len(url) == 1:
                 api_call = url[0]
-            #Afichage du tableau
+            #Affichage du tableau
             elif len(url) > 1:
                 ret = VScreateDialogSelect(qua)
                 if (ret > -1):

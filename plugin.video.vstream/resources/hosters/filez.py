@@ -16,20 +16,20 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
-        
+
     def getFileName(self):
         return self.__sFileName
 
     def getPluginIdentifier(self):
         return 'filez'
-        
+
     def setHD(self, sHD):
         self.__sHD = ''
-        
+
     def getHD(self):
         return self.__sHD
 
@@ -41,7 +41,7 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-    
+
     def __getIdFromUrl(self, sUrl):
         sPattern = 'https*://filez.tv/([^<]+)'
         oParser = cParser()
@@ -52,10 +52,10 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl).replace('embed/','')
+        self.__sUrl = str(sUrl).replace('embed/', '')
         self.__sUrl = self.__sUrl.replace('www.', '')
         self.__sUrl = self.__sUrl.replace('u=', '')
-        
+
     def checkUrl(self, sUrl):
         return True
 
@@ -75,7 +75,7 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        sPattern = 'file: *"([^"]+)",' 
+        sPattern = 'file: *"([^"]+)",'
         aResult = oParser.parse(sHtmlContent,sPattern)
 
         if (aResult[0] == True):

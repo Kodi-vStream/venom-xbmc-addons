@@ -7,14 +7,14 @@ import urllib
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'NovaMov.com'
+        self.__sDisplayName = 'NovaMov'
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
         return self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -86,7 +86,7 @@ class cHoster(iHoster):
             stream_url = urllib.unquote(aResult[1][0])
             return True, stream_url
         else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
+            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable', 5)
             return False, False
 
         return False

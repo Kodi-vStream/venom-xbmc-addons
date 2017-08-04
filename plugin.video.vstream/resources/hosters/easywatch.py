@@ -15,7 +15,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -40,7 +40,7 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return '';
-        
+
     def __getIdFromUrl(self, sUrl):
         sPattern = "http://easywatch.tv/embed-([^<]+)"
         oParser = cParser()
@@ -78,16 +78,16 @@ class cHoster(iHoster):
             url=[]
             qua=[]
             
-            #Replissage des tableaux
+            #Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
                 
             #Si au moins 1 url
             if (url):
-            #Afichage du tableau
+            #Affichage du tableau
                 dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
+                ret = dialog2.select('Select Quality', qua)
                 if (ret > -1):
                     api_call = url[ret]
  
@@ -95,4 +95,3 @@ class cHoster(iHoster):
             return True, api_call
             
         return False, False
-
