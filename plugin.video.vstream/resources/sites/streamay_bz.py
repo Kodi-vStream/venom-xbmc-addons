@@ -202,6 +202,8 @@ def showResultSearch(sSearch = ''):
     oRequest = cRequestHandler(URL_MAIN + 'search')
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent',UA)
+    oRequest.addHeaderEntry('Referer',URL_MAIN)
+    #oRequest.addHeaderEntry('X-CSRF-TOKEN','ZEkIadnmogIOiPFzUk')
     oRequest.addParametersLine(data)
 
     sHtmlContent = oRequest.request()
@@ -269,8 +271,12 @@ def showMovies():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
 
-    sPattern = '<a href="([^"]+)" class="mv">.+?<img src="([^"]+)" alt="">.+?<span>([^<>]+)<\/span>.+?<\/span>(.+?)<\/p>'
+    sPattern = '<a href="([^"]+)" class="mv">.+?(?:<span class="qualitos">([^><]+)<\/span>)*<img src="([^"]+)".+?class="title"><span>([^<>]+)<\/span>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -281,12 +287,16 @@ def showMovies():
             if dialog.iscanceled():
                 break
 
-            sTitle = aEntry[2].decode("utf-8")
+            sTitle = aEntry[3].decode("utf-8")
             sTitle = cUtil().unescape(sTitle).encode("utf-8")
+            if aEntry[1]:
+                sTitle = sTitle + ' [' + aEntry[1] + ']'
+                
             sUrl = aEntry[0]
-            sThumb = aEntry[1]
-            sSyn = aEntry[3].decode("utf-8")
-            sSyn = cUtil().unescape(sSyn).encode("utf-8")
+            sThumb = aEntry[2]
+            #sSyn = aEntry[3].decode("utf-8")
+            #sSyn = cUtil().unescape(sSyn).encode("utf-8")
+            sSyn = ''
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
