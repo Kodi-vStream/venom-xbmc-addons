@@ -4,7 +4,7 @@
 - Suivez les mises a jour en direct : Twitter @lordvenom57
 =============================================================================
 Merci aux généreux donateurs
-- Mor17, Yoann, Stéphane G, Sylvain L, Daniel L, Jean Charles A, 3DWorld, David M, Johnny D, Rachid L, Fabrice M, John G.
+- Mor17, Yoann, Stéphane G, Sylvain L, Daniel L, Jean Charles A, 3DWorld, David M, Johnny D, Rachid L, Fabrice M, John G, Warren D.
 =============================================================================
 Merci au contributeur de la bêta.
 - Mino60/Chataigne73/Kodigoal/Johngf/Gregwar/Razorex/Lolema
@@ -12,6 +12,31 @@ Merci au contributeur de la bêta.
 =============================================================================
 - Version 0.5.3 - 37.07.2017
 =============================================================================
+04-08-2017 -- @TmpName -- Update hosts.json
+04-08-2017 -- @TmpName -- Update sites.json
+04-08-2017 -- @TmpName -- Merge pull request #1546 from Kodi-vStream/master  Merge pull request #1545 from Kodi-vStream/Beta
+04-08-2017 -- @TmpName -- Merge pull request #1545 from Kodi-vStream/Beta  MAJ 04/08
+04-08-2017 -- @TmpName -- Update planet_streaming.py
+03-08-2017 -- @razorex -- Update libre_stream_org.py  Travail sur le titre transmis et correction bug, pas de liens pour les qualités autres que HD (en cause le titre).
+03-08-2017 -- @Lord Venom -- update french
+03-08-2017 -- @razorex -- Update filmsvostfr_biz.py
+03-08-2017 -- @Lord Venom -- Merge pull request #1539 from Kodi-vStream/razorex-patch-1  Update hoster.py
+03-08-2017 -- @Lord Venom -- close zt.eu
+02-08-2017 -- @razorex -- Update hoster.py
+02-08-2017 -- @razorex -- Update french_stream
+02-08-2017 -- @razorex -- Update french_stream_com.py
+02-08-2017 -- @razorex -- Delete filmenstreaminghd_com.png  site HS
+02-08-2017 -- @TmpName -- Delete filmenstreaminghd_com.py
+02-08-2017 -- @TmpName -- Create filmenstreaminghd_com.py
+02-08-2017 -- @razorex -- Update filmstreamvk_com.py
+02-08-2017 -- @Lord Venom -- vshare aurovid
+02-08-2017 -- @Lord Venom -- update setting  add cinemavf
+02-08-2017 -- @Lord Venom -- unquote
+01-08-2017 -- @razorex -- Update thevideo_me.py
+01-08-2017 -- @razorex -- Create cinemavf
+01-08-2017 -- @razorex -- Create cinemavf.py
+31-07-2017 -- @razorex -- Update googledrive.py
+31-07-2017 -- @Lord Venom -- update
 30-07-2017 -- @Lord Venom -- Merge pull request #1535 from mino60/patch-5  Update topimdb.py
 30-07-2017 -- @mino60 -- Update topimdb.py
 30-07-2017 -- @razorex -- Update flashx.py
