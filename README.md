@@ -66,4 +66,8 @@ Pour participer directement au projet
 [![PayPayl](https://img.shields.io/badge/Paypal-CB-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NG5VVH8BMNLBJ)
 
 
+## Merci!
+
+Merci à tous nos généreux donateurs et donatrices. J'évite de mettre vos pseudo en évidence pour ne pas faire de vStream une vitrine, mais sachez que celas me motive, encore merci.
+
 Bon Film ++
