@@ -214,8 +214,11 @@ def showResultSearch(sSearch = ''):
     sHtmlContent = sHtmlContent.replace("\n","")
     sHtmlContent = re.sub('"img":"([^"]+)","synopsis":"([^"]+)"','"synopsis":"\g<2>","img":"\g<1>"',sHtmlContent) #pattern en ordre img et syn inversé parfois
 
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
 
-    sPattern = '{"result":{"id":".+?","title":"([^"]+)",.+?(?:"story"|"synopsis"):"(.+?)",*.+?(?:"img"|"banner"):"([^"]+)",.+?,"url":"([^"]+)"'
+    sPattern = '\"id\":.+?,\"title\":\"([^\"]+)\".+?\"qualite\":\"([^\"]+)\",\"img\":\"([^\"]+)\",.+?\"url\":\"([^\"]+)\"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
