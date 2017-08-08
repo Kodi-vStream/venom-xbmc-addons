@@ -246,8 +246,9 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     oParser = cParser()
+    sHtmlContent = oParser.abParse(sHtmlContent,'<div class="nav_ver">','<div class="vdo_wrp">')
+
     sPattern = '<a href="([^"<>]+/[0-9]/)">([^"]+)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
