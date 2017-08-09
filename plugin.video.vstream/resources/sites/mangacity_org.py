@@ -236,6 +236,8 @@ def ShowAlpha2():
     sType = 'VF'
     if 'vostfr' in sUrl:
         sType = 'VOSTFR'
+        
+    #cConfig().log(sUrl2)
     
     oRequestHandler = cRequestHandler(sUrl2)
     sHtmlContent = oRequestHandler.request()
@@ -247,7 +249,7 @@ def ShowAlpha2():
         sHtmlContent = FullUnescape(sHtmlContent)
     
     oParser = cParser()
-    sPattern = '<a href=\'(listing_(?:vf|vostfr)\.php\?affichage=[^<>"]+?)\' class=\'button black pastel light\' alt="Voir la liste des animes en ' + sType + '"'
+    sPattern = '<a href=.(listing_(?:vf|vostfr)\.php\?affichage=[^<>"]+?). class=.button black pastel light. alt="Voir la liste des animes en ' + sType + '"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if (aResult[0] == True):
@@ -275,7 +277,7 @@ def ShowAlpha(url = None):
     #fh.write(sHtmlContent)
     #fh.close()
 
-    sPattern = "<a href='([^<>]+?)' class='button (?:red )*light'><headline6>(?:<font color='black'>)*([A-Z#])(?:<\/font>)*<\/headline6><\/a>"
+    sPattern = "<a href=.([^<>]+?). class=.button (?:red )*light.><headline6>(?:<font color=.black.>)*([A-Z#])(?:<\/font>)*<\/headline6><\/a>"
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -339,7 +341,7 @@ def showMovies(sSearch = ''):
     if sHtmlContent.startswith('<script type="text/javascript">'):
         sHtmlContent = FullUnescape(sHtmlContent)
 
-    sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=\'*(.+?)\'* class=.button'
+    sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=["\']*(.+?)[\'"]* class=.button'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -422,7 +424,7 @@ def showEpisode():
     
     if 'HTML/JavaScript Encoder' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
-    
+
     oParser = cParser()    
     
     #On fait 2 passage pr accelerer le parsing regex
@@ -432,7 +434,7 @@ def showEpisode():
     # sPattern = '<img src="(.+?).+? alt="&#101;&#112;&#105;&#115;&#111;&#100;&#101;&#115;".+?<a href="(.+?)" title="(.+?)"'
     # aResult = oParser.parse(aResult[1][0], sPattern)
     
-    sPattern = 'class=\'button light\' [^>]+"><headline11>(.+?)<\/headline11><\/a>|<a href="*([^"]+)"* title="([^"]+)"[^>]+style="*text-decoration:none;"*>'
+    sPattern = 'class="button light" [^>]+"><headline11>(.+?)<\/headline11><\/a>|<a href="*([^"]+)"* title="([^"]+)"[^>]+style="*text-decoration:none;"*>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if (aResult[0] == True):
@@ -556,12 +558,16 @@ def showHosters():
     sPattern = 'document\.write\(unescape\("(%3c%69%66%72%61%6d%65%20%69%64%3d%27%76%69%64%65%6f%5f%66%72%61%6d%65%27.+?)"\)\);'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        cConfig().log("methode 3")
         for aEntry in aResult[1]:
             tmp = urllib.unquote(aEntry)
+            #cConfig().log(tmp)
             sPattern2 = 'src=["\']([^"\']+)["\']'
             aResult = re.findall(sPattern2,tmp)
             if aResult:
                 list_url.append(aResult[0])
+                
+    #cConfig().log(str(list_url))         
 
     if len(list_url) > 0:
         total = len(list_url)
