@@ -5,6 +5,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
+#from resources.lib.config import cConfig
+
 import urllib,xbmcgui,xbmc,re
 
 class cHoster(iHoster):
@@ -81,7 +83,7 @@ class cHoster(iHoster):
         #On ne charge les sous titres uniquement si vostfr se trouve dans le titre.
         if re.search('<head>\s*<title>[^<>]+VOSTFR[^<>]*<\/title>',sHtmlContent,re.IGNORECASE):
         
-            sPattern = "<track type='.+?' kind='subtitles' src='([^']+)' srclang='.+?' label='([^']+)'>"
+            sPattern = '<track type=[\'"].+?[\'"] kind=[\'"]subtitles[\'"] src=[\'"]([^\'"]+)[\'"] srclang=[\'"].+?[\'"] label=[\'"]([^\'"]+)[\'"]>'
             aResult = oParser.parse(sHtmlContent, sPattern)
             
             if (aResult[0] == True):
@@ -113,12 +115,19 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
+        #cConfig().log(self.__sUrl)
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+        
         SubTitle = ''
         SubTitle = self.checkSubtitle(sHtmlContent)
         
         oParser = cParser()
-        sPattern =  "<source src='([^<>']+)' type='[^'><]+?' data-res='([0-9]+p)'(?:[^<>]* lang='([^']+))*"
+        sPattern =  '<source src=[\'"]([^<>\'"]+)[\'"] type=[\'"][^\'"><]+?[\'"] data-res=[\'"]([0-9]+p)[\'"](?:[^<>]* lang=[\'"]([^\'"]+))*'
         aResult = oParser.parse(sHtmlContent, sPattern)
+        
+        #cConfig().log(str(aResult))
         
         stream_url = ''
         
