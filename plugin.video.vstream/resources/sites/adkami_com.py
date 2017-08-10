@@ -324,7 +324,7 @@ def showEpisode():
     else:
         
         #sPattern = '<li style.+?>(.+?)</li>|<li title=""><a href="([^<]+)">([^<]+)</a></li>'
-        sPattern = '<li class="saison">([^<>]+)</li>|<a href="(https:\/\/www\.adkami\.com[^"]+)" title="">([^<>]+)<\/a><\/li>'
+        sPattern = '<li class="saison">(.+?)<|<a href="(https:\/\/www\.adkami\.com[^"]+)" title>(.+?)<'
         
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
