@@ -95,7 +95,7 @@ def showAnnees():#recuperer automatiquement
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
 
-    sHtmlContent = oParser.abParse(sHtmlContent,sStart,sEnd)
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
     sPattern = '<li><a href="([^"]+)">(.+?)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -132,18 +132,20 @@ def showMovies(sSearch = ''):
         
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             
             sThumb = str(aEntry[0])
             sTitle = str(aEntry[1]).replace('&#8217;', '\'').replace('&#8230;', '!')
             sUrl = str(aEntry[2])
-            sResume = str(aEntry[3])
+            sDesc = str(aEntry[3])
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle',sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail',sThumb )
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb )
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sResume, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 			
         cConfig().finishDialog(dialog)
            
@@ -171,7 +173,7 @@ def showLinks():
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -189,16 +191,19 @@ def showLinks():
 
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
-            sTitle = sMovieTitle + ' [' + str(aEntry[2]) + '/' + str(aEntry[3]) + '] ' + '[COLOR skyblue]' + str(aEntry[1]) + '[/COLOR]'
             sUrl = str(aEntry[0])
+            sHost = str(aEntry[1]).replace('.co', '').replace('.to', '')
+            sTitle = sMovieTitle + ' [' + str(aEntry[2]) + '/' + str(aEntry[3]) + '] ' + '(' + sHost + ')'
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle',sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumbnail',sThumb )
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb )
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle,'', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -209,7 +214,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
@@ -227,6 +232,6 @@ def showHosters():
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
                 
     oGui.setEndOfDirectory()
