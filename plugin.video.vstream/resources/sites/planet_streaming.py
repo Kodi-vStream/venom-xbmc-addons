@@ -84,7 +84,7 @@ def showGenres():
     liste.append( ['Science Fiction',URL_MAIN + 'science-fiction'] )
     liste.append( ['Thriller',URL_MAIN + 'thriller'] )
     liste.append( ['Western',URL_MAIN + 'western'] )
-	   #la suite fonctionne mais pas de menu sur le site
+	#la suite fonctionne mais pas de menu sur le site
     liste.append( ['Espionnage',URL_MAIN + 'espionnage'] )
     liste.append( ['Péplum',URL_MAIN + 'peplum'] )
     liste.append( ['Divers',URL_MAIN + 'divers'] )
@@ -110,7 +110,7 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(URL_MAIN)
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
         oRequestHandler.addParameters('Content-Type', 'application/x-www-form-urlencoded')
-        oRequestHandler.addParameters('Referer', 'http://www.voirfilms.planet-streaming.com/')
+        oRequestHandler.addParameters('Referer', URL_MAIN)
         oRequestHandler.addParameters('do', 'search')
         oRequestHandler.addParameters('subaction', 'search')
         oRequestHandler.addParameters('story', sSearch)
@@ -145,28 +145,27 @@ def showMovies(sSearch = ''):
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),aEntry[1]) == 0:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[1]) == 0:
                     continue
 
-            if aEntry[0].startswith('/'):
-                sThumbnail = URL_MAIN[:-1] + aEntry[0]
-            else:
-                sThumbnail = aEntry[0]
+            sThumb = str(aEntry[0])
+            if sThumb.startswith('/'):
+                sThumb = URL_MAIN[:-1] + sThumb
 
-            siteUrl = aEntry[2]
+            siteUrl = str(aEntry[2])
             sTitle = str(aEntry[1])
             sQual = cUtil().removeHtmlTags(str(aEntry[3]))
-            sQual = sQual.replace(':','').replace(' ','').replace(',','/')
+            sQual = sQual.replace(':', '').replace(' ', '').replace(',', '/')
 
             sDisplayTitle = sTitle + ' [' + sQual + ']'
-            sDisplayTitle = cUtil().DecoTitle(sDisplayTitle)
+            #sDisplayTitle = cUtil().DecoTitle(sDisplayTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -195,7 +194,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -211,12 +210,8 @@ def showHosters():
             if dialog.iscanceled():
                 break
 
-            if aEntry[0]:
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addDir(SITE_IDENTIFIER, 'showHosters', '[COLOR red]' + str(aEntry[0]) + '[/COLOR]', 'host.png', oOutputParameterHandler)
+            if (aEntry[0]):
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
 
             sHosterUrl = str(aEntry[1])
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -228,7 +223,7 @@ def showHosters():
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
 
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         cConfig().finishDialog(dialog)
 
