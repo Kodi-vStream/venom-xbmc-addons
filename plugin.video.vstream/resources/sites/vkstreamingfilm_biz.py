@@ -11,7 +11,7 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re,urllib2,urllib
-
+ 
 SITE_IDENTIFIER = 'vkstreamingfilm_biz'
 SITE_NAME = 'Vk Streaming Film'
 SITE_DESC = 'Film en Streaming HD'
@@ -75,7 +75,7 @@ def showGenres():
     liste.append( ['Musical',URL_MAIN + 'films/musical/'] )
     liste.append( ['Péplum',URL_MAIN + 'films/peplum/'] )
     liste.append( ['Policier',URL_MAIN + 'films/policier/'] )
-    liste.append( ['Romance',URL_MAIN + 'films/Romance/'] )
+    liste.append( ['Romance',URL_MAIN + 'films/romance/'] )
     liste.append( ['Science-Fiction',URL_MAIN + 'films/science-fiction/'] )
     liste.append( ['Spectacle',URL_MAIN + 'films/spectacle/'] )
     liste.append( ['Sport',URL_MAIN + 'films/sport/'] )
@@ -95,13 +95,13 @@ def showMovies(sSearch=''):
     if sSearch:
         #on redecode la recherche codé il y a meme pas une seconde par l'addon
         sSearch = urllib2.unquote(sSearch)
-       
-        query_args = { 'do' : 'search' , 'subaction' : 'search' , 'story' : str(sSearch) , 'x' : '0', 'y' : '0'}
+        sSearch = sSearch.replace(' ', '%20')
+        query_args = {'do' : 'search' , 'subaction' : 'search' , 'story' : str(sSearch) , 'x' : '0', 'y' : '0'}
        
         data = urllib.urlencode(query_args)
         headers = {'User-Agent' : 'Mozilla 5.10'}
         url = URL_MAIN + 'index.php?do=search=' + sSearch
-        request = urllib2.Request(url,data,headers)
+        request = urllib2.Request(url, data, headers)
      
         try:
             reponse = urllib2.urlopen(request)
@@ -110,13 +110,13 @@ def showMovies(sSearch=''):
             print e.reason
      
         sHtmlContent = reponse.read()
-        sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)".*?<a href="(.*?)" title'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        sPattern = '<div class="img-block border-2">.*?<img src="(.*?)" alt="(.*?)\sstreaming".*?<a href="(.*?)" title'
+    
+    sPattern = '<div class="img-block border-2">.*?<img src="(.*?)".*?<h5><a href="([^"]+)".+?>(.+?)</a>'
     
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -131,19 +131,19 @@ def showMovies(sSearch=''):
                 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch, aEntry[1]) == 0:
+                if cUtil().CheckOccurence(sSearch, aEntry[2]) == 0:
                     continue
            
-            sTitle = str(aEntry[1])
-            sUrl2 = str(aEntry[2])
+            sTitle = str(aEntry[2])
+            sUrl2 = str(aEntry[1])
             sThumb = str(aEntry[0])
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
  
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle',sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)            
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
            
@@ -174,7 +174,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -187,12 +187,12 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         sQual = ' [' + aResult[1][0] + ']'
-        sQual = sQual.replace('VF','').replace('VOSTFR','')
-        sQual = sQual.replace(' ]',']')
+        sQual = sQual.replace('VF', '').replace('VOSTFR', '')
+        sQual = sQual.replace(' ]', ']')
    
     #Recup langue
     sLang = ''
-    sPattern = '<a href="#(video[0-9]+?)" title=".+?" class="border-3"><span>.+?(\[.+?\])<\/span><\/a><\/li>'
+    sPattern = '<a href="#(video[0-9]+?)" title=".+?" class="border-3"><span>.+?(\[.+?\])<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
         sLang = aResult[1]
@@ -219,12 +219,12 @@ def showHosters():
             sHosterUrl = str(aEntry[1])
             oHoster = cHosterGui().checkHoster(sHosterUrl)
            
-            sMovieTitle2 = sMovieTitle2
+            #sMovieTitle2 = sMovieTitle2
 
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle2)
                 oHoster.setFileName(sMovieTitle2)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         cConfig().finishDialog(dialog)
 
