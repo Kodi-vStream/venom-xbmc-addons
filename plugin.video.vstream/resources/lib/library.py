@@ -62,9 +62,7 @@ class cLibrary:
         sLink = 'plugin://plugin.video.vstream/?function=play&site=cHosterGui&sFileName=' + sFileName + '&sMediaUrl=' + sMediaUrl + '&sHosterIdentifier=' + sHosterIdentifier
         
         sTitle = sFileName
-        sTitle = cGui().showKeyBoard(sTitle)
 
-        
         folder = self.__sMovieFolder
         
         #film
@@ -72,6 +70,7 @@ class cLibrary:
             folder = self.__sMovieFolder
             
             sTitle = cUtil().CleanName(sTitle)
+            sTitle = cGui().showKeyBoard(sTitle)
             
             try:
                 # folder = folder + '/' + sTitle + '/'
