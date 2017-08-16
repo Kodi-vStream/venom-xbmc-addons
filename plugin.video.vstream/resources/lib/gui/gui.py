@@ -281,7 +281,7 @@ class cGui():
             if cGui.CONTENT == "movies":
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
                 #self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
-                #self.createContexMenuba(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuba(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
@@ -290,7 +290,7 @@ class cGui():
             elif cGui.CONTENT == "tvshows":
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
                 #self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
-                #self.createContexMenuba(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuba(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
