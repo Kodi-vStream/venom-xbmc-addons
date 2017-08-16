@@ -97,6 +97,10 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir('topimdb', 'load', 'Top Imdb', 'star.png', oOutputParameterHandler)
 
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://')
+    oGui.addDir(SITE_IDENTIFIER, 'showFolderList', 'Listes TMDB (beta)', 'star.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 def showSearchMovie():
@@ -158,6 +162,22 @@ def showGenreTV():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('genre', str(sId))
             oGui.addDir(SITE_IDENTIFIER, 'showSeries', str(sTitle), 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showFolderList():
+    oGui = cGui()
+    liste = []
+    liste.append( ['Top Manga (senscritique)', '31665'] )
+    liste.append( ['Disney Classic', '338'] )
+    #liste.append( ['nom de la liste', 'ID de la liste'] )
+
+    for sTitle,sUrl in liste:
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showLists', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -627,6 +647,90 @@ def showFilmActor():
             # oGui.addDir(SITE_IDENTIFIER, 'showFilmActor', '[COLOR teal]Page '+str(iNextPage)+' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
+
+def showLists():
+    oInputParameterHandler = cInputParameterHandler()
+
+    iPage = 1
+    if (oInputParameterHandler.exist('page')):
+        iPage = oInputParameterHandler.getValue('page')
+
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+
+    result = grab.getUrl('list/'+sUrl, iPage, '')
+
+    oGui = cGui()
+
+    total = len(result)
+
+    if (total > 0):
+        for i in result['items']:
+
+            sId, sType, sThumbnail, sFanart, sVote, sDesc = i['id'], i['media_type'], i['poster_path'], i['backdrop_path'], i['vote_average'], i['overview']
+
+            if sThumbnail:
+                sThumbnail = POSTER_URL + sThumbnail
+            else:
+                sThumbnail = ''
+
+            if sFanart:
+                sFanart = FANART_URL + sFanart
+            else : sFanart = ''
+
+            sTitle = "None"
+
+            if 'name' in i:
+                sTitle = i['name'].encode("utf-8")
+            if 'title' in i:
+                sTitle = i['title'].encode("utf-8")
+
+            sSiteUrl = 'tv/' + str(sId)
+
+            sDisplayTitle = "%s (%s)" % (sTitle, sVote)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'none')
+            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
+            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            oOutputParameterHandler.addParameter('sId', str(sId))
+            oOutputParameterHandler.addParameter('sFanart', str(sFanart))
+            oOutputParameterHandler.addParameter('sTmdbId', i['id'])
+            oOutputParameterHandler.addParameter('searchtext', sTitle)
+
+            #oGui.addTVDB(SITE_IDENTIFIER, 'showSeriesSaison', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
+
+            cGui.CONTENT = "movies"
+            oGuiElement = cGuiElement()
+            oGuiElement.setTmdbId(i['id'])
+            oGuiElement.setSiteName('cHome')
+            oGuiElement.setFunction('showSearch')
+            oGuiElement.setTitle(sDisplayTitle)
+            oGuiElement.setFileName(sTitle)
+            oGuiElement.setIcon('series.png')
+            if sType == 'movie':
+                oGuiElement.setMeta(1)
+            elif sType == 'tv':
+                oGuiElement.setMeta(2)
+            oGuiElement.setThumbnail(sThumbnail)
+            oGuiElement.setFanart(sFanart)
+            oGuiElement.setCat(7)
+            oGuiElement.setDescription(sDesc)
+
+            oGui.addFolder(oGuiElement, oOutputParameterHandler)
+
+        if (iPage > 0):
+            iNextPage = int(iPage) + 1
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('page', iNextPage)
+            oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
+
+    #test pr chnagement mode
+    #xbmc.executebuiltin('Container.SetViewMode(500)')
+
+    oGui.setEndOfDirectory('500')
 
 def __checkForNextPage(sHtmlContent):
     sPattern = "<span class='page-numbers current'>.+?</span><a class='page-numbers' href='([^<]+)'>.+?</a>"
