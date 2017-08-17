@@ -99,7 +99,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir(SITE_IDENTIFIER, 'showFolderList', 'Listes TMDB (beta)', 'star.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showFolderList', 'Listes TMDB (beta)', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -171,13 +171,20 @@ def showFolderList():
     liste = []
     liste.append( ['Top Manga (senscritique)', '31665'] )
     liste.append( ['Disney Classic', '338'] )
+    liste.append( ['Pixar', '3700'] )
+
+    liste.append( ['Top 50 des plus grands films', '10'] )
+
+    liste.append( ['Marvel', '1'] )
+    liste.append( ['DC Comics Universe', '3'] )
+
     #liste.append( ['nom de la liste', 'ID de la liste'] )
 
     for sTitle,sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showLists', sTitle, 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showLists', sTitle, 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -686,8 +693,6 @@ def showLists():
             if 'title' in i:
                 sTitle = i['title'].encode("utf-8")
 
-            sSiteUrl = 'tv/' + str(sId)
-
             sDisplayTitle = "%s (%s)" % (sTitle, sVote)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -720,17 +725,8 @@ def showLists():
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        if (iPage > 0):
-            iNextPage = int(iPage) + 1
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('page', iNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
-
-    #test pr chnagement mode
-    #xbmc.executebuiltin('Container.SetViewMode(500)')
-
     oGui.setEndOfDirectory('500')
+    
 
 def __checkForNextPage(sHtmlContent):
     sPattern = "<span class='page-numbers current'>.+?</span><a class='page-numbers' href='([^<]+)'>.+?</a>"
