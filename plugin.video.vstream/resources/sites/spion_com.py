@@ -11,16 +11,16 @@ from resources.lib.parser import cParser
 SITE_IDENTIFIER = 'spion_com'
 SITE_NAME = 'Spi0n'
 SITE_DESC = 'Toute l\'actualité insolite du web est chaque jour sur Spi0n.com'
- 
+
 URL_MAIN = 'http://www.spi0n.com/'
- 
+
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
- 
+
 MOVIE_NETS = ('http://', 'load')
 NETS_NEWS = (URL_MAIN + 'page/1/', 'showMovies')
-NETS_GENRES = (True, 'showGenre')
- 
+NETS_GENRES = (True, 'showGenres')
+
 # True : Contenu Censuré | False : Contenu Non Censuré
 SPION_CENSURE = True
 
@@ -32,7 +32,7 @@ def showCensure():
     content = "Pour activer le contenu (+18) mettre: \n[COLOR coral]SPION_CENSURE = False[/COLOR]\ndans le fichier:\n[COLOR coral]plugin.video.vstream/resources/sites/spion_com.py[/COLOR]"
     cConfig().createDialogOK(content)
 
-def load(): 
+def load():
     oGui = cGui()
 	
     oOutputParameterHandler = cOutputParameterHandler()
@@ -55,11 +55,11 @@ def showSearch():
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText
-        showMovies(sUrl) 
+        showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
 
-def showGenre():
+def showGenres():
     oGui = cGui()
 	
     liste = []
@@ -94,7 +94,7 @@ def showGenre():
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler) 
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -122,7 +122,7 @@ def showMovies(sSearch = ''):
          
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
-             
+            
             sUrlp   = str(aEntry[2])
             sTitle  = str(aEntry[3])
             sPoster = str(aEntry[1])
@@ -136,8 +136,8 @@ def showMovies(sSearch = ''):
             if (sCat != 'Image'):
             
                  oOutputParameterHandler = cOutputParameterHandler()
-                 oOutputParameterHandler.addParameter('siteUrl', sUrlp) 
-                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle) 
+                 oOutputParameterHandler.addParameter('siteUrl', sUrlp)
+                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                  oOutputParameterHandler.addParameter('sThumbnail', sPoster)
                  
                  if (SPION_CENSURE == True):
@@ -148,7 +148,6 @@ def showMovies(sSearch = ''):
                         oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sPoster,'', oOutputParameterHandler)
                  else:
                      oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sPoster,'', oOutputParameterHandler)
-                
                
         cConfig().finishDialog(dialog)
             
@@ -178,11 +177,11 @@ def showHosters():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
      
     oRequestHandler = cRequestHandler(sUrl) 
-    sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','')\
-                               .replace('<iframe src=\'http://creative.rev2pub.com','')\
-                               .replace('dai.ly','www.dailymotion.com/video')\
-                               .replace('youtu.be/','www.youtube.com/watch?v=')
+    sHtmlContent = oRequestHandler.request()
+    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/', '')\
+                               .replace('<iframe src=\'http://creative.rev2pub.com', '')\
+                               .replace('dai.ly', 'www.dailymotion.com/video')\
+                               .replace('youtu.be/', 'www.youtube.com/watch?v=')
     oParser = cParser()
     
     #prise en compte lien direct mp4
@@ -200,7 +199,7 @@ def showHosters():
             sHosterUrl = str(aEntry)
             # Certains URL "dailymotion" sont écrits : //www.dailymotion.com
             if sHosterUrl[:4] != 'http':
-                sHosterUrl = 'http:' + sHosterUrl     
+                sHosterUrl = 'http:' + sHosterUrl
             
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             
