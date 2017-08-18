@@ -28,9 +28,9 @@ MOVIE_ANNEES = (True, 'showYears')
 SERIE_NEWS = (URL_MAIN + 'serie-tv/', 'showMovies')
 SERIE_SERIES = (URL_MAIN + 'serie-tv/', 'showMovies')
 SERIE_HD = (URL_MAIN + 'serie-tv/', 'showMovies')
-  
+
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
- 
+
 def load():
     oGui = cGui()
     
@@ -163,7 +163,7 @@ def showMovies(sSearch = ''):
                 break
                 
             sName = aEntry[2].replace(' Streaming Ultra-HD', '').replace(' Streaming Full-HD', '')
-            sName = sName.replace(' Streaming HD', '')
+            sName = sName.replace(' Streaming HD', '').replace(' streaming HD', '')
             sName = sName.decode('utf8')
             sName = cUtil().unescape(sName)
             try:
@@ -327,7 +327,6 @@ def ShowSpecialHosters():
     data = re.sub('(.+?f=)', '', sUrl)
     data = data.replace('&c=', '')
     pdata = 'data=' + urllib.quote_plus(data)
-    
     
     cConfig().log(sUrl)
     if 'fr-land.me' in sUrl:
