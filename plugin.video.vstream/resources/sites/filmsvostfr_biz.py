@@ -273,7 +273,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = "<a href='([^<>']+?)' rel='nofollow' class=\"last\">suiv »<\/a>"
+    sPattern = '<a href="([^<>"]+?)" rel="nofollow" class="last">suiv »<\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -370,7 +370,7 @@ def showLinks():
     if (aResult[0] == True):
         sDesc = aResult[1][0]
 
-    sPattern = '<a href="([^"]+)" class="sinactive ilink v"" rel="nofollow" title="([^"]+)">.+?<span class="quality" title="(.+?)">.+?<span class="langue" title="(.+?)">'
+    sPattern = '<a href="([^"]+)" class="sinactive ilink.+?" rel="nofollow" title="([^"]+)">.+?<span class="quality" title="(.+?)">.+?<span class="langue" title="(.+?)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -442,10 +442,10 @@ def showHosters():
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
-         sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-         oHoster.setDisplayName(sDisplayTitle)
-         oHoster.setFileName(sMovieTitle)
-         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+        sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+        oHoster.setDisplayName(sDisplayTitle)
+        oHoster.setFileName(sMovieTitle)
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     cHosterGui().plusHoster(oGui)
 
