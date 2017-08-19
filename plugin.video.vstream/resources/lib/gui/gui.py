@@ -122,7 +122,7 @@ class cGui():
             oGuiElement.setFileName(sTitle)
 
         self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-        self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
+        #self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
         self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
