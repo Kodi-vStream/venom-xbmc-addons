@@ -2,7 +2,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
-import time
+import time,re
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -49,6 +50,14 @@ class cHoster(iHoster):
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
+        
+    def extractSmil(self,smil):
+        oRequest = cRequestHandler(smil)
+        oRequest.addParameters('referer', self.__sUrl)
+        sHtmlContent = oRequest.request()
+        Base = re.search('<meta base="(.+?)"',sHtmlContent)
+        Src = re.search('<video src="(.+?)"',sHtmlContent)
+        return Base.group(1) + Src.group(1)
 
     def __getMediaLinkForGuest(self):
         api_call = ''
@@ -70,20 +79,20 @@ class cHoster(iHoster):
             oRequest.addParameters('referer', self.__sUrl)
             sHtmlContent = oRequest.request()
 
-            sPattern = '{file: *"([^"]+(?<!smil))"}'
+            sPattern = '{file: *"([^"]+smil)"}'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
-                api_call = aResult[1][0]
+                api_call = self.extractSmil(aResult[1][0])
     
             else:
                 sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
                 aResult = oParser.parse(sHtmlContent, sPattern)
                 if (aResult[0] == True):
                     sHtmlContent = cPacker().unpack(aResult[1][0])
-                    sPattern = '{file: *"([^"]+(?<!smil))"}'
+                    sPattern = '{file: *"([^"]+smil)"}'
                     aResult = oParser.parse(sHtmlContent, sPattern)
                     if (aResult[0] == True):
-                        api_call = aResult[1][0]
+                        api_call = self.extractSmil(aResult[1][0])
 
         if (api_call):
             return True, api_call
