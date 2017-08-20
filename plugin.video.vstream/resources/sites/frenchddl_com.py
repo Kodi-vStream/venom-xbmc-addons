@@ -23,19 +23,19 @@ MOVIE_GENRES = (True, 'showGenres')
 
 def load():
     oGui = cGui()
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
-	
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -75,15 +75,15 @@ def showGenres():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
-    
+
     bGlobal_Search = False
-    
+
     if sSearch:
         sUrl = sSearch
-      
+
         if URL_SEARCH[0] in sSearch:
             bGlobal_Search = True
-    
+
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -97,6 +97,9 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
         total = len(aResult[1])
 
@@ -109,16 +112,16 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl) 
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sUrl, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
-        
+
         sNextPage = __checkForNextPage(sHtmlContent)
-        
+
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
@@ -153,7 +156,7 @@ def showHosters():
     oParser = cParser()
     sPattern = '<a href="([^"]+?)" rel=\'nofollow\'.+?>T.+?<td align=\'center\' class=\'TextLink\'>(.+?)</td>.*?<td align=\'center\' class=\'TextLink\'>(.+?)</td>.*?<td align=\'center\' class=\'TextLink\'>(.+?)</td>.*?<td align=\'center\' class=\'TextLink\'>(.+?)</td>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     oGui.addText(SITE_IDENTIFIER,'[COLOR olive]' + sMovieTitle + '[/COLOR]')
 
     if (aResult[0] == True):

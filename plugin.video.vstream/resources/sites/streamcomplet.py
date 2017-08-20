@@ -16,7 +16,7 @@ import re
 SITE_IDENTIFIER = 'streamcomplet'
 SITE_NAME = 'StreamComplet'
 SITE_DESC = 'Streaming Gratuit de 5709 Films Complets en VF'
- 
+
 URL_MAIN = 'http://streamcomplet.com/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -27,19 +27,19 @@ FUNCTION_SEARCH = 'showMovies'
 
 def load():
     oGui = cGui()
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
-    
+
     oGui.setEndOfDirectory()
 
 def showMoviesSearch():
@@ -54,7 +54,7 @@ def showMoviesSearch():
 
 def showGenres():
     oGui = cGui()
- 
+
     liste = []
     liste.append( ['Action',URL_MAIN + 'film/action/'] )
     liste.append( ['Animation',URL_MAIN + 'film/animation/'] )
@@ -69,13 +69,13 @@ def showGenres():
     liste.append( ['Policier',URL_MAIN + 'film/policier/'] )
     liste.append( ['Romance',URL_MAIN + 'film/romance/'] )
     liste.append( ['Thriller',URL_MAIN + 'film/thriller/'] )
-               
+
     for sTitle,sUrl in liste:
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-       
+
     oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):
@@ -93,6 +93,9 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -102,18 +105,18 @@ def showMovies(sSearch = ''):
                 break
 
             sTitle = aEntry[2]
-            
+
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),sTitle) == 0:
                     continue
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], '', oOutputParameterHandler)
-            
+
         cConfig().finishDialog(dialog)
 
         sNextPage = __checkForNextPage(sHtmlContent)
@@ -141,30 +144,30 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     oParser = cParser()
 
     sPattern = 'src="(http:\/\/media\.vimple\.me.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        
+
         sUrl2 = aResult[1][0]
 
         oRequestHandler = cRequestHandler(sUrl2)
         oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0')
         oRequestHandler.addHeaderEntry('Referer',sUrl)
         sHtmlContent = oRequestHandler.request()
-        
+
         sPattern = '<source.+?src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            cGui().showInfo('Info', 'Chargement film' , 5) 
+            cGui().showInfo('Info', 'Chargement film' , 5)
             web_url = 'http://media.vimple.me/playerk.swf/' + aResult[1][0]
-            
+
             sHosterUrl = web_url
 
             oGuiElement = cGuiElement()
@@ -195,5 +198,5 @@ def showHosters():
                        oHoster.setDisplayName(sMovieTitle)
                        oHoster.setFileName(sMovieTitle)
                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
-                     
+
             oGui.setEndOfDirectory()

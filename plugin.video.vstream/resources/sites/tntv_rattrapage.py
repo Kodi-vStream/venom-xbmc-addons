@@ -29,19 +29,19 @@ URL_SEARCH = (URL_MAIN + 'search/','showMovies')
 
 def load():
     oGui = cGui()
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Nouvelles Emissions', 'series.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_GENRES[1], 'Emissions par Catégories', 'genres.png', oOutputParameterHandler)
-	
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -51,7 +51,7 @@ def showSearch():
     if (sSearchText != False):
         #sSearchText = cUtil().urlEncode(sSearchText)
         sUrl = URL_SEARCH[0] + sSearchText + '/'
- 
+
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -60,9 +60,9 @@ def showGenre():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
- 
+
     liste = []
-    
+
     if sUrl == 'xyz':
         liste.append( ['Chaines','1'] )
         liste.append( ['Téléréalités','2'] )
@@ -71,9 +71,9 @@ def showGenre():
         liste.append( ['Sport','5'] )
         liste.append( ['Série VF',URL_MAIN + 'tag/series%20vf/'] )
         liste.append( ['Série VOSTFR',URL_MAIN + 'tag/series%20vostfr/'] )
-               
+
         for sTitle,sUrl2 in liste:
-           
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             if not sUrl2.startswith('http'):
@@ -81,12 +81,12 @@ def showGenre():
             else:
                 oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
     else:
-        
+
         oRequestHandler = cRequestHandler(URL_MAIN)
         sHtmlContent = oRequestHandler.request()
 
         sPattern = ''
-        
+
         if sUrl == '1':
             sPattern = 'class="NavElement-link" href="#">Cat..gories<\/a>(.+?)class="NavElement-link" href="#">Archives<\/a>'
         if sUrl == '2':
@@ -97,30 +97,30 @@ def showGenre():
             sPattern = 'class="NavElement-link" href="#">Infos et Magazine<\/a>(.+?)class="NavElement-link" href="#">Sport<\/a>'
         if sUrl == '5':
             sPattern = 'class="NavElement-link" href="#">Sport<\/a>(.+?)class="NavElement-link" href="\/tag\/archive">Les int..grales<\/a>'
-                
+
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
+
         #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
-        
+
         if (aResult[0] == True):
             tmp = aResult[1][0]
             sPattern = 'class="NavElement-link" href="(.+?)">(.+?)<\/a>'
             oParser = cParser()
             aResult = oParser.parse(tmp, sPattern)
-        
+
         if (aResult[0] == True):
 
             for aEntry in aResult[1]:
                 sTitle = aEntry[1]
                 sUrl = aEntry[0]
-           
+
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', URL_MAIN[:-1] + sUrl)
                 oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-       
+
     oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):
@@ -132,18 +132,20 @@ def showMovies(sSearch = ''):
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sUrl = sUrl.replace(' ','%20')
-   
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     #sHtmlContent = sHtmlContent.replace('direct','')
 
     sPattern = '<img class="PostPreview-coverImage" src="(.+?)" alt="(.+?)".+?<p class="PostPreview-snippet">(.+?)</p>.+?<a class="PostPreview-link" href="(.+?)"'
-    
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     #print aResult
-    
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -155,15 +157,15 @@ def showMovies(sSearch = ''):
             sTitle = unicode(aEntry[1], 'utf-8')#converti en unicode
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
             sTitle = sTitle.encode( "utf-8")
-            
+
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],'')[:-1],sTitle) == 0:
                     continue
-            
+
             #Reformatage
             sTitle = re.sub('[0-9:]{5} \| ([0-9-]{8}) \|','[\\1]', sTitle)
-            
+
             sMovieTitle = sTitle#re.sub('(\[.*\])','', str.strip(aEntry[1]))
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -176,7 +178,7 @@ def showMovies(sSearch = ''):
             #else:
             if not '[direct]' in aEntry[1]:
                 oGui.addTV(SITE_IDENTIFIER, 'showHoster', sTitle, '', aEntry[0], aEntry[2], oOutputParameterHandler)
-            
+
         cConfig().finishDialog(dialog)
 
         sNextPage = __checkForNextPage(sHtmlContent)
@@ -204,17 +206,17 @@ def showHoster():
     #sUrl = sUrl.replace("\'", '').replace('')', '')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
-    
+
+
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
 
     sPattern = '<a (?:sl-processed="1" )*(?:class="episode-number" )*href="#itsthetable1" on[cC]lick="(.+?)_player\( *\'(.+?)\' *\);">(?:<span class="ep-numb">(.+?)<\/span>)*'
-    
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -240,7 +242,7 @@ def showHoster():
 
             if 'vodlocker' in aEntry[0]:
                 sUrl = 'http://vodlocker.com/embed-' + str(aEntry[1]) + '-624x360.html'
-                
+
             sTitle = sMovieTitle
             if aEntry[2]:
                 sTitle = sTitle + 'Ep ' + aEntry[2]

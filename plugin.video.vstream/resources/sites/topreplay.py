@@ -59,7 +59,7 @@ def showGenre():
     oGui = cGui()
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
-    
+
     oParser = cParser()
     sPattern = '<\/span>.+?par genre<\/h3>(.+?)<li class="active">'
     aResult = re.search(sPattern,sHtmlContent,re.DOTALL)
@@ -74,12 +74,12 @@ def showGenre():
                 cConfig().updateDialog(dialog, total)
                 if dialog.iscanceled():
                     break
-                    
+
                 sTitle = aEntry[1]
                 if 'Film' in sTitle:
                     continue
                 sUrl = URL_MAIN + aEntry[0]
-            
+
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle , 'replay.png', oOutputParameterHandler)
@@ -92,7 +92,7 @@ def showListe():
     oGui = cGui()
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
-    
+
     oParser = cParser()
     sPattern = '<\/span>Liste des.+?<span>(.+?)<li class="active">'
     aResult = re.search(sPattern,sHtmlContent,re.DOTALL)
@@ -107,10 +107,10 @@ def showListe():
                 cConfig().updateDialog(dialog, total)
                 if dialog.iscanceled():
                     break
-                    
+
                 sTitle = aEntry[1]
                 sUrl = URL_MAIN + aEntry[0]
-            
+
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle , 'replay.png', oOutputParameterHandler)
@@ -121,21 +121,25 @@ def showListe():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
-    
+
     if sSearch:
       sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    
+
     sPattern = '<div class="img-short"><img src="([^"]+)".+?<a href="([^"]+)">([^<]+)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+        
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -143,7 +147,7 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-                
+
             sThumb = aEntry[0]
             sUrl = aEntry[1]
             sTitle = aEntry[2]
@@ -156,7 +160,7 @@ def showMovies(sSearch = ''):
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'replay.png',  sThumb,  '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
-		
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -180,22 +184,22 @@ def checkforHoster(sHosterUrl):
     code = re.search('\/(.+?)=([^"]+)',sHosterUrl)
     if not 'php?link' in code.group(1):
         if 'openload' in sHosterUrl:
-            return 'https://openload.co/embed/' + code.group(2) 
+            return 'https://openload.co/embed/' + code.group(2)
         elif 'netu' in sHosterUrl:
             return 'http://hqq.tv/player/embed_player.php?vid=' + code.group(2)
-        elif 'allvid' in sHosterUrl:    
+        elif 'allvid' in sHosterUrl:
             return 'http://allvid.ch/embed-' + code.group(2) + '.html'
-        elif 'easyvid' in sHosterUrl:    
+        elif 'easyvid' in sHosterUrl:
             return 'http://easyvid.org/embed-' + code.group(2) + '.html'
-        elif 'rutube' in sHosterUrl:    
+        elif 'rutube' in sHosterUrl:
             return 'http://rutube.ru/play/embed/' + code.group(2)
         elif 'vidlox' in sHosterUrl:
             return 'https://vidlox.tv/' + code.group(2)
-        elif 'streammoe' in sHosterUrl:    
+        elif 'streammoe' in sHosterUrl:
             return 'https://stream.moe/embed-' + code.group(2) + '.html'
         elif 'playernaut' in sHosterUrl or 'rapidvideo' in sHosterUrl:
-            return 'https://www.raptu.com/embed/' + code.group(2) 
-        elif 'dailymotion' in sHosterUrl:    
+            return 'https://www.raptu.com/embed/' + code.group(2)
+        elif 'dailymotion' in sHosterUrl:
             return 'http://www.dailymotion.com/embed/video/' + code.group(2)
         elif 'filez' in sHosterUrl:
             return 'http://filez.tv/embed/u=' + code.group(2)
@@ -228,7 +232,7 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     #integrale saison
     oParser = cParser()
     sPattern = '<div class="img-short"><img src="([^"]+)".+?<a href="([^"]+)">([^<]+)<\/a>'
@@ -240,7 +244,7 @@ def showHosters():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-                
+
             sThumb = aEntry[0]
             sUrl = aEntry[1]
             sTitle = aEntry[2]
@@ -258,7 +262,7 @@ def showHosters():
         #2
         sPattern = '<iframe.+?src="([^"]+)" style=".+?".+?<\/iframe>'
         aResult2 = re.findall(sPattern, sHtmlContent)
-    
+
         aResult = []
         aResult = list(set(aResult1 + aResult2)) #pas de doublons
         if (aResult):

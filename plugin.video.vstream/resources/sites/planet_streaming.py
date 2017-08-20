@@ -26,27 +26,27 @@ FUNCTION_SEARCH = 'showMovies'
 
 def load():
     oGui = cGui()
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films (HD)', 'films_hd.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
-	
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -60,7 +60,7 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-	
+
     liste = []
     liste.append( ['HD/HQ',URL_MAIN + 'xfsearch/hd'] )
     liste.append( ['Action',URL_MAIN + 'action'] )
@@ -102,11 +102,11 @@ def showMovies(sSearch = ''):
     oInputParameterHandler = cInputParameterHandler()
 
     if sSearch:
-        
+
         sType = oInputParameterHandler.getValue('type')
 
         sUrl = URL_SEARCH[0]
-        
+
         oRequestHandler = cRequestHandler(URL_MAIN)
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
         oRequestHandler.addParameters('Content-Type', 'application/x-www-form-urlencoded')
@@ -114,7 +114,7 @@ def showMovies(sSearch = ''):
         oRequestHandler.addParameters('do', 'search')
         oRequestHandler.addParameters('subaction', 'search')
         oRequestHandler.addParameters('story', sSearch)
-        
+
         if (sType):
             if sType == 'serie':
                 oRequestHandler.addParameters('catlist[]', '30')
@@ -125,7 +125,7 @@ def showMovies(sSearch = ''):
 
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        
+
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
@@ -134,6 +134,9 @@ def showMovies(sSearch = ''):
     sPattern = '<div class="fullstream fullstreaming">\s*<img src="([^><"]+)"[^<>]+alt="([^"<>]+)".+?<h3 class="mov-title"><a href="([^><"]+)">.+?<strong>(?:Qualité|Version)(.+?)<\/*strong>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -195,7 +198,7 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -215,7 +218,7 @@ def showHosters():
 
             sHosterUrl = str(aEntry[1])
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-        
+
             if (oHoster != False):
                 try:
                     oHoster.setHD(sHosterUrl)

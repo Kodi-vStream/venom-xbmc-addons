@@ -31,27 +31,27 @@ MOVIE_GENRES = (True, 'showGenres')
 
 def load():
     oGui = cGui()
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'films_annees.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
-    
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -67,7 +67,7 @@ def showSearch():
 def showGenres():#recup les genres et la quantites sur le site
     oGui = cGui()
     oParser = cParser()
-    
+
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
 
@@ -77,7 +77,7 @@ def showGenres():#recup les genres et la quantites sur le site
         for aEntry in aResult[1]:
             sTitle = aEntry[1] + ' (' + (aEntry[2]) + ')'
             sUrl = aEntry[0]
-        
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
@@ -86,12 +86,12 @@ def showGenres():#recup les genres et la quantites sur le site
 
 def showAnnees():#recuperer automatiquement
     oGui = cGui()
-    
+
     sStart = '<h3>Année de sortie <span class="icon-sort">'
     sEnd = '<h3>Qualité <span class="icon-sort">'
-	
+
     oParser = cParser()
-    
+
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
 
@@ -103,7 +103,7 @@ def showAnnees():#recuperer automatiquement
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sTitle = aEntry[1]
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'annees.png', oOutputParameterHandler)
@@ -117,38 +117,41 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-   
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     sPattern = '<div class="image"><img src="([^<]+)" alt="(.+?)".+?/>.+?<a href="(.+?)">.+?<span class="ttx">(.+?)<div class="degradado">'
-    
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
-        
+
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-            
+
             sThumb = str(aEntry[0])
             sTitle = str(aEntry[1]).replace('&#8217;', '\'').replace('&#8230;', '!')
             sUrl = str(aEntry[2])
             sDesc = str(aEntry[3])
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb )
 
             oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-			
+
         cConfig().finishDialog(dialog)
-           
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -162,7 +165,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<div class="pag_b"><a href="(.+?)" >Next</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     if (aResult[0] == True):
         return aResult[1][0]
 
@@ -215,23 +218,23 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
 
     oParser = cParser()
     sPattern = '<iframe.+?src="(.+?)"'
-    
+
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            
+
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-                
+
     oGui.setEndOfDirectory()

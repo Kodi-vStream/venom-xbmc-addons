@@ -34,13 +34,13 @@ UA = '|User-Agent=Mozilla/5.0 (Linux; Android 6.0.1; Nexus 6P Build/MMB29P) Appl
 headers = { 'User-Agent' : UA }
 
 def load():
-    
+
     oGui = cGui()
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Live Sports', 'sport.png', oOutputParameterHandler)
-  
+
     oGui.setEndOfDirectory()
 
 def showLive():
@@ -58,7 +58,7 @@ def showLive():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', LA_LIGA)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', sLive + 'La Liga', 'tv.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_A)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', sLive + 'Série A', 'tv.png', oOutputParameterHandler)
@@ -72,65 +72,69 @@ def showLive():
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', sLive + 'NHL Games', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-  
+
 def showMovies(sSearch = ''):
-   
+
     oGui = cGui()
 
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Programme des Matchs[/COLOR]')
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     sPattern = '<a href="([^"]+)"><li id=".+?" ><div>(.+?)</div><img src="([^"]+)".+?<img src=".+?".+?<img src="([^"]+)".+?</li></a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
         
+    if (aResult[0] == True):
+
         for aEntry in aResult[1]:
 
             #Recup Nom Team
             sUrl2 = URL_MAIN + aEntry[0]
             sTitle = aEntry[2] + '[COLOR gray]' +  ' vs ' + '[/COLOR]' + aEntry[3]
             sTitle =sTitle.replace('img/teams/', '').replace('.png', '')
-           
+
             #Affichage custom Titre Player
             sMovieTitle2 = '[Live] ' + sTitle
-            
+
             #Affiche sThumbnail 1ere equipe
             sThumbnail = URL_MAIN + aEntry[2]
             sThumbnail = sThumbnail.replace(' ', '%20')
-            
+
             #Horaires
             sPattern = '<font color="#46AAE3">(.+?)<font color="grey">(.+?)</font>'
-            
+
             aResult = re.findall(sPattern,aEntry[1])
-            
+
             if (aResult):
-               for aEntry in aResult: 
+               for aEntry in aResult:
                    sTime = '[COLOR teal]' + aEntry[0] + aEntry[1] + ' GMT' + '  ' +'[/COLOR]'
                    sTitle = sTime + sTitle
-                   
-            #Test si live en cours 
+
+            #Test si live en cours
             if 'STARTED'  in aEntry[1]:
-                
-                sTitle = '[COLOR coral]' + '[Live en cours]  ' + '[/COLOR]' + sTitle 
+
+                sTitle = '[COLOR coral]' + '[Live en cours]  ' + '[/COLOR]' + sTitle
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2) 
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sMovieTitle2', str(sMovieTitle2))
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
-            
+
     else:
         oGui.addText(SITE_IDENTIFIER, '(Aucune diffusion prévue pour le moment)')
-    
+
     if not sSearch:
         oGui.setEndOfDirectory()
 
@@ -145,33 +149,33 @@ def showHosters():
     oGui.addText(SITE_IDENTIFIER, sMovieTitle)
 
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles:[/COLOR]')
-    
-    if '[Live' in sMovieTitle:  
-       
+
+    if '[Live' in sMovieTitle:
+
        request = urllib2.Request(sUrl,None,headers)
        reponse = urllib2.urlopen(request)
        sHtmlContent = reponse.read()
        reponse.close()
-    
+
        sPattern = '<source src="(.+?)" type="video/mp4"/>'
 
        oParser = cParser()
        aResult = oParser.parse(sHtmlContent, sPattern)
-       
+
        #si blocage site limite visiteur ou erreur
        #on force live via lien direct bypass
        if (aResult[0] == True):
-           
+
            url = aResult[1][0] + UA
            sTitle = 'Navixsport 720p'
-              
+
        else:
            sTitle = 'Navixsport [bypass] 720p'
-           bypass = 'aHR0cDovLzE5NS4xNTQuMjUyLjIyMi9obHMtbGl2ZS9saXZlcGtncnIvX2RlZmluc3RfL215bGl2ZWV2ZW50L215bGl2ZXN0cmVhbS5tM3U4fFVzZXItQWdlbnQ9TW96aWxsYS81LjAgKExpbnV4OyBBbmRyb2lkIDQuMi4yOyBOZXh1cyA0IEJ1aWxkL0pEUTM5KSBBcHBsZVdlYktpdC81MzcuMzYgKEtIVE1MLCBsaWtlIEdlY2tvKSBDaHJvbWUvNTMuMC4yNzg1LjEyNCBNb2JpbGUgU2FmYXJpLzUzNy4zNiApIENocm9tZS8xOC4wLjEwMjUuMTMzIE1vYmlsZSBTYWZhcmkvNTM1LjE5'          
-          
+           bypass = 'aHR0cDovLzE5NS4xNTQuMjUyLjIyMi9obHMtbGl2ZS9saXZlcGtncnIvX2RlZmluc3RfL215bGl2ZWV2ZW50L215bGl2ZXN0cmVhbS5tM3U4fFVzZXItQWdlbnQ9TW96aWxsYS81LjAgKExpbnV4OyBBbmRyb2lkIDQuMi4yOyBOZXh1cyA0IEJ1aWxkL0pEUTM5KSBBcHBsZVdlYktpdC81MzcuMzYgKEtIVE1MLCBsaWtlIEdlY2tvKSBDaHJvbWUvNTMuMC4yNzg1LjEyNCBNb2JpbGUgU2FmYXJpLzUzNy4zNiApIENocm9tZS8xOC4wLjEwMjUuMTMzIE1vYmlsZSBTYWZhcmkvNTM1LjE5'
+
            s = base64.b64decode(bypass)
            url = s + UA
-           
+
     else:
         url = ''
         oGui.addText(SITE_IDENTIFIER, '(Live non disponible avant le début du match)')
@@ -183,5 +187,5 @@ def showHosters():
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sMovieTitle2)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
-            
+
     oGui.setEndOfDirectory()

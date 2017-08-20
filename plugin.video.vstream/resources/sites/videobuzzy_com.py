@@ -9,7 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-    
+
 SITE_IDENTIFIER = 'videobuzzy_com'
 SITE_NAME = 'Videobuzzy'
 SITE_DESC = 'Sélection des vidéos les plus populaires de Videobuzzy'
@@ -22,15 +22,15 @@ NETS_GENRES = (True, 'showGenres')
 
 #URL_SEARCH = ('http://www.notre-ecole.net/?s=', 'showMovies')
 #FUNCTION_SEARCH = 'showMovies'
-    
+
 def load():
-    
+
     oGui = cGui()
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NETS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NETS[1], 'Vidéos du net', 'buzz.png',oOutputParameterHandler)
@@ -39,7 +39,7 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', NETS_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'Vidéos du net (Genres)', 'genres.png',oOutputParameterHandler)
 
-    oGui.setEndOfDirectory() 
+    oGui.setEndOfDirectory()
 
 def showSearch():
     oGui = cGui()
@@ -73,7 +73,7 @@ def showGenres():
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory() 
+    oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -82,14 +82,17 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
 
     sPattern = "<a class='titre_news_index' href='(.+?)' title='(.+?)'>.+?<img class=\"thumbnail\" src='(.+?)'.+?>.+?<span class='corps_news_p2'>(.+?)</span>"
-    
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
     #print aResult
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -98,7 +101,7 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-            
+
             sTitle = aEntry[1]
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
@@ -119,7 +122,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     sPattern = '<span class="current">.+?</span><a href="(.+?)" title=\'.+?\'>.+?</a>'
-    
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -134,14 +137,14 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    
+
     sPattern = 'file: "(.+?)", label: "(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     #print aResult
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -150,7 +153,7 @@ def showHosters():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-            
+
             sHosterUrl = str(aEntry[0])
             sTitle = sMovieTitle + ' | ' + aEntry[1]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -159,6 +162,6 @@ def showHosters():
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
-        cConfig().finishDialog(dialog) 
+        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()

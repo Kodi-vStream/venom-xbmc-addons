@@ -24,19 +24,19 @@ FUNCTION_SEARCH = 'showSeries'
 
 def load():
     oGui = cGui()
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries (Liste AZ)', 'series_az.png',oOutputParameterHandler)
-	
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -56,7 +56,7 @@ def showAlpha():
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     sPattern = '<div id="main">(.+?)<div id="comments">'
     aResult = re.search(sPattern,sHtmlContent,re.DOTALL)
     if (aResult):
@@ -90,7 +90,7 @@ def showAZ():
         for aEntry in aResult[1]:
             uaE = cUtil().CleanName(aEntry[1])
             if uaE.upper()[0] == dAZ or aEntry[1][0].isdigit() and dAZ == '0-9':
-            
+
                sUrl = aEntry[0]
                sTitle =  aEntry[1]
                if 'Liste de' in sTitle:
@@ -217,7 +217,7 @@ def serieHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     oParser = cParser()
 
     #recuperation thumb
