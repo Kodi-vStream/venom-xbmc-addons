@@ -94,7 +94,7 @@ def showMovies(sSearch = ''):
                 break
             
             sThumb = str(aEntry[0])
-            if aEntry[0].startswith('/'):
+            if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + aEntry[0]
               
             siteUrl = str(aEntry[2])
