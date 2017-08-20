@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-#Venom.kodigoal.Arias800(recherche)
+#Venom.kodigoal
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -51,7 +51,7 @@ def showSearch():
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText
-        showSearchResult(sUrl)
+        showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
 
@@ -68,70 +68,21 @@ def showGenres():
        
     oGui.setEndOfDirectory()
 
-def showSearchResult(sSearch = ''):
+def showMovies(sSearch = ''):
     oGui = cGui()
-
     if sSearch:
         sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    sPattern = '<h3 class="mov-title"><a href="([^"]+)">(.+?)<'
-	
     oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-
-            sQual = str(aEntry[1])
-            sLang = str(aEntry[1])
-            sUrl2 = str(aEntry[0])
-            sThumb = str(aEntry[1])
-            sTitle = str(aEntry[1])
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-        cConfig().finishDialog(dialog)
-
-        sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
-
-    if not sSearch:
-        oGui.setEndOfDirectory()
-	
-def showMovies(sSearch = ''):
-    oGui = cGui()
-
-    if sSearch:
-        sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
     
     sPattern = '<div class="fullstream fullstreaming"><img src="([^"]+)".+?alt="([^"]+)".+?<h3 class="mov-title"><a href="([^"]+)'
 	
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if (aResult[0] == True):
@@ -142,10 +93,9 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
             
+            sThumb = str(aEntry[0])
             if aEntry[0].startswith('/'):
-                sThumbnail = URL_MAIN[:-1] + aEntry[0]
-            else:
-                sThumbnail = str(aEntry[0])
+                sThumb = URL_MAIN[:-1] + aEntry[0]
               
             siteUrl = str(aEntry[2])
             sTitle =  (' %s ') % (str(aEntry[1]))
@@ -154,9 +104,9 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, 'series.png', sThumbnail, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
            
         cConfig().finishDialog(dialog)
  
@@ -185,7 +135,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 	
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -229,7 +179,7 @@ def showHosters():
                 if (oHoster != False):
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle2)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     #Liens VF                 
     if (aResult2[0] == True):
@@ -258,7 +208,7 @@ def showHosters():
                     if (oHoster != False):
                         oHoster.setDisplayName(sDisplayTitle)
                         oHoster.setFileName(sMovieTitle2)
-                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
 
     cConfig().finishDialog(dialog)
