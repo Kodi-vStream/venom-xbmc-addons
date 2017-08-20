@@ -539,7 +539,6 @@ def showHosters():
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
-        oGui.addText(SITE_IDENTIFIER, aResult1[1][0])
         for aEntry in aResult[1]:
 
             sHostName = aEntry[0]
@@ -638,7 +637,7 @@ def Display_protected_link():
             if sHtmlContent.startswith('http'):
                 aResult_dlprotect = (True, [sHtmlContent])
             else:
-                sPattern_dlprotect = 'target=_blank>([^<]+)<'
+                sPattern_dlprotect = '<a href="([^"]+)"'
                 aResult_dlprotect = oParser.parse(sHtmlContent, sPattern_dlprotect)
 		
         else:
