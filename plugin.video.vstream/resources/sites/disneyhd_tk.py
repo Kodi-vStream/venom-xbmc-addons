@@ -26,26 +26,26 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
 def load():
     oGui = cGui()
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'index.php')
     oOutputParameterHandler.addParameter('filtre', 'ajouts')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Ajouts récents', 'animes_enfants.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'index.php')
     oOutputParameterHandler.addParameter('filtre', 'nouveautes')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Nouveautés', 'animes_enfants.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_LISTE)
     oOutputParameterHandler.addParameter('filtre', 'liste')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Liste des films', 'animes_enfants.png', oOutputParameterHandler)
-    
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -55,10 +55,10 @@ def showSearch():
         sHowResultSearch(str(sSearchText))
         oGui.setEndOfDirectory()
         return
-   
+
 def sHowResultSearch(sSearch = ''):
     oGui = cGui()
-    
+
     pdata = 'requete=' + sSearch
     oRequest = cRequestHandler(URL_MAIN + 'search.php')
     oRequest.setRequestType(1)
@@ -75,6 +75,10 @@ def sHowResultSearch(sSearch = ''):
     oParser = cParser()
     sPattern = '<a href="([^"]+)"><img.+?src="([^"]+)" alt="(.+?)"/><\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+        
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
@@ -89,7 +93,7 @@ def sHowResultSearch(sSearch = ''):
 
     if not sSearch:
         oGui.setEndOfDirectory()
-    
+
 def showMovies():
     oGui = cGui()
     oParser = cParser()
@@ -99,7 +103,7 @@ def showMovies():
     sFiltre = oInputParameterHandler.getValue('filtre')
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     if 'ajouts' in sFiltre:
         sPattern = '<i>Derniers films.+?</i>(.+?)<i>Dernières sorties.+?</i>'
         sHtmlContent = re.search(sPattern,sHtmlContent,re.DOTALL)
@@ -111,7 +115,7 @@ def showMovies():
     else:
         aResult = oParser.parse(sHtmlContent, sPattern1)
         aResult[1].sort()
-        
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]
@@ -149,13 +153,13 @@ def showHosters():
                     class NoRedirection(urllib2.HTTPErrorProcessor):
                         def http_response(self, request, response):
                             return response
-                    
+
                     url8 = sHosterUrl.replace('https','http')
-                    
+
                     opener = urllib2.build_opener(NoRedirection)
                     opener.addheaders.append (('User-Agent', UA))
                     opener.addheaders.append (('Connection', 'keep-alive'))
-            
+
                     HttpReponse = opener.open(url8)
                     sHosterUrl = HttpReponse.headers['Location']
                     sHosterUrl = sHosterUrl.replace('https','http')
@@ -167,5 +171,5 @@ def showHosters():
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-  
+
     oGui.setEndOfDirectory()

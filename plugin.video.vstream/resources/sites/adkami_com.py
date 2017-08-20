@@ -36,59 +36,59 @@ FUNCTION_SEARCH = 'showMovies'
 
 def load():
     oGui = cGui()
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF)', 'animes_vf.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'animes_vostfr.png', oOutputParameterHandler)
-    
+
     #oOutputParameterHandler = cOutputParameterHandler()
     #oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     #oOutputParameterHandler.addParameter('type2', 0)
     #oOutputParameterHandler.addParameter('title', 'Animés')
     #oGui.addDir(SITE_IDENTIFIER, 'showLang', 'Animés (A-Z)', 'animes_az.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('type2', 0)
     oOutputParameterHandler.addParameter('title', 'Animés')
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Animés (Genres)', 'animes_genres.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF)', 'series_vf.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries (VOSTFR)', 'series_vostfr.png', oOutputParameterHandler)
-    
+
     #oOutputParameterHandler = cOutputParameterHandler()
     #oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     #oOutputParameterHandler.addParameter('type2', 1)
     #oOutputParameterHandler.addParameter('title', 'Séries')
     #oGui.addDir(SITE_IDENTIFIER, 'showLang', 'Séries (A-Z)', 'series_az.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oOutputParameterHandler.addParameter('type2', 1)
     oOutputParameterHandler.addParameter('title', 'Séries')
     oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
-            
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -99,73 +99,73 @@ def showSearch():
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
-        return  
-    
-    
+        return
+
+
 #def showLang():
 #    oGui = cGui()
 #    oInputParameterHandler = cInputParameterHandler()
 #    sType2 = oInputParameterHandler.getValue('type2')
 #    sTitle = oInputParameterHandler.getValue('title')
-#    
+#
 #    oOutputParameterHandler = cOutputParameterHandler()
 #    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
 #    oOutputParameterHandler.addParameter('version', 0)
 #    oOutputParameterHandler.addParameter('type2', sType2)
 #    oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle+' A-Z', 'lang.png', oOutputParameterHandler)
-#    
+#
 #    oOutputParameterHandler = cOutputParameterHandler()
 #    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
 #    oOutputParameterHandler.addParameter('version', 1)
 #    oOutputParameterHandler.addParameter('type2', sType2)
 #    oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle+' A-Z VF', 'fr.png', oOutputParameterHandler)
-#    
+#
 #    oOutputParameterHandler = cOutputParameterHandler()
 #    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
 #    oOutputParameterHandler.addParameter('version', 2)
 #    oOutputParameterHandler.addParameter('type2', sType2)
 #    oGui.addDir(SITE_IDENTIFIER, 'showAZ', sTitle+' A-Z VOSTFR', 'vostfr.png', oOutputParameterHandler)
-#       
-#    oGui.setEndOfDirectory() 
-    
-    
+#
+#    oGui.setEndOfDirectory()
+
+
 #def showLanggenre():
 #    oGui = cGui()
 #    oInputParameterHandler = cInputParameterHandler()
 #    sType2 = oInputParameterHandler.getValue('type2')
 #    sTitle = oInputParameterHandler.getValue('title')
-#    
+#
 #    oOutputParameterHandler = cOutputParameterHandler()
 #    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
 #    oOutputParameterHandler.addParameter('version', 0)
 #    oOutputParameterHandler.addParameter('type2', sType2)
 #    oGui.addDir(SITE_IDENTIFIER, 'showGenre', sTitle+'Genres', 'lang.png', oOutputParameterHandler)
-#    
+#
 #    oOutputParameterHandler = cOutputParameterHandler()
 #    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
 #    oOutputParameterHandler.addParameter('version', 1)
 #    oOutputParameterHandler.addParameter('type2', sType2)
 #    oGui.addDir(SITE_IDENTIFIER, 'showGenre', sTitle+'Genre VF', 'vf.png', oOutputParameterHandler)
-#    
+#
 #    oOutputParameterHandler = cOutputParameterHandler()
 #    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
 #    oOutputParameterHandler.addParameter('version', 2)
 #    oOutputParameterHandler.addParameter('type2', sType2)
 #    oGui.addDir(SITE_IDENTIFIER, 'showGenre', sTitle+'Genre VOSTFR', 'vostfr.png', oOutputParameterHandler)
-#       
-#    oGui.setEndOfDirectory() 
+#
+#    oGui.setEndOfDirectory()
 
 def showAZ():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sVersion = oInputParameterHandler.getValue('version')
     sType2 = oInputParameterHandler.getValue('type2')
-    
+
     sUrl = URL_MAIN + 'video?recherche=&version=' + str(sVersion) + '&type2=' + str(sType2) + '#.'
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oOutputParameterHandler.addParameter('AZ', '.')
-    oGui.addDir(SITE_IDENTIFIER, 'showMoviesAZ', '.', 'az.png', oOutputParameterHandler)          
+    oGui.addDir(SITE_IDENTIFIER, 'showMoviesAZ', '.', 'az.png', oOutputParameterHandler)
     for i in string.ascii_uppercase:
         sUrl = URL_MAIN + 'video?recherche=&version=' + str(sVersion) + '&type2=' + str(sType2) + '#' + i
         oOutputParameterHandler = cOutputParameterHandler()
@@ -173,7 +173,7 @@ def showAZ():
         oOutputParameterHandler.addParameter('AZ', i)
         oGui.addDir(SITE_IDENTIFIER, 'showMoviesAZ', i, 'az.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory() 
+    oGui.setEndOfDirectory()
 
 def showGenre():
     oGui = cGui()
@@ -209,14 +209,14 @@ def showGenre():
     liste.append( ['Shôjo-Ai',URL_MAIN + 'video?recherche=&genre3=25&type2=' + str(sType2)] )
     liste.append( ['Shônen-Ai',URL_MAIN + 'video?recherche=&genre3=26&type2=' + str(sType2)] )
     liste.append( ['Yaoi/BL',URL_MAIN + 'video?recherche=&genre3=27&type2=' + str(sType2)] )
-                
+
     for sTitle,sUrl in liste:
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory() 
+    oGui.setEndOfDirectory()
 
 def showMoviesAZ():
     oGui = cGui()
@@ -243,7 +243,7 @@ def showMoviesAZ():
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', aEntry[1], 'animes.png', '', '', oOutputParameterHandler)
-        
+
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
@@ -261,11 +261,15 @@ def showMovies(sSearch = ''):
     sPattern = '<span class="top"><a href="([^"]+)"><span class="title">([^<>]+)<\/span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+        
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)               
+            cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
 
@@ -277,7 +281,7 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', aEntry[1], 'animes.png', '', '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)   
+        cConfig().finishDialog(dialog)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -290,10 +294,10 @@ def showEpisode():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     sThumb = ''
-    sComm = '' 
-    
+    sComm = ''
+
     #info anime
     try:
         oParser = cParser()
@@ -304,28 +308,28 @@ def showEpisode():
             sComm = aResult[1][0][1]
     except:
         pass
-    
+
     oParser = cParser()
     sPattern = 'line-height:200px;font-size:26px;text-align:center;">L.anime est licencié<.p>'
-    
+
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     if (aResult[0] == True):
         dialog = cConfig().createDialog(SITE_NAME)
         cConfig().updateDialog(dialog, 1)
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
         oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
         oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]' + 'Animé licencié' + '[/COLOR]', 'host.png', oOutputParameterHandler)
-        
+
         cConfig().finishDialog(dialog)
-    
+
     else:
-        
+
         #sPattern = '<li style.+?>(.+?)</li>|<li title=""><a href="([^<]+)">([^<]+)</a></li>'
         sPattern = '<li class="saison">([^<>]+)</li>|<a href="(https:\/\/www\.adkami\.com[^"]+)"[^<>]+>([^<>]+)<\/a><\/li>'
-        
+
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             total = len(aResult[1])
@@ -334,7 +338,7 @@ def showEpisode():
                 cConfig().updateDialog(dialog, total)
                 if dialog.iscanceled():
                     break
-                
+
                 if aEntry[0]:
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
@@ -359,10 +363,10 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     #cConfig().log(sUrl)
 
     #sPattern = '</div><iframe.+?src="(.+?)"|<a rel="nofollow" target="_back" href="([^"]+)" [^<>]+">[^<>]+Redirection<\/a>'
@@ -382,15 +386,15 @@ def showHosters():
                 sHosterUrl = str(aEntry[0])
             else:
                 sHosterUrl = str(aEntry[1])
-                
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-        
+
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')         
-    
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()

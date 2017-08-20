@@ -71,7 +71,7 @@ def showGenres():
     liste.append( ['Sport', URL_MAIN + 'videos/sport/'] )
     liste.append( ['Travail', URL_MAIN + 'videos/travail/'] )
     liste.append( ['Zapping', URL_MAIN + 'videos/zapping/'] )
-    
+
     for sTitle,sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -93,26 +93,29 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-    
+
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-    
+
     sPattern = "<div class='m2'>.+?<a href='(.+?)'><div style='.+?image:url\((.+?)\);position:relative;' class='.+?' alt='(.+?)' id='.+?'.+?<span class='videoduree'>([^<]+)</span>"
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
-        
+
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
-            
+
             sTitle = unicode(aEntry[2], 'latin-1')
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
             sTitle = ('%s') % (sTitle)
-            
+
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
                 if util.cUtil().CheckOccurence(sSearch,sTitle) == 0:
@@ -121,17 +124,17 @@ def showMovies(sSearch = ''):
             sUrl    = str(aEntry[0])
             sThumbnail = str(aEntry[1])
             sTime = str(aEntry[3])
-            
+
             sDisplayTitle = ('%s (%s)') % (sTitle, sTime)
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail,'', oOutputParameterHandler)
-            
+
         cConfig().finishDialog(dialog)
-        
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -145,7 +148,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = "<a href='([^']+)'>Suivante[^<]+</a>"
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     if (aResult[0] == True):
         return aResult[1][0]
 
@@ -153,21 +156,21 @@ def __checkForNextPage(sHtmlContent):
 
 def showHosters():
     oGui = cGui()
-    
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    
+
     oParser = cParser()
-    
+
     #lien direct flv
     sPattern = "file=(http.+?\.flv)'"
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl =  cUtil().urlDecode(str(aEntry))
@@ -184,7 +187,7 @@ def showHosters():
         oPlayer.addItemToPlaylist(oGuiElement)
         oPlayer.startPlayer()
         return
-    
+
     else:
         return
 
