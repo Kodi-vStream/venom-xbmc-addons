@@ -51,7 +51,6 @@ SERIE_ANNEES = (True, 'showSerieAnnees') #séries (par années)
 SERIE_VFS = (URL_MAIN + 'series/', 'showMovies') #séries VF
 SERIE_VOSTFRS = (URL_MAIN + 'series/', 'showMovies') #séries Vostfr
 
-
 ANIM_NEWS = (URL_MAIN + 'animes/', 'showMovies') #animés (derniers ajouts)
 ANIM_ANIMS = (URL_MAIN + 'animes', 'showMovies') #animés vrac
 ANIM_GENRES = (True, 'showGenres') #anime genres
@@ -244,7 +243,7 @@ def showMovies(sSearch = ''):
     #et modifier sPattern si besoin
     cConfig().log(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
 
-	#affiche une information si aucun resulat
+    #affiche une information si aucun resulat
     if (aResult[0] == False):
 		oGui.addText(SITE_IDENTIFIER)
 
@@ -265,7 +264,7 @@ def showMovies(sSearch = ''):
             sLang = str(aEntry[3])
             sQual = str(aEntry[4])
             sHoster = str(aEntry[5])
-            SResume = ''
+            sDesc = ''
 
             sTitle = sTitle.replace('En streaming', '')
 
@@ -279,13 +278,13 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2) #sortie de l'url
             oOutputParameterHandler.addParameter('sMovieTitle',sTitle) #sortie du titre
-            oOutputParameterHandler.addParameter('sThumbnail',sThumb ) #sortie du poster
+            oOutputParameterHandler.addParameter('sThumb',sThumb ) #sortie du poster
 
             if '/series' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle,'', sThumb, SResume, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle,'', sThumb, sDesc, oOutputParameterHandler)
                 #addTV pour sortir les series tv (identifiant, function, titre, icon, poster, description, sortie parametre)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, SResume, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
                 #addMovies pour sortir les films (identifiant, function, titre, icon, poster, description, sortie parametre)
 
             #il existe aussis addMisc(identifiant, function, titre, icon, poster, description, sortie parametre)
@@ -320,7 +319,7 @@ def showHosters(): #recherche et affiche les hotes
     oInputParameterHandler = cInputParameterHandler() #apelle l'entree de parametre
     sUrl = oInputParameterHandler.getValue('siteUrl') #apelle siteUrl
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle') #appelle le titre
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail') #appelle le poster
+    sThumb = oInputParameterHandler.getValue('sThumb') #appelle le poster
 
     oRequestHandler = cRequestHandler(sUrl) #requete sur l'url
     sHtmlContent = oRequestHandler.request(); #requete sur l'url
@@ -341,7 +340,7 @@ def showHosters(): #recherche et affiche les hotes
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle) #nom affiche
                 oHoster.setFileName(sMovieTitle) # idem
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
                 #affiche le lien (oGui, oHoster, url du lien, poster)
 
     oGui.setEndOfDirectory() #fin
@@ -352,7 +351,7 @@ def ShowSerieSaisonEpisodes():
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumb = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -379,7 +378,7 @@ def ShowSerieSaisonEpisodes():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle',sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail',sThumb )
+            oOutputParameterHandler.addParameter('sThumb',sThumb )
 
             oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle,'', sThumb, '', oOutputParameterHandler)
 
@@ -392,7 +391,7 @@ def seriesHosters(): #cherche les episodes de series
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -408,7 +407,7 @@ def seriesHosters(): #cherche les episodes de series
             if (oHoster != False):
                 oHoster.setDisplayName(aEntry[1])
                 oHoster.setFileName(aEntry[1])
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
