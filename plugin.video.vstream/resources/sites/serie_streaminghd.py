@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-#Venom.kodigoal
+#Venom.kodigoal.Arias800(recherche)
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -14,14 +14,14 @@ SITE_IDENTIFIER = 'serie_streaminghd'
 SITE_NAME = 'Série-StreamingHD'
 SITE_DESC = 'Séries en streaming vf, vostfr'
 
-URL_MAIN = 'http://www.serie-streaminghd.com/'
+URL_MAIN = 'http://www.episode.serie-streaminghd.com/'
  
 SERIE_NEWS = (URL_MAIN, 'showMovies')
 SERIE_SERIES = (URL_MAIN, 'showMovies')
 SERIE_VFS = (URL_MAIN + 'regarder-series/vf-hd/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'regarder-series/vostfr-hd/', 'showMovies')
 
-URL_SEARCH = ('' , 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -50,7 +50,8 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        showMovies(sSearchText)
+        sUrl = URL_SEARCH[0] + sSearchText
+        showSearchResult(sUrl)
         oGui.setEndOfDirectory()
         return
 
@@ -67,43 +68,70 @@ def showGenres():
        
     oGui.setEndOfDirectory()
 
+def showSearchResult(sSearch = ''):
+    oGui = cGui()
+
+    if sSearch:
+        sUrl = sSearch
+    else:
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    
+    sPattern = '<h3 class="mov-title"><a href="([^"]+)">(.+?)<'
+	
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
+            sQual = str(aEntry[1])
+            sLang = str(aEntry[1])
+            sUrl2 = str(aEntry[0])
+            sThumb = str(aEntry[1])
+            sTitle = str(aEntry[1])
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+
+        sNextPage = __checkForNextPage(sHtmlContent)
+        if (sNextPage != False):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+
+    if not sSearch:
+        oGui.setEndOfDirectory()
+	
 def showMovies(sSearch = ''):
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    
+
     if sSearch:
-        
-        sType = oInputParameterHandler.getValue('type')
-		
-        sUrl = URL_SEARCH[0]
-        
-        oRequestHandler = cRequestHandler(URL_MAIN)
-        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-        oRequestHandler.addParameters('Content-Type', 'application/x-www-form-urlencoded')
-        oRequestHandler.addParameters('Referer',URL_MAIN)
-        oRequestHandler.addParameters('do', 'search')
-        oRequestHandler.addParameters('subaction', 'search')
-        oRequestHandler.addParameters('story', sSearch)
-        
-        if (sType):
-            if sType == 'serie':
-                oRequestHandler.addParameters('catlist[]', '30')
-            elif sType == 'film':
-                oRequestHandler.addParameters('catlist[]', '3')
-        
-        sHtmlContent = oRequestHandler.request()
-        
-        
+        sUrl = sSearch
     else:
+        oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        
-        oRequestHandler = cRequestHandler(sUrl)
-        sHtmlContent = oRequestHandler.request()
-    
-    oParser = cParser()
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
     
     sPattern = '<div class="fullstream fullstreaming"><img src="([^"]+)".+?alt="([^"]+)".+?<h3 class="mov-title"><a href="([^"]+)'
 	
+    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     
     if (aResult[0] == True):
