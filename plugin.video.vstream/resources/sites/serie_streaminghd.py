@@ -14,14 +14,14 @@ SITE_IDENTIFIER = 'serie_streaminghd'
 SITE_NAME = 'Série-StreamingHD'
 SITE_DESC = 'Séries en streaming vf, vostfr'
 
-URL_MAIN = 'http://www.serie-streaminghd.com/'
+URL_MAIN = 'http://www.episode.serie-streaminghd.com/'
  
 SERIE_NEWS = (URL_MAIN, 'showMovies')
 SERIE_SERIES = (URL_MAIN, 'showMovies')
 SERIE_VFS = (URL_MAIN + 'regarder-series/vf-hd/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'regarder-series/vostfr-hd/', 'showMovies')
 
-URL_SEARCH = ('' , 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -50,7 +50,8 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        showMovies(sSearchText)
+        sUrl = URL_SEARCH[0] + sSearchText
+        showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
 
@@ -69,36 +70,14 @@ def showGenres():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    
     if sSearch:
-        
-        sType = oInputParameterHandler.getValue('type')
-		
-        sUrl = URL_SEARCH[0]
-        
-        oRequestHandler = cRequestHandler(URL_MAIN)
-        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-        oRequestHandler.addParameters('Content-Type', 'application/x-www-form-urlencoded')
-        oRequestHandler.addParameters('Referer',URL_MAIN)
-        oRequestHandler.addParameters('do', 'search')
-        oRequestHandler.addParameters('subaction', 'search')
-        oRequestHandler.addParameters('story', sSearch)
-        
-        if (sType):
-            if sType == 'serie':
-                oRequestHandler.addParameters('catlist[]', '30')
-            elif sType == 'film':
-                oRequestHandler.addParameters('catlist[]', '3')
-        
-        sHtmlContent = oRequestHandler.request()
-        
-        
+        sUrl = sSearch
     else:
+        oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        
-        oRequestHandler = cRequestHandler(sUrl)
-        sHtmlContent = oRequestHandler.request()
+    
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
     
     oParser = cParser()
     
@@ -114,10 +93,9 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
             
-            if aEntry[0].startswith('/'):
-                sThumbnail = URL_MAIN[:-1] + aEntry[0]
-            else:
-                sThumbnail = str(aEntry[0])
+            sThumb = str(aEntry[0])
+            if sThumb.startswith('/'):
+                sThumb = URL_MAIN[:-1] + aEntry[0]
               
             siteUrl = str(aEntry[2])
             sTitle =  (' %s ') % (str(aEntry[1]))
@@ -126,9 +104,9 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, 'series.png', sThumbnail, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
            
         cConfig().finishDialog(dialog)
  
@@ -157,7 +135,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 	
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -201,7 +179,7 @@ def showHosters():
                 if (oHoster != False):
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle2)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     #Liens VF                 
     if (aResult2[0] == True):
@@ -230,7 +208,7 @@ def showHosters():
                     if (oHoster != False):
                         oHoster.setDisplayName(sDisplayTitle)
                         oHoster.setFileName(sMovieTitle2)
-                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
 
     cConfig().finishDialog(dialog)
