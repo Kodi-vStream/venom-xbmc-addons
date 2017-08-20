@@ -41,57 +41,57 @@ REPLAYTV_REPLAYTV = (URL_MAIN + 'category/emissions-tv/', 'showMovies')
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-def load(): 
+def load():
     oGui = cGui()
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus Vues)', 'series_views.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENTS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENTS[1], 'Séries (Les plus Commentés)', 'series_comments.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NOTES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Séries (Les mieux Notés)', 'series_notes.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries (Liste)', 'series.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF)', 'series_vf.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFR[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFR[1], 'Séries (VOSTFR)', 'series_vostfr.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Emissions TV', 'replay.png', oOutputParameterHandler)
-	
+
     oGui.setEndOfDirectory()
 
 def showMoviesSearch():
@@ -183,11 +183,14 @@ def showMovies(sSearch = ''):
         sHtmlContent = sHtmlContent.replace('quelle-est-votre-serie-preferee','<>')
         sHtmlContent = sHtmlContent.replace('top-series-du-moment','<>')
         sHtmlContent = sHtmlContent.replace('listes-des-series-annulees-et-renouvelees','<>')
-        
+
     oParser = cParser()
     sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<>"]+)".+?\/><\/a><div class="movief"><a href="([^<]+)">([^<]+)<\/a><\/div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         #plante la recherche global dialog = util.createDialog(SITE_NAME)
@@ -196,7 +199,7 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-                
+
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
                 if util.cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),aEntry[2]) == 0:
@@ -207,9 +210,9 @@ def showMovies(sSearch = ''):
             sTitle = sTitle.replace(' [Telecharger]','')
             sTitle = sTitle.replace(' [Complète]','')
             sTitle = sTitle.replace(' [Complete]','')
-            
+
             sDisplayTitle = util.cUtil().DecoTitle(sTitle)
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -248,25 +251,25 @@ def showSeries(sLoop = False):
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     sHtmlContent = sHtmlContent.decode('utf-8',"replace")
     sHtmlContent = unicodedata.normalize('NFD', sHtmlContent).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
     sHtmlContent = sHtmlContent.encode('utf-8')#On remet en utf-8
-    
+
     oParser = cParser()
 
     sPattern = '<span style="color: #33cccc;[^<>"]*">(?:<(?:strong|b)>)*((?:Stream|Telec)[^<>]+)|>(Episode[^<]{2,12})<(?!\/a>)(.{0,10}a href="http.+?)(?:<.p|<br|<.div)'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     #astuce en cas d'episode unique
     if (aResult[0] == False) and (sLoop == False):
         #oGui.setEndOfDirectory()
         showHosters(True)
         return;
-    
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = util.createDialog(SITE_NAME)
@@ -286,7 +289,7 @@ def showSeries(sLoop = False):
             else:
                 sTitle = sMovieTitle + ' ' + aEntry[1]
                 sDisplayTitle = util.cUtil().DecoTitle(sTitle)
-                
+
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -326,15 +329,15 @@ def showHosters(sLoop = False):
     #fusion des resultats
     aResult = []
     aResult = list(set( aResult1 + aResult2 + aResult3 ))
-    
+
     #cConfig().log(str(aResult))
-        
+
     #Si il y a rien a afficher c'est peut etre une serie
     if (len(aResult) == 0) and (sLoop == False):
         #oGui.setEndOfDirectory()
         showSeries(True)
-        return        
-        
+        return
+
     if (len(aResult) > 0):
         total = len(aResult)
         dialog = util.createDialog(SITE_NAME)
@@ -362,21 +365,21 @@ def serieHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
+
     oParser = cParser()
-    
+
     liste = False
-    
+
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
-    
+
     #1 - liste fichier
     if 'dl-protect.com' in sUrl:
         sPattern = 'href="([^<]+)" target="_blank.+?>(.+?)<.a>'
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
-            
+
             UrlList =''
             vid_list = []
             hoster_list = []
@@ -404,7 +407,7 @@ def serieHosters():
         #2 - Normal
         sPattern = 'href="([^<]+)" target="_blank"[^<>]*>.+?<\/a>'
         aResult = oParser.parse(sUrl, sPattern)
-    
+
     #affichage
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -414,7 +417,7 @@ def serieHosters():
             util.updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-                
+
             sTitle = sMovieTitle
             if liste:
                 sTitle = sTitle + ' (' + str(index) + ') '

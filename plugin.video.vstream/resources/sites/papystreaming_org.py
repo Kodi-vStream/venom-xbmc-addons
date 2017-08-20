@@ -38,76 +38,76 @@ headers = { 'User-Agent' : UA }
 
 def load():
     oGui = cGui()
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMSearch', 'Recherche Film', 'search.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSSearch', 'Recherche Série', 'search.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuFilms', 'Films', 'films.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Séries', 'series.png', oOutputParameterHandler)
-	
+
     oGui.setEndOfDirectory()
 
 def showMenuFilms():
     oGui = cGui()
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_COMMENTS[1], 'Films (Les plus commentés)', 'films_comments.png', oOutputParameterHandler)
 
-#    Résultat des comments et des views identiques    
+#    Résultat des comments et des views identiques
 #    oOutputParameterHandler = cOutputParameterHandler()
 #    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
 #    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'films_views.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'films_notes.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
-    
+
     oGui.setEndOfDirectory()
 
 def showMenuSeries():
     oGui = cGui()
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENTS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENTS[1], 'Séries (Les plus commentées)', 'series_comments.png', oOutputParameterHandler)
-    
-#    Résultat des comments et des views identiques    
+
+#    Résultat des comments et des views identiques
 #    oOutputParameterHandler = cOutputParameterHandler()
 #    oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
 #    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus vues)', 'series_views.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NOTES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Séries (Les mieux notées)', 'series_notes.png', oOutputParameterHandler)
-	
+
     oGui.setEndOfDirectory()
 
 def showGenres():
     oGui = cGui()
-    
+
     liste = []
     liste.append( ['Action',URL_MAIN + 'category/action/'] )
     liste.append( ['Animation',URL_MAIN + 'category/animation/'] )
@@ -131,9 +131,9 @@ def showGenres():
     liste.append( ['Téléfilm',URL_MAIN + 'category/telefilm/'] )
     liste.append( ['Thriller',URL_MAIN + 'category/thriller/'] )
     liste.append( ['Western',URL_MAIN + 'category/western/'] )
-    
+
     for sTitle,sUrl in liste:
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
@@ -169,18 +169,22 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
-    
+
     sPattern = '<a class="poster" href="([^"]+)"\s+title="([^"]+)".+?<img src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+        
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
-        
+
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-            
+
             sUrl = aEntry[0]
             if '/serie/' in sUrl:
                 continue
@@ -195,7 +199,7 @@ def showMovies(sSearch = ''):
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
-		
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -231,7 +235,7 @@ def showSeries(sSearch = ''):
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
-        
+
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
@@ -266,11 +270,11 @@ def showSaisons():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
-    
+
     sSyn = ''
     sPattern = '<p class=".+?">([^<]+)<\/p>'
     aResult = oParser.parse(sHtmlContent,sPattern)
@@ -292,7 +296,7 @@ def showSaisons():
             sSaison = sSaison.replace('N/A','')
             sFilter = oParser.getNumberFromString(aEntry[1])
             sFilter = 'saison-' + sFilter + '/'
-            
+
             sDisplayTitle = sSaison
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', vUrl)
@@ -314,7 +318,7 @@ def showEpisodes():
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     sFilter = oInputParameterHandler.getValue('sFilter')
     sSyn = oInputParameterHandler.getValue('sSyn')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
@@ -358,7 +362,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('http://www.google.com/s2/favicons?domain=','').replace('\\','')
     oParser = cParser()
-	
+
     sPattern1 = '{"link":"([^"]+)","type":".+?"}'
     sPattern2 = 'src="([^"]+)"/><\/td>.+?<td>(.+?)<\/td>'
 
@@ -386,10 +390,10 @@ def showHosters():
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
                 oGui.addMisc(SITE_IDENTIFIER, 'ShowPapyLink', sDisplayTitle, 'films.png', sThumbnail, '', oOutputParameterHandler)
-				
+
             else:
                 sHosterUrl = sUrl
-                
+
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     sDisplayTitle = sMovieTitle + ' [' + aEntry[1][1] + '/' + sLang + ']'
@@ -410,12 +414,12 @@ def ShowPapyLink():
     if 'papystreaming' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        
+
         sPattern = 'src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             sUrl = aResult[1][0]
-            
+
             #get redirected url
             import urllib2
             req = urllib2.Request(sUrl,None,headers)
@@ -423,13 +427,13 @@ def ShowPapyLink():
             response = urllib2.urlopen(req)
             sHosterUrl = response.geturl()
             response.close()
-            
+
             #lien youtube mais non resolvable, convertion
             sPattern = 'docid=([\w-]+)'
             aResult = oParser.parse(sHosterUrl, sPattern)
             if (aResult[0] == True):
                 sHosterUrl = 'https://drive.google.com/' + aResult[1][0]
-            
+
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     #sDisplayTitle = cUtil().DecoTitle(sMovieTitle )
@@ -450,7 +454,7 @@ def ShowPapyLink():
             for aEntry in aResult[1]:
                 sHosterUrl = aEntry[0]
                 sLabel = aEntry[1]
-                
+
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     sDisplayTitle = sMovieTitle + ' [' + sLabel + ']'
@@ -458,12 +462,12 @@ def ShowPapyLink():
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
     else:
-        
+
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        
+
         sHtmlContent = sHtmlContent.replace('\\','')
-        
+
         #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
@@ -474,7 +478,7 @@ def ShowPapyLink():
         if (aResult[0]):
             listurl = []
             listqual = []
-            
+
             listurl.append(aResult[1][0][1])
             listqual.append(aResult[1][0][0])
 
@@ -482,7 +486,7 @@ def ShowPapyLink():
 
             for url,qual in tab:
                 sHosterUrl = url
-                
+
                 if not sHosterUrl.startswith('http'):
                     sHosterUrl = 'http' + sHosterUrl
 

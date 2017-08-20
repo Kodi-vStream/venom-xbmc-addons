@@ -124,6 +124,7 @@ class cFav:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', siteurl)
                 oOutputParameterHandler.addParameter('sMovieTitle', title)
+                oOutputParameterHandler.addParameter('searchtext', title)
                 oOutputParameterHandler.addParameter('sThumbnail', thumbnail)
 
                 if (function == 'play'):

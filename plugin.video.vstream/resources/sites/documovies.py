@@ -27,21 +27,21 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires (Derniers ajouts)', 'doc.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_GENRES[1], 'Documentaires (Genres)', 'genres.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'videos/?playid=27')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Documentaires Sélection', 'doc.png', oOutputParameterHandler)
-    
+
     oGui.setEndOfDirectory()
-  
+
 def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
@@ -53,7 +53,7 @@ def showSearch():
 def showGenres():
     oGui = cGui()
     oParser = cParser()
-    
+
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('<a title="Accueil"','')
@@ -64,7 +64,7 @@ def showGenres():
         for aEntry in aResult[1]:
             sTitle = aEntry[0]
             sUrl = aEntry[1]
-        
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
@@ -84,6 +84,10 @@ def sHowResultSearch(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     sPattern = '<a class="link_image" *href="([^"]+)" *title="([^"]+)".+?<img src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+        
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -118,10 +122,10 @@ def showMovies():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     oParser = cParser()
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     sPattern = 'class="video_play".+?<a href="([^"]+)".+?<img src="([^"]+)".+?title="(.+?)" *(?:data|>).+?flashvars="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):

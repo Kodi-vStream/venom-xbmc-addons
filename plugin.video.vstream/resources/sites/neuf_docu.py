@@ -130,6 +130,9 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -141,12 +144,12 @@ def showMovies(sSearch = ''):
             sUrl = aEntry[1]
             sThumb = aEntry[0]
             sCom = aEntry[3]
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb )
-            
+
             sDisplayTitle = cUtil().DecoTitle(sTitle)
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'doc.png',  sThumb,  sCom, oOutputParameterHandler)
 

@@ -371,6 +371,9 @@ class cHosterGui:
         sFileName = oInputParameterHandler.getValue('sFileName')
         sTitle = oInputParameterHandler.getValue('title')
         #sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+        
+        if not sTitle:
+            sTitle = sFileName
 
         if (bGetRedirectUrl == 'True'):
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)

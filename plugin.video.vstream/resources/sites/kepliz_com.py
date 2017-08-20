@@ -39,39 +39,39 @@ DOC_DOCS = ('http://', 'load')
 
 URL_SEARCH = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
- 
+
 def load():
     oGui = cGui()
- 
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-   
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
-   
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'index.php?option=com_content&view=category&id=3')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Spectacles', 'doc.png', oOutputParameterHandler)  
-    
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Spectacles', 'doc.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
- 
+
 def showSearch():
     oGui = cGui()
- 
+
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         showMovies(sSearchText)
@@ -95,18 +95,18 @@ def showGenres():
     liste.append( ['Science Fiction',URL_MAIN + 'index.php?option=com_content&view=category&id=11'] )
     liste.append( ['Spectacle',URL_MAIN + 'index.php?option=com_content&view=category&id=3'] )
     liste.append( ['Thriller',URL_MAIN + 'index.php?option=com_content&view=category&id=12'] )
-                
+
     for sTitle,sUrl in liste:
-        
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-       
-    oGui.setEndOfDirectory() 
- 
+
+    oGui.setEndOfDirectory()
+
 def showMovies(sSearch = ''):
     oGui = cGui()
- 
+
     if sSearch :
         #limite de caratere sinon bug de la recherche
         sSearch = sSearch[:20]
@@ -117,8 +117,8 @@ def showMovies(sSearch = ''):
         sUrl = oInputParameterHandler.getValue('siteUrl')
         sPattern = NORMALPATTERN
 
-    oParser = cParser() 
-        
+    oParser = cParser()
+
     #L'url change tres souvent donc faut la retrouver
     req = urllib2.Request(URL_HOST)
     response = urllib2.urlopen(req)
@@ -134,49 +134,52 @@ def showMovies(sSearch = ''):
     else:
         #Si ca marche pas, pas la peine de continuer
         return
-   
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-   
+
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
-       
+
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-           
+
             sTitle2 = aEntry[1]
             sTitle2 = re.sub('<font color="#[0-9]{6}" *><i>HD<\/i><\/font>', '[HD]',sTitle2)
             sUrl2 = aEntry[0]
-           
+
             #not found better way
             #sTitle = unicode(sTitle, errors='replace')
             #sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
-            
+
             sDisplayTitle = cUtil().DecoTitle(sTitle2)
-           
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sMainUrl + str(sUrl2))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle2))
             oOutputParameterHandler.addParameter('sMainUrl', sMainUrl)
- 
+
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
- 
+
         cConfig().finishDialog(dialog)
-           
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sMainUrl + sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
- 
+
     if not sSearch:
         oGui.setEndOfDirectory()
-   
+
 def __checkForNextPage(sHtmlContent):
     sPattern = NEXTPAGEPATTERN
     oParser = cParser()
@@ -188,36 +191,36 @@ def __checkForNextPage(sHtmlContent):
 
 def showHosters():
     oGui = cGui()
-   
+
     sThumb = ''
     sComm = ''
-   
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMainUrl = oInputParameterHandler.getValue('sMainUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-   
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-   
+
     oParser = cParser()
-    
+
     #Recuperation info film, com et image
     sPattern = FILMPATTERN
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sThumb = aResult[1][0][0]
         sComm = cUtil().unescape(aResult[1][0][1])
- 
+
     #Recuperation info lien du stream.
     sLink = None
     sPostUrl = None
     sHtmlContent = sHtmlContent.replace('\r','')
-    
+
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
-    
+
     #Format classique
     sPattern = FRAMEPATTERN
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -227,7 +230,7 @@ def showHosters():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0]):
             sPostUrl = sMainUrl + 'plugins/' + aResult[1][0] + '/plugins/GRUDALpluginsphp.php'
-            
+
         if ((sLink) and (sPostUrl)):
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -235,11 +238,11 @@ def showHosters():
             oOutputParameterHandler.addParameter('sLink', sLink)
             oOutputParameterHandler.addParameter('sPostUrl', sPostUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            
+
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-            
+
             oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle, sThumb, sThumb, sComm, oOutputParameterHandler)
-            
+
     #Format rare
     if not sLink:
         sPattern = FRAMEPATTERN2
@@ -251,22 +254,22 @@ def showHosters():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sLink', sLink)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            
+
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-            
+
             oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink2', sDisplayTitle, sThumb, sThumb, sComm, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-   
+
 def showHostersLink():
     oGui = cGui()
-   
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sLink = oInputParameterHandler.getValue('sLink')
     sPostUrl = oInputParameterHandler.getValue('sPostUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    
+
     UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
     headers = {'User-Agent': UA ,
                'Host' : 'ozporo.com',
@@ -275,15 +278,15 @@ def showHostersLink():
                'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
                'Accept-Encoding' : 'gzip, deflate',
                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
-               
+
     post_data = {'link' : sLink}
-    
+
     req = urllib2.Request(sPostUrl , urllib.urlencode(post_data), headers)
-    
+
     response = urllib2.urlopen(req)
     data = response.read()
     response.close()
-    
+
     oParser = cParser()
     sPattern = HOSTPATTERN
     aResult = oParser.parse(data, sPattern)
@@ -291,7 +294,7 @@ def showHostersLink():
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
-       
+
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
@@ -301,28 +304,28 @@ def showHostersLink():
             Squality = aEntry[1]
             sTitle = sMovieTitle.replace(' [HD]','')
             sTitle = '[' + Squality + '] ' + sTitle
-           
+
             sHosterUrl = str(sLink)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-           
+
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
-                
+
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
             cConfig().finishDialog(dialog)
-       
+
     oGui.setEndOfDirectory()
 
 def showHostersLink2():
     oGui = cGui()
-   
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sLink = oInputParameterHandler.getValue('sLink')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    
+
     UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'
     headers = {'User-Agent': UA ,
                'Host' : 'grudal.com',
@@ -332,13 +335,13 @@ def showHostersLink2():
                'Range' : 'bytes=0-'
                #'Accept-Encoding' : 'gzip, deflate',
                #'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-               } 
-               
+               }
+
     req = urllib2.Request(sLink)
     response = urllib2.urlopen(req)
     data = response.read()
     response.close()
-    
+
     oParser = cParser()
     sPattern = '"file":"(.+?)","type":"mp4","label":"(.+?)"'
     aResult = oParser.parse(data, sPattern)
@@ -346,7 +349,7 @@ def showHostersLink2():
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
-       
+
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
@@ -356,8 +359,8 @@ def showHostersLink2():
             Squality = aEntry[1]
             sTitle = sMovieTitle.replace(' [HD]','')
             sTitle = '[' + Squality + '] ' + sTitle
-            
-            #decodage des liens          
+
+            #decodage des liens
             req = urllib2.Request(sLink,None,headers)
             try:
                 response = urllib2.urlopen(req)
@@ -365,16 +368,16 @@ def showHostersLink2():
                 response.close()
             except urllib2.URLError, e:
                 sLink = e.geturl()
-            
+
             sHosterUrl = str(sLink)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-           
+
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
-                
+
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
             cConfig().finishDialog(dialog)
-       
+
     oGui.setEndOfDirectory()

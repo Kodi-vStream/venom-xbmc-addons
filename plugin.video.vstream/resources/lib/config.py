@@ -334,10 +334,9 @@ class cConfig():
                 pass
 
         #si rien ne marche
-        if (not meta['imdb_id']):
+        if (not meta['imdb_id'] and not ['tmdb_id'] and not ['tvdb_id']):
             #dialog par defaut
             #xbmc.executebuiltin("Action(Info)")
-
             #fenetre d'erreur
             self.showInfo('Vstream', self.getlanguage(30204))
 

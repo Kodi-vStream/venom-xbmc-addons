@@ -33,7 +33,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Nouveautées', 'news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Toutes les videos', 'news.png', oOutputParameterHandler)
@@ -57,11 +57,11 @@ def showSearch():
 def showGenre():
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
-    
+
     oParser = cParser()
     sPattern = 'menu-item-[0-9]+ depth"><a href="([^"]+\/)">([^<>]+)<\/a><([^><]+)>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     oGui = cGui()
 
     if (aResult[0] == True):
@@ -69,13 +69,13 @@ def showGenre():
         for aEntry in aResult[1]:
             oOutputParameterHandler = cOutputParameterHandler()
             sTitle = str(aEntry[1])
-            
+
             if ('F.A.Q' in sTitle) or ('Télévision en direc' in sTitle) or ('Proposer des vidéos' in sTitle):
                 break
-                
+
             if ('ul' in aEntry[2]) or (sTitle=='Documentaires') or (sTitle=='Reportages'):
                 sTitle = '[B][COLOR skyblue]' + sTitle + '[/COLOR][/B]'
-            
+
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oGui.addMisc(SITE_IDENTIFIER, 'showMovies', sTitle , 'genres.png', '', '', oOutputParameterHandler)
 
@@ -89,9 +89,9 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-    
-    sUrl = sUrl.replace('https','http') 
-    
+
+    sUrl = sUrl.replace('https','http')
+
     if not (sUrl == URL_MAIN):
         sPattern = '<div class="item-img">.+?<img.+?src="([^"]+)".+?<h3><a href="([^"]+)\/*">([^<>]+)<'
     else:
@@ -102,6 +102,9 @@ def showMovies(sSearch = ''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -118,7 +121,7 @@ def showMovies(sSearch = ''):
                 sTitle = aEntry[0]
                 sUrl2 = str(aEntry[1])
                 sThumb = str(aEntry[2])
-                
+
             sTitle = sTitle.replace('Replay du ','')
             sTitle = sTitle.replace('Emission du ','')
             sTitle = sTitle.replace(',','')
@@ -126,7 +129,7 @@ def showMovies(sSearch = ''):
             sTitle = re.sub('(?:du )*([0-9]+ [a-zA-Zéèû]+ [0-9]{4})','[\\1]', sTitle)
 
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -167,7 +170,7 @@ def showEpisode():
     oParser = cParser()
     sPattern = '<a href="([^"<]+tape=.+?)">(\d+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     #Si pas plusieurs liens on affiche direct les hosts.
     if (aResult[0] == False):
         showHosters()
@@ -182,9 +185,9 @@ def showEpisode():
 
             sTitle =  '(' + aEntry[1] + ')' + sMovieTitle
             sUrl = str(aEntry[0])
-            
+
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -214,7 +217,7 @@ def showHosters():
         for aEntry in aResult[1]:
 
             sHosterUrl = str(aEntry)
-            
+
             if 'opentostream.com' in sHosterUrl:
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 sHtmlContent = oRequestHandler.request()
@@ -225,7 +228,7 @@ def showHosters():
                     sHosterUrl = aResult[1][0]
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            
+
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
 
             if (oHoster != False):

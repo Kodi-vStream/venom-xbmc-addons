@@ -23,29 +23,29 @@ MOVIE_ANNEES = (URL_MAIN + 'annee/', 'showYear')
 URL_SEARCH = ('https://api.streamiz.co/movies/search/?query=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-def load(): 
+def load():
     oGui = cGui()
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les Plus Vus)', 'films_views.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'films_annees.png', oOutputParameterHandler)
-    
+
     oGui.setEndOfDirectory()
 
 def showMoviesSearch():
@@ -60,12 +60,12 @@ def showMoviesSearch():
 
 def showGenres():
     oGui = cGui()
-    
+
     sStart = '<h3 class="nav-title nop">Film Streaming par Genres</h3>'
     sEnd = '<h3 class="nav-title nop">Film Streaming par Années</h3>'
-	
+
     oParser = cParser()
-    
+
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
 
@@ -77,31 +77,31 @@ def showGenres():
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             sTitle = aEntry[1] + '(' + aEntry[2] + ')'
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-    
+
 def showYear():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sCheck = VSshowYear(sUrl,1995,2018,endswithslash = '/')
     if not sCheck == None:
         showMovies(yearUrl = sCheck)
-        
+
 def showMovies(sSearch = '',yearUrl = ''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    
+
     if sSearch:
         sUrl = sSearch
     elif yearUrl:
-        sUrl = yearUrl      
+        sUrl = yearUrl
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     #indispensable
@@ -112,6 +112,10 @@ def showMovies(sSearch = '',yearUrl = ''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+        
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
@@ -153,7 +157,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
-    
+
     sPattern = '<div class="movie_player" data-id="(.+?)"'
     Fresult = oParser.parse(sHtmlContent, sPattern)
     if (Fresult[0] == True):

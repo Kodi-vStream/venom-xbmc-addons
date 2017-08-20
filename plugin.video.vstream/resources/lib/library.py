@@ -4,6 +4,7 @@ from resources.lib.config import cConfig
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.util import cUtil
+from resources.lib.gui.gui import cGui
 
 import xbmcvfs
 import os,re
@@ -54,13 +55,14 @@ class cLibrary:
         sFileName = oInputParameterHandler.getValue('sFileName')
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         
+        #cConfig().log(oInputParameterHandler.getAllParameter())
+        
         sMediaUrl = urllib.quote(sMediaUrl)
         
         sLink = 'plugin://plugin.video.vstream/?function=play&site=cHosterGui&sFileName=' + sFileName + '&sMediaUrl=' + sMediaUrl + '&sHosterIdentifier=' + sHosterIdentifier
         
-        sTitle = sFileName        
+        sTitle = sFileName
 
-        
         folder = self.__sMovieFolder
         
         #film
@@ -68,6 +70,7 @@ class cLibrary:
             folder = self.__sMovieFolder
             
             sTitle = cUtil().CleanName(sTitle)
+            sTitle = cGui().showKeyBoard(sTitle)
             
             try:
                 # folder = folder + '/' + sTitle + '/'

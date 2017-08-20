@@ -26,7 +26,7 @@ FUNCTION_SEARCH = 'showMovies'
 
 def load():
     oGui = cGui()
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
@@ -38,11 +38,11 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_COMMENTS[1], 'Films (Les plus commentés)', 'films_comments.png', oOutputParameterHandler)
-   
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
-    
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -57,7 +57,7 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
- 
+
     liste = []
     liste.append( ['Action',URL_MAIN + 'category/action/'] )
     liste.append( ['Animation',URL_MAIN + 'category/animation/'] )
@@ -97,11 +97,14 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#46;', '')
-    
+
     oParser = cParser()
-    
+
     sPattern = '<div class="post-thumbnail"><a href="([^<]+)" title="([^"]+)"><img [^<>]+src="([^"]+)".+?<p>([^<>]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -116,16 +119,16 @@ def showMovies(sSearch=''):
             for item in bliste:
                 if item in aEntry[1]:
                    sTitle = sTitle.replace(item,'')
-            
+
             sThumb = aEntry[2]
             sThumb = urllib.quote(sThumb, safe=':/')
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, aEntry[3], oOutputParameterHandler)
-         
+
         cConfig().finishDialog(dialog)
 
         sNextPage = __checkForNextPage(sHtmlContent)
@@ -155,7 +158,7 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     oParser = cParser()
 
     sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]'
@@ -169,7 +172,7 @@ def showHosters():
                 break
 
             sHosterUrl = str(aEntry)
-            
+
             if 'filmzenstream.com' in sHosterUrl:
                 if not sHosterUrl.startswith('http'):
                     sHosterUrl = 'http:' + sHosterUrl
@@ -179,9 +182,9 @@ def showHosters():
                 aResult = oParser.parse(sHtmlContent, sPattern)
                 if (aResult[0] == True):
                     sHosterUrl = aResult[1][0]
-            
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-        
+
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
