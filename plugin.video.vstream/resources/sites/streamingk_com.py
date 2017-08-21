@@ -8,9 +8,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib import util
 from resources.lib.config import cConfig
-
 import re,xbmcgui,unicodedata
-from resources.lib.dl_deprotect import DecryptDlProtect
 
 #clone de dpstreaming.tv
 
@@ -330,7 +328,6 @@ def showHosters(sLoop = False):
     aResult = []
     aResult = list(set( aResult1 + aResult2 + aResult3 ))
 
-    #cConfig().log(str(aResult))
 
     #Si il y a rien a afficher c'est peut etre une serie
     if (len(aResult) == 0) and (sLoop == False):
@@ -339,12 +336,7 @@ def showHosters(sLoop = False):
         return
 
     if (len(aResult) > 0):
-        total = len(aResult)
-        dialog = util.createDialog(SITE_NAME)
         for aEntry in aResult:
-            util.updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -354,8 +346,6 @@ def showHosters(sLoop = False):
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-
-        util.finishDialog(dialog)
 
     oGui.setEndOfDirectory()
 
@@ -368,60 +358,17 @@ def serieHosters():
 
     oParser = cParser()
 
-    liste = False
-
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-
-    #1 - liste fichier
-    if 'dl-protect.com' in sUrl:
-        sPattern = 'href="([^<]+)" target="_blank.+?>(.+?)<.a>'
-        aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
-
-            UrlList =''
-            vid_list = []
-            hoster_list = []
-
-            if len(aResult[1]) > 1:
-                for i in aResult[1]:
-                    vid_list.extend([i[0]])
-                    hoster_list.extend([i[1]])
-            if len(aResult[1]) == 1:
-                UrlList = aResult[1][0][0]
-            else:
-                result = xbmcgui.Dialog().select('Choose a link list', hoster_list)
-                if result != -1:
-                    UrlList = vid_list[result]
-
-            if (UrlList):
-                sHtmlContent = DecryptDlProtect(UrlList)
-                if sHtmlContent:
-                    sPattern = '<br .><a href="(.+?)" target="_blank">http:.+?<.a>'
-                    aResult = oParser.parse(sHtmlContent, sPattern)
-                    liste = True
-            else:
-                return
-    else:
-        #2 - Normal
-        sPattern = 'href="([^<]+)" target="_blank"[^<>]*>.+?<\/a>'
-        aResult = oParser.parse(sUrl, sPattern)
+    sPattern = 'href="([^<]+)" target="_blank"[^<>]*>.+?<\/a>'
+    aResult = oParser.parse(sUrl, sPattern)
 
     #affichage
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = util.createDialog(SITE_NAME)
         index = 1
         for aEntry in aResult[1]:
-            util.updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             sTitle = sMovieTitle
-            if liste:
-                sTitle = sTitle + ' (' + str(index) + ') '
-                index = index + 1
+            sTitle = sTitle + ' (' + str(index) + ') '
+            index = index + 1
 
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -431,7 +378,5 @@ def serieHosters():
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-
-        util.finishDialog(dialog)
 
     oGui.setEndOfDirectory()
