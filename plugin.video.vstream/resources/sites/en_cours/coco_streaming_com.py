@@ -1,52 +1,28 @@
 #-*- coding: utf-8 -*-
 #Venom.
-from resources.lib.gui.hoster import cHosterGui #systeme de recherche pour l'hote
-from resources.lib.handler.hosterHandler import cHosterHandler #systeme de recherche pour l'hote
-from resources.lib.gui.gui import cGui #systeme d'affichage pour xbmc
-from resources.lib.gui.guiElement import cGuiElement #systeme d'affichage pour xbmc
-from resources.lib.handler.inputParameterHandler import cInputParameterHandler #entree des parametres
-from resources.lib.handler.outputParameterHandler import cOutputParameterHandler #sortie des parametres
-from resources.lib.handler.requestHandler import cRequestHandler #requete url
-from resources.lib.config import cConfig #config
-from resources.lib.parser import cParser #recherche de code
-#from resources.lib.util import cUtil #outils pouvant etre utiles
+from resources.lib.gui.hoster import cHosterGui 
+from resources.lib.handler.hosterHandler import cHosterHandler
+from resources.lib.gui.gui import cGui
+from resources.lib.gui.guiElement import cGuiElement
+from resources.lib.handler.inputParameterHandler import cInputParameterHandler
+from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.config import cConfig
+from resources.lib.parser import cParser
+
  
-SITE_IDENTIFIER = 'coco_streaming_com' #identifant (nom de votre fichier) remplacez les espaces et les . par _ AUCUN CARACTERE SPECIAL
-SITE_NAME = 'Coco-streaming' # nom que xbmc affiche
-SITE_DESC = 'Films & Séries en streaming.' #description courte de votre source
+SITE_IDENTIFIER = 'coco_streaming_com'
+SITE_NAME = 'Coco-streaming'
+SITE_DESC = 'Films en streaming.'
  
-URL_MAIN = 'http://coco-stream.com/' # url de votre source
+URL_MAIN = 'https://coco-stream.com'
  
-URL_SEARCH = (URL_MAIN + 'films-en-streaming?search=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '/films-en-streaming?search=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
 MOVIE_NEWS = (URL_MAIN, 'showMovies') 
-MOVIE_MOVIE = (URL_MAIN + 'films-en-streaming', 'showMovies')
-MOVIE_VIEWS = ('http://url', 'showMovies')
-MOVIE_COMMENTS = ('http://url', 'showMovies')
-MOVIE_NOTES = ('http://url', 'showMovies') 
-MOVIE_GENRES = (True, 'showGenres')
-MOVIE_VF = ('http://url', 'showMovies') 
-MOVIE_VOSTFR = ('http://url', 'showMovies') 
-MOVIE_CULTE = (URL_MAIN + 'films-culte-en-streaming','showMovies')
- 
-SERIE_NEWS = ('http://url', 'showSeries') # serie nouveautés
-SERIE_SERIES = (URL_MAIN + 'series-en-streaming', 'showSeries') # serie vrac
-SERIE_VFS = ('http://url', 'showSeries') # serie VF
-SERIE_VOSTFRS = ('http://url', 'showSeries') # serie Vostfr
-SERIE_GENRES = (True, 'showGenres')
- 
-ANIM_NEWS = ('http://url', 'showAnimes') #anime nouveautés
-ANIM_ANIMS = ('http://url', 'showAnimes') #anime vrac
-ANIM_VFS = ('http://url', 'showAnimes') #anime VF
-ANIM_VOSTFRS = ('http://url', 'showAnimes') #anime VOSTFR
-ANIM_MOVIES = ('http://url', 'showAnimes') #anime film
-ANIM_GENRES = (True, 'showGenres') #anime genre
- 
-DOC_DOCS = ('http://url', 'showOthers') #Documentaire
-SPORT_SPORTS = ('http://url', 'showOthers') #sport
-MOVIE_NETS = ('http://url', 'showOthers') #video du net
-REPLAYTV_REPLAYTV = ('http://url', 'showOthers') #Replay
+MOVIE_MOVIE = (URL_MAIN + '/films-en-streaming', 'showMovies') 
+MOVIE_CULTE = (URL_MAIN + '/films-culte-en-streaming','showMovies')
  
 def load():
     oGui = cGui()
@@ -79,7 +55,7 @@ def showSearch():
         return  
    
    
-def showGenres(): #affiche les genres
+def showGenres():
     oGui = cGui()
     
     liste = []
@@ -110,99 +86,121 @@ def showGenres(): #affiche les genres
     liste.append( ['Western','http://full-streaming.org/western/'] )
     liste.append( ['Divers','http://full-streaming.org/divers/'] )
                
-    for sTitle,sUrl in liste:#boucle
+    for sTitle,sUrl in liste:
        
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)#sortie de l'url en parametre
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
              
     oGui.setEndOfDirectory()
  
  
+def showMovieAnnees():
+    oGui = cGui()
+
+    for i in reversed (xrange(1913, 2018)):
+        Year = str(i)
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee-' + Year)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showSerieAnnees():
+    oGui = cGui()
+
+    for i in reversed (xrange(1936, 2018)):
+        Year = str(i)
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee-' + Year)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
 def showMovies(sSearch = ''):
-    oGui = cGui() 
-    if sSearch:
+    oGui = cGui()
+    if sSearch: 
       sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl') # recupere l'url sortie en parametre
+        sUrl = oInputParameterHandler.getValue('siteUrl') #recupere l'url sortie en parametre
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
    
-    oRequestHandler = cRequestHandler(sUrl) # envoye une requete a l'url
-    sHtmlContent = oRequestHandler.request() #requete aussi
-   
-    sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
-    #la function replace et pratique pour supprimer un code du resultat
-   
-    sPattern = '<a href="([^<]+)<img alt="([^<]+)src="(.+?)"'
-    #pour faire simple recherche ce bout de code dans le code source de l'url
-    #- ([^<]+) je veut cette partie de code mais y a une suite
-    #- .+? je ne veut pas cette partis et peux importe ceux qu'elle contient
-    #- (.+?) je veut cette partis et c'est la fin
+    sPattern = 'src="(.+?).jpg">.+?<a class="coco-film-link-see"\s*href="(.+?)"\s*title="(.+?)"'
    
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    print aResult #Commenter ou supprimer cette ligne une foix fini
-   
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
         total = len(aResult[1])
-        
         dialog = cConfig().createDialog(SITE_NAME)
-       
+
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
-           
-           
-            sTitle = aEntry[0]
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + aEntry[0])
-            oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[0])) #sortie du titre
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2])) #sortie du poster
- 
-            if 'series' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle,'', aEntry[0], aEntry[2], oOutputParameterHandler)
+            if dialog.iscanceled():
+                break
 
+            sTitle = str(aEntry[2])
+            sUrl2 = str(aEntry[1])
+            sThumb = str(aEntry[0])
+            sDesc = ''
+
+            sTitle = sTitle.replace('Voir en streaming', '')
+
+            sUrl2 = URL_MAIN + sUrl2
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle',sTitle)
+            oOutputParameterHandler.addParameter('sThumb',sThumb )
+
+            if '/series' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle,'', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], aEntry[2], oOutputParameterHandler)
-        
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+
         cConfig().finishDialog(dialog)
-           
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
- 
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+
     if not sSearch:
-        oGui.setEndOfDirectory() #ferme l'affichage
+        oGui.setEndOfDirectory()
  
- 
-def __checkForNextPage(sHtmlContent): #cherche la page suivante
+def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<div class="navigation".+? <span.+? <a href="(.+?)">'
+    #sPattern = '</a></li><li class="active"><a href=\'#\'>.+?<\/a><\/li><li><a href="(.+?)">'
+    sPattern = '<a rel="next" href="(.+?)">Suivant.+?<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    print aResult #affiche le result dans le log
     if (aResult[0] == True):
-        return aResult[1][0]
- 
+        return URL_MAIN + aResult[1][0]
+
     return False
    
-def showHosters():# recherche et affiche les hotes
-    oGui = cGui() #ouvre l'affichage
-    oInputParameterHandler = cInputParameterHandler() #apelle l'entree de paramettre
-    sUrl = oInputParameterHandler.getValue('siteUrl')  # apelle siteUrl
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle') #apelle le titre
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail') # apelle le poster
-   
-    oRequestHandler = cRequestHandler(sUrl) #requete sur l'url
-    sHtmlContent = oRequestHandler.request(); #requete sur l'url
-    #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','')   
+def showHosters():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+	
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request();
  
     oParser = cParser()
-    sPattern = 'src="(.+?)" alt="(.+?)" title="(.+?)"'
+    sPattern = '<li class=.+?" data-embed="(.+?)" title=".+?">'
    
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #penser a faire un print aResult pour verifier
-    print aResult
    
     if (aResult[0] == True):
         for aEntry in aResult[1]:
