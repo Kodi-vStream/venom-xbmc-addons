@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 #Venom.Kodigoal.Razorex
+#supprimer le 22/08 2hots pour les films dont youwatch qui fonctionne pas et les series pareil.
+return False
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
