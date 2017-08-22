@@ -690,7 +690,7 @@ def DecryptDlProtecte(url):
     if not (url):
         return ''
 
-    url=url.replace('https','http')
+    #url=url.replace('https','http')
 
     headersBase = {
     'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0',
@@ -701,7 +701,8 @@ def DecryptDlProtecte(url):
     #'Pragma' : '',
     #'Accept-Charset' : ''
     }
-    url2 = 'http://www.dl-protecte.com/php/Qaptcha.jquery.php'
+    
+    url2 = 'https://www.dl-protecte.org/php/Qaptcha.jquery.php'
 
     #Make random key
     s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN_-#@";
@@ -735,6 +736,8 @@ def DecryptDlProtecte(url):
         return ''
 
     sHtmlContent = reponse.read()
+    
+    #cConfig().log( 'result'  + str(sHtmlContent))
 
     #Recuperatioen et traitement cookies ???
     cookies=reponse.info()['Set-Cookie']
@@ -745,6 +748,8 @@ def DecryptDlProtecte(url):
     cookies = ''
     for cook in c2:
         cookies = cookies + cook[0] + '=' + cook[1] + ';'
+        
+    #cConfig().log( 'Cookie'  + str(cookies))
 
     reponse.close()
 
@@ -765,9 +770,17 @@ def DecryptDlProtecte(url):
     #data = urllib.urlencode(query_args)
 
     #Nouvelle methode avec multipart
-    multipart_form_data = { RandomKey : '', 'submit' : 'Valider'  }
-    data, headersMulti = encode_multipart(multipart_form_data, {})
+    #multipart_form_data = { RandomKey : '', 'submit' : 'Valider'  }
+    
+    import string
+    _BOUNDARY_CHARS = string.digits + string.ascii_letters
+    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(30))
+    
+    multipart_form_data = { RandomKey : '', 'submit' : 'Valider' }
+    data, headersMulti = encode_multipart(multipart_form_data, {},boundary)
     headers2.update(headersMulti)
+    #cConfig().log( 'header 2'  + str(headersMulti))
+    #cConfig().log( 'data 2'  + str(data))
 
     #rajout des cookies
     headers2.update({'Cookie': cookies})
@@ -775,8 +788,7 @@ def DecryptDlProtecte(url):
     #Modifications
     headers2.update({'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'})
 
-    #cConfig().log( headers2)
-    #cConfig().log( data )
+    #cConfig().log( str(headers2) )
 
     #Requete
     request = urllib2.Request(url,data,headers2)
