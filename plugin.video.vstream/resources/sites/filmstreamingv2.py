@@ -10,6 +10,7 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.config import cConfig
 import re
+import xbmc
 
 SITE_IDENTIFIER = 'filmstreamingv2'
 SITE_NAME = '[COLOR violet]Films Streaming V2[/COLOR]'
@@ -26,7 +27,7 @@ MOVIE_GENRES = (True, 'showGenres')
 
 ANIM_ENFANTS = (URL_MAIN + 'les-films-disney-en-streaming.html', 'showMoviesHtml')
 
-URL_SEARCH = (URL_MAIN + '?do=search&mode=advanced&subaction=search&titleonly=3&story=')
+URL_SEARCH = (URL_MAIN + '?do=search&mode=advanced&subaction=search&titleonly=3&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -110,7 +111,10 @@ def showMovies(sSearch = ''):
     oGui = cGui()
 
     if sSearch:
-        sUrl = URL_SEARCH + sSearch
+        if URL_SEARCH[0] in sSearch:
+            sUrl = sSearch
+        else:
+            sUrl = URL_SEARCH[0] + sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
