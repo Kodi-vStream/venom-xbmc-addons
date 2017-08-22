@@ -431,12 +431,6 @@ def showHosters():# recherche et affiche les hotes
         oParser = cParser()
         sPattern = '<font color=red>([^<]+?)</font>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0]:
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aResult[1]) + '[/COLOR]')
         sHtmlContent = CutNonPremiumlinks(sHtmlContent)
         #print sHtmlContent
     oParser = cParser()
@@ -445,7 +439,7 @@ def showHosters():# recherche et affiche les hotes
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     #xbmc.log(str(aResult))
-
+    
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -456,11 +450,12 @@ def showHosters():# recherche et affiche les hotes
                 break
 
             if aEntry[0]:
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+                if ('Interchangeables' not in aEntry[0]):
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+                    oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+                    oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
 
             #elif aEntry[1]:
                 #oOutputParameterHandler = cOutputParameterHandler()
