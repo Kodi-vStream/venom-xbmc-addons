@@ -117,9 +117,6 @@
         <setting visible="false" id="search1_disneyhd_tk" type="bool" label="30077" default="true"/>
         <setting visible="false" id="search3_disneyhd_tk" type="bool" label="30090" default="true" />
 
-        <setting id="plugin_documovies" type="bool" label="Documovies (Documentaires)" default="true"/>
-        <setting visible="false" id="search4_documovies" type="bool" label="30091" default="true" />
-
         <setting id="plugin_evilox" type="bool" label="Evilox (Vidéos)" default="true"/>
 
         <setting id="plugin_film_illimit_fr" type="bool" label="Film Illimité (Films)" default="true"/>

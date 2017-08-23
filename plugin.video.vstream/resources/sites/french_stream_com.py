@@ -37,8 +37,12 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche films', 'search.png', oOutputParameterHandler)
 
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchSeries', 'Recherche series', 'search.png', oOutputParameterHandler)
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
@@ -86,6 +90,16 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
+		
+def showSearchSeries():
+    oGui = cGui()
+
+    sSearchText = oGui.showKeyBoard()
+    if (sSearchText != False):
+        sUrl = URL_SEARCH[0] + sSearchText
+        showSeries(sUrl)
+        oGui.setEndOfDirectory()
+        return		
 
 def showMovieGenres():
     oGui = cGui()
@@ -239,7 +253,7 @@ def showSeries(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<div class="short-in nl">.+?"short-poster img-box with-mask" href="(.+?)"><img src="([^<]+)" alt="(.+?)"/>'
+    sPattern = 'href="([^<]+)"([^<]+)<img src="([^<]+)" alt="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -256,12 +270,12 @@ def showSeries(sSearch = ''):
                     continue
 
             sUrl2 = str(aEntry[0])
-            sThumb = str(aEntry[1]).replace('/img/french-stream.com.php?src=', '')
+            sThumb = str(aEntry[2]).replace('/img/french-stream.com.php?src=', '')
             sThumb = sThumb.split('&')[0]
             if sThumb.startswith ('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
-            sTitle = str(aEntry[2])
+            sTitle = str(aEntry[3])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
