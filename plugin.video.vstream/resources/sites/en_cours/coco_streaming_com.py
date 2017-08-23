@@ -11,7 +11,7 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 
  
-SITE_IDENTIFIER = 'coco_streaming'
+SITE_IDENTIFIER = 'coco_streaming_com'
 SITE_NAME = 'Coco-streaming'
 SITE_DESC = 'Films en streaming.'
  
