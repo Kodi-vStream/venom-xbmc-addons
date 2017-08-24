@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'coco_streaming_com'
 SITE_NAME = 'Coco-streaming'
 SITE_DESC = 'Films en streaming.'
  
-URL_MAIN = 'https://coco-stream.com'
+URL_MAIN = 'http://coco-stream.com'
  
 URL_SEARCH = (URL_MAIN + '/films-en-streaming?search=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -23,6 +23,10 @@ FUNCTION_SEARCH = 'showMovies'
 MOVIE_NEWS = (URL_MAIN, 'showMovies') 
 MOVIE_MOVIE = (URL_MAIN + '/films-en-streaming', 'showMovies') 
 MOVIE_CULTE = (URL_MAIN + '/films-culte-en-streaming','showMovies')
+MOVIE_GENRES = (True, 'showGenres')
+MOVIE_VF = (URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Blanguages%5D%5BVF%5D=VF','showMovies')
+MOVIE_VOSTFR = (URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Blanguages%5D%5BVOSTFR%5D=VOSTFR','showMovies')
+MOVIE_CULTE_GENRES = (True, 'showCulteGenres')
  
 def load():
     oGui = cGui()
@@ -33,15 +37,31 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
+	
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_CULTE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE_GENRES[1], 'Films Culte (Genres)', 'films_genres.png', oOutputParameterHandler)	
+	
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)	
+	
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VOSTFR[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFR[1], 'Films VOSTFR', 'films_news.png', oOutputParameterHandler)	
+	
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VF[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VF[1], 'Films VF', 'films_news.png', oOutputParameterHandler)	
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
-    
+	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_CULTE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE[1], 'Films cultes', 'genres.png', oOutputParameterHandler)
-    
+	
     oGui.setEndOfDirectory()
  
 def showSearch():
@@ -58,33 +78,34 @@ def showSearch():
 def showGenres():
     oGui = cGui()
     
-    liste = []
-    liste.append( ['Action','http://full-streaming.org/action/'] )
-    liste.append( ['Animation','http://full-streaming.org/animation/'] )
-    liste.append( ['Arts Martiaux','http://full-streaming.org/arts-martiaux/'] )
-    liste.append( ['Aventure','http://full-streaming.org/aventure/'] )
-    liste.append( ['Biopic','http://full-streaming.org/biopic/'] )
-    liste.append( ['Comédie','http://full-streaming.org/comedie/'] )
-    liste.append( ['Comédie Dramatique','http://full-streaming.org/comedie-dramatique/'] )
-    liste.append( ['Comédie Musicale','http://full-streaming.org/comedie-musicale/'] )
-    liste.append( ['Documentaire','http://full-streaming.org/documentaire/'] )
-    liste.append( ['Drame','http://full-streaming.org/drame/'] )
-    liste.append( ['Epouvante Horreur','http://full-streaming.org/epouvante-horreur/'] )
-    liste.append( ['Erotique','http://full-streaming.org/erotique'] )
-    liste.append( ['Espionnage','http://full-streaming.org/espionnage/'] )
-    liste.append( ['Famille','http://full-streaming.org/famille/'] )
-    liste.append( ['Fantastique','http://full-streaming.org/fantastique/'] )  
-    liste.append( ['Guerre','http://full-streaming.org/guerre/'] )
-    liste.append( ['Historique','http://full-streaming.org/historique/'] )
-    liste.append( ['Musical','http://full-streaming.org/musical/'] )
-    liste.append( ['Policier','http://full-streaming.org/policier/'] )
-    liste.append( ['Péplum','http://full-streaming.org/peplum/'] )
-    liste.append( ['Romance','http://full-streaming.org/romance/'] )
-    liste.append( ['Science Fiction','http://full-streaming.org/science-fiction/'] )
-    liste.append( ['Spectacle','http://full-streaming.org/spectacle/'] )
-    liste.append( ['Thriller','http://full-streaming.org/thriller/'] )
-    liste.append( ['Western','http://full-streaming.org/western/'] )
-    liste.append( ['Divers','http://full-streaming.org/divers/'] )
+    liste = []	
+    liste.append( ['Action',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=15'] )
+    liste.append( ['Animation',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=18'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=25'] )
+    liste.append( ['Aventure',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=5'] )
+    liste.append( ['Biopic',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=20'] )
+    liste.append( ['Comédie',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=6'] )
+    liste.append( ['Comédie Dramatique',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=4'] )
+    liste.append( ['Comédie Musicale',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=23'] )
+    liste.append( ['Documentaire',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=16'] )
+    liste.append( ['Drame',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=2'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=9'] )
+    liste.append( ['Erotique',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=13'] )
+    liste.append( ['Espionnage',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=14'] )
+    liste.append( ['Famille',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=24'] )
+    liste.append( ['Fantastique',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=12'] )  
+    liste.append( ['Guerre',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=19'] )
+    liste.append( ['Historique',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=11'] )
+    liste.append( ['Judiciare',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=26'] )
+    liste.append( ['Musical',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=10'] )
+    liste.append( ['Policier',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=1'] )
+    liste.append( ['Péplum',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=30'] )
+    liste.append( ['Romance',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=7'] )
+    liste.append( ['Science Fiction',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=17'] )
+    liste.append( ['Sport Event',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=33'] )
+    liste.append( ['Thriller',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=3'] )
+    liste.append( ['Western',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=21'] )
+    liste.append( ['Divers',URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=8'] )
                
     for sTitle,sUrl in liste:
        
@@ -93,6 +114,38 @@ def showGenres():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
              
     oGui.setEndOfDirectory()
+	
+def showCulteGenres():
+    oGui = cGui()
+    
+    liste = []	
+    liste.append( ['Action',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=15'] )
+    liste.append( ['Animation',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=18'] )
+    liste.append( ['Aventure',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=5'] )
+    liste.append( ['Biopic',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=20'] )
+    liste.append( ['Comédie',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=6'] )
+    liste.append( ['Comédie Dramatique',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=4'] )
+    liste.append( ['Comédie Musicale',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=23'] )
+    liste.append( ['Drame',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=2'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=9'] )
+    liste.append( ['Famille',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=24'] )
+    liste.append( ['Fantastique',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=12'] )  
+    liste.append( ['Guerre',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=19'] )
+    liste.append( ['Historique',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=11'] )
+    liste.append( ['Musical',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=10'] )
+    liste.append( ['Policier',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=1'] )
+    liste.append( ['Romance',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=7'] )
+    liste.append( ['Science Fiction',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=17'] )
+    liste.append( ['Thriller',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=3'] )
+    liste.append( ['Western',URL_MAIN + '/films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D=21'] )
+               
+    for sTitle,sUrl in liste:
+       
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+             
+    oGui.setEndOfDirectory()	
  
  
 def showMovieAnnees():
