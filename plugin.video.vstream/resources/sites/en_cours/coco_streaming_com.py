@@ -22,15 +22,14 @@ FUNCTION_SEARCH = 'showMovies'
  
 MOVIE_NEWS = (URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_films', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos', 'showMovies')
-MOVIE_CULTE_NEWS = (URL_MAIN + '/films-culte-en-streaming?search=&filters%5BorderBy%5D=new_films', 'showMovies') 
-MOVIE_CULTE_MOVIE = (URL_MAIN + '/films-culte-en-streaming?search=&filters%5BorderBy%5D=new_videos', 'showMovies') 
 MOVIE_CULTE_NEWS = (URL_MAIN + '/films-culte-en-streaming?search=&filters%5BorderBy%5D=new_films', 'showMovies')
 MOVIE_CULTE_MOVIE = (URL_MAIN + '/films-culte-en-streaming?search=&filters%5BorderBy%5D=new_videos', 'showMovies')
 MOVIE_CULTE_GENRES = (True, 'showCulteGenres')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_VF = (URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Blanguages%5D%5BVF%5D=VF','showMovies')
 MOVIE_VOSTFR = (URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Blanguages%5D%5BVOSTFR%5D=VOSTFR','showMovies')
-MOVIE_CULTE_GENRES = (True, 'showCulteGenres')
+SERIES = (URL_MAIN + '/series-en-streaming','showSeries')
+SERIES_ACTUEL =('')
  
 def load():
     oGui = cGui()
@@ -40,11 +39,11 @@ def load():
    	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Les + recent)', 'genres.png', oOutputParameterHandler)	
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Les + recent)', 'films_news.png', oOutputParameterHandler)	
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE_MOVIE[1], 'Films (Liens + recent)', 'films.png', oOutputParameterHandler)	
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE_MOVIE[1], 'Films (Liens + recent)', 'films_news.png', oOutputParameterHandler)	
 	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -60,15 +59,19 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_CULTE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE_NEWS[1], 'Films cultes (Les + recent)', 'genres.png', oOutputParameterHandler)	
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE_NEWS[1], 'Films cultes (Les + recent)', 'films_news.png', oOutputParameterHandler)	
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE_MOVIE[1], 'Films Culte (Liens + recent)', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE_MOVIE[1], 'Films Culte (Liens + recent)', 'films_news.png', oOutputParameterHandler)
 	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_CULTE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE_GENRES[1], 'Films Culte (Genres)', 'films_genres.png', oOutputParameterHandler)		
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE_GENRES[1], 'Films Culte (Genres)', 'films_genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIES[1], 'Series', 'series_news.png', oOutputParameterHandler)	
 	
     oGui.setEndOfDirectory()
  
@@ -237,6 +240,64 @@ def showMovies(sSearch = ''):
 
     if not sSearch:
         oGui.setEndOfDirectory()
+		
+def showSeries(sSearch = ''):
+    oGui = cGui()
+    if sSearch: 
+      sUrl = sSearch
+    else:
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl') #recupere l'url sortie en parametre
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+   
+    sPattern = '<div class="col-xs-4">\s*<a href="(.+?)".+?>\s*.+?title="(.+?)".+? src="(.+?)"'
+   
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
+            sTitle = str(aEntry[1])
+            sUrl2 = str(aEntry[0])
+            sThumb = str(aEntry[2])
+            sDesc = ''
+
+            sTitle = sTitle.replace('Regarder', '')
+            sTitle = sTitle.replace('en streaming', '')
+            sUrl2 = sUrl2.replace('https:','http:')
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle',sTitle)
+            oOutputParameterHandler.addParameter('sThumb',sThumb )
+
+            if '/series' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaison', sTitle,'', sThumb, sDesc, oOutputParameterHandler)
+            else:
+                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaison', sTitle,'', sThumb, sDesc, oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+
+        sNextPage = __checkForNextPage(sHtmlContent)
+        if (sNextPage != False):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+
+    if not sSearch:
+        oGui.setEndOfDirectory()		
  
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -247,6 +308,129 @@ def __checkForNextPage(sHtmlContent):
         return URL_MAIN + aResult[1][0]
 
     return False
+   
+def ShowSerieSaison():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl') #recupere l'url sortie en parametre
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()	
+	
+    sPattern = '<li>\s*<a href="(.+?)" title="Voir en streaming (.+?) - (.+?)">.+?</a>\s*</li>'
+
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
+            sTitle = str(aEntry[1])
+            sUrl2 = str(aEntry[0])
+            sThumb = str(aEntry[0])
+            sTitle2 = str(aEntry[2])
+            sDesc = ''
+
+            sTitle = sTitle.replace('Voir en streaming ', '')
+            sUrl2 = sUrl2.replace('https:','http:')
+            sUrl2 = sUrl + sUrl2
+            sTitle = sTitle + sTitle2
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle',sTitle)
+            oOutputParameterHandler.addParameter('sThumb',sThumb )
+
+            if '/series' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieEpisodes', sTitle,'', sThumb, sDesc, oOutputParameterHandler)
+            else:
+                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieEpisodes', sTitle,'', sThumb, sDesc, oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+
+        sNextPage = __checkForNextPage(sHtmlContent)
+        if (sNextPage != False):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+
+        oGui.setEndOfDirectory()	
+
+def ShowSerieEpisodes():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '<article class="col-xs-12 col-md-6 preview">\s*<a href="(.+?)" title="Voir en streaming (.+?)">'
+
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+
+        dialog = cConfig().createDialog(SITE_NAME)
+
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
+            sTitle = sMovieTitle + str(aEntry[1])
+            sUrl2 = sUrl + str(aEntry[0])
+            sUrl2 = sUrl2.replace('https:','http:')
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle',sTitle)
+            oOutputParameterHandler.addParameter('sThumb',sThumb )
+
+            oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle,'', sThumb, '', oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()	
+	
+def seriesHosters(): #cherche les episodes de series
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '<button data-src="(.+?)" class="btn btn-primary .+?">Lien(.+?)</button>'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+
+            sHosterUrl = str(aEntry[0])
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(aEntry[1])
+                oHoster.setFileName(aEntry[1])
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+    oGui.setEndOfDirectory()   
    
 def showHosters():
     oGui = cGui()
