@@ -20,9 +20,13 @@ URL_MAIN = 'http://coco-stream.com'
 URL_SEARCH = (URL_MAIN + '/films-en-streaming?search=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
  
-MOVIE_NEWS = (URL_MAIN, 'showMovies') 
-MOVIE_MOVIE = (URL_MAIN + '/films-en-streaming', 'showMovies') 
-MOVIE_CULTE = (URL_MAIN + '/films-culte-en-streaming','showMovies')
+MOVIE_NEWS = (URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_films', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos', 'showMovies')
+MOVIE_CULTE_NEWS = (URL_MAIN + '/films-culte-en-streaming?search=&filters%5BorderBy%5D=new_films', 'showMovies') 
+MOVIE_CULTE_MOVIE = (URL_MAIN + '/films-culte-en-streaming?search=&filters%5BorderBy%5D=new_videos', 'showMovies') 
+MOVIE_CULTE_NEWS = (URL_MAIN + '/films-culte-en-streaming?search=&filters%5BorderBy%5D=new_films', 'showMovies')
+MOVIE_CULTE_MOVIE = (URL_MAIN + '/films-culte-en-streaming?search=&filters%5BorderBy%5D=new_videos', 'showMovies')
+MOVIE_CULTE_GENRES = (True, 'showCulteGenres')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_VF = (URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Blanguages%5D%5BVF%5D=VF','showMovies')
 MOVIE_VOSTFR = (URL_MAIN + '/films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Blanguages%5D%5BVOSTFR%5D=VOSTFR','showMovies')
@@ -33,14 +37,14 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    
+   	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
-	
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Les + recent)', 'genres.png', oOutputParameterHandler)	
+
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_CULTE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE_GENRES[1], 'Films Culte (Genres)', 'films_genres.png', oOutputParameterHandler)	
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE_MOVIE[1], 'Films (Liens + recent)', 'films.png', oOutputParameterHandler)	
 	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -55,12 +59,16 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VF[1], 'Films VF', 'films_news.png', oOutputParameterHandler)	
     
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_CULTE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE_NEWS[1], 'Films cultes (Les + recent)', 'genres.png', oOutputParameterHandler)	
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE_MOVIE[1], 'Films Culte (Liens + recent)', 'films.png', oOutputParameterHandler)
 	
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_CULTE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE[1], 'Films cultes', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_CULTE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE_GENRES[1], 'Films Culte (Genres)', 'films_genres.png', oOutputParameterHandler)		
 	
     oGui.setEndOfDirectory()
  
