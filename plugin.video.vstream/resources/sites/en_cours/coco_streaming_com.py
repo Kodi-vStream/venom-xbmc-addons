@@ -214,6 +214,8 @@ def showMovies(sSearch = ''):
             sTitle = str(aEntry[2])
             sUrl2 = str(aEntry[1])
             sThumb = str(aEntry[0])
+            if sThumb.startswith('/'):
+				sThumb = URL_MAIN[:-1] + sThumb
             sDesc = ''
 
             sTitle = sTitle.replace('Voir en streaming', '')
@@ -272,6 +274,8 @@ def showSeries(sSearch = ''):
             sTitle = str(aEntry[1])
             sUrl2 = str(aEntry[0])
             sThumb = str(aEntry[2])
+            if sThumb.startswith('/'):
+				sThumb = URL_MAIN[:-1] + sThumb
             sDesc = ''
 
             sTitle = sTitle.replace('Regarder', '')
@@ -392,7 +396,7 @@ def ShowSerieEpisodes():
             if dialog.iscanceled():
                 break
 
-            sTitle = sMovieTitle + str(aEntry[1])
+            sTitle = str(aEntry[1])
             sUrl2 = sUrl + str(aEntry[0])
             sUrl2 = sUrl2.replace('https:','http:')
 
@@ -405,7 +409,7 @@ def ShowSerieEpisodes():
 
         cConfig().finishDialog(dialog)
 
-    oGui.setEndOfDirectory()	
+    oGui.setEndOfDirectory()			
 	
 def seriesHosters(): #cherche les episodes de series
     oGui = cGui()
