@@ -196,12 +196,13 @@ def showMovies(sSearch = ''):
 
     #print aResult
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-
+            cConfig().updateDialog(dialog, total)
             sTitle = str(aEntry[2])
             sUrl2 = aEntry[0]
 
