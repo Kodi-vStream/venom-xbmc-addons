@@ -33,7 +33,7 @@ URL_MAIN = 'https://www.zone-telechargement.ws/'
 URL_SEARCH = (URL_MAIN, 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_NEWS = (URL_MAIN + 'films-gratuit/', 'showMovies') # films (derniers ajouts)
+MOVIE_NEWS = (URL_MAIN + 'nouveaute/', 'showMovies') # films (derniers ajouts)
 MOVIE_EXCLUS = (URL_MAIN + 'exclus/', 'showMovies') # exclus (films populaires)
 MOVIE_3D = (URL_MAIN + 'films-bluray-3d/', 'showMovies') # films en 3D
 MOVIE_HD = (URL_MAIN + 'films-bluray-hd/', 'showMovies') # films en HD
