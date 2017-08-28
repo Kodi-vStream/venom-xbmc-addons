@@ -296,7 +296,7 @@ def showEpisode():
     sHtmlContent = oRequestHandler.request()
 
     sThumb = ''
-    sComm = ''
+    sDesc = ''
 
     #info anime
     try:
@@ -305,7 +305,7 @@ def showEpisode():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             sThumb = aResult[1][0][0]
-            sComm = aResult[1][0][1]
+            sDesc = aResult[1][0][1]
     except:
         pass
 
@@ -318,16 +318,12 @@ def showEpisode():
         dialog = cConfig().createDialog(SITE_NAME)
         cConfig().updateDialog(dialog, 1)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-        oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-        oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]' + 'Animé licencié' + '[/COLOR]', 'host.png', oOutputParameterHandler)
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + 'Animé licencié' + '[/COLOR]')
 
         cConfig().finishDialog(dialog)
 
     else:
 
-        #sPattern = '<li style.+?>(.+?)</li>|<li title=""><a href="([^<]+)">([^<]+)</a></li>'
         sPattern = '<li class="saison">([^<>]+)</li>|<a href="(https:\/\/www\.adkami\.com[^"]+)"[^<>]+>([^<>]+)<\/a><\/li>'
 
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -340,19 +336,16 @@ def showEpisode():
                     break
 
                 if aEntry[0]:
-                    oOutputParameterHandler = cOutputParameterHandler()
-                    oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                    oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                    oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]' + str(aEntry[0]) + '[/COLOR]', 'films.png', oOutputParameterHandler)
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
                 else:
                     sTitle = sMovieTitle + ' ' + aEntry[2]
-                    sTitle = re.sub(' vf',' [VF]',sTitle,re.IGNORECASE)
-                    sTitle = re.sub(' vostfr',' [VOSTFR]',sTitle,re.IGNORECASE)
+                    sTitle = re.sub(' vf',' [VF]', sTitle, re.IGNORECASE)
+                    sTitle = re.sub(' vostfr',' [VOSTFR]', sTitle, re.IGNORECASE)
                     sDisplayTitle = cUtil().DecoTitle(sTitle)
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                    oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle , 'films.png',sThumb, sComm, oOutputParameterHandler)
+                    oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle , 'films.png',sThumb, sDesc, oOutputParameterHandler)
 
             cConfig().finishDialog(dialog)
 
@@ -369,7 +362,6 @@ def showHosters():
 
     #cConfig().log(sUrl)
 
-    #sPattern = '</div><iframe.+?src="(.+?)"|<a rel="nofollow" target="_back" href="([^"]+)" [^<>]+">[^<>]+Redirection<\/a>'
     sPattern = '<div class="video-video"><iframe[^<>]+src="([^"]+)"|<a rel="nofollow" target="_back" href="([^"]+)" [^<>]+">[^<>]+Redirection<\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
