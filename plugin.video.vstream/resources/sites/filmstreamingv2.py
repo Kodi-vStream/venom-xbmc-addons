@@ -147,7 +147,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
@@ -159,10 +159,11 @@ def showMovies(sSearch = ''):
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
+
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<span class="pnext"><a href="([^"]+)">Suivant</a></span>'
+    sPattern = '<span class="pnext"><a href="([^"]+)">Suivant'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -202,7 +203,7 @@ def showMoviesHtml():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if '/les-sagas-' in sUrl:
 			    oGui.addMovie(SITE_IDENTIFIER, 'showSagas', sTitle, '', sThumb, '', oOutputParameterHandler)
@@ -210,6 +211,7 @@ def showMoviesHtml():
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
+
     oGui.setEndOfDirectory()
 
 def showSagas():
@@ -241,11 +243,12 @@ def showSagas():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
+
     oGui.setEndOfDirectory()
 
 def showHosters():
@@ -253,7 +256,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     #recherche des liens de streaming
     oRequestHandler = cRequestHandler(sUrl)
@@ -279,7 +282,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
 
-    sPattern = '<div id="download-quality-([^"]+)"></div><p class="download-size">Taille du fichier: <span class="download-filesize">([^<]+)</span></p>|<a class="download-torrent leta-[^"]+" target="_blank" href="([^"]+)" rel="external noopener noreferrer">([^>]+)</a>'
+    sPattern = '<div id="download-quality-([^"]+)">.+?<span class="download-filesize">([^<]+)</span>|<a class="download-torrent leta-[^"]+" target="_blank" href="([^"]+)" rel="external noopener noreferrer">([^>]+)</a>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     print aResult
@@ -293,11 +296,7 @@ def showHosters():
             if dialog.iscanceled():
                 break
 
-            if aEntry[0]:
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            if aEntry[0]:#affichage format et taille du fichier
                 oGui.addText(SITE_IDENTIFIER, '[COLOR olive]' + str(aEntry[0]) + ' (' + str(aEntry[1]) + ')' + '[/COLOR]')
 
             else:
@@ -306,13 +305,10 @@ def showHosters():
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', aEntry[2])
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-                oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
-
-
-
 
     oGui.setEndOfDirectory()
 
@@ -322,12 +318,11 @@ def Display_protected_link():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumbnail=oInputParameterHandler.getValue('sThumbnail')
+    sThumb=oInputParameterHandler.getValue('sThumb')
 
     oParser = cParser()
 
-
-    #Est ce un lien ushort-links ?
+    #Est ce un lien ushort-links?
     if 'ushort-links' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
@@ -345,13 +340,10 @@ def Display_protected_link():
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         else:
             oDialog = cConfig().createDialogOK('Erreur décryptage du lien')
             aResult_dlprotecte = (False, False)
-
-
-
 
     oGui.setEndOfDirectory()
