@@ -1,572 +1,115 @@
 =============================================================================
 - Version & Repository: https://github.com/Kodi-vStream/venom-xbmc-addons/releases
 - Question & Support: https://github.com/Kodi-vStream/venom-xbmc-addons/issues
-- Suivez les mises a jour en direct : Twitter @lordvenom57
 =============================================================================
 Merci aux généreux donateurs
-- Mor17, Yoann, Stéphane G, Sylvain L, Daniel L, Jean Charles A, 3DWorld, David M, Johnny D, Rachid L, Fabrice M, Patrick C, John G, Warren D.
+- Mor17, Yoann, Stéphane G, Sylvain L, Daniel L, Jean Charles A, 3DWorld, David M, Johnny D, Rachid L, Fabrice M, Patrick C, John G, Warren D, Michael J.
 =============================================================================
 Merci au contributeur de la bêta.
 - Mino60/Chataigne73/Kodigoal/Johngf/Gregwar/Razorex/Lolema
 =============================================================================
 =============================================================================
-- Version 0.5.3 - 37.07.2017
+- Version 0.5.4 - 01.09.2017
 =============================================================================
-04-08-2017 -- @TmpName -- Update hosts.json
-04-08-2017 -- @TmpName -- Update sites.json
-04-08-2017 -- @TmpName -- Merge pull request #1546 from Kodi-vStream/master  Merge pull request #1545 from Kodi-vStream/Beta
-04-08-2017 -- @TmpName -- Merge pull request #1545 from Kodi-vStream/Beta  MAJ 04/08
-04-08-2017 -- @TmpName -- Update planet_streaming.py
-03-08-2017 -- @razorex -- Update libre_stream_org.py  Travail sur le titre transmis et correction bug, pas de liens pour les qualités autres que HD (en cause le titre).
-03-08-2017 -- @Lord Venom -- update french
-03-08-2017 -- @razorex -- Update filmsvostfr_biz.py
-03-08-2017 -- @Lord Venom -- Merge pull request #1539 from Kodi-vStream/razorex-patch-1  Update hoster.py
-03-08-2017 -- @Lord Venom -- close zt.eu
-02-08-2017 -- @razorex -- Update hoster.py
-02-08-2017 -- @razorex -- Update french_stream
-02-08-2017 -- @razorex -- Update french_stream_com.py
-02-08-2017 -- @razorex -- Delete filmenstreaminghd_com.png  site HS
-02-08-2017 -- @TmpName -- Delete filmenstreaminghd_com.py
-02-08-2017 -- @TmpName -- Create filmenstreaminghd_com.py
-02-08-2017 -- @razorex -- Update filmstreamvk_com.py
-02-08-2017 -- @Lord Venom -- vshare aurovid
-02-08-2017 -- @Lord Venom -- update setting  add cinemavf
-02-08-2017 -- @Lord Venom -- unquote
-01-08-2017 -- @razorex -- Update thevideo_me.py
-01-08-2017 -- @razorex -- Create cinemavf
-01-08-2017 -- @razorex -- Create cinemavf.py
-31-07-2017 -- @razorex -- Update googledrive.py
-31-07-2017 -- @Lord Venom -- update
-30-07-2017 -- @Lord Venom -- Merge pull request #1535 from mino60/patch-5  Update topimdb.py
-30-07-2017 -- @mino60 -- Update topimdb.py
-30-07-2017 -- @razorex -- Update flashx.py
-30-07-2017 -- @razorex -- Update filez.py
-30-07-2017 -- @razorex -- Update filetrip.py
-30-07-2017 -- @razorex -- Update filepup.py
-30-07-2017 -- @razorex -- Update facebook.py
-30-07-2017 -- @razorex -- Update estream.py
-30-07-2017 -- @razorex -- Update easywatch.py
-30-07-2017 -- @razorex -- Update easyvid.py
-30-07-2017 -- @razorex -- Update divxstage.py
-30-07-2017 -- @razorex -- Update dailymotion.py
-30-07-2017 -- @razorex -- Update daclips.py
-30-07-2017 -- @razorex -- Update cloudy.py
-30-07-2017 -- @razorex -- Update amazon.py
-30-07-2017 -- @razorex -- Update allmyvideos.py
-30-07-2017 -- @razorex -- Update vidto.py
-30-07-2017 -- @razorex -- Update netu.py
-30-07-2017 -- @razorex -- Update filmstreamvk_com.py
-30-07-2017 -- @razorex -- Update novamov.py
-30-07-2017 -- @razorex -- Update ajouter_un_hebergeur.py
-30-07-2017 -- @TmpName -- Update sokrostream_biz.py
-29-07-2017 -- @TmpName -- Update hosts.json
-29-07-2017 -- @TmpName -- Merge pull request #1534 from Kodi-vStream/master  Master
-29-07-2017 -- @TmpName -- Merge pull request #1533 from Kodi-vStream/Beta  flsx
-29-07-2017 -- @TmpName -- Update flashx.py
-29-07-2017 -- @TmpName -- Update flashx.py
-27-07-2017 -- @Lord Venom -- del info fav
-27-07-2017 -- @Lord Venom -- del tv
-26-07-2017 -- @TmpName -- Merge pull request #1531 from Kodi-vStream/Beta  dfgsdf
-26-07-2017 -- @TmpName -- Update hosts.json
-26-07-2017 -- @TmpName -- Update sites.json
-26-07-2017 -- @TmpName -- Merge pull request #1530 from Kodi-vStream/master  Master
-26-07-2017 -- @TmpName -- Merge pull request #1529 from Kodi-vStream/Beta  MAJ 26/07
-26-07-2017 -- @razorex -- Update ajouter_une_source.py
-26-07-2017 -- @razorex -- Update cinemay_com.py
-25-07-2017 -- @TmpName -- Update adkami_com.py
-25-07-2017 -- @razorex -- Update sokrostream_biz.py
-25-07-2017 -- @Lord Venom -- update
-24-07-2017 -- @Lord Venom -- bug
-24-07-2017 -- @Lord Venom -- bug&deloption
-24-07-2017 -- @razorex -- Update vkstreamingfilm_biz.py
-24-07-2017 -- @Lord Venom -- Update README.md
-24-07-2017 -- @Lord Venom -- update  recherche
-23-07-2017 -- @razorex -- Update vkstreamingfilm_biz.py
-23-07-2017 -- @razorex -- Update papystreaming_org.py
-23-07-2017 -- @Lord Venom -- Merge pull request #1525 from Kodi-vStream/razorex-patch-1  Update papystreaming_org.py
-23-07-2017 -- @TmpName -- Update full_stream_org.py
-23-07-2017 -- @razorex -- Update papystreaming_org.py
-21-07-2017 -- @TmpName -- Update topimdb.py
-21-07-2017 -- @Lord Venom -- Merge pull request #1520 from mino60/patch-4  Update  topimdb.py
-21-07-2017 -- @mino60 -- Update  topimdb.py  Add top Film 2017
-18-07-2017 -- @razorex -- Update filmstreamvk_com.py
-12-07-2017 -- @TmpName -- Merge pull request #1513 from Kodi-vStream/Beta  gfhgf
-12-07-2017 -- @TmpName -- Update hosts.json
-12-07-2017 -- @TmpName -- Update sites.json
-12-07-2017 -- @TmpName -- Merge pull request #1512 from Kodi-vStream/master  Merge pull request #1511 from Kodi-vStream/Beta
-12-07-2017 -- @TmpName -- Merge pull request #1511 from Kodi-vStream/Beta  MAJ 12/07
-12-07-2017 -- @TmpName -- Update film_illimit_fr.py
-11-07-2017 -- @Kodigoal -- Update robindesdroits.py  Fix regex
-11-07-2017 -- @TmpName -- Merge pull request #1506 from Kodi-vStream/master  Master
-11-07-2017 -- @TmpName -- Update cloudy.py
-08-07-2017 -- @razorex -- Add files via upload
-08-07-2017 -- @razorex -- New logo
-08-07-2017 -- @razorex -- Update filmstreamingv2.py
-08-07-2017 -- @razorex -- Update disneyhd_tk.py
-08-07-2017 -- @razorex -- Update filmenstreaminghd_com.py
-08-07-2017 -- @razorex -- Update streamfilmzzz.py
-07-07-2017 -- @razorex -- Update serie_streaminghd.py
-07-07-2017 -- @razorex -- Update libre_stream_org.py
-07-07-2017 -- @TmpName -- Merge pull request #1507 from Kodi-vStream/Beta  Update sites.json
-07-07-2017 -- @TmpName -- Update sites.json
-07-07-2017 -- @TmpName -- Merge pull request #1505 from Kodi-vStream/Beta  MAJ 07/07
-02-07-2017 -- @TmpName -- Update evilox.py
-29-06-2017 -- @TmpName -- Update libre_stream_org.py
-29-06-2017 -- @TmpName -- Merge pull request #1496 from Kodi-vStream/Beta  hgfghh
-29-06-2017 -- @TmpName -- Update hosts.json
-29-06-2017 -- @TmpName -- Update sites.json
-29-06-2017 -- @TmpName -- Merge pull request #1495 from Kodi-vStream/master  Master
-29-06-2017 -- @TmpName -- Merge pull request #1494 from Kodi-vStream/Beta  MAJ 29/06
-29-06-2017 -- @johngf -- fix
-26-06-2017 -- @razorex -- Update streamingk_com.py
-26-06-2017 -- @razorex -- Update streaming_series_xyz.py
-26-06-2017 -- @razorex -- Update streaming_series_org.py
-26-06-2017 -- @razorex -- Update streamcomplet.py
-26-06-2017 -- @razorex -- Update streamay_bz.py
-26-06-2017 -- @razorex -- Update serie_streaminghd.py
-26-06-2017 -- @razorex -- Update planet_streaming.py
-25-06-2017 -- @razorex -- Update megastream.py
-25-06-2017 -- @razorex -- Update cinemay_com.py
-25-06-2017 -- @razorex -- Update buzzmonclick_com.py
-25-06-2017 -- @razorex -- Update filmstreamvk_com.py  modif  __checkForNextPage
-25-06-2017 -- @TmpName -- Merge pull request #1492 from Kodi-vStream/Beta  nvnvb
-25-06-2017 -- @TmpName -- Update hosts.json
-25-06-2017 -- @TmpName -- Update sites.json
-25-06-2017 -- @TmpName -- Merge pull request #1491 from Kodi-vStream/master  Master
-25-06-2017 -- @TmpName -- Merge pull request #1490 from Kodi-vStream/Beta  MAJ 25/06
-25-06-2017 -- @TmpName -- Update flashx.py
-25-06-2017 -- @TmpName -- Update nowvideo.py
-25-06-2017 -- @TmpName -- Update mangacity_org.py
-25-06-2017 -- @TmpName -- Update voirfilms_org.py
-25-06-2017 -- @TmpName -- Update voirfilms_org.py  Regex trop lourd
-24-06-2017 -- @TmpName -- Update series_en_streaming_tv.py
-24-06-2017 -- @TmpName -- Update gui.py
-23-06-2017 -- @LordVenom -- Tv du web
-22-06-2017 -- @TmpName -- Update flashx.py
-22-06-2017 -- @LordVenom -- gui append
-22-06-2017 -- @TmpName -- Merge pull request #1485 from Kodi-vStream/Beta  gbffd
-22-06-2017 -- @TmpName -- Update sites.json
-22-06-2017 -- @TmpName -- Merge pull request #1484 from Kodi-vStream/master  Master
-22-06-2017 -- @TmpName -- Merge pull request #1483 from Kodi-vStream/Beta  MAJ 22/06
-22-06-2017 -- @TmpName -- Update filmstreamvk_com.py
-21-06-2017 -- @TmpName -- Update zone_telechargement_ws.py
-21-06-2017 -- @TmpName -- Update zone_telechargement_ws.py
-21-06-2017 -- @TmpName -- Merge pull request #1482 from razorex/patch-293  Update filmsvostfr_biz.py
-21-06-2017 -- @razorex -- Add files via upload
-21-06-2017 -- @razorex -- Update filmsvostfr_biz.py
-20-06-2017 -- @TmpName -- Update free_telechargement_org.py
-19-06-2017 -- @chataigne73 -- Update filmstreamingv2.py
-18-06-2017 -- @johngf -- remise  remise comme avant en attendant la maj mensuel
-17-06-2017 -- @vic1997 -- Update webtv2.m3u
-17-06-2017 -- @TmpName -- Merge pull request #1477 from Kodi-vStream/Beta  bv
-17-06-2017 -- @TmpName -- Update sites.json
-17-06-2017 -- @TmpName -- Merge pull request #1476 from Kodi-vStream/master  Master
-17-06-2017 -- @TmpName -- Merge pull request #1475 from Kodi-vStream/Beta  MAJ 17/06
-17-06-2017 -- @johngf -- Delete replay_documentaire_com.png
-17-06-2017 -- @johngf -- Update strings.po
-16-06-2017 -- @johngf -- Update youtube.py
-15-06-2017 -- @TmpName -- Create default.py
-15-06-2017 -- @TmpName -- Create gui.py
-15-06-2017 -- @chataigne73 -- Update zone_telechargement_ws.py  amelioration fonction recherche
-15-06-2017 -- @johngf -- Create gui.py
-15-06-2017 -- @johngf -- Create strings.po
-15-06-2017 -- @johngf -- Create strings.po
-14-06-2017 -- @TmpName -- Create ddl_island_su.py
-14-06-2017 -- @TmpName -- Create libre_stream_org.py
-14-06-2017 -- @TmpName -- Create series_en_streaming_tv.py
-14-06-2017 -- @TmpName -- Create favourite.py
-13-06-2017 -- @TmpName -- Merge pull request #1470 from Kodi-vStream/Beta  cbfdg
-13-06-2017 -- @TmpName -- Create hosts.json
-13-06-2017 -- @TmpName -- Create sites.json
-13-06-2017 -- @TmpName -- Merge pull request #1469 from Kodi-vStream/master  Master
-13-06-2017 -- @TmpName -- Merge pull request #1468 from Kodi-vStream/Beta  MAJ 13/06
-13-06-2017 -- @TmpName -- Create free_telechargement_org.py
-11-06-2017 -- @johngf -- Update settings.xml
-11-06-2017 -- @TmpName -- Merge pull request #1456 from razorex/patch-285  Delete frenchstream_org.png
-11-06-2017 -- @TmpName -- Merge pull request #1455 from razorex/patch-284  Delete film_streaming_co.png
-11-06-2017 -- @TmpName -- Merge pull request #1457 from razorex/patch-286  Delete hd_stream_in.png
-11-06-2017 -- @TmpName -- Merge pull request #1458 from razorex/patch-287  Delete zone_telechargement_com.png
-10-06-2017 -- @TmpName -- Update papystreaming_org.py
-10-06-2017 -- @TmpName -- Create french_stream_com.py
-10-06-2017 -- @TmpName -- Create french_stream_com.py
-09-06-2017 -- @TmpName -- Create papystreaming_org.py
-09-06-2017 -- @TmpName -- Create papystreaming_org.py  Non fonctionnel encore, on obtient un lien youtube.
-09-06-2017 -- @TmpName -- Merge pull request #1463 from razorex/patch-291  Update ajouter_une_source.py
-09-06-2017 -- @razorex -- Create ajouter_une_source.py
-08-06-2017 -- @razorex -- Create ajouter_une_source.py  Correction d'un beug MOVIE'S' dans le menu
-08-06-2017 -- @TmpName -- Merge pull request #1460 from razorex/patch-288  Update filmstreamingv2.py
-08-06-2017 -- @TmpName -- Merge pull request #1461 from razorex/patch-289  Create strings.po
-08-06-2017 -- @razorex -- Create strings.po
-08-06-2017 -- @razorex -- Create filmstreamingv2.py  Rajout de menus. correction récupération de l'URL d'affichage des posters.
-07-06-2017 -- @razorex -- Delete zone_telechargement_com.png  Trash
-07-06-2017 -- @razorex -- Delete hd_stream_in.png  trash
-07-06-2017 -- @razorex -- Delete frenchstream_org.png  Trash
-07-06-2017 -- @razorex -- Delete film_streaming_co.png  Trash
-06-06-2017 -- @TmpName -- Merge pull request #1451 from razorex/patch-283  Update streamfilmzzz.py
-05-06-2017 -- @razorex -- Update streamfilmzzz.py
-05-06-2017 -- @TmpName -- Update streamingk_com.py
-05-06-2017 -- @TmpName -- Update streamingk_com.py
-04-06-2017 -- @TmpName -- Update tmdb.py
-04-06-2017 -- @johngf -- Update streamiz_co.py
-04-06-2017 -- @johngf -- Update util.py
-04-06-2017 -- @TmpName -- Merge pull request #1445 from Kodi-vStream/Beta  fghhfg
-04-06-2017 -- @TmpName -- Update hosts.json
-04-06-2017 -- @TmpName -- Update sites.json
-04-06-2017 -- @TmpName -- Merge pull request #1444 from Kodi-vStream/master  Master
-04-06-2017 -- @TmpName -- Merge pull request #1443 from Kodi-vStream/Beta  MAJ 04/06
-04-06-2017 -- @TmpName -- Update zone_telechargement_ws.py
-04-06-2017 -- @johngf -- year
-04-06-2017 -- @johngf -- slash
-04-06-2017 -- @johngf -- Update util.py
-04-06-2017 -- @johngf -- year
-04-06-2017 -- @johngf -- en cours..
-04-06-2017 -- @johngf -- dialog Year pour les sites
-03-06-2017 -- @chataigne73 -- Creation filmstreamingv2
-03-06-2017 -- @TmpName -- Merge pull request #1441 from razorex/patch-280  Update filmstreamvk_com.py
-03-06-2017 -- @TmpName -- Merge pull request #1442 from razorex/patch-281  Update streamiz_co.py
-03-06-2017 -- @razorex -- Update streamiz_co.py  récupération auto des genres (avec la quantités) et des années.
-03-06-2017 -- @johngf -- oubli
-03-06-2017 -- @johngf -- new site en cours ...
-03-06-2017 -- @razorex -- Update filmstreamvk_com.py
-03-06-2017 -- @razorex -- Update filmstreamvk_com.py
-03-06-2017 -- @johngf -- Update sokrostream_biz.py
-03-06-2017 -- @johngf -- Update vidup.py
-03-06-2017 -- @johngf -- Update netu.py
-03-06-2017 -- @johngf -- Update streamcomplet.py
-03-06-2017 -- @johngf -- Update voirfilms_org.py
-02-06-2017 -- @vic1997 -- Nouvelles chaines
-02-06-2017 -- @TmpName -- Update serie_streaming_watch.py
-02-06-2017 -- @TmpName -- Update mangacity_org.py
-02-06-2017 -- @TmpName -- Update mangacity_org.py
-02-06-2017 -- @TmpName -- Update film_illimit_fr.py
-02-06-2017 -- @TmpName -- Update streamcomplet.py
-02-06-2017 -- @TmpName -- Update streamcomplet.py
-02-06-2017 -- @TmpName -- Update streamase_com.py
-02-06-2017 -- @TmpName -- Merge pull request #1430 from razorex/patch-279  Update film_illimit_fr.py
-02-06-2017 -- @TmpName -- Merge pull request #1438 from Kodi-vStream/Beta  fdgdg
-02-06-2017 -- @TmpName -- Update hosts.json
-02-06-2017 -- @TmpName -- Update sites.json
-02-06-2017 -- @TmpName -- Merge pull request #1437 from Kodi-vStream/master  Merge pull request #1436 from Kodi-vStream/Beta
-02-06-2017 -- @TmpName -- Merge pull request #1436 from Kodi-vStream/Beta  MAJ 02/06
-02-06-2017 -- @johngf -- Delete filmstreamingz_fr.png
-02-06-2017 -- @johngf -- Update and rename filmstreamingz_fr.py to streamiz_co.py  remplacement
-02-06-2017 -- @johngf -- nettoyage
-02-06-2017 -- @johngf -- Update hoster.py
-01-06-2017 -- @johngf -- Delete enquetedereportages_com.png
-01-06-2017 -- @johngf -- Delete ddlfrench_org.png
-01-06-2017 -- @johngf -- Update thevideo_me.py
-01-06-2017 -- @johngf -- Update hdvid.py
-01-06-2017 -- @johngf -- Update filmsvostfr_biz.py
-01-06-2017 -- @johngf -- pas de clic sur url non valide
-01-06-2017 -- @johngf -- Update filmsvostfr_biz.py
-01-06-2017 -- @johngf -- Update thevideo_me.py
-01-06-2017 -- @johngf -- Update hoster.py
-01-06-2017 -- @johngf -- Update vidabc.py
-01-06-2017 -- @johngf -- Update nowvideo.py
-01-06-2017 -- @johngf -- remise en place
-31-05-2017 -- @vic1997 -- Nouvelles chaines
-31-05-2017 -- @razorex -- Update film_illimit_fr.py  nextPage
-30-05-2017 -- @razorex -- Update film_illimit_fr.py  ajout recherche par années pour les films et travail des titres.
-30-05-2017 -- @TmpName -- Update netu.py
-30-05-2017 -- @TmpName -- Merge pull request #1428 from vic1997/patch-4  Mise à jour des chaines
-30-05-2017 -- @vic1997 -- Mise à jour des chaines  - Retirer les liens morts.
-30-05-2017 -- @LordVenom -- bug reload
-30-05-2017 -- @johngf -- Update thevideo_me.py
-30-05-2017 -- @johngf -- Update voirfilms_org.py
-29-05-2017 -- @TmpName -- Merge pull request #1425 from Kodi-vStream/master  Merge pull request #1424 from Kodi-vStream/Beta
-29-05-2017 -- @TmpName -- Merge pull request #1424 from Kodi-vStream/Beta  gdfgf
-29-05-2017 -- @TmpName -- Update hosts.json
-29-05-2017 -- @TmpName -- Update sites.json
-29-05-2017 -- @TmpName -- Merge pull request #1423 from Kodi-vStream/master  Master
-29-05-2017 -- @TmpName -- Merge pull request #1422 from Kodi-vStream/Beta  MAJ 29/05
-29-05-2017 -- @TmpName -- Update kaydo_ws.py
-29-05-2017 -- @johngf -- del mangas serielinks ajout langue
-29-05-2017 -- @Lord Venom -- Merge pull request #1421 from vic1997/patch-3  Ajout de nouvelles chaines
-29-05-2017 -- @johngf -- pas finis
-29-05-2017 -- @johngf -- pas finis
-29-05-2017 -- @vic1997 -- Ajout de nouvelles chaines  - Ajout de plusieurs nouvelles chaines.
- - Différente source (si une ne marche plus, l'autre peut marcher).
- - Lignes sans logo, sans groupe, sans id, sans nom (je prépare l'ajout automatique de ces 4 attributs d'ici 2-3 semaines).
-29-05-2017 -- @LordVenom -- bug reload
-29-05-2017 -- @johngf -- Update nowvideo.py
-28-05-2017 -- @TmpName -- Update about.py
-28-05-2017 -- @TmpName -- Merge pull request #1419 from Kodi-vStream/Beta  gffhfg
-28-05-2017 -- @TmpName -- Update sites.json
-28-05-2017 -- @TmpName -- Merge pull request #1418 from Kodi-vStream/master  Master
-28-05-2017 -- @TmpName -- Merge pull request #1417 from Kodi-vStream/Beta  MAJ 28/05
-28-05-2017 -- @TmpName -- Update gui.py
-28-05-2017 -- @johngf -- fix nb episode serie mais ..  Certaine série nécessite d'avoir un compte chez eux (non pris en charge)
-27-05-2017 -- @Lord Venom -- Merge pull request #1415 from razorex/patch-278  Update cinemay_com.py
-27-05-2017 -- @razorex -- Update cinemay_com.py
-26-05-2017 -- @TmpName -- Update config.py
-26-05-2017 -- @TmpName -- Update tmdb.py
-26-05-2017 -- @TmpName -- Update guiElement.py
-26-05-2017 -- @TmpName -- Update guiElement.py  Va etre modifie directmeent dans cConfig()
-26-05-2017 -- @TmpName -- Update tmdb.py  Va etre modifie directement dans cConfig()
-25-05-2017 -- @Lord Venom -- Merge pull request #1413 from Kodi-vStream/Beta  25/05
-25-05-2017 -- @Lord Venom -- Merge pull request #1412 from vic1997/patch-2  Ajout Being Sport 1,2,3 et quelques autres chaines
-25-05-2017 -- @LordVenom -- bug marquer lu
-25-05-2017 -- @vic1997 -- Ajout Being Sport 1,2,3 et quelques autres chaines
-25-05-2017 -- @LordVenom -- update gui
-25-05-2017 -- @TmpName -- Update about.py
-25-05-2017 -- @TmpName -- Update about.py
-25-05-2017 -- @Lord Venom -- Merge pull request #1409 from Kodi-vStream/Beta  mise ajour tv
-25-05-2017 -- @Lord Venom -- Merge pull request #1408 from lolema/patch-6  Update tv.xml
-25-05-2017 -- @johngf -- Merge pull request #1407 from razorex/patch-274  Update streamzzz_com.py
-25-05-2017 -- @johngf -- Merge pull request #1406 from razorex/patch-271  Rename streamfilmzzz to streamfilmzzz.py
-25-05-2017 -- @johngf -- Update hoster.py
-25-05-2017 -- @johngf -- Create vidoza.py
-24-05-2017 -- @lolema -- Update tv.xml
-24-05-2017 -- @razorex -- Update streamzzz_com.py
-24-05-2017 -- @razorex -- Rename streamfilmzzz to streamfilmzzz.py
-24-05-2017 -- @Lord Venom -- Update tv.xml
-24-05-2017 -- @Lord Venom -- Merge pull request #1401 from lolema/patch-5  Update tv.xml
-23-05-2017 -- @Kodigoal -- Update tvrex_net
-23-05-2017 -- @TmpName -- Merge pull request #1399 from vic1997/patch-1  Mis à jour des liens
-23-05-2017 -- @vic1997 -- Mis à jour des liens  Mise à jour des liens pour quelques chaines.
-22-05-2017 -- @Kodigoal -- Update tvrex_net  Refait fichier car modif récente a tout cassé.
- Fix rajout des liens vidéos  Replay non embed sur la page.
-22-05-2017 -- @chataigne73 -- Update frenchddl_com.py
-22-05-2017 -- @chataigne73 -- Update disneyhd_tk.py
-22-05-2017 -- @LordVenom -- vuenonvue
-21-05-2017 -- @TmpName -- Merge pull request #1396 from Kodi-vStream/Beta  bnvnb
-21-05-2017 -- @TmpName -- Update sites.json
-21-05-2017 -- @TmpName -- Merge pull request #1395 from Kodi-vStream/master  Master
-21-05-2017 -- @TmpName -- Update sites.json
-21-05-2017 -- @TmpName -- Merge pull request #1394 from Kodi-vStream/Beta  Update kaydo_ws.py
-21-05-2017 -- @TmpName -- Update kaydo_ws.py
-21-05-2017 -- @TmpName -- Merge pull request #1392 from Kodi-vStream/Beta  vbnv
-21-05-2017 -- @TmpName -- Update sites.json
-21-05-2017 -- @TmpName -- Merge pull request #1391 from Kodi-vStream/master  Master
-21-05-2017 -- @TmpName -- Merge pull request #1390 from Kodi-vStream/Beta  MAJ 21/05
-21-05-2017 -- @TmpName -- Merge pull request #1388 from razorex/patch-270  Create streamfilmzzz
-21-05-2017 -- @Kodigoal -- Merge pull request #1377 from razorex/patch-269  Update tvrex_net.py
-20-05-2017 -- @chataigne73 -- Update streamase_com.py
-20-05-2017 -- @chataigne73 -- Merge pull request #1387 from Ryuk999/Beta  Decodage des URLs dl protecte
-20-05-2017 -- @razorex -- Create streamfilmzzz
-20-05-2017 -- @Ryuk999 -- Decodage des URLs dl protecte
-20-05-2017 -- @TmpName -- Merge pull request #1386 from Kodi-vStream/Beta  vbbvv
-20-05-2017 -- @TmpName -- Update hosts.json
-20-05-2017 -- @TmpName -- Update sites.json
-20-05-2017 -- @TmpName -- Merge pull request #1385 from Kodi-vStream/master  Master
-20-05-2017 -- @TmpName -- Merge pull request #1384 from Kodi-vStream/Beta  MAJ 20/05
-20-05-2017 -- @TmpName -- Update netu.py
-19-05-2017 -- @razorex -- Update tvrex_net.py
-19-05-2017 -- @razorex -- Update tvrex_net.py
-19-05-2017 -- @lolema -- Update tv.xml
-18-05-2017 -- @Lord Venom -- Merge pull request #1381 from lolema/patch-4  Update tv.xml
-16-05-2017 -- @razorex -- Update tvrex_net.py  Menu genres états/équipes
-15-05-2017 -- @LordVenom -- img
-15-05-2017 -- @Lord Venom -- Merge pull request #1353 from razorex/patch-244  Update streaming_series_org.py
-15-05-2017 -- @LordVenom -- img
-15-05-2017 -- @Lord Venom -- Merge pull request #1373 from razorex/patch-268  Update zone_telechargement_ws.py
-15-05-2017 -- @Lord Venom -- Merge pull request #1372 from razorex/patch-267  Update zone_telechargement_eu.py
-15-05-2017 -- @Lord Venom -- Merge pull request #1369 from razorex/patch-263  Update vkstreamingfilm_biz.py
-15-05-2017 -- @Lord Venom -- Merge pull request #1368 from razorex/patch-262  Update videobuzzy_com.py
-15-05-2017 -- @Lord Venom -- Merge pull request #1366 from razorex/patch-258  Update tv_streaming_ch.py
-14-05-2017 -- @razorex -- Update zone_telechargement_ws.py
-14-05-2017 -- @razorex -- Update zone_telechargement_eu.py
-14-05-2017 -- @TmpName -- Merge pull request #1370 from razorex/patch-265  Update ajouter_une_source.py
-14-05-2017 -- @TmpName -- Merge pull request #1371 from razorex/patch-266  Update voirfilms_org.py
-14-05-2017 -- @razorex -- Update voirfilms_org.py  Remplacement de la recherche par années
-14-05-2017 -- @razorex -- Update ajouter_une_source.py  ajout de menu
-14-05-2017 -- @lolema -- Update tv.xml
-14-05-2017 -- @razorex -- Update vkstreamingfilm_biz.py
-14-05-2017 -- @razorex -- Update videobuzzy_com.py
-14-05-2017 -- @razorex -- Update tv_streaming_ch.py  Modifications filtrage dans showMovie, correction liens mangas vf et vostfr
-14-05-2017 -- @TmpName -- Merge pull request #1364 from razorex/patch-254  Update topreplay.py
-14-05-2017 -- @TmpName -- Merge pull request #1362 from razorex/patch-252  Update tntv_rattrapage.py
-14-05-2017 -- @TmpName -- Merge pull request #1363 from razorex/patch-253  Update topimdb.py
-13-05-2017 -- @razorex -- Update topreplay.py
-13-05-2017 -- @razorex -- Update topimdb.py
-13-05-2017 -- @razorex -- Update tntv_rattrapage.py
-13-05-2017 -- @Lord Venom -- Merge pull request #1361 from Kodi-vStream/Beta  13/04
-13-05-2017 -- @Lord Venom -- Update hosts.json
-13-05-2017 -- @Lord Venom -- Update sites.json
-13-05-2017 -- @Lord Venom -- Merge pull request #1360 from Kodi-vStream/Beta  13/04
-13-05-2017 -- @Lord Venom -- Merge pull request #1359 from lolema/patch-3  Update tv.xml
-13-05-2017 -- @Lord Venom -- Merge pull request #1350 from razorex/patch-240  Update streamase_com.py
-13-05-2017 -- @Lord Venom -- Merge pull request #1351 from razorex/patch-241  Update streamay_bz.py
-13-05-2017 -- @Lord Venom -- Merge pull request #1352 from razorex/patch-242  Update streamcomplet.py
-13-05-2017 -- @Lord Venom -- Merge pull request #1354 from razorex/patch-247  Update streaming_series_xyz.py
-13-05-2017 -- @Lord Venom -- Merge pull request #1358 from razorex/patch-251  Update themoviedb_org.py
-13-05-2017 -- @TmpName -- Merge pull request #1356 from razorex/patch-248  Update streamingk_com.py
-13-05-2017 -- @TmpName -- Merge pull request #1357 from razorex/patch-250  Update streamzzz_com.py
-12-05-2017 -- @lolema -- Update tv.xml
-12-05-2017 -- @razorex -- Update themoviedb_org.py  addNext
-12-05-2017 -- @razorex -- Update streamzzz_com.py
-12-05-2017 -- @razorex -- Update streamingk_com.py
-12-05-2017 -- @razorex -- Update streamingk_com.py  ajout de menus dans les séries.
-11-05-2017 -- @razorex -- Update streaming_series_xyz.py  Modif affichage du titre
-11-05-2017 -- @razorex -- Update streaming_series_org.py  Changement d'adresse, ajout d'un menu VF
-11-05-2017 -- @razorex -- Update streamcomplet.py
-11-05-2017 -- @razorex -- Update streamay_bz.py
-11-05-2017 -- @razorex -- Update streamase_com.py  Rajout recherche par années (films et séries); url; modif des genres (dissocié)
-11-05-2017 -- @TmpName -- Merge pull request #1347 from razorex/patch-237  Update siteuptobox.py
-11-05-2017 -- @TmpName -- Merge pull request #1345 from razorex/patch-230  Update serie_streaminghd.py
-11-05-2017 -- @TmpName -- Merge pull request #1346 from razorex/patch-236  Update series_en_streaming_tv.py
-11-05-2017 -- @TmpName -- Merge pull request #1348 from razorex/patch-238  Update sokrostream_biz.py
-11-05-2017 -- @TmpName -- Merge pull request #1349 from razorex/patch-239  Update spion_com.py
-10-05-2017 -- @razorex -- Update spion_com.py
-10-05-2017 -- @razorex -- Update sokrostream_biz.py  Travail sur les menus années
-10-05-2017 -- @razorex -- Update series_en_streaming_tv.py
-10-05-2017 -- @razorex -- Update serie_streaminghd.py
-10-05-2017 -- @razorex -- Update siteuptobox.py
-10-05-2017 -- @razorex -- Update series_en_streaming_tv.py
-10-05-2017 -- @razorex -- Update serie_streaminghd.py
-10-05-2017 -- @Lord Venom -- Merge pull request #1323 from razorex/patch-213  Update mangacity_org.py
-10-05-2017 -- @Lord Venom -- Merge pull request #1332 from razorex/patch-224  Update regarder_films.py
-10-05-2017 -- @Lord Venom -- Merge pull request #1341 from razorex/patch-226  Update replaytvstreaming_com.py
-10-05-2017 -- @Lord Venom -- Merge pull request #1342 from razorex/patch-227  Update reportagestv_com.py
-10-05-2017 -- @LordVenom -- title clean et meta lecteur
-10-05-2017 -- @TmpName -- Create captcha.py  Pour future version.
-10-05-2017 -- @TmpName -- Merge pull request #1343 from razorex/patch-228  Update robindesdroits.py
-10-05-2017 -- @TmpName -- Merge pull request #1340 from razorex/patch-225  Update replay_documentaire_com.py
-10-05-2017 -- @TmpName -- Merge pull request #1344 from razorex/patch-229  Update serie_streaming_watch.py
-09-05-2017 -- @razorex -- Update serie_streaming_watch.py
-09-05-2017 -- @razorex -- Update robindesdroits.py
-09-05-2017 -- @razorex -- Update reportagestv_com.py
-09-05-2017 -- @razorex -- Update replaytvstreaming_com.py  Modif URL_MAIN + menu +addNext
-09-05-2017 -- @Kodigoal -- Update tvrex_net.py  Fix stream replay openload
- Ajout menu live 24/24 chaine nbaTV
- Ajout menu replay 2017 playoffs +  menu replay all star Weekend
-09-05-2017 -- @TmpName -- Update default.py
-09-05-2017 -- @TmpName -- Update default.py  Pour afficher cette put1 de ligne ou se trouve l'erreur.
-09-05-2017 -- @razorex -- Update replay_documentaire_com.py
-09-05-2017 -- @TmpName -- Merge pull request #1339 from Kodi-vStream/Beta  rthfg
-09-05-2017 -- @TmpName -- Merge pull request #1338 from Kodi-vStream/master  Merge pull request #1337 from Kodi-vStream/Beta
-09-05-2017 -- @TmpName -- Update hosts.json
-09-05-2017 -- @TmpName -- Update sites.json
-09-05-2017 -- @TmpName -- Merge pull request #1337 from Kodi-vStream/Beta  gfhfg
-09-05-2017 -- @TmpName -- Merge pull request #1330 from razorex/patch-222  Update planet_streaming.py
-09-05-2017 -- @TmpName -- Merge pull request #1328 from razorex/patch-220  Update otakufr_com.py
-09-05-2017 -- @TmpName -- Merge pull request #1326 from razorex/patch-218  Update megastream.py
-09-05-2017 -- @TmpName -- Merge pull request #1317 from razorex/patch-209  Update libertyland_tv.py
-09-05-2017 -- @TmpName -- Merge pull request #1336 from Kodi-vStream/master  Master
-09-05-2017 -- @TmpName -- Merge pull request #1335 from Kodi-vStream/Beta  MAJ 09/05
-09-05-2017 -- @TmpName -- Update ok_ru.py  Modif en attente.
-09-05-2017 -- @TmpName -- Update cloudy.py
-09-05-2017 -- @TmpName -- Update ok_ru.py
-09-05-2017 -- @TmpName -- Delete png.py
-09-05-2017 -- @TmpName -- Create png.py
-09-05-2017 -- @TmpName -- Delete jsunpacker.py
-09-05-2017 -- @TmpName -- Delete dl_deprotect.py
-09-05-2017 -- @TmpName -- Create dl_deprotect.py
-09-05-2017 -- @TmpName -- Update ddl_island_su.py
-09-05-2017 -- @TmpName -- Update ddl_island_su.py
-09-05-2017 -- @TmpName -- Update netu.py
-09-05-2017 -- @johngf -- Update voirfilms_org.py
-09-05-2017 -- @TmpName -- Update ddl_island_su.py
-09-05-2017 -- @TmpName -- Update ddl_island_su.py
-09-05-2017 -- @TmpName -- Update ddl_island_su.py
-09-05-2017 -- @johngf -- Update vidtodo.py
-09-05-2017 -- @johngf -- Merge pull request #1322 from razorex/patch-211  Update filmsvostfr_biz.py
-09-05-2017 -- @johngf -- Update util.py  fix erreur au premier démarrage de vstream sur nouvelle install
- 'DIALOG2' is used prior to global declaration
-09-05-2017 -- @johngf -- Update config.py  fix erreur au premier démarrage de vstream sur nouvelle install
- 'DIALOG2' is used prior to global declaration
-09-05-2017 -- @johngf -- Merge pull request #1309 from razorex/patch-198  Update french_stream_com.py
-09-05-2017 -- @johngf -- Merge pull request #1324 from razorex/patch-214  Update mareplaytv.py
-09-05-2017 -- @johngf -- Merge pull request #1316 from razorex/patch-206  Update les_docus.py
-08-05-2017 -- @Kodigoal -- Update ddl_island_su.py  Activation affichage Captcha via dialogCaptcha.xml
-08-05-2017 -- @johngf -- Update runscript.py
-08-05-2017 -- @razorex -- Update regarder_films.py
-08-05-2017 -- @TmpName -- Update ddl_island_su.py
-08-05-2017 -- @johngf -- Merge pull request #1331 from Arias800/patch-9  Mangas plus dispo sur le site (erreur 405)
-08-05-2017 -- @TmpName -- Merge pull request #1329 from razorex/patch-221  Update papystreaming_org.py
-08-05-2017 -- @Arias800 -- Update streamase_com.py
-08-05-2017 -- @johngf -- Update replay_documentaire_com.py
-08-05-2017 -- @Arias800 -- Mangas plus dispo sur le site (erreur 405)
-08-05-2017 -- @johngf -- Update voirfilms_org.py
-07-05-2017 -- @razorex -- Update planet_streaming.py
-07-05-2017 -- @razorex -- Update papystreaming_org.py  Affichage du titre(titre/qual+lang/hotes) et addNext
-07-05-2017 -- @TmpName -- Merge pull request #1327 from razorex/patch-219  Update neuf_docu.py
-07-05-2017 -- @razorex -- Update otakufr_com.py
-07-05-2017 -- @Kodigoal -- Create malaisetv.py  Comeback via leur compte twitter.
- Forcer affichage vignette ( que les dates en titre en mode liste c'est moyen, à voir ..)
- Lancement des vidéos en 1 clic.
-07-05-2017 -- @razorex -- Update neuf_docu.py
-07-05-2017 -- @razorex -- Update megastream.py
-07-05-2017 -- @razorex -- Update mareplaytv.py  modif addNext
-07-05-2017 -- @razorex -- Update mangacity_org.py  Rajout des films et séries.
-07-05-2017 -- @johngf -- Update otakufr_com.py
-07-05-2017 -- @johngf -- Update streamay_bz.py
-07-05-2017 -- @TmpName -- Update raptu.py
-07-05-2017 -- @TmpName -- Merge pull request #1321 from razorex/patch-210  Update libre_stream_org.py
-07-05-2017 -- @TmpName -- Update util.py
-07-05-2017 -- @johngf -- Update ok_ru.py
-07-05-2017 -- @johngf -- inutile
-07-05-2017 -- @razorex -- Update filmsvostfr_biz.py  Correction menu films
-07-05-2017 -- @johngf -- Update tune.py
-07-05-2017 -- @razorex -- Update libre_stream_org.py
-07-05-2017 -- @TmpName -- Merge pull request #1320 from Kodi-vStream/Beta  fgdfg
-07-05-2017 -- @TmpName -- Update sites.json
-07-05-2017 -- @TmpName -- Merge pull request #1319 from Kodi-vStream/master  Master
-07-05-2017 -- @TmpName -- Update sites.json
-07-05-2017 -- @TmpName -- Merge pull request #1318 from Kodi-vStream/Beta  MAJ 07/05
-07-05-2017 -- @TmpName -- Merge pull request #1310 from razorex/patch-199  Update frenchddl_com.py
-07-05-2017 -- @TmpName -- Merge pull request #1311 from razorex/patch-200  Update full_stream_org.py
-07-05-2017 -- @TmpName -- Merge pull request #1312 from razorex/patch-201  Update fullmoviz_org.py
-07-05-2017 -- @TmpName -- Merge pull request #1313 from razorex/patch-202  Update gum_gum_streaming_com.py
-07-05-2017 -- @TmpName -- Merge pull request #1314 from razorex/patch-203  Update kaydo_ws.py
-07-05-2017 -- @TmpName -- Merge pull request #1315 from razorex/patch-204  Update kepliz_com.py
-06-05-2017 -- @razorex -- Update libertyland_tv.py
-06-05-2017 -- @razorex -- Update libertyland_tv.py
-06-05-2017 -- @razorex -- Update les_docus.py
-06-05-2017 -- @razorex -- Update kepliz_com.py  Ajout du menu anim_news et anim_anims
-06-05-2017 -- @razorex -- Update kaydo_ws.py
-06-05-2017 -- @razorex -- Update gum_gum_streaming_com.py
-06-05-2017 -- @razorex -- Update fullmoviz_org.py
-06-05-2017 -- @razorex -- Update full_stream_org.py
-06-05-2017 -- @razorex -- Update frenchddl_com.py
-06-05-2017 -- @razorex -- Update french_stream_com.py
-06-05-2017 -- @TmpName -- Update mangacity_org.py
-06-05-2017 -- @TmpName -- Update mangacity_org.py
-06-05-2017 -- @TmpName -- Update zone_telechargement_ws.py
-06-05-2017 -- @johngf -- Update ok_ru.py
-06-05-2017 -- @TmpName -- Merge pull request #1308 from Kodi-vStream/Beta  Update voirfilms_org.py
-06-05-2017 -- @TmpName -- Update voirfilms_org.py  Bug recherche, pas teste les regex.
-06-05-2017 -- @TmpName -- Merge pull request #1307 from Kodi-vStream/Beta  sdsd
-06-05-2017 -- @TmpName -- Update hosts.json
-06-05-2017 -- @TmpName -- Update sites.json
-06-05-2017 -- @TmpName -- Merge pull request #1306 from Kodi-vStream/master  Master
-06-05-2017 -- @TmpName -- Merge pull request #1305 from Kodi-vStream/Beta  MAJ 06/04
-06-05-2017 -- @johngf -- Update ok_ru.py
-06-05-2017 -- @johngf -- Update ok_ru.py  test a appronfondir
-06-05-2017 -- @Lord Venom -- Merge pull request #1304 from razorex/patch-196  Update free_telechargement_org.py
-06-05-2017 -- @Lord Venom -- Merge pull request #1303 from razorex/patch-193  Update filmsvostfr_biz.py
-06-05-2017 -- @razorex -- Update free_telechargement_org.py
-05-05-2017 -- @razorex -- Update filmsvostfr_biz.py
-05-05-2017 -- @Lord Venom -- Merge pull request #1296 from razorex/patch-185  Update alluc_ee.py
-05-05-2017 -- @Lord Venom -- Merge pull request #1297 from razorex/patch-186  Update buzzmonclick_com.py
-05-05-2017 -- @Lord Venom -- Merge pull request #1298 from razorex/patch-187  Update cinemay_com.py
-05-05-2017 -- @Lord Venom -- Merge pull request #1299 from razorex/patch-188  Update ddl_island_su.py
-05-05-2017 -- @Lord Venom -- Merge pull request #1301 from razorex/patch-189  Update ddlfrench_org.py
-05-05-2017 -- @Lord Venom -- Merge pull request #1302 from razorex/patch-190  Update documovies.py
-05-05-2017 -- @razorex -- Update documovies.py
-05-05-2017 -- @razorex -- Update ddlfrench_org.py
-04-05-2017 -- @razorex -- Update ddl_island_su.py  Remplacement addDir par addNext
-04-05-2017 -- @razorex -- Update cinemay_com.py  remplacement addDir par addNext
-04-05-2017 -- @razorex -- Update buzzmonclick_com.py
-04-05-2017 -- @razorex -- Update alluc_ee.py
-04-05-2017 -- @TmpName -- Merge pull request #1295 from Kodi-vStream/Beta  dsgf
-04-05-2017 -- @TmpName -- Update sites.json
-04-05-2017 -- @TmpName -- Merge pull request #1294 from Kodi-vStream/master  Master
-04-05-2017 -- @TmpName -- Merge pull request #1293 from Kodi-vStream/Beta  MAJ 04/05/17
-04-05-2017 -- @TmpName -- Update premiumHandler.py
-04-05-2017 -- @TmpName -- Update siteuptobox.py
-04-05-2017 -- @Kodigoal -- Rename plugin.video.vstream/resources/sites/malaisetv.py to plugin.video.vstream/resources/sites/trash/malaisetv.py  Arrêt du site.
- Poste les vidéos que sur compte twitter.
-04-05-2017 -- @johngf -- Merge pull request #1291 from razorex/patch-184  Update filmsvostfr_biz.py
-04-05-2017 -- @johngf -- Merge pull request #1289 from razorex/patch-182  Update filmenstreaminghd_com.py
-04-05-2017 -- @johngf -- Merge pull request #1288 from razorex/patch-181  Update film_illimit_fr.py
-04-05-2017 -- @johngf -- Merge pull request #1290 from razorex/patch-183  Update filmstreamvk_com.py
-04-05-2017 -- @razorex -- Update filmsvostfr_biz.py
-04-05-2017 -- @razorex -- Update filmstreamvk_com.py  Correction nextPage et optimisation regex
-04-05-2017 -- @razorex -- Update filmenstreaminghd_com.py  déplacement de la version (Vostfr....) en fin de titre. modif next page.
-03-05-2017 -- @razorex -- Update film_illimit_fr.py
-03-05-2017 -- @Lord Venom -- Merge pull request #1287 from razorex/patch-180  Update evilox.py
-03-05-2017 -- @razorex -- Update evilox.py
-03-05-2017 -- @LordVenom -- remove plus
-03-05-2017 -- @LordVenom -- debug film illimit
-03-05-2017 -- @LordVenom -- debug Kaydo
+28-08-2017 -- @razorex -- Update adkami_com.py
+28-08-2017 -- @razorex -- Update coco_streaming_com.py  épuration du fichier.
+26-08-2017 -- @chataigne73 -- diminution des doublons
+26-08-2017 -- @chataigne73 -- Update zone_telechargement_ws.py
+26-08-2017 -- @LordVenom -- view tmdb  pas activer pour eviter les bug
+26-08-2017 -- @LordVenom -- add list tmdb
+25-08-2017 -- @razorex -- Update coco_streaming_com.py  petite correction
+25-08-2017 -- @LordVenom -- Merge pull request #1611 from Arias800/patch-16  Ajout modif url image + fix bug ShowSeriesEpisodes
+25-08-2017 -- @Arias800 -- Ajout modif url image
+24-08-2017 -- @LordVenom -- Merge pull request #1609 from Arias800/patch-15  Add genre + add serie
+24-08-2017 -- @Arias800 -- Ajout genre + ajout des series
+24-08-2017 -- @Arias800 -- Create coco_streaming_com.py
+24-08-2017 -- @Arias800 -- Add genre
+23-08-2017 -- @razorex -- Update coco_streaming_com.py
+23-08-2017 -- @razorex -- Update coco_streaming_com.py
+23-08-2017 -- @TmpName -- Update sites.json
+23-08-2017 -- @TmpName -- Merge pull request #1606 from Kodi-vStream/master  Master
+23-08-2017 -- @TmpName -- Merge pull request #1605 from Kodi-vStream/Beta  MAJ 23/08
+22-08-2017 -- @chataigne73 -- correction pb affichage
+22-08-2017 -- @chataigne73 -- correct dl-protecte
+22-08-2017 -- @chataigne73 -- correct global search
+22-08-2017 -- @razorex -- Delete documovies.png
+22-08-2017 -- @LordVenom -- del documovie
+22-08-2017 -- @LordVenom -- del cinemay
+21-08-2017 -- @LordVenom -- Merge pull request #1601 from Arias800/patch-14  Ah déplacer dans la liste des site car finit ^^
+21-08-2017 -- @Arias800 -- Ah déplacer dans la liste des site car finit ^^
+21-08-2017 -- @LordVenom -- Merge pull request #1597 from Arias800/patch-13  Fix recherche pour les serie et regex serie
+21-08-2017 -- @Arias800 -- Fix recherche pour les serie et regex serie
+21-08-2017 -- @johngf -- decrypt dl protect est dans trash.
+20-08-2017 -- @razorex -- Update ajouter_une_source.py
+20-08-2017 -- @TmpName -- Merge pull request #1593 from Kodi-vStream/Beta  hfdh
+20-08-2017 -- @TmpName -- Update sites.json
+20-08-2017 -- @TmpName -- Merge pull request #1592 from Kodi-vStream/master  Master
+20-08-2017 -- @TmpName -- Merge pull request #1591 from Kodi-vStream/Beta  MAJ 20/08
+20-08-2017 -- @LordVenom -- result == false
+20-08-2017 -- @LordVenom -- result false
+20-08-2017 -- @LordVenom -- Merge pull request #1589 from Arias800/patch-12  Fix Display_protected_link
+20-08-2017 -- @razorex -- Merge pull request #1588 from Arias800/patch-11  Modif recherche
+20-08-2017 -- @razorex -- Update serie_streaminghd.py
+20-08-2017 -- @Arias800 -- Update serie_streaminghd.py
+20-08-2017 -- @Arias800 -- Fix Display_protected_link
+20-08-2017 -- @razorex -- Delete full_streamvk_net.png
+20-08-2017 -- @LordVenom -- update
+20-08-2017 -- @Arias800 -- Petit probleme pour les image
+19-08-2017 -- @LordVenom -- update misc
+19-08-2017 -- @johngf -- Update vidtodo.py
+19-08-2017 -- @johngf -- Update filmsvostfr_biz.py
+18-08-2017 -- @razorex -- Update film_illimit_fr.py
+18-08-2017 -- @razorex -- Update spion_com.py
+18-08-2017 -- @razorex -- Update filmstreamvk_com.py
+18-08-2017 -- @razorex -- Update cinemavf.py  Genres par liste, écriture différentes d'un thèmes à l’autre et d'un genres à l’autre.
+17-08-2017 -- @LordVenom -- update lists
+16-08-2017 -- @LordVenom -- add lists
+16-08-2017 -- @LordVenom -- bug fav
+16-08-2017 -- @LordVenom -- back the futur  retour des ba dans le context
+16-08-2017 -- @LordVenom -- update config  bug popup info
+15-08-2017 -- @razorex -- Update skstream_co.py  Correction de la recherche par pays.
+14-08-2017 -- @razorex -- Update film_illimit_fr.py
+14-08-2017 -- @TmpName -- Update hoster.py
+14-08-2017 -- @TmpName -- Update library.py
+14-08-2017 -- @TmpName -- Update library.py
+14-08-2017 -- @TmpName -- Merge pull request #1575 from Kodi-vStream/Beta  fdgf
+14-08-2017 -- @TmpName -- Update sites.json
+14-08-2017 -- @TmpName -- Merge pull request #1574 from Kodi-vStream/master  Master
+14-08-2017 -- @TmpName -- Merge pull request #1573 from Kodi-vStream/Beta  MAJ 14/08
+12-08-2017 -- @razorex -- Update full_stream_org.py  Correction du titre
+11-08-2017 -- @razorex -- Update streamfilmzzz.py
+11-08-2017 -- @razorex -- Update cinemavf.py
+11-08-2017 -- @razorex -- Update vkstreamingfilm_biz.py  correction d'un genre qui bug.
+11-08-2017 -- @razorex -- Update planet_streaming.py
+10-08-2017 -- @TmpName -- Update adkami_com.py  A tester
+10-08-2017 -- @TmpName -- Merge pull request #1567 from Kodi-vStream/Beta  gf
+10-08-2017 -- @TmpName -- Merge pull request #1566 from Kodi-vStream/master  Master
+10-08-2017 -- @TmpName -- Update sites.json
+10-08-2017 -- @TmpName -- Update hosts.json
+10-08-2017 -- @TmpName -- Merge pull request #1565 from Kodi-vStream/Beta  MAJ 10/08
+10-08-2017 -- @TmpName -- Update uptobox.py
+10-08-2017 -- @TmpName -- Update uptostream.py
+10-08-2017 -- @TmpName -- Merge pull request #1562 from Arias800/patch-10  Fix cherche episode
+10-08-2017 -- @Arias800 -- Fix cherche episode
+10-08-2017 -- @LordVenom -- Merge pull request #1561 from Kodi-vStream/Beta  10/08
+10-08-2017 -- @LordVenom -- Update hosts.json
+10-08-2017 -- @LordVenom -- Update sites.json
+10-08-2017 -- @LordVenom -- Merge pull request #1560 from Kodi-vStream/Beta  10/08
+10-08-2017 -- @LordVenom -- uptade tmdb  bug recherche serie
+09-08-2017 -- @TmpName -- Update mangacity_org.py
+08-08-2017 -- @johngf -- Update otakufr_com.py
+05-08-2017 -- @TmpName -- Merge pull request #1552 from Kodi-vStream/master  Master
+05-08-2017 -- @TmpName -- Merge pull request #1553 from Kodi-vStream/Beta  Update sites.json
+05-08-2017 -- @TmpName -- Update sites.json
+05-08-2017 -- @TmpName -- Merge pull request #1551 from Kodi-vStream/Beta  MAJ 05/08
+05-08-2017 -- @TmpName -- Update streamay_bz.py
+05-08-2017 -- @TmpName -- Update streamay_bz.py
+05-08-2017 -- @TmpName -- Update streamay_bz.py  Remise en place de l'ancienne version
+05-08-2017 -- @TmpName -- Update streamay_bz.py  La recherche ne marche ps encore.
+05-08-2017 -- @LordVenom -- Update README.md
+05-08-2017 -- @LordVenom -- add donateur
+05-08-2017 -- @LordVenom -- Merge pull request #1549 from Kodi-vStream/Beta  site
+05-08-2017 -- @LordVenom -- Update hosts.json
+05-08-2017 -- @LordVenom -- Update sites.json
+05-08-2017 -- @LordVenom -- Merge pull request #1548 from Kodi-vStream/Beta  v0.5.3
+05-08-2017 -- @LordVenom -- v0.5.3
