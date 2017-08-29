@@ -26,9 +26,20 @@ class cPluginHandler:
         for sItemName in items:
             #sFilePath = os.path.join(sFolder, sItemName)
             sFilePath = os.path.join(unicode(sFolder, 'utf-8'), sItemName)
+            #size
+            sSize = 0
+            try:
+                file=open(sFilePath)
+                Content = file.read()
+                sSize = len(Content)
+                file.close()
+            except: pass
+
             # xbox hack
             sFilePath = sFilePath.replace('\\', '/')
-            
+
+            cConfig().log("Load Plugin %s : Size %s" % (sItemName, sSize))
+
             if (os.path.isdir(sFilePath) == False):
                 #if (str(sFilePath.lower()).endswith('py')):
                 if (sFilePath.lower().endswith('py')):
@@ -44,20 +55,20 @@ class cPluginHandler:
             sPluginSettingsName = 'plugin_' + sName
             return sSiteName, sPluginSettingsName, sSiteDesc
         except Exception, e:
-            cConfig().log("Cant import plugin " + str(sName))            
+            cConfig().log("Cant import plugin " + str(sName))
             return False, False
 
-    def getRootFolder(self):        
+    def getRootFolder(self):
         sRootFolder = cConfig().getAddonPath()
         cConfig().log("Root Folder " + sRootFolder)
         return sRootFolder
-        
+
     def getRootArt(self):
         oConfig = cConfig()
 
         sFolder =  self.getRootFolder()
         sFolder = os.path.join(sFolder, 'resources/art/').decode("utf-8")
-       
+
         sFolder = sFolder.replace('\\', '/')
         return sFolder
 
@@ -67,16 +78,14 @@ class cPluginHandler:
         sFolder =  self.getRootFolder()
         sFolder = os.path.join(sFolder, 'resources/sites')
 
-        # xbox hack        
+        # xbox hack
         sFolder = sFolder.replace('\\', '/')
         cConfig().log("Sites Folder " + sFolder)
-        
+
         aFileNames = self.__getFileNamesFromFolder(sFolder)
 
         aPlugins = []
         for sFileName in aFileNames:
-            cConfig().log("Load Plugin " + str(sFileName))
-
             # wir versuchen das plugin zu importieren
             aPlugin = self.__importPlugin(sFileName)
             if (aPlugin[0] != False):
@@ -95,18 +104,18 @@ class cPluginHandler:
                    aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName, sSiteDesc))
 
         return aPlugins
-        
-        
+
+
     def getSearchPlugins(self):
         oConfig = cConfig()
 
         sFolder =  self.getRootFolder()
         sFolder = os.path.join(sFolder, 'resources/sites')
 
-        # xbox hack        
+        # xbox hack
         sFolder = sFolder.replace('\\', '/')
         cConfig().log("Sites Folder " + sFolder)
-        
+
         aFileNames = self.__getFileNamesFromFolder(sFolder)
 
         aPlugins = []
@@ -126,9 +135,9 @@ class cPluginHandler:
                     exec "from resources.sites import " + sFileName
                     exec "sSearch = " + sFileName + ".URL_SEARCH"
                     sPlugin = True
-                except: 
+                except:
                     sPlugin = False
-                    
+
                 if (bPlugin == 'true') and (sPlugin == True):
                     aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName, sSiteDesc))
 
