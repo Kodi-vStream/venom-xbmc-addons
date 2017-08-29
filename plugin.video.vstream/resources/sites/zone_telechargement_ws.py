@@ -273,7 +273,7 @@ def showMoviesLinks():
     oGui.addText(SITE_IDENTIFIER,'[COLOR olive]' + 'Qualités disponibles pour ce film :' + '[/COLOR]')
 
     #on recherche d'abord la qualité courante
-    sPattern = '<div style="[^"]+?"> *Qualité (.+?)<\/div><center>'
+    sPattern = '<div style="[^"]+?"> *Qualité (.+?)<\/div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
 
@@ -281,13 +281,13 @@ def showMoviesLinks():
     if (aResult[0]):
         sQual = aResult[1][0]
 
-    sTitle = sMovieTitle + ' [COLOR skyblue]' + sQual + '[/COLOR]'
+        sTitle = sMovieTitle + ' [COLOR skyblue]' + sQual + '[/COLOR]'
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', sUrl)
-    oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-    oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-    oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sCom, oOutputParameterHandler)
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
+        oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+        oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sCom, oOutputParameterHandler)
 
     #on regarde si dispo dans d'autres qualités
     sPattern = '<a href="([^"]+)"><span class="otherquality"><span style="color:#.{6}"><b>([^<]+)<\/b><\/span><span style="color:#.{6}"><b>([^<]+)<\/b><\/span>'
