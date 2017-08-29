@@ -314,11 +314,11 @@ def showEpisode():
 
     oParser = cParser()
 
-    sSyn = ''
+    sDesc = ''
     sPattern = '<div class="more-info">.+?<p>(.+?)<\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
-        sSyn = cUtil().removeHtmlTags(aResult[1][0])
+        sDesc = cUtil().removeHtmlTags(aResult[1][0])
 
     sPattern = '<div class="panel-heading"><h4><i class="fa fa-television" id="(.+?)">|<a class="episode-block" href="([^"]+)" title="(.+?)">'
 
@@ -332,17 +332,19 @@ def showEpisode():
                 break
 
             if aEntry[0]:
-                sSaison = aEntry[0]
+                sSaison = aEntry[0].replace('-', ' ')
                 oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + sSaison + '[/COLOR]')
             else:
                 sUrl = URL_MAIN[:-1] + aEntry[1]
-                sTitle = aEntry[2].replace('En Streaming', '').replace(',', '').replace('Regarder', '').replace('en streaming', '')
+                sDisplayTitle = aEntry[2].replace('En Streaming', '').replace(',', '').replace('Regarder', '').replace('en streaming', '')
+                #suppression de la langue pour le titre transmis doublons dans showLinks
+                sTitle = sDisplayTitle.replace(' [VF]', '').replace(' [VOSTFR]', '').replace(' [VO]', '')
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sSyn, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -360,11 +362,11 @@ def showLinks():
 
     oParser = cParser()
 
-    sSyn = ''
+    sDesc = ''
     sPattern = '<div class="more-info">.+?<p>(.+?)<\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
-        sSyn = aResult[1][0]
+        sDesc = aResult[1][0]
 
     sPattern = '<tr class="changeplayer.+?".+?data-embedlien="([^"]+)".+?<i class="server player-.+?"><\/i>(.+?)<.+?<span class="badge">(.+?)<\/span>.+?<td>(.+?)<\/td>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -378,14 +380,14 @@ def showLinks():
             sQual = aEntry[3]
             sUrl2 = aEntry[0]
 
-            sTitle = '[%s] %s [%s] [COLOR coral]%s[/COLOR]' %(sLang, sMovieTitle, sQual, sHost)
+            sTitle = '%s [%s/%s] [COLOR coral]%s[/COLOR]' %(sMovieTitle, sLang, sQual, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('refUrl', sUrl)
             oOutputParameterHandler.addParameter('sUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sSyn, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
