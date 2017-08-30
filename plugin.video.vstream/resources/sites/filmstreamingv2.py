@@ -138,17 +138,19 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
             sQual = ' (' + aEntry[2] + ')'
-            sTitle = aEntry[1] + sQual
+            sTitle = str(aEntry[1]).replace('streaming', '')
             sUrl = aEntry[3]
             sThumb = aEntry[0]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
+            sDisplayTitle = sTitle + sQual
+			
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -194,7 +196,7 @@ def showMoviesHtml():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-            sTitle = aEntry[2]
+            sTitle = str(aEntry[2]).replace('streaming', '')
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
             if sThumb.startswith('/'):
@@ -267,8 +269,15 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     print aResult
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + 'Liens Streaming :' + '[/COLOR]')
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            #print aEntry
+            if dialog.iscanceled():
+                break
+
             sHosterUrl = str(aEntry)
             sHosterUrl = sHosterUrl.replace('//ok.ru','https://ok.ru')
             oHoster = cHosterGui().checkHoster(sHosterUrl)
