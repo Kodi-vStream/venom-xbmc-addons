@@ -21,14 +21,8 @@ SITE_NAME = '[COLOR orange]Télévision Direct / Stream[/COLOR]'
 SITE_DESC = 'Regarder la télévision'
 
 URL_MAIN = 'http://mafreebox.freebox.fr/freeboxtv/playlist.m3u'
-URL_FREE = 'https://annuel.framapad.org/p/vstream/export/txt'
 URL_WEB = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/Beta/repo/resources/webtv2.m3u'
 URL_RADIO = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/repo/resources/radio.m3u'
-URL_TV = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/Beta/repo/resources/tv.xml'
-
-URL_LIBRETV = 'http://libretv.me/Liste-m3u/token_Tj1CRNSd/add_item.dat'
-
-#URL_LIBRETV = 'http://libretv.me/Liste-m3u/Liste-anonymes/(PB)Redeneobux(USA).m3u'
 
 UA = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
 
@@ -49,22 +43,9 @@ def load():
     oGui = cGui()
     oConfig = cConfig()
 
-    #~ oOutputParameterHandler = cOutputParameterHandler()
-    #~ oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    #~ oGui.addDir(SITE_IDENTIFIER, 'load', '[COLOR khaki]Installer plugin.video.f4mTester pour lire ci dessous[/COLOR]', 'tv.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', URL_TV)
-    # oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Télévision (A-Z) (Bêta) (f4mTester only)', 'tv.png', oOutputParameterHandler)
-    #
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', URL_TV)
-    # oGui.addDir(SITE_IDENTIFIER, 'showTV', 'Télévision (Bêta) (f4mTester only)', 'tv.png', oOutputParameterHandler)
-
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', URL_WEB)
-    # oGui.addDir(SITE_IDENTIFIER, 'showWeb', 'Tv du web', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_WEB)
+    oGui.addDir(SITE_IDENTIFIER, 'showWeb', oConfig.getlanguage(30332), 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)

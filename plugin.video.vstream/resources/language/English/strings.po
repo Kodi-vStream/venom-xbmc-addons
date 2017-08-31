@@ -221,7 +221,7 @@ msgid "Web video"
 msgstr ""
 
 msgctxt "#30115"
-msgid "Television radio"
+msgid "Television / Radio"
 msgstr ""
 
 msgctxt "#30116"
@@ -446,6 +446,10 @@ msgstr ""
 
 msgctxt "#30331"
 msgid "Calendar"
+msgstr ""
+
+msgctxt "#30332"
+msgid "WebTv"
 msgstr ""
 
 msgctxt "#30400"
