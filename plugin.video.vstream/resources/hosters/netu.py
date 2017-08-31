@@ -96,7 +96,7 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.replace('http://hqq.tv/watch_video.php?v=','http://hqq.tv/player/embed_player.php?vid=')
     
     def __getIdFromUrl(self):
-        sPattern = 'https*:..hqq.tv.player.embed_player.php\?vid=([0-9A-Za-z]+)'
+        sPattern = 'https*:\/\/hqq\.(?:tv|player|watch)\/player\/embed_player\.php\?vid=([0-9A-Za-z]+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
         
