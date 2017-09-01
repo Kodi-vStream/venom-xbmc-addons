@@ -9,6 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
+import urllib2
 
 
 SITE_IDENTIFIER = 'coco_streaming_com'
@@ -392,14 +393,25 @@ def seriesHosters():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-
+           
             if 'VF' in aEntry[1]:
                 sLang = ' [VF]'
             if 'VOSTFR' in aEntry[1]:
                 sLang = ' [VOSTFR]'
             sTitle = sMovieTitle + sLang
-
+ 
             sHosterUrl = str(aEntry[0])
+           
+            if '//goo.gl' in sHosterUrl:
+                try:
+                    cConfig().log('ok ' + sHosterUrl)
+                    headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'}
+                    request = urllib2.Request(sHosterUrl, None, headers)
+                    reponse = urllib2.urlopen(request)
+                    sHosterUrl = reponse.geturl()
+                except:
+                    pass          
+           
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sTitle)
