@@ -163,7 +163,7 @@ def showMovies(sSearch = ''):
                 break
                 
             sName = aEntry[2].replace(' Streaming Ultra-HD', '').replace(' Streaming Full-HD', '')
-            sName = sName.replace(' Streaming HD', '').replace(' streaming HD', '')
+            sName = sName.replace(' en Streaming HD', '').replace(' Streaming HD', '').replace(' streaming HD', '')
             sName = sName.decode('utf8')
             sName = cUtil().unescape(sName)
             try:

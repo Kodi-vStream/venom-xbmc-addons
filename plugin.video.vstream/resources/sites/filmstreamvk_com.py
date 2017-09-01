@@ -13,7 +13,7 @@ SITE_IDENTIFIER = 'filmstreamvk_com'
 SITE_NAME = 'Filmstreamvk'
 SITE_DESC = 'Films, Séries & Mangas en Streaming'
 
-URL_MAIN = 'http://filmstreamvk.biz/'
+URL_MAIN = 'http://filmstreamvk.org/'
 
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -279,9 +279,9 @@ def showEpisode():
                 break
 
             if aEntry[0]:
-                sTitle = aEntry[0].decode("utf8")
-                sTitle = cUtil().unescape(sTitle).encode("utf8")
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sTitle + '[/COLOR]')
+                sLang = aEntry[0].decode("utf8")
+                sLang = cUtil().unescape(sLang).encode("utf8")
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sLang + '[/COLOR]')
             else:
                 sTitle = sMovieTitle + ' episode ' + aEntry[2]
                 sUrl = aEntry[1]

@@ -221,7 +221,7 @@ msgid "Web video"
 msgstr ""
 
 msgctxt "#30115"
-msgid "Television radio"
+msgid "Television / Radio"
 msgstr ""
 
 msgctxt "#30116"
@@ -448,6 +448,10 @@ msgctxt "#30331"
 msgid "Calendar"
 msgstr ""
 
+msgctxt "#30332"
+msgid "WebTv"
+msgstr ""
+
 msgctxt "#30400"
 msgid "Premium/Login"
 msgstr ""
@@ -521,4 +525,8 @@ msgstr ""
 
 msgctxt "#30418"
 msgid "[COLOR green]Update available[/COLOR]"
+msgstr ""
+
+msgctxt "#30419"
+msgid "View: Visual search (recommended 500)"
 msgstr ""

@@ -25,11 +25,13 @@
 
         <setting label="30032" type="lsep"/>
         <setting type="sep"/>
+        <setting id="visuel-view" type="number" label="30419" default="500"/>
         <setting id="active-view" type="bool" label="30408" default="false"/>
         <setting id="default-view" type="number" label="30406" default="50" enable="eq(-1,true)"/>
         <setting id="accueil-view" type="number" label="30407" default="500" enable="eq(-2,true)"/>
         <setting id="movie-view" type="number" label="30404" default="500" enable="eq(-3,true)"/>
         <setting id="serie-view" type="number" label="30405" default="500" enable="eq(-4,true)"/>
+
 
         <!--utilisation masquer de chemin pour les fanart -->
         <setting  visible="false" label="Recherches: Image" type="image" id="images_cherches" default="special://home/addons/plugin.video.vstream/resources/art/search_fanart.jpg"/>

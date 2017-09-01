@@ -42,6 +42,8 @@ FANART_URL = 'https://image.tmdb.org/t/p/w1280'
 #https://api.themoviedb.org/3/movie/popular?api_key=92ab39516970ab9d86396866456ec9b6
 
 grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
+view = '500'
+#view = cConfig().getSetting('visuel-view')
 
 xbmcgui.Window(10101).clearProperty('search_disp')
 
@@ -170,13 +172,15 @@ def showFolderList():
     oGui = cGui()
     liste = []
     liste.append( ['Top Manga (senscritique)', '31665'] )
+    liste.append( ['Top Manga 2', '31695'] )
     liste.append( ['Disney Classic', '338'] )
     liste.append( ['Pixar', '3700'] )
-
     liste.append( ['Top 50 des plus grands films', '10'] )
-
     liste.append( ['Marvel', '1'] )
     liste.append( ['DC Comics Universe', '3'] )
+    liste.append( ['Les films fascinants ', '43'] )
+    liste.append( ['Gagnants des Oscars', '31670'] )
+    liste.append( ['Les adaptations', '9883'] )
 
     #liste.append( ['nom de la liste', 'ID de la liste'] )
 
@@ -256,7 +260,7 @@ def showMovies(sSearch = ''):
     #test pr chnagement mode
     #xbmc.executebuiltin('Container.SetViewMode(500)')
 
-    oGui.setEndOfDirectory('500')
+    oGui.setEndOfDirectory(view)
 
 def showSeries(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
@@ -337,7 +341,7 @@ def showSeries(sSearch=''):
     #test pr chnagement mode
     #xbmc.executebuiltin('Container.SetViewMode(500)')
 
-    oGui.setEndOfDirectory('500')
+    oGui.setEndOfDirectory(view)
 
 def showSeriesSaison():
 
@@ -725,8 +729,8 @@ def showLists():
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-    oGui.setEndOfDirectory('500')
-    
+    oGui.setEndOfDirectory(view)
+
 
 def __checkForNextPage(sHtmlContent):
     sPattern = "<span class='page-numbers current'>.+?</span><a class='page-numbers' href='([^<]+)'>.+?</a>"
