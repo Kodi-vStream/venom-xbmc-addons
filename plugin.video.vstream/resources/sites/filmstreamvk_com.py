@@ -219,7 +219,7 @@ def showLinks():
     oParser = cParser()
     ListeUrl = []
     #recuperation du hoster de base
-    sPattern = '<div class="keremiya_part"> <span>([^<]+)<\/span>'
+    sPattern = '<div class="keremiya_part"> <span>(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         ListeUrl = [(sUrl,aResult[1][0])]
