@@ -43,7 +43,7 @@ FANART_URL = 'https://image.tmdb.org/t/p/w1280'
 
 grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
 view = '500'
-#view = cConfig().getSetting('visuel-view')
+view = cConfig().getSetting('visuel-view')
 
 xbmcgui.Window(10101).clearProperty('search_disp')
 
