@@ -15,8 +15,8 @@ import unicodedata,htmlentitydefs
 SITE_IDENTIFIER = 'kepliz_com'
 SITE_NAME = 'Kepliz'
 SITE_DESC = 'Films en streaming'
-#URL_HOST = 'http://www.grudal.com/'
-URL_HOST = 'http://www.ozporo.com/'
+URL_HOST = 'http://fetayo.com/'
+#URL_HOST = 'http://www.ozporo.com/'
 URL_MAIN = 'URL_MAIN'
 FILMPATTERN = '<div class="article-content"><p style="text-align: center;"><img src="(.+?)" border.+?<p style="text-align: left;">([^<>]+?)<\/p>'
 SEARCHPATTERN = '<fieldset> *<div> *<b><a *href="\/[0-9a-zA-Z]+\/(.+?)" *>(.+?)<\/a><\/b>'
@@ -249,6 +249,8 @@ def showHosters():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0]):
             sLink = aResult[1][0]
+            if not sLink.startswith('http'):
+                sLink = URL_HOST[:-1] + sLink
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -328,7 +330,7 @@ def showHostersLink2():
 
     UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'
     headers = {'User-Agent': UA ,
-               'Host' : 'grudal.com',
+               #'Host' : 'grudal.com',
                'Referer': sLink,
                'Accept': 'video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5',
                'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
@@ -341,6 +343,10 @@ def showHostersLink2():
     response = urllib2.urlopen(req)
     data = response.read()
     response.close()
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(data)
+    #fh.close()
 
     oParser = cParser()
     sPattern = '"file":"(.+?)","type":"mp4","label":"(.+?)"'
@@ -354,22 +360,22 @@ def showHostersLink2():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-
-            sLink = aEntry[0].replace('\/','/')
+                
+            sLink2 = aEntry[0].replace('\/','/')
             Squality = aEntry[1]
             sTitle = sMovieTitle.replace(' [HD]','')
             sTitle = '[' + Squality + '] ' + sTitle
 
             #decodage des liens
-            req = urllib2.Request(sLink,None,headers)
+            req = urllib2.Request(sLink2,None,headers)
             try:
                 response = urllib2.urlopen(req)
                 #data = response.read()
                 response.close()
             except urllib2.URLError, e:
-                sLink = e.geturl()
+                sLink2 = e.geturl()
 
-            sHosterUrl = str(sLink)
+            sHosterUrl = str(sLink2)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):

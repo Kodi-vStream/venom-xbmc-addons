@@ -37,11 +37,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche films', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Film', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchSeries', 'Recherche series', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchSeries', 'Recherche Série', 'search.png', oOutputParameterHandler)
 	
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -225,7 +225,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[4]))
-            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
@@ -253,8 +253,11 @@ def showSeries(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'href="([^<]+)"([^<]+)<img src="([^<]+)" alt="(.+?)"'
+    sPattern = '<a class="short-poster img-box with-mask" href="([^<]+)".+?<img src="([^<]+)" alt="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -266,23 +269,23 @@ def showSeries(sSearch = ''):
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH[0], ''), aEntry[3]) == 0:
+                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
                     continue
 
             sUrl2 = str(aEntry[0])
-            sThumb = str(aEntry[2]).replace('/img/french-stream.com.php?src=', '')
+            sThumb = str(aEntry[1]).replace('/img/french-stream.com.php?src=', '')
             sThumb = sThumb.split('&')[0]
             if sThumb.startswith ('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
-            sTitle = str(aEntry[3])
+            sTitle = str(aEntry[2])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -309,7 +312,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumb = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -336,49 +339,12 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
-def serieHostersNew():
+def showLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumb = oInputParameterHandler.getValue('sThumbnail')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    oParser = cParser()
-    sPattern = '<\/i> (VOSTFR|VF) *<\/div>|<a class="fs.+?" href="([^"]+)".+?target="seriePlayer".+?<\/i>\s+([^<>]+?)\s+<\/a>'
-
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    #pensez a faire un cConfig().log(str(aResult)) pour verifier
-    #cConfig().log(str(sUrl))
-    #cConfig().log(str(aResult))
-
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-
-            if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
-            else:
-                sTitle = str(aEntry[2]) + ' ' + sMovieTitle
-
-            sHosterUrl = str(aEntry[1])
-            if sHosterUrl.startswith('/'):
-                sHosterUrl = 'http:' + sHosterUrl
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-    oGui.setEndOfDirectory()
-
-def serieHosters():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -426,8 +392,8 @@ def serieHosters():
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                    oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-                    oGui.addTV(SITE_IDENTIFIER, 'Showlink', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+                    oOutputParameterHandler.addParameter('sThumb', sThumb)
+                    oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
     else:
@@ -435,12 +401,12 @@ def serieHosters():
 
     oGui.setEndOfDirectory()
 
-def Showlink():
+def serieHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     if 'sibeol.com' in sUrl:
         oRequest = cRequestHandler(sUrl)
@@ -491,6 +457,6 @@ def Showlink():
 
         oHoster.setDisplayName(sDisplayTitle)
         oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, sUrl, sThumbnail)
+        cHosterGui().showHoster(oGui, oHoster, sUrl, sThumb)
 
     oGui.setEndOfDirectory()
