@@ -144,7 +144,8 @@ def AddmyAccount():
     sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
 
     sId = sMediaUrl.replace(URL_MAIN,'')
-    sId = sMediaUrl.replace('http://uptobox.com/','')
+    if 'https://uptostream.com/iframe/' in sMediaUrl : sId = sMediaUrl.replace('https://uptostream.com/iframe/','') 
+    else : sId = sMediaUrl.replace('http://uptobox.com/','') 
           
     Upurl = URL_MAIN + '?op=my_files&add_my_acc=' + sId
 
