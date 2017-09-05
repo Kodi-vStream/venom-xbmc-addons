@@ -3,6 +3,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.player import cPlayer
+from resources.lib import util
 import re, urllib2
 
 try:    import json
@@ -35,7 +36,7 @@ class cShowBA:
                 ids = result['items'][0]['id']['videoId']
 
                 url = 'http://www.youtube.com/watch?v=%s' % ids
-                exec "from resources.hosters.youtube import cHoster"
+                from resources.hosters.youtube import cHoster
                 hote = cHoster()
                 hote.setUrl(url)
                 api_call = hote.getMediaLink()[1]
@@ -53,7 +54,9 @@ class cShowBA:
                 oPlayer.addItemToPlaylist(oGuiElement)
                 oPlayer.startPlayer()
 
-            except: return
+            except:
+                util.VSshowInfo('Vstream',util.VSlang(30204))
+                return
             return
 
     def SearchBA_old(self):
