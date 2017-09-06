@@ -61,7 +61,7 @@ def showFile():
     oPremiumHandler = cPremiumHandler('uptobox')
 
     if 'uptobox.com' in sUrl:
-        sHtmlContent = oPremiumHandler.GetHtml(sUrl)
+        sHtmlContent = oPremiumHandler.GetHtml(sUrl+'&per_page=1000')
     else:    
         sHtmlContent = oPremiumHandler.GetHtml(BURL)
 
