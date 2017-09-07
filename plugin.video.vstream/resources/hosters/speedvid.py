@@ -2,7 +2,12 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
-import re
+
+#from resources.lib.config import cConfig
+
+#from resources.lib.jsparser import JsParser
+
+import re,xbmcgui
 
 class cHoster(iHoster):
 
@@ -65,27 +70,96 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
     
         oRequest = cRequestHandler(self.__sUrl)
+        oRequest.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0')
         sHtmlContent = oRequest.request()
-
+        
         oParser = cParser()
         
-        #sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
-        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\)\))'
+        #Recherche de la vraie page
+        Url = ''
+        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\))<'
+        aResult = re.findall(sPattern,sHtmlContent)
+        if (aResult):
+            for packed in aResult:
+                
+                #cConfig().log('>>' + packed)
+                
+                #Recherche du bon bloc
+                if not 'mp4' in packed:
+                    
+                    
+                    #3 passages necessaires, avec nettoyage
+                    sHtmlContent = cPacker().unpack(packed)
+                    sHtmlContent = sHtmlContent.decode('string-escape')
+
+                    sHtmlContent = cPacker().unpack(sHtmlContent)
+                    sHtmlContent = sHtmlContent.decode('string-escape')
+                    
+                    sHtmlContent = cPacker().unpack(sHtmlContent)
+                    sHtmlContent = sHtmlContent.decode('string-escape')
+                    
+                    #recuperation de l'url
+                    Url = 'http://' + re.findall('href="\/\/(.+?)"',sHtmlContent)[0]
+                    
+                    break
+                    
+                    
+        if not Url:
+            return False, False
+            
+        #cConfig().log('>> ' + Url)
+
+        oRequest = cRequestHandler(Url)
+        oRequest.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0')
+        oRequest.addHeaderEntry('Referer',self.__sUrl)
+        sHtmlContent = oRequest.request()
+
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+                
+        #initialisation des tableaux
+        url=[]
+        qua=[]
+        api_call = ''
+        
+        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\))<'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             for packed in aResult[1]:
+                
+                #cConfig().log(packed)
+
+                #if 'while' not in packed:
+                #    continue
+                
                 sHtmlContent = cPacker().unpack(packed)
                 sHtmlContent = sHtmlContent.replace('\\','')
-                if not 'http://www.speedvid.net/hgcd06yxp6hf' in sHtmlContent:
-                    break
                 
-            sPattern = "{file:.([^']+.mp4)"
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
-                api_call = aResult[1][0]
+                #cConfig().log(sHtmlContent)
+                    
+                sPattern2 = "{file:.([^']+.mp4)"
+                aResult2 = oParser.parse(sHtmlContent, sPattern2)
+                if (aResult2[0] == True):
+                    url.append(aResult2[1][0])
+                    if 'HD' in aResult2[1][0]:
+                        qua.append('HD')
+                    else:
+                        qua.append('SD')
+                    
+        #Si une seule url
+        if len(url) == 1:
+            api_call = url[0]
+        #si plus de une
+        elif len(url) > 1:
+        #Afichage du tableau
+            dialog2 = xbmcgui.Dialog()
+            ret = dialog2.select('Select Quality', qua)
+            if (ret > -1):
+                api_call = url[ret]
 
-            
         if (api_call):
+            api_call = api_call + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
             return True, api_call
             
         return False, False

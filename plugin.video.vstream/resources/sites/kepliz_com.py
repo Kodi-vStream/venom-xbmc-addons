@@ -21,19 +21,21 @@ URL_MAIN = 'URL_MAIN'
 FILMPATTERN = '<div class="article-content"><p style="text-align: center;"><img src="(.+?)" border.+?<p style="text-align: left;">([^<>]+?)<\/p>'
 SEARCHPATTERN = '<fieldset> *<div> *<b><a *href="\/[0-9a-zA-Z]+\/(.+?)" *>(.+?)<\/a><\/b>'
 NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/(.+?)">(.+?)<\/a>'
-NEXTPAGEPATTERN = '<span class="pagenav">[0-9]+<.span><.li><li><a title=".+?" href="\/[0-9a-zA-Z]+\/(.+?)" class="pagenav">'
+NEXTPAGEPATTERN = '<span class="pagenav">.+?<.span>.+?<a title=".+?" href="\/[0-9a-zA-Z]+\/(.+?)" class="pagenav">'
 FRAMEPATTERN = 'GRUDALpluginsphp\("player1",{link:"(.+?)"}\);'
 FRAMEPATTERN2 = '<iframe src= *(?:"|)([^<>"]+\/player\.php\?id=.+?)"' #'<iframe src="*\/([^<>"]+\/player\.php\?id=.+?)"'
 HOSTPATTERN = '"link":"([^"]+?)","label":"([^"]+?)"'
 
 #pour l'addon
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=29&Itemid=7', 'showMovies')
+
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_HD = (URL_MAIN, 'showMovies')
 
 ANIM_NEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=2&Itemid=2', 'showMovies')
-ANIM_ANIMS = (URL_MAIN + 'index.php?option=com_content&view=category&id=2&Itemid=2', 'showMovies')
+ANIM_ANIMS = (URL_MAIN + 'index.php?option=com_content&view=category&id=2&Itemid=19', 'showMovies')
 DOC_NEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=26', 'showMovies')
 DOC_DOCS = ('http://', 'load')
 
@@ -50,6 +52,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -343,10 +349,6 @@ def showHostersLink2():
     response = urllib2.urlopen(req)
     data = response.read()
     response.close()
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(data)
-    #fh.close()
 
     oParser = cParser()
     sPattern = '"file":"(.+?)","type":"mp4","label":"(.+?)"'
@@ -360,7 +362,7 @@ def showHostersLink2():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-                
+
             sLink2 = aEntry[0].replace('\/','/')
             Squality = aEntry[1]
             sTitle = sMovieTitle.replace(' [HD]','')
@@ -368,15 +370,20 @@ def showHostersLink2():
 
             #decodage des liens
             req = urllib2.Request(sLink2,None,headers)
+
             try:
                 response = urllib2.urlopen(req)
-                #data = response.read()
+                sLink2 = response.geturl()
                 response.close()
+
+                sHosterUrl = str(sLink2)
+                oHoster = cHosterGui().getHoster('lien_direct')
+                #data = response.read()
+
             except urllib2.URLError, e:
                 sLink2 = e.geturl()
-
-            sHosterUrl = str(sLink2)
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
+                sHosterUrl = str(sLink2)
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
