@@ -63,8 +63,6 @@ Pour participer directement au projet
 [![PayPayl](https://img.shields.io/badge/Paypal-Me-yellow.svg)](http://paypal.me/vstream)
 
 
-[![PayPayl](https://img.shields.io/badge/Paypal-CB-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NG5VVH8BMNLBJ)
-
 [![paypal](https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XGYW7QDKCLPCJ)
 
 
