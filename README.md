@@ -60,9 +60,6 @@ Pour participer directement au projet
 
 ## Faire un Don!
 
-[![PayPayl](https://img.shields.io/badge/Paypal-Me-yellow.svg)](http://paypal.me/vstream)
-
-
 [![paypal](https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XGYW7QDKCLPCJ)
 
 
