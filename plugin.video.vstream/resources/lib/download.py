@@ -491,9 +491,9 @@ class cDownload:
         #status = data[8]
 
         if (cConfig().getSetting('always-use-fastmode') == 'true'):
-        	self.download(url,title,path,True)
+            self.download(url,title,path,True)
         else :
-        	self.download(url,title,path,False)
+            self.download(url,title,path,False)
                 
     def StartDownloadList(self):
         cConfig().showInfo('Information', 'Demarrage de la liste complete')
