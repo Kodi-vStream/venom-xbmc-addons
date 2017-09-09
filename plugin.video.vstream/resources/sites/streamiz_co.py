@@ -139,7 +139,7 @@ def showMovies(sSearch = '',yearUrl = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = "<li class='active'>.+?<\/a><\/li><li><a.+?ref='(.+?)'>"
+    sPattern = '<li class="active">.+?<\/a><\/li><li><a.+?ref="(.+?)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
