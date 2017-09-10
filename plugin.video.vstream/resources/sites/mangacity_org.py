@@ -483,8 +483,13 @@ def ExtractLink(html):
 
     sPattern = '(?i)src=(?:\'|")(.+?)(?:\'|")'
     aResult = re.findall(sPattern,html)
+    loop = 0
     if aResult:
-        final = aResult[0]
+        for a in aResult:
+            if 'adnetworkperformance' in a:
+                continue
+            final = a
+            break
 
     sPattern = 'encodeURI\("(.+?)"\)'
     aResult = re.findall(sPattern,html)
@@ -558,10 +563,10 @@ def showHosters():
             list_url.append(sHosterUrl)
 
     #3 eme methode
-    sPattern = 'document\.write\(unescape\("(%3c%69%66%72%61%6d%65%20%69%64%3d%27%76%69%64%65%6f%5f%66%72%61%6d%65%27.+?)"\)\);'
+    sPattern = 'document\.write\(unescape\("(%3c%69%66%72%61%6d%65%20.+?)"\)\);'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        cConfig().log("methode 3")
+        #cConfig().log("methode 3")
         for aEntry in aResult[1]:
             tmp = urllib.unquote(aEntry)
             #cConfig().log(tmp)
@@ -570,7 +575,7 @@ def showHosters():
             if aResult:
                 list_url.append(aResult[0])
 
-    #cConfig().log(str(list_url))
+    #cConfig().log("resultats : " + str(list_url))
 
     if len(list_url) > 0:
         total = len(list_url)
@@ -699,7 +704,7 @@ def showHosters():
                 if aResult[0]:
                     sHosterUrl = aResult[1][0]
 
-            #Derniere en date
+            #Avant derniere en date
             sPattern = '(http:\/\/www\.ianime\.tv\/[a-z\.]+&[\w-]+\.htm)'
             aResult = oParser.parse(sHosterUrl, sPattern)
             if aResult[0]:
@@ -708,6 +713,15 @@ def showHosters():
                 sHtmlContent = oRequestHandler.request()
 
                 sHtmlContent = ICDecode(sHtmlContent)
+
+                sHosterUrl = ExtractLink(sHtmlContent)
+                
+            #Derniere en date
+            if 'www.ianime.tv/embed/' in sHosterUrl:
+                
+                oRequestHandler = cRequestHandler( sHosterUrl )
+                oRequestHandler.addHeaderEntry('Referer',sUrl)
+                sHtmlContent = oRequestHandler.request()
 
                 sHosterUrl = ExtractLink(sHtmlContent)
 
