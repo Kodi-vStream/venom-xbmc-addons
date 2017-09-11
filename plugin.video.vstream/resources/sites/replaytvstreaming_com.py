@@ -2,7 +2,6 @@
 #Venom.kodigoal
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -19,7 +18,7 @@ REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
 REPLAYTV_REPLAYTV = ('http://', 'load')
 REPLAYTV_GENRES = (True, 'showGenres')
 
-URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -73,16 +72,22 @@ def showGenres():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-       sUrl = sSearch
+        sUrl = URL_SEARCH[0] + sSearch
 
+
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+
+        sHtmlContent = oRequestHandler.request()
+        sPattern = '<div class="item-box"><a class="item-link" href="([^"]+)"><div class="item-img"><img src="(.+?)".+?<div class="item-title">(.+?)<\/div>(.+?)div>'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="shortstory"><div class="shortstory-images"><a href="([^"]+)" title="([^"]+)"><img src="([^"]+)"'
+        sPattern = '<div class="item-box"><a class="item-link" href="([^"]+)">.+?<img src="(.+?)".+?<div class="item-title">(.+?)<\/div><div class="item-info clearfix">(.+?)<\/div>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -91,17 +96,12 @@ def showMovies(sSearch = ''):
 		oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             sUrl = str(aEntry[0])
-            sTitle = ('%s') % (str(aEntry[1]))
-            sThumbnail = str(aEntry[2])
-
+            sTitle = ('%s') % (str(aEntry[2]))
+            sThumbnail = str(aEntry[1])
+            sSyn = aEntry[3]
             if not sThumbnail.startswith('http'):
                sThumbnail = URL_MAIN + sThumbnail
 
@@ -110,9 +110,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumbnail, '', oOutputParameterHandler)
-
-        cConfig().finishDialog(dialog)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumbnail, sSyn, oOutputParameterHandler)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -124,7 +122,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<div class=".+?pages-next"><a href="([^"]+)"'
+    sPattern = '<span class="pnext"><a href="(.+?)">SUIVANT<\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -133,7 +131,6 @@ def __checkForNextPage(sHtmlContent):
     return False
 
 def showLinks(page, video):
-
     sUrl = 'http://replaytvstreaming.com/engine/ajax/re_video_part.php?block=video&page=' + page + '&id=' + video
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -161,11 +158,7 @@ def showHosters():
     sTest = ''
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
 
             sPage = str(aEntry[1])
             sVideoID = str(aEntry[0])
@@ -182,7 +175,17 @@ def showHosters():
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+    else:
+        sPattern = '<div class="playe.+?" data-show_player="video"><iframe.+?src="([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
-        cConfig().finishDialog(dialog)
-
+        if (aResult[0] == True):
+            sHosterUrl = aResult[1][0]
+            
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+            
     oGui.setEndOfDirectory()
