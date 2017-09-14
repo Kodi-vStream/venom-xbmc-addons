@@ -18,13 +18,6 @@ SITE_DESC = 'Films en streaming'
 URL_HOST = 'http://fetayo.com/'
 #URL_HOST = 'http://www.ozporo.com/'
 URL_MAIN = 'URL_MAIN'
-FILMPATTERN = '<div class="article-content"><p style="text-align: center;"><img src="(.+?)" border.+?<p style="text-align: left;">([^<>]+?)<\/p>'
-SEARCHPATTERN = '<fieldset> *<div> *<b><a *href="\/[0-9a-zA-Z]+\/(.+?)" *>(.+?)<\/a><\/b>'
-NORMALPATTERN = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/(.+?)">(.+?)<\/a>'
-NEXTPAGEPATTERN = '<span class="pagenav">.+?<.span>.+?<a title=".+?" href="\/[0-9a-zA-Z]+\/(.+?)" class="pagenav">'
-FRAMEPATTERN = 'GRUDALpluginsphp\("player1",{link:"(.+?)"}\);'
-FRAMEPATTERN2 = '<iframe src= *(?:"|)([^<>"]+\/player\.php\?id=.+?)"' #'<iframe src="*\/([^<>"]+\/player\.php\?id=.+?)"'
-HOSTPATTERN = '"link":"([^"]+?)","label":"([^"]+?)"'
 
 #pour l'addon
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -117,11 +110,11 @@ def showMovies(sSearch = ''):
         #limite de caratere sinon bug de la recherche
         sSearch = sSearch[:20]
         sUrl = URL_MAIN + 'index.php?ordering=&searchphrase=all&Itemid=1&option=com_search&searchword=' + sSearch
-        sPattern = SEARCHPATTERN
+        sPattern = '<fieldset> *<div> *<b><a *href="\/[0-9a-zA-Z]+\/(.+?)" *>(.+?)<\/a><\/b>'
     else :
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = NORMALPATTERN
+        sPattern = '<span style="list-style-type:none;" >.+? href="\/[0-9a-zA-Z]+\/(.+?)">(.+?)<\/a>'
 
     oParser = cParser()
 
@@ -158,19 +151,19 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            sTitle2 = aEntry[1]
-            sTitle2 = re.sub('<font color="#[0-9]{6}" *><i>HD<\/i><\/font>', '[HD]',sTitle2)
+            sTitle = aEntry[1]
+            sTitle = re.sub('<font color="#[0-9]{6}" *><i>HD<\/i><\/font>', '[HD]', sTitle)
             sUrl2 = aEntry[0]
 
             #not found better way
             #sTitle = unicode(sTitle, errors='replace')
             #sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
 
-            sDisplayTitle = cUtil().DecoTitle(sTitle2)
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sMainUrl + str(sUrl2))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle2))
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sMainUrl', sMainUrl)
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', '', '', oOutputParameterHandler)
@@ -187,7 +180,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = NEXTPAGEPATTERN
+    sPattern = '<span class="pagenav">.+?<.span>.+?<a title=".+?" href="\/[0-9a-zA-Z]+\/(.+?)" class="pagenav">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -199,7 +192,7 @@ def showHosters():
     oGui = cGui()
 
     sThumb = ''
-    sComm = ''
+    sDesc = ''
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -212,23 +205,23 @@ def showHosters():
     oParser = cParser()
 
     #Recuperation info film, com et image
-    sPattern = FILMPATTERN
+    sPattern = '<div class="article-content"><p style="text-align: center;"><img src="(.+?)" border.+?<p style="text-align: left;">([^<>]+?)<\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         sThumb = aResult[1][0][0]
-        sComm = cUtil().unescape(aResult[1][0][1])
+        sDesc = cUtil().unescape(aResult[1][0][1])
 
     #Recuperation info lien du stream.
     sLink = None
     sPostUrl = None
-    sHtmlContent = sHtmlContent.replace('\r','')
+    sHtmlContent = sHtmlContent.replace('\r', '')
 
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
 
     #Format classique
-    sPattern = FRAMEPATTERN
+    sPattern = 'GRUDALpluginsphp\("player1",{link:"(.+?)"}\);'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0]):
         sLink = aResult[1][0]
@@ -247,15 +240,17 @@ def showHosters():
 
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle, sThumb, sThumb, sComm, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
 
     #Format rare
     if not sLink:
-        sPattern = FRAMEPATTERN2
+        sPattern = '<iframe src= *(?:"|)([^<>"]+\/player\.php\?id=.+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0]):
+
+            sMovieTitle = sMovieTitle.replace(' [HD]', '')
             sLink = aResult[1][0]
-            if not sLink.startswith('http'):
+            if sLink.startswith('/'):
                 sLink = URL_HOST[:-1] + sLink
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -265,7 +260,7 @@ def showHosters():
 
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink2', sDisplayTitle, sThumb, sThumb, sComm, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink2', sDisplayTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -289,14 +284,14 @@ def showHostersLink():
 
     post_data = {'link' : sLink}
 
-    req = urllib2.Request(sPostUrl , urllib.urlencode(post_data), headers)
+    req = urllib2.Request(sPostUrl, urllib.urlencode(post_data), headers)
 
     response = urllib2.urlopen(req)
     data = response.read()
     response.close()
 
     oParser = cParser()
-    sPattern = HOSTPATTERN
+    sPattern = '"link":"([^"]+?)","label":"([^"]+?)"'
     aResult = oParser.parse(data, sPattern)
 
     if (aResult[0] == True):
@@ -309,9 +304,9 @@ def showHostersLink():
                 break
 
             sLink = aEntry[0]
-            Squality = aEntry[1]
-            sTitle = sMovieTitle.replace(' [HD]','')
-            sTitle = '[' + Squality + '] ' + sTitle
+            sQual = aEntry[1]
+            sTitle = sMovieTitle
+            sTitle = '[' + sQual + '] ' + sTitle
 
             sHosterUrl = str(sLink)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -364,9 +359,9 @@ def showHostersLink2():
                 break
 
             sLink2 = aEntry[0].replace('\/','/')
-            Squality = aEntry[1]
+            sQual = aEntry[1]
             sTitle = sMovieTitle.replace(' [HD]','')
-            sTitle = '[' + Squality + '] ' + sTitle
+            sTitle = '[' + sQual + '] ' + sTitle
 
             #decodage des liens
             req = urllib2.Request(sLink2,None,headers)

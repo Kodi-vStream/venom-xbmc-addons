@@ -338,9 +338,11 @@ class cGui():
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
 
-        sPluginHandle = cPluginHandler().getPluginHandle();
+        sPluginHandle = cPluginHandler().getPluginHandle()
 
-        xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=False)
+        #modif 13/09
+        #xbmcplugin.addDirectoryItem(sPluginHandle, sItemUrl, oListItem, isFolder=False)
+        self.listing.append((sItemUrl, oListItem, False))
 
     #Marquer vu/Non vu
     def createContexMenuWatch(self, oGuiElement, oOutputParameterHandler= ''):

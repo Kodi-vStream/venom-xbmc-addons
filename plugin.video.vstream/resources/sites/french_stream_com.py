@@ -16,7 +16,8 @@ SITE_DESC = 'films en streaming'
 
 URL_MAIN = 'http://french-stream.co/'
 
-URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
+URL_SEARCH_MOVIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=9&story=', 'showMovies')
+URL_SEARCH_SERIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=10&story=', 'showSeries')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming/', 'showMovies')
@@ -42,7 +43,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchSeries', 'Recherche Série', 'search.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
@@ -86,20 +87,20 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
+        sUrl = URL_SEARCH_MOVIE[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
-		
+
 def showSearchSeries():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
+        sUrl = URL_SEARCH_SERIE[0] + sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
-        return		
+        return
 
 def showMovieGenres():
     oGui = cGui()
@@ -210,7 +211,7 @@ def showMovies(sSearch = ''):
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH[0], ''), aEntry[4]) == 0:
+                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_MOVIE[0], ''), aEntry[4]) == 0:
                     continue
 
             sQual = str(aEntry[0])
@@ -269,7 +270,7 @@ def showSeries(sSearch = ''):
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
+                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_SERIE[0], ''), aEntry[2]) == 0:
                     continue
 
             sUrl2 = str(aEntry[0])

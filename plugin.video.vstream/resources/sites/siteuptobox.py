@@ -76,7 +76,7 @@ def showFile():
             if dialog.iscanceled():
                 break
 
-            sTitle = aEntry[1] + ' [' + aEntry[2] + ']'
+            sTitle = aEntry[1] 
             sHosterUrl = aEntry[0]
             
             sDisplayTitle = cUtil().DecoTitle(sTitle)
