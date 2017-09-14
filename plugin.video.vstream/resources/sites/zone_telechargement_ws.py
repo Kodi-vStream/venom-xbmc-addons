@@ -580,13 +580,13 @@ def Display_protected_link():
                 return
 
     #Est ce un lien dl-protect ?
-    if 'dl-protecte' in sUrl:
+    if 'dl-protecte' in sUrl or 'protect-lien' in sUrl:
         sHtmlContent = DecryptDlProtecte(sUrl)
 
         if sHtmlContent:
             #Si redirection
             if sHtmlContent.startswith('http'):
-                aResult_dlprotect = (True, [sHtmlContent])
+                aResult_dlprotecte = (True, [sHtmlContent])
             else:
                 sPattern_dlprotecte = '<div class="lienet"><a href="(.+?)">'
                 aResult_dlprotecte = oParser.parse(sHtmlContent, sPattern_dlprotecte)
@@ -599,9 +599,9 @@ def Display_protected_link():
     else:
         if not sUrl.startswith('http'):
             sUrl = 'http://' + sUrl
-        aResult_dlprotect = (True, [sUrl])
+        aResult_dlprotecte = (True, [sUrl])
 
-    #print aResult_dlprotect
+    #print aResult_dlprotecte
 
     if (aResult_dlprotecte[0]):
 
@@ -698,7 +698,8 @@ def DecryptDlProtecte(url):
     #'Accept-Charset' : ''
     }
     
-    url2 = 'https://www.dl-protecte.org/php/Qaptcha.jquery.php'
+    #url2 = 'https://www.dl-protecte.org/php/Qaptcha.jquery.php'
+    url2 = 'https://www.protect-lien.com/php/Qaptcha.jquery.php'
 
     #Make random key
     s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN_-#@";
