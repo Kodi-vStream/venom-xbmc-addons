@@ -177,6 +177,10 @@ class cUtil:
         #vire espace a la fin
         if string.endswith(' '):
             string = string[:-1]
+            
+        #vire espace au debut         
+        if string.startswith(' '):
+            string = string[1:]     
         
         #convertion unicode
         string = string.decode("utf-8")
