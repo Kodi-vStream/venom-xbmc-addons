@@ -21,9 +21,7 @@ URL_MAIN = 'URL_MAIN'
 
 #pour l'addon
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
-MOVIE_VIEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=29&Itemid=7', 'showMovies')
-
-MOVIE_MOVIE = (URL_MAIN, 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'index.php?option=com_content&view=category&id=29&Itemid=7', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_HD = (URL_MAIN, 'showMovies')
 
@@ -47,8 +45,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -107,7 +105,7 @@ def showMovies(sSearch = ''):
     oGui = cGui()
 
     if sSearch :
-        #limite de caratere sinon bug de la recherche
+        #limite de caractere sinon bug de la recherche
         sSearch = sSearch[:20]
         sUrl = URL_MAIN + 'index.php?ordering=&searchphrase=all&Itemid=1&option=com_search&searchword=' + sSearch
         sPattern = '<fieldset> *<div> *<b><a *href="\/[0-9a-zA-Z]+\/(.+?)" *>(.+?)<\/a><\/b>'
