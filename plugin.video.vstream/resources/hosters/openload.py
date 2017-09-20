@@ -92,7 +92,7 @@ class cHoster(iHoster):
         
         #Recuperation url cachee
         TabUrl = []
-        sPattern = r'<span id="([^"]+)">([^<>]+)<\/span>'
+        sPattern = '<span style="".+?id="([^"]+)">([^<]+)<\/span>'
         aResult = re.findall(sPattern,sHtmlContent1)
         if (aResult):
             TabUrl = aResult
