@@ -38,7 +38,7 @@ ANIM_VOSTFRS = (URL_MAIN + 'mangas/mangas-vostfr/', 'showMovies')
 URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&search_start=0&full_search=0&result_from=1&titleonly=3&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-def DecodeURL(data):
+def DecodeURL_old(data):
 
     oParser = cParser()
     sPattern = '([a-z0-9A-Z]{2})\(\'([^\']*)\'\)'
@@ -80,6 +80,46 @@ def DecodeURL(data):
         url = "https://streamango.com/embed/" + d
 
     if f == 'BB':
+        url = "http://easyvid.org/embed-" + d + "-600x360.html"
+
+    return url
+
+def DecodeURL(data):
+
+    oParser = cParser()
+    sPattern = '([a-z0-9A-Z]{2})\(\'([^\']*)\'\)'
+    aResult = oParser.parse(data, sPattern)
+
+    if not aResult[0]:
+        return ''
+
+    f = aResult[1][0][0]
+    d = aResult[1][0][1]
+
+    url = ''
+
+    if f == 'aw':
+        url = "http://www.flashx.tv/embed-" + d + ".html"
+
+    if f == 'en':
+        url = d
+
+    if f == 'ae':
+        url = "https://openload.co/embed/" + d
+
+    if f == 'tq':
+        url = "https://vidoza.net/embed-" + d + ".html"
+
+    if f == 'bg':
+        url = "http://estream.to/embed-" + d + ".html"
+
+    if f == 'jh':
+        url = "http://vidlox.tv/embed-" + d + ".html"
+
+    if f == 'yu':
+        url = "https://streamango.com/embed/" + d
+
+    if f == 'ru':
         url = "http://easyvid.org/embed-" + d + "-600x360.html"
 
     return url
