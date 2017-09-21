@@ -3,8 +3,6 @@ from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 import re
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0'
-
 class cHoster(iHoster):
 
     def __init__(self):
@@ -36,14 +34,38 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return True
 
-    def isJDownloaderable(self):
-        return True
+    def decode(self, encoded, code):
+        #from https://github.com/jsergio123/script.module.urlresolver
+        _0x59b81a = ""
+        k = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
+        k = k[::-1]
 
-    def getPattern(self):
-        return ''
-    
-    def __getIdFromUrl(self, sUrl):
-        return ''
+        count = 0
+
+        for index in range(0, len(encoded) - 1):
+            while count <= len(encoded) - 1:
+                _0x4a2f3a = k.index(encoded[count])
+                count += 1
+                _0x29d5bf = k.index(encoded[count])
+                count += 1
+                _0x3b6833 = k.index(encoded[count])
+                count += 1
+                _0x426d70 = k.index(encoded[count])
+                count += 1
+
+                _0x2e4782 = ((_0x4a2f3a << 2) | (_0x29d5bf >> 4))
+                _0x2c0540 = (((_0x29d5bf & 15) << 4) | (_0x3b6833 >> 2))
+                _0x5a46ef = ((_0x3b6833 & 3) << 6) | _0x426d70
+                _0x2e4782 = _0x2e4782 ^ code
+
+                _0x59b81a = str(_0x59b81a) + chr(_0x2e4782)
+
+                if _0x3b6833 != 64:
+                    _0x59b81a = str(_0x59b81a) + chr(_0x2c0540)
+                if _0x3b6833 != 64:
+                    _0x59b81a = str(_0x59b81a) + chr(_0x5a46ef)
+
+        return _0x59b81a
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
@@ -58,15 +80,14 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
         api_call = False
-
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        r2 = re.search('{type:"video\/mp4",src:"([^"]+)",', sHtmlContent)
-        if (r2):
-            api_call = 'http:' + r2.group(1)
+        r1 = re.search("srces\.push\({type:\"video/mp4\",src:\w+\('([^']+)',(\d+)", sHtmlContent)
+        if (r1):
+            api_call = self.decode(r1.group(1), int(r1.group(2)))
+            api_call = 'http:' + api_call
  
         if (api_call):
             return True, api_call 
