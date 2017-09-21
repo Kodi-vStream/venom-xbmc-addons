@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-
 from resources.lib.handler.requestHandler import cRequestHandler 
 from resources.lib.config import cConfig 
 from resources.hosters.hoster import iHoster
@@ -10,7 +9,7 @@ import re,xbmcgui
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Raptu'
+        self.__sDisplayName = 'Rapidvideo'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
@@ -36,21 +35,10 @@ class cHoster(iHoster):
         return self.__sHD
 
     def isDownloadable(self):
-        return False
-
-    def isJDownloaderable(self):
-        return False
-
-    def getPattern(self):
-        return ''
-    
-    def __getIdFromUrl(self, sUrl):
-        return ''
+        return True
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        #Ne marche pas systematiquement
-        #self.__sUrl = self.__sUrl.replace('www.rapidvideo.com','www.raptu.com')
         
     def checkUrl(self, sUrl):
         return True
@@ -62,48 +50,56 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-    
-        sUrl = self.__sUrl
+        api_call = False
         
+        sUrl = self.__sUrl
+
         oParser = cParser()
         oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
         
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
-        
-        #pour lien rapidvideo modif en raptu
-        #sPattern = '<input type="hidden" value="(\d+)" name="block">'
-        #aResult = oParser.parse(sHtmlContent,sPattern)
-        #if (aResult[0] == True):
-        #    cConfig().log('Modif rapidvideo > raptu')
-        #    oRequest = cRequestHandler(sUrl)
-        #    oRequest.setRequestType(1)
-        #    oRequest.addParametersLine('confirm.x=74&confirm.y=35&block=1')
-        #    sHtmlContent = oRequest.request()
+        if 'rapidvideo' in sUrl:#qual site film illimite
+            sPattern = '<a href="([^"]+&q=\d+p)"'
+            aResult = oParser.parse(sHtmlContent,sPattern)
+            if (aResult[0] == True):
+                url=[]
+                qua=[]
+                for i in aResult[1]:
+                    url.append(str(i))
+                    qua.append(str(i.rsplit('&q=', 1)[1]))
+                
+                if len(url) == 1:
+                    api_call = url[0]
 
-        sPattern = '{"file":"([^"]+)","label":"([^"]+)"'
-        aResult = oParser.parse(sHtmlContent,sPattern)
-        if (aResult[0] == True):
-            #initialisation des tableaux
-            url=[]
-            qua=[]
-            #Replissage des tableaux
-            for i in aResult[1]:
-                url.append(str(i[0]))
-                qua.append(str(i[1]))   
-            #Si une seule url
-            if len(url) == 1:
-                api_call = url[0]
-            #si plus de une
-            elif len(url) > 1:
-            #Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
-                if (ret > -1):
-                    api_call = url[ret]
+                elif len(url) > 1:
+                    dialog2 = xbmcgui.Dialog()
+                    ret = dialog2.select('Select Quality',qua)
+                    if (ret > -1):
+                        oRequest = cRequestHandler(url[ret])
+                        sHtmlContent = oRequest.request()
+                        sPattern = '<source src="([^"]+)" type="video/.+?"'
+                        aResult = oParser.parse(sHtmlContent,sPattern)
+                        if (aResult[0] == True):
+                            api_call = aResult[1][0]
+        else:
+            sPattern = '{"file":"([^"]+)","label":"([^"]+)"'
+            aResult = oParser.parse(sHtmlContent,sPattern)
+            if (aResult[0] == True):
+                url=[]
+                qua=[]
+                for i in aResult[1]:
+                    url.append(str(i[0]))
+                    qua.append(str(i[1]))
+                    
+                if len(url) == 1:
+                    api_call = url[0]
 
+                elif len(url) > 1:
+                    dialog2 = xbmcgui.Dialog()
+                    ret = dialog2.select('Select Quality',qua)
+                    if (ret > -1):
+                        api_call = url[ret]
+       
         if (api_call):
             return True, api_call
             
