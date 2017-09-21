@@ -50,26 +50,27 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-
+    
+    oParser = cParser()
+    
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.decode('iso-8859-1').encode('utf8') # Site en latin1
-    sPattern = '<td class="GenresCell"><a href=(.+?) class.+?>(.+?)</a></td>'
+    #suppression du genre pornographique
+    sHtmlContent = sHtmlContent.replace('<td class="GenresCell"><a href=18Plus.php target="_blank" class="GenresMenu">Pornographique</a></td>', '')
 
-    oParser = cParser()
+    sPattern = '<td class="GenresCell"><a href=(.+?) class.+?>(.+?)</a>'
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    liste = []
-    if aResult[0]:
+    if (aResult[0] == True):
         for aEntry in aResult[1]:
-            title = aEntry[1].replace('&eacute;', 'é')
-            liste.append( [title,URL_MAIN + aEntry[0]] )
-
-    for sTitle,sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+            sUrl = URL_MAIN + aEntry[0].replace('Péplum', 'P%E9plum')
+            sTitle = aEntry[1].replace('&eacute;', 'é')
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -107,30 +108,27 @@ def showMovies(sSearch = ''):
 
         for aEntry in aResult[1]:
             sTitle = re.sub('<[^<]+?>', '', aEntry[0])
-            sUrl = URL_MAIN + '/' + aEntry[1]
-            sThumbnail = aEntry[2]
+            sUrl = URL_MAIN + aEntry[1]
+            sThumb = aEntry[2]
             cConfig().updateDialog(dialog, total)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sUrl, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sUrl, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
         sNextPage = __checkForNextPage(sHtmlContent)
-
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
-
     if not sSearch:
         oGui.setEndOfDirectory()
-
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -147,7 +145,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -167,12 +165,12 @@ def showHosters():
             sType = str(aEntry[2]).upper()
             sFmt = str(aEntry[3]).upper()
             sSize = str(aEntry[4]).upper()
-            sDisplay = '[COLOR teal][' + sType + '][' + sLang + '][' + sType + '][' + sSize + '][/COLOR]'
+            sDisplay = '[COLOR teal][' + sType + '][' + sLang + '][' + sFmt + '][' + sSize + '][/COLOR]'
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sDisplay)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
