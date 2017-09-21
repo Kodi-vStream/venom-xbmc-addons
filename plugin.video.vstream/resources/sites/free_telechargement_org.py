@@ -46,7 +46,7 @@ MOVIE_HD = (URL_MAIN + '1/categorie-Films+BluRay+720p+et+1080p/1.html', 'showMov
 MOVIE_3D = (URL_MAIN + '1/categorie-Films+BluRay+3D/1.html', 'showMovies')
 MOVIE_HD_VIEWS = (URL_MAIN + '1/films-bluray/affichage', 'showMovies')
 MOVIE_GENRES_HD = (True, 'showGenreMoviesHD')
-MOVIE_ANNEES = (True, 'showMovieAnnees')
+MOVIE_ANNEES = (True, 'showMovieYears')
 
 ANIM_ANIMS = (URL_MAIN + '1/animations/1', 'showMovies')
 ANIM_VFS = (URL_MAIN + '1/categorie-Mangas+VF/1.html', 'showMovies')
@@ -266,7 +266,7 @@ def showGenreMoviesSD():
 def showGenreMoviesHD():
     showGenre("Films+BluRay+720p+et+1080p/")
 
-def showMovieAnnees():
+def showMovieYears():
     oGui = cGui()
 
     for i in reversed (xrange(1950, 2018)):
@@ -399,21 +399,21 @@ def showSearchResult(sSearch = ''):
             sTitle = cUtil().removeHtmlTags(sTitle)
             sUrl2 = aEntry[0]
 
-            sCom = aEntry[3]
-            sCom = sCom.decode("unicode_escape").encode("latin-1")
-            sThumbnail=aEntry[2]
+            sDesc = aEntry[3]
+            sDesc = sDesc.decode("unicode_escape").encode("latin-1")
+            sThumb=aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + str(sUrl2))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            oOutputParameterHandler.addParameter('sCom', sCom)
+            oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
             sDisplayTitle = cUtil().DecoTitle('(' + sQual+ ') ' + sTitle)
 
             if 'series-' in sUrl or '-Saison' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         for n,u in NextPage:
             oOutputParameterHandler = cOutputParameterHandler()
@@ -431,7 +431,7 @@ def showMovies():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sCom = ''
+    sDesc = ''
     sQual = ''
 
     sPattern = '<table style="float:left;padding-left:8px"> *<td> *<div align="left"> *<a href="([^"]+)" onmouseover="Tip\(\'<b>([^"]+?)<\/b>.+?Description :</b> <i>([^<]+?)<.+?<img src="([^"]+?)"'
@@ -450,21 +450,21 @@ def showMovies():
             sTitle = str(aEntry[1])
             sUrl2 = aEntry[0]
 
-            sCom = aEntry[2]
-            sCom = sCom.decode("unicode_escape").encode("latin-1")
-            sThumbnail=aEntry[3]
+            sDesc = aEntry[2]
+            sDesc = sDesc.decode("unicode_escape").encode("latin-1")
+            sThumb=aEntry[3]
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + str(sUrl2))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            oOutputParameterHandler.addParameter('sCom', sCom)
+            oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
             sDisplayTitle = cUtil().DecoTitle('(' + sQual + ') ' + sTitle)
 
             if 'series-' in sUrl or '-Saison' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, sCom, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -492,7 +492,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumbnail=oInputParameterHandler.getValue('sThumbnail')
+    sThumb=oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -532,7 +532,7 @@ def showHosters():
         if not aResult[0]:
             return
         sHtmlContent = aResult[1][0]
-        sHtmlContent = sHtmlContent.replace('&nbsp;','')
+        sHtmlContent = sHtmlContent.replace('&nbsp;', '')
 
     if '-multi' in sHtmlContent:
         sPattern = '<a href="link.php\?lien\=([^"]+)"'
@@ -559,9 +559,9 @@ def showHosters():
                 sTitle = '[COLOR skyblue]' + sHostName + '[/COLOR]'
                 oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
 
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -572,7 +572,7 @@ def showSeriesHosters():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumbnail=oInputParameterHandler.getValue('sThumbnail')
+    sThumb=oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -590,14 +590,14 @@ def showSeriesHosters():
         sPattern = '<div id="link">(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sHtmlContent = aResult[1][0]
-    sHtmlContent = re.sub('<font color="[^"]+">','',sHtmlContent)
-    sHtmlContent = re.sub('</font>','',sHtmlContent)
+    sHtmlContent = re.sub('<font color="[^"]+">', '', sHtmlContent)
+    sHtmlContent = re.sub('</font>', '', sHtmlContent)
     #sHtmlContent = re.sub('link.php\?lien\=','',sHtmlContent)
 
     if '-multi' in sHtmlContent:
         sPattern = '<a href="link.php\?lien\=([^"]+)"'
     else:
-        sPattern = '<b>(.+?)</b> </br> <a href="link.php\?lien\=([^"]+)" target="_blank" ><b>Cliquer ici pour Télécharger</b></a><br /><br />'
+        sPattern = '<b>(.+?)</b> </br> <a href="link.php\?lien\=([^"]+)" target="_blank" ><b>Cliquer ici pour Télécharger</b></a>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -616,9 +616,9 @@ def showSeriesHosters():
                 sTitle = '[COLOR skyblue]' + aEntry[0] + '[/COLOR]'
                 oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
 
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -629,7 +629,7 @@ def Display_protected_link():
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sThumbnail=oInputParameterHandler.getValue('sThumbnail')
+    sThumb=oInputParameterHandler.getValue('sThumb')
 
     oParser = cParser()
 
@@ -645,7 +645,7 @@ def Display_protected_link():
                 aResult_dlprotect = oParser.parse(sHtmlContent, sPattern_dlprotect)
 
         else:
-            oDialog = cConfig().createDialogOK('Desole, probleme de captcha.\n Veuillez en rentrer un directement sur le site, le temps de reparer')
+            oDialog = cConfig().createDialogOK('Désolé, problème de captcha.\n Veuillez en rentrer un directement sur le site, le temps de réparer')
             aResult_dlprotect = (False, False)
 
     #Si lien normal
@@ -665,7 +665,7 @@ def Display_protected_link():
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
@@ -683,7 +683,7 @@ def DecryptddlProtect(url):
 
     oRequestHandler = cRequestHandler(url)
     if cookies:
-        oRequestHandler.addHeaderEntry('Cookie',cookies)
+        oRequestHandler.addHeaderEntry('Cookie', cookies)
     sHtmlContent = oRequestHandler.request()
 
     #A partir de la on a les bon cookies pr la protection cloudflare
@@ -695,59 +695,59 @@ def DecryptddlProtect(url):
             oRequestHandler = cRequestHandler(url)
             sHtmlContent = oRequestHandler.request()
 
-        s = re.findall('src=".\/([^<>"]+?)" alt="CAPTCHA Image"',sHtmlContent)
+        s = re.findall('src=".\/([^<>"]+?)" alt="CAPTCHA Image"', sHtmlContent)
         if host in s[0]:
             image = s[0]
         else:
             image = host + s[0]
 
-        captcha,cookies2 = get_response(image,cookies)
+        captcha,cookies2 = get_response(image, cookies)
         cookies = cookies + '; ' + cookies2
 
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.setRequestType(1)
-        oRequestHandler.addHeaderEntry('User-Agent' , UA)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
         oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4')
-        oRequestHandler.addHeaderEntry('Accept' , 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
-        oRequestHandler.addHeaderEntry('Cookie',cookies)
-        oRequestHandler.addHeaderEntry('Referer',url)
+        oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+        oRequestHandler.addHeaderEntry('Cookie', cookies)
+        oRequestHandler.addHeaderEntry('Referer', url)
 
-        oRequestHandler.addParameters( 'do' , 'contact')
-        oRequestHandler.addParameters( 'ct_captcha' , captcha)
+        oRequestHandler.addParameters('do', 'contact')
+        oRequestHandler.addParameters('ct_captcha', captcha)
 
         sHtmlContent = oRequestHandler.request()
 
         if 'Code de securite incorrect' in sHtmlContent:
-            cConfig().showInfo("Erreur", 'Mauvais Captcha' , 5)
+            cConfig().showInfo("Erreur", 'Mauvais Captcha', 5)
             return 'rate'
 
         if 'Veuillez recopier le captcha ci-dessus' in sHtmlContent:
-            cConfig().showInfo("Erreur", 'Rattage' , 5)
+            cConfig().showInfo("Erreur", 'Rattage', 5)
             return 'rate'
 
         #si captcha reussi
         #save cookies
-        GestionCookie().SaveCookie('liens_free-telechargement_org',cookies)
+        GestionCookie().SaveCookie('liens_free-telechargement_org', cookies)
 
     return sHtmlContent
 
 def get_response(img,cookie):
     #on telecharge l'image
 
-    hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',img)
-    host = re.sub(r'https*:\/\/','',hostComplet)
+    hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)', '\\1', img)
+    host = re.sub(r'https*:\/\/', '', hostComplet)
     url = img
 
     oRequestHandler = cRequestHandler(url)
     oRequestHandler.addHeaderEntry('User-Agent' , UA)
     #oRequestHandler.addHeaderEntry('Referer', url)
-    oRequestHandler.addHeaderEntry('Cookie',cookie)
+    oRequestHandler.addHeaderEntry('Cookie', cookie)
 
     htmlcontent = oRequestHandler.request()
 
     NewCookie = oRequestHandler.GetCookies()
 
-    filename  = os.path.join(PathCache,'Captcha.raw')
+    filename  = os.path.join(PathCache, 'Captcha.raw')
 
     downloaded_image = file(filename, "wb")
     downloaded_image.write(htmlcontent)

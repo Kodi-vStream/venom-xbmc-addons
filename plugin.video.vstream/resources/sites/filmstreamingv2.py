@@ -1,5 +1,8 @@
 #-*- coding: utf-8 -*-
 #Venom.
+
+#desactiver le 18/09
+return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
@@ -145,7 +148,7 @@ def showMovies(sSearch = ''):
                 sThumb = URL_MAIN[:-1] + sThumb
 
             sDisplayTitle = sTitle + sQual
-			
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)

@@ -207,7 +207,8 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<link rel="next" href="(.+?)"/>'
+    sPattern = '<link rel="next" href="([^"]+)"'
+    #<div class="pag_.+?"><a href="([^"]+)">Prochaine<\/a><\/div>
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 	
