@@ -333,7 +333,7 @@ class cHoster(iHoster):
         else:
             web_url = AllUrl[0]
             
-        web_url = AllUrl[1]
+        web_url = AllUrl[0]
         
         #Requests to unlock video
         LoadLinks(sHtmlContent)
