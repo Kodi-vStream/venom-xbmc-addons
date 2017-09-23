@@ -22,7 +22,7 @@ SITE_IDENTIFIER = 'mangacity_org'
 SITE_NAME = 'I anime'
 SITE_DESC = 'Animés en streaming'
 
-URL_MAIN = 'http://www.ianime.tv/'
+URL_MAIN = 'http://www.ianimes.net/'
 
 MOVIE_MOVIE = (URL_MAIN + 'films.php?liste=' + RandomKey , 'ShowAlpha')
 MOVIE_GENRES = (URL_MAIN + 'films.php?liste=' + RandomKey , 'showGenres')
@@ -237,7 +237,7 @@ def ShowAlpha2():
     if 'vostfr' in sUrl:
         sType = 'VOSTFR'
 
-    #cConfig().log(sUrl2)
+    #VSlog(sUrl2)
 
     oRequestHandler = cRequestHandler(sUrl2)
     sHtmlContent = oRequestHandler.request()
@@ -521,7 +521,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #cConfig().log(sUrl)
+    #VSlog(sUrl)
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
@@ -563,19 +563,19 @@ def showHosters():
             list_url.append(sHosterUrl)
 
     #3 eme methode
-    sPattern = 'document\.write\(unescape\("(%3c%69%66%72%61%6d%65%20.+?)"\)\);'
+    sPattern = 'document\.write\(unescape\("(%3c%.+?)"\)\);'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        #cConfig().log("methode 3")
+        VSlog("methode 3")
         for aEntry in aResult[1]:
             tmp = urllib.unquote(aEntry)
-            #cConfig().log(tmp)
+
             sPattern2 = 'src=["\']([^"\']+)["\']'
             aResult = re.findall(sPattern2,tmp)
             if aResult:
                 list_url.append(aResult[0])
 
-    #cConfig().log("resultats : " + str(list_url))
+    #VSlog(str(list_url))
 
     if len(list_url) > 0:
         total = len(list_url)
@@ -607,7 +607,7 @@ def showHosters():
                 sHosterUrl = ExtractLink(sHtmlContent)
 
             #Passe par lien .asx ??
-            sPattern = '(http:\/\/www.ianime.tv\/[0-9a-zA-Z_-]+\.asx)'
+            sPattern = '(http:\/\/www.ianimes*.net\/[0-9a-zA-Z_-]+\.asx)'
             aResult = oParser.parse(sHosterUrl, sPattern)
             if aResult[0] :
                 #on telecharge la page
@@ -624,7 +624,7 @@ def showHosters():
                     sHosterUrl = ExtractLink(html)
 
             #Passe par lien .vxm ??
-            sPattern = 'http:\/\/www.ianime.tv\/([0-9a-zA-Z_-]+)\.vxm'
+            sPattern = 'http:\/\/www.ianimes*.net\/([0-9a-zA-Z_-]+)\.vxm'
             aResult = oParser.parse(sHosterUrl, sPattern)
             if aResult[0] :
                 sHosterUrl = 'http://embed.nowvideo.sx/embed.php?v=' + aResult[1][0]
@@ -704,27 +704,23 @@ def showHosters():
                 if aResult[0]:
                     sHosterUrl = aResult[1][0]
 
-            #Avant derniere en date
-            sPattern = '(http:\/\/www\.ianime\.tv\/[a-z\.]+&[\w-]+\.htm)'
+            #Derniere en date
+            sPattern = "(http:\/\/www\.ianimes*\.net\/[^']+)"
             aResult = oParser.parse(sHosterUrl, sPattern)
+            #VSlog(aResult)
             if aResult[0]:
-                oRequestHandler = cRequestHandler(aResult[1][0] )
+                oRequestHandler = cRequestHandler(aResult[1][0])
                 oRequestHandler.addHeaderEntry('Referer',sUrl)
                 sHtmlContent = oRequestHandler.request()
 
                 sHtmlContent = ICDecode(sHtmlContent)
 
                 sHosterUrl = ExtractLink(sHtmlContent)
-                
-            #Derniere en date
-            if 'www.ianime.tv/embed/' in sHosterUrl:
-                
-                oRequestHandler = cRequestHandler( sHosterUrl )
-                oRequestHandler.addHeaderEntry('Referer',sUrl)
-                sHtmlContent = oRequestHandler.request()
-
-                sHosterUrl = ExtractLink(sHtmlContent)
-
+                #VSlog(sHosterUrl)
+                if 'tinyurl' in sHosterUrl:
+                    if '://tinyurl.com/kt3owzh' in sHosterUrl:
+                        sHosterUrl = sHosterUrl.replace('://tinyurl.com/kt3owzh/','://estream.to/')
+                        
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
