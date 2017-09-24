@@ -1,7 +1,7 @@
 Venom-Addons-Vstream-XBMC
 =================
 
-Sommaire: **[A Propos](#a-propos)** | **[Image](#image)** | **[Installer](#installer)** | **[Video](#video)** | **[Quoi de neuf](#quoi-de-neuf)** | **[Contribuer](#contribuer)** | **[Faire un Don](#faire-un-don)** 
+Sommaire: **[A Propos](#a-propos)** | **[Image](#image)** | **[Installer](#installer)** | **[Video](#video)** | **[Quoi de neuf](#quoi-de-neuf)** | **[Questions fréquentes](#Questions-fréquentes)** | **[Contribuer](#contribuer)** | **[Faire un Don](#faire-un-don)** 
 
 ## A Propos!
 
@@ -25,12 +25,17 @@ Installez le zip du repository (pour avoir les mises à jour automatiques) ou in
 
 ## Video!
 
-[![Video d'installation](http://img.youtube.com/vi/dId6TN9WPlQ/0.jpg)](https://www.youtube.com/watch?v=dId6TN9WPlQ)
+[![Video d'installation](http://img.youtube.com/vi/1SCJ_h4bwJQ/0.jpg)](https://www.youtube.com/watch?v=1SCJ_h4bwJQ)
 
 
 ## Quoi de neuf!
 
 [Voir le changelog](https://github.com/Kodi-vStream/venom-xbmc-addons/blob/Beta/plugin.video.vstream/changelog.txt)
+
+
+## Questions fréquentes!
+
+[Voir le Wiki](https://github.com/Kodi-vStream/venom-xbmc-addons/wiki)
 
 
 ## Contribuer!
