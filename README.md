@@ -39,11 +39,6 @@ Pour me proposer de nouvelles sources ou me rapporter un bug, utilisez :
 
 [Issues Github](https://github.com/Kodi-vStream/venom-xbmc-addons/issues)
 
-[Twitter @LordVenom57](https://twitter.com/LordVenom57)
-
-[Google+ LordVenom57](https://plus.google.com/+LordVenom57/posts)
-
-
 Pour créer un nouvelle source, utilisez le fichier avec commentaire pour vous aider.
 
 [Fichier avec commentaire (source)](https://github.com/Kodi-vStream/venom-xbmc-addons/blob/Beta/ajouter_une_source.py)
@@ -52,8 +47,6 @@ Pour créer un nouvelle source, utilisez le fichier avec commentaire pour vous a
 
 
 Pour participer directement au projet
-
-[github bêta](https://github.com/Kodi-vStream/venom-xbmc-addons/tree/Beta)
 
 [Télécharger la bêta](https://minhaskamal.github.io/DownGit/#/home?url=https:%2F%2Fgithub.com%2FKodi-vStream%2Fvenom-xbmc-addons%2Ftree%2FBeta%2Fplugin.video.vstream)
 
@@ -65,6 +58,6 @@ Pour participer directement au projet
 
 ## Merci!
 
-Merci à tous nos généreux donateurs et donatrices. J'évite de mettre vos pseudo en évidence pour ne pas faire de vStream une vitrine, mais sachez que celas me motive, encore merci.
+Merci à tous nos généreux donateurs et donatrices.
 
 Bon Film ++
