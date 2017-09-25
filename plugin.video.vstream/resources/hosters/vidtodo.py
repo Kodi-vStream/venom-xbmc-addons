@@ -4,6 +4,8 @@ from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
 import time,re
 
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -27,12 +29,6 @@ class cHoster(iHoster):
 
     def isDownloadable(self):
         return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
         
     def __getIdFromUrl(self):
         return ''
@@ -41,9 +37,9 @@ class cHoster(iHoster):
         self.__sUrl = str(sUrl)  
         self.__sUrl = self.__sUrl.replace('embed-', '')
         self.__sUrl = self.__sUrl.replace('.html', '')
+        if not self.__sUrl.startswith('https'):
+            self.__sUrl = self.__sUrl.replace('http', 'https')
         
-    def checkUrl(self, sUrl):
-        return True
 
     def getUrl(self):
         return self.__sUrl
@@ -66,9 +62,10 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        sPattern =  '<input type="hidden" name="([^"]+)" value="([^"]+)"'
+        sPattern =  '<input type="(?:hidden|submit)" name="([^"]+)" value="([^"]+)"'
 
         aResult = oParser.parse(sHtmlContent, sPattern)
+
         if (aResult[0] == True): 
             time.sleep(3)
             oRequest = cRequestHandler(self.__sUrl)
@@ -77,6 +74,8 @@ class cHoster(iHoster):
                 oRequest.addParameters(aEntry[0], aEntry[1])
 
             oRequest.addParameters('referer', self.__sUrl)
+            oRequest.addHeaderEntry('User-Agent', UA)
+            
             sHtmlContent = oRequest.request()
 
             sPattern = '{file: *"([^"]+smil)"}'
@@ -89,11 +88,17 @@ class cHoster(iHoster):
                 aResult = oParser.parse(sHtmlContent, sPattern)
                 if (aResult[0] == True):
                     sHtmlContent = cPacker().unpack(aResult[1][0])
+
                     sPattern = '{file: *"([^"]+smil)"}'
                     aResult = oParser.parse(sHtmlContent, sPattern)
                     if (aResult[0] == True):
                         api_call = self.extractSmil(aResult[1][0])
-
+                    else:
+                        sPattern = '{file: *"([^"]+mp4)"'
+                        aResult = oParser.parse(sHtmlContent, sPattern)
+                        if (aResult[0] == True):
+                            api_call = aResult[1][0]
+  
         if (api_call):
             return True, api_call
             
