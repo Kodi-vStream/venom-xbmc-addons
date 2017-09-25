@@ -79,6 +79,7 @@ class cHoster(iHoster):
         self.__sUrl = str(sUrl)
         self.__sUrl = self.__sUrl.replace('http://dai.ly/', '')
         self.__sUrl = self.__sUrl.replace('http://www.dailymotion.com/', '')
+        self.__sUrl = self.__sUrl.replace('https://www.dailymotion.com/', '')
         self.__sUrl = self.__sUrl.replace('embed/', '')
         self.__sUrl = self.__sUrl.replace('video/', '')
         self.__sUrl = self.__sUrl.replace('sequence/', '')
