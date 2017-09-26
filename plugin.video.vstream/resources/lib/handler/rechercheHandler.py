@@ -16,7 +16,8 @@ class cRechercheHandler:
     def __init__(self):
         self.__sText = ""
         self.__sDisp = ""
-        self.__sRead = "True"
+        self.__sRead = cConfig().getSetting("history-view")
+        self.__sCat = ""
 
     def getPluginHandle(self):
         try:
@@ -62,6 +63,12 @@ class cRechercheHandler:
 
     def getRead(self):
         return self.__sRead
+
+    def setCat(self, sCat):
+        self.__sCat = sCat
+
+    def getCat(self):
+        return self.__sCat
 
     def getDisp(self):
         return self.__sDisp

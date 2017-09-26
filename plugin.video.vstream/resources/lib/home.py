@@ -329,9 +329,8 @@ class cHome:
         # oGui.addDir('globalSearch', 'none', '%s: %s' % (oConfig.getlanguage(30076), sSearchText), 'search.png', oOutputParameterHandler)
         # oGui.setEndOfDirectory()
 
-    def showSearch(self, searchtext=''):
+    def showSearch(self, searchtext=cInputParameterHandler().getValue('searchtext')):
 
-        print searchtext
         if not searchtext:
             return self.showSearchText()
 
@@ -341,41 +340,78 @@ class cHome:
         oGui = cGui()
         oConfig = cConfig()
 
-        print "lalalalal"
-        print xbmc.getInfoLabel('ListItem.Property(Category)')
+        #print xbmc.getInfoLabel('ListItem.Property(Category)')
 
         oGui.addText('globalSearch', '[COLOR khaki]%s: %s[/COLOR]' % (oConfig.getlanguage(30076), searchtext), 'none.png')
 
+        #utilisation de guielement pour ajouter la bonne catégories
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oOutputParameterHandler.addParameter('searchtext', searchtext)
-        oOutputParameterHandler.addParameter('disp', 'search1')
-        oOutputParameterHandler.addParameter('type', oConfig.getSetting('search1_type'))
-        oOutputParameterHandler.addParameter('readdb', 'True')
-        #sLabel1 = oConfig.getlanguage(30077)+": "+oConfig.getSetting('search1_label')
+
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName('globalSearch')
+        oGuiElement.setFunction('showSearch')
         sLabel1 = '%s (%s)' % (oConfig.getlanguage(30330), oConfig.getlanguage(30120))
-        oGui.addDir('globalSearch', 'showSearchText', sLabel1, 'search.png', oOutputParameterHandler)
+        oGuiElement.setTitle(sLabel1)
+        oGuiElement.setFileName(sLabel1)
+        oGuiElement.setIcon('search.png')
+        oGuiElement.setMeta(0)
+        #oGuiElement.setThumbnail(sThumbnail)
+        #oGuiElement.setFanart(sFanart)
+        oGuiElement.setCat(1)
+
+        oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oOutputParameterHandler.addParameter('searchtext', searchtext)
-        oOutputParameterHandler.addParameter('disp', 'search2')
-        oOutputParameterHandler.addParameter('type', oConfig.getSetting('search2_type'))
-        oOutputParameterHandler.addParameter('readdb', 'True')
-        #sLabel2 = oConfig.getlanguage(30089)+": "+oConfig.getSetting('search2_label')
-        sLabel2 = '%s (%s, %s)' % (oConfig.getlanguage(30330), oConfig.getlanguage(30121), oConfig.getlanguage(30122))
-        oGui.addDir('globalSearch', 'showSearchText', sLabel2, 'search.png', oOutputParameterHandler)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oOutputParameterHandler.addParameter('searchtext', searchtext)
-        oOutputParameterHandler.addParameter('disp', 'search3')
-        oOutputParameterHandler.addParameter('type', oConfig.getSetting('search3_type'))
-        oOutputParameterHandler.addParameter('readdb', 'True')
-        #sLabel3 = oConfig.getlanguage(30090)+": "+oConfig.getSetting('search3_label')
-        sLabel3 = '%s (%s)' % (oConfig.getlanguage(30330), oConfig.getlanguage(30410))
-        oGui.addDir('globalSearch', 'showSearchText', sLabel3, 'search.png', oOutputParameterHandler)
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName('globalSearch')
+        oGuiElement.setFunction('showSearch')
+        sLabel1 = '%s (%s)' % (oConfig.getlanguage(30330), oConfig.getlanguage(30120))
+        oGuiElement.setTitle(sLabel1)
+        oGuiElement.setFileName(sLabel1)
+        oGuiElement.setIcon('search.png')
+        oGuiElement.setMeta(0)
+        #oGuiElement.setThumbnail(sThumbnail)
+        #oGuiElement.setFanart(sFanart)
+        oGuiElement.setCat(2)
+
+        oGui.addFolder(oGuiElement, oOutputParameterHandler)
+
+
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        # oOutputParameterHandler.addParameter('searchtext', searchtext)
+        # oOutputParameterHandler.addParameter('disp', 'search1')
+        # oOutputParameterHandler.addParameter('type', oConfig.getSetting('search1_type'))
+        # oOutputParameterHandler.addParameter('readdb', 'True')
+        # #sLabel1 = oConfig.getlanguage(30077)+": "+oConfig.getSetting('search1_label')
+        # sLabel1 = '%s (%s)' % (oConfig.getlanguage(30330), oConfig.getlanguage(30120))
+        # oGui.addDir('globalSearch', 'showSearchText', sLabel1, 'search.png', oOutputParameterHandler)
+        #
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        # oOutputParameterHandler.addParameter('searchtext', searchtext)
+        # oOutputParameterHandler.addParameter('disp', 'search2')
+        # oOutputParameterHandler.addParameter('type', oConfig.getSetting('search2_type'))
+        # oOutputParameterHandler.addParameter('readdb', 'True')
+        # #sLabel2 = oConfig.getlanguage(30089)+": "+oConfig.getSetting('search2_label')
+        # sLabel2 = '%s (%s, %s)' % (oConfig.getlanguage(30330), oConfig.getlanguage(30121), oConfig.getlanguage(30122))
+        # oGui.addDir('globalSearch', 'showSearchText', sLabel2, 'search.png', oOutputParameterHandler)
+        #
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        # oOutputParameterHandler.addParameter('searchtext', searchtext)
+        # oOutputParameterHandler.addParameter('disp', 'search3')
+        # oOutputParameterHandler.addParameter('type', oConfig.getSetting('search3_type'))
+        # oOutputParameterHandler.addParameter('readdb', 'True')
+        # #sLabel3 = oConfig.getlanguage(30090)+": "+oConfig.getSetting('search3_label')
+        # sLabel3 = '%s (%s)' % (oConfig.getlanguage(30330), oConfig.getlanguage(30410))
+        # oGui.addDir('globalSearch', 'showSearchText', sLabel3, 'search.png', oOutputParameterHandler)
 
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -395,12 +431,12 @@ class cHome:
         # sLabel5 = ('%s: %s') % (oConfig.getlanguage(30076), oConfig.getlanguage(30092))
         # oGui.addDir('globalSearch', 'searchMovie', sLabel5, 'search.png', oOutputParameterHandler)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oOutputParameterHandler.addParameter('searchtext', searchtext)
-        oOutputParameterHandler.addParameter('disp', 'search10')
-        oOutputParameterHandler.addParameter('readdb', 'True')
-        oGui.addDir('globalSearch', 'showSearchText', '[COLOR orange]Recherche: Alluc_ee[/COLOR]', 'search.png', oOutputParameterHandler)
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        # oOutputParameterHandler.addParameter('searchtext', searchtext)
+        # oOutputParameterHandler.addParameter('disp', 'search10')
+        # oOutputParameterHandler.addParameter('readdb', 'True')
+        # oGui.addDir('globalSearch', 'showSearchText', '[COLOR orange]Recherche: Alluc_ee[/COLOR]', 'search.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
