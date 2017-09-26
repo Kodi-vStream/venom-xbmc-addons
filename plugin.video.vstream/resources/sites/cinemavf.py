@@ -284,6 +284,9 @@ def ShowSaisons():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    #probleme de redirection non finalisée sur leur site
+    sUrl = oRequestHandler.getRealUrl()
 
     sPattern = '<div class="season">.+?<h3>(.+?)</h3>|<a class="num_episode" href="(.+?)">(.+?)<span>'
 
@@ -325,6 +328,11 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    #cConfig().log(str(sUrl))
+    
+    #probleme de redirection non finalisée sur leur site
+    sUrl = oRequestHandler.getRealUrl()
 
     sPattern = '<div class="langue.*?">.*?<span>(.*?)<\/span>|<a onclick=".+?">\s*([^<>]+)\s*<\/a>\s*<input name="levideo" value="([^"]+)"'
 
@@ -346,7 +354,7 @@ def showLinks():
                 sHost = sHost.replace('.to', '').replace('.com', '').replace('.me', '').replace('.ec', '').replace('.co', '').replace('.eu', '')
                 sPost = str(aEntry[2])
                 sTitle = ('%s (%s)') % (sMovieTitle, sHost)
-
+                
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sPost', sPost)
@@ -377,6 +385,8 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     #pensez a faire un cConfig().log(str(aResult)) pour verifier
     #cConfig().log(str(sUrl))
+    #cConfig().log(sPost)
+    
     #cConfig().log(str(aResult))
 
     if (aResult[0] == True):
