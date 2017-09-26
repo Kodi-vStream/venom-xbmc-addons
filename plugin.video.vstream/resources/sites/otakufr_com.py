@@ -291,6 +291,9 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('<iframe src="http://www.facebook.com','')
+    sHtmlContent = sHtmlContent.replace('<div class="vdo_wrp"><div style=','<div class="vdo_wrp"><iframe ')
+    sHtmlContent = sHtmlContent.replace('data-videoid="','src="https://embed.tune.pk/vid=')
+    #pour Tune en test
 
     oParser = cParser()
     sPattern = '<div class="vdo_wrp"><iframe.+?src="([^"]+)"'
