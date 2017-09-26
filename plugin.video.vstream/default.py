@@ -184,6 +184,8 @@ def searchGlobal():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
 
+    #xbmc.getInfoLabel('ListItem.Property(Category)')
+
     sReadDB = oInputParameterHandler.getValue('readdb')
     sSearchText = oInputParameterHandler.getValue('searchtext')
     sDisp = oInputParameterHandler.getValue('disp')

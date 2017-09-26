@@ -337,8 +337,8 @@ msgid "[COLOR red]Delete Bookmark[/COLOR]"
 msgstr "[COLOR red]Supprimer TOUT[/COLOR]"
 
 msgctxt "#30210"
-msgid "[COLOR teal]Display Bookmark[/COLOR]"
-msgstr "[COLOR teal]Voir Marque-page[/COLOR]"
+msgid "Bookmark"
+msgstr "Marque-page"
 
 msgctxt "#30211"
 msgid "[COLOR red]Clear this category[/COLOR]"
