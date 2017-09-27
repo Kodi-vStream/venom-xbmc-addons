@@ -517,8 +517,8 @@ msgid "[COLOR gold]Full season search[/COLOR]"
 msgstr "[COLOR gold]Recherche saison complète[/COLOR]"
 
 msgctxt "#30416"
-msgid "[COLOR azure]Search history[/COLOR]"
-msgstr "[COLOR azure]Historique de recherche[/COLOR]"
+msgid "[COLOR gold]Search history[/COLOR]"
+msgstr "[COLOR gold]Historique de recherche[/COLOR]"
 
 msgctxt "#30417"
 msgid "[COLOR orange]Search on Alluc_ee[/COLOR]"

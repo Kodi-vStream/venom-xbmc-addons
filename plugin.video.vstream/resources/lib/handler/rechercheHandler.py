@@ -16,7 +16,6 @@ class cRechercheHandler:
     def __init__(self):
         self.__sText = ""
         self.__sDisp = ""
-        self.__sRead = cConfig().getSetting("history-view")
         self.__sCat = ""
 
     def getPluginHandle(self):
@@ -58,12 +57,6 @@ class cRechercheHandler:
         self.__sDisp = sDisp
         return self.__sDisp
 
-    def setRead(self, sRead):
-        self.__sRead = sRead
-
-    def getRead(self):
-        return self.__sRead
-
     def getDisp(self):
         return self.__sDisp
 
@@ -85,43 +78,6 @@ class cRechercheHandler:
                     aNameList.append(sItemName)
         return aNameList
 
-    def __importPlugin_old(self, sName, sLabel, sText):
-        oConfig = cConfig()
-        sPluginSettingsName = sLabel+'_' +sName
-        bPlugin = oConfig.getSetting(sPluginSettingsName)
-        #multicherche
-        if sLabel == 'search5':
-            bPlugin = 'true'
-
-        OnPlugins = oConfig.getSetting('plugin_' + sName)
-
-        if (bPlugin == 'true') and (OnPlugins == 'true'):
-            try:
-                oGui = cGui()
-
-                exec "from resources.sites import " + sName
-                exec "sDisplayname = " + sName + ".SITE_NAME"
-                exec "sSearch = " + sName + ".URL_SEARCH"
-
-                cConfig().log("Load Recherche: " + str(sName))
-
-                cRechercheHandler.Count += 1
-                Count = cRechercheHandler.Count
-                if (Count == 1):
-                    oGui.addText(sName, '[COLOR khaki]%s: %s[/COLOR]' % (cConfig().getlanguage(30076), sText), 'none.png')
-
-                oGui.addText(sName, '%s. [COLOR olive]%s[/COLOR]' % (Count, sDisplayname), 'sites/%s.png' % (sName))
-
-                sUrl = sSearch[0]+sText
-                searchUrl = "%s.%s('%s')" % (sName, sSearch[1], sUrl)
-                exec searchUrl
-
-                return True
-            except Exception, e:
-                cConfig().log("cant import plugin: " + str(sName))
-                return False, False
-        else:
-            return False, False
 
     def __importPlugin(self, sName, sCat):
         pluginData = {}
@@ -178,6 +134,8 @@ class cRechercheHandler:
         if not sText:
             return False
         sCat =  xbmc.getInfoLabel('ListItem.Property(Category)')
+        #print "recherche handler"
+        #print sCat
         if not sCat:
             return False
 
