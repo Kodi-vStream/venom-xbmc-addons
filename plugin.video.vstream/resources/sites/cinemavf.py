@@ -21,6 +21,7 @@ SITE_DESC = 'Films, Séries & Mangas en streaming.'
 URL_MAIN = 'http://cinemavf.tv/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
@@ -284,7 +285,7 @@ def ShowSaisons():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     #probleme de redirection non finalisée sur leur site
     sUrl = oRequestHandler.getRealUrl()
 
@@ -328,9 +329,9 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     #cConfig().log(str(sUrl))
-    
+
     #probleme de redirection non finalisée sur leur site
     sUrl = oRequestHandler.getRealUrl()
 
@@ -354,7 +355,7 @@ def showLinks():
                 sHost = sHost.replace('.to', '').replace('.com', '').replace('.me', '').replace('.ec', '').replace('.co', '').replace('.eu', '')
                 sPost = str(aEntry[2])
                 sTitle = ('%s (%s)') % (sMovieTitle, sHost)
-                
+
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sPost', sPost)
@@ -386,7 +387,7 @@ def showHosters():
     #pensez a faire un cConfig().log(str(aResult)) pour verifier
     #cConfig().log(str(sUrl))
     #cConfig().log(sPost)
-    
+
     #cConfig().log(str(aResult))
 
     if (aResult[0] == True):

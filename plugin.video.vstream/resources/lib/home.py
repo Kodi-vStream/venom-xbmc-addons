@@ -371,7 +371,7 @@ class cHome:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName('globalSearch')
         oGuiElement.setFunction('showSearch')
-        sLabel1 = '%s (%s)' % (oConfig.getlanguage(30330), oConfig.getlanguage(30120))
+        sLabel1 = '%s (%s)' % (oConfig.getlanguage(30330), oConfig.getlanguage(30121))
         oGuiElement.setTitle(sLabel1)
         oGuiElement.setFileName(sLabel1)
         oGuiElement.setIcon('search.png')
@@ -379,6 +379,24 @@ class cHome:
         #oGuiElement.setThumbnail(sThumbnail)
         #oGuiElement.setFanart(sFanart)
         oGuiElement.setCat(2)
+
+        oGui.addFolder(oGuiElement, oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oOutputParameterHandler.addParameter('searchtext', searchtext)
+
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName('globalSearch')
+        oGuiElement.setFunction('showSearch')
+        sLabel1 = '%s (%s)' % (oConfig.getlanguage(30330), oConfig.getlanguage(30410))
+        oGuiElement.setTitle(sLabel1)
+        oGuiElement.setFileName(sLabel1)
+        oGuiElement.setIcon('search.png')
+        oGuiElement.setMeta(0)
+        #oGuiElement.setThumbnail(sThumbnail)
+        #oGuiElement.setFanart(sFanart)
+        oGuiElement.setCat(3)
 
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 

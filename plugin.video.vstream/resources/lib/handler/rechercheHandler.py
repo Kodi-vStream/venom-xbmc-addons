@@ -64,12 +64,6 @@ class cRechercheHandler:
     def getRead(self):
         return self.__sRead
 
-    def setCat(self, sCat):
-        self.__sCat = sCat
-
-    def getCat(self):
-        return self.__sCat
-
     def getDisp(self):
         return self.__sDisp
 
@@ -129,30 +123,38 @@ class cRechercheHandler:
         else:
             return False, False
 
-    def __importPlugin(self, sName, sLabel):
+    def __importPlugin(self, sName, sCat):
         pluginData = {}
         oConfig = cConfig()
-        sPluginSettingsName = sLabel+'_' +sName
+        sPluginSettingsName = 'plugin_' + sName
         bPlugin = oConfig.getSetting(sPluginSettingsName)
         #multicherche
-        if sLabel == 'search5':
-            bPlugin = 'true'
+        # if sLabel == 'search5':
+        #     bPlugin = 'true'
 
-        OnPlugins = oConfig.getSetting('plugin_' + sName)
+        if sCat == '1':
+            sSearch = 'URL_SEARCH_MOVIES'
+        elif sCat == '2':
+            sSearch = 'URL_SEARCH_SERIES'
+        elif sCat == '3':
+            sSearch = 'URL_SEARCH_MISC'
+        else :
+            sSearch = 'URL_SEARCH'
 
-        if (bPlugin == 'true') and (OnPlugins == 'true'):
+
+        if (bPlugin == 'true'):
             try:
 
                 plugin = __import__('resources.sites.%s' % sName, fromlist=[sName])
 
                 pluginData['identifier'] = plugin.SITE_IDENTIFIER
                 pluginData['name'] = plugin.SITE_NAME
-                pluginData['search'] = plugin.URL_SEARCH
+                pluginData['search'] = getattr(plugin, sSearch)
+                return pluginData
 
             except Exception, e:
-                cConfig().log("cant import plugin: " + str(sName))
-
-        return pluginData
+                #cConfig().log("cant import plugin: " + str(sName))
+                return False
 
 
     def getRootFolder(self):
@@ -170,20 +172,21 @@ class cRechercheHandler:
         return sFolder
 
     def getAvailablePlugins(self):
+
         oConfig = cConfig()
         sText = self.getText()
         if not sText:
             return False
-        sLabel = self.getDisp()
-        if not sLabel:
+        sCat =  xbmc.getInfoLabel('ListItem.Property(Category)')
+        if not sCat:
             return False
 
         #historique
         try:
-            if (cConfig().getSetting("history-view") == 'true' and self.__sRead != "False"):
+            if (cConfig().getSetting("history-view") == 'true'):
                 meta = {}
                 meta['title'] = sText
-                meta['disp'] = sLabel
+                meta['disp'] = sCat
                 cDb().insert_history(meta)
         except: pass
 
@@ -198,24 +201,25 @@ class cRechercheHandler:
 
         aPlugins = []
         for sFileName in aFileNames:
-            aPlugin = self.__importPlugin(sFileName, sLabel)
+            aPlugin = self.__importPlugin(sFileName, sCat)
             if aPlugin:
                 aPlugins.append(aPlugin)
 
-        #multiselect
-        if sLabel == 'search5':
-            multi = []
-            for plugin in aPlugins:
-                multi.append(plugin['identifier'])
-            dialog = xbmcgui.Dialog()
-            ret = dialog.multiselect(cConfig().getlanguage(30094), multi)
-            NewFileNames = []
-            if ret > -1:
-                for i in ret:
-                    NewFileNames.append(aPlugins[i])
+        # #multiselect
+        # if sLabel == 'search5':
+        #     multi = []
+        #     for plugin in aPlugins:
+        #         multi.append(plugin['identifier'])
+        #     dialog = xbmcgui.Dialog()
+        #     ret = dialog.multiselect(cConfig().getlanguage(30094), multi)
+        #     NewFileNames = []
+        #     if ret > -1:
+        #         for i in ret:
+        #             NewFileNames.append(aPlugins[i])
+        #
+        #     aPlugins = NewFileNames
+        # #fin multiselect
 
-            aPlugins = NewFileNames
-        #fin multiselect
         return aPlugins
 
     def __createAvailablePluginsItem(self, sPluginName, sPluginIdentifier, sPluginDesc):
