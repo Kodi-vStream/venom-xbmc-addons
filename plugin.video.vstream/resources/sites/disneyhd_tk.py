@@ -18,6 +18,7 @@ URL_LISTE = URL_MAIN + 'liste_mosaique.php'
 ANIM_ENFANTS = ('http://', 'load')
 
 URL_SEARCH = ('', 'sHowResultSearch')
+URL_SEARCH_MOVIES = ('', 'sHowResultSearch')
 FUNCTION_SEARCH = 'sHowResultSearch'
 
 sPattern1 = '<a href="([^"]+)"><img.+?src="([^"]+)" alt="(.+?)".+?>'
@@ -78,7 +79,7 @@ def sHowResultSearch(sSearch = ''):
 
     if (aResult[0] == False):
 		oGui.addText(SITE_IDENTIFIER)
-        
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0]

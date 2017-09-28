@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 #Aria800.
-from resources.lib.gui.hoster import cHosterGui 
+from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
@@ -18,6 +18,9 @@ SITE_DESC = 'Films en streaming.'
 URL_MAIN = 'https://coco-stream.com/'
 
 URL_SEARCH = (URL_MAIN + 'films-en-streaming?search=', 'showMovies')
+
+URL_SEARCH_MOVIES = (URL_MAIN + 'films-en-streaming?search=', 'showMovies')
+
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'films-en-streaming?search=&filters%5BorderBy%5D=new_films', 'showMovies')
@@ -35,43 +38,43 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-   	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films (Liens + récent)', 'films_news.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_CULTE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE_NEWS[1], 'Films cultes (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_CULTE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTE_MOVIE[1], 'Films cultes (Liens + récent)', 'films_news.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_CULTES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_CULTES[1], 'Films cultes (Genres)', 'films_genres.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VF[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VF[1], 'Films (VF)', 'films_vf.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VOSTFR[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VOSTFR[1], 'Films (VOSTFR)', 'films_vostfr.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
-	
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -86,9 +89,9 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-    
+
     Genre = 'films-en-streaming?search=&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D='
-	
+
     liste = []
     liste.append( ['Action',URL_MAIN + Genre + '15'] )
     liste.append( ['Animation',URL_MAIN + Genre + '18'] )
@@ -117,20 +120,20 @@ def showGenres():
     liste.append( ['Thriller',URL_MAIN + Genre + '3'] )
     liste.append( ['Western',URL_MAIN + Genre + '21'] )
     liste.append( ['Divers',URL_MAIN + Genre + '8'] )
-	
+
     for sTitle,sUrl in liste:
-       
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-		
+
     oGui.setEndOfDirectory()
 
 def showCultes():
     oGui = cGui()
-    
+
     Culte = 'films-culte-en-streaming?search=&filters&filters%5BorderBy%5D=new_videos&filters%5Btypes%5D%5B15%5D='
-	
+
     liste = []
     liste.append( ['Action',URL_MAIN + Culte + '15'] )
     liste.append( ['Animation',URL_MAIN + Culte + '18'] )
@@ -151,19 +154,19 @@ def showCultes():
     liste.append( ['Science Fiction',URL_MAIN + Culte + '17'] )
     liste.append( ['Thriller',URL_MAIN + Culte + '3'] )
     liste.append( ['Western',URL_MAIN + Culte + '21'] )
-	
+
     for sTitle,sUrl in liste:
-       
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-		
+
     oGui.setEndOfDirectory()
 
 
 def showMovies(sSearch = ''):
     oGui = cGui()
-    if sSearch: 
+    if sSearch:
       sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -171,9 +174,9 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-   
+
     sPattern = '<div class="coco-film-preview-content-box">.+?src="([^<]+)">.+?<a class="coco-film-link-see"\s*href="([^<]+)"\s*title="(.+?)"'
-   
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -223,9 +226,9 @@ def showSeries():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-   
+
     sPattern = '<div class="col-xs-4">\s*<a href="(.+?)".+?src="(.+?)".+?<h3>(.+?)</h3>\s*<p>(.+?)</p>'
-   
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -290,10 +293,10 @@ def ShowSerieSaison():
 
     #Decoupage pour cibler la partie des saisons
     sPattern = '<div class="collapse navbar-collapse" id="navbar-saisons">(.+?)<nav class="navbar navbar-default navbar-custom">'
-	
+
     aResult = oParser.parse(sHtmlContent, sPattern)
     sHtmlContent = aResult
-	
+
     sPattern = '<a href="(.+?)" title="Voir en streaming.+?">(.+?)</a>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -410,7 +413,7 @@ def seriesHosters():
                     sHosterUrl = reponse.geturl()
                 except:
                     pass
-            
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sTitle)
@@ -425,23 +428,23 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-	
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
-	
+
     sPattern = 'data-embed="(.+?)".+?<button class="text-white">\s*(.+?)s*</button>'
-   
+
     aResult = oParser.parse(sHtmlContent, sPattern)
-   
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-           
+
             sLang = str(aEntry[1]).replace(' ', '')
             sTitle = sMovieTitle + ' [' + sLang + ']'
 
             sHosterUrl = str(aEntry[0])
-            
+
             if '//goo.gl' in sHosterUrl:
                 import urllib2
                 try:
@@ -452,11 +455,11 @@ def showHosters():
                     sHosterUrl = reponse.geturl()
                 except:
                     pass
-            
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-               
+
     oGui.setEndOfDirectory()

@@ -14,6 +14,7 @@ SITE_DESC = 'Documentaires reportages et vidéos en streaming en francais.'
 URL_MAIN = 'http://www.les-docus.com/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 DOC_GENRES = (True, 'showGenres')
@@ -144,7 +145,7 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == False):
 		oGui.addText(SITE_IDENTIFIER)
-        
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 

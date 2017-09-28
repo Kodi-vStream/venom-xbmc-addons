@@ -33,6 +33,9 @@ ANIM_ANNEES = (True, 'showAnimeAnnees')
 
 URL_SEARCH = (URL_MAIN + 'recherche.htm?q=', 'showMovies')
 
+URL_SEARCH_MOVIES = (URL_MAIN + 'recherche.htm?q=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'recherche.htm?q=', 'showMovies')
+
 def load():
     oGui = cGui()
 

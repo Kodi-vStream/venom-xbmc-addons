@@ -34,6 +34,8 @@ SERIE_SERIES = (URL_MAIN + 'series.php', 'showMovies')
 SERIE_GENRES = (True, 'showSerieGenres')
 
 URL_SEARCH = (URL_MAIN + 'search.php?q=', 'sHowResultSearch')
+URL_SEARCH_MOVIES = (URL_MAIN + 'search.php?q=', 'sHowResultSearch')
+URL_SEARCH_SERIES = (URL_MAIN + 'search.php?q=', 'sHowResultSearch')
 FUNCTION_SEARCH = 'sHowResultSearch'
 
 def Decode(chain):

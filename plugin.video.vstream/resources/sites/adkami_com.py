@@ -34,6 +34,8 @@ SERIE_GENRES = (URL_MAIN + 'video?search=&t=1', 'showMovies')
 URL_SEARCH = (URL_MAIN + 'video?search=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
+URL_SEARCH_SERIES = (URL_MAIN + 'video?search=', 'showMovies')
+
 def load():
     oGui = cGui()
 
@@ -264,7 +266,7 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == False):
 		oGui.addText(SITE_IDENTIFIER)
-        
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)

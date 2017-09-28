@@ -31,6 +31,9 @@ DOC_NEWS = (URL_MAIN + 'index.php?option=com_content&view=category&id=26', 'show
 DOC_DOCS = ('http://', 'load')
 
 URL_SEARCH = ('', 'showMovies')
+URL_SEARCH_MOVIES = ('', 'showMovies')
+URL_SEARCH_SERIES = ('', 'showMovies')
+URL_SEARCH_MISC = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():

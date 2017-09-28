@@ -26,6 +26,8 @@ DOC_DOCS = ('http://', 'load')
 URL_SEARCH = ('http://buzzmonclick.com/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
+URL_SEARCH_MISC = ('http://buzzmonclick.com/?s=', 'showMovies')
+
 def load():
     oGui = cGui()
 
@@ -45,9 +47,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'infos-magazine/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Infos/Magazines', 'doc.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series-tv/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries-TV', 'series.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series-tv/')
+    # oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries-TV', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'tele-realite/')
@@ -100,7 +102,7 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == False):
 		oGui.addText(SITE_IDENTIFIER)
-        
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
