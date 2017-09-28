@@ -316,6 +316,7 @@ class cTrakt:
         response.close()
 
         result = json.loads(sHtmlContent)
+
         #xbmc.log(str(result))
 
         sPage = '1'
@@ -340,32 +341,32 @@ class cTrakt:
                 if 'collection' in sUrl:
                     if  'show' in i:
                         sTrakt, sTitle, sYear, sImdb, sTmdb, sDate = i['show']['ids']['trakt'], i['show']['title'], i['show']['year'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['last_collected_at']
-                        sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
+                        #sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                         cTrakt.CONTENT = '2'
                         sFunction = 'getBseasons'
                     else:
                         sTrakt, sTitle, sYear, sImdb, sTmdb, sDate = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['year'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['collected_at']
-                        sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
+                        #sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                         cTrakt.CONTENT = '1'
                         sFunction = 'showSearch'
-                        sId = 'cHome'
+                        sId = 'globalSearch'
 
                     searchtext = ('%s') % (sTitle.encode("utf-8"))
 
                     if sYear:
                         sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
-                        sTitle = ('[COLOR white]%s[/COLOR] %s - (%s)') % (sDate, sTitle.encode("utf-8"), int(sYear))
+                        sTitle = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                     else:
                         sFile = ('%s') % (sTitle.encode("utf-8"))
-                        sTitle = ('[COLOR white]%s[/COLOR] %s') % (sDate, sTitle.encode("utf-8"))
+                        sTitle = ('%s') % (sTitle.encode("utf-8"))
 
                 elif 'history' in sUrl:
                 #commun
                     sAction, sType, sWatched_at  = i['action'], i['type'], i['watched_at']
                     sFunction = 'showSearch'
-                    sId = 'cHome'
+                    sId = 'globalSearch'
                     #2016-11-16T09:21:18.000Z
-                    sDate = datetime.datetime(*(time.strptime(sWatched_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
+                    #sDate = datetime.datetime(*(time.strptime(sWatched_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y')
                     if 'episode' in i:
                         sTrakt, sTitle, sImdb, sTmdb, sSeason, sNumber = i['episode']['ids']['trakt'], i['episode']['title'], i['episode']['ids']['imdb'], i['episode']['ids']['tmdb'], i['episode']['season'],  i['episode']['number']
                         sExtra = ('(S%02dE%02d)') % (sSeason, sNumber)
@@ -379,16 +380,16 @@ class cTrakt:
                     sTitle.encode("utf-8")
                     searchtext = ('%s') % (sTitle.encode("utf-8"))
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), sExtra)
-                    sTitle = ('[COLOR white]%s - %s %s[/COLOR] - %s %s') % (sDate, sAction, sType, sTitle, sExtra )
+                    sTitle = ('%s %s - %s %s') % (sAction, sType, sTitle, sExtra)
 
 
                 elif 'watchlist' in sUrl:
                     #commun
                     sType, sListed_at  = i['type'], i['listed_at']
                     sFunction = 'showSearch'
-                    sId = 'cHome'
+                    sId = 'globalSearch'
                     #2016-11-16T09:21:18.000Z
-                    sDate = datetime.datetime(*(time.strptime(sListed_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
+                    #sDate = datetime.datetime(*(time.strptime(sListed_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                     if  'show' in i:
                         sTrakt, sTitle, sImdb, sTmdb, sYear = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year']
                         sExtra = ('(%s)') % (sYear)
@@ -405,15 +406,15 @@ class cTrakt:
                     sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode("unicode_escape")
                     sTitle.encode("utf-8")
                     searchtext = ('%s') % (sTitle.encode("utf-8"))
-                    sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), sExtra)
-                    sTitle = ('[COLOR white]%s - %s[/COLOR] - %s %s') % (sDate, sType, sTitle, sExtra )
+                    sFile = ('%s %s') % (sTitle.encode("utf-8"), sExtra)
+                    sTitle = ('%s %s') % (sTitle, sExtra )
 
 
                 elif 'watched' in sUrl:
                 #commun
                     sLast_watched_at, sPlays  = i['last_watched_at'], i['plays']
                     #2016-11-16T09:21:18.000Z
-                    sDate = datetime.datetime(*(time.strptime(sLast_watched_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
+                    #sDate = datetime.datetime(*(time.strptime(sLast_watched_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                     if  'show' in i:
                         sTrakt, sTitle, sImdb, sTmdb, sYear = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year']
                         cTrakt.CONTENT = '2'
@@ -422,19 +423,19 @@ class cTrakt:
                         sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
                         cTrakt.CONTENT = '1'
                         sFunction = 'showSearch'
-                        sId = 'cHome'
+                        sId = 'globalSearch'
 
                     sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode("unicode_escape")
                     sTitle.encode("utf-8")
                     searchtext = ('%s') % (sTitle.encode("utf-8"))
-                    sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), sYear)
-                    sTitle = ('[COLOR white]%s - %s Lectures[/COLOR] - %s (%s)') % (sDate, sPlays, sTitle, sYear )
+                    sFile = ('%s - %s') % (sTitle.encode("utf-8"), sYear)
+                    sTitle = ('%s Lectures - %s (%s)') % (sPlays, sTitle, sYear )
 
                 elif 'played' in sUrl:
                 #commun
                     sWatcher_count, sPlay_count, sCollected_count = i['watcher_count'], i['play_count'], i['collected_count']
                     sFunction = 'showSearch'
-                    sId = 'cHome'
+                    sId = 'globalSearch'
                     if  'show' in i:
                         sTrakt, sTitle, sImdb, sTmdb, sYear = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year']
                         cTrakt.CONTENT = '2'
@@ -443,7 +444,7 @@ class cTrakt:
                         cTrakt.CONTENT = '1'
                     searchtext = ('%s') % (sTitle.encode("utf-8"))
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
-                    sTitle = ('Spectateur [COLOR white](%s)[/COLOR] - Collection [COLOR white](%s)[/COLOR] - %s - (%s)') % (int(sPlay_count), int(sCollected_count), sTitle.encode("utf-8"), int(sYear))
+                    sTitle = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
 
                 elif 'calendars' in sUrl:
                     #xbmc.log(str(i))
@@ -460,10 +461,10 @@ class cTrakt:
                     sDate = datetime.datetime(*(time.strptime(sFirst_aired, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y')
                     searchtext = ('%s') % (sTitle.encode("utf-8"))
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), sYear)
-                    sTitle = ('[COLOR white]%s[/COLOR] - %s (S%02dE%02d)') % (sDate, sTitle.encode('utf-8').decode('ascii','ignore'), sSaison,sEpisode)
+                    sTitle = ('%s - %s (S%02dE%02d)') % (sDate, sTitle.encode('utf-8').decode('ascii','ignore'), sSaison,sEpisode)
 
                     sFunction = 'showSearch'
-                    sId = 'cHome'
+                    sId = 'globalSearch'
 
                 elif 'search' in sUrl:
                     if  'show' in i:
@@ -474,7 +475,7 @@ class cTrakt:
                         sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
                         cTrakt.CONTENT = '1'
                         sFunction = 'showSearch'
-                        sId = 'cHome'
+                        sId = 'globalSearch'
 
                     sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode("unicode_escape")
                     sTitle.encode("utf-8")
@@ -492,14 +493,14 @@ class cTrakt:
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                     sTitle = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                     sFunction = 'showSearch'
-                    sId = 'cHome'
+                    sId = 'globalSearch'
 
                 elif 'boxoffice' in sUrl:
                         sTrakt, sTitle, sYear, sImdb, sTmdb, sRevenue = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['year'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['revenue']
                         cTrakt.CONTENT = '1'
                         searchtext = ('%s') % (sTitle.encode("utf-8"))
                         sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
-                        sTitle = ('Revenues [COLOR white](%s)[/COLOR] - %s - (%s)') % (sRevenue, sTitle.encode("utf-8"), int(sYear))
+                        sTitle = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                         sFunction = 'showSearch'
                         sId = 'globalSearch'
 
@@ -559,7 +560,7 @@ class cTrakt:
                     cTrakt.CONTENT = '2'
                 else: return
 
-                sTitle2 = ('%s - S%02d') % (sFile.encode("utf-8"), int(sNumber))
+                sTitle2 = ('%s - (S%02d)') % (sFile.encode("utf-8"), int(sNumber))
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('Key', sKey)
@@ -606,15 +607,15 @@ class cTrakt:
 
                 if 'collection' in sUrl:
                     sNumber, sDate = i['number'],  i['collected_at']
-                    sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
+                    #sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
 
-                    sTitle2 = ('[COLOR white]%s [/COLOR] %sE%02d') % (sDate, sTitle.encode("utf-8"), int(sNumber))
+                    sTitle2 = ('%s (E%02d)') % (sTitle.encode("utf-8"), int(sNumber))
 
                 elif 'watched' in sUrl:
                     sNumber, sPlays, sDate = i['number'], i['plays'], i['last_watched_at']
-                    sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
+                    #sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
 
-                    sTitle2 = ('[COLOR white]%s - %s Lectures[/COLOR] - %sE%02d') % (sDate, sPlays, sTitle.encode("utf-8"), int(sNumber))
+                    sTitle2 = ('%s Lectures - %s(E%02d)') % (sPlays, sTitle.encode("utf-8"), int(sNumber))
 
                 else: return
 
@@ -623,7 +624,7 @@ class cTrakt:
                 oOutputParameterHandler.addParameter('file', sFile)
                 #oOutputParameterHandler.addParameter('Key', skey)
                 oOutputParameterHandler.addParameter('searchtext', searchtext)
-                self.getFolder(oGui, 'cHome', sTitle2, sFile, 'showSearch', '', '', oOutputParameterHandler)
+                self.getFolder(oGui, 'globalSearch', sTitle2, sFile, 'showSearch', '', '', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
         return
@@ -651,8 +652,10 @@ class cTrakt:
         #xbmc.log(str(cTrakt.CONTENT))
         if cTrakt.CONTENT == '2':
             oGuiElement.setMeta(2)
+            oGuiElement.setCat(2)
         else:
             oGuiElement.setMeta(1)
+            oGuiElement.setCat(1)
 
         #oGuiElement.setDescription(sDesc)
         #oGuiElement.setFanart(fanart)
@@ -825,7 +828,7 @@ class cTrakt:
         sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)',' ', sMovieTitle) #vire les articles
 
         sMovieTitle = re.sub(' +',' ',sMovieTitle) #vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
-        #print 'apres ' + sMovieTitle
+
 
         dialog3 = xbmcgui.Dialog()
         ret = dialog3.select('Selectionner un Moteur de Recherche',['Vstream (Fiable mais plus complexe)','Alluc (Simple mais resultats non garantis)'])
