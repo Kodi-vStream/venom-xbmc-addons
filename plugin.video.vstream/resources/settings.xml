@@ -19,9 +19,13 @@
         <setting id="backdrop_tmdb" type="select" label="30008" values="w300|w780|w1280|original" default="w1280"/>
         <setting id="extendedinfo-view" type="bool" label="Use extendedinfo" default="false"/>
 
-        <setting label="30410" type="lsep"/>
-        <setting id="Block_Noti_sound" type="bool" label="30411" default="false"/>
+        <setting label="30076" type="lsep"/>
         <setting type="sep"/>
+        <setting id="history-view" type="bool" label="Activer l'historique de recherche" default="true"/>
+
+        <setting label="30410" type="lsep"/>
+        <setting type="sep"/>
+        <setting id="Block_Noti_sound" type="bool" label="30411" default="false"/>
 
         <setting label="30032" type="lsep"/>
         <setting type="sep"/>
@@ -52,7 +56,7 @@
 
     </category>
 
-    <category label="30076">
+    <!--<category label="30076">
         <setting label="30076" type="lsep"/>
         <setting type="sep"/>
         <setting id="history-view" type="bool" label="Activer l'historique de recherche" default="true"/>
@@ -81,7 +85,7 @@
         <setting label="30094" type="action"  action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, search, search4)" />
         <setting id="search4_type" type="select" label="Mode de recherche à préférer pour cette recherche" values="Film|Série|Animé|Documentaire" default="Documentaire"/>
 
-    </category>
+    </category> -->
 
     <!-- search1_ = Films | search2_ = Séries | search3_ = Animés | search4_ = Documentaires-->
     <category label="30022">
