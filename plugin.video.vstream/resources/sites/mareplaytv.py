@@ -17,6 +17,7 @@ SITE_DESC = 'Replay TV Divers: peu de sources'
 URL_MAIN = 'http://mareplaytv.com/'
 
 URL_SEARCH = (URL_MAIN + '?post_type=video&s=', 'showMovies')
+URL_SEARCH_MISC = (URL_MAIN + '?post_type=video&s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 REPLAYTV_GENRES = (True, 'showGenre')

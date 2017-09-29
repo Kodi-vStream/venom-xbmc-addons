@@ -23,6 +23,7 @@ REPLAYTV_REPLAYTV = ('http://', 'load')
 REPLAYTV_GENRES = ('xyz', 'showGenre')
 
 URL_SEARCH = (URL_MAIN + 'search/','showMovies')
+URL_SEARCH_MISC = (URL_MAIN + 'search/','showMovies')
 
 
 #FUNCTION_SEARCH = 'showMovies'

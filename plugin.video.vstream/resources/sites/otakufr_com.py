@@ -22,6 +22,7 @@ ANIM_POPULAR = (URL_MAIN + 'anime-list/all/any/most-popular/' , 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'anime-list-all/', 'showAlpha')
 
 URL_SEARCH = (URL_MAIN + 'anime-list/search/', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'anime-list/search/', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():

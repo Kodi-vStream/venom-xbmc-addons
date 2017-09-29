@@ -20,6 +20,7 @@ SERIE_NEWS = (URL_MAIN + 'category/series/', 'showSeries')
 SERIE_SERIES = (URL_MAIN + 'liste-de-series/', 'showAlpha')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showSeries')
+URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showSeries')
 FUNCTION_SEARCH = 'showSeries'
 
 def load():

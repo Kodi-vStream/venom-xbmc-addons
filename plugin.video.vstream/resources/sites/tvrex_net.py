@@ -18,6 +18,7 @@ URL_MAIN = 'http://tvrex.net'
 REDDIT = 'https://www.reddit.com/r/nbastreams/'
 
 URL_SEARCH = ('http://tvrex.net/?s=', 'showMovies')
+URL_SEARCH_MISC = ('http://tvrex.net/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 SPORT_SPORTS = ('http://', 'ReplayTV')

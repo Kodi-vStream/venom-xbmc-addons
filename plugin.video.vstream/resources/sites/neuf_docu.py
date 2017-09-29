@@ -16,6 +16,7 @@ SITE_DESC = 'Site pour Telecharger ou Regarder des Documentaires et Emissions TV
 URL_MAIN = 'http://www.9docu.com/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 DOC_NEWS = (URL_MAIN, 'showMovies')

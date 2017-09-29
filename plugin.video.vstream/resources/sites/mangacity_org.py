@@ -36,6 +36,7 @@ ANIM_VOSTFRS = (URL_MAIN + 'listing_vostfr.php', 'ShowAlpha2')
 ANIM_GENRES = (URL_MAIN + 'animes.php?liste=' + RandomKey , 'showGenres')
 
 URL_SEARCH = ('', 'showMovies')
+URL_SEARCH_SERIES = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def DecryptMangacity(chain):
@@ -720,7 +721,7 @@ def showHosters():
                 if 'tinyurl' in sHosterUrl:
                     if '://tinyurl.com/kt3owzh' in sHosterUrl:
                         sHosterUrl = sHosterUrl.replace('://tinyurl.com/kt3owzh/','://estream.to/')
-                        
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)

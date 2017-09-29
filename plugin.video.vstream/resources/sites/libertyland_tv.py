@@ -18,6 +18,9 @@ SITE_DESC = 'Les films et séries récentes en streaming et en téléchargement'
 URL_MAIN = 'http://libertyland.co/'
 
 URL_SEARCH = (URL_MAIN + 'v2/recherche/', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'v2/recherche/', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'v2/recherche/', 'showMovies')
+
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'films/nouveautes/', 'showMovies')

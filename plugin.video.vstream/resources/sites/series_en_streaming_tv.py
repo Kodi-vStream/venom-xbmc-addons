@@ -22,6 +22,8 @@ SERIE_NEWS = (URL_MAIN + 'ajouts/', 'showLasts')
 SERIE_SERIES = (URL_MAIN + 'search/', 'AlphaSearch')
 
 URL_SEARCH = (URL_MAIN + 'search/', 'showMovies')
+
+URL_SEARCH_SERIES = (URL_MAIN + 'search/', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def CleanTitle(title):

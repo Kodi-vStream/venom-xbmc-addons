@@ -38,6 +38,8 @@ ANIM_QLT = (ANIM_NEWS[0], 'showQlt')
 ANIM_PAYS = (URL_MAIN + 'mangas', 'showPays')
 
 URL_SEARCH = (URL_MAIN + 'recherche?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'recherche?s=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'recherche?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -264,7 +266,7 @@ def showMovies(sSearch = '', yearUrl = ''):
 
     if (aResult[0] == False):
 		oGui.addText(SITE_IDENTIFIER)
-        
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl = URL_MAIN[:-1] + aEntry[0]

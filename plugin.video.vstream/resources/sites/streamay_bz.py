@@ -32,6 +32,8 @@ ANIM_GENRES = (URL_MAIN + 'mangas', 'showGenres')
 ANIM_ANNEES = (URL_MAIN + 'mangas/annee/', 'showMovies')
 
 URL_SEARCH = ('', 'showResultSearch')
+URL_SEARCH_MOVIES = ('', 'showResultSearch')
+URL_SEARCH_SERIES = ('', 'showResultSearch')
 FUNCTION_SEARCH = 'showResultSearch'
 
 def load():

@@ -23,6 +23,7 @@ SERIE_COMMENTS = (URL_MAIN + 'series-les-plus-commentees/', 'showMovies')
 SERIE_NOTES = (URL_MAIN + 'series-les-plus-aimees/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -82,7 +83,7 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == False):
 		oGui.addText(SITE_IDENTIFIER)
-        
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)

@@ -28,6 +28,8 @@ SERIE_VFS = (URL_MAIN + 'series/version-francaise/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'series/vostfr/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?q=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + '?q=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + '?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():

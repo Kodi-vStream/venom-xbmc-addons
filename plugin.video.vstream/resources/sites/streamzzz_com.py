@@ -22,6 +22,7 @@ SITE_DESC = 'Séries VF & VOSTFR en streaming.'
 URL_MAIN = 'http://streamzzz.online/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 SERIE_NEWS = (URL_MAIN + 'episodes/', 'showMovies')
