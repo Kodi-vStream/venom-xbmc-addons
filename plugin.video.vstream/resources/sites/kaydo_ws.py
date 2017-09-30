@@ -29,7 +29,7 @@ MOVIE_TOP = (URL_MAIN + 'top-films.php', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'films.php', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
-SERIE_NEWS = (URL_MAIN + 'last-added-series.php', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'series-latest.php', 'showMovies')
 SERIE_SERIES = (URL_MAIN + 'series.php', 'showMovies')
 SERIE_GENRES = (True, 'showSerieGenres')
 
@@ -130,7 +130,7 @@ def sHowResultSearch(sSearch = ''):
             sUrl = URL_MAIN+aEntry[0]
             sThumb = URL_MAIN+aEntry[1]
             sCom = aEntry[3]
-            sTitle = ('%s (%s)') % (str(aEntry[2]) , str(aEntry[3]).replace(' - ', ''))
+            sTitle = ('%s (%s)') % (str(aEntry[2]) , str(aEntry[3]).replace(' - ', ' '))
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -150,27 +150,29 @@ def showMovieGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action',URL_MAIN + 'genre.php?g=Action'] )
-    liste.append( ['Animation',URL_MAIN + 'genre.php?g=Animation'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'genre.php?g=Arts%20Martiaux'] )
-    liste.append( ['Aventure',URL_MAIN + 'genre.php?g=Aventure'] )
-    liste.append( ['Biopic',URL_MAIN + 'genre.php?g=Biopic'] )
-    liste.append( ['Comédie',URL_MAIN + 'genre.php?g=Com%C3%A9die'] )
-    liste.append( ['Comédie Dramatique',URL_MAIN + 'genre.php?g=Com%C3%A9die%20dramatique'] )
-    liste.append( ['Documentaire',URL_MAIN + 'genre.php?g=Documentaire'] )
-    liste.append( ['Drame',URL_MAIN + 'genre.php?g=Drame'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'genre.php?g=Epouvante-horreur'] )
-    liste.append( ['Espionnage',URL_MAIN + 'genre.php?g=Espionnage'] )
-    liste.append( ['Fantastique',URL_MAIN + 'genre.php?g=Fantastique'] )
-    liste.append( ['Famille',URL_MAIN + 'genre.php?g=Famille'] )
-    liste.append( ['Guerre',URL_MAIN + 'genre.php?g=Guerre'] )
-    liste.append( ['Historique',URL_MAIN + 'genre.php?g=Historique'] )
-    liste.append( ['Musical',URL_MAIN + 'genre.php?g=Musical'] )
-    liste.append( ['Policier',URL_MAIN + 'genre.php?g=Policier'] )
-    liste.append( ['Romance',URL_MAIN + 'genre.php?g=Romance'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'genre.php?g=Science%20fiction'] )
-    liste.append( ['Thriller',URL_MAIN + 'genre.php?g=Thriller'] )
-    liste.append( ['Western',URL_MAIN + 'genre.php?g=Western'] )
+
+
+    liste.append( ['Action',URL_MAIN + 'films.php?s=go&sort=add&g=Action'] )
+    liste.append( ['Animation',URL_MAIN + 'films.php?s=go&sort=add&g=Animation'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'films.php?s=go&sort=add&g=Arts%20Martiaux'] )
+    liste.append( ['Aventure',URL_MAIN + 'films.php?s=go&sort=add&g=Aventure'] )
+    liste.append( ['Biopic',URL_MAIN + 'films.php?s=go&sort=add&g=Biopic'] )
+    liste.append( ['Comédie',URL_MAIN + 'films.php?s=go&sort=add&g=Com%C3%A9die'] )
+    liste.append( ['Comédie Dramatique',URL_MAIN + 'films.php?s=go&sort=add&g=Com%C3%A9die%20dramatique'] )
+    liste.append( ['Documentaire',URL_MAIN + 'films.php?s=go&sort=add&g=Documentaire'] )
+    liste.append( ['Drame',URL_MAIN + 'films.php?s=go&sort=add&g=Drame'] )
+    liste.append( ['Epouvante Horreur',URL_MAIN + 'films.php?s=go&sort=add&g=Epouvante-horreur'] )
+    liste.append( ['Espionnage',URL_MAIN + 'films.php?s=go&sort=add&g=Espionnage'] )
+    liste.append( ['Fantastique',URL_MAIN + 'films.php?s=go&sort=add&g=Fantastique'] )
+    liste.append( ['Famille',URL_MAIN + 'films.php?s=go&sort=add&g=Famille'] )
+    liste.append( ['Guerre',URL_MAIN + 'films.php?s=go&sort=add&g=Guerre'] )
+    liste.append( ['Historique',URL_MAIN + 'films.php?s=go&sort=add&g=Historique'] )
+    liste.append( ['Musical',URL_MAIN + 'films.php?s=go&sort=add&g=Musical'] )
+    liste.append( ['Policier',URL_MAIN + 'films.php?s=go&sort=add&g=Policier'] )
+    liste.append( ['Romance',URL_MAIN + 'films.php?s=go&sort=add&g=Romance'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'films.php?s=go&sort=add&g=Science%20fiction'] )
+    liste.append( ['Thriller',URL_MAIN + 'films.php?s=go&sort=add&g=Thriller'] )
+    liste.append( ['Western',URL_MAIN + 'films.php?s=go&sort=add&g=Western'] )
 
     for sTitle,sUrl in liste:
 
@@ -228,6 +230,7 @@ def showMovies():
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern2)
+
     if not (aResult[0] == True):
         aResult = oParser.parse(sHtmlContent, sPattern1)
     if (aResult[0] == True):
@@ -238,7 +241,8 @@ def showMovies():
             if dialog.iscanceled():
                 break
 
-            if not sUrl.startswith(URL_MAIN + 'series.php') and 'serie' in sUrl or 'genre' in sUrl:
+            if  'genre' in sUrl:
+
                 sThumbnail = URL_MAIN + str(aEntry[0])
                 siteUrl = URL_MAIN + str(aEntry[4])
                 sCom = str(aEntry[3])
@@ -335,11 +339,16 @@ def seriesHosters():
     oRequestHandler = cRequestHandler(sUrl + '&ep=0')
     sHtmlContent = oRequestHandler.request();
 
+
     oParser = cParser()
     result = re.search('^(.+?)(|col s4 hide-on-med-and-down(.+?))$', sHtmlContent, re.DOTALL)
+
+    result.group(1)
+
     sHtmlContent = result.group(1)
-    sPattern = '<li><div class="truncate.+?</i>(.+?)</div>(.+?)</li>'
+    sPattern = '<div class="truncate.+?</i>(.+?)</div>(.+?)</li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
