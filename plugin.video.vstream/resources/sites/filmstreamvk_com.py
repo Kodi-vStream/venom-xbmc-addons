@@ -20,8 +20,8 @@ MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'les-plus-vues-films', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
-SERIE_SERIES = (URL_MAIN + 'series', 'showMovies')
-SERIE_NEWS = (URL_MAIN + 'series', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'serie', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'serie', 'showMovies')
 
 ANIM_ANIMS = (URL_MAIN + 'manga', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'manga', 'showMovies')
@@ -172,15 +172,15 @@ def showMovies(sSearch = ''):
                     continue
 
             sThumb = aEntry[0]
-            sTitle = aEntry[2].replace('&#8217;', '\'').replace('&#8230;', '...')
             sUrl = aEntry[1]
+            sTitle = aEntry[2].replace('&#8217;', '\'').replace('&#8230;', '...')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '/series/' in sUrl or '/manga/' in sUrl:
+            if '/serie/' in sUrl or '/manga/' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
