@@ -223,10 +223,17 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
 
+    #Decoupage pour cibler une partie Film
+    sPattern = '<div class="section-box">(.+?)</body>'
+
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    sHtmlContent = aResult
+	
+    #regex pour listage films sur la partie decoupée
     sPattern = '<div class="thumb">.+?<img src="([^<]+)" alt="(.+?)".+?<a href="(.+?)"'
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -241,7 +248,7 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            sTitle = str(aEntry[1]).replace('&#8217;', '\'')
+            sTitle = str(aEntry[1]).decode("unicode_escape").encode("latin-1")#.replace('&#8217;', '\'')
             sUrl2 = str(aEntry[2])
             sThumb = str(aEntry[0])
 
