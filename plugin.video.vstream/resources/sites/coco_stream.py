@@ -20,6 +20,7 @@ URL_MAIN = 'https://coco-stream.com/'
 URL_SEARCH = (URL_MAIN + 'films-en-streaming?search=', 'showMovies')
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'films-en-streaming?search=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'films-en-streaming?search=', 'showMovies')
 
 FUNCTION_SEARCH = 'showMovies'
 

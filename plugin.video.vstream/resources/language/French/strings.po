@@ -531,3 +531,7 @@ msgstr "[COLOR green]Mise à jour disponible[/COLOR]"
 msgctxt "#30419"
 msgid "View: Visual search (recommended 500)"
 msgstr "Vue: Recherche Visuelle (recommandé 500)"
+
+msgctxt "#30420"
+msgid "Enable/Disable sources"
+msgstr "Activer/Désactiver les sources"

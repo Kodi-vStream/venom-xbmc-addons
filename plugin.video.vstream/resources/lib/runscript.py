@@ -23,15 +23,15 @@ class cClear:
         #self.__sFunctionName = ''
 
     def main(self, env):
-        
+
         if (env == 'urlresolver'):
             xbmcaddon.Addon('script.module.urlresolver').openSettings()
             return
-            
+
         elif (env == 'metahandler'):
             xbmcaddon.Addon('script.module.metahandler').openSettings()
             return
-        
+
         elif (env == 'changelog'):
             try:
                 sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/changelog.txt'
@@ -40,10 +40,10 @@ class cClear:
                 sContent = oResponse.read()
                 from about import cAbout
                 cAbout().TextBoxes('vStream Changelog', sContent)
-            except:            
+            except:
                 cConfig().error("%s,%s" % (cConfig().getlanguage(30205), sUrl))
             return
-            
+
         elif (env == 'soutient'):
             try:
                 sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/soutient.txt'
@@ -52,14 +52,14 @@ class cClear:
                 sContent = oResponse.read()
                 from about import cAbout
                 cAbout().TextBoxes('vStream Soutient', sContent)
-            except:            
+            except:
                 cConfig().error("%s,%s" % (cConfig().getlanguage(30205), sUrl))
             return
 
         elif (env == 'addon'):
             dialog = xbmcgui.Dialog()
             if dialog.yesno('vStream', 'Êtes-vous sûr ?','','','Non', 'Oui'):
-                
+
                 cached_fav = cConfig().getFileFav()
                 cached_DB = cConfig().getFileDB()
                 cached_Cache = cConfig().getFileCache()
@@ -86,7 +86,7 @@ class cClear:
                     if ".fi" in i:
                         os.remove(os.path.join(path, i))
             return
-        
+
         elif (env == 'uplog'):
             dialog = xbmcgui.Dialog()
             if dialog.yesno('vStream', 'Êtes-vous sûr ?','','','Non', 'Oui'):
@@ -112,18 +112,15 @@ class cClear:
                         code = reponse.geturl().replace('http://slexy.org/view/','')
                         reponse.close()
                         cConfig().createDialogOK('Ce code doit être transmis lorsque vous ouvrez une issue veuillez le noter:' + '  ' + code)
-            return 
-        
+            return
+
         elif (env == 'search'):
-        
+
             from resources.lib.handler.pluginHandler import cPluginHandler
             valid = '[COLOR green][x][/COLOR]'
-            try:
-                sDips = sys.argv[2]
-            except: return
-        
 
-            
+
+
             class XMLDialog(xbmcgui.WindowXMLDialog):
 
                 def __init__(self, *args, **kwargs):
@@ -137,41 +134,46 @@ class cClear:
                     self.getControl(3).setVisible(False)
                     self.getControl(1).setLabel(cConfig().getlanguage(30094))
                     self.button.setLabel('OK')
-                    listitems = []    
+                    listitems = []
                     oPluginHandler = cPluginHandler()
                     aPlugins = oPluginHandler.getSearchPlugins()
 
                     for aPlugin in aPlugins:
                         #teste si deja dans le dsip
-                        sPluginSettingsName = sDips+'_' +aPlugin[1]
+                        sPluginSettingsName = 'plugin_' +aPlugin[1]
                         bPlugin = cConfig().getSetting(sPluginSettingsName)
-                        
+
                         icon = os.path.join(unicode(cConfig().getRootArt(), 'utf-8'), 'sites', aPlugin[1]+'.png')
                         stitle = aPlugin[0].replace('[COLOR violet]','').replace('[COLOR orange]','').replace('[/COLOR]','')
                         if (bPlugin == 'true'):
-                            stitle = ('%s %s') % (stitle, valid) 
-                        listitem = xbmcgui.ListItem(label = stitle)
+                            stitle = ('%s %s') % (stitle, valid)
+                        listitem = xbmcgui.ListItem(label = stitle, label2 = aPlugin[2])
                         listitem.setArt({'icon' : icon, 'thumb' : icon})
                         listitem.setProperty('Addon.Summary', aPlugin[2])
                         listitem.setProperty('sitename', aPlugin[1])
                         if (bPlugin == 'true'):
-                            listitem.select(True) 
-                            
+                            listitem.select(True)
+
                         listitems.append(listitem)
                     self.container.addItems(listitems)
-                    
-                    
+
+
                     self.setFocus(self.container)
-                      
+
                 def message(self, message):
                     dialog = xbmcgui.Dialog()
                     dialog.ok(" My message title", message)
-      
+
                 def onClick(self, controlId):
                     if controlId == 5:
                         self.close()
                         return
                     elif controlId == 99:
+                        window = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+                        del window
+                        self.close()
+                        return
+                    elif controlId == 7:
                         window = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                         del window
                         self.close()
@@ -182,26 +184,26 @@ class cClear:
                             label = item.getLabel().replace(valid,'')
                             item.setLabel(label)
                             item.select(False)
-                            sPluginSettingsName = ('%s_%s') % (sDips, item.getProperty('sitename'))
-                            cConfig().setSetting(sPluginSettingsName, str('false')) 
-                        else : 
-                            label = ('%s %s') % (item.getLabel(), valid) 
+                            sPluginSettingsName = ('plugin_%s') % (item.getProperty('sitename'))
+                            cConfig().setSetting(sPluginSettingsName, str('false'))
+                        else :
+                            label = ('%s %s') % (item.getLabel(), valid)
                             item.setLabel(label)
                             item.select(True)
-                            sPluginSettingsName = ('%s_%s') % (sDips, item.getProperty('sitename'))
+                            sPluginSettingsName = ('plugin_%s') % (item.getProperty('sitename'))
                             cConfig().setSetting(sPluginSettingsName, str('true'))
                         return
 
                 def onFocus(self, controlId):
                     self.controlId = controlId
-                    
+
                 def _close_dialog( self ):
                     self.close()
 
                 # def onAction( self, action ):
                     # if action.getId() in ( 9, 10, 92, 216, 247, 257, 275, 61467, 61448, ):
                         # self.close()
-          
+
             wd = XMLDialog('DialogSelect.xml', cConfig().getAddonPath(), "Default")
             wd.doModal()
             del wd
@@ -219,7 +221,7 @@ class cClear:
                         p = next(os.walk(folders))[2]
                         for x in p:
                             os.remove(os.path.join(folders, x).encode('utf-8'))
-                       
+
                 filenames = next(os.walk(path2))[2]
                 for x in filenames:
                     if "exture" in x:
@@ -249,7 +251,7 @@ class cClear:
             else:
                 try:os.unlink(file_path)
                 except Exception, e: print str(e)
-                    
+
     def ClearDir2(self, dir, clearNested = False):
         try:
             dir = dir.decode("utf8")

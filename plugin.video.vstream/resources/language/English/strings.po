@@ -530,3 +530,7 @@ msgstr ""
 msgctxt "#30419"
 msgid "View: Visual search (recommended 500)"
 msgstr ""
+
+msgctxt "#30420"
+msgid "Enable/Disable sources"
+msgstr ""
