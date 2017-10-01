@@ -431,14 +431,26 @@ def showHosters():
         reponse = urllib2.urlopen(request)
         repok = reponse.read()
         reponse.close()
+        
+        sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
+        aResult = re.findall(sPattern,repok)
+        if (aResult):
+            repok = cPacker().unpack(aResult[0])
+            
+        repok = repok.replace("\\'",'"')
+            
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(repok)
+        #fh.close()           
 
-        vUrl = re.search('url=([^"]+)"', repok)
+        vUrl = re.search('src="([^"]+)"', repok)
         if vUrl:
            sHosterUrl = vUrl.group(1)
-           if 'uptobox' in sHosterUrl:
-               sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/uptoboxlink\.php\?link=)', 'http://uptobox.com/', sHosterUrl)
-           elif '1fichier' in sHosterUrl:
-               sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/1fichierlink\.php\?link=)', 'https://1fichier.com/?', sHosterUrl)
+            #Pas sur si encore utile
+        #   if 'uptobox' in sHosterUrl:
+        #       sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/uptoboxlink\.php\?link=)', 'http://uptobox.com/', sHosterUrl)
+        #   elif '1fichier' in sHosterUrl:
+        #       sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/1fichierlink\.php\?link=)', 'https://1fichier.com/?', sHosterUrl)
 
     else:
         sHosterUrl = sUrl
