@@ -22,7 +22,7 @@ SITE_IDENTIFIER = 'mangacity_org'
 SITE_NAME = 'I anime'
 SITE_DESC = 'Animés en streaming'
 
-URL_MAIN = 'http://www.ianimes.net/'
+URL_MAIN = 'http://www.ianimes.co/'
 
 MOVIE_MOVIE = (URL_MAIN + 'films.php?liste=' + RandomKey , 'ShowAlpha')
 MOVIE_GENRES = (URL_MAIN + 'films.php?liste=' + RandomKey , 'showGenres')
@@ -36,7 +36,6 @@ ANIM_VOSTFRS = (URL_MAIN + 'listing_vostfr.php', 'ShowAlpha2')
 ANIM_GENRES = (URL_MAIN + 'animes.php?liste=' + RandomKey , 'showGenres')
 
 URL_SEARCH = ('', 'showMovies')
-URL_SEARCH_SERIES = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def DecryptMangacity(chain):
@@ -459,7 +458,7 @@ def showEpisode():
 
             sUrl2 = str(cUtil().unescape(aEntry[1]))
 
-            if URL_MAIN not in sUrl2:
+            if not sUrl2.startswith('http'):
                 sUrl2 = URL_MAIN + sUrl2
 
             if aEntry[0]:
@@ -608,7 +607,7 @@ def showHosters():
                 sHosterUrl = ExtractLink(sHtmlContent)
 
             #Passe par lien .asx ??
-            sPattern = '(http:\/\/www.ianimes*.net\/[0-9a-zA-Z_-]+\.asx)'
+            sPattern = '(http:\/\/www.ianime[^\/\\]+\/[0-9a-zA-Z_-]+\.asx)'
             aResult = oParser.parse(sHosterUrl, sPattern)
             if aResult[0] :
                 #on telecharge la page
@@ -625,10 +624,10 @@ def showHosters():
                     sHosterUrl = ExtractLink(html)
 
             #Passe par lien .vxm ??
-            sPattern = 'http:\/\/www.ianimes*.net\/([0-9a-zA-Z_-]+)\.vxm'
-            aResult = oParser.parse(sHosterUrl, sPattern)
-            if aResult[0] :
-                sHosterUrl = 'http://embed.nowvideo.sx/embed.php?v=' + aResult[1][0]
+            #sPattern = 'http:\/\/www.ianime[^\/\\]+\/([0-9a-zA-Z_-]+)\.vxm'
+            #aResult = oParser.parse(sHosterUrl, sPattern)
+            #if aResult[0] :
+            #    sHosterUrl = 'http://embed.nowvideo.sx/embed.php?v=' + aResult[1][0]
 
             #redirection tinyurl
             if 'tinyurl' in sHosterUrl:
@@ -706,14 +705,21 @@ def showHosters():
                     sHosterUrl = aResult[1][0]
 
             #Derniere en date
-            sPattern = "(http:\/\/www\.ianimes*\.net\/[^']+)"
+            sPattern = "(http:\/\/www.ianime[^\/\\]+\/[^']+)"
             aResult = oParser.parse(sHosterUrl, sPattern)
             #VSlog(aResult)
             if aResult[0]:
-                oRequestHandler = cRequestHandler(aResult[1][0])
+                
+                #VSlog(sHosterUrl)
+                
+                oRequestHandler = cRequestHandler(sHosterUrl)
                 oRequestHandler.addHeaderEntry('Referer',sUrl)
                 sHtmlContent = oRequestHandler.request()
 
+                #fh = open('c:\\test.txt', "w")
+                #fh.write(sHtmlContent)
+                #fh.close()
+                
                 sHtmlContent = ICDecode(sHtmlContent)
 
                 sHosterUrl = ExtractLink(sHtmlContent)
@@ -721,7 +727,7 @@ def showHosters():
                 if 'tinyurl' in sHosterUrl:
                     if '://tinyurl.com/kt3owzh' in sHosterUrl:
                         sHosterUrl = sHosterUrl.replace('://tinyurl.com/kt3owzh/','://estream.to/')
-
+                        
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
