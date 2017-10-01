@@ -10,6 +10,8 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re,urllib,urllib2
 
+from resources.lib.packer import cPacker
+
 SITE_IDENTIFIER = 'filmsvostfr_biz'
 SITE_NAME = 'Filmsvostfr'
 SITE_DESC = 'Films/Séries/Animés'
@@ -32,7 +34,6 @@ ANIM_GENRES = ('http://animgenre', 'showGenres')
 ANIM_ANNEES = (True, 'showAnimeAnnees')
 
 URL_SEARCH = (URL_MAIN + 'recherche.htm?q=', 'showMovies')
-
 URL_SEARCH_MOVIES = (URL_MAIN + 'recherche.htm?q=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'recherche.htm?q=', 'showMovies')
 
@@ -443,14 +444,14 @@ def showHosters():
         #fh.write(repok)
         #fh.close()           
 
-        vUrl = re.search('src="([^"]+)"', repok)
+        vUrl = re.search('[src|url]="([^"]+)"', repok)
         if vUrl:
            sHosterUrl = vUrl.group(1)
-            #Pas sur si encore utile
-        #   if 'uptobox' in sHosterUrl:
-        #       sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/uptoboxlink\.php\?link=)', 'http://uptobox.com/', sHosterUrl)
-        #   elif '1fichier' in sHosterUrl:
-        #       sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/1fichierlink\.php\?link=)', 'https://1fichier.com/?', sHosterUrl)
+ 
+           if 'uptobox' in sHosterUrl:
+               sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/uptoboxlink\.php\?link=)', 'http://uptobox.com/', sHosterUrl)
+           elif '1fichier' in sHosterUrl:
+               sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/1fichierlink\.php\?link=)', 'https://1fichier.com/?', sHosterUrl)
 
     else:
         sHosterUrl = sUrl
