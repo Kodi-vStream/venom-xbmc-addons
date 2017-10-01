@@ -8,6 +8,7 @@
         <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2" enable="eq(-1,0)"/>
         <setting id="srt-view" type="bool" label="30002" default="false"/>
         <setting id="deco_color" type="select" label="30010" values="aliceblue|lemonchiffon|lightblue|lightcoral|lightcyan|lightgrey|lightgreen|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lavender|moccasin|pink|plum|powderblue|seashell|coral" default="lightcoral"/>
+        <setting id="always-use-fastmode" type="bool" label="Téléchargement turbo" default="false"/>
     <!-- setting id="param_timeout" label="30027" type="number" default="1000"/-->
 
         <setting label="30031" type="lsep"/>

@@ -341,7 +341,7 @@ class cDownload:
         
         #recherche d'une extension
         sUrl = sUrl.lower()
-        m = re.search('(flv|avi|mp4|mpg|mpeg)', sUrl)
+        m = re.search('(flv|avi|mp4|mpg|mpeg|mkv)', sUrl)
         if m:
             sTitle = sTitle + '.' + m.group(0)
         else:
@@ -490,7 +490,10 @@ class cDownload:
         #thumbnail = urllib.unquote_plus(data[4])
         #status = data[8]
 
-        self.download(url,title,path)
+        if (cConfig().getSetting('always-use-fastmode') == 'true'):
+            self.download(url,title,path,True)
+        else :
+            self.download(url,title,path,False)
                 
     def StartDownloadList(self):
         cConfig().showInfo('Information', 'Demarrage de la liste complete')
