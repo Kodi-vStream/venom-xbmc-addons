@@ -337,7 +337,7 @@ msgid "[COLOR red]Delete Bookmark[/COLOR]"
 msgstr ""
 
 msgctxt "#30210"
-msgid "[COLOR teal]Display Bookmark[/COLOR]"
+msgid "Bookmark"
 msgstr ""
 
 msgctxt "#30211"
@@ -516,7 +516,7 @@ msgid "[COLOR gold]Full season search[/COLOR]"
 msgstr ""
 
 msgctxt "#30416"
-msgid "[COLOR azure]Search history[/COLOR]"
+msgid "[COLOR gold]Search history[/COLOR]"
 msgstr ""
 
 msgctxt "#30417"
@@ -529,4 +529,8 @@ msgstr ""
 
 msgctxt "#30419"
 msgid "View: Visual search (recommended 500)"
+msgstr ""
+
+msgctxt "#30420"
+msgid "Enable/Disable sources"
 msgstr ""

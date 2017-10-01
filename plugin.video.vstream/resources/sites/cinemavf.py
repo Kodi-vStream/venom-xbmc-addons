@@ -18,9 +18,11 @@ SITE_IDENTIFIER = 'cinemavf'
 SITE_NAME = 'CinemaVF'
 SITE_DESC = 'Films, Séries & Mangas en streaming.'
 
-URL_MAIN = 'http://cinemavf.info/'
+URL_MAIN = 'http://cinemavf.tv/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
@@ -221,10 +223,17 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
 
+    #Decoupage pour cibler une partie Film
+    sPattern = '<div class="section-box">(.+?)</body>'
+
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    sHtmlContent = aResult
+	
+    #regex pour listage films sur la partie decoupée
     sPattern = '<div class="thumb">.+?<img src="([^<]+)" alt="(.+?)".+?<a href="(.+?)"'
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -239,7 +248,7 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            sTitle = str(aEntry[1]).replace('&#8217;', '\'')
+            sTitle = str(aEntry[1]).decode("unicode_escape").encode("latin-1")#.replace('&#8217;', '\'')
             sUrl2 = str(aEntry[2])
             sThumb = str(aEntry[0])
 
@@ -285,6 +294,9 @@ def ShowSaisons():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    #probleme de redirection non finalisée sur leur site
+    sUrl = oRequestHandler.getRealUrl()
+
     sPattern = '<div class="season">.+?<h3>(.+?)</h3>|<a class="num_episode" href="(.+?)">(.+?)<span>'
 
     oParser = cParser()
@@ -325,6 +337,11 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+
+    #cConfig().log(str(sUrl))
+
+    #probleme de redirection non finalisée sur leur site
+    sUrl = oRequestHandler.getRealUrl()
 
     sPattern = '<div class="langue.*?">.*?<span>(.*?)<\/span>|<a onclick=".+?">\s*([^<>]+)\s*<\/a>\s*<input name="levideo" value="([^"]+)"'
 
@@ -377,6 +394,8 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     #pensez a faire un cConfig().log(str(aResult)) pour verifier
     #cConfig().log(str(sUrl))
+    #cConfig().log(sPost)
+
     #cConfig().log(str(aResult))
 
     if (aResult[0] == True):

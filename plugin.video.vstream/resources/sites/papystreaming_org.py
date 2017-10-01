@@ -31,6 +31,10 @@ SERIE_NOTES = (URL_MAIN + 'de-vote/', 'showSeries')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH2 = (URL_MAIN + '?s=', 'showSeries')
+
+URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showSeries')
+
 FUNCTION_SEARCH = 'showMovies'
 #series et films melangé sur certaine fonction tri obligatoire qui bloque l'optimisation
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
@@ -175,7 +179,7 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == False):
 		oGui.addText(SITE_IDENTIFIER)
-        
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)

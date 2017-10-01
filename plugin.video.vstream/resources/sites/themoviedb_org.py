@@ -236,7 +236,7 @@ def showMovies(sSearch = ''):
             cGui.CONTENT = "movies"
             oGuiElement = cGuiElement()
             oGuiElement.setTmdbId(i['id'])
-            oGuiElement.setSiteName('cHome')
+            oGuiElement.setSiteName('globalSearch')
             oGuiElement.setFunction('showSearch')
             oGuiElement.setTitle(sTitle)
             oGuiElement.setFileName(sTitle)
@@ -244,7 +244,7 @@ def showMovies(sSearch = ''):
             oGuiElement.setMeta(1)
             oGuiElement.setThumbnail(sThumbnail)
             oGuiElement.setFanart(sFanart)
-            oGuiElement.setCat(7)
+            oGuiElement.setCat(1)
             oGuiElement.setDescription(sDesc)
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
@@ -326,7 +326,7 @@ def showSeries(sSearch=''):
             oGuiElement.setMeta(2)
             oGuiElement.setThumbnail(sThumbnail)
             oGuiElement.setFanart(sFanart)
-            oGuiElement.setCat(7)
+            oGuiElement.setCat(2)
             oGuiElement.setDescription(sDesc)
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
@@ -364,9 +364,18 @@ def showSeriesSaison():
     #recherche la serie complete
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sMovieTitle)
-    oOutputParameterHandler.addParameter('type', 'serie')
+    #oOutputParameterHandler.addParameter('type', 'serie')
     oOutputParameterHandler.addParameter('searchtext', sMovieTitle)
-    oGui.addDir('cHome', 'showSearch', cConfig().getlanguage(30414), 'searchtmdb.png', oOutputParameterHandler)
+
+    oGuiElement = cGuiElement()
+    oGuiElement.setSiteName('globalSearch')
+    oGuiElement.setFunction('searchMovie')
+    oGuiElement.setTitle(cConfig().getlanguage(30414))
+    oGuiElement.setCat(2)
+    oGuiElement.setIcon("searchtmdb.png")
+    oGui.addFolder(oGuiElement, oOutputParameterHandler)
+
+    #oGui.addDir('cHome', 'showSearch', cConfig().getlanguage(30414), 'searchtmdb.png', oOutputParameterHandler)
     #fin
 
     result = grab.getUrl(sUrl)
@@ -440,10 +449,19 @@ def showSeriesEpisode():
     #recherche saison complete
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sMovieTitle)
-    oOutputParameterHandler.addParameter('type', 'serie')
+    #oOutputParameterHandler.addParameter('type', 'serie')
     search = '%s S%02d' % (sMovieTitle, int(sSeason))
     oOutputParameterHandler.addParameter('searchtext', search)
-    oGui.addDir('cHome', 'showSearch', cConfig().getlanguage(30415), 'searchtmdb.png', oOutputParameterHandler)
+
+    oGuiElement = cGuiElement()
+    oGuiElement.setSiteName('globalSearch')
+    oGuiElement.setFunction('searchMovie')
+    oGuiElement.setTitle(cConfig().getlanguage(30415))
+    oGuiElement.setCat(2)
+    oGuiElement.setIcon("searchtmdb.png")
+    oGui.addFolder(oGuiElement, oOutputParameterHandler)
+
+    #oGui.addDir('cHome', 'showSearch', cConfig().getlanguage(30415), 'searchtmdb.png', oOutputParameterHandler)
     #fin
 
     result = grab.getUrl(sUrl)
@@ -483,7 +501,7 @@ def showSeriesEpisode():
             cGui.CONTENT = "tvshows"
             oGuiElement = cGuiElement()
             oGuiElement.setTmdbId(sTmdbId)
-            oGuiElement.setSiteName('cHome')
+            oGuiElement.setSiteName('globalSearch')
             oGuiElement.setFunction('showSearch')
             oGuiElement.setTitle(sTitle)
             oGuiElement.setFileName(sMovieTitle)
@@ -491,7 +509,7 @@ def showSeriesEpisode():
             oGuiElement.setMeta(2)
             oGuiElement.setThumbnail(sThumbnail)
             oGuiElement.setFanart(sFanart)
-            oGuiElement.setCat(7)
+            oGuiElement.setCat(2)
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
@@ -573,7 +591,7 @@ def showActors():
 
                 oGuiElement = cGuiElement()
                 oGuiElement.setTmdbId(sId)
-                oGuiElement.setSiteName('cHome')
+                oGuiElement.setSiteName('globalSearch')
                 oGuiElement.setFunction('showSearch')
                 oGuiElement.setTitle(sTitle)
                 oGuiElement.setFileName(sTitle)
@@ -581,7 +599,7 @@ def showActors():
                 oGuiElement.setMeta(0)
                 oGuiElement.setThumbnail(sThumbnail)
                 oGuiElement.setFanart(sFanart)
-                oGuiElement.setCat(7)
+                oGuiElement.setCat(1)
 
                 oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
@@ -638,14 +656,14 @@ def showFilmActor():
 
             oGuiElement = cGuiElement()
             oGuiElement.setTmdbId(sId)
-            oGuiElement.setSiteName('cHome')
+            oGuiElement.setSiteName('globalSearch')
             oGuiElement.setFunction('showSearch')
             oGuiElement.setTitle(sTitle)
             oGuiElement.setFileName(sTitle)
             oGuiElement.setIcon('actors.png')
             oGuiElement.setMeta(1)
             oGuiElement.setThumbnail(sThumbnail)
-            oGuiElement.setCat(7)
+            oGuiElement.setCat(1)
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
@@ -713,18 +731,19 @@ def showLists():
             cGui.CONTENT = "movies"
             oGuiElement = cGuiElement()
             oGuiElement.setTmdbId(i['id'])
-            oGuiElement.setSiteName('cHome')
+            oGuiElement.setSiteName('globalSearch')
             oGuiElement.setFunction('showSearch')
             oGuiElement.setTitle(sDisplayTitle)
             oGuiElement.setFileName(sTitle)
             oGuiElement.setIcon('series.png')
             if sType == 'movie':
                 oGuiElement.setMeta(1)
+                oGuiElement.setCat(1)
             elif sType == 'tv':
                 oGuiElement.setMeta(2)
+                oGuiElement.setCat(2)
             oGuiElement.setThumbnail(sThumbnail)
             oGuiElement.setFanart(sFanart)
-            oGuiElement.setCat(7)
             oGuiElement.setDescription(sDesc)
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)

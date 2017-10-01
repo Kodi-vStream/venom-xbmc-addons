@@ -30,34 +30,36 @@ SERIE_SERIES = (URL_MAIN + 'serie-tv/', 'showMovies')
 SERIE_HD = (URL_MAIN + 'serie-tv/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
 
 def load():
     oGui = cGui()
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films (HD)', 'films_hd.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'films_annees.png', oOutputParameterHandler)
-	
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
-    
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -72,7 +74,7 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-    
+
     liste = []
     liste.append( ['Ultra-HD',URL_MAIN + 'ultra-hd/'] )
     liste.append( ['720p/1080p',URL_MAIN + 'films/streaming-720p-streaming-1080p/'] )
@@ -102,39 +104,39 @@ def showGenres():
     liste.append( ['Téléfilm',URL_MAIN + 'films/telefilm/'] )
     liste.append( ['VOSTFR',URL_MAIN + 'films/vostfr/'] )
     liste.append( ['Western',URL_MAIN + 'films/western/'] )
-    
+
     for sTitle,sUrl in liste:
-       
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'films_genres.png', oOutputParameterHandler)
-        
+
     oGui.setEndOfDirectory()
 
 def showYears():
     oGui = cGui()
-    
+
     sStart = '<div class="filter-content-slider">'
     sEnd = '<div class="filter-slide filter-slide-down">'
-	
+
     oParser = cParser()
-    
+
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
-	
+
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-	
+
     sPattern = '<a href="([^"]+)">(.+?)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl = URL_MAIN[:-1] + aEntry[0]
             sTitle = aEntry[1]
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'annees.png', oOutputParameterHandler)
-			
+
     oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):
@@ -144,7 +146,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-    
+
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
 
     oParser = cParser()
@@ -161,7 +163,7 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-                
+
             sName = aEntry[2].replace(' Streaming Ultra-HD', '').replace(' Streaming Full-HD', '')
             sName = sName.replace(' en Streaming HD', '').replace(' Streaming HD', '').replace(' streaming HD', '')
             sName = sName.decode('utf8')
@@ -170,16 +172,16 @@ def showMovies(sSearch = ''):
                 sName = sName.encode("utf-8")
             except:
                 pass
-            
+
             sTitle = sName + ' [' + aEntry[3] + ']'
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
-            
+
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sName) == 0:
                     continue
-            
+
             if sThumb.startswith('//'):
                 sThumb = 'http:' + sThumb
 
@@ -188,14 +190,14 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sName)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-            
+
             if re.match('.+?saison [0-9]+', sTitle, re.IGNORECASE):
                 oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
-            
+
         cConfig().finishDialog(dialog)
-           
+
         if not sSearch:
             sNextPage = __checkForNextPage(sHtmlContent)
             if (sNextPage != False):
@@ -211,7 +213,7 @@ def __checkForNextPage(sHtmlContent):
     #<div class="pag_.+?"><a href="([^"]+)">Prochaine<\/a><\/div>
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-	
+
     if (aResult[0] == True):
         return  aResult[1][0]
 
@@ -219,25 +221,25 @@ def __checkForNextPage(sHtmlContent):
 
 def showHosters():
     oGui = cGui()
-    
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
-    
+
     #Vire les bandes annonces
     sHtmlContent = sHtmlContent.replace('src="//www.youtube.com/', '')
 
     sPattern = '<iframe.+?src="(.+?)"'
-    
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-                
+
             sHosterUrl = str(aEntry)
             if '//goo.gl' in sHosterUrl:
                 import urllib2
@@ -245,27 +247,27 @@ def showHosters():
                     class NoRedirection(urllib2.HTTPErrorProcessor):
                         def http_response(self, request, response):
                             return response
-                    
+
                     url8 = sHosterUrl.replace('https', 'http')
-                    
+
                     opener = urllib2.build_opener(NoRedirection)
                     opener.addheaders.append (('User-Agent', UA))
                     opener.addheaders.append (('Connection', 'keep-alive'))
-            
+
                     HttpReponse = opener.open(url8)
                     sHosterUrl = HttpReponse.headers['Location']
                     sHosterUrl = sHosterUrl.replace('https', 'http')
                 except:
                     pass
-            
+
             if 'official-film-illimite' in sHosterUrl:
-                
+
                 #La vostfr n'existe que pour ce hoster
                 if '.srt' in sHosterUrl or 'VOSTFR' in sHosterUrl:
                     sDisplayTitle = sMovieTitle + ' [VOSTFR]'
                 else:
                     sDisplayTitle = sMovieTitle
-                    
+
                 sDisplayTitle = sDisplayTitle + ' [COLOR skyblue]Google[/COLOR]'
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
@@ -293,19 +295,19 @@ def serieHosters():
 
     sHtmlContent = sHtmlContent.replace('<iframe width="420" height="315" src="https://www.youtube.com/', '')
     sPattern = '<iframe.+?src="(http.+?)".+?>'
-    
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     print aResult
-    
+
     if (aResult[0] == True):
         i = 1
-        for aEntry in aResult[1]: 
-        
+        for aEntry in aResult[1]:
+
             sUrl = str(aEntry)
             sTitle = '%s episode %s' % (sMovieTitle, str(i))
             sDisplayTitle = sTitle
-            
+
             i = i + 1
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -322,13 +324,13 @@ def ShowSpecialHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
+
     #cConfig().log(sUrl)
-    
+
     data = re.sub('(.+?f=)', '', sUrl)
     data = data.replace('&c=', '')
     pdata = 'data=' + urllib.quote_plus(data)
-    
+
     cConfig().log(sUrl)
     if 'fr-land.me' in sUrl:
         oRequest = cRequestHandler('http://fr-land.me/Htplugins/Loader.php')
@@ -340,14 +342,14 @@ def ShowSpecialHosters():
         oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
         oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequest.addParametersLine(pdata)
-        
+
         sHtmlContent = oRequest.request()
         sHtmlContent = sHtmlContent.replace('\\', '')
-                
+
         #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
-        
+
         sPattern = '\[(.+?)\]'
 
         oParser = cParser()
@@ -355,9 +357,9 @@ def ShowSpecialHosters():
         if (aResult[0] == True):
             listurl = aResult[1][0].replace('"', '').split(',http')
             listqual = aResult[1][1].replace('"', '').split(',')
-            
+
             tab = zip(listurl,listqual)
-            
+
             for url, qual in tab:
                 sHosterUrl = url
                 if not sHosterUrl.startswith('http'):

@@ -15,14 +15,15 @@ import re
 
 SITE_IDENTIFIER = 'streamcomplet'
 SITE_NAME = 'StreamComplet'
-SITE_DESC = 'Streaming Gratuit de 5709 Films Complets en VF'
+SITE_DESC = 'Streaming Gratuit de 5947 Films Complets en VF.'
 
-URL_MAIN = 'http://streamcomplet.com/'
+URL_MAIN = 'http://streamcomplet.me/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -108,13 +109,13 @@ def showMovies(sSearch = ''):
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),sTitle) == 0:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
                     continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sThumb', str(aEntry[0]))
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
@@ -143,7 +144,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -174,7 +175,7 @@ def showHosters():
             oGuiElement.setSiteName(SITE_IDENTIFIER)
             oGuiElement.setTitle(sMovieTitle)
             oGuiElement.setMediaUrl(sHosterUrl)
-            oGuiElement.setThumbnail(sThumbnail)
+            oGuiElement.setThumbnail(sThumb)
 
             oPlayer = cPlayer()
             oPlayer.clearPlayList()

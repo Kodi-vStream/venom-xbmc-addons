@@ -16,8 +16,9 @@ SITE_IDENTIFIER = 'topreplay'
 SITE_NAME = 'TopReplay'
 SITE_DESC = 'Replay TV'
 
-URL_MAIN = 'http://www.topreplay.com'
+URL_MAIN = 'http://www.topreplay.net'
 URL_SEARCH = (URL_MAIN + '/index.php?do=search&subaction=search&story=', 'showMovies')
+URL_SEARCH_MISC = (URL_MAIN + '/index.php?do=search&subaction=search&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 REPLAYTV_GENRES = (True, 'showGenre')
@@ -139,7 +140,7 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == False):
 		oGui.addText(SITE_IDENTIFIER)
-        
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)

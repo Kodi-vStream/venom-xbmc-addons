@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#test sur http://vshare.eu/embed-wuqinr62cpn6-703x405.html
+#         http://vshare.eu/embed-cxmr4o8l2waa-703x405.html
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
@@ -38,15 +40,6 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return False
 
-    def isJDownloaderable(self):
-        return False
-
-    def getPattern(self):
-        return ''
-
-    def __getIdFromUrl(self, sUrl):
-        return ''
-
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
 
@@ -65,19 +58,24 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
+
         if 'File was deleted' in sHtmlContent:
             return False,False
 
         oParser = cParser()
-        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+        sPattern = "file: *'([^']+vid.mp4)'"
         aResult = oParser.parse(sHtmlContent,sPattern)
         if (aResult[0] == True):
-            sHtmlContent = cPacker().unpack(aResult[1][0])
-
-        sPattern = '{file:"(http.+?mp4)"'
-        aResult = oParser.parse(sHtmlContent,sPattern)
-        if (aResult[0] == True):
-            api_call = aResult[1][0] #pas de choix qualité trouvé pour le moment
+            api_call = aResult[1][0]
+        else:        
+            sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+            aResult = oParser.parse(sHtmlContent,sPattern)
+            if (aResult[0] == True):
+                sHtmlContent = cPacker().unpack(aResult[1][0])
+                sPattern = '{file:"(http.+?vid.mp4)"'
+                aResult = oParser.parse(sHtmlContent,sPattern)
+                if (aResult[0] == True):
+                    api_call = aResult[1][0]
 
         if (api_call):
             return True, api_call

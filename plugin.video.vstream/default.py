@@ -184,14 +184,12 @@ def searchGlobal():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
 
-    sReadDB = oInputParameterHandler.getValue('readdb')
+    #print xbmc.getInfoLabel('ListItem.Property(Category)')
+
     sSearchText = oInputParameterHandler.getValue('searchtext')
-    sDisp = oInputParameterHandler.getValue('disp')
 
     oHandler = cRechercheHandler()
     oHandler.setText(sSearchText)
-    oHandler.setDisp(sDisp)
-    oHandler.setRead(sReadDB)
     aPlugins = oHandler.getAvailablePlugins()
     if not aPlugins: return True
     total = len(aPlugins)

@@ -27,6 +27,7 @@ URL_PROTECT = 'http://protect.ddl-island.su'
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'recherche.php?categorie=99&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'recherche.php?categorie=98&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
+
 URL_SEARCH_ANIMES = (URL_MAIN + 'recherche.php?categorie=5&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
 URL_SEARCH_MANGAS = (URL_MAIN + 'recherche.php?categorie=3&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
 URL_SEARCH_EMISSIONS_TV = (URL_MAIN + 'recherche.php?categorie=17&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
@@ -407,7 +408,7 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == False):
 		oGui.addText(SITE_IDENTIFIER)
-        
+
     if (aResult[0] == True):
         total = len(aResult[1])
         for aEntry in aResult[1]:

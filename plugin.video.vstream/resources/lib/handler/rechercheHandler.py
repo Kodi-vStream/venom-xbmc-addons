@@ -16,7 +16,7 @@ class cRechercheHandler:
     def __init__(self):
         self.__sText = ""
         self.__sDisp = ""
-        self.__sRead = "True"
+        self.__sCat = ""
 
     def getPluginHandle(self):
         try:
@@ -57,12 +57,6 @@ class cRechercheHandler:
         self.__sDisp = sDisp
         return self.__sDisp
 
-    def setRead(self, sRead):
-        self.__sRead = sRead
-
-    def getRead(self):
-        return self.__sRead
-
     def getDisp(self):
         return self.__sDisp
 
@@ -84,68 +78,39 @@ class cRechercheHandler:
                     aNameList.append(sItemName)
         return aNameList
 
-    def __importPlugin_old(self, sName, sLabel, sText):
-        oConfig = cConfig()
-        sPluginSettingsName = sLabel+'_' +sName
-        bPlugin = oConfig.getSetting(sPluginSettingsName)
-        #multicherche
-        if sLabel == 'search5':
-            bPlugin = 'true'
 
-        OnPlugins = oConfig.getSetting('plugin_' + sName)
-
-        if (bPlugin == 'true') and (OnPlugins == 'true'):
-            try:
-                oGui = cGui()
-
-                exec "from resources.sites import " + sName
-                exec "sDisplayname = " + sName + ".SITE_NAME"
-                exec "sSearch = " + sName + ".URL_SEARCH"
-
-                cConfig().log("Load Recherche: " + str(sName))
-
-                cRechercheHandler.Count += 1
-                Count = cRechercheHandler.Count
-                if (Count == 1):
-                    oGui.addText(sName, '[COLOR khaki]%s: %s[/COLOR]' % (cConfig().getlanguage(30076), sText), 'none.png')
-
-                oGui.addText(sName, '%s. [COLOR olive]%s[/COLOR]' % (Count, sDisplayname), 'sites/%s.png' % (sName))
-
-                sUrl = sSearch[0]+sText
-                searchUrl = "%s.%s('%s')" % (sName, sSearch[1], sUrl)
-                exec searchUrl
-
-                return True
-            except Exception, e:
-                cConfig().log("cant import plugin: " + str(sName))
-                return False, False
-        else:
-            return False, False
-
-    def __importPlugin(self, sName, sLabel):
+    def __importPlugin(self, sName, sCat):
         pluginData = {}
         oConfig = cConfig()
-        sPluginSettingsName = sLabel+'_' +sName
+        sPluginSettingsName = 'plugin_' + sName
         bPlugin = oConfig.getSetting(sPluginSettingsName)
         #multicherche
-        if sLabel == 'search5':
-            bPlugin = 'true'
+        # if sLabel == 'search5':
+        #     bPlugin = 'true'
 
-        OnPlugins = oConfig.getSetting('plugin_' + sName)
+        if sCat == '1':
+            sSearch = 'URL_SEARCH_MOVIES'
+        elif sCat == '2':
+            sSearch = 'URL_SEARCH_SERIES'
+        elif sCat == '3':
+            sSearch = 'URL_SEARCH_MISC'
+        else :
+            sSearch = 'URL_SEARCH'
 
-        if (bPlugin == 'true') and (OnPlugins == 'true'):
+
+        if (bPlugin == 'true'):
             try:
 
                 plugin = __import__('resources.sites.%s' % sName, fromlist=[sName])
 
                 pluginData['identifier'] = plugin.SITE_IDENTIFIER
                 pluginData['name'] = plugin.SITE_NAME
-                pluginData['search'] = plugin.URL_SEARCH
+                pluginData['search'] = getattr(plugin, sSearch)
+                return pluginData
 
             except Exception, e:
-                cConfig().log("cant import plugin: " + str(sName))
-
-        return pluginData
+                #cConfig().log("cant import plugin: " + str(sName))
+                return False
 
 
     def getRootFolder(self):
@@ -163,20 +128,23 @@ class cRechercheHandler:
         return sFolder
 
     def getAvailablePlugins(self):
+
         oConfig = cConfig()
         sText = self.getText()
         if not sText:
             return False
-        sLabel = self.getDisp()
-        if not sLabel:
+        sCat =  xbmc.getInfoLabel('ListItem.Property(Category)')
+        #print "recherche handler"
+        #print sCat
+        if not sCat:
             return False
 
         #historique
         try:
-            if (cConfig().getSetting("history-view") == 'true' and self.__sRead != "False"):
+            if (cConfig().getSetting("history-view") == 'true'):
                 meta = {}
                 meta['title'] = sText
-                meta['disp'] = sLabel
+                meta['disp'] = sCat
                 cDb().insert_history(meta)
         except: pass
 
@@ -191,24 +159,25 @@ class cRechercheHandler:
 
         aPlugins = []
         for sFileName in aFileNames:
-            aPlugin = self.__importPlugin(sFileName, sLabel)
+            aPlugin = self.__importPlugin(sFileName, sCat)
             if aPlugin:
                 aPlugins.append(aPlugin)
 
-        #multiselect
-        if sLabel == 'search5':
-            multi = []
-            for plugin in aPlugins:
-                multi.append(plugin['identifier'])
-            dialog = xbmcgui.Dialog()
-            ret = dialog.multiselect(cConfig().getlanguage(30094), multi)
-            NewFileNames = []
-            if ret > -1:
-                for i in ret:
-                    NewFileNames.append(aPlugins[i])
+        # #multiselect
+        # if sLabel == 'search5':
+        #     multi = []
+        #     for plugin in aPlugins:
+        #         multi.append(plugin['identifier'])
+        #     dialog = xbmcgui.Dialog()
+        #     ret = dialog.multiselect(cConfig().getlanguage(30094), multi)
+        #     NewFileNames = []
+        #     if ret > -1:
+        #         for i in ret:
+        #             NewFileNames.append(aPlugins[i])
+        #
+        #     aPlugins = NewFileNames
+        # #fin multiselect
 
-            aPlugins = NewFileNames
-        #fin multiselect
         return aPlugins
 
     def __createAvailablePluginsItem(self, sPluginName, sPluginIdentifier, sPluginDesc):

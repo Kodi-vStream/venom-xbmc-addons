@@ -1,7 +1,7 @@
 Venom-Addons-Vstream-XBMC
 =================
 
-Sommaire: **[A Propos](#a-propos)** | **[Image](#image)** | **[Installer](#installer)** | **[Video](#video)** | **[Quoi de neuf](#quoi-de-neuf)** | **[Contribuer](#contribuer)** | **[Faire un Don](#faire-un-don)** 
+Sommaire: **[A Propos](#a-propos)** | **[Image](#image)** | **[Installer](#installer)** | **[Video](#video)** | **[Quoi de neuf](#quoi-de-neuf)** | **[FAQ](#faq)** | **[Contribuer](#contribuer)** | **[Faire un Don](#faire-un-don)** 
 
 ## A Propos!
 
@@ -25,7 +25,7 @@ Installez le zip du repository (pour avoir les mises à jour automatiques) ou in
 
 ## Video!
 
-[![Video d'installation](http://img.youtube.com/vi/dId6TN9WPlQ/0.jpg)](https://www.youtube.com/watch?v=dId6TN9WPlQ)
+[![Video d'installation](http://img.youtube.com/vi/1SCJ_h4bwJQ/0.jpg)](https://www.youtube.com/watch?v=1SCJ_h4bwJQ)
 
 
 ## Quoi de neuf!
@@ -33,16 +33,16 @@ Installez le zip du repository (pour avoir les mises à jour automatiques) ou in
 [Voir le changelog](https://github.com/Kodi-vStream/venom-xbmc-addons/blob/Beta/plugin.video.vstream/changelog.txt)
 
 
+## FAQ!
+
+[Voir le Wiki](https://github.com/Kodi-vStream/venom-xbmc-addons/wiki)
+
+
 ## Contribuer!
 
 Pour me proposer de nouvelles sources ou me rapporter un bug, utilisez :
 
 [Issues Github](https://github.com/Kodi-vStream/venom-xbmc-addons/issues)
-
-[Twitter @LordVenom57](https://twitter.com/LordVenom57)
-
-[Google+ LordVenom57](https://plus.google.com/+LordVenom57/posts)
-
 
 Pour créer un nouvelle source, utilisez le fichier avec commentaire pour vous aider.
 
@@ -52,8 +52,6 @@ Pour créer un nouvelle source, utilisez le fichier avec commentaire pour vous a
 
 
 Pour participer directement au projet
-
-[github bêta](https://github.com/Kodi-vStream/venom-xbmc-addons/tree/Beta)
 
 [Télécharger la bêta](https://minhaskamal.github.io/DownGit/#/home?url=https:%2F%2Fgithub.com%2FKodi-vStream%2Fvenom-xbmc-addons%2Ftree%2FBeta%2Fplugin.video.vstream)
 
@@ -65,6 +63,6 @@ Pour participer directement au projet
 
 ## Merci!
 
-Merci à tous nos généreux donateurs et donatrices. J'évite de mettre vos pseudo en évidence pour ne pas faire de vStream une vitrine, mais sachez que celas me motive, encore merci.
+Merci à tous nos généreux donateurs et donatrices.
 
 Bon Film ++

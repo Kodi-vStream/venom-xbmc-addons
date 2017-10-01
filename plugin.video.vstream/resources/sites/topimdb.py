@@ -186,7 +186,7 @@ def showMovies(sSearch = '', page = 1):
             #oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[1]))
             #oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
             oOutputParameterHandler.addParameter('searchtext', showTitle(str(aEntry[0]),  str('none')))
-            oGui.addMovie('cHome', 'showSearch', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oGui.addMovie('globalSearch', 'showSearch', sTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 

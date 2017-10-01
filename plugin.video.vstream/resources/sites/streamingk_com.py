@@ -37,6 +37,8 @@ ANIM_NEWS = (URL_MAIN + 'category/mangas/', 'showMovies')
 REPLAYTV_REPLAYTV = (URL_MAIN + 'category/emissions-tv/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():

@@ -15,6 +15,7 @@ SITE_DESC = 'Vidéos drôles, du buzz, des fails et des vidéos insolites'
 URL_MAIN = 'http://www.lesdebiles.com'
 
 URL_SEARCH = (URL_MAIN , 'showMovies')
+URL_SEARCH_MISC = (URL_MAIN , 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NETS = ('http://', 'load')

@@ -22,6 +22,7 @@ MOVIE_COMMENTS = (URL_MAIN + '?p=movies&orderby=comment_count', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():

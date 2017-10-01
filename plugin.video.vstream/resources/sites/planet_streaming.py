@@ -22,6 +22,7 @@ MOVIE_HD = (URL_MAIN + 'xfsearch/hd/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 URL_SEARCH = ('' , 'showMovies')
+URL_SEARCH_MOVIES = ('' , 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():

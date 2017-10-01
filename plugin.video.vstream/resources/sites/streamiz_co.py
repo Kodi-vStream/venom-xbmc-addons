@@ -21,6 +21,8 @@ MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (URL_MAIN + 'annee/', 'showYear')
 
 URL_SEARCH = ('https://api.streamiz.co/movies/search/?query=', 'showMovies')
+URL_SEARCH_MOVIES = ('https://api.streamiz.co/movies/search/?query=', 'showMovies')
+
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -115,7 +117,7 @@ def showMovies(sSearch = '',yearUrl = ''):
 
     if (aResult[0] == False):
 		oGui.addText(SITE_IDENTIFIER)
-        
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl = aEntry[0]

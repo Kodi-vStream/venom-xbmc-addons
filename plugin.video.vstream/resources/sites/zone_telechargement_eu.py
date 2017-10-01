@@ -24,6 +24,7 @@ SITE_DESC = 'Films en DDL et streaming'
 URL_MAIN = 'https://www.zonetelechargement.su/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():

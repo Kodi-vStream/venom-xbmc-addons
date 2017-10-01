@@ -27,6 +27,8 @@ SERIE_SERIES = (URL_MAIN + 'serie/', 'showMovies')
 SERIE_GENRES = (True, 'showSerieGenres')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():

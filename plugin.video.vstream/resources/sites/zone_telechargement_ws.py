@@ -31,6 +31,8 @@ SITE_DESC = 'Fichier en DDL, HD'
 URL_MAIN = 'https://www.zone-telechargement.ws/'
 
 URL_SEARCH = (URL_MAIN, 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN, 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN, 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'nouveaute/', 'showMovies') # films (derniers ajouts)
@@ -440,7 +442,7 @@ def showHosters():# recherche et affiche les hotes
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     #xbmc.log(str(aResult))
-    
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -697,7 +699,7 @@ def DecryptDlProtecte(url):
     #'Pragma' : '',
     #'Accept-Charset' : ''
     }
-    
+
     #url2 = 'https://www.dl-protecte.org/php/Qaptcha.jquery.php'
     url2 = 'https://www.protect-lien.com/php/Qaptcha.jquery.php'
 
@@ -733,7 +735,7 @@ def DecryptDlProtecte(url):
         return ''
 
     sHtmlContent = reponse.read()
-    
+
     #cConfig().log( 'result'  + str(sHtmlContent))
 
     #Recuperatioen et traitement cookies ???
@@ -745,7 +747,7 @@ def DecryptDlProtecte(url):
     cookies = ''
     for cook in c2:
         cookies = cookies + cook[0] + '=' + cook[1] + ';'
-        
+
     #cConfig().log( 'Cookie'  + str(cookies))
 
     reponse.close()
@@ -768,11 +770,11 @@ def DecryptDlProtecte(url):
 
     #Nouvelle methode avec multipart
     #multipart_form_data = { RandomKey : '', 'submit' : 'Valider'  }
-    
+
     import string
     _BOUNDARY_CHARS = string.digits + string.ascii_letters
     boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(30))
-    
+
     multipart_form_data = { RandomKey : '', 'submit' : 'Valider' }
     data, headersMulti = encode_multipart(multipart_form_data, {},boundary)
     headers2.update(headersMulti)

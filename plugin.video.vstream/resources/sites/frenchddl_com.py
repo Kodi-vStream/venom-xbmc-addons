@@ -16,6 +16,7 @@ SITE_DESC = 'films en ddl'
 URL_MAIN = 'http://www.frenchddl.com/'
 
 URL_SEARCH = (URL_MAIN + 'index.php?Query=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?Query=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_MOVIE = (URL_MAIN , 'showMovies')
@@ -50,9 +51,9 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-    
+
     oParser = cParser()
-    
+
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.decode('iso-8859-1').encode('utf8') # Site en latin1
@@ -67,7 +68,7 @@ def showGenres():
         for aEntry in aResult[1]:
             sUrl = URL_MAIN + aEntry[0].replace('Péplum', 'P%E9plum')
             sTitle = aEntry[1].replace('&eacute;', 'é')
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)

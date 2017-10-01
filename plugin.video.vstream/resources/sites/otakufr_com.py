@@ -22,6 +22,7 @@ ANIM_POPULAR = (URL_MAIN + 'anime-list/all/any/most-popular/' , 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'anime-list-all/', 'showAlpha')
 
 URL_SEARCH = (URL_MAIN + 'anime-list/search/', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'anime-list/search/', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -291,6 +292,9 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('<iframe src="http://www.facebook.com','')
+    sHtmlContent = sHtmlContent.replace('<div class="vdo_wrp"><div style=','<div class="vdo_wrp"><iframe ')
+    sHtmlContent = sHtmlContent.replace('data-videoid="','src="https://embed.tune.pk/vid=')
+    #pour Tune en test
 
     oParser = cParser()
     sPattern = '<div class="vdo_wrp"><iframe.+?src="([^"]+)"'

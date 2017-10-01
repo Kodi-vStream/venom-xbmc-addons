@@ -23,6 +23,7 @@ MOVIE_NEWS = (URL_MAIN + 'lastnews', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 URL_SEARCH = ('', 'showMovies')
+URL_SEARCH_MOVIES = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():

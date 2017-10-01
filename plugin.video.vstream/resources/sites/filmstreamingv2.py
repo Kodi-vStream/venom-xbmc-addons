@@ -31,6 +31,7 @@ MOVIE_GENRES = (True, 'showGenres')
 ANIM_ENFANTS = (URL_MAIN + 'les-films-disney-en-streaming.html', 'showMoviesHtml')
 
 URL_SEARCH = (URL_MAIN + '?do=search&mode=advanced&subaction=search&titleonly=3&story=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + '?do=search&mode=advanced&subaction=search&titleonly=3&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():

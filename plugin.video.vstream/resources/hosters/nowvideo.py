@@ -67,10 +67,6 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
-        fh = open('c:\\test.txt', "w")
-        fh.write(sHtmlContent)
-        fh.close()
 
         # 1 er lecteur
         sDash = re.search("player.src.+?src: *'([^']+)", sHtmlContent,re.DOTALL)

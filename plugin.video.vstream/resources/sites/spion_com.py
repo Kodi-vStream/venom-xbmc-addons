@@ -15,6 +15,7 @@ SITE_DESC = 'Toute l\'actualité insolite du web est chaque jour sur Spi0n.com'
 URL_MAIN = 'http://www.spi0n.com/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NETS = ('http://', 'load')

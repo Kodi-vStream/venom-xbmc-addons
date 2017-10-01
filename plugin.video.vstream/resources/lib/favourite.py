@@ -67,9 +67,9 @@ class cFav:
         oOutputParameterHandler.addParameter('sCat', '4')
         oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Sources (' + str(compt[4]) + ')', 'mark.png', oOutputParameterHandler)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sCat', '7')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Recherche Visuelle (' + str(compt[7]) + ')', 'mark.png', oOutputParameterHandler)
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('sCat', '7')
+        # oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Recherche Visuelle (' + str(compt[7]) + ')', 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '5')
@@ -144,11 +144,14 @@ class cFav:
                     if (cat  == '1'):
                         cGui.CONTENT = 'movies'
                         oGuiElement.setMeta(cat)
+                        oGuiElement.setCat(1)
                     elif (cat == '2'):
                         cGui.CONTENT = 'tvshows'
                         oGuiElement.setMeta(cat)
+                        oGuiElement.setCat(2)
                     else:
                         oGuiElement.setMeta(0)
+                        oGuiElement.setCat(cat)
                     oGuiElement.setThumbnail(thumbnail)
                     oGuiElement.setFanart(fanart)
 

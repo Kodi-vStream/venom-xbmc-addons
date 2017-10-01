@@ -137,8 +137,8 @@ class cPluginHandler:
                     sPlugin = True
                 except:
                     sPlugin = False
-
-                if (bPlugin == 'true') and (sPlugin == True):
+                
+                if  sPlugin == True:
                     aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName, sSiteDesc))
 
         return aPlugins

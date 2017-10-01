@@ -56,6 +56,8 @@ SERIE_PAYS = (URL_MAIN + 'series-tv/', 'showPays')
 SERIE_PLT = (URL_MAIN + 'series-tv/', 'showPlt')
 
 URL_SEARCH = (URL_MAIN + 'search.php?q=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'search.php?q=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'search.php?q=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'

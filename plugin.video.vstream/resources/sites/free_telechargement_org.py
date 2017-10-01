@@ -33,6 +33,8 @@ URL_SEARCH_EMISSIONS_TV = (URL_MAIN, 'showMovies')
 URL_SEARCH_SPECTACLES = (URL_MAIN, 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '1/recherche/1.html?rech_fiche=', 'showSearchResult')
+URL_SEARCH_MOVIES = (URL_MAIN + '1/recherche/1.html?rech_fiche=', 'showSearchResult')
+URL_SEARCH_SERIES = (URL_MAIN + '1/recherche/1.html?rech_fiche=', 'showSearchResult')
 FUNCTION_SEARCH = 'showSearchResult'
 
 MOVIE_SD_DVDRIP = (URL_MAIN + '1/categorie-Films+DVDRiP+et+BDRiP/1.html', 'showMovies')

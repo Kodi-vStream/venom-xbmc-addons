@@ -27,6 +27,10 @@ class cPacker():
     def unpack(self, source):
         """Unpacks P.A.C.K.E.R. packed js code."""
         payload, symtab, radix, count = self._filterargs(source)
+        
+        #correction pour eviter bypass
+        if (len(symtab) > count) and (count > 0):
+            del symtab[count:]
 
         if count != len(symtab):
             raise UnpackingError('Malformed p.a.c.k.e.r. symtab.')

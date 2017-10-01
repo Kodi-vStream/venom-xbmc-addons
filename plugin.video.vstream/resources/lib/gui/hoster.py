@@ -168,16 +168,12 @@ class cHosterGui:
             return self.getHoster('watchers')
         if (('videoweed' in sHostName) or ('bitvid' in sHostName)):
             return self.getHoster('videoweed')
-        if ('youwatch' in sHostName):
-            return self.getHoster('youwatch')
         if ('vidoza.' in sHostName):
             return self.getHoster('vidoza')
         if (('youtube' in sHostName) or ('youtu.be' in sHostName)):
             return self.getHoster('youtube')
         if ('rutube' in sHostName):
             return self.getHoster('rutube')
-        #if ('exashare' in sHostName):
-            #return self.getHoster('exashare')
         if ('nowvideo' in sHostName):
             return self.getHoster('nowvideo')
         if ('vk.com' in sHostName):
@@ -214,8 +210,6 @@ class cHosterGui:
             return self.getHoster('speedvideo')
         if ('speedvid' in sHostName):
             return self.getHoster('speedvid')
-        #if ('axavid' in sHostName):
-        #    return self.getHoster('axavid')
         if (('netu' in sHostName) or ('hqq' in sHostName)):
             return self.getHoster('netu')
         if ('waaw' in sHostName):
@@ -264,18 +258,10 @@ class cHosterGui:
             return self.getHoster('letwatch')
         if ('easyvid' in sHostName):
             return self.getHoster('easyvid')
-        #if (('allvid' in sHostName) or ('coo5shaine' in sHostName)):
-            #return self.getHoster('allvid')
         if ('www.amazon' in sHostName):
             return self.getHoster('amazon')
         if ('filepup' in sHostName):
             return self.getHoster('filepup')
-        #if ('v-vids' in sHostName):
-        #    return self.getHoster('v_vids')
-        if ('vid.ag' in sHostName):
-            return self.getHoster('vid_ag')
-        #if ('wat.tv' in sHostName):
-        #    return self.getHoster('wat_tv')
         if ('thevid' in sHostName):
             return self.getHoster('thevid')
         if ('nosvideo' in sHostName):
@@ -288,8 +274,6 @@ class cHosterGui:
             return self.getHoster('idowatch')
         if ('wstream.' in sHostName):
             return self.getHoster('wstream')
-        #if ('veevr.' in sHostName):
-        #    return self.getHoster('veevr')
         if ('watchvideo.' in sHostName):
              return self.getHoster('watchvideo')
         if ('drive.google.com' in sHostName):
