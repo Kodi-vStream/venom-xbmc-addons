@@ -1,0 +1,544 @@
+# Addon Name: vStream
+# Addon id: plugin.video.vstream
+# Addon Provider: vStream
+msgid ""
+msgstr ""
+"Project-Id-Version: venom-xbmc-addons\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2017-10-04 09:11+0300\n"
+"Last-Translator: A. Dambledore\n"
+"Language-Team: Eng2Heb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: he_IL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+
+msgctxt "#30000"
+msgid "Logging"
+msgstr "רושם ביומן"
+
+msgctxt "#30001"
+msgid "Videoplayer"
+msgstr "נגן וידאו"
+
+msgctxt "#30002"
+msgid "Auto-activate subtitles"
+msgstr "הפעל כתוביות אוטומטית"
+
+msgctxt "#30003"
+msgid "Activate filtering search"
+msgstr "הפעל סינון חיפוש"
+
+msgctxt "#30004"
+msgid "Filter Error"
+msgstr "שגיאת מסנן"
+
+msgctxt "#30005"
+msgid "VStream will be faster with your own API key."
+msgstr "הרחבת VStream תהיה מהירה יותר עם מפתח API משלך."
+
+msgctxt "#30006"
+msgid "Search Metadata (slowed the Addon)"
+msgstr "שימוש במטה-נתונים (מאט את ההרחבה)"
+
+msgctxt "#30007"
+msgid "Posters Size"
+msgstr "גודל פוסטרים"
+
+msgctxt "#30008"
+msgid "Fanarts Size"
+msgstr "גודל פאנארט"
+
+msgctxt "#30009"
+msgid "Use extendedinfo"
+msgstr "שימוש ב-ExtendedInfo"
+
+msgctxt "#30010"
+msgid "Color Text note"
+msgstr "צבע טקסט הערה"
+
+msgctxt "#30500"
+msgid "Select"
+msgstr "בחר"
+
+msgctxt "#30501"
+msgid "Name"
+msgstr "שם"
+
+msgctxt "#30021"
+msgid "General"
+msgstr "כללי"
+
+msgctxt "#30022"
+msgid "Plugins on/off (1/3)"
+msgstr "תוספים מאופשרים או מנותקים (1/3)"
+
+msgctxt "#30023"
+msgid "[COLOR teal]Plugins Preferences[/COLOR]"
+msgstr "[COLOR teal]הגדרת תוספים[/COLOR]"
+
+msgctxt "#30024"
+msgid "Host"
+msgstr "מארח"
+
+msgctxt "#30025"
+msgid "Home"
+msgstr "דף הבית"
+
+msgctxt "#30026"
+msgid "IPTV and TV Guid"
+msgstr "IPTV ולוח חשידורים"
+
+msgctxt "#30027"
+msgid "Waiting time for player (ms)"
+msgstr "זמן המתנה לנגן (מילי שניות)"
+
+msgctxt "#30028"
+msgid "PVR addon setting"
+msgstr "הגדרת הרחבת PVR"
+
+msgctxt "#30029"
+msgid "Play default"
+msgstr "ברירת המחדל לניגון"
+
+msgctxt "#30030"
+msgid "Play"
+msgstr "נגן"
+
+msgctxt "#30031"
+msgid "MÃ©tadata"
+msgstr "מידע-מטא"
+
+msgctxt "#30032"
+msgid "View"
+msgstr "תצוגה"
+
+msgctxt "#30033"
+msgid "Tool"
+msgstr "כלי"
+
+msgctxt "#30034"
+msgid "About"
+msgstr "אודות"
+
+msgctxt "#30035"
+msgid "Support Us"
+msgstr "תמוך בנו"
+
+msgctxt "#30036"
+msgid "Changelog"
+msgstr "יומן רישום שינויים"
+
+msgctxt "#30076"
+msgid "Search"
+msgstr "חיפוש"
+
+msgctxt "#30077"
+msgid "Search 1"
+msgstr "חיפוש 1"
+
+msgctxt "#30078"
+msgid "Custom search 1"
+msgstr "חיפוש מותאם אישית 1"
+
+msgctxt "#30079"
+msgid "Custom search 2"
+msgstr "חיפוש מותאם אישית 2"
+
+msgctxt "#30080"
+msgid "Custom search 3"
+msgstr "חיפוש מותאם אישית 3"
+
+msgctxt "#30081"
+msgid "Custom search 4"
+msgstr "חיפוש מותאם אישית 4"
+
+msgctxt "#30088"
+msgid "Visual search"
+msgstr "חיפוש חזותי"
+
+msgctxt "#30089"
+msgid "Search 2"
+msgstr "חיפוש 2"
+
+msgctxt "#30090"
+msgid "Search 3"
+msgstr "חיפוש 3"
+
+msgctxt "#30091"
+msgid "Search 4"
+msgstr "חיפוש 4"
+
+msgctxt "#30092"
+msgid "Multiple Choices"
+msgstr "בחירות מרובות"
+
+msgctxt "#30093"
+msgid "Select Search Engine"
+msgstr "בחר מנוע חיפוש"
+
+msgctxt "#30094"
+msgid "Select your Sources"
+msgstr "בחר את המקורות שלך"
+
+msgctxt "#30101"
+msgid "News"
+msgstr "חדשות"
+
+msgctxt "#30102"
+msgid "Most seeing"
+msgstr "ניצפו הכי הרבה"
+
+msgctxt "#30103"
+msgid "Most commented"
+msgstr "עם הכי הרבה תגובות"
+
+msgctxt "#30104"
+msgid "Top rated"
+msgstr "המדורגים ביותר"
+
+msgctxt "#30105"
+msgid "Genre"
+msgstr "סגנון"
+
+msgctxt "#30106"
+msgid "Years"
+msgstr "שנים"
+
+msgctxt "#30107"
+msgid "Vf"
+msgstr "Vf"
+
+msgctxt "#30108"
+msgid "Vostfr"
+msgstr "Vostfr"
+
+msgctxt "#30109"
+msgid "Children"
+msgstr "ילדים"
+
+msgctxt "#30112"
+msgid "Documentary"
+msgstr "סרט תיעודי"
+
+msgctxt "#30113"
+msgid "Sport"
+msgstr "ספורט"
+
+msgctxt "#30114"
+msgid "Web video"
+msgstr "סרטון מהרשת"
+
+msgctxt "#30115"
+msgid "Television / Radio"
+msgstr "טלוויזיה / רדיו"
+
+msgctxt "#30116"
+msgid "All the sources"
+msgstr "כל המקורות"
+
+msgctxt "#30117"
+msgid "Television replay"
+msgstr "שידור חוזר טלוויזיה"
+
+msgctxt "#30120"
+msgid "Movies"
+msgstr "סרטים"
+
+msgctxt "#30121"
+msgid "Tvshow"
+msgstr "סדרה"
+
+msgctxt "#30122"
+msgid "Animes"
+msgstr "אנימה"
+
+msgctxt "#30125"
+msgid "Research Update (source only)"
+msgstr "עדכון חיפוש מחדש (מקור בלבד)"
+
+msgctxt "#30126"
+msgid "Beta Tester (not recommended)"
+msgstr "בדיקת בטא (לא מומלץ)"
+
+msgctxt "#30127"
+msgid "Tool/About"
+msgstr "כלי/אודות"
+
+msgctxt "#30128"
+msgid "Clear Cache Addon"
+msgstr "ניקוי מטמון ההרחבה"
+
+msgctxt "#30129"
+msgid "Clear Cache Addon"
+msgstr "ניקוי מטמון ההרחבה"
+
+msgctxt "#30130"
+msgid "Lists"
+msgstr "רשימות"
+
+msgctxt "#30134"
+msgid "Movies VF"
+msgstr "סרטים VF"
+
+msgctxt "#30135"
+msgid "Movies VOSTFR"
+msgstr "סרטים VOSTFR"
+
+msgctxt "#30138"
+msgid "Sources"
+msgstr "מקורות"
+
+msgctxt "#30145"
+msgid "Download folder"
+msgstr "תיקיית הורדה"
+
+msgctxt "#30146"
+msgid "Show / Hide search settings"
+msgstr "הצג / הסתר הגדרות חיפוש"
+
+msgctxt "#30147"
+msgid "Plugins on/off (2/3)"
+msgstr "תוספים פועל/כבוי (2/3)"
+
+msgctxt "#30148"
+msgid "Plugins on/off (3/3)"
+msgstr "תוספים פועל/כבוי (3/3)"
+
+msgctxt "#30160"
+msgid "Quality HD"
+msgstr "איכות HD"
+
+msgctxt "#30201"
+msgid "Add to playlist"
+msgstr "הוסף לרשימת ניגון"
+
+msgctxt "#30202"
+msgid "Download"
+msgstr "הורדה"
+
+msgctxt "#30203"
+msgid "Webradio"
+msgstr "רדיו אינטרנט"
+
+msgctxt "#30204"
+msgid "No informations"
+msgstr "לא נמצא מידע"
+
+msgctxt "#30205"
+msgid "Connection Failed"
+msgstr "האימות נכשל"
+
+msgctxt "#30206"
+msgid "Mark view/Not view"
+msgstr "סמן תצוגה/לא תצוגה"
+
+msgctxt "#30207"
+msgid "Bookmarks"
+msgstr "סימניות"
+
+msgctxt "#30208"
+msgid "Information"
+msgstr "מידע"
+
+msgctxt "#30209"
+msgid "[COLOR red]Delete Bookmark[/COLOR]"
+msgstr "[COLOR red]מחק סימנייה[/COLOR]"
+
+msgctxt "#30210"
+msgid "Bookmark"
+msgstr "סימנייה"
+
+msgctxt "#30211"
+msgid "[COLOR red]Clear this category[/COLOR]"
+msgstr "[COLOR red]מחק את הקטגוריה הזו[/COLOR]"
+
+msgctxt "#30300"
+msgid "Library"
+msgstr "ספרייה"
+
+msgctxt "#30301"
+msgid "To configure in kodi if you want them to be imported"
+msgstr "להגדיר בקודי אם אתה רוצה שייובא"
+
+msgctxt "#30302"
+msgid "Auto update"
+msgstr "עדכן אוטומטית"
+
+msgctxt "#30303"
+msgid "Enable/Disable"
+msgstr "הפעל / השבת"
+
+msgctxt "#30304"
+msgid "Go to [COLOR teal]%s[/COLOR] Enter the code [COLOR teal]%s[/COLOR]"
+msgstr "עבור אל [COLOR teal]%s[/COLOR] הכנס את הקוד [COLOR teal]%s[/COLOR]"
+
+msgctxt "#30305"
+msgid "[COLOR khaki]Click here to login[/COLOR]"
+msgstr "[COLOR khaki]לחץ להתחברות[/COLOR]"
+
+msgctxt "#30306"
+msgid "[COLOR khaki]Hello, %s[/COLOR]"
+msgstr "[COLOR khaki]שלום, %s[/COLOR]"
+
+msgctxt "#30307"
+msgid "Movie (%s/%s) watch / Show watch (%s) / episode (%s/%s) watch"
+msgstr "סרט (%s/%s) נצפה / הצג נצפה (%s) / פרק (%s/%s) נצפה"
+
+msgctxt "#30308"
+msgid "History"
+msgstr "היסטוריה"
+
+msgctxt "#30309"
+msgid "Disconnection"
+msgstr "ניתוק"
+
+msgctxt "#30310"
+msgid "Collection"
+msgstr "אוספים"
+
+msgctxt "#30311"
+msgid "Watchlist"
+msgstr "רשימת צפייה"
+
+msgctxt "#30312"
+msgid "Watch"
+msgstr "שעון יד"
+
+msgctxt "#30313"
+msgid "Recommend"
+msgstr "מומלץ"
+
+msgctxt "#30314"
+msgid "BoxOffice"
+msgstr "קופות"
+
+msgctxt "#30315"
+msgid "Popular"
+msgstr "פופולרי"
+
+msgctxt "#30316"
+msgid "Most viewed this week"
+msgstr "הפופולרי ביותר השבוע"
+
+msgctxt "#30317"
+msgid "Most viewed of the month"
+msgstr "הנצפים ביותר של החודש"
+
+msgctxt "#30318"
+msgid "Watchlist (seasons)"
+msgstr "רשימת המעקב (עונות)"
+
+msgctxt "#30319"
+msgid "Watchlist (episodes)"
+msgstr "רשימת צפייה (פרקים)"
+
+msgctxt "#30320"
+msgid "You have successfully logged out"
+msgstr "התנתקת בהצלחה"
+
+msgctxt "#30321"
+msgid "Add collection"
+msgstr "הוספה לאוסף"
+
+msgctxt "#30322"
+msgid "Add watch history"
+msgstr "הוסף להיסטורית צפייה"
+
+msgctxt "#30323"
+msgid "Add watchlist"
+msgstr "הוספה לרשימת צפייה"
+
+msgctxt "#30330"
+msgid "Search"
+msgstr "חיפוש"
+
+msgctxt "#30331"
+msgid "Calendar"
+msgstr "לוח שנה"
+
+msgctxt "#30332"
+msgid "WebTv"
+msgstr "WebTv"
+
+msgctxt "#30400"
+msgid "Premium/Login"
+msgstr "פרימיום/התחברות"
+
+msgctxt "#30401"
+msgid "Username"
+msgstr "שם משתמש"
+
+msgctxt "#30402"
+msgid "Password"
+msgstr "סיסמה"
+
+msgctxt "#30403"
+msgid "Activate"
+msgstr "הפעל"
+
+msgctxt "#30404"
+msgid "View : Movies (recommended 50-51-500-501-508) "
+msgstr "צפייה : סרטים (מומלץ 50-51-500-501-508) "
+
+msgctxt "#30405"
+msgid "View: Tvshow (recommended 50-51-500-501-508) "
+msgstr "צפייה : סדרות (מומלץ 50-51-500-501-508) "
+
+msgctxt "#30406"
+msgid "View: Default (recommended 50-51-500) "
+msgstr "צפייה : ברירת מחדל (מומלץ 50-51-500) "
+
+msgctxt "#30407"
+msgid "Vue: Home (recommended 50-51-500) "
+msgstr "Vue: בית (מומלץ 50-51-500) "
+
+msgctxt "#30408"
+msgid "Enable customized view"
+msgstr "אפשר תצוגה מותאמת אישית"
+
+msgctxt "#30409"
+msgid "Close"
+msgstr "סגירה"
+
+msgctxt "#30410"
+msgid "Divers"
+msgstr "צוללים"
+
+msgctxt "#30411"
+msgid "Block sounds notifications"
+msgstr "חסום התראות צליל"
+
+msgctxt "#30412"
+msgid "[COLOR red]Delete entry[/COLOR]"
+msgstr "[COLOR red]מחק כניסה[/COLOR]"
+
+msgctxt "#30414"
+msgid "[COLOR gold]Full series search[/COLOR]"
+msgstr "[COLOR gold]חיפוש מלא של כל הסדרה[/COLOR]"
+
+msgctxt "#30415"
+msgid "[COLOR gold]Full season search[/COLOR]"
+msgstr "[COLOR gold]חיפוש מלא של כל העונה[/COLOR]"
+
+msgctxt "#30416"
+msgid "[COLOR gold]Search history[/COLOR]"
+msgstr "[COLOR gold]היסטוריית חיפוש [/COLOR]"
+
+msgctxt "#30417"
+msgid "[COLOR orange]Search on Alluc_ee[/COLOR]"
+msgstr "[COLOR orange]חיפוש ב-Alluc_ee[/COLOR]"
+
+msgctxt "#30418"
+msgid "[COLOR green]Update available[/COLOR]"
+msgstr "[COLOR green]עדכון דמין[/COLOR]"
+
+msgctxt "#30419"
+msgid "View: Visual search (recommended 500)"
+msgstr "צפייה: חיפוש ויזואלי (מומלץ 500)"
+
+msgctxt "#30420"
+msgid "Enable/Disable sources"
+msgstr "הפעל/בטל מקורות"
