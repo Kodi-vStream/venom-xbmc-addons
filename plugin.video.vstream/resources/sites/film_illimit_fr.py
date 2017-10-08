@@ -298,7 +298,6 @@ def serieHosters():
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    print aResult
 
     if (aResult[0] == True):
         i = 1
@@ -331,7 +330,6 @@ def ShowSpecialHosters():
     data = data.replace('&c=', '')
     pdata = 'data=' + urllib.quote_plus(data)
 
-    cConfig().log(sUrl)
     if 'fr-land.me' in sUrl:
         oRequest = cRequestHandler('http://fr-land.me/Htplugins/Loader.php')
         oRequest.setRequestType(1)
