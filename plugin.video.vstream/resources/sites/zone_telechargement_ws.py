@@ -582,7 +582,7 @@ def Display_protected_link():
                 return
 
     #Est ce un lien dl-protect ?
-    if 'dl-protecte' in sUrl or 'protect-lien' in sUrl:
+    if 'dl-protecte' in sUrl or 'protect-lien' in sUrl or 'protect-zt' in sUrl:
         sHtmlContent = DecryptDlProtecte(sUrl)
 
         if sHtmlContent:
@@ -670,7 +670,7 @@ def CutPremiumlinks(sHtmlContent):
         res = aResult[1][0]
 
     #si l'ordre a été chnage ou si il ya un probleme
-    if 'dl-protect.com' not in res:
+    if 'protect-zt' not in res:
         sPattern = '(?i) par .{1,2}pisode(.+?)$'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0]):
@@ -701,7 +701,7 @@ def DecryptDlProtecte(url):
     }
 
     #url2 = 'https://www.dl-protecte.org/php/Qaptcha.jquery.php'
-    url2 = 'https://www.protect-lien.com/php/Qaptcha.jquery.php'
+    url2 = 'https://www.protect-zt.com/php/Qaptcha.jquery.php'
 
     #Make random key
     s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN_-#@";
