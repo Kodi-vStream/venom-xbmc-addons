@@ -20,13 +20,99 @@
                 <effect type="fade" start="100" end="0" time="800" delay="400"/>
             </animation>
 
-            <control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-              <fadetime>200</fadetime>
-							<texture fallback="fanart.jpg">$INFO[Window(Home).Property(ListItem.backdrop_url)]</texture>
-              <aspectratio align="center" aligny="center" scalediffuse="false">scale</aspectratio>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+              	<fadetime>200</fadetime>
+				<texture fallback="fanart.jpg">$INFO[Window(Home).Property(ListItem.backdrop_url)]</texture>
+              	<aspectratio align="center" aligny="center" scalediffuse="false">scale</aspectratio>
+			</control>
+
+			<control type="group" id="5500">
+				<left>0</left>
+				<top>160</top>
+				<width>1950</width>
+				<height>300</height>
+				<align>left</align>
+
+				<!-- <animation type="Conditional" condition="true" reversible="true">-->
+				<animation type="conditional" condition="Control.HasFocus(5200)" reversible="false">
+					<effect type="slide" start="-400,0" end="0,0" time="800" tween="back" easing="out"/>
+					<effect type="fade" start="0" end="100" time="800" delay="100"/>
+				</animation>
+
+
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>1950</width>
+					<height>260</height>
+					<texture colordiffuse="BFFAFAFA">black-back.png</texture>
+				</control>
+
+				<control type="wraplist" id="5200">
+					<top>0</top>
+					<left>40</left>
+					<right>40</right>
+					<width>1200</width>
+					<height>700</height>
+					<onleft>5200</onleft>
+					<onright>5200</onright>
+					<onup>9000</onup>
+					<ondown>50</ondown>
+					<align>left</align>
+					<orientation>horizontal</orientation>
+
+
+					<itemlayout height="187" width="202">
+
+						<control type="image">
+							<left>0</left>
+							<top>5</top>
+							<width>187</width>
+							<height>250</height>
+							<texture fallback="actor.png">$INFO[ListItem.icon]</texture>
+							<aspectratio align="center" aligny="center">scale</aspectratio>
 						</control>
+
+					</itemlayout>
+
+					<focusedlayout height="187" width="202">
+
+						<control type="image">
+							<left>0</left>
+							<top>5</top>
+							<width>187</width>
+							<height>250</height>
+							<texture fallback="actor.png">$INFO[ListItem.icon]</texture>
+							<aspectratio align="center" aligny="center">scale</aspectratio>
+						</control>
+
+						<control type="image">
+							<left>0</left>
+							<top>215</top>
+							<width>187</width>
+							<height>40</height>
+							<texture colordiffuse="BFFAFAFA">black-back.png</texture>
+						</control>
+
+						<control type="label">
+							<description>title film</description>
+							<left>5</left>
+							<top>215</top>
+							<width>177</width>
+							<height>40</height>
+							<font>font12_title</font>
+							<align>center</align>
+							<aligny>center</aligny>
+							<selectedcolor>white</selectedcolor>
+							<scroll>true</scroll>
+							<!-- <label>$INFO[ListItem.Label]</label> -->
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+					</focusedlayout>
+				</control>
+			</control>
 
             <control type="image">
                 <posx>0</posx>
@@ -38,15 +124,15 @@
 			</control>
 
 
-            <control type="group">
-                <visible>Control.HasFocus(50)</visible>
+            <control type="group" id="5300">
+                <visible>Control.HasFocus(50)+!Control.IsVisible(5500)</visible>
 
                 <visible>!Container(50).OnNext+!Container(50).OnPrevious</visible>
-                    <left>40</left>
-					<top>100</top>
-					<width>240</width>
-					<height>300</height>
-                    <align>left</align>
+                <left>0</left>
+				<top>160</top>
+				<width>1950</width>
+				<height>300</height>
+                <align>left</align>
 
 
                 <!-- <animation type="Conditional" condition="true" reversible="true">-->
@@ -59,35 +145,75 @@
                 <control type="image">
                     <left>0</left>
                     <top>0</top>
-                    <width>240</width>
-                    <height>300</height>
+                    <width>1950</width>
+                    <height>260</height>
                     <texture colordiffuse="BFFAFAFA">black-back.png</texture>
                 </control>
 
                 <control type="image">
-                    <left>5</left>
+                    <left>40</left>
                     <top>5</top>
-                    <width>230</width>
-                    <height>230</height>
+					<width>187</width>
+					<height>250</height>
                     <texture fallback="actor.png">$INFO[Container(50).ListItem.Icon]</texture>
                     <aspectratio align="center" aligny="center">scale</aspectratio>
                 </control>
 
                 <control type="label">
                     <description>Role label2</description>
-                    <left>5</left>
-                    <top>240</top>
-                    <width>230</width>
-                    <height>60</height>
-                    <font>font13_title</font>
+                    <left>247</left>
+                    <top>10</top>
+                    <width>600</width>
+                    <height>30</height>
+                    <font>font30_title</font>
                     <scroll>true</scroll>
-                    <scrollsuffix>   -   </scrollsuffix>
-                    <align>center</align>
-                    <aligny>center</aligny>
-                    <selectedcolor>white</selectedcolor>
-                    <onclick>noop</onclick>
-                    <label>$INFO[Container(50).ListItem.Label][CR]$INFO[Container(50).ListItem.Label2, $LOCALIZE[20347] ,]</label>
+                    <align>left</align>
+                    <color>white</color>
+					<shadowcolor>black</shadowcolor>
+                    <label>$INFO[Container(50).ListItem.Label] $INFO[Container(50).ListItem.Label2, $LOCALIZE[20347] ,]</label>
                 </control>
+
+				<control type="label">
+					<description>birthday</description>
+					<left>247</left>
+					<top>40</top>
+					<width>600</width>
+					<height>20</height>
+					<font>font12</font>
+					<align>left</align>
+					<selectedcolor>white</selectedcolor>
+					<scroll>false</scroll>
+					<!-- <label>$INFO[ListItem.Label]</label> -->
+					<label>$INFO[Window(Home).Property(birthday),[B]Date de naissance[/B]: ]$INFO[Window(Home).Property(deathday), / Date de décès: ]</label>
+					<visible>!Control.HasFocus(51)</visible>
+				</control>
+				<control type="label">
+					<description>place_of_birth</description>
+					<left>247</left>
+					<top>60</top>
+					<width>600</width>
+					<height>20</height>
+					<font>font12</font>
+					<align>left</align>
+					<selectedcolor>white</selectedcolor>
+					<scroll>false</scroll>
+					<!-- <label>$INFO[ListItem.Label]</label> -->
+					<label>$INFO[Window(Home).Property(place_of_birth),[B]Lieu de naissance[/B]: ]</label>
+					<visible>!Control.HasFocus(51)</visible>
+				</control>
+				<control type="textbox">
+					<description>bio</description>
+                    <top>90</top>
+					<left>247</left>
+					<height>160</height>
+					<width>993</width>
+					<font>font13</font>
+					<align>justify</align>
+					<textcolor>white</textcolor>
+					<label>$INFO[Window(Home).Property(biography),[B]Biographie[/B]: ]</label>
+					<autoscroll time="3000" delay="6000" repeat="5000">!Control.HasFocus(61)</autoscroll>
+				</control>
+
 
             </control>
 
@@ -120,10 +246,10 @@
 					<height>20</height>
 					<font>font30_title</font>
 					<label>$INFO[Window(Home).Property(Listitem.Title)] ($INFO[Window(Home).Property(ListItem.Year)])</label>
+					<shadowcolor>black</shadowcolor>
 					<align>left</align>
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
 				</control>
                 <control type="label" id="1">
 					<description>header label</description>
@@ -159,7 +285,6 @@
 				<control type="group">
 					<visible>[!container.content(episodes) + !container.content(musicvideos)] + ![Control.HasFocus(12) | Control.HasFocus(15)]</visible>
 					<top>25</top>
-					<left>40</left>
 					<!--<control type="image">
 						<left>0</left>
 						<top>0</top>
@@ -172,7 +297,9 @@
 						<visible>!IsEmpty(Window(Home).Property(ListItem.cover_url))</visible>
 					</control>-->
 					<control type="list" id="49">
-						<width>1080</width>
+						<left>40</left>
+						<right>40</right>
+
 						<height>30</height>
 						<onleft>49</onleft>
 						<onright>49</onright>
@@ -182,9 +309,8 @@
 						<scrolltime>200</scrolltime>
                         <orientation>horizontal</orientation>
 
-						<itemlayout width="1080" height="30">
+						<itemlayout width="1900" height="30">
 							<control type="label">
-								<width>1080</width>
 								<height>30</height>
 								<font>font13</font>
 								<align>left</align>
@@ -195,9 +321,8 @@
                                 <scroll>true</scroll>
 							</control>
 						</itemlayout>
-						<focusedlayout width="1080" height="30">
+						<focusedlayout width="1900" height="30">
 							<control type="label">
-								<width>1080</width>
 								<height>30</height>
 								<font>font13</font>
 								<align>left</align>
@@ -228,7 +353,6 @@
                     <top>60</top>
 					<left>40</left>
 					<right>40</right>
-
 					<height>115</height>
 					<font>font13</font>
 					<align>justify</align>
@@ -259,10 +383,10 @@
 					<height>700</height>
 					<onleft>50</onleft>
 					<onright>50</onright>
-					<onup>9000</onup>
+					<onup>5200</onup>
 					<ondown>9000</ondown>
                     <align>left</align>
-                    <autoscroll time="4000" delay="4000" repeat="2000">!Control.HasFocus(50)</autoscroll>
+                    <!-- <autoscroll time="4000" delay="4000" repeat="2000">!Control.HasFocus(50)</autoscroll> -->
 					<orientation>horizontal</orientation>
 
 
@@ -346,6 +470,8 @@
 
 					</focusedlayout>
 				</control>
+
+
 				<control type="grouplist" id="9000">
 					<right>40</right>
 					<top>185</top>

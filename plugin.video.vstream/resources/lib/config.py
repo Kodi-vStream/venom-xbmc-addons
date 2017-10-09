@@ -4,6 +4,7 @@ import xbmc
 import xbmcplugin
 import xbmcgui
 import xbmcaddon
+import unicodedata
 
 DIALOG2 = None
 
@@ -303,6 +304,8 @@ class cConfig():
 
     def WindowsBoxes(self, sTitle, sFileName, num,year = ''):
 
+        API = self.getSetting('api_tmdb')
+
         #Presence de l'addon ExtendedInfo ?
         try:
             if (xbmcaddon.Addon('script.extendedinfo') and self.getSetting('extendedinfo-view') == 'true'):
@@ -363,12 +366,13 @@ class cConfig():
                 #par default le resumer#
                 self.getControl(50).setVisible(False)
                 self.getControl(50).reset()
+                self.getControl(5500).setVisible(False)
                 listitems = []
                 try:
-                    for a, r, i in meta['cast']:
-                        listitem = xbmcgui.ListItem(label = a, label2=r, iconImage=i)
+                    for sid, slabel, slabel2, sicon in meta['cast']:
+                        listitem = xbmcgui.ListItem(label = slabel, label2=slabel2, iconImage=sicon)
                     #listitem.setInfo('video', {'Title': 'test', 'RatingAndVotes':'6.8'})
-                    #listitem.setProperty('RatingAndVotes', '6.2')
+                        listitem.setProperty('id', str(sid))
                         listitems.append(listitem)
                     self.getControl(50).addItems(listitems)
                 except: pass
@@ -387,6 +391,68 @@ class cConfig():
                         xbmcgui.Window(10000).setProperty(property, str(meta[e]))
 
 
+            def credit(self, sid=""):
+                from resources.lib.tmdb import cTMDb
+                grab = cTMDb(api_key=API)
+                sUrl = 'person/' + str(sid) + '/movie_credits'
+                meta = grab.getUrl(sUrl)
+                self.getControl(5200).reset()
+                listitems = []
+
+                try:
+                    for i in meta['cast']:
+                        try:
+                            sTitle = unicodedata.normalize('NFKD', i['title']).encode('ascii','ignore')
+                        except: sTitle = "Aucune information"
+                        try:
+                            sThumbnail = 'https://image.tmdb.org/t/p/w396' + i['poster_path']
+                        except:
+                            sThumbnail = ''
+                        sId = i['id']
+
+                        listitem = xbmcgui.ListItem(label = sTitle, iconImage=sThumbnail)
+                        #listitem.setInfo('video', {'Title': 'test', 'RatingAndVotes':'6.8'})
+                        #listitem.setProperty('id', str(sId))
+                        listitems.append(listitem)
+                    self.getControl(5200).addItems(listitems)
+                except: pass
+                self.getControl(5500).setVisible(True)
+                self.setFocusId(5200)
+                #self.setFocus(self.getControl(5200))
+
+
+            def person(self, sid=""):
+                from resources.lib.tmdb import cTMDb
+                grab = cTMDb(api_key=API, lang='en')
+                sUrl = 'person/' + str(sid)
+                meta = grab.getUrl(sUrl)
+
+                listitems = []
+
+                try:
+                    try:
+                        sTitle = unicodedata.normalize('NFKD', meta['name']).encode('ascii','ignore')
+                    except: sTitle = "Aucune information"
+                    #xbmcgui.Window(10000).setProperty('person_name', sTitle)
+                    try:
+                        sThumbnail = 'https://image.tmdb.org/t/p/w396' + meta['profile_path']
+                    except:
+                        sThumbnail = ''
+                    sId = meta['id']
+
+
+                    bio = meta['biography'].replace('\n\n', '[CR]').replace('\n', '[CR]')
+
+                    #self.getControl(5300).setLabel('[COLOR gold]test[/COLOR]')
+                    #print meta
+
+                    xbmcgui.Window(10000).setProperty('biography', bio)
+                    xbmcgui.Window(10000).setProperty('birthday', meta['birthday'])
+                    xbmcgui.Window(10000).setProperty('place_of_birth', meta['place_of_birth'])
+                    xbmcgui.Window(10000).setProperty('deathday', meta['deathday'])
+
+                    #self.getControl(20).setVisible(True)
+                except: pass
 
 
                 #description
@@ -411,15 +477,41 @@ class cConfig():
                 elif controlId == 30:
                     self.close()
                     return
-                #self.close()
+                elif controlId == 50:
+                    #print self.getControl(50).ListItem.Property('id')
+                    item = self.getControl(50).getSelectedItem()
+                    sid = item.getProperty('id')
+                    self.credit(sid)
+                    #self.getControl(50).setVisible(True)
+                    return
+
+                #dans le futur permet de retourne le texte du film
+                # elif controlId == 5200:
+                #     item = self.getControl(5200).getSelectedItem()
+                #     sid = item.getLabel()
+                #     print sid
+                #     return
 
             def onFocus(self, controlId):
                 self.controlId = controlId
+                if controlId != 5200:
+                    #self.getControl(5500).reset()
+                    self.getControl(5500).setVisible(False)
+                if controlId == 50:
+                    item = self.getControl(50).getSelectedItem()
+                    sid = item.getProperty('id')
+                    self.person(sid)
 
             def _close_dialog( self ):
                 self.close()
 
             def onAction( self, action ):
+                if action.getId() in ( 104, 105, 1, 2):
+                    if self.controlId == 50:
+                        item = self.getControl(50).getSelectedItem()
+                        sid = item.getProperty('id')
+                        self.person(sid)
+
                 if action.getId() in ( 9, 10, 11, 30, 92, 216, 247, 257, 275, 61467, 61448, ):
                     self.close()
 
