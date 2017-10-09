@@ -22,8 +22,8 @@ BURL = URL_MAIN + '?op=my_files'
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
 headers = { 'User-Agent' : UA }
 
-URL_SEARCH = (URL_MAIN + '?op=my_files&per_page=1000&fld_id=0&key=', 'showMovies')
-FUNCTION_SEARCH = 'showMovies'
+URL_UPTOBOX_SEARCH = (URL_MAIN + '?op=my_files&per_page=1000&fld_id=0&key=', 'showMovies')
+
 
 def load(): 
     oGui = cGui()
@@ -70,7 +70,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
+        sUrl = URL_UPTOBOX_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
