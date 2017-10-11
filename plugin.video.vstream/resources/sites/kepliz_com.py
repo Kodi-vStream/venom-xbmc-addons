@@ -15,7 +15,7 @@ import unicodedata,htmlentitydefs
 SITE_IDENTIFIER = 'kepliz_com'
 SITE_NAME = 'Kepliz'
 SITE_DESC = 'Films en streaming'
-URL_HOST = 'http://fetayo.com/'
+URL_HOST = 'http://topulor.com/'
 #URL_HOST = 'http://www.ozporo.com/'
 URL_MAIN = 'URL_MAIN'
 
@@ -153,7 +153,7 @@ def showMovies(sSearch = ''):
                 break
 
             sTitle = aEntry[1]
-            sTitle = re.sub('<font color="#[0-9]{6}" *><i>HD<\/i><\/font>', '[HD]', sTitle)
+            sTitle = re.sub('<font color="#[0-9a-f]{6}" *><i>HD<\/i><\/font>', '[HD]', sTitle)
             sUrl2 = aEntry[0]
 
             #not found better way
@@ -340,6 +340,8 @@ def showHostersLink2():
                #'Accept-Encoding' : 'gzip, deflate',
                #'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                }
+               
+    #cConfig().log(sLink)
 
     req = urllib2.Request(sLink)
     response = urllib2.urlopen(req)
