@@ -229,8 +229,8 @@ msgid "All the sources"
 msgstr "Toutes les sources"
 
 msgctxt "#30117"
-msgid "Television replay"
-msgstr "Télévision replay"
+msgid "TV replay"
+msgstr "TV replay"
 
 msgctxt "#30120"
 msgid "Movies"

@@ -229,7 +229,7 @@ msgid "All the sources"
 msgstr ""
 
 msgctxt "#30117"
-msgid "Television replay"
+msgid "TV replay"
 msgstr ""
 
 msgctxt "#30120"
