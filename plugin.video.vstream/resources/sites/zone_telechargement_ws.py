@@ -210,6 +210,8 @@ def showMovies(sSearch = ''):
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             sTitle = str(aEntry[2])
             sUrl2 = aEntry[0]
 
