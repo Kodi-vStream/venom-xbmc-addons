@@ -31,6 +31,8 @@ class cPacker():
         #correction pour eviter bypass
         if (len(symtab) > count) and (count > 0):
             del symtab[count:]
+        if (len(symtab) < count) and (count > 0):
+            symtab.append('BUGGED')   
 
         if count != len(symtab):
             raise UnpackingError('Malformed p.a.c.k.e.r. symtab.')
