@@ -325,7 +325,7 @@ class cTMDb:
             meta['credits'] = eval(str(meta['credits']))
             licast = []
             for cast in meta['credits']['cast']:
-                licast.append((cast['id'], cast['name'], cast['character'], self.poster+str(cast['profile_path'])))
+                licast.append((cast['name'], cast['character'], self.poster+str(cast['profile_path']), str(cast['id'])))
                 #licast.append((cast['name'], cast['character'], self.poster+str(cast['profile_path'])))
             _meta['cast'] = licast
 

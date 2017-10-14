@@ -325,14 +325,14 @@ class cConfig():
             try:
                 from resources.lib.tmdb import cTMDb
                 grab = cTMDb(api_key=self.getSetting('api_tmdb'))
-                meta = grab.get_meta('movie',sFileName)
+                meta = grab.get_meta('movie',sFileName, '', xbmc.getInfoLabel('ListItem.Property(TmdbId)'))
             except:
                 pass
         elif num == "2":
             try:
                 from resources.lib.tmdb import cTMDb
                 grab = cTMDb(api_key=self.getSetting('api_tmdb'))
-                meta = grab.get_meta('tvshow',sFileName)
+                meta = grab.get_meta('tvshow',sFileName, '', xbmc.getInfoLabel('ListItem.Property(TmdbId)'))
             except:
                 pass
 
@@ -369,7 +369,7 @@ class cConfig():
                 self.getControl(5500).setVisible(False)
                 listitems = []
                 try:
-                    for sid, slabel, slabel2, sicon in meta['cast']:
+                    for slabel, slabel2, sicon, sid in meta['cast']:
                         listitem = xbmcgui.ListItem(label = slabel, label2=slabel2, iconImage=sicon)
                     #listitem.setInfo('video', {'Title': 'test', 'RatingAndVotes':'6.8'})
                         listitem.setProperty('id', str(sid))
