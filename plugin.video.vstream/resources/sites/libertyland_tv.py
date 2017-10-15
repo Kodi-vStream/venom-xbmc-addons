@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'libertyland_tv'
 SITE_NAME = 'Libertyland'
 SITE_DESC = 'Les films et séries récentes en streaming et en téléchargement'
 
-URL_MAIN = 'http://libertyland.co/'
+URL_MAIN = 'http://libertyvf.com/'
 
 URL_SEARCH = (URL_MAIN + 'v2/recherche/', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + 'v2/recherche/', 'showMovies')
@@ -395,11 +395,11 @@ def showHosters():
     if (oInputParameterHandler.exist('idMov')):
         idMov = oInputParameterHandler.getValue('idMov')
         pdata = 'id='+idHeb+'&id_movie='+idMov+'&type='+stype
-        pUrl = 'http://liencaptcha.com/getStreamingMovie.php'
+        pUrl = 'http://linkcaptcha.com/getStreamingMovie.php'
     else:
         #serie pas d'idmov
         pdata = 'id='+idHeb+'&type='+stype
-        pUrl= 'http://liencaptcha.com/getStreamingEpisode.php'
+        pUrl= 'http://linkcaptcha.com/getStreamingEpisode.php'
 
     oRequest = cRequestHandler(pUrl)
     oRequest.setRequestType(1)
