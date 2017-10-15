@@ -292,6 +292,8 @@ class cHosterGui:
             return self.getHoster('sendvid')
         if ('vidup' in sHostName):
             return self.getHoster('vidup')
+        if ('vidbom' in sHostName):
+            return self.getHoster('vidbom') 
         if ('vidbull' in sHostName):
             return self.getHoster('vidbull')
         if ('vidlox' in sHostName):
