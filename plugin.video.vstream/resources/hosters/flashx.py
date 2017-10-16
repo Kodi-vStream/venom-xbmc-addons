@@ -51,10 +51,11 @@ def UnlockUrl():
     'Referer':'https://www.flashx.tv/dl?playthis'
     }
     code = GetHtml('https://www.flashx.tv/js/code.js',headers9)
-    aResult = re.search("!= null\){\s*\$.get\('(.+?)', *{(.+?): *'(.+?)'}", code, re.DOTALL)
+    #cConfig().log(code)
+    aResult = re.search("!= null\){\s*\$.get\('(.+?)', *{(.+?): *'(.+?)' *, *(.+?): *'(.+?)'}", code, re.DOTALL)
     if aResult:
-        url = aResult.group(1)+ '?' + aResult.group(2) + '=' + aResult.group(3)
-        #xbmc.log(url)
+        url = aResult.group(1)+ '?' + aResult.group(2) + '=' + aResult.group(3) + '&' + aResult.group(3) + '=' + aResult.group(4)
+        #cConfig().log(url)
         GetHtml(url,headers9)
         return True
     return False

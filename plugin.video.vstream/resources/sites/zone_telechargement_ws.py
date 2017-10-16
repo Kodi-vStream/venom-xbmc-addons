@@ -28,7 +28,7 @@ SITE_IDENTIFIER = 'zone_telechargement_ws'
 SITE_NAME = '[COLOR violet]Zone-Telechargement.ws[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_MAIN = 'https://www.zone-telechargement.ws/'
+URL_MAIN = 'https://ww1.zone-telechargement.ws/'
 
 URL_SEARCH = (URL_MAIN, 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN, 'showMovies')
@@ -41,6 +41,7 @@ MOVIE_3D = (URL_MAIN + 'films-bluray-3d/', 'showMovies') # films en 3D
 MOVIE_HD = (URL_MAIN + 'films-bluray-hd/', 'showMovies') # films en HD
 MOVIE_HDLIGHT = (URL_MAIN + 'x265-x264-hdlight/', 'showMovies') # films en x265 et x264
 MOVIE_VOSTFR = (URL_MAIN + 'filmsenvostfr/', 'showMovies') # films VOSTFR
+MOVIE_4K = (URL_MAIN + 'film-ultra-hd-4k/', 'showMovies') # films "4k"
 
 MOVIE_ANIME = (URL_MAIN + 'dessins-animes/', 'showMovies') # dessins animes
 
@@ -83,6 +84,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HDLIGHT[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_HDLIGHT[1], 'Films (x265 & x264)', 'films_hd.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_4K[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_4K[1], 'Films 4k', 'films_hd.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANIME[0])
@@ -205,6 +210,8 @@ def showMovies(sSearch = ''):
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
             sTitle = str(aEntry[2])
             sUrl2 = aEntry[0]
 

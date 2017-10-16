@@ -96,6 +96,10 @@ class cLibrary:
 
             try:
                 #print folder
+                
+                if sTitleGlobal.endswith('FINAL'):
+                     sTitleGlobal = sTitleGlobal[:-5]
+                        
                 folder2 = folder + '/' + sTitleGlobal + '/'
                 
                 if not os.path.exists(folder2):

@@ -318,6 +318,10 @@ class cHosterGui:
             return self.getHoster('vidabc')
         if ('vshare' in sHostName):
             return self.getHoster('vshare')
+        if ('giga' in sHostName):
+            return self.getHoster('giga')
+        if ('vidbom' in sHostName):
+            return self.getHoster('vidbom') 
         #if ('cloudvid' in sHostName):
             #return self.getHoster('cloudvid')
 
@@ -355,7 +359,7 @@ class cHosterGui:
         sFileName = oInputParameterHandler.getValue('sFileName')
         sTitle = oInputParameterHandler.getValue('title')
         #sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-        
+
         if not sTitle:
             sTitle = sFileName
 

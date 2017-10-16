@@ -170,7 +170,7 @@
                     <align>left</align>
                     <color>white</color>
 					<shadowcolor>black</shadowcolor>
-                    <label>$INFO[Container(50).ListItem.Label] $INFO[Container(50).ListItem.Label2, $LOCALIZE[20347] ,]</label>
+                    <label>$INFO[Container(50).ListItem.Label]$INFO[Container(50).ListItem.Label2, $LOCALIZE[20347] ,]</label>
                 </control>
 
 				<control type="label">
@@ -299,7 +299,7 @@
 					<control type="list" id="49">
 						<left>40</left>
 						<right>40</right>
-
+						<width>1200</width>
 						<height>30</height>
 						<onleft>49</onleft>
 						<onright>49</onright>
@@ -309,7 +309,7 @@
 						<scrolltime>200</scrolltime>
                         <orientation>horizontal</orientation>
 
-						<itemlayout width="1900" height="30">
+						<itemlayout width="1200" height="30">
 							<control type="label">
 								<height>30</height>
 								<font>font13</font>
@@ -321,7 +321,7 @@
                                 <scroll>true</scroll>
 							</control>
 						</itemlayout>
-						<focusedlayout width="1900" height="30">
+						<focusedlayout width="1200" height="30">
 							<control type="label">
 								<height>30</height>
 								<font>font13</font>
@@ -353,6 +353,7 @@
                     <top>60</top>
 					<left>40</left>
 					<right>40</right>
+					<width>1200</width>
 					<height>115</height>
 					<font>font13</font>
 					<align>justify</align>
