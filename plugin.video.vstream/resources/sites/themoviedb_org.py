@@ -563,45 +563,46 @@ def showActors():
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-            for e in i['known_for']:
-                try:
-                    sTitle = unicodedata.normalize('NFKD', e['title']).encode('ascii','ignore')
-
-                except: sTitle = "Aucune information"
-                sId = e['id']
-                try:
-                    sFanart = FANART_URL+e['backdrop_path']
-                except:
-                    sFanart = ''
-
-                try:
-                    sThumbnail = POSTER_URL+e['poster_path']
-                except:
-                    sThumbnail = ''
-
-                #sTitle = sTitle.encode("utf-8")
-                oOutputParameterHandler.addParameter('siteUrl', 'none')
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-                oOutputParameterHandler.addParameter('sTmdbId', sId)
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oOutputParameterHandler.addParameter('type', 'film')
-                oOutputParameterHandler.addParameter('searchtext', showTitle(sTitle,  str('none')))
-
-                #oGui.addMovieDB('globalSearch', 'showHosters', sTitle, '', sThumbnail, sFanart, oOutputParameterHandler)
-
-                oGuiElement = cGuiElement()
-                oGuiElement.setTmdbId(sId)
-                oGuiElement.setSiteName('globalSearch')
-                oGuiElement.setFunction('showSearch')
-                oGuiElement.setTitle(sTitle)
-                oGuiElement.setFileName(sTitle)
-                oGuiElement.setIcon('actors.png')
-                oGuiElement.setMeta(0)
-                oGuiElement.setThumbnail(sThumbnail)
-                oGuiElement.setFanart(sFanart)
-                oGuiElement.setCat(1)
-
-                oGui.addFolder(oGuiElement, oOutputParameterHandler)
+            #afficher aussi les dernier film mais ça le fait au click
+            # for e in i['known_for']:
+            #     try:
+            #         sTitle = unicodedata.normalize('NFKD', e['title']).encode('ascii','ignore')
+            #
+            #     except: sTitle = "Aucune information"
+            #     sId = e['id']
+            #     try:
+            #         sFanart = FANART_URL+e['backdrop_path']
+            #     except:
+            #         sFanart = ''
+            #
+            #     try:
+            #         sThumbnail = POSTER_URL+e['poster_path']
+            #     except:
+            #         sThumbnail = ''
+            #
+            #     #sTitle = sTitle.encode("utf-8")
+            #     oOutputParameterHandler.addParameter('siteUrl', 'none')
+            #     oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
+            #     oOutputParameterHandler.addParameter('sTmdbId', sId)
+            #     oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+            #     oOutputParameterHandler.addParameter('type', 'film')
+            #     oOutputParameterHandler.addParameter('searchtext', showTitle(sTitle,  str('none')))
+            #
+            #     #oGui.addMovieDB('globalSearch', 'showHosters', sTitle, '', sThumbnail, sFanart, oOutputParameterHandler)
+            #
+            #     oGuiElement = cGuiElement()
+            #     oGuiElement.setTmdbId(sId)
+            #     oGuiElement.setSiteName('globalSearch')
+            #     oGuiElement.setFunction('showSearch')
+            #     oGuiElement.setTitle(sTitle)
+            #     oGuiElement.setFileName(sTitle)
+            #     oGuiElement.setIcon('actors.png')
+            #     oGuiElement.setMeta(0)
+            #     oGuiElement.setThumbnail(sThumbnail)
+            #     oGuiElement.setFanart(sFanart)
+            #     oGuiElement.setCat(1)
+            #
+            #     oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
 
 
@@ -636,11 +637,17 @@ def showFilmActor():
 
             except: sTitle = "Aucune information"
             sId = i['id']
+            sDesc = i['overview']
 
             try:
                 sThumbnail = POSTER_URL + i['poster_path']
             except:
                 sThumbnail = ''
+
+            try:
+                sFanart = FANART_URL + i['backdrop_path']
+            except :
+                sFanart = ''
 
             #sTitle = sTitle.encode("utf-8")
 
@@ -663,7 +670,9 @@ def showFilmActor():
             oGuiElement.setIcon('actors.png')
             oGuiElement.setMeta(1)
             oGuiElement.setThumbnail(sThumbnail)
+            oGuiElement.setFanart(sFanart)
             oGuiElement.setCat(1)
+            oGuiElement.setDescription(sDesc)
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 

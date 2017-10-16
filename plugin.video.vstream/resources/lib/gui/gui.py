@@ -310,7 +310,7 @@ class cGui():
         #oListItem.setThumbnailImage(oGuiElement.getThumbnail())
         #oListItem.setIconImage(oGuiElement.getIcon())
 
-        oListItem.setArt({'thumb': oGuiElement.getThumbnail(), 'icon': oGuiElement.getIcon(),'fanart': oGuiElement.getFanart() })
+        oListItem.setArt({'poster': oGuiElement.getThumbnail(), 'thumb': oGuiElement.getThumbnail(), 'icon': oGuiElement.getIcon(),'fanart': oGuiElement.getFanart() })
 
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey in aProperties.keys():
