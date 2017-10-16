@@ -452,6 +452,9 @@ class cGuiElement:
         elif sIcon == 'library.png':
             self.__sFanart = cConfig().getSetting('images_librarys')
 
+        elif sIcon == 'trakt.png':
+            self.__sFanart = cConfig().getSetting('images_trakt')
+
         elif sIcon == 'actor.png':
             self.__sFanart = self.__sFanart
 

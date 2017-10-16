@@ -53,6 +53,7 @@
         <setting visible="false" label="Images update" type="image" id="images_updates" default="special://home/addons/plugin.video.vstream/resources/art/update_fanart.jpg"/>
         <setting visible="false" label="Images download" type="image" id="images_downloads" default="special://home/addons/plugin.video.vstream/resources/art/download_fanart.jpg"/>
         <setting visible="false" label="Images library" type="image" id="images_librarys" default="special://home/addons/plugin.video.vstream/resources/art/library_fanart.jpg"/>
+        <setting visible="false" label="Trakt" type="image" id="images_trakt" default="special://home/addons/plugin.video.vstream/resources/art/trakt_fanart.jpg"/>
 
     </category>
 
