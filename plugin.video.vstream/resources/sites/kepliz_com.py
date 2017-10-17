@@ -208,6 +208,7 @@ def showHosters():
     #Recuperation info film, com et image
     sPattern = '<div class="article-content"><p style="text-align: center;"><img src="(.+?)" border.+?<p style="text-align: left;">([^<>]+?)<\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         sThumb = aResult[1][0][0]
         sDesc = cUtil().unescape(aResult[1][0][1])
@@ -245,6 +246,7 @@ def showHosters():
 
     #Format rare
     if not sLink:
+
         sPattern = '<iframe src= *(?:"|)([^<>"]+\/player\.php\?id=.+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0]):
@@ -262,6 +264,26 @@ def showHosters():
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink2', sDisplayTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
+
+    #news Format
+    if not sLink:
+        sPattern = '<iframe src="(.+?)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0]):
+
+            sMovieTitle = sMovieTitle.replace(' [HD]', '')
+            sLink = aResult[1][0]
+            if sLink.startswith('/'):
+                sLink = URL_HOST[:-1] + sLink
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sLink', sLink)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+
+            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+
+            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink3', sDisplayTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -340,7 +362,7 @@ def showHostersLink2():
                #'Accept-Encoding' : 'gzip, deflate',
                #'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                }
-               
+
     #cConfig().log(sLink)
 
     req = urllib2.Request(sLink)
@@ -350,6 +372,79 @@ def showHostersLink2():
 
     oParser = cParser()
     sPattern = '"file":"(.+?)","type":"mp4","label":"(.+?)"'
+    aResult = oParser.parse(data, sPattern)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
+            sLink2 = aEntry[0].replace('\/','/')
+            sQual = aEntry[1]
+            sTitle = sMovieTitle.replace(' [HD]','')
+            sTitle = '[' + sQual + '] ' + sTitle
+
+            #decodage des liens
+            req = urllib2.Request(sLink2,None,headers)
+
+            try:
+                response = urllib2.urlopen(req)
+                sLink2 = response.geturl()
+                response.close()
+
+                sHosterUrl = str(sLink2)
+                oHoster = cHosterGui().getHoster('lien_direct')
+                #data = response.read()
+
+            except urllib2.URLError, e:
+                sLink2 = e.geturl()
+                sHosterUrl = str(sLink2)
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+
+            if (oHoster != False):
+                sDisplayTitle = cUtil().DecoTitle(sTitle)
+
+                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setFileName(sTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+            cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()
+
+
+
+def showHostersLink3():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sLink = oInputParameterHandler.getValue('sLink')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+
+    UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'
+    headers = {'User-Agent': UA ,
+               #'Host' : 'grudal.com',
+               'Referer': sLink,
+               'Accept': 'video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5',
+               'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+               'Range' : 'bytes=0-'
+               #'Accept-Encoding' : 'gzip, deflate',
+               #'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+               }
+
+    #cConfig().log(sLink)
+
+    req = urllib2.Request(sLink)
+    response = urllib2.urlopen(req)
+    data = response.read()
+    response.close()
+
+    oParser = cParser()
+    sPattern = 'file:"(.+?)".+?label:"(.+?)"'
     aResult = oParser.parse(data, sPattern)
 
     if (aResult[0] == True):
