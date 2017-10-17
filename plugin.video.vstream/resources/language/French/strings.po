@@ -313,8 +313,8 @@ msgid "Webradio"
 msgstr "Radio du web"
 
 msgctxt "#30204"
-msgid "No informations"
-msgstr "Aucune information"
+msgid "[COLOR=red]No informations[/COLOR]"
+msgstr "[COLOR=red]Aucune information[/COLOR]"
 
 msgctxt "#30205"
 msgid "Connection Failed"
@@ -351,6 +351,35 @@ msgstr "Bande annonce"
 msgctxt "#30213"
 msgid "Search Similar"
 msgstr "Recherche Similaire"
+
+msgctxt "#30214"
+msgid "Trakt"
+msgstr "Trakt"
+
+msgctxt "#30215"
+msgid "Start download"
+msgstr "Demarrer ce telechargement"
+
+msgctxt "#30216"
+msgid "Remove from list"
+msgstr "Supprimer de la liste"
+
+msgctxt "#30217"
+msgid "[COLOR red]Delete definitely[/COLOR]"
+msgstr "[COLOR red]Supprimer definitivement[/COLOR]"
+
+msgctxt "#30218"
+msgid "Stop download"
+msgstr "Arreter le telechargement"
+
+msgctxt "#30219"
+msgid "Read"
+msgstr "Lire"
+
+msgctxt "#30220"
+msgid "Reset"
+msgstr "réinitialiser"
+
 
 msgctxt "#30300"
 msgid "Library"

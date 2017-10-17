@@ -313,7 +313,7 @@ msgid "Webradio"
 msgstr ""
 
 msgctxt "#30204"
-msgid "No informations"
+msgid "[COLOR red]No informations[/COLOR]"
 msgstr ""
 
 msgctxt "#30205"
@@ -351,6 +351,35 @@ msgstr ""
 msgctxt "#30213"
 msgid "Search Similar"
 msgstr ""
+
+msgctxt "#30214"
+msgid "Trakt"
+msgstr ""
+
+msgctxt "#30215"
+msgid "Start download"
+msgstr ""
+
+msgctxt "#30216"
+msgid "Remove from list"
+msgstr ""
+
+msgctxt "#30217"
+msgid "[COLOR red]Delete definitely[/COLOR]"
+msgstr ""
+
+msgctxt "#30218"
+msgid "Stop download"
+msgstr ""
+
+msgctxt "#30219"
+msgid "Read"
+msgstr ""
+
+msgctxt "#30220"
+msgid "Reset"
+msgstr ""
+
 
 msgctxt "#30300"
 msgid "Library"
