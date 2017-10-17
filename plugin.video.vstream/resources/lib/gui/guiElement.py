@@ -655,6 +655,7 @@ class cGuiElement:
                 # return
         # else:
             # return
+
         del meta['playcount']
         del meta['trailer']
 

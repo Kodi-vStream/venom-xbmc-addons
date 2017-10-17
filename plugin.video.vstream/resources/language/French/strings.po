@@ -65,8 +65,8 @@ msgid "Plugins on/off (1/3)"
 msgstr "Plugins on/off (1/3)"
 
 msgctxt "#30023"
-msgid "[COLOR teal]Plugins Preferences[/COLOR]"
-msgstr "[COLOR teal]Plugins Préférences[/COLOR]"
+msgid "Plugins Preferences"
+msgstr "Plugins Préférences"
 
 msgctxt "#30024"
 msgid "Host"
@@ -343,6 +343,14 @@ msgstr "Marque-page"
 msgctxt "#30211"
 msgid "[COLOR red]Clear this category[/COLOR]"
 msgstr "[COLOR red]Vider cette catégorie[/COLOR]"
+
+msgctxt "#30212"
+msgid "Trailer"
+msgstr "Bande annonce"
+
+msgctxt "#30213"
+msgid "Search Similar"
+msgstr "Recherche Similaire"
 
 msgctxt "#30300"
 msgid "Library"
