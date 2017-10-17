@@ -225,17 +225,17 @@ def showMovies(sSearch = ''):
             else : sFanart = ''
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+            oOutputParameterHandler.addParameter('siteUrl', 'http://tmdb/%s' % sId)
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oOutputParameterHandler.addParameter('sTmdbId', i['id'])
+            oOutputParameterHandler.addParameter('sTmdbId', sId)
             oOutputParameterHandler.addParameter('type', 'film')
             oOutputParameterHandler.addParameter('searchtext', showTitle(sTitle,  str('none')))
 
             #oGui.addMovieDB('globalSearch', 'showHosters', sTitle, 'films.png', sThumbnail, sFanart, oOutputParameterHandler)
             cGui.CONTENT = "movies"
             oGuiElement = cGuiElement()
-            oGuiElement.setTmdbId(i['id'])
+            oGuiElement.setTmdbId(sId)
             oGuiElement.setSiteName('globalSearch')
             oGuiElement.setFunction('showSearch')
             oGuiElement.setTitle(sTitle)
@@ -309,14 +309,14 @@ def showSeries(sSearch=''):
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oOutputParameterHandler.addParameter('sId', str(sId))
             oOutputParameterHandler.addParameter('sFanart', str(sFanart))
-            oOutputParameterHandler.addParameter('sTmdbId', i['id'])
+            oOutputParameterHandler.addParameter('sTmdbId', sId)
             oOutputParameterHandler.addParameter('searchtext', sTitle)
 
             #oGui.addTVDB(SITE_IDENTIFIER, 'showSeriesSaison', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
 
             cGui.CONTENT = "tvshows"
             oGuiElement = cGuiElement()
-            oGuiElement.setTmdbId(i['id'])
+            oGuiElement.setTmdbId(sId)
             oGuiElement.setSiteName(SITE_IDENTIFIER) # a activer pour  saisons
             #oGuiElement.setSiteName('globalSearch') # a desactiver pour saison
             oGuiElement.setFunction('showSeriesSaison')
@@ -632,27 +632,29 @@ def showFilmActor():
     if (total > 0):
         for i in result['cast']:
 
+
+            sId, sTitle, sThumbnail, sFanart, sDesc = i['id'], i['title'], i['poster_path'], i['backdrop_path'], i['overview']
+
+
             try:
-                sTitle = unicodedata.normalize('NFKD', i['title']).encode('ascii','ignore')
+                sTitle = unicodedata.normalize('NFKD', sTitle).encode('ascii','ignore')
 
             except: sTitle = "Aucune information"
-            sId = i['id']
-            sDesc = i['overview']
 
             try:
-                sThumbnail = POSTER_URL + i['poster_path']
+                sThumbnail = POSTER_URL + sThumbnail
             except:
                 sThumbnail = ''
 
             try:
-                sFanart = FANART_URL + i['backdrop_path']
+                sFanart = FANART_URL + sFanart
             except :
                 sFanart = ''
 
             #sTitle = sTitle.encode("utf-8")
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'none')
+            oOutputParameterHandler.addParameter('siteUrl', 'http://tmdb/%s' % sId)
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sTmdbId', sId)
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
@@ -660,7 +662,7 @@ def showFilmActor():
             oOutputParameterHandler.addParameter('searchtext', showTitle(sTitle,  str('none')))
 
             #oGui.addMovieDB('globalSearch', 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
-
+            cGui.CONTENT = "movies"
             oGuiElement = cGuiElement()
             oGuiElement.setTmdbId(sId)
             oGuiElement.setSiteName('globalSearch')
@@ -727,19 +729,19 @@ def showLists():
             sDisplayTitle = "%s (%s)" % (sTitle, sVote)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'none')
+            oOutputParameterHandler.addParameter('siteUrl', 'http://tmdb/%s' % sId)
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oOutputParameterHandler.addParameter('sId', str(sId))
             oOutputParameterHandler.addParameter('sFanart', str(sFanart))
-            oOutputParameterHandler.addParameter('sTmdbId', i['id'])
+            oOutputParameterHandler.addParameter('sTmdbId', sId)
             oOutputParameterHandler.addParameter('searchtext', sTitle)
 
             #oGui.addTVDB(SITE_IDENTIFIER, 'showSeriesSaison', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
 
             cGui.CONTENT = "movies"
             oGuiElement = cGuiElement()
-            oGuiElement.setTmdbId(i['id'])
+            oGuiElement.setTmdbId(sId)
             oGuiElement.setSiteName('globalSearch')
             oGuiElement.setFunction('showSearch')
             oGuiElement.setTitle(sDisplayTitle)
