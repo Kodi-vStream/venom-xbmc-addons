@@ -150,6 +150,8 @@ class cUtil:
 
         #vire tag
         name = re.sub('[\(\[].+?[\)\]]','', name)
+        #les apostrohes remplacer par des espaces
+        name = name.replace("'", " ")
         #vire caractere special
         name = re.sub("[^a-zA-Z0-9 ]", "",name)
         #tout en minuscule

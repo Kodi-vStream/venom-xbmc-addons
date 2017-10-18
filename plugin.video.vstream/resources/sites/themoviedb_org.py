@@ -230,7 +230,8 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oOutputParameterHandler.addParameter('sTmdbId', sId)
             oOutputParameterHandler.addParameter('type', 'film')
-            oOutputParameterHandler.addParameter('searchtext', showTitle(sTitle,  str('none')))
+            #oOutputParameterHandler.addParameter('searchtext', showTitle(sTitle,  str('none')))
+            oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
 
             #oGui.addMovieDB('globalSearch', 'showHosters', sTitle, 'films.png', sThumbnail, sFanart, oOutputParameterHandler)
             cGui.CONTENT = "movies"
@@ -310,7 +311,9 @@ def showSeries(sSearch=''):
             oOutputParameterHandler.addParameter('sId', str(sId))
             oOutputParameterHandler.addParameter('sFanart', str(sFanart))
             oOutputParameterHandler.addParameter('sTmdbId', sId)
-            oOutputParameterHandler.addParameter('searchtext', sTitle)
+            #oOutputParameterHandler.addParameter('searchtext', sTitle)
+            oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
+
 
             #oGui.addTVDB(SITE_IDENTIFIER, 'showSeriesSaison', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
 
@@ -365,7 +368,8 @@ def showSeriesSaison():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sMovieTitle)
     #oOutputParameterHandler.addParameter('type', 'serie')
-    oOutputParameterHandler.addParameter('searchtext', sMovieTitle)
+    #oOutputParameterHandler.addParameter('searchtext', sMovieTitle)
+    oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sMovieTitle))
 
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName('globalSearch')
@@ -451,7 +455,9 @@ def showSeriesEpisode():
     oOutputParameterHandler.addParameter('siteUrl', sMovieTitle)
     #oOutputParameterHandler.addParameter('type', 'serie')
     search = '%s S%02d' % (sMovieTitle, int(sSeason))
-    oOutputParameterHandler.addParameter('searchtext', search)
+    #oOutputParameterHandler.addParameter('searchtext', search)
+    oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(search))
+
 
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName('globalSearch')
@@ -494,7 +500,8 @@ def showSeriesEpisode():
             oOutputParameterHandler.addParameter('sSeason', sSeason)
             oOutputParameterHandler.addParameter('sEpisode', str(sEpNumber))
             oOutputParameterHandler.addParameter('type', 'serie')
-            oOutputParameterHandler.addParameter('searchtext', showTitle(sMovieTitle,  sMovieTitle + '|' + sExtraTitle))
+            #oOutputParameterHandler.addParameter('searchtext', showTitle(sMovieTitle,  sMovieTitle + '|' + sExtraTitle))
+            oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sMovieTitle))
 
             #oGui.addTVDB('globalSearch', 'showHosters', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
 
@@ -659,7 +666,8 @@ def showFilmActor():
             oOutputParameterHandler.addParameter('sTmdbId', sId)
             oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
             oOutputParameterHandler.addParameter('type', 'film')
-            oOutputParameterHandler.addParameter('searchtext', showTitle(sTitle,  str('none')))
+            #oOutputParameterHandler.addParameter('searchtext', showTitle(sTitle,  str('none')))
+            oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
 
             #oGui.addMovieDB('globalSearch', 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
             cGui.CONTENT = "movies"
@@ -735,7 +743,8 @@ def showLists():
             oOutputParameterHandler.addParameter('sId', str(sId))
             oOutputParameterHandler.addParameter('sFanart', str(sFanart))
             oOutputParameterHandler.addParameter('sTmdbId', sId)
-            oOutputParameterHandler.addParameter('searchtext', sTitle)
+            #oOutputParameterHandler.addParameter('searchtext', sTitle)
+            oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
 
             #oGui.addTVDB(SITE_IDENTIFIER, 'showSeriesSaison', sTitle, 'series.png', sThumbnail, sFanart, oOutputParameterHandler)
 
