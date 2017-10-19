@@ -9,6 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.parser import cParser
+from resources.lib import util
 
 import xbmc,sys
 import xbmcgui
@@ -183,7 +184,7 @@ class cGui():
         return self.addText(sId)
 
 
-    def addText(self, sId, sLabel='[COLOR= red]'+cConfig().getlanguage(30204)+'[/COLOR]', sIcon='none.png'):
+    def addText(self, sId, sLabel=util.VSlang(30204), sIcon='none.png'):
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction('DoNothing')
@@ -280,20 +281,20 @@ class cGui():
         if (oGuiElement.getMeta() > 0):
             if cGui.CONTENT == "movies":
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-                #self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuba(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
 
 
             elif cGui.CONTENT == "tvshows":
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-                #self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuba(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
 
@@ -310,7 +311,7 @@ class cGui():
         #oListItem.setThumbnailImage(oGuiElement.getThumbnail())
         #oListItem.setIconImage(oGuiElement.getIcon())
 
-        oListItem.setArt({'thumb': oGuiElement.getThumbnail(), 'icon': oGuiElement.getIcon(),'fanart': oGuiElement.getFanart() })
+        oListItem.setArt({'poster': oGuiElement.getThumbnail(), 'thumb': oGuiElement.getThumbnail(), 'icon': oGuiElement.getIcon(),'fanart': oGuiElement.getFanart() })
 
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey in aProperties.keys():
@@ -346,7 +347,7 @@ class cGui():
 
     #Marquer vu/Non vu
     def createContexMenuWatch(self, oGuiElement, oOutputParameterHandler= ''):
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'setWatched', cConfig().getlanguage(30206))
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'setWatched', util.VSlang(30206))
 
     def createContexMenuPageSelect(self, oGuiElement, oOutputParameterHandler):
         #sSiteUrl = oGuiElement.getSiteName()
@@ -381,7 +382,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
         oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
 
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','setFavorite', cConfig().getlanguage(30207))
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','setFavorite', util.VSlang(30207))
 
     def createContexMenuTrakt(self, oGuiElement, oOutputParameterHandler= ''):
         #pas de menu si pas de meta.
@@ -394,23 +395,23 @@ class cGui():
 
         sType = cGui.CONTENT.replace('tvshows', 'shows')
         oOutputParameterHandler.addParameter('sType', sType)
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cTrakt','cTrakt','getAction','Trakt')
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cTrakt','cTrakt','getAction', util.VSlang(30214))
 
     def createContexMenuDownload(self, oGuiElement, oOutputParameterHandler= '', status = '0'):
 
         if status == '0':
-            self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','StartDownloadOneFile','Demarrer ce telechargement')
+            self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','StartDownloadOneFile',util.VSlang(30215))
 
         if status == '0' or status == '2':
-            self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','delDownload','Supprimer de la liste')
-            self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','DelFile','[COLOR=red]Supprimer definitivement[/COLOR]')
+            self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','delDownload',util.VSlang(30216))
+            self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','DelFile',util.VSlang(30217))
 
         if status == '1':
-            self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','StopDownloadList','Arreter le telechargement')
+            self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','StopDownloadList',util.VSlang(30218))
 
         if status == '2':
-            self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','ReadDownload','Lire')
-            self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','ResetDownload','Reset')
+            self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','ReadDownload',util.VSlang(30219))
+            self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cDownload','cDownload','ResetDownload',util.VSlang(30220))
 
 
     #Information
@@ -422,7 +423,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
 
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewinfo',cConfig().getlanguage(30208))
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewinfo',util.VSlang(30208))
 
     def createContexMenuba(self, oGuiElement, oOutputParameterHandler= ''):
 
@@ -430,7 +431,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
 
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewBA','[COLOR azure]Bande annonce[/COLOR]')
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewBA', util.VSlang(30212))
 
 
     def createContexMenuSimil(self, oGuiElement, oOutputParameterHandler= ''):
@@ -438,7 +439,7 @@ class cGui():
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
 
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewsimil','[COLOR azure]Recherche Similaire[/COLOR]')
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewsimil', util.VSlang(30213))
 
     def CreateSimpleMenu(self,oGuiElement,oOutputParameterHandler,file,name,function,title):
         oContext = cContextElement()
@@ -452,10 +453,10 @@ class cGui():
         oGuiElement.addContextItem(oContext)
 
     def createContexMenuDelFav(self, oGuiElement, oOutputParameterHandler= ''):
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','delFavouritesMenu','[COLOR red]'+cConfig().getlanguage(30209)+'[/COLOR]')
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','delFavouritesMenu',util.VSlang(30209))
 
     def createContexMenuSettings(self, oGuiElement, oOutputParameterHandler= ''):
-        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'globalParametre','globalParametre','opensetting',cConfig().getlanguage(30023))
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'globalParametre','globalParametre','opensetting',util.VSlang(30023))
 
 
     def __createContextMenu(self, oGuiElement, oListItem):

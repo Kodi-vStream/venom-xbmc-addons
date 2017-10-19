@@ -589,7 +589,7 @@ def Display_protected_link():
                 return
 
     #Est ce un lien dl-protect ?
-    if 'dl-protecte' in sUrl or 'protect-lien' in sUrl or 'protect-zt' in sUrl:
+    if 'dl-protecte' in sUrl or 'protect-lien' in sUrl or 'protect-zt' in sUrl or 'protecte-link' in sUrl:
         sHtmlContent = DecryptDlProtecte(sUrl)
 
         if sHtmlContent:
@@ -708,7 +708,10 @@ def DecryptDlProtecte(url):
     }
 
     #url2 = 'https://www.dl-protecte.org/php/Qaptcha.jquery.php'
-    url2 = 'https://www.protect-zt.com/php/Qaptcha.jquery.php'
+    #url2 = 'https://www.protect-zt.com/php/Qaptcha.jquery.php'
+    url2 = 'https://' + url.split('/')[2] + '/php/Qaptcha.jquery.php'
+    
+    #cConfig().log(url2)
 
     #Make random key
     s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN_-#@";

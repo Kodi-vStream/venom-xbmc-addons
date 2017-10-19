@@ -122,6 +122,7 @@ class cTrakt:
         #self.getToken()
         oGui = cGui()
 
+
         if cConfig().getSetting("bstoken") == '':
             xbmc.log('er')
             oOutputParameterHandler = cOutputParameterHandler()
@@ -134,8 +135,11 @@ class cTrakt:
             #post = {'client_id': API_KEY, 'client_secret': API_SECRET, 'code': result['device_code']}
             #post = json.dumps(post)
 
-            req = urllib2.Request('https://api.trakt.tv/users/me', None,headers)
-            response = urllib2.urlopen(req)
+            try:
+                req = urllib2.Request('https://api.trakt.tv/users/me', None,headers)
+                response = urllib2.urlopen(req)
+            except:
+                return self.getToken()
             sHtmlContent = response.read()
             result = json.loads(sHtmlContent)
             response.close()

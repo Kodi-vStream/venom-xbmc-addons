@@ -483,6 +483,21 @@ class cConfig():
                     sid = item.getProperty('id')
                     self.credit(sid)
                     #self.getControl(50).setVisible(True)
+                elif controlId == 5200:
+                #click sur un film acteur
+                    import sys
+                    from resources.lib.util import cUtil
+                    item = self.getControl(5200).getSelectedItem()
+                    sTitle = item.getLabel()
+
+                    try:
+                        sTitle = sTitle.encode("utf-8")
+                        sTitle = cUtil().CleanName(sTitle)
+                    except: return
+
+                    sTest = '%s?site=globalSearch&searchtext=%s' % (sys.argv[0], sTitle)
+                    xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest )
+                    self.close()
                     return
 
                 #dans le futur permet de retourne le texte du film

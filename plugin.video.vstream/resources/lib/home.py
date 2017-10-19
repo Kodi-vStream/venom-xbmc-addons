@@ -9,6 +9,8 @@ from resources.lib.handler.siteHandler import cSiteHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.db import cDb
+from resources.lib import util
+
 import os
 import urllib
 import xbmc, xbmcgui
@@ -31,11 +33,11 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'showSearchText', oConfig.getlanguage(30076), 'search.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showSearchText', util.VSlang(30076), 'search.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('themoviedb_org', 'load', oConfig.getlanguage(30088), 'searchtmdb.png', oOutputParameterHandler)
+        oGui.addDir('themoviedb_org', 'load', util.VSlang(30088), 'searchtmdb.png', oOutputParameterHandler)
 
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -43,62 +45,62 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('freebox', 'load', oConfig.getlanguage(30115), 'tv.png', oOutputParameterHandler)
+        oGui.addDir('freebox', 'load', util.VSlang(30115), 'tv.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'showReplay', oConfig.getlanguage(30117), 'replay.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showReplay', util.VSlang(30117), 'replay.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', oConfig.getlanguage(30120), 'films.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', util.VSlang(30120), 'films.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'showSeries', oConfig.getlanguage(30121), 'series.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showSeries', util.VSlang(30121), 'series.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'showAnimes', oConfig.getlanguage(30122), 'animes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showAnimes', util.VSlang(30122), 'animes.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'showDocs', oConfig.getlanguage(30112), 'doc.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showDocs', util.VSlang(30112), 'doc.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'SPORT_SPORTS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', oConfig.getlanguage(30113), 'sport.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', util.VSlang(30113), 'sport.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir(SITE_IDENTIFIER, 'showNets', oConfig.getlanguage(30114), 'buzz.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showNets', util.VSlang(30114), 'buzz.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('cTrakt', 'getLoad', 'Trakt (bêta)', 'trakt.png', oOutputParameterHandler)
+        oGui.addDir('cTrakt', 'getLoad', util.VSlang(30214), 'trakt.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('cDownload', 'getDownload', oConfig.getlanguage(30202), 'download.png', oOutputParameterHandler)
+        oGui.addDir('cDownload', 'getDownload', util.VSlang(30202), 'download.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('cLibrary', 'getLibrary', oConfig.getlanguage(30300), 'library.png', oOutputParameterHandler)
+        oGui.addDir('cLibrary', 'getLibrary', util.VSlang(30300), 'library.png', oOutputParameterHandler)
 
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('cFav', 'getFavourites', oConfig.getlanguage(30210), 'mark.png', oOutputParameterHandler)
+        oGui.addDir('cFav', 'getFavourites', util.VSlang(30210), 'mark.png', oOutputParameterHandler)
 
         if (oConfig.getSetting("history-view") == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir('cHome', 'showHistory', oConfig.getlanguage(30308), 'annees.png', oOutputParameterHandler)
+            oGui.addDir('cHome', 'showHistory', util.VSlang(30308), 'annees.png', oOutputParameterHandler)
 
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('globalSources', 'showSources', oConfig.getlanguage(30116), 'host.png', oOutputParameterHandler)
+        oGui.addDir('globalSources', 'showSources', util.VSlang(30116), 'host.png', oOutputParameterHandler)
 
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -107,7 +109,7 @@ class cHome:
         if (oConfig.getSetting('home_update') == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'showUpdate', '[COLOR green]Mise à jour disponible[/COLOR]', 'update.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showUpdate', util.VSlang(30418), 'update.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
         if (oConfig.getSetting("active-view") == 'true'):
