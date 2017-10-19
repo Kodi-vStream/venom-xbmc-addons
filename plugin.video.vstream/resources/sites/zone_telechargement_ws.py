@@ -29,6 +29,7 @@ SITE_NAME = '[COLOR violet]Zone-Telechargement.ws[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
 URL_MAIN = 'https://ww1.zone-telechargement.ws/'
+URL_DECRYPT =  'https://www.protecte-link.com/'
 
 URL_SEARCH = (URL_MAIN, 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN, 'showMovies')
@@ -445,7 +446,7 @@ def showHosters():# recherche et affiche les hotes
         #print sHtmlContent
     oParser = cParser()
 
-    sPattern = '<font color=red>([^<]+?)</font>|<div style="font-weight:bold;[^"]+?">([^>]+?)</div></b><b><a target="_blank" href="([^<>"]+?)">Télécharger<\/a>|>\[(Liens Premium) \]<|<span style="color:#FF0000">([^<]+)<'
+    sPattern = '<font color=red>([^<]+?)</font>|<div style="font-weight:bold;[^"]+?">([^>]+?)</div></b><b><a target="_blank" href="https://(.+?)/([^"]+?)">Télécharger<\/a>|>\[(Liens Premium) \]<|<span style="color:#FF0000">([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     #xbmc.log(str(aResult))
@@ -479,8 +480,9 @@ def showHosters():# recherche et affiche les hotes
 
             else:
                 sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR] ' + sMovieTitle
+                sUrl2 = 'https://' + aEntry[2] + '/' + aEntry[3]
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', aEntry[2])
+                oOutputParameterHandler.addParameter('siteUrl', str(sUrl2))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumbnail, '', oOutputParameterHandler)
@@ -510,7 +512,7 @@ def showSeriesHosters():# recherche et affiche les hotes
 
     oParser = cParser()
 
-    sPattern = '<div style="font-weight:bold;color:[^"]+?">([^<]+)</div>|<a target="_blank" href="([^"]+?)">([^<]+)<'
+    sPattern = '<div style="font-weight:bold;color:[^"]+?">([^<]+)</div>|<a target="_blank" href="https://(.+?)/([^"]+?)">([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -525,7 +527,7 @@ def showSeriesHosters():# recherche et affiche les hotes
 
             if aEntry[0]:
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
+                oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 if 'Télécharger' in aEntry[0]:
@@ -536,12 +538,13 @@ def showSeriesHosters():# recherche et affiche les hotes
                 sName = aEntry[2]
                 sName = sName.replace('Télécharger','')
                 sName = sName.replace('pisodes','pisode')
+                sUrl2 = 'https://' + aEntry[1] +  '/' + aEntry[2]
 
                 sTitle = sMovieTitle + ' ' + sName
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
 
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
+                oOutputParameterHandler.addParameter('siteUrl', str(sUrl2))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
@@ -589,7 +592,7 @@ def Display_protected_link():
                 return
 
     #Est ce un lien dl-protect ?
-    if 'dl-protecte' in sUrl or 'protect-lien' in sUrl or 'protect-zt' in sUrl or 'protecte-link' in sUrl:
+    if URL_DECRYPT in sUrl:
         sHtmlContent = DecryptDlProtecte(sUrl)
 
         if sHtmlContent:
