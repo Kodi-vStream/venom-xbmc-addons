@@ -692,9 +692,6 @@ class cGuiElement:
         self.__aItemValues['Title'] = self.getTitle()
         self.__aItemValues['Plot'] = self.getDescription()
         self.__aItemValues['Playcount'] = self.getWatched()
-        #catégorie
-        if self.getCat():
-            self.addItemProperties('Category', str(self.getCat()))
         #tmdbid
         if self.getTmdb():
             self.addItemProperties('TmdbId', str(self.getTmdb()))

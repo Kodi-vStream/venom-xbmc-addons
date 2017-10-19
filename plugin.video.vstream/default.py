@@ -187,9 +187,11 @@ def searchGlobal():
     #print xbmc.getInfoLabel('ListItem.Property(Category)')
 
     sSearchText = oInputParameterHandler.getValue('searchtext')
+    sCat = oInputParameterHandler.getValue('sCat')
 
     oHandler = cRechercheHandler()
     oHandler.setText(sSearchText)
+    oHandler.setCat(sCat)
     aPlugins = oHandler.getAvailablePlugins()
     if not aPlugins: return True
     total = len(aPlugins)

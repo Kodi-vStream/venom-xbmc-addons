@@ -42,6 +42,15 @@ class cRechercheHandler:
     def getText(self):
         return self.__sText
 
+    def setCat(self, sCat):
+        if not sCat:
+            return False
+        self.__sCat = sCat
+        return self.__sCat
+
+    def getCat(self):
+        return self.__sCat
+
 
     def setDisp(self, sDisp):
         if not sDisp:
@@ -133,9 +142,7 @@ class cRechercheHandler:
         sText = self.getText()
         if not sText:
             return False
-        sCat =  xbmc.getInfoLabel('ListItem.Property(Category)')
-        #print "recherche handler"
-        #print sCat
+        sCat =  self.getCat()
         if not sCat:
             return False
 

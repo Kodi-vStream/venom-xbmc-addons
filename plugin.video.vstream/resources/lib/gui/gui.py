@@ -272,7 +272,9 @@ class cGui():
         #oListItem.addStreamInfo('audio', {'language': 'fr'})
 
         # if oGuiElement.getMeta():
-            # oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
+        #oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
+        if oGuiElement.getCat():
+            oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
 
 
         sItemUrl = self.__createItemUrl(oGuiElement, oOutputParameterHandler)
@@ -438,6 +440,7 @@ class cGui():
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
+        oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
 
         self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewsimil', util.VSlang(30213))
 
@@ -582,15 +585,11 @@ class cGui():
         sPluginPath = cPluginHandler().getPluginPath();
         oInputParameterHandler = cInputParameterHandler()
         sFileName = oInputParameterHandler.getValue('sFileName')
+        sCat = oInputParameterHandler.getValue('sCat')
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('searchtext', sFileName)
-
-        #ne fonctionne pas
-        # if cGui.CONTENT == "movies":
-            # oOutputParameterHandler.addParameter('disp', 'search1')
-        # elif cGui.CONTENT == "tvshows":
-            # oOutputParameterHandler.addParameter('disp', 'search2')
+        oOutputParameterHandler.addParameter('sCat', sCat)
 
         oOutputParameterHandler.addParameter('readdb', 'False')
 
@@ -713,7 +712,6 @@ class cGui():
             oOutputParameterHandler = cOutputParameterHandler()
 
         sParams = oOutputParameterHandler.getParameterAsUri()
-
         #cree une id unique
         # if oGuiElement.getSiteUrl():
             # print  str(hash(oGuiElement.getSiteUrl()))
