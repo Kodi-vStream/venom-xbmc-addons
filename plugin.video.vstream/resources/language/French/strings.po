@@ -313,8 +313,8 @@ msgid "Webradio"
 msgstr "Radio du web"
 
 msgctxt "#30204"
-msgid "[COLOR=red]No informations[/COLOR]"
-msgstr "[COLOR=red]Aucune information[/COLOR]"
+msgid "[COLOR red]No informations[/COLOR]"
+msgstr "[COLOR red]Aucune information[/COLOR]"
 
 msgctxt "#30205"
 msgid "Connection Failed"

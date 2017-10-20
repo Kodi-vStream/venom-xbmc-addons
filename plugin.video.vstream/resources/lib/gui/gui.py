@@ -548,6 +548,9 @@ class cGui():
 
         iHandler = cPluginHandler().getPluginHandle()
         #modif 22/06
+        if not self.listing:
+            self.addText('cGui')
+
         xbmcplugin.addDirectoryItems(iHandler, self.listing, len(self.listing))
 
         xbmcplugin.setPluginCategory(iHandler, "")
