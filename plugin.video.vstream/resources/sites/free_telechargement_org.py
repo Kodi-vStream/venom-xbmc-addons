@@ -45,6 +45,7 @@ MOVIE_SD_VIEWS = (URL_MAIN + '1/films/affichage', 'showMovies')
 MOVIE_GENRES_SD = (True, 'showGenreMoviesSD')
 
 MOVIE_HD = (URL_MAIN + '1/categorie-Films+BluRay+720p+et+1080p/1.html', 'showMovies')
+MOVIE_HDLIGHT = (URL_MAIN + '1/films-hdlight/1.html', 'showMovies')
 MOVIE_3D = (URL_MAIN + '1/categorie-Films+BluRay+3D/1.html', 'showMovies')
 MOVIE_HD_VIEWS = (URL_MAIN + '1/films-bluray/affichage', 'showMovies')
 MOVIE_GENRES_HD = (True, 'showGenreMoviesHD')
@@ -122,6 +123,10 @@ def showMenuFilms():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD 720p & 1080p (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_HDLIGHT[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HDLight (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_3D[0])
@@ -392,7 +397,7 @@ def showSearchResult(sSearch = ''):
             i = i + 1
 
             sQual = 'SD'
-            if '-hd/' in aEntry[0] or 'bluray' in aEntry[0]:
+            if '-hd/' in aEntry[0] or 'bluray' in aEntry[0] or 'hdlight' in aEntry[0]:
                 sQual = 'HD'
             if '-3d/' in aEntry[0]:
                 sQual = '3D'
@@ -444,7 +449,7 @@ def showMovies():
         total = len(aResult[1])
         for aEntry in aResult[1]:
             sQual = 'SD'
-            if '-hd/' in aEntry[0] or 'bluray' in aEntry[0]:
+            if '-hd/' in aEntry[0] or 'bluray' in aEntry[0] or 'hdlight' in aEntry[0]:
                 sQual = 'HD'
             if '-3d/' in aEntry[0]:
                 sQual = '3D'
@@ -508,6 +513,8 @@ def showHosters():
         sPattern = '<br /> *([^<]+)</p></center>'
 
     aResult1 = oParser.parse(sHtmlContent, sPattern)
+    #print aResult1
+    
     if (aResult1[0] == True):
         if 'Forced' in aResult1[1][0]:
             aResult1[1][0]=''
@@ -542,23 +549,26 @@ def showHosters():
         sPattern = '<b>(.+?)<\/b>.+?<a href="link.php\?lien\=([^"]+)" target="_blank" *><b>Cliquer ici pour Télécharger'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
+    #print aResult
+    
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-
-            sHostName = aEntry[0]
-            sHostName = cUtil().removeHtmlTags(sHostName)
-
+            if '-multi' in aEntry:
+                sHostName = 'Liens Multi'
+            else:
+                sHostName = aEntry[0]
+                sHostName = cUtil().removeHtmlTags(sHostName)
+            
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
             oOutputParameterHandler = cOutputParameterHandler()
-            if total == 1:
-                sTitle = '[COLOR skyblue]' + 'Liens Premium' + '[/COLOR]'
+            sTitle = '[COLOR skyblue]' + sHostName + '[/COLOR]'
+            if '-multi' in aEntry:
                 oOutputParameterHandler.addParameter('siteUrl', aEntry)
             else:
-                sTitle = '[COLOR skyblue]' + sHostName + '[/COLOR]'
                 oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
 
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -627,6 +637,7 @@ def showSeriesHosters():
     oGui.setEndOfDirectory()
 
 def Display_protected_link():
+    #print 'entering Display_protected_link' 
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -634,16 +645,19 @@ def Display_protected_link():
     sThumb=oInputParameterHandler.getValue('sThumb')
 
     oParser = cParser()
+    
+    print sUrl
 
     #Est ce un lien dl-protect ?
     if URL_PROTECT in sUrl:
         sHtmlContent = DecryptddlProtect(sUrl)
+        print sHtmlContent
         if sHtmlContent:
             #Si redirection
             if sHtmlContent.startswith('http'):
                 aResult_dlprotect = (True, [sHtmlContent])
             else:
-                sPattern_dlprotect = '<a href="([^"]+)"'
+                sPattern_dlprotect = 'target=_blank>([^<]+)<'
                 aResult_dlprotect = oParser.parse(sHtmlContent, sPattern_dlprotect)
 
         else:
@@ -672,7 +686,7 @@ def Display_protected_link():
     oGui.setEndOfDirectory()
 
 def DecryptddlProtect(url):
-
+    #print 'entering DecryptddlProtect'
     if not (url): return ''
 
     #Get host
