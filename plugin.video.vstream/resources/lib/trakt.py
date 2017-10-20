@@ -656,9 +656,11 @@ class cTrakt:
         if cTrakt.CONTENT == '2':
             oGuiElement.setMeta(2)
             oGuiElement.setCat(2)
+            cGui.CONTENT = "tvshows"
         else:
             oGuiElement.setMeta(1)
             oGuiElement.setCat(1)
+            cGui.CONTENT = "movies"
 
         #oGuiElement.setDescription(sDesc)
         #oGuiElement.setFanart(fanart)
