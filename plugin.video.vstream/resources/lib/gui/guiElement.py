@@ -31,6 +31,7 @@ class cGuiElement:
         self.__sFileName = ''
         self.__sDescription = ''
         self.__sThumbnail = ''
+        self.__sPoster = ''
         self.__Season = ''
         self.__Episode = ''
         self.__sIcon = self.DEFAULT_FOLDER_ICON
@@ -390,6 +391,12 @@ class cGuiElement:
 
     def getThumbnail(self):
         return self.__sThumbnail
+
+    def setPoster(self, sPoster):
+        self.__sPoster = sPoster
+
+    def getPoster(self):
+        return self.__sPoster
 
     def setFanart(self, sFanart):
         if (sFanart != ''):

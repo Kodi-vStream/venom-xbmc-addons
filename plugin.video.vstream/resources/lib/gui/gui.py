@@ -63,6 +63,7 @@ class cGui():
         oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon(sIcon)
         oGuiElement.setThumbnail(sThumbnail)
+        oGuiElement.setPoster(sThumbnail)
         oGuiElement.setMeta(1)
         oGuiElement.setDescription(sDesc)
         oGuiElement.setMovieFanart()
@@ -83,6 +84,7 @@ class cGui():
         oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon(sIcon)
         oGuiElement.setThumbnail(sThumbnail)
+        oGuiElement.setPoster(sThumbnail)
         oGuiElement.setMeta(2)
         oGuiElement.setDescription(sDesc)
         oGuiElement.setTvFanart()
@@ -112,6 +114,7 @@ class cGui():
         oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon(sIcon)
         oGuiElement.setThumbnail(sThumbnail)
+        #oGuiElement.setPoster(sThumbnail)
         oGuiElement.setMeta(0)
         oGuiElement.setDirFanart(sIcon)
         oGuiElement.setCat(5)
@@ -313,7 +316,8 @@ class cGui():
         #oListItem.setThumbnailImage(oGuiElement.getThumbnail())
         #oListItem.setIconImage(oGuiElement.getIcon())
 
-        oListItem.setArt({'poster': oGuiElement.getThumbnail(), 'thumb': oGuiElement.getThumbnail(), 'icon': oGuiElement.getIcon(),'fanart': oGuiElement.getFanart() })
+        #krypton et sont comportement
+        oListItem.setArt({'poster': oGuiElement.getPoster(), 'thumb': oGuiElement.getThumbnail(), 'icon': oGuiElement.getIcon(),'fanart': oGuiElement.getFanart() })
 
         aProperties = oGuiElement.getItemProperties()
         for sPropertyKey in aProperties.keys():

@@ -244,6 +244,7 @@ def showMovies(sSearch = ''):
             oGuiElement.setIcon('films.png')
             oGuiElement.setMeta(1)
             oGuiElement.setThumbnail(sThumbnail)
+            oGuiElement.setPoster(sThumbnail)
             oGuiElement.setFanart(sFanart)
             oGuiElement.setCat(1)
             oGuiElement.setDescription(sDesc)
@@ -328,6 +329,7 @@ def showSeries(sSearch=''):
             oGuiElement.setIcon('series.png')
             oGuiElement.setMeta(2)
             oGuiElement.setThumbnail(sThumbnail)
+            oGuiElement.setPoster(sThumbnail)
             oGuiElement.setFanart(sFanart)
             oGuiElement.setCat(2)
             oGuiElement.setDescription(sDesc)
@@ -421,6 +423,7 @@ def showSeriesSaison():
             oGuiElement.setIcon('series.png')
             oGuiElement.setMeta(2)
             oGuiElement.setThumbnail(sThumbnail)
+            oGuiElement.setPoster(sThumbnail)
             oGuiElement.setFanart(sFanart)
             oGuiElement.setCat(7)
 
@@ -566,6 +569,7 @@ def showActors():
             oGuiElement.setIcon('actors.png')
             oGuiElement.setMeta(0)
             oGuiElement.setThumbnail(sThumbnail)
+            oGuiElement.setPoster(sThumbnail)
             oGuiElement.setCat(7)
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
@@ -680,6 +684,7 @@ def showFilmActor():
             oGuiElement.setIcon('actors.png')
             oGuiElement.setMeta(1)
             oGuiElement.setThumbnail(sThumbnail)
+            oGuiElement.setPoster(sThumbnail)
             oGuiElement.setFanart(sFanart)
             oGuiElement.setCat(1)
             oGuiElement.setDescription(sDesc)
@@ -763,6 +768,7 @@ def showLists():
                 oGuiElement.setMeta(2)
                 oGuiElement.setCat(2)
             oGuiElement.setThumbnail(sThumbnail)
+            oGuiElement.setPoster(sThumbnail)
             oGuiElement.setFanart(sFanart)
             oGuiElement.setDescription(sDesc)
 
