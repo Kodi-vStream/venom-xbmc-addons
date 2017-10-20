@@ -28,8 +28,8 @@ SITE_IDENTIFIER = 'zone_telechargement_ws'
 SITE_NAME = '[COLOR violet]Zone-Telechargement.ws[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_MAIN = 'https://ww1.zone-telechargement.ws/'
-URL_DECRYPT =  'https://www.protecte-link.com/'
+URL_MAIN = 'http://ww1.zone-telechargement.ws/'
+URL_DECRYPT =  ''
 
 URL_SEARCH = (URL_MAIN, 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN, 'showMovies')
@@ -481,6 +481,8 @@ def showHosters():# recherche et affiche les hotes
             else:
                 sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR] ' + sMovieTitle
                 sUrl2 = 'https://' + aEntry[2] + '/' + aEntry[3]
+                URL_DECRYPT = aEntry[2]
+                
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl2))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
@@ -535,13 +537,14 @@ def showSeriesHosters():# recherche et affiche les hotes
                 else:
                     oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
             else:
-                sName = aEntry[2]
+                sName = aEntry[3]
                 sName = sName.replace('Télécharger','')
                 sName = sName.replace('pisodes','pisode')
                 sUrl2 = 'https://' + aEntry[1] +  '/' + aEntry[2]
 
                 sTitle = sMovieTitle + ' ' + sName
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
+                URL_DECRYPT = aEntry[1]
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(sUrl2))
