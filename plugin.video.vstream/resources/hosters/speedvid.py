@@ -82,7 +82,7 @@ class cHoster(iHoster):
             sHtmlContent = AADecoder(aResult.group(1)).decode()
 
             #recuperation de l'url
-            Url = re.findall('href *= *"(.+?)"',sHtmlContent)[0]
+            Url = re.findall('href *= *["\'](.+?)["\']',sHtmlContent)[0]
             if not 'speedvid' in Url:
                 Url = 'http://www.speedvid.net/' + Url  
             if not 'http' in Url:
@@ -91,7 +91,7 @@ class cHoster(iHoster):
                 else:
                     Url = 'http://' + Url
 
-        
+        VSlog("Connexion: " + Url)
         oRequest = cRequestHandler(Url)
         oRequest.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0')
         oRequest.addHeaderEntry('Referer',self.__sUrl)
