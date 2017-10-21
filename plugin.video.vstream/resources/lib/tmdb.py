@@ -159,7 +159,8 @@ class cTMDb:
         #teste sans l'année
         if 'errors' not in meta and 'status_code' not in meta:
             if 'total_results' in meta and meta['total_results'] == 0 and year:
-                    meta = self.get_movie_idbyname(name,'')
+                    #meta = self.get_movie_idbyname(name,'')
+                    meta = self.search_movie_name(name, '')
 
             #cherche 1 seul resultat
             if 'total_results' in meta and meta['total_results'] != 0:

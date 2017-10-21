@@ -31,6 +31,7 @@ class cGuiElement:
         self.__sFileName = ''
         self.__sDescription = ''
         self.__sThumbnail = ''
+        self.__sPoster = ''
         self.__Season = ''
         self.__Episode = ''
         self.__sIcon = self.DEFAULT_FOLDER_ICON
@@ -391,6 +392,12 @@ class cGuiElement:
     def getThumbnail(self):
         return self.__sThumbnail
 
+    def setPoster(self, sPoster):
+        self.__sPoster = sPoster
+
+    def getPoster(self):
+        return self.__sPoster
+
     def setFanart(self, sFanart):
         if (sFanart != ''):
             self.__sFanart = sFanart
@@ -692,9 +699,6 @@ class cGuiElement:
         self.__aItemValues['Title'] = self.getTitle()
         self.__aItemValues['Plot'] = self.getDescription()
         self.__aItemValues['Playcount'] = self.getWatched()
-        #catégorie
-        if self.getCat():
-            self.addItemProperties('Category', str(self.getCat()))
         #tmdbid
         if self.getTmdb():
             self.addItemProperties('TmdbId', str(self.getTmdb()))

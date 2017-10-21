@@ -1,8 +1,9 @@
+#coding: utf-8
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 #from resources.lib.packer import cPacker
-
+from resources.lib.util import VSlog
 from resources.lib.config import cConfig
 
 #from resources.lib.jsparser import JsParser
@@ -72,94 +73,46 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0')
         sHtmlContent = oRequest.request()
-        
-        #fh = open('c:\\testok.txt', "r")
-        #sHtmlContent=fh.read()
-        #fh.close()
-        
+
         oParser = cParser()
         
-        #Recherche de la vraie page
-        Url = ''
-        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\))<'
-        aResult = re.findall(sPattern,sHtmlContent)
-        
-        #cConfig().log('nbre >>' + str(len(aResult)))
-        
+        aResult = re.search('(ﾟωﾟ.+?\(\'_\'\);)', sHtmlContent,re.DOTALL | re.UNICODE)
         if (aResult):
-            for packed in aResult:
-                
-                #cConfig().log('>>' + packed)
-                
-                #Recherche du bon bloc
-                if not 'ALLOWFULLSCREEN' in packed:
-                                       
-                    #bidouille rapide
-                    #packed = packed.replace('|mp4','')
-                    #Pas besoin bidouile, faux lien
-                    if '|mp4' in packed:
-                        continue
-                                       
-                    #3 passages necessaires, avec nettoyage
-                    sHtmlContent = cPacker().unpack(packed)
-                    sHtmlContent = sHtmlContent.decode('string-escape')
+            VSlog('AA encryption')
+            sHtmlContent = AADecoder(aResult.group(1)).decode()
 
-                    sHtmlContent = cPacker().unpack(sHtmlContent)
-                    sHtmlContent = sHtmlContent.decode('string-escape')
-                    
-                    sHtmlContent = cPacker().unpack(sHtmlContent)
-                    sHtmlContent = sHtmlContent.decode('string-escape')
-                    
-                    #cConfig().log('*** >> ' + sHtmlContent)
-                    
-                    #recuperation de l'url
-                    Url = re.findall('href="(.+?)"',sHtmlContent)[0]
-                    if not 'speedvid' in Url:
-                        Url = 'http://www.speedvid.net/' + Url  
-                    if not 'http' in Url:
-                        if Url.startswith('//'):
-                            Url = 'http:' + Url
-                        else:
-                            Url = 'http://' + Url
+            #recuperation de l'url
+            Url = re.findall('href *= *"(.+?)"',sHtmlContent)[0]
+            if not 'speedvid' in Url:
+                Url = 'http://www.speedvid.net/' + Url  
+            if not 'http' in Url:
+                if Url.startswith('//'):
+                    Url = 'http:' + Url
+                else:
+                    Url = 'http://' + Url
 
-                    
-                    break
-                    
-        #cConfig().log('ok >> ' + Url)
         
-        if not Url:
-            return False, False
-
         oRequest = cRequestHandler(Url)
         oRequest.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0')
         oRequest.addHeaderEntry('Referer',self.__sUrl)
-        sHtmlContent = oRequest.request()
+        sHtmlContent = oRequest.request()  
+        
 
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
-                
         api_call = ''
         
         sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\))<'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             for packed in aResult[1]:
-                
-                #cConfig().log(packed)
 
-                #if 'while' not in packed:
-                #    continue
-                
                 sHtmlContent = cPacker().unpack(packed)
                 sHtmlContent = sHtmlContent.replace('\\','')
                 
-                #cConfig().log(sHtmlContent)
-                    
+
                 sPattern2 = "{file:.([^']+.mp4)"
                 aResult2 = oParser.parse(sHtmlContent, sPattern2)
                 if (aResult2[0] == True):
-                    #tris des faux liens
+                    # tris des faux liens
                     if not 'speedvid' in aResult2[1][0]:
                         api_call = aResult2[1][0]
                     
@@ -208,10 +161,12 @@ class cPacker():
         #correction
         if (len(symtab) > count) and (count > 0):
             del symtab[count:]
+        if (len(symtab) < count) and (count > 0):
+            symtab.append('BUGGED')                    
+            
         #xbmc.log(str(count), xbmc.LOGNOTICE)
         #xbmc.log(str(symtab), xbmc.LOGNOTICE)
-        #xbmc.log(str(len(symtab)), xbmc.LOGNOTICE)
-        
+        #xbmc.log(str(len(symtab)), xbmc.LOGNOTICE) 
 
         if count != len(symtab):
             raise UnpackingError('Malformed p.a.c.k.e.r. symtab.')
@@ -345,3 +300,224 @@ class Unbaser(object):
         for index, cipher in enumerate(string[::-1]):
             ret += (self.base ** index) * self.dictionary[cipher]
         return ret
+
+        
+class AADecoder(object):
+    def __init__(self, aa_encoded_data):
+        self.encoded_str = aa_encoded_data.replace('/*´∇｀*/','')
+
+        self.b = ["(c^_^o)", "(ﾟΘﾟ)", "((o^_^o) - (ﾟΘﾟ))", "(o^_^o)",
+                  "(ﾟｰﾟ)", "((ﾟｰﾟ) + (ﾟΘﾟ))", "((o^_^o) +(o^_^o))", "((ﾟｰﾟ) + (o^_^o))",
+                  "((ﾟｰﾟ) + (ﾟｰﾟ))", "((ﾟｰﾟ) + (ﾟｰﾟ) + (ﾟΘﾟ))", "(ﾟДﾟ) .ﾟωﾟﾉ", "(ﾟДﾟ) .ﾟΘﾟﾉ",
+                  "(ﾟДﾟ) ['c']", "(ﾟДﾟ) .ﾟｰﾟﾉ", "(ﾟДﾟ) .ﾟДﾟﾉ", "(ﾟДﾟ) [ﾟΘﾟ]"]
+
+    def is_aaencoded(self):
+        idx = self.encoded_str.find("ﾟωﾟﾉ= /｀ｍ´）ﾉ ~┻━┻   //*´∇｀*/ ['_']; o=(ﾟｰﾟ)  =_=3; c=(ﾟΘﾟ) =(ﾟｰﾟ)-(ﾟｰﾟ); ")
+        if idx == -1:
+            return False
+
+        if self.encoded_str.find("(ﾟДﾟ)[ﾟoﾟ]) (ﾟΘﾟ)) ('_');", idx) == -1:
+            return False
+
+        return True
+
+    def base_repr(self, number, base=2, padding=0):
+        digits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        if base > len(digits):
+            base = len(digits)
+
+        num = abs(number)
+        res = []
+        while num:
+            res.append(digits[num % base])
+            num //= base
+        if padding:
+            res.append('0' * padding)
+        if number < 0:
+            res.append('-')
+        return ''.join(reversed(res or '0'))
+
+    def decode_char(self, enc_char, radix):
+        end_char = "+ "
+        str_char = ""
+        while enc_char != '':
+            found = False
+            #for i in range(len(self.b)):
+            #    if enc_char.find(self.b[i]) == 0:
+            #        str_char += self.base_repr(i, radix)
+            #        enc_char = enc_char[len(self.b[i]):]
+            #        found = True
+            #        break
+
+            if not found:
+                for i in range(len(self.b)):             
+                    enc_char=enc_char.replace(self.b[i], str(i))
+                
+                startpos=0
+                findClose=True
+                balance=1
+                result=[]
+                if enc_char.startswith('('):
+                    l=0
+                    
+                    for t in enc_char[1:]:
+                        l+=1
+                        if findClose and t==')':
+                            balance-=1;
+                            if balance==0:
+                                result+=[enc_char[startpos:l+1]]
+                                findClose=False
+                                continue
+                        elif not findClose and t=='(':
+                            startpos=l
+                            findClose=True
+                            balance=1
+                            continue
+                        elif t=='(':
+                            balance+=1
+                 
+
+                if result is None or len(result)==0:
+                    return ""
+                else:
+                    
+                    for r in result:
+                        value = self.decode_digit(r, radix)
+                        if value == "":
+                            return ""
+                        else:
+                            str_char += value
+                            
+                    return str_char
+
+            enc_char = enc_char[len(end_char):]
+
+        return str_char
+
+
+    def decode_digit(self, enc_int, radix):
+
+        #enc_int=enc_int.replace('(ﾟΘﾟ)','1').replace('(ﾟｰﾟ)','4').replace('(c^_^o)','0').replace('(o^_^o)','3')  
+
+        rr = '(\(.+?\)\))\+'
+        rerr=enc_int.split(')))+')
+        v = ''
+        
+        #new mode
+        if (True):
+
+            for c in rerr:
+                
+                if len(c)>0:
+                    if c.strip().endswith('+'):
+                        c=c.strip()[:-1]
+
+                    startbrackets=len(c)-len(c.replace('(',''))
+                    endbrackets=len(c)-len(c.replace(')',''))
+                    
+                    if startbrackets>endbrackets:
+                        startbrackets = int (startbrackets)
+                        endbrackets = int (endbrackets )
+                        c+=')'*startbrackets-endbrackets
+
+                    
+                    c = c.replace('!+[]','1')
+                    c = c.replace('-~','1+')
+                    c = c.replace('[]','0')
+                    
+                    v+=str(eval(c))
+                    
+            return v
+         
+        # mode 0=+, 1=-
+        mode = 0
+        value = 0
+
+        while enc_int != '':
+            found = False
+            for i in range(len(self.b)):
+                if enc_int.find(self.b[i]) == 0:
+                    if mode == 0:
+                        value += i
+                    else:
+                        value -= i
+                    enc_int = enc_int[len(self.b[i]):]
+                    found = True
+                    break
+
+            if not found:
+                return ""
+
+            enc_int = re.sub('^\s+|\s+$', '', enc_int)
+            if enc_int.find("+") == 0:
+                mode = 0
+            else:
+                mode = 1
+
+            enc_int = enc_int[1:]
+            enc_int = re.sub('^\s+|\s+$', '', enc_int)
+
+        return self.base_repr(value, radix)
+
+    def decode(self):
+
+        self.encoded_str = re.sub('^\s+|\s+$', '', self.encoded_str)
+        
+        self.encoded_str = self.encoded_str.replace('((ﾟДﾟ))','(ﾟДﾟ)')
+        self.encoded_str = self.encoded_str.replace('((ﾟДﾟ)[ﾟoﾟ])','(ﾟДﾟ)[ﾟoﾟ]')
+
+        
+        # get data
+        pattern = (r"\(ﾟДﾟ\)\[ﾟoﾟ\]\+ (.+?)\(ﾟДﾟ\)\[ﾟoﾟ\]\)")
+        result = re.search(pattern, self.encoded_str, re.DOTALL)
+        if result is None:
+            VSlog("AADecoderee: data not found")
+            return False
+
+        data = result.group(1)
+
+        # hex decode string
+        begin_char = "(ﾟДﾟ)[ﾟεﾟ]+"
+        alt_char = "(oﾟｰﾟo)+ "
+
+        out = ''
+
+        while data != '':
+            
+            # Check new char
+            if data.find(begin_char) != 0:
+                VSlog("AADecoderwwww: data not found")
+                return False
+
+            data = data[len(begin_char):]
+
+            # Find encoded char
+            enc_char = ""
+            if data.find(begin_char) == -1:
+                enc_char = data
+                data = ""
+            else:
+                enc_char = data[:data.find(begin_char)]
+                data = data[len(enc_char):]
+
+            
+            radix = 8
+            # Detect radix 16 for utf8 char
+            if enc_char.find(alt_char) == 0:
+                enc_char = enc_char[len(alt_char):]
+                radix = 16
+
+            str_char = self.decode_char(enc_char, radix)
+            
+            if str_char == "":
+                VSlog("no match :  ")
+                print  data + "\nout = " + out + "\n"
+                return False
+            
+            out += chr(int(str_char, radix))
+
+        if out == "":
+            VSlog("no match : " + data )
+            return False
+
+        return out

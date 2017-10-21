@@ -495,7 +495,7 @@ class cConfig():
                         sTitle = cUtil().CleanName(sTitle)
                     except: return
 
-                    sTest = '%s?site=globalSearch&searchtext=%s' % (sys.argv[0], sTitle)
+                    sTest = '%s?site=globalSearch&searchtext=%s&sCat=1' % (sys.argv[0], sTitle)
                     xbmc.executebuiltin('XBMC.Container.Update(%s)' % sTest )
                     self.close()
                     return
