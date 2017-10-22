@@ -1,21 +1,14 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.config import cConfig
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.rechercheHandler import cRechercheHandler
-from resources.lib.handler.pluginHandler import cPluginHandler
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.favourite import cFav
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import urllib, unicodedata, re
-import xbmcgui
-import xbmc
+import xbmcgui, xbmc
 from resources.lib.tmdb import cTMDb
 
 try:    import json
@@ -200,8 +193,11 @@ def showMovies(sSearch = ''):
     if (oInputParameterHandler.exist('page')):
         iPage = oInputParameterHandler.getValue('page')
 
+    if (oInputParameterHandler.exist('sSearch')):
+        sSearch = oInputParameterHandler.getValue('sSearch')
+
     if sSearch:
-        result = grab.getUrl('search/movie', '', 'query=' + sSearch)
+        result = grab.getUrl('search/movie', iPage, 'query=' + sSearch)
         sUrl = ''
 
     else:
@@ -254,6 +250,9 @@ def showMovies(sSearch = ''):
         if (iPage > 0):
             iNextPage = int(iPage) + 1
             oOutputParameterHandler = cOutputParameterHandler()
+            if sSearch:
+                oOutputParameterHandler.addParameter('sSearch', sSearch)
+
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('page', iNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
@@ -271,8 +270,11 @@ def showSeries(sSearch=''):
     if (oInputParameterHandler.exist('page')):
         iPage = oInputParameterHandler.getValue('page')
 
+    if (oInputParameterHandler.exist('sSearch')):
+        sSearch = oInputParameterHandler.getValue('sSearch')
+
     if sSearch:
-        result = grab.getUrl('search/tv', '', 'query=' + sSearch)
+        result = grab.getUrl('search/tv', iPage, 'query=' + sSearch)
         sUrl = ''
 
     else:
@@ -339,6 +341,8 @@ def showSeries(sSearch=''):
         if (iPage > 0):
             iNextPage = int(iPage) + 1
             oOutputParameterHandler = cOutputParameterHandler()
+            if sSearch:
+                oOutputParameterHandler.addParameter('sSearch', sSearch)
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('page', iNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)

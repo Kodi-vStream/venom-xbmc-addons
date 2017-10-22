@@ -444,6 +444,7 @@ class cGui():
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
+        oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
         oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
 
         self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cGui',oGuiElement.getSiteName(),'viewsimil', util.VSlang(30213))
@@ -592,10 +593,12 @@ class cGui():
         sPluginPath = cPluginHandler().getPluginPath();
         oInputParameterHandler = cInputParameterHandler()
         sFileName = oInputParameterHandler.getValue('sFileName')
+        sTitle = oInputParameterHandler.getValue('sTitle')
         sCat = oInputParameterHandler.getValue('sCat')
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('searchtext', sFileName)
+        #oOutputParameterHandler.addParameter('searchtext', sFileName)
+        oOutputParameterHandler.addParameter('searchtext', util.cUtil().CleanName(sTitle))
         oOutputParameterHandler.addParameter('sCat', sCat)
 
         oOutputParameterHandler.addParameter('readdb', 'False')
