@@ -174,6 +174,7 @@ def showFolderList():
     liste.append( ['Les films fascinants ', '43'] )
     liste.append( ['Gagnants des Oscars', '31670'] )
     liste.append( ['Les adaptations', '9883'] )
+    liste.append( ['science-fiction', '3945'] )
 
     #liste.append( ['nom de la liste', 'ID de la liste'] )
 
