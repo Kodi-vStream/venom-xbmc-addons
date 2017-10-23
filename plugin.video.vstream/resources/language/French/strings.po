@@ -326,7 +326,7 @@ msgstr "Marquer vu/Non vu"
 
 msgctxt "#30207"
 msgid "Bookmarks"
-msgstr "Marque-pages"
+msgstr "[COLOR teal]Marquer la page[/COLOR]"
 
 msgctxt "#30208"
 msgid "Information"
