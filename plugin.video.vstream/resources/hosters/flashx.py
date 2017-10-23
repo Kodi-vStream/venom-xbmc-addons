@@ -45,16 +45,21 @@ def GetHtml(url,headers):
     reponse.close()
     return sCode
 
-def UnlockUrl():
+def UnlockUrl(url2=None):
     headers9 = {
     'User-Agent': UA,
     'Referer':'https://www.flashx.tv/dl?playthis'
     }
-    code = GetHtml('https://www.flashx.tv/js/code.js',headers9)
+    
+    url1 = 'https://www.flashx.tv/js/code.js'
+    if url2:
+        url1 = url2
+    
+    code = GetHtml(url1,headers9)
     #cConfig().log(code)
     aResult = re.search("!= null\){\s*\$.get\('(.+?)', *{(.+?): *'(.+?)' *, *(.+?): *'(.+?)'}", code, re.DOTALL)
     if aResult:
-        url = aResult.group(1)+ '?' + aResult.group(2) + '=' + aResult.group(3) + '&' + aResult.group(3) + '=' + aResult.group(4)
+        url = aResult.group(1)+ '?' + aResult.group(2) + '=' + aResult.group(3) + '&' + aResult.group(4) + '=' + aResult.group(5)
         #cConfig().log(url)
         GetHtml(url,headers9)
         return True
@@ -337,8 +342,13 @@ class cHoster(iHoster):
         web_url = AllUrl[0]
         
         #Requests to unlock video
+        #unlock fake video
         LoadLinks(sHtmlContent)
-        if not UnlockUrl():
+        #unlock bubble
+        url2 = re.search('["\']([^"\']+?js\/code\.js\?cache.+?)["\']', sHtmlContent, re.DOTALL)
+        if url2:
+            url2 = url2.group(1)
+        if not UnlockUrl(url2):
             cConfig().log('No special unlock url')
             return False,False
                

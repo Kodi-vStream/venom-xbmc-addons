@@ -233,10 +233,10 @@ def showMovies(sSearch = ''):
 
             sDisplayTitle = cUtil().DecoTitle(sTitle)
 
-            if '-series' in sUrl2 or '-animes' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
-            else:
+            if 'films-gratuit' in sUrl2:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+            else:
+                oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
 
 
 
