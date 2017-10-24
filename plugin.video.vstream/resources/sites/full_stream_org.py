@@ -507,7 +507,11 @@ def showHostersSerie():
     if (aResult[0] == True):
         sHtmlContentListFile = aResult[1][0]
 
-    sPattern = '<\/i> ([^<>"]+)<\/div>|<a href="([^<>"]+)" title="([^<]+)" target="seriePlayer".+?>|onclick="javascript:return false;" href="#" title="([^<>"]+)".*?data-rel="episode([0-9]+)"'
+        
+    if "/mangas/" in sUrl:
+        sPattern = '<\/i> ([^<>"]+)<\/div>|<a href="([^<>"]+)" title="([^<]+)" target="serieplayer".+?>|onclick="javascript:return false;" href="#" title="([^<>"]+)".*?data-rel="episode([0-9]+)"'
+    else:
+        sPattern = '<\/i> ([^<>"]+)<\/div>|<a href="([^<>"]+)" title="([^<]+)" target="seriePlayer".+?>|onclick="javascript:return false;" href="#" title="([^<>"]+)".*?data-rel="episode([0-9]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
