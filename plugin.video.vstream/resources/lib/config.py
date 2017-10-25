@@ -367,6 +367,7 @@ class cConfig():
                 self.getControl(50).setVisible(False)
                 self.getControl(50).reset()
                 self.getControl(5500).setVisible(False)
+                self.getControl(57).setVisible(False)
                 listitems = []
                 try:
                     for slabel, slabel2, sicon, sid in meta['cast']:
@@ -380,7 +381,7 @@ class cConfig():
                 #self.getControl(1).setLabel(meta['title'])
                 meta['title'] = sTitle
 
-                self.getControl(49).setVisible(True)
+                #self.getControl(49).setVisible(True)
                 #self.getControl(2).setImage(meta['cover_url'])
                 #self.getControl(3).setLabel(meta['rating'])
                 for e in meta:
@@ -391,16 +392,12 @@ class cConfig():
                         xbmcgui.Window(10000).setProperty(property, str(meta[e]))
 
 
-            def credit(self, sid=""):
-                from resources.lib.tmdb import cTMDb
-                grab = cTMDb(api_key=API)
-                sUrl = 'person/' + str(sid) + '/movie_credits'
-                meta = grab.getUrl(sUrl)
+            def credit(self, meta=""):
                 self.getControl(5200).reset()
                 listitems = []
 
                 try:
-                    for i in meta['cast']:
+                    for i in meta:
                         try:
                             sTitle = unicodedata.normalize('NFKD', i['title']).encode('ascii','ignore')
                         except: sTitle = "Aucune information"
@@ -467,6 +464,9 @@ class cConfig():
                     self.getControl(50).setVisible(False)
                     self.getControl(400).setVisible(True)
                     return
+                elif controlId == 7:
+                    self.getControl(57).setVisible(True)
+                    return
                 elif controlId == 11:
                     from resources.lib.ba import cShowBA
                     cBA = cShowBA()
@@ -479,10 +479,48 @@ class cConfig():
                     return
                 elif controlId == 50:
                     #print self.getControl(50).ListItem.Property('id')
+                    xbmcgui.Window(10000).setProperty('nav', '1')
                     item = self.getControl(50).getSelectedItem()
                     sid = item.getProperty('id')
-                    self.credit(sid)
+
+                    from resources.lib.tmdb import cTMDb
+                    grab = cTMDb(api_key=API)
+                    sUrl = 'person/' + str(sid) + '/movie_credits'
+                    try:
+                        meta = grab.getUrl(sUrl)
+                        meta = meta['cast']
+                        self.credit(meta)
+                    except: return
                     #self.getControl(50).setVisible(True)
+                #click sur similaire
+                elif controlId == 9:
+                    #print self.getControl(9000).ListItem.tmdb_id
+                    sid = xbmcgui.Window(10000).getProperty("ListItem.tmdb_id")
+                    xbmcgui.Window(10000).setProperty('nav', '2')
+
+                    from resources.lib.tmdb import cTMDb
+                    grab = cTMDb(api_key=API)
+                    sUrl = 'movie/%s/similar' % str(sid)
+                    try:
+                        meta = grab.getUrl(sUrl)
+                        meta = meta['results']
+                        self.credit(meta)
+                    except: return
+                #click sur recommendations
+                elif controlId == 13:
+                    #print self.getControl(9000).ListItem.tmdb_id
+                    sid = xbmcgui.Window(10000).getProperty("ListItem.tmdb_id")
+                    xbmcgui.Window(10000).setProperty('nav', '3')
+
+                    from resources.lib.tmdb import cTMDb
+                    grab = cTMDb(api_key=API)
+                    sUrl = 'movie/%s/recommendations' % str(sid)
+                    try:
+                        meta = grab.getUrl(sUrl)
+                        meta = meta['results']
+                        self.credit(meta)
+                    except: return
+
                 elif controlId == 5200:
                 #click sur un film acteur
                     import sys
