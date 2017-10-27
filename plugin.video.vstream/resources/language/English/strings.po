@@ -141,7 +141,7 @@ msgid "Search (Other category)"
 msgstr ""
 
 msgctxt "#30081"
-msgid "Custom search 4"
+msgid "[COLOR gold]Results for: %s[/COLOR]"
 msgstr ""
 
 msgctxt "#30088"
