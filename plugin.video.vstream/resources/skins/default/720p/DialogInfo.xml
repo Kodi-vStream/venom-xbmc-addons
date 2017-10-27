@@ -485,7 +485,7 @@
 					<description>header label</description>
 					<left>10</left>
 					<top>10</top>
-					<width>600</width>
+					<width>1200</width>
 					<height>20</height>
 					<font>font32_title</font>
 					<label>$INFO[Window(Home).Property(Listitem.Title)] ($INFO[Window(Home).Property(ListItem.Year)])</label>

@@ -125,20 +125,20 @@ msgid "Search"
 msgstr "Recherche"
 
 msgctxt "#30077"
-msgid "Search 1"
-msgstr "Recherche 1"
+msgid "[COLOR gold]Select your search for: %s[/COLOR]"
+msgstr "[COLOR gold]Sélectionnez votre recherche pour: %s[/COLOR]"
 
 msgctxt "#30078"
-msgid "Custom search 1"
-msgstr "Recherche personnalisée 1"
+msgid "Search (Movie)"
+msgstr "Recherche (Films)"
 
 msgctxt "#30079"
-msgid "Custom search 2"
-msgstr "Recherche personnalisée 2"
+msgid "Search (Tvshow/Anim)"
+msgstr "Recherche (Séries/Animés)"
 
 msgctxt "#30080"
-msgid "Custom search 3"
-msgstr "Recherche personnalisée 3"
+msgid "Search (Other category)"
+msgstr "Recherche (Autre catégories)"
 
 msgctxt "#30081"
 msgid "Custom search 4"
@@ -326,7 +326,7 @@ msgstr "Marquer vu/Non vu"
 
 msgctxt "#30207"
 msgid "Bookmarks"
-msgstr "[COLOR teal]Marquer la page[/COLOR]"
+msgstr "Marque-pages"
 
 msgctxt "#30208"
 msgid "Information"
