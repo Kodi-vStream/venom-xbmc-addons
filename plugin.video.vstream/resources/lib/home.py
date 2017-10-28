@@ -344,7 +344,7 @@ class cHome:
 
         #print xbmc.getInfoLabel('ListItem.Property(Category)')
 
-        oGui.addText('globalSearch', '[COLOR gold]%s: %s[/COLOR]' % (oConfig.getlanguage(30076), searchtext), 'none.png')
+        oGui.addText('globalSearch', oConfig.getlanguage(30077) % (searchtext), 'none.png')
 
         #utilisation de guielement pour ajouter la bonne catégories
 
@@ -355,9 +355,8 @@ class cHome:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName('globalSearch')
         oGuiElement.setFunction('showSearch')
-        sLabel1 = '%s (%s)' % (oConfig.getlanguage(30330), oConfig.getlanguage(30120))
-        oGuiElement.setTitle(sLabel1)
-        oGuiElement.setFileName(sLabel1)
+        oGuiElement.setTitle(oConfig.getlanguage(30078))
+        oGuiElement.setFileName(oConfig.getlanguage(30078))
         oGuiElement.setIcon('search.png')
         oGuiElement.setMeta(0)
         #oGuiElement.setThumbnail(sThumbnail)
@@ -373,9 +372,8 @@ class cHome:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName('globalSearch')
         oGuiElement.setFunction('showSearch')
-        sLabel1 = '%s (%s)' % (oConfig.getlanguage(30330), oConfig.getlanguage(30121))
-        oGuiElement.setTitle(sLabel1)
-        oGuiElement.setFileName(sLabel1)
+        oGuiElement.setTitle(oConfig.getlanguage(30079))
+        oGuiElement.setFileName(oConfig.getlanguage(30079))
         oGuiElement.setIcon('search.png')
         oGuiElement.setMeta(0)
         #oGuiElement.setThumbnail(sThumbnail)
@@ -391,9 +389,8 @@ class cHome:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName('globalSearch')
         oGuiElement.setFunction('showSearch')
-        sLabel1 = '%s (%s)' % (oConfig.getlanguage(30330), oConfig.getlanguage(30410))
-        oGuiElement.setTitle(sLabel1)
-        oGuiElement.setFileName(sLabel1)
+        oGuiElement.setTitle(oConfig.getlanguage(30080))
+        oGuiElement.setFileName(oConfig.getlanguage(30080))
         oGuiElement.setIcon('search.png')
         oGuiElement.setMeta(0)
         #oGuiElement.setThumbnail(sThumbnail)

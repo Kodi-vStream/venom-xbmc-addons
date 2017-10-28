@@ -125,23 +125,23 @@ msgid "Search"
 msgstr ""
 
 msgctxt "#30077"
-msgid "Search 1"
+msgid "[COLOR gold]Select your search for: %s[/COLOR]"
 msgstr ""
 
 msgctxt "#30078"
-msgid "Custom search 1"
+msgid "Search (Movie)"
 msgstr ""
 
 msgctxt "#30079"
-msgid "Custom search 2"
+msgid "Search (Tvshow/Anim)"
 msgstr ""
 
 msgctxt "#30080"
-msgid "Custom search 3"
+msgid "Search (Other category)"
 msgstr ""
 
 msgctxt "#30081"
-msgid "Custom search 4"
+msgid "[COLOR gold]Results for: %s[/COLOR]"
 msgstr ""
 
 msgctxt "#30088"

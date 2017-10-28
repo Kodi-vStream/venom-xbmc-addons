@@ -21,9 +21,9 @@ SPORT_SPORTS = ('http://url', 'showLive')
 
 #Url menu
 PREMIER_LEAGUE = URL_MAIN + 'matches.php?league=epl'
-LA_LIGA = URL_MAIN + 'matches.php?league=lfp'
-SERIE_A = URL_MAIN + 'matches.php?league=serie'
 LIGUE_CHAMPION = URL_MAIN + 'matches.php?league=cl'
+SERIE_A = URL_MAIN + 'matches.php?league=serie'
+LA_LIGA = URL_MAIN + 'matches.php?league=lfp'
 NBA = URL_MAIN + 'matches.php?league=nba'
 NHL = URL_MAIN + 'matches.php?league=nhl'
 
@@ -52,8 +52,8 @@ def showLive():
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', sLive + 'Premier League', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', NBA)
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', sLive + 'NBA Games', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', LIGUE_CHAMPION)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', sLive + 'UEFA Champions League', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', LA_LIGA)
@@ -64,8 +64,8 @@ def showLive():
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', sLive + 'Série A', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', LIGUE_CHAMPION)
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', sLive + 'UEFA Ldc', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', NBA)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', sLive + 'NBA Games', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NHL)
@@ -85,14 +85,11 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a href="([^"]+)"><li id=".+?" ><div>(.+?)</div><img src="([^"]+)".+?<img src=".+?".+?<img src="([^"]+)".+?</li></a>'
+    sPattern = '<a href="([^"]+)"><li id=.+?><div>(.+?)</div><img src="([^"]+)".+?<img src=.+?<img src="([^"]+)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
-        
     if (aResult[0] == True):
 
         for aEntry in aResult[1]:
@@ -105,18 +102,18 @@ def showMovies(sSearch = ''):
             #Affichage custom Titre Player
             sMovieTitle2 = '[Live] ' + sTitle
 
-            #Affiche sThumbnail 1ere equipe
-            sThumbnail = URL_MAIN + aEntry[2]
-            sThumbnail = sThumbnail.replace(' ', '%20')
+            #Affiche sThumb 1ere equipe
+            sThumb = URL_MAIN + aEntry[2]
+            sThumb = sThumb.replace(' ', '%20')
 
             #Horaires
             sPattern = '<font color="#46AAE3">(.+?)<font color="grey">(.+?)</font>'
 
-            aResult = re.findall(sPattern,aEntry[1])
+            aResult = re.findall(sPattern, aEntry[1])
 
             if (aResult):
                for aEntry in aResult:
-                   sTime = '[COLOR teal]' + aEntry[0] + aEntry[1] + ' GMT' + '  ' +'[/COLOR]'
+                   sTime = '[COLOR teal]' + aEntry[0] + aEntry[1] + ' GMT' + '  ' + '[/COLOR]'
                    sTitle = sTime + sTitle
 
             #Test si live en cours
@@ -126,11 +123,11 @@ def showMovies(sSearch = ''):
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('sMovieTitle2', str(sMovieTitle2))
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle2', sMovieTitle2)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     else:
         oGui.addText(SITE_IDENTIFIER, '(Aucune diffusion prévue pour le moment)')
@@ -144,7 +141,7 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sMovieTitle2 = oInputParameterHandler.getValue('sMovieTitle2')
-    sThumbnail  = oInputParameterHandler.getValue('sThumbnail')
+    sThumb  = oInputParameterHandler.getValue('sThumb')
 
     oGui.addText(SITE_IDENTIFIER, sMovieTitle)
 
