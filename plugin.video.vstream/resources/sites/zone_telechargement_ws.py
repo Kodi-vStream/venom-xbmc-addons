@@ -446,7 +446,7 @@ def showHosters():# recherche et affiche les hotes
         #print sHtmlContent
     oParser = cParser()
 
-    sPattern = '<font color=red>([^<]+?)</font>|<div style="font-weight:bold;[^"]+?">([^>]+?)</div></b><b><a target="_blank" href="https://(.+?)/([^"]+?)">Télécharger<\/a>|>\[(Liens Premium) \]<|<span style="color:#FF0000">([^<]+)<'
+    sPattern = '<font color=red>([^<]+?)</font>|<div style="font-weight:bold;[^"]+?">([^>]+?)</div></b><b><a target="_blank" href="https://([^"]+)/([^"]+)">Télécharger<\/a>|>\[(Liens Premium) \]<|<span style="color:#FF0000">([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     #xbmc.log(str(aResult))
@@ -514,7 +514,7 @@ def showSeriesHosters():# recherche et affiche les hotes
 
     oParser = cParser()
 
-    sPattern = '<div style="font-weight:bold;color:[^"]+?">([^<]+)</div>|<a target="_blank" href="https://(.+?)/([^"]+?)">([^<]+)<'
+    sPattern = '<div style="font-weight:bold;color:[^"]+?">([^<]+)</div>|<a target="_blank" href="https://([^"]+?)/([^"]+?)">([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -541,6 +541,7 @@ def showSeriesHosters():# recherche et affiche les hotes
                 sName = sName.replace('Télécharger','')
                 sName = sName.replace('pisodes','pisode')
                 sUrl2 = 'https://' + aEntry[1] +  '/' + aEntry[2]
+                cConfig().log(sUrl2)
 
                 sTitle = sMovieTitle + ' ' + sName
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
