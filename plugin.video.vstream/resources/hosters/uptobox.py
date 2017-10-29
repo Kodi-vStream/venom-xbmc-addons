@@ -119,8 +119,10 @@ class cHoster(iHoster):
         if ret == 1:
             self.stream = False
         #mode stream
-        else:
+        elif ret == 0:
             self.__sUrl = self.__sUrl.replace('http://uptobox.com/','http://uptostream.com/iframe/')
+        else:
+            return False
         
         cGui().showInfo('Resolve', self.__sDisplayName, 5)
         
