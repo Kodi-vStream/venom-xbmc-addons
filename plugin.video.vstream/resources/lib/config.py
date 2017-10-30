@@ -364,6 +364,9 @@ class cConfig():
 
             def onInit(self):
                 #par default le resumer#
+                color = cConfig().getSetting('deco_color')
+                xbmcgui.Window(10000).setProperty('color', color)
+                
                 self.getControl(50).setVisible(False)
                 self.getControl(50).reset()
                 self.getControl(5500).setVisible(False)
