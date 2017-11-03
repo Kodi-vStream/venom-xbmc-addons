@@ -150,7 +150,7 @@
 						<aligny>center</aligny>
 						<color>white</color>
 						<shadowcolor>black</shadowcolor>
-						<label>lll $INFO[Container(5200).ListItem.Label]</label>
+						<label>$INFO[Container(5200).ListItem.Label]</label>
 					</control>
 				</control>
 
