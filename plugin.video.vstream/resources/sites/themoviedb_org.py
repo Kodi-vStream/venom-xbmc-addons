@@ -7,6 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
+from resources.lib import util
 import urllib, unicodedata, re
 import xbmcgui, xbmc
 from resources.lib.tmdb import cTMDb
@@ -175,6 +176,7 @@ def showFolderList():
     liste.append( ['Gagnants des Oscars', '31670'] )
     liste.append( ['Les adaptations', '9883'] )
     liste.append( ['science-fiction', '3945'] )
+    liste.append( ['Best séries', '36788'] )
 
     #liste.append( ['nom de la liste', 'ID de la liste'] )
 
@@ -210,7 +212,15 @@ def showMovies(sSearch = ''):
     total = len(result)
 
     if (total > 0):
+
+        dialog = util.createDialog(SITE_NAME)
         for i in result['results']:
+
+            total = len(result['results'])
+            util.updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
             sId, sTitle, sOtitle, sThumbnail, sFanart, sDesc = i['id'], i['title'], i['original_title'], i['poster_path'], i['backdrop_path'], i['overview']
             if sThumbnail:
                 sThumbnail = POSTER_URL + sThumbnail
@@ -240,14 +250,16 @@ def showMovies(sSearch = ''):
             oGuiElement.setFileName(sTitle)
             oGuiElement.setIcon('films.png')
             oGuiElement.setMeta(1)
-            oGuiElement.setThumbnail(sThumbnail)
-            oGuiElement.setPoster(sThumbnail)
-            oGuiElement.setFanart(sFanart)
+            oGuiElement.setMetaAddon('true')
+            #oGuiElement.setThumbnail(sThumbnail)
+            #oGuiElement.setPoster(sThumbnail)
+            #oGuiElement.setFanart(sFanart)
             oGuiElement.setCat(1)
             oGuiElement.setDescription(sDesc)
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
+        util.finishDialog(dialog)
         if (iPage > 0):
             iNextPage = int(iPage) + 1
             oOutputParameterHandler = cOutputParameterHandler()
@@ -292,8 +304,16 @@ def showSeries(sSearch=''):
 
     total = len(result)
 
+    dialog = util.createDialog(SITE_NAME)
+
     if (total > 0):
         for i in result['results']:
+
+            total = len(result['results'])
+            util.updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
             sId, sTitle, sOtitle, sThumbnail, sFanart, sDesc = i['id'], i['name'], i['original_name'], i['poster_path'], i['backdrop_path'], i['overview']
             if sThumbnail:
                 sThumbnail = POSTER_URL + sThumbnail
@@ -331,14 +351,16 @@ def showSeries(sSearch=''):
             oGuiElement.setFileName(sTitle)
             oGuiElement.setIcon('series.png')
             oGuiElement.setMeta(2)
-            oGuiElement.setThumbnail(sThumbnail)
-            oGuiElement.setPoster(sThumbnail)
-            oGuiElement.setFanart(sFanart)
+            oGuiElement.setMetaAddon('true')
+            #oGuiElement.setThumbnail(sThumbnail)
+            #oGuiElement.setPoster(sThumbnail)
+            #oGuiElement.setFanart(sFanart)
             oGuiElement.setCat(2)
-            oGuiElement.setDescription(sDesc)
+            #oGuiElement.setDescription(sDesc)
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
+        util.finishDialog(dialog)
         if (iPage > 0):
             iNextPage = int(iPage) + 1
             oOutputParameterHandler = cOutputParameterHandler()
@@ -392,9 +414,15 @@ def showSeriesSaison():
     result = grab.getUrl(sUrl)
 
     total = len(result)
+    dialog = util.createDialog(SITE_NAME)
 
     if (total > 0):
         for i in result['seasons']:
+
+            total = len(result['seasons'])
+            util.updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sdate, sNbreEp, sIdSeason, sThumbnail, SSeasonNum = i['air_date'], i['episode_count'], i['id'], i['poster_path'], i['season_number']
 
@@ -427,18 +455,19 @@ def showSeriesSaison():
             oGuiElement.setFileName(sMovieTitle)
             oGuiElement.setIcon('series.png')
             oGuiElement.setMeta(2)
-            oGuiElement.setThumbnail(sThumbnail)
-            oGuiElement.setPoster(sThumbnail)
-            oGuiElement.setFanart(sFanart)
+            oGuiElement.setMetaAddon('true')
+            #oGuiElement.setThumbnail(sThumbnail)
+            #oGuiElement.setPoster(sThumbnail)
+            #oGuiElement.setFanart(sFanart)
             oGuiElement.setCat(7)
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-
+        util.finishDialog(dialog)
     #test pr chnagement mode
     #xbmc.executebuiltin('Container.SetViewMode(500)')
 
-    oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory(view)
 
 def showSeriesEpisode():
 
@@ -481,8 +510,14 @@ def showSeriesEpisode():
     result = grab.getUrl(sUrl)
 
     total = len(result)
+    dialog = util.createDialog(SITE_NAME)
     if (total > 0):
         for i in result['episodes']:
+
+            total = len(result['episodes'])
+            util.updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             #sId, sTitle, sOtitle, sThumbnail, sFanart = i['id'], i['name'], i['original_name'], i['poster_path'], i['backdrop_path']
             sdate, sIdEp, sEpNumber, sName, sThumbnail, SResume = i['air_date'], i['id'], i['episode_number'], i['name'], i['still_path'], i['overview']
@@ -522,16 +557,18 @@ def showSeriesEpisode():
             oGuiElement.setFileName(sMovieTitle)
             oGuiElement.setIcon('series.png')
             oGuiElement.setMeta(2)
-            oGuiElement.setThumbnail(sThumbnail)
-            oGuiElement.setFanart(sFanart)
+            oGuiElement.setMetaAddon('true')
+            #oGuiElement.setThumbnail(sThumbnail)
+            #oGuiElement.setFanart(sFanart)
             oGuiElement.setCat(2)
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
+        util.finishDialog(dialog)
     #test pr chnagement mode
     #xbmc.executebuiltin('Container.SetViewMode(50)')
 
-    oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory(view)
 
 def showActors():
     oGui = cGui()
@@ -546,9 +583,15 @@ def showActors():
     result = grab.getUrl(sUrl, iPage)
 
     total = len(result)
+    dialog = util.createDialog(SITE_NAME)
 
     if (total > 0):
         for i in result['results']:
+
+            total = len(result['results'])
+            util.updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sName, sThumbnail = i['name'], i['profile_path']
 
@@ -579,47 +622,7 @@ def showActors():
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-            #afficher aussi les dernier film mais ça le fait au click
-            # for e in i['known_for']:
-            #     try:
-            #         sTitle = unicodedata.normalize('NFKD', e['title']).encode('ascii','ignore')
-            #
-            #     except: sTitle = "Aucune information"
-            #     sId = e['id']
-            #     try:
-            #         sFanart = FANART_URL+e['backdrop_path']
-            #     except:
-            #         sFanart = ''
-            #
-            #     try:
-            #         sThumbnail = POSTER_URL+e['poster_path']
-            #     except:
-            #         sThumbnail = ''
-            #
-            #     #sTitle = sTitle.encode("utf-8")
-            #     oOutputParameterHandler.addParameter('siteUrl', 'none')
-            #     oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            #     oOutputParameterHandler.addParameter('sTmdbId', sId)
-            #     oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            #     oOutputParameterHandler.addParameter('type', 'film')
-            #     oOutputParameterHandler.addParameter('searchtext', showTitle(sTitle,  str('none')))
-            #
-            #     #oGui.addMovieDB('globalSearch', 'showHosters', sTitle, '', sThumbnail, sFanart, oOutputParameterHandler)
-            #
-            #     oGuiElement = cGuiElement()
-            #     oGuiElement.setTmdbId(sId)
-            #     oGuiElement.setSiteName('globalSearch')
-            #     oGuiElement.setFunction('showSearch')
-            #     oGuiElement.setTitle(sTitle)
-            #     oGuiElement.setFileName(sTitle)
-            #     oGuiElement.setIcon('actors.png')
-            #     oGuiElement.setMeta(0)
-            #     oGuiElement.setThumbnail(sThumbnail)
-            #     oGuiElement.setFanart(sFanart)
-            #     oGuiElement.setCat(1)
-            #
-            #     oGui.addFolder(oGuiElement, oOutputParameterHandler)
-
+        util.finishDialog(dialog)
 
 
         if (iPage > 0):
@@ -629,7 +632,7 @@ def showActors():
             oOutputParameterHandler.addParameter('page', iNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showActors', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory(view)
 
 def showFilmActor():
     oGui = cGui()
@@ -644,9 +647,15 @@ def showFilmActor():
     result = grab.getUrl(sUrl, iPage)
 
     total = len(result)
+    dialog = util.createDialog(SITE_NAME)
 
     if (total > 0):
         for i in result['cast']:
+
+            total = len(result['cast'])
+            util.updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
 
             sId, sTitle, sThumbnail, sFanart, sDesc = i['id'], i['title'], i['poster_path'], i['backdrop_path'], i['overview']
@@ -688,14 +697,16 @@ def showFilmActor():
             oGuiElement.setFileName(sTitle)
             oGuiElement.setIcon('actors.png')
             oGuiElement.setMeta(1)
-            oGuiElement.setThumbnail(sThumbnail)
-            oGuiElement.setPoster(sThumbnail)
-            oGuiElement.setFanart(sFanart)
+            oGuiElement.setMetaAddon('true')
+            #oGuiElement.setThumbnail(sThumbnail)
+            #oGuiElement.setPoster(sThumbnail)
+            #oGuiElement.setFanart(sFanart)
             oGuiElement.setCat(1)
-            oGuiElement.setDescription(sDesc)
+            #oGuiElement.setDescription(sDesc)
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
+        util.finishDialog(dialog)
          #pas de paramettre de page
         # if (iPage > 0):
             # iNextPage = int(iPage) + 1
@@ -704,7 +715,7 @@ def showFilmActor():
             # oOutputParameterHandler.addParameter('page', iNextPage)
             # oGui.addDir(SITE_IDENTIFIER, 'showFilmActor', '[COLOR teal]Page '+str(iNextPage)+' >>>[/COLOR]', 'next.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory(view)
 
 
 def showLists():
@@ -722,9 +733,15 @@ def showLists():
     oGui = cGui()
 
     total = len(result)
+    dialog = util.createDialog(SITE_NAME)
 
     if (total > 0):
         for i in result['items']:
+
+            total = len(result['items'])
+            util.updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sId, sType, sThumbnail, sFanart, sVote, sDesc = i['id'], i['media_type'], i['poster_path'], i['backdrop_path'], i['vote_average'], i['overview']
 
@@ -772,12 +789,15 @@ def showLists():
             elif sType == 'tv':
                 oGuiElement.setMeta(2)
                 oGuiElement.setCat(2)
-            oGuiElement.setThumbnail(sThumbnail)
-            oGuiElement.setPoster(sThumbnail)
-            oGuiElement.setFanart(sFanart)
+            oGuiElement.setMetaAddon('true')
+            #oGuiElement.setThumbnail(sThumbnail)
+            #oGuiElement.setPoster(sThumbnail)
+            #oGuiElement.setFanart(sFanart)
             oGuiElement.setDescription(sDesc)
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
+
+        util.finishDialog(dialog)
 
     oGui.setEndOfDirectory(view)
 

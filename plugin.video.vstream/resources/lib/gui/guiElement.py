@@ -589,6 +589,7 @@ class cGuiElement:
             self.__sTrailerUrl = meta['trailer']
         if meta['cover_url']:
             self.__sThumbnail = meta['cover_url']
+            self.__sPoster = meta['cover_url']
 
         return
 
@@ -693,6 +694,7 @@ class cGuiElement:
             # self.__sTrailerUrl = meta['trailer']
         if meta['cover_url']:
             self.__sThumbnail = meta['cover_url']
+            self.__sPoster = meta['cover_url']
         return
 
     def getItemValues(self):
