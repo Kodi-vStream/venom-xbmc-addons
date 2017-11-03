@@ -51,7 +51,7 @@
 						<top>0</top>
 						<width>234</width>
 						<height>310</height>
-						<texture colordiffuse="BFFAFAFA">black-back.png</texture>
+						<texture colordiffuse=$INFO[Window(Home).Property(color)]>focus.png</texture>
 					</control>
 
 					<control type="image">
@@ -73,7 +73,7 @@
 						<top>0</top>
 						<width>986</width>
 						<height>45</height>
-						<texture colordiffuse="BFFAFAFA">black-back.png</texture>
+						<texture>nofocus.png</texture>
 					</control>
 
 					<control type="label">
@@ -135,7 +135,7 @@
 						<top>0</top>
 						<width>1240</width>
 						<height>40</height>
-						<texture colordiffuse="BFFAFAFA">black-back.png</texture>
+						<texture>nofocus.png</texture>
 					</control>
 
 					<control type="label">
@@ -159,7 +159,7 @@
 			        <top>90</top>
 			        <width>986</width>
 			        <height>220</height>
-			        <texture colordiffuse="BFFAFAFA">black-back.png</texture>
+			        <texture>nofocus.png</texture>
 			    </control>
 
 
@@ -224,7 +224,7 @@
 	                    <top>0</top>
 	                    <width>234</width>
 	                    <height>310</height>
-	                    <texture colordiffuse="BFFAFAFA">black-back.png</texture>
+	                    <texture>nofocus.png</texture>
 	                </control>
 
 	                <control type="image">
@@ -245,7 +245,7 @@
 						<top>0</top>
 						<width>986</width>
 						<height>85</height>
-						<texture colordiffuse="BFFAFAFA">black-back.png</texture>
+						<texture>nofocus.png</texture>
 					</control>
 
 	                <control type="label">
@@ -257,7 +257,7 @@
 	                    <font>font30_title</font>
 	                    <scroll>true</scroll>
 	                    <align>left</align>
-	                    <color>white</color>
+						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 	                    <label>$INFO[Container(50).ListItem.Label]$INFO[Container(50).ListItem.Label2, $LOCALIZE[20347] ,]</label>
 	                </control>
@@ -270,9 +270,8 @@
 						<height>20</height>
 						<font>font12</font>
 						<align>left</align>
-						<selectedcolor>white</selectedcolor>
+						<textcolor>white</textcolor>
 						<scroll>false</scroll>
-						<!-- <label>$INFO[ListItem.Label]</label> -->
 						<label>$INFO[Window(Home).Property(birthday),[B]Date de naissance[/B]: ]$INFO[Window(Home).Property(deathday), / Date de décès: ]</label>
 						<visible>!Control.HasFocus(51)</visible>
 					</control>
@@ -284,9 +283,8 @@
 						<height>20</height>
 						<font>font12</font>
 						<align>left</align>
-						<selectedcolor>white</selectedcolor>
+						<textcolor>white</textcolor>
 						<scroll>false</scroll>
-						<!-- <label>$INFO[ListItem.Label]</label> -->
 						<label>$INFO[Window(Home).Property(place_of_birth),[B]Lieu de naissance[/B]: ]</label>
 						<visible>!Control.HasFocus(51)</visible>
 					</control>
@@ -302,7 +300,7 @@
 						<top>0</top>
 						<width>986</width>
 						<height>220</height>
-						<texture colordiffuse="BFFAFAFA">black-back.png</texture>
+						<texture>nofocus.png</texture>
 					</control>
 					<control type="textbox">
 						<description>bio</description>
@@ -347,7 +345,7 @@
 						<top>0</top>
 						<width>234</width>
 						<height>310</height>
-						<texture colordiffuse="BFFAFAFA">black-back.png</texture>
+						<texture>nofocus.png</texture>
 					</control>
 
 					<control type="image">
@@ -370,7 +368,7 @@
 						<top>0</top>
 						<width>986</width>
 						<height>220</height>
-						<texture colordiffuse="BFFAFAFA">black-back.png</texture>
+						<texture>nofocus.png</texture>
 					</control>
 
 					<control type="list">
@@ -405,8 +403,6 @@
 								<align>left</align>
 								<aligny>center</aligny>
 								<textcolor>white</textcolor>
-								<selectedcolor>selected</selectedcolor>
-								<!--<shadowcolor>black</shadowcolor>-->
 								<info>ListItem.Label</info>
 								<scroll>true</scroll>
 							</control>
@@ -478,7 +474,7 @@
 					<top>0</top>
 					<width>1240</width>
 					<height>40</height>
-					<texture colordiffuse="BFFAFAFA">black-back.png</texture>
+					<texture>nofocus.png</texture>
 				</control>
 
 				<control type="label" id="1">
@@ -521,7 +517,7 @@
 						<top>0</top>
 						<width>40</width>
 						<height>40</height>
-						<texture colordiffuse="BFFAFAFA">black-back.png</texture>
+						<texture>nofocus.png</texture>
 					</control>
 
 					<control type="label">
@@ -534,6 +530,7 @@
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
 						<label>$INFO[Window(Home).Property(ListItem.rating)]</label>
 						<visible>!IsEmpty(Window(Home).Property(ListItem.rating))</visible>
 					</control>
@@ -549,7 +546,7 @@
 						<top>0</top>
 						<width>1240</width>
 						<height>150</height>
-						<texture colordiffuse="BFFAFAFA">black-back.png</texture>
+						<texture>nofocus.png</texture>
 					</control>
 
 					<control type="textbox" id="400">
@@ -601,7 +598,7 @@
 								<top>110</top>
 								<width>110</width>
 								<height>20</height>
-								<texture colordiffuse="4DFAFAFA">black-back.png</texture>
+								<texture>nofocus.png</texture>
 							</control>
 
 							<control type="label">
@@ -613,7 +610,7 @@
 								<font>font12</font>
 								<align>center</align>
 								<aligny>center</aligny>
-								<selectedcolor>white</selectedcolor>
+								<textcolor>white</textcolor>
 	                            <onclick>noop</onclick>
 								<label>$INFO[ListItem.Label]</label>
 							</control>
@@ -635,7 +632,7 @@
 								<top>0</top>
 								<width>110</width>
 								<height>130</height>
-								<texture colordiffuse="BFFAFAFA">black-back.png</texture>
+								<texture colordiffuse=$INFO[Window(Home).Property(color)]>focus.png</texture>
 	                            <visible>Control.HasFocus(50)</visible>
 							</control>
 
@@ -644,7 +641,7 @@
 								<top>110</top>
 								<width>110</width>
 								<height>20</height>
-								<texture colordiffuse="BFFAFAFA">black-back.png</texture>
+								<texture>nofocus.png</texture>
 	                            <visible>!Control.HasFocus(50)</visible>
 							</control>
 
@@ -657,7 +654,7 @@
 								<font>font12</font>
 								<align>center</align>
 								<aligny>center</aligny>
-								<selectedcolor>white</selectedcolor>
+								<textcolor>white</textcolor>
 	                            <scroll>false</scroll>
 								<!-- <label>$INFO[ListItem.Label]</label> -->
 	                            <label>$INFO[ListItem.Label]</label>
@@ -691,8 +688,10 @@
                         <height>40</height>
                         <width>180</width>
 						<label>206</label>
-                        <texturenofocus colordiffuse="4DFAFAFA">black-back.png</texturenofocus>
-                        <texturefocus colordiffuse="BFFAFAFA">black-back.png</texturefocus>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<texturenofocus>nofocus.png</texturenofocus>
+						<texturefocus colordiffuse=$INFO[Window(Home).Property(color)]>focus.png</texturefocus>
 						<visible>!Control.IsVisible(50)</visible>
 					</control>
 					<control type="button" id="20">
@@ -704,8 +703,10 @@
                         <height>40</height>
                         <width>180</width>
 						<label>207</label>
-                       <texturenofocus colordiffuse="4DFAFAFA">black-back.png</texturenofocus>
-                        <texturefocus colordiffuse="BFFAFAFA">black-back.png</texturefocus>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<texturenofocus>nofocus.png</texturenofocus>
+						<texturefocus colordiffuse=$INFO[Window(Home).Property(color)]>focus.png</texturefocus>
 						<visible>Control.IsVisible(50)</visible>
 					</control>
 					<control type="button" id="7">
@@ -717,8 +718,10 @@
 						<height>40</height>
 						<width>180</width>
 						<label>eXtra Info</label>
-						<texturenofocus colordiffuse="4DFAFAFA">black-back.png</texturenofocus>
-						<texturefocus colordiffuse="BFFAFAFA">black-back.png</texturefocus>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<texturenofocus>nofocus.png</texturenofocus>
+						<texturefocus colordiffuse=$INFO[Window(Home).Property(color)]>focus.png</texturefocus>
 					</control>
 					<control type="button" id="9">
 						<description>Similaire</description>
@@ -729,8 +732,10 @@
 						<height>40</height>
 						<width>180</width>
 						<label>Similaire</label>
-						<texturenofocus colordiffuse="4DFAFAFA">black-back.png</texturenofocus>
-						<texturefocus colordiffuse="BFFAFAFA">black-back.png</texturefocus>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<texturenofocus>nofocus.png</texturenofocus>
+						<texturefocus colordiffuse=$INFO[Window(Home).Property(color)]>focus.png</texturefocus>
 					</control>
 					<control type="button" id="13">
 						<description>Similaire</description>
@@ -741,8 +746,10 @@
 						<height>40</height>
 						<width>180</width>
 						<label>Recommandés</label>
-						<texturenofocus colordiffuse="4DFAFAFA">black-back.png</texturenofocus>
-						<texturefocus colordiffuse="BFFAFAFA">black-back.png</texturefocus>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<texturenofocus>nofocus.png</texturenofocus>
+						<texturefocus colordiffuse=$INFO[Window(Home).Property(color)]>focus.png</texturefocus>
 					</control>
 					<control type="button" id="11">
 						<description>Play Trailer</description>
@@ -753,8 +760,10 @@
                         <height>40</height>
                         <width>180</width>
 						<label>20410</label>
-                        <texturenofocus colordiffuse="4DFAFAFA">black-back.png</texturenofocus>
-                        <texturefocus colordiffuse="BFFAFAFA">black-back.png</texturefocus>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<texturenofocus>nofocus.png</texturenofocus>
+						<texturefocus colordiffuse=$INFO[Window(Home).Property(color)]>focus.png</texturefocus>
 						<!--<onclick>PlayMedia($INFO[Window(Home).Property(ListItem.Trailer)])</onclick>-->
 						<!--<visible>!IsEmpty(Window(Home).Property(ListItem.Trailer)) + !Skin.HasSetting(WindowedTrailer)</visible>-->
 					</control>
@@ -767,8 +776,10 @@
                         <height>40</height>
                         <width>180</width>
 						<label>$ADDON[plugin.video.vstream 30409]</label>
-                        <texturenofocus colordiffuse="4DFAFAFA">black-back.png</texturenofocus>
-                        <texturefocus colordiffuse="BFFAFAFA">black-back.png</texturefocus>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+                        <texturenofocus>nofocus.png</texturenofocus>
+                        <texturefocus colordiffuse=$INFO[Window(Home).Property(color)]>focus.png</texturefocus>
 						<onclick>Action(Close)</onclick>
 					</control>
 					<!--<control type="button" id="15">

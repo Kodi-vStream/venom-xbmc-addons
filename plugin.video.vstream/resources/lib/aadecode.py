@@ -45,12 +45,13 @@ class AADecoder(object):
         str_char = ""
         while enc_char != '':
             found = False
-            #for i in range(len(self.b)):
-            #    if enc_char.find(self.b[i]) == 0:
-            #        str_char += self.base_repr(i, radix)
-            #        enc_char = enc_char[len(self.b[i]):]
-            #        found = True
-            #        break
+            
+            for i in range(len(self.b)):
+                if enc_char.find(self.b[i]) == 0:
+                    str_char += self.base_repr(i, radix)
+                    enc_char = enc_char[len(self.b[i]):]
+                    found = True
+                    break
 
             if not found:
                 for i in range(len(self.b)):             

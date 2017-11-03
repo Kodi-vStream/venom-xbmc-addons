@@ -124,7 +124,7 @@ class cHoster(iHoster):
         SubTitle = self.checkSubtitle(sHtmlContent)
         
         oParser = cParser()
-        sPattern =  '<source src=[\'"]([^<>\'"]+)[\'"] type=[\'"][^\'"><]+?[\'"] data-res=[\'"]([0-9]+p)[\'"](?:[^<>]* lang=[\'"]([^\'"]+))*'
+        sPattern =  'src":[\'"]([^<>\'"]+)[\'"],"type":[\'"][^\'"><]+?[\'"],"label":[\'"]([0-9]+p)[\'"].+?"lang":[\'"]([^\'"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
         
         #cConfig().log(str(aResult))

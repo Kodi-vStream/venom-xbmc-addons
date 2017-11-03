@@ -119,8 +119,10 @@ class cHoster(iHoster):
         if ret == 1:
             self.stream = False
         #mode stream
-        else:
+        elif ret == 0:
             self.__sUrl = self.__sUrl.replace('http://uptobox.com/','http://uptostream.com/iframe/')
+        else:
+            return False
         
         cGui().showInfo('Resolve', self.__sDisplayName, 5)
         
@@ -218,7 +220,7 @@ class cHoster(iHoster):
     def GetMedialinkStreaming(self,sHtmlContent):
         
         oParser = cParser()
-        sPattern =  '<source src=[\'"]([^<>\'"]+)[\'"] type=[\'"][^\'"><]+?[\'"] data-res=[\'"]([0-9]+p)[\'"](?:[^<>]* lang=[\'"]([^\'"]+))*'
+        sPattern =  'src":[\'"]([^<>\'"]+)[\'"],"type":[\'"][^\'"><]+?[\'"],"label":[\'"]([0-9]+p)[\'"].+?"lang":[\'"]([^\'"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
         
         stream_url = ''

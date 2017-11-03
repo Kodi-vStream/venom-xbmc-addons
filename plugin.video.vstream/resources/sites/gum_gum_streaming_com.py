@@ -57,7 +57,7 @@ def showNews():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<h3 style="color: .+?;">.+? : <a title="([^"]+)" href="(.+?)">.+?</a></h3>'
+    sPattern = '<h3 style="color: .+?;">.+? : <a title="([^"]+)" href="(.+?)">.+?</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -73,6 +73,7 @@ def showNews():
             if filter:
                 continue
             sTitle = aEntry[0]
+            #sTitle = cUtil().removeHtmlTags(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -90,7 +91,7 @@ def showAnimes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<h2 style="text-align: center;"><a href="([^"]+)">(.+?)</a></h2>'
+    sPattern = '<h2 style="text-align: center;"><a href="([^"]+)">(.+?)</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -101,6 +102,7 @@ def showAnimes():
             if dialog.iscanceled():
                 break
             sTitle = str(aEntry[1])
+            #sTitle = cUtil().removeHtmlTags(sTitle)
             sUrl = str(aEntry[0])
             
             #traitement du titre pour compatibilite

@@ -232,14 +232,12 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-
-            if 'film' or 'films' in sUrl2:
-                oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+          
+            if 'films-gratuit' in sUrl2 or '4k' in sUrl2:
+                  oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
-
-
-
+                
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -441,15 +439,16 @@ def showHosters():# recherche et affiche les hotes
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent:
         oParser = cParser()
         sPattern = '<font color=red>([^<]+?)</font>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        aResult = oParser.parse(sHtmlContent, sPattern)      
         sHtmlContent = CutNonPremiumlinks(sHtmlContent)
+        
         #print sHtmlContent
     oParser = cParser()
 
-    sPattern = '<font color=red>([^<]+?)</font>|<div style="font-weight:bold;[^"]+?">([^>]+?)</div></b><b><a target="_blank" href="https://(.+?)/([^"]+?)">Télécharger<\/a>|>\[(Liens Premium) \]<|<span style="color:#FF0000">([^<]+)<'
+    sPattern = '<font color=red>([^<]+?)</font>|<div style="font-weight:bold;[^"]+?">([^>]+?)</div></b><b><a target="_blank" href="([^<>"]+?)">Télécharger<\/a>|>\[(Liens Premium) \]<|<span style="color:#FF0000">(.+?)</div></b><b><a target="_blank" href=href="https://([^"]+)/([^"]+?)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    #xbmc.log(str(aResult))
+    xbmc.log(str(aResult))
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -480,11 +479,14 @@ def showHosters():# recherche et affiche les hotes
 
             else:
                 sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR] ' + sMovieTitle
-                sUrl2 = 'https://' + aEntry[2] + '/' + aEntry[3]
-                URL_DECRYPT = aEntry[2]
-                
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(sUrl2))
+                URL_DECRYPT = aEntry[3]
+                oOutputParameterHandler = cOutputParameterHandler()                  
+                if sUrl.startswith ('https') or sUrl.startswith ('http'):
+                    oOutputParameterHandler.addParameter('siteUrl', aEntry[2])
+                else:
+                    sUrl2 = 'https://' + aEntry[3] + '/' + aEntry[4]
+                    oOutputParameterHandler.addParameter('siteUrl', str(sUrl2))
+                    
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumbnail, '', oOutputParameterHandler)
@@ -492,7 +494,7 @@ def showHosters():# recherche et affiche les hotes
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
-
+    
 def showSeriesHosters():# recherche et affiche les hotes
     #xbmc.log('showSeriesHosters')
 
@@ -514,7 +516,7 @@ def showSeriesHosters():# recherche et affiche les hotes
 
     oParser = cParser()
 
-    sPattern = '<div style="font-weight:bold;color:[^"]+?">([^<]+)</div>|<a target="_blank" href="https://(.+?)/([^"]+?)">([^<]+)<'
+    sPattern = '<div style="font-weight:bold;color:[^"]+?">([^<]+)</div>|<a target="_blank" href="https://([^"]+)/([^"]+?)">([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -541,6 +543,7 @@ def showSeriesHosters():# recherche et affiche les hotes
                 sName = sName.replace('Télécharger','')
                 sName = sName.replace('pisodes','pisode')
                 sUrl2 = 'https://' + aEntry[1] +  '/' + aEntry[2]
+                cConfig().log(sUrl2)
 
                 sTitle = sMovieTitle + ' ' + sName
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
@@ -683,7 +686,7 @@ def CutPremiumlinks(sHtmlContent):
         res = aResult[1][0]
 
     #si l'ordre a été chnage ou si il ya un probleme
-    if 'protect-zt' not in res:
+    if URL_DECRYPT not in res:
         sPattern = '(?i) par .{1,2}pisode(.+?)$'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0]):
