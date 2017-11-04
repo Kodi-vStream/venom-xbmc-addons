@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'skstream_co'
 SITE_NAME = 'Skstream'
 SITE_DESC = 'Films Series Mangas'
 
-URL_MAIN = 'http://www.skstream.co/'
+URL_MAIN = 'http://www.skstream.ws/'
 
 MOVIE_NEWS = (URL_MAIN + 'films', 'showMovies')
 MOVIE_MOVIE = ('http://films', 'showMenuMovies')
