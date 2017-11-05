@@ -74,9 +74,19 @@ def UnlockUrl(url2=None):
         url = oRequest.getRealUrl()
     else:
         #cConfig().log(code)
-        aResult = re.search("!= null\){\s*\$.get\('(.+?)', *{(.+?): *'(.+?)' *, *(.+?): *'(.+?)'}", code, re.DOTALL)
+        aResult = re.search("!= null\){\s*\$.get\('([^']+)',{(.+?)}", code, re.DOTALL)
         if aResult:
-            url = aResult.group(1)+ '?' + aResult.group(2) + '=' + aResult.group(3) + '&' + aResult.group(4) + '=' + aResult.group(5)
+            dat = aResult.group(2)
+            dat = dat.replace("'",'')
+            dat = dat.replace(" ",'')
+
+            dat2 = dict(x.split(':') for x in dat.split(','))
+
+            dat3 = aResult.group(1) + '?'
+            for i,j in dat2.items():
+                dat3 = dat3 + str(i)+ '=' + str(j) + '&'
+            
+            url = dat3[:-1]
             
     #url = 'https://www.flashx.tv/flashx.php?fxfx=6'
     
@@ -392,6 +402,7 @@ class cHoster(iHoster):
         #fh = open('c:\\test2.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
+        
         cConfig().log('Page obtenue')
 
         if 'reload the page!' in sHtmlContent:
