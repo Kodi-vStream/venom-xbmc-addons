@@ -152,7 +152,7 @@ def showMovies(sSearch=''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class=.arrow_pag..+?href=.(.+?).>'
+    sPattern = 'class="inactive">.+?<a class=.arrow_pag..+?href=.(.+?).>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -166,7 +166,7 @@ def showSeries():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -196,7 +196,7 @@ def showSeries():
                 oOutputParameterHandler.addParameter('siteUrl',sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle',sTitle)
                 oOutputParameterHandler.addParameter('sThumbnail',sThumbnail)
-                oGui.addTV(SITE_IDENTIFIER,'showHosters',sTitle,'',sThumbnail,'',oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER,'showLinks',sTitle,'',sThumbnail,'',oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -226,10 +226,11 @@ def showSeriesNews():
             sUrl = aEntry[0]
             sTitle = re.sub('(\d+)&#215;(\d+)',"S\g<1>E\g<2>",aEntry[1])
             sTitle = sTitle.replace(':','')
+            cCleantitle = re.sub('S\d+E\d+','',sTitle)
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl',sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle',sTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle',cCleantitle)
             oGui.addTV(SITE_IDENTIFIER,'showSeries',sTitle,'','','',oOutputParameterHandler)
 
             
