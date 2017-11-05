@@ -67,7 +67,7 @@ class cHosterGui:
         oContext.setFile('cHosterGui')
         oContext.setSiteName(self.SITE_NAME)
         oContext.setFunction('addToPlaylist')
-        oContext.setTitle(cConfig().getlanguage(30201))
+        oContext.setTitle(util.VSlang(30201))
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
 
@@ -77,7 +77,7 @@ class cHosterGui:
             oContext.setFile('cDownload')
             oContext.setSiteName('cDownload')
             oContext.setFunction('AddtoDownloadList')
-            oContext.setTitle(cConfig().getlanguage(30202))
+            oContext.setTitle(util.VSlang(30202))
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)
 
@@ -87,45 +87,27 @@ class cHosterGui:
             oContext.setFile('cDownload')
             oContext.setSiteName('cDownload')
             oContext.setFunction('AddtoDownloadListandview')
-            oContext.setTitle('DL et Visualiser')
+            oContext.setTitle(util.VSlang(30326))
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)
         #Upload menu
         if cInputParameterHandler().getValue('site') != 'siteuptobox' and cConfig().getSetting('hoster_uptobox_premium') == 'true' and oHoster.getPluginIdentifier() == 'uptobox' or oHoster.getPluginIdentifier() == 'uptostream':
-            oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteuptobox', 'siteuptobox', 'AddmyAccount', '[COLOR dodgerblue]Ajouter à mon compte Uptobox[/COLOR]')
+            oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteuptobox', 'siteuptobox', 'AddmyAccount', util.VSlang(30325))
 
         #Upload url vers upto
         if cConfig().getSetting('hoster_uptobox_premium') == 'true' and oHoster.getPluginIdentifier() == 'onefichier' or oHoster.getPluginIdentifier() == 'uplea':
-            oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteuptobox', 'siteuptobox', 'UptomyAccount', '[COLOR dodgerblue]Ajouter à mon compte Uptobox[/COLOR]')
+            oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteuptobox', 'siteuptobox', 'UptomyAccount', util.VSlang(30325))
 
         #context FAV menu
         oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
 
         #context Library menu
-        oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cLibrary', 'cLibrary', 'setLibrary', '[COLOR teal]Ajouter à la librairie[/COLOR]')
+        oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cLibrary', 'cLibrary', 'setLibrary', util.VSlang(30324))
 
         #bug
         oGui.addHost(oGuiElement, oOutputParameterHandler)
 
         #oGui.addFolder(oGuiElement, oOutputParameterHandler)
-
-    def plusHoster(self, oGui):
-
-        oInputParameterHandler = cInputParameterHandler()
-        #aParams = oInputParameterHandler.getAllParameter()
-
-        sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-
-        #formatage pour recherche serie
-        sMovieTitle = util.cUtil().FormatSerie(sMovieTitle)
-        #nettoyage pour la recherche
-        sMovieTitle = util.cUtil().CleanName(sMovieTitle)
-
-        sUrl = "http://www.alluc.ee/stream/lang%3Afr+" + sMovieTitle
-        oOutputParameterHandler = cOutputParameterHandler()
-
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir('alluc_ee', 'showMovies', 'Plus', 'search.png', oOutputParameterHandler)
 
     def checkHoster(self, sHosterUrl):
 
@@ -321,12 +303,12 @@ class cHosterGui:
         if ('giga' in sHostName):
             return self.getHoster('giga')
         if ('vidbom' in sHostName):
-            return self.getHoster('vidbom') 
+            return self.getHoster('vidbom')
         if ('upvid.' in sHostName):
             return self.getHoster('upvid')
         if ('cloudvid' in sHostName):
             return self.getHoster('cloudvid')
-        
+
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
             return self.getHoster('onefichier')
