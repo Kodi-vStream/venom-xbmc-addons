@@ -324,7 +324,9 @@ class cHosterGui:
             return self.getHoster('vidbom') 
         if ('upvid.' in sHostName):
             return self.getHoster('upvid')
-
+        if ('cloudvid' in sHostName):
+            return self.getHoster('cloudvid')
+        
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
             return self.getHoster('onefichier')
