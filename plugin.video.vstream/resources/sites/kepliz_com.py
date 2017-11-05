@@ -461,20 +461,24 @@ def showHostersLink3():
             sTitle = sMovieTitle.replace(' [HD]','')
             sTitle = '[' + sQual + '] ' + sTitle
 
-            #decodage des liens
-            req = urllib2.Request(sLink2,None,headers)
+            if (False):
+                #decodage des liens
+                req = urllib2.Request(sLink2,None,headers)
 
-            try:
-                response = urllib2.urlopen(req)
-                sLink2 = response.geturl()
-                response.close()
+                try:
+                    response = urllib2.urlopen(req)
+                    sLink2 = response.geturl()
+                    response.close()
 
-                sHosterUrl = str(sLink2)
-                oHoster = cHosterGui().getHoster('lien_direct')
-                #data = response.read()
+                    sHosterUrl = str(sLink2)
+                    oHoster = cHosterGui().getHoster('lien_direct')
+                    #data = response.read()
 
-            except urllib2.URLError, e:
-                sLink2 = e.geturl()
+                except urllib2.URLError, e:
+                    sLink2 = e.geturl()
+                    sHosterUrl = str(sLink2)
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+            else:
                 sHosterUrl = str(sLink2)
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
 
