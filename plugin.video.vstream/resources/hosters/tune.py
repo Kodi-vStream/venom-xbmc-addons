@@ -4,7 +4,8 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.util import cUtil,VScreateDialogSelect
 import json
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
+
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
 
 class cHoster(iHoster):
 
@@ -69,16 +70,19 @@ class cHoster(iHoster):
 
         id = self.__getIdFromUrl(self.__sUrl)
         
-        sUrl = 'https://embed.tune.pk/play/' + id  + '?autoplay=&ssl=yes&inline=true'
+        sUrl = 'https://embed.tune.pk/play/' + id  + '?autoplay=no&ssl=yes&inline=true'
 
         oRequest = cRequestHandler(sUrl)
-        sHtmlContent = oRequest.request()
+        sHtmlContent1 = oRequest.request()
 
-        sPattern = "var requestURL *= *'([^']+)'"
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        sPattern = "var requestURL *= *'([^']+)';.+?\"X-secret-Header\":\"(.+?)\"}"
+        aResult = oParser.parse(sHtmlContent1, sPattern)
         if (aResult[0] == True):
-            vUrl = aResult[1][0]
+            vUrl = aResult[1][0][0]
+            Secret = aResult[1][0][1]
             oRequest = cRequestHandler(vUrl)
+            oRequest.addHeaderEntry('User-Agent', UA)
+            oRequest.addHeaderEntry('X-secret-Header', Secret)
             sHtmlContent = oRequest.request()
 
             sHtmlContent = cUtil().removeHtmlTags(sHtmlContent)
@@ -100,10 +104,13 @@ class cHoster(iHoster):
                     ret = VScreateDialogSelect(qua)
                     if (ret > -1):
                         api_call = url[ret]
-
+            else:
+                sPattern = '<meta itemprop="contentURL" content="([^"]+)"'
+                aResult = oParser.parse(sHtmlContent1, sPattern)
+                if (aResult[0] == True):
+                    api_call = aResult[1][0]
+                    
             if (api_call):
                 return True, api_call + '|User-Agent=' + UA 
 
             return False, False
-
-        
