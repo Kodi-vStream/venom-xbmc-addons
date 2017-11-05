@@ -319,19 +319,16 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<iframe.+?src="([^<]+)"'
+    sPattern = '<span> *<a href="([^"]+)" *id="gGotop"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #pensez a faire un cConfig().log(str(aResult)) pour verifier
-    #cConfig().log(str(sUrl))
-    #cConfig().log(str(aResult))
-
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
             sHosterUrl = str(aEntry)
             if sHosterUrl.startswith('/'):
                 sHosterUrl = 'http:' + sHosterUrl
+                
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
