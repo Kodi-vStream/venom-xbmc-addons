@@ -249,7 +249,7 @@
         <setting id="service_time" type="text" label="Derniere MAJ auto le:" default="" enable="false"/>
         <setting label="Upload kodi.log" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, uplog)"/>
         <setting label="Supprimer une BDD" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, clean)"/>
-        <setting subsetting="true" label="Supprime une par une les BDD par séléction (Relancer l'addon une fois réussies)" type="lsep"/>
+        <setting subsetting="true" label="Supprime une par une les BDD par sélection (Relancer l'addon une fois réussies)" type="lsep"/>
         <setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>
         <setting subsetting="true" label="Supprime la BDD du cache pour les métadonnées (Relancer l'addon une fois réussies)" type="lsep"/>
         <setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, xbmc)"/>
