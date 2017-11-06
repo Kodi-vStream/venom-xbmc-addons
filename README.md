@@ -23,9 +23,9 @@ Installez le zip du repository (pour avoir les mises à jour automatiques) ou in
 
 [Voir toutes les Versions](https://github.com/Kodi-vStream/venom-xbmc-addons/releases/)
 
-## Video!
-
-[![Video d'installation](http://img.youtube.com/vi/1SCJ_h4bwJQ/0.jpg)](https://www.youtube.com/watch?v=1SCJ_h4bwJQ)
+## Video!		
+	
+ [![Video d'installation](http://img.youtube.com/vi/jQePwxpTKbI/0.jpg)](https://youtu.be/jQePwxpTKbI)
 
 
 ## Quoi de neuf!

@@ -319,19 +319,16 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<iframe.+?src="([^<]+)"'
+    sPattern = '<span> *<a href="([^"]+)" *id="gGotop"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #pensez a faire un cConfig().log(str(aResult)) pour verifier
-    #cConfig().log(str(sUrl))
-    #cConfig().log(str(aResult))
-
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
             sHosterUrl = str(aEntry)
             if sHosterUrl.startswith('/'):
                 sHosterUrl = 'http:' + sHosterUrl
+                
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
@@ -408,7 +405,7 @@ def serieHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-
+    #inutile??
     if 'sibeol.com' in sUrl:
         oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
@@ -416,7 +413,7 @@ def serieHosters():
         aResult = re.findall(sPattern,sHtmlContent)
         if (aResult):
             sUrl = aResult[0]
-
+    #inutile??
     if '9animeonline' in sUrl:
         oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
@@ -425,7 +422,7 @@ def serieHosters():
         aResult = re.findall(sPattern,sHtmlContent)
         if (aResult):
             sUrl = aResult[0]
-
+    #inutile??
     if 'belike.pw' in sUrl:
         oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
@@ -435,21 +432,13 @@ def serieHosters():
         if (aResult):
             sUrl = aResult[0]
 
-    if 'cloudvid.co' in sUrl:
-        oRequest = cRequestHandler(sUrl)
-        sHtmlContent = oRequest.request()
-
-        sPattern = 'src="([^"]+)"'
-        aResult = re.findall(sPattern,sHtmlContent)
+    #inutile??
+    #lien youtube mais non resolvable, convertion
+    if 'docid' in sUrl:
+        sPattern = 'docid=([\w-]+)'
+        aResult = re.findall(sPattern,sUrl)
         if (aResult):
-            sUrl = aResult[0]
-
-            #lien youtube mais non resolvable, convertion
-            if 'docid' in sUrl:
-                sPattern = 'docid=([\w-]+)'
-                aResult = re.findall(sPattern,sUrl)
-                if (aResult):
-                    sUrl = 'https://drive.google.com/' + aResult[0]
+            sUrl = 'https://drive.google.com/' + aResult[0]
 
     oHoster = cHosterGui().checkHoster(sUrl)
 

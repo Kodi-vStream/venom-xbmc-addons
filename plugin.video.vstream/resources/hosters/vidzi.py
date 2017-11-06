@@ -32,7 +32,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):       
         self.__sUrl = sUrl.replace('http://vidzi.tv/', '')
-        self.__sUrl = sUrl.replace('https://vidzi.tv/', '')
+        self.__sUrl = self.__sUrl.replace('https://vidzi.tv/', '')
         self.__sUrl = self.__sUrl.replace('embed-', '')
         self.__sUrl= re.sub(r'\-.*\.html',r'',self.__sUrl)
         self.__sUrl = self.__sUrl.replace('.html', '')

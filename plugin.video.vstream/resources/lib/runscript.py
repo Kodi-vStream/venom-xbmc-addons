@@ -5,7 +5,14 @@ from config import cConfig
 import xbmc, xbmcgui, xbmcaddon
 import sys, os
 import urllib, urllib2
-import sqlite3
+
+
+try:
+    from sqlite3 import dbapi2 as sqlite
+    cConfig().log('SQLITE 3 as DB engine')
+except:
+    from pysqlite2 import dbapi2 as sqlite
+    cConfig().log('SQLITE 2 as DB engine')
 
 sLibrary = xbmc.translatePath(cConfig().getAddonPath()).decode("utf-8")
 sys.path.append (sLibrary)
@@ -60,13 +67,47 @@ class cClear:
             dialog = xbmcgui.Dialog()
             if dialog.yesno('vStream', 'Êtes-vous sûr ?','','','Non', 'Oui'):
 
-                cached_fav = cConfig().getFileFav()
-                cached_DB = cConfig().getFileDB()
+                #cached_fav = cConfig().getFileFav()
+                #cached_DB = cConfig().getFileDB()
                 cached_Cache = cConfig().getFileCache()
-                self.ClearDir2(VStranslatePath(cached_fav),True)
-                self.ClearDir2(VStranslatePath(cached_DB),True)
+                #self.ClearDir2(VStranslatePath(cached_fav),True)
+                #self.ClearDir2(VStranslatePath(cached_DB),True)
                 self.ClearDir2(VStranslatePath(cached_Cache),True)
                 xbmc.executebuiltin("XBMC.Notification(Clear Addon Cache,Successful,5000,"")")
+            return
+
+        elif (env == 'clean'):
+            dialog = xbmcgui.Dialog()
+            liste = ['historique', 'lecture en cours', 'Marquer vue', 'favorite', 'download']
+            ret = dialog.select('BDD à supprimer', liste)
+            cached_DB = cConfig().getFileDB()
+
+            sql_drop = ""
+
+            if ret > -1:
+
+                if ret == 0:
+                    sql_drop = "DROP TABLE history"
+                elif ret == 1:
+                    sql_drop = "DROP TABLE resume"
+                elif ret == 2:
+                    sql_drop = "DROP TABLE watched"
+                elif ret == 3:
+                    sql_drop = "DROP TABLE favorite"
+                elif ret == 4:
+                    sql_drop = "DROP TABLE download"
+
+                try:
+                    db = sqlite.connect(cached_DB)
+                    dbcur = db.cursor()
+                    dbcur.execute(sql_drop)
+                    db.commit()
+                    dbcur.close()
+                    db.close()
+                    xbmc.executebuiltin("XBMC.Notification(Suppression BDD,Successful,5000,"")")
+                except:
+                    xbmc.executebuiltin("XBMC.Notification(Suppresion BDD,Error,5000,"")")
+
             return
 
         elif (env == 'xbmc'):
@@ -225,7 +266,7 @@ class cClear:
                 filenames = next(os.walk(path2))[2]
                 for x in filenames:
                     if "exture" in x:
-                        con = sqlite3.connect(os.path.join(path2, x).encode('utf-8'))
+                        con = sqlite.connect(os.path.join(path2, x).encode('utf-8'))
                         cursor = con.cursor()
                         cursor.execute("DELETE FROM texture")
                         con.commit()

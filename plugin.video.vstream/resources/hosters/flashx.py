@@ -43,6 +43,7 @@ def GetHtml(url,headers):
     reponse = urllib2.urlopen(request)
     sCode = reponse.read()
     reponse.close()
+    
     return sCode
 
 def UnlockUrl(url2=None):
@@ -54,15 +55,46 @@ def UnlockUrl(url2=None):
     url1 = 'https://www.flashx.tv/js/code.js'
     if url2:
         url1 = url2
+        
+    if not url1.startswith('http'):
+        url1 = 'https:' + url1
+        
+    cConfig().log('unlock url :' + url1)
     
-    code = GetHtml(url1,headers9)
-    #cConfig().log(code)
-    aResult = re.search("!= null\){\s*\$.get\('(.+?)', *{(.+?): *'(.+?)' *, *(.+?): *'(.+?)'}", code, re.DOTALL)
-    if aResult:
-        url = aResult.group(1)+ '?' + aResult.group(2) + '=' + aResult.group(3) + '&' + aResult.group(4) + '=' + aResult.group(5)
-        #cConfig().log(url)
+    oRequest = cRequestHandler(url1)
+    oRequest.addParameters('User-Agent', UA)
+    #oRequest.addParameters('Accept', '*/*')
+    #oRequest.addParameters('Accept-Encoding', 'gzip, deflate, br')
+    #oRequest.addParameters('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequest.addParameters('Referer','https://www.flashx.tv/dl?playthis')
+    code = oRequest.request()
+    
+    url = ''
+    if not code:
+        url = oRequest.getRealUrl()
+    else:
+        #cConfig().log(code)
+        aResult = re.search("!= null\){\s*\$.get\('([^']+)',{(.+?)}", code, re.DOTALL)
+        if aResult:
+            dat = aResult.group(2)
+            dat = dat.replace("'",'')
+            dat = dat.replace(" ",'')
+
+            dat2 = dict(x.split(':') for x in dat.split(','))
+
+            dat3 = aResult.group(1) + '?'
+            for i,j in dat2.items():
+                dat3 = dat3 + str(i)+ '=' + str(j) + '&'
+            
+            url = dat3[:-1]
+            
+    #url = 'https://www.flashx.tv/flashx.php?fxfx=6'
+    
+    if url:
+        cConfig().log(url)
         GetHtml(url,headers9)
         return True
+        
     return False
 
 def LoadLinks(htmlcode):
@@ -370,6 +402,7 @@ class cHoster(iHoster):
         #fh = open('c:\\test2.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
+        
         cConfig().log('Page obtenue')
 
         if 'reload the page!' in sHtmlContent:
@@ -404,7 +437,6 @@ class cHoster(iHoster):
             #et on re-recupere la page
             sHtmlContent = self.GetRedirectHtml(sGoodUrl,sId)
             
-        #desactive pr le moment
         if (False):
          
             #A t on le lien code directement?

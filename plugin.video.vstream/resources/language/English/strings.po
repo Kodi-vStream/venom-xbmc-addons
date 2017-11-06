@@ -301,7 +301,7 @@ msgid "Quality HD"
 msgstr ""
 
 msgctxt "#30201"
-msgid "Add to playlist"
+msgid "Playlist"
 msgstr ""
 
 msgctxt "#30202"
@@ -475,6 +475,18 @@ msgstr ""
 
 msgctxt "#30323"
 msgid "Add watchlist"
+msgstr ""
+
+msgctxt "#30324"
+msgid "Library"
+msgstr ""
+
+msgctxt "#30325"
+msgid "Uptobox"
+msgstr ""
+
+msgctxt "#30326"
+msgid "DL and Read"
 msgstr ""
 
 msgctxt "#30330"

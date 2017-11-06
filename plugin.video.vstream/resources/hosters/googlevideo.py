@@ -2,6 +2,7 @@ from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
+from resources.lib.config import cConfig
 import urllib, urllib2,re
 #import cookielib
 #import json
@@ -65,11 +66,38 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
 
         r = self.get_host_and_id(self.__sUrl)
+
         #si lien deja decode
         if (r == False):
             if 'https://lh3.googleusercontent.com' in self.__sUrl:
-                return True, self.__sUrl 
-        
+                #Nouveaute, avec cookie now
+                                    
+                cConfig().log(self.__sUrl)
+                
+                import requests
+                r = requests.get(self.__sUrl, allow_redirects=False)
+                url = r.headers['Location']
+                cookies = r.headers['set-cookie']
+               
+                # Impossible a faire fonctionner, si quelqu'un y arrive .....
+                #class NoRedirect(urllib2.HTTPRedirectHandler):
+                #    def redirect_request(self, req, fp, code, msg, hdrs, newurl):
+                #        return newurl
+                #opener = urllib2.build_opener(NoRedirect)
+                #HttpReponse = opener.open(self.__sUrl)
+                #htmlcontent = HttpReponse.read()
+                #head = HttpReponse.headers
+                #cConfig().log(str(head))
+                
+                cConfig().log(url)
+                cConfig().log(cookies)
+                
+                return True, url+ '|Cookie=' + cookies
+            #Peut etre un peu brutal, peut provoquer des bugs
+            if 'lh3.googleusercontent.com' in self.__sUrl:
+                cConfig().log('Attention :lien sans cookies')
+                return True, self.__sUrl
+
         web_url = self.getUrl(r[0],r[1])
         
         headers = {'Referer': web_url}

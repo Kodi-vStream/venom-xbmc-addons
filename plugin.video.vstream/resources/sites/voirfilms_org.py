@@ -364,8 +364,8 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #sPattern = '<a href="([^<>"]+?)" target="filmPlayer".+?class="([a-zA-Z]+)L"><\/span> *<\/div><span class="gras">.+?>(.+?)<\/span>'
     sPattern='class="([vostfrL]+)"><\/span>.+?<a href="[^"]+" data-src="(.+?)" target="filmPlayer" class=.+?<span class="([^"]+)"><\/span>'
+    sPattern='data-src="(.+?)" target="filmPlayer" class=.+?<span class="([^"]+)"><\/span>.+?class="([vostfrL]+)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -377,13 +377,13 @@ def showHosters():
             if dialog.iscanceled():
                 break
 
-            sHost = aEntry[2]
-            sLang = aEntry[0].replace('L','')
+            sHost = aEntry[1]
+            sLang = aEntry[2].replace('L','')
             #sTitle = '(' + str(aEntry[1]) + ') [' + sHost + '] ' + sMovieTitle
             sTitle = '[%s] %s [COLOR coral]%s[/COLOR]' %(sLang.upper(),sMovieTitle,sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
+            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 

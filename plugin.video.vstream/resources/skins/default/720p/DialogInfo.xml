@@ -679,6 +679,20 @@
 					<onup>50</onup>
 					<ondown>49</ondown>
 
+					<control type="button" id="7">
+						<description>extra info</description>
+						<textoffsetx>5</textoffsetx>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font12_title</font>
+						<height>40</height>
+						<width>180</width>
+						<label>eXtra Info</label>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<texturenofocus>nofocus.png</texturenofocus>
+						<texturefocus colordiffuse=$INFO[Window(Home).Property(color)]>focus.png</texturefocus>
+					</control>
 					<control type="button" id="5">
 						<description>Cast/Review</description>
                         <textoffsetx>5</textoffsetx>
@@ -708,20 +722,6 @@
 						<texturenofocus>nofocus.png</texturenofocus>
 						<texturefocus colordiffuse=$INFO[Window(Home).Property(color)]>focus.png</texturefocus>
 						<visible>Control.IsVisible(50)</visible>
-					</control>
-					<control type="button" id="7">
-						<description>extra info</description>
-						<textoffsetx>5</textoffsetx>
-						<align>center</align>
-						<aligny>center</aligny>
-						<font>font12_title</font>
-						<height>40</height>
-						<width>180</width>
-						<label>eXtra Info</label>
-						<textcolor>white</textcolor>
-						<shadowcolor>black</shadowcolor>
-						<texturenofocus>nofocus.png</texturenofocus>
-						<texturefocus colordiffuse=$INFO[Window(Home).Property(color)]>focus.png</texturefocus>
 					</control>
 					<control type="button" id="9">
 						<description>Similaire</description>

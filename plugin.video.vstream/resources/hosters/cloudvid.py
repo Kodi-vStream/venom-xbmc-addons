@@ -1,11 +1,11 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#http://cloudvid.co/embed-xxxx.html
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
-import re,xbmcgui
+from resources.lib.util import VScreateDialogSelect
 
 class cHoster(iHoster):
 
@@ -65,6 +65,7 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
+
         if 'File was deleted' in sHtmlContent:
             return False,False
 
@@ -75,11 +76,26 @@ class cHoster(iHoster):
         if (aResult[0] == True):
             sHtmlContent = cPacker().unpack(aResult[1][0])
 
-        sPattern = '{sources:\["(http.+?mp4)"\]'
+        sPattern = '{file:"([^"]+)",label:"([^"]+)"}'
         aResult = oParser.parse(sHtmlContent,sPattern)
-
         if (aResult[0] == True):
-            api_call = aResult[1][0] #pas de choix qualité trouvé pour le moment
+            #initialisation des tableaux
+            url=[]
+            qua=[]
+        
+            #Remplissage des tableaux
+            for i in aResult[1]:
+                url.append(str(i[0]))
+                qua.append(str(i[1]))
+                
+            #Si  1 url
+            if len(url) == 1:
+                api_call = url[0]
+            #Affichage du tableau
+            elif len(url) > 1:
+                ret = VScreateDialogSelect(qua)
+                if (ret > -1):
+                    api_call = url[ret]
 
         if (api_call):
             return True, api_call

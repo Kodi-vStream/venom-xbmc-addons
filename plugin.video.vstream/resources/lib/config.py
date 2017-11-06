@@ -366,11 +366,10 @@ class cConfig():
                 #par default le resumer#
                 color = cConfig().getSetting('deco_color')
                 xbmcgui.Window(10000).setProperty('color', color)
-                
+
                 self.getControl(50).setVisible(False)
                 self.getControl(50).reset()
                 self.getControl(5500).setVisible(False)
-                self.getControl(57).setVisible(False)
                 listitems = []
                 try:
                     for slabel, slabel2, sicon, sid in meta['cast']:
@@ -462,13 +461,14 @@ class cConfig():
                 if controlId == 5:
                     self.getControl(400).setVisible(False)
                     self.getControl(50).setVisible(True)
+                    self.setFocusId(20)
                     return
                 elif controlId == 20:
                     self.getControl(50).setVisible(False)
                     self.getControl(400).setVisible(True)
+                    self.setFocusId(5)
                     return
                 elif controlId == 7:
-                    self.getControl(57).setVisible(True)
                     return
                 elif controlId == 11:
                     from resources.lib.ba import cShowBA

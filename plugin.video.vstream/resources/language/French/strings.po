@@ -297,8 +297,8 @@ msgid "Plugins on/off (3/3)"
 msgstr "Plugins on/off (3/3)"
 
 msgctxt "#30201"
-msgid "Add to playlist"
-msgstr "Ajouter à la playlist"
+msgid "Playlist"
+msgstr "Playlist"
 
 msgctxt "#30160"
 msgid "Quality HD"
@@ -476,6 +476,18 @@ msgstr "Marquer comme regardé"
 msgctxt "#30323"
 msgid "Add watchlist"
 msgstr "Marquer à surveiller"
+
+msgctxt "#30324"
+msgid "Library"
+msgstr "Librairie"
+
+msgctxt "#30325"
+msgid "Uptobox"
+msgstr "Uptobox"
+
+msgctxt "#30326"
+msgid "DL and Read"
+msgstr "DL et Lire"
 
 msgctxt "#30330"
 msgid "Search"
