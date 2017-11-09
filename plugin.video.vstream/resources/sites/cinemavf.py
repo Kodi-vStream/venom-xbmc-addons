@@ -360,7 +360,7 @@ def showLinks():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]).upper() + '[/COLOR]')
             else:
                 sHost = str(aEntry[1]).strip()
-                sHost = sHost.replace('.to', '').replace('.com', '').replace('.me', '').replace('.ec', '').replace('.co', '').replace('.eu', '')
+                sHost = sHost.replace('.to', '').replace('.com', '').replace('.me', '').replace('.ec', '').replace('.co', '').replace('.eu', '').replace('.sx', '')
                 sPost = str(aEntry[2])
                 sTitle = ('%s (%s)') % (sMovieTitle, sHost)
 
