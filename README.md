@@ -19,15 +19,20 @@ Vstream est un addon pour xbmc qui vous permet de visionner en streaming un gran
 
 Installez le zip du repository (pour avoir les mises à jour automatiques) ou installez la dernière version.
 
-[Télécharger le Repository](https://github.com/Kodi-vStream/venom-xbmc-addons/releases/tag/Repository)
+[![images](https://img.shields.io/badge/T%C3%A9l%C3%A9charger-Repository-blue.svg?style=for-the-badge)](https://github.com/Kodi-vStream/venom-xbmc-addons/releases/tag/Repository)
 
-[Voir toutes les Versions](https://github.com/Kodi-vStream/venom-xbmc-addons/releases/)
+[![images](https://img.shields.io/badge/T%C3%A9l%C3%A9charger-Derni%C3%A8res%20versions-green.svg?style=for-the-badge)](https://github.com/Kodi-vStream/venom-xbmc-addons/releases/)
+
+[![images](https://img.shields.io/badge/T%C3%A9l%C3%A9charger-Toutes%20les%20versions-yellow.svg?style=for-the-badge)](https://github.com/Kodi-vStream/venom-xbmc-addons/tree/Beta/repo/plugin.video.vstream)
+
 
 ## Video!		
 	
  [![Video d'installation](http://img.youtube.com/vi/jQePwxpTKbI/0.jpg)](https://youtu.be/jQePwxpTKbI)
-
-
+ 
+ [![images](https://img.shields.io/badge/Chaine-Youtube-red.svg?style=for-the-badge)](https://www.youtube.com/channel/UCdyY1QEC8dJSU6-6GPKPrnA)
+ 
+ 
 ## Quoi de neuf!
 
 [Voir le changelog](https://github.com/Kodi-vStream/venom-xbmc-addons/blob/Beta/plugin.video.vstream/changelog.txt)
