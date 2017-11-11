@@ -338,7 +338,7 @@ msgstr "[COLOR red]Supprimer TOUT[/COLOR]"
 
 msgctxt "#30210"
 msgid "Bookmark"
-msgstr "Marque-page"
+msgstr "Marque-pages"
 
 msgctxt "#30211"
 msgid "[COLOR red]Clear this category[/COLOR]"

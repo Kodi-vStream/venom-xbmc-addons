@@ -111,9 +111,11 @@ class cHome:
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
             oGui.addDir(SITE_IDENTIFIER, 'showUpdate', util.VSlang(30418), 'update.png', oOutputParameterHandler)
 
-        oGui.setEndOfDirectory()
+        view = False
         if (oConfig.getSetting("active-view") == 'true'):
-            xbmc.executebuiltin('Container.SetViewMode(%s)' % oConfig.getSetting('accueil-view'))
+            view = oConfig.getSetting('accueil-view')
+
+        oGui.setEndOfDirectory(view)
 
 
     def showUpdate(self):

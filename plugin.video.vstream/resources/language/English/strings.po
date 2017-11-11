@@ -337,7 +337,7 @@ msgid "[COLOR red]Delete Bookmark[/COLOR]"
 msgstr ""
 
 msgctxt "#30210"
-msgid "Bookmark"
+msgid "Bookmarks"
 msgstr ""
 
 msgctxt "#30211"
