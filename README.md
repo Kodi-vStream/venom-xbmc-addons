@@ -62,7 +62,7 @@ Pour participer directement au projet:
 
 ## Faire un Don!
 
-[![paypal](https://img.shields.io/badge/Dons-Paypal/CB-009CDE.svg?style=for-the-badge)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XGYW7QDKCLPCJ)
+[![paypal](https://img.shields.io/badge/Don-Paypal/CB-009CDE.svg?style=for-the-badge)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XGYW7QDKCLPCJ)
 
 
 ## Merci!
