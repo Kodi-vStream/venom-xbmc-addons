@@ -35,35 +35,34 @@ Installez le zip du repository (pour avoir les mises à jour automatiques) ou in
  
 ## Quoi de neuf!
 
-[Voir le changelog](https://github.com/Kodi-vStream/venom-xbmc-addons/blob/Beta/plugin.video.vstream/changelog.txt)
+[![images](https://img.shields.io/badge/voir-Changelog-yellowgreen.svg?style=for-the-badge)](https://github.com/Kodi-vStream/venom-xbmc-addons/blob/Beta/plugin.video.vstream/changelog.txt)
 
 
 ## FAQ!
 
-[Voir le Wiki](https://github.com/Kodi-vStream/venom-xbmc-addons/wiki)
+[![images](https://img.shields.io/badge/voir-Wiki-yellowgreen.svg?style=for-the-badge)](https://github.com/Kodi-vStream/venom-xbmc-addons/wiki)
 
 
 ## Contribuer!
 
-Pour me proposer de nouvelles sources ou me rapporter un bug, utilisez :
+Pour nous proposer de nouvelles sources ou nous rapporter un bug:
 
-[Issues Github](https://github.com/Kodi-vStream/venom-xbmc-addons/issues)
+[![images](https://img.shields.io/badge/Github-Issues-blue.svg?style=for-the-badge)](https://github.com/Kodi-vStream/venom-xbmc-addons/issues)
 
 Pour créer un nouvelle source, utilisez le fichier avec commentaire pour vous aider.
 
-[Fichier avec commentaire (source)](https://github.com/Kodi-vStream/venom-xbmc-addons/blob/Beta/ajouter_une_source.py)
+[![images](https://img.shields.io/badge/Fichier-Site-green.svg?style=for-the-badge)](https://github.com/Kodi-vStream/venom-xbmc-addons/blob/Beta/ajouter_une_source.py)
 
-[Fichier avec commentaire (host)](https://github.com/Kodi-vStream/venom-xbmc-addons/blob/Beta/ajouter_un_hebergeur.py)
+[![images](https://img.shields.io/badge/Ficher-H%C3%A9bergeur-yellow.svg?style=for-the-badge)](https://github.com/Kodi-vStream/venom-xbmc-addons/blob/Beta/ajouter_un_hebergeur.py)
 
+Pour participer directement au projet:
 
-Pour participer directement au projet
-
-[Télécharger la bêta](https://minhaskamal.github.io/DownGit/#/home?url=https:%2F%2Fgithub.com%2FKodi-vStream%2Fvenom-xbmc-addons%2Ftree%2FBeta%2Fplugin.video.vstream)
+[![images](https://img.shields.io/badge/T%C3%A9l%C3%A9charger-B%C3%AAta-orange.svg?style=for-the-badge)](https://minhaskamal.github.io/DownGit/#/home?url=https:%2F%2Fgithub.com%2FKodi-vStream%2Fvenom-xbmc-addons%2Ftree%2FBeta%2Fplugin.video.vstream)
 
 
 ## Faire un Don!
 
-[![paypal](https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XGYW7QDKCLPCJ)
+[![paypal](https://img.shields.io/badge/Dons-Paypal/CB-009CDE.svg?style=for-the-badge)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XGYW7QDKCLPCJ)
 
 
 ## Merci!
