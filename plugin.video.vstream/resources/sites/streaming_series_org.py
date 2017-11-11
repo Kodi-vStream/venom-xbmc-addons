@@ -10,17 +10,17 @@ from resources.lib.util import cUtil
 from resources.lib.config import cConfig
 
 SITE_IDENTIFIER = 'streaming_series_org'
-SITE_NAME = 'Série Streaming'
+SITE_NAME = 'Streaming Séries'
 SITE_DESC = 'Séries en streaming vf gratuitement sur Série Streaming'
 
-URL_MAIN = 'http://www.seriestreaming.net/'
+URL_MAIN = 'http://www.streamingseries.biz/'
 
 SERIE_NEWS = (URL_MAIN, 'showMovies')
 SERIE_SERIES = (URL_MAIN, 'showMovies')
 SERIE_VFS = (URL_MAIN + 'version-francaise-vf/', 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'series-les-plus-vues/', 'showMovies')
-SERIE_COMMENTS = (URL_MAIN + 'series-les-plus-commentees/', 'showMovies')
-SERIE_NOTES = (URL_MAIN + 'series-les-plus-aimees/', 'showMovies')
+SERIE_COMMENTS = (URL_MAIN + 'seriestv-les-plus-commentees/', 'showMovies')
+SERIE_NOTES = (URL_MAIN + 'series-streaming-les-plus-aimees/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
