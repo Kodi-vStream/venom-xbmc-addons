@@ -47,11 +47,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENTS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENTS[1], 'Séries (Les plus Commentés)', 'series_comments.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENTS[1], 'Séries (Les plus Commentées)', 'series_comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NOTES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Séries (Les mieux Notés)', 'series_notes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Séries (Les mieux Notées)', 'series_notes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -75,8 +75,8 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('//ad.advertstream.com/', '').replace('http://www.adcash.com/', '').replace('http://regie.espace-plus.net/', '')
-    sPattern = '<div class="moviefilm"><a href=".+?"><img src="([^<]+)" alt=".+?" height=".+?" width=".+?" />.+?<a href="([^<]+)">([^<]+)</a>.+?<small>(.+?)</small>'
+#    sHtmlContent = sHtmlContent.replace('//ad.advertstream.com/', '').replace('http://www.adcash.com/', '').replace('http://regie.espace-plus.net/', '')
+    sPattern = '<div class="moviefilm"><a href=".+?"><img src="(.+?)".+?<a href="([^<]+)">([^<]+)</a>.+?<small>(.+?)</small>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -94,24 +94,21 @@ def showMovies(sSearch = ''):
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),aEntry[2]) == 0:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
                     continue
 
             sThumb = aEntry[0].replace('-119x125','') #qual thumbs
             sSmall = aEntry[3].replace('<span class="likeThis">', '').replace('</span>', '')
-            sSmall = sSmall.replace('Yorum','Commentaire')
+            sSmall = sSmall.replace('Yorum','Commentaires')
             sTitle = aEntry[2] + ' [COLOR azure]- ' + sSmall + '[/COLOR]'
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
-            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-            if 'series' in sUrl:
-                sDisplayTitle = cUtil().DecoTitle(sTitle)
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-            else:
-                sDisplayTitle = cUtil().DecoTitle(sTitle)
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+
+            oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -125,7 +122,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<span class=\'current\'>.+?<a class="page larger" href="(.+?)">'
+    sPattern = '<span class=\'current\'>.+?<a class="page larger".+?href="(.+?)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -138,7 +135,7 @@ def showSeries():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     sUrl = sUrl + '100/'
     oRequestHandler = cRequestHandler(sUrl)
@@ -160,8 +157,8 @@ def showSeries():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sThumb', str(sThumb))
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -172,12 +169,12 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','')
-    sHtmlContent = sHtmlContent.replace('\r','')
+    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/', '')
+    sHtmlContent = sHtmlContent.replace('\r', '')
 
     sPattern = '(VF|VOSTFR)<\/b><\/p>|<iframe.+?src=[\'|"](.+?)[\'|"]'
     oParser = cParser()
@@ -192,21 +189,27 @@ def showHosters():
 
             #langue
             if aEntry[0]:
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMisc(SITE_IDENTIFIER, 'showSeries', '[COLOR red]' + str(aEntry[0]) + '[/COLOR]', 'series.png', sThumbnail, '', oOutputParameterHandler)
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
             #episode
             else:
                 sHosterUrl = str(aEntry[1])
+                if '//goo.gl' in sHosterUrl:
+                    import urllib2
+                    try:
+                        cConfig().log('ok ' + sHosterUrl)
+                        headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'}
+                        request = urllib2.Request(sHosterUrl, None, headers)
+                        reponse = urllib2.urlopen(request)
+                        sHosterUrl = reponse.geturl()
+                    except:
+                        pass
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         cConfig().finishDialog(dialog)
 
