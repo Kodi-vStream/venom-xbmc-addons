@@ -161,66 +161,6 @@ class cGuiElement:
     def getFunction(self):
         return self.__sFunctionName
 
-    def RangeTitle(self, string):
-
-        string['color'] = self.__sDecoColor
-        sText = ''
-
-        try:
-            #season return 03
-            string['season'] = int(string['season'])
-            sText += '[COLOR {color}]S{season:02d}[/COLOR] '
-        except: pass
-        try:
-            #episode return 02
-            string['episode'] = int(string['episode'])
-            sText += '[COLOR {color}]E{episode:02d}[/COLOR] '
-        except:pass
-        try:
-            #debut de ligne pour plage de serie ou saison
-            string['start']
-            sText += '[COLOR {color}]{start}[/COLOR] '
-        except:pass
-        try:
-            string['title']
-            sText += '{title}'
-        except:pass
-        try:
-            #qual pour qualiter
-            string['qual']
-            sText += ' ({qual}) '
-        except:pass
-        try:
-            #qual pour qualiter
-            string['lang']
-            sText += ' ({lang}) '
-        except:pass
-        try:
-            string['year'] = int(string['year'])
-            sText += ' ({year:04d})'
-        except:pass
-        try:
-            string['date']
-            sText += ' ({date})'
-            #print t['date'][6:10]
-        except:pass
-        try:
-            #fin de ligne pour genre ou info diverse
-            string['end']
-            sText += ' [COLOR {color}]({end})[/COLOR]'
-        except:pass
-        try:
-            string['host']
-            sText += ' [COLOR teal]({host})[/COLOR]'
-            #print t['date'][6:10]
-        except:pass
-
-        try:
-            sText = sText.format(**string)
-            return sText
-        except:
-            config().log("format du titre incorrecte" + string)
-
     def TraiteTitre(self, sTitle):
 
         # Format Obligatoire a traiter via le fichier site
@@ -345,20 +285,6 @@ class cGuiElement:
 
     def setTitle(self, sTitle):
         self.__sTitle = sTitle
-
-    def setTitle_old(self, sTitle):
-        #Si le titre est un dict en bêta
-        if type(sTitle) is dict:
-            self.__sTitle = self.RangeTitle(sTitle)
-        #titre normal
-        else:
-            # avec la derniere modif de la recherche de tag plus besoin non?
-            if not sTitle.startswith('[COLOR'):
-                sTitle = self.TraiteTitre(sTitle)
-
-            self.__sTitle = sTitle
-            #xbmc.log(sTitle, xbmc.LOGNOTICE)
-
 
     def getTitle(self):
 
@@ -702,8 +628,8 @@ class cGuiElement:
         self.__aItemValues['Plot'] = self.getDescription()
         self.__aItemValues['Playcount'] = self.getWatched()
         #tmdbid
-        if self.getTmdb():
-            self.addItemProperties('TmdbId', str(self.getTmdb()))
+        if self.getTmdbId():
+            self.addItemProperties('TmdbId', str(self.getTmdbId()))
 
         #self.addItemProperties('fanart_image', self.__sFanart)
 
