@@ -78,7 +78,7 @@ class cClear:
 
         elif (env == 'clean'):
             dialog = xbmcgui.Dialog()
-            liste = ['historique', 'lecture en cours', 'Marquer vue', 'favorite', 'download']
+            liste = ['Historiques', 'Lecture en cours', 'Marqués vues', 'Marque-Pages', 'Téléchargements']
             ret = dialog.select('BDD à supprimer', liste)
             cached_DB = cConfig().getFileDB()
 

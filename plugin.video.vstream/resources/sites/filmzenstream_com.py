@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'filmzenstream_com'
 SITE_NAME = 'Filmzenstream'
 SITE_DESC = 'Film streaming HD gratuit complet'
 
-URL_MAIN = 'http://filmzenstream.com/'
+URL_MAIN = 'https://filmzenstream.com/'
 
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_MOVIE = (URL_MAIN , 'showMovies')
@@ -54,7 +54,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
+        sUrl = URL_SEARCH_MOVIES[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -63,7 +63,7 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action/Aventure',URL_MAIN + 'action'] )
+    liste.append( ['Action/Aventure',URL_MAIN + 'action/'] )
     liste.append( ['Animation',URL_MAIN + 'animation/'] )
     liste.append( ['Aventure',URL_MAIN + 'aventure/'] )
     liste.append( ['Comédie',URL_MAIN + 'comedie/'] )
@@ -95,21 +95,20 @@ def showGenres():
 def showYears():
     oGui = cGui()
 
-    sStart = '<div class="filter-content-slider">'
-    sEnd = '<div class="filter-slide filter-slide-down">'
-
     oParser = cParser()
 
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
 
+    sStart = '<h3>Année de sortie'
+    sEnd = '<h3>Qualité'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
     sPattern = '<a href="([^"]+)">(.+?)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sUrl = URL_MAIN[:-1] + aEntry[0]
+            sUrl = aEntry[0]
             sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -145,26 +144,25 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            sName = aEntry[2].replace(' Streaming Ultra-HD', '').replace(' Streaming Full-HD', '')
-            sName = sName.replace(' en Streaming HD', '').replace(' Streaming HD', '').replace(' streaming HD', '')
-            sName = sName.decode('utf8')
-            sName = cUtil().unescape(sName)
-            try:
-                sName = sName.encode("utf-8")
-            except:
-                pass
+            sName = str(aEntry[2])#.replace(' Streaming Ultra-HD', '').replace(' Streaming Full-HD', '')
+#            sName = sName.replace(' en Streaming HD', '').replace(' Streaming HD', '').replace(' streaming HD', '')
+#            sName = sName.decode('utf8')
+#            sName = cUtil().unescape(sName)
+#            try:
+#                sName = sName.encode("utf-8")
+#            except:
+#                pass
 
             sTitle = sName + ' [' + aEntry[3] + ']'
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
+            if sThumb.startswith('//'):
+                sThumb = 'http:' + sThumb
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sName) == 0:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH_MOVIES[0], ''), sName) == 0:
                     continue
-
-            if sThumb.startswith('//'):
-                sThumb = 'http:' + sThumb
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -172,10 +170,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             sDisplayTitle = cUtil().DecoTitle(sTitle)
 
-            if re.match('.+?saison [0-9]+', sTitle, re.IGNORECASE):
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-            else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -223,21 +218,16 @@ def showHosters():
 
             if 'belike.pw' in aEntry:
                 #print 'belike redirection'
-                oRequestHandler = cRequestHandler('http:'+str(aEntry))
+                if aEntry.startswith('/'):
+                    oRequestHandler = cRequestHandler('https:' + str(aEntry))
+                else:
+                    oRequestHandler = cRequestHandler(str(aEntry))
                 sHtmlContent = oRequestHandler.request()
-                sPattern = 'file: *"([^"]+)",label:"'
+                sPattern = '{file: "(.+?)", type: ".+?", label: "'
                 aResult = oParser.parse(sHtmlContent, sPattern)
                 #print aResult
                 if (aResult[0] == True):
                     sHosterUrl = aResult[1][0]
-                else :
-                    oRequestHandler = cRequestHandler('http:'+str(aEntry))
-                    sHtmlContent = oRequestHandler.request()
-                    sPattern = 'src="([^"]+)"'
-                    aResult = oParser.parse(sHtmlContent, sPattern)
-                    #print aResult
-                    if (aResult[0] == True):
-                        sHosterUrl = aResult[1][0]
 
             else:
                 sHosterUrl = str(aEntry)

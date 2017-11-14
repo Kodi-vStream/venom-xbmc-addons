@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'filmsvostfr_biz'
 SITE_NAME = 'Filmsvostfr'
 SITE_DESC = 'Films/Séries/Animés'
 
-URL_MAIN = 'http://www.filmsvostfr.xyz/'
+URL_MAIN = 'http://filmsvostfr.ws/'
 
 MOVIE_NEWS = (URL_MAIN + 'films-en-streaming', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films-en-streaming', 'showMovies')
@@ -32,7 +32,6 @@ ANIM_GENRES = ('http://animgenre', 'showGenres')
 ANIM_ANNEES = (True, 'showAnimeAnnees')
 
 URL_SEARCH = (URL_MAIN + 'recherche.htm?q=', 'showMovies')
-
 URL_SEARCH_MOVIES = (URL_MAIN + 'recherche.htm?q=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'recherche.htm?q=', 'showMovies')
 
@@ -254,9 +253,9 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if '/serie' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'series.png', sThumb,'', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             elif '/anime' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'animes.png', sThumb,'', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
@@ -385,7 +384,7 @@ def showLinks():
             if dialog.iscanceled():
                 break
 
-            sUrl = aEntry[0].replace('p=watchers','p=30').replace('p=16do','p=16').replace('p=the23eo','p=23').replace('p=the24','p=24') #a del si correction sur le site
+            sUrl = aEntry[0].replace('p=watchers', 'p=30').replace('p=16do', 'p=16').replace('p=the23eo', 'p=23').replace('p=the24', 'p=24') #a del si correction sur le site
             if sUrl.endswith('&c=') or '?p=0&c=' in sUrl: #vide ou redirection
                 continue
 
@@ -421,13 +420,13 @@ def showHosters():
     if 'filmsvostfr.vip' in sUrl or 'voirstream.org' in sUrl:
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
-        headers = {'User-Agent': UA ,
-                   'Host' : sHost,
-                   'Referer': URL_MAIN ,
+        headers = {'User-Agent': UA,
+                   'Host': sHost,
+                   'Referer': URL_MAIN,
                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                    'Content-Type': 'text/html; charset=utf-8'}
 
-        request = urllib2.Request(sUrl,None,headers)
+        request = urllib2.Request(sUrl, None, headers)
         reponse = urllib2.urlopen(request)
         repok = reponse.read()
         reponse.close()

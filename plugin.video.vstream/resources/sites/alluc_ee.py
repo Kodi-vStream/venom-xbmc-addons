@@ -18,6 +18,7 @@ URL_MAIN = 'http://www.alluc.ee/'
 URL_SEARCH = (URL_MAIN + 'stream/lang%3Afr+', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
+
 def load():
     oGui = cGui()
 
@@ -37,23 +38,23 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
-def Decrypt(string,key):
+# def Decrypt(string,key):
 
-    import base64
-    import math
+    # import base64
+    # import math
 
-    s = base64.b64decode(string)
-    i = 0
-    sResult = ''
-    while i < len(s):
-        sChar = s[i:i + 1]
-        sKeyChar = key[int(i%len(key)):int(i%len(key) + 1)]
-        sChar = int(math.floor(ord(sChar) - ord(sKeyChar)))
-        sChar = chr(sChar)
-        sResult = sResult + sChar
-        i = i + 1
+    # s = base64.b64decode(string)
+    # i = 0
+    # sResult = ''
+    # while i < len(s):
+        # sChar = s[i:i + 1]
+        # sKeyChar = key[int(i%len(key)):int(i%len(key) + 1)]
+        # sChar = int(math.floor(ord(sChar) - ord(sKeyChar)))
+        # sChar = chr(sChar)
+        # sResult = sResult + sChar
+        # i = i + 1
 
-    return sResult
+    # return sResult
 
 def showMovies(sSearch = ''):
     if sSearch:
@@ -157,36 +158,66 @@ def showHosters():
 
     sPattern = "<div class=\"linktitleurl\">.+?decrypt\('(.+?)', *'(.+?)' *\)\)"
     aResult = re.search(sPattern,sHtmlContent,re.DOTALL)
-
     if aResult:
-        sHosterUrl = Decrypt(aResult.group(1),aResult.group(2))
-
-    else:
-        sPattern = '\/(www\.alluc\.ee\/embed\/[a-zA-Z0-9%-_]+?)\?alt='
-        aResult = oParser.parse(sHtmlContent, sPattern)
-
-        if (aResult[0] == True):
-            sUrl = 'http://' + aResult[1][0]
-
-            oRequestHandler = cRequestHandler(sUrl)
-            sHtmlContent = oRequestHandler.request()
-
-            sPattern = "decrypt\('(.+?)', *'(.+?)'\)"
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0] == True):
-                sHtmlContent = Decrypt(aResult[1][0][0],aResult[1][0][1])
-
-                sPattern = '<iframe.+?src=["|\'](.+?)["|\'].+?<\/iframe>'
-                aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0] == True):
-                    aEntry = aResult[1]
-                    sTitle = sMovieTitle
-                    sHosterUrl = str(aEntry[0])
-
-    oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
-        oHoster.setDisplayName(sMovieTitle)
-        oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+        sHosterUrl = decrypt(aResult.group(1),aResult.group(2))
+        if sHosterUrl:
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
     oGui.setEndOfDirectory()
+
+def strrev(r):
+    return r[::-1] 
+   
+def hta(r):
+    e = ""
+    o = 0
+    while o < len(r):
+        e += chr(int(r[o:o+2],16))
+        o += 2
+    return e
+
+def strswpcs(r): 
+    t = ""
+    e = 0
+    while e < len(r):
+        f = re.search('[A-Za-z]+',r[e])
+        if not f:
+            t += r[e]
+            e += 1
+            continue
+        else:    
+            t += f.group().upper() if f.group().islower() else f.group().lower()
+            e += 1
+    return t
+
+    
+def decrypt(r, t):
+    import math
+    import base64
+
+    e = ""
+    o = r[0: 3]
+    r = r[3:]
+    
+    if (o == "36f"):
+        r = strrev(base64.b64decode(r))
+    elif (o == "fc0"):
+        r = hta(strrev(r))
+    elif (o == "663"): 
+        r = base64.b64decode(strrev(r))
+    elif (o == "53a"):
+        r = base64.b64decode(strswpcs(r))
+        
+    s = 0
+    while s < len(r):
+        n = r[s:s+1]
+        a = t[s%len(t) - 1: 1]
+        n = int(math.floor(ord(n) - ord(a)))
+        n = chr(n)
+        e += n
+        s += 1
+    return e

@@ -81,9 +81,9 @@ class cHoster(iHoster):
         oParser = cParser()
 
         #On ne charge les sous titres uniquement si vostfr se trouve dans le titre.
-        if re.search('<head>\s*<title>[^<>]+VOSTFR[^<>]*<\/title>',sHtmlContent,re.IGNORECASE):
+        if re.search('<head\s*.+?>\s*<title>[^<>]+VOSTFR[^<>]*<\/title>',sHtmlContent,re.IGNORECASE):
         
-            sPattern = '<track type=[\'"].+?[\'"] kind=[\'"]subtitles[\'"] src=[\'"]([^\'"]+)[\'"] srclang=[\'"].+?[\'"] label=[\'"]([^\'"]+)[\'"]>'
+            sPattern = '<track type=[\'"].+?[\'"] kind=[\'"]subtitles[\'"] src=[\'"]([^\'"]+).vtt[\'"] srclang=[\'"].+?[\'"] label=[\'"]([^\'"]+)[\'"]>'
             aResult = oParser.parse(sHtmlContent, sPattern)
             
             if (aResult[0] == True):
@@ -91,6 +91,7 @@ class cHoster(iHoster):
                 for aEntry in aResult[1]:
                     url = aEntry[0]
                     label = aEntry[1]
+                    url = url + '.srt'
                     
                     if not url.startswith('http'):
                         url = 'http:' + url
@@ -134,10 +135,16 @@ class cHoster(iHoster):
         if (aResult[0] == True):
             url=[]
             qua=[]
-            
+            lang=[]
+ 
             for aEntry in aResult[1]:
                 url.append(aEntry[0])
                 tmp_qua = aEntry[1]
+                if (aEntry[3]):
+                    if 'unknow' not in aEntry[3]:
+                        tmp_lang = tmp_lang + ' (' + aEntry[3] + ')'
+                lang.append(tmp_lang)
+                
                 if (aEntry[2]):
                     if 'unknow' not in aEntry[2]:
                         tmp_qua = tmp_qua + ' (' + aEntry[2] + ')'
@@ -150,7 +157,7 @@ class cHoster(iHoster):
             elif len(url) > 1:
                 #Afichage du tableau
                 dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
+                ret = dialog2.select('Select Quality',qua,lang)
                 if (ret > -1):
                     stream_url = url[ret]
                 else:
