@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog">
+	<!-- Audio DSP Manager -->
+	<defaultcontrol always="true">9000</defaultcontrol>
+	
+	<controls>
+		<!-- Window Background -->
+		<include>WindowFadeBackgroundImage</include>
+
+		<control type="group">
+
+			<!-- Animation -->
+			<include>DialogZoomAnimation</include>
+
+			<!-- Heading -->
+			<include content="Time">
+				<param name="heading">15020</param>
+			</include>
+
+			<!-- List with available modes -->
+			<control type="list" id="9000">
+				<left>150</left>
+				<top>296</top>
+				<width>360</width>
+				<height>660</height>
+				<onleft>noop</onleft>
+				<onright>20</onright>
+				<onup>noop</onup>
+				<ondown>9001</ondown>
+				<itemlayout width="360" height="66">
+					<control type="label">
+						<width>360</width>
+						<height>66</height>
+						<label>$INFO[ListItem.Label]</label>
+						<textcolor>DialogColor2</textcolor>
+						<font>Font36</font>
+					</control>
+				</itemlayout>
+				<focusedlayout width="360" height="66">
+					<control type="label">
+						<width>360</width>
+						<height>66</height>
+						<label>$INFO[ListItem.Label]</label>
+						<textcolor>DialogColor1</textcolor>
+						<font>Font36</font>
+						<visible>Control.HasFocus(9000)</visible>
+					</control>
+					<control type="label">
+						<width>360</width>
+						<height>66</height>
+						<label>$INFO[ListItem.Label]</label>
+						<textcolor>$VAR[SelectedColor]</textcolor>
+						<font>Font36</font>
+						<visible>!Control.HasFocus(9000)</visible>
+					</control>
+				</focusedlayout>
+
+			</control>
+
+			<!-- Available options -->
+			<control type="label">
+				<left>600</left>
+				<top>228</top>
+				<width>880</width>
+				<height>66</height>
+				<textcolor>DialogColor2</textcolor>
+				<label>[COLOR white]$LOCALIZE[15050][/COLOR]: $INFO[Container(20).NumItems]</label>
+			</control>
+			<control type="list" id="20">
+				<left>600</left>
+				<top>296</top>
+				<width>1200</width>
+				<height>660</height>
+				<pagecontrol>60</pagecontrol>
+
+				<onleft>9000</onleft>
+				<onright>21</onright>
+				<onup>noop</onup>
+				<ondown>9001</ondown>
+
+				<itemlayout width="880" height="66">
+					<control type="label">
+						<width>880</width>
+						<height>66</height>
+						<textcolor>DialogColor2</textcolor>
+						<label> - $INFO[ListItem.Label]</label>
+					</control>
+				</itemlayout>
+
+				<focusedlayout width="880" height="66">
+					<control type="label">
+						<width>880</width>
+						<height>66</height>
+						<textcolor>DialogColor1</textcolor>
+						<label> - $INFO[ListItem.Label]</label>
+						<visible>Control.HasFocus(20)</visible>
+					</control>
+					<control type="label">
+						<width>880</width>
+						<height>66</height>
+						<textcolor>DialogColor2</textcolor>
+						<label> - $INFO[ListItem.Label]</label>
+						<visible>!Control.HasFocus(20)</visible>
+					</control>
+				</focusedlayout>
+			</control>
+
+			<!-- Active options -->
+			<control type="label">
+				<left>1200</left>
+				<top>228</top>
+				<width>600</width>
+				<height>66</height>
+				<textcolor>DialogColor2</textcolor>
+				<label>[COLOR white]$LOCALIZE[15051][/COLOR]: $INFO[Container(21).NumItems]</label>
+			</control>
+			<control type="list" id="21">
+				<left>1200</left>
+				<top>296</top>
+				<width>600</width>
+				<height>660</height>
+				<pagecontrol>61</pagecontrol>
+
+				<onleft>20</onleft>
+				<onright>noop</onright>
+				<onup>noop</onup>
+				<ondown>9001</ondown>
+
+				<itemlayout width="600" height="66">
+					<control type="label">
+						<width>600</width>
+						<height>66</height>
+						<textcolor>DialogColor2</textcolor>
+						<label> - $INFO[ListItem.Label]</label>
+					</control>
+				</itemlayout>
+
+				<focusedlayout width="600" height="66">
+					<control type="label">
+						<width>600</width>
+						<height>66</height>
+						<textcolor>DialogColor1</textcolor>
+						<label> - $INFO[ListItem.Label]</label>
+						<visible>Control.HasFocus(21)</visible>
+					</control>
+					<control type="label">
+						<width>600</width>
+						<height>66</height>
+						<textcolor>DialogColor2</textcolor>
+						<label> - $INFO[ListItem.Label]</label>
+						<visible>!Control.HasFocus(21)</visible>
+					</control>
+				</focusedlayout>
+			</control>
+
+			<!-- Button grouplist background -->
+			<include content="dialogButtonBackground">
+				<param name="id">9001</param>
+			</include>
+
+			<!-- Buttons -->
+			<control type="grouplist" id="9001">
+				<left>120</left>
+				<bottom>100</bottom>
+				<width>1680</width>
+				<height>66</height>
+				<orientation>horizontal</orientation>
+				<align>center</align>
+				<itemgap>30</itemgap><!-- Button grouplist -->
+				<onup>9000</onup>
+
+				<!-- Apply changes now -->
+				<control type="button" id="23">
+					<width>Auto</width>
+					<label>14070</label>
+				</control>
+				<!-- Clear active modes -->
+				<control type="button" id="24">
+					<width>Auto</width>
+					<label>15066</label>
+				</control>
+				<!-- Apply changes directly -->
+				<control type="radiobutton" id="22">
+					<width>450</width>
+					<label>15064</label>
+				</control>
+
+			</control>
+
+			<!-- Fake scrollbars, otherwise 20/21 won't populate -->
+			<control type="scrollbar" id="60">
+				<left>-100000</left>
+				<centertop>50%</centertop>
+				<width>20</width>
+				<height>720</height>
+			</control>
+			<control type="scrollbar" id="61">
+				<centerleft>50%</centerleft>
+				<top>-1000766</top>
+				<width>1680</width>
+				<height>20</height>
+			</control>
+
+		</control>
+
+	</controls>
+
+</window>

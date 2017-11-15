@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- dialogsettings -->
+	<defaultcontrol always="true">5</defaultcontrol>
+
+	<include condition="!Window.IsVisible(osdaudiosettings) + !Window.IsVisible(osdvideosettings)">DialogSettings_Default</include>
+	<include condition="Window.IsVisible(osdaudiosettings) | Window.IsVisible(osdvideosettings)">DialogSettings_OSD</include>
+
+</window>

@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- smartplaylisteditor -->
+	<defaultcontrol always="true">22</defaultcontrol>
+
+	<controls>
+		<!-- Window Background -->
+		<include>WindowFadeBackgroundImage</include>
+
+		<control type="group">
+
+			<!-- Animation -->
+			<include>DialogZoomAnimation</include>
+
+			<!-- Heading -->
+			<include content="Time">
+				<param name="heading">$INFO[Control.GetLabel(2)]</param>
+			</include>
+			<control type="label" id="2">
+				<left>-150000</left>
+				<top>96</top>
+				<width>1620</width>
+				<height>72</height>
+				<font>Font72</font>
+				<label>-</label>
+			</control>
+
+			<!-- Left group -->
+			<control type="group">
+				<left>150</left>
+				<top>228</top>
+				<width>360</width>
+				<height>462</height>
+
+				<!-- Name Label -->
+				<control type="label">
+					<top>66</top>
+					<width>360</width>
+					<height>66</height>
+					<label>21433</label>
+					<align>right</align>
+					<textcolor>$VAR[SelectedColor]</textcolor>
+				</control>
+
+				<!-- Rules label -->
+				<control type="label">
+					<top>132</top>
+					<width>360</width>
+					<height>66</height>
+					<label>21434</label>
+					<align>right</align>
+					<textcolor>$VAR[SelectedColor]</textcolor>
+				</control>
+
+				<!-- Name Label -->
+				<control type="label">
+					<top>330</top>
+					<width>360</width>
+					<height>66</height>
+					<label>31048</label>
+					<align>right</align>
+					<textcolor>$VAR[SelectedColor]</textcolor>
+				</control>
+
+			</control>
+
+			<!-- Right group -->
+			<control type="group">
+				<left>600</left>
+				<top>228</top>
+				<width>1200</width>
+				<height>462</height>
+
+				<!-- Set Playlist type -->
+				<control type="button" id="22">
+					<width>1200</width>
+					<height>66</height>
+					<label>467</label>
+					<onright>noop</onright>
+					<onleft>noop</onleft>
+					<onup>noop</onup>
+					<ondown>12</ondown>
+				</control>
+
+				<!-- Name Button -->
+				<control type="button" id="12">
+					<top>66</top>
+					<width>1200</width>
+					<onup>22</onup>
+					<onleft>noop</onleft>
+					<onright>noop</onright>
+					<ondown>10</ondown>
+				</control>
+
+				<!-- Rules list -->
+				<control type="list" id="10">
+					<top>132</top>
+					<width>880</width>
+					<height>198</height>
+					<onup>12</onup>
+					<ondown>16</ondown>
+					<onleft>noop</onleft>
+					<onright>9000</onright>
+
+					<itemlayout width="880" height="66">
+						<control type="label">
+							<width>880</width>
+							<height>66</height>
+							<textcolor>DialogColor2</textcolor>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+					</itemlayout>
+
+					<focusedlayout width="880" height="66">
+						<control type="label">
+							<width>880</width>
+							<height>66</height>
+							<textcolor>DialogColor1</textcolor>
+							<label>$INFO[ListItem.Label]</label>
+							<animation effect="fade" start="100" end="75" condition="!Control.HasFocus(10)">Conditional</animation>
+						</control>
+					</focusedlayout>
+
+				</control>
+
+				<control type="grouplist" id="9000">
+					<left>900</left>
+					<top>132</top>
+					<width>300</width>
+					<height>198</height>
+					<itemgap>0</itemgap>
+					<onleft>10</onleft>
+					<onright>noop</onright>
+					<onup>noop</onup>
+					<ondown>noop</ondown>
+					<orientation>vertical</orientation>
+
+					<!-- Add Rule Button -->
+					<control type="button" id="13">
+						<width>300</width>
+						<align>right</align>
+						<label>15019</label>
+					</control>
+
+					<!-- Remove Rule Button -->
+					<control type="button" id="14">
+						<width>300</width>
+						<align>right</align>
+						<label>1210</label>
+					</control>
+
+					<!-- Edit Rule Button -->
+					<control type="button" id="15">
+						<width>300</width>
+						<align>right</align>
+						<label>21435</label>
+					</control>
+
+				</control>
+
+				<!-- Default spin control -->
+				<control type="button" id="16">
+					<top>330</top>
+					<width>1200</width>
+					<label>21424</label>
+					<onright>noop</onright>
+					<onleft>noop</onleft>
+					<onup>10</onup>
+					<ondown>17</ondown>
+				</control>
+
+				<!-- Default spin control -->
+				<control type="button" id="17">
+					<top>396</top>
+					<width>1200</width>
+					<label>21427</label>
+					<onright>noop</onright>
+					<onleft>noop</onleft>
+					<onup>16</onup>
+					<ondown>18</ondown>
+				</control>
+
+				<!-- Default spin control -->
+				<control type="button" id="18">
+					<top>462</top>
+					<width>860</width>
+					<label>21429</label>
+					<onright>19</onright>
+					<onleft>noop</onleft>
+					<onup>17</onup>
+					<ondown>23</ondown>
+				</control>
+
+				<!-- Default toggle -->
+				<control type="button" id="19">
+					<left>880</left>
+					<top>462</top>
+					<width>300</width>
+					<align>right</align>
+					<onright>noop</onright>
+					<onleft>18</onleft>
+					<onup>17</onup>
+					<ondown>23</ondown>
+				</control>
+
+				<!-- Default spin control -->
+				<control type="button" id="23">
+					<top>528</top>
+					<width>860</width>
+					<label>21458</label>
+					<onright>24</onright>
+					<onleft>noop</onleft>
+					<onup>18</onup>
+					<ondown>9001</ondown>
+				</control>
+
+				<!-- Default radio button -->
+				<control type="radiobutton" id="24">
+					<left>880</left>
+					<top>528</top>
+					<width>300</width>
+					<label>21459</label>
+					<onright>noop</onright>
+					<onleft>23</onleft>
+					<onup>18</onup>
+					<ondown>9001</ondown>
+				</control>
+
+			</control>
+
+			<!-- Button grouplist background -->
+			<include content="dialogButtonBackground">
+				<param name="id">9001</param>
+			</include>
+
+			<!-- Buttons -->
+			<control type="grouplist" id="9001">
+				<left>120</left>
+				<bottom>100</bottom>
+				<width>1680</width>
+				<height>66</height>
+				<orientation>horizontal</orientation>
+				<align>center</align>
+				<itemgap>30</itemgap>
+				<onup>23</onup>
+
+				<!-- OK Button -->
+				<control type="button" id="20">
+					<width>auto</width>
+					<label>186</label>
+				</control>
+
+				<!-- Cancel Button -->
+				<control type="button" id="21">
+					<width>auto</width>
+					<label>222</label>
+				</control>
+			</control>
+
+		</control>
+
+	</controls>
+
+</window>

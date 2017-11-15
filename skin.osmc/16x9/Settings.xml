@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- settings -->
+	<backgroundcolor>0x00000000</backgroundcolor>
+	<defaultcontrol>9000</defaultcontrol>
+	<onload condition="!String.IsEmpty(Window(settings).Property(ChangeSettingsLevel))">ClearProperty(ChangeSettingsLevel)</onload>
+
+	<controls>
+
+		<!-- Background -->
+		<include>WindowBackgroundImage</include>
+
+		<!-- Time -->
+		<include>Time</include>
+
+		<!-- List -->
+		<control type="grouplist" id="9000">
+			<left>120</left>
+			<top>240</top>
+			<width>300</width>
+			<height>870</height>
+			<itemgap>34</itemgap>
+			<onleft>noop</onleft>
+			<orientation>vertical</orientation>
+
+			<!-- Interface -->
+			<control type="togglebutton" id="1">
+				<width>300</width>
+				<height>42</height>
+				<label>[B]$LOCALIZE[31074][/B]</label>
+				<altlabel>[LIGHT]$LOCALIZE[31074][/LIGHT]</altlabel>
+				<usealttexture>!Control.HasFocus(1)</usealttexture>
+				<font>Font42</font>
+				<textcolor>TextColor2</textcolor>
+				<focusedcolor>TextColor1</focusedcolor>
+				<onclick>ActivateWindow(InterfaceSettings)</onclick>
+				<animation effect="fade" start="100" end="70" time="0" condition="!ControlGroup(9000).HasFocus">Conditional</animation>
+			</control>
+
+			<!-- Player -->
+			<control type="togglebutton" id="2">
+				<width>300</width>
+				<height>42</height>
+				<label>[B]$LOCALIZE[16003][/B]</label>
+				<altlabel>[LIGHT]$LOCALIZE[16003][/LIGHT]</altlabel>
+				<usealttexture>!Control.HasFocus(2)</usealttexture>
+				<font>Font42</font>
+				<textcolor>TextColor2</textcolor>
+				<focusedcolor>TextColor1</focusedcolor>
+				<onclick>ActivateWindow(PlayerSettings)</onclick>
+				<animation effect="fade" start="100" end="70" time="0" condition="!ControlGroup(9000).HasFocus">Conditional</animation>
+			</control>
+
+			<!-- Library -->
+			<control type="togglebutton" id="3">
+				<width>300</width>
+				<height>42</height>
+				<label>[B]$LOCALIZE[14211][/B]</label>
+				<altlabel>[LIGHT]$LOCALIZE[14211][/LIGHT]</altlabel>
+				<usealttexture>!Control.HasFocus(3)</usealttexture>
+				<font>Font42</font>
+				<textcolor>TextColor2</textcolor>
+				<focusedcolor>TextColor1</focusedcolor>
+				<onclick>ActivateWindow(MediaSettings)</onclick>
+				<animation effect="fade" start="100" end="70" time="0" condition="!ControlGroup(9000).HasFocus">Conditional</animation>
+			</control>
+
+			<!-- TV -->
+			<control type="togglebutton" id="4">
+				<width>300</width>
+				<height>42</height>
+				<label>[B]$LOCALIZE[31015][/B]</label>
+				<altlabel>[LIGHT]$LOCALIZE[31015][/LIGHT]</altlabel>
+				<usealttexture>!Control.HasFocus(4)</usealttexture>
+				<font>Font42</font>
+				<textcolor>TextColor2</textcolor>
+				<focusedcolor>TextColor1</focusedcolor>
+				<onclick>ActivateWindow(pvrsettings)</onclick>
+				<animation effect="fade" start="100" end="70" time="0" condition="!ControlGroup(9000).HasFocus">Conditional</animation>
+			</control>
+
+			<!-- Profiles -->
+			<control type="togglebutton" id="5">
+				<width>300</width>
+				<height>42</height>
+				<label>[B]$LOCALIZE[13200][/B]</label>
+				<altlabel>[LIGHT]$LOCALIZE[13200][/LIGHT]</altlabel>
+				<usealttexture>!Control.HasFocus(5)</usealttexture>
+				<font>Font42</font>
+				<textcolor>TextColor2</textcolor>
+				<focusedcolor>TextColor1</focusedcolor>
+				<onclick>ActivateWindow(profiles)</onclick>
+				<animation effect="fade" start="100" end="70" time="0" condition="!ControlGroup(9000).HasFocus">Conditional</animation>
+			</control>
+
+			<!-- Services -->
+			<control type="togglebutton" id="6">
+				<width>300</width>
+				<height>42</height>
+				<label>[B]$LOCALIZE[14036][/B]</label>
+				<altlabel>[LIGHT]$LOCALIZE[14036][/LIGHT]</altlabel>
+				<usealttexture>!Control.HasFocus(6)</usealttexture>
+				<font>Font42</font>
+				<textcolor>TextColor2</textcolor>
+				<focusedcolor>TextColor1</focusedcolor>
+				<onclick>ActivateWindow(servicesettings)</onclick>
+				<animation effect="fade" start="100" end="70" time="0" condition="!ControlGroup(9000).HasFocus">Conditional</animation>
+			</control>
+
+			<!-- System -->
+			<control type="togglebutton" id="7">
+				<width>300</width>
+				<height>42</height>
+				<label>[B]$LOCALIZE[13000][/B]</label>
+				<altlabel>[LIGHT]$LOCALIZE[13000][/LIGHT]</altlabel>
+				<usealttexture>!Control.HasFocus(7)</usealttexture>
+				<font>Font42</font>
+				<textcolor>TextColor2</textcolor>
+				<focusedcolor>TextColor1</focusedcolor>
+				<onclick>ActivateWindow(systemsettings)</onclick>
+				<onright>ActivateWindow(systemsettings)</onright>
+				<animation effect="fade" start="100" end="70" time="0" condition="!ControlGroup(9000).HasFocus">Conditional</animation>
+			</control>
+
+			<!-- System info -->
+			<control type="togglebutton" id="8">
+				<width>300</width>
+				<height>42</height>
+				<label>[B]$LOCALIZE[130][/B]</label>
+				<altlabel>[LIGHT]$LOCALIZE[130][/LIGHT]</altlabel>
+				<usealttexture>!Control.HasFocus(8)</usealttexture>
+				<font>Font42</font>
+				<textcolor>TextColor2</textcolor>
+				<focusedcolor>TextColor1</focusedcolor>
+				<onclick>ActivateWindow(systeminfo)</onclick>
+				<animation effect="fade" start="100" end="70" time="0" condition="!ControlGroup(9000).HasFocus">Conditional</animation>
+			</control>
+
+			<!-- Add-on browser -->
+			<control type="togglebutton" id="9">
+				<width>300</width>
+				<height>42</height>
+				<label>[B]$LOCALIZE[10040][/B]</label>
+				<altlabel>[LIGHT]$LOCALIZE[10040][/LIGHT]</altlabel>
+				<usealttexture>!Control.HasFocus(9)</usealttexture>
+				<font>Font42</font>
+				<textcolor>TextColor2</textcolor>
+				<focusedcolor>TextColor1</focusedcolor>
+				<onclick>ActivateWindow(addonbrowser)</onclick>
+				<animation effect="fade" start="100" end="70" time="0" condition="!ControlGroup(9000).HasFocus">Conditional</animation>
+			</control>
+
+			<!-- File manager -->
+			<control type="togglebutton" id="10">
+				<width>300</width>
+				<height>42</height>
+				<label>[B]$LOCALIZE[7][/B]</label>
+				<altlabel>[LIGHT]$LOCALIZE[7][/LIGHT]</altlabel>
+				<usealttexture>!Control.HasFocus(10)</usealttexture>
+				<font>Font42</font>
+				<textcolor>TextColor2</textcolor>
+				<focusedcolor>TextColor1</focusedcolor>
+				<onclick>ActivateWindow(filemanager)</onclick>
+				<animation effect="fade" start="100" end="70" time="0" condition="!ControlGroup(9000).HasFocus">Conditional</animation>
+			</control>
+
+		</control>
+
+	</controls>
+
+</window>

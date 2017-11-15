@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- filebrowser -->
+	<defaultcontrol always="true">450</defaultcontrol>
+	<include>WindowFadeAnimation</include>
+
+	<controls>
+		<!-- Window Background -->
+		<include>WindowFadeBackgroundImage</include>
+
+		<control type="group">
+
+			<!-- Animation -->
+			<include>DialogZoomAnimation</include>
+
+			<!-- Heading -->
+			<include content="Time">
+				<param name="heading">$INFO[Control.GetLabel(411)]</param>
+			</include>
+
+			<control type="label" id="411">
+				<left>-15000</left>
+				<top>96</top>
+				<width>1620</width>
+				<height>72</height>
+				<font>Font72</font>
+			</control>
+
+			<!-- Image -->
+			<control type="image">
+				<left>150</left>
+				<top>225</top>
+				<width>405</width>
+				<height>600</height>
+				<texture>$INFO[ListItem.Icon]</texture>
+				<aspectratio aligny="center">keep</aspectratio>
+				<visible>!String.Contains(ListItem.Icon,Default) + !String.Contains(Control.GetLabel(416),*)</visible>
+			</control>
+			<control type="image">
+				<left>150</left>
+				<top>225</top>
+				<width>405</width>
+				<height>600</height>
+				<texture flipx="true">$INFO[ListItem.Icon]</texture>
+				<aspectratio aligny="center">keep</aspectratio>
+				<visible>!String.Contains(ListItem.Icon,Default) + String.Contains(Control.GetLabel(416),*)</visible>
+			</control>
+			<control type="image">
+				<left>150</left>
+				<top>225</top>
+				<width>405</width>
+				<height>600</height>
+				<texture>$INFO[ListItem.Icon]</texture>
+				<colordiffuse>OverlayColorFO</colordiffuse>
+				<aspectratio aligny="center">keep</aspectratio>
+				<visible>String.Contains(ListItem.Icon,Default)</visible>
+			</control>
+			<control type="image">
+				<left>150</left>
+				<top>225</top>
+				<width>405</width>
+				<height>600</height>
+				<texture>$INFO[ListItem.FileNameAndPath]</texture>
+				<colordiffuse>OverlayColorFO</colordiffuse>
+				<aspectratio aligny="center">keep</aspectratio>
+				<visible>String.IsEqual(ListItem.Path,special://skin/extras/backgrounds/)</visible>
+			</control>
+
+			<!-- Scrollbar -->
+			<control type="scrollbar" id="60">
+				<left>690</left>
+				<centertop>50%</centertop>
+				<width>20</width>
+				<height>672</height>
+				<onleft>9000</onleft>
+				<onright>450</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+				<colordiffuse>OverlayColorNF</colordiffuse>
+				<texturesliderbackground border="11,1,1,1">common/ScrollBackground.png</texturesliderbackground>
+				<texturesliderbar border="11,1,1,1">common/ScrollbarGripNF.png</texturesliderbar>
+				<texturesliderbarfocus border="11,1,1,1" colordiffuse="DialogColor1">common/ScrollbarGripFO.png</texturesliderbarfocus>
+				<textureslidernib>-</textureslidernib>
+				<textureslidernibfocus>-</textureslidernibfocus>
+				<visible>!Skin.HasSetting(Scrollbars)</visible>
+			</control>
+
+			<!-- List -->
+			<control type="list" id="450">
+				<left>750</left>
+				<centertop>50%</centertop>
+				<width>1050</width>
+				<height>672</height>
+				<onup>noop</onup>
+				<ondown>9000</ondown>
+				<onleft>60</onleft>
+				<onright>9000</onright>
+				<orientation>vertical</orientation>
+				<viewtype label="list">list</viewtype>
+				<scrolltime tween="sine" easing="out">240</scrolltime>
+				<pagecontrol>60</pagecontrol>
+
+				<itemlayout width="1050" height="96">
+					<control type="image">
+						<width>96</width>
+						<height>96</height>
+						<bordersize>6</bordersize>
+						<aspectratio>scale</aspectratio>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<animation effect="fade" start="100" end="75" condition="True">Conditional</animation>
+						<visible>!String.Contains(ListItem.Icon,Default)</visible>
+					</control>
+					<control type="image">
+						<width>96</width>
+						<height>96</height>
+						<bordersize>6</bordersize>
+						<aspectratio>scale</aspectratio>
+						<colordiffuse>OverlayColorNF</colordiffuse>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<animation effect="fade" start="100" end="75" condition="True">Conditional</animation>
+						<visible>String.Contains(ListItem.Icon,Default)</visible>
+					</control>
+					<control type="label">
+						<left>140</left>
+						<width>910</width>
+						<height>96</height>
+						<font>Font36</font>
+						<textcolor>DialogColor2</textcolor>
+						<label>[LIGHT]$INFO[ListItem.Label][/LIGHT]</label>
+					</control>
+				</itemlayout>
+
+				<focusedlayout width="1050" height="96">
+					<control type="image">
+						<width>96</width>
+						<height>96</height>
+						<bordersize>6</bordersize>
+						<aspectratio>scale</aspectratio>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<animation effect="fade" start="100" end="75" condition="!Control.HasFocus(450)">Conditional</animation>
+						<visible>!String.Contains(ListItem.Icon,Default)</visible>
+					</control>
+					<control type="image">
+						<width>96</width>
+						<height>96</height>
+						<bordersize>6</bordersize>
+						<aspectratio>scale</aspectratio>
+						<colordiffuse>OverlayColorFO</colordiffuse>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<animation effect="fade" start="100" end="75" condition="!Control.HasFocus(450)">Conditional</animation>
+						<visible>String.Contains(ListItem.Icon,Default)</visible>
+					</control>
+					<control type="label">
+						<left>140</left>
+						<width>910</width>
+						<height>96</height>
+						<font>Font36</font>
+						<textcolor>DialogColor1</textcolor>
+						<label>[B]$INFO[ListItem.Label][/B]</label>
+						<visible>Control.HasFocus(450)</visible>
+					</control>
+					<control type="label">
+						<left>140</left>
+						<width>910</width>
+						<height>96</height>
+						<font>Font36</font>
+						<textcolor>DialogColor2</textcolor>
+						<label>[B]$INFO[ListItem.Label][/B]</label>
+						<visible>!Control.HasFocus(450)</visible>
+					</control>
+				</focusedlayout>
+
+			</control>
+
+			<!-- List -->
+			<control type="list" id="451">
+				<left>750</left>
+				<centertop>50%</centertop>
+				<width>1050</width>
+				<height>672</height>
+				<onup>noop</onup>
+				<ondown>9000</ondown>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+				<orientation>vertical</orientation>
+				<scrolltime tween="sine" easing="out">240</scrolltime>
+
+				<itemlayout width="1170" height="96">
+					<control type="image">
+						<width>96</width>
+						<height>96</height>
+						<bordersize>6</bordersize>
+						<aspectratio>scale</aspectratio>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<animation effect="fade" start="100" end="75" condition="True">Conditional</animation>
+						<visible>!String.Contains(ListItem.Icon,Default)</visible>
+					</control>
+					<control type="image">
+						<width>96</width>
+						<height>96</height>
+						<bordersize>6</bordersize>
+						<aspectratio>scale</aspectratio>
+						<colordiffuse>OverlayColorNF</colordiffuse>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<animation effect="fade" start="100" end="75" condition="True">Conditional</animation>
+						<visible>String.Contains(ListItem.Icon,Default)</visible>
+					</control>
+					<control type="label">
+						<left>140</left>
+						<width>910</width>
+						<height>96</height>
+						<font>Font36</font>
+						<textcolor>DialogColor2</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</itemlayout>
+
+				<focusedlayout width="1170" height="96">
+					<control type="image">
+						<width>96</width>
+						<height>96</height>
+						<bordersize>6</bordersize>
+						<aspectratio>scale</aspectratio>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<animation effect="fade" start="100" end="75" condition="!Control.HasFocus(451)">Conditional</animation>
+						<visible>!String.Contains(ListItem.Icon,Default)</visible>
+					</control>
+					<control type="image">
+						<width>96</width>
+						<height>96</height>
+						<bordersize>6</bordersize>
+						<aspectratio>scale</aspectratio>
+						<colordiffuse>OverlayColorFO</colordiffuse>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<animation effect="fade" start="100" end="75" condition="!Control.HasFocus(451)">Conditional</animation>
+						<visible>String.Contains(ListItem.Icon,Default)</visible>
+					</control>
+					<control type="label">
+						<left>140</left>
+						<width>910</width>
+						<height>96</height>
+						<font>Font36</font>
+						<textcolor>DialogColor1</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+						<visible>Control.HasFocus(451)</visible>
+					</control>
+					<control type="label">
+						<left>140</left>
+						<width>910</width>
+						<height>96</height>
+						<font>Font36</font>
+						<textcolor>DialogColor1</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+						<visible>!Control.HasFocus(451)</visible>
+					</control>
+				</focusedlayout>
+
+			</control>
+
+			<!-- Button grouplist background -->
+			<include content="dialogButtonBackground">
+				<param name="id">9000</param>
+			</include>
+
+			<!-- Buttons -->
+			<control type="grouplist" id="9000">
+				<left>120</left>
+				<bottom>100</bottom>
+				<width>1680</width>
+				<height>66</height>
+				<orientation>horizontal</orientation>
+				<align>center</align>
+				<itemgap>30</itemgap>
+				<onup>450</onup>
+
+				<!-- OK Button -->
+				<control type="button" id="413">
+					<width>auto</width>
+					<label>186</label>
+				</control>
+
+				<!-- Cancel Button -->
+				<control type="button" id="414">
+					<width>auto</width>
+					<label>222</label>
+				</control>
+
+				<!-- New folder -->
+				<control type="button" id="415">
+					<width>auto</width>
+					<label>119</label>
+					<visible>Control.IsEnabled(415)</visible>
+				</control>
+
+				<!-- Mirror image -->
+				<control type="radiobutton" id="416">
+					<width>auto</width>
+					<label>749</label>
+					<visible>Control.IsEnabled(416)</visible>
+				</control>
+
+			</control>
+
+		</control>
+
+	</controls>
+
+</window>

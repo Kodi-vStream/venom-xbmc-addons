@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+
+	<include name="HomeOSMC">
+		<!-- Widget control -->
+		<include>skinshortcuts-template-widgetControl</include>
+
+		<!-- Main list -->
+		<control type="list" id="9000">
+			<animation effect="slide" start="0,0" end="-450,0" time="200" condition="ControlGroup(9010).HasFocus|Window.IsActive(shutdownmenu)">Conditional</animation>
+			<left>120</left>
+			<top>240</top>
+			<width>400</width>
+			<height>679</height>
+			<focusposition>7</focusposition>
+			<defaultcontrol>1</defaultcontrol>
+			<onup>9000</onup>
+			<ondown>9000</ondown>
+			<onleft>9001</onleft>
+			<onright condition="Control.IsVisible(9006)">9006</onright>
+			<orientation>vertical</orientation>
+			<scrolltime tween="sine" easing="out">240</scrolltime>
+
+			<itemlayout width="400" height="97">
+				<control type="label">
+					<left>0</left>
+					<top>0</top>
+					<width>400</width>
+					<height>97</height>
+					<label>[LIGHT]$INFO[ListItem.Label][/LIGHT]</label>
+					<font>Font50</font>
+					<textcolor>TextColor2</textcolor>
+				</control>
+			</itemlayout>
+
+			<focusedlayout width="400" height="97">
+				<control type="label">
+					<left>0</left>
+					<top>0</top>
+					<width>400</width>
+					<height>97</height>
+					<label>[B]$INFO[ListItem.Label][/B]</label>
+					<font>Font50</font>
+					<textcolor>TextColor1</textcolor>
+					<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="false" condition="!Control.HasFocus(9000)">Conditional</animation>
+				</control>
+			</focusedlayout>
+
+			<content>
+				<include>skinshortcuts-mainmenu</include>
+				<item>
+					<label>$LOCALIZE[10004]</label>
+					<icon>DefaultShortcut.png</icon>
+					<thumb />
+					<onclick>ActivateWindow(Settings)</onclick>
+					<visible>System.HasAddon(script.skinshortcuts) + !Skin.HasSetting(AlwaysShowSettingsLink) + !Skin.HasSetting(HasSettingsLink)</visible>
+				</item>
+			</content>
+
+		</control>
+
+		<!-- Indicators -->
+		<include content="Indicators">
+			<param name="left">120</param>
+			<param name="top">200</param>
+			<param name="height">759</param>
+			<param name="container">9000</param>
+		</include>
+
+		<!-- Widgets -->
+		<control type="group" id="9002">
+			<include>skinshortcuts-template-vertical</include>
+		</control>
+
+		<!-- Reloading indicator -->
+		<control type="group">
+			<left>1820</left>
+			<top>685</top>
+			<include>skinshortcuts-template-reloading</include>
+		</control>
+
+		<!-- Sub Menu -->
+		<control type="group" id="9010">
+			<animation effect="slide" time="0" end="-10000,0" condition="Integer.IsEqual(Container(9001).NumItems,0)">Conditional</animation>
+			<control type="image">
+				<include>FullscreenDimensions</include>
+				<texture colordiffuse="DarkenColor">dialogs/DialogTextBackground.png</texture>
+				<animation effect="fade" start="0" end="100" time="200">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+				<visible>ControlGroup(9010).HasFocus</visible>
+			</control>
+			<control type="group">
+				<left>-450</left>
+				<top>0</top>
+				<animation effect="slide" start="0,0" end="450,0" time="200" condition="ControlGroup(9010).HasFocus">Conditional</animation>
+				<control type="button">
+					<left>0</left>
+					<top>0</top>
+					<width>460</width>
+					<height>1080</height>
+					<onclick>noop</onclick>
+				</control>
+
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>450</width>
+					<height>1080</height>
+					<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+				</control>
+
+				<control type="list" id="9001">
+					<left>20</left>
+					<top>20</top>
+					<width>410</width>
+					<height>1040</height>
+					<onleft>noop</onleft>
+					<onright>9000</onright>
+					<orientation>vertical</orientation>
+					<defaultcontrol always="true">1</defaultcontrol>
+
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,20)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,19)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,18)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,17)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,16)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,15)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,14)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,13)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,12)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,11)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,10)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,9)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,8)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,7)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,6)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,5)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,4)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,3)">Conditional</animation>
+					<animation effect="slide" time="0" end="0,26" condition="Integer.IsLess(Container(9001).NumItems,2)">Conditional</animation>
+
+					<itemlayout width="400" height="52">
+						<control type="label">
+							<top>0</top>
+							<width>400</width>
+							<height>52</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>Font33</font>
+							<textcolor>DialogColor2</textcolor>
+						</control>
+					</itemlayout>
+
+					<focusedlayout width="460" height="52">
+						<control type="label">
+							<top>0</top>
+							<width>460</width>
+							<height>52</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>Font33</font>
+							<textcolor>DialogColor1</textcolor>
+							<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="false" condition="!Control.HasFocus(9001)">Conditional</animation>
+						</control>
+					</focusedlayout>
+
+					<content>
+						<include>skinshortcuts-submenu</include>
+					</content>
+
+				</control>
+			</control>
+		</control>
+
+	</include>
+</includes>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- busydialog -->
+
+	<controls>
+
+		<!-- Background -->
+		<include>DialogFadeBackgroundImage</include>
+		<include>DialogFadeBackgroundImage</include>
+		<include>DialogFadeBackgroundImage</include>
+
+		<!-- Main group -->
+		<control type="group">
+			<include>DialogZoomAnimation</include>
+			<centerleft>50%</centerleft>
+			<centertop>50%</centertop>
+			<width>680</width>
+			<height>220</height>
+
+			<!-- Spinner -->
+			<control type="image">
+				<centerleft>50%</centerleft>
+				<centertop>50%</centertop>
+				<width>150</width>
+				<height>150</height>
+				<texture colordiffuse="DialogColor1">$VAR[BusySpinner]</texture>
+			</control>
+
+		</control>
+
+	</controls>
+
+</window>

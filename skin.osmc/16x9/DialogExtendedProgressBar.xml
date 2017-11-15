@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- extendedprogressdialog -->
+	<animation effect="slide" start="550,0" time="200">WindowOpen</animation>
+	<animation effect="slide" end="550,0" time="200">WindowClose</animation>
+	<zorder>100</zorder>
+	<controls>
+		<control type="group">
+			<animation effect="slide" end="0,50" time="200" condition="String.IsEqual(Window(10000).Property(isCaching),True)">Conditional</animation>
+			<animation effect="slide" end="0,50" time="200" condition="Window.IsActive(volumebar)">Conditional</animation>
+			<animation effect="slide" end="0,20" time="200" condition="String.IsEqual(Window(10000).Property(isCaching),True) | Window.IsActive(volumebar)">Conditional</animation>
+			<animation effect="slide" end="0,85" time="200" condition="Window.IsActive(notification)">Conditional</animation>
+			<control type="image">
+				<right>0</right>
+				<top>90</top>
+				<width>550</width>
+				<height>75</height>
+				<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+			</control>
+
+			<!-- Heading -->
+			<control type="label" id="30">
+				<right>10</right>
+				<top>100</top>
+				<width>530</width>
+				<height>20</height>
+				<align>left</align>
+				<scroll>true</scroll>
+				<font>Font27</font>
+			</control>
+
+			<!-- Details -->
+			<control type="label" id="31">
+				<right>10</right>
+				<top>125</top>
+				<width>530</width>
+				<height>25</height>
+				<align>left</align>
+				<aligny>top</aligny>
+				<scroll>true</scroll>
+				<font>Font27-Light</font>
+			</control>
+
+			<!-- Progress -->
+			<control type="progress" id="32">
+				<description>Progressbar</description>
+				<right>0</right>
+				<top>163</top>
+				<width>550</width>
+				<height>2</height>
+				<visible>true</visible>
+				<midtexture colordiffuse="DialogColor1">common/white.png</midtexture>
+			</control>
+		</control>
+
+	</controls>
+
+</window>

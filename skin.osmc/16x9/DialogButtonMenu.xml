@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- shutdownmenu -->
+	<defaultcontrol always="true">7000</defaultcontrol>
+
+	<onload>Dialog.Close(1110)</onload>
+
+	
+	<controls>
+
+		<!-- Background image -->
+		<include>DialogFadeBackgroundImage</include>
+		<control type="group">
+			<animation effect="slide" start="-450,0" time="200">WindowOpen</animation>
+			<animation effect="slide" end="-450,0" time="200">WindowClose</animation>
+
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>450</width>
+				<height>1080</height>
+				<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+			</control>
+
+			<control type="list" id="7000">
+				<left>20</left>
+				<top>20</top>
+				<width>410</width>
+				<height>1040</height>
+				<onright>Close</onright>
+
+				<include content="SideMenuAnimation">
+					<param name="containerID">7000</param>
+				</include>
+
+				<itemlayout width="410" height="52">
+					<control type="label">
+						<width>410</width>
+						<height>52</height>
+						<label>$INFO[ListItem.Label]</label>
+						<textcolor>DialogColor2</textcolor>
+						<align>center</align>
+					</control>
+				</itemlayout>
+				<focusedlayout width="410" height="52">
+					<control type="label">
+						<width>410</width>
+						<height>52</height>
+						<label>$INFO[ListItem.Label]</label>
+						<align>center</align>
+					</control>
+				</focusedlayout>
+				<content>
+					<item>
+						<label>13012</label>
+						<onclick>XBMC.Quit()</onclick>
+						<visible>System.ShowExitButton</visible>
+					</item>
+					<item>
+						<label>13016</label>
+						<onclick>XBMC.Powerdown()</onclick>
+						<visible>System.CanPowerDown</visible>
+					</item>
+					<item>
+						<label>13011</label>
+						<onclick>XBMC.Suspend()</onclick>
+						<visible>System.CanSuspend</visible>
+					</item>
+					<item>
+						<label>13010</label>
+						<onclick>XBMC.Hibernate()</onclick>
+						<visible>System.CanHibernate</visible>
+					</item>
+					<item>
+						<label>13013</label>
+						<onclick>XBMC.Reset()</onclick>
+						<visible>System.CanReboot</visible>
+					</item>
+					<item>
+						<label>$LOCALIZE[20126] $INFO[system.profilename]</label>
+						<onclick>dialog.close(all,true)</onclick>
+						<onclick>System.LogOff</onclick>
+						<visible>System.HasLoginScreen | Integer.IsGreater(System.ProfileCount,1)</visible>
+						<visible>System.Loggedon</visible>
+					</item>
+					<item>
+						<label>20046</label>
+						<onclick>xbmc.mastermode</onclick>
+						<visible>System.HasLocks + System.IsMaster</visible>
+					</item>
+					<item>
+						<altlabel>20045</altlabel>
+						<onclick>xbmc.mastermode</onclick>
+						<visible>System.HasLocks + !System.IsMaster</visible>
+					</item>
+					<item>
+						<label>13017</label>
+						<onclick>XBMC.InhibitIdleShutdown(true)</onclick>
+						<visible>System.HasShutdown +!System.IsInhibit</visible>
+					</item>
+					<item>
+						<label>13018</label>
+						<onclick>XBMC.InhibitIdleShutdown(false)</onclick>
+						<visible>System.HasShutdown + System.IsInhibit</visible>
+					</item>
+					<item>
+						<label>20150</label>
+						<onclick>XBMC.AlarmClock(shutdowntimer,XBMC.Shutdown())</onclick>
+						<visible>!System.HasAlarm(shutdowntimer)</visible>
+						<visible>System.CanPowerDown | System.CanSuspend | System.CanHibernate</visible>
+					</item>
+					<item>
+						<label>20151 $INFO[System.Alarmpos,T-]</label>
+						<onclick>XBMC.CancelAlarm(shutdowntimer)</onclick>
+						<visible>System.HasAlarm(shutdowntimer)</visible>
+					</item>
+					<item>
+						<label>5</label>
+						<onclick>Close</onclick>
+						<onclick>ActivateWindow(Settings)</onclick>
+					</item>
+				</content>
+			</control>
+		</control>
+
+	</controls>
+
+</window>

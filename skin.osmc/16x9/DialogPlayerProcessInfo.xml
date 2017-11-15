@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- fullscreeninfo -->
+	<defaultcontrol>100</defaultcontrol>
+	<animation type="WindowOpen">
+		<effect type="zoom" start="90" end="100" center="auto" tween="back" easing="out" time="200"/>
+		<effect type="fade" start="0" end="100" time="200"/>
+	</animation>
+
+	<controls>
+
+		<control type="group">
+			<!-- Info -->
+			<control type="group">
+				<left>150</left>
+				<top>75</top>
+				<width>1620</width>
+				<height>234</height>
+
+				<!-- Background -->
+				<control type="image">
+					<width>1620</width>
+					<height>234</height>
+					<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+				</control>
+
+				<!-- Icon -->
+				<control type="image">
+					<right>20</right>
+					<top>20</top>
+					<width>234</width>
+					<height>194</height>
+					<aspectratio align="right">keep</aspectratio>
+					<texture>$VAR[VideoPlayerIcon]</texture>
+				</control>
+
+				<!-- Video/Audio info -->
+				<control type="grouplist">
+					<left>20</left>
+					<top>14</top>
+					<itemgap>0</itemgap>
+					<control type="label">
+						<width>1280</width>
+						<height>35</height>
+						<aligny>bottom</aligny>
+						<label>$INFO[Player.Process(videodecoder),[LIGHT]$LOCALIZE[31087]:[/LIGHT] ]$VAR[VideoHWDecoder, (,)]</label>
+						<font>Font25</font>
+						<visible>Player.HasVideo</visible>				
+					</control>
+					<control type="label">
+						<width>1280</width>
+						<height>35</height>
+						<aligny>bottom</aligny>
+						<label>$INFO[Player.Process(pixformat),[LIGHT]$LOCALIZE[31088]:[/LIGHT] ]</label>
+						<font>Font25</font>
+						<visible>Player.HasVideo</visible>					
+					</control>
+					<control type="label">
+						<width>1280</width>
+						<height>35</height>
+						<aligny>bottom</aligny>
+						<label>$INFO[Player.Process(deintmethod),[LIGHT]$LOCALIZE[16038]:[/LIGHT] ]</label>
+						<font>Font25</font>
+						<visible>Player.HasVideo</visible>					
+					</control>
+					<control type="label">
+						<width>1280</width>
+						<height>35</height>
+						<aligny>bottom</aligny>
+						<label>$INFO[Player.Process(videowidth),[LIGHT]$LOCALIZE[38031]:[/LIGHT] ,x]$INFO[Player.Process(videoheight),, px]$INFO[Player.Process(videodar),$COMMA , AR]$INFO[Player.Process(videofps),$COMMA , FPS]</label>
+						<font>Font25</font>
+						<visible>Player.HasVideo</visible>					
+					</control>
+					<control type="label">
+						<width>1280</width>
+						<height>35</height>
+						<aligny>bottom</aligny>
+						<label>[LIGHT]$LOCALIZE[460]:[/LIGHT] $INFO[Player.Process(audiochannels),,$COMMA ]$INFO[Player.Process(audiodecoder)]$INFO[Player.Process(audiobitspersample),$COMMA , bits]$INFO[Player.Process(audiosamplerate),$COMMA , Hz]</label>
+						<font>Font25</font>
+					</control>
+					<control type="label">
+						<width>1280</width>
+						<height>35</height>
+						<aligny>bottom</aligny>
+						<label>$INFO[System.Memory(used.percent),[LIGHT]$LOCALIZE[31089]:[/LIGHT] ,  ]$INFO[System.CpuUsage,[LIGHT]$LOCALIZE[13271][/LIGHT] ]</label>
+						<font>Font25</font>
+					</control>
+				</control>
+
+				<!-- PVR info -->
+				<control type="grouplist">
+					<left>20</left>
+					<top>14</top>
+					<itemgap>0</itemgap>
+					<visible>VideoPlayer.Content(livetv)</visible>
+					<control type="label">
+						<width>1280</width>
+						<height>35</height>
+						<aligny>bottom</aligny>
+						<align>right</align>
+						<label>$INFO[PVR.ActStreamServiceName,[LIGHT]$LOCALIZE[19099]:[/LIGHT] ]  $INFO[PVR.ActStreamProviderName,[LIGHT]$LOCALIZE[19101]:[/LIGHT] ]</label>
+						<font>Font25</font>
+						<visible>Player.HasVideo</visible>				
+					</control>
+					<control type="label">
+						<width>1280</width>
+						<height>35</height>
+						<aligny>bottom</aligny>
+						<align>right</align>
+						<label>$INFO[PVR.ActStreamDevice,[LIGHT]$LOCALIZE[19006]:[/LIGHT] ] $INFO[PVR.ActStreamStatus,(,)]</label>
+						<font>Font25</font>
+						<visible>Player.HasVideo</visible>					
+					</control>
+					<control type="label">
+						<width>1280</width>
+						<height>35</height>
+						<aligny>bottom</aligny>
+						<align>right</align>
+						<label>$INFO[PVR.ActStreamClient,[LIGHT]$LOCALIZE[19012]:[/LIGHT] ]</label>
+						<font>Font25</font>
+						<visible>Player.HasVideo</visible>					
+					</control>
+					<control type="label">
+						<width>1280</width>
+						<height>35</height>
+						<aligny>bottom</aligny>
+						<align>right</align>
+						<label>$INFO[PVR.ActStreamEncryptionName,[LIGHT]$LOCALIZE[19015]:[/LIGHT] ]</label>
+						<font>Font25</font>
+						<visible>Player.HasVideo</visible>					
+					</control>
+					<control type="label">
+						<width>1280</width>
+						<height>35</height>
+						<aligny>bottom</aligny>
+						<align>right</align>
+						<label>$INFO[PVR.ActStreamBer,[LIGHT]$LOCALIZE[19010]:[/LIGHT] ]  $INFO[PVR.ActStreamUnc,[LIGHT]$LOCALIZE[19011]:[/LIGHT] ]  $INFO[PVR.ActStreamMux,[LIGHT]$LOCALIZE[19100]:[/LIGHT] ]</label>
+						<font>Font25</font>
+						<visible>Player.HasVideo</visible>					
+					</control>
+					<control type="label">
+						<width>1280</width>
+						<height>35</height>
+						<aligny>bottom</aligny>
+						<align>right</align>
+						<label>$INFO[PVR.ActStreamSignal,[LIGHT]$LOCALIZE[19008]:[/LIGHT] ]  $INFO[PVR.ActStreamSNR,[LIGHT]$LOCALIZE[19009]:[/LIGHT] ]</label>
+						<font>Font25</font>
+					</control>
+				</control>
+
+				<!-- Background -->
+				<control type="image">
+					<width>1620</width>
+					<height>40</height>
+					<top>249</top>
+					<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+				</control>
+
+				<control type="label">
+					<width>1280</width>
+					<height>40</height>
+					<top>249</top>
+					<left>20</left>
+					<label>[LIGHT]Click OK to toggle player debug information[/LIGHT]</label>
+					<font>Font25</font>
+				</control>
+			</control>
+
+			<control type="button" id="100">
+				<left>-10000</left>
+				<top>-10000</top>
+				<width>1</width>
+				<height>1</height>
+				<label>noop</label>
+				<onclick>PlayerDebug</onclick>
+			</control>
+
+			<control type="group">
+				<visible>!Window.IsActive(seekbar) + !Window.IsActive(videoosd)</visible>
+				<!-- Player forwarding/rewinding -->
+				<control type="group">
+					<left>150</left>
+					<top>870</top>
+					<width>140</width>
+					<height>60</height>
+					<visible>player.forwarding | player.rewinding | player.paused | player.istempo</visible>
+
+					<!-- Background -->
+					<control type="image">
+						<width>140</width>
+						<height>60</height>
+						<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+					</control>
+
+					<!-- Status -->
+					<control type="label">
+						<width>140</width>
+						<height>60</height>
+						<font>Font36</font>
+						<align>center</align>
+						<label>$VAR[PlayerStatus]</label>
+						<textcolor>DialogColor2</textcolor>
+					</control>
+
+					<!-- Pause -->
+					<control type="image">
+						<left>40</left>
+						<width>60</width>
+						<height>60</height>
+						<texture colordiffuse="DialogColor1">osd/OSDPauseNF.png</texture>
+						<visible>player.paused</visible>
+					</control>
+
+				</control>
+
+				<!-- Player skipping -->
+				<control type="group">
+					<right>150</right>
+					<top>870</top>
+					<width>140</width>
+					<height>60</height>
+					<visible>[Player.DisplayAfterSeek + Integer.IsGreater(Player.ChapterCount,0)] | Integer.IsGreater(MusicPlayer.PlaylistLength,0)</visible>
+
+					<!-- Background -->
+					<control type="image">
+						<width>140</width>
+						<height>60</height>
+						<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+					</control>
+
+					<!-- Status -->
+					<control type="label">
+						<width>140</width>
+						<height>60</height>
+						<font>Font27</font>
+						<align>center</align>
+						<label>[B]$INFO[Player.Chapter,(,/]$INFO[Player.ChapterCount,,)][/B][B]$INFO[MusicPlayer.PlaylistPosition,(,/]$INFO[MusicPlayer.PlaylistLength,,)][/B]</label>
+						<textcolor>DialogColor2</textcolor>
+						<visible>!Window.IsVisible(visualisation)</visible>
+					</control>
+
+					<!-- Status -->
+					<control type="label">
+						<width>140</width>
+						<height>60</height>
+						<font>Font27</font>
+						<align>center</align>
+						<label>[B]$INFO[MusicPlayer.PlaylistPosition,(,/]$INFO[MusicPlayer.PlaylistLength,,)][/B]</label>
+						<textcolor>DialogColor2</textcolor>
+						<visible>Window.IsVisible(visualisation)</visible>
+					</control>
+
+				</control>
+
+				<!-- Progress -->
+				<control type="group">
+					<left>150</left>
+					<top>945</top>
+					<width>1620</width>
+					<height>60</height>
+
+					<!-- Background -->
+					<control type="image">
+						<width>1620</width>
+						<height>60</height>
+						<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+					</control>
+
+					<!--  Current position/Time remaining -->
+					<control type="label">
+						<left>20</left>
+						<width>260</width>
+						<height>60</height>
+						<font>Font27</font>
+						<textcolor>DialogColor2</textcolor>
+						<label>$INFO[Player.Time] / $INFO[Player.Duration]</label>
+					</control>
+
+					<!--  Progress bar -->
+					<control type="progress" id="1">
+						<left>280</left>
+						<top>20</top>
+						<width>920</width>
+						<height>20</height>
+						<info>Player.Progress</info>
+						<texturebg border="2" colordiffuse="DialogColor2">osd/OSDProgressBack.png</texturebg>
+						<lefttexture>-</lefttexture>
+						<midtexture border="2" colordiffuse="DialogColor1">osd/OSDProgressBar.png</midtexture>
+						<righttexture>-</righttexture>
+						<overlaytexture>-</overlaytexture>
+					</control>
+
+					<!--  Cache bar -->
+					<control type="progress" id="1">
+						<left>280</left>
+						<top>20</top>
+						<width>920</width>
+						<height>20</height>
+						<info>Player.ProgressCache</info>
+						<texturebg colordiffuse="DialogColor2" border="2">osd/OSDProgressBack.png</texturebg>
+						<lefttexture>-</lefttexture>
+						<midtexture colordiffuse="OSDCache" border="2">osd/OSDProgressBar.png</midtexture>
+						<righttexture>-</righttexture>
+						<overlaytexture>-</overlaytexture>
+					</control>
+
+					<!-- Current Time/End Time -->
+					<control type="label">
+						<left>1001</left>
+						<width>600</width>
+						<height>60</height>
+						<align>right</align>
+						<font>Font27</font>
+						<textcolor>DialogColor2</textcolor>
+						<label>$INFO[System.Time,$LOCALIZE[142] , / ]$INFO[Player.FinishTime,$LOCALIZE[19081] ]</label>
+					</control>
+
+				</control>
+			</control>
+
+		</control>
+
+	</controls>
+
+</window>

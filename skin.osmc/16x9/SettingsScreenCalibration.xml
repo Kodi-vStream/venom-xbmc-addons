@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- screencalibration -->
+	<defaultcontrol always="true">8</defaultcontrol>
+
+	<controls>
+		<!-- Background -->
+		<include>WindowBackgroundImage</include>
+
+		<!-- Top left mover -->
+		<control type="mover" id="8">
+			<width>44</width>
+			<height>42</height>
+			<texturefocus colordiffuse="TextColor1">calibrate/CalibrateTopLeftFO.png</texturefocus>
+			<texturenofocus colordiffuse="TextColor2">calibrate/CalibrateTopLeftFO.png</texturenofocus>
+		</control>
+
+		<!-- Bottom right mover -->
+		<control type="mover" id="9">
+			<width>44</width>
+			<height>42</height>
+			<texturefocus colordiffuse="TextColor1">calibrate/CalibrateBottomRightFO.png</texturefocus>
+			<texturenofocus colordiffuse="TextColor2">calibrate/CalibrateBottomRightFO.png</texturenofocus>
+		</control>
+
+		<!-- Subtitle position mover -->
+		<control type="mover" id="10">
+			<width>384</width>
+			<height>128</height>
+			<texturefocus colordiffuse="TextColor1">calibrate/CalibrateSubTitlesFO.png</texturefocus>
+			<texturenofocus colordiffuse="TextColor2">calibrate/CalibrateSubTitlesFO.png</texturenofocus>
+		</control>
+
+		<!-- Pixel aspect ratio box -->
+		<control type="resize" id="11">
+			<width>128</width>
+			<height>128</height>
+			<texturefocus colordiffuse="TextColor1">calibrate/CalibratePixelRatioFO.png</texturefocus>
+			<texturenofocus colordiffuse="TextColor2">calibrate/CalibratePixelRatioFO.png</texturenofocus>
+		</control>
+
+		<!-- Coordinates label -->
+		<control type="label" id="2">
+			<top>60</top>
+			<width>1920</width>
+			<height>36</height>
+			<align>center</align>
+			<textcolor>TextColor1</textcolor>
+		</control>
+
+		<!-- Help information -->
+		<control type="label" id="3">
+			<top>140</top>
+			<width>1920</width>
+			<height>36</height>
+			<align>center</align>
+			<textcolor>TextColor1</textcolor>
+		</control>
+
+	</controls>
+
+</window>

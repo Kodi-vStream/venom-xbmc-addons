@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<animation effect="slide" start="550,0" time="200">WindowOpen</animation>
+	<animation effect="slide" end="550,0" time="200">WindowClose</animation>
+	<zorder>100</zorder>
+	<!-- infodialog -->
+	<controls>
+		<control type="group">
+			<animation effect="slide" end="0,50" time="200" condition="String.IsEqual(Window(10000).Property(isCaching),True)">Conditional</animation>
+			<animation effect="slide" end="0,50" time="200" condition="Window.IsActive(volumebar)">Conditional</animation>
+			<animation effect="slide" end="0,20" time="200" condition="String.IsEqual(Window(10000).Property(isCaching),True) | Window.IsActive(volumebar)">Conditional</animation>
+		
+			<control type="image">
+				<right>0</right>
+				<top>90</top>
+				<width>550</width>
+				<height>75</height>
+				<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+			</control>
+
+			<!-- Heading -->
+			<control type="label" id="401">
+				<right>10</right>
+				<top>100</top>
+				<width>530</width>
+				<height>20</height>
+				<align>left</align>
+				<scroll>true</scroll>
+				<font>Font27</font>
+			</control>
+
+			<!-- Details -->
+			<control type="label" id="402">
+				<right>10</right>
+				<top>125</top>
+				<width>530</width>
+				<height>20</height>
+				<align>left</align>
+				<aligny>top</aligny>
+				<scroll>true</scroll>
+				<font>Font27-Light</font>
+			</control>
+
+		</control>
+
+	</controls>
+
+</window>

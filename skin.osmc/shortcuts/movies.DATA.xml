@@ -1,0 +1,30 @@
+<shortcuts>
+	<shortcut>
+		<label>345</label>
+		<label2>Videos</label2>
+		<icon>DefaultShortcut.png</icon>
+		<thumb />
+		<action>ActivateWindow(10025,"library://video/movies/years.xml/",return)</action>
+	</shortcut>
+	<shortcut>
+		<label>135</label>
+		<label2>Videos</label2>
+		<icon>DefaultShortcut.png</icon>
+		<thumb />
+		<action>ActivateWindow(10025,"library://video/movies/genres.xml/",return)</action>
+	</shortcut>
+	<shortcut>
+		<label>344</label>
+		<label2>Videos</label2>
+		<icon>DefaultShortcut.png</icon>
+		<thumb />
+		<action>ActivateWindow(10025,"library://video/movies/actors.xml/",return)</action>
+	</shortcut>
+	<shortcut>
+		<label>20348</label>
+		<label2>Videos</label2>
+		<icon>DefaultShortcut.png</icon>
+		<thumb />
+		<action>ActivateWindow(10025,"library://video/movies/directors.xml/",return)</action>
+	</shortcut>
+</shortcuts>
