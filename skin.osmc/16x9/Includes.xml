@@ -12,6 +12,7 @@
 	<include file="Viewtype53.xml" />
 	<include file="Viewtype54.xml" />
 	<include file="Viewtype55.xml" />
+	<include file="Viewtype59.xml" />
 	<include file="Variables.xml" />
 
 	<!-- Fullscreen dimensions -->
@@ -423,6 +424,40 @@
 				<visible>!String.IsEmpty(ListItem.VideoCodec) + !String.IsEmpty(ListItem.VideoResolution)</visible>
 			</control>
 
+			<!-- tv show -->
+			<control type="image">
+				<width>44</width>
+				<height>44</height>
+				<colordiffuse>TextColor2</colordiffuse>
+				<texture>DefaultLiveTV.png</texture>
+				<visible>!String.IsEmpty(ListItem.Season) + [Container.Content(TVShows) | Container.Content(Seasons)]</visible>
+			</control>
+			<control type="label">
+				<width>auto</width>
+				<height>44</height>
+				<align>right</align>
+				<label>$INFO[ListItem.Season,,]$INFO[ListItem.VideoResolution, ,p]</label>
+				<font>Font33</font>
+				<textcolor>TextColor2</textcolor>
+				<visible>!String.IsEmpty(ListItem.Season) + [Container.Content(TVShows) | Container.Content(Seasons)]</visible>
+			</control>
+			<control type="image">
+				<width>44</width>
+				<height>44</height>
+				<colordiffuse>TextColor2</colordiffuse>
+				<texture>DefaultFile.png</texture>
+				<visible>!String.IsEmpty(ListItem.Episode) + [Container.Content(TVShows) | Container.Content(Seasons)]</visible>
+			</control>
+			<control type="label">
+				<width>auto</width>
+				<height>44</height>
+				<align>right</align>
+				<label>$INFO[ListItem.Episode,,]</label>
+				<font>Font33</font>
+				<textcolor>TextColor2</textcolor>
+				<visible>!String.IsEmpty(ListItem.Episode) + [Container.Content(TVShows) | Container.Content(Seasons)]</visible>
+			</control>
+
 			<!-- Audio flags -->
 			<control type="image">
 				<width>44</width>
@@ -451,7 +486,7 @@
 			<orientation>horizontal</orientation>
 			<usecontrolcoords>true</usecontrolcoords>
 			<visible>Integer.IsGreater(Container.NumItems,0)</visible>
-			<animation effect="slide" time="0" start="0,0" end="0,-44" condition="String.IsEmpty(ListItem.VideoCodec) + String.IsEmpty(ListItem.VideoResolution) + String.IsEmpty(ListItem.AudioCodec)">Conditional</animation>
+			<animation effect="slide" time="0" start="0,0" end="0,-44" condition="String.IsEmpty(ListItem.Season) + String.IsEmpty(ListItem.VideoCodec) + String.IsEmpty(ListItem.VideoResolution) + String.IsEmpty(ListItem.AudioCodec)">Conditional</animation>
 
 			<!-- Duration -->
 			<control type="image">
@@ -459,7 +494,7 @@
 				<height>44</height>
 				<colordiffuse>TextColor2</colordiffuse>
 				<texture>pvr/Timer.png</texture>
-				<visible>!String.IsEmpty(ListItem.Duration) + !Container.Content(tvshows) + !Container.Content(seasons)</visible>
+				<visible>!String.IsEmpty(ListItem.Duration)</visible>
 			</control>
 			<control type="label">
 				<width>auto</width>
@@ -468,7 +503,7 @@
 				<label>$INFO[ListItem.Duration]</label>
 				<font>Font33</font>
 				<textcolor>TextColor2</textcolor>
-				<visible>!String.IsEmpty(ListItem.Duration) + !Container.Content(tvshows) + !Container.Content(seasons)</visible>
+				<visible>!String.IsEmpty(ListItem.Duration)</visible>
 			</control>
 			<control type="label">
 				<width>auto</width>
@@ -477,7 +512,7 @@
 				<label> $LOCALIZE[12391]</label>
 				<font>Font33</font>
 				<textcolor>TextColor2</textcolor>
-				<visible>!String.IsEmpty(ListItem.Duration) + !String.Contains(ListItem.Duration,:) + !Container.Content(tvshows) + !Container.Content(seasons)</visible>
+				<visible>!String.IsEmpty(ListItem.Duration) + !String.Contains(ListItem.Duration,:)</visible>
 			</control>
 		</control>
 	</include>

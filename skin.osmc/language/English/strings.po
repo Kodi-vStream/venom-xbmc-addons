@@ -459,3 +459,7 @@ msgstr ""
 msgctxt "#31099"
 msgid "Show fanart images"
 msgstr ""
+
+msgctxt "#31100"
+msgid "Seasons"
+msgstr ""

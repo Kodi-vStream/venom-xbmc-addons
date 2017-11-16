@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+
+    <include name="Viewtype59">
+
+        <control type="group">
+            <visible>Control.IsVisible(59)</visible>
+
+            <control type="fixedlist" id="59">
+                <left>130</left>
+                <top>700</top>
+                <width>1280</width>
+                <height>800</height>
+                <onleft>59</onleft>
+                <onright>59</onright>
+                <onup condition="!Skin.HasSetting(KioskMode)">3001</onup>
+                <onup>9111</onup>
+                <ondown>61</ondown>
+                <oninfo condition="Container.Content(Sets) | String.StartsWith(ListItem.Path,videodb://movies/sets/)">RunScript(script.skin.helper.service,action=textviewer,header=$INFO[ListItem.Label],message='"$VAR[GlobalPlotDescription]"')</oninfo>
+                <viewtype label="Netflix">List</viewtype>
+                <scrolltime tween="Quadratic" easing="out">300</scrolltime>
+                <orientation>horizontal</orientation>
+                <preloaditems>2</preloaditems>
+                <focusposition>0</focusposition>
+                <pagecontrol>60</pagecontrol>
+                <visible>[Container.Content(Movies) | Container.Content(Sets) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes)] + !String.StartsWith(Container.FolderPath,plugin://)</visible>
+                <itemlayout condition="Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Sets) | Container.Content(MusicVideos)" width="149.5" height="256">
+                    <control type="image">
+                        <width>142</width>
+                        <height>203</height>
+                        <colordiffuse>DiffusePosterNF</colordiffuse>
+                        <aspectratio align="center" aligny="center">stretch</aspectratio>
+                        <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
+                    </control>
+                    <!-- Watched status -->
+                    <control type="image">
+                        <left>90</left>
+                        <top>190</top>
+                        <width>30</width>
+                        <height>42</height>
+                        <texture>$VAR[StatusOverlayWide]</texture>
+                        <colordiffuse>OverlayColorNF</colordiffuse>
+                    </control>
+                </itemlayout>
+                <itemlayout condition="Container.Content(Seasons) | Container.Content(Episodes)" width="299.5" height="256">
+                    <control type="image">
+                        <left>0</left>
+                        <top>38</top>
+                        <width>291</width>
+                        <height>165</height>
+                        <colordiffuse>DiffusePosterNF</colordiffuse>
+                        <aspectratio align="center" aligny="center">scale</aspectratio>
+                        <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
+                    </control>
+                    <!-- Watched status -->
+                    <control type="image">
+                        <left>90</left>
+                        <top>190</top>
+                        <width>30</width>
+                        <height>42</height>
+                        <texture>$VAR[StatusOverlayWide]</texture>
+                        <colordiffuse>OverlayColorNF</colordiffuse>
+                        <animation effect="fade" start="50" end="50" condition="true">Conditional</animation>
+                    </control>
+                </itemlayout>
+                <focusedlayout condition="Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Sets) | Container.Content(MusicVideos)" width="149.5" height="256">
+                    <control type="image">
+                        <width>142</width>
+                        <height>203</height>
+                        <aspectratio align="center" aligny="center">scale</aspectratio>
+                        <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
+                        <animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(59)">Conditional</animation>
+                    </control>
+                    <!-- Watched status -->
+                    <control type="image">
+                        <left>90</left>
+                        <top>190</top>
+                        <width>30</width>
+                        <height>42</height>
+                    	<texture>$VAR[StatusOverlayWide]</texture>
+                    </control>
+                </focusedlayout>
+                <focusedlayout condition="Container.Content(Seasons) | Container.Content(Episodes)" width="299.5" height="256">
+                    <control type="image">
+                        <left>0</left>
+                        <top>38</top>
+                        <width>291</width>
+                        <height>165</height>
+                        <aspectratio align="center" aligny="center">scale</aspectratio>
+                        <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
+                    </control>
+                    <!-- Watched status -->
+					<control type="image">
+                        <left>90</left>
+                        <top>190</top>
+                        <width>30</width>
+                        <height>42</height>
+                    	<texture>$VAR[StatusOverlayWide]</texture>
+					</control>
+                </focusedlayout>
+            </control>
+
+        </control>
+
+        <control type="group">
+            <left>130</left>
+            <top>400</top>
+            <visible>Control.IsVisible(59)</visible>
+            <control type="label">
+                <left>0</left>
+                <top>0</top>
+                <height>30</height>
+                <width>550</width>
+                <textcolor>TextColor1</textcolor>
+                <shadowcolor>77000000</shadowcolor>
+                <scroll>false</scroll>
+                <align>left</align>
+                <font>Font50</font>
+                <label>[LIGHT]$INFO[ListItem.Label][/LIGHT]</label>
+                <visible>![Skin.HasSetting(ShowLogoAsTtile) + ![String.IsEmpty(ListItem.Art(clearlogo)) | String.StartsWith(ListItem.Path,videodb://movies/sets/)]] + !ListItem.IsParentFolder</visible>
+            </control>
+            <!-- Sublabel Info -->
+            <control type="grouplist">
+                <left>0</left>
+                <top>38</top>
+                <width>850</width>
+                <height>30</height>
+                <itemgap>10</itemgap>
+                <orientation>horizontal</orientation>
+                <control type="label">
+                    <left>0</left>
+                    <top>-2</top>
+                    <font>Font40</font>
+                    <width>55</width>
+                    <height>24</height>
+                    <label>$INFO[ListItem.Year]</label>
+                </control>
+                <control type="label">
+                    <left>0</left>
+                    <top>-2</top>
+                    <font>Font40</font>
+                    <width>180</width>
+                    <height>24</height>
+                    <label>$INFO[ListItem.RatingAndVotes]</label>
+                </control>
+                <control type="label">
+                    <left>0</left>
+                    <top>-2</top>
+                    <font>Font40</font>
+                    <width>55</width>
+                    <height>24</height>
+                    <label>$INFO[ListItem.VideoResolution]</label>
+                    <visible>!String.IsEmpty(ListItem.VideoResolution)</visible>
+                </control>
+                <control type="group">
+                    <visible>String.IsEqual(ListItem.Overlay,OverlayUnWatched.png) + Integer.IsGreater(ListItem.Property(unWatchedEpisodes),0) + [Container.Content(TVShows) | Container.Content(Seasons)]</visible>
+                    <control type="image">
+                        <left>0</left>
+                        <top>0</top>
+                        <width>58</width>
+                        <height>24</height>
+                        <colordiffuse>viewsinfo</colordiffuse>
+                        <aspectratio align="center" aligny="center">stretch</aspectratio>
+                        <texture>flags/empty.png</texture>
+                    </control>
+                    <control type="label">
+                        <left>0</left>
+                        <top>0</top>
+                        <width>58</width>
+                        <height>24</height>
+                        <font>FontSize_16B</font>
+                        <textcolor>viewsinfo</textcolor>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <label>$INFO[ListItem.Property(unWatchedEpisodes)]</label>
+                    </control>
+                </control>
+            </control>
+        </control>
+
+        <!-- Plot Info -->
+        <control type="group">
+            <left>130</left>
+            <top>480</top>
+            <visible>Control.IsVisible(59)</visible>
+
+            <control type="label">
+                <top>0</top>
+                <height>30</height>
+                <width>550</width>
+                <textcolor>TextColor2</textcolor>
+                <shadowcolor>77000000</shadowcolor>
+                <font>Font30</font>
+                <scrollspeed>30</scrollspeed>
+                <align>left</align>
+                <label>$INFO[ListItem.Genre]</label>
+                <visible>!Container.Content(Episodes)</visible>
+                <!--<animation effect="slide" start="0,0" end="0,5" condition="[Container.Content(TVShows) | Container.Content(Seasons)]">Conditional</animation>-->
+            </control>
+            <control type="label">
+                <top>5</top>
+                <height>30</height>
+                <width>550</width>
+                <textcolor>TextColor2</textcolor>
+                <shadowcolor>77000000</shadowcolor>
+                <font>Font36</font>
+                <scrollspeed>30</scrollspeed>
+                <align>left</align>
+                <label>$INFO[ListItem.TVShowTitle] $INFO[ListItem.Season,,x]$INFO[ListItem.Episode]</label>
+                <visible>[Container.Content(Episodes) + !String.StartsWith(Container.FolderPath,plugin://plugin.video)] + ![Skin.HasSetting(ShowLogoAsTtile) + !String.IsEmpty(ListItem.Art(clearlogo))]</visible>
+            </control>
+            <control type="textbox">
+                <top>45</top>
+                <width>450</width>
+                <height>150</height>
+                <font>Font22</font>
+                <textcolor>DialogColor2</textcolor>
+                <shadowcolor>77000000</shadowcolor>
+                <align>left</align>
+                <autoscroll delay="8000" time="2000" repeat="8000">Skin.HasSetting(AutoScroll)</autoscroll>
+                <label>$VAR[Plot]</label>
+                <visible>Container.Content(Movies) | Container.Content(TVShows)</visible>
+            </control>
+
+
+            <control type="scrollbar" id="60">
+                <left>-2</left>
+                <top>408</top>
+                <width>1188</width>
+                <height>6</height>
+                <texturesliderbackground>-</texturesliderbackground>
+                <texturesliderbar border="14,0,14,0">views/scrollbar/scrollbar_horizontal.png</texturesliderbar>
+                <texturesliderbarfocus border="14,0,14,0">views/scrollbar/scrollbar_horizontal.png</texturesliderbarfocus>
+                <textureslidernib>-</textureslidernib>
+                <textureslidernibfocus>-</textureslidernibfocus>
+                <onup>59</onup>
+                <ondown>9555</ondown>
+                <showonepage>false</showonepage>
+                <orientation>horizontal</orientation>
+                <animation effect="fade" start="100" end="0" time="250" condition="!Control.HasFocus(60) + !Container.Scrolling">Conditional</animation>
+            </control>
+        </control>
+
+    </include>
+
+</includes>

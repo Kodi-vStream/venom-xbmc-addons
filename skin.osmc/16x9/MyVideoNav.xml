@@ -4,7 +4,7 @@
 	<backgroundcolor>0x00000000</backgroundcolor>
 	<defaultcontrol always="true">50</defaultcontrol>
 	<onload condition="System.HasAddon(script.tvtunes)">XBMC.RunScript(script.tvtunes,backend=True)</onload>
-	<views>52,53,51,50</views>
+	<views>52,53,51,50,59</views>
 
 	<controls>
 
@@ -20,6 +20,7 @@
 			<include>Viewtype51</include>
 			<include>Viewtype52</include>
 			<include>Viewtype53</include>
+			<include>Viewtype59</include>
 
 			<!-- Scrollbar (list) -->
 			<control type="scrollbar" id="60">
