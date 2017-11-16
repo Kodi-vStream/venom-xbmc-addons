@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <includes>
 
     <include name="Viewtype59">
@@ -6,10 +7,13 @@
         <control type="group">
             <visible>Control.IsVisible(59)</visible>
 
+
+
             <control type="fixedlist" id="59">
+
+                <width>1420</width>
                 <left>130</left>
-                <top>700</top>
-                <width>1280</width>
+                <top>600</top>
                 <height>800</height>
                 <onleft>59</onleft>
                 <onright>59</onright>
@@ -24,32 +28,30 @@
                 <focusposition>0</focusposition>
                 <pagecontrol>60</pagecontrol>
                 <visible>[Container.Content(Movies) | Container.Content(Sets) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes)] + !String.StartsWith(Container.FolderPath,plugin://)</visible>
-                <itemlayout condition="Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Sets) | Container.Content(MusicVideos)" width="149.5" height="256">
+                <itemlayout condition="Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Sets) | Container.Content(MusicVideos)" width="238" height="256">
                     <control type="image">
-                        <width>142</width>
-                        <height>203</height>
+                        <width>202</width>
+                        <height>300</height>
                         <colordiffuse>DiffusePosterNF</colordiffuse>
-                        <aspectratio align="center" aligny="center">stretch</aspectratio>
+                        <aspectratio align="center">keep</aspectratio>
                         <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
                     </control>
                     <!-- Watched status -->
                     <control type="image">
-                        <left>90</left>
-                        <top>190</top>
+                        <left>140</left>
+                        <top>285</top>
                         <width>30</width>
                         <height>42</height>
                         <texture>$VAR[StatusOverlayWide]</texture>
                         <colordiffuse>OverlayColorNF</colordiffuse>
                     </control>
                 </itemlayout>
-                <itemlayout condition="Container.Content(Seasons) | Container.Content(Episodes)" width="299.5" height="256">
+                <itemlayout condition="Container.Content(Episodes)" width="476" height="256">
                     <control type="image">
-                        <left>0</left>
-                        <top>38</top>
-                        <width>291</width>
-                        <height>165</height>
+                        <width>452</width>
+                        <height>286</height>
                         <colordiffuse>DiffusePosterNF</colordiffuse>
-                        <aspectratio align="center" aligny="center">scale</aspectratio>
+                        <aspectratio aligny="center">scale</aspectratio>
                         <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
                     </control>
                     <!-- Watched status -->
@@ -63,30 +65,29 @@
                         <animation effect="fade" start="50" end="50" condition="true">Conditional</animation>
                     </control>
                 </itemlayout>
-                <focusedlayout condition="Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Sets) | Container.Content(MusicVideos)" width="149.5" height="256">
+                <focusedlayout condition="Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Sets) | Container.Content(MusicVideos)" width="238" height="256">
                     <control type="image">
-                        <width>142</width>
-                        <height>203</height>
-                        <aspectratio align="center" aligny="center">scale</aspectratio>
+                        <width>202</width>
+                        <height>300</height>
+                        <aspectratio align="center">keep</aspectratio>
                         <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
                         <animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(59)">Conditional</animation>
                     </control>
                     <!-- Watched status -->
                     <control type="image">
-                        <left>90</left>
-                        <top>190</top>
+                        <left>140</left>
+                        <top>285</top>
                         <width>30</width>
                         <height>42</height>
                     	<texture>$VAR[StatusOverlayWide]</texture>
                     </control>
                 </focusedlayout>
-                <focusedlayout condition="Container.Content(Seasons) | Container.Content(Episodes)" width="299.5" height="256">
+                <focusedlayout condition="Container.Content(Episodes)" width="476" height="256">
                     <control type="image">
                         <left>0</left>
-                        <top>38</top>
-                        <width>291</width>
-                        <height>165</height>
-                        <aspectratio align="center" aligny="center">scale</aspectratio>
+                        <width>452</width>
+                        <height>286</height>
+                        <aspectratio aligny="center">scale</aspectratio>
                         <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
                     </control>
                     <!-- Watched status -->
@@ -104,7 +105,7 @@
 
         <control type="group">
             <left>130</left>
-            <top>400</top>
+            <top>300</top>
             <visible>Control.IsVisible(59)</visible>
             <control type="label">
                 <left>0</left>
@@ -143,26 +144,8 @@
                     <height>24</height>
                     <label>$INFO[ListItem.RatingAndVotes]</label>
                 </control>
-                <control type="label">
-                    <left>0</left>
-                    <top>-2</top>
-                    <font>Font40</font>
-                    <width>55</width>
-                    <height>24</height>
-                    <label>$INFO[ListItem.VideoResolution]</label>
-                    <visible>!String.IsEmpty(ListItem.VideoResolution)</visible>
-                </control>
                 <control type="group">
-                    <visible>String.IsEqual(ListItem.Overlay,OverlayUnWatched.png) + Integer.IsGreater(ListItem.Property(unWatchedEpisodes),0) + [Container.Content(TVShows) | Container.Content(Seasons)]</visible>
-                    <control type="image">
-                        <left>0</left>
-                        <top>0</top>
-                        <width>58</width>
-                        <height>24</height>
-                        <colordiffuse>viewsinfo</colordiffuse>
-                        <aspectratio align="center" aligny="center">stretch</aspectratio>
-                        <texture>flags/empty.png</texture>
-                    </control>
+                    <visible>Integer.IsGreater(ListItem.Property(unWatchedEpisodes),0) + [Container.Content(TVShows) | Container.Content(Seasons)]</visible>
                     <control type="label">
                         <left>0</left>
                         <top>0</top>
@@ -181,7 +164,7 @@
         <!-- Plot Info -->
         <control type="group">
             <left>130</left>
-            <top>480</top>
+            <top>380</top>
             <visible>Control.IsVisible(59)</visible>
 
             <control type="label">
@@ -219,7 +202,7 @@
                 <align>left</align>
                 <autoscroll delay="8000" time="2000" repeat="8000">Skin.HasSetting(AutoScroll)</autoscroll>
                 <label>$VAR[Plot]</label>
-                <visible>Container.Content(Movies) | Container.Content(TVShows)</visible>
+                <visible>Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes)</visible>
             </control>
 
 

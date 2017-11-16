@@ -142,6 +142,7 @@
 						<height>52</height>
 						<onclick>Container.NextViewMode</onclick>
 					</control>
+
 					<!-- Scrollbars -->
 					<control type="radiobutton" id="94">
 						<label>31005</label>

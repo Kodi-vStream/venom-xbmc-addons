@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
+
+	<variable name="width59">
+	<value condition="Container.Content(Episodes)">1420</value>
+	<value>1350</value>
+	</variable>
 	<!-- Colors -->
 	<variable name="SelectedColor">
 		<value>SelectedColor</value>

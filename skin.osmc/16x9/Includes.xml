@@ -436,7 +436,7 @@
 				<width>auto</width>
 				<height>44</height>
 				<align>right</align>
-				<label>$INFO[ListItem.Season,,]$INFO[ListItem.VideoResolution, ,p]</label>
+				<label>$INFO[ListItem.Season]</label>
 				<font>Font33</font>
 				<textcolor>TextColor2</textcolor>
 				<visible>!String.IsEmpty(ListItem.Season) + [Container.Content(TVShows) | Container.Content(Seasons)]</visible>
@@ -446,16 +446,16 @@
 				<height>44</height>
 				<colordiffuse>TextColor2</colordiffuse>
 				<texture>DefaultFile.png</texture>
-				<visible>!String.IsEmpty(ListItem.Episode) + [Container.Content(TVShows) | Container.Content(Seasons)]</visible>
+				<visible>Integer.IsGreater(ListItem.Episode,0) + [Container.Content(TVShows) | Container.Content(Seasons)]</visible>
 			</control>
 			<control type="label">
 				<width>auto</width>
 				<height>44</height>
 				<align>right</align>
-				<label>$INFO[ListItem.Episode,,]</label>
+				<label>$INFO[ListItem.Episode]</label>
 				<font>Font33</font>
 				<textcolor>TextColor2</textcolor>
-				<visible>!String.IsEmpty(ListItem.Episode) + [Container.Content(TVShows) | Container.Content(Seasons)]</visible>
+				<visible>Integer.IsGreater(ListItem.Episode,0) + [Container.Content(TVShows) | Container.Content(Seasons)]</visible>
 			</control>
 
 			<!-- Audio flags -->
