@@ -66,7 +66,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENTS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENTS[1], 'Séries (Les plus Commentés)', 'series_comments.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENTS[1], 'Séries (Les plus Commentées)', 'series_comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NOTES[0])
@@ -108,32 +108,32 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action',URL_MAIN + 'category/films/action/'] )
-    liste.append( ['Animation',URL_MAIN + 'category/films/animation/'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'category/films/arts-martiaux/'] )
-    liste.append( ['Aventure',URL_MAIN + 'category/films/biopic/'] )
-    liste.append( ['Biopic',URL_MAIN + 'category/films/animation/'] )
-    liste.append( ['Comédie',URL_MAIN + 'category/films/comedie/'] )
-    liste.append( ['Comédie Dramatique',URL_MAIN + 'category/films/comedie-dramatique/'] )
-    liste.append( ['Documentaire',URL_MAIN + 'category/documentaire/'] )
-    liste.append( ['Drame',URL_MAIN + 'category/films/drame/'] )
-    liste.append( ['Espionnage',URL_MAIN + 'category/films/espionnage/'] )
-    liste.append( ['Famille',URL_MAIN + 'category/films/famille/'] )
-    liste.append( ['Fantastique',URL_MAIN + 'category/films/fantastique/'] )
-    liste.append( ['Guerre',URL_MAIN + 'category/films/guerre/'] )
-    liste.append( ['Historique',URL_MAIN + 'category/films/historique/'] )
-    liste.append( ['Horreur',URL_MAIN + 'category/films/horreur/'] )
-    liste.append( ['Musical',URL_MAIN + 'category/films/musical/'] )
-    liste.append( ['Policier',URL_MAIN + 'category/films/policier/'] )
-    liste.append( ['Romance',URL_MAIN + 'category/films/romance/'] )
-    liste.append( ['Science-Fiction',URL_MAIN + 'category/films/science-fiction/'] )
-    liste.append( ['Spectacle',URL_MAIN + 'category/films/spectacle/'] )
-    liste.append( ['Thriller',URL_MAIN + 'category/films/thriller/'] )
-    liste.append( ['Western',URL_MAIN + 'category/films/western/'] )
-    liste.append( ['VOSTFR',URL_MAIN + 'category/films/vostfr-films/'] )
-    liste.append( ['BLURAY 1080p/720p',URL_MAIN + 'category/films/bluray-1080p-720p/'] )
-    liste.append( ['BLURAY 3D',URL_MAIN + 'category/films/bluray-3d/'] )
-    liste.append( ['Emissions TV',URL_MAIN + 'category/emissions-tv/'] )
+    liste.append( ['Action', URL_MAIN + 'category/films/action/'] )
+    liste.append( ['Animation', URL_MAIN + 'category/films/animation/'] )
+    liste.append( ['Arts Martiaux', URL_MAIN + 'category/films/arts-martiaux/'] )
+    liste.append( ['Aventure', URL_MAIN + 'category/films/biopic/'] )
+    liste.append( ['Biopic', URL_MAIN + 'category/films/animation/'] )
+    liste.append( ['Comédie', URL_MAIN + 'category/films/comedie/'] )
+    liste.append( ['Comédie Dramatique', URL_MAIN + 'category/films/comedie-dramatique/'] )
+    liste.append( ['Documentaire', URL_MAIN + 'category/documentaire/'] )
+    liste.append( ['Drame', URL_MAIN + 'category/films/drame/'] )
+    liste.append( ['Espionnage', URL_MAIN + 'category/films/espionnage/'] )
+    liste.append( ['Famille', URL_MAIN + 'category/films/famille/'] )
+    liste.append( ['Fantastique', URL_MAIN + 'category/films/fantastique/'] )
+    liste.append( ['Guerre', URL_MAIN + 'category/films/guerre/'] )
+    liste.append( ['Historique', URL_MAIN + 'category/films/historique/'] )
+    liste.append( ['Horreur', URL_MAIN + 'category/films/horreur/'] )
+    liste.append( ['Musical', URL_MAIN + 'category/films/musical/'] )
+    liste.append( ['Policier', URL_MAIN + 'category/films/policier/'] )
+    liste.append( ['Romance', URL_MAIN + 'category/films/romance/'] )
+    liste.append( ['Science-Fiction', URL_MAIN + 'category/films/science-fiction/'] )
+    liste.append( ['Spectacle', URL_MAIN + 'category/films/spectacle/'] )
+    liste.append( ['Thriller', URL_MAIN + 'category/films/thriller/'] )
+    liste.append( ['Western', URL_MAIN + 'category/films/western/'] )
+    liste.append( ['VOSTFR', URL_MAIN + 'category/films/vostfr-films/'] )
+    liste.append( ['BLURAY 1080p/720p', URL_MAIN + 'category/films/bluray-1080p-720p/'] )
+    liste.append( ['BLURAY 3D', URL_MAIN + 'category/films/bluray-3d/'] )
+    liste.append( ['Emissions TV', URL_MAIN + 'category/emissions-tv/'] )
 
     for sTitle,sUrl in liste:
 
@@ -147,15 +147,15 @@ def showList():
     oGui = cGui()
 
     liste = []
-    liste.append( ['0-9',URL_MAIN + 'category/series-tv/0-9/'] )
-    liste.append( ['A-B-C',URL_MAIN + 'category/series-tv/a-b-c/'] )
-    liste.append( ['D-E-F',URL_MAIN + 'category/series-tv/d-e-f/'] )
-    liste.append( ['G-H-I',URL_MAIN + 'category/series-tv/g-h-i/'] )
-    liste.append( ['J-K-L',URL_MAIN + 'category/series-tv/j-k-l/'] )
-    liste.append( ['M-N-O',URL_MAIN + 'category/series-tv/m-n-o/'] )
-    liste.append( ['P-Q-R',URL_MAIN + 'category/series-tv/p-q-r/'] )
-    liste.append( ['S-T-U',URL_MAIN + 'category/series-tv/s-t-u/'] )
-    liste.append( ['V-W-X-Y-Z',URL_MAIN + 'category/series-tv/v-w-x-y-z/'] )
+    liste.append( ['0-9', URL_MAIN + 'category/series-tv/0-9/'] )
+    liste.append( ['A-B-C', URL_MAIN + 'category/series-tv/a-b-c/'] )
+    liste.append( ['D-E-F', URL_MAIN + 'category/series-tv/d-e-f/'] )
+    liste.append( ['G-H-I', URL_MAIN + 'category/series-tv/g-h-i/'] )
+    liste.append( ['J-K-L', URL_MAIN + 'category/series-tv/j-k-l/'] )
+    liste.append( ['M-N-O', URL_MAIN + 'category/series-tv/m-n-o/'] )
+    liste.append( ['P-Q-R', URL_MAIN + 'category/series-tv/p-q-r/'] )
+    liste.append( ['S-T-U', URL_MAIN + 'category/series-tv/s-t-u/'] )
+    liste.append( ['V-W-X-Y-Z', URL_MAIN + 'category/series-tv/v-w-x-y-z/'] )
 
     for sTitle,sUrl in liste:
 
@@ -175,14 +175,14 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #Meilleure resolution sthumbnail
-    sHtmlContent = sHtmlContent.replace('119x125','125x160')
+    #Meilleure resolution sThumb
+    sHtmlContent = sHtmlContent.replace('119x125', '125x160')
 
     #Magouille pour virer les 3 ligne en trop en cas de recherche
     if sSearch:
-        sHtmlContent = sHtmlContent.replace('quelle-est-votre-serie-preferee','<>')
-        sHtmlContent = sHtmlContent.replace('top-series-du-moment','<>')
-        sHtmlContent = sHtmlContent.replace('listes-des-series-annulees-et-renouvelees','<>')
+        sHtmlContent = sHtmlContent.replace('quelle-est-votre-serie-preferee', '<>')
+        sHtmlContent = sHtmlContent.replace('top-series-du-moment', '<>')
+        sHtmlContent = sHtmlContent.replace('listes-des-series-annulees-et-renouvelees', '<>')
 
     oParser = cParser()
     sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<>"]+)".+?\/><\/a><div class="movief"><a href="([^<]+)">([^<]+)<\/a><\/div>'
@@ -202,27 +202,32 @@ def showMovies(sSearch = ''):
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if util.cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),aEntry[2]) == 0:
+                if util.cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
                     continue
 
-            sTitle = aEntry[2]
-            sTitle = sTitle.replace(' [Streaming]','')
-            sTitle = sTitle.replace(' [Telecharger]','')
-            sTitle = sTitle.replace(' [Complète]','')
-            sTitle = sTitle.replace(' [Complete]','')
+            sThumb = str(aEntry[0])
+            sUrl = str(aEntry[1])
+            sTitle = str(aEntry[2])
+            sTitle = sTitle.replace(' [Streaming]', '')
+            sTitle = sTitle.replace(' [Telecharger]', '').replace(' [Telechargement]', '')
+            sTitle = sTitle.replace(' [Complète]', '').replace(' [Complete]', '')
+            sTitle = sTitle.replace('&#8217;', '\'')
 
             sDisplayTitle = util.cUtil().DecoTitle(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+
             if '-filmographie-streaming' in aEntry[1]:
                 pass
-            elif 'series' in sUrl or re.match('.+?saison [0-9]+',sTitle,re.IGNORECASE):
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
+            elif 'quelle-est-votre-serie-preferee' in aEntry[1]:
+                pass
+            elif 'series' in sUrl or re.match('.+?saison [0-9]+', sTitle, re.IGNORECASE):
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -250,12 +255,12 @@ def showSeries(sLoop = False):
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sHtmlContent = sHtmlContent.decode('utf-8',"replace")
+    sHtmlContent = sHtmlContent.decode('utf-8', "replace")
     sHtmlContent = unicodedata.normalize('NFD', sHtmlContent).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
     sHtmlContent = sHtmlContent.encode('utf-8')#On remet en utf-8
 
@@ -280,21 +285,18 @@ def showSeries(sLoop = False):
 
             #langue
             if aEntry[0]:
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMisc(SITE_IDENTIFIER, 'showSeries', '[COLOR red]' + str(aEntry[0]) + '[/COLOR]', 'series.png', sThumbnail, '', oOutputParameterHandler)
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
             #episode
             else:
-                sTitle = sMovieTitle + ' ' + aEntry[1]
+                sUrl = str(aEntry[2])
+                sTitle = sMovieTitle + ' ' + str(aEntry[1])
                 sDisplayTitle = util.cUtil().DecoTitle(sTitle)
 
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-                oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         util.finishDialog(dialog)
 
@@ -305,12 +307,12 @@ def showHosters(sLoop = False):
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','')
-    sHtmlContent = sHtmlContent.replace("src='https://ad.a-ads.com",'')
+    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/', '')
+    sHtmlContent = sHtmlContent.replace("src='https://ad.a-ads.com", '')
 
     oParser = cParser()
 
@@ -347,7 +349,7 @@ def showHosters(sLoop = False):
                 sDisplayTitle = util.cUtil().DecoTitle(sMovieTitle)
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
@@ -356,7 +358,7 @@ def serieHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oParser = cParser()
 
@@ -379,6 +381,6 @@ def serieHosters():
                 sDisplayTitle = util.cUtil().DecoTitle(sTitle)
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
