@@ -224,7 +224,11 @@ def searchGlobal():
 
     for count,result in enumerate(oGui.searchResults):
         text = '%s/%s - %s' % ((count+1/total), total, result['guiElement'].getTitle())
-        cConfig().updateDialogSearch(dialog, total, text)
+
+        if(count == 0):
+            cConfig().updateDialogSearch(dialog, total, text,True)
+        else:
+            cConfig().updateDialogSearch(dialog, total, text)
 
         #result['params'].addParameter('VSTRMSEARCH','True')
 

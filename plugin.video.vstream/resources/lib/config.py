@@ -214,7 +214,11 @@ class cConfig():
             dialog.update(iPercent, 'Chargement: '+str(cConfig.COUNT)+'/'+str(total))
             cConfig.COUNT += 1
 
-    def updateDialogSearch(self, dialog, total, site):
+    def updateDialogSearch(self, dialog, total, site, resetCount = False):
+
+        if (resetCount == True):
+            cConfig.COUNT=0
+
         iPercent = int(float(cConfig.COUNT * 100) / total)
         dialog.update(iPercent, 'Chargement: '+str(site))
         cConfig.COUNT += 1
