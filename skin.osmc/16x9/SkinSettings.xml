@@ -10,7 +10,7 @@
 		<control type="group">
 			<!-- Background -->
 			<include>WindowBackgroundImage</include>
-			
+
 
 			<include content="Time">
 				<param name="heading">$LOCALIZE[20077]</param>

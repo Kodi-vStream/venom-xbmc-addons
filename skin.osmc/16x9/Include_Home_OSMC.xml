@@ -7,7 +7,6 @@
 
 		<!-- Main list -->
 		<control type="list" id="9000">
-			<animation effect="slide" start="0,0" end="-450,0" time="200" condition="ControlGroup(9010).HasFocus|Window.IsActive(shutdownmenu)">Conditional</animation>
 			<left>120</left>
 			<top>240</top>
 			<width>400</width>
@@ -68,7 +67,7 @@
 		</include>
 
 		<!-- Widgets -->
-		<control type="group" id="9002">
+		<control type="group" id="9005">
 			<include>skinshortcuts-template-vertical</include>
 		</control>
 
@@ -90,7 +89,7 @@
 				<visible>ControlGroup(9010).HasFocus</visible>
 			</control>
 			<control type="group">
-				<left>-450</left>
+				<left>-900</left>
 				<top>0</top>
 				<animation effect="slide" start="0,0" end="450,0" time="200" condition="ControlGroup(9010).HasFocus">Conditional</animation>
 				<control type="button">

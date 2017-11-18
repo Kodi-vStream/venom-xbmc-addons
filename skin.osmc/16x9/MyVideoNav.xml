@@ -13,6 +13,7 @@
 
 		<!-- Main group -->
 		<control type="group">
+			<include>SlideAnim</include>
 			<include>WindowFadeAnimation</include>
 
 			<!-- Views -->
@@ -88,7 +89,10 @@
 		</control>
 
 		<!-- Time -->
-		<include>Time</include>
+		<control type="group">
+			<include>SlideAnim</include>
+			<include>Time</include>
+		</control>
 
 		<!-- Options -->
 		<control type="group" id="9002">
@@ -141,6 +145,14 @@
 						<label>$INFO[Container.ViewMode]</label>
 						<height>52</height>
 						<onclick>Container.NextViewMode</onclick>
+					</control>
+
+					<control type="radiobutton" id="95">
+						<label>Landscape</label>
+						<height>52</height>
+						<onclick>Skin.ToggleSetting(59_landscape)</onclick>
+						<selected>!Skin.HasSetting(59_landscape)</selected>
+						<visible>Control.IsVisible(59)</visible>
 					</control>
 
 					<!-- Scrollbars -->

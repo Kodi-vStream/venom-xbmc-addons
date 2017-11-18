@@ -5,7 +5,7 @@
 
 	<onload>Dialog.Close(1110)</onload>
 
-	
+
 	<controls>
 
 		<!-- Background image -->

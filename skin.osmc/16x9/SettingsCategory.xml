@@ -9,87 +9,94 @@
 		<include>WindowBackgroundImage</include>
 
 		<!-- Time -->
-		<include>Time</include>
-
-		<!-- Main list (Left) -->
-		<control type="grouplist" id="3">
-			<left>120</left>
-			<top>228</top>
-			<width>300</width>
-			<height>660</height>
-			<itemgap>0</itemgap>
-			<onleft>3001</onleft>
-			<onright>5</onright>
-			<ondown>20</ondown>
-			<orientation>vertical</orientation>
-			<scrolltime tween="sine" easing="out">240</scrolltime>
+		<control type="group">
+			<include>SlideAnim</include>
+			<include>Time</include>
 		</control>
 
-		<!-- Sub list (Right) -->
-		<control type="grouplist" id="5">
-			<left>550</left>
-			<top>228</top>
-			<width>1220</width>
-			<height>660</height>
-			<itemgap>0</itemgap>
-			<onleft>3</onleft>
-			<onright>998</onright>
-			<orientation>vertical</orientation>
-		</control>
-
-		<!-- Settings description -->
-		<control type="textbox" id="6">
-			<left>550</left>
-			<top>900</top>
-			<width>1220</width>
-			<height>95</height>
-			<textcolor>TextColor1</textcolor>
-			<font>Font27</font>
-			<visible>ControlGroup(5).HasFocus</visible>
-		</control>
-
-		<!-- Indicators -->
-		<include content="Indicators">
-			<param name="left">500</param>
-			<param name="top">253</param>
-			<param name="height">610</param>
-			<param name="container">5</param>
-		</include>
-
-		<control type="grouplist">
-			<left>120</left>
-			<bottom>110</bottom>
-			<width>800</width>
-			<height>44</height>
-			<itemgap>0</itemgap>
-			<align>left</align>
-			<orientation>horizontal</orientation>
-			<usecontrolcoords>true</usecontrolcoords>
-			<control type="label">
-				<width>auto</width>
-				<height>44</height>
-				<align>right</align>
-				<label>$LOCALIZE[31016]: </label>
-				<font>Font33</font>
-				<textcolor>TextColor2</textcolor>
-				<visible>!Control.HasFocus(20)</visible>
+		<!--group slide -->
+		<control type="group">
+			<include>SlideAnim</include>
+			<!-- Main list (Left) -->
+			<control type="grouplist" id="3">
+				<left>120</left>
+				<top>228</top>
+				<width>300</width>
+				<height>660</height>
+				<itemgap>0</itemgap>
+				<onleft>3001</onleft>
+				<onright>5</onright>
+				<ondown>20</ondown>
+				<orientation>vertical</orientation>
+				<scrolltime tween="sine" easing="out">240</scrolltime>
 			</control>
-			<control type="label">
-				<width>auto</width>
-				<height>44</height>
-				<align>right</align>
-				<label>$LOCALIZE[31016]: </label>
-				<font>Font33</font>
+
+			<!-- Sub list (Right) -->
+			<control type="grouplist" id="5">
+				<left>550</left>
+				<top>228</top>
+				<width>1220</width>
+				<height>660</height>
+				<itemgap>0</itemgap>
+				<onleft>3</onleft>
+				<onright>998</onright>
+				<orientation>vertical</orientation>
+			</control>
+
+			<!-- Settings description -->
+			<control type="textbox" id="6">
+				<left>550</left>
+				<top>900</top>
+				<width>1220</width>
+				<height>95</height>
 				<textcolor>TextColor1</textcolor>
-				<visible>Control.HasFocus(20)</visible>
+				<font>Font27</font>
+				<visible>ControlGroup(5).HasFocus</visible>
 			</control>
-			<control type="button" id="20">
-				<width>auto</width>
+
+			<!-- Indicators -->
+			<include content="Indicators">
+				<param name="left">500</param>
+				<param name="top">253</param>
+				<param name="height">610</param>
+				<param name="container">5</param>
+			</include>
+
+			<control type="grouplist">
+				<left>120</left>
+				<bottom>110</bottom>
+				<width>800</width>
 				<height>44</height>
-				<align>right</align>
-				<font>Font33</font>
-				<onup>3</onup>
-				<onclick>SettingsLevelChange</onclick>
+				<itemgap>0</itemgap>
+				<align>left</align>
+				<orientation>horizontal</orientation>
+				<usecontrolcoords>true</usecontrolcoords>
+				<control type="label">
+					<width>auto</width>
+					<height>44</height>
+					<align>right</align>
+					<label>$LOCALIZE[31016]: </label>
+					<font>Font33</font>
+					<textcolor>TextColor2</textcolor>
+					<visible>!Control.HasFocus(20)</visible>
+				</control>
+				<control type="label">
+					<width>auto</width>
+					<height>44</height>
+					<align>right</align>
+					<label>$LOCALIZE[31016]: </label>
+					<font>Font33</font>
+					<textcolor>TextColor1</textcolor>
+					<visible>Control.HasFocus(20)</visible>
+				</control>
+				<control type="button" id="20">
+					<width>auto</width>
+					<height>44</height>
+					<align>right</align>
+					<font>Font33</font>
+					<onup>3</onup>
+					<onclick>SettingsLevelChange</onclick>
+				</control>
 			</control>
 		</control>
 

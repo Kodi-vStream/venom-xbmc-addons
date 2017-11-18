@@ -23,6 +23,10 @@
 		<height>1080</height>
 	</include>
 
+	<include name="SlideAnim">
+		<animation effect="slide" start="0,0" end="450,0" time="200" condition="ControlGroup(9002).HasFocus|ControlGroup(9010).HasFocus|Window.IsActive(contextmenu)|Window.IsActive(shutdownmenu)">Conditional</animation>
+	</include>
+
 	<!-- Window background image -->
 	<include name="WindowBackgroundImage">
 		<param name="isHomeWindow">False</param>

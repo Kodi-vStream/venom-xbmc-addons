@@ -20,7 +20,7 @@
 				<height>1080</height>
 				<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
 			</control>
-			
+
 
 			<!-- Dialog group -->
 			<control type="group">
