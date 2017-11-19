@@ -20,6 +20,7 @@
 
 		<!-- Main group -->
 		<control type="group">
+			<include>SlideAnim</include>
 			<animation effect="fade" start="0" end="100" time="200" condition="!Window.Previous(musicplaylisteditor)">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="200" condition="!Window.Next(musicplaylisteditor)">WindowClose</animation>
 
@@ -76,7 +77,10 @@
 		</control>
 
 		<!-- Time -->
-		<include>Time</include>
+		<control type="group">
+			<include>SlideAnim</include>
+			<include>Time</include>
+		</control>
 
 		<!-- Options -->
 		<control type="group" id="9002">

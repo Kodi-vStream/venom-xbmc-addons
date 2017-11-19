@@ -31,11 +31,11 @@
 
 	<!-- Additional widgets -->
 	<widget label="$LOCALIZE[10508]" type="custom" path="$INCLUDE[weather-widget]">WeatherWidget</widget>
-	<widget label="$LOCALIZE[31091]" type="custom" path="$INCLUDE[osmc-widget]">OSMCWidget</widget>
+	<!--<widget label="$LOCALIZE[31091]" type="custom" path="$INCLUDE[osmc-widget]">OSMCWidget</widget>-->
 
 	<!-- Default properties -->
 	<widgetdefault labelID="widget" group="weather.1">WeatherWidget</widgetdefault>
-	<widgetdefault labelID="widget" group="31091.1">OSMCWidget</widgetdefault>
+	<!--<widgetdefault labelID="widget" group="31091.1">OSMCWidget</widgetdefault>-->
 
 	<widgetdefaultnode labelID="widget" group="movies.1" label="$LOCALIZE[31054]" type="movies" path="special://skin/extras/playlists/random_movies.xsp" target="videos">playlist</widgetdefaultnode>
 	<propertydefault labelID="widget" group="movies.1" property="widgetArt">Art(poster)</propertydefault>

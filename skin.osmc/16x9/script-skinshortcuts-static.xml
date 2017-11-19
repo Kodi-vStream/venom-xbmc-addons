@@ -83,7 +83,7 @@
 			<property name="group">mainmenu</property>
 			<property name="hasSubmenu">True</property>
 		</item>
-		<item id="6">
+		<!--<item id="6">
 			<property name="id">$NUMBER[6]</property>
 			<label>$LOCALIZE[31091]</label>
 			<label2>Custom shortcut</label2>
@@ -98,7 +98,7 @@
 			<property name="submenuVisibility">service-osmc-settings</property>
 			<property name="group">mainmenu</property>
 			<property name="hasSubmenu">False</property>
-		</item>
+		</item>-->
 		<item id="7">
 			<property name="id">$NUMBER[7]</property>
 			<label>$LOCALIZE[1036]</label>
