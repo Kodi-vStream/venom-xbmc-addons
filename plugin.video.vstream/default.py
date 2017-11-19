@@ -229,6 +229,9 @@ def searchGlobal():
             cConfig().updateDialogSearch(dialog, total, text,True)
         else:
             cConfig().updateDialogSearch(dialog, total, text)
+            
+        if dialog.iscanceled():
+            break
 
         #result['params'].addParameter('VSTRMSEARCH','True')
 
