@@ -47,7 +47,6 @@
 		<!-- Home layout -->
 		<control type="group">
 			<include>WindowFadeAnimation</include>
-			<include>SlideAnim</include>
 			<include>HomeOSMC</include>
 		</control>
 

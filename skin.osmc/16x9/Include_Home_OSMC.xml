@@ -2,80 +2,84 @@
 <includes>
 
 	<include name="HomeOSMC">
-		<!-- Widget control -->
-		<include>skinshortcuts-template-widgetControl</include>
 
-		<!-- Main list -->
-		<control type="list" id="9000">
-			<left>120</left>
-			<top>240</top>
-			<width>400</width>
-			<height>679</height>
-			<focusposition>7</focusposition>
-			<defaultcontrol>1</defaultcontrol>
-			<onup>9000</onup>
-			<ondown>9000</ondown>
-			<onleft>9001</onleft>
-			<onright condition="Control.IsVisible(9006)">9006</onright>
-			<orientation>vertical</orientation>
-			<scrolltime tween="sine" easing="out">240</scrolltime>
-
-			<itemlayout width="400" height="97">
-				<control type="label">
-					<left>0</left>
-					<top>0</top>
-					<width>400</width>
-					<height>97</height>
-					<label>[LIGHT]$INFO[ListItem.Label][/LIGHT]</label>
-					<font>Font50</font>
-					<textcolor>TextColor2</textcolor>
-				</control>
-			</itemlayout>
-
-			<focusedlayout width="400" height="97">
-				<control type="label">
-					<left>0</left>
-					<top>0</top>
-					<width>400</width>
-					<height>97</height>
-					<label>[B]$INFO[ListItem.Label][/B]</label>
-					<font>Font50</font>
-					<textcolor>TextColor1</textcolor>
-					<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="false" condition="!Control.HasFocus(9000)">Conditional</animation>
-				</control>
-			</focusedlayout>
-
-			<content>
-				<include>skinshortcuts-mainmenu</include>
-				<item>
-					<label>$LOCALIZE[10004]</label>
-					<icon>DefaultShortcut.png</icon>
-					<thumb />
-					<onclick>ActivateWindow(Settings)</onclick>
-					<visible>System.HasAddon(script.skinshortcuts) + !Skin.HasSetting(AlwaysShowSettingsLink) + !Skin.HasSetting(HasSettingsLink)</visible>
-				</item>
-			</content>
-
-		</control>
-
-		<!-- Indicators -->
-		<include content="Indicators">
-			<param name="left">120</param>
-			<param name="top">200</param>
-			<param name="height">759</param>
-			<param name="container">9000</param>
-		</include>
-
-		<!-- Widgets -->
-		<control type="group" id="9005">
-			<include>skinshortcuts-template-vertical</include>
-		</control>
-
-		<!-- Reloading indicator -->
 		<control type="group">
-			<left>1820</left>
-			<top>685</top>
-			<include>skinshortcuts-template-reloading</include>
+			<include>SlideAnim</include>
+		<!-- Widget control -->
+			<include>skinshortcuts-template-widgetControl</include>
+
+			<!-- Main list -->
+			<control type="list" id="9000">
+				<left>120</left>
+				<top>240</top>
+				<width>400</width>
+				<height>679</height>
+				<focusposition>7</focusposition>
+				<defaultcontrol>1</defaultcontrol>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<onleft>9001</onleft>
+				<onright condition="Control.IsVisible(9006)">9006</onright>
+				<orientation>vertical</orientation>
+				<scrolltime tween="sine" easing="out">240</scrolltime>
+
+				<itemlayout width="400" height="97">
+					<control type="label">
+						<left>0</left>
+						<top>0</top>
+						<width>400</width>
+						<height>97</height>
+						<label>[LIGHT]$INFO[ListItem.Label][/LIGHT]</label>
+						<font>Font50</font>
+						<textcolor>TextColor2</textcolor>
+					</control>
+				</itemlayout>
+
+				<focusedlayout width="400" height="97">
+					<control type="label">
+						<left>0</left>
+						<top>0</top>
+						<width>400</width>
+						<height>97</height>
+						<label>[B]$INFO[ListItem.Label][/B]</label>
+						<font>Font50</font>
+						<textcolor>TextColor1</textcolor>
+						<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="false" condition="!Control.HasFocus(9000)">Conditional</animation>
+					</control>
+				</focusedlayout>
+
+				<content>
+					<include>skinshortcuts-mainmenu</include>
+					<item>
+						<label>$LOCALIZE[10004]</label>
+						<icon>DefaultShortcut.png</icon>
+						<thumb />
+						<onclick>ActivateWindow(Settings)</onclick>
+						<visible>System.HasAddon(script.skinshortcuts) + !Skin.HasSetting(AlwaysShowSettingsLink) + !Skin.HasSetting(HasSettingsLink)</visible>
+					</item>
+				</content>
+
+			</control>
+
+			<!-- Indicators -->
+			<include content="Indicators">
+				<param name="left">120</param>
+				<param name="top">200</param>
+				<param name="height">759</param>
+				<param name="container">9000</param>
+			</include>
+
+			<!-- Widgets -->
+			<control type="group" id="9005">
+				<include>skinshortcuts-template-vertical</include>
+			</control>
+
+			<!-- Reloading indicator -->
+			<control type="group">
+				<left>1820</left>
+				<top>685</top>
+				<include>skinshortcuts-template-reloading</include>
+			</control>
 		</control>
 
 		<!-- Sub Menu -->
@@ -89,7 +93,7 @@
 				<visible>ControlGroup(9010).HasFocus</visible>
 			</control>
 			<control type="group">
-				<left>-900</left>
+				<left>-450</left>
 				<top>0</top>
 				<animation effect="slide" start="0,0" end="450,0" time="200" condition="ControlGroup(9010).HasFocus">Conditional</animation>
 				<control type="button">

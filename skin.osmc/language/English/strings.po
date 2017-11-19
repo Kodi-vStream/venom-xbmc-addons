@@ -447,7 +447,7 @@ msgstr ""
 
 #: /16x9/SkinSettings.xml
 msgctxt "#31097"
-msgid "Color of overlays"
+msgid "Color of Menu"
 msgstr ""
 
 #: /16x9/SkinSettings.xml
