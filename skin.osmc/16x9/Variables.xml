@@ -604,7 +604,7 @@
 		<value condition="Container.Content(Episodes)">$INFO[ListItem.Icon]</value>
 		<value condition="IsEmpty(ListItem.Art(landscape)) + !IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
 		<value condition="!IsEmpty(ListItem.Art(landscape))">$INFO[ListItem.Art(landscape)]</value>
-		<value>$INFO[ListItem.Art(thumb)]</value>
+		<value>$INFO[ListItem.Icon]</value>
 	</variable>
 
 	<!-- Skin Settings - Weather Art -->

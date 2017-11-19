@@ -56,8 +56,8 @@
                     </control>
                     <!-- Watched status -->
                     <control type="image">
-                        <left>90</left>
-                        <top>190</top>
+                        <left>350</left>
+                        <top>270</top>
                         <width>30</width>
                         <height>42</height>
                         <texture>$VAR[StatusOverlayWide]</texture>
@@ -92,8 +92,8 @@
                     </control>
                     <!-- Watched status -->
 					<control type="image">
-                        <left>90</left>
-                        <top>190</top>
+                        <left>350</left>
+                        <top>270</top>
                         <width>30</width>
                         <height>42</height>
                     	<texture>$VAR[StatusOverlayWide]</texture>
@@ -140,7 +140,7 @@
                     <left>0</left>
                     <top>-2</top>
                     <font>Font40</font>
-                    <width>180</width>
+                    <width>250</width>
                     <height>24</height>
                     <label>$INFO[ListItem.RatingAndVotes]</label>
                 </control>
