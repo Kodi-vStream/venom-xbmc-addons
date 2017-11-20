@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<shortcuts>
+	<shortcut>
+		<label>342</label>
+		<label2>Common Shortcut</label2>
+		<icon>DefaultMovies.png</icon>
+		<thumb />
+		<action>ActivateWindow(Videos,library://video/movies/titles.xml/,return)</action>
+	</shortcut>
+	<shortcut>
+		<label>20343</label>
+		<label2>Common Shortcut</label2>
+		<icon>DefaultTVShows.png</icon>
+		<thumb />
+		<action>ActivateWindow(Videos,library://video/tvshows/titles.xml/,return)</action>
+	</shortcut>
+	<shortcut>
+		<label>10006</label>
+		<label2>Common Shortcut</label2>
+		<icon>DefaultVideo.png</icon>
+		<thumb />
+		<action>ActivateWindow(Videos,root)</action>
+	</shortcut>
+	<shortcut>
+		<defaultID>music</defaultID>
+		<label>10005</label>
+		<label2>Common Shortcut</label2>
+		<icon>DefaultMusicAlbums.png</icon>
+		<thumb />
+		<action>ActivateWindow(Music,root)</action>
+	</shortcut>
+	<shortcut>
+		<label>10002</label>
+		<label2>Common Shortcut</label2>
+		<icon>DefaultPicture.png</icon>
+		<thumb />
+		<action>ActivateWindow(Pictures)</action>
+	</shortcut>
+	<shortcut>
+		<label>1036</label>
+		<label2>Common Shortcut</label2>
+		<icon>home/DefaultFavourites.png</icon>
+		<thumb />
+		<action>ActivateWindow(Favourites)</action>
+	</shortcut>
+	<shortcut>
+		<label>10001</label>
+		<label2>Common Shortcut</label2>
+		<icon>DefaultProgram.png</icon>
+		<thumb />
+		<action>ActivateWindow(Programs,Addons,return)</action>
+	</shortcut>
+	<shortcut>
+		<label>12600</label>
+		<label2>Common Shortcut</label2>
+		<icon>home/DefaultWeather.png</icon>
+		<thumb />
+		<action>ActivateWindow(Weather)</action>
+	</shortcut>
+	<shortcut>
+		<label>14204</label>
+		<label2>Common Shortcut</label2>
+		<icon>home/DefaultLiveTV.png</icon>
+		<thumb />
+		<action>ActivateWindow(TVGuide)</action>
+	</shortcut>
+	<shortcut>
+		<label>19021</label>
+		<label2>Common Shortcut</label2>
+		<icon>home/DefaultRadio.png</icon>
+		<thumb />
+		<action>ActivateWindow(RadioGuide)</action>
+	</shortcut>
+	<shortcut>
+		<label>341</label>
+		<label2>32034</label2>
+		<icon>DefaultDVDFull.png</icon>
+		<thumb />
+		<action>XBMC.PlayDVD()</action>
+	</shortcut>
+	<shortcut>
+		<label>10004</label>
+		<label2>Common Shortcut</label2>
+		<icon>home/DefaultSettings.png</icon>
+		<thumb />
+		<action>ActivateWindow(Settings)</action>
+	</shortcut>
+	<shortcut>
+		<label>33060</label>
+		<label2>Common Shortcut</label2>
+		<icon>home/DefaultPower.png</icon>
+		<thumb />
+		<action>ActivateWindow(shutdownmenu)</action>
+	</shortcut>
+</shortcuts>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- pvrgroupmanager -->
+	<defaultcontrol always="true">13</defaultcontrol>
+
+	<controls>
+		<!-- Window Background -->
+		<include>WindowFadeBackgroundImage</include>
+
+		<!-- Hidden labels -->
+		<control type="label" id="21">
+			<font>-</font>
+		</control>
+		<control type="label" id="22">
+			<font>-</font>
+		</control>
+
+		<control type="group">
+
+			<!-- Animation -->
+			<include>DialogZoomAnimation</include>
+
+			<!-- Heading -->
+			<include content="Time">
+				<param name="heading">$LOCALIZE[19143]</param>
+			</include>
+
+			<!-- Name -->
+			<control type="label">
+				<left>150</left>
+				<top>228</top>
+				<width>526</width>
+				<height>36</height>
+				<font>Font36</font>
+				<textcolor>TextColor2</textcolor>
+				<label>$LOCALIZE[19146]</label>
+				<align>center</align>
+			</control>
+
+			<!-- Groups list -->			
+			<control type="list" id="13">
+				<left>150</left>
+				<top>284</top>
+				<width>526</width>
+				<height>660</height>
+				<onup>noop</onup>
+				<ondown>29</ondown>
+				<onleft>noop</onleft>
+				<onright>11</onright>
+				<scrolltime tween="sine" easing="out">240</scrolltime>
+
+				<itemlayout width="526" height="66">
+
+					<control type="label">
+						<width>526</width>
+						<textcolor>DialogColor2</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+
+				</itemlayout>
+
+				<focusedlayout width="526" height="66">
+
+					<control type="label">
+						<width>526</width>
+						<label>$INFO[ListItem.Label]</label>
+						<animation effect="fade" start="100" end="75" condition="!Control.HasFocus(13)">Conditional</animation>
+					</control>
+
+				</focusedlayout>
+
+			</control>
+
+			<!-- Name -->
+			<control type="label">
+				<centerleft>960</centerleft>
+				<top>228</top>
+				<width>526</width>
+				<height>36</height>
+				<font>Font36</font>
+				<textcolor>TextColor2</textcolor>
+				<label>$INFO[Control.GetLabel(21)]</label>
+				<align>center</align>
+			</control>
+
+			<!-- Grouped Channels list -->			
+			<control type="list" id="11">
+				<centerleft>960</centerleft>
+				<top>284</top>
+				<width>526</width>
+				<height>594</height>
+				<onup>noop</onup>
+				<ondown>29</ondown>
+				<onleft>13</onleft>
+				<onright>12</onright>
+				<scrolltime tween="sine" easing="out">240</scrolltime>
+
+				<itemlayout width="526" height="66">
+
+					<control type="label">
+						<width>526</width>
+						<textcolor>DialogColor2</textcolor>
+						<label>$INFO[ListItem.ChannelNumber,(,) ]$INFO[ListItem.ChannelName]</label>
+					</control>
+
+				</itemlayout>
+
+				<focusedlayout width="526" height="66">
+
+					<control type="label">
+						<width>526</width>
+						<label>$INFO[ListItem.ChannelNumber,(,) ]$INFO[ListItem.ChannelName]</label>
+						<animation effect="fade" start="100" end="75" condition="!Control.HasFocus(11)">Conditional</animation>
+					</control>
+
+				</focusedlayout>
+
+			</control>
+
+			<!-- Name -->
+			<control type="label">
+				<right>150</right>
+				<top>228</top>
+				<width>526</width>
+				<height>36</height>
+				<font>Font36</font>
+				<textcolor>TextColor2</textcolor>
+				<label>$INFO[Control.GetLabel(22)]</label>
+				<align>center</align>
+			</control>
+
+			<!-- Channels list -->			
+			<control type="list" id="12">
+				<right>150</right>
+				<top>284</top>
+				<width>526</width>
+				<height>594</height>
+				<onup>noop</onup>
+				<ondown>29</ondown>
+				<onleft>11</onleft>
+				<onright>noop</onright>
+				<scrolltime tween="sine" easing="out">240</scrolltime>
+
+				<itemlayout width="526" height="66">
+
+					<control type="label">
+						<width>526</width>
+						<textcolor>DialogColor2</textcolor>
+						<label>$INFO[ListItem.ChannelNumber,(,) ]$INFO[ListItem.ChannelName]</label>
+					</control>
+
+				</itemlayout>
+
+				<focusedlayout width="526" height="66">
+
+					<control type="label">
+						<width>526</width>
+						<label>$INFO[ListItem.ChannelNumber,(,) ]$INFO[ListItem.ChannelName]</label>
+						<animation effect="fade" start="100" end="75" condition="!Control.HasFocus(12)">Conditional</animation>
+					</control>
+
+				</focusedlayout>
+
+			</control>
+
+			<!-- Button grouplist background -->
+			<include content="dialogButtonBackground">
+				<param name="id">9001</param>
+			</include>
+
+			<!-- Buttons -->
+			<control type="grouplist" id="9001">
+				<left>120</left>
+				<bottom>100</bottom>
+				<width>1680</width>
+				<height>66</height>
+				<orientation>horizontal</orientation>
+				<align>center</align>
+				<itemgap>30</itemgap>
+				<onup>13</onup>
+				<defaultcontrol>29</defaultcontrol>
+
+				<!-- OK Button -->
+				<control type="button" id="29">
+					<width>auto</width>
+					<label>186</label>
+				</control>
+
+				<!-- Hide Button -->
+				<control type="button" id="25">
+					<width>auto</width>
+					<label>19289</label>
+				</control>
+
+				<!-- Delete Button -->
+				<control type="button" id="28">
+					<width>auto</width>
+					<label>$LOCALIZE[117] $LOCALIZE[19141]</label>
+				</control>
+
+				<!-- Rename Button -->
+				<control type="button" id="27">
+					<width>auto</width>
+					<label>$LOCALIZE[118] $LOCALIZE[19141]</label>
+				</control>
+
+				<!-- Add Button -->
+				<control type="button" id="26">
+					<width>auto</width>
+					<label>$LOCALIZE[15019] $LOCALIZE[19141]</label>
+				</control>
+
+			</control>
+
+		</control>
+
+	</controls>
+
+</window>

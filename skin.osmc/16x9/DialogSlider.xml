@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- sliderdialog -->
+	<defaultcontrol always="true">11</defaultcontrol>
+
+	<controls>
+
+		<!-- Background image -->
+		<control type="image">
+			<left>685</left>
+			<top>10</top>
+			<width>550</width>
+			<height>75</height>
+			<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+		</control>
+
+		<!-- Heading -->
+		<control type="label" id="10">
+			<left>685</left>
+			<top>20</top>
+			<width>550</width>
+			<height>20</height>
+			<align>center</align>
+			<scroll>true</scroll>
+			<font>Font27</font>
+		</control>
+
+		<!-- Details -->
+		<control type="label" id="12">
+			<left>685</left>
+			<top>45</top>
+			<width>550</width>
+			<height>25</height>
+			<align>center</align>
+			<aligny>top</aligny>
+			<scroll>true</scroll>
+			<font>Font27-Light</font>
+		</control>
+
+		<!-- Slider -->
+		<control type="slider" id="11">
+			<left>685</left>
+			<top>75</top>
+			<width>550</width>
+			<height>20</height>
+		</control>
+
+	</controls>
+
+</window>

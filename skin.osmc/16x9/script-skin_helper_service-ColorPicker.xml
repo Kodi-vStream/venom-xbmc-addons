@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">3110</defaultcontrol>
+	<controls>
+		<!-- Background -->
+		<include>WindowFadeBackgroundImage</include>
+
+		<control type="group">
+			<include>DialogZoomAnimation</include>
+
+			<include content="Time">
+				<param name="heading">$ADDON[script.skin.helper.colorpicker 32011]</param>
+			</include>
+	        
+			<control type="grouplist" id="9">
+				<left>120</left>
+				<top>228</top>
+				<width>360</width>
+				<height>660</height>
+				<itemgap>0</itemgap>
+				<onleft>noop</onleft>
+				<onright>3110</onright>
+				<onup>noop</onup>
+				<ondown>9001</ondown>
+				<orientation>vertical</orientation>
+				<scrolltime tween="sine" easing="out">240</scrolltime>
+
+				<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="false" condition="ControlGroup(2).HasFocus">Conditional</animation>
+
+				<!-- Preview-->
+				<control type="button" id="10">
+					<width>360</width>
+					<height>66</height>
+					<label>$INFO[Window.Property(colorstring)]</label>
+					<font>Font33</font>
+					<textcolor>$VAR[SkinSettingButton10]</textcolor>
+					<texturenofocus colordiffuse="$INFO[Window.Property(colorstring)]">common/white.png</texturenofocus>
+					<disabledcolor>TextColor1</disabledcolor>
+					<enable>False</enable>
+				</control>
+
+				<!-- Edit -->
+				<control type="button" id="3010">
+					<width>600</width>
+					<height>66</height>
+					<label>$LOCALIZE[21450]</label>
+					<font>Font33</font>
+					<textcolor>TextColor2</textcolor>
+					<focusedcolor>TextColor1</focusedcolor>
+				</control>
+
+				<!-- Opacity -->
+				<control type="button" id="11">
+					<width>360</width>
+					<height>66</height>
+					<label>$ADDON[script.skin.helper.colorpicker 32049]:</label>
+					<label2>$INFO[Control.Getlabel(3015)]</label2>
+					<font>Font33</font>
+					<disabledcolor>TextColor2</disabledcolor>
+					<enable>False</enable>
+				</control>
+
+				<control type="slider" id="3015">
+					<width>360</width>
+					<height>20</height>
+				</control>
+
+				<!-- Pallette -->
+				<control type="button" id="3030">
+					<width>360</width>
+					<height>66</height>
+					<label>$ADDON[script.skin.helper.colorpicker 32141]</label>
+					<label2>$INFO[Window.Property(palettename)]</label2>
+					<font>Font33</font>
+					<textcolor>TextColor2</textcolor>
+					<focusedcolor>TextColor1</focusedcolor>
+				</control>
+
+			</control>
+
+	        <!-- Color picker panel -->
+			<control type="panel" id="3110">
+				<left>550</left>
+				<centertop>50%</centertop>
+				<width>1209</width>
+				<height>646</height>
+				<orientation>vertical</orientation>
+				<onleft>9</onleft>
+				<ondown>9001</ondown>
+				<preloaditems>4</preloaditems>
+				<itemlayout height="38" width="39">
+					<control type="image">
+						<width>92%</width>
+						<height>92%</height>
+						<texture border="5">$INFO[ListItem.Icon]</texture>
+					</control>
+				</itemlayout>
+				<focusedlayout height="38" width="39">
+	                <control type="group">
+	                    <animation effect="zoom" time="200" tween="sine" easing="inout" start="100" end="300" center="auto">Focus</animation>
+	                    <control type="image">
+	                        <width>92%</width>
+	                        <height>92%</height>
+	                        <texture border="5">$INFO[ListItem.Icon]</texture>
+	                    </control>
+	                </control>
+				</focusedlayout>
+	        </control>
+
+			<!-- Button grouplist background -->
+			<include content="dialogButtonBackground">
+				<param name="id">9001</param>
+			</include>
+
+			<!-- Buttons -->
+			<control type="grouplist" id="9001">
+				<left>120</left>
+				<bottom>100</bottom>
+				<width>1680</width>
+				<height>66</height>
+				<orientation>horizontal</orientation>
+				<align>center</align>
+				<itemgap>30</itemgap>
+				<onup>9</onup>
+
+				<!-- Save -->
+				<control type="button" id="3012">
+					<width>auto</width>
+					<label>190</label>
+				</control>
+
+				<!-- None -->
+				<control type="button" id="3011">
+					<width>auto</width>
+					<label>$LOCALIZE[571]</label>
+				</control>
+
+			</control>
+
+		</control>
+
+	</controls>
+</window>

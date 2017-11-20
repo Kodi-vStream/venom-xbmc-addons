@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- pictureinfo -->
+	<defaultcontrol always="true">5</defaultcontrol>
+
+	<controls>
+		<!-- Window Background -->
+		<include>WindowFadeBackgroundImage</include>
+
+		<control type="group">
+
+			<!-- Animation -->
+			<include>DialogZoomAnimation</include>
+
+			<!-- Heading -->
+			<include content="Time">
+				<param name="heading">$LOCALIZE[13406]</param>
+			</include>
+
+			<!-- List -->
+			<control type="list" id="5">
+				<left>360</left>
+				<top>235</top>
+				<width>1200</width>
+				<height>580</height>
+				<onup>noop</onup>
+				<ondown>9000</ondown>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+				<orientation>vertical</orientation>
+				<viewtype label="list">list</viewtype>
+				<scrolltime tween="sine" easing="out">240</scrolltime>
+
+				<itemlayout width="1200" height="58">
+					<control type="label">
+						<width>1200</width>
+						<height>58</height>
+						<font>Font36</font>
+						<textcolor>DialogColor2</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="label">
+						<width>1200</width>
+						<height>58</height>
+						<font>Font36</font>
+						<align>right</align>
+						<textcolor>DialogColor2</textcolor>
+						<label>$INFO[ListItem.Label2]</label>
+					</control>
+				</itemlayout>
+
+				<focusedlayout width="1200" height="58">
+					<control type="label">
+						<width>1200</width>
+						<height>58</height>
+						<font>Font36</font>
+						<textcolor>DialogColor1</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+						<animation effect="fade" start="100" end="75" time="0" condition="!Control.HasFocus(5)">Conditional</animation>
+					</control>
+					<control type="label">
+						<width>1200</width>
+						<height>58</height>
+						<font>Font36</font>
+						<align>right</align>
+						<textcolor>DialogColor1</textcolor>
+						<label>$INFO[ListItem.Label2]</label>
+						<animation effect="fade" start="100" end="75" time="0" condition="!Control.HasFocus(5)">Conditional</animation>
+					</control>
+				</focusedlayout>
+
+			</control>
+
+			<!-- Button grouplist background -->
+			<include content="dialogButtonBackground">
+				<param name="id">9000</param>
+			</include>
+
+			<!-- Buttons -->
+			<control type="grouplist" id="9000">
+				<left>120</left>
+				<bottom>100</bottom>
+				<width>1680</width>
+				<height>66</height>
+				<orientation>horizontal</orientation>
+				<align>center</align>
+				<itemgap>30</itemgap>
+				<onup>5</onup>
+
+				<!-- OK button -->
+				<control type="button" id="9001">
+					<width>auto</width>
+					<onclick>Close</onclick>
+					<label>186</label>
+				</control>
+			</control>
+
+		</control>
+
+	</controls>
+
+</window>

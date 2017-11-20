@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+	<!-- settingscategory -->
+	<backgroundcolor>0x00000000</backgroundcolor>
+
+	<controls>
+
+		<!-- Background -->
+		<include>WindowBackgroundImage</include>
+
+		<!-- Time -->
+		<control type="group">
+			<include>SlideAnim</include>
+			<include>Time</include>
+		</control>
+
+		<!--group slide -->
+		<control type="group">
+			<include>SlideAnim</include>
+			<!-- Main list (Left) -->
+			<control type="grouplist" id="3">
+				<left>120</left>
+				<top>228</top>
+				<width>300</width>
+				<height>660</height>
+				<itemgap>0</itemgap>
+				<onleft>3001</onleft>
+				<onright>5</onright>
+				<ondown>20</ondown>
+				<orientation>vertical</orientation>
+				<scrolltime tween="sine" easing="out">240</scrolltime>
+			</control>
+
+			<!-- Sub list (Right) -->
+			<control type="grouplist" id="5">
+				<left>550</left>
+				<top>228</top>
+				<width>1220</width>
+				<height>660</height>
+				<itemgap>0</itemgap>
+				<onleft>3</onleft>
+				<onright>998</onright>
+				<orientation>vertical</orientation>
+			</control>
+
+			<!-- Settings description -->
+			<control type="textbox" id="6">
+				<left>550</left>
+				<top>900</top>
+				<width>1220</width>
+				<height>95</height>
+				<textcolor>TextColor1</textcolor>
+				<font>Font27</font>
+				<visible>ControlGroup(5).HasFocus</visible>
+			</control>
+
+			<!-- Indicators -->
+			<include content="Indicators">
+				<param name="left">500</param>
+				<param name="top">253</param>
+				<param name="height">610</param>
+				<param name="container">5</param>
+			</include>
+
+			<control type="grouplist">
+				<left>120</left>
+				<bottom>110</bottom>
+				<width>800</width>
+				<height>44</height>
+				<itemgap>0</itemgap>
+				<align>left</align>
+				<orientation>horizontal</orientation>
+				<usecontrolcoords>true</usecontrolcoords>
+				<control type="label">
+					<width>auto</width>
+					<height>44</height>
+					<align>right</align>
+					<label>$LOCALIZE[31016]: </label>
+					<font>Font33</font>
+					<textcolor>TextColor2</textcolor>
+					<visible>!Control.HasFocus(20)</visible>
+				</control>
+				<control type="label">
+					<width>auto</width>
+					<height>44</height>
+					<align>right</align>
+					<label>$LOCALIZE[31016]: </label>
+					<font>Font33</font>
+					<textcolor>TextColor1</textcolor>
+					<visible>Control.HasFocus(20)</visible>
+				</control>
+				<control type="button" id="20">
+					<width>auto</width>
+					<height>44</height>
+					<align>right</align>
+					<font>Font33</font>
+					<onup>3</onup>
+					<onclick>SettingsLevelChange</onclick>
+				</control>
+			</control>
+		</control>
+
+
+		<!-- Options -->
+		<control type="group" id="9002">
+			<control type="image">
+				<include>FullscreenDimensions</include>
+				<texture colordiffuse="DarkenColor">dialogs/DialogTextBackground.png</texture>
+				<animation effect="fade" start="0" end="100" time="200">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+				<visible>ControlGroup(9002).HasFocus</visible>
+			</control>
+			<control type="group">
+				<left>-450</left>
+				<top>0</top>
+				<animation effect="slide" start="0,0" end="450,0" time="200" condition="ControlGroup(9002).HasFocus">Conditional</animation>
+				<control type="button">
+					<left>0</left>
+					<top>0</top>
+					<width>460</width>
+					<height>1080</height>
+					<onclick>noop</onclick>
+				</control>
+
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>450</width>
+					<height>1080</height>
+					<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+				</control>
+
+				<!-- Look controls -->
+				<control type="grouplist" id="3001">
+					<left>20</left>
+					<width>410</width>
+					<height>1040</height>
+					<onleft>3</onleft>
+					<onright>3</onright>
+					<scrolltime>200</scrolltime>
+					<orientation>vertical</orientation>
+					<itemgap>0</itemgap>
+					<defaultcontrol always="true">99</defaultcontrol>
+
+					<include content="SideMenuAnimation">
+						<param name="containerID">3001</param>
+					</include>
+
+					<!-- Settings quick-nav -->
+					<control type="button" id="90">
+						<label>31074</label>
+						<height>52</height>
+						<onclick>ReplaceWindow(InterfaceSettings)</onclick>
+					</control>
+					<control type="button" id="91">
+						<label>16003</label>
+						<height>52</height>
+						<onclick>ReplaceWindow(PlayerSettings)</onclick>
+					</control>
+					<control type="button" id="92">
+						<label>14211</label>
+						<height>52</height>
+						<onclick>ReplaceWindow(MediaSettings)</onclick>
+					</control>
+					<control type="button" id="93">
+						<label>31015</label>
+						<height>52</height>
+						<onclick>ReplaceWindow(PVRSettings)</onclick>
+					</control>
+					<control type="button" id="94">
+						<label>13200</label>
+						<height>52</height>
+						<onclick>ReplaceWindow(Profiles)</onclick>
+					</control>
+					<control type="button" id="95">
+						<label>14036</label>
+						<height>52</height>
+						<onclick>ReplaceWindow(ServiceSettings)</onclick>
+					</control>
+					<control type="button" id="96">
+						<label>13000</label>
+						<height>52</height>
+						<onclick>ReplaceWindow(SystemSettings)</onclick>
+					</control>
+					<control type="button" id="97">
+						<label>130</label>
+						<height>52</height>
+						<onclick>ReplaceWindow(SystemInfo)</onclick>
+					</control>
+
+				</control>
+			</control>
+		</control>
+
+		<!-- Default label -->
+		<control type="label" id="14">
+			<width>1220</width>
+			<height>66</height>
+			<font>Font33</font>
+			<align>center</align>
+			<label>-</label>
+			<textcolor>TextColor2</textcolor>
+		</control>
+
+		<!-- Default group button -->
+		<control type="button" id="10">
+			<width>300</width>
+			<height>66</height>
+			<font>Font33</font>
+			<onclick>SetFocus(5)</onclick>
+			<textcolor>TextColor2</textcolor>
+			<focusedcolor>TextColor1</focusedcolor>
+			<invalidcolor>TextColor4</invalidcolor>
+			<disabledcolor>TextColor4</disabledcolor>
+			<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="false" condition="ControlGroup(5).HasFocus | Control.HasFocus(20)">Conditional</animation>
+		</control>
+
+		<!-- Default button -->
+		<control type="button" id="7">
+			<width>1220</width>
+			<height>66</height>
+			<font>Font33</font>
+			<textwidth>900</textwidth>
+			<textcolor>TextColor2</textcolor>
+			<focusedcolor>TextColor1</focusedcolor>
+			<invalidcolor>TextColor4</invalidcolor>
+			<disabledcolor>TextColor4</disabledcolor>
+		</control>
+
+		<!-- Default radiobutton -->
+		<control type="radiobutton" id="8">
+			<width>1220</width>
+			<height>66</height>
+			<font>Font33</font>
+			<textwidth>900</textwidth>
+			<textcolor>TextColor2</textcolor>
+			<focusedcolor>TextColor1</focusedcolor>
+			<disabledcolor>TextColor4</disabledcolor>
+		</control>
+
+		<!-- Default spincontrolex -->
+		<control type="spincontrolex" id="9">
+			<width>1220</width>
+			<height>66</height>
+			<font>Font33</font>
+			<textwidth>900</textwidth>
+			<textcolor>TextColor2</textcolor>
+			<focusedcolor>TextColor1</focusedcolor>
+			<disabledcolor>TextColor4</disabledcolor>
+		</control>
+
+		<!-- Default sliderex -->
+		<control type="sliderex" id="13">
+			<width>1220</width>
+			<height>66</height>
+			<font>Font33</font>
+			<textwidth>900</textwidth>
+			<textcolor>TextColor2</textcolor>
+			<focusedcolor>TextColor1</focusedcolor>
+			<disabledcolor>TextColor4</disabledcolor>
+		</control>
+
+		<!-- Default image -->
+		<control type="image" id="11">
+			<width>1220</width>
+			<height>66</height>
+			<texture border="2" colordiffuse="DialogColor2">common/Divider.png</texture>
+		</control>
+
+		<!-- Default edit -->
+		<control type="edit" id="12">
+			<width>1220</width>
+			<height>66</height>
+		</control>
+
+	</controls>
+
+</window>

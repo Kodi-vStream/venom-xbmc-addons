@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<smartplaylist type="tvshows">
+    <name>Recommended TV-Shows</name>
+    <match>all</match>
+    <rule field="playcount" operator="is">
+        <value>0</value>
+    </rule>
+	<rule field="rating" operator="greaterthan">
+        <value>7</value>
+    </rule>
+	<limit>20</limit>
+    <order direction="ascending">random</order>
+</smartplaylist>

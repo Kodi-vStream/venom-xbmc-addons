@@ -25,8 +25,10 @@ SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, r�
 
 URL_MAIN = 'http://le_site.org/' #url de votre source
 
-#definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle seras affichee.
+#definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 # menu films existant dans l'acceuil (Home)
@@ -37,7 +39,7 @@ MOVIE_VIEWS = (URL_MAIN + 'url', 'showMovies') #films (les plus vus)
 MOVIE_COMMENTS = (URL_MAIN + 'url', 'showMovies') #films (les plus commentés)
 MOVIE_NOTES = (URL_MAIN + 'url', 'showMovies') #films (les mieux notés)
 MOVIE_GENRES = (True, 'showGenres') #films genres
-MOVIE_ANNEES = (True, 'showMovieAnnees') #films (par années)
+MOVIE_ANNEES = (True, 'showMovieYears') #films (par années)
 #menu supplementaire non gerer par l'acceuil
 MOVIE_VF = (URL_MAIN + 'url', 'showMovies') #films VF
 MOVIE_VOSTFR = (URL_MAIN + 'url', 'showMovies') #films VOSTFR
@@ -47,14 +49,14 @@ SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies') #séries (derniers ajouts)
 SERIE_HD = (URL_MAIN + 'series/', 'showMovies') #séries HD
 SERIE_SERIES = (URL_MAIN + 'series/', 'showMovies') #séries vrac
 SERIE_GENRES = (True, 'showGenres') #séries genres
-SERIE_ANNEES = (True, 'showSerieAnnees') #séries (par années)
+SERIE_ANNEES = (True, 'showSerieYears') #séries (par années)
 SERIE_VFS = (URL_MAIN + 'series/', 'showMovies') #séries VF
 SERIE_VOSTFRS = (URL_MAIN + 'series/', 'showMovies') #séries Vostfr
 
 ANIM_NEWS = (URL_MAIN + 'animes/', 'showMovies') #animés (derniers ajouts)
 ANIM_ANIMS = (URL_MAIN + 'animes', 'showMovies') #animés vrac
 ANIM_GENRES = (True, 'showGenres') #anime genres
-ANIM_ANNEES = (True, 'showAnimesAnnees') #anime (par années)
+ANIM_ANNEES = (True, 'showAnimesYears') #anime (par années)
 ANIM_VFS = (URL_MAIN + 'animes', 'showMovies') #animés VF
 ANIM_VOSTFRS = (URL_MAIN + 'animes', 'showMovies') #animés VOSTFR
 ANIM_ENFANTS = (URL_MAIN + 'animes', 'showMovies')
@@ -153,32 +155,32 @@ def showGenres(): #affiche les genres
 
     #juste a entrer les categories et les liens qui vont bien
     liste = []
-    liste.append( ['Action',URL_MAIN + 'action/'] )
-    liste.append( ['Animation',URL_MAIN + 'animation/'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'arts-martiaux/'] )
-    liste.append( ['Aventure',URL_MAIN + 'aventure/'] )
-    liste.append( ['Biopic',URL_MAIN + 'biopic/'] )
-    liste.append( ['Comédie',URL_MAIN + 'comedie/'] )
-    liste.append( ['Comédie Dramatique',URL_MAIN + 'comedie-dramatique/'] )
-    liste.append( ['Comédie Musicale',URL_MAIN + 'comedie-musicale/'] )
-    liste.append( ['Documentaire',URL_MAIN + 'documentaire/'] )
-    liste.append( ['Drame',URL_MAIN + 'drame/'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'epouvante-horreur/'] )
-    liste.append( ['Erotique',URL_MAIN + 'erotique'] )
-    liste.append( ['Espionnage',URL_MAIN + 'espionnage/'] )
-    liste.append( ['Famille',URL_MAIN + 'famille/'] )
-    liste.append( ['Fantastique',URL_MAIN + 'fantastique/'] )
-    liste.append( ['Guerre',URL_MAIN + 'guerre/'] )
-    liste.append( ['Historique',URL_MAIN + 'historique/'] )
-    liste.append( ['Musical',URL_MAIN + 'musical/'] )
-    liste.append( ['Policier',URL_MAIN + 'policier/'] )
-    liste.append( ['Péplum',URL_MAIN + 'peplum/'] )
-    liste.append( ['Romance',URL_MAIN + 'romance/'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'science-fiction/'] )
-    liste.append( ['Spectacle',URL_MAIN + 'spectacle/'] )
-    liste.append( ['Thriller',URL_MAIN + 'thriller/'] )
-    liste.append( ['Western',URL_MAIN + 'western/'] )
-    liste.append( ['Divers',URL_MAIN + 'divers/'] )
+    liste.append( ['Action', URL_MAIN + 'action/'] )
+    liste.append( ['Animation', URL_MAIN + 'animation/'] )
+    liste.append( ['Arts Martiaux', URL_MAIN + 'arts-martiaux/'] )
+    liste.append( ['Aventure', URL_MAIN + 'aventure/'] )
+    liste.append( ['Biopic', URL_MAIN + 'biopic/'] )
+    liste.append( ['Comédie', URL_MAIN + 'comedie/'] )
+    liste.append( ['Comédie Dramatique', URL_MAIN + 'comedie-dramatique/'] )
+    liste.append( ['Comédie Musicale', URL_MAIN + 'comedie-musicale/'] )
+    liste.append( ['Documentaire', URL_MAIN + 'documentaire/'] )
+    liste.append( ['Drame', URL_MAIN + 'drame/'] )
+    liste.append( ['Epouvante Horreur', URL_MAIN + 'epouvante-horreur/'] )
+    liste.append( ['Erotique', URL_MAIN + 'erotique'] )
+    liste.append( ['Espionnage', URL_MAIN + 'espionnage/'] )
+    liste.append( ['Famille', URL_MAIN + 'famille/'] )
+    liste.append( ['Fantastique', URL_MAIN + 'fantastique/'] )
+    liste.append( ['Guerre', URL_MAIN + 'guerre/'] )
+    liste.append( ['Historique', URL_MAIN + 'historique/'] )
+    liste.append( ['Musical', URL_MAIN + 'musical/'] )
+    liste.append( ['Policier', URL_MAIN + 'policier/'] )
+    liste.append( ['Péplum', URL_MAIN + 'peplum/'] )
+    liste.append( ['Romance', URL_MAIN + 'romance/'] )
+    liste.append( ['Science Fiction', URL_MAIN + 'science-fiction/'] )
+    liste.append( ['Spectacle', URL_MAIN + 'spectacle/'] )
+    liste.append( ['Thriller', URL_MAIN + 'thriller/'] )
+    liste.append( ['Western', URL_MAIN + 'western/'] )
+    liste.append( ['Divers', URL_MAIN + 'divers/'] )
 
     for sTitle,sUrl in liste: #boucle
 
@@ -190,7 +192,7 @@ def showGenres(): #affiche les genres
     oGui.setEndOfDirectory()
 
 
-def showMovieAnnees():#creer une liste inversée d'annees
+def showMovieYears():#creer une liste inversée d'annees
     oGui = cGui()
 
     for i in reversed (xrange(1913, 2018)):
@@ -202,7 +204,7 @@ def showMovieAnnees():#creer une liste inversée d'annees
     oGui.setEndOfDirectory()
 
 
-def showSerieAnnees():
+def showSerieYears():
     oGui = cGui()
 
     for i in reversed (xrange(1936, 2018)):
@@ -225,7 +227,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl) #envoye une requete a l'url
     sHtmlContent = oRequestHandler.request() #requete aussi
 
-    sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
+    sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>', '')
     #la fonction replace est pratique pour supprimer un code du resultat
 
     sPattern = 'class="movie movie-block"><img src="([^<]+)" alt=".+?" title="([^<]+)"/>.+?<h2 onclick="window.location.href=\'([^<]+)\'">.+?<div style="color:#F29000">.+?<div.+?>(.+?)</div>'
@@ -270,24 +272,24 @@ def showMovies(sSearch = ''):
 
             #Si vous avez des information dans aEntry Qualiter lang organiser un peux vos titre exemple.
             #Si vous pouvez la langue et la Qualite en MAJ ".upper()" vostfr.upper() = VOSTFR
-            sTitle = ('%s [%s] (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sQual, sLang.upper() , sHoster)
+            sTitle = ('%s [%s] (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sQual, sLang.upper(), sHoster)
             #mettre les information de streaming entre [] et le reste entre () vstream s'occupe de la couleur automatiquement.
 
             sUrl2 = URL_MAIN + sUrl2
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2) #sortie de l'url
-            oOutputParameterHandler.addParameter('sMovieTitle',sTitle) #sortie du titre
-            oOutputParameterHandler.addParameter('sThumb',sThumb ) #sortie du poster
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle) #sortie du titre
+            oOutputParameterHandler.addParameter('sThumb', sThumb) #sortie du poster
 
             if '/series' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle,'', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'ShowSerieSaisonEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
                 #addTV pour sortir les series tv (identifiant, function, titre, icon, poster, description, sortie parametre)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
                 #addMovies pour sortir les films (identifiant, function, titre, icon, poster, description, sortie parametre)
 
-            #il existe aussis addMisc(identifiant, function, titre, icon, poster, description, sortie parametre)
+            #il existe aussi addMisc(identifiant, function, titre, icon, poster, description, sortie parametre)
             #la difference et pour les metadonner serie, films ou sans
 
         cConfig().finishDialog(dialog) #fin du dialog
@@ -339,7 +341,7 @@ def showHosters(): #recherche et affiche les hotes
             oHoster = cHosterGui().checkHoster(sHosterUrl) #recherche l'hote dans l'addon
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle) #nom affiche
-                oHoster.setFileName(sMovieTitle) # idem
+                oHoster.setFileName(sMovieTitle) #idem
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
                 #affiche le lien (oGui, oHoster, url du lien, poster)
 
@@ -377,10 +379,10 @@ def ShowSerieSaisonEpisodes():
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle',sTitle)
-            oOutputParameterHandler.addParameter('sThumb',sThumb )
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle,'', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- profiles -->
+	<backgroundcolor>0x00000000</backgroundcolor>
+	<defaultcontrol always="true">4</defaultcontrol>
+
+	<controls>
+
+		<!-- Background -->
+		<include>WindowBackgroundImage</include>
+
+		<!-- Time -->
+		<include>Time</include>
+
+
+		<!-- Default list -->
+		<control type="group" id="50">
+			<control type="grouplist" id="500">
+				<left>550</left>
+				<top>228</top>
+				<width>1220</width>
+				<height>660</height>
+				<itemgap>0</itemgap>
+				<onleft>3001</onleft>
+				<onright>noop</onright>
+				<onup>noop</onup>
+				<ondown>2</ondown>
+				<orientation>vertical</orientation>
+				<usecontrolcoords>true</usecontrolcoords>
+				<defaultcontrol always="true">4</defaultcontrol>
+
+				<!-- Enable login screen -->
+				<control type="radiobutton" id="4">
+					<width>1220</width>
+					<height>66</height>
+					<font>Font33</font>
+					<textcolor>TextColor2</textcolor>
+					<focusedcolor>TextColor1</focusedcolor>
+					<disabledcolor>TextColor4</disabledcolor>
+					<label>20096</label>
+				</control>
+
+				<!-- Auto login -->
+				<control type="button" id="5">
+					<width>1220</width>
+					<height>66</height>
+					<font>Font33</font>
+					<textcolor>TextColor2</textcolor>
+					<focusedcolor>TextColor1</focusedcolor>
+					<invalidcolor>TextColor4</invalidcolor>
+					<disabledcolor>TextColor4</disabledcolor>
+					<label>33084</label>
+					<enable>!System.HasLoginScreen</enable>
+				</control>
+
+				<!-- Separator -->
+				<control type="image" id="6">
+					<top>11</top>
+					<width>1220</width>
+					<height>20</height>
+					<texture border="1,12,1,1" colordiffuse="DialogOverlayColorNF">common/ScrollBackgroundHorizontal.png</texture>
+				</control>
+
+			</control>
+
+			<control type="list" id="2">
+				<left>550</left>
+				<top>404</top>
+				<width>1220</width>
+				<height>456</height>
+				<onleft>3001</onleft>
+				<onright>noop</onright>
+				<onup>500</onup>
+				<ondown>noop</ondown>
+				<orientation>vertical</orientation>
+
+				<itemlayout height="76" width="1220">
+					<control type="label">
+						<width>1150</width>
+						<height>76</height>
+						<font>Font33</font>
+						<label>$INFO[ListItem.Label]</label>
+						<textcolor>TextColor2</textcolor>
+					</control>
+					<control type="image">
+						<right>0</right>
+						<top>2</top>
+						<width>72</width>
+						<height>72</height>
+						<colordiffuse>OverlayColorNF</colordiffuse>
+						<texture fallback="DefaultUser.png">$INFO[ListItem.Icon]</texture>
+					</control>
+				</itemlayout>
+
+				<focusedlayout height="76" width="1220">
+					<control type="label">
+						<width>1150</width>
+						<height>76</height>
+						<font>Font33</font>
+						<label>$INFO[ListItem.Label]</label>
+						<textcolor>TextColor1</textcolor>
+						<animation effect="fade" start="100" end="50" time="0" condition="!Control.HasFocus(2)">Conditional</animation>
+					</control>
+					<control type="image">
+						<right>0</right>
+						<top>2</top>
+						<width>72</width>
+						<height>72</height>
+						<colordiffuse>OverlayColorNF</colordiffuse>
+						<texture fallback="DefaultUser.png">$INFO[ListItem.Icon]</texture>
+						<visible>!Control.HasFocus(2)</visible>
+					</control>
+					<control type="image">
+						<right>0</right>
+						<top>2</top>
+						<width>72</width>
+						<height>72</height>
+						<texture fallback="DefaultUser.png">$INFO[ListItem.Icon]</texture>
+						<visible>Control.HasFocus(2)</visible>
+					</control>
+				</focusedlayout>
+
+			</control>
+		</control>
+
+		<!-- Options -->
+		<control type="group" id="9002">
+			<control type="image">
+				<include>FullscreenDimensions</include>
+				<texture colordiffuse="DarkenColor">dialogs/DialogTextBackground.png</texture>
+				<animation effect="fade" start="0" end="100" time="200">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+				<visible>ControlGroup(9002).HasFocus</visible>
+			</control>
+			<control type="group">
+				<left>-450</left>
+				<top>0</top>
+				<animation effect="slide" start="0,0" end="450,0" time="200" condition="ControlGroup(9002).HasFocus">Conditional</animation>
+				<control type="button">
+					<left>0</left>
+					<top>0</top>
+					<width>460</width>
+					<height>1080</height>
+					<onclick>noop</onclick>
+				</control>
+
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>450</width>
+					<height>1080</height>
+					<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+				</control>
+
+				<!-- Look controls -->
+				<control type="grouplist" id="3001">
+					<left>20</left>
+					<top>0</top>
+					<width>410</width>
+					<height>1040</height>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<scrolltime>200</scrolltime>
+					<orientation>vertical</orientation>
+					<itemgap>0</itemgap>
+					<defaultcontrol always="true">99</defaultcontrol>
+
+					<include content="SideMenuAnimation">
+						<param name="containerID">3001</param>
+					</include>
+
+					<!-- Settings quick-nav -->
+					<control type="button" id="190">
+						<label>31074</label>
+						<height>52</height>
+						<onclick>ReplaceWindow(InterfaceSettings)</onclick>
+					</control>
+					<control type="button" id="191">
+						<label>16003</label>
+						<height>52</height>
+						<onclick>ReplaceWindow(PlayerSettings)</onclick>
+					</control>
+					<control type="button" id="192">
+						<label>14211</label>
+						<height>52</height>
+						<onclick>ReplaceWindow(MediaSettings)</onclick>
+					</control>
+					<control type="button" id="193">
+						<label>31015</label>
+						<height>52</height>
+						<onclick>ReplaceWindow(PVRSettings)</onclick>
+					</control>
+					<control type="button" id="194">
+						<label>13200</label>
+						<height>52</height>
+						<onclick>ReplaceWindow(Profiles)</onclick>
+					</control>
+					<control type="button" id="195">
+						<label>14036</label>
+						<height>52</height>
+						<onclick>ReplaceWindow(ServiceSettings)</onclick>
+					</control>
+					<control type="button" id="196">
+						<label>13000</label>
+						<height>52</height>
+						<onclick>ReplaceWindow(SystemSettings)</onclick>
+					</control>
+					<control type="button" id="197">
+						<label>130</label>
+						<height>52</height>
+						<onclick>ReplaceWindow(SystemInfo)</onclick>
+					</control>
+				</control>
+			</control>
+		</control>
+
+	</controls>
+
+</window>

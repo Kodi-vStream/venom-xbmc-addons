@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- videolibrary -->
+	<backgroundcolor>0x00000000</backgroundcolor>
+	<defaultcontrol>50</defaultcontrol>
+
+	<controls>
+
+		<!-- Background -->
+		<include>WindowBackgroundImage</include>
+
+		<!-- Main group -->
+		<control type="group">
+			<include>WindowFadeAnimation</include>
+
+			<control type="list" id="50">
+				<left>120</left>
+				<top>226</top>
+				<width>1440</width>
+				<height>648</height>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<onleft>3000</onleft>
+				<onright>70</onright>
+				<pagecontrol>70</pagecontrol>
+				<preloaditems>2</preloaditems>
+				<viewtype label="535">list</viewtype>				
+				<scrolltime tween="sine" easing="out">240</scrolltime>
+
+				<itemlayout width="1440" height="108">
+
+					<!-- Start date -->
+					<control type="label">
+						<left>20</left>
+						<top>12</top>
+						<width>280</width>
+						<align>right</align>
+						<textcolor>TextColor2</textcolor>
+						<label>[LIGHT]$INFO[ListItem.StartDate][/LIGHT]</label>
+					</control>
+
+					<!-- Start time - End time -->
+					<control type="label">
+						<left>20</left>
+						<top>62</top>
+						<width>280</width>
+						<height>27</height>
+						<font>Font27</font>
+						<align>right</align>
+						<textcolor>HomeNF</textcolor>
+						<label>[LIGHT]$INFO[ListItem.StartTime]$INFO[ListItem.EndTime, - ,][/LIGHT]</label>
+					</control>
+
+					<!-- Thumb -->
+					<control type="image">
+						<left>266</left>
+						<top>3</top>
+						<width>181</width>
+						<height>102</height>
+						<aspectratio>scale</aspectratio>
+						<texture fallback="pvr/NoImage.png">$INFO[ListItem.Thumb]</texture>
+					</control>
+
+					<!-- Program name -->
+					<control type="label">
+						<left>489</left>
+						<top>12</top>
+						<width>634</width>
+						<textcolor>TextColor2</textcolor>
+						<label>[LIGHT]$INFO[ListItem.Label][/LIGHT]</label>
+					</control>
+
+					<!-- Channel name -->
+					<control type="label">
+						<left>489</left>
+						<top>62</top>
+						<width>634</width>
+						<height>27</height>
+						<font>Font27</font>
+						<textcolor>TextColor2</textcolor>
+						<label>[LIGHT]$INFO[ListItem.ChannelName][/LIGHT]</label>
+					</control>
+
+					<!-- Program comment -->
+					<control type="label">
+						<left>1020</left>
+						<top>12</top>
+						<width>400</width>
+						<align>right</align>
+						<textcolor>TextColor2</textcolor>
+						<label>[LIGHT]$INFO[ListItem.Comment][/LIGHT]</label>
+					</control>
+
+				</itemlayout>
+
+				<focusedlayout width="1440" height="108">
+
+					<!-- Start date -->
+					<control type="label">
+						<left>20</left>
+						<top>12</top>
+						<width>280</width>
+						<align>right</align>
+						<label>$INFO[ListItem.StartDate]</label>
+						<textcolor>TextColor1</textcolor>
+					</control>
+
+					<!-- Start time - End time -->
+					<control type="label">
+						<left>20</left>
+						<top>62</top>
+						<width>280</width>
+						<height>27</height>
+						<font>Font27</font>
+						<align>right</align>
+						<textcolor>TextColor1</textcolor>
+						<label>$INFO[ListItem.StartTime]$INFO[ListItem.EndTime, - ,]</label>
+					</control>
+
+					<!-- Thumb -->
+					<control type="image">
+						<left>266</left>
+						<top>3</top>
+						<width>181</width>
+						<height>102</height>
+						<aspectratio>scale</aspectratio>
+						<texture fallback="pvr/NoImage.png">$INFO[ListItem.Thumb]</texture>
+					</control>
+
+					<!-- Program name -->
+					<control type="label">
+						<left>489</left>
+						<top>12</top>
+						<width>634</width>
+						<label>[B]$INFO[ListItem.Label][/B]</label>
+						<textcolor>TextColor1</textcolor>
+					</control>
+
+					<!-- Channel name -->
+					<control type="label">
+						<left>489</left>
+						<top>62</top>
+						<width>634</width>
+						<height>27</height>
+						<font>Font27</font>
+						<textcolor>TextColor1</textcolor>
+						<label>$INFO[ListItem.ChannelName]</label>
+					</control>
+
+					<!-- Program comment -->
+					<control type="label">
+						<left>1020</left>
+						<top>12</top>
+						<width>400</width>
+						<align>right</align>
+						<label>$INFO[ListItem.Comment]</label>
+						<textcolor>TextColor1</textcolor>
+					</control>
+
+				</focusedlayout>
+
+			</control>
+
+			<!-- Scrollbar -->
+			<control type="scrollbar" id="70">
+				<left>1581</left>
+				<top>226</top>
+				<width>20</width>
+				<height>648</height>
+				<onleft>50</onleft>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+				<colordiffuse>OverlayColorNF</colordiffuse>
+				<texturesliderbackground border="6,1,8,1">common/ScrollBackground.png</texturesliderbackground>
+				<texturesliderbar border="8,1,6,1">common/ScrollbarGripNF.png</texturesliderbar>
+				<texturesliderbarfocus border="8,1,6,1" colordiffuse="DialogColor1">common/ScrollbarGripFO.png</texturesliderbarfocus>
+				<textureslidernib>-</textureslidernib>
+				<textureslidernibfocus>-</textureslidernibfocus>
+				<visible>!Skin.HasSetting(Scrollbars)</visible>
+			</control>
+
+			<!-- Entry count -->
+			<control type="grouplist">
+				<right>120</right>
+				<bottom>110</bottom>
+				<width>800</width>
+				<height>44</height>
+				<itemgap>6</itemgap>
+				<align>right</align>
+				<orientation>horizontal</orientation>
+				<usecontrolcoords>true</usecontrolcoords>
+
+				<control type="label">
+					<top>3</top>
+					<width>auto</width>
+					<height>44</height>
+					<align>right</align>
+					<label>$INFO[Container(50).NumItems]</label>
+					<font>Font25</font>
+					<textcolor>TextColor2</textcolor>
+				</control>
+
+				<control type="label">
+					<width>auto</width>
+					<height>44</height>
+					<align>right</align>
+					<label>$VAR[ContentType]</label>
+					<font>Font33</font>
+					<textcolor>TextColor2</textcolor>
+				</control>
+
+			</control>
+
+		</control>
+
+		<!-- Time -->
+		<include>Time</include>
+
+		<!-- Options -->
+		<control type="group" id="9002">
+			<control type="image">
+				<include>FullscreenDimensions</include>
+				<texture colordiffuse="DarkenColor">dialogs/DialogTextBackground.png</texture>
+				<animation effect="fade" start="0" end="100" time="200">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+				<visible>ControlGroup(9002).HasFocus</visible>
+			</control>
+			<control type="group">
+				<left>-450</left>
+				<top>0</top>
+				<animation effect="slide" start="0,0" end="450,0" time="200" condition="ControlGroup(9002).HasFocus">Conditional</animation>
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>450</width>
+					<height>1080</height>
+					<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+				</control>
+				<control type="button">
+					<left>0</left>
+					<top>0</top>
+					<width>460</width>
+					<height>1080</height>
+					<onclick>noop</onclick>
+				</control>
+
+				<!-- Look controls -->
+				<control type="grouplist" id="3000">
+					<left>20</left>
+					<top>15</top> <!-- -5 because there is one spacer -->
+					<width>410</width>
+					<height>1040</height>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<scrolltime>200</scrolltime>
+					<orientation>vertical</orientation>
+					<itemgap>0</itemgap>
+					<defaultcontrol always="true">99</defaultcontrol>
+
+					<include content="SideMenuAnimation">
+						<param name="containerID">3000</param>
+					</include>
+
+					<!-- Sort by -->
+					<control type="button" id="3">
+						<height>52</height>
+						<label>103</label>
+						<visible>Control.IsEnabled(3)</visible>
+					</control>
+					<!-- Sort ascending/descending -->
+					<control type="togglebutton" id="4">
+						<height>52</height>
+						<label>584</label>
+						<altlabel>585</altlabel>
+						<usealttexture>Container.SortDirection(Descending)</usealttexture>
+						<visible>Control.IsEnabled(4)</visible>
+					</control>
+					<!-- Channel Groups -->
+					<control type="button" id="28">
+						<height>52</height>
+						<label>-</label>
+						<visible>Control.IsEnabled(28)</visible>
+					</control>
+					<!-- Group recording items by folder structure -->
+					<control type="radiobutton" id="5">
+						<height>52</height>
+						<label>19270</label>
+						<visible>Window.IsActive(TVRecordings) | Window.IsActive(RadioRecordings)</visible>
+					</control>
+
+					<control type="image" id="81">
+						<left>0</left>
+						<top>0</top>
+						<width>410</width>
+						<height>10</height>
+						<texture>transparent.png</texture>
+					</control>
+
+					<!-- Channels -->
+					<control type="button" id="100">
+						<height>52</height>
+						<onclick condition="Window.IsActive(TVChannels) | Window.IsActive(RadioChannels)">NextChannelGroup</onclick>
+						<onclick condition="String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(TVChannels)</onclick>
+						<onclick condition="!String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(RadioChannels)</onclick>
+						<onclick>SetFocus(10)</onclick>
+						<label>19019</label>
+					</control>
+					<!-- Guide -->
+					<control type="button" id="102">
+						<height>52</height>
+						<label>22020</label>
+						<onclick condition="Window.IsActive(TVGuide) | Window.IsActive(RadioGuide)">NextChannelGroup</onclick>
+						<onclick condition="String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(TVGuide)</onclick>
+						<onclick condition="!String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(RadioGuide)</onclick>
+						<onclick>SetFocus(10)</onclick>
+					</control>
+					<!-- Recordings -->
+					<control type="button" id="103">
+						<height>52</height>
+						<onclick condition="String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(TVRecordings)</onclick>
+						<onclick condition="!String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(RadioRecordings)</onclick>
+						<onclick>SetFocus(10)</onclick>
+						<label>19163</label>
+					</control>
+					<!-- Timers -->
+					<control type="button" id="35">
+						<height>52</height>
+						<onclick condition="String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(TVTimers)</onclick>
+						<onclick condition="!String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(RadioTimers)</onclick>
+						<onclick>SetFocus(50)</onclick>
+						<label>19040</label>
+					</control>
+					<!-- Rules -->
+					<control type="button" id="36">
+						<height>52</height>
+						<onclick condition="String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(TVTimerRules)</onclick>
+						<onclick condition="!String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(RadioTimerRules)</onclick>
+						<onclick>SetFocus(50)</onclick>
+						<label>$LOCALIZE[31022]</label>
+					</control>
+					<!-- Search -->
+					<control type="button" id="37">
+						<height>52</height>
+						<onclick condition="String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(TVSearch)</onclick>
+						<onclick condition="!String.IsEmpty(Window.Property(IsRadio))">ActivateWindow(RadioSearch)</onclick>
+						<onclick>SetFocus(50)</onclick>
+						<label>137</label>
+					</control>
+					
+				</control>
+			</control>
+		</control>
+
+	</controls>
+
+</window>

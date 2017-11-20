@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- pvrchannelmanager -->
+	<defaultcontrol always="true">20</defaultcontrol>
+
+	<controls>
+		<!-- Window Background -->
+		<include>WindowFadeBackgroundImage</include>
+
+		<control type="group">
+
+			<!-- Animation -->
+			<include>DialogZoomAnimation</include>
+
+			<!-- Heading -->
+			<include content="Time">
+				<param name="heading">$LOCALIZE[19199]</param>
+			</include>
+
+			<!-- Left list -->			
+			<control type="list" id="20">
+				<left>150</left>
+				<top>228</top>
+				<width>800</width>
+				<height>660</height>
+				<onup>20</onup>
+				<ondown>20</ondown>
+				<onleft>noop</onleft>
+				<onright>9000</onright>
+				<scrolltime tween="sine" easing="out">240</scrolltime>
+
+				<itemlayout width="800" height="66">
+
+					<control type="group">
+						<animation effect="fade" start="100" end="50" condition="!ListItem.Property(ActiveChannel)">Conditional</animation>
+						<control type="image">
+							<left>3</left>
+							<top>3</top>
+							<width>60</width>
+							<height>60</height>
+							<texture>$INFO[ListItem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+						<control type="label">
+							<left>80</left>
+							<width>720</width>
+							<height>66</height>
+							<textcolor>$VAR[SelectedColor]</textcolor>
+							<selectedcolor>$VAR[SelectedColor]</selectedcolor>
+							<label>$INFO[ListItem.Property(Number),(,) ]$INFO[ListItem.Property(Name)]</label>
+							<visible>ListItem.Property(Changed)</visible>
+						</control>
+						<control type="label">
+							<left>80</left>
+							<width>720</width>
+							<height>66</height>
+							<textcolor>DialogColor2</textcolor>
+							<selectedcolor>DialogColor2</selectedcolor>
+							<label>$INFO[ListItem.Property(Number),(,) ]$INFO[ListItem.Property(Name)]</label>
+							<visible>!ListItem.Property(Changed)</visible>
+						</control>
+					</control>
+
+				</itemlayout>
+
+				<focusedlayout width="800" height="132">
+
+					<control type="group">
+						<animation effect="fade" start="100" end="50" condition="!ListItem.Property(ActiveChannel)">Conditional</animation>
+						<animation effect="fade" start="100" end="75" condition="!Control.HasFocus(20)">Conditional</animation>
+						<control type="image">
+							<left>3</left>
+							<top>3</top>
+							<width>60</width>
+							<height>60</height>
+							<texture>$INFO[ListItem.Icon]</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+						<control type="label">
+							<left>80</left>
+							<width>720</width>
+							<height>66</height>
+							<textcolor>$VAR[SelectedColor]</textcolor>
+							<selectedcolor>$VAR[SelectedColor]</selectedcolor>
+							<label>$INFO[ListItem.Property(Number),(,) ]$INFO[ListItem.Property(Name)]</label>
+							<visible>ListItem.Property(Changed)</visible>
+						</control>
+						<control type="label">
+							<left>80</left>
+							<width>720</width>
+							<height>66</height>
+							<textcolor>DialogColor1</textcolor>
+							<selectedcolor>DialogColor1</selectedcolor>
+							<label>$INFO[ListItem.Property(Number),(,) ]$INFO[ListItem.Property(Name)]</label>
+							<visible>!ListItem.Property(Changed)</visible>
+						</control>
+						<control type="label">
+							<top>80</top>
+							<left>20</left>
+							<width>860</width>
+							<height>27</height>
+							<font>Font27</font>
+							<textcolor>$VAR[SelectedColor]</textcolor>
+							<selectedcolor>$VAR[SelectedColor]</selectedcolor>
+							<label>$LOCALIZE[19210]: $INFO[ListItem.Property(ClientName)]</label>
+							<visible>ListItem.Property(Changed)</visible>
+						</control>
+						<control type="label">
+							<top>80</top>
+							<left>20</left>
+							<width>860</width>
+							<height>27</height>
+							<font>Font27</font>
+							<textcolor>DialogColor1</textcolor>
+							<selectedcolor>DialogColor1</selectedcolor>
+							<label>$LOCALIZE[19210]: $INFO[ListItem.Property(ClientName)]</label>
+							<visible>!ListItem.Property(Changed)</visible>
+						</control>
+					</control>
+
+				</focusedlayout>
+
+			</control>
+
+			<control type="grouplist" id="9000">
+				<left>960</left>
+				<top>228</top>
+				<width>800</width>
+				<height>660</height>
+				<itemgap>0</itemgap>
+				<onleft>20</onleft>
+				<onright>noop</onright>
+				<onup>noop</onup>
+				<ondown>4</ondown>
+				<orientation>vertical</orientation>
+				<usecontrolcoords>true</usecontrolcoords>
+
+				<!-- Channel options header -->
+				<control type="label" id="100">
+					<width>800</width>
+					<height>66</height>
+					<label>$LOCALIZE[19029] $LOCALIZE[33063]</label>
+					<align>center</align>
+					<textcolor>TextColor2</textcolor>
+				</control>
+
+				<!-- Channel activated -->
+				<control type="radiobutton" id="7">
+					<width>800</width>
+					<label>19074</label>
+				</control>
+
+				<!-- Channel name -->
+				<control type="edit" id="8">
+					<width>800</width>
+					<textwidth>800</textwidth>
+					<label>19201</label>
+				</control>
+
+				<!-- Channel logo button -->
+				<control type="button" id="9">
+					<width>800</width>
+					<label>19202</label>
+				</control>
+
+				<!-- Current channel logo -->
+				<control type="image" id="10">
+					<top>-63</top>
+					<left>737</left>
+					<width>60</width>
+					<height>60</height>
+					<texture>$INFO[ListItem.Icon]</texture>
+					<aspectratio>keep</aspectratio>
+				</control>
+
+				<!-- EPG activated -->
+				<control type="radiobutton" id="12">
+					<width>800</width>
+					<label>19074</label>
+				</control>
+
+				<!-- EPG source -->
+				<control type="spincontrolex" id="13">
+					<width>800</width>
+					<textwidth>760</textwidth>
+					<label>19200</label>
+				</control>
+
+				<!-- Parental locked -->
+				<control type="radiobutton" id="14">
+					<width>800</width>
+					<label>19267</label>
+				</control>
+
+			</control>
+
+			<!-- Button grouplist background -->
+			<include content="dialogButtonBackground">
+				<param name="id">9001</param>
+			</include>
+
+			<!-- Buttons -->
+			<control type="grouplist" id="9001">
+				<left>120</left>
+				<bottom>100</bottom>
+				<width>1680</width>
+				<height>66</height>
+				<orientation>horizontal</orientation>
+				<align>center</align>
+				<itemgap>30</itemgap>
+				<onup>9000</onup>
+				<defaultcontrol>4</defaultcontrol>
+
+				<!-- OK Button -->
+				<control type="button" id="4">
+					<width>auto</width>
+					<label>186</label>
+				</control>
+
+				<!-- Cancel Button -->
+				<control type="button" id="6">
+					<width>auto</width>
+					<label>222</label>
+				</control>
+
+				<!-- Apply changes Button -->
+				<control type="button" id="5">
+					<width>auto</width>
+					<label>14070</label>
+				</control>
+
+				<!-- TV/Radio Button -->
+				<control type="togglebutton" id="34">
+					<width>auto</width>
+					<label>19024</label>
+					<altlabel>19023</altlabel>
+					<usealttexture>!String.IsEmpty(Window.Property(IsRadio))</usealttexture>
+				</control>
+
+				<!-- Group Manager Button -->
+				<control type="button" id="30">
+					<width>auto</width>
+					<label>19205</label>
+				</control>
+
+			</control>
+
+		</control>
+
+	</controls>
+
+</window>

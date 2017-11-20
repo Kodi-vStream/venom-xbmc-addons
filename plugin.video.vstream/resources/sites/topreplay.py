@@ -198,8 +198,10 @@ def checkforHoster(sHosterUrl):
             return 'https://vidlox.tv/' + code.group(2)
         elif 'streammoe' in sHosterUrl:
             return 'https://stream.moe/embed-' + code.group(2) + '.html'
-        elif 'playernaut' in sHosterUrl or 'rapidvideo' in sHosterUrl:
+        elif 'playernaut' in sHosterUrl or 'raptu' in sHosterUrl:
             return 'https://www.raptu.com/embed/' + code.group(2)
+        elif 'rapidvideo' in sHosterUrl:
+            return 'https://www.rapidvideo.com/e/' + code.group(2) 
         elif 'dailymotion' in sHosterUrl:
             return 'http://www.dailymotion.com/embed/video/' + code.group(2)
         elif 'filez' in sHosterUrl:

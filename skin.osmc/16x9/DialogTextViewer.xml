@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- textviewer -->
+	<defaultcontrol always="true">61</defaultcontrol>
+
+	<controls>
+		<!-- Window Background -->
+		<include>WindowFadeBackgroundImage</include>
+
+		<control type="group">
+
+			<!-- Animation -->
+			<include>DialogZoomAnimation</include>
+
+			<!-- Heading -->
+			<include content="Time">
+				<param name="heading">$INFO[Control.GetLabel(1)]</param>
+			</include>
+
+			<!-- Heading -->
+			<control type="label" id="1">
+				<left>-150000</left>
+				<top>96</top>
+				<width>1620</width>
+				<height>72</height>
+				<font>Font72</font>
+			</control>
+
+			<!-- Info -->
+			<control type="textbox" id="5">
+				<left>150</left>
+				<top>235</top>
+				<width>1620</width>
+				<height>700</height>
+				<pagecontrol>61</pagecontrol>
+			</control>
+
+			<!-- Scrollbar -->
+			<control type="scrollbar" id="61">
+				<left>150</left>
+				<top>235</top>
+				<width>10</width>
+				<height>716</height>
+			</control>
+
+		</control>
+
+	</controls>
+
+</window>

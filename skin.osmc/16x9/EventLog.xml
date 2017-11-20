@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- Event Log -->
+	<defaultcontrol always="true">570</defaultcontrol>
+	<views>570</views>
+	<controls>
+		<!-- Background -->
+		<include>WindowBackgroundImage</include>
+
+		<!-- Image -->
+		<control type="image">
+			<left>120</left>
+			<top>225</top>
+			<width>405</width>
+			<height>600</height>
+			<texture>$INFO[ListItem.Icon]</texture>
+			<colordiffuse>OverlayColorFO</colordiffuse>
+			<aspectratio align="center" aligny="center">keep</aspectratio>
+		</control>
+
+		<!-- List -->
+		<control type="fixedlist" id="570">
+			<left>750</left>
+			<centertop>50%</centertop>
+			<width>1050</width>
+			<height>720</height>
+			<onup>570</onup>
+			<ondown>570</ondown>
+			<onleft>60</onleft>
+			<onright condition="!Skin.HasSetting(KioskMode)">3001</onright>
+			<pagecontrol>60</pagecontrol>
+			<focusposition>3</focusposition>
+			<orientation>vertical</orientation>
+			<scrolltime tween="sine" easing="out">240</scrolltime>
+			<viewtype label="535">list</viewtype>
+
+			<itemlayout height="90" width="1050">
+				<control type="label">
+					<left>32</left>
+					<top>0</top>
+					<width>1018</width>
+					<height>90</height>
+					<font>Font36</font>
+					<label>[LIGHT]$VAR[Label1][/LIGHT]</label>
+					<textcolor>TextColor2</textcolor>
+				</control>
+			</itemlayout>
+
+			<focusedlayout height="180" width="1050">
+				<control type="label">
+					<left>32</left>
+					<top>29</top>
+					<width>1018</width>
+					<height>48</height>
+					<font>Font48</font>
+					<label>[B]$INFO[ListItem.Label][/B]</label>
+					<textcolor>TextColor1</textcolor>
+					<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(570)">Conditional</animation>
+				</control>
+				<control type="label">
+					<left>32</left>
+					<top>86</top>
+					<width>1018</width>
+					<height>54</height>
+					<font>Font27</font>
+					<label>$INFO[ListItem.Property(Event.Description)][CR]$INFO[ListItem.Label2]</label>
+					<textcolor>TextColor2</textcolor>
+					<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(570)">Conditional</animation>
+				</control>
+
+			</focusedlayout>
+
+		</control>
+
+		<!-- Scrollbar -->
+		<control type="scrollbar" id="60">
+			<left>690</left>
+			<centertop>50%</centertop>
+			<width>20</width>
+			<height>720</height>
+			<onleft condition="!Skin.HasSetting(KioskMode)">3001</onleft>
+			<onright>570</onright>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
+			<colordiffuse>OverlayColorNF</colordiffuse>
+			<texturesliderbackground border="11,1,1,1">common/ScrollBackground.png</texturesliderbackground>
+			<texturesliderbar border="11,1,1,1">common/ScrollbarGripNF.png</texturesliderbar>
+			<texturesliderbarfocus border="11,1,1,1" colordiffuse="DialogColor1">common/ScrollbarGripFO.png</texturesliderbarfocus>
+			<textureslidernib>-</textureslidernib>
+			<textureslidernibfocus>-</textureslidernibfocus>
+			<visible>!Skin.HasSetting(Scrollbars)</visible>
+		</control>
+
+		<!-- Time -->
+		<include>Time</include>
+
+		<!-- Options -->
+		<control type="group" id="9002">
+			<control type="image">
+				<include>FullscreenDimensions</include>
+				<texture colordiffuse="DarkenColor">dialogs/DialogTextBackground.png</texture>
+				<animation effect="fade" start="0" end="100" time="200">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+				<visible>ControlGroup(9002).HasFocus</visible>
+			</control>
+			<control type="group">
+				<left>-450</left>
+				<top>0</top>
+				<animation effect="slide" start="0,0" end="450,0" time="200" condition="ControlGroup(9002).HasFocus">Conditional</animation>
+				<control type="button">
+					<left>0</left>
+					<top>0</top>
+					<width>460</width>
+					<height>1080</height>
+					<onclick>noop</onclick>
+				</control>
+
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>450</width>
+					<height>1080</height>
+					<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+				</control>
+
+				<!-- Look controls -->
+				<control type="grouplist" id="3001">
+					<left>20</left>
+					<top>10</top>
+					<width>410</width>
+					<height>1040</height>
+					<onleft>60</onleft>
+					<onright>60</onright>
+					<scrolltime>200</scrolltime>
+					<orientation>vertical</orientation>
+					<itemgap>0</itemgap>
+					<defaultcontrol always="true">99</defaultcontrol>
+
+					<include content="SideMenuAnimation">
+						<param name="containerID">3001</param>
+					</include>
+
+					<!-- Sort -->
+					<control type="togglebutton" id="4">
+						<label>584</label>
+						<altlabel>585</altlabel>
+						<usealttexture>Container.SortDirection(Descending)</usealttexture>
+						<visible>Control.IsEnabled(4)</visible>
+						<height>52</height>
+					</control>
+					<!-- Level -->
+					<control type="button" id="21">
+						<height>52</height>
+					</control>
+					<!-- Only current level -->
+					<control type="radiobutton" id="22">
+						<height>52</height>
+					</control>
+					<!-- Clear -->
+					<control type="button" id="20">
+						<label>192</label>
+						<height>52</height>
+					</control>
+
+				</control>
+			</control>
+		</control>
+
+	</controls>
+
+</window>

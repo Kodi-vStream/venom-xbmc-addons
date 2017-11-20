@@ -11,8 +11,6 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.config import cConfig
 
-
-
 import re,urllib,urllib2,xbmc
 
 #pour sucury
@@ -22,22 +20,21 @@ class NoRedirection(urllib2.HTTPErrorProcessor):
     def http_response(self, request, response):
         return response
 
-
 SITE_IDENTIFIER = 'sokrostream_biz'
 SITE_NAME = 'Sokrostream'
 SITE_DESC = 'Films & Séries en streaming en vf et Vostfr'
 
 URL_MAIN = 'http://sokrostream.ws/'
 
-MOVIE_NEWS = (URL_MAIN + 'categories/films', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'categories/films', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'categories/films-streaming', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'categories/films-streaming', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'les-films-les-plus-vues-2', 'showMovies')
 MOVIE_VF = (URL_MAIN + 'langues/french', 'showMovies')
 MOVIE_VOSTFR = (URL_MAIN + 'langues/vostfr', 'showMovies')
 MOVIE_COMMENTS = (URL_MAIN + 'les-films-les-plus-commentes-2', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'films-les-mieux-notes-2', 'showMovies')
 MOVIE_GENRES = (URL_MAIN , 'showGenres')
-MOVIE_ANNEES = (URL_MAIN , 'showMovieAnnees')
+MOVIE_ANNEES = (URL_MAIN , 'showMovieYears')
 MOVIE_LANG = (URL_MAIN , 'showLang')
 MOVIE_QLT = (URL_MAIN , 'showQlt')
 MOVIE_PAYS = (URL_MAIN , 'showPays')
@@ -49,7 +46,7 @@ SERIE_VFS = (URL_MAIN + 'series-tv/langues/french', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'series-tv/langues/vostfr', 'showMovies')
 SERIE_HD = (URL_MAIN + 'series-tv/qualites/hd-720p', 'showMovies')
 SERIE_GENRES = (URL_MAIN + 'series-tv/', 'showGenres')
-SERIE_ANNEES = (URL_MAIN + 'series-tv/', 'showSerieAnnees')
+SERIE_ANNEES = (URL_MAIN + 'series-tv/', 'showSerieYears')
 SERIE_LANG = (URL_MAIN + 'series-tv/', 'showLang')
 SERIE_QLT = (URL_MAIN + 'series-tv/', 'showQlt')
 SERIE_PAYS = (URL_MAIN + 'series-tv/', 'showPays')
@@ -173,28 +170,28 @@ def showGenres():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-    liste.append( ['Action',sUrl + 'genre/action'] )
-    liste.append( ['Animation',sUrl + 'genre/animation'] )
-    liste.append( ['Aventure',sUrl + 'genre/aventure'] )
-    liste.append( ['Biopic',sUrl + 'genre/biopic'] )
-    liste.append( ['Comédie',sUrl + 'genre/comedie'] )
-    liste.append( ['Comédie Dramatique',sUrl + 'genre/comedie-dramatique'] )
-    liste.append( ['Comédie Musicale',sUrl + 'genre/comedie-musicale'] )
-    liste.append( ['Drame',sUrl + 'genre/drame'] )
-    liste.append( ['Epouvante Horreur',sUrl + 'genre/epouvante-horreur'] )
-    liste.append( ['Espionnage',sUrl + 'genre/espionnage'] )
-    liste.append( ['Famille',sUrl + 'genre/famille'] )
-    liste.append( ['Fantastique',sUrl + 'genre/fantastique'] )
-    liste.append( ['Guerre',sUrl + 'genre/guerre'] )
-    liste.append( ['Historique',sUrl + 'genre/historique'] )
-    liste.append( ['Judiciaire',sUrl + 'genre/judiciaire'] )
-    liste.append( ['Médical',sUrl + 'genre/musical'] )
-    liste.append( ['Policier',sUrl + 'genre/policier'] )
-    liste.append( ['Péplum',sUrl + 'genre/peplum'] )
-    liste.append( ['Romance',sUrl + 'genre/romance'] )
-    liste.append( ['Science-Fiction',sUrl + 'genre/science-fiction'] )
-    liste.append( ['Thriller',sUrl + 'genre/thriller'] )
-    liste.append( ['Western',sUrl + 'genre/western'] )
+    liste.append( ['Action', sUrl + 'genre/action'] )
+    liste.append( ['Animation', sUrl + 'genre/animation'] )
+    liste.append( ['Aventure', sUrl + 'genre/aventure'] )
+    liste.append( ['Biopic', sUrl + 'genre/biopic'] )
+    liste.append( ['Comédie', sUrl + 'genre/comedie'] )
+    liste.append( ['Comédie Dramatique', sUrl + 'genre/comedie-dramatique'] )
+    liste.append( ['Comédie Musicale', sUrl + 'genre/comedie-musicale'] )
+    liste.append( ['Drame', sUrl + 'genre/drame'] )
+    liste.append( ['Epouvante Horreur', sUrl + 'genre/epouvante-horreur'] )
+    liste.append( ['Espionnage', sUrl + 'genre/espionnage'] )
+    liste.append( ['Famille', sUrl + 'genre/famille'] )
+    liste.append( ['Fantastique', sUrl + 'genre/fantastique'] )
+    liste.append( ['Guerre', sUrl + 'genre/guerre'] )
+    liste.append( ['Historique', sUrl + 'genre/historique'] )
+    liste.append( ['Judiciaire', sUrl + 'genre/judiciaire'] )
+    liste.append( ['Médical', sUrl + 'genre/musical'] )
+    liste.append( ['Policier', sUrl + 'genre/policier'] )
+    liste.append( ['Péplum', sUrl + 'genre/peplum'] )
+    liste.append( ['Romance', sUrl + 'genre/romance'] )
+    liste.append( ['Science-Fiction', sUrl + 'genre/science-fiction'] )
+    liste.append( ['Thriller', sUrl + 'genre/thriller'] )
+    liste.append( ['Western', sUrl + 'genre/western'] )
 
     for sTitle,sUrl in liste:
 
@@ -210,15 +207,15 @@ def showPays():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-    liste.append( ['Americain',sUrl + 'pays/americain'] )
-    liste.append( ['Allemand',sUrl + 'pays/allemand'] )
-    liste.append( ['Britanique',sUrl + 'pays/britannique'] )
-    liste.append( ['Canadien',sUrl + 'pays/canadien'] )
-    liste.append( ['Espagnol',sUrl + 'pays/espagnol'] )
-    liste.append( ['Francais',sUrl + 'pays/francais'] )
-    liste.append( ['Italien',sUrl + 'pays/italien'] )
-    liste.append( ['Japonnais',sUrl + 'pays/japonnais'] )
-    liste.append( ['Norvegien',sUrl + 'pays/norvegien'] )
+    liste.append( ['Américain', sUrl + 'pays/americain'] )
+    liste.append( ['Allemand', sUrl + 'pays/allemand'] )
+    liste.append( ['Britannique', sUrl + 'pays/britannique'] )
+    liste.append( ['Canadien', sUrl + 'pays/canadien'] )
+    liste.append( ['Espagnol', sUrl + 'pays/espagnol'] )
+    liste.append( ['Français', sUrl + 'pays/francais'] )
+    liste.append( ['Italien', sUrl + 'pays/italien'] )
+    liste.append( ['Japonais', sUrl + 'pays/japonnais'] )
+    liste.append( ['Norvégien', sUrl + 'pays/norvegien'] )
 
     for sTitle,sUrl in liste:
 
@@ -228,7 +225,7 @@ def showPays():
 
     oGui.setEndOfDirectory()
 
-def showMovieAnnees():
+def showMovieYears():
     oGui = cGui()
 
     for i in reversed (xrange(1913, 2018)):
@@ -239,7 +236,7 @@ def showMovieAnnees():
 
     oGui.setEndOfDirectory()
 
-def showSerieAnnees():
+def showSerieYears():
     oGui = cGui()
 
     for i in reversed (xrange(1940, 2018)):
@@ -256,20 +253,20 @@ def showQlt():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-    liste.append( ['DVDRip',sUrl + 'qualites/dvdrip'] )
-    liste.append( ['BDRip',sUrl + 'qualites/bdrip'] )
-    liste.append( ['HD 720p',sUrl + 'qualites/hd-720p'] )
-    liste.append( ['HD 1080p',sUrl + 'qualites/hd-1080p'] )
-    liste.append( ['R6',sUrl + 'qualites/r6'] )
+    liste.append( ['DVDRip', sUrl + 'qualites/dvdrip'] )
+    liste.append( ['BDRip', sUrl + 'qualites/bdrip'] )
+    liste.append( ['HD 720p', sUrl + 'qualites/hd-720p'] )
+    liste.append( ['HD 1080p', sUrl + 'qualites/hd-1080p'] )
+    liste.append( ['R6', sUrl + 'qualites/r6'] )
     #la suite fonctionne mais n'est pas sur la page d'acceuil du site
-    liste.append( ['DVDSCR',sUrl + 'qualites/dvdscr'] )
-    liste.append( ['WEB-DL',sUrl + 'qualites/web-dl'] )
-    liste.append( ['WEBRIP',sUrl + 'qualites/webrip'] )
-    liste.append( ['HDRIP',sUrl + 'qualites/hdrip'] )
-    liste.append( ['HDTV',sUrl + 'qualites/hdtv'] )
-    liste.append( ['HDCAM',sUrl + 'qualites/hdcam'] )
-    liste.append( ['TVRIP',sUrl + 'qualites/tvrip'] )
-    liste.append( ['BRRIP',sUrl + 'qualites/brrip'] )
+    liste.append( ['DVDSCR', sUrl + 'qualites/dvdscr'] )
+    liste.append( ['WEB-DL', sUrl + 'qualites/web-dl'] )
+    liste.append( ['WEBRIP', sUrl + 'qualites/webrip'] )
+    liste.append( ['HDRIP', sUrl + 'qualites/hdrip'] )
+    liste.append( ['HDTV', sUrl + 'qualites/hdtv'] )
+    liste.append( ['HDCAM', sUrl + 'qualites/hdcam'] )
+    liste.append( ['TVRIP', sUrl + 'qualites/tvrip'] )
+    liste.append( ['BRRIP', sUrl + 'qualites/brrip'] )
 
     for sTitle,sUrl in liste:
 
@@ -285,9 +282,9 @@ def showLang():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-    liste.append( ['FRENCH',sUrl + 'langues/french'] )
-    liste.append( ['VO',sUrl + 'langues/vo'] )
-    liste.append( ['VOSTFR',sUrl + 'langues/vostfr'] )
+    liste.append( ['FRENCH', sUrl + 'langues/french'] )
+    liste.append( ['VOSTFR', sUrl + 'langues/vostfr'] )
+    liste.append( ['VO', sUrl + 'langues/vo'] )
 
     for sTitle,sUrl in liste:
 
@@ -303,31 +300,31 @@ def showPlt():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-    liste.append( ['OK.RU',sUrl + 'plateformes/ok-ru'] )
-    liste.append( ['FlashX',sUrl + 'plateformes/flashx'] )
-    liste.append( ['Netu',sUrl + 'plateformes/netu'] )
-    liste.append( ['OpenLoad',sUrl + 'plateformes/openload'] )
-    liste.append( ['Youwatch',sUrl + 'plateformes/youwatch'] )
-    liste.append( ['Vidup',sUrl + 'plateformes/vidup'] )
-    liste.append( ['Uptobox',sUrl + 'plateformes/uptobox'] )
+    liste.append( ['OK.RU', sUrl + 'plateformes/ok-ru'] )
+    liste.append( ['FlashX', sUrl + 'plateformes/flashx'] )
+    liste.append( ['Netu', sUrl + 'plateformes/netu'] )
+    liste.append( ['OpenLoad', sUrl + 'plateformes/openload'] )
+    liste.append( ['Youwatch', sUrl + 'plateformes/youwatch'] )
+    liste.append( ['Vidup', sUrl + 'plateformes/vidup'] )
+    liste.append( ['Uptobox', sUrl + 'plateformes/uptobox'] )
     # les suivants n'apparaissent plus sur le site mais fonctionnent
-    liste.append( ['DivxStage',sUrl + 'plateformes/divxstage'] )
-    liste.append( ['Exashare',sUrl + 'plateformes/exashare'] )
-    liste.append( ['Firedrive',sUrl + 'plateformes/firedrive'] )
-    liste.append( ['MovShare',sUrl + 'plateformes/movshare'] )
-    liste.append( ['NovaMov',sUrl + 'plateformes/novamov'] )
-    liste.append( ['NowVideo',sUrl + 'plateformes/nowvideo'] )
-    liste.append( ['Putlocker',sUrl + 'plateformes/putlocker'] )
-    liste.append( ['RapidVideo',sUrl + 'plateformes/rapidvideo'] )
-    liste.append( ['SockShare',sUrl + 'plateformes/sockshare'] )
-    liste.append( ['SpeedVideo',sUrl + 'plateformes/speedvideo'] )
-    liste.append( ['UploadHero',sUrl + 'plateformes/uploadhero'] )
-    liste.append( ['UptoStream',sUrl + 'plateformes/uptostream'] )
-    liste.append( ['VideoMega',sUrl + 'plateformes/videomega'] )
-    liste.append( ['VideoWeed',sUrl + 'plateformes/videoweed'] )
-    liste.append( ['Vidto',sUrl + 'plateformes/vidto'] )
-    liste.append( ['Vimple',sUrl + 'plateformes/vimple'] )
-    liste.append( ['Vodlocker',sUrl + 'plateformes/vodlocker'] )
+    liste.append( ['DivxStage', sUrl + 'plateformes/divxstage'] )
+    liste.append( ['Exashare', sUrl + 'plateformes/exashare'] )
+    liste.append( ['Firedrive', sUrl + 'plateformes/firedrive'] )
+    liste.append( ['MovShare', sUrl + 'plateformes/movshare'] )
+    liste.append( ['NovaMov', sUrl + 'plateformes/novamov'] )
+    liste.append( ['NowVideo', sUrl + 'plateformes/nowvideo'] )
+    liste.append( ['Putlocker', sUrl + 'plateformes/putlocker'] )
+    liste.append( ['RapidVideo', sUrl + 'plateformes/rapidvideo'] )
+    liste.append( ['SockShare', sUrl + 'plateformes/sockshare'] )
+    liste.append( ['SpeedVideo', sUrl + 'plateformes/speedvideo'] )
+    liste.append( ['UploadHero', sUrl + 'plateformes/uploadhero'] )
+    liste.append( ['UptoStream', sUrl + 'plateformes/uptostream'] )
+    liste.append( ['VideoMega', sUrl + 'plateformes/videomega'] )
+    liste.append( ['VideoWeed', sUrl + 'plateformes/videoweed'] )
+    liste.append( ['Vidto', sUrl + 'plateformes/vidto'] )
+    liste.append( ['Vimple', sUrl + 'plateformes/vimple'] )
+    liste.append( ['Vodlocker', sUrl + 'plateformes/vodlocker'] )
 
     for sTitle,sUrl in liste:
 
@@ -353,7 +350,7 @@ def showMovies(sSearch = ''):
 
             head = oRequestHandler.GetHeaders()
 
-            c = re.search('Set-Cookie: PHPSESSID=(.+?);',str(head))
+            c = re.search('Set-Cookie: PHPSESSID=(.+?);', str(head))
             if c:
                 cookiesearch = 'PHPSESSID=' + c.group(1)
 
@@ -370,8 +367,8 @@ def showMovies(sSearch = ''):
                 #xbmc.log('NEW ****' + cookies, xbmc.LOGNOTICE)
 
             oRequestHandler = cRequestHandler(sUrl)
-            oRequestHandler.addHeaderEntry('Cookie',cookies)
-            oRequestHandler.addHeaderEntry('Referer',sUrl)
+            oRequestHandler.addHeaderEntry('Cookie', cookies)
+            oRequestHandler.addHeaderEntry('Referer', sUrl)
             oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4')
             oRequestHandler.addHeaderEntry('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
             oRequestHandler.addHeaderEntry('Content-Type', 'text/html; charset=utf-8')
@@ -379,7 +376,7 @@ def showMovies(sSearch = ''):
 
         else:
             oRequestHandler = cRequestHandler(sUrl)
-            oRequestHandler.addHeaderEntry('Referer',sUrl)
+            oRequestHandler.addHeaderEntry('Referer', sUrl)
             sHtmlContent = oRequestHandler.request()
 
     else:
@@ -393,17 +390,17 @@ def showMovies(sSearch = ''):
     #fh.write(sHtmlContent)
     #fh.close()
 
-    sHtmlContent = sHtmlContent.replace('<span class="tr-dublaj"></span>', '').replace('<span class="tr-altyazi"></span>','').replace('<small>','').replace('</small>','').replace('<span class="likeThis">','').replace('</span>','')
+    sHtmlContent = sHtmlContent.replace('<span class="tr-dublaj"></span>', '').replace('<span class="tr-altyazi"></span>', '').replace('<small>', '').replace('</small>', '').replace('<span class="likeThis">', '').replace('</span>', '')
 
     if (sSearch or ('/series' in sUrl) or ('/search/' in sUrl)):
-        sHtmlContent = sHtmlContent.replace("\n","")
-        sHtmlContent = re.sub('<div class="yazitip">Series similaires</div>.+','',sHtmlContent)
+        sHtmlContent = sHtmlContent.replace("\n", "")
+        sHtmlContent = re.sub('<div class="yazitip">Series similaires</div>.+', '', sHtmlContent)
         sPattern = '<div class="moviefilm">\s+<a href=".+?">\s+<img src="([^<]+)" alt=".+?".+?<\/a>\s+<div class="movief"><a href="([^<]+)">(.+?)<\/a>'
     else:
         sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<]+)" alt=".+?" height=".+?" width=".+?" \/><\/a> *<div class="ozet">.+?</div> *<div class="movief"><a href="([^<]+)">([^<]+)<\/a><\/div> *<div class="movie.+?">(.+?)<\/div>'
 
     oParser = cParser()
-    aResult = oParser.parse(sHtmlContent,sPattern)
+    aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
 		oGui.addText(SITE_IDENTIFIER)
@@ -421,26 +418,28 @@ def showMovies(sSearch = ''):
 
             if (sSearch or ('categories/series' in sUrl) or ('/series/' in sUrl) or ('/series-tv/' in sUrl) or ('/search/' in sUrl)):
                 sTitle = aEntry[2]
+                sDisplayTitle = sTitle
             else:
-                sTitle = aEntry[2] + ' (' + aEntry[3] + ')'
-
+                sTitle = aEntry[2]
+                sDisplayTitle = sTitle + ' (' + aEntry[3] + ')'
             if sMovieTitle:
                 sTitle = sMovieTitle + sTitle
+                sDisplayTitle = sTitle
 
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
             sUrl2 = str(aEntry[1])
+            sThumb = str(aEntry[0])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2 )
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if ('-saison-' in sUrl2):
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle,'', aEntry[0], '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle,'', sThumb, '', oOutputParameterHandler)
             elif ('/series/' in sUrl2):
-                oGui.addTV(SITE_IDENTIFIER, 'showMovies', sDisplayTitle,'', aEntry[0], '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showMovies', sDisplayTitle,'', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', aEntry[0], '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -469,15 +468,11 @@ def showEpisode():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     #oRequestHandler = cRequestHandler(sUrl)
     #sHtmlContent = oRequestHandler.request()
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
-
-    #cConfig().log(sMovieTitle)
-
-    #sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','')
 
     sPattern = '<div class="movief2"><a href="([^<]+)" class="listefile">(.+?)<\/a><\/div>'
 
@@ -497,8 +492,8 @@ def showEpisode():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -510,7 +505,7 @@ def showLinks():
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     #oRequestHandler = cRequestHandler(sUrl)
     #sHtmlContent = oRequestHandler.request()
@@ -519,7 +514,6 @@ def showLinks():
     oParser = cParser()
 
     #get post vars
-    #sPattern = '<div class="num_link">Lien.+?\/([vostfr]+)\.png">([^<]+).+?<input name="([^<]+)" value="(.+?)"'
     sPattern = '<div class="num_link">Lien.+?\.png">([^<>]+)<.+?\/([vostfr]+)\.png">.+?<input name="([^<]+)" value="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #xbmc.log(str(aResult))
@@ -534,18 +528,18 @@ def showLinks():
 
             sLang = ' [' + aEntry[1].upper() + ']'
             sHost = aEntry[0]
-            sHost = sHost.replace('Telecharger sur ','').replace('&nbsp;','')
+            sHost = sHost.replace('Telecharger sur ', '').replace('&nbsp;', '')
 
             sTitle = sMovieTitle + sLang
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-            sTitle = sDisplayTitle + ' [COLOR coral]' + sHost + '[/COLOR]'
+            sTitle = sDisplayTitle + ' (' + sHost + ')'
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sUrl', sUrl)
             oOutputParameterHandler.addParameter('sPOST', str(aEntry[2] + '=' + aEntry[3]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -557,7 +551,7 @@ def showHosters():
     sPOST = oInputParameterHandler.getValue('sPOST')
     sUrl = oInputParameterHandler.getValue('sUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
     if '29702' in sPOST:
         sPOST = ''
 
@@ -574,7 +568,7 @@ def showHosters():
     if cookies:
         opener.addheaders.append(('Cookie', cookies))
 
-    response = opener.open(sUrl,sPOST)
+    response = opener.open(sUrl, sPOST)
     sHtmlContent = response.read()
     response.close()
 
@@ -586,14 +580,14 @@ def showHosters():
         cookies = SBP.DecryptCookie(sHtmlContent)
 
         #on sauve le nouveau cookie
-        SBP.SaveCookie('sokrostream_biz',cookies)
+        SBP.SaveCookie('sokrostream_biz', cookies)
 
         #et on recommence
         opener2 = urllib2.build_opener(NoRedirection)
         opener2.addheaders = SBP.SetHeader()
         opener2.addheaders.append(('Cookie', cookies))
 
-        response2 = opener2.open(sUrl,sPOST)
+        response2 = opener2.open(sUrl, sPOST)
         sHtmlContent = response2.read()
         response2.close()
 
@@ -601,7 +595,7 @@ def showHosters():
         #fh.write(sHtmlContent)
         #fh.close()
 
-    sHtmlContent = re.sub(r'<iframe.+?src=(.+?//www\.facebook\.com.+</iframe>)','',sHtmlContent)
+    sHtmlContent = re.sub(r'<iframe.+?src=(.+?//www\.facebook\.com.+</iframe>)', '', sHtmlContent)
 
     oParser = cParser()
 
@@ -612,21 +606,21 @@ def showHosters():
         cUrl = str(aResult[1][0])
         if 'sokrostr' in cUrl:
             UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
-            headers = {'User-Agent': UA ,
+            headers = {'User-Agent': UA,
                        'Host' : 'sokrostrem.xyz',
                        'Referer': sUrl,
                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                        'Content-Type': 'text/html; charset=utf-8'}
 
-            request = urllib2.Request(cUrl,None,headers)
+            request = urllib2.Request(cUrl, None, headers)
             reponse = urllib2.urlopen(request)
             repok = reponse.read()
             reponse.close()
-            vUrl = re.search('url=([^"]+)"',repok)
+            vUrl = re.search('url=([^"]+)"', repok)
             if vUrl:
                sHosterUrl = vUrl.group(1)
                if 'uptobox' in sHosterUrl:
-                   sHosterUrl = re.sub(r'(http://sokrostream.+?/uptobox\.php\?id=)','http://uptobox.com/',sHosterUrl)
+                   sHosterUrl = re.sub(r'(http://sokrostream.+?/uptobox\.php\?id=)', 'http://uptobox.com/', sHosterUrl)
 
         else:
             sHosterUrl = str(aResult[1][0])
@@ -636,6 +630,6 @@ def showHosters():
             sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
             oHoster.setDisplayName(sDisplayTitle)
             oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()

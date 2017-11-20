@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- yesnodialog -->
+	<include>WindowFadeAnimation</include>
+	<controls>
+
+		<!-- Background -->
+		<include>WindowFadeBackgroundImage</include>
+
+		<include content="Time">
+			<param name="heading">$INFO[Control.GetLabel(1)]</param>
+		</include>
+
+		<!-- Heading -->
+		<control type="label" id="1">
+			<left>-15000</left>
+			<top>40</top>
+			<width>600</width>
+			<height>48</height>
+			<align>center</align>
+			<font>Font48</font>
+			<textcolor>DialogColor1</textcolor>
+		</control>
+
+		<!-- Details -->
+		<control type="textbox" id="9">
+			<centerleft>50%</centerleft>
+			<centertop>50%</centertop>
+			<width>1880</width>
+			<height>600</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>Font36</font>
+			<autoscroll>False</autoscroll>
+			<textcolor>DialogColor1</textcolor>
+		</control>
+
+		<!-- Progress -->
+		<control type="progress" id="20">
+			<description>Progressbar</description>
+			<centerleft>50%</centerleft>
+			<top>630</top>
+			<width>760</width>
+			<height>20</height>
+			<texturebg>common/ScrollBackgroundHorizontal.png</texturebg>
+			<midtexture colordiffuse="DialogColor1">common/ScrollbarGripHorizontalFO.png</midtexture>
+			<info>System.Progressbar</info>
+		</control>
+
+		<!-- Button grouplist background -->
+		<include content="dialogButtonBackground">
+			<param name="id">9001</param>
+		</include>
+
+		<!-- Buttons -->
+		<control type="grouplist" id="9001">
+			<left>120</left>
+			<bottom>100</bottom>
+			<width>1680</width>
+			<height>66</height>
+			<orientation>horizontal</orientation>
+			<align>center</align>
+			<itemgap>30</itemgap>
+			<control type="button" id="10">
+				<width>auto</width>
+				<font>Font36</font>
+				<align>center</align>
+			</control>
+			<control type="button" id="11">
+				<width>auto</width>
+				<font>Font36</font>
+				<align>center</align>
+			</control>
+			<control type="button" id="12">
+				<width>auto</width>
+				<font>Font36</font>
+				<align>center</align>
+			</control>
+		</control>
+
+	</controls>
+
+</window>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<overrides>
+	<!-- Disable context menu -->
+	<contextmenu />
+
+	<!-- Don't share additional submenu levels -->
+	<doNotShareLevels />
+
+	<!-- Save any shortcut with a widgetPath property -->
+	<saveWithProperty>widgetPath</saveWithProperty>
+
+	<!-- Backgrounds -->
+	<backgrounddefault labelID="videos">$INFO[Window(Home).Property(SkinHelper.GlobalFanartBackground)]</backgrounddefault>
+	<backgrounddefault labelID="movies">$INFO[Window(Home).Property(SkinHelper.AllMoviesBackground)]</backgrounddefault>
+	<backgrounddefault labelID="pictures">$INFO[Window(Home).Property(SkinHelper.PicturesBackground)]</backgrounddefault>
+	<backgrounddefault labelID="tvshows">$INFO[Window(Home).Property(SkinHelper.AllTvShowsBackground)]</backgrounddefault>
+	<backgrounddefault labelID="livetv">$INFO[Window(Home).Property(SkinHelper.PvrBackground)]</backgrounddefault>
+	<backgrounddefault labelID="radio">$INFO[Window(Home).Property(SkinHelper.AllMusicBackground)]</backgrounddefault>
+	<backgrounddefault labelID="music">$INFO[Window(Home).Property(SkinHelper.AllMusicBackground)]</backgrounddefault>
+	<backgrounddefault labelID="music--0">$INFO[Window(Home).Property(SkinHelper.AllMusicBackground)]</backgrounddefault>
+	<backgrounddefault labelID="musicvideos">$INFO[Window(Home).Property(SkinHelper.AllMusicVideosBackground)]</backgrounddefault>
+	<backgrounddefault labelID="programs">$INFO[Window(Home).Property(SkinHelper.GlobalFanartBackground)]</backgrounddefault>
+	<backgrounddefault labelID="settings">$INFO[Window(Home).Property(SkinHelper.GlobalFanartBackground)]</backgrounddefault>
+	<backgrounddefault labelID="script.globalsearch">$INFO[Window(Home).Property(SkinHelper.GlobalFanartBackground)]</backgrounddefault>
+	<backgroundBrowse default="special://skin/extras/backgrounds/">True</backgroundBrowse>
+	<background label="smartshortcuts">||BROWSE||plugin://script.skin.helper.service/?action=backgrounds</background>
+
+
+	<!-- Check for settings window shortcut -->
+	<checkforshortcut property="HasSettingsLink">ActivateWindow(Settings)</checkforshortcut>
+
+	<!-- Additional widgets -->
+	<widget label="$LOCALIZE[10508]" type="custom" path="$INCLUDE[weather-widget]">WeatherWidget</widget>
+	<!--<widget label="$LOCALIZE[31091]" type="custom" path="$INCLUDE[osmc-widget]">OSMCWidget</widget>-->
+
+	<!-- Default properties -->
+	<widgetdefault labelID="widget" group="weather.1">WeatherWidget</widgetdefault>
+	<!--<widgetdefault labelID="widget" group="31091.1">OSMCWidget</widgetdefault>-->
+
+	<widgetdefaultnode labelID="widget" group="movies.1" label="$LOCALIZE[31054]" type="movies" path="special://skin/extras/playlists/random_movies.xsp" target="videos">playlist</widgetdefaultnode>
+	<propertydefault labelID="widget" group="movies.1" property="widgetArt">Art(poster)</propertydefault>
+
+	<widgetdefaultnode labelID="widget" group="tvshows.1" label="$LOCALIZE[20387]" type="epsiodes" path="videodb://recentlyaddedepisodes" target="video">library</widgetdefaultnode>
+	<propertydefault labelID="widget" group="tvshows.1" property="widgetArt">Art(season.poster)</propertydefault>
+	<propertydefault labelID="widget" group="tvshows.1" property="widgetFallbackArt">Art(tvshow.poster)</propertydefault>
+
+	<widgetdefaultnode labelID="widget" group="14204.1" label="$LOCALIZE[19217]" type="pvr" path="pvr://channels/tv/*/" target="video">pvr</widgetdefaultnode>
+
+	<widgetdefaultnode labelID="widget" group="19021.1" label="$LOCALIZE[19216]" type="pvr" path="pvr://channels/radio/*/" target="video">pvr</widgetdefaultnode>
+
+	<widgetdefaultnode labelID="widget" group="music.1" label="$LOCALIZE[31056]" type="albums" path="special://skin/extras/playlists/random_albums.xsp" target="music">playlist</widgetdefaultnode>
+
+	<widgetdefaultnode labelID="widget" group="programs.1" label="$LOCALIZE[10001]" type="program" path="addons://sources/executable" target="programs">addon</widgetdefaultnode>
+
+	<!-- Size -->
+	<propertySettings property="layout" buttonID="601" showNone="False" title="Layout" requires="widgetPath" />
+	<propertyfallback property="layout">tall</propertyfallback>
+	<!--property property="layout" label="Square">square</property-->
+	<property property="layout" label="Tall">tall</property>
+	<property property="layout" label="Wide">wide</property>
+
+	<!-- Artwork -->
+	<propertySettings property="widgetArt" buttonID="602" templateonly="True" showNone="False" title="Artwork" />
+	<propertyfallback property="widgetArt">Icon</propertyfallback>
+	<property property="widgetArt" label="Icon">Icon</property>
+	<property property="widgetArt" condition="!IsEmpty(Container(8000).ListItem.Art(poster)) | !IsEmpty(Container(8000).ListItem(2).Art(poster))" label="Poster">Art(poster)</property>
+	<property property="widgetArt" condition="!IsEmpty(Container(8000).ListItem.Art(tvshow.poster)) | !IsEmpty(Container(8000).ListItem(2).Art(tvshow.poster))" label="TV Show Poster">Art(tvshow.poster)</property>
+	<property property="widgetArt" condition="!IsEmpty(Container(8000).ListItem.Art(season.poster)) | !IsEmpty(Container(8000).ListItem(2).Art(season.poster))" label="Season Poster">Art(season.poster)</property>
+	<property property="widgetArt" condition="!IsEmpty(Container(8000).ListItem.Art(fanart)) | !IsEmpty(Container(8000).ListItem(2).Art(fanart))" label="Fanart">Art(fanart)</property>
+	<property property="widgetArt" condition="!IsEmpty(Container(8000).ListItem.Art(season.fanart)) | !IsEmpty(Container(8000).ListItem(2).Art(season.fanart))" label="Season Fanart">Art(season.fanart)</property>
+	<property property="widgetArt" condition="!IsEmpty(Container(8000).ListItem.Art(banner)) | !IsEmpty(Container(8000).ListItem(2).Art(banner))" label="Banner">Art(banner)</property>
+	<property property="widgetArt" condition="!IsEmpty(Container(8000).ListItem.Art(tvshow.banner)) | !IsEmpty(Container(8000).ListItem(2).Art(tvshow.banner))" label="TV Show Banner">Art(tvshow.banner)</property>
+	<property property="widgetArt" condition="!IsEmpty(Container(8000).ListItem.Art(season.banner)) | !IsEmpty(Container(8000).ListItem(2).Art(season.banner))" label="Season Banner">Art(season.banner)</property>
+	<property property="widgetArt" condition="!IsEmpty(Container(8000).ListItem.Art(clearlogo)) | !IsEmpty(Container(8000).ListItem(2).Art(clearlogo))" label="Clear Logo">Art(clearlogo)</property>
+	<property property="widgetArt" condition="!IsEmpty(Container(8000).ListItem.Art(tvshow.clearlogo)) | !IsEmpty(Container(8000).ListItem(2).Art(tvshow.clearlogo))" label="TV Show Clear Logo">Art(tvshow.clearlogo)</property>
+	<property property="widgetArt" condition="!IsEmpty(Container(8000).ListItem.Art(clearart)) | !IsEmpty(Container(8000).ListItem(2).Art(clearart))" label="Clear Art">Art(clearart)</property>
+	<property property="widgetArt" condition="!IsEmpty(Container(8000).ListItem.Art(tvshow.clearart)) | !IsEmpty(Container(8000).ListItem(2).Art(tvshow.clearart))" label="TV Show Clear Art">Art(tvshow.clearart)</property>
+	<property property="widgetArt" condition="!IsEmpty(Container(8000).ListItem.Art(characterart)) | !IsEmpty(Container(8000).ListItem(2).Art(pcharacterartoster))" label="Character Art">Art(characterart)</property>
+	<property property="widgetArt" condition="!IsEmpty(Container(8000).ListItem.Art(tvshow.characterart)) | !IsEmpty(Container(8000).ListItem(2).Art(tvshow.characterart))" label="TV Show Character Art">Art(tvshow.characterart)</property>
+	<property property="widgetArt" condition="!IsEmpty(Container(8000).ListItem.Art(landscape)) | !IsEmpty(Container(8000).ListItem(2).Art(landscape))" label="Landscape">Art(landscape)</property>
+	<property property="widgetArt" condition="!IsEmpty(Container(8000).ListItem.Art(tvshow.landscape)) | !IsEmpty(Container(8000).ListItem(2).Art(tvshow.landscape))" label="TV Show Landscape">Art(tvshow.landscape)</property>
+	<property property="widgetArt" condition="[!IsEmpty(Container(8000).ListItem.Art(fanart)) | !IsEmpty(Container(8000).ListItem(2).Art(fanart))] + [!IsEmpty(Container(8000).ListItem.Art(clearlogo)) | !IsEmpty(Container(8000).ListItem(2).Art(clearlogo))]" label="Fake Landscape">FAKELANDSCAPE</property>
+	<property property="widgetArt" condition="[!IsEmpty(Container(8000).ListItem.Art(fanart)) | !IsEmpty(Container(8000).ListItem(2).Art(fanart))] + [!IsEmpty(Container(8000).ListItem.Art(tvshow.clearlogo)) | !IsEmpty(Container(8000).ListItem(2).Art(tvshow.clearlogo))]" label="Fake TV Show Landscape">FAKETVLANDSCAPE</property>
+
+	<!-- Fallback Artwork -->
+	<propertySettings property="widgetFallbackArt" buttonID="603" templateonly="True" showNone="False" title="Fallback Artwork" />
+	<propertyfallback property="widgetFallbackArt">Icon</propertyfallback>
+	<property property="widgetFallbackArt" label="Icon">Icon</property>
+	<property property="widgetFallbackArt" condition="!IsEmpty(Container(8000).ListItem.Art(poster)) | !IsEmpty(Container(8000).ListItem(2).Art(poster))" label="Poster">Art(poster)</property>
+	<property property="widgetFallbackArt" condition="!IsEmpty(Container(8000).ListItem.Art(tvshow.poster)) | !IsEmpty(Container(8000).ListItem(2).Art(tvshow.poster))" label="TV Show Poster">Art(tvshow.poster)</property>
+	<property property="widgetFallbackArt" condition="!IsEmpty(Container(8000).ListItem.Art(season.poster)) | !IsEmpty(Container(8000).ListItem(2).Art(season.poster))" label="Season Poster">Art(season.poster)</property>
+	<property property="widgetFallbackArt" condition="!IsEmpty(Container(8000).ListItem.Art(fanart)) | !IsEmpty(Container(8000).ListItem(2).Art(fanart))" label="Fanart">Art(fanart)</property>
+	<property property="widgetFallbackArt" condition="!IsEmpty(Container(8000).ListItem.Art(season.fanart)) | !IsEmpty(Container(8000).ListItem(2).Art(season.fanart))" label="Season Fanart">Art(season.fanart)</property>
+	<property property="widgetFallbackArt" condition="!IsEmpty(Container(8000).ListItem.Art(banner)) | !IsEmpty(Container(8000).ListItem(2).Art(banner))" label="Banner">Art(banner)</property>
+	<property property="widgetFallbackArt" condition="!IsEmpty(Container(8000).ListItem.Art(tvshow.banner)) | !IsEmpty(Container(8000).ListItem(2).Art(tvshow.banner))" label="TV Show Banner">Art(tvshow.banner)</property>
+	<property property="widgetFallbackArt" condition="!IsEmpty(Container(8000).ListItem.Art(season.banner)) | !IsEmpty(Container(8000).ListItem(2).Art(season.banner))" label="Season Banner">Art(season.banner)</property>
+	<property property="widgetFallbackArt" condition="!IsEmpty(Container(8000).ListItem.Art(clearlogo)) | !IsEmpty(Container(8000).ListItem(2).Art(clearlogo))" label="Clear Logo">Art(clearlogo)</property>
+	<property property="widgetFallbackArt" condition="!IsEmpty(Container(8000).ListItem.Art(tvshow.clearlogo)) | !IsEmpty(Container(8000).ListItem(2).Art(tvshow.clearlogo))" label="TV Show Clear Logo">Art(tvshow.clearlogo)</property>
+	<property property="widgetFallbackArt" condition="!IsEmpty(Container(8000).ListItem.Art(clearart)) | !IsEmpty(Container(8000).ListItem(2).Art(clearart))" label="Clear Art">Art(clearart)</property>
+	<property property="widgetFallbackArt" condition="!IsEmpty(Container(8000).ListItem.Art(tvshow.clearart)) | !IsEmpty(Container(8000).ListItem(2).Art(tvshow.clearart))" label="TV Show Clear Art">Art(tvshow.clearart)</property>
+	<property property="widgetFallbackArt" condition="!IsEmpty(Container(8000).ListItem.Art(characterart)) | !IsEmpty(Container(8000).ListItem(2).Art(pcharacterartoster))" label="Character Art">Art(characterart)</property>
+	<property property="widgetFallbackArt" condition="!IsEmpty(Container(8000).ListItem.Art(tvshow.characterart)) | !IsEmpty(Container(8000).ListItem(2).Art(tvshow.characterart))" label="TV Show Character Art">Art(tvshow.characterart)</property>
+	<property property="widgetFallbackArt" condition="!IsEmpty(Container(8000).ListItem.Art(landscape)) | !IsEmpty(Container(8000).ListItem(2).Art(landscape))" label="Landscape">Art(landscape)</property>
+	<property property="widgetFallbackArt" condition="!IsEmpty(Container(8000).ListItem.Art(tvshow.landscape)) | !IsEmpty(Container(8000).ListItem(2).Art(tvshow.landscape))" label="TV Show Landscape">Art(tvshow.landscape)</property>
+	<property property="widgetFallbackArt" condition="[!IsEmpty(Container(8000).ListItem.Art(fanart)) | !IsEmpty(Container(8000).ListItem(2).Art(fanart))] + [!IsEmpty(Container(8000).ListItem.Art(clearlogo)) | !IsEmpty(Container(8000).ListItem(2).Art(clearlogo))]" label="Fake Landscape">FAKELANDSCAPE</property>
+	<property property="widgetFallbackArt" condition="[!IsEmpty(Container(8000).ListItem.Art(fanart)) | !IsEmpty(Container(8000).ListItem(2).Art(fanart))] + [!IsEmpty(Container(8000).ListItem.Art(tvshow.clearlogo)) | !IsEmpty(Container(8000).ListItem(2).Art(tvshow.clearlogo))]" label="Fake TV Show Landscape">FAKETVLANDSCAPE</property>
+
+</overrides>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- pvrosdchannels -->
+	<defaultcontrol always="true">11</defaultcontrol>
+	<include>DialogZoomAnimation</include>
+
+	<controls>
+
+		<!-- Menu -->
+		<control type="group">
+			<left>150</left>
+			<top>150</top>
+
+			<!-- Background -->
+			<control type="image">
+				<width>1620</width>
+				<height>695</height>
+				<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+			</control>
+
+			<!-- Heading label -->
+			<control type="label" id="2">
+				<left>20</left>
+				<top>14</top>
+				<width>750</width>
+				<height>48</height>
+				<font>Font33</font>
+				<textcolor>DialogColor1</textcolor>
+				<label>[B]$INFO[VideoPlayer.ChannelGroup][/B]</label>
+			</control>
+
+			<!-- Episode Information -->
+			<control type="textbox">
+				<left>20</left>
+				<top>160</top>
+				<width>650</width>
+				<height>500</height>
+				<label>$INFO[Container(11).ListItem.TVShowTitle,[B],[/B][CR]]$INFO[Container(11).ListItem.Title,[B],[/B][CR]][LIGHT]$INFO[Container(11).ListItem.Season,$LOCALIZE[20373] , / ]$INFO[Container(11).ListItem.Episode,$LOCALIZE[20359],[CR] ][/LIGHT]$INFO[Container(11).ListItem.Plot]</label>
+				<textcolor>TextColor1</textcolor>
+				<autoscroll delay="5000" time="1400" repeat="10000">true</autoscroll>
+			</control>
+
+			<control type="fixedlist" id="11">
+				<left>750</left>
+				<top>75</top>
+				<width>800</width>
+				<height>540</height>
+				<focusposition>2</focusposition>
+				<orientation>vertical</orientation>
+				<viewtype label="535">list</viewtype>
+				<scrolltime tween="sine" easing="out">240</scrolltime>
+
+				<itemlayout height="90" width="800">
+					<control type="label">
+						<left>32</left>
+						<top>-12</top>
+						<width>746</width>
+						<height>90</height>
+						<font>Font36</font>
+						<label>$INFO[ListItem.ChannelName]</label>
+						<textcolor>TextColor2</textcolor>
+					</control>
+					<control type="label">
+						<left>32</left>
+						<top>58</top>
+						<width>746</width>
+						<height>27</height>
+						<font>Font27</font>
+						<textcolor>TextColor2</textcolor>
+						<label>[LIGHT]$INFO[ListItem.StartTime]:[/LIGHT] $INFO[ListItem.Title]</label>
+						<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(11)">Conditional</animation>
+					</control>
+					<!-- Watched status -->
+					<control type="image">
+						<left>0</left>
+						<top>38</top>
+						<width>14</width>
+						<height>14</height>
+						<texture>$VAR[StatusOverlay]</texture>
+						<colordiffuse>OverlayColorNF</colordiffuse>
+						<animation effect="fade" start="50" end="50" condition="true">Conditional</animation>
+					</control>
+
+					<control type="label">
+						<left>32</left>
+						<top>-12</top>
+						<width>746</width>
+						<height>90</height>
+						<font>Font36</font>
+						<label>$INFO[ListItem.ChannelNumber]</label>
+						<align>right</align>
+						<textcolor>TextColor2</textcolor>
+					</control>
+				</itemlayout>
+
+				<focusedlayout height="180" width="1050">
+					<control type="label">
+						<left>32</left>
+						<top>43</top>
+						<width>1018</width>
+						<height>48</height>
+						<font>Font48</font>
+						<label>$INFO[ListItem.ChannelName]</label>
+						<textcolor>TextColor1</textcolor>
+						<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(11)">Conditional</animation>
+					</control>
+					<control type="label">
+						<left>32</left>
+						<top>100</top>
+						<width>1018</width>
+						<height>27</height>
+						<font>Font27</font>
+						<label>[LIGHT]$INFO[ListItem.StartTime]:[/LIGHT] $INFO[ListItem.Title]</label>
+						<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(11)">Conditional</animation>
+					</control>
+					<control type="label">
+						<left>32</left>
+						<top>127</top>
+						<width>1018</width>
+						<height>27</height>
+						<font>Font27</font>
+						<label>[LIGHT]$INFO[ListItem.NextStartTime]:[/LIGHT] $INFO[ListItem.NextTitle]</label>
+						<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(11)">Conditional</animation>
+					</control>
+					<!-- Watched status -->
+					<control type="image">
+						<left>0</left>
+						<top>61</top>
+						<width>14</width>
+						<height>14</height>
+						<texture>$VAR[StatusOverlay]</texture>
+						<colordiffuse>OverlayColorFO</colordiffuse>
+						<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(11)">Conditional</animation>
+					</control>
+
+					<control type="label">
+						<left>32</left>
+						<top>43</top>
+						<width>746</width>
+						<height>90</height>
+						<font>Font36</font>
+						<label>$INFO[ListItem.ChannelNumber]</label>
+						<align>right</align>
+						<textcolor>TextColor1</textcolor>
+					</control>
+				</focusedlayout>
+
+			</control>
+
+		</control>
+
+	</controls>
+
+</window>
