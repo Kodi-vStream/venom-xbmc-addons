@@ -46,9 +46,15 @@
 
 	<variable name="OSMCBackgroundImage">
 		<value condition="!String.IsEmpty(Container(9000).ListItem.Property(background))">$INFO[Container(9000).ListItem.Property(background)]</value>
-		<value condition="String.IsEqual(Skin.String(BackgroundImage),custom) + !String.IsEmpty(Skin.String(CustomBackground))">$INFO[Skin.String(CustomBackground)]</value>
-		<value condition="!String.IsEmpty(Skin.String(BackgroundImage))">$INFO[Skin.String(BackgroundImage),special://skin/extras/backgrounds/,.jpg]</value>
+		<value condition="!Skin.HasSetting(BackgroundImage) + !String.IsEmpty(Skin.String(CustomBackground))">$INFO[Skin.String(CustomBackground)]</value>
+		<value condition="Skin.HasSetting(BackgroundImage)">special://skin/extras/backgrounds/1.jpg</value>
 		<value>special://skin/extras/backgrounds/1.jpg</value>
+	</variable>
+
+	<variable name="OSMCBackgroundOverlay">
+		<value condition="!String.IsEmpty(Skin.String(BackgroundOverlayTexture)) + !Skin.HasSetting(Not.OSMC.Background)">$INFO[Skin.String(BackgroundOverlayTexture)]</value>
+		<value condition="Skin.HasSetting(Not.OSMC.Background)">special://skin/media/Background.png</value>
+		<value>special://skin/media/Background-Custom.png</value>
 	</variable>
 
 	<variable name="HeadingLabel">

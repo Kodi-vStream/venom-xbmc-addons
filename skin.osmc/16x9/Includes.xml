@@ -96,27 +96,15 @@
 				<visible>Player.HasAudio + Skin.HasSetting(BackgroundVisualisation) + !String.Contains(Window(Videos).Property(TvTunesIsAlive),True)</visible>
 			</control>
 
-			<!-- Overlay -->
-			<control type="image">
-				<include>FullscreenDimensions</include>
-				<texture background="true">Background.png</texture>
-				<animation effect="fade" start="0" end="100" time="200" condition="$PARAM[animate]">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="200" delay="70" condition="$PARAM[animate]">WindowClose</animation>
-				<include>VisibleFadeAnimation</include>
-				<visible>!Window.Is(visualisation) | [Window.Is(visualisation) + [Player.ShowInfo | Window.IsActive(musicosd)]]</visible>
-				<visible>Skin.HasSetting(Not.OSMC.Background)</visible>
-			</control>
-
 			<!-- Overlay - Custom color -->
 			<control type="image">
 				<include>FullscreenDimensions</include>
-				<texture background="true">Background-Custom.png</texture>
+				<texture background="true">$VAR[OSMCBackgroundOverlay]</texture>
 				<colordiffuse>$INFO[Skin.String(color.background)]</colordiffuse>
 				<animation effect="fade" start="0" end="100" time="200" condition="$PARAM[animate]">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="200" delay="70" condition="$PARAM[animate]">WindowClose</animation>
 				<include>VisibleFadeAnimation</include>
 				<visible>!Window.Is(visualisation) | [Window.Is(visualisation) + [Player.ShowInfo | Window.IsActive(musicosd)]]</visible>
-				<visible>!Skin.HasSetting(Not.OSMC.Background)</visible>
 			</control>
 		</definition>
 	</include>
