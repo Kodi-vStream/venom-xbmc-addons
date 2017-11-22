@@ -11,7 +11,7 @@
 				<left>0</left>
 				<top>120</top>
 				<width>1920</width>
-				<height>750</height>
+				<height>920</height>
 				<onup condition="!Skin.HasSetting(KioskMode)">3001</onup>
 				<ondown>61</ondown>
 				<onleft>52</onleft>
@@ -26,53 +26,92 @@
 
 				<itemlayout width="249" height="666">
 					<!-- Image - Movies -->
-					<include content="image-52">
-						<param name="fallback">DefaultMovie.png</param>
-						<param name="visible">Container.Content(movies)</param>
-					</include>
-					<!-- Image - TV Shows -->
-					<include content="image-52">
-						<param name="fallback">DefaultTVShows.png</param>
-						<param name="visible">!Container.Content(movies)</param>
-					</include>
-					<!-- Watched status -->
-					<control type="image">
-						<left>177</left>
-						<top>452</top>
-						<width>35</width>
-						<height>49</height>
-						<texture>$VAR[StatusOverlayWide]</texture>
-						<colordiffuse>OverlayColorNF</colordiffuse>
+					<control type="group">
+						<visible>Skin.HasSetting(52_bottom) + Container.Content(movies)</visible>
+						<include content="image-52">
+							<param name="fallback">DefaultMovie.png</param>
+							<param name="top">135</param>
+							<param name="top2">452</param>
+						</include>
 					</control>
+
+					<control type="group">
+						<visible>!Skin.HasSetting(52_bottom) + Container.Content(movies)</visible>
+						<include content="image-52">
+							<param name="fallback">DefaultMovie.png</param>
+							<param name="top">420</param>
+							<param name="top2">737</param>
+						</include>
+					</control>
+
+					<!-- Image - TV Shows -->
+					<control type="group">
+						<visible>Skin.HasSetting(52_bottom) + !Container.Content(movies)</visible>
+						<include content="image-52">
+							<param name="fallback">DefaultTVShows.png</param>
+							<param name="top">135</param>
+							<param name="top2">452</param>
+						</include>
+					</control>
+
+					<control type="group">
+						<visible>!Skin.HasSetting(52_bottom) + !Container.Content(movies)</visible>
+						<include content="image-52">
+							<param name="fallback">DefaultTVShows.png</param>
+							<param name="top">420</param>
+							<param name="top2">737</param>
+						</include>
+					</control>
+
 				</itemlayout>
 
 				<focusedlayout width="405" height="666">
 					<control type="group">
 						<animation effect="zoom" start="60" end="100" center="202,300" time="300" tween="back" easing="out" reversible="false">Focus</animation>
+
 						<!-- Image - Movies -->
-						<include content="image-52-focus">
-							<param name="fallback">DefaultMovie.png</param>
-							<param name="visible">Container.Content(movies)</param>
-						</include>
-						<!-- Image - TV Shows -->
-						<include content="image-52-focus">
-							<param name="fallback">DefaultTVShows.png</param>
-							<param name="visible">!Container.Content(movies)</param>
-						</include>
-						<!-- Watched status -->
-						<control type="image">
-							<left>290</left>
-							<top>585</top>
-							<width>35</width>
-							<height>49</height>
-							<texture>$VAR[StatusOverlayWide]</texture>
+						<control type="group">
+							<visible>Skin.HasSetting(52_bottom) + Container.Content(movies)</visible>
+							<include content="image-52-focus">
+								<param name="fallback">DefaultMovie.png</param>
+								<param name="top">0</param>
+								<param name="top2">585</param>
+							</include>
 						</control>
+						<control type="group">
+							<visible>!Skin.HasSetting(52_bottom) + Container.Content(movies)</visible>
+							<include content="image-52-focus">
+								<param name="fallback">DefaultMovie.png</param>
+								<param name="top">285</param>
+								<param name="top2">870</param>
+							</include>
+						</control>
+
+						<!-- Image - TV Shows -->
+						<control type="group">
+							<visible>Skin.HasSetting(52_bottom) + !Container.Content(movies)</visible>
+							<include content="image-52-focus">
+								<param name="fallback">DefaultTVShows.png</param>
+								<param name="top">0</param>
+								<param name="top2">585</param>
+							</include>
+						</control>
+						<control type="group">
+							<visible>!Skin.HasSetting(52_bottom) + !Container.Content(movies)</visible>
+							<include content="image-52-focus">
+								<param name="fallback">DefaultTVShows.png</param>
+								<param name="top">285</param>
+								<param name="top2">870</param>
+							</include>
+						</control>
+
 					</control>
 				</focusedlayout>
 
 			</control>
 
 			<control type="group">
+				<visible>Skin.HasSetting(52_bottom)</visible>
 				<centerleft>50%</centerleft>
 				<top>800</top>
 				<width>1920</width>
@@ -90,7 +129,6 @@
 					<label>$INFO[ListItem.Label]</label>
 					<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="false" condition="!Control.HasFocus(52)">Conditional</animation>
 				</control>
-
 				<!-- Details -->
 				<control type="label">
 					<left>90</left>
@@ -104,7 +142,39 @@
 					<textcolor>TextColor1</textcolor>
 					<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="false" condition="!Control.HasFocus(52)">Conditional</animation>
 				</control>
+			</control>
 
+			<control type="group">
+				<visible>!Skin.HasSetting(52_bottom)</visible>
+				<centerleft>50%</centerleft>
+				<top>200</top>
+				<width>1920</width>
+				<height>100</height>
+				<!-- Title -->
+				<control type="label">
+					<left>90</left>
+					<top>0</top>
+					<width>1740</width>
+					<height>72</height>
+					<font>Font72</font>
+					<align>center</align>
+					<textcolor>TextColor1</textcolor>
+					<label>$INFO[ListItem.Label]</label>
+					<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="false" condition="!Control.HasFocus(52)">Conditional</animation>
+				</control>
+				<!-- Details -->
+				<control type="label">
+					<left>90</left>
+					<top>88</top>
+					<width>1740</width>
+					<height>54</height>
+					<font>Font27</font>
+					<align>center</align>
+					<aligny>top</aligny>
+					<label>$VAR[Label2]</label>
+					<textcolor>TextColor1</textcolor>
+					<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="false" condition="!Control.HasFocus(52)">Conditional</animation>
+				</control>
 			</control>
 
 		</control>
@@ -114,31 +184,54 @@
 	<include name="image-52">
 		<param name="fallback">DefaultVideos.png</param>
 		<param name="visible">False</param>
+		<param name="top">135</param>
+		<param name="top2">452</param>
 		<definition>
 			<control type="image">
 				<left>23</left>
-				<top>135</top>
+				<top>$PARAM[top]</top>
 				<width>225</width>
 				<height>333</height>
 				<colordiffuse>DiffusePosterNF</colordiffuse>
 				<texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
 				<aspectratio align="center">keep</aspectratio>
-				<visible>$PARAM[visible]</visible>
 			</control>
+			<!-- Watched status -->
+			<control type="image">
+				<left>177</left>
+				<top>$PARAM[top2]</top>
+				<width>35</width>
+				<height>49</height>
+				<texture>$VAR[StatusOverlayWide]</texture>
+				<colordiffuse>OverlayColorNF</colordiffuse>
+			</control>
+
 		</definition>
 	</include>
 
 	<include name="image-52-focus">
 		<param name="fallback">DefaultVideos.png</param>
+		<param name="top">0</param>
+		<param name="top2">585</param>
 		<definition>
 			<control type="image">
 				<left>11</left>
-				<top>0</top>
+				<top>$PARAM[top]</top>
 				<width>405</width>
 				<height>600</height>
 				<texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
 				<aspectratio align="center">keep</aspectratio>
 			</control>
+
+			<!-- Watched status -->
+			<control type="image">
+				<left>290</left>
+				<top>$PARAM[top2]</top>
+				<width>35</width>
+				<height>49</height>
+				<texture>$VAR[StatusOverlayWide]</texture>
+			</control>
+
 		</definition>
 	</include>
 

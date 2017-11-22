@@ -58,7 +58,26 @@
 				<texturesliderbarfocus border="1,12,1,1" colordiffuse="DialogColor1">common/ScrollbarGripHorizontalFO.png</texturesliderbarfocus>
 				<textureslidernib>-</textureslidernib>
 				<textureslidernibfocus>-</textureslidernibfocus>
-				<visible>!Skin.HasSetting(Scrollbars) + Control.IsVisible(52)</visible>
+				<visible>!Skin.HasSetting(Scrollbars) + Control.IsVisible(52) + Skin.HasSetting(52_bottom)</visible>
+			</control>
+
+			<!-- Scrollbar (poster) -->
+			<control type="scrollbar" id="61">
+				<centerleft>50%</centerleft>
+				<top>336</top>
+				<width>1680</width>
+				<height>20</height>
+				<onup>50</onup>
+				<ondown condition="!Skin.HasSetting(KioskMode)">3001</ondown>
+				<showonepage>false</showonepage>
+				<orientation>horizontal</orientation>
+				<colordiffuse>OverlayColorNF</colordiffuse>
+				<texturesliderbackground border="1,12,1,1">common/ScrollBackgroundHorizontal.png</texturesliderbackground>
+				<texturesliderbar border="1,12,1,1">common/ScrollbarGripHorizontalNF.png</texturesliderbar>
+				<texturesliderbarfocus border="1,12,1,1" colordiffuse="DialogColor1">common/ScrollbarGripHorizontalFO.png</texturesliderbarfocus>
+				<textureslidernib>-</textureslidernib>
+				<textureslidernibfocus>-</textureslidernibfocus>
+				<visible>!Skin.HasSetting(Scrollbars) + Control.IsVisible(52) + !Skin.HasSetting(52_bottom)</visible>
 			</control>
 
 			<!-- Scrollbar (wall) -->
@@ -153,6 +172,13 @@
 						<onclick>Skin.ToggleSetting(59_landscape)</onclick>
 						<selected>!Skin.HasSetting(59_landscape)</selected>
 						<visible>Control.IsVisible(59)</visible>
+					</control>
+					<control type="radiobutton" id="95">
+						<label>Bottom</label>
+						<height>52</height>
+						<onclick>Skin.ToggleSetting(52_bottom)</onclick>
+						<selected>!Skin.HasSetting(52_bottom)</selected>
+						<visible>Control.IsVisible(52)</visible>
 					</control>
 
 					<!-- Scrollbars -->
