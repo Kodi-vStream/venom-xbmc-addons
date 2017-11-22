@@ -100,7 +100,8 @@
 			<control type="image">
 				<include>FullscreenDimensions</include>
 				<texture background="true">$VAR[OSMCBackgroundOverlay]</texture>
-				<colordiffuse>$INFO[Skin.String(color.background)]</colordiffuse>
+				<!--<colordiffuse>$INFO[Skin.String(color.background)]</colordiffuse>-->
+				<colordiffuse>$VAR[FanartColor]</colordiffuse>
 				<animation effect="fade" start="0" end="100" time="200" condition="$PARAM[animate]">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="200" delay="70" condition="$PARAM[animate]">WindowClose</animation>
 				<include>VisibleFadeAnimation</include>
