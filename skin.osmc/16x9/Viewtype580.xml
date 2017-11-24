@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<includes>
+
+    <include name="Viewtype580">
+
+        <control type="group">
+            <visible>Control.IsVisible(580)</visible>
+
+            <control type="wraplist" id="580">
+                <width>1920</width>
+                <height>1080</height>
+				<onleft>580</onleft>
+				<onright>580</onright>
+                <onup>9002</onup>
+                <ondown>9002</ondown>
+				<preloaditems>2</preloaditems>
+				<pagecontrol>-</pagecontrol>
+				<viewtype label="Fanart">BigWrap</viewtype>
+				<scrolltime tween="Cubic" easing="out">450</scrolltime>
+				<orientation>horizontal</orientation>
+                <itemlayout height="1080" width="1920">
+
+        		</itemlayout>
+        		<focusedlayout height="1080" width="1920">
+
+        		</focusedlayout>
+				<visible>[Container.Content(Movies) | Container.Content(Sets) | Container.Content(TVShows)] + !String.StartsWith(Container.FolderPath,plugin://)</visible>
+			</control>
+
+            <control type="group">
+    			<left>25</left>
+    			<top>485</top>
+    			<include>VideoWallView_Animation</include>
+    			<visible>Control.IsVisible(580)</visible>
+    			<include>InfoDialogsVisible_FadeAnimation</include>
+    			<control type="image">
+    				<left>-25</left>
+    				<top>-485</top>
+    				<width>1920</width>
+    				<height>1080</height>
+    				<aspectratio>stretch</aspectratio>
+    				<texture background="true">video_grid.png</texture>
+    				<colordiffuse>CCFFFFFF</colordiffuse>
+    			</control>
+    			<control type="label">
+    				<left>20</left>
+    				<top>295</top>
+    				<height>26</height>
+    				<width>840</width>
+    				<scroll>false</scroll>
+    				<align>left</align>
+                    <font>Font72</font>
+                    <align>center</align>
+                    <textcolor>TextColor1</textcolor>
+                    <label>[LIGHT]$INFO[ListItem.Label][/LIGHT]</label>
+    			</control>
+    			<control type="label">
+    				<left>21</left>
+    				<top>340</top>
+    				<width>840</width>
+    				<height>30</height>
+                    <font>Font27</font>
+                    <label>$VAR[Label2]</label>
+                    <textcolor>TextColor1</textcolor>
+    				<!--<label>$INFO[ListItem.Genre]</label>-->
+    				<scroll>false</scroll>
+    				<visible>!ListItem.IsParentFolder</visible>
+    			</control>
+    		</control>
+
+        </control>
+
+    </include>
+
+</includes>

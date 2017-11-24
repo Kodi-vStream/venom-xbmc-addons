@@ -183,14 +183,26 @@
 					<focusedcolor>TextColor1</focusedcolor>
 					<textcolor>TextColor2</textcolor>
 				</control>-->
+				<control type="button" id="1106">
+					<width>1220</width>
+					<height>66</height>
+					<textwidth>1120</textwidth>
+					<font>Font33</font>
+					<label> - Backgrounds Skin</label>
+					<label2>$INFO[Skin.String(CustomBackground)]</label2>
+					<onclick>Skin.SetFile(CustomBackground, ,special://skin/extras/backgrounds)</onclick>
+					<visible>ControlGroup(9).HasFocus(11) + !Skin.HasSetting(BackgroundImage)</visible>
+					<focusedcolor>TextColor1</focusedcolor>
+					<textcolor>TextColor2</textcolor>
+				</control>
 				<control type="button" id="1107">
 					<width>1220</width>
 					<height>66</height>
 					<textwidth>1120</textwidth>
 					<font>Font33</font>
-					<label>- $LOCALIZE[1024]</label>
+					<label> - Backgrounds perso et Télécharger</label>
 					<label2>$INFO[Skin.String(CustomBackground)]</label2>
-					<onclick>Skin.SetFile(CustomBackground, ,special://skin/extras/backgrounds)</onclick>
+					<onclick>RunScript(script.skin.helper.service,action=selectimage,skinstring=CustomBackground,resourceaddon=resource.images.skinbackgrounds)</onclick>
 					<visible>ControlGroup(9).HasFocus(11) + !Skin.HasSetting(BackgroundImage)</visible>
 					<focusedcolor>TextColor1</focusedcolor>
 					<textcolor>TextColor2</textcolor>

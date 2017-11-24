@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- view 51 Liste -->
 <includes>
 
 	<include name="Viewtype51">
+
 
 		<control type="group">
 			<visible>Control.IsVisible(51)</visible>

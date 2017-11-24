@@ -4,7 +4,7 @@
 	<backgroundcolor>0x00000000</backgroundcolor>
 	<defaultcontrol always="true">50</defaultcontrol>
 	<onload condition="System.HasAddon(script.tvtunes)">XBMC.RunScript(script.tvtunes,backend=True)</onload>
-	<views>52,53,51,50,59</views>
+	<views>52,53,51,50,59,580,581</views>
 
 	<controls>
 
@@ -22,6 +22,8 @@
 			<include>Viewtype52</include>
 			<include>Viewtype53</include>
 			<include>Viewtype59</include>
+			<include>Viewtype580</include>
+			<include>Viewtype581</include>
 
 			<!-- Scrollbar (list) -->
 			<control type="scrollbar" id="60">
@@ -142,12 +144,16 @@
 					<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
 				</control>
 
+				<include>mediamenu</include>
+
 				<!-- Look controls -->
 				<control type="grouplist" id="3001">
 					<left>20</left>
 					<top>10</top> <!-- -10 because there are two spacers -->
 					<width>410</width>
 					<height>1040</height>
+					<onup>85</onup>
+					<ondown>85</ondown>
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<scrolltime>200</scrolltime>
@@ -173,14 +179,13 @@
 						<selected>!Skin.HasSetting(59_landscape)</selected>
 						<visible>Control.IsVisible(59)</visible>
 					</control>
-					<control type="radiobutton" id="95">
+					<control type="radiobutton" id="96">
 						<label>Bottom</label>
 						<height>52</height>
 						<onclick>Skin.ToggleSetting(52_bottom)</onclick>
 						<selected>!Skin.HasSetting(52_bottom)</selected>
 						<visible>Control.IsVisible(52)</visible>
 					</control>
-
 					<!-- Scrollbars -->
 					<control type="radiobutton" id="94">
 						<label>31005</label>

@@ -671,6 +671,13 @@
 		<value>$INFO[ListItem.Icon]</value>
 	</variable>
 
+	<!--media logo-->
+	<variable name="mediaImages_Clearlogo">
+		<value condition="[Container.Content(TVShows) | Container.Content(Movies) | Container.Content(Sets)] + !String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>
+		<value condition="Container.Content(Seasons) | Container.Content(Episodes) + !String.IsEmpty(ListItem.Art(tvshow.clearlogo))">$INFO[ListItem.Art(tvshow.clearlogo)]</value>
+		<value>$INFO[ListItem.ActualIcon,thumbs/,/folderback_fanart_tp.png]</value>
+	</variable>
+
 	<!-- Skin Settings - Weather Art -->
 	<variable name="weather-icons">
 		<value condition="!String.IsEmpty(Skin.String(weatherIcons.name))">$INFO[Skin.String(weatherIcons.name)]</value>
