@@ -181,6 +181,7 @@ def isTrakt(sSiteName, sFunction):
     return False
 
 def searchGlobal():
+    cancel = False
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
 
@@ -208,6 +209,7 @@ def searchGlobal():
         text = '%s/%s - %s' % ((count+1), total, plugin['name'])
         cConfig().updateDialogSearch(dialog, total, text)
         if dialog.iscanceled():
+            cancel = True
             break
 
         #nom du site
@@ -228,18 +230,20 @@ def searchGlobal():
         if(count == 0):
             cConfig().updateDialogSearch(dialog, total, text,True)
         else:
-            cConfig().updateDialogSearch(dialog, total, text)
-            
-        if dialog.iscanceled():
-            break
+            cConfig().updateDialogSearch(dialog, total, text)               
 
         #result['params'].addParameter('VSTRMSEARCH','True')
 
         oGui.addFolder(result['guiElement'],result['params'])
         #xbmc.log('%s - %s' % (middle,old_label),  xbmc.LOGNOTICE)
 
+        if dialog.iscanceled():
+            if cancel == True:            
+                continue
+            else:
+                break        
+   
     cConfig().finishDialog(dialog)
-
 
     oGui.setEndOfDirectory()
 
