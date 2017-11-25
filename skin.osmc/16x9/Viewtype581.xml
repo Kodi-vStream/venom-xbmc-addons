@@ -2,6 +2,7 @@
 
 <includes>
 
+<!--galerie-->
     <include name="Viewtype581">
 
         <control type="group">
@@ -27,7 +28,7 @@
 					<control type="label">
 						<left>47</left>
 						<top>355</top>
-						<width>800</width>
+						<width>670</width>
 						<height>58</height>
 						<textcolor>TextColor2</textcolor>
 						<font>Font50</font>
@@ -50,15 +51,9 @@
 				</itemlayout>
 				<focusedlayout width="695" height="380">
 					<control type="group">
+                        <include>FocusAnim</include>
+
 						<left>60</left>
-						<animation type="Focus" reversible="false" condition="Container(581).OnNext">
-							<effect type="slide" start="26,0" end="0,0" time="150" tween="Cubic" easing="out" />
-							<effect type="fade" start="20" end="100" time="750" delay="0" tween="sine" easing="out" />
-						</animation>
-						<animation type="Focus" reversible="false" condition="Container(581).OnPrevious">
-							<effect type="slide" start="-26,0" end="0,0" time="150" tween="Cubic" easing="out" />
-							<effect type="fade" start="20" end="100" time="750" delay="0" tween="sine" easing="out" />
-						</animation>
 						<control type="image">
 							<width>675</width>
 							<height>380</height>
@@ -75,6 +70,12 @@
 							<fadetime>400</fadetime>
 							<visible>[[Container.Content(TVShows) | Container.Content(Seasons)] + String.IsEqual(Skin.String(GalleryViewWideThumbTVShows),3)] | [[Container.Content(Movies) | Container.Content(Sets)] + String.IsEqual(Skin.String(GalleryViewWideThumbMovies),3)]</visible>
 						</control>
+                        <control type="image">
+                            <width>675</width>
+                            <height>380</height>
+                            <aspectratio>stretch</aspectratio>
+                            <texture background="true">border.png</texture>
+                        </control>
                         <!-- Watched status -->
     					<control type="image">
                             <left>570</left>

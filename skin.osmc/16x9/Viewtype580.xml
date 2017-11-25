@@ -2,6 +2,8 @@
 
 <includes>
 
+    <!-- FANART -->
+
     <include name="Viewtype580">
 
         <control type="group">
@@ -9,11 +11,14 @@
 
             <control type="wraplist" id="580">
                 <width>1920</width>
-                <height>1080</height>
+                <height>520</height>
 				<onleft>580</onleft>
 				<onright>580</onright>
                 <onup>9002</onup>
                 <ondown>9002</ondown>
+                <top>190</top>
+                <left>330</left>
+                <right>330</right>
 				<preloaditems>2</preloaditems>
 				<pagecontrol>-</pagecontrol>
 				<viewtype label="Fanart">BigWrap</viewtype>
@@ -22,18 +27,54 @@
                 <itemlayout height="1080" width="1920">
 
         		</itemlayout>
-        		<focusedlayout height="1080" width="1920">
+        		<focusedlayout condition="Skin.HasSetting(59_landscape)" height="1080" width="1920">
 
         		</focusedlayout>
+
+                <focusedlayout condition="!Skin.HasSetting(59_landscape)" height="600" width="1920">
+                    <control type="group">
+                        <include>FocusAnim</include>
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>-190</posy>
+                            <width>1260</width>
+                            <height>1080</height>
+                            <aspectratio scalediffuse="false">scale</aspectratio>
+                            <texture background="true" fallback="DefaultVideoFanart.png">$VAR[mediaImages_landscape]</texture>
+                        </control>
+                        <control type="label">
+                            <top>580</top>
+                            <left>40</left>
+                            <width>1600</width>
+                            <aligny>center</aligny>
+                            <align>center</align>
+                            <height>70</height>
+                            <textcolor>TextColor1</textcolor>
+                            <font>Font50</font>
+                            <label>[LIGHT]$INFO[ListItem.Label][/LIGHT]</label>
+                        </control>
+                        <control type="label">
+                            <left>40</left>
+                            <top>650</top>
+                            <width>1600</width>
+                            <height>27</height>
+                            <font>Font27</font>
+                            <aligny>center</aligny>
+                            <align>center</align>
+                            <label>$VAR[Label2]</label>
+                            <textcolor>TextColor2</textcolor>
+                        </control>
+                    </control>
+                </focusedlayout>
+
 				<visible>[Container.Content(Movies) | Container.Content(Sets) | Container.Content(TVShows)] + !String.StartsWith(Container.FolderPath,plugin://)</visible>
 			</control>
 
             <control type="group">
     			<left>25</left>
     			<top>485</top>
-    			<include>VideoWallView_Animation</include>
+    			<include>FocusAnim</include>
     			<visible>Control.IsVisible(580)</visible>
-    			<include>InfoDialogsVisible_FadeAnimation</include>
     			<control type="image">
     				<left>-25</left>
     				<top>-485</top>
@@ -42,6 +83,7 @@
     				<aspectratio>stretch</aspectratio>
     				<texture background="true">video_grid.png</texture>
     				<colordiffuse>CCFFFFFF</colordiffuse>
+                    <visible>!Skin.HasSetting(580_grille)</visible>
     			</control>
     			<control type="label">
     				<left>20</left>

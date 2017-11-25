@@ -4,7 +4,7 @@
 	<backgroundcolor>0x00000000</backgroundcolor>
 	<defaultcontrol always="true">50</defaultcontrol>
 	<onload condition="System.HasAddon(script.tvtunes)">XBMC.RunScript(script.tvtunes,backend=True)</onload>
-	<views>52,53,51,50,59,580,581</views>
+	<views>52,53,51,50,59,580,581,582</views>
 
 	<controls>
 
@@ -24,6 +24,7 @@
 			<include>Viewtype59</include>
 			<include>Viewtype580</include>
 			<include>Viewtype581</include>
+			<include>Viewtype582</include>
 
 			<!-- Scrollbar (list) -->
 			<control type="scrollbar" id="60">
@@ -177,7 +178,7 @@
 						<height>52</height>
 						<onclick>Skin.ToggleSetting(59_landscape)</onclick>
 						<selected>!Skin.HasSetting(59_landscape)</selected>
-						<visible>Control.IsVisible(59)</visible>
+						<visible>Control.IsVisible(59) | Control.IsVisible(580)</visible>
 					</control>
 					<control type="radiobutton" id="96">
 						<label>Bottom</label>
@@ -185,6 +186,13 @@
 						<onclick>Skin.ToggleSetting(52_bottom)</onclick>
 						<selected>!Skin.HasSetting(52_bottom)</selected>
 						<visible>Control.IsVisible(52)</visible>
+					</control>
+					<control type="radiobutton" id="97">
+						<label>Grille</label>
+						<height>52</height>
+						<onclick>Skin.ToggleSetting(580_grille)</onclick>
+						<selected>!Skin.HasSetting(580_grille)</selected>
+						<visible>Control.IsVisible(580)</visible>
 					</control>
 					<!-- Scrollbars -->
 					<control type="radiobutton" id="94">

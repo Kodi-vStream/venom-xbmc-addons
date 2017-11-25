@@ -15,6 +15,7 @@
 	<include file="Viewtype59.xml" />
 	<include file="Viewtype580.xml" />
 	<include file="Viewtype581.xml" />
+	<include file="Viewtype582.xml" />
 	<include file="Variables.xml" />
 
 	<!-- Fullscreen dimensions -->
@@ -28,6 +29,13 @@
 	<include name="SlideAnim">
 		<animation effect="slide" start="0,0" end="450,0" time="200" condition="ControlGroup(9002).HasFocus|ControlGroup(9010).HasFocus|Window.IsActive(contextmenu)|Window.IsActive(shutdownmenu)">Conditional</animation>
 	</include>
+
+	<include name="FocusAnim">
+		<animation effect="zoom" start="60" end="100" center="202,300" time="300" tween="back" easing="out" reversible="false">Focus</animation>
+		<animation effect="slide" start="100,0" end="0,0" time="150" tween="Cubic" easing="out" reversible="false">Focus</animation>
+		<animation effect="fade" start="20" end="100" time="750" delay="0" tween="sine" easing="out" reversible="false">Focus</animation>
+	</include>
+
 
 	<!-- Window background image -->
 	<include name="WindowBackgroundImage">
