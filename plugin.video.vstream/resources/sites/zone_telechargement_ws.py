@@ -58,7 +58,7 @@ TV_NEWS = (URL_MAIN + 'emissions-tv/', 'showMovies') # dernieres emissions tv
 SPECT_NEWS = (URL_MAIN + 'spectacles/', 'showMovies') # dernieres spectacles
 CONCERT_NEWS = (URL_MAIN + 'concerts/', 'showMovies') # dernieres concerts
 AUTOFORM_VID = (URL_MAIN + 'autoformations-videos/', 'showMovies')
-
+  
 def load():
     oGui = cGui()
 
@@ -129,13 +129,18 @@ def load():
     oGui.setEndOfDirectory()
 
 def showSearch():
-    oGui = cGui()
+    sDisplayName = '[COLOR skyblue]'+'Zone-telehchargement'+'[/COLOR]'  
+    oGui = cGui()   
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    SearchTextLen = len(sSearchText)
+    print (SearchTextLen)
+    if SearchTextLen >= 4 and (sSearchText != False) :
         sUrl = sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
+    else:
+        cGui().showInfo(sDisplayName, 'Recherche impossible car il faut au obligatoirement 4 caractere ou plus' , 15)
 
 def showGenre(basePath):
     oGui = cGui()
