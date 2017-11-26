@@ -123,6 +123,7 @@ class cHoster(iHoster):
         
         SubTitle = ''
         SubTitle = self.checkSubtitle(sHtmlContent)
+        #cConfig().log(SubTitle)
         
         oParser = cParser()
         sPattern =  'src":[\'"]([^<>\'"]+)[\'"],"type":[\'"][^\'"><]+?[\'"],"label":[\'"]([0-9]+p)[\'"].+?"lang":[\'"]([^\'"]+)'
@@ -140,12 +141,8 @@ class cHoster(iHoster):
             for aEntry in aResult[1]:
                 url.append(aEntry[0])
                 tmp_qua = aEntry[1]
-                if (aEntry[3]):
-                    if 'unknow' not in aEntry[3]:
-                        tmp_lang = tmp_lang + ' (' + aEntry[3] + ')'
-                lang.append(tmp_lang)
                 
-                if (aEntry[2]):
+                if (len(aEntry)>2):
                     if 'unknow' not in aEntry[2]:
                         tmp_qua = tmp_qua + ' (' + aEntry[2] + ')'
                 qua.append(tmp_qua)
@@ -157,7 +154,7 @@ class cHoster(iHoster):
             elif len(url) > 1:
                 #Afichage du tableau
                 dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua,lang)
+                ret = dialog2.select('Select Quality',qua)
                 if (ret > -1):
                     stream_url = url[ret]
                 else:
