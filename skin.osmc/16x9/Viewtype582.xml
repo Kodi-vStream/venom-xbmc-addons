@@ -55,6 +55,7 @@
                             <height>450</height>
                             <aspectratio scalediffuse="false">scale</aspectratio>
                             <texture background="true" fallback="DefaultVideoFanart.png">$VAR[mediaImages_landscape]</texture>
+                            <colordiffuse>DiffusePosterNF</colordiffuse>
                         </control>
                     </itemlayout>
                     <focusedlayout height="450" width="820">

@@ -671,6 +671,26 @@
 		<value>$INFO[ListItem.Icon]</value>
 	</variable>
 
+	<variable name="mediaImages_banner">
+		<value condition="Container.Content(tvshows) + !IsEmpty(ListItem.Art(tvshow.banner))">$INFO[ListItem.Art(tvshow.banner)]</value>
+		<value condition="Container.Content(seasons) + !IsEmpty(ListItem.Art(season.banner))">$INFO[ListItem.Art(season.banner)]</value>
+		<value condition="Container.Content(Episodes)">$INFO[ListItem.Icon]</value>
+		<value condition="IsEmpty(ListItem.Art(banner)) + !IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
+		<value condition="!IsEmpty(ListItem.Art(banner))">$INFO[ListItem.Art(banner)]</value>
+		<value>$INFO[ListItem.Icon]</value>
+	</variable>
+
+	<!--Fallback (image par defaut si aucune)-->
+	<variable name="fallback">
+		<value condition="Container.Content(songs)">DefaultMusicSongs.png</value>
+		<value condition="Container.Content(albums)">DefaultAlbumCover.png</value>
+		<value condition="Container.Content(movies)">DefaultMovies.png</value>
+		<value condition="Container.Content(tvshows)|Container.Content(seasons)|Container.Content(episodes)">DefaultTVShows.png</value>
+		<value condition="Window.IsVisible(pictures)">DefaultPicture.png</value>
+		<value condition="Container.Content(addons)">DefaultAddon.png</value>
+		<value>DefaultFolder.png</value>
+	</variable>
+
 	<!--media logo-->
 	<variable name="mediaImages_Clearlogo">
 		<value condition="[Container.Content(TVShows) | Container.Content(Movies) | Container.Content(Sets)] + !String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>

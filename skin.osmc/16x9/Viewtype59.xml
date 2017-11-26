@@ -2,6 +2,7 @@
 
 <includes>
 
+<!-- NETFIX -->
     <include name="Viewtype59">
 
         <control type="group">
@@ -66,38 +67,43 @@
                     </control>
                 </itemlayout>
                 <focusedlayout condition="Skin.HasSetting(59_landscape) + [Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Sets) | Container.Content(MusicVideos)]" width="238" height="256">
-                    <control type="image">
-                        <width>202</width>
-                        <height>300</height>
-                        <aspectratio align="center">keep</aspectratio>
-                        <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
-                        <animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(59)">Conditional</animation>
-                    </control>
-                    <!-- Watched status -->
-                    <control type="image">
-                        <left>140</left>
-                        <top>285</top>
-                        <width>30</width>
-                        <height>42</height>
-                    	<texture>$VAR[StatusOverlayWide]</texture>
+                    <control type="group">
+                        <include>FocusAnim</include>
+                        <control type="image">
+                            <width>202</width>
+                            <height>300</height>
+                            <aspectratio align="center">keep</aspectratio>
+                            <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
+                        </control>
+                        <!-- Watched status -->
+                        <control type="image">
+                            <left>140</left>
+                            <top>285</top>
+                            <width>30</width>
+                            <height>42</height>
+                        	<texture>$VAR[StatusOverlayWide]</texture>
+                        </control>
                     </control>
                 </focusedlayout>
                 <focusedlayout condition="Container.Content(Episodes) | !Skin.HasSetting(59_landscape)" width="476" height="256">
-                    <control type="image">
-                        <left>0</left>
-                        <width>452</width>
-                        <height>286</height>
-                        <aspectratio aligny="center">scale</aspectratio>
-                        <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages_landscape]</texture>
+                    <control type="group">
+                        <include>FocusAnim</include>
+                        <control type="image">
+                            <left>0</left>
+                            <width>452</width>
+                            <height>286</height>
+                            <aspectratio aligny="center">scale</aspectratio>
+                            <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages_landscape]</texture>
+                        </control>
+                        <!-- Watched status -->
+    					<control type="image">
+                            <left>350</left>
+                            <top>270</top>
+                            <width>30</width>
+                            <height>42</height>
+                        	<texture>$VAR[StatusOverlayWide]</texture>
+    					</control>
                     </control>
-                    <!-- Watched status -->
-					<control type="image">
-                        <left>350</left>
-                        <top>270</top>
-                        <width>30</width>
-                        <height>42</height>
-                    	<texture>$VAR[StatusOverlayWide]</texture>
-					</control>
                 </focusedlayout>
             </control>
 

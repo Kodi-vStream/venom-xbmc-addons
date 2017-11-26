@@ -6,7 +6,7 @@
 		<control type="group">
 			<visible>Control.IsVisible(52)</visible>
 
-			<!-- Wide list -->
+			<!-- LARGE list -->
 			<control type="fixedlist" id="52">
 				<left>0</left>
 				<top>120</top>
