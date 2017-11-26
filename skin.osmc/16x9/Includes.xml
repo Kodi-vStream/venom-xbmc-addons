@@ -559,6 +559,23 @@
 		</control>
 	</include>
 
+	<!-- Logo -->
+	<include name="MediaLogos">
+		<control type="group">
+			<left>1625</left>
+			<top>965</top>
+
+		<!--	Skin.HasSetting(show_clearlogos) -->
+			<control type="image">
+				<width>178</width>
+				<height>80</height>
+				<aspectratio align="center">keep</aspectratio>
+				<texture background="true">$VAR[MediaImages_logo]</texture>
+			</control>
+
+		</control>
+	</include>
+
 	<!-- Media Flags -->
 	<include name="MediaFlags">
 		<control type="grouplist">

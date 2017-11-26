@@ -12,7 +12,7 @@
 
             <control type="fixedlist" id="59">
 
-                <width>1420</width>
+                <width>1630</width>
                 <left>130</left>
                 <top>600</top>
                 <height>800</height>
@@ -47,12 +47,12 @@
                         <colordiffuse>OverlayColorNF</colordiffuse>
                     </control>
                 </itemlayout>
-                <itemlayout condition="Container.Content(Episodes) | !Skin.HasSetting(59_landscape)" width="476" height="256">
+                <itemlayout condition="Container.Content(Episodes) | !Skin.HasSetting(59_landscape)" width="560" height="281">
                     <control type="image">
-                        <width>452</width>
-                        <height>286</height>
+                        <width>500</width>
+                        <height>281</height>
                         <colordiffuse>DiffusePosterNF</colordiffuse>
-                        <aspectratio aligny="center">scale</aspectratio>
+                        <aspectratio scalediffuse="false">scale</aspectratio>
                         <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages_landscape]</texture>
                     </control>
                     <!-- Watched status -->
@@ -85,14 +85,14 @@
                         </control>
                     </control>
                 </focusedlayout>
-                <focusedlayout condition="Container.Content(Episodes) | !Skin.HasSetting(59_landscape)" width="476" height="256">
+                <focusedlayout condition="Container.Content(Episodes) | !Skin.HasSetting(59_landscape)" width="560" height="281">
                     <control type="group">
                         <include>FocusAnim</include>
                         <control type="image">
                             <left>0</left>
-                            <width>452</width>
-                            <height>286</height>
-                            <aspectratio aligny="center">scale</aspectratio>
+                            <width>500</width>
+                            <height>281</height>
+                            <aspectratio scalediffuse="false">scale</aspectratio>
                             <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages_landscape]</texture>
                         </control>
                         <!-- Watched status -->

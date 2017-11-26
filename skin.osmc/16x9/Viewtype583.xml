@@ -27,14 +27,7 @@
                         <control type="group">
                             <width>1800</width>
                             <height>100</height>
-                            <animation effect="fade" start="100" end="50" time="0" condition="true">Conditional</animation>
-                            <control type="image">
-                                <top>5</top>
-                                <width>1680</width>
-                                <height>90</height>
-                                <texture border="5">dialogs/Background.png</texture>
-                                <colordiffuse>1a000000</colordiffuse>
-                            </control>
+
                             <control type="image">
                                 <!--Panel icon image-->
                                 <width>550</width>
@@ -52,7 +45,7 @@
                                 <aligny>center</aligny>
                                 <align>left</align>
                                 <font>Font30</font>
-                                <textcolor>TextColor1</textcolor>
+                                <textcolor>TextColor2</textcolor>
                                 <label>$VAR[Label2-episodes]</label>
                                 <visible>Container.Content(episodes) + !IsEmpty(ListItem.episode)</visible>
                             </control>
@@ -63,7 +56,7 @@
                                 <height>50</height>
                                 <align>left</align>
                                 <font>Font25</font>
-                                <textcolor>TextColor1</textcolor>
+                                <textcolor>TextColor2</textcolor>
                                 <label>$INFO[ListItem.Label]</label>
                                 <animation effect="slide" start="0" end="120" time="0" condition="Container.Content(episodes)">Conditional</animation>
                             </control>
@@ -92,13 +85,7 @@
                             <width>1800</width>
                             <top>0</top>
                             <height>310</height>
-                            <control type="image">
-                                <top>5</top>
-                                <width>1680</width>
-                                <height>300</height>
-                                <texture border="5">dialogs/Background.png</texture>
-                                <colordiffuse>1a000000</colordiffuse>
-                            </control>
+
                             <control type="image">
                                 <!--Panel icon image-->
                                 <width>550</width>

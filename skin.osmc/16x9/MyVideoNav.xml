@@ -109,6 +109,9 @@
 			<!-- Item count -->
 			<include>ItemCount</include>
 
+			<!--logo-->
+			<include>MediaLogos</include>
+
 		</control>
 
 		<!-- Time -->

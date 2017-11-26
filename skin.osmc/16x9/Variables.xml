@@ -680,6 +680,12 @@
 		<value>$INFO[ListItem.Icon]</value>
 	</variable>
 
+	<variable name="MediaImages_logo">
+		<value condition="!String.IsEmpty(ListItem.Art(tvshow.clearlogo))">$INFO[ListItem.Art(tvshow.clearlogo)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>
+		<value condition="!String.IsEmpty(Window(Home).Property(SkinHelper.ListItem.Art.Clearlogo))">$INFO[Window(Home).Property(SkinHelper.ListItem.Art.Clearlogo)]</value>
+	</variable>
+
 	<!--Fallback (image par defaut si aucune)-->
 	<variable name="fallback">
 		<value condition="Container.Content(songs)">DefaultMusicSongs.png</value>
