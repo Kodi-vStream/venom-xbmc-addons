@@ -2,6 +2,7 @@
 
 <includes>
 
+<!-- NETFIX -->
     <include name="Viewtype59">
 
         <control type="group">
@@ -11,7 +12,7 @@
 
             <control type="fixedlist" id="59">
 
-                <width>1420</width>
+                <width>1630</width>
                 <left>130</left>
                 <top>600</top>
                 <height>800</height>
@@ -26,7 +27,7 @@
                 <orientation>horizontal</orientation>
                 <preloaditems>2</preloaditems>
                 <focusposition>0</focusposition>
-                <pagecontrol>60</pagecontrol>
+                <pagecontrol>-</pagecontrol>
                 <visible>[Container.Content(Movies) | Container.Content(Sets) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes)] + !String.StartsWith(Container.FolderPath,plugin://)</visible>
                 <itemlayout condition="Skin.HasSetting(59_landscape) + [Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Sets) | Container.Content(MusicVideos)]" width="238" height="256">
                     <control type="image">
@@ -46,12 +47,12 @@
                         <colordiffuse>OverlayColorNF</colordiffuse>
                     </control>
                 </itemlayout>
-                <itemlayout condition="Container.Content(Episodes) | !Skin.HasSetting(59_landscape)" width="476" height="256">
+                <itemlayout condition="Container.Content(Episodes) | !Skin.HasSetting(59_landscape)" width="560" height="281">
                     <control type="image">
-                        <width>452</width>
-                        <height>286</height>
+                        <width>500</width>
+                        <height>281</height>
                         <colordiffuse>DiffusePosterNF</colordiffuse>
-                        <aspectratio aligny="center">scale</aspectratio>
+                        <aspectratio scalediffuse="false">scale</aspectratio>
                         <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages_landscape]</texture>
                     </control>
                     <!-- Watched status -->
@@ -66,38 +67,43 @@
                     </control>
                 </itemlayout>
                 <focusedlayout condition="Skin.HasSetting(59_landscape) + [Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Sets) | Container.Content(MusicVideos)]" width="238" height="256">
-                    <control type="image">
-                        <width>202</width>
-                        <height>300</height>
-                        <aspectratio align="center">keep</aspectratio>
-                        <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
-                        <animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(59)">Conditional</animation>
-                    </control>
-                    <!-- Watched status -->
-                    <control type="image">
-                        <left>140</left>
-                        <top>285</top>
-                        <width>30</width>
-                        <height>42</height>
-                    	<texture>$VAR[StatusOverlayWide]</texture>
+                    <control type="group">
+                        <include>FocusAnim</include>
+                        <control type="image">
+                            <width>202</width>
+                            <height>300</height>
+                            <aspectratio align="center">keep</aspectratio>
+                            <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
+                        </control>
+                        <!-- Watched status -->
+                        <control type="image">
+                            <left>140</left>
+                            <top>285</top>
+                            <width>30</width>
+                            <height>42</height>
+                        	<texture>$VAR[StatusOverlayWide]</texture>
+                        </control>
                     </control>
                 </focusedlayout>
-                <focusedlayout condition="Container.Content(Episodes) | !Skin.HasSetting(59_landscape)" width="476" height="256">
-                    <control type="image">
-                        <left>0</left>
-                        <width>452</width>
-                        <height>286</height>
-                        <aspectratio aligny="center">scale</aspectratio>
-                        <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages_landscape]</texture>
+                <focusedlayout condition="Container.Content(Episodes) | !Skin.HasSetting(59_landscape)" width="560" height="281">
+                    <control type="group">
+                        <include>FocusAnim</include>
+                        <control type="image">
+                            <left>0</left>
+                            <width>500</width>
+                            <height>281</height>
+                            <aspectratio scalediffuse="false">scale</aspectratio>
+                            <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages_landscape]</texture>
+                        </control>
+                        <!-- Watched status -->
+    					<control type="image">
+                            <left>350</left>
+                            <top>270</top>
+                            <width>30</width>
+                            <height>42</height>
+                        	<texture>$VAR[StatusOverlayWide]</texture>
+    					</control>
                     </control>
-                    <!-- Watched status -->
-					<control type="image">
-                        <left>350</left>
-                        <top>270</top>
-                        <width>30</width>
-                        <height>42</height>
-                    	<texture>$VAR[StatusOverlayWide]</texture>
-					</control>
                 </focusedlayout>
             </control>
 
@@ -113,7 +119,6 @@
                 <height>30</height>
                 <width>550</width>
                 <textcolor>TextColor1</textcolor>
-                <shadowcolor>77000000</shadowcolor>
                 <scroll>false</scroll>
                 <align>left</align>
                 <font>Font50</font>
@@ -172,7 +177,6 @@
                 <height>30</height>
                 <width>550</width>
                 <textcolor>TextColor2</textcolor>
-                <shadowcolor>77000000</shadowcolor>
                 <font>Font30</font>
                 <scrollspeed>30</scrollspeed>
                 <align>left</align>
@@ -185,7 +189,6 @@
                 <height>30</height>
                 <width>550</width>
                 <textcolor>TextColor2</textcolor>
-                <shadowcolor>77000000</shadowcolor>
                 <font>Font36</font>
                 <scrollspeed>30</scrollspeed>
                 <align>left</align>
@@ -197,31 +200,13 @@
                 <width>450</width>
                 <height>150</height>
                 <font>Font22</font>
-                <textcolor>DialogColor2</textcolor>
-                <shadowcolor>77000000</shadowcolor>
+                <textcolor>TextColor2</textcolor>
                 <align>left</align>
                 <autoscroll delay="8000" time="2000" repeat="8000">Skin.HasSetting(AutoScroll)</autoscroll>
                 <label>$VAR[Plot]</label>
                 <visible>Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes)</visible>
             </control>
 
-
-            <control type="scrollbar" id="60">
-                <left>-2</left>
-                <top>408</top>
-                <width>1188</width>
-                <height>6</height>
-                <texturesliderbackground>-</texturesliderbackground>
-                <texturesliderbar border="14,0,14,0">views/scrollbar/scrollbar_horizontal.png</texturesliderbar>
-                <texturesliderbarfocus border="14,0,14,0">views/scrollbar/scrollbar_horizontal.png</texturesliderbarfocus>
-                <textureslidernib>-</textureslidernib>
-                <textureslidernibfocus>-</textureslidernibfocus>
-                <onup>59</onup>
-                <ondown>9555</ondown>
-                <showonepage>false</showonepage>
-                <orientation>horizontal</orientation>
-                <animation effect="fade" start="100" end="0" time="250" condition="!Control.HasFocus(60) + !Container.Scrolling">Conditional</animation>
-            </control>
         </control>
 
     </include>

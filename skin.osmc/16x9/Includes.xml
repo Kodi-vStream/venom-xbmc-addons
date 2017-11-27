@@ -13,6 +13,10 @@
 	<include file="Viewtype54.xml" />
 	<include file="Viewtype55.xml" />
 	<include file="Viewtype59.xml" />
+	<include file="Viewtype580.xml" />
+	<include file="Viewtype581.xml" />
+	<include file="Viewtype582.xml" />
+	<include file="Viewtype583.xml" />
 	<include file="Variables.xml" />
 
 	<!-- Fullscreen dimensions -->
@@ -26,6 +30,13 @@
 	<include name="SlideAnim">
 		<animation effect="slide" start="0,0" end="450,0" time="200" condition="ControlGroup(9002).HasFocus|ControlGroup(9010).HasFocus|Window.IsActive(contextmenu)|Window.IsActive(shutdownmenu)">Conditional</animation>
 	</include>
+
+	<include name="FocusAnim">
+		<animation effect="zoom" start="60" end="100" center="202,300" time="300" tween="back" easing="out" reversible="false">Focus</animation>
+		<animation effect="slide" start="100,0" end="0,0" time="150" tween="Cubic" easing="out" reversible="false">Focus</animation>
+		<animation effect="fade" start="20" end="100" time="750" delay="0" tween="sine" easing="out" reversible="false">Focus</animation>
+	</include>
+
 
 	<!-- Window background image -->
 	<include name="WindowBackgroundImage">
@@ -96,27 +107,16 @@
 				<visible>Player.HasAudio + Skin.HasSetting(BackgroundVisualisation) + !String.Contains(Window(Videos).Property(TvTunesIsAlive),True)</visible>
 			</control>
 
-			<!-- Overlay -->
-			<control type="image">
-				<include>FullscreenDimensions</include>
-				<texture background="true">Background.png</texture>
-				<animation effect="fade" start="0" end="100" time="200" condition="$PARAM[animate]">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="200" delay="70" condition="$PARAM[animate]">WindowClose</animation>
-				<include>VisibleFadeAnimation</include>
-				<visible>!Window.Is(visualisation) | [Window.Is(visualisation) + [Player.ShowInfo | Window.IsActive(musicosd)]]</visible>
-				<visible>Skin.HasSetting(Not.OSMC.Background)</visible>
-			</control>
-
 			<!-- Overlay - Custom color -->
 			<control type="image">
 				<include>FullscreenDimensions</include>
-				<texture background="true">Background-Custom.png</texture>
-				<colordiffuse>$INFO[Skin.String(color.background)]</colordiffuse>
+				<texture background="true">$VAR[OSMCBackgroundOverlay]</texture>
+				<!--<colordiffuse>$INFO[Skin.String(color.background)]</colordiffuse>-->
+				<colordiffuse>$VAR[FanartColor]</colordiffuse>
 				<animation effect="fade" start="0" end="100" time="200" condition="$PARAM[animate]">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="200" delay="70" condition="$PARAM[animate]">WindowClose</animation>
 				<include>VisibleFadeAnimation</include>
 				<visible>!Window.Is(visualisation) | [Window.Is(visualisation) + [Player.ShowInfo | Window.IsActive(musicosd)]]</visible>
-				<visible>!Skin.HasSetting(Not.OSMC.Background)</visible>
 			</control>
 		</definition>
 	</include>
@@ -365,6 +365,168 @@
 		</control>
 	</include>
 
+	<include name="mediamenu">
+		<control type="grouplist" id="85">
+			<visible>Player.HasMedia</visible>
+			<visible>!System.HasModalDialog</visible>
+			<width>450</width>
+			<top>100</top>
+			<height>60</height>
+			<itemgap>0</itemgap>
+			<onleft>50</onleft>
+			<align>center</align>
+			<onright>50</onright>
+			<onup>3001</onup>
+			<ondown>3001</ondown>
+			<orientation>horizontal</orientation>
+
+			<!-- Spacer -->
+			<control type="image" id="240">
+				<left>0</left>
+				<top>0</top>
+				<width>7</width>
+				<height>60</height>
+				<texture>transparent.png</texture>
+			</control>
+
+			<!-- Skip Back -->
+			<control type="button" id="201">
+				<width>9</width>
+				<height>60</height>
+				<texturefocus colordiffuse="DialogColor1">osd/OSDTrickBackwardEnd.png</texturefocus>
+				<texturenofocus colordiffuse="DialogColor2">osd/OSDTrickBackwardEnd.png</texturenofocus>
+				<onclick>PlayerControl(Previous)</onclick>
+				<visible>!VideoPlayer.Content(LiveTV)</visible>
+			</control>
+			<!-- Rewind -->
+			<control type="togglebutton" id="202">
+				<width>18</width>
+				<height>60</height>
+				<texturefocus colordiffuse="DialogColor1">osd/OSDTrickBackward.png</texturefocus>
+				<texturenofocus colordiffuse="DialogColor2">osd/OSDTrickBackward.png</texturenofocus>
+				<alttexturefocus colordiffuse="DialogColor1">osd/OSDTrickBackward.png</alttexturefocus>
+				<alttexturenofocus colordiffuse="DialogColor1">osd/OSDTrickBackward.png</alttexturenofocus>
+				<usealttexture>Control.HasFocus(201)</usealttexture>
+				<onclick>PlayerControl(Rewind)</onclick>
+				<visible>Player.SeekEnabled</visible>
+			</control>
+			<!-- Tempo Down -->
+			<control type="togglebutton" id="203">
+				<width>18</width>
+				<height>60</height>
+				<texturefocus colordiffuse="DialogColor1">osd/OSDTrickBackward.png</texturefocus>
+				<texturenofocus colordiffuse="DialogColor2">osd/OSDTrickBackward.png</texturenofocus>
+				<alttexturefocus colordiffuse="DialogColor1">osd/OSDTrickBackward.png</alttexturefocus>
+				<alttexturenofocus colordiffuse="DialogColor1">osd/OSDTrickBackward.png</alttexturenofocus>
+				<usealttexture>Control.HasFocus(201) | Control.HasFocus(202)</usealttexture>
+				<onclick>PlayerControl(TempoDown)</onclick>
+				<visible>Player.SeekEnabled</visible>
+				<enable>Player.TempoEnabled</enable>
+			</control>
+
+			<!-- Spacer -->
+			<control type="image" id="241">
+				<left>0</left>
+				<top>0</top>
+				<width>7</width>
+				<height>60</height>
+				<texture>transparent.png</texture>
+			</control>
+
+			<!-- Up -->
+			<control type="button" id="204">
+				<width>60</width>
+				<height>60</height>
+				<texturefocus colordiffuse="DialogColor1">osd/OSDUpNF.png</texturefocus>
+				<texturenofocus colordiffuse="DialogColor2">osd/OSDUpNF.png</texturenofocus>
+				<onclick>PlayerControl(Previous)</onclick>
+				<visible>VideoPlayer.Content(LiveTV)</visible>
+			</control>
+
+			<!-- Play / Pause -->
+			<control type="togglebutton" id="205">
+				<width>60</width>
+				<height>60</height>
+				<texturefocus colordiffuse="DialogColor1">osd/OSDPauseNF.png</texturefocus>
+				<texturenofocus colordiffuse="DialogColor2">osd/OSDPauseNF.png</texturenofocus>
+				<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding | Player.IsTempo</usealttexture>
+				<alttexturefocus colordiffuse="DialogColor1">osd/OSDPlayNF.png</alttexturefocus>
+				<alttexturenofocus colordiffuse="DialogColor2">osd/OSDPlayNF.png</alttexturenofocus>
+				<onclick>PlayerControl(Play)</onclick>
+			</control>
+
+			<!-- Stop -->
+			<control type="button" id="206">
+				<width>60</width>
+				<height>60</height>
+				<texturefocus colordiffuse="DialogColor1">osd/OSDStopNF.png</texturefocus>
+				<texturenofocus colordiffuse="DialogColor2">osd/OSDStopNF.png</texturenofocus>
+				<onclick>PlayerControl(Stop)</onclick>
+			</control>
+
+			<!-- Down -->
+			<control type="button" id="207">
+				<width>60</width>
+				<height>60</height>
+				<texturefocus colordiffuse="DialogColor1">osd/OSDDownNF.png</texturefocus>
+				<texturenofocus colordiffuse="DialogColor2">osd/OSDDownNF.png</texturenofocus>
+				<onclick>PlayerControl(Next)</onclick>
+				<visible>VideoPlayer.Content(LiveTV)</visible>
+			</control>
+
+			<!-- Spacer -->
+			<control type="image" id="242">
+				<left>0</left>
+				<top>0</top>
+				<width>7</width>
+				<height>60</height>
+				<texture>transparent.png</texture>
+			</control>
+
+			<!-- Tempo Up -->
+			<control type="togglebutton" id="208">
+				<width>18</width>
+				<height>60</height>
+				<texturefocus colordiffuse="DialogColor1">osd/OSDTrickForward.png</texturefocus>
+				<texturenofocus colordiffuse="DialogColor2">osd/OSDTrickForward.png</texturenofocus>
+				<alttexturefocus colordiffuse="DialogColor1">osd/OSDTrickForward.png</alttexturefocus>
+				<alttexturenofocus colordiffuse="DialogColor1">osd/OSDTrickForward.png</alttexturenofocus>
+				<usealttexture>Control.HasFocus(209) | Control.HasFocus(210)</usealttexture>
+				<onclick>PlayerControl(TempoUp)</onclick>
+				<visible>Player.SeekEnabled</visible>
+				<enable>Player.TempoEnabled</enable>
+			</control>
+			<!-- Fast Forward -->
+			<control type="togglebutton" id="209">
+				<width>18</width>
+				<height>60</height>
+				<texturefocus colordiffuse="DialogColor1">osd/OSDTrickForward.png</texturefocus>
+				<texturenofocus colordiffuse="DialogColor2">osd/OSDTrickForward.png</texturenofocus>
+				<alttexturefocus colordiffuse="DialogColor1">osd/OSDTrickForward.png</alttexturefocus>
+				<alttexturenofocus colordiffuse="DialogColor1">osd/OSDTrickForward.png</alttexturenofocus>
+				<usealttexture>Control.HasFocus(210)</usealttexture>
+				<onclick>PlayerControl(Forward)</onclick>
+				<visible>Player.SeekEnabled</visible>
+			</control>
+			<!-- Next -->
+			<control type="button" id="210">
+				<width>9</width>
+				<height>60</height>
+				<texturefocus colordiffuse="DialogColor1">osd/OSDTrickForwardEnd.png</texturefocus>
+				<texturenofocus colordiffuse="DialogColor2">osd/OSDTrickForwardEnd.png</texturenofocus>
+				<onclick>PlayerControl(Next)</onclick>
+				<visible>!VideoPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="button" id="211">
+				<width>60</width>
+				<height>60</height>
+				<texturefocus colordiffuse="DialogColor1">osd/OSDFullScreenNF.png</texturefocus>
+				<texturenofocus colordiffuse="DialogColor2">osd/OSDFullScreenNF.png</texturenofocus>
+				<onclick>Fullscreen</onclick>
+			</control>
+		</control>
+	</include>
+
 	<!-- Item count -->
 	<include name="ItemCount">
 		<control type="grouplist">
@@ -394,6 +556,23 @@
 				<font>Font33</font>
 				<textcolor>TextColor2</textcolor>
 			</control>
+		</control>
+	</include>
+
+	<!-- Logo -->
+	<include name="MediaLogos">
+		<control type="group">
+			<left>1625</left>
+			<top>965</top>
+
+		<!--	Skin.HasSetting(show_clearlogos) -->
+			<control type="image">
+				<width>178</width>
+				<height>80</height>
+				<aspectratio align="center">keep</aspectratio>
+				<texture background="true">$VAR[MediaImages_logo]</texture>
+			</control>
+
 		</control>
 	</include>
 

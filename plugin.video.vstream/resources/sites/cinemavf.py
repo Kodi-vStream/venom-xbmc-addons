@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'cinemavf'
 SITE_NAME = 'CinemaVF'
 SITE_DESC = 'Films, Séries & Mangas en streaming.'
 
-URL_MAIN = 'http://cinemavf.tv/'
+URL_MAIN = 'http://filmstreamin.com/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')

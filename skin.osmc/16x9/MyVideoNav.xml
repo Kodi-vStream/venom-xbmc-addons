@@ -4,7 +4,7 @@
 	<backgroundcolor>0x00000000</backgroundcolor>
 	<defaultcontrol always="true">50</defaultcontrol>
 	<onload condition="System.HasAddon(script.tvtunes)">XBMC.RunScript(script.tvtunes,backend=True)</onload>
-	<views>52,53,51,50,59</views>
+	<views>52,53,51,50,59,580,581,582,583</views>
 
 	<controls>
 
@@ -22,6 +22,10 @@
 			<include>Viewtype52</include>
 			<include>Viewtype53</include>
 			<include>Viewtype59</include>
+			<include>Viewtype580</include>
+			<include>Viewtype581</include>
+			<include>Viewtype582</include>
+			<include>Viewtype583</include>
 
 			<!-- Scrollbar (list) -->
 			<control type="scrollbar" id="60">
@@ -58,7 +62,26 @@
 				<texturesliderbarfocus border="1,12,1,1" colordiffuse="DialogColor1">common/ScrollbarGripHorizontalFO.png</texturesliderbarfocus>
 				<textureslidernib>-</textureslidernib>
 				<textureslidernibfocus>-</textureslidernibfocus>
-				<visible>!Skin.HasSetting(Scrollbars) + Control.IsVisible(52)</visible>
+				<visible>!Skin.HasSetting(Scrollbars) + Control.IsVisible(52) + Skin.HasSetting(52_bottom)</visible>
+			</control>
+
+			<!-- Scrollbar (poster) -->
+			<control type="scrollbar" id="61">
+				<centerleft>50%</centerleft>
+				<top>336</top>
+				<width>1680</width>
+				<height>20</height>
+				<onup>50</onup>
+				<ondown condition="!Skin.HasSetting(KioskMode)">3001</ondown>
+				<showonepage>false</showonepage>
+				<orientation>horizontal</orientation>
+				<colordiffuse>OverlayColorNF</colordiffuse>
+				<texturesliderbackground border="1,12,1,1">common/ScrollBackgroundHorizontal.png</texturesliderbackground>
+				<texturesliderbar border="1,12,1,1">common/ScrollbarGripHorizontalNF.png</texturesliderbar>
+				<texturesliderbarfocus border="1,12,1,1" colordiffuse="DialogColor1">common/ScrollbarGripHorizontalFO.png</texturesliderbarfocus>
+				<textureslidernib>-</textureslidernib>
+				<textureslidernibfocus>-</textureslidernibfocus>
+				<visible>!Skin.HasSetting(Scrollbars) + Control.IsVisible(52) + !Skin.HasSetting(52_bottom)</visible>
 			</control>
 
 			<!-- Scrollbar (wall) -->
@@ -85,6 +108,9 @@
 
 			<!-- Item count -->
 			<include>ItemCount</include>
+
+			<!--logo-->
+			<include>MediaLogos</include>
 
 		</control>
 
@@ -123,12 +149,16 @@
 					<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
 				</control>
 
+				<include>mediamenu</include>
+
 				<!-- Look controls -->
 				<control type="grouplist" id="3001">
 					<left>20</left>
 					<top>10</top> <!-- -10 because there are two spacers -->
 					<width>410</width>
 					<height>1040</height>
+					<onup>85</onup>
+					<ondown>85</ondown>
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<scrolltime>200</scrolltime>
@@ -140,23 +170,53 @@
 						<param name="containerID">3001</param>
 					</include>
 
+
 					<!-- View -->
-					<control type="button" id="99">
+					<control type="button" id="2">
 						<label>$INFO[Container.ViewMode]</label>
 						<height>52</height>
-						<onclick>Container.NextViewMode</onclick>
 					</control>
 
-					<control type="radiobutton" id="95">
+					<control type="radiobutton" id="194">
 						<label>Landscape</label>
 						<height>52</height>
 						<onclick>Skin.ToggleSetting(59_landscape)</onclick>
 						<selected>!Skin.HasSetting(59_landscape)</selected>
-						<visible>Control.IsVisible(59)</visible>
+						<visible>Control.IsVisible(59) | Control.IsVisible(580)</visible>
 					</control>
+					<!-- vue 53 -->
+					<control type="radiobutton" id="195">
+						<label>Landscape</label>
+						<height>52</height>
+						<onclick>Skin.ToggleSetting(53_landscape)</onclick>
+						<selected>!Skin.HasSetting(53_landscape)</selected>
+						<visible>Skin.HasSetting(53_banner) + Control.IsVisible(53)</visible>
+					</control>
+					<control type="radiobutton" id="196">
+						<label>Bannière</label>
+						<height>52</height>
+						<onclick>Skin.ToggleSetting(53_banner)</onclick>
+						<selected>!Skin.HasSetting(53_banner)</selected>
+						<visible>Skin.HasSetting(53_landscape) + Control.IsVisible(53)</visible>
+					</control>
+					<!---->
 
+					<control type="radiobutton" id="197">
+						<label>Bottom</label>
+						<height>52</height>
+						<onclick>Skin.ToggleSetting(52_bottom)</onclick>
+						<selected>!Skin.HasSetting(52_bottom)</selected>
+						<visible>Control.IsVisible(52)</visible>
+					</control>
+					<control type="radiobutton" id="198">
+						<label>Grille</label>
+						<height>52</height>
+						<onclick>Skin.ToggleSetting(580_grille)</onclick>
+						<selected>!Skin.HasSetting(580_grille)</selected>
+						<visible>Control.IsVisible(580)</visible>
+					</control>
 					<!-- Scrollbars -->
-					<control type="radiobutton" id="94">
+					<control type="radiobutton" id="199">
 						<label>31005</label>
 						<height>52</height>
 						<onclick>Skin.ToggleSetting(Scrollbars)</onclick>

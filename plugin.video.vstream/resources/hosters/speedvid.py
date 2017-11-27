@@ -77,36 +77,59 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-        
-        fh = open('c:\\test.txt', "w")
-        fh.write(sHtmlContent)
-        fh.close()
+       
         
         api_call = ''
-            
-        aResult = oParser.parse(sHtmlContent,'(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\)\)\s*<)')
-        if (aResult):
-            VSlog('Cpacker encryption')
-            
-            for packed in aResult[1]:
-                code = cPacker().unpack(packed)
-                code = code.replace('\\','')
-                VSlog(code)
 
-                sPattern2 = "{file:.([^']+.mp4)"
-                aResult2 = oParser.parse(code, sPattern2)
-                if (aResult2[0] == True):
-                    # tris des faux liens
-                    if 'http://www.speedvid.net/images/logo_small.png' not in code and '-HD' not in code:
-                        api_call = aResult2[1][0]
+        aResult = re.search('>(ﾟωﾟ.+?\(\'_\'\);)', sHtmlContent,re.DOTALL | re.UNICODE)
+        if (aResult):
+            JP = JsParser()
+            Liste_var = []
+            
+            JScode = aResult.group(1)
+            JScode = unicode(JScode, "utf-8")
+            
+            sHtmlContent = JP.ProcessJS(JScode,Liste_var)
+            sHtmlContent = JP.LastEval.decode('string-escape').decode('string-escape') 
+   
+            Url = re.findall("href = '(.+?)'",sHtmlContent)[0]
+
+            if not 'speedvid' in Url:
+                Url = 'http://www.speedvid.net/' + Url  
+            if not 'http' in Url:
+                if Url.startswith('//'):
+                    Url = 'http:' + Url
+                else:
+                    Url = 'http://' + Url
+
                     
-        VSlog('r:' + api_call)
+
+            oRequest = cRequestHandler(Url)
+            oRequest.addHeaderEntry('Referer',self.__sUrl)
+            oRequest.addHeaderEntry('User-Agent',UA)
+            sHtmlContent = oRequest.request()
+
+
+        
+        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\))<'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            for packed in aResult[1]:
+                if 'vplayer' in packed:
+                    sHtmlContent = cPacker().unpack(packed)
+                    sHtmlContent = sHtmlContent.replace('\\','')
+ 
+                    sPattern2 = "{file:.([^']+.mp4)"
+                    aResult2 = oParser.parse(sHtmlContent, sPattern2)
+                    if (aResult2[0] == True):
+                        api_call = aResult2[1][0]
+
+
         if (api_call):
-            api_call = api_call + '|' + UA
+            api_call = api_call + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
             return True, api_call
             
         return False, False
-
         
 #*********************************************************************************************************************************
 

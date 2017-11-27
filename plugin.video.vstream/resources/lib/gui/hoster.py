@@ -234,8 +234,8 @@ class cHosterGui:
             return self.getHoster('vidme')
         if ('zstream' in sHostName):
             return self.getHoster('zstream')
-        if ('watching' in sHostName):
-            return self.getHoster('watching')
+        if ('uqload.' in sHostName):
+            return self.getHoster('uqload')
         if ('letwatch' in sHostName):
             return self.getHoster('letwatch')
         if ('easyvid' in sHostName):

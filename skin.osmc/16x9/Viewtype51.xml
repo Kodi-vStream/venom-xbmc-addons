@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- view 51 Liste -->
 <includes>
 
 	<include name="Viewtype51">
 
+
 		<control type="group">
 			<visible>Control.IsVisible(51)</visible>
+
 
 			<!-- Media image - not episodes -->
 			<control type="group">
@@ -105,6 +109,7 @@
 				<visible>Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(albums)</visible>
 
 				<itemlayout height="72" width="1050">
+
 					<control type="label">
 						<left>32</left>
 						<top>0</top>
@@ -127,36 +132,39 @@
 				</itemlayout>
 
 				<focusedlayout height="144" width="1050">
-					<control type="label">
-						<left>32</left>
-						<top>25</top>
-						<width>1018</width>
-						<height>48</height>
-						<font>Font48</font>
-						<label>[B]$VAR[Label1][/B]</label>
-						<textcolor>TextColor1</textcolor>
-						<scroll>True</scroll>
-						<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(51)">Conditional</animation>
-					</control>
-					<control type="label">
-						<left>32</left>
-						<top>82</top>
-						<width>1018</width>
-						<height>27</height>
-						<font>Font27</font>
-						<label>$VAR[Label2]</label>
-						<textcolor>TextColor1</textcolor>
-						<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(51)">Conditional</animation>
-					</control>
-					<!-- Watched status -->
-					<control type="image">
-						<left>0</left>
-						<top>43</top>
-						<width>14</width>
-						<height>14</height>
-						<texture>$VAR[StatusOverlay]</texture>
-						<colordiffuse>OverlayColorFO</colordiffuse>
-						<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(51)">Conditional</animation>
+					<control type="group">
+						<include>FocusAnim</include>
+
+						<control type="label">
+							<left>32</left>
+							<top>25</top>
+							<width>1018</width>
+							<height>48</height>
+							<font>Font48</font>
+							<label>[B]$VAR[Label1][/B]</label>
+							<textcolor>TextColor1</textcolor>
+							<scroll>True</scroll>
+						</control>
+						<control type="label">
+							<left>32</left>
+							<top>82</top>
+							<width>1018</width>
+							<height>27</height>
+							<font>Font27</font>
+							<label>$VAR[Label2]</label>
+							<textcolor>TextColor1</textcolor>
+							<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(51)">Conditional</animation>
+						</control>
+						<!-- Watched status -->
+						<control type="image">
+							<left>0</left>
+							<top>43</top>
+							<width>14</width>
+							<height>14</height>
+							<texture>$VAR[StatusOverlay]</texture>
+							<colordiffuse>OverlayColorFO</colordiffuse>
+							<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(51)">Conditional</animation>
+						</control>
 					</control>
 				</focusedlayout>
 

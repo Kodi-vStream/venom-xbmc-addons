@@ -14,8 +14,11 @@
 	</variable>
 
 	<variable name="FanartColor">
-		<value condition="!String.IsEmpty(Skin.String(color.fanart)) + !String.IsEqual(Skin.String(color.fanart),None)">$INFO[Skin.String(color.fanart)]</value>
+		<value condition="!Skin.HasSetting(Not.OSMC.Background) + Skin.HasSetting(AutoBackground)">$VAR[AutoColor]</value>
+		<value condition="Skin.HasSetting(Not.OSMC.Background)">ff3285ff</value>
+		<!--<value condition="!String.IsEmpty(Skin.String(color.fanart)) + !String.IsEqual(Skin.String(color.fanart),None)">$INFO[Skin.String(color.fanart)]</value>-->
 		<value condition="!String.IsEmpty(Skin.String(color.background)) + !String.IsEqual(Skin.String(color.background),None)">$INFO[Skin.String(color.background)]</value>
+		<value condition="!String.IsEmpty(Skin.String(color.background)) + String.IsEqual(Skin.String(color.background),None)">NF</value>
 		<value>ff3285ff</value>
 	</variable>
 
@@ -46,9 +49,70 @@
 
 	<variable name="OSMCBackgroundImage">
 		<value condition="!String.IsEmpty(Container(9000).ListItem.Property(background))">$INFO[Container(9000).ListItem.Property(background)]</value>
-		<value condition="String.IsEqual(Skin.String(BackgroundImage),custom) + !String.IsEmpty(Skin.String(CustomBackground))">$INFO[Skin.String(CustomBackground)]</value>
-		<value condition="!String.IsEmpty(Skin.String(BackgroundImage))">$INFO[Skin.String(BackgroundImage),special://skin/extras/backgrounds/,.jpg]</value>
+		<value condition="!Skin.HasSetting(BackgroundImage) + !String.IsEmpty(Skin.String(CustomBackground))">$INFO[Skin.String(CustomBackground)]</value>
+		<value condition="Skin.HasSetting(BackgroundImage)">special://skin/extras/backgrounds/1.jpg</value>
 		<value>special://skin/extras/backgrounds/1.jpg</value>
+	</variable>
+
+	<variable name="OSMCBackgroundOverlay">
+		<value condition="!Skin.HasSetting(Not.OSMC.Background) + Skin.HasSetting(AutoBackground)">$VAR[AutoOverlay]</value>
+		<value condition="!String.IsEmpty(Skin.String(BackgroundOverlayTexture)) + !Skin.HasSetting(Not.OSMC.Background)">$INFO[Skin.String(BackgroundOverlayTexture)]</value>
+		<value condition="Skin.HasSetting(Not.OSMC.Background)">special://skin/media/Background.png</value>
+		<value>special://skin/media/Background-Custom.png</value>
+	</variable>
+
+	<variable name="AutoOverlay">
+		<value condition="System.Time(00:00,1:00)">resource://resource.images.backgroundoverlays.basic/Ash.png</value>
+		<value condition="System.Time(1:01,2:00)">resource://resource.images.backgroundoverlays.basic/Black.png</value>
+		<value condition="System.Time(2:01,3:00)">resource://resource.images.backgroundoverlays.basic/Carbon.png</value>
+		<value condition="System.Time(3:01,4:00)">resource://resource.images.backgroundoverlays.basic/Dark.png</value>
+		<value condition="System.Time(4:01,5:00)">resource://resource.images.backgroundoverlays.basic/Down Slope.png</value>
+		<value condition="System.Time(5:01,6:00)">resource://resource.images.backgroundoverlays.basic/Flat.png</value>
+		<value condition="System.Time(6:01,7:00)">resource://resource.images.backgroundoverlays.basic/Frost.png</value>
+		<value condition="System.Time(7:01,8:00)">resource://resource.images.backgroundoverlays.basic/Gradient Bottom.png</value>
+		<value condition="System.Time(8:01,9:00)">resource://resource.images.backgroundoverlays.basic/Gradient Top and Bottom.png</value>
+		<value condition="System.Time(9:01,10:00)">resource://resource.images.backgroundoverlays.basic/Grey.png</value>
+		<value condition="System.Time(10:01,11:00)">resource://resource.images.backgroundoverlays.basic/High and Low.png</value>
+		<value condition="System.Time(11:01,12:00)">resource://resource.images.backgroundoverlays.basic/Light.png</value>
+		<value condition="System.Time(12:01,13:00)">resource://resource.images.backgroundoverlays.basic/Low to High.png</value>
+		<value condition="System.Time(13:01,14:00)">resource://resource.images.backgroundoverlays.basic/Right Corner.png</value>
+		<value condition="System.Time(14:01,15:00)">resource://resource.images.backgroundoverlays.basic/Side by Side.png</value>
+		<value condition="System.Time(15:01,16:00)">resource://resource.images.backgroundoverlays.basic/Spot.png</value>
+		<value condition="System.Time(16:01,17:00)">resource://resource.images.backgroundoverlays.basic/Square.png</value>
+		<value condition="System.Time(17:01,18:00)">resource://resource.images.backgroundoverlays.basic/Surround.png</value>
+		<value condition="System.Time(18:01,19:00)">resource://resource.images.backgroundoverlays.basic/Tunnel.png</value>
+		<value condition="System.Time(19:01,20:00)">resource://resource.images.backgroundoverlays.basic/Up Slope.png</value>
+		<value condition="System.Time(20:01,21:00)">resource://resource.images.backgroundoverlays.basic/Vignette.png</value>
+		<value condition="System.Time(21:01,22:00)">resource://resource.images.backgroundoverlays.basic/Gradient Bottom Bold.png</value>
+		<value condition="System.Time(22:01,23:00)">resource://resource.images.backgroundoverlays.basic/Gradient Top and Bottom Bold.png</value>
+		<value condition="System.Time(23:01,23:59)">resource://resource.images.backgroundoverlays.basic/Gradient Top Bold.png</value>
+	</variable>
+
+	<variable name="AutoColor">
+		<value condition="System.Time(00:00,1:00)">b3eed58c</value>
+		<value condition="System.Time(1:01,2:00)">b3ca3d0c</value>
+		<value condition="System.Time(2:01,3:00)">b3949614</value>
+		<value condition="System.Time(3:01,4:00)">b3184124</value>
+		<value condition="System.Time(4:01,5:00)">b3a91939</value>
+		<value condition="System.Time(5:01,6:00)">b3268f8f</value>
+		<value condition="System.Time(6:01,7:00)">b3867913</value>
+		<value condition="System.Time(7:01,8:00)">b31275db</value>
+		<value condition="System.Time(8:01,9:00)">b3c875b2</value>
+		<value condition="System.Time(9:01,10:00)">b30f8c7d</value>
+		<value condition="System.Time(10:01,11:00)">b35352b5</value>
+		<value condition="System.Time(11:01,12:00)">b37707a4</value>
+		<value condition="System.Time(12:01,13:00)">b3e90792</value>
+		<value condition="System.Time(13:01,14:00)">b3017b9c</value>
+		<value condition="System.Time(14:01,15:00)">b352a176</value>
+		<value condition="System.Time(15:01,16:00)">b3a60943</value>
+		<value condition="System.Time(16:01,17:00)">b3da7a12</value>
+		<value condition="System.Time(17:01,18:00)">b306a5f3</value>
+		<value condition="System.Time(18:01,19:00)">b31389c2</value>
+		<value condition="System.Time(19:01,20:00)">b3c6f0cc</value>
+		<value condition="System.Time(20:01,21:00)">b38f3929</value>
+		<value condition="System.Time(21:01,22:00)">b37af7ec</value>
+		<value condition="System.Time(22:01,23:00)">b35e99bf</value>
+		<value condition="System.Time(23:01,23:59)">b3f79c86</value>
 	</variable>
 
 	<variable name="HeadingLabel">
@@ -605,6 +669,39 @@
 		<value condition="IsEmpty(ListItem.Art(landscape)) + !IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
 		<value condition="!IsEmpty(ListItem.Art(landscape))">$INFO[ListItem.Art(landscape)]</value>
 		<value>$INFO[ListItem.Icon]</value>
+	</variable>
+
+	<variable name="mediaImages_banner">
+		<value condition="Container.Content(tvshows) + !IsEmpty(ListItem.Art(tvshow.banner))">$INFO[ListItem.Art(tvshow.banner)]</value>
+		<value condition="Container.Content(seasons) + !IsEmpty(ListItem.Art(season.banner))">$INFO[ListItem.Art(season.banner)]</value>
+		<value condition="Container.Content(Episodes)">$INFO[ListItem.Icon]</value>
+		<value condition="IsEmpty(ListItem.Art(banner)) + !IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
+		<value condition="!IsEmpty(ListItem.Art(banner))">$INFO[ListItem.Art(banner)]</value>
+		<value>$INFO[ListItem.Icon]</value>
+	</variable>
+
+	<variable name="MediaImages_logo">
+		<value condition="!String.IsEmpty(ListItem.Art(tvshow.clearlogo))">$INFO[ListItem.Art(tvshow.clearlogo)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>
+		<value condition="!String.IsEmpty(Window(Home).Property(SkinHelper.ListItem.Art.Clearlogo))">$INFO[Window(Home).Property(SkinHelper.ListItem.Art.Clearlogo)]</value>
+	</variable>
+
+	<!--Fallback (image par defaut si aucune)-->
+	<variable name="fallback">
+		<value condition="Container.Content(songs)">DefaultMusicSongs.png</value>
+		<value condition="Container.Content(albums)">DefaultAlbumCover.png</value>
+		<value condition="Container.Content(movies)">DefaultMovies.png</value>
+		<value condition="Container.Content(tvshows)|Container.Content(seasons)|Container.Content(episodes)">DefaultTVShows.png</value>
+		<value condition="Window.IsVisible(pictures)">DefaultPicture.png</value>
+		<value condition="Container.Content(addons)">DefaultAddon.png</value>
+		<value>DefaultFolder.png</value>
+	</variable>
+
+	<!--media logo-->
+	<variable name="mediaImages_Clearlogo">
+		<value condition="[Container.Content(TVShows) | Container.Content(Movies) | Container.Content(Sets)] + !String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>
+		<value condition="Container.Content(Seasons) | Container.Content(Episodes) + !String.IsEmpty(ListItem.Art(tvshow.clearlogo))">$INFO[ListItem.Art(tvshow.clearlogo)]</value>
+		<value>$INFO[ListItem.ActualIcon,thumbs/,/folderback_fanart_tp.png]</value>
 	</variable>
 
 	<!-- Skin Settings - Weather Art -->

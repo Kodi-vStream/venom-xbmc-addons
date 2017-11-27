@@ -24,7 +24,6 @@
 			<param name="isHomeWindow">True</param>
 		</include>
 
-
 		<!-- Time -->
 		<control type="group">
 			<include>SlideAnim</include>
