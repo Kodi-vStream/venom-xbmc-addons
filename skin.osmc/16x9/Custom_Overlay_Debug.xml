@@ -949,7 +949,7 @@
 
 		<control type="label">
 			<right>15</right>
-			<top>48</top>
+			<top>120</top>
 			<height>21</height>
 			<textcolor>FFFF0000</textcolor>
 			<shadowcolor>FF000000</shadowcolor>

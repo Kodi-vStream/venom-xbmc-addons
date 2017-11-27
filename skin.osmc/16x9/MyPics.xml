@@ -21,6 +21,7 @@
 
 		<!-- Main group -->
 		<control type="group">
+			<include>SlideAnim</include>
 			<include>WindowFadeAnimation</include>
 
 			<!-- Views -->
@@ -52,7 +53,10 @@
 		</control>
 
 		<!-- Time -->
-		<include>Time</include>
+		<control type="group">
+			<include>SlideAnim</include>
+			<include>Time</include>
+		</control>
 
 		<!-- Options -->
 		<control type="group" id="9002">

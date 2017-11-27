@@ -11,7 +11,10 @@
 		<include>WindowBackgroundImage</include>
 
 		<!-- Time -->
-		<include>Time</include>
+		<control type="group">
+			<include>SlideAnim</include>
+			<include>Time</include>
+		</control>
 
 		<!-- List -->
 		<control type="grouplist" id="9000">
@@ -22,6 +25,7 @@
 			<itemgap>34</itemgap>
 			<onleft>noop</onleft>
 			<orientation>vertical</orientation>
+			<include>SlideAnim</include>
 
 			<!-- Interface -->
 			<control type="togglebutton" id="1">

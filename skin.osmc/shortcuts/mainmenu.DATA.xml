@@ -37,13 +37,6 @@
 		<action>ActivateWindow(Pictures)</action>
 	</shortcut>
 	<shortcut>
-		<label>31091</label>
-		<label2>Custom shortcut</label2>
-		<icon>home/DefaultOSMC.png</icon>
-		<thumb />
-		<action>RunScript(service.osmc.settings)</action>
-	</shortcut>
-	<shortcut>
 		<label>1036</label>
 		<label2>Common Shortcut</label2>
 		<icon>home/DefaultFavourites.png</icon>

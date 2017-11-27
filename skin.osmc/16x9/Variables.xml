@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
-
-	<variable name="width59">
-	<value condition="Container.Content(Episodes)">1420</value>
-	<value>1350</value>
-	</variable>
 	<!-- Colors -->
 	<variable name="SelectedColor">
 		<value>SelectedColor</value>
@@ -601,6 +596,14 @@
 		<value condition="Container.Content(Seasons) + !IsEmpty(ListItem.Art(season.poster))">$INFO[ListItem.Art(season.poster)]</value>
 		<value condition="Container.Content(Episodes)">$INFO[ListItem.Icon]</value>
 		<value condition="!IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
+		<value>$INFO[ListItem.Icon]</value>
+	</variable>
+
+	<!-- Media images -->
+	<variable name="mediaImages_landscape">
+		<value condition="Container.Content(Episodes)">$INFO[ListItem.Icon]</value>
+		<value condition="IsEmpty(ListItem.Art(landscape)) + !IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
+		<value condition="!IsEmpty(ListItem.Art(landscape))">$INFO[ListItem.Art(landscape)]</value>
 		<value>$INFO[ListItem.Icon]</value>
 	</variable>
 

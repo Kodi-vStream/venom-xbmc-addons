@@ -10,7 +10,7 @@
 		<control type="group">
 			<!-- Background -->
 			<include>WindowBackgroundImage</include>
-			
+
 
 			<include content="Time">
 				<param name="heading">$LOCALIZE[20077]</param>
@@ -228,7 +228,7 @@
 					<height>66</height>
 					<textwidth>1120</textwidth>
 					<font>Font33</font>
-					<label>Use default OSMC Background Color</label>
+					<label>Use default Overlay Color</label>
 					<onclick>Skin.ToggleSetting(Not.OSMC.Background)</onclick>
 					<visible>ControlGroup(9).HasFocus(11)</visible>
 					<focusedcolor>TextColor1</focusedcolor>
@@ -240,7 +240,7 @@
 					<height>66</height>
 					<textwidth>1120</textwidth>
 					<font>Font33</font>
-					<label> - Custom background color</label>
+					<label> - Custom Overlay color</label>
 					<label2>$VAR[BackgroundColor-Name]</label2>
 					<onclick condition="System.HasAddon(script.skin.helper.colorpicker)">RunScript(script.skin.helper.colorpicker,skinstring=color.background)</onclick>
 					<onclick condition="!System.HasAddon(script.skin.helper.colorpicker)">InstallAddon(script.skin.helper.colorpicker)</onclick>

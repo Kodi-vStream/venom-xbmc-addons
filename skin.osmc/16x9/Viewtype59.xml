@@ -28,7 +28,7 @@
                 <focusposition>0</focusposition>
                 <pagecontrol>60</pagecontrol>
                 <visible>[Container.Content(Movies) | Container.Content(Sets) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes)] + !String.StartsWith(Container.FolderPath,plugin://)</visible>
-                <itemlayout condition="Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Sets) | Container.Content(MusicVideos)" width="238" height="256">
+                <itemlayout condition="Skin.HasSetting(59_landscape) + [Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Sets) | Container.Content(MusicVideos)]" width="238" height="256">
                     <control type="image">
                         <width>202</width>
                         <height>300</height>
@@ -46,18 +46,18 @@
                         <colordiffuse>OverlayColorNF</colordiffuse>
                     </control>
                 </itemlayout>
-                <itemlayout condition="Container.Content(Episodes)" width="476" height="256">
+                <itemlayout condition="Container.Content(Episodes) | !Skin.HasSetting(59_landscape)" width="476" height="256">
                     <control type="image">
                         <width>452</width>
                         <height>286</height>
                         <colordiffuse>DiffusePosterNF</colordiffuse>
                         <aspectratio aligny="center">scale</aspectratio>
-                        <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
+                        <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages_landscape]</texture>
                     </control>
                     <!-- Watched status -->
                     <control type="image">
-                        <left>90</left>
-                        <top>190</top>
+                        <left>350</left>
+                        <top>270</top>
                         <width>30</width>
                         <height>42</height>
                         <texture>$VAR[StatusOverlayWide]</texture>
@@ -65,7 +65,7 @@
                         <animation effect="fade" start="50" end="50" condition="true">Conditional</animation>
                     </control>
                 </itemlayout>
-                <focusedlayout condition="Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Sets) | Container.Content(MusicVideos)" width="238" height="256">
+                <focusedlayout condition="Skin.HasSetting(59_landscape) + [Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Sets) | Container.Content(MusicVideos)]" width="238" height="256">
                     <control type="image">
                         <width>202</width>
                         <height>300</height>
@@ -82,18 +82,18 @@
                     	<texture>$VAR[StatusOverlayWide]</texture>
                     </control>
                 </focusedlayout>
-                <focusedlayout condition="Container.Content(Episodes)" width="476" height="256">
+                <focusedlayout condition="Container.Content(Episodes) | !Skin.HasSetting(59_landscape)" width="476" height="256">
                     <control type="image">
                         <left>0</left>
                         <width>452</width>
                         <height>286</height>
                         <aspectratio aligny="center">scale</aspectratio>
-                        <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
+                        <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages_landscape]</texture>
                     </control>
                     <!-- Watched status -->
 					<control type="image">
-                        <left>90</left>
-                        <top>190</top>
+                        <left>350</left>
+                        <top>270</top>
                         <width>30</width>
                         <height>42</height>
                     	<texture>$VAR[StatusOverlayWide]</texture>
@@ -140,7 +140,7 @@
                     <left>0</left>
                     <top>-2</top>
                     <font>Font40</font>
-                    <width>180</width>
+                    <width>250</width>
                     <height>24</height>
                     <label>$INFO[ListItem.RatingAndVotes]</label>
                 </control>
