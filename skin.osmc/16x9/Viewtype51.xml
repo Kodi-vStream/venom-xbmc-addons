@@ -192,8 +192,7 @@
 				<top>$PARAM[top]</top>
 				<width>225</width>
 				<height>333</height>
-				<colordiffuse>DiffusePosterNF</colordiffuse>
-				<texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+				<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
 				<aspectratio>scale</aspectratio>
 			</control>
 
@@ -229,7 +228,7 @@
 				<top>$PARAM[top]</top>
 				<width>405</width>
 				<height>600</height>
-				<texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+				<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
 				<aspectratio>scale</aspectratio>
 			</control>
 

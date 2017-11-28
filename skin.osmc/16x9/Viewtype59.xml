@@ -33,8 +33,7 @@
                     <control type="image">
         				<width>202</width>
         				<height>300</height>
-                        <colordiffuse>DiffusePosterNF</colordiffuse>
-        				<texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+                        <texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
         				<aspectratio>scale</aspectratio>
         			</control>
 
@@ -59,8 +58,7 @@
                     <control type="image">
         				<width>500</width>
         				<height>281</height>
-                        <colordiffuse>DiffusePosterNF</colordiffuse>
-        				<texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+                        <texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
         				<aspectratio>scale</aspectratio>
         			</control>
                     <control type="image">
@@ -87,7 +85,7 @@
                         <control type="image">
                             <width>202</width>
                             <height>300</height>
-                            <texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+                            <texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
                             <aspectratio>scale</aspectratio>
                         </control>
                         <control type="image">
@@ -112,7 +110,7 @@
                         <control type="image">
                             <width>500</width>
                             <height>281</height>
-                            <texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+                            <texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
                             <aspectratio>scale</aspectratio>
                         </control>
                         <control type="image">
@@ -140,6 +138,7 @@
             <left>130</left>
             <top>300</top>
             <visible>Control.IsVisible(59)</visible>
+
             <control type="label">
                 <left>0</left>
                 <top>0</top>

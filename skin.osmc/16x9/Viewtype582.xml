@@ -53,8 +53,7 @@
                         <control type="image">
                             <width>800</width>
                             <height>450</height>
-                            <colordiffuse>DiffusePosterNF</colordiffuse>
-                            <texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+                            <texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
                             <aspectratio>scale</aspectratio>
                         </control>
                         <control type="image">
@@ -71,8 +70,7 @@
                             <control type="image">
                                 <width>800</width>
                                 <height>450</height>
-                                <colordiffuse>DiffusePosterNF</colordiffuse>
-                                <texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+                                <texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
                                 <aspectratio>scale</aspectratio>
                             </control>
                             <control type="image">

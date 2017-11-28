@@ -231,7 +231,7 @@
 				<left>34</left>
 				<width>202</width>
 				<height>300</height>
-				<texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+				<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
 				<aspectratio>scale</aspectratio>
 				<visible>$PARAM[visible]</visible>
 			</control>
