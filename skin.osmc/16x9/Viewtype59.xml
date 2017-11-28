@@ -31,10 +31,18 @@
                 <visible>[Container.Content(Movies) | Container.Content(Sets) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes)] + !String.StartsWith(Container.FolderPath,plugin://)</visible>
                 <itemlayout condition="Skin.HasSetting(59_landscape) + [Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Sets) | Container.Content(MusicVideos)]" width="238" height="256">
                     <control type="image">
+        				<width>202</width>
+        				<height>300</height>
+                        <colordiffuse>DiffusePosterNF</colordiffuse>
+        				<texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+        				<aspectratio>scale</aspectratio>
+        			</control>
+
+                    <control type="image">
                         <width>202</width>
                         <height>300</height>
                         <colordiffuse>DiffusePosterNF</colordiffuse>
-                        <aspectratio align="center">keep</aspectratio>
+                        <aspectratio align="center">scale</aspectratio>
                         <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
                     </control>
                     <!-- Watched status -->
@@ -48,6 +56,13 @@
                     </control>
                 </itemlayout>
                 <itemlayout condition="Container.Content(Episodes) | !Skin.HasSetting(59_landscape)" width="560" height="281">
+                    <control type="image">
+        				<width>500</width>
+        				<height>281</height>
+                        <colordiffuse>DiffusePosterNF</colordiffuse>
+        				<texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+        				<aspectratio>scale</aspectratio>
+        			</control>
                     <control type="image">
                         <width>500</width>
                         <height>281</height>
@@ -72,7 +87,13 @@
                         <control type="image">
                             <width>202</width>
                             <height>300</height>
-                            <aspectratio align="center">keep</aspectratio>
+                            <texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+                            <aspectratio>scale</aspectratio>
+                        </control>
+                        <control type="image">
+                            <width>202</width>
+                            <height>300</height>
+                            <aspectratio align="center">scale</aspectratio>
                             <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
                         </control>
                         <!-- Watched status -->
@@ -88,6 +109,12 @@
                 <focusedlayout condition="Container.Content(Episodes) | !Skin.HasSetting(59_landscape)" width="560" height="281">
                     <control type="group">
                         <include>FocusAnim</include>
+                        <control type="image">
+                            <width>500</width>
+                            <height>281</height>
+                            <texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+                            <aspectratio>scale</aspectratio>
+                        </control>
                         <control type="image">
                             <left>0</left>
                             <width>500</width>

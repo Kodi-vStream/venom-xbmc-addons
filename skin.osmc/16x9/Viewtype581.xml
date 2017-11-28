@@ -54,6 +54,14 @@
                         <include>FocusAnim</include>
 						<left>60</left>
 
+                        <control type="image">
+                            <width>853</width>
+                            <height>480</height>
+                            <colordiffuse>DiffusePosterNF</colordiffuse>
+                            <texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+                            <aspectratio>scale</aspectratio>
+                        </control>
+
 						<control type="image">
 							<width>853</width>
 							<height>480</height>

@@ -21,7 +21,7 @@
 				<left>150</left>
 				<top>170</top>
 				<width>1620</width>
-				<height>666</height>
+				<height>690</height>
 				<onleft>63</onleft>
 				<onright condition="!Skin.HasSetting(KioskMode)">3001</onright>
 				<onup>500</onup>
@@ -32,7 +32,7 @@
 				<scrolltime tween="sine" easing="out">240</scrolltime>
 				<visible>Window.IsVisible(Videos) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(Episodes)</visible>
 
-				<itemlayout width="270" height="333" condition="Skin.HasSetting(500_landscape)+Skin.HasSetting(500_banner)+!Container.Content(Episodes)">
+				<itemlayout width="270" height="360" condition="Skin.HasSetting(500_landscape)+Skin.HasSetting(500_banner)+!Container.Content(Episodes)">
 					<!-- Image - Movies -->
 					<include content="image-500">
 						<param name="fallback">DefaultMovie.png</param>
@@ -83,7 +83,7 @@
 				</itemlayout>
 
 				<!--Banner -->
-				<itemlayout width="540" height="123" condition="!Skin.HasSetting(500_banner)+!Container.Content(Episodes)">
+				<itemlayout width="540" height="140" condition="!Skin.HasSetting(500_banner)+!Container.Content(Episodes)">
 					<!-- Image - Movies -->
 					<include content="image-500b">
 						<param name="fallback">DefaultMovie.png</param>
@@ -107,7 +107,7 @@
 					</control>
 				</itemlayout>
 
-				<focusedlayout width="270" height="333" condition="Skin.HasSetting(500_landscape)+Skin.HasSetting(500_banner)+!Container.Content(Episodes)">
+				<focusedlayout width="270" height="360" condition="Skin.HasSetting(500_landscape)+Skin.HasSetting(500_banner)+!Container.Content(Episodes)">
 					<control type="group">
 						<include>FocusAnim</include>
 						<!-- Image - Movies -->
@@ -157,7 +157,7 @@
 				</focusedlayout>
 
 				<!--banner -->
-				<focusedlayout width="540" height="123" condition="!Skin.HasSetting(500_banner)+!Container.Content(Episodes)">
+				<focusedlayout width="540" height="140" condition="!Skin.HasSetting(500_banner)+!Container.Content(Episodes)">
 					<control type="group">
 						<include>FocusAnim</include>
 						<!-- Image - Movies -->
@@ -185,7 +185,7 @@
 
 			<control type="group">
 				<centerleft>50%</centerleft>
-				<top>850</top>
+				<top>860</top>
 				<width>1920</width>
 				<height>100</height>
 

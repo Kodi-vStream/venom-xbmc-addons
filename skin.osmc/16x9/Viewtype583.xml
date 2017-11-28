@@ -10,8 +10,8 @@
             <control type="group">
                 <control type="fixedlist" id="583">
                     <posx>120</posx>
-                    <top>180</top>
-                    <height>705</height>
+                    <top>170</top>
+                    <height>740</height>
                     <width>1800</width>
                     <onup>518</onup>
                     <ondown>518</ondown>
@@ -24,18 +24,24 @@
                     <viewtype label="Large Landscape">list</viewtype>
                     <scrolltime tween="quadratic">400</scrolltime>
                     <visible>Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(Episodes)</visible>
-                    <itemlayout width="1690" height="100">
+                    <itemlayout width="1690" height="108">
                         <control type="group">
                             <width>1800</width>
                             <height>100</height>
 
                             <control type="image">
-                                <!--Panel icon image-->
                                 <width>550</width>
                                 <height>100</height>
-                                <bordersize>8</bordersize>
+                                <colordiffuse>DiffusePosterNF</colordiffuse>
+                                <texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+                                <aspectratio>scale</aspectratio>
+                            </control>
+
+                            <control type="image">
+                                <width>550</width>
+                                <height>100</height>
                                 <texture background="true" diffuse="diffuse/wide.png">$VAR[mediaImages_landscape]</texture>
-                                <aspectratio scalediffuse="false" align="center" aligny="center">scale</aspectratio>
+                                <aspectratio>scale</aspectratio>
                                 <colordiffuse>DiffusePosterNF</colordiffuse>
                             </control>
                             <control type="label">
@@ -66,7 +72,7 @@
                              </control>
                         </control>
                     </itemlayout>
-                    <focusedlayout width="1690" height="310">
+                    <focusedlayout width="1690" height="318">
                         <control type="group">
                             <include>FocusAnim</include>
                             <width>1800</width>
@@ -74,10 +80,15 @@
                             <height>310</height>
 
                             <control type="image">
-                                <!--Panel icon image-->
                                 <width>550</width>
                                 <height>310</height>
-                                <bordersize>8</bordersize>
+                                <texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+                                <aspectratio>scale</aspectratio>
+                            </control>
+
+                            <control type="image">
+                                <width>550</width>
+                                <height>310</height>
                                 <texture background="true" diffuse="diffuse/wide.png">$VAR[mediaImages_landscape]</texture>
                                 <aspectratio scalediffuse="false" align="left" aligny="center">stretch</aspectratio>
                             </control>
