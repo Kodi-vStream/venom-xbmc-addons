@@ -89,7 +89,7 @@
                                 <width>550</width>
                                 <height>310</height>
                                 <texture background="true" diffuse="diffuse/wide.png">$VAR[mediaImages_landscape]</texture>
-                                <aspectratio scalediffuse="false" align="left" aligny="center">stretch</aspectratio>
+                                <aspectratio scalediffuse="false" align="left" aligny="center">scale</aspectratio>
                             </control>
                             <control type="label">
                                 <left>570</left>

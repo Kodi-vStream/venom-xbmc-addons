@@ -50,7 +50,7 @@
 			</control>
 
 			<!-- Scrollbar (wall) -->
-			<control type="scrollbar" id="65">
+			<control type="scrollbar" id="63">
 				<left>120</left>
 				<top>170</top>
 				<width>20</width>

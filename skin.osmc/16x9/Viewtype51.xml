@@ -22,7 +22,7 @@
 				<orientation>horizontal</orientation>
 				<viewtype label="539">list</viewtype>
 				<scrolltime tween="sine" easing="out">240</scrolltime>
-				<visible>Window.IsVisible(Videos) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)</visible>
+				<visible>Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)</visible>
 
 				<itemlayout width="249" height="666">
 					<!-- Image - Movies -->
@@ -203,7 +203,7 @@
 				<height>333</height>
 				<colordiffuse>DiffusePosterNF</colordiffuse>
 				<texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
-				<aspectratio>scale</aspectratio>
+				<aspectratio>keep</aspectratio>
 			</control>
 			<!-- Watched status -->
 			<control type="image">
@@ -238,7 +238,7 @@
 				<width>405</width>
 				<height>600</height>
 				<texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
-				<aspectratio>scale</aspectratio>
+				<aspectratio>keep</aspectratio>
 			</control>
 
 			<!-- Watched status -->

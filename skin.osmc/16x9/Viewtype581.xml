@@ -64,7 +64,7 @@
 						<control type="image">
 							<width>853</width>
 							<height>480</height>
-							<aspectratio aligny="center" align="center">scale</aspectratio>
+							<aspectratio aligny="center" align="center">keep</aspectratio>
 							<texture background="true" fallback="$VAR[fallback]">$VAR[mediaImages_landscape]</texture>
 							<fadetime>400</fadetime>
 						</control>

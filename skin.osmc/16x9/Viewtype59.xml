@@ -41,7 +41,7 @@
                         <width>202</width>
                         <height>300</height>
                         <colordiffuse>DiffusePosterNF</colordiffuse>
-                        <aspectratio align="center">scale</aspectratio>
+                        <aspectratio align="center">keep</aspectratio>
                         <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
                     </control>
                     <!-- Watched status -->
@@ -65,7 +65,7 @@
                         <width>500</width>
                         <height>281</height>
                         <colordiffuse>DiffusePosterNF</colordiffuse>
-                        <aspectratio scalediffuse="false">scale</aspectratio>
+                        <aspectratio scalediffuse="false">keep</aspectratio>
                         <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages_landscape]</texture>
                     </control>
                     <!-- Watched status -->
@@ -91,7 +91,7 @@
                         <control type="image">
                             <width>202</width>
                             <height>300</height>
-                            <aspectratio align="center">scale</aspectratio>
+                            <aspectratio align="center">keep</aspectratio>
                             <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages]</texture>
                         </control>
                         <!-- Watched status -->
@@ -117,7 +117,7 @@
                             <left>0</left>
                             <width>500</width>
                             <height>281</height>
-                            <aspectratio scalediffuse="false">scale</aspectratio>
+                            <aspectratio scalediffuse="false">keep</aspectratio>
                             <texture background="true" fallback="$PARAM[fallback]">$VAR[mediaImages_landscape]</texture>
                         </control>
                         <!-- Watched status -->

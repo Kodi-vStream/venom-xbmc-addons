@@ -59,7 +59,7 @@
                         <control type="image">
                             <width>800</width>
                             <height>450</height>
-                            <aspectratio scalediffuse="false">scale</aspectratio>
+                            <aspectratio scalediffuse="false">keep</aspectratio>
                             <texture background="true" fallback="DefaultVideoFanart.png">$VAR[mediaImages_landscape]</texture>
                             <colordiffuse>DiffusePosterNF</colordiffuse>
                         </control>
@@ -76,7 +76,7 @@
                             <control type="image">
                                 <width>800</width>
                                 <height>450</height>
-                                <aspectratio>scale</aspectratio>
+                                <aspectratio>keep</aspectratio>
                                 <texture background="true" fallback="DefaultVideoFanart.png">$VAR[mediaImages_landscape]</texture>
                             </control>
                         </control>
