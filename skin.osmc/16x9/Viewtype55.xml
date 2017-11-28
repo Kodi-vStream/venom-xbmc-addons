@@ -18,9 +18,10 @@
 				<ondown>55</ondown>
 				<pagecontrol>63</pagecontrol>
 				<preloaditems>4</preloaditems>
-				<viewtype label="$LOCALIZE[31078]">icon</viewtype>
+				<viewtype label="Carrer">icon</viewtype>
 				<scrolltime tween="sine" easing="out">240</scrolltime>
-				<visible>Container.Content(genres)|Container.Content(countries)|Container.Content(tags) | Container.Content(years) | Container.Content() | Container.Content(actors) | Container.Content(directors)|Container.Content(studios)| Container.Content(albums) | Container.Content(addons)</visible>
+				<visible>Window.IsActive(videos)|Container.Content(albums)|Container.Content(addons)</visible>
+				<!--Container.Content(genres)|Container.Content(countries)|Container.Content(tags)|Container.Content(years)|Container.Content()|Container.Content(actors)|Container.Content(directors)|Container.Content(studios)-->
 
 				<itemlayout width="270" height="222">
 					<!-- Image - Albums -->
@@ -40,7 +41,7 @@
 					<include content="image-55">
 						<param name="fallback">DefaultMovie.png</param>
 						<param name="colordiffuse">DiffusePosterNF</param>
-						<param name="visible">Container.Content(genres)|Container.Content(countries)|Container.Content(tags)|Container.Content(years) | Container.Content() | Container.Content(addons) | Container.Content(actors) | Container.Content(directors)|Container.Content(studios)</param>
+						<param name="visible">Window.IsActive(videos)</param>
 					</include>
 
 					<!-- Watched status -->
@@ -70,7 +71,7 @@
 						<!--content vide -->
 						<include content="image-55">
 							<param name="fallback">DefaultMovie.png</param>
-							<param name="visible">Container.Content(genres)|Container.Content(countries)|Container.Content(tags)|Container.Content(years) | Container.Content() | Container.Content(addons) | Container.Content(actors) | Container.Content(directors)|Container.Content(studios)</param>
+							<param name="visible">Window.IsActive(videos)</param>
 						</include>
 						<!-- Watched status -->
 						<control type="image">
@@ -151,7 +152,7 @@
 				<height>202</height>
 				<colordiffuse>$PARAM[colordiffuse]</colordiffuse>
 				<texture fallback="$PARAM[fallback]" background="true">$VAR[mediaImages]</texture>
-				<aspectratio align="center">keep</aspectratio>
+				<aspectratio align="center">scale</aspectratio>
 				<visible>$PARAM[visible] + !String.IsEqual(ListItem.Icon,DefaultAlbumCover.png)</visible>
 			</control>
 		</definition>

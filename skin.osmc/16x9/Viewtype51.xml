@@ -22,7 +22,7 @@
 				<orientation>horizontal</orientation>
 				<viewtype label="539">list</viewtype>
 				<scrolltime tween="sine" easing="out">240</scrolltime>
-				<visible>Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)</visible>
+				<visible>Window.IsActive(videos)|Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)</visible>
 
 				<itemlayout width="249" height="666">
 					<!-- Image - Movies -->
