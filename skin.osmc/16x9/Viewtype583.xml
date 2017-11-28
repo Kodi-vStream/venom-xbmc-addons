@@ -23,6 +23,7 @@
                     <focusposition>2</focusposition>
                     <viewtype label="Large Landscape">list</viewtype>
                     <scrolltime tween="quadratic">400</scrolltime>
+                    <visible>Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(Episodes)</visible>
                     <itemlayout width="1690" height="100">
                         <control type="group">
                             <width>1800</width>
@@ -40,25 +41,12 @@
                             <control type="label">
                                 <left>570</left>
                                 <width>1100</width>
-                                <top>0</top>
-                                <height>100</height>
-                                <aligny>center</aligny>
-                                <align>left</align>
-                                <font>Font30</font>
-                                <textcolor>TextColor2</textcolor>
-                                <label>$VAR[Label2-episodes]</label>
-                                <visible>Container.Content(episodes) + !IsEmpty(ListItem.episode)</visible>
-                            </control>
-                            <control type="label">
-                                <left>570</left>
-                                <width>1100</width>
                                 <top>8</top>
                                 <height>50</height>
                                 <align>left</align>
                                 <font>Font25</font>
                                 <textcolor>TextColor2</textcolor>
                                 <label>$INFO[ListItem.Label]</label>
-                                <animation effect="slide" start="0" end="120" time="0" condition="Container.Content(episodes)">Conditional</animation>
                             </control>
                             <control type="label">
                                 <left>570</left>
@@ -70,7 +58,6 @@
                                 <font>Font25</font>
                                 <textcolor>TextColor2</textcolor>
                                 <label>$VAR[Label2]</label>
-                                <animation effect="slide" start="0" end="120" time="0" condition="Container.Content(episodes)">Conditional</animation>
                             </control>
                             <control type="group">
                                 <right>8</right>
@@ -94,18 +81,6 @@
                                 <texture background="true" diffuse="diffuse/wide.png">$VAR[mediaImages_landscape]</texture>
                                 <aspectratio scalediffuse="false" align="left" aligny="center">stretch</aspectratio>
                             </control>
-                             <control type="label">
-                                <left>570</left>
-                                <width>1100</width>
-                                <top>20</top>
-                                <height>100</height>
-                                <aligny>center</aligny>
-                                <align>left</align>
-                                <font>Font30</font>
-                                <textcolor>TextColor1</textcolor>
-                                <label>$VAR[Label2-episodes]</label>
-                                <visible>Container.Content(episodes) + !IsEmpty(ListItem.episode)</visible>
-                            </control>
                             <control type="label">
                                 <left>570</left>
                                 <width>1100</width>
@@ -115,7 +90,6 @@
                                 <font>Font30</font>
                                 <textcolor>TextColor1</textcolor>
                                 <label>$INFO[ListItem.Label]</label>
-                                <animation effect="slide" start="0" end="120" time="0" condition="Container.Content(episodes)">Conditional</animation>
                             </control>
                             <control type="label">
                                 <left>570</left>
@@ -127,7 +101,6 @@
                                 <font>Font25</font>
                                 <textcolor>TextColor2</textcolor>
                                 <label>$VAR[label2]</label>
-                                <animation effect="slide" start="0" end="120" time="0" condition="Container.Content(episodes)">Conditional</animation>
                             </control>
                             <control type="textbox">
                                 <left>570</left>

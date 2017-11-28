@@ -1,30 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- view 50 Liste -->
 <includes>
 
 	<include name="Viewtype50">
 
+
 		<control type="group">
 			<visible>Control.IsVisible(50)</visible>
 
-			<!-- Image - Songs -->
-			<include content="image-51">
-				<param name="fallback">DefaultMusicSongs.png</param>
-				<param name="visible">Container.Content(songs)</param>
-			</include>
-			<!-- Image - Other -->
-			<include content="image-51">
-				<param name="fallback">DefaultFolder.png</param>
-				<param name="visible">!Container.Content(songs)</param>
-			</include>
 
-			<control type="image">
+			<!-- Media image - not episodes -->
+			<control type="group">
+				<visible>!Container.Content(episodes)</visible>
+
+				<!-- Movies -->
+				<include content="image-50">
+					<param name="fallback">DefaultMovies.png</param>
+					<param name="visible">Container.Content(movies)</param>
+				</include>
+				<!-- Albums -->
+				<include content="image-50">
+					<param name="fallback">DefaultAlbumCover.png</param>
+					<param name="visible">Container.Content(albums)</param>
+				</include>
+				<!-- Others -->
+				<include content="image-50">
+					<param name="fallback">DefaultTVShows.png</param>
+					<param name="visible">!Container.Content(movies) + !Container.Content(albums)</param>
+				</include>
+			</control>
+
+			<!-- Episode Info -->
+			<control type="group">
 				<left>120</left>
-				<top>225</top>
-				<width>405</width>
-				<height>600</height>
-				<texture>$INFO[ListItem.Icon]</texture>
-				<colordiffuse>OverlayColorFO</colordiffuse>
-				<aspectratio aligny="center">keep</aspectratio>
+				<top>190</top>
+				<visible>Container.Content(episodes)</visible>
+
+				<control type="group">
+					<!-- Episode image -->
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>452</width>
+						<height>286</height>
+						<fadetime>200</fadetime>
+						<texture fallback="DefaultTVShows.png">$VAR[mediaImages]</texture>
+						<aspectratio aligny="center">scale</aspectratio>
+					</control>
+				</control>
+
+				<!-- Season & Episode Info -->
+				<control type="label">
+					<left>0</left>
+					<top>314</top>
+					<width>500</width>
+					<height>45</height>
+					<font>Font42</font>
+					<label>$INFO[ListItem.TVShowTitle]</label>
+					<textcolor>TextColor1</textcolor>
+				</control>
+				<control type="label">
+					<left>0</left>
+					<top>366</top>
+					<width>450</width>
+					<height>45</height>
+					<font>Font33</font>
+					<textcolor>TextColor1</textcolor>
+					<label>$INFO[ListItem.Title]</label>
+				</control>
+				<control type="label">
+					<left>0</left>
+					<top>420</top>
+					<width>450</width>
+					<height>45</height>
+					<font>Font30</font>
+					<textcolor>TextColor1</textcolor>
+					<label>$INFO[ListItem.Season,$LOCALIZE[20373] , / ]$INFO[ListItem.Episode,$LOCALIZE[20359] ]</label>
+				</control>
+				<!-- Episode Plot -->
+				<control type="textbox">
+					<left>0</left>
+					<top>474</top>
+					<width>450</width>
+					<height>246</height>
+					<label>$VAR[Plot]</label>
+					<textcolor>TextColor1</textcolor>
+					<autoscroll delay="5000" time="1400" repeat="10000">true</autoscroll>
+				</control>
+
 			</control>
 
 			<!-- List -->
@@ -38,26 +102,27 @@
 				<onleft>60</onleft>
 				<onright condition="!Skin.HasSetting(KioskMode)">3001</onright>
 				<pagecontrol>60</pagecontrol>
-				<focusposition>5</focusposition>
+				<focusposition>4</focusposition>
 				<orientation>vertical</orientation>
 				<viewtype label="535">list</viewtype>
 				<scrolltime tween="sine" easing="out">240</scrolltime>
-				<visible>[Container.Content(songs) + Window.IsVisible(musicplaylist)] | [!Container.Content(movies) + !Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(albums) + !Container.Content(songs) + !Window.IsVisible(pictures)]</visible>
+				<visible>Window.IsVisible(Videos) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(albums)</visible>
 
 				<itemlayout height="60" width="1050">
+
 					<control type="label">
 						<left>32</left>
 						<top>0</top>
 						<width>1018</width>
 						<height>60</height>
 						<font>Font36</font>
-						<label>[LIGHT]$INFO[ListItem.Label][/LIGHT]</label>
+						<label>[LIGHT]$VAR[Label1][/LIGHT]</label>
 						<textcolor>TextColor2</textcolor>
 					</control>
 					<!-- Watched status -->
 					<control type="image">
 						<left>0</left>
-						<top>23</top>
+						<top>29</top>
 						<width>14</width>
 						<height>14</height>
 						<texture>$VAR[StatusOverlay]</texture>
@@ -66,27 +131,41 @@
 					</control>
 				</itemlayout>
 
-				<focusedlayout height="120" width="1050">
-					<control type="label">
-						<left>32</left>
-						<top>0</top>
-						<width>1018</width>
-						<height>120</height>
-						<font>Font72</font>
-						<label>[B]$INFO[ListItem.Label][/B]</label>
-						<textcolor>TextColor1</textcolor>
-						<scroll>True</scroll>
-						<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(50)">Conditional</animation>
-					</control>
-					<!-- Watched status -->
-					<control type="image">
-						<left>0</left>
-						<top>53</top>
-						<width>14</width>
-						<height>14</height>
-						<texture>$VAR[StatusOverlay]</texture>
-						<colordiffuse>OverlayColorFO</colordiffuse>
-						<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(50)">Conditional</animation>
+				<focusedlayout height="144" width="1050">
+					<control type="group">
+						<include>FocusAnim</include>
+
+						<control type="label">
+							<left>32</left>
+							<top>25</top>
+							<width>1018</width>
+							<height>72</height>
+							<font>Font72</font>
+							<label>[B]$VAR[Label1][/B]</label>
+							<textcolor>TextColor1</textcolor>
+							<scroll>True</scroll>
+							<animation effect="slide" start="0,0" end="0,10" condition="String.IsEmpty(ListItem.Label2)">Conditional</animation>
+						</control>
+						<control type="label">
+							<left>32</left>
+							<top>90</top>
+							<width>1018</width>
+							<height>27</height>
+							<font>Font27</font>
+							<label>$VAR[Label2]</label>
+							<textcolor>TextColor1</textcolor>
+							<visible>!String.IsEmpty(ListItem.Label2)</visible>
+						</control>
+						<!-- Watched status -->
+						<control type="image">
+							<left>0</left>
+							<top>53</top>
+							<width>14</width>
+							<height>14</height>
+							<texture>$VAR[StatusOverlay]</texture>
+							<colordiffuse>OverlayColorFO</colordiffuse>
+							<animation effect="slide" start="0,0" end="0,10" condition="String.IsEmpty(ListItem.Label2)">Conditional</animation>
+						</control>
 					</control>
 				</focusedlayout>
 
@@ -105,8 +184,10 @@
 				<top>225</top>
 				<width>405</width>
 				<height>600</height>
+				<fadetime>200</fadetime>
 				<texture fallback="$PARAM[fallback]" background="true">$VAR[mediaImages]</texture>
 				<aspectratio aligny="center">keep</aspectratio>
+				<visible>$PARAM[visible]</visible>
 			</control>
 		</definition>
 	</include>

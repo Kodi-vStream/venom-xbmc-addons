@@ -123,7 +123,6 @@
                 <align>left</align>
                 <font>Font50</font>
                 <label>[LIGHT]$INFO[ListItem.Label][/LIGHT]</label>
-                <visible>![Skin.HasSetting(ShowLogoAsTtile) + ![String.IsEmpty(ListItem.Art(clearlogo)) | String.StartsWith(ListItem.Path,videodb://movies/sets/)]] + !ListItem.IsParentFolder</visible>
             </control>
             <!-- Sublabel Info -->
             <control type="grouplist">
@@ -189,10 +188,10 @@
                 <height>30</height>
                 <width>550</width>
                 <textcolor>TextColor2</textcolor>
-                <font>Font36</font>
+                <font>Font30</font>
                 <scrollspeed>30</scrollspeed>
                 <align>left</align>
-                <label>$INFO[ListItem.TVShowTitle] $INFO[ListItem.Season,,x]$INFO[ListItem.Episode]</label>
+                <label>$VAR[label2]</label>
                 <visible>[Container.Content(Episodes) + !String.StartsWith(Container.FolderPath,plugin://plugin.video)] + ![Skin.HasSetting(ShowLogoAsTtile) + !String.IsEmpty(ListItem.Art(clearlogo))]</visible>
             </control>
             <control type="textbox">

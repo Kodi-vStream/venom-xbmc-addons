@@ -4,7 +4,7 @@
 	<backgroundcolor>0x00000000</backgroundcolor>
 	<defaultcontrol always="true">50</defaultcontrol>
 	<onload condition="System.HasAddon(script.tvtunes)">XBMC.RunScript(script.tvtunes,backend=True)</onload>
-	<views>52,53,51,50,59,580,581,582,583</views>
+	<views>50,51,500,59,580,581,582,583</views>
 
 	<controls>
 
@@ -17,10 +17,13 @@
 			<include>WindowFadeAnimation</include>
 
 			<!-- Views -->
+			<!-- liste -->
 			<include>Viewtype50</include>
+			<!-- LARGE list -->
 			<include>Viewtype51</include>
-			<include>Viewtype52</include>
-			<include>Viewtype53</include>
+			<!-- WALL -->
+			<include>Viewtype500</include>
+
 			<include>Viewtype59</include>
 			<include>Viewtype580</include>
 			<include>Viewtype581</include>
@@ -184,29 +187,29 @@
 						<selected>!Skin.HasSetting(59_landscape)</selected>
 						<visible>Control.IsVisible(59) | Control.IsVisible(580)</visible>
 					</control>
-					<!-- vue 53 -->
+					<!-- vue 500 -->
 					<control type="radiobutton" id="195">
 						<label>Landscape</label>
 						<height>52</height>
-						<onclick>Skin.ToggleSetting(53_landscape)</onclick>
-						<selected>!Skin.HasSetting(53_landscape)</selected>
-						<visible>Skin.HasSetting(53_banner) + Control.IsVisible(53)</visible>
+						<onclick>Skin.ToggleSetting(500_landscape)</onclick>
+						<selected>!Skin.HasSetting(500_landscape)</selected>
+						<visible>Skin.HasSetting(500_banner) + Control.IsVisible(500)</visible>
 					</control>
 					<control type="radiobutton" id="196">
 						<label>Bannière</label>
 						<height>52</height>
-						<onclick>Skin.ToggleSetting(53_banner)</onclick>
-						<selected>!Skin.HasSetting(53_banner)</selected>
-						<visible>Skin.HasSetting(53_landscape) + Control.IsVisible(53)</visible>
+						<onclick>Skin.ToggleSetting(500_banner)</onclick>
+						<selected>!Skin.HasSetting(500_banner)</selected>
+						<visible>Skin.HasSetting(500_landscape) + Control.IsVisible(500)</visible>
 					</control>
 					<!---->
 
 					<control type="radiobutton" id="197">
 						<label>Bottom</label>
 						<height>52</height>
-						<onclick>Skin.ToggleSetting(52_bottom)</onclick>
-						<selected>!Skin.HasSetting(52_bottom)</selected>
-						<visible>Control.IsVisible(52)</visible>
+						<onclick>Skin.ToggleSetting(51_bottom)</onclick>
+						<selected>!Skin.HasSetting(51_bottom)</selected>
+						<visible>Control.IsVisible(51)</visible>
 					</control>
 					<control type="radiobutton" id="198">
 						<label>Grille</label>

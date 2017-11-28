@@ -6,10 +6,13 @@
 	<include condition="System.HasAddon(script.skinshortcuts)" file="script-skinshortcuts-includes.xml" />
 	<include condition="!System.HasAddon(script.skinshortcuts)" file="script-skinshortcuts-static.xml" />
 	<include file="Include_DialogSettings.xml" />
+
 	<include file="Viewtype50.xml" />
+
 	<include file="Viewtype51.xml" />
-	<include file="Viewtype52.xml" />
-	<include file="Viewtype53.xml" />
+
+	<include file="Viewtype500.xml" />
+
 	<include file="Viewtype54.xml" />
 	<include file="Viewtype55.xml" />
 	<include file="Viewtype59.xml" />
@@ -32,7 +35,7 @@
 	</include>
 
 	<include name="FocusAnim">
-		<animation effect="zoom" start="60" end="100" center="202,300" time="300" tween="back" easing="out" reversible="false">Focus</animation>
+		<animation effect="zoom" start="90" end="100" center="202,300" time="300" tween="back" easing="out" reversible="false">Focus</animation>
 		<animation effect="slide" start="100,0" end="0,0" time="150" tween="Cubic" easing="out" reversible="false">Focus</animation>
 		<animation effect="fade" start="20" end="100" time="750" delay="0" tween="sine" easing="out" reversible="false">Focus</animation>
 	</include>

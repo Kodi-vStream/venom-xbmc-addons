@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+
+	<include name="Viewtype500">
+
+		<!-- WALL -->
+
+		<control type="group">
+			<visible>Control.IsVisible(500)</visible>
+
+			<!-- Guide <control type="image">
+				<left>150</left>
+				<top>170</top>
+				<width>1620</width>
+				<align>center</align>
+				<height>666</height>
+				<texture background="true" fallback="$PARAM[fallback]">Background.png</texture>
+			</control>-->
+
+			<control type="panel" id="500">
+				<left>150</left>
+				<top>170</top>
+				<width>1620</width>
+				<height>666</height>
+				<onleft>63</onleft>
+				<onright condition="!Skin.HasSetting(KioskMode)">3001</onright>
+				<onup>500</onup>
+				<ondown>500</ondown>
+				<pagecontrol>63</pagecontrol>
+				<preloaditems>4</preloaditems>
+				<viewtype label="$LOCALIZE[31078]">icon</viewtype>
+				<scrolltime tween="sine" easing="out">240</scrolltime>
+				<visible>Window.IsVisible(Videos) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(Episodes)</visible>
+
+				<itemlayout width="270" height="333" condition="Skin.HasSetting(500_landscape)+Skin.HasSetting(500_banner)+!Container.Content(Episodes)">
+					<!-- Image - Movies -->
+					<include content="image-500">
+						<param name="fallback">DefaultMovie.png</param>
+						<param name="colordiffuse">DiffusePosterNF</param>
+						<param name="visible">Container.Content(movies)</param>
+					</include>
+					<!-- Image - TV -->
+					<include content="image-500">
+						<param name="fallback">DefaultTVShows.png</param>
+						<param name="colordiffuse">DiffusePosterNF</param>
+						<param name="visible">!Container.Content(movies)</param>
+					</include>
+					<!-- Watched status -->
+					<control type="image">
+						<left>170</left>
+						<top>286</top>
+						<width>30</width>
+						<height>42</height>
+						<texture>$VAR[StatusOverlayWide]</texture>
+						<colordiffuse>OverlayColorNF</colordiffuse>
+					</control>
+
+				</itemlayout>
+
+				<!--landscape -->
+				<itemlayout width="385" height="233" condition="!Skin.HasSetting(500_landscape) | Container.Content(Episodes)">
+					<!-- Image - Movies -->
+					<include content="image-500l">
+						<param name="fallback">DefaultMovie.png</param>
+						<param name="colordiffuse">DiffusePosterNF</param>
+						<param name="visible">Container.Content(movies)</param>
+					</include>
+					<!-- Image - TV -->
+					<include content="image-500l">
+						<param name="fallback">DefaultTVShows.png</param>
+						<param name="colordiffuse">DiffusePosterNF</param>
+						<param name="visible">!Container.Content(movies)</param>
+					</include>
+					<!-- Watched status -->
+					<control type="image">
+						<left>320</left>
+						<top>186</top>
+						<width>30</width>
+						<height>42</height>
+						<texture>$VAR[StatusOverlayWide]</texture>
+						<colordiffuse>OverlayColorNF</colordiffuse>
+					</control>
+				</itemlayout>
+
+				<!--Banner -->
+				<itemlayout width="540" height="123" condition="!Skin.HasSetting(500_banner)+!Container.Content(Episodes)">
+					<!-- Image - Movies -->
+					<include content="image-500b">
+						<param name="fallback">DefaultMovie.png</param>
+						<param name="colordiffuse">DiffusePosterNF</param>
+						<param name="visible">Container.Content(movies)</param>
+					</include>
+					<!-- Image - TV -->
+					<include content="image-500b">
+						<param name="fallback">DefaultTVShows.png</param>
+						<param name="colordiffuse">DiffusePosterNF</param>
+						<param name="visible">!Container.Content(movies)</param>
+					</include>
+					<!-- Watched status -->
+					<control type="image">
+						<left>450</left>
+						<top>85</top>
+						<width>30</width>
+						<height>42</height>
+						<texture>$VAR[StatusOverlayWide]</texture>
+						<colordiffuse>OverlayColorNF</colordiffuse>
+					</control>
+				</itemlayout>
+
+				<focusedlayout width="270" height="333" condition="Skin.HasSetting(500_landscape)+Skin.HasSetting(500_banner)+!Container.Content(Episodes)">
+					<control type="group">
+						<include>FocusAnim</include>
+						<!-- Image - Movies -->
+						<include content="image-500">
+							<param name="fallback">DefaultMovie.png</param>
+							<param name="visible">Container.Content(movies)</param>
+						</include>
+						<!-- Image - TV -->
+						<include content="image-500">
+							<param name="fallback">DefaultTVShows.png</param>
+							<param name="visible">!Container.Content(movies)</param>
+						</include>
+						<!-- Watched status -->
+						<control type="image">
+							<left>170</left>
+							<top>286</top>
+							<width>30</width>
+							<height>42</height>
+							<texture>$VAR[StatusOverlayWide]</texture>
+						</control>
+					</control>
+				</focusedlayout>
+
+				<!--landscape -->
+				<focusedlayout width="385" height="233" condition="!Skin.HasSetting(500_landscape)|Container.Content(Episodes)">
+					<control type="group">
+						<include>FocusAnim</include>
+						<!-- Image - Movies -->
+						<include content="image-500l">
+							<param name="fallback">DefaultMovie.png</param>
+							<param name="visible">Container.Content(movies)</param>
+						</include>
+						<!-- Image - TV -->
+						<include content="image-500l">
+							<param name="fallback">DefaultTVShows.png</param>
+							<param name="visible">!Container.Content(movies)</param>
+						</include>
+						<!-- Watched status -->
+						<control type="image">
+							<left>320</left>
+							<top>186</top>
+							<width>30</width>
+							<height>42</height>
+							<texture>$VAR[StatusOverlayWide]</texture>
+						</control>
+					</control>
+				</focusedlayout>
+
+				<!--banner -->
+				<focusedlayout width="540" height="123" condition="!Skin.HasSetting(500_banner)+!Container.Content(Episodes)">
+					<control type="group">
+						<include>FocusAnim</include>
+						<!-- Image - Movies -->
+						<include content="image-500b">
+							<param name="fallback">DefaultMovie.png</param>
+							<param name="visible">Container.Content(movies)</param>
+						</include>
+						<!-- Image - TV -->
+						<include content="image-500b">
+							<param name="fallback">DefaultTVShows.png</param>
+							<param name="visible">!Container.Content(movies)</param>
+						</include>
+						<!-- Watched status -->
+						<control type="image">
+							<left>450</left>
+							<top>85</top>
+							<width>30</width>
+							<height>42</height>
+							<texture>$VAR[StatusOverlayWide]</texture>
+						</control>
+					</control>
+				</focusedlayout>
+
+			</control>
+
+			<control type="group">
+				<centerleft>50%</centerleft>
+				<top>850</top>
+				<width>1920</width>
+				<height>100</height>
+
+				<!-- Title -->
+				<control type="label">
+					<left>90</left>
+					<top>0</top>
+					<width>1740</width>
+					<height>72</height>
+					<font>Font72</font>
+					<align>center</align>
+					<textcolor>TextColor1</textcolor>
+					<label>$INFO[ListItem.Label]</label>
+					<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="false" condition="!Control.HasFocus(500)">Conditional</animation>
+				</control>
+
+				<!-- Details -->
+				<control type="label">
+					<left>90</left>
+					<top>88</top>
+					<width>1740</width>
+					<height>54</height>
+					<font>Font27</font>
+					<align>center</align>
+					<aligny>top</aligny>
+					<label>$VAR[Label2]</label>
+					<textcolor>TextColor1</textcolor>
+					<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="false" condition="!Control.HasFocus(500)">Conditional</animation>
+				</control>
+
+			</control>
+
+		</control>
+
+	</include>
+
+	<include name="image-500">
+		<param name="fallback">DefaultVideos.png</param>
+		<param name="colordiffuse">FFFFFFFF</param>
+		<param name="visible">False</param>
+		<definition>
+			<control type="image">
+				<left>34</left>
+				<width>202</width>
+				<height>300</height>
+				<texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+				<aspectratio>scale</aspectratio>
+				<visible>$PARAM[visible]</visible>
+			</control>
+
+			<control type="image">
+				<left>34</left>
+				<width>202</width>
+				<height>300</height>
+				<colordiffuse>$PARAM[colordiffuse]</colordiffuse>
+				<texture fallback="$PARAM[fallback]" background="true">$VAR[mediaImages]</texture>
+				<aspectratio align="center">scale</aspectratio>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+
+	<include name="image-500l">
+		<param name="fallback">DefaultVideos.png</param>
+		<param name="colordiffuse">FFFFFFFF</param>
+		<param name="visible">False</param>
+		<definition>
+			<control type="image">
+				<left>54</left>
+				<width>355</width>
+				<height>200</height>
+				<texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+				<aspectratio>scale</aspectratio>
+				<visible>$PARAM[visible]</visible>
+			</control>
+
+			<control type="image">
+				<left>54</left>
+				<width>355</width>
+				<height>200</height>
+				<colordiffuse>$PARAM[colordiffuse]</colordiffuse>
+				<texture fallback="$PARAM[fallback]" background="true">$VAR[mediaImages_landscape]</texture>
+				<aspectratio align="center">scale</aspectratio>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+
+	<include name="image-500b">
+		<param name="fallback">DefaultVideos.png</param>
+		<param name="colordiffuse">FFFFFFFF</param>
+		<param name="visible">False</param>
+		<definition>
+			<control type="image">
+				<left>7</left>
+				<width>527</width>
+				<height>100</height>
+				<texture colordiffuse="DarkenColor" background="true">dialogs/DialogTextBackground.png</texture>
+				<aspectratio>scale</aspectratio>
+				<visible>$PARAM[visible]</visible>
+			</control>
+			<control type="image">
+				<left>7</left>
+				<width>527</width>
+				<height>100</height>
+				<colordiffuse>$PARAM[colordiffuse]</colordiffuse>
+				<texture fallback="$PARAM[fallback]" background="true">$VAR[mediaImages_banner]</texture>
+				<aspectratio align="center">scale</aspectratio>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+
+</includes>

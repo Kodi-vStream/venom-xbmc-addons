@@ -57,18 +57,9 @@
 						<control type="image">
 							<width>853</width>
 							<height>480</height>
-							<aspectratio aligny="center" align="center">stretch</aspectratio>
+							<aspectratio aligny="center" align="center">scale</aspectratio>
 							<texture background="true" fallback="$VAR[fallback]">$VAR[mediaImages_landscape]</texture>
 							<fadetime>400</fadetime>
-						</control>
-						<control type="image">
-							<left>80</left>
-							<width>853</width>
-							<height>480</height>
-							<aspectratio aligny="center" align="center">keep</aspectratio>
-							<texture background="true" fallback="$VAR[fallback]">$VAR[mediaImages_Clearlogo]</texture>
-							<fadetime>400</fadetime>
-							<visible>[[Container.Content(TVShows) | Container.Content(Seasons)] + String.IsEqual(Skin.String(GalleryViewWideThumbTVShows),3)] | [[Container.Content(Movies) | Container.Content(Sets)] + String.IsEqual(Skin.String(GalleryViewWideThumbMovies),3)]</visible>
 						</control>
                         <!-- Watched status -->
     					<control type="image">
