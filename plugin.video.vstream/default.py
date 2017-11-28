@@ -2,7 +2,6 @@
 #Venom.
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 
-from resources.lib.statistic import cStatistic
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.home import cHome
@@ -62,7 +61,6 @@ class main:
         if (oInputParameterHandler.exist('site')):
             sSiteName = oInputParameterHandler.getValue('site')
             cConfig().log('load site ' + sSiteName + ' and call function ' + sFunction)
-            cStatistic().callStartPlugin(sSiteName)
 
             if (isHosterGui(sSiteName, sFunction) == True):
                 return
