@@ -226,7 +226,7 @@ class cHosterGui:
             return self.getHoster('vimeo')
         if ('openload' in sHostName):
             return self.getHoster('openload')
-        if ('oload.co' in sHostName):
+        if ('oload.' in sHostName):
             return self.getHoster('openload')
         if (('thevideo.me' in sHostName) or ('video.tt' in sHostName)):
             return self.getHoster('thevideo_me')
