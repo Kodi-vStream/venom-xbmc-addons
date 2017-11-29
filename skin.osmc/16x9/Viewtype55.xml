@@ -6,7 +6,7 @@
 		<control type="group">
 			<visible>Control.IsVisible(55)</visible>
 
-			<!-- Thumbs -->
+			<!-- Carrer -->
 			<control type="panel" id="55">
 				<left>150</left>
 				<top>170</top>

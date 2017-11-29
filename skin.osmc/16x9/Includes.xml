@@ -20,6 +20,7 @@
 	<include file="Viewtype581.xml" />
 	<include file="Viewtype582.xml" />
 	<include file="Viewtype583.xml" />
+	<include file="Viewtype584.xml" />
 	<include file="Variables.xml" />
 
 	<!-- Fullscreen dimensions -->
