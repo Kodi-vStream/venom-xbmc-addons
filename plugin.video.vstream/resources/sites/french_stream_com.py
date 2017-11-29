@@ -8,7 +8,10 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re
+
+import re,urllib2,base64
+
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:55.0) Gecko/20100101 Firefox/55.0'
 
 SITE_IDENTIFIER = 'french_stream_com'
 SITE_NAME = 'French-stream'
@@ -32,6 +35,37 @@ SERIE_SERIES = (URL_MAIN + 'serie-tv-en-streaming/', 'showSeries')
 SERIE_VFS = (URL_MAIN + 'serie-tv-en-streaming/serie-en-vf-streaming/', 'showSeries')
 SERIE_VOSTFRS = (URL_MAIN + 'serie-tv-en-streaming/serie-en-vostfr-streaming/', 'showSeries')
 SERIE_GENRES = (True, 'showSerieGenres')
+
+def decode_url(url,id):
+    
+    v = url
+    
+    if id == 'tmp':
+        fields = url.split('sig=705&&')
+        t = base64.b64encode(base64.b64encode(fields[1]))
+        v = "/f.php?p_id=1&&c_id="+t
+ 
+    if id == 'gGotop2':
+        fields = url.split('nbsp')
+        t = base64.b64encode(base64.b64encode(fields[1]))
+        v = "/f.php?p_id=2&&c_id="+t
+        
+    if id == 'gGotop3':
+        fields = url.split('nbsq')
+        t = base64.b64encode(base64.b64encode(fields[1]))
+        v = "/f.php?p_id=3&&c_id="+t
+        
+    if id == 'gGotop4':
+        fields = url.split('nbsr')
+        t = base64.b64encode(base64.b64encode(fields[1]))
+        v = "/f.php?p_id=4&&c_id="+t
+        
+    if id == 'gGotop5':
+        fields = url.split('nbss')
+        t = base64.b64encode(base64.b64encode(fields[1]))
+        v = "/dl.php?p_id=5&&c_id="+t
+        
+    return v
 
 def load():
     oGui = cGui()
@@ -314,29 +348,76 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    
+    cConfig().log(sUrl)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<span> *<a href="([^"]+)" *id="gGotop"'
+    sPattern = '<a name="b[0-9]+" href="([^"]+)" id="([^"]+)" target="seriePlayer"> *<i class=[^>]+><\/i> ([^<]+) <'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
+            
+            sTitle = aEntry[2] + ' ' + sMovieTitle
 
-            sHosterUrl = str(aEntry)
-            if sHosterUrl.startswith('/'):
-                sHosterUrl = 'http:' + sHosterUrl
-                
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            url = aEntry[0]
+            url = decode_url(url,aEntry[1])
+            cConfig().log(url)
+            
+            if not url.startswith('http'):
+                url = URL_MAIN[:-1] + url
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', url)
+            oOutputParameterHandler.addParameter('referer', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+
+            oGui.addTV(SITE_IDENTIFIER, 'showHostersDecoded', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
+    
+def showHostersDecoded():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    referer = oInputParameterHandler.getValue('referer')
+    
+    cConfig().log('url:' + sUrl)
+
+
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('Referer',referer)
+    oRequestHandler.addHeaderEntry('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:55.0) Gecko/20100101 Firefox/55.0')
+    sHtmlContent = oRequestHandler.request()
+    sHosterUrl = oRequestHandler.getRealUrl()
+
+    
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
+
+    
+    
+    cConfig().log(sHosterUrl)
+
+    oHoster = cHosterGui().checkHoster(sHosterUrl)
+    if (oHoster != False):
+        oHoster.setDisplayName(sMovieTitle)
+        oHoster.setFileName(sMovieTitle)
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+    oGui.setEndOfDirectory()
+    
 def showLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
