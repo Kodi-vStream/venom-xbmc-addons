@@ -148,13 +148,13 @@ def showGenres():
     liste.append( ['Los Angeles (Clippers)', URL_MAIN + '/category/nba/los-angeles-clippers/'] )
     liste.append( ['Los Angeles (Lakers)', URL_MAIN + '/category/nba/los-angeles-lakers/'] )
     liste.append( ['Memphis (Grizzlies)', URL_MAIN + '/category/nba/memphis-grizzlies/'] )
-    liste.append( ['Miami (Heat)', URL_MAIN + '/category/nba/miami-heat//'] )
-    liste.append( ['Milwaukee (Bucks)', URL_MAIN + '/category/nba/milwaukee-bucks//'] )
+    liste.append( ['Miami (Heat)', URL_MAIN + '/category/nba/miami-heat/'] )
+    liste.append( ['Milwaukee (Bucks)', URL_MAIN + '/category/nba/milwaukee-bucks/'] )
     liste.append( ['Minnesota (Timberwolves)', URL_MAIN + '/category/nba/minnesota-timberwolves/'] )
     liste.append( ['New-Orléans (Pelicans)', URL_MAIN + '/category/nba/new-orleans-pelicans/'] )
     liste.append( ['New-York (Knicks)', URL_MAIN + '/category/nba/new-york-knicks/'] )
     liste.append( ['Oklahoma City (Thunder)', URL_MAIN + '/category/nba/oklahoma-city-thunder/'] )
-    liste.append( ['Orlando (Magic)', URL_MAIN + '/category/nba/orlando-magic//'] )
+    liste.append( ['Orlando (Magic)', URL_MAIN + '/category/nba/orlando-magic/'] )
     liste.append( ['Philadelphia (79ers)', URL_MAIN + '/category/nba/philadelphia-76ers/'] )
     liste.append( ['Phoenix (Suns)', URL_MAIN + '/category/nba/phoenix-suns/'] )
     liste.append( ['Portland (Blazers)', URL_MAIN + '/category/nba/portland-trail-blazers/'] )
@@ -197,10 +197,8 @@ def showMovies(sSearch = ''):
     else:
         sPattern = '<a href="([^"]+)">(?:\s*|)<img src="[^"]+" data-hidpi="(.+?)\?.+?" alt="([^"]+)"(?:width=".+?"|)'
 
-
     sDateReplay = ''
     sDate = ''
-
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -288,7 +286,6 @@ def showMovies(sSearch = ''):
 
             sTitle = sTitle.replace(' vs ', '[COLOR gray] vs [/COLOR]').replace('@', '[COLOR gray] vs [/COLOR]')
 
-
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -296,7 +293,6 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sDateReplay', sDateReplay)
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sUrl2, oOutputParameterHandler)
-
 
         cConfig().finishDialog(dialog)
 
@@ -380,13 +376,10 @@ def showHosters():
                 aResult4 = re.findall(sPattern2, sHtmlContent)
                 sLink = sLink + aResult4
 
-
         sDisplay = '[COLOR olive]Qualités disponibles:[/COLOR]'
-
 
     oGui.addText(SITE_IDENTIFIER, sMovieTitle)
     oGui.addText(SITE_IDENTIFIER, sDisplay)
-
 
     #affichage final des liens
     if (sLink):
@@ -502,7 +495,7 @@ def showLiveHosters():
     if (aResult):
         for aEntry in aResult:
 
-            #si streamer utilise chrome extention
+            #si streamer utilise chrome extension
             if '#http' in aEntry:
                 sUrl2 = aEntry.split('#')
                 sHosterUrl = sUrl2[1]
