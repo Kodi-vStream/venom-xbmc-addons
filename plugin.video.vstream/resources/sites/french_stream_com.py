@@ -36,14 +36,19 @@ SERIE_VFS = (URL_MAIN + 'serie-tv-en-streaming/serie-en-vf-streaming/', 'showSer
 SERIE_VOSTFRS = (URL_MAIN + 'serie-tv-en-streaming/serie-en-vostfr-streaming/', 'showSeries')
 SERIE_GENRES = (True, 'showSerieGenres')
 
-def decode_url(url,id):
+def decode_url(url,id,tmp = ''):
     
     v = url
     
-    if id == 'tmp':
-        fields = url.split('sig=705&&')
+    if id == 'seriePlayer':
+        fields = tmp.split('sig=705&&')
         t = base64.b64encode(base64.b64encode(fields[1]))
-        v = "/f.php?p_id=1&&c_id="+t
+        v = '/f.php?p_id=1&&c_id=' + t
+        
+    if id == 'gGotop1':
+        fields = tmp.split('sig=705&&')
+        t = base64.b64encode(base64.b64encode(fields[1]))
+        v = '/f.php?p_id=1&&c_id=' + t
  
     if id == 'gGotop2':
         fields = url.split('nbsp')
@@ -66,6 +71,30 @@ def decode_url(url,id):
         v = "/dl.php?p_id=5&&c_id="+t
         
     return v
+    
+def ResolveUrl(url):
+
+    try:
+        url2 = ''
+        pat = 'p_id=([0-9]+).+?c_id=([^&]+)'
+        id = re.search(pat, url, re.DOTALL).group(1)
+        hash = re.search(pat, url, re.DOTALL).group(2)
+        hash = base64.b64decode(base64.b64decode(hash))
+        
+        if id == '1':
+            url2 = 'http://cloudvid.co/embed-'
+        if id == '2':
+            url2 = 'https://oload.stream/embed/'
+        elif id == '3':
+            url2 = 'https://vidlox.tv/embed-'
+        elif id == '4':
+            url2 = 'https://hqq.watch/player/embed_player.php?vid='
+            
+        url2 = url2 + hash
+        return url2
+    except:
+        return ''
+    return ''
 
 def load():
     oGui = cGui()
@@ -364,59 +393,30 @@ def showHosters():
             sTitle = aEntry[2] + ' ' + sMovieTitle
 
             url = aEntry[0]
-            url = decode_url(url,aEntry[1])
-            cConfig().log(url)
+            #first convertion
+            tmp = ''
+            try:
+                tmp = re.search('input id="tmp".+?value="([^"]+)"', sHtmlContent, re.DOTALL).group(1)
+            except:
+                pass
+            url = decode_url(url,aEntry[1],tmp)
+            #second convertion
+            sHosterUrl = ResolveUrl(url)
             
-            if not url.startswith('http'):
-                url = URL_MAIN[:-1] + url
+            #cConfig().log(sHosterUrl)
             
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', url)
-            oOutputParameterHandler.addParameter('referer', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-
-            oGui.addTV(SITE_IDENTIFIER, 'showHostersDecoded', sTitle, '', sThumb, '', oOutputParameterHandler)
+            #if not url.startswith('http'):
+            #    url = URL_MAIN[:-1] + url
+            
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
-    
-def showHostersDecoded():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumb = oInputParameterHandler.getValue('sThumb')
-    referer = oInputParameterHandler.getValue('referer')
-    
-    cConfig().log('url:' + sUrl)
 
-
-    oRequestHandler = cRequestHandler(sUrl)
-    oRequestHandler.addHeaderEntry('Referer',referer)
-    oRequestHandler.addHeaderEntry('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-    oRequestHandler.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:55.0) Gecko/20100101 Firefox/55.0')
-    sHtmlContent = oRequestHandler.request()
-    sHosterUrl = oRequestHandler.getRealUrl()
-
-    
-    
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-
-    
-    
-    cConfig().log(sHosterUrl)
-
-    oHoster = cHosterGui().checkHoster(sHosterUrl)
-    if (oHoster != False):
-        oHoster.setDisplayName(sMovieTitle)
-        oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-    oGui.setEndOfDirectory()
     
 def showLinks():
     oGui = cGui()
@@ -427,6 +427,8 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    cConfig().log(sUrl)
 
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
@@ -434,7 +436,7 @@ def showLinks():
 
     oParser = cParser()
 
-    sPattern = '<\/i> (VOSTFR|VF) *<\/div>|<a class="fs.+?" href="([^"]+)".+?target="seriePlayer".+?<\/i>\s+([^<>]+?)\s+<\/a>'
+    sPattern = '<\/i> (VOSTFR|VF) *<\/div>|<a id="([^"]+)" href="([^"]+)" target="seriePlayer" title="([^"]+)" data-rel="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -449,30 +451,20 @@ def showLinks():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
             elif aEntry[1]:
 
-                sTitle = str(aEntry[2]) + ' ' + sMovieTitle
+                sTitle = str(aEntry[3]) + ' ' + sMovieTitle
+                sId = aEntry[1]
+                sdata = aEntry[4]
+                #sUrl = aEntry[2]
+                
+                sDisplayTitle = sTitle
 
-                sHosterUrl = aEntry[1]
-                sHosterName = ''
-
-                if '9animeonline' in sHosterUrl or 'sibeol.com' in sHosterUrl or 'belike.pw' in sHosterUrl:
-                    sHosterName = 'Google'
-
-                if 'cloudvid.co' in sHosterUrl:
-                    sHosterName = 'Cloudvid'
-
-                else:
-                    oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
-                        sHosterName = str(oHoster.getDisplayName())
-
-                if sHosterName:
-                    sDisplayTitle = sTitle + '(' + sHosterName + ')'
-
-                    oOutputParameterHandler = cOutputParameterHandler()
-                    oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
-                    oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                    oOutputParameterHandler.addParameter('sThumb', sThumb)
-                    oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sData', sdata)
+                oOutputParameterHandler.addParameter('sId', sId)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
     else:
@@ -486,41 +478,23 @@ def serieHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    #inutile??
-    if 'sibeol.com' in sUrl:
-        oRequest = cRequestHandler(sUrl)
-        sHtmlContent = oRequest.request()
-        sPattern = 'sources:.+?{"type":".+?","label":.+?,"file":"([^"]+)"}'
-        aResult = re.findall(sPattern,sHtmlContent)
-        if (aResult):
-            sUrl = aResult[0]
-    #inutile??
-    if '9animeonline' in sUrl:
-        oRequest = cRequestHandler(sUrl)
-        sHtmlContent = oRequest.request()
+    sData = oInputParameterHandler.getValue('sData')
+    
+    cConfig().log(sUrl)
+    
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    
+    oParser = cParser()
+    sPattern = '<div id="'+ sData +'".+?<\/div>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    cConfig().log(sPattern)
 
-        sPattern = 'file: "([^"]+)"'
-        aResult = re.findall(sPattern,sHtmlContent)
-        if (aResult):
-            sUrl = aResult[0]
-    #inutile??
-    if 'belike.pw' in sUrl:
-        oRequest = cRequestHandler(sUrl)
-        sHtmlContent = oRequest.request()
-
-        sPattern = 'src="([^"]+)"'
-        aResult = re.findall(sPattern,sHtmlContent)
-        if (aResult):
-            sUrl = aResult[0]
-
-    #inutile??
-    #lien youtube mais non resolvable, convertion
-    if 'docid' in sUrl:
-        sPattern = 'docid=([\w-]+)'
-        aResult = re.findall(sPattern,sUrl)
-        if (aResult):
-            sUrl = 'https://drive.google.com/' + aResult[0]
-
+    if (aResult[0] == True):
+        cConfig().log(aResult[1])
+        
+    rr(mm)
     oHoster = cHosterGui().checkHoster(sUrl)
 
     if (oHoster != False):
