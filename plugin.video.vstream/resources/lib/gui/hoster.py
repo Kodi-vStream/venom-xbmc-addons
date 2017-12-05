@@ -308,6 +308,9 @@ class cHosterGui:
             return self.getHoster('upvid')
         if ('cloudvid' in sHostName):
             return self.getHoster('cloudvid')
+        if ('clickopen' in sHostName):
+            return self.getHoster('clickopen')
+
 
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
