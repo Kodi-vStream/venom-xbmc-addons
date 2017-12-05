@@ -310,6 +310,8 @@ class cHosterGui:
             return self.getHoster('cloudvid')
         if ('clickopen' in sHostName):
             return self.getHoster('clickopen')
+        if ('iframe-secured' in sHostName):
+            return self.getHoster('iframe_secured')
 
 
         #Lien telechargeable a convertir en stream
