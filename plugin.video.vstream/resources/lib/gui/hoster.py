@@ -328,7 +328,7 @@ class cHosterGui:
             return self.getHoster('lien_direct')
 
         #Si aucun hebergeur connu on teste les liens directs
-        if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8'):
+        if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8.webm'):
             return self.getHoster('lien_direct')
 
         return False
