@@ -481,27 +481,40 @@ def serieHosters():
     sData = oInputParameterHandler.getValue('sData')
     
     cConfig().log(sUrl)
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
     oParser = cParser()
     sPattern = '<div id="'+ sData +'".+?<\/div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
-    cConfig().log(sPattern)
 
     if (aResult[0] == True):
-        cConfig().log(aResult[1])
+        block = aResult[1][0]
+    else:
+        return
         
-    rr(mm)
-    oHoster = cHosterGui().checkHoster(sUrl)
+    sPattern = '<li><a (?:id="([^"]+)" )*href="([^"]+)"'
+    aResult = oParser.parse(block, sPattern)
+        
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            
+            if aEntry[0]:
+                #Adecoder
+                sUrl = aEntry[1]
+            else:
+                sUrl = aEntry[1]
+            
+            
+            cConfig().log(sUrl)
+            oHoster = cHosterGui().checkHoster(sUrl)
 
-    if (oHoster != False):
-        sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+            if (oHoster != False):
+                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
 
-        oHoster.setDisplayName(sDisplayTitle)
-        oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, sUrl, sThumb)
+                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sUrl, sThumb)
 
     oGui.setEndOfDirectory()
