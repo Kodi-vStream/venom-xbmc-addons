@@ -282,15 +282,15 @@ def showHosters():
                 sHosterUrl = 'http:' + sHosterUrl
 
 
-            if 'goo.gl' in sHosterUrl or 'bit.ly' in sHosterUrl:
-                try:
-                    import requests
-                    url = sHosterUrl
-                    session = requests.Session()  # so connections are recycled
-                    resp = session.head(url, allow_redirects=True)
-                    sHosterUrl = resp.url
-                except:
-                    pass
+            # if 'goo.gl' in sHosterUrl or 'bit.ly' in sHosterUrl:
+            #     try:
+            #         import requests
+            #         url = sHosterUrl
+            #         session = requests.Session()  # so connections are recycled
+            #         resp = session.head(url, allow_redirects=True)
+            #         sHosterUrl = resp.url
+            #     except:
+            #         pass
 
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)

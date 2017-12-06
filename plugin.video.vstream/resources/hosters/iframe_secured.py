@@ -83,7 +83,12 @@ class cHoster(iHoster):
 
                     from resources.lib.gui.hoster import cHosterGui
 
-                    sHosterUrl = aResult[1][0].replace('\\', '').replace('//', 'http://')
+                    sHosterUrl = aResult[1][0]
+
+                    if not sHosterUrl.startswith('http:') and not sHosterUrl.startswith('https:'):
+                        sHosterUrl = 'http:%s' % sHosterUrl
+
+                    sHosterUrl = sHosterUrl.replace('\\', '')
 
 
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
