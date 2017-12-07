@@ -58,7 +58,7 @@ TV_NEWS = (URL_MAIN + 'emissions-tv/', 'showMovies') # dernieres emissions tv
 SPECT_NEWS = (URL_MAIN + 'spectacles/', 'showMovies') # dernieres spectacles
 CONCERT_NEWS = (URL_MAIN + 'concerts/', 'showMovies') # dernieres concerts
 AUTOFORM_VID = (URL_MAIN + 'autoformations-videos/', 'showMovies')
-  
+
 def load():
     oGui = cGui()
 
@@ -129,18 +129,13 @@ def load():
     oGui.setEndOfDirectory()
 
 def showSearch():
-    sDisplayName = '[COLOR skyblue]'+'Zone-telehchargement'+'[/COLOR]'  
-    oGui = cGui()   
+    oGui = cGui()
     sSearchText = oGui.showKeyBoard()
-    SearchTextLen = len(sSearchText)
-    print (SearchTextLen)
-    if SearchTextLen >= 4 and (sSearchText != False) :
+    if (sSearchText != False):
         sUrl = sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
-    else:
-        cGui().showInfo(sDisplayName, 'Recherche impossible car il faut au obligatoirement 4 caractere ou plus' , 15)
 
 def showGenre(basePath):
     oGui = cGui()
@@ -683,21 +678,10 @@ def CutNonPremiumlinks(sHtmlContent):
 
 def CutPremiumlinks(sHtmlContent):
     oParser = cParser()
-
-    sPattern = '(?i)^(.+?)premium'
+    sPattern = '(?i) par .{1,2}pisode(.+?)$'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    res = ''
     if (aResult[0]):
-        res = aResult[1][0]
-
-    #si l'ordre a été chnage ou si il ya un probleme
-    if URL_DECRYPT not in res:
-        sPattern = '(?i) par .{1,2}pisode(.+?)$'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0]):
-            sHtmlContent = aResult[1][0]
-    else:
-        sHtmlContent = res
+        sHtmlContent = aResult[1][0]
 
     #Si ca marche pas on renvois le code complet
     return sHtmlContent
