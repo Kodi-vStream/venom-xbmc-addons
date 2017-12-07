@@ -36,6 +36,38 @@ SERIE_VFS = (URL_MAIN + 'serie-tv-en-streaming/serie-en-vf-streaming/', 'showSer
 SERIE_VOSTFRS = (URL_MAIN + 'serie-tv-en-streaming/serie-en-vostfr-streaming/', 'showSeries')
 SERIE_GENRES = (True, 'showSerieGenres')
 
+def decode_url_Serie(url,id,tmp = ''):
+    
+    cConfig().log(id)
+    cConfig().log(id)
+    
+    v = url
+    
+    if 'singh' in id:
+        id2 = id[6:]
+        fields = url.split('nbsp')
+        t = base64.b64encode(base64.b64encode(fields[1]))
+        v = "/s.php?p_id=1&&c_id="+t
+        
+    if id == 'honey':
+        id2 = id[6:]
+        fields = url.split('nbsp')
+        t = base64.b64encode(base64.b64encode(fields[1]))
+        v = "/s.php?p_id=1&&c_id="+t
+        
+    if id == 'yoyo':
+        id2 = id[5:]
+        fields = url.split('nbsp')
+        t = base64.b64encode(base64.b64encode(fields[1]))
+        v = "/s.php?p_id=1&&c_id="+t
+        
+    if id == 'seriePlayer':
+        fields = url.split('nbsp')
+        t = base64.b64encode(base64.b64encode(fields[1]))
+        v = "/s.php?p_id=1&&c_id="+t
+        
+    return v
+
 def decode_url(url,id,tmp = ''):
     
     v = url
@@ -503,12 +535,21 @@ def serieHosters():
             if aEntry[0]:
                 #Adecoder
                 sUrl = aEntry[1]
+                tmp = ''
+                try:
+                    tmp = re.search('input id="tmp".+?value="([^"]+)"', sHtmlContent, re.DOTALL).group(1)
+                except:
+                    pass
+                url2 = decode_url_Serie(sUrl,aEntry[0],tmp)
+                #second convertion
+                sHosterUrl = ResolveUrl(url2)
+                
             else:
-                sUrl = aEntry[1]
+                sHosterUrl = aEntry[1]
             
             
-            cConfig().log(sUrl)
-            oHoster = cHosterGui().checkHoster(sUrl)
+            cConfig().log(sHosterUrl)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
