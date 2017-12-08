@@ -95,7 +95,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
-    oGui.addDir(SITE_IDENTIFIER, 'showFolderList', 'Listes TMDB (beta)', 'listes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showFolderList', 'Listes TMDB', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -165,7 +165,7 @@ def showGenreTV():
 def showFolderList():
     oGui = cGui()
     liste = []
-    liste.append( ['Top Manga (senscritique)', '31665'] )
+    liste.append( ['Top Manga', '31665'] )
     liste.append( ['Top Manga 2', '31695'] )
     liste.append( ['Disney Classic', '338'] )
     liste.append( ['Pixar', '3700'] )
@@ -177,7 +177,7 @@ def showFolderList():
     liste.append( ['Les adaptations', '9883'] )
     liste.append( ['science-fiction', '3945'] )
     liste.append( ['Best séries', '36788'] )
-
+    liste.append( ['Films de Noel', '40944'] )
     #liste.append( ['nom de la liste', 'ID de la liste'] )
 
     for sTitle,sUrl in liste:
