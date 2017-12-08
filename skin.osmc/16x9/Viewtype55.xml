@@ -6,21 +6,22 @@
 		<control type="group">
 			<visible>Control.IsVisible(55)</visible>
 
-			<!-- Thumbs -->
+			<!-- Carrer -->
 			<control type="panel" id="55">
 				<left>150</left>
 				<top>170</top>
 				<width>1620</width>
 				<height>666</height>
-				<onleft>65</onleft>
-				<onright>noop</onright>
+				<onleft>63</onleft>
+				<onright condition="!Skin.HasSetting(KioskMode)">3001</onright>
 				<onup>55</onup>
 				<ondown>55</ondown>
-				<pagecontrol>65</pagecontrol>
+				<pagecontrol>63</pagecontrol>
 				<preloaditems>4</preloaditems>
-				<viewtype label="$LOCALIZE[31078]">icon</viewtype>
+				<viewtype label="Carrer">icon</viewtype>
 				<scrolltime tween="sine" easing="out">240</scrolltime>
-				<visible>Container.Content(albums) | Container.Content(addons)</visible>
+				<visible>Window.IsActive(videos)|Container.Content(albums)|Container.Content(addons)</visible>
+				<!--Container.Content(genres)|Container.Content(countries)|Container.Content(tags)|Container.Content(years)|Container.Content()|Container.Content(actors)|Container.Content(directors)|Container.Content(studios)-->
 
 				<itemlayout width="270" height="222">
 					<!-- Image - Albums -->
@@ -35,10 +36,18 @@
 						<param name="colordiffuse">DiffusePosterNF</param>
 						<param name="visible">Container.Content(addons)</param>
 					</include>
+
+					<!--content vide -->
+					<include content="image-55">
+						<param name="fallback">DefaultMovie.png</param>
+						<param name="colordiffuse">DiffusePosterNF</param>
+						<param name="visible">Window.IsActive(videos)</param>
+					</include>
+
 					<!-- Watched status -->
 					<control type="image">
 						<left>177</left>
-						<top>452</top>
+						<top>185</top>
 						<width>35</width>
 						<height>49</height>
 						<texture>$VAR[StatusOverlayWide]</texture>
@@ -47,23 +56,31 @@
 				</itemlayout>
 
 				<focusedlayout width="270" height="222">
+					<control type="group">
+						<include>FocusAnim</include>
 					<!-- Image - Albums -->
-					<include content="image-55">
-						<param name="fallback"/>
-						<param name="visible">Container.Content(albums)</param>
-					</include>
-					<!-- Image - Addons -->
-					<include content="image-55">
-						<param name="fallback">DefaultAddon.png</param>
-						<param name="visible">Container.Content(addons)</param>
-					</include>
-					<!-- Watched status -->
-					<control type="image">
-						<left>177</left>
-						<top>452</top>
-						<width>35</width>
-						<height>49</height>
-						<texture>$VAR[StatusOverlayWide]</texture>
+						<include content="image-55">
+							<param name="fallback"/>
+							<param name="visible">Container.Content(albums)</param>
+						</include>
+						<!-- Image - Addons -->
+						<include content="image-55">
+							<param name="fallback">DefaultAddon.png</param>
+							<param name="visible">Container.Content(addons)</param>
+						</include>
+						<!--content vide -->
+						<include content="image-55">
+							<param name="fallback">DefaultMovie.png</param>
+							<param name="visible">Window.IsActive(videos)</param>
+						</include>
+						<!-- Watched status -->
+						<control type="image">
+							<left>177</left>
+							<top>185</top>
+							<width>35</width>
+							<height>49</height>
+							<texture>$VAR[StatusOverlayWide]</texture>
+						</control>
 					</control>
 				</focusedlayout>
 			</control>
@@ -125,9 +142,17 @@
 				<left>34</left>
 				<width>202</width>
 				<height>202</height>
+				<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+				<aspectratio>scale</aspectratio>
+				<visible>$PARAM[visible]</visible>
+			</control>
+			<control type="image">
+				<left>34</left>
+				<width>202</width>
+				<height>202</height>
 				<colordiffuse>$PARAM[colordiffuse]</colordiffuse>
 				<texture fallback="$PARAM[fallback]" background="true">$VAR[mediaImages]</texture>
-				<aspectratio align="center">keep</aspectratio>
+				<aspectratio align="center">scale</aspectratio>
 				<visible>$PARAM[visible] + !String.IsEqual(ListItem.Icon,DefaultAlbumCover.png)</visible>
 			</control>
 		</definition>

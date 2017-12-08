@@ -112,6 +112,8 @@
 
         <setting id="plugin_disneyhd_tk" type="bool" label="DisneyHD (Films, Animés)" default="true"/>
 
+        <setting id="plugin_documentaires_streaming_com" type="bool" label="Documentaires Streaming (Documentaires)" default="true"/>
+
         <setting id="plugin_evilox" type="bool" label="Evilox (Vidéos)" default="true"/>
 
         <setting id="plugin_film_illimit_fr" type="bool" label="Film Illimité (Films)" default="true"/>
@@ -187,7 +189,7 @@
 
         <setting id="plugin_series_en_streaming_tv" type="bool" label="Series En Streaming (Séries)" default="true"/>
 
-        <setting id="plugin_skstream_co" type="bool" label="Sokrostream (Films, Séries, Animes)" default="true"/>
+        <setting id="plugin_skstream_co" type="bool" label="Skstream (Films, Séries, Animes)" default="true"/>
 
         <setting id="plugin_sokrostream_biz" type="bool" label="Sokrostream (Films, Séries)" default="true"/>
 
@@ -197,11 +199,15 @@
 
         <setting id="plugin_streamcomplet" type="bool" label="StreamComplet (Films)" default="true"/>
 
+        <setting id="plugin_streamelite" type="bool" label="StreamElite (Séries)" default="true"/>
+
         <setting id="plugin_streamfilmzzz" type="bool" label="StreamFilmzzz (Films)" default="true"/>
 
         <setting id="plugin_streaming_series_org" type="bool" label="Streaming-Series (Séries)" default="true"/>
 
         <setting id="plugin_streaming_series_xyz" type="bool" label="Streaming-series.cx (Séries)" default="true"/>
+
+        <setting id="plugin_streamingbb" type="bool" label="StreamingBB (Films)" default="true"/>
 
         <setting id="plugin_streamingk_com" type="bool" label="StreamingK (Films, Séries, Animés)" default="true"/>
 
@@ -232,9 +238,10 @@
 
         <setting id="plugin_youtitou_com" type="bool" label="YouTitou (Animés)" default="true"/>
 
-        <setting id="plugin_zone_telechargement_eu" type="bool" label="Zone Téléchargement.ru (Films, séries)" default="true"/>
-
         <setting id="plugin_zone_telechargement_ws" type="bool" label="Zone Téléchargement.ws (Films,Séries,Animés,Documentaires)" default="true"/>
+
+        <setting id="plugin_zonestreaming" type="bool" label="ZoneStreaming (Films,Séries)" default="true"/>
+
     </category>
 
     <category label="30127">

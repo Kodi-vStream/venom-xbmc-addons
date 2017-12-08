@@ -8,7 +8,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re,urllib
+import re, urllib
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
@@ -24,7 +24,6 @@ MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 
 URL_SEARCH = (URL_MAIN + '?do=search&mode=advanced&subaction=search&titleonly=3&story=', 'showMovies')
-
 URL_SEARCH_MOVIES = (URL_MAIN + '?do=search&mode=advanced&subaction=search&titleonly=3&story=', 'showMovies')
 
 def load():
@@ -62,29 +61,29 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action',URL_MAIN + 'action'] )
-    liste.append( ['Animation',URL_MAIN + 'animation'] )
-    liste.append( ['Arts-martiaux',URL_MAIN + 'arts-martiaux'] )
-    liste.append( ['Aventure',URL_MAIN + 'aventure'] )
-    liste.append( ['Biopic',URL_MAIN + 'biopic'] )
-    liste.append( ['Comédie',URL_MAIN + 'comedie'] )
-    liste.append( ['Comédie-musicale',URL_MAIN + 'comedie-musicale'] )
-    liste.append( ['Documentaire',URL_MAIN + 'documentaire'] )
-    liste.append( ['Drame',URL_MAIN + 'drame'] )
-    liste.append( ['Epouvant-horreur',URL_MAIN + 'epouvante-horreur'] )
-    liste.append( ['Espionnage',URL_MAIN + 'espionnage'] )
-    liste.append( ['Exclu',URL_MAIN + 'exclu'] )
-    liste.append( ['Famille',URL_MAIN + 'famille'] )
-    liste.append( ['Fantastique',URL_MAIN + 'fantastique'] )
-    liste.append( ['Guerre',URL_MAIN + 'guerre'] )
-    liste.append( ['Historique',URL_MAIN + 'historique'] )
-    liste.append( ['Musical',URL_MAIN + 'musical'] )
-    liste.append( ['Policier',URL_MAIN + 'policier'] )
-    liste.append( ['Romance',URL_MAIN + 'romance'] )
-    liste.append( ['Science-fiction',URL_MAIN + 'science-fiction'] )
-    liste.append( ['Thriller',URL_MAIN + 'thriller'] )
-    liste.append( ['Western',URL_MAIN + 'western'] )
-    liste.append( ['Vieux Film',URL_MAIN + 'vieux-film'] )
+    liste.append( ['Action', URL_MAIN + 'action'] )
+    liste.append( ['Animation', URL_MAIN + 'animation'] )
+    liste.append( ['Arts-martiaux', URL_MAIN + 'arts-martiaux'] )
+    liste.append( ['Aventure', URL_MAIN + 'aventure'] )
+    liste.append( ['Biopic', URL_MAIN + 'biopic'] )
+    liste.append( ['Comédie', URL_MAIN + 'comedie'] )
+    liste.append( ['Comédie musicale', URL_MAIN + 'comedie-musicale'] )#l'url sur le site n'est pas bonne
+    liste.append( ['Documentaire', URL_MAIN + 'documentaire'] )
+    liste.append( ['Drame', URL_MAIN + 'drame'] )
+    liste.append( ['Epouvante-horreur', URL_MAIN + 'epouvante-horreur'] )
+    liste.append( ['Espionnage', URL_MAIN + 'espionnage'] )
+    liste.append( ['Exclu', URL_MAIN + 'exclu'] )
+    liste.append( ['Famille', URL_MAIN + 'famille'] )
+    liste.append( ['Fantastique', URL_MAIN + 'fantastique'] )
+    liste.append( ['Guerre', URL_MAIN + 'guerre'] )
+    liste.append( ['Historique', URL_MAIN + 'historique'] )
+    liste.append( ['Musical', URL_MAIN + 'musical'] )
+    liste.append( ['Policier', URL_MAIN + 'policier'] )
+    liste.append( ['Romance', URL_MAIN + 'romance'] )
+    liste.append( ['Science-fiction', URL_MAIN + 'science-fiction'] )
+    liste.append( ['Thriller', URL_MAIN + 'thriller'] )
+    liste.append( ['Vieux Film', URL_MAIN + 'vieux-film'] )
+    liste.append( ['Western', URL_MAIN + 'western'] )
 
     for sTitle,sUrl in liste:
 
@@ -230,7 +229,7 @@ def showHosters():
 
                     HttpReponse = opener.open(url8)
                     sHosterUrl = HttpReponse.headers['Location']
-                    sHosterUrl = sHosterUrl.replace('https','http')
+                    sHosterUrl = sHosterUrl.replace('https', 'http')
                 except:
                     pass
             else:

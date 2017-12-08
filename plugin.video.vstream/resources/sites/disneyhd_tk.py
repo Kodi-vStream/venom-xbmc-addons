@@ -141,13 +141,16 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<p.+?<iframe.+?src="(.+?)".+?<\/iframe>'
+    sPattern = '<p.+?<(?:iframe|video).+?src="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sHosterUrl = str(aEntry)
+            if '/mp4/' in sHosterUrl:
+                sHosterUrl = 'http://disneyhd.tk%s' % sHosterUrl
+
             if '//goo.gl' in sHosterUrl:
                 import urllib2
                 try:

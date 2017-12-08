@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'cinemavf'
 SITE_NAME = 'CinemaVF'
 SITE_DESC = 'Films, Séries & Mangas en streaming.'
 
-URL_MAIN = 'http://cinemavf.tv/'
+URL_MAIN = 'http://filmstreamin.com/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -230,7 +230,7 @@ def showMovies(sSearch = ''):
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     sHtmlContent = aResult
-	
+
     #regex pour listage films sur la partie decoupée
     sPattern = '<div class="thumb">.+?<img src="([^<]+)" alt="(.+?)".+?<a href="(.+?)"'
 
@@ -257,7 +257,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb )
 
-            if '/serie' in sUrl or '/mangas' in sUrl:
+            if '/serie' in sUrl or '/mangas' in sUrl or '/serie' in sUrl2 or '/mangas' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'ShowSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)

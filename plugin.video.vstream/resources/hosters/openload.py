@@ -25,7 +25,7 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Openload (14/04)'
+        self.__sDisplayName = 'Openload'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
@@ -66,6 +66,8 @@ class cHoster(iHoster):
         self.__sUrl = str(sUrl)
         self.__sUrl = self.__sUrl.replace('openload.io','openload.co')
         #self.__sUrl = self.__sUrl.replace('/embed/', '/f/')
+        if self.__sUrl[-4:-3] == '.':
+            self.__sUrl = self.__sUrl.replace(self.__sUrl.split('/')[-1],"")
 
     def checkUrl(self, sUrl):
         return True

@@ -372,4 +372,12 @@ def ShowSpecialHosters():
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
+    else :
+        
+        oHoster = cHosterGui().checkHoster(sUrl)
+        if (oHoster != False):
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sUrl, sThumb)
+
     oGui.setEndOfDirectory()

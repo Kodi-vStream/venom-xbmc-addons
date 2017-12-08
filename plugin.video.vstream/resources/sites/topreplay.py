@@ -91,32 +91,30 @@ def showGenre():
 
 def showListe():
     oGui = cGui()
-    oRequestHandler = cRequestHandler(URL_MAIN)
+    oRequestHandler = cRequestHandler(URL_MAIN + '/listing-emissions.html')
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<\/span>Liste des.+?<span>(.+?)<li class="active">'
-    aResult = re.search(sPattern,sHtmlContent,re.DOTALL)
-    if (aResult):
-        sHtmlContent = aResult.group(1)
-        sPattern = '<li><a href="([^"]+)">([^<]+)<\/a><\/li>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            total = len(aResult[1])
-            dialog = cConfig().createDialog(SITE_NAME)
-            for aEntry in aResult[1]:
-                cConfig().updateDialog(dialog, total)
-                if dialog.iscanceled():
-                    break
+    sHtmlContent = oParser.abParse(sHtmlContent,'<div class="other-title">','class="clearfix">')
 
-                sTitle = aEntry[1]
-                sUrl = URL_MAIN + aEntry[0]
+    sPattern = '<li><a href="(.+?)">(.+?)<\/a><\/li>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle , 'replay.png', oOutputParameterHandler)
+            sTitle = aEntry[1]
+            sUrl = URL_MAIN + aEntry[0]
 
-            cConfig().finishDialog(dialog)
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle , 'replay.png', oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
 

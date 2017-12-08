@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<includes>
+
+<!--Large Landscape-->
+    <include name="Viewtype583">
+
+        <control type="group">
+            <visible>Control.IsVisible(583)</visible>
+            <control type="group">
+                <control type="fixedlist" id="583">
+                    <posx>120</posx>
+                    <top>170</top>
+                    <height>740</height>
+                    <width>1800</width>
+                    <onup>518</onup>
+                    <ondown>518</ondown>
+                    <onleft condition="!Skin.HasSetting(KioskMode)">3001</onleft>
+                    <onright>60</onright>
+                    <orientation>vertical</orientation>
+                    <pagecontrol>60</pagecontrol>
+                    <preloaditems>2</preloaditems>
+                    <focusposition>2</focusposition>
+                    <viewtype label="Large Landscape">list</viewtype>
+                    <scrolltime tween="quadratic">400</scrolltime>
+                    <visible>Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(Episodes)</visible>
+                    <itemlayout width="1690" height="108">
+                        <control type="group">
+                            <width>1800</width>
+                            <height>100</height>
+
+                            <control type="image">
+                                <width>1690</width>
+                                <height>100</height>
+                                <texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+                                <aspectratio>scale</aspectratio>
+                            </control>
+
+                            <control type="image">
+                                <width>550</width>
+                                <height>100</height>
+                                <texture background="true" diffuse="diffuse/wide.png">$VAR[mediaImages_landscape]</texture>
+                                <aspectratio>scale</aspectratio>
+                                <colordiffuse>DiffusePosterNF</colordiffuse>
+                            </control>
+                            <control type="label">
+                                <left>570</left>
+                                <width>1100</width>
+                                <top>8</top>
+                                <height>50</height>
+                                <align>left</align>
+                                <font>Font25</font>
+                                <textcolor>TextColor2</textcolor>
+                                <label>$INFO[ListItem.Label]</label>
+                            </control>
+                            <control type="label">
+                                <left>570</left>
+                                <width>1100</width>
+                                <top>50</top>
+                                <aligny>center</aligny>
+                                <height>38</height>
+                                <align>left</align>
+                                <font>Font25</font>
+                                <textcolor>TextColor2</textcolor>
+                                <label>$VAR[Label2]</label>
+                            </control>
+                            <control type="group">
+                                <right>8</right>
+                                <top>8</top>
+                                <include>WatchedIndicatorNormal</include>
+                             </control>
+                        </control>
+                    </itemlayout>
+                    <focusedlayout width="1690" height="318">
+                        <control type="group">
+                            <include>FocusAnim</include>
+                            <width>1800</width>
+                            <top>0</top>
+                            <height>310</height>
+
+                            <control type="image">
+                                <width>1690</width>
+                                <height>310</height>
+                                <texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+                                <aspectratio>scale</aspectratio>
+                            </control>
+
+                            <control type="image">
+                                <width>550</width>
+                                <height>310</height>
+                                <texture background="true" diffuse="diffuse/wide.png">$VAR[mediaImages_landscape]</texture>
+                                <aspectratio scalediffuse="false" align="left" aligny="center">scale</aspectratio>
+                            </control>
+                            <control type="label">
+                                <left>570</left>
+                                <width>1100</width>
+                                <top>20</top>
+                                <height>50</height>
+                                <align>left</align>
+                                <font>Font30</font>
+                                <textcolor>TextColor1</textcolor>
+                                <label>$INFO[ListItem.Label]</label>
+                            </control>
+                            <control type="label">
+                                <left>570</left>
+                                <width>1100</width>
+                                <top>70</top>
+                                <aligny>center</aligny>
+                                <height>38</height>
+                                <align>left</align>
+                                <font>Font25</font>
+                                <textcolor>TextColor2</textcolor>
+                                <label>$VAR[label2]</label>
+                            </control>
+                            <control type="textbox">
+                                <left>570</left>
+                                <right>30</right>
+                                <top>110</top>
+                                <height>188</height>
+                                <width>1100</width>
+                                <align>justify</align>
+                                <font>Font25</font>
+                                <textcolor>TextColor2</textcolor>
+                                <label>$VAR[Plot]</label>
+                                <autoscroll delay="4000" time="4000" repeat="2000">true</autoscroll>
+                            </control>
+                            <control type="group">
+                                <right>8</right>
+                                <top>8</top>
+                                <include>WatchedIndicatorNormal</include>
+                             </control>
+                        </control>
+                    </focusedlayout>
+                </control>
+                <!--vertical Scollbar-->
+                <control type="scrollbar" id="60">
+                    <left>1880</left>
+                    <top>180</top>
+                    <width>20</width>
+                    <height>720</height>
+                    <onright condition="!Skin.HasSetting(KioskMode)">3001</onright>
+                    <onleft>50</onleft>
+                    <showonepage>false</showonepage>
+                    <orientation>vertical</orientation>
+                    <colordiffuse>OverlayColorNF</colordiffuse>
+                    <texturesliderbackground border="11,1,1,1">common/ScrollBackground.png</texturesliderbackground>
+                    <texturesliderbar border="11,1,1,1">common/ScrollbarGripNF.png</texturesliderbar>
+                    <texturesliderbarfocus border="11,1,1,1" colordiffuse="DialogColor1">common/ScrollbarGripFO.png</texturesliderbarfocus>
+                    <textureslidernib>-</textureslidernib>
+                    <textureslidernibfocus>-</textureslidernibfocus>
+                    <visible>!Skin.HasSetting(Scrollbars)</visible>
+                </control>
+
+            </control>
+         </control>
+
+    </include>
+</includes>

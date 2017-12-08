@@ -158,89 +158,86 @@
 
 
 				<!-- Background -->
-				<!-- Background image -->
 				<control type="radiobutton" id="1101">
 					<width>1220</width>
 					<height>66</height>
 					<textwidth>1120</textwidth>
 					<font>Font33</font>
-					<label>$LOCALIZE[19190] 1</label>
-					<onclick>Skin.SetString(BackgroundImage,1)</onclick>
-					<selected>String.IsEmpty(Skin.String(BackgroundImage)) | String.IsEqual(Skin.String(BackgroundImage),1)</selected>
+					<label>Use default Background</label>
+					<onclick>Skin.ToggleSetting(BackgroundImage)</onclick>
+					<selected>Skin.HasSetting(BackgroundImage)</selected>
 					<visible>ControlGroup(9).HasFocus(11)</visible>
 				</control>
-				<control type="radiobutton" id="1102">
+				<!-- Background image -->
+				<!-- inutile puisque les categorie sont modifiable -->
+				<!--<control type="button" id="1106">
 					<width>1220</width>
 					<height>66</height>
 					<textwidth>1120</textwidth>
 					<font>Font33</font>
-					<label>$LOCALIZE[19190] 2</label>
-					<onclick>Skin.SetString(BackgroundImage,2)</onclick>
-					<selected>String.IsEqual(Skin.String(BackgroundImage),2)</selected>
-					<visible>ControlGroup(9).HasFocus(11)</visible>
-				</control>
-				<control type="radiobutton" id="1103">
-					<width>1220</width>
-					<height>66</height>
-					<textwidth>1120</textwidth>
-					<font>Font33</font>
-					<label>$LOCALIZE[19190] 3</label>
-					<onclick>Skin.SetString(BackgroundImage,3)</onclick>
-					<selected>String.IsEqual(Skin.String(BackgroundImage),3)</selected>
-					<visible>ControlGroup(9).HasFocus(11)</visible>
-				</control>
-				<control type="radiobutton" id="1104">
-					<width>1220</width>
-					<height>66</height>
-					<textwidth>1120</textwidth>
-					<font>Font33</font>
-					<label>$LOCALIZE[19190] 4</label>
-					<onclick>Skin.SetString(BackgroundImage,4)</onclick>
-					<selected>String.IsEqual(Skin.String(BackgroundImage),4)</selected>
-					<visible>ControlGroup(9).HasFocus(11)</visible>
-				</control>
-				<control type="radiobutton" id="1105">
-					<width>1220</width>
-					<height>66</height>
-					<textwidth>1120</textwidth>
-					<font>Font33</font>
-					<label>$LOCALIZE[33070]</label>
-					<onclick>Skin.SetString(BackgroundImage,Custom)</onclick>
-					<selected>String.IsEqual(Skin.String(BackgroundImage),Custom)</selected>
-					<visible>ControlGroup(9).HasFocus(11)</visible>
-				</control>
+					<label>- Background Browser</label>
+					<label2>$INFO[Skin.String(CustomBackground.label)]</label2>
+					<onclick>Skin.SetImage(CustomBackground)</onclick>
+					<onclick>RunScript(script.skin.helper.service,action=selectimage,skinstring=CustomBackground,header=$LOCALIZE[31646],allowmulti=true,resourceaddon=resource.images.skinbackgrounds,skinhelperbackgrounds=true)</onclick>
+					<visible>ControlGroup(9).HasFocus(11) + !Skin.HasSetting(BackgroundImage)</visible>
+					<focusedcolor>TextColor1</focusedcolor>
+					<textcolor>TextColor2</textcolor>
+				</control>-->
 				<control type="button" id="1106">
 					<width>1220</width>
 					<height>66</height>
 					<textwidth>1120</textwidth>
 					<font>Font33</font>
-					<label> - $LOCALIZE[1024]</label>
+					<label> - Backgrounds Skin</label>
 					<label2>$INFO[Skin.String(CustomBackground)]</label2>
-					<onclick>Skin.SetImage(CustomBackground)</onclick>
-					<visible>ControlGroup(9).HasFocus(11) + String.IsEqual(Skin.String(BackgroundImage),Custom)</visible>
+					<onclick>Skin.SetFile(CustomBackground, ,special://skin/extras/backgrounds)</onclick>
+					<visible>ControlGroup(9).HasFocus(11) + !Skin.HasSetting(BackgroundImage)</visible>
+					<focusedcolor>TextColor1</focusedcolor>
+					<textcolor>TextColor2</textcolor>
+				</control>
+				<control type="button" id="1107">
+					<width>1220</width>
+					<height>66</height>
+					<textwidth>1120</textwidth>
+					<font>Font33</font>
+					<label> - Backgrounds perso et Télécharger</label>
+					<label2>$INFO[Skin.String(CustomBackground)]</label2>
+					<onclick>RunScript(script.skin.helper.service,action=selectimage,skinstring=CustomBackground,resourceaddon=resource.images.skinbackgrounds)</onclick>
+					<visible>ControlGroup(9).HasFocus(11) + !Skin.HasSetting(BackgroundImage)</visible>
 					<focusedcolor>TextColor1</focusedcolor>
 					<textcolor>TextColor2</textcolor>
 				</control>
 
 				<!-- Background color -->
-				<control type="radiobutton" id="1107">
+				<control type="radiobutton" id="1108">
 					<width>1220</width>
 					<height>66</height>
 					<textwidth>1120</textwidth>
 					<font>Font33</font>
-					<label>Use default Overlay Color</label>
+					<label>Use default Overlay and Color Overlay</label>
 					<onclick>Skin.ToggleSetting(Not.OSMC.Background)</onclick>
 					<visible>ControlGroup(9).HasFocus(11)</visible>
 					<focusedcolor>TextColor1</focusedcolor>
 					<textcolor>TextColor2</textcolor>
 					<selected>Skin.HasSetting(Not.OSMC.Background)</selected>
 				</control>
-				<control type="button" id="1108">
+
+				<control type="button" id="1109">
 					<width>1220</width>
 					<height>66</height>
 					<textwidth>1120</textwidth>
 					<font>Font33</font>
-					<label> - Custom Overlay color</label>
+	                <label> - Overlay Browser</label>
+	                <label2>$INFO[Skin.String(BackgroundOverlayTexture.label)]</label2>
+	                <onclick>RunScript(script.skin.helper.service,action=OVERLAYTEXTURE)</onclick>
+					<visible>ControlGroup(9).HasFocus(11) + !Skin.HasSetting(Not.OSMC.Background)</visible>
+	            </control>
+				<control type="button" id="1110">
+					<width>1220</width>
+					<height>66</height>
+					<textwidth>1120</textwidth>
+					<font>Font33</font>
+					<label> - Overlay color</label>
 					<label2>$VAR[BackgroundColor-Name]</label2>
 					<onclick condition="System.HasAddon(script.skin.helper.colorpicker)">RunScript(script.skin.helper.colorpicker,skinstring=color.background)</onclick>
 					<onclick condition="!System.HasAddon(script.skin.helper.colorpicker)">InstallAddon(script.skin.helper.colorpicker)</onclick>
@@ -248,9 +245,19 @@
 					<focusedcolor>TextColor1</focusedcolor>
 					<textcolor>TextColor2</textcolor>
 				</control>
+				<control type="radiobutton" id="1111">
+					<width>1220</width>
+					<height>66</height>
+					<textwidth>1120</textwidth>
+					<font>Font33</font>
+					<label> - Auto Color and Overlay</label>
+					<onclick>Skin.ToggleSetting(AutoBackground)</onclick>
+					<selected>Skin.HasSetting(AutoBackground)</selected>
+					<visible>ControlGroup(9).HasFocus(11) + !Skin.HasSetting(Not.OSMC.Background)</visible>
+				</control>
 
 				<!-- Display fanart -->
-				<control type="radiobutton" id="1108">
+				<control type="radiobutton" id="1112">
 					<width>1220</width>
 					<height>66</height>
 					<textwidth>1120</textwidth>
@@ -261,7 +268,7 @@
 					<visible>ControlGroup(9).HasFocus(11)</visible>
 				</control>
 				<!-- Background video -->
-				<control type="radiobutton" id="1109">
+				<control type="radiobutton" id="1113">
 					<width>1220</width>
 					<height>66</height>
 					<textwidth>1120</textwidth>
@@ -272,7 +279,7 @@
 					<visible>ControlGroup(9).HasFocus(11)</visible>
 				</control>
 				<!-- Background visualisation -->
-				<control type="radiobutton" id="1110">
+				<control type="radiobutton" id="1114">
 					<width>1220</width>
 					<height>66</height>
 					<textwidth>1120</textwidth>
@@ -283,7 +290,7 @@
 					<visible>ControlGroup(9).HasFocus(11)</visible>
 				</control>
 				<!-- Enable artist slideshow -->
-				<control type="radiobutton" id="1110">
+				<control type="radiobutton" id="1115">
 					<width>1220</width>
 					<height>66</height>
 					<textwidth>1120</textwidth>

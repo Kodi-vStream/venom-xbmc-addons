@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+
+<!-- ancienne vue 50 list -->
+	<include name="Viewtype50">
+
+		<control type="group">
+			<visible>Control.IsVisible(50)</visible>
+
+			<!-- Image - Songs -->
+			<include content="image-51">
+				<param name="fallback">DefaultMusicSongs.png</param>
+				<param name="visible">Container.Content(songs)</param>
+			</include>
+			<!-- Image - Other -->
+			<include content="image-51">
+				<param name="fallback">DefaultFolder.png</param>
+				<param name="visible">!Container.Content(songs)</param>
+			</include>
+
+			<control type="image">
+				<left>120</left>
+				<top>225</top>
+				<width>405</width>
+				<height>600</height>
+				<texture>$INFO[ListItem.Icon]</texture>
+				<colordiffuse>OverlayColorFO</colordiffuse>
+				<aspectratio aligny="center">keep</aspectratio>
+			</control>
+
+			<!-- List -->
+			<control type="fixedlist" id="50">
+				<left>750</left>
+				<centertop>50%</centertop>
+				<width>1050</width>
+				<height>720</height>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<onleft>60</onleft>
+				<onright condition="!Skin.HasSetting(KioskMode)">3001</onright>
+				<pagecontrol>60</pagecontrol>
+				<focusposition>5</focusposition>
+				<orientation>vertical</orientation>
+				<viewtype label="535">list</viewtype>
+				<scrolltime tween="sine" easing="out">240</scrolltime>
+				<visible>[Container.Content(songs) + Window.IsVisible(musicplaylist)] | [!Container.Content(movies) + !Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(albums) + !Container.Content(songs) + !Window.IsVisible(pictures)]</visible>
+
+				<itemlayout height="60" width="1050">
+					<control type="label">
+						<left>32</left>
+						<top>0</top>
+						<width>1018</width>
+						<height>60</height>
+						<font>Font36</font>
+						<label>[LIGHT]$INFO[ListItem.Label][/LIGHT]</label>
+						<textcolor>TextColor2</textcolor>
+					</control>
+					<!-- Watched status -->
+					<control type="image">
+						<left>0</left>
+						<top>23</top>
+						<width>14</width>
+						<height>14</height>
+						<texture>$VAR[StatusOverlay]</texture>
+						<colordiffuse>OverlayColorNF</colordiffuse>
+						<animation effect="fade" start="50" end="50" condition="true">Conditional</animation>
+					</control>
+				</itemlayout>
+
+				<focusedlayout height="120" width="1050">
+					<control type="label">
+						<left>32</left>
+						<top>0</top>
+						<width>1018</width>
+						<height>120</height>
+						<font>Font72</font>
+						<label>[B]$INFO[ListItem.Label][/B]</label>
+						<textcolor>TextColor1</textcolor>
+						<scroll>True</scroll>
+						<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(50)">Conditional</animation>
+					</control>
+					<!-- Watched status -->
+					<control type="image">
+						<left>0</left>
+						<top>53</top>
+						<width>14</width>
+						<height>14</height>
+						<texture>$VAR[StatusOverlay]</texture>
+						<colordiffuse>OverlayColorFO</colordiffuse>
+						<animation effect="fade" start="100" end="50" time="200" tween="cubic" easing="out" reversible="true" condition="!Control.HasFocus(50)">Conditional</animation>
+					</control>
+				</focusedlayout>
+
+			</control>
+
+		</control>
+
+	</include>
+
+	<include name="image-50">
+		<param name="fallback">DefaultVideo.png</param>
+		<param name="visible">False</param>
+		<definition>
+			<control type="image">
+				<left>120</left>
+				<top>225</top>
+				<width>405</width>
+				<height>600</height>
+				<texture fallback="$PARAM[fallback]" background="true">$VAR[mediaImages]</texture>
+				<aspectratio aligny="center">keep</aspectratio>
+			</control>
+		</definition>
+	</include>
+
+</includes>

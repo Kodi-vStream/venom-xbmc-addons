@@ -11,115 +11,144 @@ Merci au contributeur de la bêta.
 - Mino60/Chataigne73/Kodigoal/Johngf/Gregwar/Razorex/Lolema
 =============================================================================
 =============================================================================
-- Version 0.5.6 - 28.10.2017
+- Version 0.5.7 - 08.12.2017
 =============================================================================
-27-10-2017 -- @razorex -- Update navixsport_com.py  Correction regex showmovie
-27-10-2017 -- @Lord Venom -- lang more
-27-10-2017 -- @Lord Venom -- text
-27-10-2017 -- @Lord Venom -- lang
-26-10-2017 -- @TmpName -- Merge pull request #1753 from Arias800/patch-26  Fix certain lien notamment 4k
-26-10-2017 -- @Arias800 -- Fix certain lien notamment 4k
-25-10-2017 -- @Lord Venom -- add dialog info  film similaire et recommendation dans la popup d'info
-24-10-2017 -- @TmpName -- Merge pull request #1748 from Arias800/patch-25  Fix manga
-24-10-2017 -- @Arias800 -- Fix manga
-23-10-2017 -- @TmpName -- Update hosts.json
-23-10-2017 -- @TmpName -- Update sites.json
-23-10-2017 -- @TmpName -- Merge pull request #1745 from Kodi-vStream/master  Master
-23-10-2017 -- @TmpName -- Merge pull request #1744 from Kodi-vStream/Beta  MAJ 23/10
-23-10-2017 -- @TmpName -- Update strings.po  On peut ?
-23-10-2017 -- @TmpName -- Update flashx.py
-22-10-2017 -- @Lord Venom -- add list
-22-10-2017 -- @Lord Venom -- bug recherche  recherche similaire bug recherche tmdb bug
-22-10-2017 -- @Lord Venom -- Merge pull request #1742 from mino60/patch-6  Update kepliz_com.py
-21-10-2017 -- @mino60 -- Update kepliz_com.py  Site mort nouveaux site fetayo.com
-21-10-2017 -- @Lord Venom -- Merge pull request #1737 from Arias800/patch-24  fix animes
-21-10-2017 -- @TmpName -- Update speedvid.py
-21-10-2017 -- @TmpName -- Merge pull request #1740 from Kodi-vStream/Beta  hf
-21-10-2017 -- @TmpName -- Update sites.json
-21-10-2017 -- @TmpName -- Merge pull request #1739 from Kodi-vStream/master  Master
-21-10-2017 -- @TmpName -- Merge pull request #1738 from Kodi-vStream/Beta  MAJ 21/10
-21-10-2017 -- @Arias800 -- fix animes  Pour les animes il n'y a aucun mot caracteristique
-20-10-2017 -- @Lord Venom -- poster  comportement a la c.. de Krypton
-20-10-2017 -- @Lord Venom -- bug trakt
-20-10-2017 -- @Lord Venom -- gui et lang  Bug Krypton quand la liste gui est vide. Bug langue FR color red
-20-10-2017 -- @razorex -- Add files via upload
-20-10-2017 -- @razorex -- Create streamingbb.py
-20-10-2017 -- @TmpName -- Update speedvid.py
-20-10-2017 -- @Lord Venom -- Merge pull request #1735 from Arias800/patch-23  Fix 2 bug + URL_DECRYTP de manière dynamique
-20-10-2017 -- @chataigne73 -- Update free_telechargement_org.py
-20-10-2017 -- @Arias800 -- Fix 2 bug + URL_DECRYTP de manière dynamique  Fix :
- -Le lien apparaissait apres le nom des serie
-20-10-2017 -- @Lord Venom -- bug et add
-19-10-2017 -- @Lord Venom -- Update sCat  retour input pour sCat + bug recherche acteur
-19-10-2017 -- @Lord Venom -- Merge pull request #1733 from Arias800/patch-22  Modif dl protect
-19-10-2017 -- @Arias800 -- Modif dl protect  Recupere le nom pour l'obfucateur directement dans la page
-19-10-2017 -- @TmpName -- Merge pull request #1731 from Kodi-vStream/Beta  tyuyut
-19-10-2017 -- @TmpName -- Update hosts.json
-19-10-2017 -- @TmpName -- Update sites.json
-19-10-2017 -- @TmpName -- Merge pull request #1730 from Kodi-vStream/master  Master
-19-10-2017 -- @TmpName -- Merge pull request #1729 from Kodi-vStream/Beta  MAJ 19/10
-19-10-2017 -- @Lord Venom -- lang et recherche simil
-19-10-2017 -- @Lord Venom -- bug token
-18-10-2017 -- @TmpName -- Update zone_telechargement_ws.py
-18-10-2017 -- @Lord Venom -- recherche pour l'info  recherche pour les films d'acteurs
-18-10-2017 -- @Lord Venom -- change cleaname
-18-10-2017 -- @Lord Venom -- update contrib
-17-10-2017 -- @Lord Venom -- vLang bug et home
-17-10-2017 -- @Lord Venom -- lang et opti VSlang
-17-10-2017 -- @johngf -- Update vidzi.py
-17-10-2017 -- @Lord Venom -- update
-17-10-2017 -- @Lord Venom -- bug marque vu
-16-10-2017 -- @Lord Venom -- Add Poster kodi 17
-16-10-2017 -- @Lord Venom -- news img
-16-10-2017 -- @Lord Venom -- Fanart Trakt
-16-10-2017 -- @TmpName -- Merge pull request #1724 from Kodi-vStream/Beta  bcv
-16-10-2017 -- @TmpName -- Update hosts.json
-16-10-2017 -- @TmpName -- Update sites.json
-16-10-2017 -- @TmpName -- Merge pull request #1723 from Kodi-vStream/master  Master
-16-10-2017 -- @TmpName -- Merge pull request #1722 from Kodi-vStream/Beta  MAJ 16/10
-16-10-2017 -- @Lord Venom -- host giga
-15-10-2017 -- @Lord Venom -- Merge pull request #1718 from Arias800/patch-20  Fix recherche
-15-10-2017 -- @Arias800 -- Fix recherche
-15-10-2017 -- @TmpName -- Update flashx.py
-15-10-2017 -- @johngf -- Update libertyland_tv.py
-15-10-2017 -- @johngf -- Update hoster.py
-15-10-2017 -- @johngf -- Create vidbom.py
-14-10-2017 -- @Lord Venom -- bug  Tmdb, skin, info
-14-10-2017 -- @Lord Venom -- Merge pull request #1714 from alex83100/patch-6  Update library.py
-13-10-2017 -- @alex83100 -- Update library.py
-13-10-2017 -- @Lord Venom -- Merge pull request #1713 from Arias800/patch-19  Annuler la fenetre de dialogue dans show movies
-13-10-2017 -- @TmpName -- Update packer.py
-13-10-2017 -- @Arias800 -- Annuler la fenetre de dialogue dans show movies
-13-10-2017 -- @Lord Venom -- Merci
-12-10-2017 -- @TmpName -- Update zone_telechargement_ws.py
-11-10-2017 -- @TmpName -- Merge pull request #1708 from Kodi-vStream/Beta  fgfg
-11-10-2017 -- @TmpName -- Update sites.json
-11-10-2017 -- @TmpName -- Merge pull request #1707 from Kodi-vStream/master  Master
-11-10-2017 -- @TmpName -- Merge pull request #1706 from Kodi-vStream/Beta  MAJ 11/10
-11-10-2017 -- @TmpName -- Update kepliz_com.py
-11-10-2017 -- @Lord Venom -- change Lang
-09-10-2017 -- @Lord Venom -- Remove plushoster
-09-10-2017 -- @Lord Venom -- Merge pull request #1665 from alex83100/patch-5  Update siteuptobox.py
-09-10-2017 -- @Lord Venom -- add info, fix bug tmdb  Suppression de la base de donner OBLIGATOIRE
-09-10-2017 -- @alex83100 -- Update siteuptobox.py
-08-10-2017 -- @TmpName -- Merge pull request #1703 from Kodi-vStream/Beta  dfdsf
-08-10-2017 -- @TmpName -- Update sites.json
-08-10-2017 -- @TmpName -- Merge pull request #1702 from Kodi-vStream/master  Master
-08-10-2017 -- @TmpName -- Merge pull request #1701 from Kodi-vStream/Beta  MAJ 08/10
-08-10-2017 -- @TmpName -- Merge pull request #1700 from Arias800/patch-18  Fix DLProtecte (changement de nom)
-08-10-2017 -- @Arias800 -- Fix DLProtecte (changement de nom)
-07-10-2017 -- @johngf -- Update film_illimit_fr.py
-06-10-2017 -- @razorex -- Update streamzzz_com.py
-06-10-2017 -- @razorex -- Update streamelite.py
-06-10-2017 -- @razorex -- Add files via upload
-06-10-2017 -- @razorex -- Add files via upload
-06-10-2017 -- @razorex -- Create
-06-10-2017 -- @razorex -- Create StreamElite
-06-10-2017 -- @razorex -- Create streamelite.py
-05-10-2017 -- @Lord Venom -- new docu
-02-10-2017 -- @johngf -- Update filmsvostfr_biz.py
-01-10-2017 -- @Lord Venom -- Merge pull request #1690 from Kodi-vStream/Beta  Fin 0.5.5
-01-10-2017 -- @Lord Venom -- Update hosts.json
-01-10-2017 -- @Lord Venom -- Update sites.json
-01-10-2017 -- @Lord Venom -- Merge pull request #1689 from Kodi-vStream/Beta  merge Master
-01-10-2017 -- @Lord Venom -- version 0.5.5
+08-12-2017 -- @Lord Venom -- up setting
+08-12-2017 -- @Lord Venom -- add list noel
+07-12-2017 -- @Arias800 -- Fix serie
+07-12-2017 -- @TmpName -- Update french_stream_com.py
+07-12-2017 -- @Lord Venom -- add site & ménage
+07-12-2017 -- @Lord Venom -- site HS
+06-12-2017 -- @Lord Venom -- up redirect
+05-12-2017 -- @Lord Venom -- up disney
+05-12-2017 -- @Lord Venom -- up gumgum
+05-12-2017 -- @TmpName -- Update french_stream_com.py
+05-12-2017 -- @TmpName -- Update openload.py
+05-12-2017 -- @Lord Venom -- desctive kaydo
+05-12-2017 -- @Lord Venom -- up film illimit
+04-12-2017 -- @Lord Venom -- Del  Site HS et recherche HS
+04-12-2017 -- @razorex -- Update cinemegatoil_org.py
+04-12-2017 -- @johngf -- Rename
+04-12-2017 -- @johngf -- Update topreplay.py
+03-12-2017 -- @TmpName -- Update french_stream_com.py
+01-12-2017 -- @Lord Venom -- cinemavf  Bug recherche
+01-12-2017 -- @Lord Venom -- cloudflare  Del popup
+30-11-2017 -- @razorex -- Update tvrex_net.py
+29-11-2017 -- @Lord Venom -- reup runscript
+29-11-2017 -- @Lord Venom -- runscript
+29-11-2017 -- @TmpName -- Update pluginHandler.py
+29-11-2017 -- @TmpName -- Update french_stream_com.py
+29-11-2017 -- @TmpName -- Update hoster.py
+26-11-2017 -- @TmpName -- Update uptostream.py
+25-11-2017 -- @Arias800 -- Previen l'utilisateur si il tente de faire une rechercher comprenent - de 4 caractère
+25-11-2017 -- @razorex -- Update cinemay_com.py  Suppression du menu films (doublons) et de ligne de code dans showseriesnews et showseriesList .
+25-11-2017 -- @johngf -- Update hoster.py
+25-11-2017 -- @johngf -- Update and rename watching.py to uqload.py
+24-11-2017 -- @Lord Venom -- Merge pull request #1807 from jba31/Beta  Correction annulation impossible lors de recherche global pendant ajo…
+24-11-2017 -- @Arias800 -- Update default.py
+23-11-2017 -- @johngf -- Update voirfilms_org.py
+22-11-2017 -- @Lord Venom -- Merge branch 'Beta' of https://github.com/Kodi-vStream/venom-xbmc-addons into Beta
+22-11-2017 -- @TmpName -- Update speedvid.py
+22-11-2017 -- @razorex -- Update cinemavf.py  Nouvelle URL_MAIN
+20-11-2017 -- @Lord Venom -- Update hosts.json
+20-11-2017 -- @Lord Venom -- Update sites.json
+19-11-2017 -- @razorex -- Update filmstreamvk_com.py
+19-11-2017 -- @jba31 -- Correction annulation impossible lors de recherche global pendant ajout items
+19-11-2017 -- @razorex -- Update ajouter_une_source.py
+18-11-2017 -- @Lord Venom -- Merge pull request #1805 from jbatmall/Beta  Correction barre de progression recherche global
+17-11-2017 -- @razorex -- Update streamingk_com.py  Affichage titre dans showMovies. Remplacement addMisc par addText dans showSeries
+17-11-2017 -- @jbatmall -- Correction barre de progression recherche global
+17-11-2017 -- @razorex -- Update tv_streaming_ch.py
+16-11-2017 -- @johngf -- Update topreplay.py
+16-11-2017 -- @Lord Venom -- up skin
+15-11-2017 -- @Lord Venom -- skin
+14-11-2017 -- @razorex -- Update sokrostream_biz.py
+14-11-2017 -- @TmpName -- Update speedvid.py
+14-11-2017 -- @TmpName -- Update hosts.json
+14-11-2017 -- @TmpName -- Update sites.json
+14-11-2017 -- @TmpName -- Merge pull request #1802 from Kodi-vStream/master  Master
+14-11-2017 -- @TmpName -- Merge pull request #1801 from Kodi-vStream/Beta  MAJ 14/11
+14-11-2017 -- @johngf -- alluc en test
+13-11-2017 -- @razorex -- Site down  Site down au 13/11/2017
+13-11-2017 -- @Lord Venom -- clean
+13-11-2017 -- @Lord Venom -- Merci
+12-11-2017 -- @razorex -- Update filmsvostfr_biz.py
+12-11-2017 -- @razorex -- Update filmzenstream_com.py
+12-11-2017 -- @razorex -- Update streaming_series_org.py
+11-11-2017 -- @razorex -- Add files via upload
+11-11-2017 -- @razorex -- Add files via upload
+11-11-2017 -- @razorex -- Update streaming_series_org.py
+11-11-2017 -- @razorex -- Version 0.56
+11-11-2017 -- @Lord Venom -- Update README.md
+11-11-2017 -- @Lord Venom -- ortho
+11-11-2017 -- @johngf -- alluc temporaire
+11-11-2017 -- @johngf -- Update filmsvostfr_biz.py
+10-11-2017 -- @Lord Venom -- Merge pull request #1798 from Arias800/patch-32  Le site n'existe plus
+10-11-2017 -- @Arias800 -- Le site n'existe plus
+09-11-2017 -- @razorex -- Update cinemavf.py
+09-11-2017 -- @TmpName -- Merge pull request #1794 from Arias800/patch-30  FIx sous titre
+09-11-2017 -- @TmpName -- Merge pull request #1795 from Arias800/patch-31  Fix sous titre
+09-11-2017 -- @Arias800 -- Update uptostream.py
+09-11-2017 -- @Arias800 -- FIx sous titre
+08-11-2017 -- @razorex -- Version 0.56
+08-11-2017 -- @razorex -- Update cinemay_com.py  Affichage des hosters pour les films et titre des séries.
+08-11-2017 -- @Lord Venom -- fade clavier
+08-11-2017 -- @Lord Venom -- keplis
+07-11-2017 -- @Lord Venom -- bug  reloadback librairie
+07-11-2017 -- @razorex -- Version 0.56
+06-11-2017 -- @TmpName -- Merge pull request #1786 from Kodi-vStream/Beta  ghf
+06-11-2017 -- @TmpName -- Update hosts.json
+06-11-2017 -- @TmpName -- Update sites.json
+06-11-2017 -- @TmpName -- Merge pull request #1785 from Kodi-vStream/master  Master
+06-11-2017 -- @TmpName -- Merge pull request #1784 from Kodi-vStream/Beta  MAJ 06/11
+06-11-2017 -- @Lord Venom -- Grammaire  Moi est la grammaire xD
+06-11-2017 -- @Lord Venom -- upd outils
+05-11-2017 -- @Lord Venom -- dialog reload  petit bug entre amis
+05-11-2017 -- @TmpName -- Update flashx.py
+05-11-2017 -- @Lord Venom -- Update README.md
+05-11-2017 -- @TmpName -- Update googlevideo.py
+05-11-2017 -- @TmpName -- Update kepliz_com.py
+05-11-2017 -- @Lord Venom -- lang et opti
+05-11-2017 -- @johngf -- Update french_stream_com.py
+05-11-2017 -- @johngf -- Update french_stream_com.py
+05-11-2017 -- @johngf -- Update cloudvid.py
+05-11-2017 -- @johngf -- Update hoster.py
+05-11-2017 -- @johngf -- Update tune.py
+05-11-2017 -- @johngf -- Update cinemay_com.py
+05-11-2017 -- @johngf -- Update vidzi.py
+04-11-2017 -- @Lord Venom -- Update README.md
+04-11-2017 -- @TmpName -- Update voirfilms_org.py
+04-11-2017 -- @johngf -- Update cinemay_com.py
+04-11-2017 -- @TmpName -- Update flashx.py
+04-11-2017 -- @johngf -- Update skstream_co.py
+03-11-2017 -- @TmpName -- Merge pull request #1777 from Kodi-vStream/Beta  nvbn
+03-11-2017 -- @TmpName -- Update hosts.json
+03-11-2017 -- @TmpName -- Update sites.json
+03-11-2017 -- @TmpName -- Merge pull request #1776 from Kodi-vStream/master  Master
+03-11-2017 -- @TmpName -- Merge pull request #1775 from Kodi-vStream/Beta  MAJ 03/11
+03-11-2017 -- @Lord Venom -- tmdb  reactiv cache and dialogprogress
+03-11-2017 -- @Lord Venom -- upd dialoginfo
+03-11-2017 -- @Lord Venom -- Merge pull request #1774 from Arias800/patch-28  Fix uptostream
+03-11-2017 -- @Lord Venom -- Merge pull request #1773 from Arias800/patch-29  Fix uptostream et uptobox
+03-11-2017 -- @Arias800 -- Fix uptostream et uptobox
+03-11-2017 -- @Arias800 -- Fix uptostream
+01-11-2017 -- @TmpName -- Update aadecode.py
+01-11-2017 -- @johngf -- Rename upvid.co to upvid.py
+01-11-2017 -- @johngf -- Update hoster.py
+01-11-2017 -- @johngf -- Create upvid.co
+01-11-2017 -- @Lord Venom -- Merge pull request #1768 from Arias800/patch-27  Plusieurs fix
+01-11-2017 -- @Arias800 -- Plusieurs fix
+01-11-2017 -- @Lord Venom -- zt.eu Hs
+01-11-2017 -- @Lord Venom -- upd readme
+01-11-2017 -- @TmpName -- Update jsparser.py
+01-11-2017 -- @TmpName -- Update gum_gum_streaming_com.py
+01-11-2017 -- @johngf -- Update siteuptobox.py
+30-10-2017 -- @Lord Venom -- design
+29-10-2017 -- @TmpName -- Update zone_telechargement_ws.py
+29-10-2017 -- @TmpName -- Update uptobox.py
+29-10-2017 -- @johngf -- réparation
+28-10-2017 -- @Lord Venom -- Merge pull request #1762 from Kodi-vStream/Beta  V0.5.6 sites et hots
+28-10-2017 -- @Lord Venom -- Update hosts.json
+28-10-2017 -- @Lord Venom -- Update sites.json
+28-10-2017 -- @Lord Venom -- Merge pull request #1761 from Kodi-vStream/Beta  Pull master 0.5.6
+28-10-2017 -- @Lord Venom -- V0.5.6

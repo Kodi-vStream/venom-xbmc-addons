@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<includes>
+
+<!--galerie-->
+    <include name="Viewtype581">
+
+        <control type="group">
+            <visible>Control.IsVisible(581)</visible>
+
+			<control type="wraplist" id="581">
+				<top>390</top>
+                <left>-160</left>
+                <width>2736</width>
+                <height>700</height>
+				<onleft>52</onleft>
+				<onright>52</onright>
+                <onup condition="!Skin.HasSetting(KioskMode)">3001</onup>
+				<ondown>61</ondown>
+				<viewtype label="Galerie">List</viewtype>
+				<scrolltime tween="Quadratic" easing="out">300</scrolltime>
+				<orientation>horizontal</orientation>
+				<preloaditems>2</preloaditems>
+				<focusposition>11</focusposition>
+				<pagecontrol>-</pagecontrol>
+				<visible>Container.Content(Movies) | Container.Content(Sets) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes) | Container.Content(MusicVideos)</visible>
+				<itemlayout width="58" height="800">
+					<control type="label">
+						<left>47</left>
+						<top>455</top>
+						<width>670</width>
+						<height>58</height>
+						<textcolor>TextColor2</textcolor>
+						<font>Font50</font>
+						<scroll>false</scroll>
+						<angle>90</angle>
+						<align>left</align>
+						<aligny>top</aligny>
+						<label>$INFO[ListItem.label]</label>
+					</control>
+                    <!-- Watched status -->
+                    <control type="image">
+                        <left>75</left>
+                        <top>465</top>
+                        <width>14</width>
+                        <height>14</height>
+                        <texture>$VAR[StatusOverlay]</texture>
+                        <colordiffuse>OverlayColorNF</colordiffuse>
+                        <animation effect="fade" start="50" end="50" condition="true">Conditional</animation>
+                    </control>
+				</itemlayout>
+				<focusedlayout width="873" height="480">
+					<control type="group">
+                        <include>FocusAnim</include>
+						<left>60</left>
+
+                        <control type="image">
+                            <width>853</width>
+                            <height>480</height>
+                            <texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+                            <aspectratio>scale</aspectratio>
+                        </control>
+
+						<control type="image">
+							<width>853</width>
+							<height>480</height>
+							<aspectratio aligny="center" align="center">keep</aspectratio>
+							<texture background="true" fallback="$VAR[fallback]">$VAR[mediaImages_landscape]</texture>
+							<fadetime>400</fadetime>
+						</control>
+                        <!-- Watched status -->
+    					<control type="image">
+                            <left>720</left>
+                            <top>465</top>
+                            <width>30</width>
+                            <height>42</height>
+                        	<texture>$VAR[StatusOverlayWide]</texture>
+    					</control>
+					</control>
+                    <control type="label">
+                        <left>100</left>
+                        <top>420</top>
+                        <height>30</height>
+                        <width>595</width>
+                        <textcolor>TextColor1</textcolor>
+                        <font>Font50</font>
+                        <align>left</align>
+                        <label>[LIGHT]$INFO[ListItem.Label][/LIGHT]</label>
+                    </control>
+				</focusedlayout>
+			</control>
+
+		</control>
+
+    </include>
+
+</includes>

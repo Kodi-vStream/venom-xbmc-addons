@@ -17,7 +17,8 @@ except:
 sLibrary = xbmc.translatePath(cConfig().getAddonPath()).decode("utf-8")
 sys.path.append (sLibrary)
 
-from resources.lib.util import VStranslatePath
+#from resources.lib.util import VStranslatePath
+from util import VStranslatePath
 
 
 SITE_IDENTIFIER = 'runscript'

@@ -104,12 +104,12 @@ def showAnimes():
             sTitle = str(aEntry[1])
             #sTitle = cUtil().removeHtmlTags(sTitle)
             sUrl = str(aEntry[0])
-            
+
             #traitement du titre pour compatibilite
             sTitle = sTitle.replace('(',' ').replace(')',' ').replace('-',' ')
             sTitle = re.sub('([0-9]+) .. ([0-9\?]+)','\\1-\\2',sTitle)
             sTitle = re.sub('([0-9]+) & ([0-9\?]+)','\\1-\\2',sTitle)
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -133,13 +133,13 @@ def showEpisodes():
     sPattern = '<header class="entry-header">(.+?)<footer class="entry-footer">'
     aResult = oParser.parse(sHtmlContent, sPattern)
     sUsentContent = aResult[1][0]
-    
+
     sSyn = ''
     sPattern = 'Synopsis:.+? ([^<]+)</h5>'
     aSynResult = oParser.parse(sUsentContent, sPattern)
     if aSynResult[0]:
         sSyn = aSynResult[1][0]
-        
+
     sThumb = ''
     sPattern = '<h4 style=".+?"><img class="alignright" src="(.+?)"'
     sThumbResult = oParser.parse(sUsentContent, sPattern)
@@ -221,7 +221,7 @@ def showMovies():
                 break
             sTitle = str(aEntry[1])
             sUrl = str(aEntry[0])
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -272,12 +272,27 @@ def showHosters():
     oParser = cParser()
     sPattern = '<div class="video-container"><iframe.+?src="([^<>"]+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             #xbmc.log(aEntry)
             sHosterUrl = str(aEntry)
             if not sHosterUrl.startswith('http:') and not sHosterUrl.startswith('https:'):
                 sHosterUrl = 'http:' + sHosterUrl
+
+
+            # if 'goo.gl' in sHosterUrl or 'bit.ly' in sHosterUrl:
+            #     try:
+            #         import requests
+            #         url = sHosterUrl
+            #         session = requests.Session()  # so connections are recycled
+            #         resp = session.head(url, allow_redirects=True)
+            #         sHosterUrl = resp.url
+            #     except:
+            #         pass
+
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sTitle)

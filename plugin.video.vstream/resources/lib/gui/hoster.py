@@ -226,7 +226,7 @@ class cHosterGui:
             return self.getHoster('vimeo')
         if ('openload' in sHostName):
             return self.getHoster('openload')
-        if ('oload.co' in sHostName):
+        if ('oload.' in sHostName):
             return self.getHoster('openload')
         if (('thevideo.me' in sHostName) or ('video.tt' in sHostName)):
             return self.getHoster('thevideo_me')
@@ -234,8 +234,8 @@ class cHosterGui:
             return self.getHoster('vidme')
         if ('zstream' in sHostName):
             return self.getHoster('zstream')
-        if ('watching' in sHostName):
-            return self.getHoster('watching')
+        if ('uqload.' in sHostName):
+            return self.getHoster('uqload')
         if ('letwatch' in sHostName):
             return self.getHoster('letwatch')
         if ('easyvid' in sHostName):
@@ -308,6 +308,13 @@ class cHosterGui:
             return self.getHoster('upvid')
         if ('cloudvid' in sHostName):
             return self.getHoster('cloudvid')
+        if ('clickopen' in sHostName):
+            return self.getHoster('clickopen')
+        if ('iframe-secured' in sHostName):
+            return self.getHoster('iframe_secured')
+        if ('goo.gl' in sHostName or 'bit.ly' in sHostName):
+            return self.getHoster('allow_redirects')
+
 
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
@@ -323,7 +330,7 @@ class cHosterGui:
             return self.getHoster('lien_direct')
 
         #Si aucun hebergeur connu on teste les liens directs
-        if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8'):
+        if (sHosterUrl[-4:] in '.mp4.avi.flv.m3u8.webm'):
             return self.getHoster('lien_direct')
 
         return False
