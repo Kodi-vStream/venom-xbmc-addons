@@ -7,15 +7,25 @@
 		<control type="group">
 			<visible>Control.IsVisible(584)</visible>
 
-			<control type="image">
-				<left>120</left>
-				<top>225</top>
-				<width>405</width>
-				<height>600</height>
-				<texture>$INFO[ListItem.Icon]</texture>
-				<colordiffuse>OverlayColorFO</colordiffuse>
-				<aspectratio aligny="center">keep</aspectratio>
-			</control>
+
+			<include content="image-full">
+				<param name="texture">$INFO[ListItem.Art(poster)]</param>
+				<param name="aspectratio">scale</param>
+				<param name="visible">!IsEmpty(ListItem.Art(poster))</param>
+			</include>
+
+			<include content="image-full">
+				<param name="texture">$INFO[ListItem.Art(fanart)]</param>
+				<param name="aspectratio">scale</param>
+				<param name="visible">IsEmpty(ListItem.Art(poster))+!IsEmpty(ListItem.Art(fanart))</param>
+			</include>
+
+			<include content="image-full">
+				<param name="texture">$INFO[ListItem.Icon]</param>
+				<param name="aspectratio">keep</param>
+				<param name="visible">IsEmpty(ListItem.Art(poster))+IsEmpty(ListItem.Art(fanart))+!IsEmpty(ListItem.Icon)</param>
+			</include>
+
 
 			<control type="group">
 				<top>225</top>
@@ -30,14 +40,15 @@
 					<aspectratio>scale</aspectratio>
 				</control>
 
+
 				<control type="label">
-					<top>20</top>
+					<top>30</top>
 					<left>40</left>
 					<width>1010</width>
 					<height>60</height>
 					<font>Font72</font>
 					<align>center</align>
-					<label>[LIGHT]$INFO[ListItem.Label][/LIGHT]</label>
+					<label>$INFO[ListItem.Label]</label>
 					<textcolor>TextColor1</textcolor>
 				</control>
 
@@ -61,25 +72,27 @@
 
 				<control type="list">
 					<left>40</left>
-					<top>50</top>
+					<top>80</top>
 					<width>1010</width>
 					<height>600</height>
 
-					<itemlayout width="410" height="52">
+					<itemlayout width="410" height="45">
 						<control type="label">
 							<width>1010</width>
 							<height>52</height>
 							<align>left</align>
+							<font>font30</font>
 							<label>$INFO[ListItem.Label]</label>
 							<textcolor>TextColor2</textcolor>
 							<align>center</align>
 						</control>
 					</itemlayout>
-					<focusedlayout width="410" height="52">
+					<focusedlayout width="410" height="45">
 						<control type="label">
 							<width>1010</width>
 							<height>52</height>
 							<align>left</align>
+							<font>font30</font>
 							<label>$INFO[ListItem.Label]</label>
 							<textcolor>TextColor2</textcolor>
 							<align>center</align>
@@ -130,7 +143,7 @@
 				<pagecontrol>60</pagecontrol>
 				<focusposition>5</focusposition>
 				<orientation>vertical</orientation>
-				<viewtype label="Carrer Info">list</viewtype>
+				<viewtype label="Carrer Large">list</viewtype>
 				<scrolltime tween="sine" easing="out">240</scrolltime>
 				<visible>Window.IsActive(videos)</visible>
 
@@ -191,6 +204,23 @@
 				<colordiffuse>$PARAM[colordiffuse]</colordiffuse>
 				<texture fallback="$PARAM[fallback]" background="true">$VAR[mediaImages]</texture>
 				<aspectratio align="center">scale</aspectratio>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+
+	<include name="image-full">
+		<param name="texture">$INFO[ListItem.Icon]</param>
+		<param name="aspectratio">keep</param>
+		<param name="visible">False</param>
+		<definition>
+			<control type="image">
+				<left>120</left>
+				<top>225</top>
+				<width>405</width>
+				<height>600</height>
+				<texture>$PARAM[texture]</texture>
+				<aspectratio aligny="center">$PARAM[aspectratio]</aspectratio>
 				<visible>$PARAM[visible]</visible>
 			</control>
 		</definition>
