@@ -9,9 +9,20 @@
 		<control type="group">
 			<visible>Control.IsVisible(50)</visible>
 
+			<control type="image">
+				<top>220</top>
+				<left>120</left>
+				<width>1680</width>
+				<height>640</height>
+				<texture colordiffuse="$VAR[OverlayColor]">dialogs/Background.png</texture>
+				<aspectratio>scale</aspectratio>
+			</control>
+
 
 			<!-- Media image - not episodes -->
 			<control type="group">
+				<left>20</left>
+				<top>10</top>
 				<visible>!Container.Content(episodes)</visible>
 
 				<!-- Movies -->
@@ -33,8 +44,8 @@
 
 			<!-- Episode Info -->
 			<control type="group">
-				<left>120</left>
-				<top>190</top>
+				<left>140</left>
+				<top>240</top>
 				<visible>Container.Content(episodes)</visible>
 
 				<control type="group">
@@ -94,15 +105,15 @@
 			<!-- List -->
 			<control type="fixedlist" id="50">
 				<left>750</left>
-				<centertop>50%</centertop>
+				<top>250</top>
 				<width>1050</width>
-				<height>700</height>
+				<height>580</height>
 				<onup>50</onup>
 				<ondown>50</ondown>
 				<onleft>60</onleft>
 				<onright condition="!Skin.HasSetting(KioskMode)">3001</onright>
 				<pagecontrol>60</pagecontrol>
-				<focusposition>4</focusposition>
+				<focusposition>3</focusposition>
 				<orientation>vertical</orientation>
 				<viewtype label="535">list</viewtype>
 				<scrolltime tween="sine" easing="out">240</scrolltime>

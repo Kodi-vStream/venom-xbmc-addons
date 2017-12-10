@@ -267,6 +267,7 @@ def showHosters():
 
     #news Format
     if not sLink:
+
         sPattern = '<iframe src="(.+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0]):
@@ -447,6 +448,7 @@ def showHostersLink3():
     sPattern = 'file:"(.+?)".+?label:"(.+?)"'
     aResult = oParser.parse(data, sPattern)
 
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -460,6 +462,7 @@ def showHostersLink3():
             sQual = aEntry[1]
             sTitle = sMovieTitle.replace(' [HD]','')
             sTitle = '[' + sQual + '] ' + sTitle
+
 
             if (False):
                 #decodage des liens
@@ -478,9 +481,13 @@ def showHostersLink3():
                     sLink2 = e.geturl()
                     sHosterUrl = str(sLink2)
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
+            elif "amazonaws.com" in sLink2:
+                sHosterUrl = str(sLink2)
+                oHoster = cHosterGui().getHoster('lien_direct')
             else:
                 sHosterUrl = str(sLink2)
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
+
 
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sTitle)

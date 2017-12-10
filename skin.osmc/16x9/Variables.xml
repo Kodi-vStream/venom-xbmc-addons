@@ -105,7 +105,7 @@
 		<value condition="System.Time(13:01,14:00)">b3017b9c</value>
 		<value condition="System.Time(14:01,15:00)">b352a176</value>
 		<value condition="System.Time(15:01,16:00)">b3a60943</value>
-		<value condition="System.Time(16:01,17:00)">b3da7a12</value>
+		<value condition="System.Time(16:01,17:00)">b38dc4df</value>
 		<value condition="System.Time(17:01,18:00)">b306a5f3</value>
 		<value condition="System.Time(18:01,19:00)">b31389c2</value>
 		<value condition="System.Time(19:01,20:00)">b3c6f0cc</value>
@@ -662,6 +662,16 @@
 		<value condition="!IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
 		<value>$INFO[ListItem.Icon]</value>
 	</variable>
+
+	<variable name="mediaImages_poster">
+		<value condition="Container.Content(Seasons) + !IsEmpty(ListItem.Art(season.poster))">$INFO[ListItem.Art(season.poster)]</value>
+		<value condition="Container.Content(Episodes) + !IsEmpty(ListItem.Art(season.poster))">$INFO[ListItem.Art(season.poster)]</value>
+		<value condition="!IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
+		<value condition="!IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
+		<value>$INFO[ListItem.Icon]</value>
+	</variable>
+
+
 
 	<!-- Media images -->
 	<variable name="mediaImages_landscape">

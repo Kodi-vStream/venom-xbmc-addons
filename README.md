@@ -5,7 +5,13 @@ Sommaire: **[A Propos](#a-propos)** | **[Image](#image)** | **[Installer](#insta
 
 ## A Propos!
 
-Vstream est un addon pour xbmc qui vous permet de visionner en streaming un grand nombre de sources video (comme la télévision, les films, les séries, les mangas, les documentaires, etc..) il vous est même possible de télécharger certaine source, de les mettre en favoris ou de voir la bande annonce. Le tout depuis XBMC et 100% français.
+vStream est un addon pour xbmc qui vous permet de visionner en streaming un grand nombre de sources video (comme la télévision, les films, les séries, les mangas, les documentaires, etc..) il vous est même possible de télécharger certaine source, de les mettre en favoris ou de voir la bande annonce. Le tout depuis KODI et 100% français.
+
+## A Savoir!
+
+vStream n'est pas affilié avec KODI, URL-Resoler, ou autres services payants, il n'est pas préinstallé sur des box Android ou tout autres systèmes. Il n'a pas d'autre URL de téléchargement que ce Github. Il est gratuit et n'a pas d'assistance online.
+vStream est programmé par la communauté de ce Github sans fin commercial. Ce Github est un espace de discussions pour les contributeurs et le suivi de la programmation (bug, idée etc..).
+Si vous proposez des liens de téléchargement ou l'installation de vStream Merci de citer ce Github et les contributeurs.
 
 ## Image!
 

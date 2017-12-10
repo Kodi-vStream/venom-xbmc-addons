@@ -311,7 +311,8 @@
 					<font>Font33</font>
 					<label>$LOCALIZE[31067]</label>
 					<label2>$VAR[weather-icons]</label2>
-					<onclick condition="System.HasAddon(script.image.resource.select)">RunScript(script.image.resource.select,property=weatherIcons&amp;type=resource.images.weathericons)</onclick>
+					<onclick>RunScript(script.skin.helper.service,action=setskinsetting,setting=defaultcolorpalette,header=test)</onclick>
+					<!--<onclick condition="System.HasAddon(script.image.resource.select)">RunScript(script.image.resource.select,property=weatherIcons&amp;type=resource.images.weathericons)</onclick>-->
 					<onclick condition="!System.HasAddon(script.image.resource.select)">InstallAddon(script.image.resource.select)</onclick>
 					<visible>ControlGroup(9).HasFocus(13)</visible>
 					<focusedcolor>TextColor1</focusedcolor>
@@ -340,6 +341,17 @@
 					<visible>ControlGroup(9).HasFocus(13) + Skin.HasSetting(weatherFanart.multi)</visible>
 					<textcolor>TextColor2</textcolor>
 				</control>
+				<!--<control type="button" id="1204">
+					<description>Movie Genre Icons</description>
+					<width>1220</width>
+					<height>66</height>
+					<font>Font33</font>
+					<label>Genre Icon</label>
+					<label2>$INFO[Skin.String(MovieGenreIconPack.name)]</label2>
+					<onclick condition="System.HasAddon(script.image.resource.select)">RunScript(script.image.resource.select,property=MovieGenreIconPack&amp;type=resource.images.moviegenreicons)</onclick>
+					<onclick condition="!System.HasAddon(script.image.resource.select)">InstallAddon(script.image.resource.select)</onclick>
+					<visible>ControlGroup(9).HasFocus(13)</visible>
+				</control>-->
 
 
 				<!-- Advanced -->
