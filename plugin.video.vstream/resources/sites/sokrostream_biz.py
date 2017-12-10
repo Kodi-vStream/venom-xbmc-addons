@@ -446,7 +446,6 @@ def showEpisode():
 
     sPattern = '<a href="([^"]+)".+?>(E.+?)</button>'
 
-
     aResult = oParser.parse(sHtmlContent, sPattern)
     cConfig().log(aResult)
     if (aResult[0] == True):
@@ -484,28 +483,32 @@ def showHosters():
 
     sHtmlContent = oParser.abParse(sHtmlContent,'window.__NUXT__=',';</script>',16)
 
+    page = None
     if '-episode-' in sUrl:
         page = json.loads(sHtmlContent)
         page = page["data"][0]["data"]["episode"][0]["videos"]
-        aResult = [x["link"] for x in page]
+        #aResult = [x["link"] for x in page]
     else:
         page = json.loads(sHtmlContent)
         page = page["data"][0]["data"]["videos"]
-        aResult = [x["link"] for x in page]
+        #aResult = [x["link"] for x in page]
 
-    if (aResult):
-        total = len(aResult)
+    #cConfig().log(str(page))
+        
+    if (page):
+        total = len(page)
         dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult:
+        for aEntry in page:
 
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
 
-            sHosterUrl = aEntry
+            sHosterUrl = aEntry["link"]
+            sDisplayTitle = cUtil().DecoTitle(sMovieTitle + ' (' + aEntry["language"] + ')' )
+            
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
