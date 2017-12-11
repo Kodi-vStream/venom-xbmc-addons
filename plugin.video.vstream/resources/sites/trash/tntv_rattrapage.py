@@ -14,6 +14,7 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re,unicodedata
 
+#11/12/17 le site fonctionne mais pas verifier
 SITE_IDENTIFIER = 'tntv_rattrapage'
 SITE_NAME = 'Tntv-rattrapage'
 SITE_DESC = 'Replay TV'
