@@ -341,7 +341,7 @@ class cDownload:
         
         #recherche d'une extension
         sUrl = sUrl.lower()
-        m = re.search('(flv|avi|mp4|mpg|mpeg)', sUrl)
+        m = re.search('(flv|avi|mp4|mpg|mpeg|mkv)', sUrl)
         if m:
             sTitle = sTitle + '.' + m.group(0)
         else:
