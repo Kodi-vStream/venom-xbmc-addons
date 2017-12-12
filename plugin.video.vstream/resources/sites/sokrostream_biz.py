@@ -338,11 +338,11 @@ def showMovies(sSearch = ''):
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+    sHtmlContent2 = oRequestHandler.request()
 
     oParser = cParser()
 
-    sHtmlContent = oParser.abParse(sHtmlContent,'<section class="box"','<div class="pagination-fix"')
+    sHtmlContent = oParser.abParse(sHtmlContent2,'<section class="box"','<div class="pagination-fix"')
     sPattern = 'data-v-.+?<a href="([^"]+)".+?<img src="(.+?)" alt="(.+?)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -376,7 +376,7 @@ def showMovies(sSearch = ''):
 
         cConfig().finishDialog(dialog)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage = __checkForNextPage(sHtmlContent2)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
@@ -387,10 +387,10 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<span class="current">.+?<a class="page larger" href=\'(.+?)\'>'
+    sPattern = 'class="pagination-link is-current".+?<a href="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return aResult[1][0]
+        return URL_MAIN[:-1]+aResult[1][0]
 
     return False
 
