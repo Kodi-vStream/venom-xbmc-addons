@@ -17,14 +17,14 @@ SITE_IDENTIFIER = 'cinemay_com'
 SITE_NAME = 'Cinemay'
 SITE_DESC = 'Films & Séries en streaming'
 
-URL_MAIN = 'http://www.cinemay.com/'
+URL_MAIN = 'http://2017.cinemay.com/'
 
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
-SERIE_SERIES = (URL_MAIN + 'series-list/', 'showSeriesList')
 SERIE_NEWS = (URL_MAIN ,'showSeriesNews')
+SERIE_SERIES = (URL_MAIN + 'series-tv-streaming/', 'showSeriesList')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -121,7 +121,7 @@ def showMovies(sSearch=''):
             #encode/decode pour affichage des accents
             sTitle = unicode(aEntry[1], 'utf-8')
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode("unicode_escape")
-            sTitle = sTitle.encode("latin-1")
+            sTitle = sTitle.encode("latin-1").replace('&#8230;', '...').replace('&#8217;', '\'')
 
             sThumb = aEntry[2]
             sUrl = aEntry[0]
@@ -131,7 +131,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             
-            if 'series/' in sUrl:
+            if '/series/' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
@@ -156,48 +156,6 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
-def showSeries():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumb = oInputParameterHandler.getValue('sThumb')
-    
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<span class="title">(.+?)<i>|<div class="numerando">(.+?)<\/div>.+?<a href="(.+?)">'
-
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
-        
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-
-            if aEntry[0]:
-                sSaison = aEntry[0]
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sSaison + '[/COLOR]')
-            else:
-                sUrl = aEntry[2]
-                sTitle =  aEntry[1].replace(' x ', '').replace(' ', '') + ' ' + sMovieTitle
-
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-        cConfig().finishDialog(dialog)
-
-    oGui.setEndOfDirectory()
-    
 def showSeriesNews():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -232,7 +190,51 @@ def showSeriesNews():
 
     oGui.setEndOfDirectory()
     
+def showSeries():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '<div class="poster dsdataposter".+?img src="(.+?)"|<span class="title">(.+?)<i>|<div class="numerando">(.+?)<\/div>.+?<a href="(.+?)">'
+
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    sThumb = ''
+
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+        
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
+            if aEntry[0]:
+                sThumb = aEntry[0]
+            elif aEntry[1]:
+                sSaison = aEntry[1]
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sSaison + '[/COLOR]')
+            else:
+                sUrl = aEntry[3]
+                sTitle =  aEntry[2].replace(' x ', '').replace(' ', '') + ' ' + sMovieTitle
+
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()
+
 def showSeriesList():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -241,7 +243,7 @@ def showSeriesList():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    sPattern = '<td class="mlnh-thumb">.+?<a href="([^"]+)" title="(.+?)".+?img src="([^"]+)"'
+    sPattern = '<li class="alpha-title"><h3>([^"]+)</h3>|</li><li class="item-title">.+?href="([^"]+)">(.+?)</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -252,15 +254,16 @@ def showSeriesList():
             if dialog.iscanceled():
                 break
                 
-            sUrl = aEntry[0]
-            sTitle =  aEntry[1].replace('&lsquo;', '\'').replace('&#8230;', '...').replace('&#8212;', '-')
-            sThumb = aEntry[2]
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+            else:
+                sUrl = aEntry[1]
+                sTitle =  aEntry[2].replace('&lsquo;', '\'').replace('&#8230;', '...').replace('&#8212;', '-')
             
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', '', '', oOutputParameterHandler)
             
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
