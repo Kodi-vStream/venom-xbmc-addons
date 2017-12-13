@@ -23,17 +23,17 @@ URL_SEARCH_MOVIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=9
 URL_SEARCH_SERIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=10&story=', 'showSeries')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_NEWS = (URL_MAIN + 'film-en-streaming/', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'film/', 'showMovies')
 MOVIE_VF = (URL_MAIN + 'film-en-streaming/vf/', 'showMovies')
 MOVIE_VOSTFR = (URL_MAIN + 'film-en-streaming/vostfr/', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'film-en-streaming/hd-vf/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
-SERIE_NEWS = (URL_MAIN + 'serie-tv-en-streaming/', 'showSeries')
-SERIE_SERIES = (URL_MAIN + 'serie-tv-en-streaming/', 'showSeries')
-SERIE_VFS = (URL_MAIN + 'serie-tv-en-streaming/serie-en-vf-streaming/', 'showSeries')
-SERIE_VOSTFRS = (URL_MAIN + 'serie-tv-en-streaming/serie-en-vostfr-streaming/', 'showSeries')
+SERIE_NEWS = (URL_MAIN + 'serie/', 'showSeries')
+SERIE_SERIES = (URL_MAIN + 'serie/', 'showSeries')
+SERIE_VFS = (URL_MAIN + 'serie/serie-en-vf-streaming/', 'showSeries')
+SERIE_VOSTFRS = (URL_MAIN + 'serie/serie-en-vostfr-streaming/', 'showSeries')
 SERIE_GENRES = (True, 'showSerieGenres')
 
 def decode_url_Serie(url,id,tmp = ''):
@@ -47,24 +47,24 @@ def decode_url_Serie(url,id,tmp = ''):
         id2 = id[6:]
         fields = url.split('nbsp')
         t = base64.b64encode(base64.b64encode(fields[1]))
-        v = "/s.php?p_id=1&&c_id="+t
+        v = "/s.php?p_id=1&&c_id=" + t
         
     if id == 'honey':
         id2 = id[6:]
         fields = url.split('nbsp')
         t = base64.b64encode(base64.b64encode(fields[1]))
-        v = "/s.php?p_id=1&&c_id="+t
+        v = "/s.php?p_id=1&&c_id=" + t
         
     if id == 'yoyo':
         id2 = id[5:]
         fields = url.split('nbsp')
         t = base64.b64encode(base64.b64encode(fields[1]))
-        v = "/s.php?p_id=1&&c_id="+t
+        v = "/s.php?p_id=1&&c_id=" + t
         
     if id == 'seriePlayer':
         fields = url.split('nbsp')
         t = base64.b64encode(base64.b64encode(fields[1]))
-        v = "/s.php?p_id=1&&c_id="+t
+        v = "/s.php?p_id=1&&c_id=" + t
         
     return v
 
@@ -85,22 +85,22 @@ def decode_url(url,id,tmp = ''):
     if id == 'gGotop2':
         fields = url.split('nbsp')
         t = base64.b64encode(base64.b64encode(fields[1]))
-        v = "/f.php?p_id=2&&c_id="+t
+        v = "/f.php?p_id=2&&c_id=" + t
         
     if id == 'gGotop3':
         fields = url.split('nbsq')
         t = base64.b64encode(base64.b64encode(fields[1]))
-        v = "/f.php?p_id=3&&c_id="+t
+        v = "/f.php?p_id=3&&c_id=" + t
         
     if id == 'gGotop4':
         fields = url.split('nbsr')
         t = base64.b64encode(base64.b64encode(fields[1]))
-        v = "/f.php?p_id=4&&c_id="+t
+        v = "/f.php?p_id=4&&c_id=" + t
         
     if id == 'gGotop5':
         fields = url.split('nbss')
         t = base64.b64encode(base64.b64encode(fields[1]))
-        v = "/dl.php?p_id=5&&c_id="+t
+        v = "/dl.php?p_id=5&&c_id=" + t
         
     return v
     
@@ -201,33 +201,33 @@ def showMovieGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action',URL_MAIN + 'xfsearch/genre-1/action/'] )
-    liste.append( ['Animation',URL_MAIN +'xfsearch/genre-1/animation/'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'xfsearch/genre-1/arts+Martiaux/'] )
-    liste.append( ['Aventure',URL_MAIN + 'xfsearch/genre-1/aventure/'] )
-    liste.append( ['Biopic',URL_MAIN + 'xfsearch/genre-1/biopic/'] )
-    liste.append( ['Comédie',URL_MAIN + 'xfsearch/genre-1/comédie/'] )
-    liste.append( ['Comédie Dramatique',URL_MAIN + 'xfsearch/genre-1/comédie+dramatique/'] )
-    liste.append( ['Comédie Musicale',URL_MAIN + 'xfsearch/genre-1/comédie+musicale/'] )
-    liste.append( ['Documentaire',URL_MAIN + 'xfsearch/genre-1/documentaire/'] )
-    liste.append( ['Drame',URL_MAIN + 'xfsearch/genre-1/drame/'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'xfsearch/genre-1/epouvante-horreur/'] )
-    liste.append( ['Erotique',URL_MAIN + 'xfsearch/genre-1/erotique/'] )
-    liste.append( ['Espionnage',URL_MAIN + 'xfsearch/genre-1/espionnage/'] )
-    liste.append( ['Famille',URL_MAIN + 'xfsearch/genre-1/famille/'] )
-    liste.append( ['Fantastique',URL_MAIN + 'xfsearch/genre-1/fantastique/'] )
-    liste.append( ['Guerre',URL_MAIN + 'xfsearch/genre-1/guerre/'] )
-    liste.append( ['Historique',URL_MAIN + 'xfsearch/genre-1/historique/'] )
-    liste.append( ['Musical',URL_MAIN + 'xfsearch/genre-1/musical/'] )
-    liste.append( ['Policier',URL_MAIN + 'xfsearch/genre-1/policier/'] )
-    liste.append( ['Péplum',URL_MAIN + 'xfsearch/genre-1/peplum/'] )
-    liste.append( ['Romance',URL_MAIN + 'xfsearch/genre-1/romance/'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'xfsearch/genre-1/science+fiction/'] )
-    liste.append( ['Spectacle',URL_MAIN + 'xfsearch/genre-1/spectacle/'] )
-    liste.append( ['Thriller',URL_MAIN + 'xfsearch/genre-1/thriller/'] )
-    liste.append( ['Walt Disney',URL_MAIN + 'xfsearch/Walt+Disney+Animation/'] )
-    liste.append( ['Western',URL_MAIN + 'xfsearch/genre-1/western/'] )
-    liste.append( ['Divers',URL_MAIN + 'xfsearch/genre-1/divers/'] )
+    liste.append( ['Action', URL_MAIN + 'xfsearch/genre-1/action/'] )
+    liste.append( ['Animation', URL_MAIN +'xfsearch/genre-1/animation/'] )
+    liste.append( ['Arts Martiaux', URL_MAIN + 'xfsearch/genre-1/arts+Martiaux/'] )
+    liste.append( ['Aventure', URL_MAIN + 'xfsearch/genre-1/aventure/'] )
+    liste.append( ['Biopic', URL_MAIN + 'xfsearch/genre-1/biopic/'] )
+    liste.append( ['Comédie', URL_MAIN + 'xfsearch/genre-1/comédie/'] )
+    liste.append( ['Comédie Dramatique', URL_MAIN + 'xfsearch/genre-1/comédie+dramatique/'] )
+    liste.append( ['Comédie Musicale', URL_MAIN + 'xfsearch/genre-1/comédie+musicale/'] )
+    liste.append( ['Documentaire', URL_MAIN + 'xfsearch/genre-1/documentaire/'] )
+    liste.append( ['Drame', URL_MAIN + 'xfsearch/genre-1/drame/'] )
+    liste.append( ['Epouvante Horreur', URL_MAIN + 'xfsearch/genre-1/epouvante-horreur/'] )
+    liste.append( ['Erotique', URL_MAIN + 'xfsearch/genre-1/erotique/'] )
+    liste.append( ['Espionnage', URL_MAIN + 'xfsearch/genre-1/espionnage/'] )
+    liste.append( ['Famille', URL_MAIN + 'xfsearch/genre-1/famille/'] )
+    liste.append( ['Fantastique', URL_MAIN + 'xfsearch/genre-1/fantastique/'] )
+    liste.append( ['Guerre', URL_MAIN + 'xfsearch/genre-1/guerre/'] )
+    liste.append( ['Historique', URL_MAIN + 'xfsearch/genre-1/historique/'] )
+    liste.append( ['Musical', URL_MAIN + 'xfsearch/genre-1/musical/'] )
+    liste.append( ['Policier', URL_MAIN + 'xfsearch/genre-1/policier/'] )
+    liste.append( ['Péplum', URL_MAIN + 'xfsearch/genre-1/peplum/'] )
+    liste.append( ['Romance', URL_MAIN + 'xfsearch/genre-1/romance/'] )
+    liste.append( ['Science Fiction', URL_MAIN + 'xfsearch/genre-1/science+fiction/'] )
+    liste.append( ['Spectacle', URL_MAIN + 'xfsearch/genre-1/spectacle/'] )
+    liste.append( ['Thriller', URL_MAIN + 'xfsearch/genre-1/thriller/'] )
+    liste.append( ['Walt Disney', URL_MAIN + 'xfsearch/Walt+Disney+Animation/'] )
+    liste.append( ['Western', URL_MAIN + 'xfsearch/genre-1/western/'] )
+    liste.append( ['Divers', URL_MAIN + 'xfsearch/genre-1/divers/'] )
 
     for sTitle,sUrl in liste:
 
@@ -241,32 +241,32 @@ def showSerieGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action',URL_MAIN +'xfsearch/genre-serie/Action/'] )
-    liste.append( ['Animation',URL_MAIN+'xfsearch/genre-serie/Animation/'])
-    liste.append( ['Arts Martiaux',URL_MAIN + 'xfsearch/genre-serie/Arts+Martiaux/'] )
-    liste.append( ['Aventure',URL_MAIN + 'xfsearch/genre-serie/Aventure/'])
-    liste.append( ['Biopic',URL_MAIN + 'xfsearch/genre-serie/Biopic/'])
-    liste.append( ['Comédie',URL_MAIN + 'xfsearch/genre-serie/Comédie/'])
-    liste.append( ['Comédie Dramatique',URL_MAIN + 'xfsearch/genre-serie/Comédie+dramatique/'] )
-    liste.append( ['Comédie Musicale',URL_MAIN + 'xfsearch/genre-serie/Comédie+musicale/'] )
-    liste.append( ['Documentaire',URL_MAIN + 'xfsearch/genre-serie/Documentaire/'] )
-    liste.append( ['Drame',URL_MAIN + 'xfsearch/genre-serie/Drame/'])
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'xfsearch/genre-serie/Epouvante-horreur/'] )
-    liste.append( ['Espionnage',URL_MAIN + 'xfsearch/genre-serie/Espionnage/'])
-    liste.append( ['Famille',URL_MAIN + 'xfsearch/genre-serie/Famille/'])
-    liste.append( ['Fantastique',URL_MAIN + 'xfsearch/genre-serie/Fantastique/'] )
-    liste.append( ['Guerre',URL_MAIN + 'xfsearch/genre-serie/Guerre/'])
-    liste.append( ['Historique',URL_MAIN + 'xfsearch/genre-serie/Historique/'])
-    liste.append( ['Judiciaire',URL_MAIN + 'xfsearch/genre-serie/Judiciaire/'])
-    liste.append( ['Médical',URL_MAIN + 'xfsearch/genre-serie/Médical/'])
-    liste.append( ['Musical',URL_MAIN + 'xfsearch/genre-serie/Musical/'] )
-    liste.append( ['Policier',URL_MAIN + 'xfsearch/genre-serie/Policier/'] )
-    liste.append( ['Romance',URL_MAIN + 'xfsearch/genre-serie/Romance/'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'xfsearch/genre-serie/Science+fiction/'] )
-    liste.append( ['Soap',URL_MAIN + 'xfsearch/genre-serie/Soap/'] )
-    liste.append( ['Sport',URL_MAIN + 'xfsearch/genre-serie/Sport+event/'] )
-    liste.append( ['Thriller',URL_MAIN + 'xfsearch/genre-serie/Thriller/'] )
-    liste.append( ['Western',URL_MAIN + 'xfsearch/genre-serie/Western/'] )
+    liste.append( ['Action', URL_MAIN +'xfsearch/genre-serie/Action/'] )
+    liste.append( ['Animation', URL_MAIN+'xfsearch/genre-serie/Animation/'])
+    liste.append( ['Arts Martiaux', URL_MAIN + 'xfsearch/genre-serie/Arts+Martiaux/'] )
+    liste.append( ['Aventure', URL_MAIN + 'xfsearch/genre-serie/Aventure/'])
+    liste.append( ['Biopic', URL_MAIN + 'xfsearch/genre-serie/Biopic/'])
+    liste.append( ['Comédie', URL_MAIN + 'xfsearch/genre-serie/Comédie/'])
+    liste.append( ['Comédie Dramatique', URL_MAIN + 'xfsearch/genre-serie/Comédie+dramatique/'] )
+    liste.append( ['Comédie Musicale', URL_MAIN + 'xfsearch/genre-serie/Comédie+musicale/'] )
+    liste.append( ['Documentaire', URL_MAIN + 'xfsearch/genre-serie/Documentaire/'] )
+    liste.append( ['Drame', URL_MAIN + 'xfsearch/genre-serie/Drame/'])
+    liste.append( ['Epouvante Horreur', URL_MAIN + 'xfsearch/genre-serie/Epouvante-horreur/'] )
+    liste.append( ['Espionnage', URL_MAIN + 'xfsearch/genre-serie/Espionnage/'])
+    liste.append( ['Famille', URL_MAIN + 'xfsearch/genre-serie/Famille/'])
+    liste.append( ['Fantastique', URL_MAIN + 'xfsearch/genre-serie/Fantastique/'] )
+    liste.append( ['Guerre', URL_MAIN + 'xfsearch/genre-serie/Guerre/'])
+    liste.append( ['Historique', URL_MAIN + 'xfsearch/genre-serie/Historique/'])
+    liste.append( ['Judiciaire', URL_MAIN + 'xfsearch/genre-serie/Judiciaire/'])
+    liste.append( ['Médical', URL_MAIN + 'xfsearch/genre-serie/Médical/'])
+    liste.append( ['Musical', URL_MAIN + 'xfsearch/genre-serie/Musical/'] )
+    liste.append( ['Policier', URL_MAIN + 'xfsearch/genre-serie/Policier/'] )
+    liste.append( ['Romance', URL_MAIN + 'xfsearch/genre-serie/Romance/'] )
+    liste.append( ['Science Fiction', URL_MAIN + 'xfsearch/genre-serie/Science+fiction/'] )
+    liste.append( ['Soap', URL_MAIN + 'xfsearch/genre-serie/Soap/'] )
+    liste.append( ['Sport', URL_MAIN + 'xfsearch/genre-serie/Sport+event/'] )
+    liste.append( ['Thriller', URL_MAIN + 'xfsearch/genre-serie/Thriller/'] )
+    liste.append( ['Western', URL_MAIN + 'xfsearch/genre-serie/Western/'] )
 
     for sTitle,sUrl in liste:
 
@@ -431,7 +431,7 @@ def showHosters():
                 tmp = re.search('input id="tmp".+?value="([^"]+)"', sHtmlContent, re.DOTALL).group(1)
             except:
                 pass
-            url = decode_url(url,aEntry[1],tmp)
+            url = decode_url(url, aEntry[1], tmp)
             #second convertion
             sHosterUrl = ResolveUrl(url)
             
@@ -485,14 +485,14 @@ def showLinks():
 
                 sTitle = str(aEntry[3]) + ' ' + sMovieTitle
                 sId = aEntry[1]
-                sdata = aEntry[4]
+                sData = aEntry[4]
                 #sUrl = aEntry[2]
                 
                 sDisplayTitle = sTitle
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sData', sdata)
+                oOutputParameterHandler.addParameter('sData', sData)
                 oOutputParameterHandler.addParameter('sId', sId)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
@@ -518,7 +518,7 @@ def serieHosters():
     sHtmlContent = oRequestHandler.request()
     
     oParser = cParser()
-    sPattern = '<div id="'+ sData +'".+?<\/div>'
+    sPattern = '<div id="' + sData + '".+?<\/div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -540,7 +540,7 @@ def serieHosters():
                     tmp = re.search('input id="tmp".+?value="([^"]+)"', sHtmlContent, re.DOTALL).group(1)
                 except:
                     pass
-                url2 = decode_url_Serie(sUrl,aEntry[0],tmp)
+                url2 = decode_url_Serie(sUrl, aEntry[0], tmp)
                 #second convertion
                 sHosterUrl = ResolveUrl(url2)
                 
