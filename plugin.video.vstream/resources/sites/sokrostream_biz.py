@@ -152,6 +152,8 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
+        sSearchText = urllib.quote( sSearchText, safe='' )
+        #cConfig().log('SEARCH ----> '+ sSearchText)
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -346,6 +348,18 @@ def showMovies(sSearch = ''):
     sPattern = 'data-v-.+?<a href="([^"]+)".+?<img src="(.+?)" alt="(.+?)" class='
 
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    datas = None
+    if sSearch:
+        datas = __getDataFromHtmlContent( sHtmlContent2 )
+        datas = [[ __genUrl(x,'series'), x['poster'], x['name'].encode('utf-8')]
+                    for x in datas['series']]
+        if len( datas ) > 0:
+            aResult = list( aResult ) # aResult: tuple -> list
+            aResult[0] = True
+            aResult[1] += datas
+
+    #cConfig().log( repr(aResult) )
     if (aResult[0] == False):
 		oGui.addText(SITE_IDENTIFIER)
 
@@ -393,6 +407,45 @@ def __checkForNextPage(sHtmlContent):
         return URL_MAIN[:-1]+aResult[1][0]
 
     return False
+
+def __getDataFromHtmlContent( sHtmlContent ):
+    """ extrait les datas du code source html au format json """
+
+    import json
+    oParser = cParser()
+    sHtmlContent = oParser.abParse(sHtmlContent,'window.__NUXT__=',';</script>',16)
+    datas = json.loads( sHtmlContent )
+    datas = datas["data"][0]
+    return datas
+
+def __genUrl( e, t ):
+    """ Génere une url depuis l'element et le type passé en paramètre.
+        e: element ( dict )
+        t: type    ( string )
+        
+        > /[type]/[name]-[id].html
+        type: 'films' ou 'series'
+        name: e['name'] en minuscule et formaté
+        id  : e['customID']
+    """
+    url = e['name']
+
+    # remplace les caractères et les espaces pour former une url valide ...
+    # caractères à surveiller: #!&:,-,%'
+    # ( voir d'autres que je n'ai pas trouvé ou oublié )
+    url = re.sub(ur"[ëèéê]", 'e', url)
+    url = re.sub(ur"[âäà]", 'a', url)
+    url = re.sub(ur"[ùûü]", 'u', url)
+    url = re.sub(ur"[öô]", 'o', url)
+    url = re.sub(ur"[ïî]", 'i', url)
+    url = re.sub(ur"ç", 'c', url)
+    url = re.sub(r"[#!&:,]", '', url)
+    url = re.sub(r"\s+$", '', url)
+    url = re.sub(r"[\'\/%]|\s+", '-', url)
+
+    url = '/'+ t + '/' + url.lower() + '-' + str(e['customID']) + '.html'
+    #cConfig().log( url )
+    return url
 
 def showSaisons():
     oGui = cGui()
@@ -447,7 +500,7 @@ def showEpisode():
     sPattern = '<a href="([^"]+)".+?>(E.+?)</button>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    cConfig().log(aResult)
+    #cConfig().log(aResult)
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
