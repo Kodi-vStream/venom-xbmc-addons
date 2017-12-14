@@ -343,7 +343,7 @@ def showMovies(sSearch = ''):
     oParser = cParser()
 
     sHtmlContent = oParser.abParse(sHtmlContent2,'<section class="box"','<div class="pagination-fix"')
-    sPattern = 'data-v-.+?<a href="([^"]+)".+?<img src="(.+?)" alt="(.+?)"'
+    sPattern = 'data-v-.+?<a href="([^"]+)".+?<img src="(.+?)" alt="(.+?)" class='
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False):
