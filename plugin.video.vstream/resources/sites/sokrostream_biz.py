@@ -335,6 +335,9 @@ def showMovies(sSearch = ''):
 
     if sSearch:
         sUrl = sSearch
+        sUrl = re.sub( r".*\/(.+)$", r"\1", sUrl )
+        sUrl = urllib.quote( sUrl, safe='' )
+        sUrl = URL_SEARCH[0] + sUrl
 
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
