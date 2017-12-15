@@ -152,8 +152,6 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sSearchText = urllib.quote( sSearchText, safe='' )
-        #cConfig().log('SEARCH ----> '+ sSearchText)
         sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -336,7 +334,7 @@ def showMovies(sSearch = ''):
     if sSearch:
         sUrl = sSearch
         sUrl = re.sub( r".*\/(.+)$", r"\1", sUrl )
-        sUrl = urllib.quote( sUrl, safe='' )
+        sUrl = urllib.quote( sUrl.rstrip(), safe='' )
         sUrl = URL_SEARCH[0] + sUrl
 
     else:
