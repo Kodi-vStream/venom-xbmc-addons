@@ -153,7 +153,9 @@ class cUtil:
         #les apostrohes remplacer par des espaces
         name = name.replace("'", " ")
         #vire caractere special
-        name = re.sub("[^a-zA-Z0-9 ]", "",name)
+        #name = re.sub("[^a-zA-Z0-9 ]", "",name)
+        #Modif du 15/12 caractere special
+        name = re.sub("[^a-zA-Z0-9 : -]", "",name)
         #tout en minuscule
         name = name.lower()
         #vire espace double
