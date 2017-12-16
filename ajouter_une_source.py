@@ -26,9 +26,15 @@ SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, r�
 URL_MAIN = 'http://le_site.org/' #url de votre source
 
 #definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
+#LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+#recherche global films
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
+#recherche global serie, manga
 URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
+#recherche global divers
+URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
+#
 FUNCTION_SEARCH = 'showMovies'
 
 # menu films existant dans l'acceuil (Home)

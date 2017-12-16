@@ -41,17 +41,20 @@ class cHoster(iHoster):
         return True
 
     def __getIdFromUrl(self,sUrl):
-        sPattern = 'http://www.thevideo.me/embed-([^\.]+)'
-        oParser = cParser()
-        aResult = oParser.parse(self.__sUrl, sPattern)
+        """ URL trouvées:
+            https://thevideo.me/1a2b3c4e5d6f
+            https://thevideo.me/embed-1a2b3c4e5d6f.html
+            http(s)://thevideo.me/embed-1a2b3c4e5d6f-816x459.html
+        """
+        sPattern = '\/(?:embed-)?(\w+)(?:-\d+x\d+)?(?:\.html)?$' 
+        aResult = cParser().parse( sUrl, sPattern )
         if (aResult[0] == True):
             return aResult[1][0]
         return ''
-
+ 
     def setUrl(self, sUrl):
-        self.__sUrl = sUrl.replace('video.tt/embed/', 'thevideo.me/embed-')
-        if not self.__sUrl.endswith('.html'):
-           self.__sUrl = self.__sUrl + '.html'
+        sId = self.__getIdFromUrl( sUrl )
+        self.__sUrl = 'https://thevideo.me/embed-' + sId + '.html'
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
@@ -79,7 +82,7 @@ class cHoster(iHoster):
             
         ee = aResult[1][0]
             
-        url2 = 'http://thevideo.me/' + ee + '/' + key
+        url2 = 'https://thevideo.me/' + ee + '/' + key
 
         oRequest = cRequestHandler(url2)
         sHtmlContent2 = oRequest.request()

@@ -382,7 +382,7 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sPost = oInputParameterHandler.getValue('sPost')
-
+    
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.setRequestType(1)
     oRequestHandler.addParameters('levideo', sPost)
@@ -392,16 +392,22 @@ def showHosters():
     sPattern = '<iframe.+?src=["\']([^"\']+)["\']'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #pensez a faire un cConfig().log(str(aResult)) pour verifier
+
     #cConfig().log(str(sUrl))
     #cConfig().log(sPost)
-
     #cConfig().log(str(aResult))
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
             sHosterUrl = str(aEntry)
+            if 'vid.php' in sHosterUrl:
+                oRequestHandler = cRequestHandler(sHosterUrl)
+                tmp = oRequestHandler.request()
+                sHosterUrl = oRequestHandler.getRealUrl()              
+            
+            cConfig().log(str(sHosterUrl))
+            
             if sHosterUrl.startswith('/'):
                 sHosterUrl = 'http:' + sHosterUrl
             oHoster = cHosterGui().checkHoster(sHosterUrl)

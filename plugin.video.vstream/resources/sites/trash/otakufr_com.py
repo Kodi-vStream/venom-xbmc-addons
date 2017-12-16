@@ -14,7 +14,8 @@ import urllib2,urllib,re
 import unicodedata,htmlentitydefs
 
 import xbmc
-#Si vous créez une source et la deposez dans le dossier "sites" elle sera directement visible sous xbmc
+
+#11/12/17 le site fonctionne mais pas regarder.
 
 SITE_IDENTIFIER = 'otakufr_com' #identifant (nom de votre fichier) remplacez les espaces et les . par _ AUCUN CARACTERE SPECIAL
 SITE_NAME = 'otakufr.com' # nom que xbmc affiche
@@ -37,20 +38,20 @@ def load(): #fonction chargee automatiquement par l'addon l'index de votre navig
 
     oOutputParameterHandler = cOutputParameterHandler() #apelle la function pour sortir un parametre
     oOutputParameterHandler.addParameter('siteUrl', 'siteUrl') # sortie du parametres siteUrl n'oubliez pas la Majuscule
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler) 
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
     #Ajoute lien dossier (identifant, function a attendre, nom, icon, parametre de sortie)
     #Puisque nous ne voulons pas atteindre une url on peut mettre ce qu'on veut dans le parametre siteUrl
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animes Nouveautés', 'news.png', oOutputParameterHandler)
     #ici la function showMovies a besoin d'une url ici le racourci MOVIE_NEWS
-    
-    
+
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animes liste complete', 'series.png', oOutputParameterHandler)
-              
+
     oGui.setEndOfDirectory() #ferme l'affichage
 
 def showSearch(): #function de recherche
@@ -61,7 +62,7 @@ def showSearch(): #function de recherche
         sUrl = URL_SEARCH[0] + sSearchText  #modifi l'url de recherche
         showMovies(sUrl) #apelle la function qui pouras lire la page de resultats
         oGui.setEndOfDirectory()
-        return  
+        return
 
 
 def showMovies(sSearch = ''):
@@ -71,42 +72,42 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl') # recupere l'url sortie en parametre
-   
+
     oRequestHandler = cRequestHandler(sUrl) # envoye une requete a l'url
     sHtmlContent = oRequestHandler.request() #requete aussi
-    
+
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>','')
     #la function replace et pratique pour supprimer un code du resultat
-    
+
     sPattern = '<a href="([^"]+)" class="anm" title="([^"]+)">[^<]+<\/a>.+?<img src="([^"]+)"'
     #pour faire simple recherche ce bout de code dans le code source de l'url
     #- ([^<]+) je veut cette partie de code mais y a une suite
     #- .+? je ne veut pas cette partis et peux importe ceux qu'elle contient
     #- (.+?) je veut cette partis et c'est la fin
-    
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    # le plus simple et de faire un print aResult 
+    # le plus simple et de faire un print aResult
     # dans le fichier log d'xbmc vous pourez voir un array de ce que recupere le script
     # et modifier sPattern si besoin
-    
+
     #xbmc.log(str(aResult)) #Commenter ou supprimer cette ligne une foix fini
-    
+
     if (aResult[0] == True):
         total = len(aResult[1])
         #dialog barre de progression
         dialog = cConfig().createDialog(SITE_NAME)
-        
+
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total) #dialog update
-            
+
             #L'array affiche vos info dans l'orde de sPattern en commencant a 0
             sTitle = aEntry[1]
             sUrl = aEntry[0]
             Sthumb = aEntry[2]
-            
+
             Sthumb = 'http:' + Sthumb
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl) #sortie de l'url
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle) #sortie du titre
@@ -116,9 +117,9 @@ def showMovies(sSearch = ''):
 
             #il existe aussis addMisc(identifiant, function, titre, icon, poster, description, sortie parametre)
             #la difference et pour les metadonner serie, films ou sans
-            
+
         cConfig().finishDialog(dialog)# fin du dialog
-           
+
         sNextPage = __checkForNextPage(sHtmlContent)#cherche la page suivante
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -136,7 +137,7 @@ def showMovies2(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-   
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sPattern = '<li><a href="([^<]+)" title="([^<]+)" rel="([^<]+)" class="anm_det_pop">([^<]+)</a></li>'
@@ -146,7 +147,7 @@ def showMovies2(sSearch = ''):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)               
+            cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
 
@@ -158,7 +159,7 @@ def showMovies2(sSearch = ''):
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', aEntry[1], 'animes.png', '', '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)   
+        cConfig().finishDialog(dialog)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -173,7 +174,7 @@ def __checkForNextPage(sHtmlContent): #cherche la page suivante
         return aResult[1][0]
 
     return False
-    
+
 
 def showHosters():# recherche et affiche les hotes
     oGui = cGui() #ouvre l'affichage
@@ -181,66 +182,65 @@ def showHosters():# recherche et affiche les hotes
     sUrl = oInputParameterHandler.getValue('siteUrl')  # apelle siteUrl
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle') #apelle le titre
     sThumbnail = oInputParameterHandler.getValue('sThumbnail') # apelle le poster
-    
+
     oRequestHandler = cRequestHandler(sUrl) #requete sur l'url
     sHtmlContent = oRequestHandler.request(); #requete sur l'url
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/','').replace('<iframe src=\'http://creative.rev2pub.com','')
-    #supprimer a l'aide de replace toute les entrer qui corresponde a votre recherche mais ne doivent pas etre pris en compte      
+    #supprimer a l'aide de replace toute les entrer qui corresponde a votre recherche mais ne doivent pas etre pris en compte
 
     oParser = cParser()
     sPattern = '<iframe.+?src="(.+?)"'
     #ici nous cherchont toute les sources iframe
     aResult = oParser.parse(sHtmlContent, sPattern)
     #penser a faire un print aResult pour verifier
-    
+
     #si un lien ne s'affiche pas peux etre que l'hote n'est pas supporte par l'addon
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            
+
             sHosterUrl = str(aEntry[0])
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(aEntry[1])
                 oHoster.setFileName(aEntry[1])
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
-                
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+
     oGui.setEndOfDirectory() #fin
-   
+
 def seriesListEpisodes(): #cherche les episode de series
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-               
+
     #sPattern = '<option value="([0-9]+)">([^<]+)<\/option>'
     sPattern = '<a class="lst" href="([^"]+)" title="([^"]+)"><b class="val">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
-    
+
     xbmc.log(str(aResult))
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            
+
             sTitle = aEntry[1]
             sUrl2  = aEntry[0]
-            
+
             xbmc.log(sUrl2)
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oGui.addTV(SITE_IDENTIFIER, 'showHosters',sTitle, 'series.png', '', '', oOutputParameterHandler)
-                
-    oGui.setEndOfDirectory()
-    
-#Voila c'est un peux brouillon mais ça devrais aider un peux, n'esiter a poser vos question et meme a partager vos source
 
+    oGui.setEndOfDirectory()
+
+#Voila c'est un peux brouillon mais ça devrais aider un peux, n'esiter a poser vos question et meme a partager vos source

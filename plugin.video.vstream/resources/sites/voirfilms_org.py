@@ -250,7 +250,6 @@ def showMovies(sSearch = ''):
         oRequest = cRequestHandler(URL_MAIN + 'recherche?story=' + sSearch)
         #oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent',UA)
-        oRequest.addHeaderEntry('Host','www.voirfilms.info')
         oRequest.addHeaderEntry('Referer',URL_MAIN)
         oRequest.addHeaderEntry('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')

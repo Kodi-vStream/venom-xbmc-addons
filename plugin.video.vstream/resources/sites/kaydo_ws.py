@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
-#Venom & johngf.
-return False
+#luluvulcain
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -11,21 +10,19 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re,xbmc,base64
 
-#copie du site http://www.film-streaming.co/
-#copie du site http://www.streaming-club.com/
-#copie du site http://www.hd-stream.in/
 #copie du site http://www.kaydo.ws/
+#copie du site https://www.hds.to/
 
 SITE_IDENTIFIER = 'kaydo_ws'
 SITE_NAME = 'Kaydo'
-SITE_DESC = 'Site de streaming en HD 720p 100% Gratuit'
+SITE_DESC = 'Site de streaming en HD'
 
-URL_MAIN = 'http://www.kaydo.ws/'
+URL_MAIN = 'https://www.hds.to'
 
-MOVIE_NEWS = (URL_MAIN + 'films.php', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'affiche.php', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films.php', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'populaires.php', 'showMovies')
-MOVIE_NOTES = (URL_MAIN + 'best-rating.php', 'showMovies')
+MOVIE_NOTES = (URL_MAIN + 'films.php?s=go&sort=rating', 'showMovies')
 MOVIE_TOP = (URL_MAIN + 'top-films.php', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'films.php', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
@@ -155,11 +152,11 @@ def showMovieGenres():
 
     liste.append( ['Action',URL_MAIN + 'films.php?s=go&sort=add&g=Action'] )
     liste.append( ['Animation',URL_MAIN + 'films.php?s=go&sort=add&g=Animation'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'films.php?s=go&sort=add&g=Arts%20Martiaux'] )
+    liste.append( ['Arts Martiaux',URL_MAIN + 'films.php?s=go&sort=add&g=Arts Martiaux'] )
     liste.append( ['Aventure',URL_MAIN + 'films.php?s=go&sort=add&g=Aventure'] )
     liste.append( ['Biopic',URL_MAIN + 'films.php?s=go&sort=add&g=Biopic'] )
-    liste.append( ['Comédie',URL_MAIN + 'films.php?s=go&sort=add&g=Com%C3%A9die'] )
-    liste.append( ['Comédie Dramatique',URL_MAIN + 'films.php?s=go&sort=add&g=Com%C3%A9die%20dramatique'] )
+    liste.append( ['Comédie',URL_MAIN + 'films.php?s=go&sort=add&g=Comédie'] )
+    liste.append( ['Comédie Dramatique',URL_MAIN + 'films.php?s=go&sort=add&g=Comédie dramatique'] )
     liste.append( ['Documentaire',URL_MAIN + 'films.php?s=go&sort=add&g=Documentaire'] )
     liste.append( ['Drame',URL_MAIN + 'films.php?s=go&sort=add&g=Drame'] )
     liste.append( ['Epouvante Horreur',URL_MAIN + 'films.php?s=go&sort=add&g=Epouvante-horreur'] )
@@ -171,7 +168,7 @@ def showMovieGenres():
     liste.append( ['Musical',URL_MAIN + 'films.php?s=go&sort=add&g=Musical'] )
     liste.append( ['Policier',URL_MAIN + 'films.php?s=go&sort=add&g=Policier'] )
     liste.append( ['Romance',URL_MAIN + 'films.php?s=go&sort=add&g=Romance'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'films.php?s=go&sort=add&g=Science%20fiction'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'films.php?s=go&sort=add&g=Science fiction'] )
     liste.append( ['Thriller',URL_MAIN + 'films.php?s=go&sort=add&g=Thriller'] )
     liste.append( ['Western',URL_MAIN + 'films.php?s=go&sort=add&g=Western'] )
 
@@ -190,7 +187,7 @@ def showSerieGenres():
     liste.append( ['Action',URL_MAIN + 'series.php?g=Action'] )
     liste.append( ['Animation',URL_MAIN + 'series.php?g=Animation'] )
     liste.append( ['Aventure',URL_MAIN + 'series.php?g=Aventure'] )
-    liste.append( ['Comédie',URL_MAIN + 'series.php?g=Com%C3%A9die'] )
+    liste.append( ['Comédie',URL_MAIN + 'series.php?g=Comédie'] )
     liste.append( ['Drame',URL_MAIN + 'series.php?g=Drame'] )
     liste.append( ['Epouvante Horreur',URL_MAIN + 'series.php?g=Epouvante-horreur'] )
     liste.append( ['Fantastique',URL_MAIN + 'series.php?g=Fantastique'] )
@@ -198,7 +195,7 @@ def showSerieGenres():
     liste.append( ['Judiciaire',URL_MAIN + 'series.php?g=Judiciaire'] )
     liste.append( ['Policier',URL_MAIN + 'series.php?g=Policier'] )
     liste.append( ['Romance',URL_MAIN + 'series.php?g=Romance'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'series.php?g=Science%20fiction'] )
+    liste.append( ['Science Fiction',URL_MAIN + 'series.php?g=Science fiction'] )
     liste.append( ['Thriller',URL_MAIN + 'series.php?g=Thriller'] )
 
     for sTitle,sUrl in liste:
