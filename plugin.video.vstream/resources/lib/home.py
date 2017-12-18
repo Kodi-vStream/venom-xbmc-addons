@@ -31,6 +31,11 @@ class cHome:
         oGui = cGui()
         oConfig = cConfig()
 
+        if (oConfig.getSetting('home_update') == 'true'):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+            oGui.addDir(SITE_IDENTIFIER, 'showUpdate', util.VSlang(30418), 'update.png', oOutputParameterHandler)
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir(SITE_IDENTIFIER, 'showSearchText', util.VSlang(30076), 'search.png', oOutputParameterHandler)
@@ -90,7 +95,7 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('cFav', 'getFavourites', util.VSlang(30210), 'mark.png', oOutputParameterHandler)
+        oGui.addDir('cFav', 'getFavourites', util.VSlang(30207), 'mark.png', oOutputParameterHandler)
 
         if (oConfig.getSetting("history-view") == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -106,10 +111,6 @@ class cHome:
         # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         # oGui.addDir('globalParametre', 'showSources', '[COLOR teal]'+oConfig.getlanguage(30023)+'[/COLOR]', 'param.png', oOutputParameterHandler)
 
-        if (oConfig.getSetting('home_update') == 'true'):
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'showUpdate', util.VSlang(30418), 'update.png', oOutputParameterHandler)
 
         view = False
         if (oConfig.getSetting("active-view") == 'true'):
