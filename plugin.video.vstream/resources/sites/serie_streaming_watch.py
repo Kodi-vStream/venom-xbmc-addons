@@ -119,7 +119,7 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    cConfig().log(sHtmlContent)
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
