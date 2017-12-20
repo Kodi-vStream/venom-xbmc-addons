@@ -71,29 +71,29 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action',URL_MAIN + 'film-action/'] )
-    liste.append( ['Aventure',URL_MAIN + 'film-aventure/'] )
-    liste.append( ['Animation',URL_MAIN + 'film-animation/'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'film-arts-martiaux/'] )
-    liste.append( ['Biographie',URL_MAIN + 'film-biographie/'] )
-    liste.append( ['Box-office',URL_MAIN + 'film-box-office/'] )
-    liste.append( ['Comédie',URL_MAIN + 'film-comedie/'] )
-    liste.append( ['Comédie Dramatique',URL_MAIN + 'film-comedie-dramatique/'] )
-    liste.append( ['Dramatique',URL_MAIN + 'film-dramatique/'] )
-    liste.append( ['Documentaire',URL_MAIN + 'film-documentaire/'] )
-    liste.append( ['Familial',URL_MAIN + 'film-familial/'] )
-    liste.append( ['Fantastique',URL_MAIN + 'fantastique/'] )
-    liste.append( ['Espionnage',URL_MAIN + 'film-espionnage'] )
-    liste.append( ['Historique',URL_MAIN + 'film-historique/'] )
-    liste.append( ['Horreur',URL_MAIN + 'film-horreur/'] )
-    liste.append( ['Musique',URL_MAIN + 'film-musical/'] )
-    liste.append( ['Policier',URL_MAIN + 'film-policier/'] )
-    liste.append( ['Romance',URL_MAIN + 'film-romance/'] )
-    liste.append( ['Science-Fiction',URL_MAIN + 'film-science-fiction/'] )
-    liste.append( ['Sport',URL_MAIN + 'film-sport/'] )
-    liste.append( ['Thriller',URL_MAIN + 'film-thriller/'] )
-    liste.append( ['Western',URL_MAIN + 'film-western/'] )
-    liste.append( ['En VOSTFR',URL_MAIN + 'film-vostfr'] )
+    liste.append( ['Action', URL_MAIN + 'film-action/'] )
+    liste.append( ['Aventure', URL_MAIN + 'film-aventure/'] )
+    liste.append( ['Animation', URL_MAIN + 'film-animation/'] )
+    liste.append( ['Arts Martiaux', URL_MAIN + 'film-arts-martiaux/'] )
+    liste.append( ['Biographie', URL_MAIN + 'film-biographie/'] )
+    liste.append( ['Box-office', URL_MAIN + 'film-box-office/'] )
+    liste.append( ['Comédie', URL_MAIN + 'film-comedie/'] )
+    liste.append( ['Comédie Dramatique', URL_MAIN + 'film-comedie-dramatique/'] )
+    liste.append( ['Dramatique', URL_MAIN + 'film-dramatique/'] )
+    liste.append( ['Documentaire', URL_MAIN + 'film-documentaire/'] )
+    liste.append( ['Familial', URL_MAIN + 'film-familial/'] )
+    liste.append( ['Fantastique', URL_MAIN + 'fantastique/'] )
+    liste.append( ['Espionnage', URL_MAIN + 'film-espionnage'] )
+    liste.append( ['Historique', URL_MAIN + 'film-historique/'] )
+    liste.append( ['Horreur', URL_MAIN + 'film-horreur/'] )
+    liste.append( ['Musique', URL_MAIN + 'film-musical/'] )
+    liste.append( ['Policier', URL_MAIN + 'film-policier/'] )
+    liste.append( ['Romance', URL_MAIN + 'film-romance/'] )
+    liste.append( ['Science-Fiction', URL_MAIN + 'film-science-fiction/'] )
+    liste.append( ['Sport', URL_MAIN + 'film-sport/'] )
+    liste.append( ['Thriller', URL_MAIN + 'film-thriller/'] )
+    liste.append( ['Western', URL_MAIN + 'film-western/'] )
+    liste.append( ['En VOSTFR', URL_MAIN + 'film-vostfr'] )
 
     for sTitle,sUrl in liste:
 
@@ -130,16 +130,16 @@ def showMovies(sSearch = ''):
     cConfig().log(sHtmlContent)
     #page bloquee ?
     if sHtmlContent.startswith('<noscript>'):
-        code = re.search('value="([^"]+)"\/>', sHtmlContent,re.DOTALL).group(1)
+        code = re.search('value="([^"]+)"\/>', sHtmlContent, re.DOTALL).group(1)
 
         oRequestHandler2 = cRequestHandler(sUrl)
         
         oRequestHandler2.addHeaderEntry('Referer', 'http://fullstream.su/')
         oRequestHandler2.addHeaderEntry('User-Agent', UA)
-        oRequestHandler2.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
+        oRequestHandler2.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         
         oRequestHandler2.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-        oRequestHandler2.addParametersLine('_authfer='+ code)
+        oRequestHandler2.addParametersLine('_authfer=' + code)
      
         sHtmlContent = oRequestHandler2.request()
     
@@ -239,7 +239,7 @@ def showLink():
                 oOutputParameterHandler.addParameter('referer', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb,'', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -314,8 +314,8 @@ def showLinkSerie():
             if dialog.iscanceled():
                 break
                 
-            sUrl2 = URL_MAIN[:-1]+aEntry[0]
-            sHost = re.sub('Ep:\d+','',aEntry[1])
+            sUrl2 = URL_MAIN[:-1] + aEntry[0]
+            sHost = re.sub('Ep:\d+', '', aEntry[1])
             sTitle = '%s [%s]' % (sMovieTitle, sHost)
             
             oOutputParameterHandler = cOutputParameterHandler()
@@ -323,7 +323,7 @@ def showLinkSerie():
             oOutputParameterHandler.addParameter('referer', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb,'', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -356,7 +356,7 @@ def showEpisode():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
             else:
   
-                sTitle = '%s %s' % (sMovieTitle.replace('VOSTFR','').replace('VF','').replace('VOST',''), aEntry[1])
+                sTitle = '%s %s' % (sMovieTitle.replace('VOSTFR', '').replace('VF', '').replace('VOST', ''), aEntry[1])
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -373,7 +373,7 @@ def unescape(b, a, c):
     d = b
     j = 0
     while (j < len(a)):
-            d = d.replace(a[j],c[j])
+            d = d.replace(a[j], c[j])
             j+=1
 
     d = d.replace('%26', '&')
