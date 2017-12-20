@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-#Venom.
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -7,18 +7,17 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
-
-import re,urllib2,urllib,xbmc
+import re,xbmc
 
 SITE_IDENTIFIER = 'serie_streaming_watch'
 SITE_NAME = 'Serie-Streaming-Watch'
 SITE_DESC = 'Séries & Animés en Streaming'
 
-#meme fichiers que http://dpstreaming.watch
-URL_MAIN = 'http://serie-streaming.watch/'
 
-SERIE_NEWS = (URL_MAIN, 'showMovies')
+URL_MAIN = 'http://series-en-streaming.xyz/'
+
+SERIE_SERIES = ('http://', 'load')
+SERIE_NEWS = (URL_MAIN+'category/series/?orderby=date', 'showMovies')
 SERIE_GENRES = (True, 'showGenres')
 
 ANIM_ENFANTS = (URL_MAIN + 'category/series/dessin-anime/', 'showMovies')
@@ -33,10 +32,14 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Series (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN+'category/series/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Series (Liste)', 'series_news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
@@ -116,7 +119,7 @@ def showMovies(sSearch=''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
+    cConfig().log(sHtmlContent)
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -133,7 +136,7 @@ def showMovies(sSearch=''):
 
             sTitle = str(aEntry[2])
             sTitle = sTitle.replace(' Streaming','')
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
+
 
             sThumbnail = str(aEntry[1])
             if not sThumbnail.startswith('http'):
@@ -143,7 +146,7 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            oGui.addTV(SITE_IDENTIFIER, 'ShowEpisode', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'ShowEpisode', sTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -189,13 +192,12 @@ def ShowEpisode():
                 break
 
             sTitle = sMovieTitle + ' episode ' + str(aEntry[1])
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -211,9 +213,6 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
 
     oParser = cParser()
     sPattern = '<span class="lg">(.+?)<\/span>|<span class="myLecteur">Lecteur (?:<b>)*([a-z]+)(?:<\/b>)* *:<\/span> <a href="([^"]+)"'
@@ -235,7 +234,7 @@ def showHosters():
                 oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]'+ aEntry[0] +'[/COLOR]', 'host.png', oOutputParameterHandler)
             else:
 
-                sDisplayTitle =  cUtil().DecoTitle(sMovieTitle + ' [' + aEntry[1] + ']')
+                sDisplayTitle =  (sMovieTitle + ' [' + aEntry[1] + ']')
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', aEntry[2])
@@ -259,9 +258,6 @@ def serieHosters():
     oHoster = cHosterGui().checkHoster(sHosterUrl)
 
     if (oHoster != False):
-
-        sMovieTitle = cUtil().DecoTitle(sMovieTitle)
-
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
@@ -280,46 +276,38 @@ def ProtectstreamBypass(url):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-
+        postdata = 'k='+aResult[1][0]
+        
         cGui().showInfo("Patientez", 'Decodage en cours' , 5)
         xbmc.sleep(5000)
 
-        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
-        headers = {'User-Agent': UA ,
-                   'Host' : 'www.protect-stream.com',
-                   'Referer': Codedurl ,
-                   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                   #'Accept-Encoding' : 'gzip, deflate',
-                   #'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-                   'Content-Type': 'application/x-www-form-urlencoded'}
-
-        postdata = urllib.urlencode( { 'k': aResult[1][0] } )
-
-        req = urllib2.Request('http://www.protect-stream.com/secur2.php',postdata,headers)
-        try:
-            response = urllib2.urlopen(req)
-        except urllib2.URLError, e:
-            print e.read()
-            print e.reason
-
-        data = response.read()
-        response.close()
+        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
+        
+        oRequest = cRequestHandler('http://www.protect-stream.com/secur2.php')
+        oRequest.setRequestType(1)
+        oRequest.addHeaderEntry('User-Agent',UA)
+        oRequest.addHeaderEntry('Host','www.protect-stream.com')
+        oRequest.addHeaderEntry('Referer',Codedurl)
+        oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        oRequest.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
+        oRequest.addParametersLine(postdata)
+        sHtmlContent = oRequest.request()
 
         #Test de fonctionnement
-        aResult = oParser.parse(data, sPattern)
+        aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             cGui().showInfo("Erreur", 'Lien encore protege' , 5)
             return ''
 
         #recherche du lien embed
         sPattern = '<iframe src=["\']([^<>"\']+?)["\']'
-        aResult = oParser.parse(data, sPattern)
+        aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             return aResult[1][0]
 
         #recherche d'un lien redirigee
         sPattern = '<a class=.button. href=["\']([^<>"\']+?)["\'] target=._blank.>'
-        aResult = oParser.parse(data, sPattern)
+        aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             return aResult[1][0]
 
