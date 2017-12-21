@@ -50,7 +50,12 @@ class cHoster(iHoster):
         return '';
         
     def __getIdFromUrl(self, sUrl):
-        sPattern = "http://speedvid.net/([^<]+)"
+        """ URL trouvées:
+            http://www.speedvid.net/1a2b3c4d5e6f
+            http://speedvid.net/embed-1a2b3c4d5e6f.html
+            http://www.speedvid.net/embed-1a2b3c4d5e6f-640x360.html
+        """
+        sPattern = "\/(?:embed-)?(\w+)(?:-\d+x\d+)?(?:\.html)?$"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -59,7 +64,9 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)
+        #self.__sUrl = str(sUrl)
+        sId = self.__getIdFromUrl( sUrl )
+        self.__sUrl = 'http://www.speedvid.net/embed-' + sId + '-640x360.html';
 
     def checkUrl(self, sUrl):
         return True
@@ -71,17 +78,16 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-    
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('User-Agent',UA)
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
-       
         
         api_call = ''
 
         aResult = re.search('>(ﾟωﾟ.+?\(\'_\'\);)', sHtmlContent,re.DOTALL | re.UNICODE)
+    
         if (aResult):
             JP = JsParser()
             Liste_var = []
@@ -102,15 +108,17 @@ class cHoster(iHoster):
                 else:
                     Url = 'http://' + Url
 
-                    
-
             oRequest = cRequestHandler(Url)
             oRequest.addHeaderEntry('Referer',self.__sUrl)
             oRequest.addHeaderEntry('User-Agent',UA)
             sHtmlContent = oRequest.request()
 
-
         
+        """
+        --> Le lien de la vidéo est maintenant ecrit directement dans le source.
+        --> Alors je ne me permet pas de supprimer ce code, et pourrait-être
+        --> utile dans le cas d'un future changement du site.
+
         sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\))<'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
@@ -123,10 +131,18 @@ class cHoster(iHoster):
                     aResult2 = oParser.parse(sHtmlContent, sPattern2)
                     if (aResult2[0] == True):
                         api_call = aResult2[1][0]
+        """
+        #cConfig().log( sHtmlContent )
+        sPattern = "file:\s*\'([^\']+.mp4)"
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            api_call = aResult[1][0]
 
+        cConfig().log('API_CALL: ' + api_call );
 
         if (api_call):
-            api_call = api_call + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
+            #api_call = api_call + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
+            api_call = api_call + '|User-Agent=' + UA
             return True, api_call
             
         return False, False
