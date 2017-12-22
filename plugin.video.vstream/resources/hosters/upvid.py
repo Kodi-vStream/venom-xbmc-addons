@@ -75,7 +75,10 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-
+        #lien embed obligatoire
+        if not 'embed-' in self.__sUrl:
+            self.__sUrl = self.__sUrl.rsplit('/', 1)[0] + '/embed-' + self.__sUrl.rsplit('/', 1)[1]
+            
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
         
