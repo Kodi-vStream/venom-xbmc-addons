@@ -194,7 +194,6 @@ def strswpcs(r):
             e += 1
     return t
 
-    
 def decrypt(r, t):
     import math
     import base64
@@ -202,14 +201,14 @@ def decrypt(r, t):
     e = ""
     o = r[0: 3]
     r = r[3:]
-    
-    if (o == "36f"):
+
+    if (o[0: 1] == "3" and o[2: 3] == "f"):
         r = strrev(base64.b64decode(r))
-    elif (o == "fc0"):
+    elif (o[0: 1] == "f" and o[2: 3] == "0"):
         r = hta(strrev(r))
-    elif (o == "663"): 
+    elif (o[0: 1] == "6" and o[2: 3] == "3"): 
         r = base64.b64decode(strrev(r))
-    elif (o == "53a"):
+    elif (o[0: 1] == "5" and o[2: 3] == "a"):
         r = base64.b64decode(strswpcs(r))
         
     s = 0
