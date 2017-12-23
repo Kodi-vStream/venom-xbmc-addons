@@ -1,8 +1,14 @@
+#coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#http://vidtodo.com/embed-xxx.html
+#http://vidtodo.com/xxx
+#http://vidtodo.com/xxx.html
+#com,me
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
-import time,re
+import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
 
@@ -34,12 +40,17 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl)  
-        self.__sUrl = self.__sUrl.replace('embed-', '')
-        self.__sUrl = self.__sUrl.replace('.html', '')
+        self.__sUrl = str(sUrl)
+        self.__sUrl = self.__sUrl.replace('.com','.me')
+        if not 'embed-' in self.__sUrl:
+            self.__sUrl = self.__sUrl.rsplit('/', 1)[0] + '/embed-' + self.__sUrl.rsplit('/', 1)[1]
+
         if not self.__sUrl.startswith('https'):
             self.__sUrl = self.__sUrl.replace('http', 'https')
-        
+            
+        if not self.__sUrl.endswith('.html'):
+            self.__sUrl = self.__sUrl + '.html'
+
 
     def getUrl(self):
         return self.__sUrl
@@ -57,47 +68,26 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         api_call = ''
-        
+
         oParser = cParser()
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-
-        sPattern =  '<input type="(?:hidden|submit)" name="([^"]+)" value="([^"]+)"'
-
+  
+        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
-
-        if (aResult[0] == True): 
-            time.sleep(3)
-            oRequest = cRequestHandler(self.__sUrl)
-            oRequest.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-            for aEntry in aResult[1]:
-                oRequest.addParameters(aEntry[0], aEntry[1])
-
-            oRequest.addParameters('referer', self.__sUrl)
-            oRequest.addHeaderEntry('User-Agent', UA)
-            
-            sHtmlContent = oRequest.request()
+        if (aResult[0] == True):
+            sHtmlContent = cPacker().unpack(aResult[1][0])
 
             sPattern = '{file: *"([^"]+smil)"}'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                 api_call = self.extractSmil(aResult[1][0])
-    
             else:
-                sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+                sPattern = '{file: *xpro\("(.+?)"'
                 aResult = oParser.parse(sHtmlContent, sPattern)
                 if (aResult[0] == True):
-                    sHtmlContent = cPacker().unpack(aResult[1][0])
+                    api_call = aResult[1][0].decode('rot13')
 
-                    sPattern = '{file: *"([^"]+smil)"}'
-                    aResult = oParser.parse(sHtmlContent, sPattern)
-                    if (aResult[0] == True):
-                        api_call = self.extractSmil(aResult[1][0])
-                    else:
-                        sPattern = '{file: *"([^"]+mp4)"'
-                        aResult = oParser.parse(sHtmlContent, sPattern)
-                        if (aResult[0] == True):
-                            api_call = aResult[1][0]
   
         if (api_call):
             return True, api_call
