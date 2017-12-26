@@ -18,7 +18,6 @@ import xbmcgui
 import xbmc
 import random
 
-
 #from resources.lib.dl_deprotect import DecryptDlProtect
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
@@ -448,7 +447,7 @@ def showHosters():# recherche et affiche les hotes
     sPattern = '<font color=red>([^<]+?)</font>|<div style="font-weight:bold;[^"]+?">([^>]+?)</div></b><b><a target="_blank" href="([^<>"]+?)">Télécharger<\/a>|>\[(Liens Premium) \]<|<span style="color:#FF0000">(.+?)</div></b><b><a target="_blank" href=href="https://([^"]+)/([^"]+?)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    xbmc.log(str(aResult))
+    #xbmc.log(str(aResult))
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -543,7 +542,7 @@ def showSeriesHosters():# recherche et affiche les hotes
                 sName = sName.replace('Télécharger','')
                 sName = sName.replace('pisodes','pisode')
                 sUrl2 = 'https://' + aEntry[1] +  '/' + aEntry[2]
-                cConfig().log(sUrl2)
+                #cConfig().log(sUrl2)
 
                 sTitle = sMovieTitle + ' ' + sName
                 sDisplayTitle = cUtil().DecoTitle(sTitle)
