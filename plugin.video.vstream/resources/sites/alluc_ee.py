@@ -18,6 +18,10 @@ URL_MAIN = 'http://www.alluc.ee/'
 URL_SEARCH = (URL_MAIN + 'stream/lang%3Afr+', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
+#news recherche
+URL_SEARCH_MOVIES = (URL_MAIN + 'stream/lang%3Afr+', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'stream/lang%3Afr+', 'showMovies')
+
 
 def load():
     oGui = cGui()
@@ -170,8 +174,8 @@ def showHosters():
     oGui.setEndOfDirectory()
 
 def strrev(r):
-    return r[::-1] 
-   
+    return r[::-1]
+
 def hta(r):
     e = ""
     o = 0
@@ -180,7 +184,7 @@ def hta(r):
         o += 2
     return e
 
-def strswpcs(r): 
+def strswpcs(r):
     t = ""
     e = 0
     while e < len(r):
@@ -189,7 +193,7 @@ def strswpcs(r):
             t += r[e]
             e += 1
             continue
-        else:    
+        else:
             t += f.group().upper() if f.group().islower() else f.group().lower()
             e += 1
     return t
@@ -206,11 +210,11 @@ def decrypt(r, t):
         r = strrev(base64.b64decode(r))
     elif (o[0: 1] == "f" and o[2: 3] == "0"):
         r = hta(strrev(r))
-    elif (o[0: 1] == "6" and o[2: 3] == "3"): 
+    elif (o[0: 1] == "6" and o[2: 3] == "3"):
         r = base64.b64decode(strrev(r))
     elif (o[0: 1] == "5" and o[2: 3] == "a"):
         r = base64.b64decode(strswpcs(r))
-        
+
     s = 0
     while s < len(r):
         n = r[s:s+1]
