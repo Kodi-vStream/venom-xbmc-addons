@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'kaydo_ws'
 SITE_NAME = 'Kaydo'
 SITE_DESC = 'Site de streaming en HD'
 
-URL_MAIN = 'https://www.hds.to'
+URL_MAIN = 'https://www.hds.to/'
 
 MOVIE_NEWS = (URL_MAIN + 'affiche.php', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films.php', 'showMovies')
@@ -37,12 +37,15 @@ URL_SEARCH_SERIES = (URL_MAIN + 'search.php?q=', 'sHowResultSearch')
 FUNCTION_SEARCH = 'sHowResultSearch'
 
 def Decode(chain):
-    chain = 'aHR' + chain
-    chain = 'M'.join(chain.split('7A4c1Y9T8c'))
-    chain = 'V'.join(chain.split('8A5d1YX84A428s'))
-    chain = ''.join(chain.split('$'))
+    try:
+        chain = 'aHR' + chain
+        chain = 'M'.join(chain.split('7A4c1Y9T8c'))
+        chain = 'V'.join(chain.split('8A5d1YX84A428s'))
+        chain = ''.join(chain.split('$'))
 
-    return base64.b64decode(chain)
+        return base64.b64decode(chain)
+    except:
+        return chain
 
 def load():
     oGui = cGui()
@@ -328,22 +331,19 @@ def seriesHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
-    #modif url par Gregwar
-    if '?' in sUrl:
-        sUrl += '&r=n'
-    else:
-        sUrl += '?r=n'
-    oRequestHandler = cRequestHandler(sUrl + '&ep=0')
-    sHtmlContent = oRequestHandler.request();
+    
+    cConfig().log(sUrl)
+        
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
 
 
     oParser = cParser()
-    result = re.search('^(.+?)(|col s4 hide-on-med-and-down(.+?))$', sHtmlContent, re.DOTALL)
-
-    result.group(1)
-
+    result = re.search('col s4 hide-on-med-and-down(.+?)$', sHtmlContent, re.DOTALL)
     sHtmlContent = result.group(1)
+    
+    cConfig().log(len(sHtmlContent))
+    
     sPattern = '<div class="truncate.+?</i>(.+?)</div>(.+?)</li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -363,7 +363,7 @@ def seriesHosters():
 
             for t, link in links:
                 oOutputParameterHandler = cOutputParameterHandler()
-                sUrl = URL_MAIN+'/series/'+link+'&r=n'
+                sUrl = URL_MAIN+'/series/'+link
                 #name = aEntry[0] + ' ('+t+')'
                 name = ('%s (%s)') % (aEntry[0], t)
 
@@ -385,13 +385,8 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail  = oInputParameterHandler.getValue('sThumbnail')
 
-    #modif url par Gregwar
-    if 'r=n' not in sUrl:
-        if '?' in sUrl:
-            sUrl += '&r=n'
-        else:
-            sUrl += '?r=n'
-
+    cConfig().log(sUrl)
+            
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -403,43 +398,43 @@ def showHosters():
     else:
         BA = False
 
-    sPattern = '<script>\s*function [a-zA-Z]{2}\(\)(.+?)</script>'
-    aResult = re.search(sPattern,sHtmlContent,re.DOTALL)
-
-    sHtmlContent = aResult.group(1).replace('return de("$")','') #serie
-    #redirection sur hdstream pour les new videos
-    sPattern = '"([^"]+)"'
+    sPattern = 'de\("([^\)]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
+            
+            cConfig().log('A decoder' + str(aEntry) )
             url = Decode(str(aEntry))
-            if 'manifest.mpd' in url:
-                continue
+            cConfig().log('donne ' + url)
+            
+            if url.startswith('http'):
+                if 'manifest.mpd' in url:
+                    continue
 
-            if '/mp4/' in url: #lien upto,1fich,direct ou inutilisable
-                sId = re.search('\/mp4\/([^-]+)',url)
-                if sId:
-                    chaine = sId.group(1)
-                    vUrl = base64.b64decode(chaine + "==")
+                if '/mp4/' in url: #lien upto,1fich,direct ou inutilisable
+                    sId = re.search('\/mp4\/([^-]+)',url)
+                    if sId:
+                        chaine = sId.group(1)
+                        vUrl = base64.b64decode(chaine + "==")
 
-                    if 't411.li' in vUrl:
-                        continue
-                    elif 'uptobox' in vUrl:
-                        sHosterUrl = vUrl
-                    elif '1fichier' in vUrl:
-                        sHosterUrl = vUrl
-                    else:
-                        sHosterUrl = url
+                        if 't411.li' in vUrl:
+                            continue
+                        elif 'uptobox' in vUrl:
+                            sHosterUrl = vUrl
+                        elif '1fichier' in vUrl:
+                            sHosterUrl = vUrl
+                        else:
+                            sHosterUrl = url
 
-            else:
-                sHosterUrl = url
+                else:
+                    sHosterUrl = url
 
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(xbmc.getInfoLabel('ListItem.title'))
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(xbmc.getInfoLabel('ListItem.title'))
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
 
         if (BA != False):
             sHosterUrl2 = str(BA)
