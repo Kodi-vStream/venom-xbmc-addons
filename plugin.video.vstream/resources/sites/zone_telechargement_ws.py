@@ -18,6 +18,7 @@ import xbmcgui
 import xbmc
 import random
 
+
 #from resources.lib.dl_deprotect import DecryptDlProtect
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
@@ -27,10 +28,10 @@ SITE_IDENTIFIER = 'zone_telechargement_ws'
 SITE_NAME = '[COLOR violet]Zone-Telechargement.ws[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_MAIN = 'http://ww1.zone-telechargement.ws/'
+URL_MAIN = 'http://www.zone-telechargement1.com/'
 URL_DECRYPT =  ''
 
-URL_SEARCH = (URL_MAIN, 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN, 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN, 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
