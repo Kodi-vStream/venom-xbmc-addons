@@ -1,9 +1,15 @@
+#coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#http://www.novamov.com/video/xxx
+#http://www.auroravid.to/embed/?v=xxx
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-import re,xbmcgui
-import urllib
+from resources.lib.util import VScreateDialogSelect
+
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 #Novamov Auroravid
 class cHoster(iHoster):
 
@@ -29,32 +35,10 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return True
 
-    def isJDownloaderable(self):
-        return True
-
-    def __getIdFromUrl(self,sUrl):
-        sPattern = '(novamov.com|auroravid.to)([^<]+)'
-        oParser = cParser()
-        aResult = oParser.parse(self.__sUrl, sPattern)
-        if (aResult[0] == True):
-            return aResult[1][0][1]
-
-        return ''
-
-    def __getKey(self,sUrl):
-        oRequest = cRequestHandler(sUrl)
-        sHtmlContent = oRequest.request()
-        sPattern = 'flashvars.filekey="([^"]+)";'
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            aResult = aResult[1][0].replace('.','%2E')
-            return aResult
-
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace('http://www.auroravid.to/', '')
-        self.__sUrl = self.__sUrl.replace('embed/?v=', '')
+        self.__sUrl = self.__sUrl.rsplit('/', 1)[1] 
+        self.__sUrl = self.__sUrl.replace('?v=', '')
         self.__sUrl = 'http://www.auroravid.to/embed/?v=' + str(self.__sUrl)
 
     def checkUrl(self, sUrl):
@@ -67,7 +51,6 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-         #cGui().showInfo('Resolve', self.__sDisplayName, 5)
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
@@ -79,22 +62,23 @@ class cHoster(iHoster):
             #tableau choix de serveur
             url=[]
             serv=[]
-
+            
+            No = 1
             for i in aResult[1]:
                 url.append(str(i))
-                serv.append(str(i[0:11]))
+                serv.append('Liens '+str(No))
+                No += 1
             #Si une seule url
             if len(url) == 1:
                 api_call = url[0]
             #si plus de une
             elif len(url) > 1:
             #Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Serveur',serv)
+                ret = VScreateDialogSelect(serv)
                 if (ret > -1):
                     api_call = url[ret]
 
         if (api_call):
-            return True, api_call
+            return True, api_call + '|User-Agent=' + UA 
 
         return False, False
