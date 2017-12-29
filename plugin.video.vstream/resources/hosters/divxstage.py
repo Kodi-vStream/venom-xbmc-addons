@@ -1,10 +1,12 @@
 #coding: utf-8
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#
+# site clone auroravid|novamov
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 import urllib
+from resources.lib.util import VScreateDialogSelect
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 class cHoster(iHoster):
 
@@ -30,37 +32,11 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return True
 
-    def isJDownloaderable(self):
-        return True
-
-    def __getIdFromUrl(self,sUrl):
-        sPattern = 'v=([^<]+)'
-        oParser = cParser()
-        aResult = oParser.parse(self.__sUrl, sPattern)
-        if (aResult[0] == True):
-            return aResult[1][0]
-
-        return ''
-
-    def __getKey(self,sUrl):
-        oRequest = cRequestHandler(sUrl)
-        sHtmlContent = oRequest.request()
-        sPattern = 'var fkz="([^"]+)";'
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            aResult = aResult[1][0].replace('.', '%2E')
-            return aResult
-
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace('http://embed.divxstage.eu/', '')
-        self.__sUrl = self.__sUrl.replace('http://www.divxstage.to/', '')
-        self.__sUrl = self.__sUrl.replace('http://www.cloudtime.to/', '')
-        self.__sUrl = self.__sUrl.replace('video/', '')
-        self.__sUrl = self.__sUrl.replace('embed.php?v=', '')
-        self.__sUrl = self.__sUrl.replace('&width=711&height=400', '')
-        self.__sUrl = 'http://embed.divxstage.eu/embed.php?v=' + str(self.__sUrl)
+        self.__sUrl = self.__sUrl.rsplit('/', 1)[1] 
+        self.__sUrl = self.__sUrl.replace('?v=', '')
+        self.__sUrl = 'http://www.cloudtime.to/embed/?v=' + str(self.__sUrl)
 
     def checkUrl(self, sUrl):
         return True
@@ -72,21 +48,34 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-
-        id = self.__getIdFromUrl(self.__sUrl)
-        sUrl = 'http://www.cloudtime.to/embed/?v=' + id
-        cKey =  self.__getKey(sUrl)
-
-        api_call = 'http://www.cloudtime.to/api/player.api.php?key=' + cKey + '&file=' + id
         
-        oRequest = cRequestHandler(api_call)
+        oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
-        sPattern =  'url=(.+?)&title'
+
+        sPattern =  '<source src="(.+?)"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            stream_url = urllib.unquote(aResult[1][0])
-            return True, stream_url
-        
+            #tableau choix de serveur
+            url=[]
+            serv=[]
+            
+            No = 1
+            for i in aResult[1]:
+                url.append(str(i))
+                serv.append('Liens '+str(No))
+                No += 1
+            #Si une seule url
+            if len(url) == 1:
+                api_call = url[0]
+            #si plus de une
+            elif len(url) > 1:
+            #Afichage du tableau
+                ret = VScreateDialogSelect(serv)
+                if (ret > -1):
+                    api_call = url[ret]
+
+        if (api_call):
+            return True, api_call + '|User-Agent=' + UA 
+
         return False, False
