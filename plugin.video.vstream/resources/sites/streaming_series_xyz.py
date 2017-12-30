@@ -15,10 +15,10 @@ SITE_IDENTIFIER = 'streaming_series_xyz'
 SITE_NAME = 'Streaming-Series.cx'
 SITE_DESC = 'Séries en Streaming'
 
-URL_MAIN = 'http://dpstreaming.cx/'
+URL_MAIN = 'http://dpstreaming-series.com/'
 
-SERIE_SERIES = (URL_MAIN, 'showMovies')
-SERIE_NEWS = (URL_MAIN, 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'serie-category/series/', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'serie-category/series/', 'showMovies')
 SERIE_GENRES = (True, 'showGenres')
 
 ANIM_ENFANTS = (URL_MAIN + 'serie-category/series/dessin-anime/', 'showMovies')
