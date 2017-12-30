@@ -1,10 +1,13 @@
+#coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.util import cUtil
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-import urllib
+from resources.lib.util import VScreateDialogSelect
 
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
 class cHoster(iHoster):
 
     def __init__(self):
@@ -29,33 +32,6 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return True
 
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return 'flashvars.file=\"([^\"]+)\"';
-
-    def __getKey(self):
-        oRequestHandler = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequestHandler.request()
-        sPattern = 'var fkz="(.+?)";'
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            aResult = aResult[1][0].replace('.','%2E')
-            return aResult
-
-        return ''
-        
-    def __getIdFromUrl(self):
-        sPattern = "v=([^&]+)"
-        oParser = cParser()
-        aResult = oParser.parse(self.__sUrl, sPattern)
-        if (aResult[0] == True):
-            return aResult[1][0]
-
-        return ''
-
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
         self.__sUrl = self.__sUrl.replace('http://www.videoweed.es/', '')
@@ -63,6 +39,7 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.replace('http://embed.videoweed.es/', '')
         self.__sUrl = self.__sUrl.replace('file/', '')
         self.__sUrl = self.__sUrl.replace('embed.php?v=', '')
+        self.__sUrl = self.__sUrl.replace('embed/?v=', '')
         self.__sUrl = self.__sUrl.replace('&width=711&height=400', '')
         self.__sUrl = 'http://www.bitvid.sx/embed/?v=' + str(self.__sUrl)
 
@@ -77,20 +54,35 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        cGui().showInfo('Resolve', self.__sDisplayName, 5)
-        
-        api_call = ('http://www.bitvid.sx/api/player.api.php?key=%s&file=%s') % ( self.__getKey(),self.__getIdFromUrl())
-       
-        oRequest = cRequestHandler(api_call)
-        sHtmlContent = oRequest.request()
+        api_call = ''
 
-        sPattern =  'url=(.+?)&title'
+        oRequest = cRequestHandler(self.__sUrl)
+        sHtmlContent = oRequest.request()
+        
+        sPattern =  '<source src="([^"]+)" type=\'(.+?)\'>'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
+
         if (aResult[0] == True):
-            stream_url = urllib.unquote(aResult[1][0])
-            return True, stream_url
-        
+            url=[]
+            qua=[]
+
+            for aEntry in aResult[1]:
+                url.append(aEntry[0])
+                qua.append(aEntry[1])
+
+            #Si une seule url
+            if len(url) == 1:
+                api_call = url[0]
+            #si plus de une
+            elif len(url) > 1:
+                #Afichage du tableau
+                ret = VScreateDialogSelect(qua)
+                if (ret > -1):
+                    api_call = url[ret]
+                    
+        if (api_call):
+            return True,api_call + '|User-Agent=' + UA 
+            
         return False, False
-        
-   
+ 

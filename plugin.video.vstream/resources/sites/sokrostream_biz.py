@@ -349,7 +349,7 @@ def showMovies(sSearch = ''):
     sPattern = 'data-v-.+?<a href="([^"]+)".+?<img src="(.+?)" alt="(.+?)" class='
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     datas = None
     if sSearch:
         datas = __getDataFromHtmlContent( sHtmlContent2 )
@@ -378,7 +378,7 @@ def showMovies(sSearch = ''):
                 sThumb = URL_MAIN[:-1] + sThumb
 
             sTitle = aEntry[2]
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2 )
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -423,7 +423,7 @@ def __genUrl( e, t ):
     """ Génere une url depuis l'element et le type passé en paramètre.
         e: element ( dict )
         t: type    ( string )
-        
+
         > /[type]/[name]-[id].html
         type: 'films' ou 'series'
         name: e['name'] en minuscule et formaté
@@ -484,14 +484,14 @@ def showSaisons():
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
-    
+
 def showEpisode():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
+
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -522,7 +522,7 @@ def showEpisode():
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
-    
+
 def showHosters():
     import json
     oGui = cGui()
@@ -548,7 +548,7 @@ def showHosters():
         #aResult = [x["link"] for x in page]
 
     #cConfig().log(str(page))
-        
+
     if (page):
         total = len(page)
         dialog = cConfig().createDialog(SITE_NAME)
@@ -559,8 +559,9 @@ def showHosters():
                 break
 
             sHosterUrl = aEntry["link"]
-            sDisplayTitle = cUtil().DecoTitle(sMovieTitle + ' (' + aEntry["language"] + ')' )
-            
+            #sDisplayTitle = cUtil().DecoTitle(sMovieTitle + ' (' + aEntry["language"] + ')' )
+            sDisplayTitle = "%s (%s)" % (sMovieTitle, str(aEntry["language"]))
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sDisplayTitle)

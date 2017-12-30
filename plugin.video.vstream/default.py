@@ -200,6 +200,10 @@ def searchGlobal():
     #xbmc.log(str(aPlugins), xbmc.LOGNOTICE)
 
     dialog = cConfig().createDialog("vStream")
+    #kodi 17 vire la fenetre busy qui ce pose au dessus de la barre de Progress
+    try:
+        xbmc.executebuiltin("Dialog.Close(busydialog)")
+    except: pass
     xbmcgui.Window(10101).setProperty('search', 'true')
 
     oGui.addText('globalSearch', cConfig().getlanguage(30081) % (sSearchText), 'none.png')
@@ -210,6 +214,7 @@ def searchGlobal():
         cConfig().updateDialogSearch(dialog, total, text)
         if dialog.iscanceled():
             cancel = True
+            dialog.close()
             break
 
         #nom du site
@@ -230,7 +235,7 @@ def searchGlobal():
         if(count == 0):
             cConfig().updateDialogSearch(dialog, total, text,True)
         else:
-            cConfig().updateDialogSearch(dialog, total, text)               
+            cConfig().updateDialogSearch(dialog, total, text)
 
         #result['params'].addParameter('VSTRMSEARCH','True')
 
@@ -238,11 +243,11 @@ def searchGlobal():
         #xbmc.log('%s - %s' % (middle,old_label),  xbmc.LOGNOTICE)
 
         if dialog.iscanceled():
-            if cancel == True:            
+            if cancel == True:
                 continue
             else:
-                break        
-   
+                break
+
     cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()

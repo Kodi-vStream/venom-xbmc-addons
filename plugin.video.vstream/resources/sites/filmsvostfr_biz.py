@@ -433,11 +433,13 @@ def showHosters():
 
         vUrl = re.search('url=([^"]+)"', repok)
         if vUrl:
-           sHosterUrl = vUrl.group(1)
-           if 'uptobox' in sHosterUrl:
-               sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/uptoboxlink\.php\?link=)', 'http://uptobox.com/', sHosterUrl)
-           elif '1fichier' in sHosterUrl:
-               sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/1fichierlink\.php\?link=)', 'https://1fichier.com/?', sHosterUrl)
+            sHosterUrl = vUrl.group(1)
+            if 'vidto.' in sHosterUrl:
+                sHosterUrl = sHosterUrl.replace('vidto.','vidtodo.')
+            elif 'uptobox' in sHosterUrl:
+                sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/uptoboxlink\.php\?link=)', 'http://uptobox.com/', sHosterUrl)
+            elif '1fichier' in sHosterUrl:
+                sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/1fichierlink\.php\?link=)', 'https://1fichier.com/?', sHosterUrl)
 
     else:
         sHosterUrl = sUrl

@@ -287,14 +287,9 @@ class cGuiElement:
         self.__sTitle = sTitle
 
     def getTitle(self):
-
         sTitle = self.__sTitle
-        if type(sTitle) is dict:
-            sTitle = self.RangeTitle(sTitle)
-        #titre normal
-        else:
-            if not sTitle.startswith('[COLOR'):
-                sTitle = self.TraiteTitre(sTitle)
+        if not sTitle.startswith('[COLOR'):
+            sTitle = self.TraiteTitre(sTitle)
         return sTitle
 
     def getCleanTitle(self):

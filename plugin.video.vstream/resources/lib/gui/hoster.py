@@ -138,9 +138,7 @@ class cHosterGui:
         #Gestion classique
         if ('facebook' in sHostName):
             return self.getHoster('facebook')
-        if ('novamov' in sHostName):
-            return self.getHoster('novamov')
-        if ('auroravid' in sHostName):
+        if (('auroravid' in sHostName) or ('novamov' in sHostName)):
             return self.getHoster('auroravid')
         if (('divxstage' in sHostName) or ('cloudtime' in sHostName)):
             return self.getHoster('divxstage')
@@ -168,7 +166,7 @@ class cHosterGui:
             return self.getHoster('megawatch')
         if ('vidto.me' in sHostName):
             return self.getHoster('vidto')
-        if ('vidtodo.com' in sHostName):
+        if ('vidtodo.' in sHostName):
             return self.getHoster('vidtodo')
         if ('vidzi' in sHostName):
             return self.getHoster('vidzi')
