@@ -31,9 +31,9 @@ SITE_DESC = 'Fichier en DDL, HD'
 URL_MAIN = 'http://www.zone-telechargement1.com/'
 URL_DECRYPT =  ''
 
-URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN, 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN, 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN  + 'index.php?', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'nouveaute/', 'showMovies') # films (derniers ajouts)
@@ -85,7 +85,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HDLIGHT[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_HDLIGHT[1], 'Films (x265 & x264)', 'films_hd.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_4K[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_4K[1], 'Films 4k', 'films_hd.png', oOutputParameterHandler)
@@ -177,6 +177,7 @@ def showGenre(basePath):
 def showMovies(sSearch = ''):
     oGui = cGui()
     bGlobal_Search = False
+    qual = False
     if sSearch:
 
         if URL_SEARCH[0] in sSearch:
@@ -184,6 +185,8 @@ def showMovies(sSearch = ''):
             sSearch=sSearch.replace(URL_SEARCH[0],'')
 
         query_args = ( ( 'do' , 'search' ) , ('subaction' , 'search' ) , ('story' , sSearch ) , ('titleonly' , '3' ))
+
+
         data = urllib.urlencode(query_args)
         request = urllib2.Request(URL_SEARCH[0],data,headers)
         sPattern = '<div style="height:[0-9]{3}px;"> *<a href="([^"]+)" *><img class="[^"]+?" data-newsid="[^"]+?" src="([^<"]+)".+?<div class="[^"]+?" style="[^"]+?"> *<a href="[^"]+?" *> ([^<]+?)<'
@@ -216,7 +219,14 @@ def showMovies(sSearch = ''):
             sTitle = str(aEntry[2])
             sUrl2 = aEntry[0]
 
+            #traite les qualités
+            liste = ['4k', '1080p', '720p', 'bdrip', 'hdrip', 'dvdrip', 'cam-md']
+            for i in liste:
+                if i in sUrl2:
+                    sTitle = '%s (%s)' % (sTitle, i)
+
             #Si recherche et trop de resultat, on nettoye
+            #31/12/17 Ne fonctionne plus ?
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch,sTitle) == 0:
                     continue
@@ -232,12 +242,12 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-          
+
             if 'films-gratuit' in sUrl2 or '4k' in sUrl2:
                   oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
-                
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -439,9 +449,9 @@ def showHosters():# recherche et affiche les hotes
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent:
         oParser = cParser()
         sPattern = '<font color=red>([^<]+?)</font>'
-        aResult = oParser.parse(sHtmlContent, sPattern)      
+        aResult = oParser.parse(sHtmlContent, sPattern)
         sHtmlContent = CutNonPremiumlinks(sHtmlContent)
-        
+
         #print sHtmlContent
     oParser = cParser()
 
@@ -480,13 +490,13 @@ def showHosters():# recherche et affiche les hotes
             else:
                 sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR] ' + sMovieTitle
                 URL_DECRYPT = aEntry[3]
-                oOutputParameterHandler = cOutputParameterHandler()                  
+                oOutputParameterHandler = cOutputParameterHandler()
                 if sUrl.startswith ('https') or sUrl.startswith ('http'):
                     oOutputParameterHandler.addParameter('siteUrl', aEntry[2])
                 else:
                     sUrl2 = 'https://' + aEntry[3] + '/' + aEntry[4]
                     oOutputParameterHandler.addParameter('siteUrl', str(sUrl2))
-                    
+
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumbnail, '', oOutputParameterHandler)
@@ -494,7 +504,7 @@ def showHosters():# recherche et affiche les hotes
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
-    
+
 def showSeriesHosters():# recherche et affiche les hotes
     #xbmc.log('showSeriesHosters')
 
@@ -708,7 +718,7 @@ def DecryptDlProtecte(url):
     #url2 = 'https://www.dl-protecte.org/php/Qaptcha.jquery.php'
     #url2 = 'https://www.protect-zt.com/php/Qaptcha.jquery.php'
     url2 = 'https://' + url.split('/')[2] + '/php/Qaptcha.jquery.php'
-    
+
     #cConfig().log(url2)
 
     #Make random key
