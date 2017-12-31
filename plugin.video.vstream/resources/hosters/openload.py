@@ -164,7 +164,7 @@ class cHoster(iHoster):
         JP.AddHackVar(Item_url,Coded_url)
 
         JP.ProcessJS(code,Liste_var)
-        url = JP.GetVarHack("#streamurl")
+        url = JP.GetVarHack("#streamuri")
         
         cConfig().log( 'Decoded url : ' + url )
         
