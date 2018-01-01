@@ -1,15 +1,15 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#johngf - V0.4.1
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui 
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler 
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler 
 from resources.lib.parser import cParser 
-from resources.lib.util import cUtil
+from resources.lib.util import cUtil,VSlog
 from resources.lib.config import cConfig
 from resources.lib.handler.premiumHandler import cPremiumHandler
-
+#from resources.lib.handler.requestHandler import MPencode
 from resources.lib.config import GestionCookie
 
 import xbmc,xbmcgui,urllib,urllib2,re,random,mimetypes,string
@@ -19,7 +19,7 @@ SITE_NAME = '[COLOR dodgerblue]' + 'VotreCompteUptobox' + '[/COLOR]'
 SITE_DESC = 'Fichiers sur compte Uptobox'
 URL_MAIN = 'https://uptobox.com/'
 BURL = URL_MAIN + '?op=my_files' 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 headers = { 'User-Agent' : UA }
 
 URL_UPTOBOX_SEARCH = (URL_MAIN + '?op=my_files&per_page=1000&fld_id=0&key=', 'showMovies')
@@ -40,6 +40,7 @@ def load():
         
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+            oOutputParameterHandler.addParameter('file', 'fileonly')
             oGui.addDir(SITE_IDENTIFIER, 'showFile', 'Mes Fichiers', 'genres.png', oOutputParameterHandler)
     
             oOutputParameterHandler = cOutputParameterHandler()
@@ -57,6 +58,7 @@ def load():
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+            oOutputParameterHandler.addParameter('file', 'fileonly')
             oGui.addDir(SITE_IDENTIFIER, 'showFile', 'Mes Fichiers', 'genres.png', oOutputParameterHandler)
     
             oOutputParameterHandler = cOutputParameterHandler()
@@ -81,6 +83,10 @@ def showFile():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     
+    sFileonly = ''
+    if (oInputParameterHandler.exist('file')):
+        sFileonly = oInputParameterHandler.getValue('file')
+
     oPremiumHandler = cPremiumHandler('uptobox')
 
     if 'uptobox.com' in sUrl:
@@ -117,7 +123,23 @@ def showFile():
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showFile', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
             
-    oGui.setEndOfDirectory()
+        if sFileonly != 'fileonly':    
+            sFolder = __checkForFolder(sHtmlContent)
+            if (sFolder != False):
+                for aEntry in sFolder:
+                    sUrl = URL_MAIN+aEntry[0]
+                    sTitle = aEntry[1]
+                    oOutputParameterHandler = cOutputParameterHandler()
+                    oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                    oOutputParameterHandler.addParameter('title', sTitle)
+                    oGui.addDir(SITE_IDENTIFIER, 'showFile', sTitle, 'genres.png', oOutputParameterHandler)
+            
+        oGui.setEndOfDirectory()
+        
+    else:
+        showFolder(sHtmlContent)
+
+
 
 def __checkForNextPage(sHtmlContent):
     sPattern = "<a href='([^']+)'>(?:Next|Suivant).+?<\/a>"
@@ -127,16 +149,29 @@ def __checkForNextPage(sHtmlContent):
         return URL_MAIN + aResult[1][0]
  
     return False
-
-def showFolder():
+    
+def __checkForFolder(sHtmlContent):
+    sHtmlContent = sHtmlContent.replace('class="blue_link">&nbsp;. .&nbsp; ()</a></td>','')
+    sPattern = '<td class="tri">.+?<a href="([^"]+)" class="blue_link">(.+?)<\/a><\/td>'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        return aResult[1]
+        
+    return False
+    
+def showFolder(sHtmlContent=''):
     oGui = cGui()
     oPremiumHandler = cPremiumHandler('uptobox')
-
-    sHtmlContent = oPremiumHandler.GetHtml(BURL)
-    
+    if not sHtmlContent:
+        sHtmlContent = oPremiumHandler.GetHtml(BURL)
+    else:
+        sHtmlContent = sHtmlContent.replace('class="blue_link">&nbsp;. .&nbsp; ()</a></td>','')
+        
     oParser = cParser()
     sPattern = '<td class="tri">.+?<a href="([^"]+)" class="blue_link">(.+?)<\/a><\/td>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -166,10 +201,8 @@ def AddmyAccount():
     oInputParameterHandler = cInputParameterHandler()
     sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
 
-    sId = sMediaUrl.replace(URL_MAIN,'')
-    if 'https://uptostream.com/iframe/' in sMediaUrl : sId = sMediaUrl.replace('https://uptostream.com/iframe/','') 
-    else : sId = sMediaUrl.replace('http://uptobox.com/','') 
-          
+    sId = sMediaUrl.rsplit('/', 1)[1]
+
     Upurl = URL_MAIN + '?op=my_files&add_my_acc=' + sId
 
     oPremiumHandler = cPremiumHandler('uptobox')
@@ -201,32 +234,35 @@ def UptomyAccount():
     sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
 
     oPremiumHandler = cPremiumHandler('uptobox')
-         
+
     sHtmlContent = oPremiumHandler.GetHtml(URL_MAIN)
     cookies = GestionCookie().Readcookie('uptobox')
   
-    aResult = re.search('<div id="div_url".+?action="([^"]+)".+?name="sess_id" value="([^"]+)".+?name="srv_tmp_url" value="([^"]+)"',sHtmlContent,re.DOTALL)
-    if (aResult):
-        aCt = aResult.group(1)
-        sId = aResult.group(2)
-        sTmp = aResult.group(3)
+    aResult = re.search("request.open\('POST', '([^']+)'\);",sHtmlContent,re.DOTALL)
 
-        UPurl = ('%s%s&js_on=1&utype=reg&upload_type=url' % (aCt,sId))
- 
-        fields = {'sess_id':sId,'upload_type':'url','srv_tmp_url':sTmp,'url_mass':sMediaUrl,'tos':'1','submit_btn':'Uploader'}
+    if (aResult):
+    
+        UPurl = aResult.group(1)
+        fields = {"urls":'["'+sMediaUrl+'"]','submit':'Upload'}
         mpartdata = MPencode(fields)
+
         req = urllib2.Request(UPurl,mpartdata[1],headers)
         req.add_header('Content-Type', mpartdata[0])
         req.add_header('Cookie', cookies)
         req.add_header('Content-Length', len(mpartdata[1]))
-        #req.add_data(mpartdata[1])
+        # req.add_header('Origin','http://uptobox.com')
+        # req.add_header('Referer','http://uptobox.com')
+        
         xbmcgui.Dialog().notification('Info upload', 'Envoi de la requete patienter ..', xbmcgui.NOTIFICATION_INFO,2000,False)
         try:
-           rep = urllib2.urlopen(req)
-        except:
+            response = urllib2.urlopen(req)
+        except urllib2.URLError, e:
+            VSlog(e.code)
+            VSlog(e.reason)
             return ''
 
         sHtmlContent = rep.read()
+
         rep.close()
         xbmc.executebuiltin("Dialog.Close(all,true)")
         if '>OK<' in sHtmlContent:
@@ -272,18 +308,9 @@ def showMovies(sSearch = ''):
                 
         cConfig().finishDialog(dialog)
         
-            
+  
     oGui.setEndOfDirectory()
-
-def __checkForNextPage(sHtmlContent):
-    sPattern = "<a href='([^']+)'>(?:Next|Suivant).+?<\/a>"
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        return URL_MAIN + aResult[1][0]
- 
-    return False
-        
+    
 def MPencode(fields):
     random_boundary = __randy_boundary()
     content_type = "multipart/form-data, boundary=%s" % random_boundary
@@ -319,4 +346,4 @@ def __randy_boundary(length=10,reshuffle=False):
         random.shuffle(boundary_string)
     else:
         pass
-    return ''.join(boundary_string)        
+    return ''.join(boundary_string)
