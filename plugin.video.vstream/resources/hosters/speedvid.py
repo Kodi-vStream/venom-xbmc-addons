@@ -81,12 +81,13 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('User-Agent',UA)
         sHtmlContent = oRequest.request()
+        sHtmlContent = re.sub( r'<!--.*?-->', '', sHtmlContent )
 
         oParser = cParser()
         
         api_call = ''
 
-        aResult = re.search('>(ﾟωﾟ.+?\(\'_\'\);)', sHtmlContent,re.DOTALL | re.UNICODE)
+        aResult = re.search('>\s*(ﾟωﾟ.+?\(\'_\'\);)', sHtmlContent,re.DOTALL | re.UNICODE)
     
         if (aResult):
             JP = JsParser()
@@ -133,7 +134,7 @@ class cHoster(iHoster):
                         api_call = aResult2[1][0]
         """
         #cConfig().log( sHtmlContent )
-        sPattern = "file:\s*\'([^\']+.mp4)"
+        sPattern = "file\s*:\s*\'([^\']+.mp4)"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             api_call = aResult[1][0]
