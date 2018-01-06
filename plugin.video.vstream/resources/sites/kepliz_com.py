@@ -15,7 +15,7 @@ import unicodedata,htmlentitydefs
 SITE_IDENTIFIER = 'kepliz_com'
 SITE_NAME = 'Kepliz'
 SITE_DESC = 'Films en streaming'
-URL_HOST = 'http://pirvox.com/'
+URL_HOST = 'http://fetayo.com/'
 #URL_HOST = 'http://www.ozporo.com/'
 URL_MAIN = 'URL_MAIN'
 
