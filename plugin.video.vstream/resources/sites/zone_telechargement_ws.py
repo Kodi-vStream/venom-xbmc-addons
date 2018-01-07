@@ -85,7 +85,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HDLIGHT[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_HDLIGHT[1], 'Films (x265 & x264)', 'films_hd.png', oOutputParameterHandler)
-
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_4K[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_4K[1], 'Films 4k', 'films_hd.png', oOutputParameterHandler)
@@ -256,6 +256,7 @@ def showMovies(sSearch = ''):
 
     if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -449,9 +450,9 @@ def showHosters():# recherche et affiche les hotes
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent:
         oParser = cParser()
         sPattern = '<font color=red>([^<]+?)</font>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        aResult = oParser.parse(sHtmlContent, sPattern)      
         sHtmlContent = CutNonPremiumlinks(sHtmlContent)
-
+        
         #print sHtmlContent
     oParser = cParser()
 
@@ -490,13 +491,13 @@ def showHosters():# recherche et affiche les hotes
             else:
                 sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR] ' + sMovieTitle
                 URL_DECRYPT = aEntry[3]
-                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler = cOutputParameterHandler()                  
                 if sUrl.startswith ('https') or sUrl.startswith ('http'):
                     oOutputParameterHandler.addParameter('siteUrl', aEntry[2])
                 else:
                     sUrl2 = 'https://' + aEntry[3] + '/' + aEntry[4]
                     oOutputParameterHandler.addParameter('siteUrl', str(sUrl2))
-
+                    
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
                 oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumbnail, '', oOutputParameterHandler)
@@ -504,7 +505,7 @@ def showHosters():# recherche et affiche les hotes
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
-
+    
 def showSeriesHosters():# recherche et affiche les hotes
     #xbmc.log('showSeriesHosters')
 
@@ -569,6 +570,37 @@ def showSeriesHosters():# recherche et affiche les hotes
 
     oGui.setEndOfDirectory()
 
+def showStreamingHosters():# recherche et affiche les hotes
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
+
+    sPattern = '<iframe.+?src="(.+?)"'
+
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    #cConfig().log(str(sUrl))
+
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            sHosterUrl = aEntry
+            #print sHosterUrl
+
+            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+    
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                    
+    oGui.setEndOfDirectory()
+    
 def Display_protected_link():
     #xbmc.log('Display_protected_link')
     oGui = cGui()
@@ -643,14 +675,22 @@ def Display_protected_link():
             if len(aResult_dlprotecte[1]) > 1:
                 sTitle = sMovieTitle + ' episode ' + str(episode)
 
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+
             episode+=1
 
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(sTitle)
-                oHoster.setDisplayName(sDisplayTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+            if 'streaming' in str(sHosterUrl):
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', str(sHosterUrl))
+                oOutputParameterHandler.addParameter('sMovieTitle', str(sDisplayTitle))
+                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                oGui.addMovie(SITE_IDENTIFIER, 'showStreamingHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+            else:
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setFileName(sTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
     oGui.setEndOfDirectory()
 
@@ -718,7 +758,7 @@ def DecryptDlProtecte(url):
     #url2 = 'https://www.dl-protecte.org/php/Qaptcha.jquery.php'
     #url2 = 'https://www.protect-zt.com/php/Qaptcha.jquery.php'
     url2 = 'https://' + url.split('/')[2] + '/php/Qaptcha.jquery.php'
-
+    
     #cConfig().log(url2)
 
     #Make random key
