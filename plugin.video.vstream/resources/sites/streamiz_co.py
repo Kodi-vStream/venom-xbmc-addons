@@ -110,7 +110,10 @@ def showMovies(sSearch = '',yearUrl = ''):
     sHtmlContent = sHtmlContent.replace("\t","")
     sHtmlContent = sHtmlContent.replace("\n","")
 
-    sPattern = '<div class="movie_last"><a href="([^"]+)".+?<img src="([^"]+)".+?<div class="title">(.+?)<\/div>.+?<p class="nop synopsis">(.+?)</p>'
+    if sSearch:
+        sPattern = 'post_title":[\'"]([^<>\'"]+)[\'"],"post_name":[\'"]([^<>\'"]+)[\'"],"poster_url":[\'"]([^<>\'"]+)[\'"]'
+    else:
+        sPattern = '<div class="movie_last"><a href="([^"]+)".+?<img src="([^"]+)".+?<div class="title">(.+?)<\/div>.+?<p class="nop synopsis">(.+?)</p>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -120,10 +123,16 @@ def showMovies(sSearch = '',yearUrl = ''):
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sUrl = aEntry[0]
-            sThumb = aEntry[1]
-            sTitle = aEntry[2].replace('&#8217;', '\'')
-            sSyn = aEntry[3].replace("&laquo;",'«').replace("&raquo;",'»').replace('  ',' ')
+            if sSearch:
+                sUrl = URL_MAIN + aEntry[1].replace('\/', '/')
+                sThumb = aEntry[2].replace('\/', '/')
+                sTitle = aEntry[0].replace('-', ' ')
+                sSyn = aEntry[2].replace("&laquo;",'«').replace("&raquo;",'»').replace('  ',' ')
+            else:  
+                sUrl = aEntry[0]
+                sThumb = aEntry[1]
+                sTitle = aEntry[2].replace('&#8217;', '\'')
+                sSyn = aEntry[3].replace("&laquo;",'«').replace("&raquo;",'»').replace('  ',' ')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)

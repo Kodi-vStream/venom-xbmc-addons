@@ -31,9 +31,9 @@ SITE_DESC = 'Fichier en DDL, HD'
 URL_MAIN = 'http://www.zone-telechargement1.com/'
 URL_DECRYPT =  ''
 
-URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN, 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN, 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN  + 'index.php?', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'nouveaute/', 'showMovies') # films (derniers ajouts)
@@ -177,6 +177,7 @@ def showGenre(basePath):
 def showMovies(sSearch = ''):
     oGui = cGui()
     bGlobal_Search = False
+    qual = False
     if sSearch:
 
         if URL_SEARCH[0] in sSearch:
@@ -184,6 +185,8 @@ def showMovies(sSearch = ''):
             sSearch=sSearch.replace(URL_SEARCH[0],'')
 
         query_args = ( ( 'do' , 'search' ) , ('subaction' , 'search' ) , ('story' , sSearch ) , ('titleonly' , '3' ))
+
+
         data = urllib.urlencode(query_args)
         request = urllib2.Request(URL_SEARCH[0],data,headers)
         sPattern = '<div style="height:[0-9]{3}px;"> *<a href="([^"]+)" *><img class="[^"]+?" data-newsid="[^"]+?" src="([^<"]+)".+?<div class="[^"]+?" style="[^"]+?"> *<a href="[^"]+?" *> ([^<]+?)<'
@@ -216,7 +219,14 @@ def showMovies(sSearch = ''):
             sTitle = str(aEntry[2])
             sUrl2 = aEntry[0]
 
+            #traite les qualités
+            liste = ['4k', '1080p', '720p', 'bdrip', 'hdrip', 'dvdrip', 'cam-md']
+            for i in liste:
+                if i in sUrl2:
+                    sTitle = '%s (%s)' % (sTitle, i)
+
             #Si recherche et trop de resultat, on nettoye
+            #31/12/17 Ne fonctionne plus ?
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch,sTitle) == 0:
                     continue
@@ -232,12 +242,12 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
             sDisplayTitle = cUtil().DecoTitle(sTitle)
-          
+
             if 'films-gratuit' in sUrl2 or '4k' in sUrl2:
                   oGui.addMovie(SITE_IDENTIFIER, 'showMoviesLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
-                
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -246,6 +256,7 @@ def showMovies(sSearch = ''):
 
     if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -559,6 +570,37 @@ def showSeriesHosters():# recherche et affiche les hotes
 
     oGui.setEndOfDirectory()
 
+def showStreamingHosters():# recherche et affiche les hotes
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
+
+    sPattern = '<iframe.+?src="(.+?)"'
+
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    #cConfig().log(str(sUrl))
+
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            sHosterUrl = aEntry
+            #print sHosterUrl
+
+            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+    
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                    
+    oGui.setEndOfDirectory()
+    
 def Display_protected_link():
     #xbmc.log('Display_protected_link')
     oGui = cGui()
@@ -633,14 +675,22 @@ def Display_protected_link():
             if len(aResult_dlprotecte[1]) > 1:
                 sTitle = sMovieTitle + ' episode ' + str(episode)
 
+            sDisplayTitle = cUtil().DecoTitle(sTitle)
+
             episode+=1
 
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(sTitle)
-                oHoster.setDisplayName(sDisplayTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+            if 'streaming' in str(sHosterUrl):
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', str(sHosterUrl))
+                oOutputParameterHandler.addParameter('sMovieTitle', str(sDisplayTitle))
+                oOutputParameterHandler.addParameter('sThumbnail', str(sThumbnail))
+                oGui.addMovie(SITE_IDENTIFIER, 'showStreamingHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
+            else:
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setFileName(sTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
     oGui.setEndOfDirectory()
 
