@@ -214,13 +214,7 @@ def showMovies():
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    # modif url par Gregwar
-    if '?' in sUrl:
-        sUrl += '&r=n'
-    else:
-        sUrl += '?r=n'
-
+        
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
@@ -334,7 +328,7 @@ def seriesHosters():
     
     cConfig().log(sUrl)
         
-    oRequestHandler = cRequestHandler(sUrl + '?ep=0')
+    oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
 
