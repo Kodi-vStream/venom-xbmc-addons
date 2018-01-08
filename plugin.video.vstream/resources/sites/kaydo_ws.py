@@ -328,7 +328,7 @@ def seriesHosters():
     
     cConfig().log(sUrl)
         
-    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler = cRequestHandler(sUrl + '?ep=0')
     sHtmlContent = oRequestHandler.request()
 
 
