@@ -1,7 +1,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.config import cConfig
-#from ctypes import *
+from ctypes import *
 import time
 import random
 
@@ -10,7 +10,7 @@ class cStatistic:
     STATISTIC_URL = 'http://www.google-analytics.com/__utm.gif'
     STATISTIC_ID = 'UA-53463976-1'
 
-    def callStartPlugin(self, sPluginName):
+    def callStartPlugin(self, sPluginName, sTitle):
         oConfig = cConfig()
         bStatistic = oConfig.getSetting('statistic')
 
@@ -43,7 +43,8 @@ class cStatistic:
 	    #oRequestHandler.addParameters('aip', '1') # anonymizeIp
 
             oRequestHandler.addParameters('utmcs', 'UTF-8')
-            oRequestHandler.addParameters('utmdt', 'Plugin Activity')
+            #oRequestHandler.addParameters('utmdt', 'Plugin Activity')
+            oRequestHandler.addParameters('utmdt', str(sTitle))
             oRequestHandler.addParameters('utmfl', '10.1 r102')
             #oRequestHandler.addParameters('utmhid', '1549554730')
             oRequestHandler.addParameters('utmhn', 'code.google.com')
@@ -51,6 +52,7 @@ class cStatistic:
             oRequestHandler.addParameters('utmn', str(random.randint(0, 0x7fffffff)))
             oRequestHandler.addParameters('utmp', str(sPluginName))
             oRequestHandler.addParameters('utmr', '-')
+            #oRequestHandler.addParameters('utme', str(sPluginName))
             oRequestHandler.addParameters('utmsc', '24-bit')
             oRequestHandler.addParameters('utmsr', '1920x1080')
             oRequestHandler.addParameters('utmu', 'qAAg')
@@ -58,7 +60,5 @@ class cStatistic:
             oRequestHandler.addParameters('utmwv', '4.8.6')
 
             oRequestHandler.request()
-            print "paseeeeeeeeeeeeeeeeee"
         except Exception, e:
-            print "ammmmmmmmmmmmmmmmmmmmsee pas"
             return
