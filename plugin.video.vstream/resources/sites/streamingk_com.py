@@ -185,7 +185,7 @@ def showMovies(sSearch = ''):
         sHtmlContent = sHtmlContent.replace('listes-des-series-annulees-et-renouvelees', '<>')
 
     oParser = cParser()
-    sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<>"]+)".+?\/><\/a><div class="movief"><a href="([^<]+)">([^<]+)<\/a><\/div>'
+    sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<>"]+)".+?\/> *<\/a> *<div class="movief"><a href="([^<]+)">([^<]+)<\/a><\/div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
