@@ -190,8 +190,8 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('[Streaming]', '').replace('[Telecharger]', '')
-    sPattern = 'item-header.+?<img src="([^"]+)".+?<a href="([^>]+)">([^<]+)</a>.+?<p>(.+?)</p>'
+    sHtmlContent = sHtmlContent.replace(' [Streaming]', '').replace(' [Telecharger]', '')
+    sPattern = '<article class="latestPost.+?<a href="([^"]+)" title="(.+?)".+?<img.+?src="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -206,27 +206,25 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            sTitle = unicode(aEntry[2], 'utf-8')#converti en unicode
-            sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
-            sTitle = unescape(str(sTitle))
-            sTitle = sTitle.encode( "utf-8")
+            #sTitle = unicode(aEntry[2], 'utf-8')#converti en unicode
+            #sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
+            #sTitle = unescape(str(sTitle))
+            #sTitle = sTitle.encode( "utf-8")
 
-            sCom = unicode(aEntry[3], 'utf-8')#converti en unicode
-            sCom = unicodedata.normalize('NFD', sCom).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
-            sCom = unescape(sCom)
+            sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
 
             #Mange et Series fonctionnent pareil
-            if '/series-tv/' in sUrl or 'saison' in aEntry[1]:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, aEntry[0], aEntry[0], sCom, oOutputParameterHandler)
+            if '/series-tv/' in sUrl or 'saison' in aEntry[0]:
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, 'series.png', aEntry[2], '', oOutputParameterHandler)
             elif '/mangas/' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, aEntry[0], aEntry[0], sCom, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, 'animes.png', aEntry[2], '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, aEntry[0], aEntry[0], sCom, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', aEntry[2], '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
