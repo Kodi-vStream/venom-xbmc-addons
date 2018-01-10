@@ -66,7 +66,7 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         #self.__sUrl = str(sUrl)
         sId = self.__getIdFromUrl( sUrl )
-        self.__sUrl = 'http://www.speedvid.net/embed-' + sId + '-640x360.html';
+        self.__sUrl = 'http://www.speedvid.net/embed-' + sId + '-640x360.html'
 
     def checkUrl(self, sUrl):
         return True
@@ -99,7 +99,7 @@ class cHoster(iHoster):
             sHtmlContent = JP.ProcessJS(JScode,Liste_var)
             sHtmlContent = JP.LastEval.decode('string-escape').decode('string-escape') 
    
-            Url = re.findall("href = '(.+?)'",sHtmlContent)[0]
+            Url = re.findall("href\s*=\s*'(.+?)'",sHtmlContent)[0]
 
             if not 'speedvid' in Url:
                 Url = 'http://www.speedvid.net/' + Url  
