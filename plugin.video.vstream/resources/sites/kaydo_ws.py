@@ -338,7 +338,7 @@ def seriesHosters():
     
     cConfig().log(len(sHtmlContent))
     
-    sPattern = '<div class="truncate.+?</i>(.+?)</div>(.+?)</li>'
+    sPattern = '<div class="truncate.+?</i>(.+?)<script>(.+?)</li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
 
