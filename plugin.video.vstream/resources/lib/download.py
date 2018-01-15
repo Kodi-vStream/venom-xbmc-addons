@@ -129,7 +129,7 @@ class cDownloadProgressBar(threading.Thread):
         #Memorise.unlock("VstreamDownloaderLock")
 
         #fait une pause pour fermer le Dialog
-        xbmc.sleep(600)
+        xbmc.sleep(900)
 
         #if download finish
         meta = {}
@@ -412,6 +412,7 @@ class cDownload:
         if not meta:
             meta = self.GetOnefile()
 
+        xbmcgui.Window(10101).setProperty('SimpleDownloaderQueue', '0')
         self.StartDownload(meta)
 
 
