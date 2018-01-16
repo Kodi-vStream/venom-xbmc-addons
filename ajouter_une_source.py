@@ -67,7 +67,10 @@ ANIM_VFS = (URL_MAIN + 'animes', 'showMovies') #animés VF
 ANIM_VOSTFRS = (URL_MAIN + 'animes', 'showMovies') #animés VOSTFR
 ANIM_ENFANTS = (URL_MAIN + 'animes', 'showMovies')
 
-DOC_DOCS = (URL_MAIN + 'url', 'showMovies') #Documentaire
+DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies') #Documentaire
+DOC_DOCS = ('http://', 'load') #Documentaire Load
+DOC_GENRES = (True, 'showGenres') # Documentaires Genres
+
 SPORT_SPORTS = (URL_MAIN + 'url', 'showMovies') #sport
 MOVIE_NETS = (URL_MAIN + 'url', 'showMovies') #video du net
 

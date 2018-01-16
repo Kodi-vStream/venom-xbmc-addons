@@ -25,13 +25,18 @@ URL_MAIN = 'http://zonestreaming.ws/'
 MOVIE_NEWS = (URL_MAIN+'category/films-streaming/', 'showMovies')
 MOVIE_VOSTFR = (URL_MAIN + 'category/films-streaming/vostfr-films/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN+'category/films-en-exclus/', 'showMovies')
+MOVIE_GENRES = (True, 'showGenre')
+
 SERIE_SERIES = (URL_MAIN+'category/series-streaming/', 'showMovies')
 SERIE_VFS = (URL_MAIN + 'category/series-streaming/series-streaming-vf/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'category/series-streaming/series-streaming-vostfr/', 'showMovies')
 
-MOVIE_GENRES = (True, 'showGenre')
-REPLAYTV_REPLAYTV = (URL_MAIN+'category/emissions-tv/', 'showMovies')
-DOC_DOCS = (URL_MAIN+'category/documentaire/', 'showMovies')
+
+REPLAYTV_NEWS = (URL_MAIN+'category/emissions-tv/', 'showMovies')
+REPLAYTV_REPLAYTV = ('http://', 'load')
+
+DOC_NEWS = (URL_MAIN+'category/documentaire/', 'showMovies')
+DOC_DOCS = ('http://', 'load')
 
 URL_SEARCH = ('http://zonestreaming.ws/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -100,8 +105,12 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Series A-Z', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Replay tv', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Replay tv', 'tv.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
 
 
     oGui.setEndOfDirectory()
