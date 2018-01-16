@@ -21,8 +21,8 @@ URL_SEARCH_MISC = (URL_MAIN + '?post_type=video&s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 REPLAYTV_GENRES = (True, 'showGenre')
-REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
-REPLAYTV_REPLAYTV = (URL_MAIN + 'videos/', 'showMovies')
+REPLAYTV_REPLAYTV = ('http://', 'load')
+REPLAYTV_NEWS = (URL_MAIN + 'videos/', 'showMovies')
 
 def load():
     oGui = cGui()
@@ -34,10 +34,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Nouveautées', 'news.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Toutes les videos', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_GENRES[0])

@@ -38,11 +38,11 @@ URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 # menu films existant dans l'acceuil (Home)
-MOVIE_NEWS = (URL_MAIN , 'showMovies') #films (derniers ajouts)
-MOVIE_MOVIE = (URL_MAIN + 'url', 'showMovies') #films vrac
+MOVIE_NEWS = (URL_MAIN , 'showMovies') #films (derniers ajouts = trie par date)
+MOVIE_MOVIE = ('http://', 'load') #films vrac (load source)
 MOVIE_HD = (URL_MAIN + 'url', 'showMovies') #films HD
-MOVIE_VIEWS = (URL_MAIN + 'url', 'showMovies') #films (les plus vus)
-MOVIE_COMMENTS = (URL_MAIN + 'url', 'showMovies') #films (les plus commentés)
+MOVIE_VIEWS = (URL_MAIN + 'url', 'showMovies') #films (les plus vus = populaire)
+MOVIE_COMMENTS = (URL_MAIN + 'url', 'showMovies') #films (les plus commentés) (pas afficher sur HOME)
 MOVIE_NOTES = (URL_MAIN + 'url', 'showMovies') #films (les mieux notés)
 MOVIE_GENRES = (True, 'showGenres') #films genres
 MOVIE_ANNEES = (True, 'showMovieYears') #films (par années)
@@ -51,16 +51,16 @@ MOVIE_VF = (URL_MAIN + 'url', 'showMovies') #films VF
 MOVIE_VOSTFR = (URL_MAIN + 'url', 'showMovies') #films VOSTFR
 
 # menu serie existant dans l'acceuil (Home)
-SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies') #séries (derniers ajouts)
+SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies') #séries (derniers ajouts = trie par date)
 SERIE_HD = (URL_MAIN + 'series/', 'showMovies') #séries HD
-SERIE_SERIES = (URL_MAIN + 'series/', 'showMovies') #séries vrac
+SERIE_SERIES = ('http://', 'load') #séries (load source)
 SERIE_GENRES = (True, 'showGenres') #séries genres
 SERIE_ANNEES = (True, 'showSerieYears') #séries (par années)
 SERIE_VFS = (URL_MAIN + 'series/', 'showMovies') #séries VF
 SERIE_VOSTFRS = (URL_MAIN + 'series/', 'showMovies') #séries Vostfr
 
-ANIM_NEWS = (URL_MAIN + 'animes/', 'showMovies') #animés (derniers ajouts)
-ANIM_ANIMS = (URL_MAIN + 'animes', 'showMovies') #animés vrac
+ANIM_NEWS = (URL_MAIN + 'animes/', 'showMovies') #animés (derniers ajouts = trie par date)
+ANIM_ANIMS = ('http://', 'load') #animés vrac (load source)
 ANIM_GENRES = (True, 'showGenres') #anime genres
 ANIM_ANNEES = (True, 'showAnimesYears') #anime (par années)
 ANIM_VFS = (URL_MAIN + 'animes', 'showMovies') #animés VF
@@ -70,7 +70,10 @@ ANIM_ENFANTS = (URL_MAIN + 'animes', 'showMovies')
 DOC_DOCS = (URL_MAIN + 'url', 'showMovies') #Documentaire
 SPORT_SPORTS = (URL_MAIN + 'url', 'showMovies') #sport
 MOVIE_NETS = (URL_MAIN + 'url', 'showMovies') #video du net
-REPLAYTV_REPLAYTV = (URL_MAIN + 'url', 'showMovies') #Replay
+
+REPLAYTV_REPLAYTV = ('http://', 'load') #Replay load
+REPLAYTV_NEWS = (URL_MAIN, 'showMovies') #Replay trie par date
+REPLAYTV_GENRES = (True, 'showGenres') #Replay Genre
 
 def load(): #fonction chargee automatiquement par l'addon l'index de votre navigation.
     oGui = cGui() #ouvre l'affichage

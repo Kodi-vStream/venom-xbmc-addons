@@ -34,7 +34,8 @@ SERIE_VOSTFR = (URL_MAIN + 'series-tv/series-streaming-vostfr/', 'showMovies')
 ANIM_ANIMS = (URL_MAIN + 'category/mangas/', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'category/mangas/', 'showMovies')
 
-REPLAYTV_REPLAYTV = (URL_MAIN + 'category/emissions-tv/', 'showMovies')
+REPLAYTV_NEWS = (URL_MAIN + 'category/emissions-tv/', 'showMovies')
+REPLAYTV_REPLAYTV = ('http://', 'load')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -89,8 +90,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Emissions TV', 'replay.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Emissions TV', 'replay.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

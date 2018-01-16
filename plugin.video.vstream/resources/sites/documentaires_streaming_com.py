@@ -18,7 +18,11 @@ DOC_NEWS = (URL_MAIN+'category/documentaire/', 'showMovies')
 DOC_DOCS = ('http://', 'load')
 DOC_GENRES = (True, 'showGenres')
 
-REPLAYTV_REPLAYTV = ('http://', 'showReplayGenres')
+
+REPLAYTV_NEWS = (URL_MAIN+'category/replay_tv/', 'showMovies')
+REPLAYTV_REPLAYTV = ('http://', 'load')
+REPLAYTV_GENRES = (True, 'showReplayGenres')
+
 
 REPORTAGE_NEWS = (URL_MAIN+'category/reportages/', 'showMovies')
 
@@ -43,8 +47,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showDocuGenres', 'Documentaires (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Replay TV (chaines)', 'genres.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Replay TV (chaines)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPORTAGE_NEWS[0])
