@@ -39,7 +39,7 @@ FUNCTION_SEARCH = 'showMovies'
 
 # menu films existant dans l'acceuil (Home)
 MOVIE_NEWS = (URL_MAIN , 'showMovies') #films (derniers ajouts = trie par date)
-MOVIE_MOVIE = ('http://', 'load') #films vrac (load source)
+MOVIE_MOVIE = ('http://', 'load') #films (load source)
 MOVIE_HD = (URL_MAIN + 'url', 'showMovies') #films HD
 MOVIE_VIEWS = (URL_MAIN + 'url', 'showMovies') #films (les plus vus = populaire)
 MOVIE_COMMENTS = (URL_MAIN + 'url', 'showMovies') #films (les plus commentés) (pas afficher sur HOME)
@@ -72,7 +72,11 @@ DOC_DOCS = ('http://', 'load') #Documentaire Load
 DOC_GENRES = (True, 'showGenres') # Documentaires Genres
 
 SPORT_SPORTS = (URL_MAIN + 'url', 'showMovies') #sport
-MOVIE_NETS = (URL_MAIN + 'url', 'showMovies') #video du net
+
+NETS_NETS = ('http://' , 'load') #video du net load
+NETS_NEWS =  (URL_MAIN + 'top-video.php', 'showMovies') #video du net (derniers ajouts = trie par date)
+NETS_VIEWS =  (URL_MAIN + 'url', 'showMovies') #videos (les plus vus = populaire)
+NETS_GENRES = (True, 'showGenres') #video du net (genre)
 
 REPLAYTV_REPLAYTV = ('http://', 'load') #Replay load
 REPLAYTV_NEWS = (URL_MAIN, 'showMovies') #Replay trie par date

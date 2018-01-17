@@ -19,7 +19,7 @@ SITE_DESC = 'Les séquences les plus embarrassantes de la télévision français
 
 URL_MAIN = 'https://twitter.com/malaisetele/media?lang=fr'
 
-MOVIE_NETS = ('http://', 'load')
+NETS_NETS = ('http://', 'load')
 NETS_NEWS = (URL_MAIN, 'showMovies')
 
 

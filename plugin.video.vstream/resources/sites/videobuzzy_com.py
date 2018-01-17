@@ -16,8 +16,8 @@ SITE_DESC = 'Sélection des vidéos les plus populaires de Videobuzzy'
 
 URL_MAIN = 'http://www.videobuzzy.com/'
 
-MOVIE_NETS = (URL_MAIN , 'showMovies')
-NETS_NEWS =  (URL_MAIN + 'top-video.php', 'showMovies')
+NETS_NETS = ('http://' , 'load')
+NETS_NEWS =  (URL_MAIN, 'showMovies')
 NETS_GENRES = (True, 'showGenres')
 
 #URL_SEARCH = ('http://www.notre-ecole.net/?s=', 'showMovies')
@@ -32,8 +32,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NETS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NETS[1], 'Vidéos du net', 'buzz.png',oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', NETS_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, NETS_NEWS[1], 'Vidéos du net', 'buzz.png',oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_GENRES[0])

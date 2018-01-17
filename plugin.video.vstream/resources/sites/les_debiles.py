@@ -18,7 +18,7 @@ URL_SEARCH = (URL_MAIN , 'showMovies')
 URL_SEARCH_MISC = (URL_MAIN , 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_NETS = ('http://', 'load')
+NETS_NETS = ('http://', 'load')
 NETS_NEWS = (URL_MAIN + '/videos-s0-1.html', 'showMovies')
 NETS_GENRES = (True, 'showGenre')
 
@@ -28,6 +28,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', NETS_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, NETS_NEWS[1], 'Vidéos du net', 'buzz.png',oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_GENRES[0])

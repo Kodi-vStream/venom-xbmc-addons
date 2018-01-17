@@ -164,7 +164,7 @@ class cHome:
 
         # Affiche les Sources Vidéos
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_NETS')
+        oOutputParameterHandler.addParameter('siteUrl', 'NETS_NETS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', oConfig.getlanguage(30138), 'host.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
