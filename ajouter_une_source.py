@@ -51,16 +51,19 @@ MOVIE_VF = (URL_MAIN + 'url', 'showMovies') #films VF
 MOVIE_VOSTFR = (URL_MAIN + 'url', 'showMovies') #films VOSTFR
 
 # menu serie existant dans l'acceuil (Home)
-SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies') #séries (derniers ajouts = trie par date)
-SERIE_HD = (URL_MAIN + 'series/', 'showMovies') #séries HD
 SERIE_SERIES = ('http://', 'load') #séries (load source)
+SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies') #series_news.png ou series.png | séries (derniers ajouts = trie par date)
+SERIE_VIEWS =  (URL_MAIN + 'url', 'showMovies') #series_views.png | series (les plus vus = populaire)
+SERIE_HD = (URL_MAIN + 'series/', 'showMovies') #series_hd.png | séries HD
 SERIE_GENRES = (True, 'showGenres') #séries genres
 SERIE_ANNEES = (True, 'showSerieYears') #séries (par années)
 SERIE_VFS = (URL_MAIN + 'series/', 'showMovies') #séries VF
 SERIE_VOSTFRS = (URL_MAIN + 'series/', 'showMovies') #séries Vostfr
 
+
+ANIM_ANIMS = ('http://', 'load') #animés (load source)
 ANIM_NEWS = (URL_MAIN + 'animes/', 'showMovies') #animés (derniers ajouts = trie par date)
-ANIM_ANIMS = ('http://', 'load') #animés vrac (load source)
+ANIM_VIEWS =  (URL_MAIN + 'url', 'showMovies') #animes_views.png #animés (les plus vus = populaire)
 ANIM_GENRES = (True, 'showGenres') #anime genres
 ANIM_ANNEES = (True, 'showAnimesYears') #anime (par années)
 ANIM_VFS = (URL_MAIN + 'animes', 'showMovies') #animés VF
