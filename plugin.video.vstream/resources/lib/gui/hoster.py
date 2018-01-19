@@ -294,6 +294,8 @@ class cHosterGui:
             return self.getHoster('hdvid')
         if ('streamango' in sHostName):
             return self.getHoster('streamango')
+        if ('streamcherry' in sHostName):
+            return self.getHoster('streamango')
         if ('vidabc' in sHostName):
             return self.getHoster('vidabc')
         if ('vshare' in sHostName):
