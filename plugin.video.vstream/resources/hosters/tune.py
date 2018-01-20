@@ -67,13 +67,20 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         oParser = cParser()
-
+        url = []
+        qua = []
         id = self.__getIdFromUrl(self.__sUrl)
         
         sUrl = 'https://embed.tune.pk/play/' + id  + '?autoplay=no&ssl=yes&inline=true'
 
         oRequest = cRequestHandler(sUrl)
         sHtmlContent1 = oRequest.request()
+
+        sPattern = '<meta itemprop="videoQuality" content="(.+?)".+?<meta itemprop="contentURL" content="([^"]+)"'
+        aResult = oParser.parse(sHtmlContent1, sPattern)
+        if (aResult[0] == True):
+            url.append(aResult[1][0][1])
+            qua.append(aResult[1][0][0] + '  mp4')
 
         sPattern = "var requestURL *= *'([^']+)';.+?\"X-secret-Header\":\"(.+?)\"}"
         aResult = oParser.parse(sHtmlContent1, sPattern)
@@ -91,11 +98,14 @@ class cHoster(iHoster):
             content = json.loads(sHtmlContent)
             content = content["data"]["details"]["player"]
             if content:
-                url = []
-                qua = []
                 for x in content['sources']:
-                    url.append(x['file'])
-                    qua.append(repr(x['label']))
+                    if 'Auto' in str(x['label']):
+                        continue
+                    url2 = str(x['file']).replace('index',str(x['label']))
+
+                    url.append(url2)
+                    qua.append(repr(x['label'])+ '  m3u8')
+                    
 
                 if len(url) == 1:
                     api_call = url[0]
@@ -104,12 +114,7 @@ class cHoster(iHoster):
                     ret = VScreateDialogSelect(qua)
                     if (ret > -1):
                         api_call = url[ret]
-            else:
-                sPattern = '<meta itemprop="contentURL" content="([^"]+)"'
-                aResult = oParser.parse(sHtmlContent1, sPattern)
-                if (aResult[0] == True):
-                    api_call = aResult[1][0]
-                    
+
             if (api_call):
                 return True, api_call + '|User-Agent=' + UA 
 
