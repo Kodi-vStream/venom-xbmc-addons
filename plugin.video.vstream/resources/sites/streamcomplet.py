@@ -11,6 +11,7 @@ from resources.lib.util import cUtil
 from resources.lib.config import cConfig
 from resources.lib.player import cPlayer
 from resources.lib.packer import cPacker
+
 import re
 
 SITE_IDENTIFIER = 'streamcomplet'
@@ -182,6 +183,31 @@ def showHosters():
             oPlayer.addItemToPlaylist(oGuiElement)
             oPlayer.startPlayer()
 
+        elif 'var _0x8fb1' in sHtmlContent:
+            
+            import base64
+            
+            sHosterUrl = ''
+            link = re.search('enc1\|([^|]+)\|',sHtmlContent).group(1)
+            url = re.search('var _0x8fb1=\["([^"]+)"',sHtmlContent).group(1)
+            link = base64.b64decode(link)
+            url = url.decode('string-escape')
+            url = url + link
+            sHosterUrl = url.replace('<iframe src="','')
+            
+            cConfig().log(sHosterUrl)
+
+            if (sHosterUrl):
+                oGui = cGui()
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    cConfig().log('ok')
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+
+                oGui.setEndOfDirectory()
+            
         else:
             oGui = cGui()
             sHtmlContent = oParser.abParse(sHtmlContent,"<script>","</script><script>")
