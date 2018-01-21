@@ -419,31 +419,15 @@ def ShowPapyLink():
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-        sPattern = 'src="([^"]+)"'
+        sPattern = 'var player.+?"([^"]+mp4)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            sUrl = aResult[1][0]
-
-            #get redirected url
-            import urllib2
-            req = urllib2.Request(sUrl,None,headers)
-            #req.add_header('Referer', sUrl)
-            response = urllib2.urlopen(req)
-            sHosterUrl = response.geturl()
-            response.close()
-
-            #lien youtube mais non resolvable, convertion
-            sPattern = 'docid=([\w-]+)'
-            aResult = oParser.parse(sHosterUrl, sPattern)
-            if (aResult[0] == True):
-                sHosterUrl = 'https://drive.google.com/' + aResult[1][0]
-
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
-                    #sDisplayTitle = cUtil().DecoTitle(sMovieTitle )
-                    oHoster.setDisplayName(sMovieTitle)
-                    oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+            sHosterUrl = aResult[1][0]
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
             else:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]Lien vidéo Non géré[/COLOR]')
         else:
@@ -472,10 +456,6 @@ def ShowPapyLink():
 
         sHtmlContent = sHtmlContent.replace('\\','')
 
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
-
         sPattern = '"label":"([0-9p]+)"[^<>]+?"file":"([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -497,7 +477,6 @@ def ShowPapyLink():
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     sDisplayTitle = sMovieTitle + ' [' + qual + ']'
-                    #sDisplayTitle = cUtil().DecoTitle(sDisplayTitle)
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)

@@ -69,7 +69,11 @@ class cHoster(iHoster):
                     qua.append(str(i.rsplit('&q=', 1)[1]))
                 
                 if len(url) == 1:
-                    api_call = url[0]
+                    sPattern = '<source src="([^"]+)" type="video/.+?"'
+                    aResult = oParser.parse(sHtmlContent,sPattern)
+                    if (aResult[0] == True):
+                        api_call = aResult[1][0]
+
 
                 elif len(url) > 1:
                     dialog2 = xbmcgui.Dialog()

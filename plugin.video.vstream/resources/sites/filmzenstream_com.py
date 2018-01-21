@@ -211,27 +211,24 @@ def showHosters():
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
-
     if (aResult[0] == True):
         for aEntry in aResult[1]:
+            if 'belike' in aEntry:
 
-            if 'belike.pw' in aEntry:
-                #print 'belike redirection'
                 if aEntry.startswith('/'):
                     oRequestHandler = cRequestHandler('https:' + str(aEntry))
                 else:
                     oRequestHandler = cRequestHandler(str(aEntry))
+                    
                 sHtmlContent = oRequestHandler.request()
-                sPattern = '{file: "(.+?)", type: ".+?", label: "'
+                sPattern = '<iframe.+?src="(.+?)"'
                 aResult = oParser.parse(sHtmlContent, sPattern)
-                #print aResult
                 if (aResult[0] == True):
                     sHosterUrl = aResult[1][0]
 
             else:
                 sHosterUrl = str(aEntry)
-            #print sHosterUrl
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)

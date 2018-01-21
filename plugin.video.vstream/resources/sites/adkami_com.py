@@ -21,15 +21,19 @@ SITE_DESC = 'Bienvenue sur ADKami un site Animés Manga & Série en streaming.'
 
 URL_MAIN = 'http://www.adkami.com/'
 
-ANIM_ANIMS = (URL_MAIN + 'video?search=&n=0&t=0', 'showMovies')
-ANIM_VFS = (URL_MAIN + 'video?search=&n=1&t=0', 'showMovies')
-ANIM_VOSTFRS = (URL_MAIN + 'video?search=&n=2&t=0', 'showMovies')
-ANIM_GENRES = (URL_MAIN + 'video?search=&t=0', 'showMovies')
+#plus de trie VF et VOSTFR
+ANIM_ANIMS = ('http://', 'load')
+ANIM_NEWS = (URL_MAIN + 'video?search=&t=0', 'showMovies')
+ANIM_VIEWS = (URL_MAIN + 'video?search=&t=0&order=3', 'showMovies')
+#ANIM_VFS = (URL_MAIN + 'video?search=&n=1&t=0', 'showMovies')
+#ANIM_VOSTFRS = (URL_MAIN + 'video?search=&n=2&t=0', 'showMovies')
+#ANIM_GENRES = (URL_MAIN + 'video?search=&t=0', 'showMovies')
 
-SERIE_SERIES = (URL_MAIN + 'video?search=&n=0&t=1', 'showMovies')
-SERIE_VFS = (URL_MAIN + 'video?search=&n=1&t=1', 'showMovies')
-SERIE_VOSTFRS = (URL_MAIN + 'video?search=&n=2&t=1', 'showMovies')
-SERIE_GENRES = (URL_MAIN + 'video?search=&t=1', 'showMovies')
+SERIE_SERIES = ('http://', 'load')
+SERIE_NEWS = (URL_MAIN + 'video?search=&t=1', 'showMovies')
+SERIE_VIEWS = (URL_MAIN + 'video?search=&t=1&order=3', 'showMovies')
+#SERIE_VOSTFRS = (URL_MAIN + 'video?search=&n=2&t=1', 'showMovies')
+#SERIE_GENRES = (URL_MAIN + 'video?search=&t=1', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + 'video?search=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -44,16 +48,20 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés', 'animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF)', 'animes_vf.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VIEWS[1], 'Animés (Les Plus Vus)', 'animes_views.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'animes_vostfr.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
+    # oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF)', 'animes_vf.png', oOutputParameterHandler)
+    #
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
+    # oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'animes_vostfr.png', oOutputParameterHandler)
 
     #oOutputParameterHandler = cOutputParameterHandler()
     #oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -61,23 +69,27 @@ def load():
     #oOutputParameterHandler.addParameter('title', 'Animés')
     #oGui.addDir(SITE_IDENTIFIER, 'showLang', 'Animés (A-Z)', 'animes_az.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oOutputParameterHandler.addParameter('type2', 0)
-    oOutputParameterHandler.addParameter('title', 'Animés')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Animés (Genres)', 'animes_genres.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+    # oOutputParameterHandler.addParameter('type2', 0)
+    # oOutputParameterHandler.addParameter('title', 'Animés')
+    # oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Animés (Genres)', 'animes_genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF)', 'series_vf.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les Plus Vus)', 'series_views.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries (VOSTFR)', 'series_vostfr.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
+    # oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF)', 'series_vf.png', oOutputParameterHandler)
+    #
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
+    # oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries (VOSTFR)', 'series_vostfr.png', oOutputParameterHandler)
 
     #oOutputParameterHandler = cOutputParameterHandler()
     #oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -85,11 +97,11 @@ def load():
     #oOutputParameterHandler.addParameter('title', 'Séries')
     #oGui.addDir(SITE_IDENTIFIER, 'showLang', 'Séries (A-Z)', 'series_az.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oOutputParameterHandler.addParameter('type2', 1)
-    oOutputParameterHandler.addParameter('title', 'Séries')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+    # oOutputParameterHandler.addParameter('type2', 1)
+    # oOutputParameterHandler.addParameter('title', 'Séries')
+    # oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

@@ -25,13 +25,18 @@ URL_MAIN = 'http://zonestreaming.ws/'
 MOVIE_NEWS = (URL_MAIN+'category/films-streaming/', 'showMovies')
 MOVIE_VOSTFR = (URL_MAIN + 'category/films-streaming/vostfr-films/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN+'category/films-en-exclus/', 'showMovies')
+MOVIE_GENRES = (True, 'showGenre')
+
 SERIE_SERIES = (URL_MAIN+'category/series-streaming/', 'showMovies')
 SERIE_VFS = (URL_MAIN + 'category/series-streaming/series-streaming-vf/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'category/series-streaming/series-streaming-vostfr/', 'showMovies')
 
-MOVIE_GENRES = (True, 'showGenre')
-REPLAYTV_REPLAYTV = (URL_MAIN+'category/emissions-tv/', 'showMovies')
-DOC_DOCS = (URL_MAIN+'category/documentaire/', 'showMovies')
+
+REPLAYTV_NEWS = (URL_MAIN+'category/emissions-tv/', 'showMovies')
+REPLAYTV_REPLAYTV = ('http://', 'load')
+
+DOC_NEWS = (URL_MAIN+'category/documentaire/', 'showMovies')
+DOC_DOCS = ('http://', 'load')
 
 URL_SEARCH = ('http://zonestreaming.ws/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -100,8 +105,12 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Series A-Z', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Replay tv', 'tv.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Replay tv', 'tv.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
 
 
     oGui.setEndOfDirectory()
@@ -190,8 +199,8 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('[Streaming]', '').replace('[Telecharger]', '')
-    sPattern = 'item-header.+?<img src="([^"]+)".+?<a href="([^>]+)">([^<]+)</a>.+?<p>(.+?)</p>'
+    sHtmlContent = sHtmlContent.replace(' [Streaming]', '').replace(' [Telecharger]', '')
+    sPattern = '<article class="latestPost.+?<a href="([^"]+)" title="(.+?)".+?<img.+?src="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -206,27 +215,25 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            sTitle = unicode(aEntry[2], 'utf-8')#converti en unicode
-            sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
-            sTitle = unescape(str(sTitle))
-            sTitle = sTitle.encode( "utf-8")
+            #sTitle = unicode(aEntry[2], 'utf-8')#converti en unicode
+            #sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
+            #sTitle = unescape(str(sTitle))
+            #sTitle = sTitle.encode( "utf-8")
 
-            sCom = unicode(aEntry[3], 'utf-8')#converti en unicode
-            sCom = unicodedata.normalize('NFD', sCom).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
-            sCom = unescape(sCom)
+            sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
 
             #Mange et Series fonctionnent pareil
-            if '/series-tv/' in sUrl or 'saison' in aEntry[1]:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, aEntry[0], aEntry[0], sCom, oOutputParameterHandler)
+            if '/series-tv/' in sUrl or 'saison' in aEntry[0]:
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, 'series.png', aEntry[2], '', oOutputParameterHandler)
             elif '/mangas/' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, aEntry[0], aEntry[0], sCom, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, 'animes.png', aEntry[2], '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, aEntry[0], aEntry[0], sCom, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', aEntry[2], '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 

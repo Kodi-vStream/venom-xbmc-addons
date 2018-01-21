@@ -127,7 +127,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     sHtmlContent = oRequestHandler.request()
-    cConfig().log(sHtmlContent)
+
     #page bloquee ?
     if sHtmlContent.startswith('<noscript>'):
         code = re.search('value="([^"]+)"\/>', sHtmlContent, re.DOTALL).group(1)
@@ -272,8 +272,9 @@ def showHosters():
         # cConfig().log(sHtmlContent2)
         if sHtmlContent2:
             sHtmlContent = cUtil().unescape(sHtmlContent2)
-            # cConfig().log(sHtmlContent)
-            sPattern = '<iframe src=(.+?)style='
+            sHtmlContent = sHtmlContent.replace('\\','')
+
+            sPattern = '<iframe src="(.+?)" style='
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                 sHosterUrl = aResult[1][0]

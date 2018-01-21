@@ -164,7 +164,7 @@ class cHome:
 
         # Affiche les Sources Vidéos
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_NETS')
+        oOutputParameterHandler.addParameter('siteUrl', 'NETS_NETS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', oConfig.getlanguage(30138), 'host.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
@@ -186,9 +186,9 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_VIEWS')
         oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30120), oConfig.getlanguage(30102)), 'films_views.png', oOutputParameterHandler)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_COMMENTS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30120), oConfig.getlanguage(30103)), 'films_comments.png', oOutputParameterHandler)
+        # oOutputParameterHandler = cOutputParameterHandler()
+        # oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_COMMENTS')
+        # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30120), oConfig.getlanguage(30103)), 'films_comments.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_NOTES')

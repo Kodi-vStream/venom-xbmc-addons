@@ -9,13 +9,12 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil,VSlog
 import urllib2,urllib,re
-import unicodedata
+import unicodedata,random
 
 
 #Make random url
-from random import choice
 s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN";
-RandomKey = ''.join(choice(s) for i in range(32))
+RandomKey = ''.join(random.choice(s) for i in range(32))
 
 
 SITE_IDENTIFIER = 'mangacity_org'
@@ -722,18 +721,38 @@ def showHosters():
                 
                 sHtmlContent = ICDecode(sHtmlContent)
 
-                sHosterUrl = ExtractLink(sHtmlContent)
-                #VSlog(sHosterUrl)
-                if 'tinyurl' in sHosterUrl:
-                    if '://tinyurl.com/kt3owzh' in sHosterUrl:
-                        sHosterUrl = sHosterUrl.replace('://tinyurl.com/kt3owzh/','://estream.to/')
+                sHosterUrl2 = ExtractLink(sHtmlContent)
+                
+                #VSlog(sHosterUrl2)
+                
+                if 'intern_player2.png' in sHosterUrl2:
+                    VSlog('fausse image')
+                    #VSlog(sHtmlContent)
+                    
+                    xx = str(random.randint(300, 350))#347
+                    yy = str(random.randint(200, 255))#216
+                    
+                    oRequestHandler = cRequestHandler(sHosterUrl)
+                    oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+                    oRequestHandler.addParameters( 'submit.x' , xx)
+                    oRequestHandler.addParameters( 'submit.y' , yy)
+                    oRequestHandler.addHeaderEntry('Referer',sUrl)
+                    sHtmlContent = oRequestHandler.request()
+                    
+                    #VSlog(sHtmlContent)
+                    
+                    sHosterUrl2 = ExtractLink(sHtmlContent)
+                
+                if 'tinyurl' in sHosterUrl2:
+                    if '://tinyurl.com/kt3owzh' in sHosterUrl2:
+                        sHosterUrl2 = sHosterUrl2.replace('://tinyurl.com/kt3owzh/','://estream.to/')
                         
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            oHoster = cHosterGui().checkHoster(sHosterUrl2)
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl2, sThumbnail)
 
         cConfig().finishDialog(dialog)
 

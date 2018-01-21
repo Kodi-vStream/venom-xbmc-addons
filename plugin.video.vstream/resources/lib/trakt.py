@@ -169,7 +169,7 @@ class cTrakt:
             oGui.addDir(SITE_IDENTIFIER, 'getLists', cConfig().getlanguage(30121), 'series.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/users/me/history')
+            oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/users/me/history?page=1&limit=' + str(MAXRESULT))
             oGui.addDir(SITE_IDENTIFIER, 'getTrakt', cConfig().getlanguage(30308), 'trakt.png', oOutputParameterHandler)
 
             # oOutputParameterHandler = cOutputParameterHandler()
@@ -247,9 +247,9 @@ class cTrakt:
             liste.append( ['%s (%s)' % (cConfig().getlanguage(30312), result2['movies']['watched'] ),'https://api.trakt.tv/users/me/watched/movies?page=1&limit=' + str(MAXRESULT)] )
             liste.append( [cConfig().getlanguage(30313),'https://api.trakt.tv/recommendations/movies'] )
             liste.append( [cConfig().getlanguage(30314),'https://api.trakt.tv/movies/boxoffice'] )
-            liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/movies/popular'] )
-            liste.append( [cConfig().getlanguage(30316),'https://api.trakt.tv/movies/played/weekly'] )
-            liste.append( [cConfig().getlanguage(30317),'https://api.trakt.tv/movies/played/monthly'] )
+            liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/movies/popular?page=1&limit=' + str(MAXRESULT)] )
+            liste.append( [cConfig().getlanguage(30316),'https://api.trakt.tv/movies/played/weekly?page=1&limit=' + str(MAXRESULT)] )
+            liste.append( [cConfig().getlanguage(30317),'https://api.trakt.tv/movies/played/monthly?page=1&limit=' + str(MAXRESULT)] )
             #liste.append( ['historique de Films','https://api.trakt.tv/users/me/history/movies'] )
 
         elif sType == 'show':
@@ -259,9 +259,9 @@ class cTrakt:
             liste.append( [cConfig().getlanguage(30319),'https://api.trakt.tv/users/me/watchlist/episodes?page=1&limit=' + str(MAXRESULT)] )
             liste.append( ['%s (%s)' % (cConfig().getlanguage(30312), result2['movies']['watched'] ),'https://api.trakt.tv/users/me/watched/shows?page=1&limit=' + str(MAXRESULT)] )
             liste.append( [cConfig().getlanguage(30313),'https://api.trakt.tv/recommendations/shows'] )
-            liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/shows/popular'] )
-            liste.append( [cConfig().getlanguage(30316),'https://api.trakt.tv/shows/played/weekly'] )
-            liste.append( [cConfig().getlanguage(30317),'https://api.trakt.tv/shows/played/monthly'] )
+            liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/shows/popular?page=1&limit=' + str(MAXRESULT)] )
+            liste.append( [cConfig().getlanguage(30316),'https://api.trakt.tv/shows/played/weekly?page=1&limit=' + str(MAXRESULT)] )
+            liste.append( [cConfig().getlanguage(30317),'https://api.trakt.tv/shows/played/monthly?page=1&limit=' + str(MAXRESULT)] )
             #liste.append( ['Historique de séries','https://api.trakt.tv/users/me/history/shows'] )
 
         for sTitle,sUrl in liste:
@@ -493,8 +493,13 @@ class cTrakt:
                         cTrakt.CONTENT = '1'
                     sTrakt, sTitle, sYear, sImdb, sTmdb = i['ids']['trakt'], i['title'], i['year'], i['ids']['imdb'], i['ids']['tmdb']
                     searchtext = ('%s') % (sTitle.encode("utf-8"))
-                    sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
-                    sTitle = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
+                    if sYear:
+                        sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
+                        sTitle = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
+                    else:
+                        sFile = ('%s') % (sTitle.encode("utf-8"))
+                        sTitle = ('%s') % (sTitle.encode("utf-8"))
+
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
 
@@ -511,7 +516,7 @@ class cTrakt:
                 else: return
 
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('siteUrl', sUrl+str(sTrakt))
                 oOutputParameterHandler.addParameter('file', sFile)
                 oOutputParameterHandler.addParameter('key', sKey)
                 oOutputParameterHandler.addParameter('searchtext', searchtext)
@@ -565,7 +570,8 @@ class cTrakt:
 
                 sTitle2 = ('%s - (S%02d)') % (sFile.encode("utf-8"), int(sNumber))
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('siteUrl', sUrl+str(sNumber))
+                #oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('Key', sKey)
                 oOutputParameterHandler.addParameter('sNum', sNum)
                 oOutputParameterHandler.addParameter('file', sFile)
@@ -605,6 +611,7 @@ class cTrakt:
         oGui = cGui()
         #xbmc.log(str(sKey))
         total = len(result)
+        sNumber = 0
         if (total > 0):
             for i in result[int(sKey)]['seasons'][int(sNum)]['episodes']:
 
@@ -623,7 +630,8 @@ class cTrakt:
                 else: return
 
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('siteUrl', sUrl+str(sNumber))
+                #oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('file', sFile)
                 #oOutputParameterHandler.addParameter('Key', skey)
                 oOutputParameterHandler.addParameter('searchtext', searchtext)
@@ -666,19 +674,37 @@ class cTrakt:
         #oGui.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
 
          #oGui.addHost(oGuiElement, oOutputParameterHandler)
-        self.createContexTrakt(oGui, oGuiElement, oOutputParameterHandler)
+        #self.createContexTrakt(oGui, oGuiElement, oOutputParameterHandler)
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
         #oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'next.png', oOutputParameterHandler)
 
 
     def getContext(self):
 
-        import xbmcgui
-        disp = ['https://api.trakt.tv/sync/collection/','https://api.trakt.tv/sync/history','https://api.trakt.tv/sync/watchlist']
-        dialog2 = xbmcgui.Dialog()
-        dialog_select = cConfig().getlanguage(30321), cConfig().getlanguage(30322), cConfig().getlanguage(30323)
+        disp = []
+        lang = []
+        disp.append('https://api.trakt.tv/sync/collection')
+        lang.append('Ajouter: '+cConfig().getlanguage(30310))
 
-        ret = dialog2.select('Trakt',dialog_select)
+        disp.append('https://api.trakt.tv/sync/collection/remove')
+        lang.append('[COLOR red]Supprimer: '+cConfig().getlanguage(30310)+'[/COLOR]')
+
+        disp.append('https://api.trakt.tv/sync/watchlist')
+        lang.append('Ajouter: '+cConfig().getlanguage(30311))
+
+        disp.append('https://api.trakt.tv/sync/watchlist/remove')
+        lang.append('[COLOR red]Supprimer: '+cConfig().getlanguage(30311)+'[/COLOR]')
+
+        disp.append('https://api.trakt.tv/sync/history')
+        lang.append('Ajouter: '+cConfig().getlanguage(30312))
+
+        disp.append('https://api.trakt.tv/sync/history/remove')
+        lang.append('[COLOR red]Supprimer: '+cConfig().getlanguage(30312)+'[/COLOR]')
+
+
+        import xbmcgui
+        dialog2 = xbmcgui.Dialog()
+        ret = dialog2.select('Trakt',lang)
 
         if ret > -1:
             self.__sAction = disp[ret]

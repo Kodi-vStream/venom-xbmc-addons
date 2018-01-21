@@ -22,8 +22,8 @@ URL_SEARCH_MISC = (URL_MAIN + '/index.php?do=search&subaction=search&story=', 's
 FUNCTION_SEARCH = 'showMovies'
 
 REPLAYTV_GENRES = (True, 'showGenre')
-REPLAYTV_NEWS = (URL_MAIN + '/lastnews', 'showMovies')
-REPLAYTV_REPLAYTV = (URL_MAIN , 'showListe')
+REPLAYTV_NEWS = (URL_MAIN + '/videos/', 'showMovies')
+REPLAYTV_REPLAYTV = ('http://' , 'load')
 
 def load():
     oGui = cGui()
@@ -37,8 +37,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Nouveautées', 'replay.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Liste des émissions', 'replay.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
+    oGui.addDir(SITE_IDENTIFIER, 'showListe', 'Liste des émissions', 'replay.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_GENRES[0])
@@ -199,7 +199,7 @@ def checkforHoster(sHosterUrl):
         elif 'playernaut' in sHosterUrl or 'raptu' in sHosterUrl:
             return 'https://www.raptu.com/embed/' + code.group(2)
         elif 'rapidvideo' in sHosterUrl:
-            return 'https://www.rapidvideo.com/e/' + code.group(2) 
+            return 'https://www.rapidvideo.com/e/' + code.group(2)
         elif 'dailymotion' in sHosterUrl:
             return 'http://www.dailymotion.com/embed/video/' + code.group(2)
         elif 'filez' in sHosterUrl:
