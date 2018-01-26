@@ -58,7 +58,7 @@ def UnlockUrl(url2=None):
         
     if not url1.startswith('http'):
         url1 = 'https:' + url1
-        
+
     cConfig().log('unlock url :' + url1)
     
     oRequest = cRequestHandler(url1)
@@ -140,7 +140,7 @@ def LoadLinks(htmlcode):
                 continue
                 
             #pour test
-            if '.js' not in sUrl:
+            if ('.js' not in sUrl) and ('.cgi' not in sUrl):
                 continue
             #if 'flashx' in sUrl:
                 #continue
@@ -155,7 +155,7 @@ def LoadLinks(htmlcode):
                 reponse = urllib2.urlopen(request)
                 sCode = reponse.read()
                 reponse.close()
-                xbmc.log('Worked ' + sUrl)
+                #cConfig().log('Worked ' + sUrl)
             except urllib2.HTTPError, e:
                 if not e.geturl() == sUrl:
                     try:
@@ -169,14 +169,14 @@ def LoadLinks(htmlcode):
                         reponse = urllib2.urlopen(request)
                         sCode = reponse.read()
                         reponse.close()
-                        xbmc.log('Worked ' + sUrl)
+                        #cConfig().log('Worked ' + sUrl)
                     except urllib2.HTTPError, e:
                         xbmc.log(str(e.code))
                         #xbmc.log(e.read())
-                        xbmc.log('Redirection Blocked ' + sUrl + ' Red ' + e.geturl())
+                        cConfig().log('Redirection Blocked ' + sUrl + ' Red ' + e.geturl())
                         pass
                 else:
-                    xbmc.log('Blocked ' + sUrl)
+                    #cConfig().log('Blocked ' + sUrl)
                     xbmc.log(str(e.code))
                     xbmc.log('>>' + e.geturl())
                     xbmc.log(e.read())
@@ -377,7 +377,7 @@ class cHoster(iHoster):
         #unlock fake video
         LoadLinks(sHtmlContent)
         #unlock bubble
-        url2 = re.search('["\']([^"\']+?js\/code\.js\?cache.+?)["\']', sHtmlContent, re.DOTALL)
+        url2 = re.search('["\']([^"\']+?\.js\?cache.+?)["\']', sHtmlContent, re.DOTALL)
         if url2:
             url2 = url2.group(1)
         if not UnlockUrl(url2):
