@@ -4,16 +4,12 @@
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-
-#from resources.lib.util import cUtil #outils pouvant etre utiles
-
-import xbmc
+import re
 
 SITE_IDENTIFIER = 'streamelite'
 SITE_NAME = 'StreamElite'
@@ -25,8 +21,8 @@ URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIE = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_NEWS = (URL_MAIN, 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN ,'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'tendance/', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'evaluations/', 'showMovies')
 MOVIE_LIST = (True, 'showList')
@@ -170,11 +166,11 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
         sUrl = sSearch
-        sPattern = '<div class="result-item">.+?<img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">'
+        sPattern = '<div class="result-item">.+?<img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">.+?<p>(.+?)<\/p>'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = '<div class="poster".+?img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">'
+        sPattern = '<div class="poster".+?img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">.+?(?:<article|<div class="texto">(.+?)<div)'
 
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -193,12 +189,17 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
+                
+            try:
+                sDesc = re.sub('(\A.+?: )','',aEntry[3])
+            except:
+                sDesc= '' 
 
             #L'array affiche vos infos dans l'ordre de sPattern en commencant a 0
             sThumb = str(aEntry[0])
             sTitle = str(aEntry[1])
             sUrl2 = str(aEntry[2])
-            sDesc = ''
+
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
