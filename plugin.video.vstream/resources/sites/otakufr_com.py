@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-#johngf.
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -192,7 +192,7 @@ def showEpisodes():
        oParser = cParser()
        sThumb = ''
        sSyn = ''
-       sPattern = '<img class="cvr" src="([^"]+)".+?<div class="det"><p><b>Synopsis</b>:<br/>([^<]+)<\/p>'
+       sPattern = '<img class="cvr" src="([^"]+)".+?<b>Synopsis</b>:<br */>([^<]+)<\/p>'
        aResult = oParser.parse(sHtmlContent, sPattern)
        if aResult[0]:
           sThumb = aResult[1][0][0]
@@ -225,8 +225,9 @@ def showEpisodes():
 
             sUrl  = aEntry[0]
             sThumb = sThumb.replace(' ','%20')
-            sTitle = sTitle.replace('Episode SP','[ Episode Spécial ] episode').replace(' + ','-')
+            sTitle = sTitle.replace('Episode SP','[ Episode Spécial ] episode').replace(' + ','-').replace('Episode New-','Episode')
             sTitle = sTitle.replace('Episode ONA','[ Episode ONA ] episode').replace('Episode OVA','[ Episode OVA ] episode').replace('Episode NC','Episode')
+
             sDisplayTitle = cUtil().DecoTitle(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
