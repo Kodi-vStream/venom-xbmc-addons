@@ -11,18 +11,18 @@ from resources.lib.util import cUtil
 from resources.lib.sucuri import SucurieBypass
 import re,urllib
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 SITE_IDENTIFIER = 'filmzenstream_com'
 SITE_NAME = 'Filmzenstream'
 SITE_DESC = 'Film streaming HD gratuit complet'
 
-URL_MAIN = 'https://filmzenstream.com/'
+URL_MAIN = 'https://filmzenstream.tv/'
 
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_MOVIE = (URL_MAIN , 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
-MOVIE_ANNEES = (True, 'showYears')
+#MOVIE_ANNEES = (True, 'showYears')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 
@@ -43,9 +43,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'films_annees.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    #oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'films_annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -63,16 +63,17 @@ def showGenres():
     oGui = cGui()
 
     liste = []
+    #ne pas modifier les urls elles sont ecrits ainsi sur le site
     liste.append( ['Action/Aventure',URL_MAIN + 'action/'] )
     liste.append( ['Animation',URL_MAIN + 'animation/'] )
     liste.append( ['Aventure',URL_MAIN + 'aventure/'] )
-    liste.append( ['Comédie',URL_MAIN + 'comedie/'] )
+    liste.append( ['Comédie',URL_MAIN + 'comediee/'] )
     liste.append( ['Crime',URL_MAIN + 'crime/'] )
     liste.append( ['Documentaire',URL_MAIN + 'documentaire/'] )
     liste.append( ['Drame',URL_MAIN + 'drame/'] )
     liste.append( ['Etranger',URL_MAIN + 'etranger/'] )
     liste.append( ['Famille',URL_MAIN + 'familial/'] )
-    liste.append( ['Fantastique',URL_MAIN + 'fantastique/'] )
+    liste.append( ['Fantastique',URL_MAIN + 'fantastiquee/'] )
     liste.append( ['Guerre',URL_MAIN + 'guerre/'] )
     liste.append( ['Histoire',URL_MAIN + 'histoire/'] )
     liste.append( ['Horreur',URL_MAIN + 'horreurr/'] )
@@ -81,8 +82,8 @@ def showGenres():
     liste.append( ['Romance',URL_MAIN + 'romance/'] )
     liste.append( ['Science-fiction',URL_MAIN + 'science-fiction/'] )
     liste.append( ['Téléfilm',URL_MAIN + 'telefilm/'] )
-    liste.append( ['Thriller',URL_MAIN + 'thriller/'] )
-    liste.append( ['Western',URL_MAIN + 'western/'] )
+    liste.append( ['Thriller',URL_MAIN + 'thrillerr/'] )
+    liste.append( ['Western',URL_MAIN + 'westernn/'] )
 
     for sTitle,sUrl in liste:
 
