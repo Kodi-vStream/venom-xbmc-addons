@@ -23,7 +23,7 @@ FUNCTION_SEARCH = 'sHowResultSearch'
 
 sPattern1 = '<a href="([^"]+)".+?src="([^"]+)" alt="(.+?)".+?>'
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 def load():
     oGui = cGui()
@@ -74,11 +74,11 @@ def sHowResultSearch(sSearch = ''):
     sHtmlContent = oRequest.request()
 
     oParser = cParser()
-    sPattern = '<a class="searchresult" href="([^"]+)".+?<img src="([^"]+)" alt="(.+?)"/><\/a>'
+    sPattern = '<a class="searchresult" href="([^"]+)".+?<img src="([^"]+)" alt="(.+?)"/>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+	oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
