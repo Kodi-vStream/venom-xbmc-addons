@@ -2,10 +2,12 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-#from resources.lib.packer import cPacker
 from resources.lib.util import VSlog
 from resources.lib.config import cConfig
 
+from resources.lib.aadecode import AADecoder
+from resources.lib.jjdecode import JJDecoder
+from resources.lib.packer import cPacker
 from resources.lib.jsparser import JsParser
 
 import re,xbmcgui
@@ -50,12 +52,7 @@ class cHoster(iHoster):
         return '';
         
     def __getIdFromUrl(self, sUrl):
-        """ URL trouvées:
-            http://www.speedvid.net/1a2b3c4d5e6f
-            http://speedvid.net/embed-1a2b3c4d5e6f.html
-            http://www.speedvid.net/embed-1a2b3c4d5e6f-640x360.html
-        """
-        sPattern = "\/(?:embed-)?(\w+)(?:-\d+x\d+)?(?:\.html)?$"
+        sPattern = "http://speedvid.net/([^<]+)"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -64,9 +61,7 @@ class cHoster(iHoster):
         return ''
 
     def setUrl(self, sUrl):
-        #self.__sUrl = str(sUrl)
-        sId = self.__getIdFromUrl( sUrl )
-        self.__sUrl = 'http://www.speedvid.net/embed-' + sId + '-640x360.html'
+        self.__sUrl = str(sUrl)
 
     def checkUrl(self, sUrl):
         return True
@@ -78,249 +73,131 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+    
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('User-Agent',UA)
         sHtmlContent = oRequest.request()
+        
+        #suppression commentaires
         sHtmlContent = re.sub( r'<!--.*?-->', '', sHtmlContent )
 
         oParser = cParser()
         
-        api_call = ''
-
-        aResult = re.search('>\s*(ﾟωﾟ.+?\(\'_\'\);)', sHtmlContent,re.DOTALL | re.UNICODE)
-    
-        if (aResult):
-            JP = JsParser()
-            Liste_var = []
-            
-            JScode = aResult.group(1)
-            JScode = unicode(JScode, "utf-8")
-            
-            sHtmlContent = JP.ProcessJS(JScode,Liste_var)
-            sHtmlContent = JP.LastEval.decode('string-escape').decode('string-escape') 
-   
-            Url = re.findall("href\s*=\s*'(.+?)'",sHtmlContent)[0]
-
-            if not 'speedvid' in Url:
-                Url = 'http://www.speedvid.net/' + Url  
-            if not 'http' in Url:
-                if Url.startswith('//'):
-                    Url = 'http:' + Url
-                else:
-                    Url = 'http://' + Url
-
-            oRequest = cRequestHandler(Url)
-            oRequest.addHeaderEntry('Referer',self.__sUrl)
-            oRequest.addHeaderEntry('User-Agent',UA)
-            sHtmlContent = oRequest.request()
-
+        #fh = open('c:\\test0.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
         
-        """
-        --> Le lien de la vidéo est maintenant ecrit directement dans le source.
-        --> Alors je ne me permet pas de supprimer ce code, et pourrait-être
-        --> utile dans le cas d'un future changement du site.
+        #decodage de la pahe html
+        sHtmlContent3 = sHtmlContent
+        code = ''
+        maxboucle = 10
+        while (maxboucle > 0):
+            sHtmlContent3 = CheckCpacker(sHtmlContent3)
+            sHtmlContent3 = CheckJJDecoder(sHtmlContent3)           
+            sHtmlContent3 = CheckAADecoder(sHtmlContent3)
+            
+            maxboucle = maxboucle - 1   
+         
+        sHtmlContent = sHtmlContent3
+        
+        VSlog('fini')
+        
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
+        
+        
 
-        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\))<'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            for packed in aResult[1]:
-                if 'vplayer' in packed:
-                    sHtmlContent = cPacker().unpack(packed)
-                    sHtmlContent = sHtmlContent.replace('\\','')
- 
-                    sPattern2 = "{file:.([^']+.mp4)"
-                    aResult2 = oParser.parse(sHtmlContent, sPattern2)
-                    if (aResult2[0] == True):
-                        api_call = aResult2[1][0]
-        """
-        #cConfig().log( sHtmlContent )
+        Realurl = ''
+        
+        Realurl = re.findall('window\.location\.href= *[\'"]([^\'"]+)',sHtmlContent)[0]
+        
+        if not Realurl.startswith('http'):
+            Realurl = 'http:' + Realurl
+                  
+        if not Realurl:
+            return False, False
+            
+        cConfig().log('Real url>> ' + Realurl)
+
+        oRequest = cRequestHandler(Realurl)
+        oRequest.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0')
+        oRequest.addHeaderEntry('Referer',self.__sUrl)
+        sHtmlContent = oRequest.request()
+        
+        api_call = ''
+            
         sPattern = "file\s*:\s*\'([^\']+.mp4)"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             api_call = aResult[1][0]
 
         cConfig().log('API_CALL: ' + api_call );
-
         if (api_call):
-            #api_call = api_call + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
-            api_call = api_call + '|User-Agent=' + UA
+            api_call = api_call + '|' + UA
             return True, api_call
             
         return False, False
+#********************************************************************************************************************************
+
+def CheckCpacker(str):
+
+    sPattern = '>([^>]+\(p,a,c,k,e(?:.|\s)+?\)\)\s*)<'
+    aResult = re.search(sPattern, str,re.DOTALL | re.UNICODE)
+    if (aResult):
+        VSlog('Cpacker encryption')
+        str2 = aResult.group(1)
         
-#*********************************************************************************************************************************
+        if not str2.endswith(';'):
+            str2 = str2 + ';'
 
-
-#
-# Modified version From https://github.com/Kodi-vStream/venom-xbmc-addons
-#
-#
-# Unpacker for Dean Edward's p.a.c.k.e.r, a part of javascript beautifier
-# by Einar Lielmanis <einar@jsbeautifier.org>
-#
-#     written by Stefano Sanfilippo <a.little.coder@gmail.com>
-#
-# usage:
-#
-# if detect(some_string):
-#     unpacked = unpack(some_string)
-#
-
-"""Unpacker for Dean Edward's p.a.c.k.e.r"""
-
-import urllib2
-import string
-import xbmc
-
-class cPacker():
-    def detect(self, source):
-        """Detects whether `source` is P.A.C.K.E.R. coded."""
-        return source.replace(' ', '').startswith('eval(function(p,a,c,k,e,')
-
-    def unpack(self, source):
-        """Unpacks P.A.C.K.E.R. packed js code."""
-        payload, symtab, radix, count = self._filterargs(source)
+        #if not str2.startswith('eval'):
+        #    str2 = 'eval(function' + str2[4:]
         
-        
-        #correction
-        if (len(symtab) > count) and (count > 0):
-            del symtab[count:]
-        if (len(symtab) < count) and (count > 0):
-            symtab.append('BUGGED')                    
+        #VSlog(str2)
+        try:
+            tmp = cPacker().unpack(str2)
+            #tmp = tmp.replace("\\'","'")
+        except:
+            tmp =''
             
-        #xbmc.log(str(count), xbmc.LOGNOTICE)
-        #xbmc.log(str(symtab), xbmc.LOGNOTICE)
-        #xbmc.log(str(len(symtab)), xbmc.LOGNOTICE) 
+        #VSlog(tmp)
 
-        if count != len(symtab):
-            raise UnpackingError('Malformed p.a.c.k.e.r. symtab.')
+        return str[:(aResult.start() + 1)] + tmp + str[(aResult.end()-1):]
+        
+    return str
+    
+def CheckJJDecoder(str):
+
+    sPattern = '([a-z]=.+?\(\)\)\(\);)'
+    aResult = re.search(sPattern, str,re.DOTALL | re.UNICODE)
+    if (aResult):
+        VSlog('JJ encryption')
+        tmp = JJDecoder(aResult.group(0)).decode()
+        
+        return str[:aResult.start()] + tmp + str[aResult.end():]
+        
+    return str
+    
+def CheckAADecoder(str):
+    aResult = re.search('([>;]\s*)(ﾟωﾟ.+?\(\'_\'\);)', str,re.DOTALL | re.UNICODE)
+    if (aResult):
+        VSlog('AA encryption')
+        
+        #tmp = aResult.group(1) + AADecoder(aResult.group(2)).decode()
+        
+        JP = JsParser()
+        Liste_var = []
         
         try:
-            unbase = Unbaser(radix)
-        except TypeError:
-            raise UnpackingError('Unknown p.a.c.k.e.r. encoding.')
+            JScode = aResult.group(2)
+            JScode = unicode(JScode, "utf-8")
+           
+            tmp = JP.ProcessJS(JScode,Liste_var)
+            tmp = JP.LastEval.decode('string-escape').decode('string-escape') 
 
-        def lookup(match):
-            """Look up symbols in the synthetic symtab."""
-            word  = match.group(0)
-            return symtab[unbase(word)] or word
-
-        source = re.sub(r'\b\w+\b', lookup, payload)
-        return self._replacestrings(source)
-
-    def _cleanstr(self, str):
-        str = str.strip()
-        if str.find("function") == 0:
-            pattern = (r"=\"([^\"]+).*}\s*\((\d+)\)")
-            args = re.search(pattern, str, re.DOTALL)
-            if args:
-                a = args.groups()
-                def openload_re(match):
-                    c = match.group(0)
-                    b = ord(c) + int(a[1])
-                    return chr(b if (90 if c <= "Z" else 122) >= b else b - 26)
-
-                str = re.sub(r"[a-zA-Z]", openload_re, a[0]);
-                str = urllib2.unquote(str)
-
-        elif str.find("decodeURIComponent") == 0:
-            str = re.sub(r"(^decodeURIComponent\s*\(\s*('|\"))|(('|\")\s*\)$)", "", str);
-            str = urllib2.unquote(str)
-        elif str.find("\"") == 0:
-            str = re.sub(r"(^\")|(\"$)|(\".*?\")", "", str);
-        elif str.find("'") == 0:
-            str = re.sub(r"(^')|('$)|('.*?')", "", str);
-
-        return str
-
-    def _filterargs(self, source):
-        """Juice from a source file the four args needed by decoder."""
+            return str[:aResult.start()] + tmp + str[aResult.end():]
+        except:
+            return ''
         
-        source = source.replace(',[],',',0,')
-
-        juicer = (r"}\s*\(\s*(.*?)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\((.*?)\).split\((.*?)\)")
-        args = re.search(juicer, source, re.DOTALL)
-        if args:
-            a = args.groups()
-            try:
-                return self._cleanstr(a[0]), self._cleanstr(a[3]).split(self._cleanstr(a[4])), int(a[1]), int(a[2])
-            except ValueError:
-                raise UnpackingError('Corrupted p.a.c.k.e.r. data.')
-
-        juicer = (r"}\('(.*)', *(\d+), *(\d+), *'(.*)'\.split\('(.*?)'\)")
-        args = re.search(juicer, source, re.DOTALL)
-        if args:
-            a = args.groups()
-            try:
-                return a[0], a[3].split(a[4]), int(a[1]), int(a[2])
-            except ValueError:
-                raise UnpackingError('Corrupted p.a.c.k.e.r. data.')
-
-        # could not find a satisfying regex
-        raise UnpackingError('Could not make sense of p.a.c.k.e.r data (unexpected code structure)')
-
-
-
-    def _replacestrings(self, source):
-        """Strip string lookup table (list) and replace values in source."""
-        match = re.search(r'var *(_\w+)\=\["(.*?)"\];', source, re.DOTALL)
-
-        if match:
-            varname, strings = match.groups()
-            startpoint = len(match.group(0))
-            lookup = strings.split('","')
-            variable = '%s[%%d]' % varname
-            for index, value in enumerate(lookup):
-                source = source.replace(variable % index, '"%s"' % value)
-            return source[startpoint:]
-        return source
-        
-def UnpackingError(Exception):
-    #Badly packed source or general error.#
-    #xbmc.log(str(Exception))
-    print Exception
-    pass
-
-
-class Unbaser(object):
-    """Functor for a given base. Will efficiently convert
-    strings to natural numbers."""
-    ALPHABET = {
-        62: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-        95: (' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-             '[\]^_`abcdefghijklmnopqrstuvwxyz{|}~')
-    }
-
-    def __init__(self, base):
-        self.base = base
-        
-        #Error not possible, use 36 by defaut
-        if base == 0 :
-            base = 36
-        
-        # If base can be handled by int() builtin, let it do it for us
-        if 2 <= base <= 36:
-            self.unbase = lambda string: int(string, base)
-        else:
-            if base < 62:
-                self.ALPHABET[base] = self.ALPHABET[62][0:base]
-            elif 62 < base < 95:
-                self.ALPHABET[base] = self.ALPHABET[95][0:base]
-            # Build conversion dictionary cache
-            try:
-                self.dictionary = dict((cipher, index) for index, cipher in enumerate(self.ALPHABET[base]))
-            except KeyError:
-                raise TypeError('Unsupported base encoding.')
-
-            self.unbase = self._dictunbaser
-
-    def __call__(self, string):
-        return self.unbase(string)
-
-    def _dictunbaser(self, string):
-        """Decodes a  value to an integer."""
-        ret = 0
-        
-        for index, cipher in enumerate(string[::-1]):
-            ret += (self.base ** index) * self.dictionary[cipher]
-        return ret
+    return str

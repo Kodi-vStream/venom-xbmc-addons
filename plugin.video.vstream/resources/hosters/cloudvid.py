@@ -10,7 +10,7 @@ from resources.lib.util import VScreateDialogSelect
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Cloudvid.co'
+        self.__sDisplayName = 'Cloudvid'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
@@ -18,7 +18,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName

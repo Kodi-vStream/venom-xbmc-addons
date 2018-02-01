@@ -1,9 +1,9 @@
 #-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 #Razorex
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
@@ -12,13 +12,12 @@ from resources.lib.parser import cParser
 
 from resources.lib.util import cUtil #outils pouvant etre utiles
 
-import xbmc
 
 SITE_IDENTIFIER = 'streamingbb'
 SITE_NAME = 'StreamingBB'
 SITE_DESC = 'Films en streaming'
 
-URL_MAIN = 'http://www.streamingbb.tv/'
+URL_MAIN = 'http://www.regarderfilm.biz/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -247,10 +246,20 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
-    sPattern = '<form action="#playfilm" method="post">.+?<span>([^<>]+)</span>.+?<input name="levideo" value="([^"]+)"'
-    
     oParser = cParser()
+    
+    sDecs = ''
+    try:
+        sPattern = '<p><strong>Synopsis<\/strong.+?: *(.+?)<\/p>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            sDesc = aResult[1][0]
+    except:
+        pass
+       
+
+    sPattern = '<form action="#playfilm" method="post">.+?<span>([^<>]+)</span>.+?<input name="levideo" value="([^"]+)"'
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 	
     if (aResult[0] == False):
@@ -274,7 +283,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('sPost', sPost)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -297,9 +306,6 @@ def showHosters():
     sPattern = '<iframe.+?src=["\'](.+?)["\']'
     
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #pensez a faire un cConfig().log(str(aResult)) pour verifier
-    #cConfig().log(str(sUrl))
-    #cConfig().log(str(aResult))
     
     if (aResult[0] == True):
         for aEntry in aResult[1]:
