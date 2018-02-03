@@ -9,9 +9,9 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
-import re,urllib2,base64
+import re, urllib2, base64
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:55.0) Gecko/20100101 Firefox/55.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 SITE_IDENTIFIER = 'french_stream_com'
 SITE_NAME = 'French-stream'
@@ -36,7 +36,7 @@ SERIE_VFS = (URL_MAIN + 'serie/serie-en-vf-streaming/', 'showSeries')
 SERIE_VOSTFRS = (URL_MAIN + 'serie/serie-en-vostfr-streaming/', 'showSeries')
 SERIE_GENRES = (True, 'showSerieGenres')
 
-def decode_url_Serie(url,id,tmp = ''):
+def decode_url_Serie(url, id, tmp = ''):
     
     cConfig().log(id)
     cConfig().log(id)
@@ -68,7 +68,7 @@ def decode_url_Serie(url,id,tmp = ''):
         
     return v
 
-def decode_url(url,id,tmp = ''):
+def decode_url(url, id, tmp = ''):
     
     v = url
     
@@ -416,7 +416,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<a name="b[0-9]+" href="([^"]+)" id="([^"]+)" target="seriePlayer"> *<i class=[^>]+><\/i> ([^<]+) <'
+    sPattern = '<a name="b[0-9]+".+?href="([^"]+)" id="([^"]+)" target="seriePlayer"> *<i class=[^>]+><\/i> ([^<]+) <'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -468,7 +468,7 @@ def showLinks():
 
     oParser = cParser()
 
-    sPattern = '<\/i> (VOSTFR|VF) *<\/div>|<a id="([^"]+)" href="([^"]+)" target="seriePlayer" title="([^"]+)" data-rel="([^"]+)"'
+    sPattern = '<\/i> (VF|VOSTFR) *<\/div>|<a id="([^"]+)".+?target="seriePlayer" title="([^"]+)" data-rel="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -479,13 +479,13 @@ def showLinks():
             if dialog.iscanceled():
                 break
 
-            if aEntry[0]:
+            if str(aEntry[0]):
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
-            elif aEntry[1]:
 
-                sTitle = str(aEntry[3]) + ' ' + sMovieTitle
+            else:
                 sId = aEntry[1]
-                sData = aEntry[4]
+                sTitle = str(aEntry[2]) + ' ' + sMovieTitle
+                sData = aEntry[3]
                 #sUrl = aEntry[2]
                 
                 sDisplayTitle = sTitle
