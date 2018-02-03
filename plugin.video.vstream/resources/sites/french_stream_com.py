@@ -526,7 +526,7 @@ def serieHosters():
     else:
         return
         
-    sPattern = '<li><a (?:id="([^"]+)" )*href="([^"]+)"'
+    sPattern = '<li><a (?:id="([^"]+)" onclick=".+?" )*href="([^"]+)"'
     aResult = oParser.parse(block, sPattern)
         
     if (aResult[0] == True):
