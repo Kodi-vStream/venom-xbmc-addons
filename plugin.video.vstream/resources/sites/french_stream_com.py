@@ -460,7 +460,7 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    cConfig().log(sUrl)
+    #cConfig().log(sUrl)
 
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
@@ -469,12 +469,13 @@ def showLinks():
     oParser = cParser()
 
     sPattern = '<\/i> (VF|VOSTFR) *<\/div>|<a id="([^"]+)".+?target="seriePlayer" title="([^"]+)" data-rel="([^"]+)"'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    #aResult = oParser.parse(sHtmlContent, sPattern)
+    aResult = re.findall(sPattern,sHtmlContent)
 
-    if (aResult[0] == True):
-        total = len(aResult[1])
+    if (aResult):
+        total = len(aResult)
         dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
+        for aEntry in aResult:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
