@@ -281,6 +281,27 @@
         <setting type="sep" />
         <setting id="update_auto" type="bool" label="30302" default="true" />
     </category>
+    
+    <category label="30341">
+	    <setting type="lsep" label="30342" />
+	    <setting id="trakt_movies_show_watchlist" type="bool" label="30343" default="true" />
+	    <setting id="trakt_movies_show_watched" type="bool" label="30344" default="true" />
+	    <setting id="trakt_movies_show_recommended" type="bool" label="30345" default="true" />
+	    <setting id="trakt_movies_show_boxoffice" type="bool" label="30346" default="true" />
+	    <setting id="trakt_movies_show_popular" type="bool" label="30347" default="true" />
+	    <setting id="trakt_movies_show_most_weekly" type="bool" label="30348" default="true" />
+	    <setting id="trakt_movies_show_most_monthly" type="bool" label="30349" default="true" />
+	    
+	    <setting type="lsep" label="30351" />
+		<setting id="trakt_tvshows_show_watchlist" type="bool" label="30352" default="true" />
+	    <setting id="trakt_tvshows_show_watchlist_seasons" type="bool" label="30353" default="true" />
+	    <setting id="trakt_tvshows_show_watchlist_episodes" type="bool" label="30354" default="true" />
+	    <setting id="trakt_tvshows_show_watched" type="bool" label="30355" default="true" />
+	    <setting id="trakt_tvshows_show_recommended" type="bool" label="30356" default="true" />
+	    <setting id="trakt_tvshows_show_popular" type="bool" label="30357" default="true" />
+	    <setting id="trakt_tvshows_show_most_weekly" type="bool" label="30358" default="true" />
+    	<setting id="trakt_tvshows_show_most_monthly" type="bool" label="30359" default="true" />
+    </category>
 
     <category label="30400">
         <!--<setting label="BetaSeries" type="lsep"/>

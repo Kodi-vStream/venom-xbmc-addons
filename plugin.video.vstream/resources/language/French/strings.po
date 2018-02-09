@@ -501,6 +501,78 @@ msgctxt "#30332"
 msgid "WebTv"
 msgstr "Tv du web"
 
+msgctxt "#30341"
+msgid "Trakt integration"
+msgstr "Intégration Trakt"
+
+msgctxt "#30342"
+msgid "Movies"
+msgstr "Films"
+
+msgctxt "#30343"
+msgid "Show watchlist"
+msgstr "Afficher la liste 'A Surveiller'"
+
+msgctxt "#30344"
+msgid "Show watched list"
+msgstr "Afficher les films vus"
+
+msgctxt "#30345"
+msgid "Show recommended movies"
+msgstr "Afficher les films recommandés"
+
+msgctxt "#30346"
+msgid "Show BoxOffice"
+msgstr "Afficher les Box-Office"
+
+msgctxt "#30347"
+msgid "Show popular"
+msgstr "Afficher les films populaires"
+
+msgctxt "#30348"
+msgid "Show most weekly viewed"
+msgstr "Afficher les films les plus vus de la semaine"
+
+msgctxt "#30349"
+msgid "Show most monthly viewed"
+msgstr "Afficher les films les plus vus du mois"
+
+msgctxt "#30351"
+msgid "TV Shows"
+msgstr "Séries"
+
+msgctxt "#30352"
+msgid "Show watchlist"
+msgstr "Afficher la liste 'A Surveiller'"
+
+msgctxt "#30353"
+msgid "Show seasons watchlist"
+msgstr "Afficher la liste des saisons à surveiller"
+
+msgctxt "#30354"
+msgid "Show episodes watchlist"
+msgstr "Afficher la liste des épisodes à surveiller"
+
+msgctxt "#30355"
+msgid "Show watched list"
+msgstr "Afficher les films vus"
+
+msgctxt "#30356"
+msgid "Show recommended movies"
+msgstr "Afficher les films recommandés"
+
+msgctxt "#30357"
+msgid "Show popular"
+msgstr "Afficher les films populaires"
+
+msgctxt "#30358"
+msgid "Show most weekly viewed"
+msgstr "Afficher les films les plus vus de la semaine"
+
+msgctxt "#30359"
+msgid "Show most monthly viewed"
+msgstr "Afficher les films les plus vus du mois"
+
 msgctxt "#30400"
 msgid "Premium/Login"
 msgstr "Premium/Login"

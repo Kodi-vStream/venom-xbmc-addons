@@ -58,7 +58,7 @@ class cTrakt:
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
         result = json.loads(sHtmlContent)
-       # xbmc.log(str(result))
+        # xbmc.log(str(result))
         response.close()
 
         #{"device_code":"a434135042b5a76159628bc974eed2f266fb47df9f438d5738ce40396d531490","user_code":"EBDFD843","verification_url":"https://trakt.tv/activate","expires_in":600,"interval":5}
@@ -243,25 +243,58 @@ class cTrakt:
         liste = []
         if sType == 'movie':
             liste.append( [ '%s (%s)' % (cConfig().getlanguage(30310), result2['movies']['collected'] ),'https://api.trakt.tv/users/me/collection/movies?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30311),'https://api.trakt.tv/users/me/watchlist/movies?page=1&limit=' + str(MAXRESULT) ] )
-            liste.append( ['%s (%s)' % (cConfig().getlanguage(30312), result2['movies']['watched'] ),'https://api.trakt.tv/users/me/watched/movies?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30313),'https://api.trakt.tv/recommendations/movies'] )
-            liste.append( [cConfig().getlanguage(30314),'https://api.trakt.tv/movies/boxoffice'] )
-            liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/movies/popular?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30316),'https://api.trakt.tv/movies/played/weekly?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30317),'https://api.trakt.tv/movies/played/monthly?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_movies_show_watchlist") == 'true':
+                liste.append( [cConfig().getlanguage(30311),'https://api.trakt.tv/users/me/watchlist/movies?page=1&limit=' + str(MAXRESULT) ] )
+            
+            if cConfig().getSetting("trakt_movies_show_watched") == 'true':
+                liste.append( ['%s (%s)' % (cConfig().getlanguage(30312), result2['movies']['watched'] ),'https://api.trakt.tv/users/me/watched/movies?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_movies_show_recommended") == 'true':
+                liste.append( [cConfig().getlanguage(30313),'https://api.trakt.tv/recommendations/movies'] )
+            
+            if cConfig().getSetting("trakt_movies_show_boxoffice") == 'true':
+                liste.append( [cConfig().getlanguage(30314),'https://api.trakt.tv/movies/boxoffice'] )
+            
+            if cConfig().getSetting("trakt_movies_show_popular") == 'true':
+                liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/movies/popular?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_movies_show_most_weekly") == 'true':
+                liste.append( [cConfig().getlanguage(30316),'https://api.trakt.tv/movies/played/weekly?page=1&limit=' + str(MAXRESULT)] )
+
+            if cConfig().getSetting("trakt_movies_show_most_monthly") == 'true':
+                liste.append( [cConfig().getlanguage(30317),'https://api.trakt.tv/movies/played/monthly?page=1&limit=' + str(MAXRESULT)] )
+            
             #liste.append( ['historique de Films','https://api.trakt.tv/users/me/history/movies'] )
+
 
         elif sType == 'show':
             liste.append( ['%s (%s)' % (cConfig().getlanguage(30310), result2['shows']['collected'] ),'https://api.trakt.tv/users/me/collection/shows?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30311),'https://api.trakt.tv/users/me/watchlist/shows?page=1&limit=' + str(MAXRESULT) ] )
-            liste.append( [cConfig().getlanguage(30318),'https://api.trakt.tv/users/me/watchlist/seasons?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30319),'https://api.trakt.tv/users/me/watchlist/episodes?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( ['%s (%s)' % (cConfig().getlanguage(30312), result2['movies']['watched'] ),'https://api.trakt.tv/users/me/watched/shows?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30313),'https://api.trakt.tv/recommendations/shows'] )
-            liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/shows/popular?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30316),'https://api.trakt.tv/shows/played/weekly?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30317),'https://api.trakt.tv/shows/played/monthly?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_tvshows_show_watchlist") == 'true':
+                liste.append( [cConfig().getlanguage(30311),'https://api.trakt.tv/users/me/watchlist/shows?page=1&limit=' + str(MAXRESULT) ] )
+            
+            if cConfig().getSetting("trakt_tvshows_show_watchlist_seasons") == 'true':
+                liste.append( [cConfig().getlanguage(30318),'https://api.trakt.tv/users/me/watchlist/seasons?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_tvshows_show_watchlist_episodes") == 'true':
+                liste.append( [cConfig().getlanguage(30319),'https://api.trakt.tv/users/me/watchlist/episodes?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_tvshows_show_watched") == 'true':
+                liste.append( ['%s (%s)' % (cConfig().getlanguage(30312), result2['movies']['watched'] ),'https://api.trakt.tv/users/me/watched/shows?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_tvshows_show_recommended") == 'true':
+                liste.append( [cConfig().getlanguage(30313),'https://api.trakt.tv/recommendations/shows'] )
+                
+            if cConfig().getSetting("trakt_tvshows_show_popular") == 'true':
+                liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/shows/popular?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_tvshows_show_most_weekly") == 'true':
+                liste.append( [cConfig().getlanguage(30316),'https://api.trakt.tv/shows/played/weekly?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_tvshows_show_most_monthly") == 'true':
+                liste.append( [cConfig().getlanguage(30317),'https://api.trakt.tv/shows/played/monthly?page=1&limit=' + str(MAXRESULT)] )
+            
             #liste.append( ['Historique de séries','https://api.trakt.tv/users/me/history/shows'] )
 
         for sTitle,sUrl in liste:
