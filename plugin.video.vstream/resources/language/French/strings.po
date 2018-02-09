@@ -559,23 +559,23 @@ msgstr "Afficher la liste des épisodes à surveiller"
 
 msgctxt "#30355"
 msgid "Show watched list"
-msgstr "Afficher les films vus"
+msgstr "Afficher les séries vues"
 
 msgctxt "#30356"
-msgid "Show recommended movies"
-msgstr "Afficher les films recommandés"
+msgid "Show recommended TV Shows"
+msgstr "Afficher les séries recommandées"
 
 msgctxt "#30357"
 msgid "Show popular"
-msgstr "Afficher les films populaires"
+msgstr "Afficher les séries populaires"
 
 msgctxt "#30358"
 msgid "Show most weekly viewed"
-msgstr "Afficher les films les plus vus de la semaine"
+msgstr "Afficher les séries les plus vues de la semaine"
 
 msgctxt "#30359"
 msgid "Show most monthly viewed"
-msgstr "Afficher les films les plus vus du mois"
+msgstr "Afficher les séries les plus vues du mois"
 
 msgctxt "#30360"
 msgid "My personnal Trakt lists"

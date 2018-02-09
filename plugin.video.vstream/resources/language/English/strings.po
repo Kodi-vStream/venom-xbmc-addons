@@ -562,7 +562,7 @@ msgid "Show watched list"
 msgstr ""
 
 msgctxt "#30356"
-msgid "Show recommended movies"
+msgid "Show recommended TV Shows"
 msgstr ""
 
 msgctxt "#30357"
