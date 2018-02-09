@@ -501,6 +501,86 @@ msgctxt "#30332"
 msgid "WebTv"
 msgstr ""
 
+msgctxt "#30340"
+msgid "Trakt integration"
+msgstr ""
+
+msgctxt "#30341"
+msgid "Show personnal lists"
+msgstr ""
+
+msgctxt "#30342"
+msgid "Movies"
+msgstr ""
+
+msgctxt "#30343"
+msgid "Show watchlist"
+msgstr ""
+
+msgctxt "#30344"
+msgid "Show watched list"
+msgstr ""
+
+msgctxt "#30345"
+msgid "Show recommended movies"
+msgstr ""
+
+msgctxt "#30346"
+msgid "Show BoxOffice"
+msgstr ""
+
+msgctxt "#30347"
+msgid "Show popular"
+msgstr ""
+
+msgctxt "#30348"
+msgid "Show most weekly viewed"
+msgstr ""
+
+msgctxt "#30349"
+msgid "Show most monthly viewed"
+msgstr ""
+
+msgctxt "#30351"
+msgid "TV Shows"
+msgstr ""
+
+msgctxt "#30352"
+msgid "Show watchlist"
+msgstr ""
+
+msgctxt "#30353"
+msgid "Show seasons watchlist"
+msgstr ""
+
+msgctxt "#30354"
+msgid "Show episodes watchlist"
+msgstr ""
+
+msgctxt "#30355"
+msgid "Show watched list"
+msgstr ""
+
+msgctxt "#30356"
+msgid "Show recommended TV Shows"
+msgstr ""
+
+msgctxt "#30357"
+msgid "Show popular"
+msgstr ""
+
+msgctxt "#30358"
+msgid "Show most weekly viewed"
+msgstr ""
+
+msgctxt "#30359"
+msgid "Show most monthly viewed"
+msgstr ""
+
+msgctxt "#30360"
+msgid "My personnal Trakt lists"
+msgstr ""
+
 msgctxt "#30400"
 msgid "Premium/Login"
 msgstr ""

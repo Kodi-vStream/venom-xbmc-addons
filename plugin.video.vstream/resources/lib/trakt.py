@@ -58,7 +58,7 @@ class cTrakt:
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
         result = json.loads(sHtmlContent)
-       # xbmc.log(str(result))
+        # xbmc.log(str(result))
         response.close()
 
         #{"device_code":"a434135042b5a76159628bc974eed2f266fb47df9f438d5738ce40396d531490","user_code":"EBDFD843","verification_url":"https://trakt.tv/activate","expires_in":600,"interval":5}
@@ -167,6 +167,12 @@ class cTrakt:
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'show')
             oGui.addDir(SITE_IDENTIFIER, 'getLists', cConfig().getlanguage(30121), 'series.png', oOutputParameterHandler)
+            
+            if cConfig().getSetting("trakt_show_lists"):
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', 'https://')
+                oOutputParameterHandler.addParameter('type', 'custom-lists')
+                oGui.addDir(SITE_IDENTIFIER, 'getLists', cConfig().getlanguage(30360), 'trakt.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/users/me/history?page=1&limit=' + str(MAXRESULT))
@@ -243,27 +249,70 @@ class cTrakt:
         liste = []
         if sType == 'movie':
             liste.append( [ '%s (%s)' % (cConfig().getlanguage(30310), result2['movies']['collected'] ),'https://api.trakt.tv/users/me/collection/movies?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30311),'https://api.trakt.tv/users/me/watchlist/movies?page=1&limit=' + str(MAXRESULT) ] )
-            liste.append( ['%s (%s)' % (cConfig().getlanguage(30312), result2['movies']['watched'] ),'https://api.trakt.tv/users/me/watched/movies?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30313),'https://api.trakt.tv/recommendations/movies'] )
-            liste.append( [cConfig().getlanguage(30314),'https://api.trakt.tv/movies/boxoffice'] )
-            liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/movies/popular?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30316),'https://api.trakt.tv/movies/played/weekly?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30317),'https://api.trakt.tv/movies/played/monthly?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_movies_show_watchlist") == 'true':
+                liste.append( [cConfig().getlanguage(30311),'https://api.trakt.tv/users/me/watchlist/movies?page=1&limit=' + str(MAXRESULT) ] )
+            
+            if cConfig().getSetting("trakt_movies_show_watched") == 'true':
+                liste.append( ['%s (%s)' % (cConfig().getlanguage(30312), result2['movies']['watched'] ),'https://api.trakt.tv/users/me/watched/movies?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_movies_show_recommended") == 'true':
+                liste.append( [cConfig().getlanguage(30313),'https://api.trakt.tv/recommendations/movies'] )
+            
+            if cConfig().getSetting("trakt_movies_show_boxoffice") == 'true':
+                liste.append( [cConfig().getlanguage(30314),'https://api.trakt.tv/movies/boxoffice'] )
+            
+            if cConfig().getSetting("trakt_movies_show_popular") == 'true':
+                liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/movies/popular?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_movies_show_most_weekly") == 'true':
+                liste.append( [cConfig().getlanguage(30316),'https://api.trakt.tv/movies/played/weekly?page=1&limit=' + str(MAXRESULT)] )
+
+            if cConfig().getSetting("trakt_movies_show_most_monthly") == 'true':
+                liste.append( [cConfig().getlanguage(30317),'https://api.trakt.tv/movies/played/monthly?page=1&limit=' + str(MAXRESULT)] )
+            
             #liste.append( ['historique de Films','https://api.trakt.tv/users/me/history/movies'] )
+
 
         elif sType == 'show':
             liste.append( ['%s (%s)' % (cConfig().getlanguage(30310), result2['shows']['collected'] ),'https://api.trakt.tv/users/me/collection/shows?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30311),'https://api.trakt.tv/users/me/watchlist/shows?page=1&limit=' + str(MAXRESULT) ] )
-            liste.append( [cConfig().getlanguage(30318),'https://api.trakt.tv/users/me/watchlist/seasons?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30319),'https://api.trakt.tv/users/me/watchlist/episodes?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( ['%s (%s)' % (cConfig().getlanguage(30312), result2['movies']['watched'] ),'https://api.trakt.tv/users/me/watched/shows?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30313),'https://api.trakt.tv/recommendations/shows'] )
-            liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/shows/popular?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30316),'https://api.trakt.tv/shows/played/weekly?page=1&limit=' + str(MAXRESULT)] )
-            liste.append( [cConfig().getlanguage(30317),'https://api.trakt.tv/shows/played/monthly?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_tvshows_show_watchlist") == 'true':
+                liste.append( [cConfig().getlanguage(30311),'https://api.trakt.tv/users/me/watchlist/shows?page=1&limit=' + str(MAXRESULT) ] )
+            
+            if cConfig().getSetting("trakt_tvshows_show_watchlist_seasons") == 'true':
+                liste.append( [cConfig().getlanguage(30318),'https://api.trakt.tv/users/me/watchlist/seasons?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_tvshows_show_watchlist_episodes") == 'true':
+                liste.append( [cConfig().getlanguage(30319),'https://api.trakt.tv/users/me/watchlist/episodes?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_tvshows_show_watched") == 'true':
+                liste.append( ['%s (%s)' % (cConfig().getlanguage(30312), result2['movies']['watched'] ),'https://api.trakt.tv/users/me/watched/shows?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_tvshows_show_recommended") == 'true':
+                liste.append( [cConfig().getlanguage(30313),'https://api.trakt.tv/recommendations/shows'] )
+                
+            if cConfig().getSetting("trakt_tvshows_show_popular") == 'true':
+                liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/shows/popular?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_tvshows_show_most_weekly") == 'true':
+                liste.append( [cConfig().getlanguage(30316),'https://api.trakt.tv/shows/played/weekly?page=1&limit=' + str(MAXRESULT)] )
+            
+            if cConfig().getSetting("trakt_tvshows_show_most_monthly") == 'true':
+                liste.append( [cConfig().getlanguage(30317),'https://api.trakt.tv/shows/played/monthly?page=1&limit=' + str(MAXRESULT)] )
+            
             #liste.append( ['Historique de séries','https://api.trakt.tv/users/me/history/shows'] )
-
+            
+            
+        elif sType == 'custom-lists':
+            request = urllib2.Request('https://api.trakt.tv/users/me/lists', headers=headers)   
+            response_lists = urllib2.urlopen(request).read()
+            json_lists = json.loads(response_lists)
+                        
+            for list in json_lists:
+                url  = 'https://api.trakt.tv/users/me/lists/' + list["ids"]["slug"] + "/items"
+                liste.append( [(list["name"] + " (" + str(list["item_count"]) + ")").encode("utf-8"), url] )
+        
         for sTitle,sUrl in liste:
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -319,7 +368,7 @@ class cTrakt:
         response.close()
 
         result = json.loads(sHtmlContent)
-
+        
         #xbmc.log(str(result))
 
         sPage = '1'
@@ -511,8 +560,32 @@ class cTrakt:
                         sTitle = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                         sFunction = 'showSearch'
                         sId = 'globalSearch'
+                
+                elif 'lists' in sUrl:
+                    
+                    sType, sListed_at  = i['type'], i['listed_at']
+                    sFunction = 'showSearch'
+                    sId = 'globalSearch'
 
+                    if  'show' in i:
+                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year']
+                        sExtra = ('(%s)') % (sYear)
+                        cTrakt.CONTENT = '2'
+                    elif 'episode' in i:
+                        sTrakt, sTitle, sImdb, sTmdb, sSeason, sNumber = i['episode']['ids']['trakt'], i['episode']['title'], i['episode']['ids']['imdb'], i['episode']['ids']['tmdb'], i['episode']['season'],  i['episode']['number']
+                        sExtra = ('(S%02dE%02d)') % (sSeason, sNumber)
+                        cTrakt.CONTENT = '2'
+                    else:
+                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
+                        sExtra = ('(%s)') % (sYear)
+                        cTrakt.CONTENT = '1'
 
+                    sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode("unicode_escape")
+                    sTitle.encode("utf-8")
+                    searchtext = ('%s') % (sTitle.encode("utf-8"))
+                    sFile = ('%s %s') % (sTitle.encode("utf-8"), sExtra)
+                    sTitle = ('%s %s') % (sTitle, sExtra )
+                    
                 else: return
 
                 oOutputParameterHandler = cOutputParameterHandler()
