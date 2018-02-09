@@ -501,9 +501,13 @@ msgctxt "#30332"
 msgid "WebTv"
 msgstr "Tv du web"
 
-msgctxt "#30341"
+msgctxt "#30340"
 msgid "Trakt integration"
 msgstr "Intégration Trakt"
+
+msgctxt "#30341"
+msgid "Show personnal lists"
+msgstr "Afficher les listes personnelles"
 
 msgctxt "#30342"
 msgid "Movies"
@@ -572,6 +576,10 @@ msgstr "Afficher les films les plus vus de la semaine"
 msgctxt "#30359"
 msgid "Show most monthly viewed"
 msgstr "Afficher les films les plus vus du mois"
+
+msgctxt "#30360"
+msgid "My personnal Trakt lists"
+msgstr "Listes personnelles Trakt"
 
 msgctxt "#30400"
 msgid "Premium/Login"

@@ -282,7 +282,8 @@
         <setting id="update_auto" type="bool" label="30302" default="true" />
     </category>
     
-    <category label="30341">
+    <category label="30340">
+    	<setting id="trakt_show_lists" type="bool" label="30341" default="true" />
 	    <setting type="lsep" label="30342" />
 	    <setting id="trakt_movies_show_watchlist" type="bool" label="30343" default="true" />
 	    <setting id="trakt_movies_show_watched" type="bool" label="30344" default="true" />

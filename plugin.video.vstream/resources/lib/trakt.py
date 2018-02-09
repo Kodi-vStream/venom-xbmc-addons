@@ -167,6 +167,12 @@ class cTrakt:
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'show')
             oGui.addDir(SITE_IDENTIFIER, 'getLists', cConfig().getlanguage(30121), 'series.png', oOutputParameterHandler)
+            
+            if cConfig().getSetting("trakt_show_lists"):
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', 'https://')
+                oOutputParameterHandler.addParameter('type', 'custom-lists')
+                oGui.addDir(SITE_IDENTIFIER, 'getLists', cConfig().getlanguage(30360), 'trakt.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/users/me/history?page=1&limit=' + str(MAXRESULT))
@@ -296,7 +302,17 @@ class cTrakt:
                 liste.append( [cConfig().getlanguage(30317),'https://api.trakt.tv/shows/played/monthly?page=1&limit=' + str(MAXRESULT)] )
             
             #liste.append( ['Historique de séries','https://api.trakt.tv/users/me/history/shows'] )
-
+            
+            
+        elif sType == 'custom-lists':
+            request = urllib2.Request('https://api.trakt.tv/users/me/lists', headers=headers)   
+            response_lists = urllib2.urlopen(request).read()
+            json_lists = json.loads(response_lists)
+                        
+            for list in json_lists:
+                url  = 'https://api.trakt.tv/users/me/lists/' + list["ids"]["slug"] + "/items"
+                liste.append( [(list["name"] + " (" + str(list["item_count"]) + ")").encode("utf-8"), url] )
+        
         for sTitle,sUrl in liste:
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -352,7 +368,7 @@ class cTrakt:
         response.close()
 
         result = json.loads(sHtmlContent)
-
+        
         #xbmc.log(str(result))
 
         sPage = '1'
@@ -544,8 +560,32 @@ class cTrakt:
                         sTitle = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
                         sFunction = 'showSearch'
                         sId = 'globalSearch'
+                
+                elif 'lists' in sUrl:
+                    
+                    sType, sListed_at  = i['type'], i['listed_at']
+                    sFunction = 'showSearch'
+                    sId = 'globalSearch'
 
+                    if  'show' in i:
+                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year']
+                        sExtra = ('(%s)') % (sYear)
+                        cTrakt.CONTENT = '2'
+                    elif 'episode' in i:
+                        sTrakt, sTitle, sImdb, sTmdb, sSeason, sNumber = i['episode']['ids']['trakt'], i['episode']['title'], i['episode']['ids']['imdb'], i['episode']['ids']['tmdb'], i['episode']['season'],  i['episode']['number']
+                        sExtra = ('(S%02dE%02d)') % (sSeason, sNumber)
+                        cTrakt.CONTENT = '2'
+                    else:
+                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
+                        sExtra = ('(%s)') % (sYear)
+                        cTrakt.CONTENT = '1'
 
+                    sTitle = unicodedata.normalize('NFD',  sTitle).encode('ascii', 'ignore').decode("unicode_escape")
+                    sTitle.encode("utf-8")
+                    searchtext = ('%s') % (sTitle.encode("utf-8"))
+                    sFile = ('%s %s') % (sTitle.encode("utf-8"), sExtra)
+                    sTitle = ('%s %s') % (sTitle, sExtra )
+                    
                 else: return
 
                 oOutputParameterHandler = cOutputParameterHandler()
