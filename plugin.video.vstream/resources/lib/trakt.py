@@ -391,13 +391,19 @@ class cTrakt:
                     break
 
                 if 'collection' in sUrl:
+                    
                     if  'show' in i:
-                        sTrakt, sTitle, sYear, sImdb, sTmdb, sDate = i['show']['ids']['trakt'], i['show']['title'], i['show']['year'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['last_collected_at']
+                        show = i['show']
+                        sTitle = self.getLocalizedTitle(show, 'shows')
+                        sTrakt, sYear, sImdb, sTmdb, sDate = show['ids']['trakt'], show['year'], show['ids']['imdb'], show['ids']['tmdb'], i['last_collected_at']
+                        
                         #sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                         cTrakt.CONTENT = '2'
                         sFunction = 'getBseasons'
                     else:
-                        sTrakt, sTitle, sYear, sImdb, sTmdb, sDate = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['year'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['collected_at']
+                        movie = i['movie']
+                        sTitle = self.getLocalizedTitle(movie, 'movies')
+                        sTrakt, sYear, sImdb, sTmdb, sDate = movie['ids']['trakt'], movie['year'], movie['ids']['imdb'], movie['ids']['tmdb'], i['collected_at']
                         #sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                         cTrakt.CONTENT = '1'
                         sFunction = 'showSearch'
@@ -413,18 +419,23 @@ class cTrakt:
                         sTitle = ('%s') % (sTitle.encode("utf-8"))
 
                 elif 'history' in sUrl:
-                #commun
-                    sAction, sType, sWatched_at  = i['action'], i['type'], i['watched_at']
+                    #commun
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
                     #2016-11-16T09:21:18.000Z
-                    #sDate = datetime.datetime(*(time.strptime(sWatched_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y')
+                    #sDate = datetime.datetime(*(time.strptime(i['watched_at'], "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y')
                     if 'episode' in i:
-                        sTrakt, sTitle, sImdb, sTmdb, sSeason, sNumber = i['episode']['ids']['trakt'], i['episode']['title'], i['episode']['ids']['imdb'], i['episode']['ids']['tmdb'], i['episode']['season'],  i['episode']['number']
+                        sType = "Episode"
+                        eps = i['episode']
+                        sTitle = self.getLocalizedTitle(i, 'episodes')  
+                        sTrakt, sImdb, sTmdb, sSeason, sNumber = eps['ids']['trakt'], eps['ids']['imdb'], eps['ids']['tmdb'], eps['season'],  eps['number']
                         sExtra = ('(S%02dE%02d)') % (sSeason, sNumber)
                         cTrakt.CONTENT = '2'
                     else:
-                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
+                        sType = "Film"
+                        movie = i['movie']
+                        sTitle = self.getLocalizedTitle(movie, 'movies') 
+                        sTrakt, sImdb, sTmdb, sYear = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year']
                         sExtra = ('(%s)') % (sYear)
                         cTrakt.CONTENT = '1'
 
@@ -432,26 +443,31 @@ class cTrakt:
                     sTitle.encode("utf-8")
                     searchtext = ('%s') % (sTitle.encode("utf-8"))
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), sExtra)
-                    sTitle = ('%s %s - %s %s') % (sAction, sType, sTitle, sExtra)
+                    sTitle = ('[COLOR gold]%s %s [/COLOR]- %s %s') % (sType, "vu", sTitle, sExtra)
 
 
                 elif 'watchlist' in sUrl:
                     #commun
-                    sType, sListed_at  = i['type'], i['listed_at']
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
                     #2016-11-16T09:21:18.000Z
-                    #sDate = datetime.datetime(*(time.strptime(sListed_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
+                    #sDate = datetime.datetime(*(time.strptime(i['listed_at'], "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                     if  'show' in i:
-                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year']
+                        show = i['show']
+                        sTitle = self.getLocalizedTitle(show, 'shows')  
+                        sTrakt, sImdb, sTmdb, sYear = show['ids']['trakt'], show['ids']['imdb'], show['ids']['tmdb'], show['year']
                         sExtra = ('(%s)') % (sYear)
                         cTrakt.CONTENT = '2'
                     elif 'episode' in i:
-                        sTrakt, sTitle, sImdb, sTmdb, sSeason, sNumber = i['episode']['ids']['trakt'], i['episode']['title'], i['episode']['ids']['imdb'], i['episode']['ids']['tmdb'], i['episode']['season'],  i['episode']['number']
+                        eps = i['episode']
+                        sTitle = self.getLocalizedTitle(i, 'episodes')
+                        sTrakt, sImdb, sTmdb, sSeason, sNumber = eps['ids']['trakt'], eps['ids']['imdb'], eps['ids']['tmdb'], eps['season'],  eps['number']
                         sExtra = ('(S%02dE%02d)') % (sSeason, sNumber)
                         cTrakt.CONTENT = '2'
                     else:
-                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
+                        movie = i['movie']
+                        sTitle = self.getLocalizedTitle(movie, 'movies')
+                        sTrakt, sImdb, sTmdb, sYear = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year']
                         sExtra = ('(%s)') % (sYear)
                         cTrakt.CONTENT = '1'
 
@@ -468,11 +484,15 @@ class cTrakt:
                     #2016-11-16T09:21:18.000Z
                     #sDate = datetime.datetime(*(time.strptime(sLast_watched_at, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
                     if  'show' in i:
-                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year']
+                        show = i['show']
+                        sTitle = self.getLocalizedTitle(show, 'shows') 
+                        sTrakt, sImdb, sTmdb, sYear = show['ids']['trakt'], show['ids']['imdb'], show['ids']['tmdb'], show['year']
                         cTrakt.CONTENT = '2'
                         sFunction = 'getBseasons'
                     else:
-                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
+                        movie = i['movie']
+                        sTitle = self.getLocalizedTitle(movie, 'movies')
+                        sTrakt, sImdb, sTmdb, sYear = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year']
                         cTrakt.CONTENT = '1'
                         sFunction = 'showSearch'
                         sId = 'globalSearch'
@@ -484,15 +504,19 @@ class cTrakt:
                     sTitle = ('%s Lectures - %s (%s)') % (sPlays, sTitle, sYear )
 
                 elif 'played' in sUrl:
-                #commun
+                    #commun
                     sWatcher_count, sPlay_count, sCollected_count = i['watcher_count'], i['play_count'], i['collected_count']
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
                     if  'show' in i:
-                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year']
+                        show = i['show']
+                        sTitle = self.getLocalizedTitle(show, 'shows') 
+                        sTrakt, sImdb, sTmdb, sYear = show['ids']['trakt'], show['ids']['imdb'], show['ids']['tmdb'], show['year']
                         cTrakt.CONTENT = '2'
                     else:
-                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
+                        movie = i['movie']
+                        sTitle = self.getLocalizedTitle(movie, 'movies')
+                        sTrakt, sImdb, sTmdb, sYear = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year']
                         cTrakt.CONTENT = '1'
                     searchtext = ('%s') % (sTitle.encode("utf-8"))
                     sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
@@ -502,12 +526,16 @@ class cTrakt:
                     #xbmc.log(str(i))
                     #sRajout = ''
                     if  'show' in i:
-                        sTrakt, sTitle, sImdb, sTmdb, sYear, sFirst_aired = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year'],i['first_aired']
+                        show = i['show']
+                        sTitle = self.getLocalizedTitle(show, 'shows') 
+                        sTrakt, sImdb, sTmdb, sYear, sFirst_aired = show['ids']['trakt'], show['ids']['imdb'], show['ids']['tmdb'], show['year'],i['first_aired']
                         sSaison,sEpisode = i['episode']['season'],i['episode']['number']
                         #sRajout = " S" + str(sSaison) + "E" + str(sEpisode)
                         cTrakt.CONTENT = '2'
                     else:
-                        sTrakt, sTitle, sImdb, sTmdb, sYear, sFirst_aired  = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year'],i['first_aired']
+                        movie = i['movie']
+                        sTitle = self.getLocalizedTitle(movie, 'movies')
+                        sTrakt, sImdb, sTmdb, sYear, sFirst_aired  = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year'],i['first_aired']
                         cTrakt.CONTENT = '1'
 
                     sDate = datetime.datetime(*(time.strptime(sFirst_aired, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y')
@@ -520,11 +548,15 @@ class cTrakt:
 
                 elif 'search' in sUrl:
                     if  'show' in i:
-                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year']
+                        show = i['show']
+                        sTitle = self.getLocalizedTitle(show, 'shows') 
+                        sTrakt, sImdb, sTmdb, sYear = show['ids']['trakt'], show['ids']['imdb'], show['ids']['tmdb'], show['year']
                         cTrakt.CONTENT = '2'
                         sFunction = 'getBseasons'
                     else:
-                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
+                        movie = i['movie']
+                        sTitle = self.getLocalizedTitle(movie, 'movies')
+                        sTrakt, sImdb, sTmdb, sYear = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year']
                         cTrakt.CONTENT = '1'
                         sFunction = 'showSearch'
                         sId = 'globalSearch'
@@ -537,10 +569,12 @@ class cTrakt:
 
                 elif 'recommendations' in sUrl or 'popular' in sUrl:
                     if 'shows' in sUrl:
+                        sTitle = self.getLocalizedTitle(i, 'shows')
                         cTrakt.CONTENT = '2'
                     else :
+                        sTitle = self.getLocalizedTitle(i, 'movies')
                         cTrakt.CONTENT = '1'
-                    sTrakt, sTitle, sYear, sImdb, sTmdb = i['ids']['trakt'], i['title'], i['year'], i['ids']['imdb'], i['ids']['tmdb']
+                    sTrakt, sYear, sImdb, sTmdb = i['ids']['trakt'], i['year'], i['ids']['imdb'], i['ids']['tmdb']
                     searchtext = ('%s') % (sTitle.encode("utf-8"))
                     if sYear:
                         sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
@@ -553,7 +587,9 @@ class cTrakt:
                     sId = 'globalSearch'
 
                 elif 'boxoffice' in sUrl:
-                        sTrakt, sTitle, sYear, sImdb, sTmdb, sRevenue = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['year'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['revenue']
+                        movie = i['movie']
+                        sTitle = self.getLocalizedTitle(movie, 'movies')
+                        sTrakt, sYear, sImdb, sTmdb, sRevenue = movie['ids']['trakt'], movie['year'], movie['ids']['imdb'], movie['ids']['tmdb'], i['revenue']
                         cTrakt.CONTENT = '1'
                         searchtext = ('%s') % (sTitle.encode("utf-8"))
                         sFile = ('%s - (%s)') % (sTitle.encode("utf-8"), int(sYear))
@@ -563,20 +599,25 @@ class cTrakt:
                 
                 elif 'lists' in sUrl:
                     
-                    sType, sListed_at  = i['type'], i['listed_at']
                     sFunction = 'showSearch'
                     sId = 'globalSearch'
 
                     if  'show' in i:
-                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['show']['ids']['trakt'], i['show']['title'], i['show']['ids']['imdb'], i['show']['ids']['tmdb'], i['show']['year']
+                        show = i['show']
+                        sTitle = self.getLocalizedTitle(show, 'shows') 
+                        sTrakt, sImdb, sTmdb, sYear = show['ids']['trakt'], show['ids']['imdb'], show['ids']['tmdb'], show['year']
                         sExtra = ('(%s)') % (sYear)
                         cTrakt.CONTENT = '2'
                     elif 'episode' in i:
-                        sTrakt, sTitle, sImdb, sTmdb, sSeason, sNumber = i['episode']['ids']['trakt'], i['episode']['title'], i['episode']['ids']['imdb'], i['episode']['ids']['tmdb'], i['episode']['season'],  i['episode']['number']
+                        eps = i['episode']
+                        sTitle = self.getLocalizedTitle(i, 'episodes')
+                        sTrakt, sImdb, sTmdb, sSeason, sNumber = eps['ids']['trakt'], eps['ids']['imdb'], eps['ids']['tmdb'], eps['season'], eps['number']
                         sExtra = ('(S%02dE%02d)') % (sSeason, sNumber)
                         cTrakt.CONTENT = '2'
                     else:
-                        sTrakt, sTitle, sImdb, sTmdb, sYear = i['movie']['ids']['trakt'], i['movie']['title'], i['movie']['ids']['imdb'], i['movie']['ids']['tmdb'], i['movie']['year']
+                        movie = i['movie']
+                        sTitle = self.getLocalizedTitle(movie, 'movies')
+                        sTrakt, sImdb, sTmdb, sYear = movie['ids']['trakt'], movie['ids']['imdb'], movie['ids']['tmdb'], movie['year']
                         sExtra = ('(%s)') % (sYear)
                         cTrakt.CONTENT = '1'
 
@@ -655,6 +696,35 @@ class cTrakt:
 
         oGui.setEndOfDirectory()
         return
+        
+    
+    def getLocalizedTitle(self, item, what):
+        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 
+                   'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
+        
+        try:
+            if not 'episode' in what:
+                request = urllib2.Request('https://api.trakt.tv/%s/%s/translations/fr' % (what, item["ids"]["slug"]), headers=headers)
+            else:
+                show_title = self.getLocalizedTitle(item["show"], "shows")
+                t_values = (item["show"]["ids"]["slug"], item["episode"]["season"], item["episode"]["number"])
+                req = 'https://api.trakt.tv/shows/%s/seasons/%s/episodes/%s/translations/fr' % t_values
+                request = urllib2.Request(req, headers=headers)
+            
+            response = urllib2.urlopen(request)
+            aliasContent = response.read()
+            response.close()
+
+            aliases = json.loads(aliasContent)
+            title = next((title for title in aliases if title["language"].lower() == "fr"), item)["title"]
+            
+            return title if "episode" not in what else show_title + " - " + title 
+   
+        except:
+            return item["title"]
+        
+        
+        
 
     def getBepisodes(self):
 
@@ -697,7 +767,7 @@ class cTrakt:
                 elif 'watched' in sUrl:
                     sNumber, sPlays, sDate = i['number'], i['plays'], i['last_watched_at']
                     #sDate = datetime.datetime(*(time.strptime(sDate, "%Y-%m-%dT%H:%M:%S.%fZ")[0:6])).strftime('%d-%m-%Y %H:%M')
-
+                    
                     sTitle2 = ('%s Lectures - %s(E%02d)') % (sPlays, sTitle.encode("utf-8"), int(sNumber))
 
                 else: return
