@@ -14,7 +14,6 @@ from resources.lib.tmdb import cTMDb
 
 try:    import json
 except: import simplejson as json
-import xbmc
 
 SITE_IDENTIFIER = 'themoviedb_org'
 SITE_NAME = '[COLOR orange]TheMovieDB[/COLOR]'
@@ -277,7 +276,7 @@ def showMovies(sSearch = ''):
     oGui.setEndOfDirectory(view)
 
 
-# BUG HERE NO TERM PROVIDED SITCHING PAGES
+
 def showSeries(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
     
