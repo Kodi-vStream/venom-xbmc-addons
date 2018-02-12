@@ -25,6 +25,3 @@ http://artelive-lh.akamaihd.net/i/artelive_fr@344805/master.m3u8
 
 #EXTINF:-1 tvg-id="NRJ1.kazer.org" tvg-name="NRJ12" tvg-logo="nrj12.png" group-title="Group 12",NRJ 12
 http://nrj-apple-live.adaptive.level3.net/apple/nrj/nrj/nrj12hi.m3u8
-
-#EXTINF:-1 tvg-id="TMC.kazer.org" tvg-name="TMC" tvg-logo="tmc.png" group-title="Group 12",TMC
-http://www.wat.tv/embedframe/livetmc
