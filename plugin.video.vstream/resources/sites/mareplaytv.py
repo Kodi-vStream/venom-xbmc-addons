@@ -33,12 +33,12 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Nouveautées', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_NEWS[1], 'Nouveautés', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_GENRES[1], 'Genres', 'genres.png', oOutputParameterHandler)
-
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_GENRES[1], 'Divertissement', 'genres.png', oOutputParameterHandler)
+    
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -51,12 +51,13 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
+
 def showGenre():
-    oRequestHandler = cRequestHandler(URL_MAIN)
+    oRequestHandler = cRequestHandler(URL_MAIN + 'categorie/')
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = 'menu-item-[0-9]+ depth"><a href="([^"]+\/)">([^<>]+)<\/a><([^><]+)>'
+    sPattern = 'shorthm"><a title="([^<>]+)" href="([^"]+\/)">.+?imgshorthm".+?src="([^><]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     oGui = cGui()
@@ -65,18 +66,17 @@ def showGenre():
 
         for aEntry in aResult[1]:
             oOutputParameterHandler = cOutputParameterHandler()
-            sTitle = str(aEntry[1])
-
-            if ('F.A.Q' in sTitle) or ('Télévision en direc' in sTitle) or ('Proposer des vidéos' in sTitle):
-                break
-
-            if ('ul' in aEntry[2]) or (sTitle=='Documentaires') or (sTitle=='Reportages'):
-                sTitle = '[B][COLOR skyblue]' + sTitle + '[/COLOR][/B]'
-
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-            oGui.addMisc(SITE_IDENTIFIER, 'showMovies', sTitle , 'genres.png', '', '', oOutputParameterHandler)
+            sub = "Voir toutes les vidéos pour "
+            sTitle = str(aEntry[0])
+            sThumb = str(aEntry[2])
+            
+            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
+            
+            oGui.addMisc(SITE_IDENTIFIER, 'showMovies', sTitle.replace(sub, "") , 'genres.png', sThumb, sThumb, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
+
 
 def showMovies(sSearch = ''):
 
@@ -90,16 +90,22 @@ def showMovies(sSearch = ''):
     sUrl = sUrl.replace('https','http')
 
     if not (sUrl == URL_MAIN):
-        sPattern = '<div class="item-img">.+?<img.+?src="([^"]+)".+?<h3><a href="([^"]+)\/*">([^<>]+)<'
+        
+        if sUrl.find('/categorie') != -1:
+            sPattern = '<div class="item-img"[^"]+href="([^"]+)".+?class=.+?responsive.+?srcset="([^"]+)".+?h3><a.+?">([^"]+)<\/a>'
+        else:
+            sPattern = '<div class="item-img">.+?<img.+?src="([^"]+)".+?<h3><a href="([^"]+)\/*">([^<>]+)<'
+        
     else:
         sPattern = '<div class="item-img"> *<a title="([^"]+)" href="([^"]+)"><img.+?src="([^"]+)"'
+
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
+    
     if (aResult[0] == False):
 		oGui.addText(SITE_IDENTIFIER)
 
@@ -111,9 +117,15 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
 
             if not (sUrl == URL_MAIN):
-                sTitle = aEntry[2]
-                sUrl2 = str(aEntry[1])
-                sThumb = str(aEntry[0])
+                if sUrl.find('/categorie') != -1:
+                    sTitle = aEntry[2]
+                    sUrl2 = str(aEntry[0])
+                    # La plus grande image dans le srcset.
+                    sThumb = str(aEntry[1])[:str(aEntry[1]).find(" ")]
+                else:
+                    sTitle = aEntry[2]
+                    sUrl2 = str(aEntry[1])
+                    sThumb = str(aEntry[0])
             else:
                 sTitle = aEntry[0]
                 sUrl2 = str(aEntry[1])
@@ -130,7 +142,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
 
             oGui.addMisc(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'replay.png',  sThumb,  sThumb, oOutputParameterHandler)
 
@@ -144,6 +156,7 @@ def showMovies(sSearch = ''):
 
     if not sSearch:
         oGui.setEndOfDirectory()
+
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -195,6 +208,7 @@ def showEpisode():
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
+
 
 def showHosters():
     oGui = cGui()

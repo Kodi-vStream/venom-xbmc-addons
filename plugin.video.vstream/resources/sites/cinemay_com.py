@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'cinemay_com'
 SITE_NAME = 'Cinemay'
 SITE_DESC = 'Films & Séries en streaming'
 
-URL_MAIN = 'http://2017.cinemay.com/'
+URL_MAIN = 'http://2018.cinemay.com/'
 
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
@@ -45,6 +45,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series.png', oOutputParameterHandler)
@@ -370,7 +371,7 @@ def showHosters():
         maxretries = 5
         while 'url=' not in jscode:
             sPattern = "join\(\'\'\)\;\}\('(.+?)','(.+?)','(.+?)','(.+?)'\)\)"
-            args = re.findall(sPattern,jscode,re.DOTALL)
+            args = re.findall(sPattern, jscode, re.DOTALL)
             jscode = decode_js(args[0][0], args[0][1], args[0][2], args[0][3])
             maxretries = maxretries -1
    

@@ -143,7 +143,6 @@ def showGenreTV():
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-
     result = grab.getUrl(sUrl)
 
     total = len(result)
@@ -276,9 +275,11 @@ def showMovies(sSearch = ''):
 
     oGui.setEndOfDirectory(view)
 
+
+
 def showSeries(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
-
+    
     iPage = 1
     if (oInputParameterHandler.exist('page')):
         iPage = oInputParameterHandler.getValue('page')
@@ -299,7 +300,7 @@ def showSeries(sSearch=''):
             term = ''
 
         result = grab.getUrl(sUrl, iPage, term)
-
+    
     oGui = cGui()
 
     total = len(result)
@@ -368,6 +369,8 @@ def showSeries(sSearch=''):
                 oOutputParameterHandler.addParameter('sSearch', sSearch)
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('page', iNextPage)
+            if (oInputParameterHandler.exist('genre')):
+                oOutputParameterHandler.addParameter('genre', oInputParameterHandler.getValue('genre'))
             oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
 
     #test pr chnagement mode

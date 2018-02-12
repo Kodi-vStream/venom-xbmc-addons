@@ -16,7 +16,7 @@ URL_MAIN = 'http://www.documentaires-streaming.com/'
 
 DOC_NEWS = (URL_MAIN+'category/documentaire/', 'showMovies')
 DOC_DOCS = ('http://', 'load')
-DOC_GENRES = (True, 'showGenres')
+DOC_GENRES = (True, 'showDocuGenres')
 
 
 REPLAYTV_NEWS = (URL_MAIN+'category/replay_tv/', 'showMovies')

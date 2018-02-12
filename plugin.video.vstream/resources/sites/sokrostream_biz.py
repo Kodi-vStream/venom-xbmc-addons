@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 # Par chataigne73
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -19,13 +18,13 @@ SITE_DESC = 'Films & Séries en streaming en vf et Vostfr'
 
 URL_MAIN = 'http://sokrostream.tv/'
 
-MOVIE_NEWS = (URL_MAIN + 'categories/films-streaming', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'categories/films-streaming', 'showMovies')
-MOVIE_VIEWS = (URL_MAIN + 'les-films-les-plus-vues-2', 'showMovies')
-MOVIE_VF = (URL_MAIN + 'langues/french', 'showMovies')
-MOVIE_VOSTFR = (URL_MAIN + 'langues/vostfr', 'showMovies')
-MOVIE_COMMENTS = (URL_MAIN + 'les-films-les-plus-commentes-2', 'showMovies')
-MOVIE_NOTES = (URL_MAIN + 'films-les-mieux-notes-2', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'categories/films-streaming-2', 'showMovies')
+MOVIE_MOVIE = ('http', 'load')
+# MOVIE_VIEWS = (URL_MAIN + 'les-films-les-plus-vues-2', 'showMovies')
+# MOVIE_VF = (URL_MAIN + 'langues/french', 'showMovies')
+# MOVIE_VOSTFR = (URL_MAIN + 'langues/vostfr', 'showMovies')
+# MOVIE_COMMENTS = (URL_MAIN + 'les-films-les-plus-commentes-2', 'showMovies')
+# MOVIE_NOTES = (URL_MAIN + 'films-les-mieux-notes-2', 'showMovies')
 MOVIE_GENRES = (URL_MAIN , 'showGenres')
 MOVIE_ANNEES = (URL_MAIN , 'showMovieYears')
 MOVIE_LANG = (URL_MAIN , 'showLang')
@@ -33,14 +32,14 @@ MOVIE_QLT = (URL_MAIN , 'showQlt')
 MOVIE_PAYS = (URL_MAIN , 'showPays')
 MOVIE_PLT = (URL_MAIN , 'showPlt')
 
-SERIE_NEWS = (URL_MAIN + 'categories/series-streaming', 'showMovies')
-SERIE_SERIES = (URL_MAIN + 'categories/series-streaming', 'showMovies')
-SERIE_VFS = (URL_MAIN + 'series-tv/langues/french', 'showMovies')
-SERIE_VOSTFRS = (URL_MAIN + 'series-tv/langues/vostfr', 'showMovies')
-SERIE_HD = (URL_MAIN + 'series-tv/qualites/hd-720p', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'categories/series-streaming-2', 'showMovies')
+SERIE_SERIES = ('http', 'load')
+# SERIE_VFS = (URL_MAIN + 'series-tv/langues/french', 'showMovies')
+# SERIE_VOSTFRS = (URL_MAIN + 'series-tv/langues/vostfr', 'showMovies')
+# SERIE_HD = (URL_MAIN + 'series-tv/qualites/hd-720p', 'showMovies')
 SERIE_GENRES = (URL_MAIN + 'series-tv/', 'showGenres')
 SERIE_ANNEES = (URL_MAIN + 'series-tv/', 'showSerieYears')
-SERIE_LANG = (URL_MAIN + 'series-tv/', 'showLang')
+# SERIE_LANG = (URL_MAIN + 'series-tv/', 'showLang')
 SERIE_QLT = (URL_MAIN + 'series-tv/', 'showQlt')
 SERIE_PAYS = (URL_MAIN + 'series-tv/', 'showPays')
 SERIE_PLT = (URL_MAIN + 'series-tv/', 'showPlt')
@@ -50,7 +49,7 @@ URL_SEARCH_MOVIES = (URL_MAIN + 'search/', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'search/', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 def load():
     oGui = cGui()
@@ -76,17 +75,17 @@ def showMenuMovies():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'films_views.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
+    # oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'films_views.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_COMMENTS[1], 'Films (Les plus commentés)', 'films_comments.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
+    # oGui.addDir(SITE_IDENTIFIER, MOVIE_COMMENTS[1], 'Films (Les plus commentés)', 'films_comments.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'films_notes.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
+    # oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'films_notes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -104,9 +103,9 @@ def showMenuMovies():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_QLT[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_QLT[1], 'Films (Qualités)', 'films.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LANG[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_LANG[1], 'Films (Langues)', 'lang.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_LANG[0])
+    # oGui.addDir(SITE_IDENTIFIER, MOVIE_LANG[1], 'Films (Langues)', 'lang.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_PLT[0])
@@ -137,9 +136,9 @@ def showMenuSeries():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_QLT[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_QLT[1], 'Séries (Qualités)', 'series.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_LANG[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_LANG[1], 'Séries (Langues)', 'lang.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', SERIE_LANG[0])
+    # oGui.addDir(SITE_IDENTIFIER, SERIE_LANG[1], 'Séries (Langues)', 'lang.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_PLT[0])

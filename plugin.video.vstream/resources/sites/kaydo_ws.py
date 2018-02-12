@@ -131,13 +131,17 @@ def sHowResultSearch(sSearch = ''):
             sUrl = URL_MAIN+aEntry[0]
             sThumb = URL_MAIN+aEntry[1]
             sCom = aEntry[3]
-            sTitle = ('%s (%s)') % (str(aEntry[2]) , str(aEntry[3]).replace(' - ', ' '))
+            sTitle2 = str(aEntry[2])
+            sTitle2 = sTitle2.replace('<font color="orange">[SÉRIE]</font>','')
+            sTitle = ('%s (%s)') % (sTitle2 , str(aEntry[3]).replace(' - ', ' '))
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', aEntry[2])
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle2)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-            if 'serie' in sUrl:
+            if 'details-serie.php' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
+            elif 'serie' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
@@ -214,6 +218,8 @@ def showMovies():
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    cConfig().log(sUrl)
  
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
