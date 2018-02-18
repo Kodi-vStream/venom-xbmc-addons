@@ -23,7 +23,7 @@ SITE_NAME = '[COLOR violet]DDL-Island[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
 URL_MAIN = 'http://www.ddl-island.su/'
-URL_PROTECT = 'http://protect.ddl-island.su'
+URL_PROTECT = 'http://www.dl-protect.ru'
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'recherche.php?categorie=99&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'recherche.php?categorie=98&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
@@ -749,14 +749,14 @@ def DecryptddlProtect(url):
     #Si ca demande le captcha
     if 'value="Submit form"' in sHtmlContent:
         if cookies:
-            GestionCookie().DeleteCookie('protect_ddl_island.su')
+            GestionCookie().DeleteCookie('dl_protect.ru')
             oRequestHandler = cRequestHandler(url)
             sHtmlContent = oRequestHandler.request()
 
         cookies = oRequestHandler.GetCookies()
 
         #save cookies
-        GestionCookie().SaveCookie('protect_ddl_island.su', cookies)
+        GestionCookie().SaveCookie('dl_protect.ru', cookies)
 
         s = re.findall('<img id="captcha" src="([^<>"]+?)"', sHtmlContent)
         if URL_PROTECT in s[0]:
@@ -781,7 +781,7 @@ def DecryptddlProtect(url):
 
         #si captcha reussi
         #save cookies
-        GestionCookie().SaveCookie('protect_ddl_island.su', cookies)
+        GestionCookie().SaveCookie('dl_protect.ru', cookies)
 
     return sHtmlContent
 

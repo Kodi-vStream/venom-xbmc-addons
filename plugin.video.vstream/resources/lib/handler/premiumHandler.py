@@ -71,9 +71,9 @@ class cPremiumHandler:
         
         if 'uptobox' in self.__sHosterIdentifier:
             url = 'https://login.uptobox.com/logarithme'
-            post_data['op'] = 'login'
             post_data['login'] = self.getUsername()
             post_data['password'] = self.getPassword()
+            post_data['op'] = 'login'
             
         elif 'onefichier' in self.__sHosterIdentifier:
             url = 'https://1fichier.com/login.pl'
