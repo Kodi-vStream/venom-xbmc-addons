@@ -6,10 +6,10 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-
+from resources.lib.util import VSlog
 import urllib2,urllib,xbmcgui,re,xbmc
 
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0'}
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'}
 
 class cHoster(iHoster):
 
@@ -37,41 +37,7 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return True
 
-    def isJDownloaderable(self):
-        return True
-
     def getPattern(self):
-        return ''
-        
-    def __getIdFromUrl(self):
-        sPattern = "id=([^<]+)"
-        oParser = cParser()
-        aResult = oParser.parse(self.__sUrl, sPattern)
-        if (aResult[0] == True):
-            return aResult[1][0]
-
-        return ''
-        
-    def __modifyUrl(self, sUrl):
-        if (sUrl.startswith('http://')):
-            oRequestHandler = cRequestHandler(sUrl)
-            oRequestHandler.request()
-            sRealUrl = oRequestHandler.getRealUrl()
-            self.__sUrl = sRealUrl
-            return self.__getIdFromUrl()
-
-        return sUrl;
-        
-    def __getKey(self):
-        oRequestHandler = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequestHandler.request()
-        sPattern = 'flashvars.filekey="(.+?)";'
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            aResult = aResult[1][0].replace('.','%2E')
-            return aResult
-
         return ''
 
     def setUrl(self, sUrl):
@@ -112,30 +78,30 @@ class cHoster(iHoster):
         return self.__sUrl
 
     def getMediaLink(self):
-        
-        dialog3 = xbmcgui.Dialog()
-        ret = dialog3.select('Choissisez votre mode de fonctionnement',['Passer en Streaming (via Uptostream)','Rester en direct (via Uptobox)'])
-
-        #mode DL
-        if ret == 1:
-            self.stream = False
-        #mode stream
-        elif ret == 0:
-            self.__sUrl = self.__sUrl.replace('http://uptobox.com/','http://uptostream.com/iframe/')
-        else:
-            return False
-        
-        cGui().showInfo('Resolve', self.__sDisplayName, 5)
-        
-        #Si premium
         self.oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
         if (self.oPremiumHandler.isPremiumModeAvailable()):
-            #self.stream = False
-            return self.__getMediaLinkByPremiumUser()
+            dialog3 = xbmcgui.Dialog()
+            ret = dialog3.select('Choissisez votre mode de fonctionnement',['Passer en Streaming (via Uptostream)','Rester en direct (via Uptobox)'])
 
-        return self.__getMediaLinkForGuest()
+            #mode DL
+            if ret == 1:
+                self.stream = False
+            #mode stream
+            elif ret == 0:
+                self.__sUrl = self.__sUrl.replace('uptobox.com/','uptostream.com/iframe/')
+            else:
+                return False
+        
+            cGui().showInfo('Resolve', self.__sDisplayName, 3)
+            return self.__getMediaLinkByPremiumUser()
+            
+        else:
+            VSlog('no premium')
+            return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+        self.stream = True
+        self.__sUrl = self.__sUrl.replace('uptobox.com/','uptostream.com/iframe/')
         
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
@@ -161,65 +127,46 @@ class cHoster(iHoster):
     def __getMediaLinkByPremiumUser(self):
         
         if not self.oPremiumHandler.Authentificate():
-            return False, False
+            return self.__getMediaLinkForGuest()
 
-        sHtmlContent = self.oPremiumHandler.GetHtml(self.__sUrl)
-        
-        SubTitle = ''
-        SubTitle = self.checkSubtitle(sHtmlContent)
-        
-        if (self.stream):
-            api_call = self.GetMedialinkStreaming(sHtmlContent)
         else:
-            api_call = self.GetMedialinkDL(sHtmlContent)
+            sHtmlContent = self.oPremiumHandler.GetHtml(self.__sUrl)
+            #compte gratuit ou erreur auth
+            if 'you can wait' in sHtmlContent or 'time-remaining' in sHtmlContent:
+                VSlog('no premium')
+                return self.__getMediaLinkForGuest()
+            else:    
+                SubTitle = ''
+                SubTitle = self.checkSubtitle(sHtmlContent)
+        
+                if (self.stream):
+                    api_call = self.GetMedialinkStreaming(sHtmlContent)
+                else:
+                    api_call = self.GetMedialinkDL(sHtmlContent)
             
-        if api_call:
-            if SubTitle:
-                
-                return True, api_call,SubTitle
-            else:
-                return True, api_call
+                if api_call:
+                    if SubTitle:
+                        return True, api_call,SubTitle
+                    else:
+                        return True, api_call
 
-        cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
-        return False, False
+                cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
+                return False, False
         
     def GetMedialinkDL(self,sHtmlContent):
-        
-        #fh = open('c:\\upto.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
-        
-        if 'You have to wait' in sHtmlContent:
-            cGui().showInfo(self.__sDisplayName, 'Limitation active' , 10)
-            return False
 
         oParser = cParser()
-        sPattern =  '(?s)<form\sname\s*=[\'"]F1[\'"].+?>(.+?)<center>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        if (aResult[0]):
-            sForm = aResult[1][0]
 
-            data = {}
-            for match in re.finditer(r'type="hidden"\s+name="(.+?)"\s+value="(.*?)"', sForm):
-                key, value = match.groups()
-                data[key] = value
-                
-            postdata = urllib.urlencode( data )
-            headers['Referer'] = self.__sUrl
-           
-            sHtmlContent = self.oPremiumHandler.GetHtml(self.__sUrl,postdata) 
-            
-            sPattern =  '<a href *=[\'"](?!http:\/\/uptostream.+)([^<>]+?)[\'"]\s*>\s*<span class\s*=\s*[\'"]button_upload green[\'"]\s*>'
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            
-            if (aResult[0]):
-                return urllib.quote(aResult[1][0], safe=":/")
+        sPattern =  '<a href *=[\'"](?!http:\/\/uptostream.+)([^<>]+?)[\'"] *class=\'big-button-green-flat mt-4 mb-4\''
+        aResult = oParser.parse(sHtmlContent, sPattern)
+  
+        if (aResult[0]):
+            return urllib.quote(aResult[1][0], safe=":/")
         
         return False
 
     def GetMedialinkStreaming(self,sHtmlContent):
-        
+
         oParser = cParser()
         sPattern =  'src":[\'"]([^<>\'"]+)[\'"],"type":[\'"][^\'"><]+?[\'"],"label":[\'"]([0-9]+p)[\'"].+?"lang":[\'"]([^\'"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
