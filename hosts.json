@@ -946,16 +946,16 @@
   {
     "name": "uptobox.py",
     "path": "plugin.video.vstream/resources/hosters/uptobox.py",
-    "sha": "2895cbd6af9126897b86e25551f32e97966edce5",
-    "size": 8687,
+    "sha": "fee0e46017110090c82000a7802b787248906d1b",
+    "size": 7276,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/uptobox.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/uptobox.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/2895cbd6af9126897b86e25551f32e97966edce5",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/fee0e46017110090c82000a7802b787248906d1b",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/hosters/uptobox.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/hosters/uptobox.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/2895cbd6af9126897b86e25551f32e97966edce5",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/fee0e46017110090c82000a7802b787248906d1b",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/hosters/uptobox.py"
     }
   },
