@@ -48,58 +48,21 @@ Merci au contributeur de la bêta.
 31-01-2018 -- @TmpName -- Update speedvid.py
 31-01-2018 -- @johngf -- Update disneyhd_tk.py
 31-01-2018 -- @razorex -- Update disneyhd_tk.py
-30-01-2018 -- @razorex -- Update filmzenstream_com.py 
-23-01-2018 -- @razorex -- Update papstream.py
-23-01-2018 -- @razorex -- Update zonestreaming.py  Correction de nextPage, du menu, et un peu de mise en forme.
-21-01-2018 -- @TmpName -- Update flashx.py
-21-01-2018 -- @TmpName -- Update streamcomplet.py
-21-01-2018 -- @TmpName -- Merge pull request #1920 from Kodi-vStream/Beta  bnvnb
-21-01-2018 -- @TmpName -- Update hosts.json
-21-01-2018 -- @TmpName -- Update sites.json
-21-01-2018 -- @TmpName -- Merge pull request #1919 from Kodi-vStream/master  Master
-21-01-2018 -- @TmpName -- Merge pull request #1918 from Kodi-vStream/Beta  MAJ 21/01
-20-01-2018 -- @johngf -- Update tune.py
-19-01-2018 -- @TmpName -- Update mangacity_org.py
-19-01-2018 -- @TmpName -- Update hoster.py
-18-01-2018 -- @LordVenom -- Merci
-17-01-2018 -- @LordVenom -- adkami
-17-01-2018 -- @LordVenom -- rangement
-16-01-2018 -- @LordVenom -- rangement
-16-01-2018 -- @LordVenom -- rangement
-10-01-2018 -- @LordVenom -- Merge pull request #1898 from 1shad/dev  update speedvid.py
-10-01-2018 -- @1shad -- update speedvid.py
-10-01-2018 -- @LordVenom -- up zones
-09-01-2018 -- @TmpName -- Update streamingk_com.py
-09-01-2018 -- @LordVenom -- up stats
-08-01-2018 -- @LordVenom -- Merge pull request #1895 from KujoWolfgang/patch-2  Update kaydo_ws.py
-08-01-2018 -- @KujoWolfgang -- Update kaydo_ws.py.
-08-01-2018 -- @LordVenom -- Merge pull request #1894 from 1shad/dev  update openload.py
-08-01-2018 -- @1shad -- update openload.py
-07-01-2018 -- @TmpName -- Merge pull request #1891 from Kodi-vStream/Beta  hfhgh
-07-01-2018 -- @TmpName -- Update hosts.json
-07-01-2018 -- @TmpName -- Update sites.json
-07-01-2018 -- @TmpName -- Merge pull request #1890 from Kodi-vStream/master  Merge pull request #1889 from Kodi-vStream/Beta
-07-01-2018 -- @TmpName -- Merge pull request #1889 from Kodi-vStream/Beta  MAJ 07/01
-07-01-2018 -- @TmpName -- Update kaydo_ws.py
-07-01-2018 -- @Arias800 -- Ajout des hsoter streaming
-06-01-2018 -- @LordVenom -- Merge pull request #1886 from mino60/patch-8  Update kepliz_com.py
-06-01-2018 -- @mino60 -- Update kepliz_com.py  Retour sur le dernier site fetayo.com
-06-01-2018 -- @LordVenom -- Merge pull request #1885 from mino60/patch-7  Update kepliz_com.py
-06-01-2018 -- @mino60 -- Update kepliz_com.py  site mort remplacer par un autre ( pirvox.com ).
-05-01-2018 -- @LordVenom -- up xbox one
-05-01-2018 -- @LordVenom -- Merge pull request #1883 from 1shad/dev  update speedvid.py
-05-01-2018 -- @1shad -- update speedvid.py
-02-01-2018 -- @TmpName -- Merge pull request #1874 from Kodi-vStream/master  Master
-02-01-2018 -- @johngf -- test up en cours
-01-01-2018 -- @Arias800 -- Merge pull request #1879 from vic1997/Beta
-01-01-2018 -- @vic1997 -- VotreCompteUptobox.
-31-12-2017 -- @Arias800 -- Fix recherche
-31-12-2017 -- @LordVenom -- Zt
-31-12-2017 -- @TmpName -- Merge pull request #1875 from Kodi-vStream/Beta  Update hosts.json
-31-12-2017 -- @TmpName -- Update hosts.json
-31-12-2017 -- @TmpName -- Merge pull request #1873 from Kodi-vStream/Beta  Maj 31/12
-31-12-2017 -- @johngf -- Update openload.py
-30-12-2017 -- @TmpName -- Update kaydo_ws.py
+30-01-2018 -- @razorex -- Update filmzenstream_com.py
+30-01-2018 -- @razorex -- Update filmzenstream_com.py  Changement de terminaisons de l url_main. Suppression de la recherche par années. correction des urls des genres, erreur d écriture sur le site.
+29-01-2018 -- @razorex -- Down
+29-01-2018 -- @razorex -- Site down
+29-01-2018 -- @razorex -- Rename plugin.video.vstream/resources/sites/filmstreamingv2.py to plugin.video.vstream/resources/sites/trash/filmstreamingv2.py
+28-01-2018 -- @johngf -- Update cinemegatoil_org.py
+27-01-2018 -- @LordVenom -- bug
+27-01-2018 -- @johngf -- synopsis,url
+27-01-2018 -- @johngf -- synopsis
+27-01-2018 -- @johngf -- synopsis
+26-01-2018 -- @LordVenom -- Merge pull request #1927 from Kodi-vStream/Beta  site host 0.5.9
+26-01-2018 -- @LordVenom -- Update hosts.json
+26-01-2018 -- @LordVenom -- Update sites.json
+26-01-2018 -- @LordVenom -- Merge pull request #1926 from Kodi-vStream/Beta  version 0.5.9
+26-01-2018 -- @LordVenom -- v0.5.9
 30-12-2017 -- @LordVenom -- v0.5.8
 08-12-2017 -- @LordVenom -- V0.5.7
 28-10-2017 -- @Lord Venom -- V0.5.6
