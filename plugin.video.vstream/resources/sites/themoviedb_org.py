@@ -105,7 +105,7 @@ def showSearchMovie():
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         showMovies(sSearchText)
-        oGui.setEndOfDirectory()
+        #oGui.setEndOfDirectory()
         return
 
 def showSearchSerie():
@@ -114,7 +114,7 @@ def showSearchSerie():
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         showSeries(sSearchText)
-        oGui.setEndOfDirectory()
+        #oGui.setEndOfDirectory()
         return
 
 def showGenreMovie():
