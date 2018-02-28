@@ -13,12 +13,47 @@ Merci au contributeur de la bêta.
 - mino60/Arias800/1shad/Razorex/KujoWolfgang/vic1997
 =============================================================================
 =============================================================================
-- Version 0.5.9 - 27.01.2018
+- Version 0.6.0 - 03.03.2018
 =============================================================================
+18-02-2018 -- @TmpName -- Merge pull request #1959 from Kodi-vStream/Beta  hgfd
+18-02-2018 -- @TmpName -- Update sites.json
+18-02-2018 -- @TmpName -- Merge pull request #1958 from Kodi-vStream/master  Master
+18-02-2018 -- @TmpName -- Merge pull request #1957 from Kodi-vStream/Beta  MAJ 18/02
+18-02-2018 -- @Arias800 -- Fix cookies pour le dl protect
+18-02-2018 -- @johngf -- Update premiumHandler.py
+17-02-2018 -- @johngf -- Update streamelite.py
+17-02-2018 -- @johngf -- Update streaming_series_org.py
+15-02-2018 -- @razorex -- Update streamelite.py  Site out
+12-02-2018 -- @TmpName -- Merge pull request #1951 from Kodi-vStream/Beta  dfsdf
+12-02-2018 -- @TmpName -- Update hosts.json
+12-02-2018 -- @TmpName -- Update sites.json
+12-02-2018 -- @TmpName -- Merge pull request #1950 from Kodi-vStream/master  Master
+12-02-2018 -- @TmpName -- Merge pull request #1949 from Kodi-vStream/Beta  MAJ 12/02
+12-02-2018 -- @Arias800 -- Delete tmc  Desolé fail
+12-02-2018 -- @Arias800 -- test tmc
+11-02-2018 -- @LordVenom -- Merge pull request #1947 from Nux007/Beta  Fixed Visual searches for series by  Genres 
+11-02-2018 -- @Nux007 -- Debug cleanup( forget to clean up )
+04-02-2018 -- @TmpName -- Update french_stream_com.py
+03-02-2018 -- @razorex -- Update french_stream_com.py  Correction pour afficher le hoster Cloudvid pour les séries.
+03-02-2018 -- @razorex -- Delete regarder_films.png  Down
+03-02-2018 -- @razorex -- Delete filmstreamingv2.png  Site down
+03-02-2018 -- @razorex -- Update french_stream_com.py  Correction du regex des films et des séries.
+03-02-2018 -- @johngf -- Update sokrostream_biz.py
+01-02-2018 -- @TmpName -- Merge pull request #1935 from Kodi-vStream/Beta  gfhg
+01-02-2018 -- @TmpName -- Update hosts.json
+01-02-2018 -- @TmpName -- Update sites.json
+01-02-2018 -- @TmpName -- Merge pull request #1934 from Kodi-vStream/master  Master
+01-02-2018 -- @TmpName -- Merge pull request #1933 from Kodi-vStream/Beta  MAJ 01/02
+01-02-2018 -- @razorex -- Update cloudvid.py
+31-01-2018 -- @TmpName -- Update speedvid.py
+31-01-2018 -- @johngf -- Update disneyhd_tk.py
+31-01-2018 -- @razorex -- Update disneyhd_tk.py
+30-01-2018 -- @razorex -- Update filmzenstream_com.py 
 23-01-2018 -- @razorex -- Update papstream.py
-23-01-2018 -- @razorex -- Update zonestreaming.py
+23-01-2018 -- @razorex -- Update zonestreaming.py  Correction de nextPage, du menu, et un peu de mise en forme.
 21-01-2018 -- @TmpName -- Update flashx.py
 21-01-2018 -- @TmpName -- Update streamcomplet.py
+21-01-2018 -- @TmpName -- Merge pull request #1920 from Kodi-vStream/Beta  bnvnb
 21-01-2018 -- @TmpName -- Update hosts.json
 21-01-2018 -- @TmpName -- Update sites.json
 21-01-2018 -- @TmpName -- Merge pull request #1919 from Kodi-vStream/master  Master
@@ -31,27 +66,13 @@ Merci au contributeur de la bêta.
 17-01-2018 -- @LordVenom -- rangement
 16-01-2018 -- @LordVenom -- rangement
 16-01-2018 -- @LordVenom -- rangement
-16-01-2018 -- @LordVenom -- rangement
-15-01-2018 -- @LordVenom -- bug onelist
-15-01-2018 -- @LordVenom -- remove plug cache
-14-01-2018 -- @johngf -- Update filmzenstream_com.py
-14-01-2018 -- @johngf -- Update kaydo_ws.py
-14-01-2018 -- @johngf -- Update papystreaming_org.py
-14-01-2018 -- @johngf -- Update raptu.py
-14-01-2018 -- @johngf -- Update full_stream_org.py
-12-01-2018 -- @LordVenom -- Merge pull request #1907 from KujoWolfgang/patch-3  Update kaydo_ws.py
-12-01-2018 -- @KujoWolfgang -- Update kaydo_ws.py
-10-01-2018 -- @LordVenom -- bug
-10-01-2018 -- @LordVenom -- Merge pull request #1900 from 1shad/dev  update skstream_co.py
-10-01-2018 -- @LordVenom -- trakt
-10-01-2018 -- @1shad -- update skstream_co.py
 10-01-2018 -- @LordVenom -- Merge pull request #1898 from 1shad/dev  update speedvid.py
 10-01-2018 -- @1shad -- update speedvid.py
 10-01-2018 -- @LordVenom -- up zones
 09-01-2018 -- @TmpName -- Update streamingk_com.py
 09-01-2018 -- @LordVenom -- up stats
 08-01-2018 -- @LordVenom -- Merge pull request #1895 from KujoWolfgang/patch-2  Update kaydo_ws.py
-08-01-2018 -- @KujoWolfgang -- Update kaydo_ws.py
+08-01-2018 -- @KujoWolfgang -- Update kaydo_ws.py.
 08-01-2018 -- @LordVenom -- Merge pull request #1894 from 1shad/dev  update openload.py
 08-01-2018 -- @1shad -- update openload.py
 07-01-2018 -- @TmpName -- Merge pull request #1891 from Kodi-vStream/Beta  hfhgh
@@ -60,7 +81,7 @@ Merci au contributeur de la bêta.
 07-01-2018 -- @TmpName -- Merge pull request #1890 from Kodi-vStream/master  Merge pull request #1889 from Kodi-vStream/Beta
 07-01-2018 -- @TmpName -- Merge pull request #1889 from Kodi-vStream/Beta  MAJ 07/01
 07-01-2018 -- @TmpName -- Update kaydo_ws.py
-07-01-2018 -- @Arias800 -- Ajout des hsoter streaming   Par contre ont en fait un site a part en tiers du streaming ou pas ?
+07-01-2018 -- @Arias800 -- Ajout des hsoter streaming
 06-01-2018 -- @LordVenom -- Merge pull request #1886 from mino60/patch-8  Update kepliz_com.py
 06-01-2018 -- @mino60 -- Update kepliz_com.py  Retour sur le dernier site fetayo.com
 06-01-2018 -- @LordVenom -- Merge pull request #1885 from mino60/patch-7  Update kepliz_com.py
@@ -79,11 +100,6 @@ Merci au contributeur de la bêta.
 31-12-2017 -- @TmpName -- Merge pull request #1873 from Kodi-vStream/Beta  Maj 31/12
 31-12-2017 -- @johngf -- Update openload.py
 30-12-2017 -- @TmpName -- Update kaydo_ws.py
-30-12-2017 -- @Arias800 -- Changement de nom et changement de quelque url
-30-12-2017 -- @LordVenom -- Merge pull request #1867 from Kodi-vStream/Beta  site et host 0.5.8
-30-12-2017 -- @LordVenom -- Update hosts.json
-30-12-2017 -- @LordVenom -- Update sites.json
-30-12-2017 -- @LordVenom -- Merge pull request #1866 from Kodi-vStream/Beta  up master
 30-12-2017 -- @LordVenom -- v0.5.8
 08-12-2017 -- @LordVenom -- V0.5.7
 28-10-2017 -- @Lord Venom -- V0.5.6
