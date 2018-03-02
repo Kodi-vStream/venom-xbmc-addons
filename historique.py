@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-url = "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/commits?page=3"
+url = "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/commits?page=1"
 
 import re,urllib, json, time, datetime
 

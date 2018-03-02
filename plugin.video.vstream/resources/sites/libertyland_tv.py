@@ -395,11 +395,11 @@ def showHosters():
     if (oInputParameterHandler.exist('idMov')):
         idMov = oInputParameterHandler.getValue('idMov')
         pdata = 'id='+idHeb+'&id_movie='+idMov+'&type='+stype
-        pUrl = 'http://linkcaptcha.com/getStreamingMovie.php'
+        pUrl = 'http://linkcaptcha.net/getStreamingMovie.php'
     else:
         #serie pas d'idmov
         pdata = 'id='+idHeb+'&type='+stype
-        pUrl= 'http://linkcaptcha.com/getStreamingEpisode.php'
+        pUrl= 'http://linkcaptcha.net/getStreamingEpisode.php'
 
     oRequest = cRequestHandler(pUrl)
     oRequest.setRequestType(1)
