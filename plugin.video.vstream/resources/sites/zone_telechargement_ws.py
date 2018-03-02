@@ -681,7 +681,7 @@ def Display_protected_link():
 
             episode+=1
 
-            if not 'uptobox' or '1fichier' or 'ul' or 'turbobit' or 'nitroflare' or 'rapidgator' in str(sHosterUrl):
+            if 'stream' in str(sHosterUrl):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(sHosterUrl))
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sDisplayTitle))
