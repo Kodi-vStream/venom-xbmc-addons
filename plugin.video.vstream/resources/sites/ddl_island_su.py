@@ -739,7 +739,7 @@ def DecryptddlProtect(url):
 
     cookies = ''
     #try to get previous cookie
-    cookies = GestionCookie().Readcookie('protect_ddl_island.su')
+    cookies = GestionCookie().Readcookie('dl_protect.ru')
 
     oRequestHandler = cRequestHandler(url)
     if cookies:
