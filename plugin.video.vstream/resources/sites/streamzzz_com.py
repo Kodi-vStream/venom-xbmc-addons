@@ -2,18 +2,12 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 # Razorex.TmpName
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-
-#from resources.lib.util import cUtil #outils pouvant etre utiles
-
-import xbmc
 
 SITE_IDENTIFIER = 'streamzzz_com'
 SITE_NAME = 'Streamzzz'
@@ -277,15 +271,28 @@ def showLinks():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-
+    oParser = cParser()
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    sPattern1 = '<iframe class="metaframe.+?" src="(.+?)"'
+    aResult1 = oParser.parse(sHtmlContent, sPattern1)
 
+    if (aResult1[0] == True):
+        for aEntry in aResult1[1]:
+
+            sHosterUrl = str(aEntry)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    
+    
     sPattern = '<a class="link_a" href="([^"]+)".+?>.+?<img src=".+?"> (.+?)</td><td>(.+?)</td><td>(.+?)</td>'
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -322,9 +329,6 @@ def seriesHosters():
     sPattern = '<div class="boton reloading"><a href="([^"]+)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
-    cConfig().log(str(sUrl))
-    cConfig().log(str(aResult))
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
