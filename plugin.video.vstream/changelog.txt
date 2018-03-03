@@ -15,10 +15,18 @@ Merci au contributeur de la bêta.
 =============================================================================
 - Version 0.6.0 - 03.03.2018
 =============================================================================
-18-02-2018 -- @TmpName -- Merge pull request #1959 from Kodi-vStream/Beta  hgfd
-18-02-2018 -- @TmpName -- Update sites.json
-18-02-2018 -- @TmpName -- Merge pull request #1958 from Kodi-vStream/master  Master
-18-02-2018 -- @TmpName -- Merge pull request #1957 from Kodi-vStream/Beta  MAJ 18/02
+03-03-2018 -- @johngf -- Update streamzzz_com.py
+03-03-2018 -- @johngf -- Update netu.py
+03-03-2018 -- @johngf -- Update streaming_series_org.py
+02-03-2018 -- @Arias800 -- retour a l ancien detection
+02-03-2018 -- @TmpName -- Update sites.json
+02-03-2018 -- @TmpName -- Merge pull request #1973 from Kodi-vStream/master  Master
+02-03-2018 -- @TmpName -- Merge pull request #1972 from Kodi-vStream/Beta  MAJ 02/03
+02-03-2018 -- @LordVenom -- streaming series HS
+01-03-2018 -- @LordVenom -- return to the back
+01-03-2018 -- @LordVenom -- cinetoil https down
+01-03-2018 -- @LordVenom -- cocostream HS
+28-02-2018 -- @LordVenom -- changelog
 18-02-2018 -- @Arias800 -- Fix cookies pour le dl protect
 18-02-2018 -- @johngf -- Update premiumHandler.py
 17-02-2018 -- @johngf -- Update streamelite.py
