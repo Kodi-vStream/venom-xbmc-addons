@@ -84,14 +84,14 @@ class cHoster(iHoster):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
-	self.__sFileName = sFileName
+	    self.__sFileName = sFileName
 
     def getFileName(self):
-	return self.__sFileName
+	    return self.__sFileName
     
     def setUrl(self, sUrl):
         self.__sUrl = sUrl.replace('https','http')
-        self.__sUrl = sUrl.replace('http://netu.tv/','http://hqq.tv/')
+        self.__sUrl = self.__sUrl.replace('http://netu.tv/','http://hqq.tv/')
         self.__sUrl = self.__sUrl.replace('http://waaw.tv/','http://hqq.tv/')
         self.__sUrl = self.__sUrl.replace('http://hqq.tv/watch_video.php?v=','http://hqq.tv/player/embed_player.php?vid=')
     
