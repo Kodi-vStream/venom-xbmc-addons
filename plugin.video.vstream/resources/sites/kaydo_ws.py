@@ -114,7 +114,7 @@ def sHowResultSearch(sSearch = ''):
     if (aResult):
         sHtmlContent = aResult.group(1)
 
-    sPattern = '<a href="([^"]+)"><img src="([^"]+).+?class="name">(.+?)<\/a>.+?class="genre">([^<]+)<\/div>'
+    sPattern = '<img src="([^"]+).+?<a href="(.+?)" class="name">(.+?)<\/a>.+?class="genre">([^<]+)<\/div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -128,8 +128,8 @@ def sHowResultSearch(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            sUrl = URL_MAIN+aEntry[0]
-            sThumb = URL_MAIN+aEntry[1]
+            sUrl = URL_MAIN+aEntry[1]
+            sThumb = URL_MAIN+aEntry[0]
             sCom = aEntry[3]
             sTitle2 = str(aEntry[2])
             sTitle2 = sTitle2.replace('<font color="orange">[SÉRIE]</font>','')
