@@ -7,7 +7,9 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.util import VScreateDialogSelect
 from resources.lib.packer import cPacker
-import re
+import re,xbmc
+
+UA = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:55.0) Gecko/20100101 Firefox/55.0"
 
 class cHoster(iHoster):
 
@@ -62,18 +64,18 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
 
         api_call = False
-
+        
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
         
-        sPattern = "var lets_play_a_game='([^']+)'"
+        sPattern = "var thief='([^']+)';"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if not (aResult[0]):
             return False , False
             
-        key = aResult[1][0]
+        key = aResult[1][0].replace('+','')
             
         sPattern = "'rc=[^<>]+?\/(.+?)'\.concat"
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -115,7 +117,11 @@ class cHoster(iHoster):
                 if (ret > -1):
                     api_call = url[ret]
 
+        #xbmc.sleep(5000)
+                    
+        #api_call ='https://n4081.thevideo.me:8777/ivcgn7pgt23xu37wrbrovparhhdg6yozy42ehjynz3p3lxyt2da7ibbxyhzjgbcxf5vtsutqndvnbfcpxvelknwgfy3pbkml7ff3s2baxyzssn7o6rw66s2gcnlmzejg75pcbw2io7vdcqkg3o2ggpduysgsbybagh434jamjp3pc5gdvqc7tpfd7hxn4hdx5p2klae7mrjecghepspd6jezziuqi4xrfsbg5hldgqfirxevcaaurglqznpxivy5wndsnvedx4xokoonky77bi4mjzzq/v.mp4?direct=false&ua=1&vt=pw42hcaoyjkxkx3qfwd4gdyoc775sk55pq7sqsr7rsv4rp3qk4huxuitpwqolirqnsmcyomiwarevrb4mt4lgbouyzxvtx3z4i3it6m3gr4lke7tske5sljujqarhotsraukqq4nqwkzoqdqw5qo7zjmobw5vzwd6r5oudfvp3deh2xo3boy75pkrzybt2mftelbbbqcifmoezvqw3cqeanck5lmzhshcph2qtseoakvw26bscztw44didbp63qrmc56j3wu7kmg6bhpiidfstx57m'
         if (api_call):
-            return True, api_call + '?direct=false&ua=1&vt=' + r2.group(1)
+            api_call = api_call + '?direct=false&ua=1&vt=' + r2.group(1)
+            return True, api_call
             
         return False, False
