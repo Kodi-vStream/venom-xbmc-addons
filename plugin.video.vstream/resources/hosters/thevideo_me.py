@@ -7,9 +7,101 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.util import VScreateDialogSelect
 from resources.lib.packer import cPacker
-import re,xbmc
+from resources.lib.config import cConfig
+
+import re,xbmc,urllib,urllib2
 
 UA = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:55.0) Gecko/20100101 Firefox/55.0"
+
+
+
+ 
+def LoadLinks(htmlcode):
+    cConfig().log('Scan des liens')
+
+    sPattern ='[\("\'](https*:)*(\/[^,"\'\)\s]+)[\)\'"]'
+    aResult = re.findall(sPattern, htmlcode, re.DOTALL)
+
+    #xbmc.log(str(aResult))
+    for http,urlspam in aResult:
+        sUrl = urlspam
+            
+        if http:
+            sUrl = http + sUrl
+            
+        sUrl = sUrl.replace('/\/','//')
+        sUrl = sUrl.replace('\/','/')
+        
+        #filtrage mauvaise url
+        if (sUrl.count('/') < 2) or ('<' in sUrl) or ('>' in sUrl) or (len(sUrl) < 15):
+            continue
+        if '[' in sUrl or ']' in sUrl:
+            continue
+        if '.jpg' in sUrl or '.png' in sUrl:
+            continue
+        
+        cConfig().log('test : ' + sUrl)
+        
+        if '\\x' in sUrl or '\\u' in sUrl:
+            sUrl = ASCIIDecode(sUrl)
+            if not sUrl:
+                continue
+        
+        if sUrl.startswith('//'):
+            sUrl = 'http:' + sUrl
+            
+        if sUrl.startswith('/'):
+            host = 'https://thevideo.website'
+            sUrl = host + sUrl
+        
+        #Url ou il ne faut pas aller
+        if 'dok3v' in sUrl:
+            continue
+            
+        #pour test
+        if ('.js' not in sUrl) and ('.cgi' not in sUrl):
+            continue
+        #if 'flashx' in sUrl:
+            #continue
+
+        headers8 = {
+        'User-Agent': UA
+        #'Referer':'https://www.flashx.tv/dl?playthis'
+        }
+        
+        try:
+            request = urllib2.Request(sUrl,None,headers8)
+            reponse = urllib2.urlopen(request)
+            sCode = reponse.read()
+            reponse.close()
+            cConfig().log('Worked ' + sUrl)
+        except urllib2.HTTPError, e:
+            if not e.geturl() == sUrl:
+                try:
+                    headers9 = {
+                    'User-Agent': UA,
+                    'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+                    'Accept-Encoding':'gzip, deflate, br'
+                    }
+                    request = urllib2.Request(e.geturl().replace('https', 'http'), None, headers9)
+                    reponse = urllib2.urlopen(request)
+                    sCode = reponse.read()
+                    reponse.close()
+                    cConfig().log('Worked ' + sUrl)
+                except urllib2.HTTPError, e:
+                    cConfig().log(str(e.code))
+                    #xbmc.log(e.read())
+                    cConfig().log('Redirection Blocked ' + sUrl + ' Red ' + e.geturl())
+                    pass
+            else:
+                cConfig().log('Blocked ' + sUrl)
+                cConfig().log(str(e.code))
+                cConfig().log('>>' + e.geturl())
+                #cConfig().log(e.read())
+    
+    cConfig().log('fin des unlock')
+
 
 class cHoster(iHoster):
 
@@ -67,7 +159,13 @@ class cHoster(iHoster):
         
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
+        
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
 
+        LoadLinks(sHtmlContent)
+        
         oParser = cParser()
         
         sPattern = "var thief='([^']+)';"
@@ -94,6 +192,24 @@ class cHoster(iHoster):
         r2 = re.search(sPattern,code)
         if not (r2):
             return False,False
+            
+        #Unlock url
+        url1 = re.search(r'async src="([^"]+)">', sHtmlContent,re.DOTALL).group(1)
+        cConfig().log(url1)
+        oRequest = cRequestHandler(url1)
+        sHtmlContenttmp1 = oRequest.request()
+        
+        sId = self.__getIdFromUrl( self.__sUrl )
+        url2 = 'https://thevideo.website/api/slider/' + sId
+        cConfig().log(url2)
+        oRequest = cRequestHandler(url2)
+        sHtmlContenttmp2 = oRequest.request()
+        url3 = re.search(r'"src":"([^"]+)"', sHtmlContenttmp2,re.DOTALL).group(1)
+        cConfig().log(url3)
+        oRequest = cRequestHandler(url3)
+        sHtmlContenttmp3 = oRequest.request()
+        
+        xbmc.sleep(1000)
             
         sPattern = '{"file":"([^"]+)","label":"(.+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
