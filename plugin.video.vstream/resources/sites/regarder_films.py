@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
-#Venom.
-#desactiver le 13/11
-return False
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -16,7 +15,7 @@ SITE_IDENTIFIER = 'regarder_films'
 SITE_NAME = 'Regarder-films-gratuit'
 SITE_DESC = 'Streaming ou Téléchargement de Séries & Mangas.'
 
-URL_MAIN = 'http://www.regarder-film-gratuit.eu/'
+URL_MAIN = 'http://www.regarder-film-gratuit.online/'
 
 SERIE_NEWS = (URL_MAIN + 'category/series/', 'showSeries')
 SERIE_SERIES = (URL_MAIN + 'liste-de-series/', 'showAlpha')

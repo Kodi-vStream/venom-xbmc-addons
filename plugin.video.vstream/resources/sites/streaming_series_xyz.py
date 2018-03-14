@@ -33,7 +33,7 @@ def ProtectstreamBypass(url):
     Codedurl = url
     oRequestHandler = cRequestHandler(Codedurl)
     sHtmlContent = oRequestHandler.request()
-
+    
     oParser = cParser()
     sPattern = 'var k=\"([^<>\"]*?)\";'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -42,19 +42,25 @@ def ProtectstreamBypass(url):
 
         cGui().showInfo("Patientez", 'Decodage en cours' , 5)
         xbmc.sleep(5000)
+        
+        #postdata = urllib.urlencode( { 'k': aResult[1][0] } )
+        postdata = 'k=' + aResult[1][0]
 
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
         headers = {'User-Agent': UA ,
                    'Host' : 'www.protect-stream.com',
                    'Referer': Codedurl ,
-                   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                   'Accept' :'*/*',
+                   'Connection':'keep-alive',
                    #'Accept-Encoding' : 'gzip, deflate',
                    #'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+                   'Content-Length' : len(postdata),
                    'Content-Type': 'application/x-www-form-urlencoded'}
+                   
+        #cConfig().log(postdata)
+        #cConfig().log(str(headers))
 
-        postdata = urllib.urlencode( { 'k': aResult[1][0] } )
-
-        req = urllib2.Request('http://www.protect-stream.com/secur2.php',postdata,headers)
+        req = urllib2.Request('https://www.protect-stream.com/secur2.php',postdata,headers)
         try:
             response = urllib2.urlopen(req)
         except urllib2.URLError, e:
@@ -63,6 +69,10 @@ def ProtectstreamBypass(url):
 
         data = response.read()
         response.close()
+        
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(data)
+        #fh.close()
 
         #Test de fonctionnement
         aResult = oParser.parse(data, sPattern)

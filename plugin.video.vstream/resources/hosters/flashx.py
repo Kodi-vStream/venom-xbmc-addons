@@ -49,32 +49,33 @@ def GetHtml(url,headers):
 def UnlockUrl(url2=None):
     headers9 = {
     'User-Agent': UA,
-    'Referer':'https://www.flashx.tv/dl?playthis'
+    'Referer':'https://www.flashx.ws/dl?playthis'
     }
     
-    url1 = 'https://www.flashx.tv/js/code.js'
+    url1 = 'https://www.flashx.ws/js/code.js'
     if url2:
         url1 = url2
         
     if not url1.startswith('http'):
         url1 = 'https:' + url1
 
-    cConfig().log('unlock url :' + url1)
+    cConfig().log('Test unlock url :' + url1)
     
     oRequest = cRequestHandler(url1)
     oRequest.addParameters('User-Agent', UA)
     #oRequest.addParameters('Accept', '*/*')
     #oRequest.addParameters('Accept-Encoding', 'gzip, deflate, br')
     #oRequest.addParameters('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    oRequest.addParameters('Referer','https://www.flashx.tv/dl?playthis')
+    oRequest.addParameters('Referer','https://www.flashx.ws/dl?playthis')
     code = oRequest.request()
     
     url = ''
     if not code:
         url = oRequest.getRealUrl()
+        cConfig().log('Redirection :' + url)
     else:
         #cConfig().log(code)
-        aResult = re.search("!= null\){\s*\$.get\('([^']+)',{(.+?)}", code, re.DOTALL)
+        aResult = re.search("!= null\){\s*\$.get\('([^']+)', *{(.+?)}", code, re.DOTALL)
         if aResult:
             dat = aResult.group(2)
             dat = dat.replace("'",'')
@@ -91,9 +92,12 @@ def UnlockUrl(url2=None):
     #url = 'https://www.flashx.tv/flashx.php?fxfx=6'
     
     if url:
+        cConfig().log('Good Url :' + url1)
         cConfig().log(url)
         GetHtml(url,headers9)
         return True
+        
+    cConfig().log('Bad Url :' + url1)
         
     return False
 
@@ -353,7 +357,6 @@ class cHoster(iHoster):
         #fh.write(sHtmlContent)
         #fh.close()
 
-        #sPattern = '(<[^<>]+(?:"visibility:hidden"|"opacity: 0;")><a )*href="(http:\/\/www\.flashx[^"]+)'
         sPattern = 'href=["\'](https*:\/\/www\.flashx[^"\']+)'
         AllUrl = re.findall(sPattern,sHtmlContent,re.DOTALL)
         cConfig().log(str(AllUrl))
@@ -377,11 +380,17 @@ class cHoster(iHoster):
         #unlock fake video
         LoadLinks(sHtmlContent)
         #unlock bubble
-        url2 = re.search('["\']([^"\']+?\.js\?cache.+?)["\']', sHtmlContent, re.DOTALL)
-        if url2:
-            url2 = url2.group(1)
-        if not UnlockUrl(url2):
-            cConfig().log('No special unlock url')
+        unlock = False
+        url2 = re.findall('["\']([^"\']+?\.js\?cache.+?)["\']', sHtmlContent, re.DOTALL)
+        if not url2:
+            cConfig().log('No special unlock url find')
+        for i in url2:
+            unlock = UnlockUrl(i)
+            if unlock:
+                break
+                
+        if not unlock:
+            cConfig().log('No special unlock url working')
             return False,False
                
         #get the page
