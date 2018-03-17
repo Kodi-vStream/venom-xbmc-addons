@@ -122,7 +122,8 @@ class CloudflareBypass(object):
             head.append(('Content-Type', 'text/html; charset=utf-8'))
         else:
             for i in self.Memorised_Headers:
-                head.append((i,self.Memorised_Headers[i]))
+                if ('Content-Type' not in i) and ('Accept-charset' not in i):
+                    head.append((i,self.Memorised_Headers[i]))
         return head
 
     def GetResponse(self,htmlcontent):
@@ -145,7 +146,7 @@ class CloudflareBypass(object):
         return self.HttpReponse.geturl(), self.HttpReponse.headers
 
     def GetHtml(self,url,htmlcontent = '',cookies = '',postdata = '',Gived_headers = ''):
-
+    
         #Memorise headers
         self.Memorised_Headers = Gived_headers
 
@@ -244,9 +245,16 @@ class CloudflareBypass(object):
         #Add first cookie
         if not cookies == '':
             opener.addheaders.append(('Cookie', cookies))
+        
+        #Rajout headers manquants
+        if 'Referer' not in opener.addheaders:
+            opener.addheaders.append(('Referer', self.url))
+        if 'Accept' not in opener.addheaders:
+            opener.addheaders.append(('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'))
 
         self.HttpReponse = opener.open(NewUrl,postdata)
         
+        #xbmc.log("Headers send " + str(opener.addheaders), xbmc.LOGNOTICE)
         #xbmc.log("cookie send " + str(cookies), xbmc.LOGNOTICE)
         #xbmc.log("header recu " + str(self.HttpReponse.headers), xbmc.LOGNOTICE)
         #xbmc.log("Url " + str(NewUrl), xbmc.LOGNOTICE)
