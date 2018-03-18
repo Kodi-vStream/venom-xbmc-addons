@@ -92,8 +92,9 @@ class cHoster(iHoster):
         code = ''
         maxboucle = 10
         while (maxboucle > 0):
+            VSlog('loop : ' + str(maxboucle))
             sHtmlContent3 = CheckCpacker(sHtmlContent3)
-            sHtmlContent3 = CheckJJDecoder(sHtmlContent3)           
+            #sHtmlContent3 = CheckJJDecoder(sHtmlContent3)           
             sHtmlContent3 = CheckAADecoder(sHtmlContent3)
             
             maxboucle = maxboucle - 1   
@@ -106,24 +107,24 @@ class cHoster(iHoster):
         #fh.write(sHtmlContent)
         #fh.close()
         
-        
-
-        Realurl = ''
-        
-        Realurl = re.findall('window\.location\.href= *[\'"]([^\'"]+)',sHtmlContent)[0]
-        
-        if not Realurl.startswith('http'):
-            Realurl = 'http:' + Realurl
-                  
-        if not Realurl:
-            return False, False
+        #Desactive pour le moment
+        if (False):
+            Realurl = ''
             
-        cConfig().log('Real url>> ' + Realurl)
+            Realurl = re.findall('window\.location\.href= *[\'"]([^\'"]+)',sHtmlContent)[0]
+            
+            if not Realurl.startswith('http'):
+                Realurl = 'http:' + Realurl
+                      
+            if not Realurl:
+                return False, False
+                
+            cConfig().log('Real url>> ' + Realurl)
 
-        oRequest = cRequestHandler(Realurl)
-        oRequest.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0')
-        oRequest.addHeaderEntry('Referer',self.__sUrl)
-        sHtmlContent = oRequest.request()
+            oRequest = cRequestHandler(Realurl)
+            oRequest.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0')
+            oRequest.addHeaderEntry('Referer',self.__sUrl)
+            sHtmlContent = oRequest.request()
         
         api_call = ''
             
@@ -145,7 +146,7 @@ def CheckCpacker(str):
     sPattern = '>([^>]+\(p,a,c,k,e(?:.|\s)+?\)\)\s*)<'
     aResult = re.search(sPattern, str,re.DOTALL | re.UNICODE)
     if (aResult):
-        VSlog('Cpacker encryption')
+        #VSlog('Cpacker encryption')
         str2 = aResult.group(1)
         
         if not str2.endswith(';'):
@@ -154,7 +155,9 @@ def CheckCpacker(str):
         #if not str2.startswith('eval'):
         #    str2 = 'eval(function' + str2[4:]
         
-        #VSlog(str2)
+        #Me demandez pas pourquoi mais si je l'affiche pas en log, ca freeze ?????
+        VSlog(str2)
+        
         try:
             tmp = cPacker().unpack(str2)
             #tmp = tmp.replace("\\'","'")
