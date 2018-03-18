@@ -312,6 +312,8 @@ class cHosterGui:
             return self.getHoster('clickopen')
         if ('iframe-secured' in sHostName):
             return self.getHoster('iframe_secured')
+        if ('iframe-secure' in sHostName):
+            return self.getHoster('iframe_secure')
         if ('goo.gl' in sHostName or 'bit.ly' in sHostName):
             return self.getHoster('allow_redirects')
 
