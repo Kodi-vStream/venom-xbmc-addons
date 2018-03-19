@@ -11,9 +11,9 @@ import re
 
 SITE_IDENTIFIER = 'frenchddl_com'
 SITE_NAME = '[COLOR violet]FrenchDDL[/COLOR]'
-SITE_DESC = 'films en ddl'
+SITE_DESC = 'Films en ddl'
 
-URL_MAIN = 'http://www.frenchddl.com/'
+URL_MAIN = 'https://www.frenchddl.com/'
 
 URL_SEARCH = (URL_MAIN + 'index.php?Query=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?Query=', 'showMovies')
