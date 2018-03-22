@@ -74,22 +74,15 @@ class cHoster(iHoster):
         oParser = cParser()
     
         #Dean Edwards Packer
-        # sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
-        # aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        # print "testttttttttttttttttttttttttttt"
-        # test = "yaaaaaaaaaaaaaaaaaa"
-        # xbmc.log ("lof: %s" % test)
-        # print aResult
+        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+        aResult = oParser.parse(sHtmlContent, sPattern)        
         
         
-        
-        # if (aResult[0] == True):
-            # sUnpacked = cPacker().unpack(aResult[1][0])
-            # sHtmlContent = sUnpacked
-            
-        sPattern = ',{file:"(.+?)",label:"(.+?)"}'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            sHtmlContent = cPacker().unpack(aResult[1][0])
+                
+            sPattern = '{file:"([^"]+)"\,label:"([^"]+)"}'
+            aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True):
             #initialisation des tableaux
