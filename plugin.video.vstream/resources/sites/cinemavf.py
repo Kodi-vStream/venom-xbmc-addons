@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'cinemavf'
 SITE_NAME = 'CinemaVF'
 SITE_DESC = 'Films, Séries & Mangas en streaming.'
 
-URL_MAIN = 'http://filmstreamin.net/'
+URL_MAIN = 'http://filmstreamin.ws/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -128,7 +128,7 @@ def showMovieGenres():
     liste.append( ['Walt Disney', URL_MAIN + 'category/walt-disney'] )
     liste.append( ['Western', URL_MAIN + 'category/western'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -165,7 +165,7 @@ def showSerieGenres():
     liste.append( ['Thriller', URL_MAIN + 'serie/category/thriller'] )
     liste.append( ['Western', URL_MAIN + 'serie/category/western'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -204,7 +204,7 @@ def showMangaGenres():
     liste.append( ['Sport', URL_MAIN + 'mangas/category/sport'] )
     liste.append( ['Thriller', URL_MAIN + 'mangas/category/thriller'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
