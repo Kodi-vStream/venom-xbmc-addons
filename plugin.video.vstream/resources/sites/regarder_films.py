@@ -15,10 +15,11 @@ SITE_IDENTIFIER = 'regarder_films'
 SITE_NAME = 'Regarder-films-gratuit'
 SITE_DESC = 'Streaming ou Téléchargement de Séries & Mangas.'
 
-URL_MAIN = 'http://www.regarder-film-gratuit.online/'
+URL_MAIN = 'http://regarder-film-gratuit.online/'
 
-SERIE_NEWS = (URL_MAIN + 'category/series/', 'showSeries')
-SERIE_SERIES = (URL_MAIN + 'liste-de-series/', 'showAlpha')
+SERIE_NEWS = (URL_MAIN, 'showSeries')
+SERIE_SERIES = (URL_MAIN, 'load')
+SERIE_LIST = (URL_MAIN + 'liste-de-series/', 'showAlpha')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showSeries')
 URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showSeries')
@@ -36,8 +37,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries (Liste AZ)', 'series_az.png',oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste AZ)', 'series_az.png',oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -55,24 +56,20 @@ def showAlpha():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
 
-    sPattern = '<div id="main">(.+?)<div id="comments">'
-    aResult = re.search(sPattern,sHtmlContent,re.DOTALL)
-    if (aResult):
-        sHtmlContent = aResult.group(1)
-
-    sPattern = '<font color="red".+?>\=(.+?)\=<\/font>'
+    sPattern = '<font color="red".+?>(.+?)<\/font>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sLetter = str(aEntry)
+            sLetter = str(aEntry).replace('=', '')
+            dAZ = str(aEntry)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('AZ', sLetter)
+            oOutputParameterHandler.addParameter('AZ', dAZ)
             oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Lettre [COLOR coral]' + sLetter + '[/COLOR]', 'series_az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -80,73 +77,44 @@ def showAlpha():
 def showAZ():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    dAZ = oInputParameterHandler.getValue('AZ')
-
     oRequestHandler = cRequestHandler(URL_MAIN + 'liste-de-series/')
+    dAZ = oInputParameterHandler.getValue('AZ')
     sHtmlContent = oRequestHandler.request()
-
+    
     oParser = cParser()
+    #Decoupage pour cibler la partie selectionnée
+    sPattern = '<font color="red".+?>' + dAZ + '</font>(.+?)<p><strong>'
+	
+    aResult = oParser.parse(sHtmlContent, sPattern)
+	
+    #regex pour listage series sur la partie decoupée
     sPattern = '<a href="([^"]+)".+?>(.+?)<\/a>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True) :
-        for aEntry in aResult[1]:
-            uaE = cUtil().CleanName(aEntry[1])
-            if uaE.upper()[0] == dAZ or aEntry[1][0].isdigit() and dAZ == '0-9':
-
-               sUrl = aEntry[0]
-               sTitle =  aEntry[1]
-               if 'Liste de' in sTitle:
-                    continue
-               oOutputParameterHandler = cOutputParameterHandler()
-               oOutputParameterHandler.addParameter('siteUrl', sUrl)
-               oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-               oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'series_az.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-def showMovies(sSearch = ''):
-    oGui = cGui()
-    if sSearch:
-        showSeries()
-        return
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-    sHtmlContent = sHtmlContent.replace('Programme', '').replace('F.A.Q', '').replace('Séries', '')
-    sPattern = '<li class="cat-item cat-item-.+?"><a href="(.+?)">([^<]+)</a>'
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
+    
+    aResult = oParser.parse(aResult, sPattern)
+    
     if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
+		oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
+        
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-
-            sTitle = str(aEntry[1])
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
-
+            
+            sUrl = str(aEntry[0])
+            sTitle = str(aEntry[1]).decode("unicode_escape").encode("latin-1").replace('&#8217;', '\'').replace('&#8212;', '-')
+            
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[0]))
-            if '/series-tv/' in sUrl or 'saison' in aEntry[0]:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
-            else:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, 'series.png', '', '', oOutputParameterHandler)
-
+            oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'series_az.png', oOutputParameterHandler)
+            
         cConfig().finishDialog(dialog)
 
-    if not sSearch:
-        oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
 
 def showSeries(sSearch = ''):
     oGui = cGui()
@@ -179,18 +147,17 @@ def showSeries(sSearch = ''):
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),aEntry[1]) == 0:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[1]) == 0:
                     continue
 
             sTitle = aEntry[1]
             sUrl = str(aEntry[0])
             sDisplayTitle = cUtil().DecoTitle(sTitle)
 
-            if ('Information' not in sTitle) and ('/liste-de-series/' not in sUrl) and ('/versions-francaises/' not in sUrl):
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oGui.addDir(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, 'series.png', oOutputParameterHandler)
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oGui.addDir(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, 'series.png', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -223,16 +190,16 @@ def serieHosters():
     oParser = cParser()
 
     #recuperation thumb
-    sThumbnail = ''
-    sPattern = '<p><img src="([^"]+)" *alt=".+?".+?><\/p>'
+    sThumb = ''
+    sPattern = '<p><img src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if aResult[0]:
-        sThumbnail = aResult[1][0]
+        sThumb = aResult[1][0]
 
     if 'streamzz' in sUrl:
 		sPattern = '<div class="boton reloading"><a href="([^"]+)">'
     else:
-        sPattern = '<span id=.+?<stron.+?((?:VF|VOSTFR|VO)).+?trong>|<p><a href="([^"]+)".+?target="_blank">'
+        sPattern = '<center><.+?<stron.+?((?:VF|VOSTFR|VO)).+?trong>|<p><a href="([^"]+)".+?target="_blank">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -254,7 +221,7 @@ def serieHosters():
                     sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         cConfig().finishDialog(dialog)
 
