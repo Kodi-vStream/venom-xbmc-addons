@@ -10,14 +10,14 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 
-from resources.lib.util import cUtil #outils pouvant etre utiles
+from resources.lib.util import cUtil
 
 
 SITE_IDENTIFIER = 'streamingbb'
 SITE_NAME = 'StreamingBB'
 SITE_DESC = 'Films en streaming'
 
-URL_MAIN = 'http://www.regarderfilm.biz/'
+URL_MAIN = 'http://www.regarderfilm.ws/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -59,47 +59,47 @@ def showGenres():
     oGui = cGui()
     
     liste = []
-    liste.append( ['Action',URL_MAIN + 'film-category/action'] )
-    liste.append( ['Animation',URL_MAIN + 'film-category/animation'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'film-category/arts-martiaux'] )
-    liste.append( ['Aventure',URL_MAIN + 'film-category/aventure'] )
-    liste.append( ['Biopic',URL_MAIN + 'film-category/biopic'] )
-    liste.append( ['Bollywood',URL_MAIN + 'film-category/bollywood'] )
-    liste.append( ['Classique',URL_MAIN + 'film-category/classique'] )
-    liste.append( ['Comédie',URL_MAIN + 'film-category/comedie'] )
-    liste.append( ['Comédie Dramatique',URL_MAIN + 'film-category/comedie-dramatique'] )
-    liste.append( ['Comédie Musicale',URL_MAIN + 'film-category/comedie-musicale'] )
-    liste.append( ['Concert',URL_MAIN + 'film-category/concert'] )
-    liste.append( ['Dessin animé',URL_MAIN + 'film-category/dessin-anime'] )
-    liste.append( ['Divers',URL_MAIN + 'film-category/divers'] ) 
-    liste.append( ['Documentaire',URL_MAIN + 'film-category/documentaire'] )
-    liste.append( ['Drame',URL_MAIN + 'film-category/drame'] )
-    liste.append( ['Emissions TV',URL_MAIN + 'film-category/emissions-tv'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'film-category/epouvante-horreur'] )
-    liste.append( ['Erotique',URL_MAIN + 'film-category/erotique'] )
-    liste.append( ['Espionnage',URL_MAIN + 'film-category/espionnage/'] )
-    liste.append( ['Expérimental',URL_MAIN + 'film-category/experimental'] )
-    liste.append( ['Famille',URL_MAIN + 'film-category/famille'] )
-    liste.append( ['Fantastique',URL_MAIN + 'film-category/fantastique'] )
-    liste.append( ['Guerre',URL_MAIN + 'film-category/guerre'] )
-    liste.append( ['Historique',URL_MAIN + 'film-category/historique'] )
-    liste.append( ['Judiciaire',URL_MAIN + 'film-category/judiciaire'] )
-    liste.append( ['Musical',URL_MAIN + 'film-category/musical'] )
-    liste.append( ['Non classé',URL_MAIN + 'film-category/non-classe'] )
-    liste.append( ['Opéra',URL_MAIN + 'film-category/opera'] )
-    liste.append( ['Péplum',URL_MAIN + 'film-category/peplum'] )
-    liste.append( ['Policier',URL_MAIN + 'film-category/policier'] )
-    liste.append( ['Romance',URL_MAIN + 'film-category/romance'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'film-category/science-fiction'] )
-    liste.append( ['Show',URL_MAIN + 'film-category/show'] )
-    liste.append( ['Spectacle',URL_MAIN + 'film-category/spectacle'] )
-    liste.append( ['Sport enet',URL_MAIN + 'film-category/sport-event'] )
-    liste.append( ['Thriller',URL_MAIN + 'film-category/thriller'] )
-    liste.append( ['Vieux Films',URL_MAIN + 'film-category/vieux-films'] )
-    liste.append( ['Walt Disney',URL_MAIN + 'film-category/walt-disney'] )
-    liste.append( ['Western',URL_MAIN + 'film-category/western'] )
+    liste.append( ['Action', URL_MAIN + 'film-category/action'] )
+    liste.append( ['Animation', URL_MAIN + 'film-category/animation'] )
+    liste.append( ['Arts Martiaux', URL_MAIN + 'film-category/arts-martiaux'] )
+    liste.append( ['Aventure', URL_MAIN + 'film-category/aventure'] )
+    liste.append( ['Biopic', URL_MAIN + 'film-category/biopic'] )
+    liste.append( ['Bollywood', URL_MAIN + 'film-category/bollywood'] )
+    liste.append( ['Classique', URL_MAIN + 'film-category/classique'] )
+    liste.append( ['Comédie', URL_MAIN + 'film-category/comedie'] )
+    liste.append( ['Comédie Dramatique', URL_MAIN + 'film-category/comedie-dramatique'] )
+    liste.append( ['Comédie Musicale', URL_MAIN + 'film-category/comedie-musicale'] )
+    liste.append( ['Concert', URL_MAIN + 'film-category/concert'] )
+    liste.append( ['Dessin animé', URL_MAIN + 'film-category/dessin-anime'] )
+    liste.append( ['Divers', URL_MAIN + 'film-category/divers'] ) 
+    liste.append( ['Documentaire', URL_MAIN + 'film-category/documentaire'] )
+    liste.append( ['Drame', URL_MAIN + 'film-category/drame'] )
+    liste.append( ['Emissions TV', URL_MAIN + 'film-category/emissions-tv'] )
+    liste.append( ['Epouvante Horreur', URL_MAIN + 'film-category/epouvante-horreur'] )
+    liste.append( ['Erotique', URL_MAIN + 'film-category/erotique'] )
+    liste.append( ['Espionnage', URL_MAIN + 'film-category/espionnage/'] )
+    liste.append( ['Expérimental', URL_MAIN + 'film-category/experimental'] )
+    liste.append( ['Famille', URL_MAIN + 'film-category/famille'] )
+    liste.append( ['Fantastique', URL_MAIN + 'film-category/fantastique'] )
+    liste.append( ['Guerre', URL_MAIN + 'film-category/guerre'] )
+    liste.append( ['Historique', URL_MAIN + 'film-category/historique'] )
+    liste.append( ['Judiciaire', URL_MAIN + 'film-category/judiciaire'] )
+    liste.append( ['Musical', URL_MAIN + 'film-category/musical'] )
+    liste.append( ['Non classé', URL_MAIN + 'film-category/non-classe'] )
+    liste.append( ['Opéra', URL_MAIN + 'film-category/opera'] )
+    liste.append( ['Péplum', URL_MAIN + 'film-category/peplum'] )
+    liste.append( ['Policier', URL_MAIN + 'film-category/policier'] )
+    liste.append( ['Romance', URL_MAIN + 'film-category/romance'] )
+    liste.append( ['Science Fiction', URL_MAIN + 'film-category/science-fiction'] )
+    liste.append( ['Show', URL_MAIN + 'film-category/show'] )
+    liste.append( ['Spectacle', URL_MAIN + 'film-category/spectacle'] )
+    liste.append( ['Sport event', URL_MAIN + 'film-category/sport-event'] )
+    liste.append( ['Thriller', URL_MAIN + 'film-category/thriller'] )
+    liste.append( ['Vieux Films', URL_MAIN + 'film-category/vieux-films'] )
+    liste.append( ['Walt Disney', URL_MAIN + 'film-category/walt-disney'] )
+    liste.append( ['Western', URL_MAIN + 'film-category/western'] )
 	
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
         
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -248,7 +248,7 @@ def showLinks():
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
     
-    sDecs = ''
+    sDesc = ''
     try:
         sPattern = '<p><strong>Synopsis<\/strong.+?: *(.+?)<\/p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
