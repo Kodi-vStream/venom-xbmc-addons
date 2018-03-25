@@ -12,9 +12,9 @@ import re
 
 SITE_IDENTIFIER = 'planet_streaming'
 SITE_NAME = 'Planet Streaming'
-SITE_DESC = 'Films de 1900 jusqu à 2016, contient du HD'
+SITE_DESC = 'Films en Streaming complet  VF HD'
 
-URL_MAIN = 'http://www.2017.planet-streaming.com/'
+URL_MAIN = 'http://ww2.planet-streaming.com/'
 
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'regarder-film/', 'showMovies')
@@ -63,34 +63,34 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['HD/HQ',URL_MAIN + 'xfsearch/hd'] )
-    liste.append( ['Action',URL_MAIN + 'action'] )
-    liste.append( ['Animation',URL_MAIN + 'animation'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'arts-martiaux'] )
-    liste.append( ['Aventure',URL_MAIN + 'aventure'] )
-    liste.append( ['Biopic',URL_MAIN + 'biopic'] )
-    liste.append( ['Comédie',URL_MAIN + 'comedie'] )
-    liste.append( ['Comédie Dramatique',URL_MAIN + 'comedie-dramatique'] )
-    liste.append( ['Comédie Musicale',URL_MAIN + 'comedie-musicale'] )
-    liste.append( ['Documentaire',URL_MAIN + 'documentaire'] )
-    liste.append( ['Drame',URL_MAIN + 'drame'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'epouvante-horreur'] )
-    liste.append( ['Famille',URL_MAIN + 'famille'] )
-    liste.append( ['Fantastique',URL_MAIN + 'fantastique'] )
-    liste.append( ['Guerre',URL_MAIN + 'guerre'] )
-    liste.append( ['Historique',URL_MAIN + 'historique'] )
-    liste.append( ['Musical',URL_MAIN + 'musical'] )
-    liste.append( ['Policier',URL_MAIN + 'policier'] )
-    liste.append( ['Romance',URL_MAIN + 'romance'] )
-    liste.append( ['Science Fiction',URL_MAIN + 'science-fiction'] )
-    liste.append( ['Thriller',URL_MAIN + 'thriller'] )
-    liste.append( ['Western',URL_MAIN + 'western'] )
+    liste.append( ['HD/HQ', URL_MAIN + 'xfsearch/hd'] )
+    liste.append( ['Action', URL_MAIN + 'action'] )
+    liste.append( ['Animation', URL_MAIN + 'animation'] )
+    liste.append( ['Arts Martiaux', URL_MAIN + 'arts-martiaux'] )
+    liste.append( ['Aventure', URL_MAIN + 'aventure'] )
+    liste.append( ['Biopic', URL_MAIN + 'biopic'] )
+    liste.append( ['Comédie', URL_MAIN + 'comedie'] )
+    liste.append( ['Comédie Dramatique', URL_MAIN + 'comedie-dramatique'] )
+    liste.append( ['Comédie Musicale', URL_MAIN + 'comedie-musicale'] )
+    liste.append( ['Documentaire', URL_MAIN + 'documentaire'] )
+    liste.append( ['Drame', URL_MAIN + 'drame'] )
+    liste.append( ['Epouvante Horreur', URL_MAIN + 'epouvante-horreur'] )
+    liste.append( ['Famille', URL_MAIN + 'famille'] )
+    liste.append( ['Fantastique', URL_MAIN + 'fantastique'] )
+    liste.append( ['Guerre', URL_MAIN + 'guerre'] )
+    liste.append( ['Historique', URL_MAIN + 'historique'] )
+    liste.append( ['Musical', URL_MAIN + 'musical'] )
+    liste.append( ['Policier', URL_MAIN + 'policier'] )
+    liste.append( ['Romance', URL_MAIN + 'romance'] )
+    liste.append( ['Science Fiction', URL_MAIN + 'science-fiction'] )
+    liste.append( ['Thriller', URL_MAIN + 'thriller'] )
+    liste.append( ['Western', URL_MAIN + 'western'] )
 	#la suite fonctionne mais pas de menu sur le site
-    liste.append( ['Espionnage',URL_MAIN + 'espionnage'] )
-    liste.append( ['Péplum',URL_MAIN + 'peplum'] )
-    liste.append( ['Divers',URL_MAIN + 'divers'] )
+    liste.append( ['Espionnage', URL_MAIN + 'espionnage'] )
+    liste.append( ['Péplum', URL_MAIN + 'peplum'] )
+    liste.append( ['Divers', URL_MAIN + 'divers'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -104,7 +104,7 @@ def showMovies(sSearch = ''):
 
     if sSearch:
 
-        sType = oInputParameterHandler.getValue('type')
+        #sType = oInputParameterHandler.getValue('type')
 
         sUrl = URL_SEARCH[0]
 
@@ -116,11 +116,11 @@ def showMovies(sSearch = ''):
         oRequestHandler.addParameters('subaction', 'search')
         oRequestHandler.addParameters('story', sSearch)
 
-        if (sType):
-            if sType == 'serie':
-                oRequestHandler.addParameters('catlist[]', '30')
-            elif sType == 'film':
-                oRequestHandler.addParameters('catlist[]', '3')
+        #if (sType):
+        #    if sType == 'serie':
+        #        oRequestHandler.addParameters('catlist[]', '30')
+        #    elif sType == 'film':
+        #        oRequestHandler.addParameters('catlist[]', '3')
 
         sHtmlContent = oRequestHandler.request()
 
@@ -162,7 +162,6 @@ def showMovies(sSearch = ''):
             sQual = sQual.replace(':', '').replace(' ', '').replace(',', '/')
 
             sDisplayTitle = sTitle + ' [' + sQual + ']'
-            #sDisplayTitle = cUtil().DecoTitle(sDisplayTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)

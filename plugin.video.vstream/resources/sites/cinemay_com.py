@@ -24,7 +24,8 @@ MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
 SERIE_NEWS = (URL_MAIN ,'showSeriesNews')
-SERIE_SERIES = (URL_MAIN + 'series-tv-streaming/', 'showSeriesList')
+SERIE_SERIES = (URL_MAIN ,'showSeriesNews')
+SERIE_LIST = (URL_MAIN + 'series-tv-streaming/', 'showSeriesList')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -51,8 +52,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste)', 'series_az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -85,10 +86,10 @@ def showMovieGenres():
     liste.append( ['Science-Fiction', URL_MAIN + 'genre/science-fiction/'] )
     liste.append( ['Thriller', URL_MAIN + 'genre/thriller/'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl',sUrl)
-        oGui.addDir(SITE_IDENTIFIER,'showMovies',sTitle,'films_genres.png',oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'films_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -265,12 +266,6 @@ def showSeriesList():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', '', '', oOutputParameterHandler)
-            
-        sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showSeriesList', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
             
         cConfig().finishDialog(dialog)
 

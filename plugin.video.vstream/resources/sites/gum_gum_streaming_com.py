@@ -1,4 +1,5 @@
 #-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 # Norton-breman
 
 from resources.lib.gui.hoster import cHosterGui
@@ -30,10 +31,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)
-
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    #oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés', 'animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
@@ -106,9 +103,9 @@ def showAnimes():
             sUrl = str(aEntry[0])
 
             #traitement du titre pour compatibilite
-            sTitle = sTitle.replace('(',' ').replace(')',' ').replace('-',' ')
-            sTitle = re.sub('([0-9]+) .. ([0-9\?]+)','\\1-\\2',sTitle)
-            sTitle = re.sub('([0-9]+) & ([0-9\?]+)','\\1-\\2',sTitle)
+            sTitle = sTitle.replace('(', ' ').replace(')', ' ').replace('-', ' ')
+            sTitle = re.sub('([0-9]+) .. ([0-9\?]+)', '\\1-\\2', sTitle)
+            sTitle = re.sub('([0-9]+) & ([0-9\?]+)', '\\1-\\2', sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -134,11 +131,11 @@ def showEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
     sUsentContent = aResult[1][0]
 
-    sSyn = ''
+    sDesc = ''
     sPattern = 'Synopsis:.+? ([^<]+)</h5>'
     aSynResult = oParser.parse(sUsentContent, sPattern)
     if aSynResult[0]:
-        sSyn = aSynResult[1][0]
+        sDesc = aSynResult[1][0]
 
     sThumb = ''
     sPattern = '<h4 style=".+?"><img class="alignright" src="(.+?)"'
@@ -176,9 +173,9 @@ def showEpisodes():
                         oOutputParameterHandler = cOutputParameterHandler()
                         oOutputParameterHandler.addParameter('siteUrl', aUrl[sIdx])
                         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                        oOutputParameterHandler.addParameter('sDesc', sSyn)
-                        oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-                        oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sThumb, sSyn, oOutputParameterHandler)
+                        oOutputParameterHandler.addParameter('sDesc', sDesc)
+                        oOutputParameterHandler.addParameter('sThumb', sThumb)
+                        oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
 
         else:
             sTitlePattern = '>• (.+?)</a>'
@@ -194,10 +191,10 @@ def showEpisodes():
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', aUrl[sIdx])
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                    oOutputParameterHandler.addParameter('sDesc', sSyn)
-                    oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-                    # oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sThumb, sSyn, oOutputParameterHandler)
-                    oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sThumb, sSyn, oOutputParameterHandler)
+                    oOutputParameterHandler.addParameter('sDesc', sDesc)
+                    oOutputParameterHandler.addParameter('sThumb', sThumb)
+                    # oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
+                    oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -209,7 +206,7 @@ def showMovies():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<h2 style="text-align: center;"><a href="([^"]+)">(.+?)</a></h2>'
+    sPattern = '<h2 style="text-align: center;"><a href="([^"]+)">(.+?)</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):

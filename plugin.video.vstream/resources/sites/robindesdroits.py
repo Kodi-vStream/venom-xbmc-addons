@@ -10,6 +10,7 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.multihost import cJheberg
 from resources.lib.multihost import cMultiup
+from resources.lib.packer import cPacker
 import re
 
 SITE_IDENTIFIER = 'robindesdroits'
@@ -131,11 +132,11 @@ def __showLink(url):
             oRequestHandler = cRequestHandler(sUrl)
             sHtmlContent = oRequestHandler.request();
 
-            sPattern = '<b><a href\="http\:\/\/www\.clictune\.com\/link\/redirect\/\?url\=(.+?)\&id.+?">'
-            aResult = re.findall(sPattern,sHtmlContent)
+            sPattern = '<b><a href=".+?redirect\/\?url\=(.+?)\&id.+?">'
+            aResult2 = re.findall(sPattern,sHtmlContent)
 
             #decode url & retourne liens a showHosters
-            url = cUtil().urlDecode(aResult[0])
+            url = cUtil().urlDecode(aResult2[0])
             sLink.append(url)
 
         return sLink
@@ -197,10 +198,14 @@ def showHosters():
                   oRequestHandler = cRequestHandler(sUrl)
                   sHtmlContent = oRequestHandler.request();
                   oParser = cParser()
-                  sPattern = '{file:"([^"]+)"\,label:"([^"]+)"}'
+                  sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
                   aResult = oParser.parse(sHtmlContent, sPattern)
-
+                  
                   if (aResult[0] == True):
+                      sHtmlContent = cPacker().unpack(aResult[1][0])
+                      sPattern = '{file:"([^"]+)"\,label:"([^"]+)"}'
+                      aResult = oParser.parse(sHtmlContent, sPattern)
+
                       if (count2 >0):
                           oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via WatchVideo (suite partie vidéo)[/COLOR]')
                       else:

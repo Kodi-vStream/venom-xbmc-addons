@@ -122,7 +122,8 @@ class CloudflareBypass(object):
             head.append(('Content-Type', 'text/html; charset=utf-8'))
         else:
             for i in self.Memorised_Headers:
-                head.append((i,self.Memorised_Headers[i]))
+                if ('Content-Type' not in i) and ('Accept-charset' not in i):
+                    head.append((i,self.Memorised_Headers[i]))
         return head
 
     def GetResponse(self,htmlcontent):
@@ -145,7 +146,7 @@ class CloudflareBypass(object):
         return self.HttpReponse.geturl(), self.HttpReponse.headers
 
     def GetHtml(self,url,htmlcontent = '',cookies = '',postdata = '',Gived_headers = ''):
-
+    
         #Memorise headers
         self.Memorised_Headers = Gived_headers
 
@@ -224,7 +225,7 @@ class CloudflareBypass(object):
 
             self.HttpReponse.close()
 
-        #2 eme etape recuperation cookies
+        #2 eme etape recuperation parametres
         hash = re.findall('<input type="hidden" name="jschl_vc" value="(.+?)"\/>',htmlcontent)[0]
         passe = re.findall('<input type="hidden" name="pass" value="(.+?)"\/>',htmlcontent)[0]
 
@@ -234,7 +235,7 @@ class CloudflareBypass(object):
         #Temporisation
         #j'en peux plus de cette popup xD
         #showInfo("Information", 'Decodage protection CloudFlare' , 5)
-        xbmc.sleep(4000)
+        xbmc.sleep(5000)
 
         NewUrl = self.hostComplet + '/cdn-cgi/l/chk_jschl?jschl_vc='+ urllib.quote_plus(hash) +'&pass=' + urllib.quote_plus(passe) + '&jschl_answer=' + rep
 
@@ -244,8 +245,19 @@ class CloudflareBypass(object):
         #Add first cookie
         if not cookies == '':
             opener.addheaders.append(('Cookie', cookies))
+        
+        #Rajout headers manquants
+        if 'Referer' not in opener.addheaders:
+            opener.addheaders.append(('Referer', self.url))
+        if 'Accept' not in opener.addheaders:
+            opener.addheaders.append(('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'))
 
         self.HttpReponse = opener.open(NewUrl,postdata)
+        
+        #xbmc.log("Headers send " + str(opener.addheaders), xbmc.LOGNOTICE)
+        #xbmc.log("cookie send " + str(cookies), xbmc.LOGNOTICE)
+        #xbmc.log("header recu " + str(self.HttpReponse.headers), xbmc.LOGNOTICE)
+        #xbmc.log("Url " + str(NewUrl), xbmc.LOGNOTICE)
 
         if 'Set-Cookie' in self.HttpReponse.headers:
             cookies2 = str(self.HttpReponse.headers.get('Set-Cookie'))
@@ -263,7 +275,14 @@ class CloudflareBypass(object):
                 return ''
 
             cookies = '__cfduid=' + c1[0] + '; cf_clearance=' + c2[0]
-
+        elif 'Please complete the security check' in self.HttpReponse.read():
+            #fh = open('c:\\test.txt', "w")
+            #fh.write(self.HttpReponse.read())
+            #fh.close()
+            xbmc.log("Probleme protection Cloudflare : Protection captcha", xbmc.LOGNOTICE)
+            showInfo("Erreur", 'Probleme CloudFlare, pls Retry' , 5)
+            self.HttpReponse.close()
+            return ''           
         else:
             xbmc.log("Probleme protection Cloudflare : Cookies manquants", xbmc.LOGNOTICE)
             showInfo("Erreur", 'Probleme protection CloudFlare' , 5)

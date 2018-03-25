@@ -416,7 +416,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<a name="b[0-9]+".+?href="([^"]+)" id="([^"]+)" target="seriePlayer"> *<i class=[^>]+><\/i> ([^<]+) <'
+    sPattern = '<a *name="b[0-9]+".+?href="([^"]+)" *id="([^"]+)" *target="seriePlayer".+?i class=[^>]+><\/i> ([^<]+) <'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -448,8 +448,6 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
-
-    
 def showLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -459,7 +457,7 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     #cConfig().log(sUrl)
 
     #fh = open('c:\\test.txt', "w")
@@ -468,9 +466,9 @@ def showLinks():
 
     oParser = cParser()
 
-    sPattern = '<\/i> (VF|VOSTFR) *<\/div>|<a id="([^"]+)".+?target="seriePlayer" title="([^"]+)" data-rel="([^"]+)"'
+    sPattern = '<\/i> (VF|VOSTFR) *<\/div>|<a id="([^"]+)".+?target="seriePlayer" *title="([^"]+)" data-rel="([^"]+)"'
     #aResult = oParser.parse(sHtmlContent, sPattern)
-    aResult = re.findall(sPattern,sHtmlContent)
+    aResult = re.findall(sPattern, sHtmlContent)
 
     if (aResult):
         total = len(aResult)

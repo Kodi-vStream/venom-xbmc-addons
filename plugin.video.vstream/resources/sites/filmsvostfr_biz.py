@@ -8,7 +8,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re,urllib,urllib2
+import re, urllib, urllib2
 
 SITE_IDENTIFIER = 'filmsvostfr_biz'
 SITE_NAME = 'Filmsvostfr'
@@ -19,17 +19,17 @@ URL_MAIN = 'http://filmsvostfr.ws/'
 MOVIE_NEWS = (URL_MAIN + 'films-en-streaming', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films-en-streaming', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
-MOVIE_ANNEES = (True, 'showMovieAnnees')
+MOVIE_ANNEES = (True, 'showMoviesYears')
 
 SERIE_NEWS = (URL_MAIN + 'series-en-streaming', 'showMovies')
 SERIE_SERIES = (URL_MAIN + 'series-en-streaming', 'showMovies')
 SERIE_GENRES = ('http://seriegenre', 'showGenres')
-SERIE_ANNEES = (True, 'showSerieAnnees')
+SERIE_ANNEES = (True, 'showSeriesYears')
 
 ANIM_NEWS = (URL_MAIN + 'animes-en-streaming', 'showMovies')
 ANIM_ANIMS = (URL_MAIN + 'animes-en-streaming', 'showMovies')
 ANIM_GENRES = ('http://animgenre', 'showGenres')
-ANIM_ANNEES = (True, 'showAnimeAnnees')
+ANIM_ANNEES = (True, 'showAnimsYears')
 
 URL_SEARCH = (URL_MAIN + 'recherche.htm?q=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + 'recherche.htm?q=', 'showMovies')
@@ -94,37 +94,37 @@ def showMovieGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action',URL_MAIN + '1_1_action.html'] )
-    liste.append( ['Animation',URL_MAIN + '2_1_animation.html'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + '24_1_arts-martiaux.html'] )
-    liste.append( ['Aventure',URL_MAIN + '3_1_aventure.html'] )
-    liste.append( ['Biopic',URL_MAIN + '13_1_biopic.html'] )
-    liste.append( ['Bollywood',URL_MAIN + '26_1_bollywood.html'] )
-    liste.append( ['Comédie',URL_MAIN + '4_1_comedie.html'] )
-    liste.append( ['Comédie dramatique',URL_MAIN + '22_1_comedie-dramatique.html'] )
-    liste.append( ['Comédie Musicale',URL_MAIN + '17_1_comedie_musicale.html'] )
-    liste.append( ['Concert',URL_MAIN + '28_1_concert.html'] )
-    liste.append( ['Divers',URL_MAIN + '14_1_divers.html'] )
-    liste.append( ['Documentaire',URL_MAIN + '15_1_documentaire.html'] )
-    liste.append( ['Drame',URL_MAIN + '5_1_drame.html'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + '6_1_epouvante-horreur.html'] )
-    liste.append( ['Erotique',URL_MAIN + '25_1_erotique.html'] )
-    liste.append( ['Espionnage',URL_MAIN + '12_1_espionnage.html'] )
-    liste.append( ['Famille',URL_MAIN + '18_1_famille.html'] )
-    liste.append( ['Fantastique',URL_MAIN + '7_1_fantastique.html'] )
-    liste.append( ['Guerre',URL_MAIN + '21_1_guerre.html'] )
-    liste.append( ['Historique',URL_MAIN + '23_1_historique.html'] )
-    liste.append( ['Musical',URL_MAIN + '16_1_musical.html'] )
-    liste.append( ['Non Classé',URL_MAIN + '26_1_bollywood.html'] )
-    liste.append( ['Opéra',URL_MAIN + '27_1_opera.html'] )
-    liste.append( ['Péplum',URL_MAIN + '20_1_peplum.html'] )
-    liste.append( ['Policier',URL_MAIN + '8_1_policier.html'] )
-    liste.append( ['Romance',URL_MAIN + '9_1_romance.html'] )
-    liste.append( ['Science Fiction',URL_MAIN + '10_1_science-fiction.html'] )
-    liste.append( ['Thriller',URL_MAIN + '11_1_thriller.html'] )
-    liste.append( ['Western',URL_MAIN + '19_1_western.html'] )
+    liste.append( ['Action', URL_MAIN + '1_1_action.html'] )
+    liste.append( ['Animation', URL_MAIN + '2_1_animation.html'] )
+    liste.append( ['Arts Martiaux', URL_MAIN + '24_1_arts-martiaux.html'] )
+    liste.append( ['Aventure', URL_MAIN + '3_1_aventure.html'] )
+    liste.append( ['Biopic', URL_MAIN + '13_1_biopic.html'] )
+    liste.append( ['Bollywood', URL_MAIN + '26_1_bollywood.html'] )
+    liste.append( ['Comédie', URL_MAIN + '4_1_comedie.html'] )
+    liste.append( ['Comédie dramatique', URL_MAIN + '22_1_comedie-dramatique.html'] )
+    liste.append( ['Comédie Musicale', URL_MAIN + '17_1_comedie_musicale.html'] )
+    liste.append( ['Concert', URL_MAIN + '28_1_concert.html'] )
+    liste.append( ['Divers', URL_MAIN + '14_1_divers.html'] )
+    liste.append( ['Documentaire', URL_MAIN + '15_1_documentaire.html'] )
+    liste.append( ['Drame', URL_MAIN + '5_1_drame.html'] )
+    liste.append( ['Epouvante Horreur', URL_MAIN + '6_1_epouvante-horreur.html'] )
+    liste.append( ['Erotique', URL_MAIN + '25_1_erotique.html'] )
+    liste.append( ['Espionnage', URL_MAIN + '12_1_espionnage.html'] )
+    liste.append( ['Famille', URL_MAIN + '18_1_famille.html'] )
+    liste.append( ['Fantastique', URL_MAIN + '7_1_fantastique.html'] )
+    liste.append( ['Guerre', URL_MAIN + '21_1_guerre.html'] )
+    liste.append( ['Historique', URL_MAIN + '23_1_historique.html'] )
+    liste.append( ['Musical', URL_MAIN + '16_1_musical.html'] )
+    liste.append( ['Non Classé', URL_MAIN + '26_1_bollywood.html'] )
+    liste.append( ['Opéra', URL_MAIN + '27_1_opera.html'] )
+    liste.append( ['Péplum', URL_MAIN + '20_1_peplum.html'] )
+    liste.append( ['Policier', URL_MAIN + '8_1_policier.html'] )
+    liste.append( ['Romance', URL_MAIN + '9_1_romance.html'] )
+    liste.append( ['Science Fiction', URL_MAIN + '10_1_science-fiction.html'] )
+    liste.append( ['Thriller', URL_MAIN + '11_1_thriller.html'] )
+    liste.append( ['Western', URL_MAIN + '19_1_western.html'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -142,31 +142,31 @@ def showGenres():
         code = 'animes/'
 
     liste = []
-    liste.append( ['Action',URL_MAIN + code + 'action.html'] )
-    liste.append( ['Animation',URL_MAIN + code + 'animation.html'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + code + 'arts-martiaux.html'] )
-    liste.append( ['Aventure',URL_MAIN + code + 'aventure.html'] )
-    liste.append( ['Biopic',URL_MAIN + code + 'biopic.html'] )
-    liste.append( ['Comédie',URL_MAIN + code + 'comedie.html'] )
-    liste.append( ['Comédie dramatique',URL_MAIN + code + 'comedie-dramatique.html'] )
-    liste.append( ['Comédie Musicale',URL_MAIN + code + 'comedie_musicale.html'] )
-    liste.append( ['Divers',URL_MAIN + code + 'divers.html'] )
-    liste.append( ['Documentaire',URL_MAIN + code + 'documentaire.html'] )
-    liste.append( ['Drame',URL_MAIN + code + 'drame.html'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + code + 'epouvante-horreur.html'] )
-    liste.append( ['Espionnage',URL_MAIN + code + 'espionnage.html'] )
-    liste.append( ['Famille',URL_MAIN + code + 'famille.html'] )
-    liste.append( ['Fantastique',URL_MAIN + code + 'fantastique.html'] )
-    liste.append( ['Guerre',URL_MAIN + code + 'guerre.html'] )
-    liste.append( ['Historique',URL_MAIN + code + 'historique.html'] )
-    liste.append( ['Musical',URL_MAIN + code + 'musical.html'] )
-    liste.append( ['Policier',URL_MAIN + code + 'policier.html'] )
-    liste.append( ['Romance',URL_MAIN + code + 'romance.html'] )
-    liste.append( ['Science Fiction',URL_MAIN + code + 'science-fiction.html'] )
-    liste.append( ['Thriller',URL_MAIN + code + 'thriller.html'] )
-    liste.append( ['Western',URL_MAIN + code + 'western.html'] )
+    liste.append( ['Action', URL_MAIN + code + 'action.html'] )
+    liste.append( ['Animation', URL_MAIN + code + 'animation.html'] )
+    liste.append( ['Arts Martiaux', URL_MAIN + code + 'arts-martiaux.html'] )
+    liste.append( ['Aventure', URL_MAIN + code + 'aventure.html'] )
+    liste.append( ['Biopic', URL_MAIN + code + 'biopic.html'] )
+    liste.append( ['Comédie', URL_MAIN + code + 'comedie.html'] )
+    liste.append( ['Comédie dramatique', URL_MAIN + code + 'comedie-dramatique.html'] )
+    liste.append( ['Comédie Musicale', URL_MAIN + code + 'comedie_musicale.html'] )
+    liste.append( ['Divers', URL_MAIN + code + 'divers.html'] )
+    liste.append( ['Documentaire', URL_MAIN + code + 'documentaire.html'] )
+    liste.append( ['Drame', URL_MAIN + code + 'drame.html'] )
+    liste.append( ['Epouvante Horreur', URL_MAIN + code + 'epouvante-horreur.html'] )
+    liste.append( ['Espionnage', URL_MAIN + code + 'espionnage.html'] )
+    liste.append( ['Famille', URL_MAIN + code + 'famille.html'] )
+    liste.append( ['Fantastique', URL_MAIN + code + 'fantastique.html'] )
+    liste.append( ['Guerre', URL_MAIN + code + 'guerre.html'] )
+    liste.append( ['Historique', URL_MAIN + code + 'historique.html'] )
+    liste.append( ['Musical', URL_MAIN + code + 'musical.html'] )
+    liste.append( ['Policier', URL_MAIN + code + 'policier.html'] )
+    liste.append( ['Romance', URL_MAIN + code + 'romance.html'] )
+    liste.append( ['Science Fiction', URL_MAIN + code + 'science-fiction.html'] )
+    liste.append( ['Thriller', URL_MAIN + code + 'thriller.html'] )
+    liste.append( ['Western', URL_MAIN + code + 'western.html'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -174,10 +174,10 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-def showMovieAnnees():
+def showMoviesYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1921, 2018)):
+    for i in reversed (xrange(1921, 2019)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films-produit-en-' + Year)
@@ -185,10 +185,10 @@ def showMovieAnnees():
 
     oGui.setEndOfDirectory()
 
-def showSerieAnnees():
+def showSeriesYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1940, 2018)):
+    for i in reversed (xrange(1940, 2019)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series-produit-en-' + Year)
@@ -196,10 +196,10 @@ def showSerieAnnees():
 
     oGui.setEndOfDirectory()
 
-def showAnimeAnnees():
+def showAnimsYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1969, 2018)):
+    for i in reversed (xrange(1969, 2019)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'animes-produit-en-' + Year)

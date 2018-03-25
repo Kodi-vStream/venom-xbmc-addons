@@ -9,17 +9,20 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
+
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 SITE_IDENTIFIER = 'full_stream_org'
 SITE_NAME = 'Full-Stream'
 SITE_DESC = 'Films, Séries & Animés en Streaming HD'
-URL_MAIN = 'http://full-stream.su/'
+URL_MAIN = 'http://full-stream.im/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 SERIE_NEWS = (URL_MAIN + 'seriestv/', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'seriestv/', 'showMovies')
 SERIE_VFS = (URL_MAIN + 'seriestv/vf/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'seriestv/vostfr/', 'showMovies')
 
@@ -82,7 +85,7 @@ def showGenres():
     liste.append( ['Dramatique', URL_MAIN + 'film-dramatique/'] )
     liste.append( ['Documentaire', URL_MAIN + 'film-documentaire/'] )
     liste.append( ['Familial', URL_MAIN + 'film-familial/'] )
-    liste.append( ['Fantastique', URL_MAIN + 'fantastique/'] )
+    liste.append( ['Fantastique', URL_MAIN + 'film-fantastique/'] )
     liste.append( ['Espionnage', URL_MAIN + 'film-espionnage'] )
     liste.append( ['Historique', URL_MAIN + 'film-historique/'] )
     liste.append( ['Horreur', URL_MAIN + 'film-horreur/'] )
@@ -95,7 +98,7 @@ def showGenres():
     liste.append( ['Western', URL_MAIN + 'film-western/'] )
     liste.append( ['En VOSTFR', URL_MAIN + 'film-vostfr'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -120,15 +123,13 @@ def showMovies(sSearch = ''):
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    #sPattern = 'fullstreaming">.*?<img src="(.+?)".+?<h3.+?><a href="(.+?)">(.+?)<\/a>.+?(?:<a href=".quality.+?">(.+?)<\/a>.+?)*<span style="font-family:.+?>(.+?)<\/span>'
-    #sPattern = 'fullstreaming".*?img src="(.+?)".+?href="(.+?)">(.+?)<\/a>.*?(?:Version</strong> :([^<]+)<hr/>.*?)*style="font-family:.*?>(.+?)<\/span>'
     sPattern = 'fullstreaming".*?img src="(.+?)".+?<span class="xquality">(.+?)</span>.+?href="(.+?)">(.+?)<\/a>.*?style="font-family:.*?>(.+?)<\/span>'
 
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.addHeaderEntry('User-Agent', UA)
     sHtmlContent = oRequestHandler.request()
 
-    #page bloquee ?
+    #page bloquee?
     if sHtmlContent.startswith('<noscript>'):
         code = re.search('value="([^"]+)"\/>', sHtmlContent, re.DOTALL).group(1)
 
@@ -231,7 +232,7 @@ def showLink():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
 
             else:
-                sUrl2 = URL_MAIN[:-1]+aEntry[1]
+                sUrl2 = URL_MAIN[:-1] + aEntry[1]
                 sTitle = '%s [%s]' % (sMovieTitle, aEntry[2])
                 
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -268,11 +269,11 @@ def showHosters():
         test2 = [x.strip('"') for x in aResult[1][0][1].split(',')]
         test3 = [x.strip('"') for x in aResult[1][0][2].split(',')]
         
-        sHtmlContent2 = unescape(test1,test2,test3)
+        sHtmlContent2 = unescape(test1, test2, test3)
         # cConfig().log(sHtmlContent2)
         if sHtmlContent2:
             sHtmlContent = cUtil().unescape(sHtmlContent2)
-            sHtmlContent = sHtmlContent.replace('\\','')
+            sHtmlContent = sHtmlContent.replace('\\', '')
 
             sPattern = '<iframe src="(.+?)" style='
             aResult = oParser.parse(sHtmlContent, sPattern)
@@ -300,7 +301,7 @@ def showLinkSerie():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern ='<div id="'+sReftitle+'" class="fullsfeature">(.+?)/a></ul>'
+    sPattern ='<div id="' + sReftitle + '" class="fullsfeature">(.+?)/a></ul>'
     aResult1 = oParser.parse(sHtmlContent, sPattern)
     
     sPattern = '<a href="([^"]+)" target=".+?layer" class="fsctab".+?</span>(.+?)<'
@@ -364,7 +365,7 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oOutputParameterHandler.addParameter('reftitle', aEntry[2])
-                oGui.addTV(SITE_IDENTIFIER, 'showLinkSerie', sTitle, '', sThumb,'', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showLinkSerie', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
