@@ -10,36 +10,26 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.config import cConfig
 
-import re,urllib,urllib2,xbmc
+import re, urllib, urllib2, xbmc
 
 SITE_IDENTIFIER = 'sokrostream_biz'
 SITE_NAME = 'Sokrostream'
 SITE_DESC = 'Films & Séries en streaming en vf et Vostfr'
 
-URL_MAIN = 'http://sokrostream.tv/'
+URL_MAIN = 'https://sokrostream.cx/'
 
 MOVIE_NEWS = (URL_MAIN + 'categories/films-streaming-2', 'showMovies')
 MOVIE_MOVIE = ('http', 'load')
-# MOVIE_VIEWS = (URL_MAIN + 'les-films-les-plus-vues-2', 'showMovies')
-# MOVIE_VF = (URL_MAIN + 'langues/french', 'showMovies')
-# MOVIE_VOSTFR = (URL_MAIN + 'langues/vostfr', 'showMovies')
-# MOVIE_COMMENTS = (URL_MAIN + 'les-films-les-plus-commentes-2', 'showMovies')
-# MOVIE_NOTES = (URL_MAIN + 'films-les-mieux-notes-2', 'showMovies')
 MOVIE_GENRES = (URL_MAIN , 'showGenres')
 MOVIE_ANNEES = (URL_MAIN , 'showMovieYears')
-MOVIE_LANG = (URL_MAIN , 'showLang')
 MOVIE_QLT = (URL_MAIN , 'showQlt')
 MOVIE_PAYS = (URL_MAIN , 'showPays')
 MOVIE_PLT = (URL_MAIN , 'showPlt')
 
 SERIE_NEWS = (URL_MAIN + 'categories/series-streaming-2', 'showMovies')
 SERIE_SERIES = ('http', 'load')
-# SERIE_VFS = (URL_MAIN + 'series-tv/langues/french', 'showMovies')
-# SERIE_VOSTFRS = (URL_MAIN + 'series-tv/langues/vostfr', 'showMovies')
-# SERIE_HD = (URL_MAIN + 'series-tv/qualites/hd-720p', 'showMovies')
 SERIE_GENRES = (URL_MAIN + 'series-tv/', 'showGenres')
 SERIE_ANNEES = (URL_MAIN + 'series-tv/', 'showSerieYears')
-# SERIE_LANG = (URL_MAIN + 'series-tv/', 'showLang')
 SERIE_QLT = (URL_MAIN + 'series-tv/', 'showQlt')
 SERIE_PAYS = (URL_MAIN + 'series-tv/', 'showPays')
 SERIE_PLT = (URL_MAIN + 'series-tv/', 'showPlt')
@@ -75,18 +65,6 @@ def showMenuMovies():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'films_views.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_COMMENTS[1], 'Films (Les plus commentés)', 'films_comments.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'films_notes.png', oOutputParameterHandler)
-
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
@@ -102,10 +80,6 @@ def showMenuMovies():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_QLT[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_QLT[1], 'Films (Qualités)', 'films.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_LANG[0])
-    # oGui.addDir(SITE_IDENTIFIER, MOVIE_LANG[1], 'Films (Langues)', 'lang.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_PLT[0])
@@ -135,10 +109,6 @@ def showMenuSeries():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_QLT[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_QLT[1], 'Séries (Qualités)', 'series.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', SERIE_LANG[0])
-    # oGui.addDir(SITE_IDENTIFIER, SERIE_LANG[1], 'Séries (Langues)', 'lang.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_PLT[0])
@@ -175,17 +145,16 @@ def showGenres():
     liste.append( ['Famille', sUrl + 'genre/famille'] )
     liste.append( ['Fantastique', sUrl + 'genre/fantastique'] )
     liste.append( ['Guerre', sUrl + 'genre/guerre'] )
-    liste.append( ['Historique', sUrl + 'genre/historique'] )
+    liste.append( ['Histoire', sUrl + 'genre/histoire'] )
     liste.append( ['Judiciaire', sUrl + 'genre/judiciaire'] )
-    liste.append( ['Médical', sUrl + 'genre/musical'] )
+    liste.append( ['Médical', sUrl + 'genre/medical'] )
     liste.append( ['Policier', sUrl + 'genre/policier'] )
-    liste.append( ['Péplum', sUrl + 'genre/peplum'] )
     liste.append( ['Romance', sUrl + 'genre/romance'] )
     liste.append( ['Science-Fiction', sUrl + 'genre/science-fiction'] )
     liste.append( ['Thriller', sUrl + 'genre/thriller'] )
     liste.append( ['Western', sUrl + 'genre/western'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -206,10 +175,10 @@ def showPays():
     liste.append( ['Espagnol', sUrl + 'pays/espagnol'] )
     liste.append( ['Français', sUrl + 'pays/francais'] )
     liste.append( ['Italien', sUrl + 'pays/italien'] )
-    liste.append( ['Japonais', sUrl + 'pays/japonnais'] )
+    liste.append( ['Japonais', sUrl + 'pays/japonais'] )
     liste.append( ['Norvégien', sUrl + 'pays/norvegien'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -220,7 +189,7 @@ def showPays():
 def showMovieYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1913, 2018)):
+    for i in reversed (xrange(1913, 2019)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annees/' + Year)
@@ -231,7 +200,7 @@ def showMovieYears():
 def showSerieYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1940, 2018)):
+    for i in reversed (xrange(1940, 2019)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series-tv/annees/' + Year)
@@ -260,29 +229,11 @@ def showQlt():
     liste.append( ['TVRIP', sUrl + 'qualites/tvrip'] )
     liste.append( ['BRRIP', sUrl + 'qualites/brrip'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-def showLang():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    liste = []
-    liste.append( ['FRENCH', sUrl + 'langues/french'] )
-    liste.append( ['VOSTFR', sUrl + 'langues/vostfr'] )
-    liste.append( ['VO', sUrl + 'langues/vo'] )
-
-    for sTitle,sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'lang.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -295,6 +246,7 @@ def showPlt():
     liste.append( ['OK.RU', sUrl + 'plateformes/ok-ru'] )
     liste.append( ['FlashX', sUrl + 'plateformes/flashx'] )
     liste.append( ['Netu', sUrl + 'plateformes/netu'] )
+    liste.append( ['Cloudcartel', sUrl + 'plateformes/cloudcartel'] )
     liste.append( ['OpenLoad', sUrl + 'plateformes/openload'] )
     liste.append( ['Youwatch', sUrl + 'plateformes/youwatch'] )
     liste.append( ['Vidup', sUrl + 'plateformes/vidup'] )
@@ -318,7 +270,7 @@ def showPlt():
     liste.append( ['Vimple', sUrl + 'plateformes/vimple'] )
     liste.append( ['Vodlocker', sUrl + 'plateformes/vodlocker'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -344,7 +296,7 @@ def showMovies(sSearch = ''):
 
     oParser = cParser()
 
-    sHtmlContent = oParser.abParse(sHtmlContent2,'<section class="box"','<div class="pagination-fix"')
+    sHtmlContent = oParser.abParse(sHtmlContent2, '<section class="box"','<div class="pagination-fix"')
     sPattern = 'data-v-.+?<a href="([^"]+)".+?<img src="(.+?)" alt="(.+?)" class='
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -352,7 +304,7 @@ def showMovies(sSearch = ''):
     datas = None
     if sSearch:
         datas = __getDataFromHtmlContent( sHtmlContent2 )
-        datas = [[ __genUrl(x,'series'), x['poster'], x['name'].encode('utf-8')]
+        datas = [[ __genUrl(x, 'series'), x['poster'], x['name'].encode('utf-8')]
                     for x in datas['series']]
         if len( datas ) > 0:
             aResult = list( aResult ) # aResult: tuple -> list
@@ -384,7 +336,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if ('/series/' in sUrl2):
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle,'', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
@@ -401,7 +353,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'class="pagination-link is-current".+?<a href="(.+?)"'
+    sPattern = 'class="pagination-link is-current".+?<a href="(.+?)" class="pagination-link"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return URL_MAIN[:-1]+aResult[1][0]
@@ -413,8 +365,8 @@ def __getDataFromHtmlContent( sHtmlContent ):
 
     import json
     oParser = cParser()
-    sHtmlContent = oParser.abParse(sHtmlContent,'window.__NUXT__=',';</script>',16)
-    datas = json.loads( sHtmlContent )
+    sHtmlContent = oParser.abParse(sHtmlContent, 'window.__NUXT__=', ';</script>', 16)
+    datas = json.loads(sHtmlContent)
     datas = datas["data"][0]
     return datas
 
@@ -458,7 +410,7 @@ def showSaisons():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sHtmlContent = oParser.abParse(sHtmlContent,'</section><!----><section class="box"','<section class="box box-fix')
+    sHtmlContent = oParser.abParse(sHtmlContent, '</section><!----><section class="box"', '<section class="box box-fix')
 
     sPattern = 'data-v-.+?<a href="([^"]+)".+?>(S.+?)</button>'
 
@@ -495,7 +447,7 @@ def showEpisode():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sHtmlContent = oParser.abParse(sHtmlContent,'</section><!----><section class="box"','<section class="box box-fix')
+    sHtmlContent = oParser.abParse(sHtmlContent, '</section><!----><section class="box"', '<section class="box box-fix')
 
     sPattern = '<a href="([^"]+)".+?>(E.+?)</button>'
 
@@ -534,7 +486,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sHtmlContent = oParser.abParse(sHtmlContent,'window.__NUXT__=',';</script>',16)
+    sHtmlContent = oParser.abParse(sHtmlContent, 'window.__NUXT__=', ';</script>',16)
 
     page = None
     if '-episode-' in sUrl:
