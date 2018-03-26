@@ -5,6 +5,7 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.player import cPlayer
 from resources.lib import util
 import re, urllib2
+import ssl
 
 try:    import json
 except: import simplejson as json
@@ -27,7 +28,8 @@ class cShowBA:
             url = "https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=%s&maxResults=1&relevanceLanguage=fr&key=%s" % (self.search, self.key)
 
             req = urllib2.Request(url)
-            response = urllib2.urlopen(req)
+            gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+            response = urllib2.urlopen(req,context=gcontext)
             sHtmlContent = response.read()
             result = json.loads(sHtmlContent)
             response.close()
