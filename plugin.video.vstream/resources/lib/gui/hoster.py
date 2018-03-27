@@ -138,24 +138,24 @@ class cHosterGui:
         #Gestion classique
         if ('facebook' in sHostName):
             return self.getHoster('facebook')
-        if (('auroravid' in sHostName) or ('novamov' in sHostName)):
-            return self.getHoster('auroravid')
+        #if (('auroravid' in sHostName) or ('novamov' in sHostName)):
+            #return self.getHoster('auroravid')
         if (('divxstage' in sHostName) or ('cloudtime' in sHostName)):
             return self.getHoster('divxstage')
         if (('raptu.com' in sHostName) or ('rapidvideo' in sHostName)):
             return self.getHoster('raptu')
         if ('watchers.to' in sHostName):
             return self.getHoster('watchers')
-        if (('videoweed' in sHostName) or ('bitvid' in sHostName)):
-            return self.getHoster('videoweed')
+        #if (('videoweed' in sHostName) or ('bitvid' in sHostName)):
+            #return self.getHoster('videoweed')
         if ('vidoza.' in sHostName):
             return self.getHoster('vidoza')
         if (('youtube' in sHostName) or ('youtu.be' in sHostName)):
             return self.getHoster('youtube')
         if ('rutube' in sHostName):
             return self.getHoster('rutube')
-        if ('nowvideo' in sHostName):
-            return self.getHoster('nowvideo')
+        #if ('nowvideo' in sHostName):
+            #return self.getHoster('nowvideo')
         if ('vk.com' in sHostName):
             return self.getHoster('vk')
         if ('vkontakte' in sHostName):
