@@ -99,6 +99,43 @@ def load():
 
     oGui.setEndOfDirectory()
 
+def showMyTmdb():
+    oGui = cGui()
+    if cConfig().getSetting("tmdb_session") == '':
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'https://')
+        oGui.addDir(SITE_IDENTIFIER, 'getToken', cConfig().getlanguage(30305), 'trakt.png', oOutputParameterHandler)
+    else :
+
+        #pas de deco possible avec l'api donc on test l'username sinon ont supprime tous
+        result = grab.getUrl('account', '1', 'session_id='+ cConfig().getSetting('tmdb_session'))
+
+        if 'username' in result and result['username']:
+            sUsername = result['username']
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'https://')
+            oGui.addText(SITE_IDENTIFIER, (cConfig().getlanguage(30306)) % (sUsername))
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'http://')
+            oGui.addDir(SITE_IDENTIFIER, 'showMyTmdb', 'Mon TMDB', 'search.png', oOutputParameterHandler)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/oauth/revoke')
+            oGui.addDir(SITE_IDENTIFIER, 'delToken', cConfig().getlanguage(30309), 'trakt.png', oOutputParameterHandler)
+
+        else :
+
+            cConfig().setSetting('tmdb_session', '')
+            oGui.showNofication(cConfig().getlanguage(30320))
+            xbmc.executebuiltin("Container.Refresh")
+
+    oGui.setEndOfDirectory()
+
+
+def getToken():
+    return grab.getToken()
+
 def showSearchMovie():
     oGui = cGui()
 

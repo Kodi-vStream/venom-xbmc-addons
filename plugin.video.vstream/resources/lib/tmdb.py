@@ -4,7 +4,7 @@
 
 from resources.lib.config import cConfig
 
-import json, os, copy
+import json, os, copy, time
 from urllib import quote_plus, urlopen, urlencode
 import xbmc
 
@@ -144,6 +144,40 @@ class cTMDb:
             self.dbcur.close()
             self.dbcon.close()
         except: pass
+
+
+    def getToken(self):
+
+        result = self._call('authentication/token/new', '')
+
+        total = len(result)
+
+        if (total > 0):
+            #self.__Token  = result['token']
+            url = 'https://www.themoviedb.org/authenticate/%s'  % result['request_token']
+            sText = (cConfig().getlanguage(30421)) % (url)
+
+            oDialog = cConfig().createDialogYesNo(sText)
+            if (oDialog == 0):
+                return False
+
+            if (oDialog == 1):
+                
+                #print url
+                result = self._call('authentication/session/new', 'request_token='+ result['request_token'])
+
+                if 'success' in result and result['success']:
+                    cConfig().setSetting('tmdb_session', str(result['session_id']))
+                    cGui().showNofication(cConfig().getlanguage(30000))
+                    return
+                else:
+                    cGui().showNofication('Erreur'+cConfig().getlanguage(30000))
+                    return
+
+
+            #xbmc.executebuiltin("Container.Refresh")
+            return
+        return
 
     #cherche dans les films ou serie l'id par le nom return ID ou FALSE
     def get_idbyname(self, name, year='', type='movie', page=1):
@@ -559,6 +593,7 @@ class cTMDb:
     def _call(self, action, append_to_response):
         url = '%s%s?api_key=%s&%s&language=%s' % (self.URL, action, self.api_key, append_to_response, self.lang)
         #xbmc.log(str(url), xbmc.LOGNOTICE)
+        print url
         response = urlopen(url)
         data = json.loads(response.read())
         return data
