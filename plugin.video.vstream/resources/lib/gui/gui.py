@@ -290,6 +290,7 @@ class cGui():
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
 
 
@@ -299,6 +300,7 @@ class cGui():
                 self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
@@ -402,6 +404,17 @@ class cGui():
         sType = cGui.CONTENT.replace('tvshows', 'shows')
         oOutputParameterHandler.addParameter('sType', sType)
         self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cTrakt','cTrakt','getAction', util.VSlang(30214))
+
+    def createContexMenuTMDB(self, oGuiElement, oOutputParameterHandler= ''):
+        #pas de menu si pas de meta.
+        #if cConfig().getSetting("meta-view") == 'false':
+        #    return
+        oOutputParameterHandler.addParameter('sImdbId', oGuiElement.getImdbId())
+        oOutputParameterHandler.addParameter('sTmdbId', oGuiElement.getTmdbId())
+        #ajout de filename netoyage deja fait
+        oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
+
+        self.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'themoviedb_org','themoviedb_org','getAction', 'TMDB')
 
     def createContexMenuDownload(self, oGuiElement, oOutputParameterHandler= '', status = '0'):
 
