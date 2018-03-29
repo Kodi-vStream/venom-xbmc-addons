@@ -80,7 +80,6 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir(SITE_IDENTIFIER, 'showNets', util.VSlang(30114), 'buzz.png', oOutputParameterHandler)
 
-        #pas actif
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir('themoviedb_org', 'showMyTmdb', 'TMDB', 'trakt.png', oOutputParameterHandler)

@@ -188,6 +188,12 @@ def getContext():
     lang = []
     fow = []
     yn  = []
+
+    disp.append('vote')
+    fow.append('vote')
+    yn.append(True)
+    lang.append('Ajouter: Vote')
+
     disp.append('account/%s/watchlist' % tmdb_account)
     fow.append('watchlist')
     yn.append(True)
@@ -256,17 +262,25 @@ def getAction():
     if not sTMDB:
         return
 
-    #media_type": "movie",
-    #"media_id": 550,
-    #"favorite": true
-    #seul et unique requette en POST
-    #donc on refait la requette.
-    headers = {'Content-Type': 'application/json'}
 
+    if sAction == 'vote':
+        #vote /movie/{movie_id}/rating
+        #/tv/{tv_id}/rating
+        dialog = xbmcgui.Dialog()
+        numboard = dialog.numeric(0, 'Min 0.5 - Max 10')
+        if numboard != None:
+            sAction = '%s/%s/rating' % (sCat, sTMDB)
+            sPost = {"value": numboard}
+        else : return
+
+    else:
+
+        sPost = {"media_type": sCat, "media_id": sTMDB, sFow: sYn}
+    
     sUrl = '%s%s?api_key=%s&session_id=%s' % ('http://api.themoviedb.org/3/', sAction, cConfig().getSetting('api_tmdb'), tmdb_session)
-    sPost = {"media_type": sCat, "media_id": sTMDB, sFow: sYn}
     sPost = json.dumps(sPost)
 
+    headers = {'Content-Type': 'application/json'}
     req = urllib2.Request(sUrl, sPost, headers)
     response = urllib2.urlopen(req)
     data = json.loads(response.read())
