@@ -111,19 +111,22 @@ def showMyTmdb():
         result = grab.getUrl('account', '1', 'session_id='+ cConfig().getSetting('tmdb_session'))
 
         if 'username' in result and result['username']:
+            
             sUsername = result['username']
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oGui.addText(SITE_IDENTIFIER, (cConfig().getlanguage(30306)) % (sUsername))
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://')
-            oGui.addDir(SITE_IDENTIFIER, 'showMyTmdb', 'Mon TMDB', 'search.png', oOutputParameterHandler)
-
+            oOutputParameterHandler.addParameter('session_id', cConfig().getSetting('tmdb_session'))
+            oOutputParameterHandler.addParameter('siteUrl', 'account/%s/watchlist/movies' % int(result['id']))
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'watchlist/movies', 'search.png', oOutputParameterHandler)
+            
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/oauth/revoke')
-            oGui.addDir(SITE_IDENTIFIER, 'delToken', cConfig().getlanguage(30309), 'trakt.png', oOutputParameterHandler)
-
+            oOutputParameterHandler.addParameter('session_id', cConfig().getSetting('tmdb_session'))
+            oOutputParameterHandler.addParameter('siteUrl', 'account/%s/watchlist/tv' % int(result['id']))
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'watchlist/tv', 'search.png', oOutputParameterHandler)
+        
         else :
 
             cConfig().setSetting('tmdb_session', '')
@@ -241,7 +244,9 @@ def showMovies(sSearch = ''):
 
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        result = grab.getUrl(sUrl, iPage)
+        session_id = oInputParameterHandler.getValue('session_id')
+        result = grab.getUrl(sUrl, iPage, 'session_id=%s' % session_id)
+        #result = grab.getUrl(sUrl, iPage)
 
     oGui = cGui()
 
