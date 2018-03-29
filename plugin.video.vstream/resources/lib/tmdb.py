@@ -593,7 +593,6 @@ class cTMDb:
     def _call(self, action, append_to_response):
         url = '%s%s?api_key=%s&%s&language=%s' % (self.URL, action, self.api_key, append_to_response, self.lang)
         #xbmc.log(str(url), xbmc.LOGNOTICE)
-        print url
         response = urlopen(url)
         data = json.loads(response.read())
         return data
