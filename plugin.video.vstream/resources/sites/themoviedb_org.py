@@ -238,7 +238,7 @@ def getAction():
 
     oInputParameterHandler = cInputParameterHandler()
 
-    sAction = ""
+    sAction= ''
     if not sAction:
         sAction, sFow, sYn = getContext()
     if not sAction:
@@ -277,6 +277,44 @@ def getAction():
 
         sPost = {"media_type": sCat, "media_id": sTMDB, sFow: sYn}
 
+
+    data = grab.getPostUrl(sAction, sPost)
+
+    if len(data) > 0:
+        cGui().showNofication(data['status_message'])
+
+    return
+
+#comme le cat change pour le type ont refait
+def getWatchlist():
+
+    if not tmdb_session:
+        return
+
+    if not tmdb_account:
+        return
+
+    oInputParameterHandler = cInputParameterHandler()
+
+
+    sCat = oInputParameterHandler.getValue('sType')
+    if not sCat:
+        return
+
+    #dans le doute si meta active
+    sTMDB = oInputParameterHandler.getValue('sTmdbId')
+    sSeason = oInputParameterHandler.getValue('sSeason')
+    sEpisode = oInputParameterHandler.getValue('sEpisode')
+
+    sCat = sCat.replace('1','movie').replace('2','tv')
+    grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
+    if not sTMDB:
+        sTMDB = grab.get_idbyname(oInputParameterHandler.getValue('sFileName'), '', sCat)
+    if not sTMDB:
+        return
+
+    sPost = {"media_type": sCat, "media_id": sTMDB, 'watchlist': True}
+    sAction = 'account/%s/watchlist' % tmdb_account
 
     data = grab.getPostUrl(sAction, sPost)
 

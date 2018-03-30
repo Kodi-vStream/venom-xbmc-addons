@@ -181,7 +181,12 @@ class cPlayer(xbmc.Player):
             pass
 
         try:
-            self.__getTMDBWatchlist()
+            tmdb_session = cConfig().getSetting('tmdb_session')
+            if tmdb_session:
+                self.__getWatchlist('tmdb')
+            bstoken = cConfig().getSetting("bstoken")
+            if bstoken:
+                self.__getWatchlist('trakt')
         except:
             pass
 
@@ -202,50 +207,23 @@ class cPlayer(xbmc.Player):
         if not (cConfig().isDharma()):
             self.__getResume()
 
-    def __getTMDBWatchlist(self):
-
-        tmdb_session = cConfig().getSetting('tmdb_session')
-        tmdb_account = cConfig().getSetting('tmdb_account')
-
-        if not tmdb_session:
-            return
-
-        if not tmdb_account:
-            return
+    def __getWatchlist(self, sAction):
 
         #calcul le temp de lecture
         pourcent =  float("%.2f" % (self.currentTime / self.totalTime))
 
         if (pourcent > 0.90):
-            oInputParameterHandler = cInputParameterHandler()
-            #oInputParameterHandler.getAllParameter()
-
-            sCat = oInputParameterHandler.getValue('sType')
-            if sCat:
-                sCat = sCat.replace('1','movie').replace('2','tv')
-            else: return
-
-                #dans le doute si meta active
-            sTMDB = oInputParameterHandler.getValue('sTmdbId')
-            sSeason = oInputParameterHandler.getValue('sSeason')
-            sEpisode = oInputParameterHandler.getValue('sEpisode')
-
-            sCat = sCat.replace('1','movie').replace('2','tv')
-            from resources.lib.tmdb import cTMDb
-            if not sTMDB:
-                grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
-                sTMDB = grab.get_idbyname(oInputParameterHandler.getValue('sFileName'), '', sCat)
-            if not sTMDB:
-                return
-
-
-            sPost = {"media_type": sCat, "media_id": sTMDB, 'watchlist': True}
-            sAction = 'account/%s/watchlist' % tmdb_account
-            data = grab.getPostUrl(sAction, sPost)
-
-            if len(data) > 0:
-                cGui().showNofication(data['status_message'])
+            if sAction == 'tmdb':
+                plugins = __import__('resources.sites.themoviedb_org', fromlist=['themoviedb_org'])
+                function = getattr(plugins, 'getWatchlist')
+                function()
+            elif sAction == 'trakt':
+                plugins = __import__('resources.lib.trakt', fromlist=['trakt'])
+                function = getattr(plugins, 'getWatchlist')
+                function()
+            
         return
+
 
             
     def __getResume(self):

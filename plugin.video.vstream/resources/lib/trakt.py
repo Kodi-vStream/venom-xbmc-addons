@@ -956,6 +956,73 @@ class cTrakt:
             xbmc.executebuiltin("Container.Refresh")
         return
 
+def getWatchlist(self):
+
+        if not cConfig().getSetting("bstoken"):
+            return
+
+        oInputParameterHandler = cInputParameterHandler()
+
+        sCat = oInputParameterHandler.getValue('sType')
+        if not sCat:
+            return
+        #entrer imdb ? venant d'ou?
+        sImdb = oInputParameterHandler.getValue('sImdbId')
+        sTMDB = oInputParameterHandler.getValue('sTmdbId')
+        sSeason = oInputParameterHandler.getValue('sSeason')
+        sEpisode = oInputParameterHandler.getValue('sEpisode')
+
+        if not sImdb:
+            sPost = {}
+            if not sTMDB:
+                sTMDB = int(self.getTmdbID(oInputParameterHandler.getValue('sMovieTitle'),sCat))
+
+            sPost = {sType: [ {"ids": {"tmdb": sTMDB}} ]}
+            if sSeason:
+                sPost = {sType: [ {"ids": {"tmdb": sTMDB} , "seasons": [ { "number": int(sSeason) }] } ]}
+            if sEpisode:
+                sPost = {sType: [ {"ids": {"tmdb": sTMDB} , "seasons": [ { "number": int(sSeason) , "episodes": [ { "number": int(sEpisode) } ] } ] } ]}
+        else:
+            sPost = {sType: [{"ids": {"imdb": sImdb}}]}
+
+        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
+
+        sPost = json.dumps(sPost)
+
+        sAction = 'https://api.trakt.tv/sync/watchlist'
+
+        req = urllib2.Request(sAction, sPost,headers)
+        response = urllib2.urlopen(req)
+        sHtmlContent = response.read()
+        result = json.loads(sHtmlContent)
+        #xbmc.log(str(result))
+
+        sText = "Erreur"
+        try:
+            if result["added"]['movies'] == 1 or result["added"]['episodes'] > 0 or result["added"]['shows'] > 0:
+                sText = "Ajouté avec succes"
+        except: pass
+
+        try:
+            if result["updated"]['movies'] == 1 or result["updated"]['episodes'] > 0 or result["updated"]['shows'] > 0:
+                sText = "Mise à jour avec succes"
+        except: pass
+
+        try:
+            if result["deleted"]['movies'] == 1 or result["deleted"]['episodes'] > 0:
+                sText = 'Supprimé avec succes'
+        except: pass
+
+        try:
+            if result["existing"]['movies'] >0  or result["existing"]['episodes'] > 0 or result["existing"]['seasons'] > 0  or result["existing"]['shows'] > 0:
+                sText = 'Entree deja presente'
+        except: pass
+
+        cGui().showNofication(result)
+
+        return
+        
+
     def createContexTrakt(self, oGui, oGuiElement, oOutputParameterHandler= ''):
 
         liste = []
