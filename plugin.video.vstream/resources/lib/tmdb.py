@@ -4,7 +4,7 @@
 
 from resources.lib.config import cConfig
 
-import json, os, copy, time
+import json, os, copy, time, urllib2
 from urllib import quote_plus, urlopen, urlencode
 import xbmc
 
@@ -594,5 +594,20 @@ class cTMDb:
         url = '%s%s?api_key=%s&%s&language=%s' % (self.URL, action, self.api_key, append_to_response, self.lang)
         #xbmc.log(str(url), xbmc.LOGNOTICE)
         response = urlopen(url)
+        data = json.loads(response.read())
+        return data
+
+    def getPostUrl(self, action, post, page=1):
+
+        tmdb_session = cConfig().getSetting('tmdb_session')
+        if not tmdb_session:
+            return
+
+        sUrl = '%s%s?api_key=%s&session_id=%s' % (self.URL, action, self.api_key, tmdb_session)
+        sPost = json.dumps(post)
+
+        headers = {'Content-Type': 'application/json'}
+        req = urllib2.Request(sUrl, sPost, headers)
+        response = urllib2.urlopen(req)
         data = json.loads(response.read())
         return data

@@ -10,7 +10,7 @@ from resources.lib.util import VSlog,isKrypton,VSerror
 
 import xbmc, xbmcgui, xbmcplugin
 
-import time
+import time, urllib2
 
 #pour les sous titres
 #https://github.com/amet/service.subtitles.demo/blob/master/service.subtitles.demo/service.py
@@ -165,6 +165,7 @@ class cPlayer(xbmc.Player):
 
     #Attention pas de stop, si on lance une seconde video sans fermer la premiere
     def onPlayBackStopped( self ):
+
         
         VSlog("player stoped")
         
@@ -178,6 +179,12 @@ class cPlayer(xbmc.Player):
             self.__setResume()
         except:
             pass
+
+        try:
+            self.__getTMDBWatchlist()
+        except:
+            pass
+
         #xbmc.executebuiltin( 'Container.Refresh' )
         
     def onPlayBackStarted(self):
@@ -194,6 +201,52 @@ class cPlayer(xbmc.Player):
         #inutile sur les dernieres version > Dharma
         if not (cConfig().isDharma()):
             self.__getResume()
+
+    def __getTMDBWatchlist(self):
+
+        tmdb_session = cConfig().getSetting('tmdb_session')
+        tmdb_account = cConfig().getSetting('tmdb_account')
+
+        if not tmdb_session:
+            return
+
+        if not tmdb_account:
+            return
+
+        #calcul le temp de lecture
+        pourcent =  float("%.2f" % (self.currentTime / self.totalTime))
+
+        if (pourcent > 0.90):
+            oInputParameterHandler = cInputParameterHandler()
+            #oInputParameterHandler.getAllParameter()
+
+            sCat = oInputParameterHandler.getValue('sType')
+            if sCat:
+                sCat = sCat.replace('1','movie').replace('2','tv')
+            else: return
+
+                #dans le doute si meta active
+            sTMDB = oInputParameterHandler.getValue('sTmdbId')
+            sSeason = oInputParameterHandler.getValue('sSeason')
+            sEpisode = oInputParameterHandler.getValue('sEpisode')
+
+            sCat = sCat.replace('1','movie').replace('2','tv')
+            from resources.lib.tmdb import cTMDb
+            if not sTMDB:
+                grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
+                sTMDB = grab.get_idbyname(oInputParameterHandler.getValue('sFileName'), '', sCat)
+            if not sTMDB:
+                return
+
+
+            sPost = {"media_type": sCat, "media_id": sTMDB, 'watchlist': True}
+            sAction = 'account/%s/watchlist' % tmdb_account
+            data = grab.getPostUrl(sAction, sPost)
+
+            if len(data) > 0:
+                cGui().showNofication(data['status_message'])
+        return
+
             
     def __getResume(self):
         

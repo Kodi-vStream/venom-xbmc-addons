@@ -24,6 +24,8 @@ class cHosterGui:
         oInputParameterHandler = cInputParameterHandler()
         sMovieTitle = oInputParameterHandler.getValue('title')
 
+        
+
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)
         #oGuiElement.setFunction('showHosterMenu')
@@ -57,6 +59,11 @@ class cHosterGui:
         oOutputParameterHandler.addParameter('siteUrl', sMediaUrl)
         #oOutputParameterHandler.addParameter('sFav', 'play')
         #oOutputParameterHandler.addParameter('sCat', '4')
+
+        #nouveaux pour la lecture.
+        if (oInputParameterHandler.exist('sCat')):
+            sType = oInputParameterHandler.getValue('sCat')
+            oOutputParameterHandler.addParameter('sType', sType)
 
         #existe dans le menu krypton 17
         if not util.isKrypton():

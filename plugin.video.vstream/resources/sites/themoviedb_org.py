@@ -256,8 +256,8 @@ def getAction():
     sEpisode = oInputParameterHandler.getValue('sEpisode')
 
     sCat = sCat.replace('1','movie').replace('2','tv')
+    grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
     if not sTMDB:
-        grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
         sTMDB = grab.get_idbyname(oInputParameterHandler.getValue('sFileName'), '', sCat)
     if not sTMDB:
         return
@@ -276,14 +276,9 @@ def getAction():
     else:
 
         sPost = {"media_type": sCat, "media_id": sTMDB, sFow: sYn}
-    
-    sUrl = '%s%s?api_key=%s&session_id=%s' % ('http://api.themoviedb.org/3/', sAction, cConfig().getSetting('api_tmdb'), tmdb_session)
-    sPost = json.dumps(sPost)
 
-    headers = {'Content-Type': 'application/json'}
-    req = urllib2.Request(sUrl, sPost, headers)
-    response = urllib2.urlopen(req)
-    data = json.loads(response.read())
+
+    data = grab.getPostUrl(sAction, sPost)
 
     if len(data) > 0:
         cGui().showNofication(data['status_message'])
