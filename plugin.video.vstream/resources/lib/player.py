@@ -180,15 +180,13 @@ class cPlayer(xbmc.Player):
         except:
             pass
 
-        try:
-            tmdb_session = cConfig().getSetting('tmdb_session')
-            if tmdb_session:
-                self.__getWatchlist('tmdb')
-            bstoken = cConfig().getSetting("bstoken")
-            if bstoken:
-                self.__getWatchlist('trakt')
-        except:
-            pass
+
+        tmdb_session = cConfig().getSetting('tmdb_session')
+        if tmdb_session:
+            self.__getWatchlist('tmdb')
+        bstoken = cConfig().getSetting("bstoken")
+        if bstoken:
+            self.__getWatchlist('trakt')
 
         #xbmc.executebuiltin( 'Container.Refresh' )
         
@@ -218,7 +216,8 @@ class cPlayer(xbmc.Player):
                 function = getattr(plugins, 'getWatchlist')
                 function()
             elif sAction == 'trakt':
-                plugins = __import__('resources.lib.trakt', fromlist=['trakt'])
+                #plugins = __import__('resources.lib.trakt', fromlist=['cTrakt'])
+                plugins = __import__('resources.lib.trakt', fromlist=['trakt']).cTrakt()
                 function = getattr(plugins, 'getWatchlist')
                 function()
             

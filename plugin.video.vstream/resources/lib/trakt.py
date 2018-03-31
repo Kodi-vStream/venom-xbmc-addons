@@ -956,7 +956,7 @@ class cTrakt:
             xbmc.executebuiltin("Container.Refresh")
         return
 
-def getWatchlist(self):
+    def getWatchlist(self):
 
         if not cConfig().getSetting("bstoken"):
             return
@@ -972,18 +972,20 @@ def getWatchlist(self):
         sSeason = oInputParameterHandler.getValue('sSeason')
         sEpisode = oInputParameterHandler.getValue('sEpisode')
 
+        sCat_trakt = sCat.replace('1','movies').replace('2','shows')
+
         if not sImdb:
             sPost = {}
             if not sTMDB:
-                sTMDB = int(self.getTmdbID(oInputParameterHandler.getValue('sMovieTitle'),sCat))
+                sTMDB = int(self.getTmdbID(oInputParameterHandler.getValue('sFileName'),sCat_trakt))
 
-            sPost = {sType: [ {"ids": {"tmdb": sTMDB}} ]}
+            sPost = {sCat_trakt: [ {"ids": {"tmdb": sTMDB}} ]}
             if sSeason:
-                sPost = {sType: [ {"ids": {"tmdb": sTMDB} , "seasons": [ { "number": int(sSeason) }] } ]}
+                sPost = {sCat_trakt: [ {"ids": {"tmdb": sTMDB} , "seasons": [ { "number": int(sSeason) }] } ]}
             if sEpisode:
-                sPost = {sType: [ {"ids": {"tmdb": sTMDB} , "seasons": [ { "number": int(sSeason) , "episodes": [ { "number": int(sEpisode) } ] } ] } ]}
+                sPost = {sCat_trakt: [ {"ids": {"tmdb": sTMDB} , "seasons": [ { "number": int(sSeason) , "episodes": [ { "number": int(sEpisode) } ] } ] } ]}
         else:
-            sPost = {sType: [{"ids": {"imdb": sImdb}}]}
+            sPost = {sCat_trakt: [{"ids": {"imdb": sImdb}}]}
 
         headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
 
@@ -996,7 +998,6 @@ def getWatchlist(self):
         sHtmlContent = response.read()
         result = json.loads(sHtmlContent)
         #xbmc.log(str(result))
-
         sText = "Erreur"
         try:
             if result["added"]['movies'] == 1 or result["added"]['episodes'] > 0 or result["added"]['shows'] > 0:
@@ -1018,7 +1019,7 @@ def getWatchlist(self):
                 sText = 'Entree deja presente'
         except: pass
 
-        cGui().showNofication(result)
+        cGui().showNofication(sText)
 
         return
         

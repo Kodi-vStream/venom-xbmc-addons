@@ -126,49 +126,51 @@ def showMyTmdb():
             #/account/{account_id}/favorite/movies
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/favorite/movies' % int(result['id']))
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Favorite/movies', 'search.png', oOutputParameterHandler)
-            
-            oOutputParameterHandler = cOutputParameterHandler()
-            #/account/{account_id}/favorite/tv
-            oOutputParameterHandler.addParameter('session_id', tmdb_session)
-            oOutputParameterHandler.addParameter('siteUrl', 'account/%s/favorite/tv' % int(result['id']))
-            oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Favorite/tv', 'search.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Favoris)', 'films.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             #/account/{account_id}/rated/movies
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/rated/movies' % int(result['id']))
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Rated/movies', 'search.png', oOutputParameterHandler)
-            
-            oOutputParameterHandler = cOutputParameterHandler()
-            #/account/{account_id}/rated/tv
-            oOutputParameterHandler.addParameter('session_id', tmdb_session)
-            oOutputParameterHandler.addParameter('siteUrl', 'account/%s/rated/tv' % int(result['id']))
-            oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Rated/tv', 'search.png', oOutputParameterHandler)
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            #/account/{account_id}/rated/tv/episodes
-            oOutputParameterHandler.addParameter('session_id', tmdb_session)
-            oOutputParameterHandler.addParameter('siteUrl', 'account/%s/rated/tv/episodes' % int(result['id']))
-            oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Rated/tv/episodes', 'search.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Notés)', 'films.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             #/account/{account_id}/watchlist/movies
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/watchlist/movies' % int(result['id']))
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Watchlist/movies', 'search.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Regardés)', 'films.png', oOutputParameterHandler)
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            #/account/{account_id}/favorite/tv
+            oOutputParameterHandler.addParameter('session_id', tmdb_session)
+            oOutputParameterHandler.addParameter('siteUrl', 'account/%s/favorite/tv' % int(result['id']))
+            oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries (Favories)', 'series.png', oOutputParameterHandler)
+
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            #/account/{account_id}/rated/tv
+            oOutputParameterHandler.addParameter('session_id', tmdb_session)
+            oOutputParameterHandler.addParameter('siteUrl', 'account/%s/rated/tv' % int(result['id']))
+            oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries (Notées)', 'series.png', oOutputParameterHandler)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            #/account/{account_id}/rated/tv/episodes
+            oOutputParameterHandler.addParameter('session_id', tmdb_session)
+            oOutputParameterHandler.addParameter('siteUrl', 'account/%s/rated/tv/episodes' % int(result['id']))
+            oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Episodes (Notés)', 'series.png', oOutputParameterHandler)
+
             
             oOutputParameterHandler = cOutputParameterHandler()
             #/account/{account_id}/watchlist/tv
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/watchlist/tv' % int(result['id']))
-            oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Watchlist/tv', 'search.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries (Regardées)', 'series.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             #/account/{account_id}/lists
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/lists' % int(result['id']))
-            oGui.addDir(SITE_IDENTIFIER, 'showUserLists', 'Lists', 'search.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showUserLists', 'Mes Lists', 'listes.png', oOutputParameterHandler)
         
         else :
 
@@ -197,22 +199,22 @@ def getContext():
     disp.append('account/%s/watchlist' % tmdb_account)
     fow.append('watchlist')
     yn.append(True)
-    lang.append('Ajouter: Watchlist')
+    lang.append('Ajouter: Regardé')
 
     disp.append('account/%s/watchlist' % tmdb_account)
     fow.append('watchlist')
     yn.append(False)
-    lang.append('[COLOR red]Supprimer: Watchlist[/COLOR]')
+    lang.append('[COLOR red]Supprimer: Regardé[/COLOR]')
 
     disp.append('account/%s/favorite' % tmdb_account)
     fow.append('favorite')
     yn.append(True)
-    lang.append('Ajouter: Favorite')
+    lang.append('Ajouter: Favoris')
 
     disp.append('account/%s/favorite' % tmdb_account)
     fow.append('favorite')
     yn.append(False)
-    lang.append('[COLOR red]Supprimer: Favorite[/COLOR]')
+    lang.append('[COLOR red]Supprimer: Favoris[/COLOR]')
 
     dialog2 = xbmcgui.Dialog()
     ret = dialog2.select('TMDB',lang)
