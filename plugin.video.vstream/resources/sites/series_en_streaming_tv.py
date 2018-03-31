@@ -281,7 +281,7 @@ def showEpisode():
     oParser = cParser()
     #sPattern = "<a class='various' data-fancybox-type='iframe' href='(.+?)' > *(.+?)<\/a>\t*<\/h3>\t*(.+?)<br>"
     #sPattern = ';" src="([^"]+)" class="img-responsive">.+?<a class="various" data-fancybox-type="iframe" href="(.+?)" *> *(.+?)<\/a> *<\/h3>([^<>]+)<'
-    sPattern = '<a class="host-a wrap".+?href="(.+?)">.+?<img.+?src="/images/\?src=(.+?)" class="img-responsive">.+?<h3 style=".+?">(.+?)</h3>(.+?)<br>'
+    sPattern = '<a class="host-a wrap".+?href="([^<"]+)".+?<img.+?src="/images/\?src=(.+?)" class="img-responsive".+?<h3 style=.+?>(.+?)</h3>([^<"]+)<br'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):

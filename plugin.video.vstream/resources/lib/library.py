@@ -91,15 +91,17 @@ class cLibrary:
 
             sTitle = cUtil().FormatSerie(sTitle)
             sTitle = cUtil().CleanName(sTitle)
+            sTitle = cGui().showKeyBoard(sTitle)
+            
             sTitleGlobal = re.sub('((?:[s|e][0-9]+){1,2})','',sTitle)
+            
             if sTitleGlobal.endswith(' '):
                 sTitleGlobal = sTitleGlobal[:-1]
+            if sTitleGlobal.endswith('FINAL'):
+                 sTitleGlobal = sTitleGlobal[:-5]
 
             try:
                 #print folder
-
-                if sTitleGlobal.endswith('FINAL'):
-                     sTitleGlobal = sTitleGlobal[:-5]
 
                 folder2 = folder + '/' + sTitleGlobal + '/'
 

@@ -82,6 +82,10 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+        oGui.addDir('themoviedb_org', 'showMyTmdb', 'TMDB', 'tmdb.png', oOutputParameterHandler)
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir('cTrakt', 'getLoad', util.VSlang(30214), 'trakt.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()

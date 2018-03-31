@@ -8,7 +8,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib import util
-import urllib, unicodedata, re
+import urllib, urllib2, unicodedata, re
 import xbmcgui, xbmc
 from resources.lib.tmdb import cTMDb
 
@@ -38,6 +38,8 @@ FANART_URL = 'https://image.tmdb.org/t/p/w1280'
 grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
 view = '500'
 view = cConfig().getSetting('visuel-view')
+tmdb_session = cConfig().getSetting('tmdb_session')
+tmdb_account = cConfig().getSetting('tmdb_account')
 
 xbmcgui.Window(10101).clearProperty('search_disp')
 
@@ -98,6 +100,235 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showFolderList', 'Listes TMDB', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
+def showMyTmdb():
+    oGui = cGui()
+    if tmdb_session == '':
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'https://')
+        oGui.addDir(SITE_IDENTIFIER, 'getToken', cConfig().getlanguage(30305), 'trakt.png', oOutputParameterHandler)
+    else :
+
+        #pas de deco possible avec l'api donc on test l'username sinon ont supprime tous
+        result = grab.getUrl('account', '1', 'session_id='+ tmdb_session)
+
+        if 'username' in result and result['username']:
+
+            #pas de menu sans ID user c'est con
+            cConfig().setSetting('tmdb_account', str(result['id']))
+            
+            sUsername = result['username']
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'https://')
+            oGui.addText(SITE_IDENTIFIER, (cConfig().getlanguage(30306)) % (sUsername))
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            #/account/{account_id}/favorite/movies
+            oOutputParameterHandler.addParameter('session_id', tmdb_session)
+            oOutputParameterHandler.addParameter('siteUrl', 'account/%s/favorite/movies' % int(result['id']))
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Favoris)', 'films.png', oOutputParameterHandler)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            #/account/{account_id}/rated/movies
+            oOutputParameterHandler.addParameter('session_id', tmdb_session)
+            oOutputParameterHandler.addParameter('siteUrl', 'account/%s/rated/movies' % int(result['id']))
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Notés)', 'films.png', oOutputParameterHandler)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            #/account/{account_id}/watchlist/movies
+            oOutputParameterHandler.addParameter('session_id', tmdb_session)
+            oOutputParameterHandler.addParameter('siteUrl', 'account/%s/watchlist/movies' % int(result['id']))
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Films (Regardés)', 'films.png', oOutputParameterHandler)
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            #/account/{account_id}/favorite/tv
+            oOutputParameterHandler.addParameter('session_id', tmdb_session)
+            oOutputParameterHandler.addParameter('siteUrl', 'account/%s/favorite/tv' % int(result['id']))
+            oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries (Favories)', 'series.png', oOutputParameterHandler)
+
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            #/account/{account_id}/rated/tv
+            oOutputParameterHandler.addParameter('session_id', tmdb_session)
+            oOutputParameterHandler.addParameter('siteUrl', 'account/%s/rated/tv' % int(result['id']))
+            oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries (Notées)', 'series.png', oOutputParameterHandler)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            #/account/{account_id}/rated/tv/episodes
+            oOutputParameterHandler.addParameter('session_id', tmdb_session)
+            oOutputParameterHandler.addParameter('siteUrl', 'account/%s/rated/tv/episodes' % int(result['id']))
+            oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Episodes (Notés)', 'series.png', oOutputParameterHandler)
+
+            
+            oOutputParameterHandler = cOutputParameterHandler()
+            #/account/{account_id}/watchlist/tv
+            oOutputParameterHandler.addParameter('session_id', tmdb_session)
+            oOutputParameterHandler.addParameter('siteUrl', 'account/%s/watchlist/tv' % int(result['id']))
+            oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'Séries (Regardées)', 'series.png', oOutputParameterHandler)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            #/account/{account_id}/lists
+            oOutputParameterHandler.addParameter('session_id', tmdb_session)
+            oOutputParameterHandler.addParameter('siteUrl', 'account/%s/lists' % int(result['id']))
+            oGui.addDir(SITE_IDENTIFIER, 'showUserLists', 'Mes Lists', 'listes.png', oOutputParameterHandler)
+        
+        else :
+
+            cConfig().setSetting('tmdb_session', '')
+            cConfig().setSetting('tmdb_account', '')
+            oGui.showNofication(cConfig().getlanguage(30320))
+            xbmc.executebuiltin("Container.Refresh")
+
+    oGui.setEndOfDirectory()
+
+def getContext():
+
+    if not tmdb_account:
+        return
+
+    disp = []
+    lang = []
+    fow = []
+    yn  = []
+
+    disp.append('vote')
+    fow.append('vote')
+    yn.append(True)
+    lang.append('Ajouter: Vote')
+
+    disp.append('account/%s/watchlist' % tmdb_account)
+    fow.append('watchlist')
+    yn.append(True)
+    lang.append('Ajouter: Regardé')
+
+    disp.append('account/%s/watchlist' % tmdb_account)
+    fow.append('watchlist')
+    yn.append(False)
+    lang.append('[COLOR red]Supprimer: Regardé[/COLOR]')
+
+    disp.append('account/%s/favorite' % tmdb_account)
+    fow.append('favorite')
+    yn.append(True)
+    lang.append('Ajouter: Favoris')
+
+    disp.append('account/%s/favorite' % tmdb_account)
+    fow.append('favorite')
+    yn.append(False)
+    lang.append('[COLOR red]Supprimer: Favoris[/COLOR]')
+
+    dialog2 = xbmcgui.Dialog()
+    ret = dialog2.select('TMDB',lang)
+
+    if ret > -1:
+        return disp[ret], fow[ret],yn[ret]
+    return False
+
+def getCat():
+
+    disp = ['1','2']
+    dialog2 = xbmcgui.Dialog()
+    dialog_select = 'Films', 'Series'
+
+    ret = dialog2.select('TMDB',dialog_select)
+
+    if ret > -1:
+        sType = disp[ret]
+    return sType
+
+
+def getAction():
+
+    oInputParameterHandler = cInputParameterHandler()
+
+    sAction= ''
+    if not sAction:
+        sAction, sFow, sYn = getContext()
+    if not sAction:
+        return
+
+    sCat = oInputParameterHandler.getValue('sCat')
+    if not sCat:
+        sCat = getCat()
+    if not sCat:
+        return
+
+    #dans le doute si meta active
+    sTMDB = oInputParameterHandler.getValue('sTmdbId')
+    sSeason = oInputParameterHandler.getValue('sSeason')
+    sEpisode = oInputParameterHandler.getValue('sEpisode')
+
+    sCat = sCat.replace('1','movie').replace('2','tv')
+    grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
+    if not sTMDB:
+        sTMDB = grab.get_idbyname(oInputParameterHandler.getValue('sFileName'), '', sCat)
+    if not sTMDB:
+        return
+
+
+    if sAction == 'vote':
+        #vote /movie/{movie_id}/rating
+        #/tv/{tv_id}/rating
+        dialog = xbmcgui.Dialog()
+        numboard = dialog.numeric(0, 'Min 0.5 - Max 10')
+        if numboard != None:
+            sAction = '%s/%s/rating' % (sCat, sTMDB)
+            sPost = {"value": numboard}
+        else : return
+
+    else:
+
+        sPost = {"media_type": sCat, "media_id": sTMDB, sFow: sYn}
+
+
+    data = grab.getPostUrl(sAction, sPost)
+
+    if len(data) > 0:
+        cGui().showNofication(data['status_message'])
+
+    return
+
+#comme le cat change pour le type ont refait
+def getWatchlist():
+
+    if not tmdb_session:
+        return
+
+    if not tmdb_account:
+        return
+
+    oInputParameterHandler = cInputParameterHandler()
+
+
+    sCat = oInputParameterHandler.getValue('sType')
+    if not sCat:
+        return
+
+    #dans le doute si meta active
+    sTMDB = oInputParameterHandler.getValue('sTmdbId')
+    sSeason = oInputParameterHandler.getValue('sSeason')
+    sEpisode = oInputParameterHandler.getValue('sEpisode')
+
+    sCat = sCat.replace('1','movie').replace('2','tv')
+    grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
+    if not sTMDB:
+        sTMDB = grab.get_idbyname(oInputParameterHandler.getValue('sFileName'), '', sCat)
+    if not sTMDB:
+        return
+
+    sPost = {"media_type": sCat, "media_id": sTMDB, 'watchlist': True}
+    sAction = 'account/%s/watchlist' % tmdb_account
+
+    data = grab.getPostUrl(sAction, sPost)
+
+    if len(data) > 0:
+        cGui().showNofication(data['status_message'])
+
+    return
+
+
+
+def getToken():
+    return grab.getToken()
 
 def showSearchMovie():
     oGui = cGui()
@@ -160,6 +391,31 @@ def showGenreTV():
 
     oGui.setEndOfDirectory()
 
+def showUserLists():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+
+    iPage = 1
+    term = ''
+    if (oInputParameterHandler.exist('session_id')):
+        term += 'session_id=' +  oInputParameterHandler.getValue('session_id')
+
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    result = grab.getUrl(sUrl, iPage, term)
+
+    total = len(result)
+    if (total > 0):
+        for i in result['results']:
+            sId, sTitle = i['id'], i['name']
+
+            #sUrl = API_URL+'/genre/'+str(sId)+'/tv'
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sId)
+            oGui.addDir(SITE_IDENTIFIER, 'showLists', sTitle, 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
 
 def showFolderList():
     oGui = cGui()
@@ -191,7 +447,9 @@ def showMovies(sSearch = ''):
 
     oInputParameterHandler = cInputParameterHandler()
 
+
     iPage = 1
+    term = ''
     if (oInputParameterHandler.exist('page')):
         iPage = oInputParameterHandler.getValue('page')
 
@@ -203,8 +461,13 @@ def showMovies(sSearch = ''):
         sUrl = ''
 
     else:
+
+        if (oInputParameterHandler.exist('session_id')):
+            term += 'session_id=' +  oInputParameterHandler.getValue('session_id')
+
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        result = grab.getUrl(sUrl, iPage)
+        result = grab.getUrl(sUrl, iPage, term)
+        #result = grab.getUrl(sUrl, iPage)
 
     oGui = cGui()
 
@@ -281,6 +544,7 @@ def showSeries(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
     
     iPage = 1
+    term = ''
     if (oInputParameterHandler.exist('page')):
         iPage = oInputParameterHandler.getValue('page')
 
@@ -296,8 +560,9 @@ def showSeries(sSearch=''):
 
         if (oInputParameterHandler.exist('genre')):
             term = 'with_genres=' +  oInputParameterHandler.getValue('genre')
-        else :
-            term = ''
+
+        if (oInputParameterHandler.exist('session_id')):
+            term += 'session_id=' +  oInputParameterHandler.getValue('session_id')
 
         result = grab.getUrl(sUrl, iPage, term)
     

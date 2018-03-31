@@ -10,7 +10,7 @@ from resources.lib.util import VSlog,isKrypton,VSerror
 
 import xbmc, xbmcgui, xbmcplugin
 
-import time
+import time, urllib2
 
 #pour les sous titres
 #https://github.com/amet/service.subtitles.demo/blob/master/service.subtitles.demo/service.py
@@ -165,6 +165,7 @@ class cPlayer(xbmc.Player):
 
     #Attention pas de stop, si on lance une seconde video sans fermer la premiere
     def onPlayBackStopped( self ):
+
         
         VSlog("player stoped")
         
@@ -178,6 +179,17 @@ class cPlayer(xbmc.Player):
             self.__setResume()
         except:
             pass
+
+        try:
+            tmdb_session = cConfig().getSetting('tmdb_session')
+            if tmdb_session:
+                self.__getWatchlist('tmdb')
+            bstoken = cConfig().getSetting("bstoken")
+            if bstoken:
+                self.__getWatchlist('trakt')
+        except:
+            pass
+
         #xbmc.executebuiltin( 'Container.Refresh' )
         
     def onPlayBackStarted(self):
@@ -194,6 +206,26 @@ class cPlayer(xbmc.Player):
         #inutile sur les dernieres version > Dharma
         if not (cConfig().isDharma()):
             self.__getResume()
+
+    def __getWatchlist(self, sAction):
+
+        #calcul le temp de lecture
+        pourcent =  float("%.2f" % (self.currentTime / self.totalTime))
+
+        if (pourcent > 0.90):
+            if sAction == 'tmdb':
+                plugins = __import__('resources.sites.themoviedb_org', fromlist=['themoviedb_org'])
+                function = getattr(plugins, 'getWatchlist')
+                function()
+            elif sAction == 'trakt':
+                #plugins = __import__('resources.lib.trakt', fromlist=['cTrakt'])
+                plugins = __import__('resources.lib.trakt', fromlist=['trakt']).cTrakt()
+                function = getattr(plugins, 'getWatchlist')
+                function()
+            
+        return
+
+
             
     def __getResume(self):
         

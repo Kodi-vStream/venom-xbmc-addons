@@ -10,9 +10,17 @@ import xbmc
 import xbmcaddon
 import re,os
 
-UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 headers = { 'User-Agent' : UA }
 
+class NoRedirection(urllib2.HTTPErrorProcessor):
+    def http_response(self, request, response):
+        code, msg, hdrs = response.code, response.msg, response.info()
+
+        return response
+        
+    https_response = http_response
+    
 class cPremiumHandler:
 
     def __init__(self, sHosterIdentifier):
@@ -70,11 +78,10 @@ class cPremiumHandler:
         post_data = {}
         
         if 'uptobox' in self.__sHosterIdentifier:
-            url = 'https://login.uptobox.com/logarithme'
+            url = 'https://uptobox.com/?op=login&referer=homepage'
             post_data['login'] = self.getUsername()
             post_data['password'] = self.getPassword()
-            post_data['op'] = 'login'
-            
+
         elif 'onefichier' in self.__sHosterIdentifier:
             url = 'https://1fichier.com/login.pl'
             post_data['mail'] = self.getUsername()
@@ -83,6 +90,7 @@ class cPremiumHandler:
             post_data['purge'] = 'on'
             post_data['valider'] = 'Send'
             self.__ssl = True
+            
         elif 'uploaded' in self.__sHosterIdentifier:
             url = 'http://uploaded.net/io/login'
             post_data['id'] = self.getUsername()
@@ -91,52 +99,61 @@ class cPremiumHandler:
         #si aucun de trouve on retourne
         else:
             return False
-        
-        #print url
-        #print post_data
+            
         if (self.__ssl):
             try:
                 import ssl
                 context = ssl._create_unverified_context()
             except:
                 self.__ssl = False
-        
-        req = urllib2.Request(url, urllib.urlencode(post_data), headers)
-        
-        try:
-            if (self.__ssl):
-                response = urllib2.urlopen(req,context=context)
-            else:
-                response = urllib2.urlopen(req)       
-        except urllib2.URLError, e:
-            if getattr(e, "code", None) == 403:
-                #login denied
-                cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
-            elif getattr(e, "code", None) == 502:
-                #login denied
-                cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
-            elif getattr(e, "code", None) == 234:
-                #login denied
-                cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
-            else:
-                cConfig().log("debug" + str(getattr(e, "code", None)))
-                cConfig().log("debug" + str(getattr(e, "reason", None)))
-
-            self.isLogin = False
-            return False
-        
-        sHtmlContent = response.read()
-        head = response.headers
-        response.close()
-        
-        #print head
-        
-        #fh = open('c:\\prem.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
-        
+                
         if 'uptobox' in self.__sHosterIdentifier:
-            if 'OK' in sHtmlContent:
+            data = urllib.urlencode(post_data)
+        
+            opener = urllib2.build_opener(NoRedirection)  
+        
+            opener.addheaders = [('User-agent', UA)]
+            opener.addheaders.append (('Content-Type', 'application/x-www-form-urlencoded'))
+            opener.addheaders.append (('Referer', str(url) ))
+            opener.addheaders.append (('Content-Length', str(len(data))))
+        
+            try:
+                response = opener.open(url,data)
+                head = response.info()
+            except urllib2.URLError, e:
+                return ''
+        else:
+            req = urllib2.Request(url, urllib.urlencode(post_data), headers)
+        
+            try:
+                if (self.__ssl):
+                    response = urllib2.urlopen(req,context=context)
+                else:
+                    response = urllib2.urlopen(req)       
+            except urllib2.URLError, e:
+                if getattr(e, "code", None) == 403:
+                #login denied
+                    cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
+                elif getattr(e, "code", None) == 502:
+                #login denied
+                    cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
+                elif getattr(e, "code", None) == 234:
+                #login denied
+                    cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
+                else:
+                    cConfig().log("debug" + str(getattr(e, "code", None)))
+                    cConfig().log("debug" + str(getattr(e, "reason", None)))
+
+                self.isLogin = False
+                return False
+        
+                sHtmlContent = response.read()
+                head = response.headers
+                response.close()
+
+
+        if 'uptobox' in self.__sHosterIdentifier:
+            if 'xfss' in head['Set-Cookie']:
                 self.isLogin = True
             else:
                 cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
@@ -187,8 +204,7 @@ class cPremiumHandler:
         try:
             response = urllib2.urlopen(req)
         except urllib2.URLError, e:
-            xbmc.log( str(e.code))
-            xbmc.log( e.reason )
+
             return ''
         
         sHtmlContent = response.read()
@@ -206,10 +222,7 @@ class cPremiumHandler:
             cookies = GestionCookie().Readcookie(self.__sHosterIdentifier)          
         
         sHtmlContent = self.GetHtmlwithcookies(url,data,cookies)
-        
-        #fh = open('c:\\premium.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
+
         
         #Les cookies ne sont plus valables, mais on teste QUE si la personne n'a pas essaye de s'authentifier
         if not(self.Checklogged(sHtmlContent)) and not self.__LoginTry and self.__Ispremium :
