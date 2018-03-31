@@ -180,13 +180,15 @@ class cPlayer(xbmc.Player):
         except:
             pass
 
-
-        tmdb_session = cConfig().getSetting('tmdb_session')
-        if tmdb_session:
-            self.__getWatchlist('tmdb')
-        bstoken = cConfig().getSetting("bstoken")
-        if bstoken:
-            self.__getWatchlist('trakt')
+        try:
+            tmdb_session = cConfig().getSetting('tmdb_session')
+            if tmdb_session:
+                self.__getWatchlist('tmdb')
+            bstoken = cConfig().getSetting("bstoken")
+            if bstoken:
+                self.__getWatchlist('trakt')
+        except:
+            pass
 
         #xbmc.executebuiltin( 'Container.Refresh' )
         
