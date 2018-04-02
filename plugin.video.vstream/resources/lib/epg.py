@@ -42,15 +42,12 @@ class cePg:
     
     def get_epg(self, sTitle, sTime):
         #ce soir
-        print sTime
         if sTime == 'direct':
             sUrl = 'http://playtv.fr/programmes-tv/en-direct/canalsat/'
         elif sTime == 'soir':
             sUrl = 'http://playtv.fr/programmes-tv/'+date+'/20h-23h/'
         else :
             sUrl = 'http://playtv.fr/programmes-tv/'+date+'/20h-23h/'
-            
-        print sUrl
             
 
         oRequestHandler = cRequestHandler(sUrl)
