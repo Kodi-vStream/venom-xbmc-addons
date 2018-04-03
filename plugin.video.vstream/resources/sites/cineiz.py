@@ -2,7 +2,6 @@
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #Razorex
 #
-return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -452,6 +451,9 @@ def showLinks():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     oRequestHandler = cRequestHandler(sUrl)
+    #faut post
+    oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+    oRequestHandler.addParameters('levideo', '123456')  
     sHtmlContent = oRequestHandler.request().replace('<span class="telecharger_sur_uptobox"></span>', '')
 
     sPattern = '<div class="num_link">Lien:.+?<span class="(.+?)".+?span style="width:55px;" class="(.+?)">.+?<input name="levideo" value="(.+?)"'
@@ -522,6 +524,8 @@ def showHosters():
                 except:
                     sHosterUrl = str(oRequestHandler.getRealUrl())
                 #cConfig().log(sHosterUrl)
+
+            print sHosterUrl
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
