@@ -517,15 +517,13 @@ def showHosters():
             if 'vimple.org' in sHosterUrl:
                 #cConfig().log(sHosterUrl)
                 oRequestHandler = cRequestHandler(sHosterUrl)
-                oRequestHandler.addHeaderEntry('Referer','http://www.cineiz.cc/')
+                oRequestHandler.addHeaderEntry('Referer',sUrl)
                 sHtmlContent2 = oRequestHandler.request()
                 try:
                     sHosterUrl = re.search('url=([^"]+)"', sHtmlContent2,re.DOTALL).group(1) 
                 except:
                     sHosterUrl = str(oRequestHandler.getRealUrl())
                 #cConfig().log(sHosterUrl)
-
-            print sHosterUrl
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
