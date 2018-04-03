@@ -5,7 +5,10 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
 from resources.lib.util import VScreateDialogSelect
+from resources.lib.util import VSlog
 import re
+
+#Meme code que thevideo
 
 class cHoster(iHoster):
 
@@ -39,7 +42,7 @@ class cHoster(iHoster):
         return True
     
     def __getIdFromUrl(self, sUrl):
-        sPattern = 'https*://vidup.me/([^<]+)'
+        sPattern = 'https*://vidup.tv/([^<]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -47,73 +50,136 @@ class cHoster(iHoster):
 
         return ''
         
-    def __getKey(self,sHtmlContent):
-        oParser = cParser()
-        sPattern = "var mpri_Key='([^']+)';"
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            return aResult[1][0]
-            
-        return ''
-        
     def setUrl(self, sUrl):
-        self.__sUrl = str(sUrl).replace('beta.vidup.me','vidup.me')
-        self.__sUrl = re.sub('(-\d+x\d+\.html)','',self.__sUrl)
-        self.__sUrl = self.__sUrl.replace('embed-', '')
+        #self.__sUrl = str(sUrl).replace('beta.vidup.tv','vidup.tv')
+        #self.__sUrl = re.sub('(-\d+x\d+\.html)','',self.__sUrl)
+        #self.__sUrl = self.__sUrl.replace('embed-', '')
+        self.__sUrl = sUrl
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
     
-        sId = self.__getIdFromUrl(self.__sUrl)
+        sUrl = self.__sUrl
         
-        sUrl = 'http://vidup.me/embed-' + sId + '.html'
+        #sId = self.__getIdFromUrl(self.__sUrl)
+        #sUrl = 'http://vidup.tv/embed-' + sId + '.html'
 
+        VSlog(sUrl)
+        
         stream_url = ''
         oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
         
-        key = self.__getKey(sHtmlContent)
+        #decodage de la page html
+        sHtmlContent3 = sHtmlContent
+        code = ''
+        maxboucle = 3
+        while (maxboucle > 0):
+            VSlog('loop : ' + str(maxboucle))
+            sHtmlContent3 = CheckCpacker(sHtmlContent3)
+            #sHtmlContent3 = CheckJJDecoder(sHtmlContent3)           
+            #sHtmlContent3 = CheckAADecoder(sHtmlContent3)
+            
+            maxboucle = maxboucle - 1   
+         
+        sHtmlContent = sHtmlContent3
         
-        getCode = 'http://vidup.me/jwv/' + key
-        oRequest = cRequestHandler(getCode)
-        sHtmlContent2 = oRequest.request()
-        unPacked = cPacker().unpack(sHtmlContent2)
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
         
         oParser = cParser()
-        sPattern =  'vt=([^"]+)"'
-        aResult = oParser.parse(unPacked, sPattern)
+        
+        sPattern = "var thief='([^']+)';"
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if not (aResult[0]):
+            return False , False
+            
+        key = aResult[1][0].replace('+','')
+            
+        sPattern = "'rc=[^<>]+?\/(.+?)'\.concat"
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if not (aResult[0]):
+            return False , False
+            
+        ee = aResult[1][0]
+        if ee.endswith('\\'):
+            ee = ee[:-1]
+            
+        url2 = 'https://vidup.tv/' + ee + '/' + key
+        
+        VSlog(url2)
+
+        oRequest = cRequestHandler(url2)
+        sHtmlContent2 = oRequest.request()
+        
+        
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent2)
+        #fh.close()
+        
+        code = cPacker().unpack(sHtmlContent2)
+        sPattern = '"vt=([^"]+)'
+        r2 = re.search(sPattern,code)
+        if not (r2):
+            return False,False
+        
+        sPattern = '{"file":"([^"]+)","label":"(.+?)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+
         if (aResult[0] == True):
-            code = aResult[1][0]
+            #initialisation des tableaux
             url=[]
             qua=[]
         
-            sPattern =  "label: '([0-9]+)p', file: '([^']+)'"
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            if (aResult[0]):
-                for aEntry in aResult[1]:
-                    url.append(aEntry[1])
-                    qua.append(aEntry[0])
-            else:
-                sPattern = '"file":"([^"]+)","label":"([0-9]+)p"'
-                aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0]):
-                    for aEntry in aResult[1]:
-                        url.append(aEntry[0])
-                        qua.append(aEntry[1])            
+            #Remplissage des tableaux
+            for i in aResult[1]:
+                url.append(str(i[0]))
+                qua.append(str(i[1]))
                 
-            #Si une seule url
+            #Si  1 url
             if len(url) == 1:
-                stream_url = url[0]
-            #si plus de une
+                api_call = url[0]
+            #Affichage du tableau
             elif len(url) > 1:
-            #Afichage du tableau
                 ret = VScreateDialogSelect(qua)
                 if (ret > -1):
-                    stream_url = url[ret]
+                    api_call = url[ret]
 
-        if (stream_url):
-            return True, stream_url + '?direct=false&ua=1&vt=' + code
-        
+        #xbmc.sleep(5000)
+                    
+        if (api_call):
+            api_call = api_call + '?direct=false&ua=1&vt=' + r2.group(1)
+            return True, api_call
+            
         return False, False
+
+        
+#-----------------------------------------------------------------------------------------
+def CheckCpacker(str):
+
+    sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\)\s*)<'
+    aResult = re.search(sPattern, str,re.DOTALL | re.UNICODE)
+    if (aResult):
+        #VSlog('Cpacker encryption')
+        str2 = aResult.group(1)
+        
+        if not str2.endswith(';'):
+            str2 = str2 + ';'
+
+        #if not str2.startswith('eval'):
+        #    str2 = 'eval(function' + str2[4:]
+        
+        try:
+            tmp = cPacker().unpack(str2)
+            #tmp = tmp.replace("\\'","'")
+        except:
+            tmp =''
+            
+        #VSlog(tmp)
+
+        return str[:(aResult.start() + 1)] + tmp + str[(aResult.end()-1):]
+        
+    return str
