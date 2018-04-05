@@ -75,6 +75,11 @@ class cHoster(iHoster):
     def __getUrl(self, media_id):
         return
         
+    def __getHost(self):
+        parts = self.__sUrl.split('//', 1)
+        host = parts[0]+'//'+parts[1].split('/', 1)[0]
+        return host
+        
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()       
 
@@ -88,13 +93,14 @@ class cHoster(iHoster):
         oRequest.addHeaderEntry('User-Agent',UA)
         sHtmlContent1 = oRequest.request()
         
-        #fh = open('c:\\html1.txt', "w")
+        #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent1)
         #fh.close()
         
         #Recuperation url cachee
         TabUrl = []
-        sPattern = '<span style="".+?id="([^"]+)">([^<]+)<\/span>'
+        #sPattern = '<span style="".+?id="([^"]+)">([^<]+)<\/span>'
+        sPattern = '<p style=""[^"]+id="([^"]+)">([^<]+)<\/p>'
         aResult = re.findall(sPattern,sHtmlContent1)
         if (aResult):
             TabUrl = aResult
@@ -134,7 +140,6 @@ class cHoster(iHoster):
             cConfig().log('OPL er 3')
             return False,False
             
-            
         #Search the coded url
         Coded_url = ''
         for i in TabUrl:
@@ -166,18 +171,22 @@ class cHoster(iHoster):
         JP.ProcessJS(code,Liste_var)
 
         url = None
-        for name in [ '#streamurl', '#streamuri', '#streamurj' ]:
-            if JP.IsVar( JP.HackVars, name ):
-                url = JP.GetVarHack( name )
-                cConfig().log( 'Decoded url ' + name + ' : ' + url )
-                break
+        #for name in [ '#streamurl', '#streamuri', '#streamurj']:
+        #    if JP.IsVar( JP.HackVars, name ):
+        #        url = JP.GetVarHack( name )
+        #        cConfig().log( 'Decoded url ' + name + ' : ' + url )
+        #        break
+        url = JP.GetVar( Liste_var , '_0x1bf6e5' )
 
         if not(url):
+            cConfig().log('Rate, debug: ' + str(Liste_var))
             return False,False
             
         cGui().showInfo(self.__sDisplayName, 'Ok, lien decode.' , 15)
         
-        api_call = "https://openload.co/stream/" + url + "?mime=true" 
+        api_call = self.__getHost() + "/stream/" + url + "?mime=true" 
+        
+        cConfig().log(api_call)
         
         if (api_call):          
             return True, api_call
