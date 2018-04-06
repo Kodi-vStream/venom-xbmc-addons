@@ -7,17 +7,18 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.util import VScreateDialogSelect
 from resources.lib.packer import cPacker
-from resources.lib.config import cConfig
+from resources.lib.util import VSlog
+
 
 import re,xbmc,urllib,urllib2
 
 UA = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:55.0) Gecko/20100101 Firefox/55.0"
 
-
+#Meme code que vidup
 
  
 def LoadLinks(htmlcode):
-    cConfig().log('Scan des liens')
+    VSlog('Scan des liens')
 
     sPattern ='[\("\'](https*:)*(\/[^,"\'\)\s]+)[\)\'"]'
     aResult = re.findall(sPattern, htmlcode, re.DOTALL)
@@ -40,7 +41,7 @@ def LoadLinks(htmlcode):
         if '.jpg' in sUrl or '.png' in sUrl:
             continue
         
-        cConfig().log('test : ' + sUrl)
+        VSlog('test : ' + sUrl)
         
         if '\\x' in sUrl or '\\u' in sUrl:
             sUrl = ASCIIDecode(sUrl)
@@ -74,7 +75,7 @@ def LoadLinks(htmlcode):
             reponse = urllib2.urlopen(request)
             sCode = reponse.read()
             reponse.close()
-            cConfig().log('Worked ' + sUrl)
+            VSlog('Worked ' + sUrl)
         except urllib2.HTTPError, e:
             if not e.geturl() == sUrl:
                 try:
@@ -88,19 +89,19 @@ def LoadLinks(htmlcode):
                     reponse = urllib2.urlopen(request)
                     sCode = reponse.read()
                     reponse.close()
-                    cConfig().log('Worked ' + sUrl)
+                    VSlog('Worked ' + sUrl)
                 except urllib2.HTTPError, e:
-                    cConfig().log(str(e.code))
+                    VSlog(str(e.code))
                     #xbmc.log(e.read())
-                    cConfig().log('Redirection Blocked ' + sUrl + ' Red ' + e.geturl())
+                    VSlog('Redirection Blocked ' + sUrl + ' Red ' + e.geturl())
                     pass
             else:
-                cConfig().log('Blocked ' + sUrl)
-                cConfig().log(str(e.code))
-                cConfig().log('>>' + e.geturl())
+                VSlog('Blocked ' + sUrl)
+                VSlog(str(e.code))
+                VSlog('>>' + e.geturl())
                 #cConfig().log(e.read())
     
-    cConfig().log('fin des unlock')
+    VSlog('fin des unlock')
 
 
 class cHoster(iHoster):
@@ -160,17 +161,32 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
+        #decodage de la page html
+        sHtmlContent3 = sHtmlContent
+        code = ''
+        maxboucle = 3
+        while (maxboucle > 0):
+            VSlog('loop : ' + str(maxboucle))
+            sHtmlContent3 = CheckCpacker(sHtmlContent3)
+            #sHtmlContent3 = CheckJJDecoder(sHtmlContent3)           
+            #sHtmlContent3 = CheckAADecoder(sHtmlContent3)
+            
+            maxboucle = maxboucle - 1   
+         
+        sHtmlContent = sHtmlContent3
+        
         #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
 
-        LoadLinks(sHtmlContent)
+        #LoadLinks(sHtmlContent)
         
         oParser = cParser()
         
         sPattern = "var thief='([^']+)';"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if not (aResult[0]):
+            VSlog('thief var')
             return False , False
             
         key = aResult[1][0].replace('+','')
@@ -178,38 +194,49 @@ class cHoster(iHoster):
         sPattern = "'rc=[^<>]+?\/(.+?)'\.concat"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if not (aResult[0]):
+            VSlog('url var')
             return False , False
             
         ee = aResult[1][0]
             
         url2 = 'https://thevideo.me/' + ee + '/' + key
+        
+        VSlog('unlock url 1 :' + url2)
 
         oRequest = cRequestHandler(url2)
         sHtmlContent2 = oRequest.request()
         
-        code = cPacker().unpack(sHtmlContent2)
-        sPattern = '"vt=([^"]+)'
-        r2 = re.search(sPattern,code)
-        if not (r2):
-            return False,False
+        if (True):
+            code = cPacker().unpack(sHtmlContent2)
             
-        #Unlock url
-        url1 = re.search(r'async src="([^"]+)">', sHtmlContent,re.DOTALL).group(1)
-        cConfig().log(url1)
-        oRequest = cRequestHandler(url1)
-        sHtmlContenttmp1 = oRequest.request()
+            #fh = open('c:\\test.txt', "w")
+            #fh.write(code)
+            #fh.close()    
+            
+            sPattern = '"vt=([^"]+)'
+            r2 = re.search(sPattern,code)
+            if not (r2):
+                VSlog('vt error')
+                return False,False
         
-        sId = self.__getIdFromUrl( self.__sUrl )
-        url2 = 'https://thevideo.website/api/slider/' + sId
-        cConfig().log(url2)
-        oRequest = cRequestHandler(url2)
-        sHtmlContenttmp2 = oRequest.request()
-        url3 = re.search(r'"src":"([^"]+)"', sHtmlContenttmp2,re.DOTALL).group(1)
-        cConfig().log(url3)
-        oRequest = cRequestHandler(url3)
-        sHtmlContenttmp3 = oRequest.request()
-        
-        xbmc.sleep(1000)
+        if (True):   
+            #Unlock url
+            url1 = re.search(r'async src="([^"]+)">', sHtmlContent,re.DOTALL).group(1)
+            VSlog(url1)
+            oRequest = cRequestHandler(url1)
+            sHtmlContenttmp1 = oRequest.request()
+            
+            sId = self.__getIdFromUrl( self.__sUrl )
+            url2 = 'https://thevideo.website/api/slider/' + sId
+            VSlog(url2)
+            oRequest = cRequestHandler(url2)
+            sHtmlContenttmp2 = oRequest.request()
+            url3 = re.search(r'"src":"([^"]+)"', sHtmlContenttmp2,re.DOTALL).group(1)
+            VSlog(url3)
+            oRequest = cRequestHandler(url3)
+            sHtmlContenttmp3 = oRequest.request()
+            
+            xbmc.sleep(1000)
             
         sPattern = '{"file":"([^"]+)","label":"(.+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -241,3 +268,34 @@ class cHoster(iHoster):
             return True, api_call
             
         return False, False
+
+        
+#-----------------------------------------------------------------------------------------
+def CheckCpacker(str):
+
+    sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\)\s*)<'
+    aResult = re.search(sPattern, str,re.DOTALL | re.UNICODE)
+    if (aResult):
+        #VSlog('Cpacker encryption')
+        str2 = aResult.group(1)
+        
+        if not str2.endswith(';'):
+            str2 = str2 + ';'
+
+        #if not str2.startswith('eval'):
+        #    str2 = 'eval(function' + str2[4:]
+        
+        #Me demandez pas pourquoi mais si je l'affiche pas en log, ca freeze ?????
+        #VSlog(str2)
+        
+        try:
+            tmp = cPacker().unpack(str2)
+            #tmp = tmp.replace("\\'","'")
+        except:
+            tmp =''
+            
+        #VSlog(tmp)
+
+        return str[:(aResult.start() + 1)] + tmp + str[(aResult.end()-1):]
+        
+    return str

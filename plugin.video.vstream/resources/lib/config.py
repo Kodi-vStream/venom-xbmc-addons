@@ -408,7 +408,7 @@ class cConfig():
                             sTitle = unicodedata.normalize('NFKD', i['title']).encode('ascii','ignore')
                         except: sTitle = "Aucune information"
                         try:
-                            sThumbnail = 'https://image.tmdb.org/t/p/w396' + i['poster_path']
+                            sThumbnail = 'https://image.tmdb.org/t/p/w342' + i['poster_path']
                         except:
                             sThumbnail = ''
                         sId = i['id']

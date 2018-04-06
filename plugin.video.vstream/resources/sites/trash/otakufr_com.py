@@ -169,7 +169,7 @@ def __checkForNextPage(sHtmlContent): #cherche la page suivante
     oParser = cParser()
     sPattern = '<li><a href="([^<]+)">Suivant</a></li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    print aResult #affiche le result dans le log
+
     if (aResult[0] == True):
         return aResult[1][0]
 

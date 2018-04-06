@@ -451,6 +451,9 @@ def showLinks():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     oRequestHandler = cRequestHandler(sUrl)
+    #faut post
+    oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+    oRequestHandler.addParameters('levideo', '123456')  
     sHtmlContent = oRequestHandler.request().replace('<span class="telecharger_sur_uptobox"></span>', '')
 
     sPattern = '<div class="num_link">Lien:.+?<span class="(.+?)".+?span style="width:55px;" class="(.+?)">.+?<input name="levideo" value="(.+?)"'
@@ -512,9 +515,15 @@ def showHosters():
                 continue
             
             if 'vimple.org' in sHosterUrl:
+                #cConfig().log(sHosterUrl)
                 oRequestHandler = cRequestHandler(sHosterUrl)
+                oRequestHandler.addHeaderEntry('Referer',sUrl)
                 sHtmlContent2 = oRequestHandler.request()
-                sHosterUrl = str(oRequestHandler.getRealUrl())
+                try:
+                    sHosterUrl = re.search('url=([^"]+)"', sHtmlContent2,re.DOTALL).group(1) 
+                except:
+                    sHosterUrl = str(oRequestHandler.getRealUrl())
+                #cConfig().log(sHosterUrl)
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):

@@ -645,13 +645,11 @@ def Display_protected_link():
     sThumb=oInputParameterHandler.getValue('sThumb')
 
     oParser = cParser()
-    
-    print sUrl
 
     #Est ce un lien dl-protect ?
     if URL_PROTECT in sUrl:
         sHtmlContent = DecryptddlProtect(sUrl)
-        print sHtmlContent
+
         if sHtmlContent:
             #Si redirection
             if sHtmlContent.startswith('http'):

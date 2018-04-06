@@ -63,184 +63,137 @@
         <setting label="30420" type="action"  action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, search)" />
 
         <setting type="sep"/>
-        <setting subsetting="true" label="Si le menu ne fonctionne pas [CR] utiliser (plugins On/Off) pour activer/désactiver les sources." type="lsep"/>
-        <setting subsetting="true" label="Faite un retour sur le Github Merci." type="lsep"/>
+        <setting subsetting="true" label="Choisissez vos sources cliquez OK [CR]- Pour Valider les modifications cliquez encore sur OK" type="lsep"/>
 
-        <!-- <setting label="30079" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="search2_label" type="text" label="30501" default="Séries" />
-        <setting label="30094" type="action"  action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, search, search2)" />
-        <setting id="search2_type" type="select" label="Mode de recherche à préférer pour cette recherche" values="Film|Série|Animé|Documentaire" default="Série"/>
 
-        <setting label="30080" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="search3_label" type="text" label="30501" default="Animés" />
-        <setting label="30094" type="action"  action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, search, search3)" />
-        <setting id="search3_type" type="select" label="Mode de recherche à préférer pour cette recherche" values="Film|Série|Animé|Documentaire" default="Animé"/>
+        <!--activation invisible des sources -->
+        <setting visible="false" id="plugin_adkami_com" type="bool" label="ADKami" default="true"/>
 
-        <setting label="30081" type="lsep"/>
-        <setting type="sep"/>
-        <setting id="search4_label" type="text" label="30501" default="Documentaires" />
-        <setting label="30094" type="action"  action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, search, search4)" />
-        <setting id="search4_type" type="select" label="Mode de recherche à préférer pour cette recherche" values="Film|Série|Animé|Documentaire" default="Documentaire"/> -->
+        <setting visible="false" id="plugin_alluc_ee" type="bool" label="Alluc" default="true"/>
 
-    </category>
+        <setting visible="false" id="plugin_buzzmonclick_com" type="bool" label="BuzzMonClick" default="true"/>
 
-    <!-- search1_ = Films | search2_ = Séries | search3_ = Animés | search4_ = Documentaires-->
-    <category label="30022">
+        <setting visible="false" id="plugin_cineiz" type="bool" label="cineiz" default="true"/>
 
-        <setting label="30303" type="lsep"/>
-        <setting type="sep"/>
+        <setting visible="false" id="plugin_cinemavf" type="bool" label="Cinemavf" default="true"/>
 
-        <setting id="plugin_alluc_ee" type="bool" label="Alluc (recherche de sources)" default="true"/>
+        <setting visible="false" id="plugin_cinemay_com" type="bool" label="Cinemay" default="true"/>
+
+        <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
+
+        <setting visible="false" id="plugin_coco_stream" type="bool" label="Cinemegatoil" default="true"/>
+
+        <setting visible="false" id="plugin_ddl_island_su" type="bool" label="DDL Island" default="true"/>
+
+        <setting visible="false" id="plugin_disneyhd_tk" type="bool" label="DisneyHD" default="true"/>
+
+        <setting visible="false" id="plugin_documentaires_streaming_com" type="bool" label="Documentaires Streaming" default="true"/>
+
+        <setting visible="false" id="plugin_film_illimit_fr" type="bool" label="Film Illimité" default="true"/>
+
+        <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Film stream vk" default="true"/>
+
+        <setting visible="false" id="plugin_filmsvostfr_biz" type="bool" label="Filmsvostfr" default="true"/>
+
+        <setting visible="false" id="plugin_filmzenstream_com" type="bool" label="Filmzenstream)" default="true"/>
+
+        <setting visible="false" id="plugin_free_telechargement_org" type="bool" label="Free Telechargement" default="true"/>
 
         <setting visible="false" id="plugin_freebox" type="bool" label="active freebox" default="false"/>
+        
+        <setting visible="false" id="plugin_french_stream_com" type="bool" label="French Stream" default="true"/>
 
-        <setting id="plugin_adkami_com" type="bool" label="ADKami (Séries, Animés)" default="true"/>
+        <setting visible="false" id="plugin_frenchddl_com" type="bool" label="FrenchDDL" default="true"/>
 
-        <setting id="plugin_buzzmonclick_com" type="bool" label="BuzzMonClick (Replay TV, Documentaires)" default="true"/>
+        <setting visible="false" id="plugin_full_stream_org" type="bool" label="Full Stream" default="true"/>
 
-        <setting id="plugin_cinemavf" type="bool" label="Cinemavf (Films, Séries, Animés)" default="true"/>
+        <setting visible="false" id="plugin_gum_gum_streaming_com" type="bool" label="Gum-Gum-Streaming" default="true"/>
 
-        <setting id="plugin_cinemay_com" type="bool" label="Cinemay (Films, Séries)" default="true"/>
+        <setting visible="false" id="plugin_kaydo_ws" type="bool" label="kaydo" default="true"/>
 
-        <setting id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil (Films)" default="true"/>
+        <setting visible="false" id="plugin_kepliz_com" type="bool" label="Kepliz" default="true"/>
 
-        <setting id="plugin_coco_stream" type="bool" label="Cinemegatoil (Films, Séries)" default="true"/>
+        <setting visible="false" id="plugin_les_debiles" type="bool" label="Les Débiles" default="true"/>
 
-        <setting id="plugin_ddl_island_su" type="bool" label="DDL Island (Films, Séries, Animés)" default="true"/>
+        <setting visible="false" id="plugin_les_docus" type="bool" label="Les docus" default="true"/>
 
-        <setting id="plugin_disneyhd_tk" type="bool" label="DisneyHD (Films, Animés)" default="true"/>
+        <setting visible="false" id="plugin_libertyland_tv" type="bool" label="Libertyland" default="true"/>
 
-        <setting id="plugin_documentaires_streaming_com" type="bool" label="Documentaires Streaming (Documentaires)" default="true"/>
+        <setting visible="false" id="plugin_libre_stream_org" type="bool" label="Libre-stream" default="true"/>
 
-        <setting id="plugin_evilox" type="bool" label="Evilox (Vidéos)" default="true"/>
+        <setting visible="false" id="plugin_malaisetv" type="bool" label="Malaise tv" default="true"/>
 
-        <setting id="plugin_film_illimit_fr" type="bool" label="Film Illimité (Films)" default="true"/>
+        <setting visible="false" id="plugin_mangacity_org" type="bool" label="Ianime" default="true"/>
 
-        <setting id="plugin_filmstreamingv2" type="bool" label="Film stream vk (Films, Séries, Animés)" default="true"/>
+        <setting visible="false" id="plugin_mareplaytv" type="bool" label="Mareplay TV" default="true"/>
 
-        <setting id="plugin_filmstreamvk_com" type="bool" label="Film stream vk (Films, Séries, Animés)" default="true"/>
+        <setting visible="false" id="plugin_navixsport_com" type="bool" label="Navixsport" default="true"/>
 
-        <setting id="plugin_filmsvostfr_biz" type="bool" label="Filmsvostfr (Films, Séries, Animés)" default="true"/>
+        <setting visible="false" id="plugin_neuf_docu" type="bool" label="9Docu" default="true"/>
 
-        <setting id="plugin_filmzenstream_com" type="bool" label="Filmzenstream (Films)" default="true"/>
+        <setting visible="false" id="plugin_otakufr_com" type="bool" label="OtakuFR" default="true"/>
 
-        <setting id="plugin_free_telechargement_org" type="bool" label="Free Telechargement (Films, Séries)" default="true"/>
+        <setting visible="false" id="plugin_papstream" type="bool" label="papstream" default="true"/>
 
-        <setting id="plugin_french_stream_com" type="bool" label="French Stream (Films, Séries)" default="true"/>
+        <setting visible="false" id="plugin_planet_streaming" type="bool" label="planet streaming" default="true"/>
 
-        <setting id="plugin_frenchddl_com" type="bool" label="FrenchDDL (Films)" default="true"/>
+        <setting visible="false" id="plugin_regarder_films" type="bool" label="Regarder.films" default="true"/>
 
-        <setting id="plugin_full_stream_org" type="bool" label="Full Stream (Films, Séries, Animés)" default="true"/>
+        <setting visible="false" id="plugin_replaytvstreaming_com" type="bool" label="ReplayTVstreaming" default="true"/>
 
-        <setting id="plugin_fullmoviz_org" type="bool" label="FullMoviz (Films)" default="true"/>
+        <setting visible="false" id="plugin_reportagestv_com" type="bool" label="Reportages TV" default="true"/>
 
-        <setting id="plugin_gum_gum_streaming_com" type="bool" label="Gum-Gum-Streaming (Animés)" default="true"/>
+        <setting visible="false" id="plugin_robindesdroits" type="bool" label="Robin Des Droits" default="true"/>
 
-        <setting id="plugin_kaydo_ws" type="bool" label="kaydo (Films, Séries)" default="true"/>
+        <setting visible="false" id="plugin_serie_streaming_watch" type="bool" label="SerieStreaming.watch" default="true"/>
 
-        <setting id="plugin_kepliz_com" type="bool" label="Kepliz (Films)" default="true"/>
+        <setting visible="false" id="plugin_serie_streaminghd" type="bool" label="Série-StreamingHD" default="true"/>
 
-        <setting id="plugin_les_debiles" type="bool" label="Les Débiles (Vidéos)" default="true"/>
+        <setting visible="false" id="plugin_series_en_streaming_tv" type="bool" label="Series En Streaming" default="true"/>
 
-        <setting id="plugin_les_docus" type="bool" label="Les docus (Documentaires)" default="true"/>
+        <setting visible="false" id="plugin_skstream_co" type="bool" label="Skstream" default="true"/>
 
-    </category>
+        <setting visible="false" id="plugin_sokrostream_biz" type="bool" label="Sokrostream" default="true"/>
 
-    <category label="30147">
+        <setting visible="false" id="plugin_spion_com" type="bool" label="Spion" default="true"/>
 
-        <setting label="30303" type="lsep"/>
-        <setting type="sep"/>
+        <setting visible="false" id="plugin_streamay_bz" type="bool" label="Streamay" default="true"/>
 
-        <setting id="plugin_libertyland_tv" type="bool" label="Libertyland (Films, séries, Manga)" default="true"/>
+        <setting visible="false" id="plugin_streamcomplet" type="bool" label="StreamComplet" default="true"/>
+        
+        <setting visible="false" id="plugin_streamelite" type="bool" label="StreamElite" default="true"/>
 
-        <setting id="plugin_libre_stream_org" type="bool" label="Libre-stream (Films, séries)" default="true"/>
+        <setting visible="false" id="plugin_streamfilmzzz" type="bool" label="StreamFilmzzz" default="true"/>
 
-        <setting id="plugin_malaisetv" type="bool" label="Malaise tv (Vidéos)" default="true"/>
+        <setting visible="false" id="plugin_streaming_series_org" type="bool" label="Streaming-Series" default="true"/>
 
-        <setting id="plugin_mangacity_org" type="bool" label="Ianime (Animés)" default="true"/>
+        <setting visible="false" id="plugin_streaming_series_xyz" type="bool" label="Streaming-series.cx" default="true"/>
 
-        <setting id="plugin_mareplaytv" type="bool" label="Mareplay TV (Replay)" default="true"/>
+        <setting visible="false" id="plugin_streamingbb" type="bool" label="StreamingBB" default="true"/>
 
-        <setting id="plugin_megastream" type="bool" label="Mega-stream (Films, Séries, Animés)" default="true"/>
+        <setting visible="false" id="plugin_streamingk_com" type="bool" label="StreamingK" default="true"/>
 
-        <setting id="plugin_navixsport_com" type="bool" label="Navixsport (Sports)" default="true"/>
+        <setting visible="false" id="plugin_streamiz_co" type="bool" label="Streamiz.co" default="true"/>
 
-        <setting id="plugin_neuf_docu" type="bool" label="9Docu (Documentaires)" default="true"/>
+        <setting visible="false" id="plugin_streamzzz_com" type="bool" label="Streamzzz" default="true"/>
 
-        <setting id="plugin_otakufr_com" type="bool" label="OtakuFR (Animés)" default="true"/>
+        <setting visible="false" id="plugin_topreplay" type="bool" label="TopReplay" default="true"/>
 
-        <setting id="plugin_papystreaming_org" type="bool" label="Papystreaming (Films,Séries)" default="true"/>
+        <setting visible="false" id="plugin_tv_streaming_ch" type="bool" label="TV-Streaming" default="true"/>
 
-        <setting id="plugin_planet_streaming" type="bool" label="planet streaming (Films, Séries)" default="true"/>
+        <setting visible="false" id="plugin_tvrex_net" type="bool" label="Tvrex" default="true"/>
 
-        <setting id="plugin_regarder_films" type="bool" label="Regarder.films (Séries)" default="true"/>
+        <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
 
-        <setting id="plugin_replaytvstreaming_com" type="bool" label="ReplayTVstreaming (ReplayTV)" default="true"/>
+        <setting visible="false" id="plugin_vkstreamingfilm_biz" type="bool" label="Vk Streaming Film" default="true"/>
 
-        <setting id="plugin_reportagestv_com" type="bool" label="Reportages TV (Documentaires)" default="true"/>
+        <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
 
-        <setting id="plugin_robindesdroits" type="bool" label="Robin Des Droits (Sports)" default="true"/>
+        <setting visible="false" id="plugin_youtitou_com" type="bool" label="YouTitou (Animés)" default="true"/>
 
-        <setting id="plugin_serie_streaming_watch" type="bool" label="SerieStreaming.watch (Séries)" default="true"/>
+        <setting visible="false" id="plugin_zone_telechargement_ws" type="bool" label="Zone Téléchargement.ws" default="true"/>
 
-        <setting id="plugin_serie_streaminghd" type="bool" label="Série-StreamingHD (Séries)" default="true"/>
-
-        <setting id="plugin_series_en_streaming_tv" type="bool" label="Series En Streaming (Séries)" default="true"/>
-
-        <setting id="plugin_skstream_co" type="bool" label="Skstream (Films, Séries, Animes)" default="true"/>
-
-        <setting id="plugin_sokrostream_biz" type="bool" label="Sokrostream (Films, Séries)" default="true"/>
-
-        <setting id="plugin_spion_com" type="bool" label="Spion (Vidéos du net)" default="true"/>
-
-        <setting id="plugin_streamay_bz" type="bool" label="Streamay (Films, Séries, Animés)" default="true"/>
-
-        <setting id="plugin_streamcomplet" type="bool" label="StreamComplet (Films)" default="true"/>
-
-        <setting id="plugin_streamelite" type="bool" label="StreamElite (Séries)" default="true"/>
-
-        <setting id="plugin_streamfilmzzz" type="bool" label="StreamFilmzzz (Films)" default="true"/>
-
-        <setting id="plugin_streaming_series_org" type="bool" label="Streaming-Series (Séries)" default="true"/>
-
-        <setting id="plugin_streaming_series_xyz" type="bool" label="Streaming-series.cx (Séries)" default="true"/>
-
-        <setting id="plugin_streamingbb" type="bool" label="StreamingBB (Films)" default="true"/>
-
-        <setting id="plugin_streamingk_com" type="bool" label="StreamingK (Films, Séries, Animés)" default="true"/>
-
-    </category>
-
-    <category label="30148">
-
-        <setting label="30303" type="lsep"/>
-        <setting type="sep"/>
-
-        <setting id="plugin_streamiz_co" type="bool" label="Streamiz.co (Films)" default="true"/>
-
-        <setting id="plugin_streamzzz_com" type="bool" label="Streamzzz (Séries)" default="true"/>
-
-        <setting id="plugin_tntv_rattrapage" type="bool" label="TNTV Rattrapage (Séries, TV Replay)" default="true"/>
-
-        <setting id="plugin_topreplay" type="bool" label="TopReplay (TV Replay)" default="true"/>
-
-        <setting id="plugin_tv_streaming_ch" type="bool" label="TV-Streaming (Films, Séries, Animés, Documentaires, TV Replay)" default="true"/>
-
-        <setting id="plugin_tvrex_net" type="bool" label="Tvrex (Sports)" default="true"/>
-
-        <setting id="plugin_videobuzzy_com" type="bool" label="Videobuzzy (Vidéos du Net)" default="true"/>
-
-        <setting id="plugin_vkstreamingfilm_biz" type="bool" label="Vk Streaming Film (Films)" default="true"/>
-
-        <setting id="plugin_voirfilms_org" type="bool" label="VoirFilms (Films, Séries, Animés)" default="true"/>
-
-        <setting id="plugin_youtitou_com" type="bool" label="YouTitou (Animés)" default="true"/>
-
-        <setting id="plugin_zone_telechargement_ws" type="bool" label="Zone Téléchargement.ws (Films,Séries,Animés,Documentaires)" default="true"/>
-
-        <setting id="plugin_zonestreaming" type="bool" label="ZoneStreaming (Films,Séries)" default="true"/>
+        <setting visible="false" id="plugin_zonestreaming" type="bool" label="ZoneStreaming" default="true"/>
 
     </category>
 

@@ -471,7 +471,7 @@ def showHosters():
             except:
                 pass
 
-            print sHosterUrl
+            #print sHosterUrl
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
