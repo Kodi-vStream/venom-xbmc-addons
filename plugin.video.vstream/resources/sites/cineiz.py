@@ -22,9 +22,9 @@ SITE_DESC = 'Films, Séries et mangas en streaming'
 
 URL_MAIN = 'http://www.cineiz.cc/'
 
-URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH = ('', 'showMovieSearch')
+URL_SEARCH_MOVIES = ('', 'showMovieSearch')
+URL_SEARCH_SERIES = ('', 'showMovieSearch')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'films.htm', 'showMovies')
@@ -110,7 +110,7 @@ def showSearch():
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText
-        showMovies(sUrl)
+        showMovieSearch(sUrl)
         oGui.setEndOfDirectory()
         return
 
@@ -284,6 +284,60 @@ def showSerieYears():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
+
+def showMovieSearch(sSearch = ''):
+    oGui = cGui()
+    
+    if not sSearch:
+        return
+    else:
+        sUrl = URL_MAIN + 'recherche'
+
+    oRequestHandler = cRequestHandler(sUrl)
+
+    oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+    oRequestHandler.addParameters('action', 'recherche')
+    oRequestHandler.addParameters('story', sSearch)
+
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '<div class="unfilm".+?href="(.+?)".+?<img src="(.+?)".+?<span class="linkfilm">(.+?)</span>'
+
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+		oGui.addText(SITE_IDENTIFIER)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        #dialog barre de progression
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
+            sUrl2 = str(aEntry[0])
+            sThumb = URL_MAIN + str(aEntry[1])
+            sTitle = str(aEntry[2])
+            sDesc = ''
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+
+            if '/series-tv/' in sUrl2:
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            elif '/anime/' in sUrl2:
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+
 
 def showMovies(sSearch = ''):
     oGui = cGui()
