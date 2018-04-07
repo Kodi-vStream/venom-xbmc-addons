@@ -630,55 +630,8 @@ def showHosters():
 
             #redirection tinyurl
             if 'tinyurl' in sHosterUrl:
-                #Lien deja connu ?
-                if '://tinyurl.com/h7c9sr7' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/h7c9sr7/','://vidwatch.me/')
-                elif '://tinyurl.com/jxblgl5' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/jxblgl5/','://streamin.to/')
-                elif '://tinyurl.com/q44uiep' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/q44uiep/','://openload.co/')
-                elif '://tinyurl.com/jp3fg5x' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/jp3fg5x/','://allmyvideos.net/')
-                elif '://tinyurl.com/kqhtvlv' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/kqhtvlv/','://openload.co/embed/')
-                elif '://tinyurl.com/hymuk2f' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/hymuk2f/','://youwatch.org/')
-                elif '://tinyurl.com/lr6ytvj' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/lr6ytvj/','://netu.tv/')
-                elif '://tinyurl.com/kojastd' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/kojastd/','://www.rapidvideo.com/embed/')
-                elif '://tinyurl.com/l3tjslm' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/l3tjslm/','://hqq.tv/player/')
-                elif '://tinyurl.com/n34gtt7' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/n34gtt7/','://vidlox.tv/')
-                elif '://tinyurl.com/kdo4xuk' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/kdo4xuk/','://watchers.to/')
-                elif '://tinyurl.com/kjvlplm' in sHosterUrl:
-                    sHosterUrl = sHosterUrl.replace('://tinyurl.com/kjvlplm/','://streamango.com/')
+                sHosterUrl = GetTinyUrl(sHosterUrl)
 
-                #On va chercher le vrai lien
-                else:
-
-                    VSlog('Decodage lien tinyurl : ' + str(sHosterUrl))
-
-                    class NoRedirection(urllib2.HTTPErrorProcessor):
-                        def http_response(self, request, response):
-                            return response
-
-                    headers9 = [('User-Agent' , 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'),('Referer',URL_MAIN)]
-
-                    opener = urllib2.build_opener(NoRedirection)
-                    opener.addheaders = headers9
-                    reponse = opener.open(sHosterUrl,None,5)
-
-                    UrlRedirect = reponse.geturl()
-
-                    if not(UrlRedirect == sHosterUrl):
-                        sHosterUrl = UrlRedirect
-                    elif 'Location' in reponse.headers:
-                        sHosterUrl = reponse.headers['Location']
-
-                    reponse.close()
 
             #test pr liens raccourcis
             if 'http://goo.gl' in sHosterUrl:
@@ -706,10 +659,10 @@ def showHosters():
             #Derniere en date
             sPattern = "(http:\/\/www.ianime[^\/\\]+\/[^']+)"
             aResult = oParser.parse(sHosterUrl, sPattern)
-            #VSlog(aResult)
+            #VSlog('1>>' + str(sHosterUrl))
             if aResult[0]:
                 
-                #VSlog(sHosterUrl)
+                #VSlog('>>' + sHosterUrl)
                 
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 oRequestHandler.addHeaderEntry('Referer',sUrl)
@@ -742,18 +695,80 @@ def showHosters():
                     #VSlog(sHtmlContent)
                     
                     sHosterUrl2 = ExtractLink(sHtmlContent)
-                
-                if 'tinyurl' in sHosterUrl2:
-                    if '://tinyurl.com/kt3owzh' in sHosterUrl2:
-                        sHosterUrl2 = sHosterUrl2.replace('://tinyurl.com/kt3owzh/','://estream.to/')
+                 
+                sHosterUrl = sHosterUrl2
+
+            if 'tinyurl' in sHosterUrl:
+                sHosterUrl = GetTinyUrl(sHosterUrl)
                         
-            oHoster = cHosterGui().checkHoster(sHosterUrl2)
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl2, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
+
+
+
+#-----------------------------------------------------------------------------------------------------
+def GetTinyUrl(url):
+    if not 'tinyurl' in url:
+        return url
+    
+    #Lien deja connu ?
+    if '://tinyurl.com/h7c9sr7' in url:
+        url = url.replace('://tinyurl.com/h7c9sr7/','://vidwatch.me/')
+    elif '://tinyurl.com/jxblgl5' in url:
+        url = url.replace('://tinyurl.com/jxblgl5/','://streamin.to/')
+    elif '://tinyurl.com/q44uiep' in url:
+        url = url.replace('://tinyurl.com/q44uiep/','://openload.co/')
+    elif '://tinyurl.com/jp3fg5x' in url:
+        url = url.replace('://tinyurl.com/jp3fg5x/','://allmyvideos.net/')
+    elif '://tinyurl.com/kqhtvlv' in url:
+        url = url.replace('://tinyurl.com/kqhtvlv/','://openload.co/embed/')
+    elif '://tinyurl.com/hymuk2f' in url:
+        url = url.replace('://tinyurl.com/hymuk2f/','://youwatch.org/')
+    elif '://tinyurl.com/lr6ytvj' in url:
+        url = url.replace('://tinyurl.com/lr6ytvj/','://netu.tv/')
+    elif '://tinyurl.com/kojastd' in url:
+        url = url.replace('://tinyurl.com/kojastd/','://www.rapidvideo.com/embed/')
+    elif '://tinyurl.com/l3tjslm' in url:
+        url = url.replace('://tinyurl.com/l3tjslm/','://hqq.tv/player/')
+    elif '://tinyurl.com/n34gtt7' in url:
+        url = url.replace('://tinyurl.com/n34gtt7/','://vidlox.tv/')
+    elif '://tinyurl.com/kdo4xuk' in url:
+        url = url.replace('://tinyurl.com/kdo4xuk/','://watchers.to/')
+    elif '://tinyurl.com/kjvlplm' in url:
+        url = url.replace('://tinyurl.com/kjvlplm/','://streamango.com/')
+    elif '://tinyurl.com/kt3owzh' in url:
+        url = url.replace('://tinyurl.com/kt3owzh/','://estream.to/')
+
+    #On va chercher le vrai lien
+    else:
+
+        VSlog('Decodage lien tinyurl : ' + str(url))
+
+        class NoRedirection(urllib2.HTTPErrorProcessor):
+            def http_response(self, request, response):
+                return response
+
+        headers9 = [('User-Agent' , 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'),('Referer',URL_MAIN)]
+
+        opener = urllib2.build_opener(NoRedirection)
+        opener.addheaders = headers9
+        reponse = opener.open(url,None,5)
+
+        UrlRedirect = reponse.geturl()
+
+        if not(UrlRedirect == url):
+            url = UrlRedirect
+        elif 'Location' in reponse.headers:
+            url = reponse.headers['Location']
+
+        reponse.close()
+        
+    return url
