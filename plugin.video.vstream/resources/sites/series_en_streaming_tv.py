@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 # Venom.
+#Protection cloudflare qui ne passe pas
+return False
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
