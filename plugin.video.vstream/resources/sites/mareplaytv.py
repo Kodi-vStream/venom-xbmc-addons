@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 #Venom.
+#rien ne fonctionne, video pas héberger par le site.
+return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
