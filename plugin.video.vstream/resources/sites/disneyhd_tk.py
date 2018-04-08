@@ -148,7 +148,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sHosterUrl = str(aEntry)
-            if '/mp4/' in sHosterUrl:
+            if '/mp4/' in sHosterUrl and not 'http' in sHosterUrl:
                 sHosterUrl = 'http://disneyhd.tk%s' % sHosterUrl
 
             if '//goo.gl' in sHosterUrl:

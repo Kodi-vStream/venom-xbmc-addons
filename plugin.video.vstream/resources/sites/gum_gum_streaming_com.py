@@ -1,6 +1,8 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 # Norton-breman
+#erreur cloudflare
+return False
 
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui

@@ -998,7 +998,7 @@ class cTrakt:
         sHtmlContent = response.read()
         result = json.loads(sHtmlContent)
         #xbmc.log(str(result))
-        sText = "Erreur"
+        sText = False
         try:
             if result["added"]['movies'] == 1 or result["added"]['episodes'] > 0 or result["added"]['shows'] > 0:
                 sText = "Ajouté avec succes"
@@ -1019,7 +1019,8 @@ class cTrakt:
                 sText = 'Entree deja presente'
         except: pass
 
-        cGui().showNofication(sText)
+        if sText:
+            cGui().showNofication(sText)
 
         return
         
