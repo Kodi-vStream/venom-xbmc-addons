@@ -1,10 +1,42 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #
+from __future__ import division
+
 import re,os
 import urllib2,urllib
 import xbmc
 import xbmcaddon
+
+
+#472.31
+a = '''
+
+ //<![CDATA[
+  (function(){
+    var a = function() {try{return !!window.addEventListener} catch(e) {return !1} },
+    b = function(b, c) {a() ? document.addEventListener("DOMContentLoaded", b, c) : document.attachEvent("onreadystatechange", b)};
+    b(function(){
+      var a = document.getElementById('cf-content');a.style.display = 'block';
+      setTimeout(function(){
+        var s,t,o,p,b,r,e,a,k,i,n,g,f, rWHOuRO={"uwnI":+((!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+[])+(!+[]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(+[])+(!+[]+!![]+!![]+!![])+(+!![])+(!+[]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]))/+((!+[]+!![]+!![]+!![]+!![]+!![]+!![]+[])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(+[])+(+[])+(!+[]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]))};
+        t = document.createElement('div');
+        t.innerHTML="<a href='/'>x</a>";
+        t = t.firstChild.href;r = t.match(/https?:\/\//)[0];
+        t = t.substr(r.length); t = t.substr(0,t.length-1);
+        a = document.getElementById('jschl-answer');
+        f = document.getElementById('challenge-form');
+        ;rWHOuRO.uwnI+=+((!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+[])+(!+[]+!![])+(+[])+(!+[]+!![]+!![]+!![])+(+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![])+(!+[]+!![]+!![]))/+((!+[]+!![]+!![]+!![]+!![]+!![]+!![]+[])+(+!![])+(!+[]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(+!![])+(!+[]+!![])+(!+[]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]));rWHOuRO.uwnI*=+((!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+[])+(+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![])+(+[])+(!+[]+!![]+!![]+!![])+(!+[]+!![])+(!+[]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]))/+((!+[]+!![]+!![]+!![]+[])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]));rWHOuRO.uwnI+=+((!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+[])+(+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![])+(+[])+(!+[]+!![]+!![]+!![])+(!+[]+!![])+(!+[]+!![]+!![]+!![])+(!+[]+!![]+!![]))/+((+!![]+[])+(+!![])+(!+[]+!![])+(!+[]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![])+(+[])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+!![]));rWHOuRO.uwnI+=+((!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+[])+(!+[]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(+[])+(!+[]+!![]+!![]+!![])+(+!![])+(!+[]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]))/+((!+[]+!![]+!![]+[])+(+!![])+(!+[]+!![]+!![]+!![]+!![])+(+[])+(!+[]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![])+(+!![])+(!+[]+!![])+(!+[]+!![]+!![]+!![]+!![]));rWHOuRO.uwnI-=+((!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+[])+(+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![])+(+[])+(!+[]+!![]+!![]+!![])+(!+[]+!![])+(!+[]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]))/+((!+[]+!![]+!![]+!![]+!![]+[])+(+[])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![])+(+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![])+(!+[]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+!![]));rWHOuRO.uwnI*=+((!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+[])+(+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![])+(+[])+(!+[]+!![]+!![]+!![])+(!+[]+!![])+(!+[]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]))/+((!+[]+!![]+[])+(!+[]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![])+(!+[]+!![]+!![]+!![]+!![])+(!+[]+!![])+(+[]));rWHOuRO.uwnI*=+((!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+[])+(+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![])+(+[])+(!+[]+!![]+!![]+!![])+(!+[]+!![])+(!+[]+!![]+!![]+!![])+(!+[]+!![]+!![]))/+((+!![]+[])+(+[])+(!+[]+!![]+!![]+!![]+!![])+(+!![])+(!+[]+!![])+(+[])+(!+[]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]));rWHOuRO.uwnI+=+((!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+[])+(+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![])+(+[])+(!+[]+!![]+!![]+!![])+(!+[]+!![])+(!+[]+!![]+!![]+!![])+(!+[]+!![]+!![]))/+((!+[]+!![]+!![]+!![]+[])+(!+[]+!![]+!![])+(!+[]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![])+(+[])+(!+[]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![])+(!+[]+!![]));rWHOuRO.uwnI*=+((!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+[])+(!+[]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![])+(+[])+(!+[]+!![]+!![]))/+((!+[]+!![]+!![]+!![]+!![]+!![]+[])+(!+[]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+!![]));rWHOuRO.uwnI*=+((!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+[])+(+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![])+(+[])+(!+[]+!![]+!![]+!![])+(!+[]+!![])+(!+[]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]))/+((!+[]+!![]+!![]+!![]+!![]+!![]+[])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(+[])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![]+!![]+!![]+!![]+!![])+(!+[]+!![]+!![])+(+[]));a.value = +rWHOuRO.uwnI.toFixed(10) + t.length; '; 121'
+        f.action += location.hash;
+        f.submit();
+      }, 4000);
+    }, false);
+  })();
+  //]]>
+</script>
+
+
+'''
 
 #---------------------------------------------------------
 #Gros probleme, mais qui a l'air de passer
@@ -38,7 +70,7 @@ import xbmcaddon
 PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
-def parseInt(chain):
+def parseIntOld(chain):
 
     chain = chain.replace(' ','')
     chain = re.sub(r'!!\[\]','1',chain) # !![] = 1
@@ -51,6 +83,72 @@ def parseInt(chain):
         chain = chain.replace('!+[]','1')
 
     return eval(chain)
+
+def checkpart(s,sens):
+    number = 0
+    p = 0
+    if sens == 1:
+        pos = 0
+    else:
+        pos = len(s) - 1
+
+    try:
+        while (1):
+            c = s[pos]
+            
+            if ((c == '(') and (sens == 1)) or ((c == ')') and (sens == -1)):
+                p = p + 1
+            if ((c == ')') and (sens == 1)) or ((c == '(') and (sens == -1)):
+                p = p - 1
+            if (c == '+') and (p == 0) and (number > 1):
+                break
+                
+            number +=1
+            pos=pos + sens
+    except:
+
+        pass
+
+        
+    if sens == 1:
+        return s[:number]
+    else:
+        return s[-number:]
+
+def parseInt(s):
+
+    offset=1 if s[0]=='+' else 0
+    chain = s.replace('!+[]','1').replace('!![]','1').replace('[]','0').replace('(','str(')[offset:]
+    
+    if '/' in chain:
+        
+        #print('division ok ')
+        #print('avant ' + chain)
+        
+        val = chain.split('/')
+        gauche = checkpart(val[0],-1)
+        droite = checkpart(val[1],1)
+        
+        chain = droite.replace(droite,'')
+
+        if droite.startswith('+'):
+            droite = droite[1:]
+        
+        #print('debug1 ' + str(gauche))
+        #print('debug2 ' + str(droite))
+        
+        gg = int( eval(gauche))
+        dd = int( eval(droite))
+
+        chain = chain.replace(gauche,'') + str(gg) +'/' + str(dd) + chain
+        
+        #print('apres ' + chain)
+
+        
+    val = float( eval(chain))
+
+    return val
+
 
 def CheckIfActive(data):
     if 'Checking your browser before accessing' in data:
@@ -127,20 +225,27 @@ class CloudflareBypass(object):
         return head
 
     def GetResponse(self,htmlcontent):
-        #line1 = re.findall('var t,r,a,f, (.+?)={"(.+?)":\+*(.+?)};',htmlcontent)
+        
         line1 = re.findall('var s,t,o,p,b,r,e,a,k,i,n,g,f, (.+?)={"(.+?)":\+*(.+?)};',htmlcontent)
 
         varname = line1[0][0] + '.' + line1[0][1]
-        calcul = int(parseInt(line1[0][2]))
+        calcul = parseInt(line1[0][2])
 
         AllLines = re.findall(';' + varname + '([*\-+])=([^;]+)',htmlcontent)
+        
+        #print(">>>>>>>>>>>>>>>>: " + format(calcul,'.17g'))
 
         for aEntry in AllLines:
-            calcul = eval( str(calcul) + str(aEntry[0]) + str(parseInt(aEntry[1])))
+            #print("debug 1: " + aEntry[1])
+            #print("debug 2: " + format(calcul,'.17g') + str(aEntry[0]) + format(parseInt(aEntry[1]),'.17g'))
+            calcul = eval( format(calcul,'.17g') + str(aEntry[0]) + format(parseInt(aEntry[1]),'.17g'))
+            #print(">>>>>>>>>>>>>>>>: " + format(calcul,'.17g')+ '\n')
+
+        #print("result 1: " + format(calcul,'.17g'))
 
         rep = calcul + len(self.host)
 
-        return str(rep)
+        return format(rep,'.13g')
 
     def GetReponseInfo(self):
         return self.HttpReponse.geturl(), self.HttpReponse.headers
@@ -160,6 +265,7 @@ class CloudflareBypass(object):
 
         self.hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',url)
         self.host = re.sub(r'https*:\/\/','',self.hostComplet)
+
         self.url = url
 
         cookieMem = self.Readcookie(self.host.replace('.','_'))
@@ -224,6 +330,10 @@ class CloudflareBypass(object):
                 cookies = cookies.split(';')[0]
 
             self.HttpReponse.close()
+            
+        fh = open('c:\\test.txt', "w")
+        fh.write(htmlcontent)
+        fh.close()
 
         #2 eme etape recuperation parametres
         hash = re.findall('<input type="hidden" name="jschl_vc" value="(.+?)"\/>',htmlcontent)[0]
@@ -254,10 +364,10 @@ class CloudflareBypass(object):
 
         self.HttpReponse = opener.open(NewUrl,postdata)
         
-        #xbmc.log("Headers send " + str(opener.addheaders), xbmc.LOGNOTICE)
-        #xbmc.log("cookie send " + str(cookies), xbmc.LOGNOTICE)
-        #xbmc.log("header recu " + str(self.HttpReponse.headers), xbmc.LOGNOTICE)
-        #xbmc.log("Url " + str(NewUrl), xbmc.LOGNOTICE)
+        xbmc.log("Headers send " + str(opener.addheaders), xbmc.LOGNOTICE)
+        xbmc.log("cookie send " + str(cookies), xbmc.LOGNOTICE)
+        xbmc.log("header recu " + str(self.HttpReponse.headers), xbmc.LOGNOTICE)
+        xbmc.log("Url " + str(NewUrl), xbmc.LOGNOTICE)
 
         if 'Set-Cookie' in self.HttpReponse.headers:
             cookies2 = str(self.HttpReponse.headers.get('Set-Cookie'))
