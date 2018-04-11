@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 #https://vidzi.tv/xxx.html
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -62,7 +63,7 @@ class cHoster(iHoster):
             
         #2 test Dean Edwards Packer
         else:
-            sPattern = "<\/a><\/noscript><\/div>.+?(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
+            sPattern = "<script type='text/javascript'>(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                 sUnpacked = cPacker().unpack(aResult[1][0])
@@ -75,3 +76,4 @@ class cHoster(iHoster):
             return True, api_call
             
         return False, False
+
