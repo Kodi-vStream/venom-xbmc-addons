@@ -296,7 +296,8 @@ def showMovies(sSearch = ''):
             sTitle = ('%s [%s] (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sQual, sLang.upper(), sHoster)
             #mettre les information de streaming entre [] et le reste entre () vstream s'occupe de la couleur automatiquement.
 
-            sUrl2 = URL_MAIN + sUrl2
+	    #Utile que si les liens recuperer ne commence pas par (http://www.nomdusite.com/)
+            #sUrl2 = URL_MAIN + sUrl2
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2) #sortie de l'url
