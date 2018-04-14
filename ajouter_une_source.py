@@ -251,9 +251,10 @@ def showMovies(sSearch = ''):
 
     sPattern = 'class="movie movie-block"><img src="([^<]+)" alt=".+?" title="([^<]+)"/>.+?<h2 onclick="window.location.href=\'([^<]+)\'">.+?<div style="color:#F29000">.+?<div.+?>(.+?)</div>'
     #pour faire simple recherche ce bout de code dans le code source de l'url
-    #- ([^<]+) je veut cette partie de code mais y a une suite
-    #- .+? je ne veut pas cette partis et peux importe ceux qu'elle contient
-    #- (.+?) je veut cette partis et c'est la fin
+    #- "([^"]+)" je veux cette partie de code qui se trouve entre guillemets mais pas de guillemets dans la chaine
+    #- .+? je ne veux pas cette partie et peux importe ceux qu'elle contient
+    #- >(.+?)< je veux cette partie de code qui se trouve entre < et > mais il peut y avoir n'inporte quoi entre les 2.
+    #- (https*://[^"]) je veux l'adresse qui commence par https ou http jusqu'au prochain guillemet.
     #
     #Pour tester vos Regex, vous pouvez utiliser le site https://regex101.com/ en mettant dans les modifiers "gmis"
 
@@ -278,7 +279,8 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            #L'array affiche vos info dans l'orde de sPattern en commencant a 0
+            #L'array affiche vos info dans l'orde de sPattern en commencant a 0, attention dans ce cas la on recupere 6 information
+            #Mais selon votre regex il ne peut y en avoir que 2 ou 3.
             sTitle = str(aEntry[1])
             sUrl2 = str(aEntry[2])
             sThumb = str(aEntry[0])
@@ -294,7 +296,8 @@ def showMovies(sSearch = ''):
             sTitle = ('%s [%s] (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sQual, sLang.upper(), sHoster)
             #mettre les information de streaming entre [] et le reste entre () vstream s'occupe de la couleur automatiquement.
 
-            sUrl2 = URL_MAIN + sUrl2
+	    #Utile que si les liens recuperer ne commence pas par (http://www.nomdusite.com/)
+            #sUrl2 = URL_MAIN + sUrl2
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2) #sortie de l'url

@@ -1,6 +1,8 @@
 #-*- coding: utf-8 -*-
 #Venom.kodigoal
 #from resources.lib.gui.hoster import cHosterGui
+#ne fonctionne plus : une reprise depuis twitter vraiment utile ?
+return False
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
@@ -85,8 +87,6 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
-    #force affichage vignette
-    xbmc.executebuiltin('Container.SetViewMode(500)')
     if not sSearch:
         oGui.setEndOfDirectory()
 

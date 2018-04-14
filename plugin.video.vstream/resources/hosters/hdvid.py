@@ -2,7 +2,8 @@
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
-import re
+from resources.lib.packer import cPacker
+from resources.lib.parser import cParser
 
 class cHoster(iHoster):
 
@@ -45,11 +46,18 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
+        oParser = cParser()
+        
+        sPattern =  '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\)\s*)<\/script>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            sHtmlContent = cPacker().unpack(aResult[1][0])
+            sPattern =  'file:"([^"]+)",label:"[0-9]+"}'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                api_call = aResult[1][0]
 
-        r2 = re.search('file: *"([^"]+)",', sHtmlContent)
-        if (r2):
-            api_call = r2.group(1)
- 
+                
         if (api_call):
             return True, api_call 
 

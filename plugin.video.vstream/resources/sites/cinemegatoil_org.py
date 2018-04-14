@@ -80,7 +80,7 @@ def showGenres():
     liste.append( ['Vieux Film', URL_MAIN + 'vieux-film'] )
     liste.append( ['Western', URL_MAIN + 'western'] )
 
-    for sTitle, sUrl in liste:
+    for sTitle,sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -105,7 +105,7 @@ def showMovies(sSearch = ''):
 
     oParser = cParser()
 
-    sPattern = '<div class="short_content">.+?<a href="([^"]+)".+?img src="([^"]+)".+?class="short_header">(.+?)</div>.+?class="qulabel">(.+?)</div>'
+    sPattern = '<div class="short_content">.+?<a href="(.+?)">.+?<img src="([^"]+)".+?<div class="short_header">(.+?)<\/div>.+?<div class="qulabel">(.+?)<\/div>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -125,10 +125,12 @@ def showMovies(sSearch = ''):
             sThumb = aEntry[1]
             if sThumb.startswith('//'):
                 sThumb = 'http:' + sThumb
+                
             sTitle = str(aEntry[2])
             sQual = str(aEntry[3])
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
+
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -137,6 +139,7 @@ def showMovies(sSearch = ''):
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
+
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -185,7 +188,7 @@ def showHosters():
                         def http_response(self, request, response):
                             return response
 
-                    url8 = str(aEntry).replace('https', 'http')
+                    url8 = str(aEntry).replace('https','http')
 
                     opener = urllib2.build_opener(NoRedirection)
                     opener.addheaders.append (('User-Agent', UA))
