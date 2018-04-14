@@ -66,16 +66,16 @@
   {
     "name": "cineiz.py",
     "path": "plugin.video.vstream/resources/sites/cineiz.py",
-    "sha": "df4758b78583825250dec76a3a2a087d55e81e41",
-    "size": 22292,
+    "sha": "c863d01aa92f26ac5fc77efa9c257126dd315d43",
+    "size": 24110,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/cineiz.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/cineiz.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/df4758b78583825250dec76a3a2a087d55e81e41",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/c863d01aa92f26ac5fc77efa9c257126dd315d43",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/cineiz.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/cineiz.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/df4758b78583825250dec76a3a2a087d55e81e41",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/c863d01aa92f26ac5fc77efa9c257126dd315d43",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/cineiz.py"
     }
   },
@@ -114,16 +114,16 @@
   {
     "name": "cinemegatoil_org.py",
     "path": "plugin.video.vstream/resources/sites/cinemegatoil_org.py",
-    "sha": "56e56aa0231dd92e7c83da478cb077944bfee166",
-    "size": 7856,
+    "sha": "63d44090db1c3573d9c180591bc21c68c60bb40c",
+    "size": 7885,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/cinemegatoil_org.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/cinemegatoil_org.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/56e56aa0231dd92e7c83da478cb077944bfee166",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/63d44090db1c3573d9c180591bc21c68c60bb40c",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/cinemegatoil_org.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/cinemegatoil_org.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/56e56aa0231dd92e7c83da478cb077944bfee166",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/63d44090db1c3573d9c180591bc21c68c60bb40c",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/cinemegatoil_org.py"
     }
   },
@@ -146,16 +146,16 @@
   {
     "name": "disneyhd_tk.py",
     "path": "plugin.video.vstream/resources/sites/disneyhd_tk.py",
-    "sha": "a963af3fc8b48e9de03fff06bd6bd0badbf085cc",
-    "size": 7153,
+    "sha": "a3ce759e9bd45a01ba096f55f25a98f05a65f14f",
+    "size": 7182,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/disneyhd_tk.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/disneyhd_tk.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/a963af3fc8b48e9de03fff06bd6bd0badbf085cc",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/a3ce759e9bd45a01ba096f55f25a98f05a65f14f",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/disneyhd_tk.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/disneyhd_tk.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/a963af3fc8b48e9de03fff06bd6bd0badbf085cc",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/a3ce759e9bd45a01ba096f55f25a98f05a65f14f",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/disneyhd_tk.py"
     }
   },
@@ -322,16 +322,16 @@
   {
     "name": "gum_gum_streaming_com.py",
     "path": "plugin.video.vstream/resources/sites/gum_gum_streaming_com.py",
-    "sha": "38ed517f101f7f05d17c6f083339b39552716f49",
-    "size": 12589,
+    "sha": "2376a460ae28d6f8dca7169ee59e001f35a2e1df",
+    "size": 12621,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/gum_gum_streaming_com.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/gum_gum_streaming_com.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/38ed517f101f7f05d17c6f083339b39552716f49",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/2376a460ae28d6f8dca7169ee59e001f35a2e1df",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/gum_gum_streaming_com.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/gum_gum_streaming_com.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/38ed517f101f7f05d17c6f083339b39552716f49",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/2376a460ae28d6f8dca7169ee59e001f35a2e1df",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/gum_gum_streaming_com.py"
     }
   },
@@ -434,48 +434,48 @@
   {
     "name": "malaisetv.py",
     "path": "plugin.video.vstream/resources/sites/malaisetv.py",
-    "sha": "6bfbb51b32ed33d71d15958a154290da976bc3c8",
-    "size": 4651,
+    "sha": "83fd3cd0226578a9b1bfb29da61079214b7b074b",
+    "size": 4646,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/malaisetv.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/malaisetv.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/6bfbb51b32ed33d71d15958a154290da976bc3c8",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/83fd3cd0226578a9b1bfb29da61079214b7b074b",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/malaisetv.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/malaisetv.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/6bfbb51b32ed33d71d15958a154290da976bc3c8",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/83fd3cd0226578a9b1bfb29da61079214b7b074b",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/malaisetv.py"
     }
   },
   {
     "name": "mangacity_org.py",
     "path": "plugin.video.vstream/resources/sites/mangacity_org.py",
-    "sha": "b4b71daa29b5d59591f33a50eb9f846b1e43a580",
-    "size": 28102,
+    "sha": "6ce271b030c4e340de687db0581a1f53eb89b820",
+    "size": 27637,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/mangacity_org.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/mangacity_org.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/b4b71daa29b5d59591f33a50eb9f846b1e43a580",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/6ce271b030c4e340de687db0581a1f53eb89b820",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/mangacity_org.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/mangacity_org.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/b4b71daa29b5d59591f33a50eb9f846b1e43a580",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/6ce271b030c4e340de687db0581a1f53eb89b820",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/mangacity_org.py"
     }
   },
   {
     "name": "mareplaytv.py",
     "path": "plugin.video.vstream/resources/sites/mareplaytv.py",
-    "sha": "437995776e1090bb5da69296d9b585f2c84e7927",
-    "size": 8744,
+    "sha": "c0323e758c57ed1ef779edc9ead8b35c1d5211c1",
+    "size": 8811,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/mareplaytv.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/mareplaytv.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/437995776e1090bb5da69296d9b585f2c84e7927",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/c0323e758c57ed1ef779edc9ead8b35c1d5211c1",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/mareplaytv.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/mareplaytv.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/437995776e1090bb5da69296d9b585f2c84e7927",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/c0323e758c57ed1ef779edc9ead8b35c1d5211c1",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/mareplaytv.py"
     }
   },
@@ -658,16 +658,16 @@
   {
     "name": "series_en_streaming_tv.py",
     "path": "plugin.video.vstream/resources/sites/series_en_streaming_tv.py",
-    "sha": "ec6f0b8c9829ee900487290e14dfaf798266a002",
-    "size": 13757,
+    "sha": "6d33036f0da7022e161c87992868e8c08643f4ac",
+    "size": 13810,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/series_en_streaming_tv.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/series_en_streaming_tv.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/ec6f0b8c9829ee900487290e14dfaf798266a002",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/6d33036f0da7022e161c87992868e8c08643f4ac",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/series_en_streaming_tv.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/series_en_streaming_tv.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/ec6f0b8c9829ee900487290e14dfaf798266a002",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/6d33036f0da7022e161c87992868e8c08643f4ac",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/series_en_streaming_tv.py"
     }
   },
@@ -898,16 +898,16 @@
   {
     "name": "themoviedb_org.py",
     "path": "plugin.video.vstream/resources/sites/themoviedb_org.py",
-    "sha": "59123ae317686b1d043263ce3571239affe8c94f",
-    "size": 41831,
+    "sha": "a936ceda070629dd5aa4f87e5f250cbea7e8ba14",
+    "size": 42163,
     "url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/themoviedb_org.py?ref=master",
     "html_url": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/themoviedb_org.py",
-    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/59123ae317686b1d043263ce3571239affe8c94f",
+    "git_url": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/a936ceda070629dd5aa4f87e5f250cbea7e8ba14",
     "download_url": "https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/resources/sites/themoviedb_org.py",
     "type": "file",
     "_links": {
       "self": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/contents/plugin.video.vstream/resources/sites/themoviedb_org.py?ref=master",
-      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/59123ae317686b1d043263ce3571239affe8c94f",
+      "git": "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/git/blobs/a936ceda070629dd5aa4f87e5f250cbea7e8ba14",
       "html": "https://github.com/Kodi-vStream/venom-xbmc-addons/blob/master/plugin.video.vstream/resources/sites/themoviedb_org.py"
     }
   },
