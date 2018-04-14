@@ -171,15 +171,29 @@ def showMyTmdb():
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/lists' % int(result['id']))
             oGui.addDir(SITE_IDENTIFIER, 'showUserLists', 'Mes Lists', 'listes.png', oOutputParameterHandler)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', 'http://')
+            oGui.addDir(SITE_IDENTIFIER, 'ouTMyTmdb', 'Deconnexion', 'listes.png', oOutputParameterHandler)
         
         else :
 
-            cConfig().setSetting('tmdb_session', '')
-            cConfig().setSetting('tmdb_account', '')
-            oGui.showNofication(cConfig().getlanguage(30320))
-            xbmc.executebuiltin("Container.Refresh")
+            ouTMyTmdb()
 
     oGui.setEndOfDirectory()
+
+
+def ouTMyTmdb():
+
+        oGui = cGui()
+
+        cConfig().setSetting('tmdb_session', '')
+        cConfig().setSetting('tmdb_account', '')
+        oGui.showNofication(cConfig().getlanguage(30320))
+        xbmc.executebuiltin("Container.Refresh")
+        showMyTmdb()
+
+        return
 
 def getContext():
 

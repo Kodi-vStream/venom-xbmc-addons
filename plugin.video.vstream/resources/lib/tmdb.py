@@ -154,8 +154,8 @@ class cTMDb:
 
         if (total > 0):
             #self.__Token  = result['token']
-            url = 'https://www.themoviedb.org/authenticate/%s'  % result['request_token']
-            sText = (cConfig().getlanguage(30421)) % (url)
+            url = 'https://www.themoviedb.org/authenticate/'
+            sText = (cConfig().getlanguage(30421)) % (url, result['request_token'] )
 
             oDialog = cConfig().createDialogYesNo(sText)
             if (oDialog == 0):

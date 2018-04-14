@@ -665,5 +665,5 @@ msgid "Enable/Disable sources"
 msgstr ""
 
 msgctxt "#30421"
-msgid "Go to [COLOR teal]%s[/COLOR] and Valid vStream, only then click OK"
+msgid "Go to [COLOR teal]%s[CR]%s[/COLOR][CR],Valid vStream, only then click YES"
 msgstr ""
