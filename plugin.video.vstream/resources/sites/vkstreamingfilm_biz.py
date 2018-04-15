@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 #Venom.
+#desactiver le 15/04/18
+return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
