@@ -147,9 +147,9 @@ class cPremiumHandler:
                 self.isLogin = False
                 return False
         
-                sHtmlContent = response.read()
-                head = response.headers
-                response.close()
+            sHtmlContent = response.read()
+            head = response.headers
+            response.close()
 
 
         if 'uptobox' in self.__sHosterIdentifier:
