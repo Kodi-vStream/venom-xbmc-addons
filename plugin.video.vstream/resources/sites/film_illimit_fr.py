@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'film_illimit_fr'
 SITE_NAME = 'Film illimité'
 SITE_DESC = 'Films, Séries HD en streaming'
 
-URL_MAIN = 'http://official-film-illimite.cc/'
+URL_MAIN = 'https://official-film-illimite.cc/'
 
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_MOVIE = (URL_MAIN , 'showMovies')

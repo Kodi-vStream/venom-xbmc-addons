@@ -231,10 +231,10 @@ class cHoster(iHoster):
             VSlog(url2)
             oRequest = cRequestHandler(url2)
             sHtmlContenttmp2 = oRequest.request()
-            url3 = re.search(r'"src":"([^"]+)"', sHtmlContenttmp2,re.DOTALL).group(1)
-            VSlog(url3)
-            oRequest = cRequestHandler(url3)
-            sHtmlContenttmp3 = oRequest.request()
+            #url3 = re.search(r'"src":"([^"]+)"', sHtmlContenttmp2,re.DOTALL).group(1)
+            #VSlog(url3)
+            #oRequest = cRequestHandler(url3)
+            #sHtmlContenttmp3 = oRequest.request()
             
             xbmc.sleep(1000)
             
