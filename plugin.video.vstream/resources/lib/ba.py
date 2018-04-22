@@ -28,8 +28,11 @@ class cShowBA:
             url = "https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=%s&maxResults=1&relevanceLanguage=fr&key=%s" % (self.search, self.key)
 
             req = urllib2.Request(url)
-            gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-            response = urllib2.urlopen(req,context=gcontext)
+            try:
+                gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+                response = urllib2.urlopen(req,context=gcontext)
+            except:
+                response = urllib2.urlopen(req)
             sHtmlContent = response.read()
             result = json.loads(sHtmlContent)
             response.close()
