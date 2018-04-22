@@ -1,11 +1,19 @@
 #-*- coding: utf-8 -*-
 #Venom.
-from config import cConfig
-
 import xbmc, xbmcgui, xbmcaddon
 import sys, os
 import urllib, urllib2
 
+vstream = xbmcaddon.Addon('plugin.video.vstream')
+sLibrary = xbmc.translatePath(vstream.getAddonInfo("path")).decode("utf-8")
+sys.path.append (sLibrary)
+
+#remove sys.path lib/
+sys.path.remove(sys.path[0])
+
+from resources.lib.util import VStranslatePath
+from resources.lib.config import cConfig
+#from util import VStranslatePath
 
 try:
     from sqlite3 import dbapi2 as sqlite
@@ -13,12 +21,6 @@ try:
 except:
     from pysqlite2 import dbapi2 as sqlite
     cConfig().log('SQLITE 2 as DB engine')
-
-sLibrary = xbmc.translatePath(cConfig().getAddonPath()).decode("utf-8")
-sys.path.append (sLibrary)
-
-#from resources.lib.util import VStranslatePath
-from util import VStranslatePath
 
 
 SITE_IDENTIFIER = 'runscript'
@@ -158,7 +160,7 @@ class cClear:
 
         elif (env == 'search'):
 
-            from handler.pluginHandler import cPluginHandler
+            from resources.lib.handler.pluginHandler import cPluginHandler
             valid = '[COLOR green][x][/COLOR]'
 
 
