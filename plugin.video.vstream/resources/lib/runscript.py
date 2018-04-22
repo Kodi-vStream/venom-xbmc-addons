@@ -158,7 +158,7 @@ class cClear:
 
         elif (env == 'search'):
 
-            from resources.lib.handler.pluginHandler import cPluginHandler
+            from handler.pluginHandler import cPluginHandler
             valid = '[COLOR green][x][/COLOR]'
 
 
