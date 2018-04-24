@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'film_illimit_fr'
 SITE_NAME = 'Film illimité'
 SITE_DESC = 'Films, Séries HD en streaming'
 
-URL_MAIN = 'https://official-film-illimite.cc/'
+URL_MAIN = 'https://official-film-illimite.co/'
 
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_MOVIE = (URL_MAIN , 'showMovies')
@@ -105,7 +105,7 @@ def showGenres():
     liste.append( ['VOSTFR',URL_MAIN + 'films/vostfr/'] )
     liste.append( ['Western',URL_MAIN + 'films/western/'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -142,7 +142,7 @@ def showYears():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-        sUrl = sSearch.replace(' ','+')
+        sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -210,7 +210,6 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     sPattern = '<link rel="next" href="([^"]+)"'
-    #<div class="pag_.+?"><a href="([^"]+)">Prochaine<\/a><\/div>
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -356,7 +355,7 @@ def ShowSpecialHosters():
             listurl = aResult[1][0].replace('"', '').split(',http')
             listqual = aResult[1][1].replace('"', '').split(',')
 
-            tab = zip(listurl,listqual)
+            tab = zip(listurl, listqual)
 
             for url, qual in tab:
                 sHosterUrl = url
