@@ -531,7 +531,7 @@ class cGui():
         return oListItem
 
     def __ContextMenu(self, oGuiElement, oListItem):
-        sPluginPath = cPluginHandler().getPluginPath();
+        sPluginPath = cPluginHandler().getPluginPath()
         aContextMenus = []
 
         if (len(oGuiElement.getContextItems()) > 0):
@@ -547,7 +547,7 @@ class cGui():
         return oListItem
 
     def __ContextMenuPlay(self, oGuiElement, oListItem):
-        sPluginPath = cPluginHandler().getPluginPath();
+        sPluginPath = cPluginHandler().getPluginPath()
         aContextMenus = []
 
         if (len(oGuiElement.getContextItems()) > 0):
@@ -593,7 +593,7 @@ class cGui():
         xbmc.executebuiltin("Container.Refresh")
 
     def viewback(self):
-        sPluginPath = cPluginHandler().getPluginPath();
+        sPluginPath = cPluginHandler().getPluginPath()
         oInputParameterHandler = cInputParameterHandler()
         sParams = oInputParameterHandler.getAllParameter()
 
@@ -603,7 +603,7 @@ class cGui():
         xbmc.executebuiltin('XBMC.Container.Update(%s, replace)' % sTest )
 
     def viewsimil(self):
-        sPluginPath = cPluginHandler().getPluginPath();
+        sPluginPath = cPluginHandler().getPluginPath()
         oInputParameterHandler = cInputParameterHandler()
         sFileName = oInputParameterHandler.getValue('sFileName')
         sTitle = oInputParameterHandler.getValue('sTitle')
@@ -740,7 +740,7 @@ class cGui():
             # print  str(hash(oGuiElement.getSiteUrl()))
 
 
-        sPluginPath = cPluginHandler().getPluginPath();
+        sPluginPath = cPluginHandler().getPluginPath()
 
         if (len(oGuiElement.getFunction()) == 0):
             sItemUrl = '%s?site=%s&title=%s&%s' % (sPluginPath, oGuiElement.getSiteName(), urllib.quote_plus(oGuiElement.getCleanTitle()), sParams)
