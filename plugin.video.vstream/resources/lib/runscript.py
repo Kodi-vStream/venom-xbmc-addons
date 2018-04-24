@@ -4,14 +4,13 @@ import xbmc, xbmcgui, xbmcaddon
 import sys, os
 import urllib, urllib2
 
+#vstream = xbmcaddon.Addon('plugin.video.vstream')
+#sLibrary = xbmc.translatePath(vstream.getAddonInfo("path")).decode("utf-8")
+#sys.path.append (sLibrary)
+
 vstream = xbmcaddon.Addon('plugin.video.vstream')
 sLibrary = xbmc.translatePath(vstream.getAddonInfo("path")).decode("utf-8")
-sys.path.append (sLibrary)
-
-#remove sys.path lib/
-for indice, valeur in enumerate(sys.path):
-    if 'plugin.video.vstream/resources/lib' in valeur:
-        sys.path.remove(sys.path[indice])
+sys.path.insert (0,sLibrary)
 
 
 from resources.lib.config import cConfig
