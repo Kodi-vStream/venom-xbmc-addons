@@ -444,7 +444,26 @@ def showHostersLink3():
     data = response.read()
     response.close()
 
+    # Recherche du premier lien
     oParser = cParser()
+    sPattern = 'href="([^"]+)'
+    aResult = oParser.parse(data, sPattern)
+
+    # Si il existe, suivi du lien
+    if ( aResult[0] == True ):
+        # cConfig().log(aResult[1][0])
+        sLink = sLink.rsplit('/',1)[0] # supprime la dernière partie de l'url de l'iframe
+        # cConfig().log(sLink)
+        href = sLink+'/'+aResult[1][0] # concaténation du résultat avec le href trouvé via regex
+        # cConfig().log(href)
+
+        req = urllib2.Request(href,None,headers)
+        response = urllib2.urlopen(req)
+        data = response.read()
+        response.close()
+
+    # cConfig().log(data)
+
     sPattern = 'file:"(.+?)".+?label:"(.+?)"'
     aResult = oParser.parse(data, sPattern)
 
