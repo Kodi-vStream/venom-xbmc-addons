@@ -374,6 +374,9 @@ def serieHosters():
             sTitle = sMovieTitle
             sTitle = sTitle + ' (' + str(index) + ') '
             index = index + 1
+	
+            if '&url=' in aEntry:
+                aEntry = aEntry.split('=')[2]
 
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
