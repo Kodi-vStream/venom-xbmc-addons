@@ -112,7 +112,7 @@ class cHoster(iHoster):
                 Realurl = red[0]
             else:
                 VSlog("2")
-                red = re.findall('location\.assign *\( *"([^"]+)" \) ',sHtmlContent)
+                red = re.findall('location\.assign *\( *"([^"]+)" \)',sHtmlContent)
                 if red:
                     Realurl = red[0]
                     
