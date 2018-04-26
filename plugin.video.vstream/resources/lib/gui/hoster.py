@@ -145,8 +145,8 @@ class cHosterGui:
         #Gestion classique
         if ('facebook' in sHostName):
             return self.getHoster('facebook')
-        #if (('auroravid' in sHostName) or ('novamov' in sHostName)):
-            #return self.getHoster('auroravid')
+        if ('cloudcartel' in sHostName):
+            return self.getHoster('cloudcartel')
         if (('divxstage' in sHostName) or ('cloudtime' in sHostName)):
             return self.getHoster('divxstage')
         if (('raptu.com' in sHostName) or ('rapidvideo' in sHostName)):
