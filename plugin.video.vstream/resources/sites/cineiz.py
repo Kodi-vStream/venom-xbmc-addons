@@ -534,6 +534,8 @@ def showLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            #dispo a la version 0.6.2
+            #oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
