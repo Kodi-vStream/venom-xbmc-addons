@@ -13,13 +13,14 @@ import re
 
 SITE_IDENTIFIER = 'regarder_films'
 SITE_NAME = 'Regarder-films-gratuit'
-SITE_DESC = 'Streaming ou Téléchargement de Séries & Mangas.'
+SITE_DESC = 'Série streaming gratuit illimité vf et vostfr.'
 
 URL_MAIN = 'http://regarder-film-gratuit.online/'
 
 SERIE_NEWS = (URL_MAIN, 'showSeries')
 SERIE_SERIES = (URL_MAIN, 'load')
 SERIE_LIST = (URL_MAIN + 'liste-de-series/', 'showAlpha')
+SERIE_GENRES = (True, 'showGenres')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showSeries')
 URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showSeries')
@@ -39,6 +40,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste AZ)', 'series_az.png',oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -105,6 +110,9 @@ def showAZ():
                 break
             
             sUrl = str(aEntry[0])
+            #on filtre, les liens streamzzz.online sont hs
+            if 'streamzzz' in sUrl:
+                continue
             sTitle = str(aEntry[1]).decode("unicode_escape").encode("latin-1").replace('&#8217;', '\'').replace('&#8212;', '-')
             
             oOutputParameterHandler = cOutputParameterHandler()
@@ -113,6 +121,22 @@ def showAZ():
             oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'series_az.png', oOutputParameterHandler)
             
         cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()
+
+def showGenres():
+    oGui = cGui()
+
+    liste = []
+    liste.append( ['Dessin animés', URL_MAIN + 'category/dessins-animes/'] )
+    liste.append( ['Documentaire', URL_MAIN + 'category/documentaire/'] )
+    liste.append( ['News', URL_MAIN + 'category/news/'] )
+
+    for sTitle, sUrl in liste:
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oGui.addDir(SITE_IDENTIFIER, 'showSeries', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -127,12 +151,12 @@ def showSeries(sSearch = ''):
       sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
 
-    if 'streamzz' in sUrl:
-        sPattern = '<li><a href="(http:..streamzzz.online\/page[^<]+)" title=".+?">([^<]+)<.a><.li>'
-    else:
-        sPattern = '<div class="post".+?<h2><a class="title" href="(.+?)" rel="bookmark">(.+?)</a></h2>'
+    # if 'streamzz' in sUrl:
+        # sPattern = '<li><a href="(http:..streamzzz.online\/page[^<]+)" title=".+?">([^<]+)<.a><.li>'
+    # else:
+    sPattern = '<div class="post".+?<h2><a class="title" href="(.+?)" rel="bookmark">(.+?)</a>.+?src="(.+?)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -150,14 +174,21 @@ def showSeries(sSearch = ''):
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[1]) == 0:
                     continue
 
-            sTitle = aEntry[1]
             sUrl = str(aEntry[0])
+            sTitle = str(aEntry[1]).replace('&#8212;', '-').replace('&#8217;', '\'')
+            sThumb = str(aEntry[2])
+            #on filtre, les liens streamzzz.online sont hs
+            if 'streamzzz' in sThumb:
+                continue
+
             sDisplayTitle = cUtil().DecoTitle(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oGui.addDir(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, 'series.png', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+#            oGui.addDir(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, sThumb, oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -196,10 +227,10 @@ def serieHosters():
     if aResult[0]:
         sThumb = aResult[1][0]
 
-    if 'streamzz' in sUrl:
-		sPattern = '<div class="boton reloading"><a href="([^"]+)">'
-    else:
-        sPattern = '<center><.+?<stron.+?((?:VF|VOSTFR|VO)).+?trong>|<p><a href="([^"]+)".+?target="_blank">'
+    #if 'streamzz' in sUrl:
+		#sPattern = '<div class="boton reloading"><a href="([^"]+)">'
+    #else:
+    sPattern = '<center><.+?<stron.+?((?:VF|VOSTFR|VO)).+?trong>|<p><a href="([^"]+)".+?target="_blank">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -211,7 +242,7 @@ def serieHosters():
                 break
 
             if aEntry[0]:
-                sLang = aEntry[0].replace('&#8230;','').replace(':','')
+                sLang = aEntry[0].replace('&#8230;', '').replace(':', '')
                 oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + sLang + '[/COLOR]')
             else:
                 sHosterUrl = aEntry[1]
