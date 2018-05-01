@@ -221,18 +221,18 @@ def seriesHosters():
         
     #cConfig().log(sEpisodesList)
 
-    sPattern = '<div id="([^"]+)">.+?<iframe.+?src="(.+?)"'
+    sPattern = '<div id="(div[^"]+)">.+?<iframe.+?src="(.+?)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    cConfig().log(str(aResult))
+    #cConfig().log(str(aResult))
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             
-            cConfig().log(aEntry)
+            #cConfig().log(aEntry)
 
             div = str(aEntry[0])
-            sEpisodes = sEpisodesList.get(div, "Épisodes 1")
+            sEpisodes = sEpisodesList.get(div, "Error")
             sEpisodes = sEpisodes.replace('Épisodes ', 'E')
             
             sMovieTitle2 = sMovieTitle + sEpisodes
