@@ -213,7 +213,7 @@ def seriesHosters():
     oParser = cParser()
 
     sEpisodesList= {}
-    sPattern = '<a href="#(div.+?)">(.+?)</a>'
+    sPattern = '<a href="#(div[0-9]+)">(.+?)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for i in aResult[1]:
