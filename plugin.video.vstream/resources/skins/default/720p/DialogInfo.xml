@@ -49,7 +49,7 @@
 
 				<!-- <animation type="Conditional" condition="true" reversible="true">-->
 				<animation type="visible" reversible="false">
-					<effect type="slide" start="-400,0" end="0,0" time="800" tween="back" easing="out"/>
+					<effect type="slide" start="400,0" end="0,0" time="800" tween="back" easing="out"/>
 					<effect type="fade" start="0" end="100" time="800" delay="100"/>
 				</animation>
 
@@ -242,7 +242,6 @@
 
 			<!--title -->
 			<control type="group">
-				<visible>!Control.HasFocus(5200)</visible>
 				<animation effect="fade" delay="400" start="0" end="100" time="200">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
                 <top>40</top>
@@ -260,10 +259,41 @@
 					<align>center</align>
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>
+					<visible>!Control.HasFocus(5200)+!Control.HasFocus(50)</visible>
+				</control>
+
+				<control type="label" id="1">
+					<description>header label</description>
+					<left>60</left>
+					<right>60</right>
+					<top>10</top>
+					<height>20</height>
+					<font>font32_title</font>
+					<label>$INFO[Container(50).ListItem.Label]</label>
+					<shadowcolor>black</shadowcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+					<visible>Control.HasFocus(50)</visible>
+				</control>
+
+				<control type="label" id="1">
+					<description>header label</description>
+					<left>60</left>
+					<right>60</right>
+					<top>10</top>
+					<height>20</height>
+					<font>font32_title</font>
+					<label>$INFO[Container(5200).ListItem.Label]</label>
+					<shadowcolor>black</shadowcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+					<visible>Control.HasFocus(5200)</visible>
 				</control>
 			</control>
 
-			<!-- casting et resumer -->
+			<!-- resumer -->
 			<control type="group">
 				<top>260</top>
 				<left>455</left>
@@ -420,7 +450,7 @@
 
 
 				<animation type="conditional" condition="Control.HasFocus(5200)" reversible="false">
-					<effect type="slide" start="-400,0" end="0,0" time="800" tween="back" easing="out"/>
+					<effect type="slide" start="400,0" end="0,0" time="800" tween="back" easing="out"/>
 					<effect type="fade" start="0" end="100" time="800" delay="100"/>
 				</animation>
 
@@ -441,8 +471,8 @@
 					<height>312</height>
 					<onleft>5200</onleft>
 					<onright>5200</onright>
-					<onup>9000</onup>
-					<ondown>50</ondown>
+					<onup>50</onup>
+					<ondown>9000</ondown>
 					<align>left</align>
 					<orientation>horizontal</orientation>
 					<viewtype label="3D list">icon</viewtype>
