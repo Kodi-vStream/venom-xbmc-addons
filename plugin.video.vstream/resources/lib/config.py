@@ -371,8 +371,8 @@ class cConfig():
                 color = cConfig().getSetting('deco_color')
                 xbmcgui.Window(10000).setProperty('color', color)
 
-                self.getControl(50).setVisible(False)
-                self.getControl(50).reset()
+                #self.getControl(50).setVisible(False)
+                #self.getControl(50).reset()
                 self.getControl(5500).setVisible(False)
                 listitems = []
                 try:
@@ -557,10 +557,10 @@ class cConfig():
                 if controlId != 5200:
                     #self.getControl(5500).reset()
                     self.getControl(5500).setVisible(False)
-                if controlId == 50:
-                    item = self.getControl(50).getSelectedItem()
-                    sid = item.getProperty('id')
-                    self.person(sid)
+                #if controlId == 50:
+                    #item = self.getControl(50).getSelectedItem()
+                    #sid = item.getProperty('id')
+                    #self.person(sid)
 
             def _close_dialog( self ):
                 self.close()
