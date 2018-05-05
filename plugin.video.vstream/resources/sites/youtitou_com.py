@@ -100,7 +100,6 @@ def showEpisode():
     sHtml = oRequestHandler.request()
     
     oParser = cParser()
-    sPattern = '<div class="media-object">.+?<a href="(http:\/\/www.youtitou.com\/videos.+?)">.+?<img alt="(.+?)" src="([^"]+)"'
     sPattern = '<div class="media-object">.+?<a href="(http:\/\/www.youtitou.com\/videos.+?)">.+?<img src="([^"]+)" alt="(.+?)"'
     aResult = oParser.parse(sHtml, sPattern)
 
