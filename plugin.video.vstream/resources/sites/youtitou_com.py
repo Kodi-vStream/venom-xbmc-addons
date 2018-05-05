@@ -76,7 +76,7 @@ def showMovies():
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             if sUrl.endswith('//'):
-               sUrl = sUrl[:-1]
+                sUrl = sUrl[:-1]
                
             sThumb = aEntry[1]
             sTitle = sUrl.rsplit('/', 2)[1] #on prend le titre de l'url plus fiable site bordelique
@@ -100,17 +100,17 @@ def showEpisode():
     sHtml = oRequestHandler.request()
     
     oParser = cParser()
-    sPattern = '<div class="media-object">.+?<a href="(http:\/\/www.youtitou.com\/videos.+?)">.+?<img alt="(.+?)" src="([^"]+)"'
+    sPattern = '<div class="media-object">.+?<a href="(http:\/\/www.youtitou.com\/videos.+?)">.+?<img src="([^"]+)" alt="(.+?)"'
     aResult = oParser.parse(sHtml, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
             if sUrl.endswith('//'):
-               sUrl = sUrl[:-1]
+                sUrl = sUrl[:-1]
 
-            sTitle = aEntry[1]
-            sThumb = aEntry[2]
+            sTitle = aEntry[2]
+            sThumb = aEntry[1]
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -137,7 +137,7 @@ def showHosters():
         for aEntry in aResult[1]:
             sHosterUrl = str(aEntry)
             if sHosterUrl.startswith('//'):
-               sHosterUrl = 'https:' + sHosterUrl
+                sHosterUrl = 'https:' + sHosterUrl
                
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
@@ -166,7 +166,7 @@ def showEdu():
         for aEntry in aResult[1]:
             sHosterUrl = aEntry[1]
             if sHosterUrl.startswith('//'):
-               sHosterUrl = 'https:' + sHosterUrl
+                sHosterUrl = 'https:' + sHosterUrl
                
             sId = sHosterUrl.rsplit('/', 1)[1]
             sTitle = aEntry[0]
