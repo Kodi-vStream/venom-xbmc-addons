@@ -223,8 +223,9 @@ def showHosters():
     #on réécris pour récupérer les hosters
     sHtmlContent = sHtmlContent.replace('<p><script', '<iframe')
     #on réécris pour récupérer la langue
-    sHtmlContent = sHtmlContent.replace('VF</strong>', 'VF</b>')
+    sHtmlContent = sHtmlContent.replace('VF</strong>', 'VF</b>').replace('</font></u>', '')
     sHtmlContent = sHtmlContent.replace('</font></u>', '')
+    sHtmlContent = sHtmlContent.replace('- Version Française', '').replace('Version Française', 'VF')
 
     sPattern = '(VF|VF |VOSTFR)<\/b><\/p>|<iframe.+?=[\'|"](.+?)[\'|"]'
     oParser = cParser()
