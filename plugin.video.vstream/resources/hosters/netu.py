@@ -4,7 +4,7 @@ from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib import unwise
-from resources.lib.util import cUtil,VSlog
+from resources.lib.util import cUtil, VSlog
 import urllib, urllib2
 import re
 import base64
@@ -93,6 +93,7 @@ class cHoster(iHoster):
         self.__sUrl = sUrl.replace('https','http')
         self.__sUrl = self.__sUrl.replace('http://netu.tv/','http://hqq.tv/')
         self.__sUrl = self.__sUrl.replace('http://waaw.tv/','http://hqq.tv/')
+        self.__sUrl = self.__sUrl.replace('http://hqq.tv/player/hash.php?hash=','http://hqq.tv/player/embed_player.php?vid=')
         self.__sUrl = self.__sUrl.replace('http://hqq.tv/watch_video.php?v=','http://hqq.tv/player/embed_player.php?vid=')
     
     def __getIdFromUrl(self):
@@ -131,7 +132,7 @@ class cHoster(iHoster):
         
         player_url = self.__sUrl
         
-        req = urllib2.Request(player_url,None,headers)
+        req = urllib2.Request(player_url, None, headers)
         try:
             response = urllib2.urlopen(req)
             html = response.read()
@@ -198,7 +199,7 @@ class cHoster(iHoster):
 
                 headers['x-requested-with'] = 'XMLHttpRequest'
 
-                req = urllib2.Request(Host + "/player/get_md5.php?" + urllib.urlencode(get_data),None,headers)
+                req = urllib2.Request(Host + "/player/get_md5.php?" + urllib.urlencode(get_data), None, headers)
                 try:
                     response = urllib2.urlopen(req)
                 except urllib2.URLError, e:
