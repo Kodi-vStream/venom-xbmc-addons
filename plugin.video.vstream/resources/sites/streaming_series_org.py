@@ -220,11 +220,13 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/', '')
     sHtmlContent = sHtmlContent.replace('\r', '')
-    #on réécris les  liens pour récupérer les hosters
+    #on réécris pour récupérer les hosters
     sHtmlContent = sHtmlContent.replace('<p><script', '<iframe')
+    #on réécris pour récupérer la langue
     sHtmlContent = sHtmlContent.replace('VF</strong>', 'VF</b>')
+    sHtmlContent = sHtmlContent.replace('</font></u>', '')
 
-    sPattern = '(VF|VOSTFR)<\/b><\/p>|<iframe.+?=[\'|"](.+?)[\'|"]'
+    sPattern = '(VF|VF |VOSTFR)<\/b><\/p>|<iframe.+?=[\'|"](.+?)[\'|"]'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
