@@ -538,7 +538,7 @@ def showLinks():
             #oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
             #dispo a la version 0.6.2
             #oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, oOutputParameterHandler)
-            t = threading.Thread(target=showHosters2, args=(oGui,sUrl,sMovieTitle,sThumb,sPost), name ='name')
+            t = threading.Thread(target=showHosters2, args=(oGui,sUrl,sTitle,sThumb,sPost), name ='name')
             threads += [t]
             t.start()
 
