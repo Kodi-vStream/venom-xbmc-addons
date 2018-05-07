@@ -17,8 +17,12 @@ SITE_DESC = 'Séries VF & VOSTFR en streaming.'
 URL_MAIN = 'http://streamzzz.top/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
+
+MOVIE_NEWS = (URL_MAIN + 'movies/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'movies/', 'showMovies')
 
 SERIE_NEWS = (URL_MAIN + 'episodes/', 'showMovies')
 SERIE_SERIES = (URL_MAIN + 'series/', 'showMovies')
@@ -33,6 +37,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
@@ -153,7 +161,7 @@ def showMovies(sSearch = ''):
 
             #L'array affiche vos infos dans l'ordre de sPattern en commencant a 0
             sThumb = str(aEntry[0])
-            sTitle = str(aEntry[1]).replace(':','')
+            sTitle = str(aEntry[1]).replace(':', '')
             sUrl2 = str(aEntry[2])
             sDesc = ''
 
@@ -162,10 +170,12 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb )
 
-            if '/tvshows/' or '/genre/' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSerieSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-            else:
+            if '/episodes/' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            elif '/movies/' in sUrl2:
+                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            else:
+                oGui.addTV(SITE_IDENTIFIER, 'showSerieSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -244,7 +254,7 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    sPattern = "domain=(.+?)\">.+?document.getElementsByName\(\'iframe\'\).+?src\'.+?\'(.+?)\'\);.+?<\/td><td>(.+?)<\/td>"
+    sPattern = "domain=(.+?)\".+?document.getElementsByName\(\'iframe\'\).+?src\'.+?\'(.+?)\'\);.+?<\/td><td>(.+?)<\/td>"
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -256,24 +266,26 @@ def showLinks():
                 break
 
             sHost = str(aEntry[0]).replace('.com', '').replace('.co', '').replace('.tv', '').replace('.sx', '').replace('.org', '').replace('.ch', '')
-            if 'nowvideo' in sHost:
+            if 'nowvideo' in sHost or 'youvid' in sHost:
                 continue
-            sLang = str(aEntry[2])
-            sTitle = sMovieTitle + ' (' + sLang +')' + ' (' + sHost + ')'
+            sHost = sHost.capitalize()
             sUrl2 = str(aEntry[1])
+            sLang = str(aEntry[2])
+
+            sTitle = sMovieTitle + ' (' + sLang + ')' + ' (' + sHost + ')'
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb )
 
-            oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
 
-def seriesHosters():
+def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
