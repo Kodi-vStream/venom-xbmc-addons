@@ -53,23 +53,23 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Espionnage',URL_MAIN + 'category/espionnage/'] )
-    liste.append( ['Grand-Banditisme',URL_MAIN + 'category/grand-ganditisme/'] )
-    liste.append( ['Mafias',URL_MAIN + 'category/mafias/'] )
-    liste.append( ['TF1',URL_MAIN + 'category/tf1/'] )
-    liste.append( ['TF1 - Appels d\'Urgence',URL_MAIN + 'category/tf1/appels-durgence/'] )
-    liste.append( ['TF1 - Sept à Huit',URL_MAIN + 'category/tf1/sept-a-huit/'] )
-    liste.append( ['France 2',URL_MAIN + 'category/france-2/'] )
-    liste.append( ['France 2 - Apocalypse la 1ère guerre mondiale',URL_MAIN + 'category/france-2/apocalypse-la-1-ere-guerre-mondiale/'] )
-    liste.append( ['France 2 - Envoyé Spécial',URL_MAIN + 'category/france-2/envoye-special/'] )
-    liste.append( ['Canal+',URL_MAIN + 'category/canal-plus/'] )
-    liste.append( ['Canal+ - Nouvelle Vie',URL_MAIN + 'category/canal-plus/nouvelle-vie/'] )
-    liste.append( ['Canal+ - Spécial Investigation',URL_MAIN + 'category/canal-plus/special-investigation/'] )
-    liste.append( ['D8 - Au coeur de l\'Enquête',URL_MAIN + 'category/d8/au-coeur-de-lenquete/'] )
-    liste.append( ['D8 - En quête d\'Actualité',URL_MAIN + 'category/d8/en-quete-dactualite/'] )
-    liste.append( ['D8',URL_MAIN + 'category/d8/'] )
-    liste.append( ['TMC',URL_MAIN + 'category/tmc/'] )
-    liste.append( ['TMC - 90 Enquêtes',URL_MAIN + 'category/tmc/90-enquetes/'] )
+    liste.append( ['Espionnage', URL_MAIN + 'category/espionnage/'] )
+    liste.append( ['Grand-Banditisme', URL_MAIN + 'category/grand-ganditisme/'] )
+    liste.append( ['Mafias', URL_MAIN + 'category/mafias/'] )
+    liste.append( ['TF1', URL_MAIN + 'category/tf1/'] )
+    liste.append( ['TF1 - Appels d\'Urgence', URL_MAIN + 'category/tf1/appels-durgence/'] )
+    liste.append( ['TF1 - Sept à Huit', URL_MAIN + 'category/tf1/sept-a-huit/'] )
+    liste.append( ['France 2', URL_MAIN + 'category/france-2/'] )
+    liste.append( ['France 2 - Apocalypse la 1ère guerre mondiale', URL_MAIN + 'category/france-2/apocalypse-la-1-ere-guerre-mondiale/'] )
+    liste.append( ['France 2 - Envoyé Spécial', URL_MAIN + 'category/france-2/envoye-special/'] )
+    liste.append( ['Canal+', URL_MAIN + 'category/canal-plus/'] )
+    liste.append( ['Canal+ - Nouvelle Vie', URL_MAIN + 'category/canal-plus/nouvelle-vie/'] )
+    liste.append( ['Canal+ - Spécial Investigation', URL_MAIN + 'category/canal-plus/special-investigation/'] )
+    liste.append( ['D8 - Au coeur de l\'Enquête', URL_MAIN + 'category/d8/au-coeur-de-lenquete/'] )
+    liste.append( ['D8 - En quête d\'Actualité', URL_MAIN + 'category/d8/en-quete-dactualite/'] )
+    liste.append( ['D8', URL_MAIN + 'category/d8/'] )
+    liste.append( ['TMC', URL_MAIN + 'category/tmc/'] )
+    liste.append( ['TMC - 90 Enquêtes', URL_MAIN + 'category/tmc/90-enquetes/'] )
 
     for sTitle,sUrl in liste:
 
@@ -91,8 +91,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'')
 
-    sPattern = 'class="mh-loop-thumb">.+?<img.+?src="([^<]+)" class="attachment.+?<a href="([^"]+)" rel="bookmark">([^<]+)</a>.+?<div class="mh-excerpt"><p>(.+?)<a class'
-
+    sPattern = 'class="mh-loop-thumb".+?src="([^<]+)" class="attachment.+?href="([^"]+)" rel="bookmark">([^<]+)</a>.+?<div class="mh-excerpt"><p>(.+?)<'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -101,14 +100,16 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
+
+            sThumb = aEntry[0]
             sTitle = aEntry[2].replace('&laquo;','<<').replace('&raquo;','>>').replace('&nbsp;','')
-            sSin = aEntry[3].replace('&laquo;','<<').replace('&raquo;','>>')
+            sDesc = aEntry[3].replace('&laquo;','<<').replace('&raquo;','>>')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', aEntry[0])
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', aEntry[0], sSin, oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumb, sDesc, oOutputParameterHandler)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -120,7 +121,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = "<span class='page-numbers current'>.+?<a class='page-numbers' href='(.+?)'>.+?</a>"
+    sPattern = '<a class="next page-numbers" href="(.+?)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -129,10 +130,10 @@ def __checkForNextPage(sHtmlContent):
     return False
 
 def __checkForRealUrl(sHtmlContent):
-    sPattern = 'center.+?<a href="(.+?)".+?<input type="button".+?</a>'
+    sPattern = '<a href="([^"]+)" target="_blank".+?class="btns btn-lancement">Lancer La Video</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    cConfig().log(str(aResult))
+    #cConfig().log(str(aResult))
     if (aResult[0] == True):
         return aResult[1][0]
 
@@ -143,7 +144,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
@@ -152,7 +153,7 @@ def showHosters():
 
     if (sRealUrl != False):
         oRequestHandler = cRequestHandler(sRealUrl)
-        sHtmlContent = oRequestHandler.request();
+        sHtmlContent = oRequestHandler.request()
 
     sPattern = '<iframe.+?src="(.+?)"'
     oParser = cParser()
@@ -161,12 +162,12 @@ def showHosters():
         for aEntry in aResult[1]:
             sHosterUrl = str(aEntry)
             if sHosterUrl.startswith('//'):
-                sHosterUrl = 'http:' + sHosterUrl
+                sHosterUrl = 'https:' + sHosterUrl
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()

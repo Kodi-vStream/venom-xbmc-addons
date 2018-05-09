@@ -12,7 +12,7 @@ SITE_IDENTIFIER = 'streamiz_co'
 SITE_NAME = 'Streamiz'
 SITE_DESC = 'Tous vos films en streaming gratuitement'
 
-URL_MAIN = 'https://www.streamiz.co/'
+URL_MAIN = 'https://www.streamiz.to/'
 
 MOVIE_NEWS = (URL_MAIN + 'recemment-ajoute/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
@@ -20,8 +20,8 @@ MOVIE_VIEWS = (URL_MAIN + 'les-plus-vus/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (URL_MAIN + 'annee/', 'showYear')
 
-URL_SEARCH = ('https://api.streamiz.co/movies/search/?query=', 'showMovies')
-URL_SEARCH_MOVIES = ('https://api.streamiz.co/movies/search/?query=', 'showMovies')
+URL_SEARCH = ('https://api.streamiz.to/movies/search/?query=', 'showMovies')
+URL_SEARCH_MOVIES = ('https://api.streamiz.to/movies/search/?query=', 'showMovies')
 
 FUNCTION_SEARCH = 'showMovies'
 
@@ -173,7 +173,7 @@ def showHosters():
     Fresult = oParser.parse(sHtmlContent, sPattern)
     if (Fresult[0] == True):
         sID = Fresult[1][0]
-        oRequestHandler = cRequestHandler('https://api.streamiz.co/movies/' + sID + '/embeds')
+        oRequestHandler = cRequestHandler('https://api.streamiz.to/movies/' + sID + '/embeds')
         sHtmlContent = oRequestHandler.request()
         if sHtmlContent:
             sHtmlContent = sHtmlContent.replace('\\','')

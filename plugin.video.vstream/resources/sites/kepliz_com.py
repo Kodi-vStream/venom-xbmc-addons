@@ -32,7 +32,6 @@ DOC_DOCS = ('http://', 'load')
 
 URL_SEARCH = ('', 'showMovies')
 URL_SEARCH_MOVIES = ('', 'showMovies')
-URL_SEARCH_SERIES = ('', 'showMovies')
 URL_SEARCH_MISC = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 

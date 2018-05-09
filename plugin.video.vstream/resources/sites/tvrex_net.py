@@ -14,11 +14,11 @@ SITE_IDENTIFIER = 'tvrex_net'
 SITE_NAME = 'Tvrex'
 SITE_DESC = 'NBA Live/Replay'
 
-URL_MAIN = 'http://tvrex.net'
+URL_MAIN = 'http://tvrex.net/'
 REDDIT = 'https://www.reddit.com/r/nbastreams/'
 
-URL_SEARCH = ('http://tvrex.net/?s=', 'showMovies')
-URL_SEARCH_MISC = ('http://tvrex.net/?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 SPORT_SPORTS = ('http://', 'load')
@@ -61,7 +61,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showLiveNbatv', 'Live 24/24 Chaine NBA TV (bêta)', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/nba-replays/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/nba-replays/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA Games', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -69,7 +69,7 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showPlayoffs', 'Replay NBA PlayOffs', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/all-star-weekend/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/all-star-weekend/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA All Star Weekend', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
@@ -96,35 +96,35 @@ def showPlayoffs():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/2017-nba-playoffs/2017-nba-finals-nba-finals-2/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/2017-nba-playoffs/2017-nba-finals-nba-finals-2/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA 2017 PlayOffs', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/2016-nba-finals/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/2016-nba-finals/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA 2016 PlayOffs', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/2015-nba-finals/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/2015-nba-finals/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA 2015 PlayOffs', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/2014-nba-finals/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/2014-nba-finals/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA 2014 PlayOffs', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/2011-nba-finals/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/2011-nba-finals/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA 2011 PlayOffs', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/2010-nba-finals/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/2010-nba-finals/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA 2010 PlayOffs', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/2009-nba-finals/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/2009-nba-finals/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA 2009 PlayOffs', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + '/category/2008-nba-finals/')
+    oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/2008-nba-finals/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Replay NBA 2008 PlayOffs', 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -133,38 +133,38 @@ def showPlayoffs():
 def showGenres():
     oGui = cGui()
     liste = []
-    liste.append( ['Atlanta (Hawks)', URL_MAIN + '/category/nba/atlanta-hawks/'] )
-    liste.append( ['Boston (Celtics)', URL_MAIN + '/category/nba/boston-celtics/'] )
-    liste.append( ['Brooklyn (Nets)', URL_MAIN + '/category/nba/brooklyn-nets/'] )
-    liste.append( ['Charlotte (Hornets)', URL_MAIN + '/category/nba/charlotte-hornets/'] )
-    liste.append( ['Chicago (Bulls)', URL_MAIN + '/category/nba/chicago-bulls/'] )
-    liste.append( ['Cleveland (Cavaliers)', URL_MAIN + '/category/nba/cleveland-cavaliers/'] )
-    liste.append( ['Dallas (Mavericks)', URL_MAIN + '/category/nba/dallas-mavericks/'] )
-    liste.append( ['Denver (Nuggets)', URL_MAIN + '/category/nba/denver-nuggets/'] )
-    liste.append( ['Détroit (Pistons)', URL_MAIN + '/category/nba/detroit-pistons/'] )
-    liste.append( ['Golden-state (Warriors)', URL_MAIN + '/category/nba/golden-state-warriors/'] )
-    liste.append( ['Houston (Rockets)', URL_MAIN + '/category/nba/houston-rockets/'] )
-    liste.append( ['Indiana (Pacers)', URL_MAIN + '/category/nba/indiana-pacers/'] )
-    liste.append( ['Los Angeles (Clippers)', URL_MAIN + '/category/nba/los-angeles-clippers/'] )
-    liste.append( ['Los Angeles (Lakers)', URL_MAIN + '/category/nba/los-angeles-lakers/'] )
-    liste.append( ['Memphis (Grizzlies)', URL_MAIN + '/category/nba/memphis-grizzlies/'] )
-    liste.append( ['Miami (Heat)', URL_MAIN + '/category/nba/miami-heat/'] )
-    liste.append( ['Milwaukee (Bucks)', URL_MAIN + '/category/nba/milwaukee-bucks/'] )
-    liste.append( ['Minnesota (Timberwolves)', URL_MAIN + '/category/nba/minnesota-timberwolves/'] )
-    liste.append( ['New-Orléans (Pelicans)', URL_MAIN + '/category/nba/new-orleans-pelicans/'] )
-    liste.append( ['New-York (Knicks)', URL_MAIN + '/category/nba/new-york-knicks/'] )
-    liste.append( ['Oklahoma City (Thunder)', URL_MAIN + '/category/nba/oklahoma-city-thunder/'] )
-    liste.append( ['Orlando (Magic)', URL_MAIN + '/category/nba/orlando-magic/'] )
-    liste.append( ['Philadelphia (79ers)', URL_MAIN + '/category/nba/philadelphia-76ers/'] )
-    liste.append( ['Phoenix (Suns)', URL_MAIN + '/category/nba/phoenix-suns/'] )
-    liste.append( ['Portland (Blazers)', URL_MAIN + '/category/nba/portland-trail-blazers/'] )
-    liste.append( ['Sacramento (Kings)', URL_MAIN + '/category/nba/sacramento-kings/'] )
-    liste.append( ['San Antonio (Spurs)', URL_MAIN + '/category/nba/san-antonio-spurs/'] )
-    liste.append( ['Toronto (Raptors)', URL_MAIN + '/category/nba/toronto-raptors/'] )
-    liste.append( ['Utah (Jazz)', URL_MAIN + '/category/nba/utah-jazz/'] )
-    liste.append( ['Washington (Wizards)', URL_MAIN + '/category/nba/washington-wizards/'] )
+    liste.append( ['Atlanta (Hawks)', URL_MAIN + 'category/nba/atlanta-hawks/'] )
+    liste.append( ['Boston (Celtics)', URL_MAIN + 'category/nba/boston-celtics/'] )
+    liste.append( ['Brooklyn (Nets)', URL_MAIN + 'category/nba/brooklyn-nets/'] )
+    liste.append( ['Charlotte (Hornets)', URL_MAIN + 'category/nba/charlotte-hornets/'] )
+    liste.append( ['Chicago (Bulls)', URL_MAIN + 'category/nba/chicago-bulls/'] )
+    liste.append( ['Cleveland (Cavaliers)', URL_MAIN + 'category/nba/cleveland-cavaliers/'] )
+    liste.append( ['Dallas (Mavericks)', URL_MAIN + 'category/nba/dallas-mavericks/'] )
+    liste.append( ['Denver (Nuggets)', URL_MAIN + 'category/nba/denver-nuggets/'] )
+    liste.append( ['Détroit (Pistons)', URL_MAIN + 'category/nba/detroit-pistons/'] )
+    liste.append( ['Golden-state (Warriors)', URL_MAIN + 'category/nba/golden-state-warriors/'] )
+    liste.append( ['Houston (Rockets)', URL_MAIN + 'category/nba/houston-rockets/'] )
+    liste.append( ['Indiana (Pacers)', URL_MAIN + 'category/nba/indiana-pacers/'] )
+    liste.append( ['Los Angeles (Clippers)', URL_MAIN + 'category/nba/los-angeles-clippers/'] )
+    liste.append( ['Los Angeles (Lakers)', URL_MAIN + 'category/nba/los-angeles-lakers/'] )
+    liste.append( ['Memphis (Grizzlies)', URL_MAIN + 'category/nba/memphis-grizzlies/'] )
+    liste.append( ['Miami (Heat)', URL_MAIN + 'category/nba/miami-heat/'] )
+    liste.append( ['Milwaukee (Bucks)', URL_MAIN + 'category/nba/milwaukee-bucks/'] )
+    liste.append( ['Minnesota (Timberwolves)', URL_MAIN + 'category/nba/minnesota-timberwolves/'] )
+    liste.append( ['New-Orléans (Pelicans)', URL_MAIN + 'category/nba/new-orleans-pelicans/'] )
+    liste.append( ['New-York (Knicks)', URL_MAIN + 'category/nba/new-york-knicks/'] )
+    liste.append( ['Oklahoma City (Thunder)', URL_MAIN + 'category/nba/oklahoma-city-thunder/'] )
+    liste.append( ['Orlando (Magic)', URL_MAIN + 'category/nba/orlando-magic/'] )
+    liste.append( ['Philadelphia (79ers)', URL_MAIN + 'category/nba/philadelphia-76ers/'] )
+    liste.append( ['Phoenix (Suns)', URL_MAIN + 'category/nba/phoenix-suns/'] )
+    liste.append( ['Portland (Blazers)', URL_MAIN + 'category/nba/portland-trail-blazers/'] )
+    liste.append( ['Sacramento (Kings)', URL_MAIN + 'category/nba/sacramento-kings/'] )
+    liste.append( ['San Antonio (Spurs)', URL_MAIN + 'category/nba/san-antonio-spurs/'] )
+    liste.append( ['Toronto (Raptors)', URL_MAIN + 'category/nba/toronto-raptors/'] )
+    liste.append( ['Utah (Jazz)', URL_MAIN + 'category/nba/utah-jazz/'] )
+    liste.append( ['Washington (Wizards)', URL_MAIN + 'category/nba/washington-wizards/'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -195,7 +195,7 @@ def showMovies(sSearch = ''):
         sPattern = '<a href="([^"]+)">([^<]+)</a></h2>'
 
     else:
-        sPattern = '<a href="([^"]+)">(?:\s*|)<img src="[^"]+" data-hidpi="(.+?)\?.+?" alt="([^"]+)"(?:width=".+?"|)'
+        sPattern = '<div class="post-img".+?a href="([^"]+)".+?img src=".+?" data-hidpi="(.+?)" alt="([^"]+)"(?:width=".+?"|)'
 
     sDateReplay = ''
     sDate = ''
@@ -315,7 +315,7 @@ def showMovies(sSearch = ''):
 def __checkForNextPage(sHtmlContent):
 
     oParser = cParser()
-    sPattern = '<link rel="next" href="([^"]+)"'
+    sPattern = '<span class=\'current\'>.+?</span><a href=\'(.+?)\''
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -370,7 +370,7 @@ def showHosters():
                 sUrl = str(aEntry)
 
                 oRequestHandler = cRequestHandler(sUrl)
-                sHtmlContent = oRequestHandler.request();
+                sHtmlContent = oRequestHandler.request()
                 sHtmlContent = sHtmlContent.replace(' rel="nofollow"', '')
 
                 aResult4 = re.findall(sPattern2, sHtmlContent)

@@ -498,6 +498,8 @@ def showEpisodes():
 
 def showLinks():
     oGui = cGui()
+    import threading
+    threads = []
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -533,7 +535,15 @@ def showLinks():
             oOutputParameterHandler.addParameter('sPost', sPost)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            #oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            #dispo a la version 0.6.2
+            #oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, oOutputParameterHandler)
+            t = threading.Thread(target=showHosters2, args=(oGui,sUrl,sTitle,sThumb,sPost), name ='name')
+            threads += [t]
+            t.start()
+
+        for count, t in enumerate(threads):
+            t.join()
 
         cConfig().finishDialog(dialog)
 
@@ -586,3 +596,47 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
                 
     oGui.setEndOfDirectory()
+
+#test thread
+def showHosters2(oGui,sUrl,sMovieTitle,sThumb,sPost):
+    #oGui = cGui()
+    
+    #cConfig().log(sUrl)
+    #cConfig().log(sPost)
+    
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addParameters('levideo', sPost)
+    sHtmlContent = oRequestHandler.request()
+
+    oParser = cParser()
+    sPattern = '</div></div><iframe src="(.+?)"'
+    
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            
+            sHosterUrl = str(aEntry)
+            
+            if 'facebook.com' in sHosterUrl:
+                continue
+            
+            if 'vimple.org' in sHosterUrl:
+                #cConfig().log(sHosterUrl)
+                oRequestHandler = cRequestHandler(sHosterUrl)
+                oRequestHandler.addHeaderEntry('Referer',sUrl)
+                sHtmlContent2 = oRequestHandler.request()
+                try:
+                    sHosterUrl = re.search('url=([^"]+)"', sHtmlContent2,re.DOTALL).group(1) 
+                except:
+                    sHosterUrl = str(oRequestHandler.getRealUrl())
+                #cConfig().log(sHosterUrl)
+
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                
+    #oGui.setEndOfDirectory()

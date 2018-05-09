@@ -51,14 +51,10 @@ class cHoster(iHoster):
     def getPattern(self):
         return '';
         
-    def __getIdFromUrl(self, sUrl):
-        sPattern = "http://speedvid.net/([^<]+)"
-        oParser = cParser()
-        aResult = oParser.parse(sUrl, sPattern)
-        if (aResult[0] == True):
-            return aResult[1][0]
-
-        return ''
+    def __getHost(self):
+        parts = self.__sUrl.split('//', 1)
+        host = parts[0]+'//'+parts[1].split('/', 1)[0]
+        return host
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
@@ -108,23 +104,38 @@ class cHoster(iHoster):
         #fh.close()
         
         #Desactive pour le moment
-        if (False):
+        if (True):
             Realurl = ''
             
-            Realurl = re.findall('window\.location\.href= *[\'"]([^\'"]+)',sHtmlContent)[0]
+            red = re.findall('window\.location\.href= *[\'"]([^\'"]+)',sHtmlContent)
+            if red:
+                Realurl = red[0]
+            else:
+                VSlog("2")
+                red = re.findall('location\.assign *\( *"([^"]+)" \)',sHtmlContent)
+                if red:
+                    Realurl = red[0]
+                    
+            if 'speedvid' not in Realurl:
+                Realurl = self.__getHost() + Realurl
             
             if not Realurl.startswith('http'):
                 Realurl = 'http:' + Realurl
                       
             if not Realurl:
+                VSlog("mauvaise redirection")
                 return False, False
                 
-            cConfig().log('Real url>> ' + Realurl)
+            VSlog('Real url>> ' + Realurl)
 
             oRequest = cRequestHandler(Realurl)
             oRequest.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0')
             oRequest.addHeaderEntry('Referer',self.__sUrl)
-            sHtmlContent = oRequest.request()
+            sHtmlContent = oRequest.request()          
+            
+        #fh = open('c:\\test.txt', "w")
+        #fh.write(sHtmlContent)
+        #fh.close()
         
         api_call = ''
             
@@ -133,7 +144,9 @@ class cHoster(iHoster):
         if (aResult[0] == True):
             api_call = aResult[1][0]
 
-        cConfig().log('API_CALL: ' + api_call );
+        VSlog('API_CALL: ' + api_call )
+        gg(mm)
+        
         if (api_call):
             api_call = api_call + '|' + UA
             return True, api_call
@@ -156,7 +169,7 @@ def CheckCpacker(str):
         #    str2 = 'eval(function' + str2[4:]
         
         #Me demandez pas pourquoi mais si je l'affiche pas en log, ca freeze ?????
-        VSlog(str2)
+        #VSlog(str2)
         
         try:
             tmp = cPacker().unpack(str2)

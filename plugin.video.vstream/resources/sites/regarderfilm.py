@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #Razorex
-return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -14,9 +13,9 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
 
-SITE_IDENTIFIER = 'streamingbb'
-SITE_NAME = 'StreamingBB'
-SITE_DESC = 'Films en streaming'
+SITE_IDENTIFIER = 'regarderfilm'
+SITE_NAME = 'Regarder Film'
+SITE_DESC = 'Regarder, Voir Films En Streaming VF 100% Gratuit.'
 
 URL_MAIN = 'http://www.regarderfilm.ws/'
 
@@ -24,8 +23,8 @@ URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_NEWS = (URL_MAIN, 'showMoviesNews')
-MOVIE_MOVIE = (URL_MAIN, 'showMoviesNews')
+MOVIE_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 def load():
@@ -119,13 +118,13 @@ def showMoviesNews():
     
     oParser = cParser()
     #Decoupage pour cibler la partie Dernier Films Ajouté
-    sPattern = '<span class="name">Dernier Films Ajouté :</span>(.+?)<div id="sidebar" role="complementary" class="masonry">'
+    sPattern = '<span>DERNIER</span> FILMS AJOUTÉ.+?</div>(.+?)<div class="SideBarHome">'
 	
     aResult = oParser.parse(sHtmlContent, sPattern)
     sHtmlContent = aResult
 	
     #regex pour listage films sur la partie decoupée
-    sPattern = '<div class="thumb">.+?<img src="([^<]+)" alt="(.+?)".+?<a href="(.+?)"'
+    sPattern = '<div class="MovieItem".+?href="(.+?)".+?src="([^<]+)" alt="(.+?)"'
     
     aResult = oParser.parse(sHtmlContent, sPattern)
     
@@ -141,9 +140,9 @@ def showMoviesNews():
             if dialog.iscanceled():
                 break
             
-            sThumb = str(aEntry[0])
-            sTitle = str(aEntry[1]).decode("unicode_escape").encode("latin-1")
-            sUrl = str(aEntry[2])
+            sUrl = str(aEntry[0])
+            sThumb = str(aEntry[1])
+            sTitle = str(aEntry[2]).decode("unicode_escape").encode("latin-1")
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -176,13 +175,13 @@ def showMovies(sSearch = ''):
     
     oParser = cParser()
     #Decoupage pour cibler la partie Film hors carroussel
-    sPattern = '<div class="loop-header below-no-actions">(.+?)<div id="sidebar" role="complementary" class="masonry">'
+    # sPattern = '<div class="loop-header below-no-actions">(.+?)<div id="sidebar" role="complementary" class="masonry">'
 	
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    sHtmlContent = aResult
+    # aResult = oParser.parse(sHtmlContent, sPattern)
+    # sHtmlContent = aResult
 	
     #regex pour listage films sur la partie decoupée
-    sPattern = '<div class="thumb">.+?<img src="([^<]+)" alt="(.+?)".+?<a href="(.+?)"'
+    sPattern = '<div class="MovieItem".+?href="([^<]+)".+?src="([^<]+)" alt="(.+?)"'
     
     aResult = oParser.parse(sHtmlContent, sPattern)
     #cConfig().log(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
@@ -198,9 +197,9 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
             
-            sThumb = str(aEntry[0])
-            sTitle = str(aEntry[1]).decode("unicode_escape").encode("latin-1")
-            sUrl = str(aEntry[2])
+            sUrl = str(aEntry[0])
+            sThumb = str(aEntry[1])
+            sTitle = str(aEntry[2]).decode("unicode_escape").encode("latin-1")
             
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
@@ -251,10 +250,11 @@ def showLinks():
     
     sDesc = ''
     try:
-        sPattern = '<p><strong>Synopsis<\/strong.+?: *(.+?)<\/p>'
+        sPattern = '<span>Année de production</span>.+?<p>(.+?)<\/p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             sDesc = aResult[1][0]
+            sDesc = sDesc.replace('<br />', ' ')
     except:
         pass
        
@@ -274,8 +274,9 @@ def showLinks():
             if dialog.iscanceled():
                 break
 
-            sHost = str(aEntry[0])#.strip()
-            sHost = sHost.replace('.to', '').replace('.com', '').replace('.co', '').replace('.me', '').replace('.ec', '').replace('.eu', '').replace('.sx', '')
+            sHost = str(aEntry[0]).replace('.net', '').replace('.com', '')#.strip()
+            sHost = sHost.replace('.to', '').replace('.co', '').replace('.me', '').replace('.ec', '').replace('.eu', '').replace('.sx', '')
+            sHost = sHost.capitalize()
             sPost = str(aEntry[1])
             sTitle = ('%s (%s)') % (sMovieTitle, sHost)
             

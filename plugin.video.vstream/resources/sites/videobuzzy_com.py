@@ -14,9 +14,9 @@ SITE_IDENTIFIER = 'videobuzzy_com'
 SITE_NAME = 'Videobuzzy'
 SITE_DESC = 'Sélection des vidéos les plus populaires de Videobuzzy'
 
-URL_MAIN = 'http://www.videobuzzy.com/'
+URL_MAIN = 'https://www.videobuzzy.com/'
 
-NETS_NETS = ('http://' , 'load')
+NETS_NETS = ('http://', 'load')
 NETS_NEWS =  (URL_MAIN, 'showMovies')
 NETS_GENRES = (True, 'showGenres')
 
@@ -55,19 +55,19 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Galerie',URL_MAIN + 'galerie.htm'] )
-    liste.append( ['Football',URL_MAIN + 'football.htm'] )
-    liste.append( ['Humour',URL_MAIN + 'humour.htm'] )
-    liste.append( ['Animaux',URL_MAIN + 'animaux.htm'] )
-    liste.append( ['Insolite',URL_MAIN + 'insolite.htm'] )
-    liste.append( ['Télévision',URL_MAIN + 'television.htm'] )
-    liste.append( ['Musique',URL_MAIN + 'musique.htm'] )
-    liste.append( ['Sport',URL_MAIN + 'sport.htm'] )
-    liste.append( ['Cinéma',URL_MAIN + 'cinema.htm'] )
-    #liste.append( ['Bref.',URL_MAIN + 'BREF-tous-les-episodes-de-la-serie-de-canal-+-4902.news'] )
-    liste.append( ['Top Vidéo',URL_MAIN + 'top-video.php'] )
+    liste.append( ['Galerie', URL_MAIN + 'galerie.htm'] )
+    liste.append( ['Football', URL_MAIN + 'football.htm'] )
+    liste.append( ['Humour', URL_MAIN + 'humour.htm'] )
+    liste.append( ['Animaux', URL_MAIN + 'animaux.htm'] )
+    liste.append( ['Insolite', URL_MAIN + 'insolite.htm'] )
+    liste.append( ['Télévision', URL_MAIN + 'television.htm'] )
+    liste.append( ['Musique', URL_MAIN + 'musique.htm'] )
+    liste.append( ['Sport', URL_MAIN + 'sport.htm'] )
+    liste.append( ['Cinéma', URL_MAIN + 'cinema.htm'] )
+    #liste.append( ['Bref.', URL_MAIN + 'BREF-tous-les-episodes-de-la-serie-de-canal-+-4902.news'] )
+    liste.append( ['Top Vidéo', URL_MAIN + 'top-video.php'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -84,7 +84,7 @@ def showMovies(sSearch = ''):
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
 
     sPattern = "<a class='titre_news_index' href='(.+?)' title='(.+?)'>.+?<img class=\"thumbnail\" src='(.+?)'.+?>.+?<span class='corps_news_p2'>(.+?)</span>"
 
@@ -102,12 +102,17 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
 
+            sUrl = str(aEntry[0])
             sTitle = aEntry[1]
+            sThumb = str(aEntry[2])
+            sDesc = str(aEntry[3]).replace('&eacute;', 'é').replace('&agrave;', 'à').replace('&egrave;', 'è').replace('&ugrave;', 'ù')
+            sDesc = sDesc.replace('&#39;', '\'').replace('&iuml;', 'ï').replace('&ccedil;', 'ç').replace('&ocirc;', 'ô').replace('&ecirc;', 'ê')
+
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[2]))
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[2], aEntry[3], oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -136,7 +141,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
@@ -160,7 +165,7 @@ def showHosters():
             if (oHoster != False):
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         cConfig().finishDialog(dialog)
 

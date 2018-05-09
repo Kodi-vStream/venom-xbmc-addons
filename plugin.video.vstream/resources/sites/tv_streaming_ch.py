@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'tv_streaming_ch'
 SITE_NAME = 'Tv-streaming'
 SITE_DESC = 'Films/Séries/Animés/Documentaires/ReplayTV en streaming'
 
-URL_MAIN = 'http://www.tv-streaming-serie.xyz/'
+URL_MAIN = 'http://www.streamania.xyz/'
 
 MOVIE_NEWS = (URL_MAIN + 'category/films-vf/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'category/films-vf/', 'showMovies')
@@ -84,7 +84,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ENFANTS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ENFANTS[1] ,'Dessins animés', 'animes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ENFANTS[1], 'Dessins animés', 'animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
@@ -92,11 +92,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_GENRES[1] ,'Replay TV (Genres)', 'replay.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_GENRES[1], 'Replay TV (Genres)', 'replay.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1] ,'Sport', 'sport.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Sport', 'sport.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -123,7 +123,7 @@ def ReplayTV():
     liste.append( ['Rétro Souvenir', URL_MAIN + 'category/television/retro-souvenir/'] )
     liste.append( ['TV réalité', URL_MAIN + 'television/tv-realite/'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -157,7 +157,7 @@ def showGenres():
     liste.append( ['Thriller', URL_MAIN + 'category/films-vf/thriller/'] )
     liste.append( ['Western', URL_MAIN + 'western/'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -193,14 +193,14 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            #Si recherche et trop de resultat, on nettoye
-            if sSearch and total > 2:
-                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
-                    continue
-
             sUrl = str(aEntry[0])
             sThumb = str(aEntry[1])
             sTitle = str(aEntry[2])
+
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)

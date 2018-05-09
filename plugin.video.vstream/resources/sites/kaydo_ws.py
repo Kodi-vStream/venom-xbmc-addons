@@ -14,7 +14,7 @@ import re,xbmc,base64
 #copie du site https://www.hds.to/
 
 SITE_IDENTIFIER = 'kaydo_ws'
-SITE_NAME = 'Kaydo'
+SITE_NAME = 'Kaydo (hds.to)'
 SITE_DESC = 'Site de streaming en HD'
 
 URL_MAIN = 'https://www.hds.to/'

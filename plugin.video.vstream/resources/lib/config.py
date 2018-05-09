@@ -371,8 +371,8 @@ class cConfig():
                 color = cConfig().getSetting('deco_color')
                 xbmcgui.Window(10000).setProperty('color', color)
 
-                self.getControl(50).setVisible(False)
-                self.getControl(50).reset()
+                #self.getControl(50).setVisible(False)
+                #self.getControl(50).reset()
                 self.getControl(5500).setVisible(False)
                 listitems = []
                 try:
@@ -486,7 +486,6 @@ class cConfig():
                     return
                 elif controlId == 50:
                     #print self.getControl(50).ListItem.Property('id')
-                    xbmcgui.Window(10000).setProperty('nav', '1')
                     item = self.getControl(50).getSelectedItem()
                     sid = item.getProperty('id')
 
@@ -503,7 +502,6 @@ class cConfig():
                 elif controlId == 9:
                     #print self.getControl(9000).ListItem.tmdb_id
                     sid = xbmcgui.Window(10000).getProperty("ListItem.tmdb_id")
-                    xbmcgui.Window(10000).setProperty('nav', '2')
 
                     from resources.lib.tmdb import cTMDb
                     grab = cTMDb(api_key=API)
@@ -511,13 +509,15 @@ class cConfig():
                     try:
                         meta = grab.getUrl(sUrl)
                         meta = meta['results']
-                        self.credit(meta)
+                        if meta:
+                            self.credit(meta)
+                        else:
+                            self.getControl(9).setLabel("Aucune Information")
                     except: return
                 #click sur recommendations
                 elif controlId == 13:
                     #print self.getControl(9000).ListItem.tmdb_id
                     sid = xbmcgui.Window(10000).getProperty("ListItem.tmdb_id")
-                    xbmcgui.Window(10000).setProperty('nav', '3')
 
                     from resources.lib.tmdb import cTMDb
                     grab = cTMDb(api_key=API)
@@ -525,7 +525,11 @@ class cConfig():
                     try:
                         meta = grab.getUrl(sUrl)
                         meta = meta['results']
-                        self.credit(meta)
+                        if meta:
+                            self.credit(meta)
+                        else:
+                            self.getControl(13).setLabel("Aucune Information")
+                        
                     except: return
 
                 elif controlId == 5200:
@@ -557,10 +561,10 @@ class cConfig():
                 if controlId != 5200:
                     #self.getControl(5500).reset()
                     self.getControl(5500).setVisible(False)
-                if controlId == 50:
-                    item = self.getControl(50).getSelectedItem()
-                    sid = item.getProperty('id')
-                    self.person(sid)
+                #if controlId == 50:
+                    #item = self.getControl(50).getSelectedItem()
+                    #sid = item.getProperty('id')
+                    #self.person(sid)
 
             def _close_dialog( self ):
                 self.close()
