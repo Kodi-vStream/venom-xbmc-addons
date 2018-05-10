@@ -16,24 +16,28 @@ import re
 import htmlentitydefs, unicodedata
 
 #ancien dpstreaming_tv
+#ancien zonestreaming
 SITE_IDENTIFIER = 'zonestreaming'
-SITE_NAME = 'Zone Streaming'
+SITE_NAME = 'voirfilms'
 SITE_DESC = 'NC'
 
-URL_MAIN = 'http://zonestreaming.ws/'
+URL_MAIN = 'http://voirfilms.cool/'
 
-MOVIE_NEWS = (URL_MAIN + 'category/films-streaming/', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'category/films-streaming/', 'showMovies')
-MOVIE_VOSTFR = (URL_MAIN + 'category/films-streaming/vostfr-films/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'category/films/', 'showMovies')
+MOVIE_MOVIE = ('category/films/', 'showMovies')
+MOVIE_VOSTFR = (URL_MAIN + 'category/films/vostfr-films/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'category/films-en-exclus/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
-SERIE_SERIES = (URL_MAIN + 'category/series-streaming/', 'showMovies')
-SERIE_VFS = (URL_MAIN + 'category/series-streaming/series-streaming-vf/', 'showMovies')
-SERIE_VOSTFRS = (URL_MAIN + 'category/series-streaming/series-streaming-vostfr/', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'category/series-tv/', 'showMovies')
+SERIE_VFS = (URL_MAIN + 'category/series-tv/series-streaming-vf/', 'showMovies')
+SERIE_VOSTFRS = (URL_MAIN + 'category/series-tv/series-streaming-vostfr/', 'showMovies')
+SERIE_VFQ = (URL_MAIN + 'category/series-tv/vfq/', 'showMovies')
 
 
 REPLAYTV_NEWS = (URL_MAIN + 'category/emissions-tv/', 'showMovies')
+REPLAYTV_TELE = (URL_MAIN + 'category/emissions-tv/telerealite/', 'showMovies')
+
 REPLAYTV_REPLAYTV = ('http://', 'load')
 
 DOC_NEWS = (URL_MAIN + 'category/documentaire/', 'showMovies')
@@ -299,7 +303,7 @@ def showSeries():
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class="next page-numbers" href="(.+?)">Suiv...</a>'
+    sPattern = "class='page-numbers current'>.+?href='(.+?)'>"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):

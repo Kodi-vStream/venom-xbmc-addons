@@ -393,3 +393,15 @@ def VSshowYear(sUrl,start = '',end = '',endswithslash = ''):
         xbmcplugin.endOfDirectory(int(sys.argv[1]),True,False,False)
         xbmc.sleep(500) #sleep obligatoire
         xbmc.executebuiltin("Action(Back)") #back evite erreur du au clic sur un dossier qui mene nulle part
+
+def VSread(sHtmlContent):
+    #from resources.lib import util
+    #util.VSread(sHtmlContent)
+    import xbmcvfs
+    file = xbmc.translatePath("special://userdata/addon_data/plugin.video.vstream/html.txt").decode("utf-8")
+    if xbmcvfs.exists(file):
+        xbmcvfs.delete(file)
+
+    f = xbmcvfs.File (file, 'w')
+    result = f.write(sHtmlContent)
+    f.close()
