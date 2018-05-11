@@ -13,15 +13,15 @@ SITE_IDENTIFIER = 'filmstreamvk_com'
 SITE_NAME = 'Filmstreamvk'
 SITE_DESC = 'Films, Séries & Mangas en Streaming'
 
-URL_MAIN = 'http://filmstreamvk.me/'
+URL_MAIN = 'http://filmstreamvk.info/'
 
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'les-plus-vues-films', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
-SERIE_SERIES = (URL_MAIN + 'serie', 'showMovies')
-SERIE_NEWS = (URL_MAIN + 'serie', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'series', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'series', 'showMovies')
 
 ANIM_ANIMS = (URL_MAIN + 'manga', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'manga', 'showMovies')
@@ -74,61 +74,61 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action',URL_MAIN + 'category/action'] )
-    liste.append( ['Animation',URL_MAIN + 'category/animation'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'category/arts-martiaux'] )
-    liste.append( ['Aventure',URL_MAIN + 'category/aventure'] )
-    liste.append( ['Bande annonce',URL_MAIN + 'category/bande-annonce'] )
-    liste.append( ['Biographie',URL_MAIN + 'category/biography'] )
-    liste.append( ['Biopic',URL_MAIN + 'category/biopic'] )
-    liste.append( ['Capes et épées',URL_MAIN + 'category/capes-et-epees'] )
-    liste.append( ['Comédie',URL_MAIN + 'category/comedie'] )
-    liste.append( ['Comédie dramatique',URL_MAIN + 'category/comedie-dramatique'] )
-    liste.append( ['Comédie musicale',URL_MAIN + 'category/comedie-musicale'] )
-    liste.append( ['Concert',URL_MAIN + 'category/concert'] )
-    liste.append( ['Crime',URL_MAIN + 'category/crime'] )
-    liste.append( ['Days (TV)',URL_MAIN + 'category/days-tv'] )
-    liste.append( ['Divers',URL_MAIN + 'category/divers'] )
-    liste.append( ['Documentaire',URL_MAIN + 'category/documentaire'] )
-    liste.append( ['Drame',URL_MAIN + 'category/drame'] )
-    liste.append( ['Enigme',URL_MAIN + 'category/enigme'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'category/epouvante-horreur'] )
-    liste.append( ['Espionnage',URL_MAIN + 'category/espionnage'] )
-    liste.append( ['Exclues',URL_MAIN + 'category/exclues'] )
-    liste.append( ['Famille',URL_MAIN + 'category/famille'] )
-    liste.append( ['Fantastique',URL_MAIN + 'category/fantastique'] )
-    liste.append( ['Fantasy',URL_MAIN + 'category/fantasy'] )
-    liste.append( ['Film récompensé',URL_MAIN + 'category/film-recompense'] )
-    liste.append( ['Golden Time',URL_MAIN + 'category/golden-time'] )
-    liste.append( ['Guerre',URL_MAIN + 'category/guerre'] )
-    liste.append( ['Gugure! Kokkuri-san',URL_MAIN + 'category/gugure-kokkuri-san'] )
-    liste.append( ['Histoire vraie',URL_MAIN + 'category/histoire-vraie'] )
-    liste.append( ['Historique',URL_MAIN + 'category/historique'] )
-    liste.append( ['Horreur',URL_MAIN + 'category/horreur'] )
-    liste.append( ['Judiciaire',URL_MAIN + 'category/judiciaire'] )
-    liste.append( ['Love Live!',URL_MAIN + 'category/love-live'] )
-    liste.append( ['Musical',URL_MAIN + 'category/musical'] )
-    liste.append( ['Mystery',URL_MAIN + 'category/mystery'] )
-    liste.append( ['Naruto Shippuden Kai',URL_MAIN + 'category/naruto-shippuden-kai'] )
-    liste.append( ['Non classé',URL_MAIN + 'category/non-classe'] )
-    liste.append( ['Péplum',URL_MAIN + 'category/peplum'] )
-    liste.append( ['Pixar',URL_MAIN + 'category/pixar'] )
-    liste.append( ['Policier',URL_MAIN + 'category/policier'] )
-    liste.append( ['Romance',URL_MAIN + 'category/romance'] )
-    liste.append( ['Science-Fiction',URL_MAIN + 'category/science-fiction'] )
-    liste.append( ['Série',URL_MAIN + 'category/serie'] )
-    liste.append( ['Souryo to Majiwaru Shikiyoku no Yoru ni',URL_MAIN + 'category/souryo-to-majiwaru-shikiyoku-no-yoru-ni'] )
-    liste.append( ['Spectacle',URL_MAIN + 'category/spectacle'] )
-    liste.append( ['Sport',URL_MAIN + 'category/sport'] )
-    liste.append( ['Sport event',URL_MAIN + 'category/sport-event'] )
-    liste.append( ['Survival',URL_MAIN + 'category/survival'] )
-    liste.append( ['Thriller',URL_MAIN + 'category/thriller'] )
-    liste.append( ['Tokyo Ravens',URL_MAIN + 'category/tokyo-ravens'] )
-    liste.append( ['Top films',URL_MAIN + 'category/exclues/top-films'] )
-    liste.append( ['Walt Disney',URL_MAIN + 'category/walt-disney'] )
-    liste.append( ['Western',URL_MAIN + 'category/western'] )
+    liste.append( ['Action', URL_MAIN + 'category/action'] )
+    liste.append( ['Animation', URL_MAIN + 'category/animation'] )
+    liste.append( ['Arts Martiaux', URL_MAIN + 'category/arts-martiaux'] )
+    liste.append( ['Aventure', URL_MAIN + 'category/aventure'] )
+    liste.append( ['Bande annonce', URL_MAIN + 'category/bande-annonce'] )
+    liste.append( ['Biographie', URL_MAIN + 'category/biography'] )
+    liste.append( ['Biopic', URL_MAIN + 'category/biopic'] )
+    liste.append( ['Capes et épées', URL_MAIN + 'category/capes-et-epees'] )
+    liste.append( ['Comédie', URL_MAIN + 'category/comedie'] )
+    liste.append( ['Comédie dramatique', URL_MAIN + 'category/comedie-dramatique'] )
+    liste.append( ['Comédie musicale', URL_MAIN + 'category/comedie-musicale'] )
+    liste.append( ['Concert', URL_MAIN + 'category/concert'] )
+    liste.append( ['Crime', URL_MAIN + 'category/crime'] )
+    liste.append( ['Days (TV)', URL_MAIN + 'category/days-tv'] )
+    liste.append( ['Divers', URL_MAIN + 'category/divers'] )
+    liste.append( ['Documentaire', URL_MAIN + 'category/documentaire'] )
+    liste.append( ['Drame', URL_MAIN + 'category/drame'] )
+    liste.append( ['Enigme', URL_MAIN + 'category/enigme'] )
+    liste.append( ['Epouvante Horreur', URL_MAIN + 'category/epouvante-horreur'] )
+    liste.append( ['Espionnage', URL_MAIN + 'category/espionnage'] )
+    liste.append( ['Exclues', URL_MAIN + 'category/exclues'] )
+    liste.append( ['Famille', URL_MAIN + 'category/famille'] )
+    liste.append( ['Fantastique', URL_MAIN + 'category/fantastique'] )
+    liste.append( ['Fantasy', URL_MAIN + 'category/fantasy'] )
+    liste.append( ['Film récompensé', URL_MAIN + 'category/film-recompense'] )
+    liste.append( ['Golden Time', URL_MAIN + 'category/golden-time'] )
+    liste.append( ['Guerre', URL_MAIN + 'category/guerre'] )
+    liste.append( ['Gugure! Kokkuri-san', URL_MAIN + 'category/gugure-kokkuri-san'] )
+    liste.append( ['Histoire vraie', URL_MAIN + 'category/histoire-vraie'] )
+    liste.append( ['Historique', URL_MAIN + 'category/historique'] )
+    liste.append( ['Horreur', URL_MAIN + 'category/horreur'] )
+    liste.append( ['Judiciaire', URL_MAIN + 'category/judiciaire'] )
+    liste.append( ['Love Live!', URL_MAIN + 'category/love-live'] )
+    liste.append( ['Musical', URL_MAIN + 'category/musical'] )
+    liste.append( ['Mystery', URL_MAIN + 'category/mystery'] )
+    liste.append( ['Naruto Shippuden Kai', URL_MAIN + 'category/naruto-shippuden-kai'] )
+    liste.append( ['Non classé', URL_MAIN + 'category/non-classe'] )
+    liste.append( ['Péplum', URL_MAIN + 'category/peplum'] )
+    liste.append( ['Pixar', URL_MAIN + 'category/pixar'] )
+    liste.append( ['Policier', URL_MAIN + 'category/policier'] )
+    liste.append( ['Romance', URL_MAIN + 'category/romance'] )
+    liste.append( ['Science-Fiction', URL_MAIN + 'category/science-fiction'] )
+    liste.append( ['Série', URL_MAIN + 'category/serie'] )
+    liste.append( ['Souryo to Majiwaru Shikiyoku no Yoru ni', URL_MAIN + 'category/souryo-to-majiwaru-shikiyoku-no-yoru-ni'] )
+    liste.append( ['Spectacle', URL_MAIN + 'category/spectacle'] )
+    liste.append( ['Sport', URL_MAIN + 'category/sport'] )
+    liste.append( ['Sport event', URL_MAIN + 'category/sport-event'] )
+    liste.append( ['Survival', URL_MAIN + 'category/survival'] )
+    liste.append( ['Thriller', URL_MAIN + 'category/thriller'] )
+    liste.append( ['Tokyo Ravens', URL_MAIN + 'category/tokyo-ravens'] )
+    liste.append( ['Top films', URL_MAIN + 'category/exclues/top-films'] )
+    liste.append( ['Walt Disney', URL_MAIN + 'category/walt-disney'] )
+    liste.append( ['Western', URL_MAIN + 'category/western'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -156,7 +156,7 @@ def showMovies(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -168,7 +168,7 @@ def showMovies(sSearch = ''):
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),aEntry[2]) == 0:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
                     continue
 
             sThumb = aEntry[0]
@@ -224,7 +224,7 @@ def showLinks():
     sPattern = '<div class="keremiya_part"> <span>(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        ListeUrl = [(sUrl,aResult[1][0])]
+        ListeUrl = [(sUrl, aResult[1][0])]
 
     #Recuperation des suivants
     sPattern = '<a href="([^<]+)"><span>(.+?)</span>'
@@ -266,7 +266,7 @@ def showEpisode():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
 
     sPattern = '<td class="liste_episode" width="10%">(.+?)<\/td>|<a href="([^<>"]+?)" title="" class="num_episode">([0-9]+)<\/a>'
     oParser = cParser()
@@ -306,7 +306,7 @@ def showHostersSerie():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/', '')
 
     #deux pattern pour supprimer les doublons hoster dans les series
@@ -354,7 +354,7 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/', '')
 
     sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]'
