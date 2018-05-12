@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'filmsvostfr_biz'
 SITE_NAME = 'Filmsvostfr'
 SITE_DESC = 'Films/Séries/Animés'
 
-URL_MAIN = 'http://filmsvostfr.ws/'
+URL_MAIN = 'http://filmsvostfr.io/'
 
 MOVIE_NEWS = (URL_MAIN + 'films-en-streaming', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films-en-streaming', 'showMovies')
