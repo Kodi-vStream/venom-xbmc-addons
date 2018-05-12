@@ -20,7 +20,7 @@ SITE_IDENTIFIER = 'cineiz'
 SITE_NAME = 'Cineiz'
 SITE_DESC = 'Films, Séries et mangas en streaming'
 
-URL_MAIN = 'http://www.cineiz.cc/'
+URL_MAIN = 'http://www.cineiz.io/'
 
 URL_SEARCH = ('', 'showMovieSearch')
 URL_SEARCH_MOVIES = ('', 'showMovieSearch')
