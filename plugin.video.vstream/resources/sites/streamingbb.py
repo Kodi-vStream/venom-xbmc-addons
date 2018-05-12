@@ -1,31 +1,27 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #Razorex
-return False
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-
-from resources.lib.util import cUtil
-
+import re
 
 SITE_IDENTIFIER = 'streamingbb'
 SITE_NAME = 'StreamingBB'
 SITE_DESC = 'Films en streaming'
 
-URL_MAIN = 'http://www.regarderfilm.ws/'
+URL_MAIN = 'http://www.regarderfilm.cc/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_NEWS = (URL_MAIN, 'showMoviesNews')
-MOVIE_MOVIE = (URL_MAIN, 'showMoviesNews')
+MOVIE_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 def load():
@@ -47,7 +43,6 @@ def load():
 
 def showSearch():
     oGui = cGui()
-
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
         sUrl = URL_SEARCH[0] + sSearchText
@@ -109,26 +104,22 @@ def showGenres():
     oGui.setEndOfDirectory() 
 
 
-def showMoviesNews():
+def showMovies(sSearch = ''):
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    if sSearch:
+        sUrl = sSearch
+    else:
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
     oParser = cParser()
-    #Decoupage pour cibler la partie Dernier Films Ajouté
-    sPattern = '<span class="name">Dernier Films Ajouté :</span>(.+?)<div id="sidebar" role="complementary" class="masonry">'
-	
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    sHtmlContent = aResult
-	
-    #regex pour listage films sur la partie decoupée
-    sPattern = '<div class="thumb">.+?<img src="([^<]+)" alt="(.+?)".+?<a href="(.+?)"'
+
+    sPattern = '<div class="MovieItem".+?<a href="([^"]+)">.+?<img.+?src="([^"]+)" alt="(.+?)"'
     
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
     if (aResult[0] == False):
 		oGui.addText(SITE_IDENTIFIER)
 
@@ -141,9 +132,9 @@ def showMoviesNews():
             if dialog.iscanceled():
                 break
             
-            sThumb = str(aEntry[0])
-            sTitle = str(aEntry[1]).decode("unicode_escape").encode("latin-1")
-            sUrl = str(aEntry[2])
+            sThumb = aEntry[1]
+            sTitle = aEntry[2]
+            sUrl = aEntry[0]
             
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -158,73 +149,10 @@ def showMoviesNews():
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMoviesNews', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
-
-        oGui.setEndOfDirectory()
-
-
-def showMovies(sSearch = ''):
-    oGui = cGui()
-    if sSearch:
-        sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
-    
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    
-    oParser = cParser()
-    #Decoupage pour cibler la partie Film hors carroussel
-    sPattern = '<div class="loop-header below-no-actions">(.+?)<div id="sidebar" role="complementary" class="masonry">'
-	
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    sHtmlContent = aResult
-	
-    #regex pour listage films sur la partie decoupée
-    sPattern = '<div class="thumb">.+?<img src="([^<]+)" alt="(.+?)".+?<a href="(.+?)"'
-    
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    #cConfig().log(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
-    
-    if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
-
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-            
-            sThumb = str(aEntry[0])
-            sTitle = str(aEntry[1]).decode("unicode_escape").encode("latin-1")
-            sUrl = str(aEntry[2])
-            
-            #Si recherche et trop de resultat, on nettoye
-            if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
-                    continue
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb )
-
-            oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
-                
-        cConfig().finishDialog(dialog)
-           
-        sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
-
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -239,7 +167,6 @@ def __checkForNextPage(sHtmlContent):
 
 def showLinks():
     oGui = cGui()
-	
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
@@ -248,17 +175,17 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
-    
+
     sDesc = ''
     try:
-        sPattern = '<p><strong>Synopsis<\/strong.+?: *(.+?)<\/p>'
+        sPattern = '<p>(.+?)<\/p>.+?<div class'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             sDesc = aResult[1][0]
+            sDesc = re.sub('<[^<]+?>', '', sDesc)
     except:
         pass
        
-
     sPattern = '<form action="#playfilm" method="post">.+?<span>([^<>]+)</span>.+?<input name="levideo" value="([^"]+)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
