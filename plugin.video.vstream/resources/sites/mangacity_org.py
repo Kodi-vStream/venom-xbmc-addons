@@ -34,6 +34,7 @@ ANIM_VFS = (URL_MAIN + 'listing_vf.php', 'ShowAlpha2')
 ANIM_VOSTFRS = (URL_MAIN + 'listing_vostfr.php', 'ShowAlpha2')
 ANIM_GENRES = (URL_MAIN + 'animes.php?liste=' + RandomKey , 'showGenres')
 
+URL_SEARCH_SERIES = ('', 'showMovies')
 URL_SEARCH = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
