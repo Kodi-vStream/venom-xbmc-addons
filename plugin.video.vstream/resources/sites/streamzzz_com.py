@@ -9,6 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
+import re
 
 SITE_IDENTIFIER = 'streamzzz_com'
 SITE_NAME = 'Streamzzz'
@@ -23,6 +24,7 @@ FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'movies/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'movies/', 'showMovies')
+MOVIE_GENRES = (True, 'showGenres')
 
 SERIE_NEWS = (URL_MAIN + 'episodes/', 'showMovies')
 SERIE_SERIES = (URL_MAIN + 'series/', 'showMovies')
@@ -131,12 +133,12 @@ def showList():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
-    oRequestHandler = cRequestHandler(SERIE_LIST[0])
     dAZ = oInputParameterHandler.getValue('dAZ')
+    oRequestHandler = cRequestHandler(SERIE_LIST[0])
     sHtmlContent = oRequestHandler.request()
 
     #Decoupage pour cibler une partie Film
-    sPattern = '<span style="color: red;">' + dAZ + '<(.+?)<span style="color: red;">'
+    sPattern = '<span style="color: red;">' + dAZ + '<(.+?)<(span style="color: red;">|/tbody>)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     #regex pour listage films sur la partie decoupée
@@ -156,7 +158,7 @@ def showList():
                 break
 
             sUrl = aEntry[0]
-            sTitle = str(aEntry[1]).decode("unicode_escape").encode("latin-1").replace('&#8217;', '\'').replace('&#8212;', '-')
+            sTitle = str(aEntry[1]).decode("unicode_escape").encode("latin-1")#.replace('&#8217;', '\'').replace('&#8212;', '-')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -257,7 +259,7 @@ def showSerieSaisons():
                 break
 
             sUrl2 = str(aEntry[1])
-            #a voir
+        #a voir
             if 'x' in aEntry[0]:
                 sSXXEXX = str(aEntry[0]).replace(' ', '').split('x')
             else:
