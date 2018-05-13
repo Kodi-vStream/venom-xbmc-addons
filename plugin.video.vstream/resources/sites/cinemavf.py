@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'cinemavf'
 SITE_NAME = 'CinemaVF'
 SITE_DESC = 'Films, Séries & Mangas en streaming.'
 
-URL_MAIN = 'http://filmstreamin.ws/'
+URL_MAIN = 'http://filmstreamin.cc/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -236,7 +236,7 @@ def showMovies(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -336,15 +336,30 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
 
     #cConfig().log(str(sUrl))
 
     #probleme de redirection non finalisée sur leur site
     sUrl = oRequestHandler.getRealUrl()
 
+    try:#récupération des Synopsis
+        sDesc = ''
+        if '/serie/' in sUrl:
+            sPattern = '<p>.+?<p>(.+?)<\/p>'
+        elif '/mangas/' in sUrl:
+            sPattern = '<br />(.+?)<\/p>'
+        else:
+            sPattern = '<strong>Histoire du film.+?<p>(.+?)<\/p>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0]
+            sDesc = sDesc.replace('<br />', ' ').replace('\\', '').replace('&#8230;', '...')
+    except:
+        pass
+
     sPattern = '<div class="langue.*?">.*?<span>(.*?)<\/span>|<a onclick=".+?">\s*([^<>]+)\s*<\/a>\s*<input name="levideo" value="([^"]+)"'
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -358,17 +373,17 @@ def showLinks():
             if (aEntry[0]):
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]).upper() + '[/COLOR]')
             else:
-                sHost = str(aEntry[1]).strip()
+                sHost = str(aEntry[1]).strip().capitalize()
                 sHost = sHost.replace('.to', '').replace('.com', '').replace('.me', '').replace('.ec', '').replace('.co', '').replace('.eu', '').replace('.sx', '').replace('.net', '')
                 sPost = str(aEntry[2])
-                sTitle = ('%s (%s)') % (sMovieTitle, sHost)
+                sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sPost', sPost)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -381,7 +396,7 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sPost = oInputParameterHandler.getValue('sPost')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.setRequestType(1)
     oRequestHandler.addParameters('levideo', sPost)
@@ -404,9 +419,9 @@ def showHosters():
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 tmp = oRequestHandler.request()
                 sHosterUrl = oRequestHandler.getRealUrl()
-            
-            cConfig().log(str(sHosterUrl))
-            
+
+            #cConfig().log(str(sHosterUrl))
+
             if sHosterUrl.startswith('/'):
                 sHosterUrl = 'http:' + sHosterUrl
             oHoster = cHosterGui().checkHoster(sHosterUrl)
