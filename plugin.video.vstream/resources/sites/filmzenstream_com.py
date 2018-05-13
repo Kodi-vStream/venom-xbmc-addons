@@ -9,7 +9,7 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.sucuri import SucurieBypass
-import re,urllib
+import re, urllib
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'filmzenstream_com'
 SITE_NAME = 'Filmzenstream'
 SITE_DESC = 'Film streaming HD gratuit complet'
 
-URL_MAIN = 'https://filmzenstream.tv/'
+URL_MAIN = 'https://filmzenstream.to/'
 
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_MOVIE = (URL_MAIN , 'showMovies')
@@ -25,7 +25,6 @@ MOVIE_GENRES = (True, 'showGenres')
 #MOVIE_ANNEES = (True, 'showYears')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 
 def load():
@@ -64,28 +63,28 @@ def showGenres():
 
     liste = []
     #ne pas modifier les urls elles sont ecrits ainsi sur le site
-    liste.append( ['Action/Aventure',URL_MAIN + 'action/'] )
-    liste.append( ['Animation',URL_MAIN + 'animation/'] )
-    liste.append( ['Aventure',URL_MAIN + 'aventure/'] )
-    liste.append( ['Comédie',URL_MAIN + 'comediee/'] )
-    liste.append( ['Crime',URL_MAIN + 'crime/'] )
-    liste.append( ['Documentaire',URL_MAIN + 'documentaire/'] )
-    liste.append( ['Drame',URL_MAIN + 'drame/'] )
-    liste.append( ['Etranger',URL_MAIN + 'etranger/'] )
-    liste.append( ['Famille',URL_MAIN + 'familial/'] )
-    liste.append( ['Fantastique',URL_MAIN + 'fantastiquee/'] )
-    liste.append( ['Guerre',URL_MAIN + 'guerre/'] )
-    liste.append( ['Histoire',URL_MAIN + 'histoire/'] )
-    liste.append( ['Horreur',URL_MAIN + 'horreurr/'] )
-    liste.append( ['Musique',URL_MAIN + 'musique/'] )
-    liste.append( ['Mystère',URL_MAIN + 'mystere/'] )
-    liste.append( ['Romance',URL_MAIN + 'romance/'] )
-    liste.append( ['Science-fiction',URL_MAIN + 'science-fiction/'] )
-    liste.append( ['Téléfilm',URL_MAIN + 'telefilm/'] )
-    liste.append( ['Thriller',URL_MAIN + 'thrillerr/'] )
-    liste.append( ['Western',URL_MAIN + 'westernn/'] )
+    liste.append( ['Action/Aventure', URL_MAIN + 'action/'] )
+    liste.append( ['Animation', URL_MAIN + 'animation/'] )
+    liste.append( ['Aventure', URL_MAIN + 'aventure/'] )
+    liste.append( ['Comédie', URL_MAIN + 'comediee/'] )
+    liste.append( ['Crime', URL_MAIN + 'crime/'] )
+    liste.append( ['Documentaire', URL_MAIN + 'documentaire/'] )
+    liste.append( ['Drame', URL_MAIN + 'drame/'] )
+    liste.append( ['Etranger', URL_MAIN + 'etranger/'] )
+    liste.append( ['Famille', URL_MAIN + 'familial/'] )
+    liste.append( ['Fantastique', URL_MAIN + 'fantastiquee/'] )
+    liste.append( ['Guerre', URL_MAIN + 'guerre/'] )
+    liste.append( ['Histoire', URL_MAIN + 'histoire/'] )
+    liste.append( ['Horreur', URL_MAIN + 'horreurr/'] )
+    liste.append( ['Musique', URL_MAIN + 'musique/'] )
+    liste.append( ['Mystère', URL_MAIN + 'mystere/'] )
+    liste.append( ['Romance', URL_MAIN + 'romance/'] )
+    liste.append( ['Science-fiction', URL_MAIN + 'science-fiction/'] )
+    liste.append( ['Téléfilm', URL_MAIN + 'telefilm/'] )
+    liste.append( ['Thriller', URL_MAIN + 'thrillerr/'] )
+    liste.append( ['Western', URL_MAIN + 'westernn/'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -121,7 +120,7 @@ def showYears():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-        sUrl = sSearch.replace(' ','+')
+        sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -220,7 +219,7 @@ def showHosters():
                     oRequestHandler = cRequestHandler('https:' + str(aEntry))
                 else:
                     oRequestHandler = cRequestHandler(str(aEntry))
-                    
+
                 sHtmlContent = oRequestHandler.request()
                 sPattern = '<iframe.+?src="(.+?)"'
                 aResult = oParser.parse(sHtmlContent, sPattern)
