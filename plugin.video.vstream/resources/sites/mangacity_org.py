@@ -380,11 +380,11 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', sPicture)
 
             if '?manga=' in aEntry[2]:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, sPicture, sPicture, 'animes.png', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', sPicture, 'animes.png', oOutputParameterHandler)
             elif '?serie=' in aEntry[2]:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, sPicture, sPicture, 'series.png', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', sPicture, 'series.png', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sPicture, sPicture, 'films.png', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sPicture, 'films.png', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -471,7 +471,7 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()

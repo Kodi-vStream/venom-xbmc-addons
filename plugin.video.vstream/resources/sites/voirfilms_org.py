@@ -388,7 +388,7 @@ def showHosters():
 
             sDisplayTitle = cUtil().DecoTitle(sTitle)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle , sThumb, sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle , '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -440,9 +440,9 @@ def serieHosters():
             sDisplayTitle = cUtil().DecoTitle(sTitle)
 
             if '-episode-' in aEntry[0] or '/anime' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, sThumb, sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 

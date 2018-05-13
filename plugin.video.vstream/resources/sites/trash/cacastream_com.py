@@ -275,9 +275,9 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
             
             if ('-episode-' in sUrl2):
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, sThumb, sThumb, sCom, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, sCom, oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showListHosters', sTitle, sThumb, sThumb, sCom, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showListHosters', sTitle, '', sThumb, sCom, oOutputParameterHandler)
 
  
         cConfig().finishDialog(dialog)
@@ -374,14 +374,14 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
 
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]'+ aEntry[0] +'[/COLOR]', sThumbnail, sThumbnail, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]'+ aEntry[0] +'[/COLOR]', '', sThumbnail, '', oOutputParameterHandler)
             else:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN) + '/' + aEntry[1])
                 oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
                 oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
-                oGui.addTV(SITE_IDENTIFIER, 'showListHosters', sTitle,sThumbnail, sThumbnail, sCom, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showListHosters', sTitle, '', sThumbnail, sCom, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
             
@@ -437,7 +437,7 @@ def showListHosters():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
 
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', '[COLOR red]['+ sHost +'][/COLOR] ' + sTitle,sThumbnail, sThumbnail, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', '[COLOR red]['+ sHost +'][/COLOR] ' + sTitle, '', sThumbnail, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)#dialog
             
