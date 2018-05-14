@@ -295,57 +295,57 @@ def showGenres(basePath):
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action',URL_MAIN + 'telechargement+5/' + basePath] )
-    liste.append( ['Animation',URL_MAIN + 'telechargement+4/' + basePath] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'telechargement+64/' + basePath] )
-    liste.append( ['Aventure',URL_MAIN + 'telechargement+20/' + basePath] )
-    liste.append( ['Biographie',URL_MAIN + 'telechargement+38/' + basePath] )
-    liste.append( ['Biopic',URL_MAIN + 'telechargement+28/' + basePath] )
-    liste.append( ['Combat',URL_MAIN + 'telechargement+35/' + basePath] )
-    liste.append( ['Comédie',URL_MAIN + 'telechargement+1/' + basePath] )
-    liste.append( ['Comédie dramatique',URL_MAIN + 'telechargement+12/' + basePath] )
-    liste.append( ['Comédie musicale',URL_MAIN + 'telechargement+33/' + basePath] )
-    liste.append( ['Comédie romantique',URL_MAIN + 'telechargement+53/' + basePath] )
-    liste.append( ['Comique',URL_MAIN + 'telechargement+51/' + basePath] )
-    liste.append( ['Court métrage',URL_MAIN + 'telechargement+45/' + basePath] )
-    liste.append( ['Criminalité',URL_MAIN + 'telechargement+40/' + basePath] )
-    liste.append( ['Dessin animé',URL_MAIN + 'telechargement+27/' + basePath] )
-    liste.append( ['Divers',URL_MAIN + 'telechargement+34/' + basePath] )
-    liste.append( ['Divertissement',URL_MAIN + 'telechargement+66/' + basePath] )
-    liste.append( ['Documentaire',URL_MAIN + 'telechargement+9/' + basePath] )
-    liste.append( ['Drame',URL_MAIN + 'telechargement+3/' + basePath] )
-    liste.append( ['Epouvante',URL_MAIN + 'telechargement+41/' + basePath] )
-    liste.append( ['Epouvante-horreur',URL_MAIN + 'telechargement+17/' + basePath] )
-    liste.append( ['Erotique',URL_MAIN + 'telechargement+24/' + basePath] )
-    liste.append( ['Espionnage',URL_MAIN + 'telechargement+13/' + basePath] )
-    liste.append( ['Famille',URL_MAIN + 'telechargement+31/' + basePath] )
-    liste.append( ['Fantastique',URL_MAIN + 'telechargement+16/' + basePath] )
-    liste.append( ['Football',URL_MAIN + 'telechargement+32/' + basePath] )
-    liste.append( ['Guerre',URL_MAIN + 'telechargement+22/' + basePath] )
-    liste.append( ['Historique',URL_MAIN + 'telechargement+21/' + basePath] )
-    liste.append( ['Horreur',URL_MAIN + 'telechargement+15/' + basePath] )
-    liste.append( ['Humour',URL_MAIN + 'telechargement+44/' + basePath] )
-    liste.append( ['Jeunesse',URL_MAIN + 'telechargement+19/' + basePath] )
-    liste.append( ['Judiciaire',URL_MAIN + 'telechargement+67/' + basePath] )
-    liste.append( ['Karaté',URL_MAIN + 'telechargement+23/' + basePath] )
-    liste.append( ['Manga',URL_MAIN + 'telechargement+58/' + basePath] )
-    liste.append( ['Médical',URL_MAIN + 'telechargement+47/' + basePath] )
-    liste.append( ['Musical',URL_MAIN + 'telechargement+10/' + basePath] )
-    liste.append( ['Mystère',URL_MAIN + 'telechargement+26/' + basePath] )
-    liste.append( ['Péplum',URL_MAIN + 'telechargement+54/' + basePath] )
-    liste.append( ['Policier',URL_MAIN + 'telechargement+2/' + basePath] )
-    liste.append( ['Reportage',URL_MAIN + 'telechargement+57/' + basePath] )
-    liste.append( ['Romance',URL_MAIN + 'telechargement+6/' + basePath] )
-    liste.append( ['Science fiction',URL_MAIN + 'telechargement+7/' + basePath] )
-    liste.append( ['Sketches',URL_MAIN + 'telechargement+14/' + basePath] )
-    liste.append( ['Spectacle',URL_MAIN + 'telechargement+39/' + basePath] )
-    liste.append( ['Sport',URL_MAIN + 'telechargement+68/' + basePath] )
-    liste.append( ['Suspense',URL_MAIN + 'telechargement+42/' + basePath] )
-    liste.append( ['Téléréalité',URL_MAIN + 'telechargement+18/' + basePath] )
-    liste.append( ['Thriller',URL_MAIN + 'telechargement+8/' + basePath] )
-    liste.append( ['Western',URL_MAIN + 'telechargement+11/' + basePath] )
+    liste.append( ['Action', URL_MAIN + 'telechargement+5/' + basePath] )
+    liste.append( ['Animation', URL_MAIN + 'telechargement+4/' + basePath] )
+    liste.append( ['Arts Martiaux', URL_MAIN + 'telechargement+64/' + basePath] )
+    liste.append( ['Aventure', URL_MAIN + 'telechargement+20/' + basePath] )
+    liste.append( ['Biographie', URL_MAIN + 'telechargement+38/' + basePath] )
+    liste.append( ['Biopic', URL_MAIN + 'telechargement+28/' + basePath] )
+    liste.append( ['Combat', URL_MAIN + 'telechargement+35/' + basePath] )
+    liste.append( ['Comédie', URL_MAIN + 'telechargement+1/' + basePath] )
+    liste.append( ['Comédie dramatique', URL_MAIN + 'telechargement+12/' + basePath] )
+    liste.append( ['Comédie musicale', URL_MAIN + 'telechargement+33/' + basePath] )
+    liste.append( ['Comédie romantique', URL_MAIN + 'telechargement+53/' + basePath] )
+    liste.append( ['Comique', URL_MAIN + 'telechargement+51/' + basePath] )
+    liste.append( ['Court métrage', URL_MAIN + 'telechargement+45/' + basePath] )
+    liste.append( ['Criminalité', URL_MAIN + 'telechargement+40/' + basePath] )
+    liste.append( ['Dessin animé', URL_MAIN + 'telechargement+27/' + basePath] )
+    liste.append( ['Divers', URL_MAIN + 'telechargement+34/' + basePath] )
+    liste.append( ['Divertissement', URL_MAIN + 'telechargement+66/' + basePath] )
+    liste.append( ['Documentaire', URL_MAIN + 'telechargement+9/' + basePath] )
+    liste.append( ['Drame', URL_MAIN + 'telechargement+3/' + basePath] )
+    liste.append( ['Epouvante', URL_MAIN + 'telechargement+41/' + basePath] )
+    liste.append( ['Epouvante-horreur', URL_MAIN + 'telechargement+17/' + basePath] )
+    liste.append( ['Erotique', URL_MAIN + 'telechargement+24/' + basePath] )
+    liste.append( ['Espionnage', URL_MAIN + 'telechargement+13/' + basePath] )
+    liste.append( ['Famille', URL_MAIN + 'telechargement+31/' + basePath] )
+    liste.append( ['Fantastique', URL_MAIN + 'telechargement+16/' + basePath] )
+    liste.append( ['Football', URL_MAIN + 'telechargement+32/' + basePath] )
+    liste.append( ['Guerre', URL_MAIN + 'telechargement+22/' + basePath] )
+    liste.append( ['Historique', URL_MAIN + 'telechargement+21/' + basePath] )
+    liste.append( ['Horreur', URL_MAIN + 'telechargement+15/' + basePath] )
+    liste.append( ['Humour', URL_MAIN + 'telechargement+44/' + basePath] )
+    liste.append( ['Jeunesse', URL_MAIN + 'telechargement+19/' + basePath] )
+    liste.append( ['Judiciaire', URL_MAIN + 'telechargement+67/' + basePath] )
+    liste.append( ['Karaté', URL_MAIN + 'telechargement+23/' + basePath] )
+    liste.append( ['Manga', URL_MAIN + 'telechargement+58/' + basePath] )
+    liste.append( ['Médical', URL_MAIN + 'telechargement+47/' + basePath] )
+    liste.append( ['Musical', URL_MAIN + 'telechargement+10/' + basePath] )
+    liste.append( ['Mystère', URL_MAIN + 'telechargement+26/' + basePath] )
+    liste.append( ['Péplum', URL_MAIN + 'telechargement+54/' + basePath] )
+    liste.append( ['Policier', URL_MAIN + 'telechargement+2/' + basePath] )
+    liste.append( ['Reportage', URL_MAIN + 'telechargement+57/' + basePath] )
+    liste.append( ['Romance', URL_MAIN + 'telechargement+6/' + basePath] )
+    liste.append( ['Science fiction', URL_MAIN + 'telechargement+7/' + basePath] )
+    liste.append( ['Sketches', URL_MAIN + 'telechargement+14/' + basePath] )
+    liste.append( ['Spectacle', URL_MAIN + 'telechargement+39/' + basePath] )
+    liste.append( ['Sport', URL_MAIN + 'telechargement+68/' + basePath] )
+    liste.append( ['Suspense', URL_MAIN + 'telechargement+42/' + basePath] )
+    liste.append( ['Téléréalité', URL_MAIN + 'telechargement+18/' + basePath] )
+    liste.append( ['Thriller', URL_MAIN + 'telechargement+8/' + basePath] )
+    liste.append( ['Western', URL_MAIN + 'telechargement+11/' + basePath] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -407,11 +407,16 @@ def showMovies(sSearch = ''):
     #print aResult
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
             sUrl2 = aEntry[0]
             if ('-films-' in sUrl2) or ('-series-' in sUrl2):
                 sQual = '(SD)'
@@ -492,7 +497,7 @@ def showMoviesReleases():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sUrl = sUrl.replace('.html','')
+    sUrl = sUrl.replace('.html', '')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -513,6 +518,9 @@ def showMoviesReleases():
     #oGui.addText(SITE_IDENTIFIER,sMovieTitle)
     #oGui.addText2(SITE_IDENTIFIER,'[COLOR olive]Releases disponibles pour ce film :[/COLOR]')
 
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -520,12 +528,13 @@ def showMoviesReleases():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
+
             if ('rapidgator' not in aEntry[1]) and ('turbobit' not in aEntry[1]) and ('uploaded' not in aEntry[1]) and ('uptobox' not in aEntry[1]):
                 #sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR]'
                 sTitle = str(aEntry[1])
 
-                sTitle = sTitle.decode("iso-8859-1",'ignore')
-                sTitle = sTitle.encode("utf-8",'ignore')
+                sTitle = sTitle.decode("iso-8859-1", 'ignore')
+                sTitle = sTitle.encode("utf-8", 'ignore')
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
@@ -557,6 +566,9 @@ def showSaisons():
     sPattern = "<li><a[^<>]+Saison[^<>]+?href='([^']+)'>([^<>]+)<\/a><\/li>"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -583,7 +595,7 @@ def showSeriesReleases():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sUrl = sUrl.replace('.html','')
+    sUrl = sUrl.replace('.html', '')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -605,8 +617,8 @@ def showSeriesReleases():
     #print aResult
 
     #Affichage du menu
-    oGui.addText(SITE_IDENTIFIER,sMovieTitle)
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Episodes disponibles :[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER, sMovieTitle)
+    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Episodes disponibles :[/COLOR]')
 
     #Affichage des autres saisons
     oOutputParameterHandler = cOutputParameterHandler()
@@ -614,7 +626,7 @@ def showSeriesReleases():
     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
     oOutputParameterHandler.addParameter('sThumb', sThumb)
     oOutputParameterHandler.addParameter('sDesc', sDesc)
-    oGui.addMisc(SITE_IDENTIFIER, 'showSaisons', "[COLOR olive]Autres saisons >[/COLOR]", '', sThumb, '',oOutputParameterHandler)
+    oGui.addMisc(SITE_IDENTIFIER, 'showSaisons', "[COLOR olive]Autres saisons >[/COLOR]", '', sThumb, '', oOutputParameterHandler)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -623,6 +635,7 @@ def showSeriesReleases():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
+
             if ('rapidgator' not in aEntry[1]) and ('turbobit' not in aEntry[1]) and ('uploaded' not in aEntry[1]) and ('uptobox' not in aEntry[1]) :
                 sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR]'
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -643,7 +656,7 @@ def showHosters():
     sThumb=oInputParameterHandler.getValue('sThumb')
 
     #print sUrl
-    sUrl = sUrl.replace(' & ','+%26+').replace(' ','+')
+    sUrl = sUrl.replace(' & ', '+%26+').replace(' ', '+')
     #print sUrl
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -656,7 +669,6 @@ def showHosters():
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
-
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
@@ -776,7 +788,7 @@ def DecryptddlProtect(url):
 
         #print sHtmlContent
         if 'Erreur : Le code n\'est pas valide' in sHtmlContent:
-            cConfig().showInfo("Erreur", 'Mauvais Captcha' , 5)
+            cConfig().showInfo("Erreur", 'Mauvais Captcha', 5)
             return 'rate'
 
         #si captcha reussi
@@ -802,7 +814,7 @@ def get_response(img, cookie):
         }
 
     try:
-        req = urllib2.Request(img,None,headers2)
+        req = urllib2.Request(img, None, headers2)
         image_on_web = urllib2.urlopen(req)
         if image_on_web.headers.maintype == 'image':
             buf = image_on_web.read()
@@ -882,7 +894,7 @@ def get_response(img, cookie):
 
             solution = xbmcgui.Window(10101).getProperty('captcha')
             if solution == '':
-                cConfig().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
+                cConfig().showInfo("Erreur", 'Vous devez taper le captcha', 4)
 
     else:
         #ancien Captcha
@@ -897,9 +909,9 @@ def get_response(img, cookie):
             if (kb.isConfirmed()):
                 solution = kb.getText()
                 if solution == '':
-                    cConfig().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
+                    cConfig().showInfo("Erreur", 'Vous devez taper le captcha', 4)
             else:
-                cConfig().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
+                cConfig().showInfo("Erreur", 'Vous devez taper le captcha', 4)
         finally:
             wdlg.removeControl(img)
             wdlg.close()
