@@ -6,6 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
+from resources.lib.config import cConfig
 import re
 
 SITE_IDENTIFIER = 'disneyhd_tk'
@@ -78,10 +79,16 @@ def sHowResultSearch(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-	oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
             sUrl = URL_MAIN + aEntry[0]
             sThumb = URL_MAIN + aEntry[1]
             sTitle = aEntry[2]
@@ -117,8 +124,17 @@ def showMovies():
         aResult = oParser.parse(sHtmlContent, sPattern1)
         aResult[1].sort()
 
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
             sUrl = URL_MAIN + aEntry[0]
             sThumb = URL_MAIN + aEntry[1]
             sTitle = aEntry[2].replace('streaming', '')
@@ -145,8 +161,17 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
             sHosterUrl = str(aEntry)
             if '/mp4/' in sHosterUrl and not 'http' in sHosterUrl:
                 sHosterUrl = 'http://disneyhd.tk%s' % sHosterUrl
