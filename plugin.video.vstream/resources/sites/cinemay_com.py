@@ -19,8 +19,8 @@ SITE_DESC = 'Films & Séries en streaming'
 
 URL_MAIN = 'http://streaming.cinemay.com/'
 
-MOVIE_NEWS = (URL_MAIN + 'film-en-streaming-2018-uthgnx/', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming-2018-uthgnx/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film-en-streaming-2018/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming-2018/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
 SERIE_NEWS = (URL_MAIN ,'showSeriesNews')
@@ -294,6 +294,7 @@ def showLinks():
 
     sPattern = 'var movie.+?id.+?"(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         MovieUrl = URL_MAIN + 'playery/?id=' + aResult[1][0]
 
@@ -407,22 +408,22 @@ def decode_js(k, i, s, e):
     secondtab = []
     while True :
         if varinc < 5:
-            secondtab.append(k[varinc]);
+            secondtab.append(k[varinc])
         elif varinc < len(k):
-            firsttab.append(k[varinc]);
+            firsttab.append(k[varinc])
         varinc = varinc + 1
         if incerement2 < 5: 
-            secondtab.append(i[incerement2]);
+            secondtab.append(i[incerement2])
         elif incerement2 < len(i): 
-            firsttab.append(i[incerement2]);
+            firsttab.append(i[incerement2])
         incerement2 = incerement2 + 1
         if finalincr < 5: 
-            secondtab.append(s[finalincr]);
+            secondtab.append(s[finalincr])
         elif finalincr < len(s): 
-            firsttab.append(s[finalincr]);
+            firsttab.append(s[finalincr])
         finalincr = finalincr + 1
         if (len(k) + len(i) + len(s) + len(e)) == (len(firsttab) + len(secondtab) + len(e)):
-            break;
+            break
 
     firststr = ''.join(firsttab)
     secondstr = ''.join(secondtab)
