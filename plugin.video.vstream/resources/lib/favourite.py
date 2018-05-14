@@ -126,6 +126,8 @@ class cFav:
                 oOutputParameterHandler.addParameter('sMovieTitle', title)
                 oOutputParameterHandler.addParameter('searchtext', title)
                 oOutputParameterHandler.addParameter('sThumbnail', thumbnail)
+                #Dans ajouter source c'est bien sThumb donc...
+                oOutputParameterHandler.addParameter('sThumb', thumbnail)
 
                 if (function == 'play'):
                     oHoster = cHosterGui().checkHoster(siteurl)

@@ -39,7 +39,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste AZ)', 'series_az.png',oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste)', 'series_az.png',oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
@@ -59,42 +59,46 @@ def showSearch():
 
 def showAlpha():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
     oParser = cParser()
+    oRequestHandler = cRequestHandler(SERIE_LIST[0])
+    sHtmlContent = oRequestHandler.request()
 
     sPattern = '<font color="red".+?>(.+?)<\/font>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sLetter = str(aEntry).replace('=', '')
             dAZ = str(aEntry)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('AZ', dAZ)
-            oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Lettre [COLOR coral]' + sLetter + '[/COLOR]', 'series_az.png', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('dAZ', dAZ)
+            oGui.addDir(SITE_IDENTIFIER, 'showList', 'Lettre [COLOR coral]' + sLetter + '[/COLOR]', 'series_az.png', oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
 
-def showAZ():
+def showList():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
-    oRequestHandler = cRequestHandler(URL_MAIN + 'liste-de-series/')
-    dAZ = oInputParameterHandler.getValue('AZ')
+    oRequestHandler = cRequestHandler(SERIE_LIST[0])
+    dAZ = oInputParameterHandler.getValue('dAZ')
     sHtmlContent = oRequestHandler.request()
     
-    oParser = cParser()
     #Decoupage pour cibler la partie selectionnée
     sPattern = '<font color="red".+?>' + dAZ + '</font>(.+?)<p><strong>'
-	
     aResult = oParser.parse(sHtmlContent, sPattern)
 	
     #regex pour listage series sur la partie decoupée
     sPattern = '<a href="([^"]+)".+?>(.+?)<\/a>'
-    
     aResult = oParser.parse(aResult, sPattern)
     
     if (aResult[0] == False):

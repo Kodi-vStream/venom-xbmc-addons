@@ -1,12 +1,14 @@
 #-*- coding: utf8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#https://thevideo.cc/embed-xxx.html
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
-from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-import urllib, urllib2, re
-
 from resources.lib.packer import cPacker
+import xbmcgui
+
+
+#UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 class cHoster(iHoster):
 
@@ -43,9 +45,15 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
+        return ''
         
-    def __getIdFromUrl(self, sUrl):
+    def __getIdFromhtml(self, html):
+        sPattern = "var thief='([^']+)';"
+        oParser = cParser()
+        aResult = oParser.parse(html, sPattern)
+        if (aResult[0] == True):
+            return aResult[1][0]
+
         return ''
 
     def setUrl(self, sUrl):
@@ -61,34 +69,54 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self): 
-                    
+  
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
         oParser = cParser()
-              
-        #Dean Edwards Packer
-        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
-        aResult = oParser.parse(sHtmlContent, sPattern)
+
+        api_call = ''
+        
+        sId = self.__getIdFromhtml(sHtmlContent)
+        if sId == '':
+            return False,False
+            
+        oRequest = cRequestHandler('https://thevideo.cc/vsign/player/' + sId)
+        sHtmlContent2 = oRequest.request()
+        sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?\)\))"
+        aResult = oParser.parse(sHtmlContent2, sPattern)
         if (aResult[0] == True):
             sUnpacked = cPacker().unpack(aResult[1][0])
-        
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sUnpacked)
-        #fh.close()
-        
-        if (sUnpacked):
-
-            sPattern ='var vurl2 *= *"([^"]+?)";'
+            sPattern = 'vt=([^"]+)";'
             aResult = oParser.parse(sUnpacked, sPattern)
-            
-            #print aResult
-            
             if (aResult[0] == True):
-                return True , aResult[1][0]
+                sVt =  aResult[1][0]
         
-        cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
+        sPattern = '"file":"([^"]+)","label":"([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            #initialisation des tableaux
+            url=[]
+            qua=[]
         
+            #Remplissage des tableaux
+            for i in aResult[1]:
+                url.append(str(i[0]))
+                qua.append(str(i[1]))
+                
+            #Si une seule url
+            if len(url) == 1:
+                api_call = url[0]
+            #si plus de une
+            elif len(url) > 1:
+            #Affichage du tableau
+                dialog2 = xbmcgui.Dialog()
+                ret = dialog2.select('Select Quality', qua)
+                if (ret > -1):
+                    api_call = url[ret]
+        
+        if (api_call):
+            return True, api_call + '?direct=false&ua=1&vt=' + sVt 
+            
         return False, False
         
         

@@ -20,20 +20,22 @@ SITE_IDENTIFIER = 'zonestreaming'
 SITE_NAME = 'Zone Streaming'
 SITE_DESC = 'NC'
 
-URL_MAIN = 'http://zonestreaming.ws/'
+URL_MAIN = 'http://voirfilms.cool/'
 
-MOVIE_NEWS = (URL_MAIN + 'category/films-streaming/', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'category/films-streaming/', 'showMovies')
-MOVIE_VOSTFR = (URL_MAIN + 'category/films-streaming/vostfr-films/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'category/films/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'category/films/', 'showMovies')
+MOVIE_VOSTFR = (URL_MAIN + 'category/films/vostfr-films/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'category/films-en-exclus/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
-SERIE_SERIES = (URL_MAIN + 'category/series-streaming/', 'showMovies')
-SERIE_VFS = (URL_MAIN + 'category/series-streaming/series-streaming-vf/', 'showMovies')
-SERIE_VOSTFRS = (URL_MAIN + 'category/series-streaming/series-streaming-vostfr/', 'showMovies')
-
+SERIE_SERIES = (URL_MAIN + 'category/series-tv/', 'showMovies')
+SERIE_VFS = (URL_MAIN + 'category/series-tv/series-streaming-vf/', 'showMovies')
+SERIE_VOSTFRS = (URL_MAIN + 'category/series-tv/series-streaming-vostfr/', 'showMovies')
+SERIE_VFQ = (URL_MAIN + 'category/series-tv/vfq/', 'showMovies')
+SERIE_LIST = (URL_MAIN + 'category/series-tv/', 'showAZ')
 
 REPLAYTV_NEWS = (URL_MAIN + 'category/emissions-tv/', 'showMovies')
+REPLAYTV_TELE = (URL_MAIN + 'category/emissions-tv/telerealite/', 'showMovies')
 REPLAYTV_REPLAYTV = ('http://', 'load')
 
 DOC_NEWS = (URL_MAIN + 'category/documentaire/', 'showMovies')
@@ -99,12 +101,16 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF)', 'series_vf.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VFQ[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VFQ[1], 'Séries (VFQ)', 'series_vf.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries (VOSTFR)', 'series_vostfr.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Séries (A-Z)', 'series_az.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (A-Z)', 'series_az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
@@ -198,7 +204,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     sHtmlContent = sHtmlContent.replace(' [Streaming]', '').replace(' [Streaming', '').replace(' [Telecharger]', '').replace(' [Téléchargement]', '').replace(' [Telechargement]', '')
-    sPattern = '<article class="latestPost.+?<a href="([^"]+)" title="(.+?)".+?<img.+?src="(.+?)"'
+    sPattern = '<article class="latestPost.+?<a href="([^"]+)" title="([^"]+)".+?src="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -218,16 +224,17 @@ def showMovies(sSearch = ''):
             #sTitle = unescape(str(sTitle))
             #sTitle = sTitle.encode( "utf-8")
 
-            sTitle = aEntry[1]
+            sUrl2 = str(aEntry[0])
+            sTitle = str(aEntry[1]).replace('&#8217;', '\'').replace('&prime;', '\'')
             sThumb = str(aEntry[2])
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             #Mange et Series fonctionnent pareil
-            if '/series-streaming/' in sUrl or 'saison' in aEntry[0]:
+            if '/series-tv/' in sUrl or '-saison-' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
@@ -262,9 +269,11 @@ def showSeries():
     sHtmlContent = sHtmlContent.replace('<a href="http://www.multiup.org', '')
     sHtmlContent = sHtmlContent.replace('<iframe src="http://ads.affbuzzads.com', '')
     sHtmlContent = sHtmlContent.replace('<iframe src="//ads.ad-center.com', '')
+    #supprimme pour récuperer les new regex different
+    sHtmlContent = sHtmlContent.replace('<span style="color: #ff9900;">New</span>', '')
 
     #sPattern = '<span style="color: #33cccc;"><strong>([^<]+)|>(Episode[^<]{2,12})<(?!\/a>)(.+?)(?:<.p|<br|<.div)'
-    sPattern = '<span style="color: #33cccc;"><strong>([^<]+)|>(Episode[^<]{2,12})<(?!\/a>)(.{0,10}a href="http.+?)(?:<.p|<br|<.div)'
+    sPattern = '<span style="color: #33cccc; font-size: large;"><b>([^<]+)|>(Episode[^<]{2,12})<(?!\/a>)(.{0,10}a href="http.+?)(?:<.p|<br|<.div)'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -283,7 +292,7 @@ def showSeries():
                 break
 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]', 'series.png', oOutputParameterHandler)
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
             else:
                 sTitle = sMovieTitle + ' ' + aEntry[1]
 
@@ -299,7 +308,7 @@ def showSeries():
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class="next page-numbers" href="(.+?)">Suiv...</a>'
+    sPattern = '<link rel="next" href="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):

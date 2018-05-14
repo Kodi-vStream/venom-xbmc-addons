@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+#from resources.lib.util import cUtil
 import re, unicodedata, urllib2
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
@@ -17,15 +17,15 @@ SITE_IDENTIFIER = 'cinemay_com'
 SITE_NAME = 'Cinemay'
 SITE_DESC = 'Films & Séries en streaming'
 
-URL_MAIN = 'http://2018.cinemay.com/'
+URL_MAIN = 'http://streaming.cinemay.com/'
 
-MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film-en-streaming-2018/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming-2018/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
 SERIE_NEWS = (URL_MAIN ,'showSeriesNews')
 SERIE_SERIES = (URL_MAIN ,'showSeriesNews')
-SERIE_LIST = (URL_MAIN + 'series-tv-streaming/', 'showSeriesList')
+SERIE_LIST = (URL_MAIN + 'series-tv-streaming-vf/', 'showSeriesList')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -107,7 +107,7 @@ def showMovies(sSearch=''):
 
     oParser = cParser()
 
-    sPattern = '<a href="([^"]+)" data-url=".+?" class=".+?" title="(.+?)"><img.+?src="(.+?)"'
+    sPattern = '<a href="([^"]+)" data-url=".+?" class=".+?" title="([^"]+)"><img.+?src="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -123,7 +123,7 @@ def showMovies(sSearch=''):
             #encode/decode pour affichage des accents
             sTitle = unicode(aEntry[1], 'utf-8')
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode("unicode_escape")
-            sTitle = sTitle.encode("latin-1").replace('&#8230;', '...').replace('&#8217;', '\'')
+            sTitle = sTitle.encode("latin-1").replace('&#8230;', '...').replace('&#8217;', '\'').replace('&#8212;', '-')
 
             sThumb = aEntry[2]
             sUrl = aEntry[0]
@@ -192,6 +192,40 @@ def showSeriesNews():
 
     oGui.setEndOfDirectory()
     
+def showSeriesList():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    
+    sPattern = '<li class="alpha-title"><h3>([^"]+)</h3>|</li><li class="item-title">.+?href="([^"]+)">(.+?)</a>'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+                
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+            else:
+                sUrl = aEntry[1]
+                sTitle =  aEntry[2].replace('&lsquo;', '\'').replace('&#8230;', '...').replace('&#8212;', '-')
+            
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', '', '', oOutputParameterHandler)
+            
+        cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()
+    
 def showSeries():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -237,40 +271,6 @@ def showSeries():
 
     oGui.setEndOfDirectory()
 
-def showSeriesList():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    
-    sPattern = '<li class="alpha-title"><h3>([^"]+)</h3>|</li><li class="item-title">.+?href="([^"]+)">(.+?)</a>'
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-                
-            if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
-            else:
-                sUrl = aEntry[1]
-                sTitle =  aEntry[2].replace('&lsquo;', '\'').replace('&#8230;', '...').replace('&#8212;', '-')
-            
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', '', '', oOutputParameterHandler)
-            
-        cConfig().finishDialog(dialog)
-
-    oGui.setEndOfDirectory()
-    
 def showLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -294,6 +294,7 @@ def showLinks():
 
     sPattern = 'var movie.+?id.+?"(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         MovieUrl = URL_MAIN + 'playery/?id=' + aResult[1][0]
 
@@ -311,12 +312,14 @@ def showLinks():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHoster = aEntry[1].lower().replace(' ', '').replace('.com', '').replace('.co', '').replace('.io', '').replace('.tv', '')
-            sHoster = sHoster.replace('.to', '').replace('.me', '').replace('.la', '').replace('.sx', '').replace('.eu', '').replace('.ok.ru', 'ok.ru')
-            # sQual = aEntry[2].replace(' ', '')
+            sHost = aEntry[1].replace(' ', '').replace('.com', '').replace('.co', '').replace('.io', '').replace('.tv', '').replace('.ec', '')
+            sHost = sHost.replace('.to', '').replace('.me', '').replace('.la', '').replace('.sx', '').replace('.eu', '').replace('.ok.ru', 'ok.ru')
+            if 'nowvideo' in sHost:
+                continue
+            sHost = sHost.capitalize()
             sLang = aEntry[2].upper()
 
-            sTitle = ('%s [%s] (%s)') % (sMovieTitle, sLang, sHoster)
+            sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
 
             sUrl = URL_MAIN[:-1] + aEntry[0]
 
@@ -376,9 +379,9 @@ def showHosters():
         if (aResult[0] == True):
             sHosterUrl = aResult[1][0]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+            #sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
             if (oHoster != False):
-                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
                 
@@ -405,22 +408,22 @@ def decode_js(k, i, s, e):
     secondtab = []
     while True :
         if varinc < 5:
-            secondtab.append(k[varinc]);
+            secondtab.append(k[varinc])
         elif varinc < len(k):
-            firsttab.append(k[varinc]);
+            firsttab.append(k[varinc])
         varinc = varinc + 1
         if incerement2 < 5: 
-            secondtab.append(i[incerement2]);
+            secondtab.append(i[incerement2])
         elif incerement2 < len(i): 
-            firsttab.append(i[incerement2]);
+            firsttab.append(i[incerement2])
         incerement2 = incerement2 + 1
         if finalincr < 5: 
-            secondtab.append(s[finalincr]);
+            secondtab.append(s[finalincr])
         elif finalincr < len(s): 
-            firsttab.append(s[finalincr]);
+            firsttab.append(s[finalincr])
         finalincr = finalincr + 1
         if (len(k) + len(i) + len(s) + len(e)) == (len(firsttab) + len(secondtab) + len(e)):
-            break;
+            break
 
     firststr = ''.join(firsttab)
     secondstr = ''.join(secondtab)

@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'filmsvostfr_biz'
 SITE_NAME = 'Filmsvostfr'
 SITE_DESC = 'Films/Séries/Animés'
 
-URL_MAIN = 'http://filmsvostfr.ws/'
+URL_MAIN = 'http://filmsvostfr.io/'
 
 MOVIE_NEWS = (URL_MAIN + 'films-en-streaming', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films-en-streaming', 'showMovies')
@@ -224,6 +224,7 @@ def showMovies(sSearch = ''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
@@ -262,10 +263,7 @@ def showMovies(sSearch = ''):
         cConfig().finishDialog(dialog)
 
         if not sSearch:
-            if '/serie' in sUrl or  '/anime' in sUrl:
-                sNextPage = __checkForNextPage2(sHtmlContent)
-            else:
-                sNextPage = __checkForNextPage(sHtmlContent)
+            sNextPage = __checkForNextPage(sHtmlContent)
             if (sNextPage != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
@@ -275,20 +273,14 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = "<a href='([^<>']+?)' rel='nofollow' class=\"last\">suiv »<\/a>"
+    sPattern = "<div class=\"wp-pagenavi\">.+?</span><a href='([^<>']+?)'"
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        return URL_MAIN + aResult[1][0]
-
-    return False
-
-def __checkForNextPage2(sHtmlContent):
-    sPattern = "<span class=\"courante\">.+?<a href='(.+?)' rel='nofollow'>"
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        return aResult[1][0]
+        if aResult[1][0].startswith('http'):
+            return aResult[1][0]
+        else:
+            return URL_MAIN + aResult[1][0]
 
     return False
 
@@ -388,11 +380,10 @@ def showLinks():
             if sUrl.endswith('&c=') or '?p=0&c=' in sUrl: #vide ou redirection
                 continue
 
-            sHost = aEntry[1]
-            sQual = aEntry[2]
-            sLang = aEntry[3]
-            #sTitle = ('[COLOR coral]' + '[' + sLang + ']' + '[/COLOR]' + ' ' + sMovieTitle + ' ' + '(' + sHost + ')')
-            sTitle = '%s [%s/%s] (%s)' % (sMovieTitle, sLang, sQual, sHost)
+            sHost = str(aEntry[1]).capitalize()
+            sQual = str(aEntry[2])
+            sLang = str(aEntry[3])
+            sTitle = '%s [%s] (%s) [COLOR coral]%s[/COLOR]' % (sMovieTitle, sQual, sLang, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -435,7 +426,7 @@ def showHosters():
         if vUrl:
             sHosterUrl = vUrl.group(1)
             if 'vidto.' in sHosterUrl:
-                sHosterUrl = sHosterUrl.replace('vidto.','vidtodo.')
+                sHosterUrl = sHosterUrl.replace('vidto.', 'vidtodo.')
             elif 'uptobox' in sHosterUrl:
                 sHosterUrl = re.sub(r'(http://www\.filmsvostfr.+?/uptoboxlink\.php\?link=)', 'http://uptobox.com/', sHosterUrl)
             elif '1fichier' in sHosterUrl:

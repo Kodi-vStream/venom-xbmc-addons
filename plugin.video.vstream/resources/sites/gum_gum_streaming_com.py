@@ -175,7 +175,7 @@ def showEpisodes():
                         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                         oOutputParameterHandler.addParameter('sDesc', sDesc)
                         oOutputParameterHandler.addParameter('sThumb', sThumb)
-                        oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
+                        oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         else:
             sTitlePattern = '>• (.+?)</a>'
@@ -194,7 +194,7 @@ def showEpisodes():
                     oOutputParameterHandler.addParameter('sDesc', sDesc)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
                     # oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
-                    oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
+                    oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

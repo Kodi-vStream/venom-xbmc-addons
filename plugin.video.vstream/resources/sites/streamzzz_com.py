@@ -9,6 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
+import re
 
 SITE_IDENTIFIER = 'streamzzz_com'
 SITE_NAME = 'Streamzzz'
@@ -23,12 +24,13 @@ FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'movies/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'movies/', 'showMovies')
+MOVIE_GENRES = (True, 'showGenres')
 
 SERIE_NEWS = (URL_MAIN + 'episodes/', 'showMovies')
 SERIE_SERIES = (URL_MAIN + 'series/', 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'trending/', 'showMovies')
 SERIE_NOTES = (URL_MAIN + 'ratings/', 'showMovies')
-SERIE_LIST = (URL_MAIN + 'series-list/', 'showList')
+SERIE_LIST = (URL_MAIN + 'series-list/', 'showAlpha')
 SERIE_GENRES = (True, 'showGenres')
 
 def load():
@@ -99,36 +101,71 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-def showList():
+def showAlpha():
     oGui = cGui()
     oParser = cParser()
-
     oRequestHandler = cRequestHandler(SERIE_LIST[0])
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '>=(.+?)=</span>|<a href="([^<]+)" *target="_blank">(.+?)<\/a>'
+    sPattern = '<span style="color: red;">(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
+
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-                
-            if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
-            else:
-                sTitle = aEntry[2]
-                sUrl = aEntry[1]
 
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oGui.addDir(SITE_IDENTIFIER, 'showSerieSaisons', sTitle, 'genres.png', oOutputParameterHandler)
+            sLetter = str(aEntry).replace('=', '')
+            dAZ = str(aEntry)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('dAZ', dAZ)
+            oGui.addDir(SITE_IDENTIFIER, 'showList', 'Lettre [COLOR coral]' + sLetter + '[/COLOR]', 'series_az.png', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
-        
+
+    oGui.setEndOfDirectory()
+
+def showList():
+    oGui = cGui()
+    oParser = cParser()
+    oInputParameterHandler = cInputParameterHandler()
+    dAZ = oInputParameterHandler.getValue('dAZ')
+    oRequestHandler = cRequestHandler(SERIE_LIST[0])
+    sHtmlContent = oRequestHandler.request()
+
+    #Decoupage pour cibler une partie Film
+    sPattern = '<span style="color: red;">' + dAZ + '<(.+?)<(span style="color: red;">|/tbody>)'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    #regex pour listage films sur la partie decoupée
+    sPattern = '<a href="([^<]+)" *target="_blank">(.+?)<\/a>'
+    aResult = oParser.parse(aResult, sPattern)
+
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
+            sUrl = aEntry[0]
+            sTitle = str(aEntry[1]).decode("unicode_escape").encode("latin-1")#.replace('&#8217;', '\'').replace('&#8212;', '-')
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showSerieSaisons', sTitle, 'series_az.png', oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+
     oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):
@@ -149,7 +186,7 @@ def showMovies(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -159,7 +196,6 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            #L'array affiche vos infos dans l'ordre de sPattern en commencant a 0
             sThumb = str(aEntry[0])
             sTitle = str(aEntry[1]).replace(':', '')
             sUrl2 = str(aEntry[2])
@@ -223,12 +259,12 @@ def showSerieSaisons():
                 break
 
             sUrl2 = str(aEntry[1])
-	    #a voir
+        #a voir
             if 'x' in aEntry[0]:
-                sSXXEXX = str(aEntry[0]).replace(' ','').split('x')
+                sSXXEXX = str(aEntry[0]).replace(' ', '').split('x')
             else:
-                sSXXEXX = str(aEntry[0]).replace(' ','').split('-') 
-                
+                sSXXEXX = str(aEntry[0]).replace(' ', '').split('-')
+
             sTitle = "saison " + sSXXEXX[0]  + 'episode' + sSXXEXX[1] + ' ' + str(aEntry[2])
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -250,10 +286,10 @@ def showLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     oParser = cParser()
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     sPattern = "domain=(.+?)\".+?document.getElementsByName\(\'iframe\'\).+?src\'.+?\'(.+?)\'\);.+?<\/td><td>(.+?)<\/td>"
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -294,7 +330,7 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     sHosterUrl = oRequestHandler.getRealUrl()
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)

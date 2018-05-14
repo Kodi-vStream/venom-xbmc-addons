@@ -20,7 +20,7 @@ SITE_IDENTIFIER = 'cineiz'
 SITE_NAME = 'Cineiz'
 SITE_DESC = 'Films, Séries et mangas en streaming'
 
-URL_MAIN = 'http://www.cineiz.cc/'
+URL_MAIN = 'http://www.cineiz.io/'
 
 URL_SEARCH = ('', 'showMovieSearch')
 URL_SEARCH_MOVIES = ('', 'showMovieSearch')
@@ -277,7 +277,7 @@ def showMovieYears():
 def showSerieYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1961, 2018)):
+    for i in reversed (xrange(1961, 2019)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series-tv/annee-' + Year + '.htm')
@@ -288,7 +288,7 @@ def showSerieYears():
 
 def showMovieSearch(sSearch = ''):
     oGui = cGui()
-    
+
     if not sSearch:
         return
     else:
@@ -308,7 +308,7 @@ def showMovieSearch(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -356,7 +356,7 @@ def showMovies(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -483,7 +483,7 @@ def showEpisodes():
             sTitle = str(aEntry[1]) + str(aEntry[2]) + ' ' + sMovieTitle
             sUrl2 = str(aEntry[0])
             if sUrl2.startswith ('/'):
-			    sUrl2 = URL_MAIN[:-1] + sUrl2
+                sUrl2 = URL_MAIN[:-1] + sUrl2
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -506,15 +506,24 @@ def showLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
+    oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     #faut post
     oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-    oRequestHandler.addParameters('levideo', '123456')  
+    oRequestHandler.addParameters('levideo', '123456')
     sHtmlContent = oRequestHandler.request().replace('<span class="telecharger_sur_uptobox"></span>', '')
+
+    try:
+        sDesc = ''
+        sPattern = '<p>Synopsis.+?</strong> :(.+?)<\/p>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0]
+    except:
+        pass
 
     sPattern = '<div class="num_link">Lien:.+?<span class="(.+?)".+?span style="width:55px;" class="(.+?)">.+?<input name="levideo" value="(.+?)"'
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -525,17 +534,17 @@ def showLinks():
             if dialog.iscanceled():
                 break
 
-            sHost = str(aEntry[0])
+            sHost = str(aEntry[0]).capitalize()
             sLang = str(aEntry[1])
             sPost = str(aEntry[2])
-            sTitle = ('%s (%s) (%s)') % (sMovieTitle, sLang, sHost)
+            sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sPost', sPost)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             #dispo a la version 0.6.2
             #oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, oOutputParameterHandler)
 
@@ -550,10 +559,10 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sPost = oInputParameterHandler.getValue('sPost')
-    
+
     #cConfig().log(sUrl)
     #cConfig().log(sPost)
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.setRequestType(1)
     oRequestHandler.addParameters('levideo', sPost)
@@ -561,24 +570,24 @@ def showHosters():
 
     oParser = cParser()
     sPattern = '</div></div><iframe src="(.+?)"'
-    
+
     aResult = oParser.parse(sHtmlContent, sPattern)
-    
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            
+
             sHosterUrl = str(aEntry)
-            
+
             if 'facebook.com' in sHosterUrl:
                 continue
-            
+
             if 'vimple.org' in sHosterUrl:
                 #cConfig().log(sHosterUrl)
                 oRequestHandler = cRequestHandler(sHosterUrl)
-                oRequestHandler.addHeaderEntry('Referer',sUrl)
+                oRequestHandler.addHeaderEntry('Referer', sUrl)
                 sHtmlContent2 = oRequestHandler.request()
                 try:
-                    sHosterUrl = re.search('url=([^"]+)"', sHtmlContent2,re.DOTALL).group(1) 
+                    sHosterUrl = re.search('url=([^"]+)"', sHtmlContent2, re.DOTALL).group(1)
                 except:
                     sHosterUrl = str(oRequestHandler.getRealUrl())
                 #cConfig().log(sHosterUrl)
@@ -588,5 +597,5 @@ def showHosters():
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-                
+
     oGui.setEndOfDirectory()

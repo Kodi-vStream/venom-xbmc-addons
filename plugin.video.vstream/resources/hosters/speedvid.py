@@ -1,4 +1,5 @@
 #coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
@@ -121,7 +122,7 @@ class cHoster(iHoster):
             
             if not Realurl.startswith('http'):
                 Realurl = 'http:' + Realurl
-                      
+
             if not Realurl:
                 VSlog("mauvaise redirection")
                 return False, False
@@ -138,17 +139,16 @@ class cHoster(iHoster):
         #fh.close()
         
         api_call = ''
-            
+  
         sPattern = "file\s*:\s*\'([^\']+.mp4)"
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             api_call = aResult[1][0]
 
         VSlog('API_CALL: ' + api_call )
-        gg(mm)
-        
+
         if (api_call):
-            api_call = api_call + '|' + UA
+            api_call = api_call + '|User-Agent=' + UA 
             return True, api_call
             
         return False, False
