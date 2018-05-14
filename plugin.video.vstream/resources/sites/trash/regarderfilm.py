@@ -8,10 +8,10 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
+from resources.lib.util import cUtil
 from resources.lib.parser import cParser
 import re
 
-from resources.lib.util import cUtil
 
 
 SITE_IDENTIFIER = 'regarderfilm'
@@ -216,7 +216,7 @@ def showLinks():
             sHost = sHost.replace('.to', '').replace('.co', '').replace('.me', '').replace('.ec', '').replace('.eu', '').replace('.sx', '')
             sHost = sHost.capitalize()
             sPost = str(aEntry[1])
-            sTitle = ('%s (%s)') % (sMovieTitle, sHost)
+            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -228,6 +228,7 @@ def showLinks():
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
+
 
 def showHosters():
     oGui = cGui()
@@ -247,8 +248,16 @@ def showHosters():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sHosterUrl = str(aEntry)
             if sHosterUrl.startswith('/'):
