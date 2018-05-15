@@ -153,8 +153,8 @@ class cHosterGui:
             return self.getHoster('raptu')
         if ('watchers.to' in sHostName):
             return self.getHoster('watchers')
-        #if (('videoweed' in sHostName) or ('bitvid' in sHostName)):
-            #return self.getHoster('videoweed')
+        if ('mixloads' in sHostName):
+            return self.getHoster('mixloads')
         if ('vidoza.' in sHostName):
             return self.getHoster('vidoza')
         if (('youtube' in sHostName) or ('youtu.be' in sHostName)):
