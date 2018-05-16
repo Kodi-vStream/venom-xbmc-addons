@@ -285,7 +285,7 @@ def showLinks():
     
     try:
         sDesc = ''
-        sPattern = '<p><p>(.+?)<\/p>'
+        sPattern = '<p>([^<>"]+)<\/p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
@@ -379,7 +379,6 @@ def showHosters():
         if (aResult[0] == True):
             sHosterUrl = aResult[1][0]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            #sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
