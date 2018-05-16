@@ -45,7 +45,7 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.replace('http://uptobox.com/', '')
         self.__sUrl = self.__sUrl.replace('https://uptobox.com/', '')
         self.__sUrl = self.__sUrl.replace('iframe/', '')
-        self.__sUrl = 'http://uptobox.com/' + str(self.__sUrl)
+        self.__sUrl = 'https://uptobox.com/' + str(self.__sUrl)
         
     def checkSubtitle(self,sHtmlContent):
         oParser = cParser()
