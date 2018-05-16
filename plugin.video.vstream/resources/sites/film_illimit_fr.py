@@ -206,7 +206,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<link rel="next" href="([^"]+)"'
+    sPattern = 'href="([^"]+)" >Prochaine</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -237,12 +237,7 @@ def showHosters():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             sHosterUrl = str(aEntry)
             if '//goo.gl' in sHosterUrl:
@@ -281,14 +276,13 @@ def showHosters():
             else:
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
-                    sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
-def serieHosters():
+def showSaisons():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -308,17 +302,10 @@ def serieHosters():
 
     if (aResult[0] == True):
         i = 1
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
-
 
             sUrl = str(aEntry)
             sTitle = '%s episode %s' % (sMovieTitle, str(i))
-            sDisplayTitle = sTitle
 
             i = i + 1
 
@@ -326,7 +313,7 @@ def serieHosters():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'ShowSpecialHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'ShowSpecialHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -379,8 +366,6 @@ def ShowSpecialHosters():
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     sDisplayTitle = '[' + qual + '] ' + sMovieTitle
-                    #sDisplayTitle = sMovieTitle
-                    #sDisplayTitle = cUtil().DecoTitle(sDisplayTitle)
                     oHoster.setDisplayName(sDisplayTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
