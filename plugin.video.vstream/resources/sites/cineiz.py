@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#Razorex
 #
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
@@ -312,7 +311,6 @@ def showMovieSearch(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        #dialog barre de progression
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
@@ -338,6 +336,8 @@ def showMovieSearch(sSearch = ''):
 
         cConfig().finishDialog(dialog)
 
+    oGui.setEndOfDirectory()
+
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -360,7 +360,6 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        #dialog barre de progression
         dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
@@ -435,7 +434,6 @@ def showSaisons():
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
-
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
@@ -472,9 +470,7 @@ def showEpisodes():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-
         dialog = cConfig().createDialog(SITE_NAME)
-
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
@@ -527,14 +523,11 @@ def showLinks():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             sHost = str(aEntry[0]).capitalize()
+            if 'Nowvideo' in sHost:
+                continue
             sLang = str(aEntry[1])
             sPost = str(aEntry[2])
             sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
@@ -547,8 +540,6 @@ def showLinks():
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             #dispo a la version 0.6.2
             #oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, oOutputParameterHandler)
-
-        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
 

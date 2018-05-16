@@ -76,34 +76,34 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Ultra-HD',URL_MAIN + 'ultra-hd/'] )
-    liste.append( ['720p/1080p',URL_MAIN + 'films/streaming-720p-streaming-1080p/'] )
-    liste.append( ['Action/Aventure',URL_MAIN + 'films/action-aventure/'] )
-    liste.append( ['Animation',URL_MAIN + 'films/animation/'] )
-    liste.append( ['Arts Martiaux',URL_MAIN + 'films/arts-martiaux/'] )
-    liste.append( ['Biographie',URL_MAIN + 'films/biographique/'] )
-    liste.append( ['Comédie',URL_MAIN + 'films/comedie/'] )
-    liste.append( ['Crime/Gangster',URL_MAIN + 'films/crimegangster/'] )
-    liste.append( ['Documentaire',URL_MAIN + 'films/documentaire/'] )
-    liste.append( ['Drame',URL_MAIN + 'films/drame/'] )
-    liste.append( ['Epouvante Horreur',URL_MAIN + 'films/epouvante-horreur/'] )
-    liste.append( ['Etranger',URL_MAIN + 'films/etranger/'] )
-    liste.append( ['Famille',URL_MAIN + 'films/famille/'] )
-    liste.append( ['Fantastique',URL_MAIN + 'films/fantastique/'] )
-    liste.append( ['Guerre',URL_MAIN + 'films/guerre/'] )
-    liste.append( ['Histoire',URL_MAIN + 'films/histoire/'] )
-    liste.append( ['Musique/Danse',URL_MAIN + 'films/musiquedanse/'] )
-    liste.append( ['Mystère',URL_MAIN + 'films/mystere/'] )
-    liste.append( ['Policier',URL_MAIN + 'films/policier/'] )
-    liste.append( ['Romance',URL_MAIN + 'films/romance/'] )
-    liste.append( ['Science-fiction',URL_MAIN + 'films/science-fiction/'] )
-    liste.append( ['Spectacle (FR)',URL_MAIN + 'spectacle/francais-spectacle/'] )
-    liste.append( ['Spectacle (VOSTFR)',URL_MAIN + 'spectacle/vostfr-spectacle/'] )
-    liste.append( ['Sport',URL_MAIN + 'films/sport/'] )
-    liste.append( ['Suspense/Thriller',URL_MAIN + 'films/thrillersuspense/'] )
-    liste.append( ['Téléfilm',URL_MAIN + 'films/telefilm/'] )
-    liste.append( ['VOSTFR',URL_MAIN + 'films/vostfr/'] )
-    liste.append( ['Western',URL_MAIN + 'films/western/'] )
+    liste.append( ['Ultra-HD', URL_MAIN + 'ultra-hd/'] )
+    liste.append( ['720p/1080p', URL_MAIN + 'films/streaming-720p-streaming-1080p/'] )
+    liste.append( ['Action/Aventure', URL_MAIN + 'films/action-aventure/'] )
+    liste.append( ['Animation', URL_MAIN + 'films/animation/'] )
+    liste.append( ['Arts Martiaux', URL_MAIN + 'films/arts-martiaux/'] )
+    liste.append( ['Biographie', URL_MAIN + 'films/biographique/'] )
+    liste.append( ['Comédie', URL_MAIN + 'films/comedie/'] )
+    liste.append( ['Crime/Gangster', URL_MAIN + 'films/crimegangster/'] )
+    liste.append( ['Documentaire', URL_MAIN + 'films/documentaire/'] )
+    liste.append( ['Drame', URL_MAIN + 'films/drame/'] )
+    liste.append( ['Epouvante Horreur', URL_MAIN + 'films/epouvante-horreur/'] )
+    liste.append( ['Etranger', URL_MAIN + 'films/etranger/'] )
+    liste.append( ['Famille', URL_MAIN + 'films/famille/'] )
+    liste.append( ['Fantastique', URL_MAIN + 'films/fantastique/'] )
+    liste.append( ['Guerre', URL_MAIN + 'films/guerre/'] )
+    liste.append( ['Histoire', URL_MAIN + 'films/histoire/'] )
+    liste.append( ['Musique/Danse', URL_MAIN + 'films/musiquedanse/'] )
+    liste.append( ['Mystère', URL_MAIN + 'films/mystere/'] )
+    liste.append( ['Policier', URL_MAIN + 'films/policier/'] )
+    liste.append( ['Romance', URL_MAIN + 'films/romance/'] )
+    liste.append( ['Science-fiction', URL_MAIN + 'films/science-fiction/'] )
+    liste.append( ['Spectacle (FR)', URL_MAIN + 'spectacle/francais-spectacle/'] )
+    liste.append( ['Spectacle (VOSTFR)', URL_MAIN + 'spectacle/vostfr-spectacle/'] )
+    liste.append( ['Sport', URL_MAIN + 'films/sport/'] )
+    liste.append( ['Suspense/Thriller', URL_MAIN + 'films/thrillersuspense/'] )
+    liste.append( ['Téléfilm', URL_MAIN + 'films/telefilm/'] )
+    liste.append( ['VOSTFR', URL_MAIN + 'films/vostfr/'] )
+    liste.append( ['Western', URL_MAIN + 'films/western/'] )
 
     for sTitle, sUrl in liste:
 
@@ -115,15 +115,12 @@ def showGenres():
 
 def showYears():
     oGui = cGui()
-
-    sStart = '<div class="filter-content-slider">'
-    sEnd = '<div class="filter-slide filter-slide-down">'
-
     oParser = cParser()
-
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
 
+    sStart = '<div class="filter-content-slider">'
+    sEnd = '<div class="filter-slide filter-slide-down">'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
     sPattern = '<a href="([^"]+)">(.+?)</a>'
@@ -152,6 +149,7 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     sPattern = 'class="item"> *<a href="([^<]+)">.+?<img src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
@@ -176,14 +174,13 @@ def showMovies(sSearch = ''):
             sTitle = sName + ' [' + aEntry[3] + ']'
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
+            if sThumb.startswith('//'):
+                sThumb = 'http:' + sThumb
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sName) == 0:
                     continue
-
-            if sThumb.startswith('//'):
-                sThumb = 'http:' + sThumb
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -236,8 +233,16 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
             sHosterUrl = str(aEntry)
             if '//goo.gl' in sHosterUrl:
@@ -298,9 +303,18 @@ def serieHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
         i = 1
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
 
             sUrl = str(aEntry)
             sTitle = '%s episode %s' % (sMovieTitle, str(i))

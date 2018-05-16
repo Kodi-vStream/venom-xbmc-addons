@@ -1,15 +1,12 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'topreplay'
@@ -151,12 +148,11 @@ def showMovies(sSearch = ''):
             sUrl = aEntry[1]
             sTitle = aEntry[2]
 
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'replay.png',  sThumb,  '', oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'replay.png',  sThumb,  '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -204,8 +200,8 @@ def checkforHoster(sHosterUrl):
             return 'http://www.dailymotion.com/embed/video/' + code.group(2)
         elif 'filez' in sHosterUrl:
             return 'http://filez.tv/embed/u=' + code.group(2)
-        #elif 'userscloud' in sHosterUrl:
-            #return 'https://userscloud.com/embed-' + code.group(2) + '.html' #non utilisable sans dl
+        elif 'mixloads' in sHosterUrl:
+            return 'https://mixloads.com/embed-' + code.group(2) + '.html'
         elif 'youwatch' in sHosterUrl:
             return 'http://www.youwatch.org/embed-' + code.group(2) + '.html'
         elif 'exashare' in sHosterUrl:
@@ -239,23 +235,18 @@ def showHosters():
     sPattern = '<div class="img-short"><img src="([^"]+)".+?<a href="([^"]+)">([^<]+)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             sThumb = aEntry[0]
             sUrl = aEntry[1]
             sTitle = aEntry[2]
 
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'replay.png',  sThumb,  '', oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'replay.png',  sThumb,  '', oOutputParameterHandler)
     else:
         #1
         sPattern = '<option value="([^"]+)"'
@@ -271,9 +262,9 @@ def showHosters():
                 sHosterUrl = checkforHoster(str(aEntry))
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
+
                 if (oHoster != False):
-                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 

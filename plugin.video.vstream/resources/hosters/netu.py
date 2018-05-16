@@ -207,26 +207,26 @@ class cHoster(iHoster):
                     VSlog(str(e.reason))
                     
                 data = response.read()
-                VSlog(data)
+                #VSlog(data)
                 response.close()
 
-                file_url = re.search(r'"file"\s*:\s*"([^"]*?)"', data)
+                file_url = re.search(r'"obf_link"\s*:\s*"([^"]*?)"', data)
                
                 if file_url:
-                    list_url = _decode2(file_url.group(1).replace('\\', ''))
-
+                    list_url = decodeUN(file_url.group(1).replace('\\', ''))
+                    
                 #Hack, je sais pas si ca va durer longtemps, mais indispensable sur certains fichiers
-                list_url = list_url.replace("?socket", ".mp4.m3u8")
+                #list_url = list_url.replace("?socket", ".mp4.m3u8")
                 
             else:
                 VSlog('prb2')
-        
-        api_call = list_url
-        #api_call = list_url.replace('?socket=','.mp4Frag1Num0.ts')
-        
+        #bricolage
+        api_call = list_url+'.mp4.m3u8'
+
+
         #use a fake headers
-        Header = 'User-Agent=' + UA
-        api_call = api_call + '|' + Header
+        #Header = 'User-Agent=' + UA
+        api_call = api_call #+ '|' + Header >> pas besoin pour l'instant
 
         if not (api_call == False):
             return True, api_call
@@ -234,7 +234,21 @@ class cHoster(iHoster):
         return False, False
 
 #*******************************************************************************
+def decodeUN(a):
+    a = a[1:]
+    s2 = ""
 
+    i = 0
+    while i < len(a):
+      s2 += ('\u0' + a[i:i+3])
+      i = i + 3
+      
+    s3 = s2.decode('unicode-escape')
+    if not s3.startswith('http'):
+        s3 = 'http:' + s3
+        
+    return s3
+    
 def DecodeAllThePage(html):
     
     #html = urllib.unquote(html)

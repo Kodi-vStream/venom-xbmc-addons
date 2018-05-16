@@ -13,7 +13,6 @@ SITE_IDENTIFIER = 'serie_streaming_watch'
 SITE_NAME = 'Serie-Streaming-Watch'
 SITE_DESC = 'Séries & Animés en Streaming'
 
-
 URL_MAIN = 'http://series-en-streaming.xyz/'
 
 SERIE_SERIES = ('http://', 'load')
@@ -252,7 +251,10 @@ def serieHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
+    
+    if sUrl.startswith('/'):
+       sUrl = URL_MAIN[:-1] + sUrl
+      
     sHosterUrl = ProtectstreamBypass(sUrl)
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -283,10 +285,10 @@ def ProtectstreamBypass(url):
 
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
         
-        oRequest = cRequestHandler('http://www.protect-stream.com/secur2.php')
+        oRequest = cRequestHandler(URL_MAIN + 'secur22.php')
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent',UA)
-        oRequest.addHeaderEntry('Host','www.protect-stream.com')
+        #oRequest.addHeaderEntry('Host','www.protect-stream.com')
         oRequest.addHeaderEntry('Referer',Codedurl)
         oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
         oRequest.addHeaderEntry('Content-Type','application/x-www-form-urlencoded')
