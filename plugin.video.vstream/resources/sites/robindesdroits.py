@@ -1,4 +1,5 @@
 #-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.kodigoal
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -21,10 +22,14 @@ URL_MAIN = 'http://www.robindesdroits.me/'
 
 SPORT_SPORTS = (True, 'showGenres')
 SPORT_NEWS = (URL_MAIN + 'derniers-uploads/', 'showMovies')
+URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 
 def load():
     oGui = cGui()
-
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SPORT_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SPORT_NEWS[1], 'Nouveautés', 'news.png', oOutputParameterHandler)
@@ -34,7 +39,17 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Genres', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+    
+def showSearch():
+    oGui = cGui()
 
+    sSearchText = oGui.showKeyBoard()
+    if (sSearchText != False):
+        sUrl = URL_SEARCH[0] + sSearchText
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return
+        
 def showGenres():
     oGui = cGui()
 
@@ -92,7 +107,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail,'', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumbnail,'', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -114,128 +129,111 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
-def __showLink(url):
-
-    oRequestHandler = cRequestHandler(url)
-    sHtmlContent = oRequestHandler.request();
-
-    #recup liens clictune
-    sPattern = '<a href="(http://www.clictune.+?)"'
-    aResult = re.findall(sPattern,sHtmlContent)
-
-    #recup liens sans delai X secondes
-    if (aResult):
-        sLink =[]
-        for aEntry in aResult:
-
-            sUrl = str(aEntry)
-            oRequestHandler = cRequestHandler(sUrl)
-            sHtmlContent = oRequestHandler.request();
-
-            sPattern = '<b><a href=".+?redirect\/\?url\=(.+?)\&id.+?">'
-            aResult2 = re.findall(sPattern,sHtmlContent)
-
-            #decode url & retourne liens a showHosters
-            url = cUtil().urlDecode(aResult2[0])
-            sLink.append(url)
-
-        return sLink
-    return False
-
-def showHosters():
+def showLink():
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
 
-    #recup liens watchvideo&Jheberg&Multiup et liens direct raptu&uptobox par showLink()
-    sLink = __showLink(sUrl)
+    #recup liens clictune
+    sPattern = '<a href="(http://www.clictune.+?)".+?<b>(.+?)</b>'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        dialog = cConfig().createDialog(SITE_NAME)
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
 
-    #si vidéos découpées en X parties
-    count = 0
-    count2 = 0
-    count3 = 0
+            sDisplayTitle =  (sMovieTitle + ' [' + aEntry[1] + ']')
 
-    if (sLink):
-        for aEntry in sLink:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumbnail, '', oOutputParameterHandler)
 
-            sUrl = str(aEntry)
-            sHost = []
+        cConfig().finishDialog(dialog)
 
-            if 'jheberg' in aEntry:
+    oGui.setEndOfDirectory()
 
-                aResult = cJheberg().GetUrls(sUrl)
+def showHosters():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    oParser = cParser()
 
-                if (aResult):
-                    if (count >0):
-                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via Jheberg (suite partie vidéo)[/COLOR]')
-                    else:
-                        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via Jheberg[/COLOR]')
-                    count= count +1
-                    for aEntry in aResult:
-                        if 'nitroflare' not in aEntry:
-                            sHost.append(aEntry)
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
 
-            elif 'multiup' in aEntry:
-                 #modif temp org en eu
-                 NewUrl = sUrl.replace('http://www.multiup.org/fr/download','http://www.multiup.eu/fr/mirror').replace('http://www.multiup.eu/fr/download','http://www.multiup.eu/fr/mirror').replace('http://www.multiup.org/download', 'http://www.multiup.eu/fr/mirror')
+    sPattern = '<b><a href=".+?redirect\/\?url\=(.+?)\&id.+?">'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        sUrl = cUtil().urlDecode(aResult[1][0])
+        
+        if 'gounlimited' in sUrl:
+            oRequestHandler = cRequestHandler(sUrl)
+            sHtmlContent = oRequestHandler.request()
 
-                 aResult = cMultiup().GetUrls(NewUrl)
-
-                 if (aResult):
-                     if (count >0):
-                         oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via Multiup (suite partie vidéo)[/COLOR]')
-                     else:
-                         oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via Multiup[/COLOR]')
-                     count= count +1
-                     for aEntry in aResult:
-                         if 'nitroflare' not in aEntry:
-                             sHost.append(aEntry)
-
-            elif 'watchvideo' in sUrl:
-                  oRequestHandler = cRequestHandler(sUrl)
-                  sHtmlContent = oRequestHandler.request();
-                  oParser = cParser()
-                  sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
-                  aResult = oParser.parse(sHtmlContent, sPattern)
-                  
-                  if (aResult[0] == True):
-                      sHtmlContent = cPacker().unpack(aResult[1][0])
-                      sPattern = '{file:"([^"]+)"\,label:"([^"]+)"}'
-                      aResult = oParser.parse(sHtmlContent, sPattern)
-
-                      if (count2 >0):
-                          oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via WatchVideo (suite partie vidéo)[/COLOR]')
-                      else:
-                          oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens via WatchVideo[/COLOR]')
-                      count2 = count2 +1
-                      for aEntry in aResult[1]:
-                          sHost.append(aEntry)
-
-            #si liens directs raptu&uptobox
-            else:
-                if (count3 == 0):
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Liens divers[/COLOR]')
-                count3 = count3 +1
-                sHost.append(aEntry)
-
-            if (sHost):
-
-                for aEntry in sHost:
-                    if 'watchvideo' in sUrl:
-                        sHosterUrl = str(aEntry[0])
-                        sQual = str(aEntry[1])
-                        sDisplayTitle = ('[%s] %s') % (sQual, sMovieTitle)
-                    else:
-                        sHosterUrl = str(aEntry)
-                        sDisplayTitle = (' %s ') % (sMovieTitle)
-
+            sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                sHtmlContent = cPacker().unpack(aResult[1][0])
+                sPattern = '{file:"([^"]+)"\,label:"([^"]+)"}'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                for aEntry in aResult[1]:
+                    sHosterUrl = str(aEntry[0])
+                    sDisplayTitle = ('[%s] %s') % (aEntry[1] + 'p', sMovieTitle)
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
                     if (oHoster != False):
                         oHoster.setDisplayName(sDisplayTitle)
                         oHoster.setFileName(sDisplayTitle)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+    
+        elif 'jheberg' in sUrl:
+
+            sUrl = sUrl.replace('captcha','mirrors')
+            if not 'www.jheberg' in sUrl:
+                sUrl = sUrl.replace('jheberg','www.jheberg')
+            
+            aResult = cJheberg().GetUrls(sUrl)
+            for aEntry in aResult:
+                sHosterUrl = aEntry
+                
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+
+        elif 'multiup' in sUrl:
+
+            aResult = cMultiup().GetUrls(sUrl)
+            if (aResult):
+                for aEntry in aResult:
+                    sHosterUrl = aEntry
+                
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+                    if (oHoster != False):
+                        oHoster.setDisplayName(sMovieTitle)
+                        oHoster.setFileName(sMovieTitle)
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                    
+        else:
+            sHosterUrl = sUrl
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
     oGui.setEndOfDirectory()
