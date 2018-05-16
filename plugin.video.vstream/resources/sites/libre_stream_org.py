@@ -151,12 +151,12 @@ def AlphaSearch():
             break
 
         if (i < 10):
-            sTitle = chr(48+i)
+            sTitle = chr(48 + i)
         else:
-            sTitle = chr(65+i-10)
+            sTitle = chr(65 + i -10)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl + sTitle.lower() + '.html' )
+        oOutputParameterHandler.addParameter('siteUrl', sUrl + sTitle.lower() + '.html')
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', '[COLOR teal] Lettre [COLOR red]' + sTitle + '[/COLOR][/COLOR]', 'series_az.png', oOutputParameterHandler)
 
@@ -173,7 +173,7 @@ def AlphaDisplay():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<a href="([^<>"]+?)">([^<>"]+?)<\/a><br\/>'
+    sPattern = '<a href="([^<>"]+?)">([^<>"]+?)<\/a><br \/>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -185,12 +185,11 @@ def AlphaDisplay():
                 break
 
             sTitle = aEntry[1]
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sDisplayTitle, '', '', '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'listes.png', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -217,7 +216,7 @@ def showMovies(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -233,6 +232,7 @@ def showMovies(sSearch = ''):
                     continue
 
             sTitle = str(aEntry[1])
+            sUrl2 = str(aEntry[2])
             sDesc = str(aEntry[3])
             sThumb = aEntry[0]
             if sThumb.startswith('/'):
@@ -256,11 +256,11 @@ def showMovies(sSearch = ''):
                     sDisplayTitle = sTitle
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '/series/' in sUrl or '-saison-' in aEntry[2]:
+            if '/series/' in sUrl or '-saison-' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
@@ -294,7 +294,7 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('http://creative.rev2pub.com', '')
 
     sPattern = '<iframe.+?src=[\'"]([^<>\'"]+?)[\'"]'
@@ -302,12 +302,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -315,8 +310,6 @@ def showHosters():
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
 
@@ -335,12 +328,7 @@ def seriesHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             sTitle = sMovieTitle + ' ' + str(aEntry[1])
 
@@ -350,7 +338,5 @@ def seriesHosters():
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
