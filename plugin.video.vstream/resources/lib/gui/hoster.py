@@ -261,7 +261,7 @@ class cHosterGui:
             return self.getHoster('idowatch')
         if ('wstream.' in sHostName):
             return self.getHoster('wstream')
-        if ('watchvideo.' in sHostName):
+        if ('watchvideo' in sHostName):
              return self.getHoster('watchvideo')
         if ('drive.google.com' in sHostName):
             return self.getHoster('googledrive')
