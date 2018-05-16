@@ -1,17 +1,14 @@
 #-*- coding: utf-8 -*-
-#Venom.
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.config import cConfig
-from resources.lib.player import cPlayer
 from resources.lib.packer import cPacker
-
 import re
 
 SITE_IDENTIFIER = 'streamcomplet'
@@ -141,89 +138,49 @@ def __checkForNextPage(sHtmlContent):
     return False
 
 def showHosters():
-
+    oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-
+    #vimple redirect to ok or openload
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-
-    sPattern = 'src="(http:\/\/media\.vimple\.me.+?)"'
+    list_url = []
+    
+    sPattern = 'src="(http:\/\/media\.vimple\.me.+?f=([^"]+))"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
+        sUrl3 = 'https://ok.ru/videoembed/' + aResult[1][0][1]
+        list_url.append(sUrl3)
 
-        sUrl2 = aResult[1][0]
+        sUrl2 = aResult[1][0][0]
 
         oRequestHandler = cRequestHandler(sUrl2)
         oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0')
         oRequestHandler.addHeaderEntry('Referer',sUrl)
         sHtmlContent = oRequestHandler.request()
 
-        sPattern = '<source.+?src="([^"]+)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        sHtmlContent = oParser.abParse(sHtmlContent,"<script>","</script><script>")
+
+        sPattern = 'eval\s*\(\s*function(?:.|\s)+?{}\)\)'
+        aResult = oParser.parse(sHtmlContent,sPattern)
         if (aResult[0] == True):
-            cGui().showInfo('Info', 'Chargement film' , 5)
-            web_url = 'http://media.vimple.me/playerk.swf/' + aResult[1][0]
+            sHtmlContent = cPacker().unpack(aResult[1][0])
+            sHtmlContent = sHtmlContent.replace('\\','')
+            code = re.search('(https://openload.+?embed\/.+?\/)',sHtmlContent)
+            if code:
+                sUrl4 = code.group(1)
+                list_url.append(sUrl4)
 
-            sHosterUrl = web_url
+          
+    for aEntry in list_url:
+        oHoster = cHosterGui().checkHoster(aEntry)
+        if (oHoster != False):
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, aEntry, '')
 
-            oGuiElement = cGuiElement()
-            oGuiElement.setSiteName(SITE_IDENTIFIER)
-            oGuiElement.setTitle(sMovieTitle)
-            oGuiElement.setMediaUrl(sHosterUrl)
-            oGuiElement.setThumbnail(sThumb)
-
-            oPlayer = cPlayer()
-            oPlayer.clearPlayList()
-            oPlayer.addItemToPlaylist(oGuiElement)
-            oPlayer.startPlayer()
-
-        elif 'var _0x8fb1' in sHtmlContent:
-            
-            import base64
-            
-            sHosterUrl = ''
-            link = re.search('enc1\|([^|]+)\|',sHtmlContent).group(1)
-            url = re.search('var _0x8fb1=\["([^"]+)"',sHtmlContent).group(1)
-            link = base64.b64decode(link)
-            url = url.decode('string-escape')
-            url = url + link
-            sHosterUrl = url.replace('<iframe src="','')
-            
-            cConfig().log(sHosterUrl)
-
-            if (sHosterUrl):
-                oGui = cGui()
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
-                    cConfig().log('ok')
-                    oHoster.setDisplayName(sMovieTitle)
-                    oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
-
-                oGui.setEndOfDirectory()
-            
-        else:
-            oGui = cGui()
-            sHtmlContent = oParser.abParse(sHtmlContent,"<script>","</script><script>")
-
-            sPattern = 'eval\s*\(\s*function(?:.|\s)+?{}\)\)'
-            aResult = oParser.parse(sHtmlContent,sPattern)
-            if (aResult[0] == True):
-                sHtmlContent = cPacker().unpack(aResult[1][0])
-                sHtmlContent = sHtmlContent.replace('\\','')
-                code = re.search('(https://openload.+?embed\/.+?\/)',sHtmlContent)
-                if code:
-                   sHosterUrl  = code.group(1)
-                   oHoster = cHosterGui().checkHoster(sHosterUrl)
-                   if (oHoster != False):
-                       oHoster.setDisplayName(sMovieTitle)
-                       oHoster.setFileName(sMovieTitle)
-                       cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
-
-            oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
