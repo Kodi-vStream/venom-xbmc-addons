@@ -3,11 +3,10 @@
 #test sur http://vshare.eu/embed-wuqinr62cpn6-703x405.html
 #         http://vshare.eu/embed-cxmr4o8l2waa-703x405.html
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
-import re,xbmcgui
+import xbmcgui
 
 class cHoster(iHoster):
 
@@ -59,11 +58,11 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
 
-        if 'File was deleted' in sHtmlContent:
+        if '<div id="deleted">' in sHtmlContent:
             return False,False
 
         oParser = cParser()
-        sPattern = "file: *'([^']+vid.mp4)'"
+        sPattern = '<source src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent,sPattern)
         if (aResult[0] == True):
             api_call = aResult[1][0]
