@@ -1,44 +1,29 @@
 #-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.
-
-import re,urllib2,urllib
-import xbmc
-
+from resources.lib.handler.requestHandler import cRequestHandler
+import re,urllib
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0',
+#modif cloudflare
 def GetHtml(url, postdata = None):
-    headers = {
-    'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0',
-    #'Referer' : 'http://www.jheberg.net/captcha/les-tinytoons-s01e03-the-wheel-o-comedy/' ,
-    #'Host' : 'www.dl-protect.com',
-    #'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    #'Accept-Language': 'en-gb, en;q=0.9',
-    #'Pragma' : '',
-    #'Accept-Charset' : '',
-    #'Content-Type' : 'application/x-www-form-urlencoded',
-    }
-        
-    if postdata != None:
-        headers['X-Requested-With'] = 'XMLHttpRequest'
-        headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
-        headers['Referer'] = 'http://www.jheberg.net/redirect/xxxxxx/yyyyyy/'
-    elif 'www.jheberg.net' in url:
-        headers['Referer'] = url.replace('http://www.jheberg.net/mirrors','http://www.jheberg.net/captcha')
-    
+
     sHtmlContent = ''
-    request = urllib2.Request(url,postdata,headers)
-
-    try: 
-        reponse = urllib2.urlopen(request)
-        sHtmlContent = reponse.read()
-        reponse.close()
-        
-    except urllib2.URLError, e:
-        print e.read()
-        print e.reason
-
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
+    oRequest = cRequestHandler(url)
+    oRequest.setRequestType(1)
+    oRequest.addHeaderEntry('User-Agent', UA)
     
+    if postdata != None:
+        oRequest.addHeaderEntry('X-Requested-With','XMLHttpRequest')
+        oRequest.addHeaderEntry('Content-Type','application/x-www-form-urlencoded; charset=UTF-8')
+        oRequest.addHeaderEntry('Referer','http://www.jheberg.net/redirect/xxxxxx/yyyyyy/')
+        
+    elif 'www.jheberg.net' in url:
+        oRequest.addHeaderEntry('Referer', url.replace('http://www.jheberg.net/mirrors','http://www.jheberg.net/captcha').replace('\r',''))
+    
+    oRequest.addParametersLine(postdata)
+
+    sHtmlContent = oRequest.request()
+
     return sHtmlContent
 
 class cMultiup:
@@ -50,17 +35,18 @@ class cMultiup:
 
         NewUrl = url.replace('http://www.multiup.org/fr/download','http://www.multiup.eu/fr/mirror').replace('http://www.multiup.eu/fr/download','http://www.multiup.eu/fr/mirror').replace('http://www.multiup.org/download', 'http://www.multiup.eu/fr/mirror')
         
-        
         sHtmlContent = GetHtml(NewUrl)
-        
-        sPattern = 'nameHost="([^"]+)"\s+validity=([a-z]+).+?href="([^"]+)"'
+
+        sPattern = 'nameHost="([^"]+)"\s+link="([^"]+)"\s+validity="([a-z]+)"'
         r = re.findall(sPattern,sHtmlContent,re.DOTALL)
+
         if not r:
             return False
 
         for item in r:
-            if item[1] == 'valid':
-                self.list.append(item[2])
+
+            if item[2] == 'valid' and not 'download-fast' in item[1]:
+                self.list.append(item[1])
             
         return self.list
 
@@ -85,7 +71,7 @@ class cJheberg:
                 hoster = item[0]
                 slug = url.split('/')[-2]
                 data = { 'slug' : str(slug) , 'hoster' : str(hoster) }
-                postdata = urllib.urlencode( data )
+                postdata = urllib.urlencode(data)
                 urllink = 'http://www.jheberg.net/get/link/'
                 
                 sHtmlContent = GetHtml(urllink,postdata)
