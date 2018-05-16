@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
-#Venom.
+# https://github.com/Kodi-vStream/venom-xbmc-addons
+#
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -7,8 +8,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
-import re,unicodedata
+#from resources.lib.util import cUtil
+import re, unicodedata
 
 SITE_IDENTIFIER = 'buzzmonclick_com'
 SITE_NAME = 'BuzzMonClick'
@@ -24,9 +25,9 @@ DOC_NEWS = (URL_MAIN + 'documentaires/', 'showMovies')
 DOC_DOCS = ('http://', 'load')
 
 URL_SEARCH = ('http://buzzmonclick.com/?s=', 'showMovies')
+URL_SEARCH_MISC = ('http://buzzmonclick.com/?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
-URL_SEARCH_MISC = ('http://buzzmonclick.com/?s=', 'showMovies')
 
 def load():
     oGui = cGui()
@@ -51,10 +52,6 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'infos-magazine/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Infos/Magazines', 'doc.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series-tv/')
-    # oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries-TV', 'series.png', oOutputParameterHandler)
-
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'tele-realite/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Télé-Réalité', 'tv.png', oOutputParameterHandler)
@@ -72,17 +69,15 @@ def showMoviesSearch():
 
 def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
-    liste.append( ['Documentaires',URL_MAIN + 'documentaires/'] )
-    liste.append( ['Divertissement',URL_MAIN + 'divertissement/'] )
-    liste.append( ['Infos/Magazines',URL_MAIN + 'infos-magazine/'] )
-    liste.append( ['Séries-TV',URL_MAIN + 'series-tv/'] )
-    liste.append( ['Télé-Réalité',URL_MAIN + 'tele-realite/'] )
+    liste.append( ['Documentaires', URL_MAIN + 'documentaires/'] )
+    liste.append( ['Divertissement', URL_MAIN + 'divertissement/'] )
+    liste.append( ['Infos/Magazines', URL_MAIN + 'infos-magazine/'] )
+    liste.append( ['Télé-Réalité', URL_MAIN + 'tele-realite/'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
@@ -105,7 +100,7 @@ def showMovies(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -121,20 +116,18 @@ def showMovies(sSearch = ''):
             sTitle = sTitle.encode( "utf-8")
 
             #mise en page
-            sTitle = sTitle.replace('Permalien pour', '')
-            sTitle = re.sub('(?:,)* (?:Replay |Video )*du ([0-9]+ [a-zA-z]+ [0-9]+)',' (\\1)', str(sTitle))
-            sTitle = re.sub(', (?:Replay|Video)$','', str(sTitle))
+            sTitle = sTitle.replace('Permalien pour', '').replace('&prime;', '\'')
+            sTitle = re.sub('(?:,)* (?:Replay |Video )*du ([0-9]+ [a-zA-z]+ [0-9]+)', ' (\\1)', str(sTitle))
+            sTitle = re.sub(', (?:Replay|Video)$', '', str(sTitle))
+            sUrl = str(aEntry[2])
+            sThumb = str(aEntry[3])
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[3]))
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
-            if "/series-tv/" in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'series.png', aEntry[3], '', oOutputParameterHandler)
-            else:
-                oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'doc.png', aEntry[3], '', oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -161,7 +154,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -171,21 +164,13 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-
-        cConfig().finishDialog(dialog)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
