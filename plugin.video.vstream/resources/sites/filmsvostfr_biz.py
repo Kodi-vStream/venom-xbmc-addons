@@ -342,6 +342,7 @@ def showEpisode():
 
 def showLinks():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -350,10 +351,10 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('HD streaming', '').replace('télécharger sur ', '')
-    oParser = cParser()
 
     sPattern = '<img src="(\/images\/video-coming-soon\.jpg)'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         oGui.addText(SITE_IDENTIFIER,'[COLOR crimson]' + 'Vidéo bientôt disponible' + '[/COLOR]')
 
@@ -361,20 +362,15 @@ def showLinks():
     sDesc= ''
     sPattern = '<span class="synopsis">([^<]+)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         sDesc = aResult[1][0]
 
     sPattern = '<a href="([^"]+)" class="sinactive ilink.+?" rel="nofollow" title="([^"]+)">.+?<span class="quality" title="(.+?)">.+?<span class="langue" title="(.+?)"'
-
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             sUrl = aEntry[0].replace('p=watchers', 'p=30').replace('p=16do', 'p=16').replace('p=the23eo', 'p=23').replace('p=the24', 'p=24') #a del si correction sur le site
             if sUrl.endswith('&c=') or '?p=0&c=' in sUrl: #vide ou redirection
@@ -390,8 +386,6 @@ def showLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
 
@@ -409,7 +403,7 @@ def showHosters():
         sHost = 'www.voirstream.org'
 
     if 'filmsvostfr.vip' in sUrl or 'voirstream.org' in sUrl:
-        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
+        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101 Firefox/60.0'
 
         headers = {'User-Agent': UA,
                    'Host': sHost,
@@ -437,8 +431,7 @@ def showHosters():
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
-        sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-        oHoster.setDisplayName(sDisplayTitle)
+        oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
