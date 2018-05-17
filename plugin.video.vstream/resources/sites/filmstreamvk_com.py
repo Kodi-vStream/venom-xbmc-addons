@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
-#Venom.
+# https://github.com/Kodi-vStream/venom-xbmc-addons
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -138,6 +139,7 @@ def showGenres():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
 
     if sSearch:
@@ -151,8 +153,6 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<div class="moviefilm">.+?<img src="([^<"]+)".+?<a href="([^<]+)">([^<]+)<\/a>'
-
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -180,7 +180,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '/serie' in sUrl or '/manga/' in sUrl:
+            if '/series/' in sUrl or '/manga/' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
@@ -208,6 +208,7 @@ def __checkForNextPage(sHtmlContent):
 
 def showLinks():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -218,15 +219,25 @@ def showLinks():
 
     #cConfig().log(sUrl)
 
-    oParser = cParser()
-    ListeUrl = []
+    #recuperation du synopsis
+    try:
+        sDesc = ''
+        sPattern = '<div class="konuozet">.+?<p>(.+?)</p>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0]
+            sDesc = sDesc.replace('<br />', '').replace('&#8230;', '...').replace('&#8217;', '\'')
+    except:
+        pass
+
     #recuperation du hoster de base
+    ListeUrl = []
     sPattern = '<div class="keremiya_part"> <span>(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         ListeUrl = [(sUrl, aResult[1][0])]
 
-    #Recuperation des suivants
+    #recuperation des suivants
     sPattern = '<a href="([^<]+)"><span>(.+?)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     ListeUrl = ListeUrl + aResult[1]
@@ -236,12 +247,7 @@ def showLinks():
         showHosters()
 
     if (aResult[0] == True):
-        total = len(ListeUrl)
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in ListeUrl:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             sTitle = sMovieTitle + ' (' + aEntry[1] + ')'
             if 'pisode' in aEntry[1]:
@@ -252,14 +258,13 @@ def showLinks():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
-
-        cConfig().finishDialog(dialog)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 def showEpisode():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -268,8 +273,17 @@ def showEpisode():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    #recuperation du synopsis
+    try:
+        sDesc = ''
+        sPattern = '<div class="konuozet">.+?</b>(.+?)<br>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0]
+    except:
+        pass
+
     sPattern = '<td class="liste_episode" width="10%">(.+?)<\/td>|<a href="([^<>"]+?)" title="" class="num_episode">([0-9]+)<\/a>'
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -292,7 +306,7 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addTV(SITE_IDENTIFIER, 'showHostersSerie', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showHostersSerie', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -323,12 +337,7 @@ def showHostersSerie():
         showHosters()
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             sHosterUrl = str(aEntry)
             if sHosterUrl.startswith('/'):
@@ -340,8 +349,6 @@ def showHostersSerie():
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
 
@@ -362,12 +369,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             sHosterUrl = str(aEntry)
 
@@ -376,7 +378,5 @@ def showHosters():
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
