@@ -148,7 +148,7 @@ class cGui():
         #self.addFolder(oGuiElement, oOutputParameterHandler)
 
 
-    def addLink(self, sId, sFunction, sLabel, sThumbnail, oOutputParameterHandler = ''):
+    def addLink(self, sId, sFunction, sLabel, sThumbnail, sDesc, oOutputParameterHandler = ''):
         cGui.CONTENT = "files"
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
@@ -157,6 +157,7 @@ class cGui():
         #oGuiElement.setIcon(sIcon)
         oGuiElement.setThumbnail(sThumbnail)
         oGuiElement.setPoster(sThumbnail)
+        oGuiElement.setDescription(sDesc)
         oGuiElement.setMeta(0)
         oGuiElement.setDirFanart('')
         
