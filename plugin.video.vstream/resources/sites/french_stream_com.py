@@ -1,4 +1,5 @@
 #-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -9,7 +10,7 @@ from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
-import re, urllib2, base64
+import re,base64
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -23,23 +24,20 @@ URL_SEARCH_MOVIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=9
 URL_SEARCH_SERIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=10&story=', 'showSeries')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_NEWS = (URL_MAIN + 'film/', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'film/', 'showMovies')
-MOVIE_VF = (URL_MAIN + 'film-en-streaming/vf/', 'showMovies')
-MOVIE_VOSTFR = (URL_MAIN + 'film-en-streaming/vostfr/', 'showMovies')
-MOVIE_HD = (URL_MAIN + 'film-en-streaming/hd-vf/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_MOVIE = ('http://', 'load')
+MOVIE_VF = (URL_MAIN + 'films/vf/', 'showMovies')
+MOVIE_VOSTFR = (URL_MAIN + 'films/vostfr/', 'showMovies')
+MOVIE_HD = (URL_MAIN + 'films/hd-vf/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
-SERIE_NEWS = (URL_MAIN + 'serie/', 'showSeries')
-SERIE_SERIES = (URL_MAIN + 'serie/', 'showSeries')
-SERIE_VFS = (URL_MAIN + 'serie/serie-en-vf-streaming/', 'showSeries')
-SERIE_VOSTFRS = (URL_MAIN + 'serie/serie-en-vostfr-streaming/', 'showSeries')
+SERIE_NEWS = (URL_MAIN + 'series/', 'showSeries')
+SERIE_SERIES = ('http://', 'load')
+SERIE_VFS = (URL_MAIN + 'series/serie-en-vf-streaming/', 'showSeries')
+SERIE_VOSTFRS = (URL_MAIN + 'series/serie-en-vostfr-streaming/', 'showSeries')
 SERIE_GENRES = (True, 'showSerieGenres')
 
 def decode_url_Serie(url, id, tmp = ''):
-    
-    cConfig().log(id)
-    cConfig().log(id)
     
     v = url
     
@@ -409,16 +407,15 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
-    cConfig().log(sUrl)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<a *name="b[0-9]+".+?href="([^"]+)" *id="([^"]+)" *target="seriePlayer".+?i class=[^>]+><\/i> ([^<]+) <'
+    sPattern = 'href="([^"]+)" *id="([^"]+)" *target="seriePlayer".+?i class=[^>]+><\/i> ([^<]+) <'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             
@@ -431,11 +428,14 @@ def showHosters():
                 tmp = re.search('input id="tmp".+?value="([^"]+)"', sHtmlContent, re.DOTALL).group(1)
             except:
                 pass
-            url = decode_url(url, aEntry[1], tmp)
-            #second convertion
-            sHosterUrl = ResolveUrl(url)
-            
-            #cConfig().log(sHosterUrl)
+                
+            if 'hqq' in url:
+                sHosterUrl = url
+            else:
+                url = decode_url(url, aEntry[1], tmp)
+
+                #second convertion
+                sHosterUrl = ResolveUrl(url)
             
             #if not url.startswith('http'):
             #    url = URL_MAIN[:-1] + url
@@ -510,12 +510,10 @@ def serieHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sData = oInputParameterHandler.getValue('sData')
-    
-    cConfig().log(sUrl)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     oParser = cParser()
     sPattern = '<div id="' + sData + '".+?<\/div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -525,14 +523,14 @@ def serieHosters():
     else:
         return
         
-    sPattern = '<li><a (?:id="([^"]+)" onclick=".+?" )*href="([^"]+)"'
+    sPattern = '<li><a (?:|id="([^"]+)" (?:|onclick=".+?")) *href="([^"]+)"'
     aResult = oParser.parse(block, sPattern)
-        
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             
             if aEntry[0]:
-                #Adecoder
+
                 sUrl = aEntry[1]
                 tmp = ''
                 try:
@@ -540,21 +538,19 @@ def serieHosters():
                 except:
                     pass
                 url2 = decode_url_Serie(sUrl, aEntry[0], tmp)
+
                 #second convertion
                 sHosterUrl = ResolveUrl(url2)
-                
+
             else:
                 sHosterUrl = aEntry[1]
-            
-            
-            cConfig().log(sHosterUrl)
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
 
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
 
                 oHoster.setDisplayName(sDisplayTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sUrl, sThumb)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
