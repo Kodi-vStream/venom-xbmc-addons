@@ -148,7 +148,7 @@ def showEpisodes():
     aSynResult = oParser.parse(sUsentContent, sPattern)
     if aSynResult[0]:
         sDesc = aSynResult[1][0]
-        sDesc = sDesc.replace('<br />', '').replace('&#8230;', '...')
+        sDesc = sDesc.replace('<br />', '').replace('&#8230;', '...').replace('&#8217;', '\'')
 
     #récupération du poster
     sThumb = ''
