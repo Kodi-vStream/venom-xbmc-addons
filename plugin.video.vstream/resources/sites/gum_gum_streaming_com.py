@@ -21,9 +21,9 @@ URL_MAIN = 'http://gum-gum-streaming.com/'
 
 ANIM_NEWS = (URL_MAIN, 'showNews')
 ANIM_ANIMS = (URL_MAIN, 'showNews')
-ANIM_VFS = (URL_MAIN + 'vf', 'showAnimes')
-ANIM_VOSTFRS = (URL_MAIN + 'vostfr', 'showAnimes')
-ANIM_MOVIES = (URL_MAIN + 'films', 'showMovies')
+ANIM_VFS = (URL_MAIN + 'vf/', 'showAnimes')
+ANIM_VOSTFRS = (URL_MAIN + 'vostfr/', 'showAnimes')
+ANIM_MOVIES = (URL_MAIN + 'films/', 'showMovies')
 
 def load():
     oGui = cGui()
