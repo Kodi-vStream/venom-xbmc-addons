@@ -48,6 +48,7 @@ def load():
 
 def showNews():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -55,8 +56,8 @@ def showNews():
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<h3 style="color: .+?;">.+? : <a title="([^"]+)" href="(.+?)">.+?</a>'
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -65,23 +66,34 @@ def showNews():
             if dialog.iscanceled():
                 break
 
-            sUrl = aEntry[1]
+            #traitement pour affichage de la langue
+            sLang = ''
+            if '/vf/' in sUrl or '/vostfr/' in sUrl:
+                sLang = ''
+            elif 'VF' in str(aEntry[0]):
+                sLang = 'VF'
+            elif 'VOSTFR' in str(aEntry[0]):
+                sLang = 'VOSTFR'
+
+            sUrl = str(aEntry[1])
+            sTitle = str(aEntry[0]).replace(' VOSTFR', '').replace(' VF', '')
+            sDisplayTitle = ('%s (%s)') % (sTitle, sLang)
+
             filter = re.search('(\d+)-(\d+)', sUrl)
             if filter:
                 continue
-            sTitle = aEntry[0]
-            #sTitle = cUtil().removeHtmlTags(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, 'sites/gum_gum_streaming_com.png', '', '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'sites/gum_gum_streaming_com.png', '', '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
     oGui.setEndOfDirectory()
 
 def showAnimes():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -89,8 +101,8 @@ def showAnimes():
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<h2 style="text-align: center;"><a href="([^"]+)">(.+?)</a>'
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -98,9 +110,9 @@ def showAnimes():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-            sTitle = str(aEntry[1])
-            #sTitle = cUtil().removeHtmlTags(sTitle)
+
             sUrl = str(aEntry[0])
+            sTitle = str(aEntry[1])
 
             #traitement du titre pour compatibilite
             sTitle = sTitle.replace('(', ' ').replace(')', ' ').replace('-', ' ')
@@ -111,8 +123,7 @@ def showAnimes():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
-            # oGui.addDir(SITE_IDENTIFIER, 'showEpisodes', sTitle, 'anime.png', oOutputParameterHandler)
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, 'sites/gum_gum_streaming_com.png', '', '', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showEpisodes', sTitle, 'sites/gum_gum_streaming_com.png', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
     oGui.setEndOfDirectory()
@@ -131,14 +142,17 @@ def showEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
     sUsentContent = aResult[1][0]
 
+    #récupération du synopsis
     sDesc = ''
-    sPattern = 'Synopsis:.+? ([^<]+)</h5>'
+    sPattern = 'Synopsis:</span>(.+?)</h5>'
     aSynResult = oParser.parse(sUsentContent, sPattern)
     if aSynResult[0]:
         sDesc = aSynResult[1][0]
+        sDesc = sDesc.replace('<br />', '').replace('&#8230;', '...')
 
+    #récupération du poster
     sThumb = ''
-    sPattern = '<h4 style=".+?"><img class="alignright" src="(.+?)"'
+    sPattern = '<h4 style=".+?"><img class="alignright".+?src="(.+?)"'
     sThumbResult = oParser.parse(sUsentContent, sPattern)
     if sThumbResult[0]:
         sThumb = sThumbResult[1][0]
@@ -148,7 +162,7 @@ def showEpisodes():
     aSeasonsTitleEnd = [m.start() for m in re.finditer('</h2>', sUsentContent)]
     for idx, val in enumerate(aSeasonsIdx):
         sSeasonTitle = re.split('>', sUsentContent[val:aSeasonsTitleEnd[idx]])[1]
-        oGui.addText(SITE_IDENTIFIER, '[COLOR gold]' + sSeasonTitle + '[/COLOR]', sThumb)
+        oGui.addText(SITE_IDENTIFIER, '[COLOR gold]' + sSeasonTitle + '[/COLOR]', 'sites/gum_gum_streaming_com.png')
 
         sSeasonContent = sUsentContent[val:aSeasonsEndIdx[idx]]
         aArcIdx = [m.start() for m in re.finditer('<h3>', sSeasonContent)]
@@ -157,7 +171,7 @@ def showEpisodes():
             aArcTitleEnd = [m.start() for m in re.finditer('</h3>', sSeasonContent)]
             for idxarc, valarc in enumerate(aArcIdx):
                 sArcTitle = re.split('>', sSeasonContent[valarc:aArcTitleEnd[idxarc]])[1]
-                oGui.addText(SITE_IDENTIFIER, '[COLOR teal]' + str(sArcTitle) + '[/COLOR]', sThumb)
+                oGui.addText(SITE_IDENTIFIER, '[COLOR teal]' + str(sArcTitle) + '[/COLOR]', 'sites/gum_gum_streaming_com.png')
 
                 sArcContent = str(sSeasonContent[valarc:aArcEndIdx[idxarc]])
                 sTitlePattern = '>• (.+?)</a>'
@@ -169,7 +183,6 @@ def showEpisodes():
                     aTitle = aTitleResult[1]
                     aUrl = aUrlResult[1]
                     for sIdx, sTitle in enumerate(aTitle):
-                        #sDisplayTitle = cUtil().DecoTitle(sTitle)
                         oOutputParameterHandler = cOutputParameterHandler()
                         oOutputParameterHandler.addParameter('siteUrl', aUrl[sIdx])
                         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -187,19 +200,18 @@ def showEpisodes():
                 aTitle = aTitleResult[1]
                 aUrl = aUrlResult[1]
                 for sIdx, sTitle in enumerate(aTitle):
-                    #sDisplayTitle = cUtil().DecoTitle(sTitle)
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', aUrl[sIdx])
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                     oOutputParameterHandler.addParameter('sDesc', sDesc)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
-                    # oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sThumb, sDesc, oOutputParameterHandler)
                     oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 def showMovies():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -207,8 +219,8 @@ def showMovies():
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<h2 style="text-align: center;"><a href="([^"]+)">(.+?)</a>'
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -216,6 +228,7 @@ def showMovies():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
+
             sTitle = str(aEntry[1])
             sUrl = str(aEntry[0])
 
@@ -223,15 +236,16 @@ def showMovies():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             if sTitle.lower().find('les films') != -1:
-                oGui.addDir(SITE_IDENTIFIER, 'showMovieList', sTitle, '', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showMovieList', sTitle, 'sites/gum_gum_streaming_com.png', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', '', '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'sites/gum_gum_streaming_com.png', '', '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
     oGui.setEndOfDirectory()
 
 def showMovieList():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -239,8 +253,8 @@ def showMovieList():
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<a title=".+?" href="([^"]+)">(.+?)</a>'
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -248,8 +262,10 @@ def showMovieList():
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-            sTitle = str(aEntry[1])
+
             sUrl = str(aEntry[0])
+            sTitle = str(aEntry[1])
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -260,22 +276,19 @@ def showMovieList():
 
 def showHosters():
     oGui = cGui()
-
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    oParser = cParser()
     sPattern = '<div class="video-container"><iframe.+?src="([^<>"]+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            #xbmc.log(aEntry)
             sHosterUrl = str(aEntry)
-            if not sHosterUrl.startswith('http:') and not sHosterUrl.startswith('https:'):
+            if not sHosterUrl.startswith('http'):
                 sHosterUrl = 'http:' + sHosterUrl
 
 
