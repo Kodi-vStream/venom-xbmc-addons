@@ -70,7 +70,7 @@ def showSearch():
         return
 
 
-def showGenres():#recup les genres sur le site
+def showGenres():
     oGui = cGui()
     oParser = cParser()
 
@@ -91,7 +91,7 @@ def showGenres():#recup les genres sur le site
     oGui.setEndOfDirectory()
 
 
-def showMovieYears():#creer une liste inversée d'annees
+def showMovieYears():
     oGui = cGui()
 
     for i in reversed (xrange(1964, 2019)):
@@ -120,7 +120,7 @@ def showMovies(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -133,7 +133,7 @@ def showMovies(sSearch = ''):
 
             sUrl = str(aEntry[0])
             sThumb = str(aEntry[1])
-            sTitle = str(aEntry[2])
+            sTitle = str(aEntry[2]).replace('&#8217;', '\'')
             sQual = str(aEntry[3])
             sDesc = ''
 
@@ -151,6 +151,7 @@ def showMovies(sSearch = ''):
 
         cConfig().finishDialog(dialog)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -174,6 +175,7 @@ def __checkForNextPage(sHtmlContent):
 
 def showHosters():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -181,8 +183,9 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    #réécriture des liens beclic
+    sHtmlContent = sHtmlContent.replace('http://beclic.pw/op.php?s=', 'https://oload.site/embed/')
 
-    oParser = cParser()
     sPattern = '<iframe.+?src="(.+?)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -202,6 +205,7 @@ def showHosters():
 
 def seriesHosters():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -210,7 +214,8 @@ def seriesHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace(' class="selected"', '')
-    oParser = cParser()
+    #réécriture des liens beclic
+    sHtmlContent = sHtmlContent.replace('http://beclic.pw/op.php?s=', 'https://oload.site/embed/')
 
     sEpisodesList= {}
     sPattern = '<a href="#(div[0-9]+)">(.+?)</a>'
@@ -218,7 +223,7 @@ def seriesHosters():
     if (aResult[0] == True):
         for i in aResult[1]:
             sEpisodesList[i[0]] = i[1]
-        
+
     #cConfig().log(sEpisodesList)
 
     sPattern = '<div id="(div[^"]+)">.+?<iframe.+?src="(.+?)"'
@@ -228,13 +233,13 @@ def seriesHosters():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            
+
             #cConfig().log(aEntry)
 
             div = str(aEntry[0])
             sEpisodes = sEpisodesList.get(div, "Error")
             sEpisodes = sEpisodes.replace('Épisodes ', 'E')
-            
+
             sMovieTitle2 = sMovieTitle + sEpisodes
 
             sHosterUrl = str(aEntry[1])
