@@ -12,15 +12,16 @@ SITE_IDENTIFIER = 'les_debiles'
 SITE_NAME = 'Les Débiles'
 SITE_DESC = 'Vidéos drôles, du buzz, des fails et des vidéos insolites'
 
-URL_MAIN = 'http://www.lesdebiles.com'
+URL_MAIN = 'http://www.lesdebiles.com/'
 
-URL_SEARCH = (URL_MAIN , 'showMovies')
-URL_SEARCH_MISC = (URL_MAIN , 'showMovies')
+URL_SEARCH = (URL_MAIN, 'showMovies')
+URL_SEARCH_MISC = (URL_MAIN, 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 NETS_NETS = ('http://', 'load')
-NETS_NEWS = (URL_MAIN + '/videos-s0-1.html', 'showMovies')
+NETS_NEWS = (URL_MAIN + 'videos-s0-1.html', 'showMovies')
 NETS_GENRES = (True, 'showGenre')
+NETS_CATS = (True, 'showGenres')
 
 def load():
     oGui = cGui()
@@ -35,7 +36,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'Vidéos Catégories', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'Vidéos (Genres)', 'genres.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', NETS_CATS[0])
+    oGui.addDir(SITE_IDENTIFIER, NETS_CATS[1], 'Vidéos (Catégories)', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -44,7 +49,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + '/' + sSearchText + '-s0-r1.html'
+        sUrl = URL_SEARCH[0] + sSearchText + '-s0-r1.html'
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -54,13 +59,13 @@ def showGenre():
 
     liste = []
     liste.append( ['Nouveautés', URL_MAIN + '/videos-s0-1.html'] )
-    liste.append( ['Hit Parade', URL_MAIN + '/videos-s5-1.html'] )
     liste.append( ['Top Vues', URL_MAIN + '/videos-s1-1.html'] )
     liste.append( ['Top Vote', URL_MAIN + '/videos-s2-1.html'] )
+    liste.append( ['Hit Parade', URL_MAIN + '/videos-s5-1.html'] )
     liste.append( ['Fatality', URL_MAIN + '/videos-s7-1.html'] )
     liste.append( ['Vidéos Longues', URL_MAIN + '/videos-s3-1.html'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -68,8 +73,30 @@ def showGenre():
 
     oGui.setEndOfDirectory()
 
+def showGenres():
+    oGui = cGui()
+    oParser = cParser()
+    oRequestHandler = cRequestHandler(URL_MAIN + 'categories.html')
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '<li><a href="([^>]+)">([^<]+)</a></li>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+
+            sUrl = str(aEntry[0])
+            sTitle = str(aEntry[1])
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
 
     if sSearch:
       sUrl = sSearch
@@ -83,11 +110,10 @@ def showMovies(sSearch = ''):
 
     sPattern = '<div class="blockthumb">.+?<img class="imageitem" src="([^"]+)".+?<h2 class="titleitem"><a href="([^"]+)">(.+?)</a>'
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -96,15 +122,15 @@ def showMovies(sSearch = ''):
         for aEntry in aResult[1]:
             cConfig().updateDialog(dialog, total)
 
-            sUrl    = str(aEntry[1])
-            sTitle  = str(aEntry[2])
-            sThumbnail = str(aEntry[0])
+            sThumb = str(aEntry[0])
+            sUrl = str(aEntry[1])
+            sTitle = str(aEntry[2])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail,'', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -112,8 +138,7 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]',
-                        'next.png',  oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -130,15 +155,14 @@ def __checkForNextPage(sHtmlContent):
 
 def showHosters():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
-
-    oParser = cParser()
+    sHtmlContent = oRequestHandler.request()
 
     #lien direct mp4
     sPattern = 'file: "([^"]+)"'
@@ -161,7 +185,7 @@ def showHosters():
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     else:
         oGui.addText(SITE_IDENTIFIER, '(Video non visible, Lien Premium)')
 
