@@ -18,6 +18,7 @@ URL_MAIN = 'http://ww2.serie-streaminghd.com/'
 
 SERIE_NEWS = (URL_MAIN, 'showMovies')
 SERIE_SERIES = (URL_MAIN, 'showMovies')
+SERIE_HD = (URL_MAIN , 'showMovies')
 SERIE_VFS = (URL_MAIN + 'regarder-series/vf-hd/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'regarder-series/vostfr-hd/', 'showMovies')
 
