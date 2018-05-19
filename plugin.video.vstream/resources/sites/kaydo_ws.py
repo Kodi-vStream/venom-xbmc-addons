@@ -341,10 +341,10 @@ def seriesHosters():
             links = []
             result = re.search('href="(.+?ver=vf)"', aEntry[1])
             if result:
-                links + = [['VF', result.group(1)]]
+                links += [['VF', result.group(1)]]
             result = re.search('href="(.+?ver=vo)"', aEntry[1])
             if result:
-                links + = [['VOST', result.group(1)]]
+                links += [['VOST', result.group(1)]]
 
             for t, link in links:
                 oOutputParameterHandler = cOutputParameterHandler()
