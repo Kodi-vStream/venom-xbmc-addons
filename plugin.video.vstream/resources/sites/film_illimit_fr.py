@@ -189,7 +189,7 @@ def showMovies(sSearch = ''):
             sDisplayTitle = cUtil().DecoTitle(sTitle)
 
             if re.match('.+?saison [0-9]+', sTitle, re.IGNORECASE):
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
