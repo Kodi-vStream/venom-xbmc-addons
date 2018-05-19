@@ -58,12 +58,12 @@ def showGenre():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Nouveautés', URL_MAIN + '/videos-s0-1.html'] )
-    liste.append( ['Top Vues', URL_MAIN + '/videos-s1-1.html'] )
-    liste.append( ['Top Vote', URL_MAIN + '/videos-s2-1.html'] )
-    liste.append( ['Hit Parade', URL_MAIN + '/videos-s5-1.html'] )
-    liste.append( ['Fatality', URL_MAIN + '/videos-s7-1.html'] )
-    liste.append( ['Vidéos Longues', URL_MAIN + '/videos-s3-1.html'] )
+    liste.append( ['Nouveautés', URL_MAIN + 'videos-s0-1.html'] )
+    liste.append( ['Top Vues', URL_MAIN + 'videos-s1-1.html'] )
+    liste.append( ['Top Vote', URL_MAIN + 'videos-s2-1.html'] )
+    liste.append( ['Hit Parade', URL_MAIN + 'videos-s5-1.html'] )
+    liste.append( ['Fatality', URL_MAIN + 'videos-s7-1.html'] )
+    liste.append( ['Vidéos Longues', URL_MAIN + 'videos-s3-1.html'] )
 
     for sTitle, sUrl in liste:
 
