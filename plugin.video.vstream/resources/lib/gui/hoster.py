@@ -175,6 +175,8 @@ class cHosterGui:
             return self.getHoster('vidto')
         if ('vidtodo.' in sHostName):
             return self.getHoster('vidtodo')
+        if ('vidstodo.' in sHostName):
+            return self.getHoster('vidtodo')
         if ('vidzi' in sHostName):
             return self.getHoster('vidzi')
         if ('cloudy' in sHostName):

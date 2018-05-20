@@ -1,9 +1,5 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-
-#Site sous DLPROTECT
-
-return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -12,13 +8,12 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil, VSshowYear
 from resources.lib.config import cConfig
-import re,xbmcgui,urllib2
 
 SITE_IDENTIFIER = 'skstream_co'
 SITE_NAME = 'Skstream'
 SITE_DESC = 'Films Series Mangas'
 
-URL_MAIN = 'http://www.skstream.biz/'
+URL_MAIN = 'http://www.skstream.info/'
 
 MOVIE_NEWS = (URL_MAIN + 'films', 'showMovies')
 MOVIE_MOVIE = ('http://films', 'showMenuMovies')
@@ -405,16 +400,10 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
-
-    headers = {'User-Agent': UA ,
-                'Referer': refUrl ,
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}
-
-    request = urllib2.Request(sUrl,None,headers)
-    reponse = urllib2.urlopen(request)
-    vUrl = reponse.geturl()
-    reponse.close()
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('Referer', refUrl)
+    oRequestHandler.request()
+    vUrl = oRequestHandler.getRealUrl()
 
     if vUrl:
         sHosterUrl = vUrl
