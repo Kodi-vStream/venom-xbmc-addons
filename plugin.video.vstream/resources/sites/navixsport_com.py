@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
-#Venom.
+# https://github.com/Kodi-vStream/venom-xbmc-addons
+#désactiver le 20/05/2018
+return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -7,8 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-import base64
-import re,urllib2
+import base64, re, urllib2
 
 
 SITE_IDENTIFIER = 'navixsport_com'
@@ -118,7 +119,6 @@ def showMovies(sSearch = ''):
 
             #Test si live en cours
             if 'STARTED'  in aEntry[1]:
-
                 sTitle = '[COLOR coral]' + '[Live en cours]  ' + '[/COLOR]' + sTitle
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -137,6 +137,7 @@ def showMovies(sSearch = ''):
 
 def showHosters():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -144,19 +145,17 @@ def showHosters():
     sThumb  = oInputParameterHandler.getValue('sThumb')
 
     oGui.addText(SITE_IDENTIFIER, sMovieTitle)
-
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles:[/COLOR]')
 
     if '[Live' in sMovieTitle:
 
-       request = urllib2.Request(sUrl,None,headers)
+       request = urllib2.Request(sUrl, None, headers)
        reponse = urllib2.urlopen(request)
        sHtmlContent = reponse.read()
        reponse.close()
 
        sPattern = '<source src="(.+?)" type="video/mp4"/>'
 
-       oParser = cParser()
        aResult = oParser.parse(sHtmlContent, sPattern)
 
        #si blocage site limite visiteur ou erreur
