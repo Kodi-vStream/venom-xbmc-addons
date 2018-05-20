@@ -25,8 +25,6 @@ class cRequestHandler:
         self.__bRemoveNewLines = False
         self.__bRemoveBreakLines = False
         self.__sResponseHeader = ''
-        
-        self.__HeaderReturn = ''
 
     def removeNewLines(self, bRemoveNewLines):
         self.__bRemoveNewLines = bRemoveNewLines
@@ -60,13 +58,9 @@ class cRequestHandler:
         self.addHeaderEntry('Content-Type', mpartdata[0] )
         self.addHeaderEntry('Content-Length', len(mpartdata[1]))
 
-    #Fonction la plus fiable
+    #Je sais plus si elle gere les doublons
     def getResponseHeader(self):
         return self.__sResponseHeader
-    
-    #Ce n'est pas un doublon de getResponseHeader, si il y a des doublon, l'une des deux fonctions les zappe.
-    def GetHeaders(self):
-        return self.__HeaderReturn
         
     # url after redirects
     def getRealUrl(self):
@@ -137,9 +131,10 @@ class cRequestHandler:
             if self.__sResponseHeader.get('Content-Encoding') == 'gzip':
                 import zlib
                 sContent = zlib.decompress(sContent, zlib.MAX_WBITS|16)
-                
+            
+            #https://bugs.python.org/issue4773
             self.__sRealUrl = oResponse.geturl()
-            self.__HeaderReturn = oResponse.headers
+            self.__sResponseHeader = oResponse.info()
         
             oResponse.close()
             
@@ -155,11 +150,16 @@ class cRequestHandler:
                     print 'Page protegee par cloudflare'
                     CF = cloudflare.CloudflareBypass()
                     sContent = CF.GetHtml(self.__sUrl,e.read(),cookies,sParameters,oRequest.headers)
-                    self.__sRealUrl,self.__HeaderReturn = CF.GetReponseInfo()
+                    self.__sRealUrl,self.__sResponseHeader = CF.GetReponseInfo()
 
             if not sContent:
                 cConfig().error("%s (%d),%s" % (cConfig().getlanguage(30205), e.code , self.__sUrl))
                 return ''
+                
+        except urllib2.URLError, e:
+            cConfig().log(e.reason)
+            cConfig().error("%s (%s),%s" % (cConfig().getlanguage(30205), e.reason , self.__sUrl))
+            return ''           
         
         if (self.__bRemoveNewLines == True):
             sContent = sContent.replace("\n","")
