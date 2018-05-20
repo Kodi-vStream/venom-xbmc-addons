@@ -241,8 +241,8 @@ class CloudflareBypass(object):
             cookies = cookieMem
             xbmc.log('cookies present sur disque', xbmc.LOGNOTICE)
 
-            #Test PRIORITAIRE
-            opener = urllib2.build_opener(NoRedirection)
+            #Redirection possible
+            opener = urllib2.build_opener()
             opener.addheaders = self.SetHeader()
 
             #Add saved cookies
@@ -371,9 +371,8 @@ class CloudflareBypass(object):
         #Memorisation
         self.SaveCookie(self.host.replace('.','_'),cookies)
 
-
         #3 eme etape : on refait la requete mais avec les nouveaux cookies
-        opener = urllib2.build_opener(NoRedirection)
+        opener = urllib2.build_opener()
         opener.addheaders = self.SetHeader()
 
         #Add the two cookies
