@@ -336,7 +336,8 @@ def showMovieSearch(sSearch = ''):
 
         cConfig().finishDialog(dialog)
 
-    oGui.setEndOfDirectory()
+    if not sSearch:
+        oGui.setEndOfDirectory()
 
 
 def showMovies(sSearch = ''):

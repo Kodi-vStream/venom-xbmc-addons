@@ -352,11 +352,11 @@ def showSeriesLinks():
     oParser = cParser()
 
     #Mise àjour du titre
-    sPattern = 'content="Telecharger (.+?)Qualité [^\|]+?\| [^\|]+?\| (.+?)       la serie'
+    sPattern = '<meta name="description" content="Telecharger (.+?)Qualité.+?\|[^\|](.+?) Episode .+?\|[^\|](.+?)      la serie'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):
-        sMovieTitle = aResult[1][0][0]+aResult[1][0][1]
+        sMovieTitle = aResult[1][0][0]+aResult[1][0][1]+aResult[1][0][2]
 
     oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualités disponibles pour cette saison :[/COLOR]')
 

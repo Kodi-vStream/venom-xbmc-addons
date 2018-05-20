@@ -21,11 +21,11 @@ SITE_DESC = 'plus belle la vie, streaming, séries, récent'
 
 URL_MAIN = 'https://www.mamcin.com/'
 
-FUNCTION_SEARCH = 'showMovies'
+#FUNCTION_SEARCH = 'showMovies'
 
 SERIE_NEWS = (URL_MAIN, 'showMovies')
 SERIE_SERIES = (URL_MAIN, 'showMovies')
-SERIE_GENRES = (True, 'showSerieGenres')
+#SERIE_GENRES = (True, 'showGenres')
 
 #loader function
 def load():
@@ -55,7 +55,7 @@ def showGenres():
     liste = []
     liste.append( ['News', URL_MAIN + 'non-classe/'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -85,7 +85,6 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-
         dialog = cConfig().createDialog(SITE_NAME)
 
         for aEntry in aResult[1]:
@@ -96,14 +95,14 @@ def showMovies(sSearch = ''):
             #first post filter
             if (str(aEntry[2]) != "https://www.mamcin.com/wp-content/uploads/2017/10/plus-belle-la-vie-episode-suivant-en-avance.jpg"):
                 sUrl    = str(aEntry[0])
-                sTitle  = (' %s ') % (str(aEntry[1]))
-                sThumbnail = str(aEntry[2])
- 
+                sTitle  = str(aEntry[1])
+                sThumb = str(aEntry[2])
+
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail,'', oOutputParameterHandler)	
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -133,10 +132,10 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
 
@@ -150,7 +149,7 @@ def showHosters():
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     #add sendvid sources
     sPattern = '<source src="(.+?)" type=\'video/mp4\' />'
@@ -162,6 +161,6 @@ def showHosters():
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)                
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-    oGui.setEndOfDirectory() #fin
+    oGui.setEndOfDirectory()

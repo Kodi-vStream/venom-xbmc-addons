@@ -71,6 +71,7 @@ class cHoster(iHoster):
 
         oParser = cParser()
         oRequest = cRequestHandler(self.__sUrl)
+        oRequest.addHeaderEntry('Referer', self.__sUrl)
         sHtmlContent = oRequest.request()
   
         sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'

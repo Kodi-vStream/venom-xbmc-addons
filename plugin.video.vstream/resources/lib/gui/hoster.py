@@ -175,6 +175,8 @@ class cHosterGui:
             return self.getHoster('vidto')
         if ('vidtodo.' in sHostName):
             return self.getHoster('vidtodo')
+        if ('vidstodo.' in sHostName):
+            return self.getHoster('vidtodo')
         if ('vidzi' in sHostName):
             return self.getHoster('vidzi')
         if ('cloudy' in sHostName):
@@ -186,7 +188,7 @@ class cHosterGui:
         if (('dailymotion' in sHostName) or ('dai.ly' in sHostName)):
             return self.getHoster('dailymotion')
         if ('filez.' in sHostName):
-            return self.getHoster('filez')
+            return self.getHoster('flashx')
         if ('vodlocker' in sHostName):
             return self.getHoster('vodlocker')
         if ('mystream' in sHostName):
@@ -315,6 +317,10 @@ class cHosterGui:
             return self.getHoster('upvid')
         if ('cloudvid' in sHostName):
             return self.getHoster('cloudvid')
+        if ('megadrive' in sHostName):
+            return self.getHoster('megadrive')
+        if ('downace' in sHostName):
+            return self.getHoster('downace')
         if ('clickopen' in sHostName):
             return self.getHoster('clickopen')
         if ('iframe-secured' in sHostName):

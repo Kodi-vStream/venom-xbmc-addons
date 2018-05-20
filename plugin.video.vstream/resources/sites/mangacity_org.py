@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-#Venom.
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -7,9 +7,9 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil,VSlog
-import urllib2,urllib,re
-import unicodedata,random
+from resources.lib.util import cUtil, VSlog
+import urllib2, urllib, re
+import unicodedata, random
 
 
 #Make random url
@@ -23,16 +23,16 @@ SITE_DESC = 'Animés en streaming'
 
 URL_MAIN = 'http://www.ianimes.co/'
 
-MOVIE_MOVIE = (URL_MAIN + 'films.php?liste=' + RandomKey , 'ShowAlpha')
-MOVIE_GENRES = (URL_MAIN + 'films.php?liste=' + RandomKey , 'showGenres')
+MOVIE_MOVIE = (URL_MAIN + 'films.php?liste=' + RandomKey, 'ShowAlpha')
+MOVIE_GENRES = (URL_MAIN + 'films.php?liste=' + RandomKey, 'showGenres')
 
-SERIE_SERIES = (URL_MAIN + 'series.php?liste=' + RandomKey , 'ShowAlpha')
+SERIE_SERIES = (URL_MAIN + 'series.php?liste=' + RandomKey, 'ShowAlpha')
 
 ANIM_NEWS = (URL_MAIN + 'nouveautees.html', 'showMovies')
 ANIM_ANIMS = (URL_MAIN + 'animes.php?liste=' + RandomKey, 'ShowAlpha')
 ANIM_VFS = (URL_MAIN + 'listing_vf.php', 'ShowAlpha2')
 ANIM_VOSTFRS = (URL_MAIN + 'listing_vostfr.php', 'ShowAlpha2')
-ANIM_GENRES = (URL_MAIN + 'animes.php?liste=' + RandomKey , 'showGenres')
+ANIM_GENRES = (URL_MAIN + 'animes.php?liste=' + RandomKey, 'showGenres')
 
 URL_SEARCH_SERIES = ('', 'showMovies')
 URL_SEARCH = ('', 'showMovies')
@@ -47,8 +47,8 @@ def DecryptMangacity(chain):
     if (aResult2[0] == True):
 
         a = aResult2[1][0][0]
-        b = aResult2[1][0][1].replace('"','').split(',')
-        c = aResult2[1][0][2].replace('"','').split(',')
+        b = aResult2[1][0][1].replace('"', '').split(',')
+        c = aResult2[1][0][2].replace('"', '').split(',')
 
         d = a
         for i in range(0, len(b)):
@@ -61,7 +61,7 @@ def DecryptMangacity(chain):
 
 def FullUnescape(code):
     sPattern = '<script type="text\/javascript">document\.write\(unescape\(".+?"\)\);<\/script>'
-    aResult = re.findall(sPattern,code)
+    aResult = re.findall(sPattern, code)
     if aResult:
         return urllib.unquote(aResult[0])
     return code
@@ -74,7 +74,7 @@ def ICDecode(html):
     import math
 
     sPattern = 'language=javascript>c="([^"]+)";eval\(unescape\("([^"]+)"\)\);x\("([^"]+)"\);'
-    aResult = re.findall(sPattern,html)
+    aResult = re.findall(sPattern, html)
 
     if not aResult:
         return html
@@ -95,7 +95,7 @@ def ICDecode(html):
 
     c = urllib.unquote(d)
     #Recuperation du tableau
-    aResult = re.findall('t=Array\(([0-9,]+)\);',c)
+    aResult = re.findall('t=Array\(([0-9,]+)\);', c)
     if not aResult:
         return ''
     t = aResult[0].split(',')
@@ -203,27 +203,20 @@ def showGenres():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             sGenre = cUtil().unescape(aEntry[1]).decode("latin-1").encode("utf-8")
-            Link = cUtil().unescape(aEntry[0])
+            sUrl = cUtil().unescape(aEntry[0])
+            sUrl = URL_MAIN + Link
 
             #sGenre = unicode(sGenre,'iso-8859-1')
             #sGenre = sGenre.encode('ascii', 'ignore').decode('ascii')
 
-            sTitle = aEntry[1].decode("latin-1").encode("utf-8")
+            #sTitle = aEntry[1].decode("latin-1").encode("utf-8")
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN) + Link)
-            oGui.addTV(SITE_IDENTIFIER, 'showMovies', sGenre, '', '', '', oOutputParameterHandler)
-
-        cConfig().finishDialog(dialog)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sGenre, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -253,7 +246,7 @@ def ShowAlpha2():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        ShowAlpha( str(URL_MAIN) + aResult[1][0])
+        ShowAlpha(URL_MAIN + aResult[1][0])
 
 def ShowAlpha(url = None):
     oGui = cGui()
@@ -291,12 +284,12 @@ def ShowAlpha(url = None):
             if dialog.iscanceled():
                 break
 
-            sLetter = aEntry[1]
-            Link = aEntry[0]
+            sUrl = URL_MAIN + str(aEntry[0])
+            sLetter = str(aEntry[1])
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN) + Link)
-            oGui.addTV(SITE_IDENTIFIER, 'showMovies', 'Lettre [B][COLOR red]' + sLetter + '[/COLOR][/B]', '', '', '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [B][COLOR red]' + sLetter + '[/COLOR][/B]', 'az.png', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -304,12 +297,13 @@ def ShowAlpha(url = None):
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
 
     if sSearch:
 
         #query_args = { 's': str(sSearch) }
         #data = urllib.urlencode(query_args)
-        #headers = {'User-Agent' : 'Mozilla 5.10', 'Referer' : 'http://www.mangacity.org'}
+        #headers = {'User-Agent' : 'Mozilla 5.10', 'Referer' : 'URL_MAIN'}
         #url = URL_MAIN + 'result.php'
         #request = urllib2.Request(url,data,headers)
         #reponse = urllib2.urlopen(request)
@@ -319,8 +313,8 @@ def showMovies(sSearch = ''):
 
         url = URL_MAIN + 'resultat+' + sSearch + '.html'
 
-        headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0','Referer' : URL_MAIN}
-        request = urllib2.Request(url,None,headers)
+        headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0', 'Referer' : URL_MAIN}
+        request = urllib2.Request(url, None, headers)
         reponse = urllib2.urlopen(request)
 
         sHtmlContent = reponse.read()
@@ -343,55 +337,66 @@ def showMovies(sSearch = ''):
 
     sPattern = '<center><div style="background: url\(\'([^\'].+?)\'\); background-size.+?alt="(.+?)" title.+?<a href=["\']*(.+?)[\'"]* class=.button'
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
 
         for aEntry in list(set(aResult[1])):
-            cConfig().updateDialog(dialog, total) #dialog
+            cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
 
-            sTitle = aEntry[1]
+            sThumb = URL_MAIN + str(aEntry[0])
+
+            sTitle = str(aEntry[1])
             #sTitle = unicode(sTitle, errors='replace')
-            sTitle = unicode(sTitle,'iso-8859-1')
+            sTitle = unicode(sTitle, 'iso-8859-1')
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
             sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
-
             sTitle = cUtil().unescape(sTitle)
-            sTitle = sTitle.replace('[Streaming] - ','')
+            sTitle = sTitle.replace('[Streaming] - ', '').replace(' (VF)', '').replace(' (VOSTFR)', '').replace(' DVDRIP', '')
+            if ' - Episode' in sTitle:
+                sTitle = sTitle.replace(' -', '')
 
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            sUrl = URL_MAIN + str(aEntry[2])
 
-            sPicture = aEntry[0]
-            #sPicture = sPicture.encode('ascii', 'ignore').decode('ascii')
-            #sPicture = sPicture.replace('[Streaming] - ','')
-            sPicture = str(URL_MAIN) + str(sPicture)
+            #affichage de la langue
+            sLang = ''
+            if 'VF' in str(aEntry[1]):
+                sLang = 'VF'
+            elif 'VOSTFR' in str(aEntry[1]):
+                sLang = 'VOSTFR'
+
+            #affichage de la qualité
+            sQual = ''
+            if 'DVDRIP' in str(aEntry[1]):
+                sQual = 'DVDRIP'
+
+            sDisplayTitle = ('%s (%s) (%s)') % (sTitle, sLang, sQual)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN) + str(aEntry[2]))
-            oOutputParameterHandler.addParameter('sMovieTitle', str(sTitle))
-            oOutputParameterHandler.addParameter('sThumbnail', sPicture)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '?manga=' in aEntry[2]:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', sPicture, 'animes.png', oOutputParameterHandler)
-            elif '?serie=' in aEntry[2]:
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, '', sPicture, 'series.png', oOutputParameterHandler)
+            if '?manga=' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
+            elif '?serie=' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sDisplayTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sPicture, 'films.png', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
         if sSearch:
             sNextPage = False
         else:
-            sNextPage = __checkForNextPage(sHtmlContent,sUrl)
+            sNextPage = __checkForNextPage(sHtmlContent, sUrl)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
@@ -400,7 +405,7 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
-def __checkForNextPage(sHtmlContent,sUrl):
+def __checkForNextPage(sHtmlContent, sUrl):
     oParser = cParser()
 
     sPattern ='class=.button red light. title=.Voir la page.+?<a href=.(.+?)(?:\'|") class=.button light.'
@@ -411,24 +416,23 @@ def __checkForNextPage(sHtmlContent,sUrl):
         aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        return str(URL_MAIN) + str(aResult[1][0])
+        return URL_MAIN + aResult[1][0]
 
     return False
 
 def showEpisode():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumb = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     if 'HTML/JavaScript Encoder' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
-
-    oParser = cParser()
 
     #On fait 2 passage pr accelerer le parsing regex
     # sPattern = '<div class="&#105;&#110;&#110;&#101;&#114;">(.+?)<footer id="footer">'
@@ -437,7 +441,7 @@ def showEpisode():
     # sPattern = '<img src="(.+?).+? alt="&#101;&#112;&#105;&#115;&#111;&#100;&#101;&#115;".+?<a href="(.+?)" title="(.+?)"'
     # aResult = oParser.parse(aResult[1][0], sPattern)
 
-    sPattern = 'class="button light" [^>]+"><headline11>(.+?)<\/headline11><\/a>|<a href="*([^"]+)"* title="([^"]+)"[^>]+style="*text-decoration:none;"*>'
+    sPattern = '<headline11>(.+?)<\/headline11><\/a>|<a href="*([^"]+)"* title="([^"]+)"[^>]+style="*text-decoration:none;"*>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -448,30 +452,25 @@ def showEpisode():
             if dialog.iscanceled():
                 break
 
-            sTitle = unicode(aEntry[2],'iso-8859-1')
+            sTitle = unicode(aEntry[2], 'iso-8859-1')
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')
-            sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
+            sTitle = sTitle.encode('ascii', 'ignore').decode('ascii').replace(' VF', '').replace(' VOSTFR', '')
 
             sTitle = cUtil().unescape(sTitle)
 
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
-
             sUrl2 = str(cUtil().unescape(aEntry[1]))
-
             if not sUrl2.startswith('http'):
                 sUrl2 = URL_MAIN + sUrl2
 
             if aEntry[0]:
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                oGui.addDir(SITE_IDENTIFIER, 'showEpisode', '[COLOR red]' + str(aEntry[0]) + '[/COLOR]', 'animes.png', oOutputParameterHandler)
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
 
             else:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
         cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
@@ -482,7 +481,7 @@ def ExtractLink(html):
     oParser = cParser()
 
     sPattern = '(?i)src=(?:\'|")(.+?)(?:\'|")'
-    aResult = re.findall(sPattern,html)
+    aResult = re.findall(sPattern, html)
     loop = 0
     if aResult:
         for a in aResult:
@@ -492,7 +491,7 @@ def ExtractLink(html):
             break
 
     sPattern = 'encodeURI\("(.+?)"\)'
-    aResult = re.findall(sPattern,html)
+    aResult = re.findall(sPattern, html)
     if aResult:
         final = aResult[0]
 
@@ -505,18 +504,18 @@ def ExtractLink(html):
     if ';&#' in final:
         final = cUtil().unescape(final)
 
-    if (not final.startswith( 'http' )) and (len(final) > 2) :
+    if (not final.startswith('http')) and (len(final) > 2):
         final = URL_MAIN + final
 
     return final
 
 def showHosters():
     oGui = cGui()
-
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -529,15 +528,15 @@ def showHosters():
     if 'HTML/JavaScript Encoder' in sHtmlContent:
         sHtmlContent = ICDecode(sHtmlContent)
 
-    sHtmlContent = sHtmlContent.replace('<iframe src="http://www.promoliens.net','')
-    sHtmlContent = sHtmlContent.replace("<iframe src='cache_vote.php",'')
+    sHtmlContent = sHtmlContent.replace('<iframe src="http://www.promoliens.net', '')
+    sHtmlContent = sHtmlContent.replace("<iframe src='cache_vote.php", '')
 
     list_url = []
-    oParser = cParser()
 
     #1 er methode
     sPattern = '<div class="box"><iframe.+?src=[\'|"](.+?)[\'|"]'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             if re.match(".+?&#[0-9]+;", aEntry):#directe mais codé html
@@ -547,7 +546,7 @@ def showHosters():
                 sHosterUrl = str(aEntry)
 
             #Ces liens sont tjours des liens
-            if (not sHosterUrl.startswith( 'http' )) and (len(sHosterUrl) > 2) :
+            if (not sHosterUrl.startswith('http')) and (len(sHosterUrl) > 2):
                 sHosterUrl = URL_MAIN + sHosterUrl
 
             list_url.append(sHosterUrl)
@@ -559,7 +558,7 @@ def showHosters():
         for aEntry in aResult[1]:
             #si url cryptee mangacity algo
             sHosterUrl = DecryptMangacity(aEntry[1])
-            sHosterUrl = sHosterUrl.replace('\\','')
+            sHosterUrl = sHosterUrl.replace('\\', '')
             list_url.append(sHosterUrl)
 
     #3 eme methode
@@ -571,19 +570,14 @@ def showHosters():
             tmp = urllib.unquote(aEntry)
 
             sPattern2 = 'src=["\']([^"\']+)["\']'
-            aResult = re.findall(sPattern2,tmp)
+            aResult = re.findall(sPattern2, tmp)
             if aResult:
                 list_url.append(aResult[0])
 
     #VSlog(str(list_url))
 
     if len(list_url) > 0:
-        total = len(list_url)
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in list_url:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             sHosterUrl = aEntry
 
@@ -600,7 +594,7 @@ def showHosters():
                 #on telecharge la page
 
                 oRequestHandler = cRequestHandler(sHosterUrl )
-                oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0')
+                oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0')
                 sHtmlContent = oRequestHandler.request()
                 #Et on remplace le code
                 sHtmlContent = ICDecode(sHtmlContent)
@@ -612,7 +606,7 @@ def showHosters():
             if aResult[0] :
                 #on telecharge la page
                 oRequestHandler = cRequestHandler(sHosterUrl )
-                oRequestHandler.addHeaderEntry('Referer',sUrl)
+                oRequestHandler.addHeaderEntry('Referer', sUrl)
                 sHtmlContent = oRequestHandler.request()
 
                 #Si c'est une redirection, on passe juste le vrai lien
@@ -637,8 +631,8 @@ def showHosters():
             #test pr liens raccourcis
             if 'http://goo.gl' in sHosterUrl:
                 try:
-                    headers = {'User-Agent' : 'Mozilla 5.10','Host' : 'goo.gl', 'Connection' : 'keep-alive'}
-                    request = urllib2.Request(sHosterUrl,None,headers)
+                    headers = {'User-Agent' : 'Mozilla 5.10', 'Host' : 'goo.gl', 'Connection' : 'keep-alive'}
+                    request = urllib2.Request(sHosterUrl, None, headers)
                     reponse = urllib2.urlopen(request)
                     sHosterUrl = reponse.geturl()
                 except:
@@ -647,7 +641,7 @@ def showHosters():
             #Potection visio.php
             if '/visio.php?' in sHosterUrl:
                 oRequestHandler = cRequestHandler(sHosterUrl )
-                oRequestHandler.addHeaderEntry('Referer',sUrl)
+                oRequestHandler.addHeaderEntry('Referer', sUrl)
                 sHtmlContent = oRequestHandler.request()
 
                 sHtmlContent = ICDecode(sHtmlContent)
@@ -666,7 +660,7 @@ def showHosters():
                 #VSlog('>>' + sHosterUrl)
                 
                 oRequestHandler = cRequestHandler(sHosterUrl)
-                oRequestHandler.addHeaderEntry('Referer',sUrl)
+                oRequestHandler.addHeaderEntry('Referer', sUrl)
                 sHtmlContent = oRequestHandler.request()
 
                 #fh = open('c:\\test.txt', "w")
@@ -688,9 +682,9 @@ def showHosters():
                     
                     oRequestHandler = cRequestHandler(sHosterUrl)
                     oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-                    oRequestHandler.addParameters( 'submit.x' , xx)
-                    oRequestHandler.addParameters( 'submit.y' , yy)
-                    oRequestHandler.addHeaderEntry('Referer',sUrl)
+                    oRequestHandler.addParameters('submit.x', xx)
+                    oRequestHandler.addParameters('submit.y', yy)
+                    oRequestHandler.addHeaderEntry('Referer', sUrl)
                     sHtmlContent = oRequestHandler.request()
                     
                     #VSlog(sHtmlContent)
@@ -704,12 +698,9 @@ def showHosters():
                         
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-
-        cConfig().finishDialog(dialog)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
@@ -722,31 +713,29 @@ def GetTinyUrl(url):
     
     #Lien deja connu ?
     if '://tinyurl.com/h7c9sr7' in url:
-        url = url.replace('://tinyurl.com/h7c9sr7/','://vidwatch.me/')
+        url = url.replace('://tinyurl.com/h7c9sr7/', '://vidwatch.me/')
     elif '://tinyurl.com/jxblgl5' in url:
-        url = url.replace('://tinyurl.com/jxblgl5/','://streamin.to/')
+        url = url.replace('://tinyurl.com/jxblgl5/', '://streamin.to/')
     elif '://tinyurl.com/q44uiep' in url:
-        url = url.replace('://tinyurl.com/q44uiep/','://openload.co/')
+        url = url.replace('://tinyurl.com/q44uiep/', '://openload.co/')
     elif '://tinyurl.com/jp3fg5x' in url:
-        url = url.replace('://tinyurl.com/jp3fg5x/','://allmyvideos.net/')
+        url = url.replace('://tinyurl.com/jp3fg5x/', '://allmyvideos.net/')
     elif '://tinyurl.com/kqhtvlv' in url:
-        url = url.replace('://tinyurl.com/kqhtvlv/','://openload.co/embed/')
-    elif '://tinyurl.com/hymuk2f' in url:
-        url = url.replace('://tinyurl.com/hymuk2f/','://youwatch.org/')
+        url = url.replace('://tinyurl.com/kqhtvlv/', '://openload.co/embed/')
     elif '://tinyurl.com/lr6ytvj' in url:
-        url = url.replace('://tinyurl.com/lr6ytvj/','://netu.tv/')
+        url = url.replace('://tinyurl.com/lr6ytvj/', '://netu.tv/')
     elif '://tinyurl.com/kojastd' in url:
-        url = url.replace('://tinyurl.com/kojastd/','://www.rapidvideo.com/embed/')
+        url = url.replace('://tinyurl.com/kojastd/', '://www.rapidvideo.com/embed/')
     elif '://tinyurl.com/l3tjslm' in url:
-        url = url.replace('://tinyurl.com/l3tjslm/','://hqq.tv/player/')
+        url = url.replace('://tinyurl.com/l3tjslm/', '://hqq.tv/player/')
     elif '://tinyurl.com/n34gtt7' in url:
-        url = url.replace('://tinyurl.com/n34gtt7/','://vidlox.tv/')
+        url = url.replace('://tinyurl.com/n34gtt7/', '://vidlox.tv/')
     elif '://tinyurl.com/kdo4xuk' in url:
-        url = url.replace('://tinyurl.com/kdo4xuk/','://watchers.to/')
+        url = url.replace('://tinyurl.com/kdo4xuk/', '://watchers.to/')
     elif '://tinyurl.com/kjvlplm' in url:
-        url = url.replace('://tinyurl.com/kjvlplm/','://streamango.com/')
+        url = url.replace('://tinyurl.com/kjvlplm/', '://streamango.com/')
     elif '://tinyurl.com/kt3owzh' in url:
-        url = url.replace('://tinyurl.com/kt3owzh/','://estream.to/')
+        url = url.replace('://tinyurl.com/kt3owzh/', '://estream.to/')
 
     #On va chercher le vrai lien
     else:
@@ -757,7 +746,7 @@ def GetTinyUrl(url):
             def http_response(self, request, response):
                 return response
 
-        headers9 = [('User-Agent' , 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'),('Referer',URL_MAIN)]
+        headers9 = [('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'), ('Referer', URL_MAIN)]
 
         opener = urllib2.build_opener(NoRedirection)
         opener.addheaders = headers9

@@ -22,10 +22,10 @@ URL_MAIN = 'https://filmzenstream.to/'
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_MOVIE = (URL_MAIN , 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
-#MOVIE_ANNEES = (True, 'showYears')
+MOVIE_ANNEES = (True, 'showYears')
 
-URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?s=', 'showMovies')
 
 def load():
     oGui = cGui()
@@ -42,9 +42,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
 
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    #oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'films_annees.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'films_annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -65,8 +65,8 @@ def showGenres():
     #ne pas modifier les urls elles sont ecrits ainsi sur le site
     liste.append( ['Action/Aventure', URL_MAIN + 'action/'] )
     liste.append( ['Animation', URL_MAIN + 'animation/'] )
-    liste.append( ['Aventure', URL_MAIN + 'aventure/'] )
-    liste.append( ['Comédie', URL_MAIN + 'comediee/'] )
+    liste.append( ['Aventure', URL_MAIN + 'aventuree/'] )
+    liste.append( ['Comédie', URL_MAIN + 'comedie/'] )
     liste.append( ['Crime', URL_MAIN + 'crime/'] )
     liste.append( ['Documentaire', URL_MAIN + 'documentaire/'] )
     liste.append( ['Drame', URL_MAIN + 'drame/'] )
@@ -75,13 +75,14 @@ def showGenres():
     liste.append( ['Fantastique', URL_MAIN + 'fantastiquee/'] )
     liste.append( ['Guerre', URL_MAIN + 'guerre/'] )
     liste.append( ['Histoire', URL_MAIN + 'histoire/'] )
-    liste.append( ['Horreur', URL_MAIN + 'horreurr/'] )
+    liste.append( ['Horreur', URL_MAIN + 'horreur/'] )
     liste.append( ['Musique', URL_MAIN + 'musique/'] )
     liste.append( ['Mystère', URL_MAIN + 'mystere/'] )
     liste.append( ['Romance', URL_MAIN + 'romance/'] )
     liste.append( ['Science-fiction', URL_MAIN + 'science-fiction/'] )
     liste.append( ['Téléfilm', URL_MAIN + 'telefilm/'] )
     liste.append( ['Thriller', URL_MAIN + 'thrillerr/'] )
+    liste.append( ['Uncategorized', URL_MAIN + 'uncategorized/'] )
     liste.append( ['Western', URL_MAIN + 'westernn/'] )
 
     for sTitle, sUrl in liste:
@@ -94,9 +95,7 @@ def showGenres():
 
 def showYears():
     oGui = cGui()
-
     oParser = cParser()
-
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
 
@@ -106,8 +105,10 @@ def showYears():
 
     sPattern = '<a href="([^"]+)">(.+?)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
+
             sUrl = aEntry[0]
             sTitle = aEntry[1]
 
@@ -132,6 +133,7 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     sPattern = 'class="item"> *<a href="([^<]+)">.+?<img src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
@@ -168,9 +170,8 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sName)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -231,8 +232,7 @@ def showHosters():
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 

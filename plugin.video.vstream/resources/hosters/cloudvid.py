@@ -49,7 +49,9 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-
+        if not self.__sUrl.endswith('.html'):
+            self.__sUrl = self.__sUrl + '.html'
+            
     def checkUrl(self, sUrl):
         return True
 

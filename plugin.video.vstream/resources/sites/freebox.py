@@ -22,8 +22,10 @@ SITE_DESC = 'Regarder la télévision'
 
 URL_MAIN = 'http://mafreebox.freebox.fr/freeboxtv/playlist.m3u'
 URL_WEB = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/Beta/repo/resources/webtv2.m3u'
+URL_CAFE = 'http://www.iptvsource.com/category/europe-iptv-lists/france-iptv-lists/'
 URL_RADIO = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/repo/resources/radio.m3u'
-
+URL_AIZEN = 'http://goo.gl/VYc5FK'
+ListM3u = False
 UA = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
 
 icon = 'tv.png'
@@ -48,6 +50,10 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showWeb', oConfig.getlanguage(30332), 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_CAFE)
+    oGui.addDir(SITE_IDENTIFIER, 'showDailyList', "IptvSource(Beta - Necessite f4mTester)", 'tv.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
     oGui.addDir(SITE_IDENTIFIER, 'showAZRadio', oConfig.getlanguage(30203)+' (A-Z)', 'tv.png', oOutputParameterHandler)
 
@@ -55,9 +61,144 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
     oGui.addDir(SITE_IDENTIFIER, 'showWeb', oConfig.getlanguage(30203), 'tv.png', oOutputParameterHandler)
 
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_AIZEN)
+    oGui.addDir(SITE_IDENTIFIER, 'showWeb', "Liste D'AizenKnower (Down pour le moment)", 'tv.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
+def showDailyList():
+    oGui = cGui()
 
+    oRequestHandler = cRequestHandler(URL_CAFE)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '<h3 class="entry-title td-module-title"><a href="(.+?)" rel="bookmark" title="(.+?)"'
+
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+
+        dialog = cConfig().createDialog(SITE_NAME)
+
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
+            sTitle = str(aEntry[1])
+            sUrl2 = str(aEntry[0])
+            ListM3u = True
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+
+            oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, '', oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()
+
+def showAllPlaylist():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    site= sUrl
+    user_agent = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
+    headers = {'User-Agent': user_agent}
+    req = urllib2.Request(site,headers=headers)
+    page = urllib2.urlopen(req)
+    sHtmlContent = page.read()
+
+    sPattern = '<a href="(.+?)">Download as(.+?)</a>'
+
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+
+        dialog = cConfig().createDialog(SITE_NAME)
+
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
+            sTitle = str(aEntry[1])
+            sUrl2 = str(aEntry[0])
+            ListM3u = True
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+
+            oGui.addDir(SITE_IDENTIFIER, 'showWebIptvSource', sTitle, '', oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()
+
+def showWebIptvSource():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    if ListM3u == False:
+        playlist = parseWebM3U(sUrl)
+        
+    if (oInputParameterHandler.exist('AZ')):
+        sAZ = oInputParameterHandler.getValue('AZ')
+        string = filter(lambda t: t.title.strip().capitalize().startswith(sAZ), playlist)
+        playlist = sorted(string, key=lambda t: t.title.strip().capitalize())
+    else :
+        playlist = sorted(playlist, key=lambda t: t.title.strip().capitalize())
+
+
+    if not playlist:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://')
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red] Probleme de lecture avec la playlist[/COLOR] ")
+
+    else:
+        for track in playlist:
+            sThumb = track.icon
+            if not sThumb:
+                sThumb = 'tv.png'
+
+            #les + ne peuvent pas passer
+            url2 = str(track.path).replace('+','P_L_U_S')
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', url2)
+            oOutputParameterHandler.addParameter('sMovieTitle', str(track.title))
+            oOutputParameterHandler.addParameter('sThumbnail', str(sRootArt + '/tv/' + sThumb))
+
+            #oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt+'/tv/'+sThumb, oOutputParameterHandler)
+
+            oGuiElement = cGuiElement()
+            oGuiElement.setSiteName(SITE_IDENTIFIER)
+            oGuiElement.setFunction('play__')
+            oGuiElement.setTitle(track.title)
+            oGuiElement.setFileName(track.title)
+            oGuiElement.setIcon('tv.png')
+            oGuiElement.setMeta(0)
+            oGuiElement.setThumbnail(sRootArt+'/tv/'+sThumb)
+            oGuiElement.setDirectTvFanart()
+            oGuiElement.setCat(6)
+
+            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,SITE_IDENTIFIER,'direct_epg','Guide tv Direct')
+            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,SITE_IDENTIFIER,'soir_epg','Guide tv Soir')
+            oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+            oGui.addFolder(oGuiElement, oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+      
 def showWeb():
     oGui = cGui()
 
@@ -112,7 +253,6 @@ def showWeb():
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def direct_epg():
     oGuiElement = cGuiElement()
@@ -285,12 +425,17 @@ def showTV():
 # David Anderson code thanck's for good job #
 
 def parseWebM3U(infile):
-    inf = urllib.urlopen(infile)
+    site= infile
+    user_agent = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
+    headers = {'User-Agent': user_agent}
+    req = urllib2.Request(site,headers=headers)
+    inf = urllib2.urlopen(req)
 
     line = inf.readline()
 
-    if not line.startswith('#EXTM3U'):
-       return
+    #cConfig().log(str(line))
+    #if not line.startswith('#EXTM3U'):
+        #return
 
     playlist=[]
     song=track(None,None,None,None)
@@ -417,6 +562,8 @@ def play__():
     #Special url with tag
     if '[' in sUrl and ']' in sUrl:
         sUrl = GetRealUrl(sUrl)
+    if '.ts' in sUrl:
+        sUrl = 'plugin://plugin.video.f4mTester/?url='+urllib.quote_plus(sUrl)+'&amp;streamtype=TSDOWNLOADER&name='+urllib.quote(sTitle)
 
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName(SITE_IDENTIFIER)
@@ -430,9 +577,12 @@ def play__():
     oPlayer.clearPlayList()
     oPlayer.addItemToPlaylist(oGuiElement)
     #tout repetter
-    #xbmc.executebuiltin("xbmc.playercontrol(RepeatAll)")
+    xbmc.executebuiltin("xbmc.playercontrol(RepeatAll)")
 
-    oPlayer.startPlayer()
+    if '.ts' in sUrl:
+        xbmc.executebuiltin('XBMC.RunPlugin('+sUrl+')')
+    else:
+        xbmc.Player().play(sUrl)
     return
 
     oGui.setEndOfDirectory()
@@ -445,7 +595,6 @@ def GetRealUrl(chain):
     url = chain
     regex = ''
     sHtmlContent = ''
-
 
     r = re.search('\[[REGEX]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
     if (r):
