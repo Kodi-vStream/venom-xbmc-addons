@@ -187,6 +187,7 @@ def showMovies(sSearch = ''):
 
         cConfig().finishDialog(dialog)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
