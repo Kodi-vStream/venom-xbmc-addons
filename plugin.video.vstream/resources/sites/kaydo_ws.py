@@ -95,6 +95,8 @@ def showSearch():
     if (sSearchText != False):
         sSearchText = cUtil().urlEncode(sSearchText)
         sUrl = URL_SEARCH[0] + sSearchText
+        if '' in sSearchText:
+            sSearchText.replace('','+')
         sHowResultSearch(sUrl)
         oGui.setEndOfDirectory()
         return
