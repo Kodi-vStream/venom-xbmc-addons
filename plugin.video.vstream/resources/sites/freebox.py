@@ -579,7 +579,10 @@ def play__():
     #tout repetter
     xbmc.executebuiltin("xbmc.playercontrol(RepeatAll)")
 
-    oPlayer.startPlayer()
+    if '.ts' in sUrl:
+        xbmc.executebuiltin('XBMC.RunPlugin('+sUrl+')')
+    else:
+        xbmc.Player().play(sUrl)
     return
 
     oGui.setEndOfDirectory()
@@ -592,7 +595,6 @@ def GetRealUrl(chain):
     url = chain
     regex = ''
     sHtmlContent = ''
-
 
     r = re.search('\[[REGEX]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
     if (r):
