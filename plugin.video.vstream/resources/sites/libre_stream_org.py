@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-#Venom.
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -197,6 +197,7 @@ def AlphaDisplay():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
     if sSearch:
       sUrl = sSearch
     else:
@@ -206,7 +207,6 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    oParser = cParser()
     sPattern = '<div class="libre-movie.+?data-src="(.+?)".+?title="(.+?)".+?onclick="window.location.href=\'(.+?)\'">.+?class="maskhr">Synopsis.+?</span>(.+?)</div>'
     if '/films' in sUrl:
         sPattern = sPattern + '.+?<div class="maskquality (.+?)">'
@@ -228,13 +228,16 @@ def showMovies(sSearch = ''):
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0],''),aEntry[1]) == 0:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[1]) == 0:
                     continue
 
             sTitle = str(aEntry[1])
+            #on nettoie le titre si c'est une serie
+            if ' - Saison' in sTitle:
+                sTitle = sTitle.replace(' - ', '')
             sUrl2 = str(aEntry[2])
             sDesc = str(aEntry[3])
-            sThumb = aEntry[0]
+            sThumb = str(aEntry[0])
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
@@ -251,7 +254,7 @@ def showMovies(sSearch = ''):
                 if not '/vostfr/' in sUrl and not '/version-francaise/' in sUrl:
                     sLang = str(aEntry[4])
                     sLang = sLang.replace('Version Française', 'VF')
-                    sDisplayTitle = sTitle + ' [' + sLang + ']'
+                    sDisplayTitle = sTitle + ' (' + sLang + ')'
                 else:
                     sDisplayTitle = sTitle
 
@@ -288,6 +291,7 @@ def __checkForNextPage(sHtmlContent):
 
 def showHosters():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -298,7 +302,6 @@ def showHosters():
     sHtmlContent = sHtmlContent.replace('http://creative.rev2pub.com', '')
 
     sPattern = '<iframe.+?src=[\'"]([^<>\'"]+?)[\'"]'
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -315,6 +318,7 @@ def showHosters():
 
 def seriesHosters():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -323,7 +327,6 @@ def seriesHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    oParser = cParser()
     sPattern = '<div class="e-number">.+?<iframe src="(.+?)".+?class="episode-id">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
