@@ -215,7 +215,7 @@ class CloudflareBypass(object):
         return format(rep,'.10f')
 
     def GetReponseInfo(self):
-        return self.HttpReponse.geturl(), self.HttpReponse.headers
+        return self.HttpReponse.geturl(), self.HttpReponse.info()
 
     def GetHtml(self,url,htmlcontent = '',cookies = '',postdata = '',Gived_headers = ''):
     
