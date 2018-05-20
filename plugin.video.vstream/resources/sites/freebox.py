@@ -22,10 +22,10 @@ SITE_DESC = 'Regarder la télévision'
 
 URL_MAIN = 'http://mafreebox.freebox.fr/freeboxtv/playlist.m3u'
 URL_WEB = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/Beta/repo/resources/webtv2.m3u'
-URL_CAFE = 'https://www.iptvsource.com/category/europe-iptv-lists/france-iptv-lists/'
+URL_CAFE = 'http://www.iptvsource.com/category/europe-iptv-lists/france-iptv-lists/'
 URL_RADIO = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/repo/resources/radio.m3u'
+URL_AIZEN = 'http://goo.gl/VYc5FK'
 ListM3u = False
-
 UA = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
 
 icon = 'tv.png'
@@ -51,7 +51,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_CAFE)
-    oGui.addDir(SITE_IDENTIFIER, 'showDailyList', "IptvSource(Beta)", 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showDailyList', "IptvSource(Beta - Necessite f4mTester)", 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
@@ -60,6 +60,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
     oGui.addDir(SITE_IDENTIFIER, 'showWeb', oConfig.getlanguage(30203), 'tv.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_AIZEN)
+    oGui.addDir(SITE_IDENTIFIER, 'showWeb', "Liste D'AizenKnower (Down pour le moment)", 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -70,6 +74,48 @@ def showDailyList():
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<h3 class="entry-title td-module-title"><a href="(.+?)" rel="bookmark" title="(.+?)"'
+
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+
+        dialog = cConfig().createDialog(SITE_NAME)
+
+        for aEntry in aResult[1]:
+            cConfig().updateDialog(dialog, total)
+            if dialog.iscanceled():
+                break
+
+            sTitle = str(aEntry[1])
+            sUrl2 = str(aEntry[0])
+            ListM3u = True
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+
+            oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, '', oOutputParameterHandler)
+
+        cConfig().finishDialog(dialog)
+
+    oGui.setEndOfDirectory()
+
+def showAllPlaylist():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    
+    site= sUrl
+    user_agent = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
+    headers = {'User-Agent': user_agent}
+    req = urllib2.Request(site,headers=headers)
+    page = urllib2.urlopen(req)
+    sHtmlContent = page.read()
+
+    sPattern = '<a href="(.+?)">Download as(.+?)</a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -104,18 +150,8 @@ def showWebIptvSource():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     if ListM3u == False:
-        site= sUrl
-        hdr = {'User-Agent': 'Mozilla/5.0'}
-        req = urllib2.Request(site,headers=hdr)
-        page = urllib2.urlopen(req)
-        html = page.read()
-        #cConfig().log(str(html))
-
-        m = re.findall('<p></br><a href="(.+?)">Download as M3U Playlist</a>',html)
-        sUrl = str(m[0])
         playlist = parseWebM3U(sUrl)
         
-
     if (oInputParameterHandler.exist('AZ')):
         sAZ = oInputParameterHandler.getValue('AZ')
         string = filter(lambda t: t.title.strip().capitalize().startswith(sAZ), playlist)
@@ -390,15 +426,16 @@ def showTV():
 
 def parseWebM3U(infile):
     site= infile
-    hdr = {'User-Agent': 'Mozilla/5.0'}
-    req = urllib2.Request(site,headers=hdr)
+    user_agent = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
+    headers = {'User-Agent': user_agent}
+    req = urllib2.Request(site,headers=headers)
     inf = urllib2.urlopen(req)
 
     line = inf.readline()
 
-    cConfig().log(str(line))
-    if not line.startswith('#EXTM3U'):
-       return
+    #cConfig().log(str(line))
+    #if not line.startswith('#EXTM3U'):
+        #return
 
     playlist=[]
     song=track(None,None,None,None)
@@ -406,7 +443,6 @@ def parseWebM3U(infile):
 
     for line in inf:
         line=line.strip()
-        line.replace('http','plugin://plugin.video.f4mTester/?url=http')
         if line.startswith('#EXTINF:'):
             length,title=line.split('#EXTINF:')[1].split(',',1)
             try:
@@ -520,13 +556,14 @@ def play__():
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl').replace('P_L_U_S','+')
-    sUrl = oInputParameterHandler.getValue('siteUrl').replace('ts','m3u8')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
     #Special url with tag
     if '[' in sUrl and ']' in sUrl:
         sUrl = GetRealUrl(sUrl)
+    if '.ts' in sUrl:
+        sUrl = 'plugin://plugin.video.f4mTester/?url='+urllib.quote_plus(sUrl)+'&amp;streamtype=TSDOWNLOADER&name='+urllib.quote(sTitle)
 
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName(SITE_IDENTIFIER)
@@ -540,7 +577,7 @@ def play__():
     oPlayer.clearPlayList()
     oPlayer.addItemToPlaylist(oGuiElement)
     #tout repetter
-    #xbmc.executebuiltin("xbmc.playercontrol(RepeatAll)")
+    xbmc.executebuiltin("xbmc.playercontrol(RepeatAll)")
 
     oPlayer.startPlayer()
     return
