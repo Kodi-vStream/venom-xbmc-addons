@@ -146,7 +146,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<div class="keremiya-loadnavi.+?"></div><a href="(.+?)"'
+    sPattern = '<div class=".+?oadnavi.+?"></div><a href="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -154,7 +154,7 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
-def showSeries():
+def showSeries():#episode
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -164,14 +164,15 @@ def showSeries():
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     sHtmlContent = oParser.abParse(sHtmlContent,'<div class="single-content video">','</div></div></div></div>')
     #active hidden
-    sHtmlContent = re.sub('<div class="part-name">Part 1</div>','<a href="'+sUrl+'"><div class="part "> <div class="part-name">Part 1</div>',sHtmlContent)
+    sHtmlContent = re.sub('<div class="part-name">(?:Part 1|Épisode 1)</div>','<a href="'+sUrl+'"><div class="part "> <div class="part-name">episode 1</div>',sHtmlContent)
 
     sPattern = '<a href="(.+?)"><div class="part ">.+?<div class="part-name">(.+?)<\/div>' #vire non épisode
 
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         dialog = cConfig().createDialog(SITE_NAME)
@@ -180,7 +181,9 @@ def showSeries():
             if dialog.iscanceled():
                 break
 
-            sTitle = sMovieTitle + 'episode' + aEntry[1].replace('Part','')
+            sTitle = aEntry[1].replace('\xc3\x89pisode','episode')
+            sTitle = sTitle.replace('Part','episode')
+            sTitle = sMovieTitle + sTitle
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
