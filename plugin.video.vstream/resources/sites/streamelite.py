@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 # Razorex
-
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -243,6 +242,7 @@ def showHosters():
 
     sPattern = '<iframe src=["\'](.+?)["\']'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:

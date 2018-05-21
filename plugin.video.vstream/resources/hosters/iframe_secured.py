@@ -45,6 +45,7 @@ class cHoster(iHoster):
         #http://iframe-secured.com/embed/evovinec
         #http://iframe-secured.com/embed/iframe.php?u=evovinec
         self.__sUrl = sUrl.replace('http://iframe-secured.com/embed/','')
+        self.__sUrl = sUrl.replace('//iframe-secured.com/embed/','')
         self.__sUrl = 'http://iframe-secured.com/embed/iframe.php?u=%s' % self.__sUrl
 
     def checkUrl(self, sUrl):
@@ -89,7 +90,6 @@ class cHoster(iHoster):
                         sHosterUrl = 'http:%s' % sHosterUrl
 
                     sHosterUrl = sHosterUrl.replace('\\', '')
-
 
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
                     oHoster.setUrl(sHosterUrl)
