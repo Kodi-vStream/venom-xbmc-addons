@@ -53,9 +53,6 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Espionnage', URL_MAIN + 'category/espionnage/'] )
-    liste.append( ['Grand-Banditisme', URL_MAIN + 'category/grand-ganditisme/'] )
-    liste.append( ['Mafias', URL_MAIN + 'category/mafias/'] )
     liste.append( ['TF1', URL_MAIN + 'category/tf1/'] )
     liste.append( ['TF1 - Appels d\'Urgence', URL_MAIN + 'category/tf1/appels-durgence/'] )
     liste.append( ['TF1 - Sept à Huit', URL_MAIN + 'category/tf1/sept-a-huit/'] )
@@ -71,7 +68,7 @@ def showGenres():
     liste.append( ['TMC', URL_MAIN + 'category/tmc/'] )
     liste.append( ['TMC - 90 Enquêtes', URL_MAIN + 'category/tmc/90-enquetes/'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -81,6 +78,7 @@ def showGenres():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
     if sSearch:
       sUrl = sSearch
     else:
@@ -92,21 +90,21 @@ def showMovies(sSearch = ''):
     sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'')
 
     sPattern = 'class="mh-loop-thumb".+?src="([^<]+)" class="attachment.+?href="([^"]+)" rel="bookmark">([^<]+)</a>.+?<div class="mh-excerpt"><p>(.+?)<'
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
             sThumb = aEntry[0]
-            sTitle = aEntry[2].replace('&laquo;','<<').replace('&raquo;','>>').replace('&nbsp;','')
-            sDesc = aEntry[3].replace('&laquo;','<<').replace('&raquo;','>>')
+            sUrl = aEntry[1]
+            sTitle = aEntry[2].replace('&laquo;', '<<').replace('&raquo;', '>>').replace('&nbsp;', '')
+            sDesc = aEntry[3].replace('&laquo;', '<<').replace('&raquo;', '>>')
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumb, sDesc, oOutputParameterHandler)
@@ -133,7 +131,6 @@ def __checkForRealUrl(sHtmlContent):
     sPattern = '<a href="([^"]+)" target="_blank".+?class="btns btn-lancement">Lancer La Video</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #cConfig().log(str(aResult))
     if (aResult[0] == True):
         return aResult[1][0]
 
@@ -147,7 +144,7 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
 
     sRealUrl = __checkForRealUrl(sHtmlContent)
 
@@ -158,6 +155,7 @@ def showHosters():
     sPattern = '<iframe.+?src="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sHosterUrl = str(aEntry)
