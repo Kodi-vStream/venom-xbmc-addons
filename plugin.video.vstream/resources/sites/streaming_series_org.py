@@ -17,7 +17,7 @@ SITE_DESC = 'Séries en streaming vf gratuitement sur Série Streaming'
 
 URL_MAIN = 'http://www.seriestreaming.watch/'
 
-SERIE_NEWS = (URL_MAIN, 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'film-archive/', 'showMovies') #astuce anti caroussel
 SERIE_SERIES = ('http://', 'load')
 SERIE_VFS = (URL_MAIN + 'version-francaise-vf/', 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'version-francaise-vf/?sort=views', 'showMovies')
@@ -102,13 +102,14 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-
+        
+    oParser = cParser()
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-   
+
     sPattern = '<div class="movie-poster">.+?<a href="(.+?)">.+?<img src="(.+?)" alt="(.+?)"'
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False):
 		oGui.addText(SITE_IDENTIFIER)
@@ -132,7 +133,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[2]))
             oOutputParameterHandler.addParameter('sThumb', aEntry[1])
 
-            oGui.addTV(SITE_IDENTIFIER, 'showSeries', aEntry[2], '', aEntry[1], '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showEpisode', aEntry[2], '', aEntry[1], '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -146,7 +147,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<div class=".+?oadnavi.+?"></div><a href="(.+?)"'
+    sPattern = '<div class=".+?oadnavi.+?"><\/div><a href="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -154,7 +155,7 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
-def showSeries():#episode
+def showEpisode():#episode
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -192,7 +193,15 @@ def showSeries():#episode
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
-
+        
+    else:
+        #si un seul episode
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle + 'episode 1 ')
+        oOutputParameterHandler.addParameter('sThumb', sThumb)
+        oGui.addTV(SITE_IDENTIFIER, 'showHosters', sMovieTitle +'episode 1 ', '', sThumb, '', oOutputParameterHandler)
+        
     oGui.setEndOfDirectory()
 
 def showHosters():
