@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-#Venom.kodigoal
+#https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+#from resources.lib.util import cUtil
 
 
 SITE_IDENTIFIER = 'serie_streaminghd'
@@ -18,7 +18,7 @@ URL_MAIN = 'http://ww2.serie-streaminghd.com/'
 
 SERIE_NEWS = (URL_MAIN, 'showMovies')
 SERIE_SERIES = (URL_MAIN, 'showMovies')
-SERIE_HD = (URL_MAIN , 'showMovies')
+SERIE_HD = (URL_MAIN + 'saison-complete/', 'showMovies')
 SERIE_VFS = (URL_MAIN + 'regarder-series/vf-hd/', 'showMovies')
 SERIE_VOSTFRS = (URL_MAIN + 'regarder-series/vostfr-hd/', 'showMovies')
 
@@ -36,6 +36,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_HD[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_HD[1], 'Séries (Saisons Complète)', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
@@ -57,19 +61,6 @@ def showSearch():
         oGui.setEndOfDirectory()
         return
 
-def showGenres():
-    oGui = cGui()
-
-    liste = []
-
-    for sTitle,sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
@@ -88,7 +79,7 @@ def showMovies(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -100,10 +91,10 @@ def showMovies(sSearch = ''):
 
             sThumb = str(aEntry[0])
             if sThumb.startswith('/'):
-                sThumb = URL_MAIN[:-1] + aEntry[0]
+                sThumb = URL_MAIN[:-1] + sThumb
 
+            sTitle =  str(aEntry[1])
             siteUrl = str(aEntry[2])
-            sTitle =  (' %s ') % (str(aEntry[1]))
 
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -119,15 +110,14 @@ def showMovies(sSearch = ''):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]' , oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-
-    sPattern = '<a href="([^<>"]+)">Suivant &#8594;<\/a>'
     oParser = cParser()
+    sPattern = '<a href="([^<>"]+)">Suivant &#8594;<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -169,7 +159,7 @@ def showHosters():
             total = len(aResult[1])
             dialog = cConfig().createDialog(SITE_NAME)
 
-            oGui.addText(SITE_IDENTIFIER,'[COLOR red]VOSTFR[/COLOR]')
+            oGui.addText(SITE_IDENTIFIER, '[COLOR red]Langue VOSTFR[/COLOR]')
 
             for aEntry in aResult[1]:
                 cConfig().updateDialog(dialog, total)
@@ -178,11 +168,10 @@ def showHosters():
 
                 sHosterUrl = str(aEntry[0])
                 sMovieTitle2 = sMovieTitle + 'episode ' + aEntry[1]
-                sDisplayTitle = cUtil().DecoTitle(sMovieTitle2)
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
-                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setDisplayName(sMovieTitle2)
                     oHoster.setFileName(sMovieTitle2)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
@@ -198,7 +187,7 @@ def showHosters():
                 total3 = total + total2
                 dialog = cConfig().createDialog(SITE_NAME)
 
-                oGui.addText(SITE_IDENTIFIER,'[COLOR red]VF[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]Langue VF[/COLOR]')
 
                 for aEntry in aResult[1]:
                     cConfig().updateDialog(dialog, total3)
@@ -207,11 +196,10 @@ def showHosters():
 
                     sHosterUrl = str(aEntry[0])
                     sMovieTitle2 = sMovieTitle + 'episode ' + aEntry[1]
-                    sDisplayTitle = cUtil().DecoTitle(sMovieTitle2)
 
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
                     if (oHoster != False):
-                        oHoster.setDisplayName(sDisplayTitle)
+                        oHoster.setDisplayName(sMovieTitle2)
                         oHoster.setFileName(sMovieTitle2)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
