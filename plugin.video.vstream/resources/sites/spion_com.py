@@ -12,7 +12,7 @@ SITE_IDENTIFIER = 'spion_com'
 SITE_NAME = 'Spi0n'
 SITE_DESC = 'Toute l\'actualité insolite du web est chaque jour sur Spi0n.com'
 
-URL_MAIN = 'http://www.spi0n.com/'
+URL_MAIN = 'https://www.spi0n.com/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
@@ -91,7 +91,7 @@ def showGenres():
         liste.append( ['NSFW (+18)', URL_MAIN + 'nsfw/'] )
         liste.append( ['Trash (+18)', URL_MAIN + 'category/trash-gore/'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -118,7 +118,7 @@ def showMovies(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -142,7 +142,7 @@ def showMovies(sSearch = ''):
                  oOutputParameterHandler = cOutputParameterHandler()
                  oOutputParameterHandler.addParameter('siteUrl', sUrlp)
                  oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                 oOutputParameterHandler.addParameter('sThumbnail', sPoster)
+                 oOutputParameterHandler.addParameter('sThumb', sPoster)
 
                  if (SPION_CENSURE == True):
                     if (sCat == 'NSFW') or (sCat == 'Trash'):
@@ -178,7 +178,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -210,6 +210,6 @@ def showHosters():
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
