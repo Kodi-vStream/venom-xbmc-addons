@@ -13,8 +13,8 @@ from resources.lib.player import cPlayer
 from resources.lib.config import cConfig
 from resources.lib.epg import cePg
 
-import re, urllib2, urllib, os, time, unicodedata
-import xbmc, xbmcgui
+import re, urllib2, urllib, os, time, unicodedata, sys
+import xbmc, xbmcgui, xbmcplugin
 
 SITE_IDENTIFIER = 'freebox'
 SITE_NAME = '[COLOR orange]Télévision Direct / Stream[/COLOR]'
@@ -102,7 +102,7 @@ def showAizenListe():
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, 'films_genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showWebIptvSource', sTitle, 'films_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -224,54 +224,8 @@ def showWebIptvSource():
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    playlist = parseWebM3U(sUrl)
-        
-    if (oInputParameterHandler.exist('AZ')):
-        sAZ = oInputParameterHandler.getValue('AZ')
-        string = filter(lambda t: t.title.strip().capitalize().startswith(sAZ), playlist)
-        playlist = sorted(string, key=lambda t: t.title.strip().capitalize())
-    else :
-        playlist = sorted(playlist, key=lambda t: t.title.strip().capitalize())
-
-
-    if not playlist:
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', 'http://')
-        oGui.addText(SITE_IDENTIFIER, "[COLOR red] Probleme de lecture avec la playlist[/COLOR] ")
-
-    else:
-        for track in playlist:
-            sThumb = track.icon
-            if not sThumb:
-                sThumb = 'tv.png'
-
-            #les + ne peuvent pas passer
-            url2 = str(track.path).replace('+','P_L_U_S')
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', url2)
-            oOutputParameterHandler.addParameter('sMovieTitle', str(track.title))
-            oOutputParameterHandler.addParameter('sThumbnail', str(sRootArt + '/tv/' + sThumb))
-
-            #oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt+'/tv/'+sThumb, oOutputParameterHandler)
-
-            oGuiElement = cGuiElement()
-            oGuiElement.setSiteName(SITE_IDENTIFIER)
-            oGuiElement.setFunction('play__')
-            oGuiElement.setTitle(track.title)
-            oGuiElement.setFileName(track.title)
-            oGuiElement.setIcon('tv.png')
-            oGuiElement.setMeta(0)
-            oGuiElement.setThumbnail(sRootArt+'/tv/'+sThumb)
-            oGuiElement.setDirectTvFanart()
-            oGuiElement.setCat(6)
-
-            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,SITE_IDENTIFIER,'direct_epg','Guide tv Direct')
-            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,SITE_IDENTIFIER,'soir_epg','Guide tv Soir')
-            oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
-            oGui.addFolder(oGuiElement, oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
+    parseWebM3U(sUrl)
+    xbmcplugin.endOfDirectory(int(sys.argv[1]))
       
 def showWeb():
     oGui = cGui()
@@ -279,10 +233,8 @@ def showWeb():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    if 'github' in sUrl:
-        playlist = parseWebM3URegex(sUrl)
-    else:
-        playlist = parseWebM3U(sUrl)
+    playlist = parseWebM3URegex(sUrl)
+
 
     if (oInputParameterHandler.exist('AZ')):
         sAZ = oInputParameterHandler.getValue('AZ')
@@ -507,27 +459,29 @@ def getHtml(sUrl, referer=None, hdr=None, data=None):
     response.close()
     return data
 
-def parseWebM3U(infile):
-    oGui = cGui()
-    html = getHtml(infile)
+def parseWebM3U(sUrl):
+    html = getHtml(sUrl)
 
     #cConfig().log(str(line))
     #if not line.startswith('#EXTM3U'):
         #return
     line = re.compile('#.+,(.+?)\n(.+?)\n').findall(html)
     for sTitle, sUrl2 in line:
+        sUrl2 = sUrl2.replace('\r','')
         icon = "tv.png"
         if '.ts' in sUrl2:
             sUrl2 = 'plugin://plugin.video.f4mTester/?url='+urllib.quote_plus(sUrl2)+'&amp;streamtype=TSDOWNLOADER&name='+urllib.quote(sTitle)
                 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-
-        oGui.addDir(SITE_IDENTIFIER, 'play__', sTitle, '', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
+        ok = True
+        liz = xbmcgui.ListItem(sTitle, iconImage="DefaultVideo.png", thumbnailImage=icon)
+        liz.setArt({'thumb': icon, 'icon': icon})
+        #liz.setProperty('IsPlayable', 'true')
+        liz.setInfo(type="Video", infoLabels={"Title": sTitle})
+        video_streaminfo = {'codec': 'h264'}
+        liz.addStreamInfo('video', video_streaminfo)
+        ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=sUrl2, listitem=liz, isFolder=False)
+    return ok
+    
 def parseWebM3URegex(infile):
     site= infile
     user_agent = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
@@ -686,8 +640,6 @@ def play__():
     else:
         xbmc.Player().play(sUrl)
     return
-
-    oGui.setEndOfDirectory()
 
 def GetRealUrl(chain):
 
