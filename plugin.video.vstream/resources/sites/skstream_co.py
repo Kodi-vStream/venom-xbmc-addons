@@ -230,7 +230,7 @@ def showQlt():
     liste.append( ['WEBrip', sUrl + '-qualites-web-rip'] )
     liste.append( ['DVDscr', sUrl + '-qualites-dvdscr'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
@@ -246,6 +246,7 @@ def showYears():
 
 def showMovies(sSearch = '', yearUrl = ''):
     oGui = cGui()
+    oParser = cParser()
 
     if sSearch:
         sUrl = sSearch
@@ -257,14 +258,13 @@ def showMovies(sSearch = '', yearUrl = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    oParser = cParser()
 
     sPattern = '<a class="unfilm" *HREF="([^"]+)">.+?title="(.+?)".+?src="([^"]+)">'
 
     aResult = oParser.parse(sHtmlContent,sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -278,7 +278,7 @@ def showMovies(sSearch = '', yearUrl = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             if ('/series/' in sUrl or '/mangas/' in sUrl):
-                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle,'', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
 
@@ -369,19 +369,19 @@ def showLinks():
     if aResult[0]:
         sDesc = aResult[1][0]
 
-    sPattern = '<tr class="changeplayer.+?".+?data-embedlien="([^"]+)".+?<i class="server player-.+?"><\/i>(.+?)<.+?<span class="badge">(.+?)<\/span>.+?<td>(.+?)<\/td>'
+    sPattern = 'data-embedlien="([^"]+)".+?<i class="server player-.+?"><\/i>(.+?)<.+?<span class="badge">(.+?)<\/span>.+?<td>(.+?)<\/td>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sHost = aEntry[1]
+            sHost = aEntry[1].capitalize()
             if 'Skstream' in sHost:
                 continue
             sLang = aEntry[2]
             sQual = aEntry[3]
             sUrl2 = aEntry[0]
 
-            sTitle = '%s [%s/%s] [COLOR coral]%s[/COLOR]' %(sMovieTitle, sLang, sQual, sHost)
+            sTitle = '%s [%s] (%s) [COLOR coral]%s[/COLOR]' %(sMovieTitle, sQual, sLang, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('refUrl', sUrl)
