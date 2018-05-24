@@ -15,7 +15,7 @@ import re
 
 SITE_IDENTIFIER = 'streamcomplet'
 SITE_NAME = 'StreamComplet'
-SITE_DESC = 'Streaming Gratuit de 5947 Films Complets en VF.'
+SITE_DESC = 'Streaming Gratuit de 6420 Films Complets en VF.'
 
 URL_MAIN = 'http://streamcomplet.me/'
 
@@ -31,7 +31,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_SEARCH[0])
-    oGui.addDir(SITE_IDENTIFIER, 'showMoviesSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -43,7 +43,7 @@ def load():
 
     oGui.setEndOfDirectory()
 
-def showMoviesSearch():
+def showSearch():
     oGui = cGui()
 
     sSearchText = oGui.showKeyBoard()
@@ -57,21 +57,21 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action',URL_MAIN + 'film/action/'] )
-    liste.append( ['Animation',URL_MAIN + 'film/animation/'] )
-    liste.append( ['Aventure',URL_MAIN + 'film/aventure/'] )
-    liste.append( ['Comédie',URL_MAIN + 'film/comedie/'] )
-    liste.append( ['Drame',URL_MAIN + 'film/drame/'] )
-    liste.append( ['Fiction',URL_MAIN + 'film/fiction/'] )
-    liste.append( ['Guerre',URL_MAIN + 'film/guerre/'] )
-    liste.append( ['Historique',URL_MAIN + 'film/historique/'] )
-    liste.append( ['Horreur',URL_MAIN + 'film/horreur/'] )
-    liste.append( ['Musique',URL_MAIN + 'film/musique/'] )
-    liste.append( ['Policier',URL_MAIN + 'film/policier/'] )
-    liste.append( ['Romance',URL_MAIN + 'film/romance/'] )
-    liste.append( ['Thriller',URL_MAIN + 'film/thriller/'] )
+    liste.append( ['Action', URL_MAIN + 'film/action/'] )
+    liste.append( ['Animation', URL_MAIN + 'film/animation/'] )
+    liste.append( ['Aventure', URL_MAIN + 'film/aventure/'] )
+    liste.append( ['Comédie', URL_MAIN + 'film/comedie/'] )
+    liste.append( ['Drame', URL_MAIN + 'film/drame/'] )
+    liste.append( ['Fiction', URL_MAIN + 'film/fiction/'] )
+    liste.append( ['Guerre', URL_MAIN + 'film/guerre/'] )
+    liste.append( ['Historique', URL_MAIN + 'film/historique/'] )
+    liste.append( ['Horreur', URL_MAIN + 'film/horreur/'] )
+    liste.append( ['Musique', URL_MAIN + 'film/musique/'] )
+    liste.append( ['Policier', URL_MAIN + 'film/policier/'] )
+    liste.append( ['Romance', URL_MAIN + 'film/romance/'] )
+    liste.append( ['Thriller', URL_MAIN + 'film/thriller/'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -81,6 +81,7 @@ def showGenres():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
     if sSearch:
       sUrl = sSearch
     else:
@@ -90,12 +91,10 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sPattern = '<div class="moviefilm"><a href=".+?"><img src="([^<]+)" alt=".+?" height=".+?" width=".+?" />.+?<a href="([^<]+)">([^<]+)</a>'
-
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -105,7 +104,9 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            sTitle = aEntry[2]
+            sThumb = str(aEntry[0])
+            sUrl = str(aEntry[1])
+            sTitle = str(aEntry[2])
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
@@ -113,13 +114,14 @@ def showMovies(sSearch = ''):
                     continue
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(aEntry[1]))
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumb', str(aEntry[0]))
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', aEntry[0], '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -151,7 +153,7 @@ def showHosters():
 
     oParser = cParser()
     list_url = []
-    
+
     sPattern = 'src="(http:\/\/media\.vimple\.me.+?f=([^"]+))"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -161,23 +163,23 @@ def showHosters():
         sUrl2 = aResult[1][0][0]
 
         oRequestHandler = cRequestHandler(sUrl2)
-        oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0')
-        oRequestHandler.addHeaderEntry('Referer',sUrl)
+        oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0')
+        oRequestHandler.addHeaderEntry('Referer', sUrl)
         sHtmlContent = oRequestHandler.request()
 
-        sHtmlContent = oParser.abParse(sHtmlContent,"<script>","</script><script>")
+        sHtmlContent = oParser.abParse(sHtmlContent, "<script>", "</script><script>")
 
         sPattern = 'eval\s*\(\s*function(?:.|\s)+?{}\)\)'
-        aResult = oParser.parse(sHtmlContent,sPattern)
+        aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             sHtmlContent = cPacker().unpack(aResult[1][0])
-            sHtmlContent = sHtmlContent.replace('\\','')
-            code = re.search('(https://openload.+?embed\/.+?\/)',sHtmlContent)
+            sHtmlContent = sHtmlContent.replace('\\', '')
+            code = re.search('(https://openload.+?embed\/.+?\/)', sHtmlContent)
             if code:
                 sUrl4 = code.group(1)
                 list_url.append(sUrl4)
 
-          
+
     for aEntry in list_url:
         oHoster = cHosterGui().checkHoster(aEntry)
         if (oHoster != False):
