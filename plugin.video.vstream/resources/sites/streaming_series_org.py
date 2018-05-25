@@ -22,7 +22,7 @@ SERIE_SERIES = ('http://', 'load')
 SERIE_VFS = (URL_MAIN + 'version-francaise-vf/', 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'version-francaise-vf/?sort=views', 'showMovies')
 SERIE_COMMENTS = (URL_MAIN + 'version-francaise-vf/?sort=comments', 'showMovies')
-SERIE_LIST = (URL_MAIN, 'AlphaSearch')
+SERIE_LIST = (True, 'AlphaSearch')
 
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
@@ -70,20 +70,17 @@ def showSerieSearch():
 
 def AlphaSearch():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     for i in range(0, 27) :
 
         if (i < 1):
-            sTitle = '[0-9]'
+            sLetter = '[0-9]'
         else:
-            sTitle = chr(64 + i)
+            sLetter = chr(64 + i)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sLetter', sTitle)
-        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', '[COLOR teal] Lettre [COLOR red]' + sTitle + '[/COLOR][/COLOR]', 'series_az.png', oOutputParameterHandler)
+        oOutputParameterHandler.addParameter('sLetter', sLetter)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', '[COLOR teal] Lettre [COLOR red]' + sLetter + '[/COLOR][/COLOR]', 'series_az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -108,7 +105,7 @@ def AlphaDisplay():
 
             sUrl = str(aEntry[0])
             sTitle = str(aEntry[1])
-                
+
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -257,6 +254,14 @@ def showEpisodes():
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
+
+    #si un seul episode
+    else:
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle + 'episode 1 ')
+        oOutputParameterHandler.addParameter('sThumb', sThumb)
+        oGui.addTV(SITE_IDENTIFIER, 'showHosters', sMovieTitle + 'episode 1 ', '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
