@@ -117,7 +117,7 @@ class cHoster(iHoster):
         return False, False
         
     def __getMediaLinkForGuest(self):
-
+        import random
         url = 'https://1fichier.com/?' + self.__getIdFromUrl(self.__sUrl)
         
         headers = {'User-Agent': UA ,
@@ -128,9 +128,11 @@ class cHoster(iHoster):
                    #'Content-Type': 'application/x-www-form-urlencoded'
                    }
         
+        adcode = random.uniform(000.000000000, 999.999999999)
+
         Mode = ''
         #Mode = {'dl_no_ssl' : 'on' , 'dlinline' : 'on'}
-        Mode = {'dl_no_ssl' : 'on' }
+        Mode = {'dl_no_ssl' : 'on' ,'adzone' : adcode}
         postdata = urllib.urlencode( Mode )
         
         req = urllib2.Request(url,postdata,headers)
