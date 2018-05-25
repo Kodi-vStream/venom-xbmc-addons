@@ -172,7 +172,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = '<div class="poster".+?img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">.+?(?:<article|<div class="texto">(.+?)<div)'
+        sPattern = '<div class="poster".+?img src="([^"]+)" alt="(.+?)".+?<div class="flag".+?flags\/([^"]+)\.png.+?<a href="([^"]+)">.+?(?:<article|<div class="texto">(.+?)<div)'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -191,13 +191,16 @@ def showMovies(sSearch = ''):
                 break
 
             try:
-                sDesc = re.sub('(\A.+?: )', '', aEntry[3])
+                sDesc = re.sub('(\A.+?: )', '', str(aEntry[4]))
             except:
                 sDesc= ''
 
             sThumb = str(aEntry[0])
             sTitle = str(aEntry[1])
-            sUrl2 = str(aEntry[2])
+            sLang = str(aEntry[2]).upper()
+            sUrl2 = str(aEntry[3])
+
+            sDisplayTitle = ('%s (%s)') % (sTitle, sLang)
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
@@ -209,7 +212,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb )
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
