@@ -17,7 +17,7 @@ SITE_DESC = 'Séries en streaming vf gratuitement sur Série Streaming'
 
 URL_MAIN = 'https://www.seriestreaming.watch/'
 
-SERIE_NEWS = (URL_MAIN, 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'film-archive/', 'showMovies') #astuce anti caroussel
 SERIE_SERIES = ('http://', 'load')
 SERIE_VFS = (URL_MAIN + 'version-francaise-vf/', 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'version-francaise-vf/?sort=views', 'showMovies')
@@ -131,14 +131,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    if '<span>Récemment ajoutées</span>' in sHtmlContent:
-        sStart = '</script><div class="film-content">'
-        sEnd = '</div><div class="film-content">'
-        sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-    else:
-        sHtmlContent = sHtmlContent
-
-    sPattern = '<div class="movie-poster">.+?href="([^<]+)".+?src="([^<]+)" alt="(.+?)"'#.+?(?:|<p class=\'story\'>(.+?)<\/p>)
+    sPattern = '<div class="movie-poster">.+?href="([^<]+)".+?src="([^<]+)" alt="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -155,11 +148,6 @@ def showMovies(sSearch = ''):
             sUrl = str(aEntry[0])
             sThumb = str(aEntry[1])
             sTitle = str(aEntry[2])
-
-#            try:
-#                sDesc = str(aEntry[3])
-#            except:
-#                sDesc= ''
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
