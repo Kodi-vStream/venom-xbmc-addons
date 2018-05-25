@@ -9,6 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
+from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'streamelite'
@@ -22,10 +23,10 @@ URL_SEARCH_MOVIE = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN ,'showMovies')
+MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'tendance/', 'showMovies')
 MOVIE_NOTES = (URL_MAIN + 'evaluations/', 'showMovies')
-MOVIE_LIST = (True, 'showList')
+#MOVIE_LIST = (True, 'showList')
 MOVIE_ANNEES = (True, 'showYears')
 MOVIE_GENRES = (True, 'showGenres')
 
@@ -46,15 +47,16 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vues)', 'films_views.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'films_views.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NOTES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NOTES[1], 'Films (Les mieux notés)', 'films_notes.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Liste)', 'films_az.png', oOutputParameterHandler)
+    #ne fonctionne plus sur le site
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
+    #oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Liste)', 'films_az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
@@ -100,35 +102,35 @@ def showList():
     oGui = cGui()
 
     liste = []
-    liste.append( ['09',URL_MAIN + '?letter=true&s=title-09'] )
-    liste.append( ['A',URL_MAIN + '?letter=true&s=title-a'] )
-    liste.append( ['B',URL_MAIN + '?letter=true&s=title-b'] )
-    liste.append( ['C',URL_MAIN + '?letter=true&s=title-c'] )
-    liste.append( ['D',URL_MAIN + '?letter=true&s=title-d'] )
-    liste.append( ['E',URL_MAIN + '?letter=true&s=title-e'] )
-    liste.append( ['F',URL_MAIN + '?letter=true&s=title-f'] )
-    liste.append( ['G',URL_MAIN + '?letter=true&s=title-g'] )
-    liste.append( ['H',URL_MAIN + '?letter=true&s=title-h'] )
-    liste.append( ['I',URL_MAIN + '?letter=true&s=title-i'] )
-    liste.append( ['J',URL_MAIN + '?letter=true&s=title-j'] )
-    liste.append( ['K',URL_MAIN + '?letter=true&s=title-k'] )
-    liste.append( ['L',URL_MAIN + '?letter=true&s=title-l'] )
-    liste.append( ['M',URL_MAIN + '?letter=true&s=title-m'] )
-    liste.append( ['N',URL_MAIN + '?letter=true&s=title-n'] )
-    liste.append( ['O',URL_MAIN + '?letter=true&s=title-o'] )
-    liste.append( ['P',URL_MAIN + '?letter=true&s=title-p'] )
-    liste.append( ['Q',URL_MAIN + '?letter=true&s=title-q'] )
-    liste.append( ['R',URL_MAIN + '?letter=true&s=title-r'] )
-    liste.append( ['S',URL_MAIN + '?letter=true&s=title-s'] )
-    liste.append( ['T',URL_MAIN + '?letter=true&s=title-t'] )
-    liste.append( ['U',URL_MAIN + '?letter=true&s=title-u'] )
-    liste.append( ['V',URL_MAIN + '?letter=true&s=title-v'] )
-    liste.append( ['W',URL_MAIN + '?letter=true&s=title-w'] )
-    liste.append( ['X',URL_MAIN + '?letter=true&s=title-x'] )
-    liste.append( ['Y',URL_MAIN + '?letter=true&s=title-y'] )
-    liste.append( ['Z',URL_MAIN + '?letter=true&s=title-z'] )
+    liste.append( ['09', URL_MAIN + '?letter=true&s=title-09'] )
+    liste.append( ['A', URL_MAIN + '?letter=true&s=title-a'] )
+    liste.append( ['B', URL_MAIN + '?letter=true&s=title-b'] )
+    liste.append( ['C', URL_MAIN + '?letter=true&s=title-c'] )
+    liste.append( ['D', URL_MAIN + '?letter=true&s=title-d'] )
+    liste.append( ['E', URL_MAIN + '?letter=true&s=title-e'] )
+    liste.append( ['F', URL_MAIN + '?letter=true&s=title-f'] )
+    liste.append( ['G', URL_MAIN + '?letter=true&s=title-g'] )
+    liste.append( ['H', URL_MAIN + '?letter=true&s=title-h'] )
+    liste.append( ['I', URL_MAIN + '?letter=true&s=title-i'] )
+    liste.append( ['J', URL_MAIN + '?letter=true&s=title-j'] )
+    liste.append( ['K', URL_MAIN + '?letter=true&s=title-k'] )
+    liste.append( ['L', URL_MAIN + '?letter=true&s=title-l'] )
+    liste.append( ['M', URL_MAIN + '?letter=true&s=title-m'] )
+    liste.append( ['N', URL_MAIN + '?letter=true&s=title-n'] )
+    liste.append( ['O', URL_MAIN + '?letter=true&s=title-o'] )
+    liste.append( ['P', URL_MAIN + '?letter=true&s=title-p'] )
+    liste.append( ['Q', URL_MAIN + '?letter=true&s=title-q'] )
+    liste.append( ['R', URL_MAIN + '?letter=true&s=title-r'] )
+    liste.append( ['S', URL_MAIN + '?letter=true&s=title-s'] )
+    liste.append( ['T', URL_MAIN + '?letter=true&s=title-t'] )
+    liste.append( ['U', URL_MAIN + '?letter=true&s=title-u'] )
+    liste.append( ['V', URL_MAIN + '?letter=true&s=title-v'] )
+    liste.append( ['W', URL_MAIN + '?letter=true&s=title-w'] )
+    liste.append( ['X', URL_MAIN + '?letter=true&s=title-x'] )
+    liste.append( ['Y', URL_MAIN + '?letter=true&s=title-y'] )
+    liste.append( ['Z', URL_MAIN + '?letter=true&s=title-z'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -138,23 +140,22 @@ def showList():
 
 def showYears():
     oGui = cGui()
+    oParser = cParser()
+    oRequestHandler = cRequestHandler(URL_MAIN)
 
     sStart = '<ul class="year scrolling">'
-    sEnd = '</div>	<div class="content">'
-
-    oParser = cParser()
-
-    oRequestHandler = cRequestHandler(URL_MAIN)
+    sEnd = '</div>  <div class="content">'
     sHtmlContent = oRequestHandler.request()
-
-    sHtmlContent = oParser.abParse(sHtmlContent,sStart,sEnd)
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
     sPattern = '<li><a href="([^"]+)">(.+?)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sUrl = aEntry[0]
-            sTitle = aEntry[1]
+
+            sUrl = str(aEntry[0])
+            sTitle = str(aEntry[1])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -164,6 +165,7 @@ def showYears():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
     if sSearch:
         sUrl = sSearch
         sPattern = '<div class="result-item">.+?<img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">.+?<p>(.+?)<\/p>'
@@ -172,15 +174,13 @@ def showMovies(sSearch = ''):
         sUrl = oInputParameterHandler.getValue('siteUrl')
         sPattern = '<div class="poster".+?img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">.+?(?:<article|<div class="texto">(.+?)<div)'
 
-
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -189,17 +189,20 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-                
-            try:
-                sDesc = re.sub('(\A.+?: )','',aEntry[3])
-            except:
-                sDesc= '' 
 
-            #L'array affiche vos infos dans l'ordre de sPattern en commencant a 0
+            try:
+                sDesc = re.sub('(\A.+?: )', '', aEntry[3])
+            except:
+                sDesc= ''
+
             sThumb = str(aEntry[0])
             sTitle = str(aEntry[1])
             sUrl2 = str(aEntry[2])
 
+            #Si recherche et trop de resultat, on nettoye
+            if sSearch and total > 2:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -210,6 +213,7 @@ def showMovies(sSearch = ''):
 
         cConfig().finishDialog(dialog)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -242,7 +246,6 @@ def showHosters():
 
     sPattern = '<iframe src=["\'](.+?)["\']'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
