@@ -33,16 +33,16 @@ def ProtectstreamBypass(url):
     Codedurl = url
     oRequestHandler = cRequestHandler(Codedurl)
     sHtmlContent = oRequestHandler.request()
-    
+
     oParser = cParser()
     sPattern = 'var k=\"([^<>\"]*?)\";'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
 
-        cGui().showInfo("Patientez", 'Decodage en cours', 5)
+        cGui().showInfo("Patientez", 'Décodage en cours', 5)
         xbmc.sleep(5000)
-        
+
         #postdata = urllib.urlencode( { 'k': aResult[1][0] } )
         postdata = 'k=' + aResult[1][0]
 
@@ -56,7 +56,7 @@ def ProtectstreamBypass(url):
                    #'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
                    'Content-Length' : len(postdata),
                    'Content-Type': 'application/x-www-form-urlencoded'}
-                   
+
         #cConfig().log(postdata)
         #cConfig().log(str(headers))
 
@@ -69,7 +69,7 @@ def ProtectstreamBypass(url):
 
         data = response.read()
         response.close()
-        
+
         #fh = open('c:\\test.txt', "w")
         #fh.write(data)
         #fh.close()
@@ -168,6 +168,7 @@ def showGenres():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
 
     if sSearch:
@@ -180,13 +181,12 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="moviefilm".+?<a href="(.+?)".+?<img src="([^<>"]+)" alt="(.+?)"'
+    sPattern = '<div class="moviefilm".+?<a href="(.+?)".+?<img src="([^<>"]+)" alt="(.+?)".+?<p>([^<>"]+)<\/p>'
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -196,18 +196,17 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            sUrl = aEntry[0]
-            sThumb = aEntry[1]
+            sUrl = str(aEntry[0])
+            sThumb = str(aEntry[1])
             sTitle = str(aEntry[2]).replace(' Streaming', '').replace('&#8217;', '\'')
-
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            sDesc = str(aEntry[3])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -231,6 +230,7 @@ def __checkForNextPage(sHtmlContent):
 
 def showSeries():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -239,8 +239,17 @@ def showSeries():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    try:#récupération du Synopsis
+        sDesc = ''
+        sPattern = 'class="lab_syn">Synopsis :</span>(.+?)<\/p>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0].decode("utf-8")
+            sDesc = cUtil().unescape(sDesc).encode("utf-8")
+    except:
+        pass
+
     sPattern = '<a href="([^<]+)"><span>(.+?)</span></a>'
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -254,13 +263,11 @@ def showSeries():
             sUrl = str(aEntry[0])
             sTitle = sMovieTitle + ' episode ' + str(aEntry[1])
 
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
-
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -268,6 +275,7 @@ def showSeries():
 
 def showHosters():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -278,7 +286,6 @@ def showHosters():
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/', '')
 
     sPattern = '<td class="lg" width=".+?">(?:(VF|VOSTFR|VO))<\/td>.+?<td class="lg" width=".+?">(.+?)</td>.+?<a href="(.+?)"'
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -290,8 +297,11 @@ def showHosters():
                 break
 
 
-            sDisplayTitle = ('%s [%s] [%s]') % (sMovieTitle, aEntry[0], aEntry[1])
+            sLang = str(aEntry[0])
+            sHost = str(aEntry[1])
             sUrl = str(aEntry[2])
+
+            sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -315,9 +325,6 @@ def serieHosters():
     oHoster = cHosterGui().checkHoster(sHosterUrl)
 
     if (oHoster != False):
-
-        sMovieTitle = cUtil().DecoTitle(sMovieTitle)
-
         oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

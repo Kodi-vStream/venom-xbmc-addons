@@ -1,4 +1,5 @@
 #-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -85,7 +86,7 @@ def showGenres():
     liste.append( ['Science Fiction', URL_MAIN + 'science-fiction/'] )
     liste.append( ['Thriller', URL_MAIN + 'thriller/'] )
     liste.append( ['Western', URL_MAIN + 'western/'] )
-	#la suite fonctionne mais pas de menu sur le site
+    #la suite fonctionne mais pas de menu sur le site
     liste.append( ['Espionnage', URL_MAIN + 'espionnage/'] )
     liste.append( ['Péplum', URL_MAIN + 'peplum/'] )
     liste.append( ['Divers', URL_MAIN + 'divers/'] )
@@ -100,6 +101,7 @@ def showGenres():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
 
     if sSearch:
@@ -130,14 +132,11 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    oParser = cParser()
-
     sPattern = '<div class="fullstream fullstreaming">\s*<img src="([^><"]+)"[^<>]+alt="([^"<>]+)".+?<h3 class="mov-title"><a href="([^><"]+)">.+?<strong>(?:Qualité|Version)(.+?)<\/*strong>'
-
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -182,7 +181,6 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-
     sPattern = '<a href="([^<>"]+)">Suivant &#8594;<\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -194,6 +192,7 @@ def __checkForNextPage(sHtmlContent):
 
 def showHosters():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -203,15 +202,10 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '<i class="fa fa-play-circle-o"></i>([^<]+)</div>|<a href="([^<>"]+)" title="([^<]+)" target="seriePlayer".+?>'
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             if (aEntry[0]):
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
@@ -227,7 +221,5 @@ def showHosters():
                 oHoster.setFileName(sMovieTitle)
 
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()

@@ -151,10 +151,6 @@ def showMoviesMenu():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche Film', 'search.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
 
@@ -180,10 +176,6 @@ def showSeriesMenu():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearchSeries', 'Recherche Série', 'search.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
 
@@ -199,7 +191,7 @@ def showSeriesMenu():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()   
 
 def showSearch():
     oGui = cGui()
@@ -313,8 +305,8 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'film-ripz"><a href=".+?">(.+?)</a>.+?film-verz"><a href=".*?">(.+?)</a>.*?href="(.+?)"><img src="(.+?)" alt="(.+?)"'
-
+    #sPattern = 'film-ripz"><a href=".+?">(.+?)</a>.+?film-verz"><a href=".*?">(.+?)</a>.*?href="(.+?)"><img src="(.+?)" alt="(.+?)"'
+    sPattern = 'film-ripz"><a href=".+?">([^<]+)</a>.+?film-verz"><a href=".+?">([^<]+)</a>.+?href="([^"]+)"><img src="([^"]+)".+?(?:alt|title)="(.+?)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -376,7 +368,9 @@ def showSeries(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
 
 
-    sPattern = '<a class="short-poster img-box with-mask" href="([^<]+)".+?<img src="([^<]+)" alt="(.+?)"'
+    #sPattern = '<a class="short-poster img-box with-mask" href="([^<]+)".+?<img src="([^<]+)" alt="(.+?)"'
+    sPattern = '<a class="short-poster.+?href="([^<]+)"><img src="([^"]+)".*?(?:alt|title)="(.+?)"'
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -395,13 +389,14 @@ def showSeries(sSearch = ''):
                 if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_SERIE[0], ''), aEntry[2]) == 0:
                     continue
 
+
             sUrl2 = str(aEntry[0])
             sThumb = str(aEntry[1]).replace('/img/french-stream.com.php?src=', '')
             sThumb = sThumb.split('&')[0]
             if sThumb.startswith ('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
-            sTitle = str(aEntry[2])
+            sTitle = aEntry[2].replace('-', '')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)

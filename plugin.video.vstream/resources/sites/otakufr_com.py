@@ -7,8 +7,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
-import urllib,re
+#from resources.lib.util import cUtil
+import urllib, re
 
 SITE_IDENTIFIER = 'otakufr_com'
 SITE_NAME = 'OtakuFR'
@@ -16,9 +16,9 @@ SITE_DESC = 'OtakuFR animés en streaming et téléchargement'
 
 URL_MAIN = 'http://otakufr.com/'
 
-ANIM_NEWS = (URL_MAIN + 'latest-episodes/' , 'showMovies')
+ANIM_NEWS = (URL_MAIN + 'latest-episodes/', 'showMovies')
 ANIM_ANIMS = ('http://', 'load')
-ANIM_POPULAR = (URL_MAIN + 'anime-list/all/any/most-popular/' , 'showMovies')
+ANIM_POPULAR = (URL_MAIN + 'anime-list/all/any/most-popular/', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'anime-list-all/', 'showAlpha')
 
 URL_SEARCH = (URL_MAIN + 'anime-list/search/', 'showMovies')
@@ -97,13 +97,12 @@ def showMovies(sSearch = ''):
                 sType = 'VOSTFR'
 
             sTitle =  aEntry[1] + ' (' + sType + ')'
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sDisplayTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, 'animes.png', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -158,9 +157,9 @@ def showAZ():
         for aEntry in aResult[1]:
             if aEntry[1].upper()[0] == dAZ or aEntry[1][0].isdigit() and dAZ == '#':
 
-               sUrl = aEntry[0]
-               sTitle =  aEntry[1] + ' (' + 'VOSTFR' + ')'
-               sDisplayTitle = cUtil().DecoTitle(sTitle)
+               sUrl = str(aEntry[0])
+               sTitle =  str(aEntry[1])
+               sDisplayTitle = sTitle + ' (' + 'VOSTFR' + ')'
 
                oOutputParameterHandler = cOutputParameterHandler()
                oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -180,8 +179,10 @@ def __checkForNextPage(sHtmlContent):
 
 def showEpisodes():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
+    sThumb = oInputParameterHandler.getValue('sThumb')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     oRequestHandler = cRequestHandler(sUrl)
@@ -189,19 +190,17 @@ def showEpisodes():
 
     #thumbetsyno
     try:
-       oParser = cParser()
+       #oParser = cParser()
        sThumb = ''
-       sSyn = ''
+       sDesc = ''
        sPattern = '<img class="cvr" src="([^"]+)".+?<b>Synopsis</b>:<br */>([^<]+)<\/p>'
        aResult = oParser.parse(sHtmlContent, sPattern)
        if aResult[0]:
           sThumb = aResult[1][0][0]
-          sSyn = aResult[1][0][1]
+          sDesc = aResult[1][0][1]
     except:
        pass
 
-    oParser = cParser()
-    #sPattern = '<a class="lst" href="([^"]+)" title="([^"]+)"><b class="val">'ok
     sPattern = '<a class="lst" href="([^"]+)" title="([^"]+(?<!Episode Date)(?<!Episode News))"><b class="val">'#vire les non épisode
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -213,28 +212,27 @@ def showEpisodes():
             if dialog.iscanceled():
                break
 
-            p = re.search(r'(\d+)[ +](\d+)',aEntry[1])
+            p = re.search(r'(\d+)[ +](\d+)', aEntry[1])
             if p:
-                sTitle = re.sub(r'(\d+)[ +](\d+)', p.group(1) + "-" + p.group(2) ,aEntry[1])
+                sTitle = re.sub(r'(\d+)[ +](\d+)', p.group(1) + "-" + p.group(2), aEntry[1])
             else:
                 sTitle = aEntry[1]
-            iliste = ['Ep-','-Vostfr','Vostfr-','-Non-Censure','VF-']
+            iliste = ['Ep-', '-Vostfr', 'Vostfr-', '-Non-Censure', 'VF-', ' -']
             for item in iliste:
                 if item in aEntry[1]:
-                   sTitle = sTitle.replace(item,'')
+                   sTitle = sTitle.replace(item, '')
 
             sUrl  = aEntry[0]
-            sThumb = sThumb.replace(' ','%20')
-            sTitle = sTitle.replace('Episode SP','[ Episode Spécial ] episode').replace(' + ','-').replace('Episode New-','Episode')
-            sTitle = sTitle.replace('Episode ONA','[ Episode ONA ] episode').replace('Episode OVA','[ Episode OVA ] episode').replace('Episode NC','Episode')
-
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
+            sThumb = sThumb.replace(' ', '%20')
+            sTitle = sTitle.replace('Episode SP', '[ Episode Spécial ] episode').replace(' + ', '-').replace('Episode New-', 'Episode')
+            sTitle = sTitle.replace('Episode ONA', '[ Episode ONA ] episode').replace('Episode OVA', '[ Episode OVA ] episode').replace('Episode NC', 'Episode')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showLinks',sDisplayTitle, 'animes.png', sThumb, sSyn, oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -242,17 +240,18 @@ def showEpisodes():
 
 def showLinks():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     sUrl = urllib.quote(sUrl, safe=':/')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    oParser = cParser()
-    sHtmlContent = oParser.abParse(sHtmlContent,'<div class="nav_ver">','<div class="vdo_wrp">')
+    sHtmlContent = oParser.abParse(sHtmlContent, '<div class="nav_ver">', '<div class="vdo_wrp">')
 
     sPattern = '<a href="([^"<>]+/[0-9]/)">([^"]+)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -270,14 +269,16 @@ def showLinks():
             if 'brightcove' in filter or 'purevid' in filter or 'videomega' in filter:
                 continue
 
-            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-            sDisplayTitle = sDisplayTitle + '[COLOR teal] >> ' + aEntry[1] +' [/COLOR]'
+            sUrl = str(aEntry[0])
+            sHost = str(aEntry[1])
+
+            sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters',sDisplayTitle, 'animes.png',sThumbnail, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'animes.png', sThumb, sDesc, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -285,19 +286,19 @@ def showLinks():
 
 def showHosters():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sHtmlContent = sHtmlContent.replace('<iframe src="http://www.facebook.com','')
-    sHtmlContent = sHtmlContent.replace('<div class="vdo_wrp"><div style=','<div class="vdo_wrp"><iframe ')
-    sHtmlContent = sHtmlContent.replace('data-videoid="','src="https://embed.tune.pk/vid=')
+    sHtmlContent = sHtmlContent.replace('<iframe src="http://www.facebook.com', '')
+    sHtmlContent = sHtmlContent.replace('<div class="vdo_wrp"><div style=', '<div class="vdo_wrp"><iframe ')
+    sHtmlContent = sHtmlContent.replace('data-videoid="', 'src="https://embed.tune.pk/vid=')
     #pour Tune en test
 
-    oParser = cParser()
     sPattern = '<div class="vdo_wrp"><iframe.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -313,10 +314,10 @@ def showHosters():
                     def http_response(self, request, response):
                         return response
 
-                url8 = sHosterUrl.replace('https','http')
+                url8 = sHosterUrl.replace('https', 'http')
 
                 opener = urllib2.build_opener(NoRedirection)
-                opener.addheaders.append (('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'))
+                opener.addheaders.append (('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'))
                 opener.addheaders.append (('Connection', 'keep-alive'))
 
                 HttpReponse = opener.open(url8)
@@ -326,9 +327,8 @@ def showHosters():
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
-            sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-            oHoster.setDisplayName(sDisplayTitle)
+            oHoster.setDisplayName(sMovieTitle)
             oHoster.setFileName(sMovieTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl,sThumbnail)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()

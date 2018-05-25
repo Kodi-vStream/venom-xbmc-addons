@@ -14,6 +14,8 @@ SITE_DESC = 'Replay TV'
 
 URL_MAIN = 'https://replaytvstreaming.com/'
 
+MOVIE_MOVIE = (URL_MAIN + 'film', 'showMovies')
+
 REPLAYTV_NEWS = (URL_MAIN, 'showMovies')
 REPLAYTV_REPLAYTV = ('http://', 'load')
 REPLAYTV_GENRES = (True, 'showGenres')
@@ -37,6 +39,10 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, REPLAYTV_GENRES[1], 'Replay (Genres)', 'genres.png', oOutputParameterHandler)
 
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -52,8 +58,6 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     liste = []
     liste.append( ["Emissions et Magazines", URL_MAIN + "emission-magazine"] )
@@ -61,8 +65,9 @@ def showGenres():
     liste.append( ["Spectacles", URL_MAIN + "spectacle"] )
     liste.append( ["Sports", URL_MAIN + "sport"] )
     liste.append( ["Téléfilms Fiction", URL_MAIN + "telefilm-fiction"] )
+    liste.append( ["Films", URL_MAIN + "film"] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -72,6 +77,7 @@ def showGenres():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
     if sSearch:
         sUrl = URL_SEARCH[0] + sSearch
 
@@ -90,28 +96,27 @@ def showMovies(sSearch = ''):
 
         sPattern = '<div class="item-box"><a class="item-link" href="([^"]+)">.+?<img src="(.+?)".+?<div class="item-title">(.+?)<\/div><div class="item-info clearfix">(.+?)<\/div>'
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
             sUrl = str(aEntry[0])
-            sTitle = ('%s') % (str(aEntry[2]))
-            sThumbnail = str(aEntry[1])
-            sSyn = aEntry[3]
-            if not sThumbnail.startswith('http'):
-               sThumbnail = URL_MAIN + sThumbnail
+            sTitle = str(aEntry[2])
+            sThumb = str(aEntry[1])
+            sDesc = aEntry[3]
+            if not sThumb.startswith('http'):
+               sThumb = URL_MAIN + sThumb
 
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumbnail, sSyn, oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumb, sDesc, oOutputParameterHandler)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -145,7 +150,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -165,7 +170,7 @@ def showHosters():
             sVideoID = str(aEntry[0])
             sHosterUrl = showLinks(sPage, sVideoID)
 
-            sTitle = ('%s') % (str(aEntry[2]))
+            sTitle = str(aEntry[2])
 
             if not ('Lecteur' in sTitle) and (sTest != sTitle):
                 oGui.addText(SITE_IDENTIFIER,'[COLOR olive]' + sTitle + '[/COLOR]')
@@ -175,7 +180,7 @@ def showHosters():
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     else:
         sPattern = '<div class="playe.+?" data-show_player="video"><iframe.+?src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -187,6 +192,6 @@ def showHosters():
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()

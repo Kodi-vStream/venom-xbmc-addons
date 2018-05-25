@@ -45,6 +45,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = sUrl.replace('http://www.iframe-secure.com/embed/','')
+        self.__sUrl = sUrl.replace('//iframe-secure.com/embed/','')
         self.__sUrl = 'http://www.iframe-secure.com/embed/iframe.php?u=%s' % self.__sUrl
 
     def checkUrl(self, sUrl):

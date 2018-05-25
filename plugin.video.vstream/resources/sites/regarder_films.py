@@ -96,13 +96,13 @@ def showList():
     #Decoupage pour cibler la partie selectionnée
     sPattern = '<font color="red".+?>' + dAZ + '</font>(.+?)<p><strong>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-	
+    
     #regex pour listage series sur la partie decoupée
     sPattern = '<a href="([^"]+)".+?>(.+?)<\/a>'
     aResult = oParser.parse(aResult, sPattern)
     
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -146,6 +146,7 @@ def showGenres():
 
 def showSeries(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
     if sSearch:
       sUrl = sSearch
 
@@ -157,12 +158,7 @@ def showSeries(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    # if 'streamzz' in sUrl:
-        # sPattern = '<li><a href="(http:..streamzzz.online\/page[^<]+)" title=".+?">([^<]+)<.a><.li>'
-    # else:
     sPattern = '<div class="post".+?<h2><a class="title" href="(.+?)" rel="bookmark">(.+?)</a>.+?src="(.+?)"'
-
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -185,14 +181,11 @@ def showSeries(sSearch = ''):
             if 'streamzzz' in sThumb:
                 continue
 
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
-
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-#            oGui.addDir(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, sThumb, oOutputParameterHandler)
-            oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -207,7 +200,7 @@ def showSeries(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     sPattern = '<a class="nextpostslink" rel="next" href="(.+?)">..<'
-    aResult = re.findall(sPattern,sHtmlContent,re.UNICODE)
+    aResult = re.findall(sPattern, sHtmlContent, re.UNICODE)
     if (aResult):
         return aResult[0]
 
@@ -232,7 +225,7 @@ def serieHosters():
         sThumb = aResult[1][0]
 
     #if 'streamzz' in sUrl:
-		#sPattern = '<div class="boton reloading"><a href="([^"]+)">'
+        #sPattern = '<div class="boton reloading"><a href="([^"]+)">'
     #else:
     sPattern = '<center><.+?<stron.+?((?:VF|VOSTFR|VO)).+?trong>|<p><a href="([^"]+)".+?target="_blank">'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -253,8 +246,7 @@ def serieHosters():
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
 
                 if (oHoster != False):
-                    sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-                    oHoster.setDisplayName(sDisplayTitle)
+                    oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
