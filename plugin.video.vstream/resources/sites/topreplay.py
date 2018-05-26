@@ -13,7 +13,7 @@ SITE_IDENTIFIER = 'topreplay'
 SITE_NAME = 'TopReplay'
 SITE_DESC = 'Replay TV'
 
-URL_MAIN = 'http://www.topreplay.net'
+URL_MAIN = 'http://www.topreplay.tv'
 URL_SEARCH = (URL_MAIN + '/index.php?do=search&subaction=search&story=', 'showMovies')
 URL_SEARCH_MISC = (URL_MAIN + '/index.php?do=search&subaction=search&story=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -55,12 +55,12 @@ def showSearch():
 
 def showGenre():
     oGui = cGui()
+    oParser = cParser()
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
 
-    oParser = cParser()
     sPattern = '<\/span>.+?par genre<\/h3>(.+?)<li class="active">'
-    aResult = re.search(sPattern,sHtmlContent,re.DOTALL)
+    aResult = re.search(sPattern, sHtmlContent, re.DOTALL)
     if (aResult):
         sHtmlContent = aResult.group(1)
         sPattern = '<li><a href="([^"]+)">([^<]+)<\/a><\/li>'
@@ -92,7 +92,7 @@ def showListe():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sHtmlContent = oParser.abParse(sHtmlContent,'<div class="other-title">','class="clearfix">')
+    sHtmlContent = oParser.abParse(sHtmlContent, '<div class="other-title">', 'class="clearfix">')
 
     sPattern = '<li><a href="(.+?)">(.+?)<\/a><\/li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -104,8 +104,8 @@ def showListe():
             if dialog.iscanceled():
                 break
 
-            sTitle = aEntry[1]
             sUrl = URL_MAIN + aEntry[0]
+            sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -117,6 +117,7 @@ def showListe():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
 
     if sSearch:
       sUrl = sSearch
@@ -124,17 +125,14 @@ def showMovies(sSearch = ''):
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
-
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    oParser = cParser()
 
     sPattern = '<div class="img-short"><img src="([^"]+)".+?<a href="([^"]+)">([^<]+)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -151,8 +149,8 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'replay.png',  sThumb,  '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'replay.png', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -176,7 +174,7 @@ def __checkForNextPage(sHtmlContent):
 
 def checkforHoster(sHosterUrl):
     #principal hoster les autres avec que des videos hs non mis
-    code = re.search('\/(.+?)=([^"]+)',sHosterUrl)
+    code = re.search('\/(.+?)=([^"]+)', sHosterUrl)
     if not 'php?link' in code.group(1):
         if 'openload' in sHosterUrl:
             return 'https://openload.co/embed/' + code.group(2)
@@ -216,22 +214,22 @@ def checkforHoster(sHosterUrl):
                 return 'http://my.mail.ru/video/embed/' + code.group(1)
     else:
         if 'uptobox' in sHosterUrl:
-            code = re.search('/plyr/.+?//uptobox.com/([^"]+)',sHosterUrl)
+            code = re.search('/plyr/.+?//uptobox.com/([^"]+)', sHosterUrl)
             if code:
                 return 'https://uptobox.com/' + code.group(1)
 
 def showHosters():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     #integrale saison
-    oParser = cParser()
     sPattern = '<div class="img-short"><img src="([^"]+)".+?<a href="([^"]+)">([^<]+)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -241,12 +239,12 @@ def showHosters():
             sUrl = aEntry[1]
             sTitle = aEntry[2]
 
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'replay.png',  sThumb,  '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'replay.png', sThumb, '', oOutputParameterHandler)
     else:
         #1
         sPattern = '<option value="([^"]+)"'
@@ -257,15 +255,15 @@ def showHosters():
 
         aResult = []
         aResult = list(set(aResult1 + aResult2)) #pas de doublons
+
         if (aResult):
             for aEntry in aResult:
                 sHosterUrl = checkforHoster(str(aEntry))
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
-
                 if (oHoster != False):
                     oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
