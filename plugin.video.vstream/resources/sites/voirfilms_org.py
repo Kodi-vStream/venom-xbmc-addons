@@ -163,7 +163,7 @@ def showGenres():
 def showMovieAnnees():
     oGui = cGui()
 
-    for i in reversed (xrange(1913, 2018)):
+    for i in reversed (xrange(1913, 2019)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee-' + Year)
@@ -174,7 +174,7 @@ def showMovieAnnees():
 def showSerieAnnees():
     oGui = cGui()
 
-    for i in reversed (xrange(1936, 2018)):
+    for i in reversed (xrange(1936, 2019)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee-' + Year)
@@ -240,6 +240,7 @@ def showAlpha():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
 
     if sSearch:
         #on redecode la recherche codé il y a meme pas une seconde par l'addon
@@ -276,11 +277,10 @@ def showMovies(sSearch = ''):
 
     sHtmlContent = sHtmlContent.replace('\n', '')
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if not (aResult[0] == False):
         total = len(aResult[1])
@@ -386,9 +386,7 @@ def showHosters():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
-
-            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle , '', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -437,12 +435,10 @@ def serieHosters():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
-
             if '-episode-' in aEntry[0] or '/anime' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -488,8 +484,7 @@ def showHostersLink():
     sHosterUrl = sUrl
     oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
-        sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-        oHoster.setDisplayName(sDisplayTitle)
+        oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
