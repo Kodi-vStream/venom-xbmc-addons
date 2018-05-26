@@ -77,6 +77,7 @@ def showGenres():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
     if sSearch:
       sUrl = sSearch
     else:
@@ -88,11 +89,10 @@ def showMovies(sSearch = ''):
 
     sPattern = "<a class='titre_news_index' href='(.+?)' title='(.+?)'>.+?<img class=\"thumbnail\" src='(.+?)'.+?>.+?<span class='corps_news_p2'>(.+?)</span>"
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
     #print aResult
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -144,7 +144,7 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
 
     sPattern = 'file: "(.+?)", label: "(.+?)"'
     oParser = cParser()
@@ -152,12 +152,7 @@ def showHosters():
 
     #print aResult
     if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             sHosterUrl = str(aEntry[0])
             sTitle = sMovieTitle + ' | ' + aEntry[1]
@@ -166,7 +161,5 @@ def showHosters():
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-        cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
