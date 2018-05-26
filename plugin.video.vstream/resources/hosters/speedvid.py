@@ -4,14 +4,12 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.util import VSlog
-from resources.lib.config import cConfig
-
 from resources.lib.aadecode import AADecoder
 from resources.lib.jjdecode import JJDecoder
 from resources.lib.packer import cPacker
 from resources.lib.jsparser import JsParser
 
-import re,xbmcgui
+import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -99,7 +97,7 @@ class cHoster(iHoster):
         sHtmlContent = sHtmlContent3
         
         VSlog('fini')
-        
+
         #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
@@ -108,7 +106,7 @@ class cHoster(iHoster):
         if (True):
             Realurl = ''
             
-            red = re.findall('window\.location\.href= *[\'"]([^\'"]+)',sHtmlContent)
+            red = re.findall('location *= *[\'"]([^\'"]+)',sHtmlContent)
             if red:
                 Realurl = red[0]
             else:
@@ -130,10 +128,11 @@ class cHoster(iHoster):
             VSlog('Real url>> ' + Realurl)
 
             oRequest = cRequestHandler(Realurl)
-            oRequest.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0')
+            oRequest.addHeaderEntry('User-Agent',UA)
             oRequest.addHeaderEntry('Referer',self.__sUrl)
+
             sHtmlContent = oRequest.request()          
-            
+
         #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
@@ -148,7 +147,8 @@ class cHoster(iHoster):
         VSlog('API_CALL: ' + api_call )
 
         if (api_call):
-            api_call = api_call + '|User-Agent=' + UA 
+            api_call = api_call + '|User-Agent=' + UA  #+ #'|Host=' + api_call.replace('http://','').rsplit('/', 2)[0]
+
             return True, api_call
             
         return False, False
