@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+#from resources.lib.util import cUtil
 import urllib2, urllib, re
 
 SITE_IDENTIFIER = 'voirfilms_org'
@@ -259,7 +259,7 @@ def showMovies(sSearch = ''):
 
         sHtmlContent = oRequest.request()
 
-        sPattern = '<div class="imagefilm">.+?<img src="(.+?)".+?<a href="([^<>]+?)".+?titreunfilm" style="width:145px;"> *(.+?) *<\/div>'
+        sPattern = '<div class="imagefilm">.+?<img src="([^"]+)".+?<a href="([^<>]+?)".+?titreunfilm" style="width:145px;"> *(.+?) *<\/div>'
         type = '1'
 
     else:
@@ -269,10 +269,10 @@ def showMovies(sSearch = ''):
         sHtmlContent = oRequestHandler.request()
 
         if 'animes/' in sUrl:
-            sPattern = '<div class="imagefilm">.+?<a href="([^<>]+?)".+?<img src="(.+?)".+?titreunfilm" style="width:145px;">(.+?)<\/div>'
+            sPattern = '<div class="imagefilm">.+?<a href="([^<>]+?)".+?<img src="([^"]+)".+?titreunfilm" style="width:145px;">(.+?)<\/div>'
             type = '2'
         else:
-            sPattern = '<div class="imagefilm">.+?<img src="(.+?)".+?<a href="([^<>]+?)".+?titreunfilm" style="width:145px;">(.+?)<\/div>'
+            sPattern = '<div class="imagefilm">.+?<img src="([^"]+)".+?<a href="([^<>]+?)".+?titreunfilm" style="width:145px;">(.+?)<\/div>'
             type = '1'
 
     sHtmlContent = sHtmlContent.replace('\n', '')
@@ -298,7 +298,8 @@ def showMovies(sSearch = ''):
                 sThumb = str(aEntry[0])
                 sUrl = str(aEntry[1])
 
-            sTitle = cUtil().unescape(aEntry[2])
+            #sTitle = cUtil().unescape(aEntry[2])#ancien traitement du titre
+            sTitle = str(aEntry[2])
 
             if not 'http' in sThumb:
                 sThumb = URL_MAIN + sThumb
@@ -311,8 +312,8 @@ def showMovies(sSearch = ''):
             #sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
 
             #Vstream don't work with unicode url for the moment
-            sThumb = unicode(sThumb, "UTF-8")
-            sThumb = sThumb.encode('ascii', 'ignore').decode('ascii')
+            #sThumb = unicode(sThumb, "UTF-8")
+            #sThumb = sThumb.encode('ascii', 'ignore').decode('ascii')
             #sThumb=sThumb.decode('utf8')
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -378,8 +379,8 @@ def showHosters():
 
             sUrl = aEntry[0]
             sHost = aEntry[1].capitalize()
-            sLang = aEntry[2].replace('L', '')
-            sTitle = '%s [%s] [COLOR coral]%s[/COLOR]' %(sMovieTitle, sLang.upper(), sHost)
+            sLang = aEntry[2].replace('L', '').upper()
+            sTitle = '%s (%s) [COLOR coral]%s[/COLOR]' %(sMovieTitle, sLang, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
