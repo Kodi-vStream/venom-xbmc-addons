@@ -11,7 +11,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+#from resources.lib.util import cUtil
 import urllib, unicodedata, re
 import xbmcgui
 import xbmc
@@ -138,6 +138,7 @@ def load():
 
 def showMovies(sSearch = '', page = 1):
     oGui = cGui()
+    oParser = cParser()
     bGlobal_Search = False
 
     oInputParameterHandler = cInputParameterHandler()
@@ -149,12 +150,10 @@ def showMovies(sSearch = '', page = 1):
         #bGlobal_Search = True
 
     oRequestHandler = cRequestHandler(sUrl)
-    oRequestHandler.addHeaderEntry('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
     sHtmlContent = oRequestHandler.request()
 
     sPattern  ='class="lister-item-image.+?<img\salt="([^"]+)".+?loadlate="([^"]+)".+?class="lister-item-index.+?>([^<]+)</span>.+?class="lister-item-year.+?>([^<]+)</span.+?title="Users rated this(.+?)\s'
-
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -171,10 +170,10 @@ def showMovies(sSearch = '', page = 1):
             #sTitle = sTitle.encode( "utf-8")
 
             sTitle = ('%s %s %s [COLOR fuchsia]%s[/COLOR]') % (aEntry[2], aEntry[0], aEntry[3], aEntry[4])
-            sMovieTitle=re.sub('(\[.*\])','', sTitle)
+            sMovieTitle=re.sub('(\[.*\])', '', sTitle)
             sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle)
             #sTitle2=re.sub('(.*)(\[.*\])','\\1 [COLOR orange]\\2[/COLOR]', sTitle)
-            sThumbnail = aEntry[1].replace('UX67', 'UX328').replace('UY98', 'UY492').replace('67','0').replace('98','0')
+            sThumb = aEntry[1].replace('UX67', 'UX328').replace('UY98', 'UY492').replace('67', '0').replace('98', '0')
 
             #sCom = unicode(aEntry[3], 'utf-8')#converti en unicode
             #sCom = unicodedata.normalize('NFD', sCom).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
@@ -183,10 +182,10 @@ def showMovies(sSearch = '', page = 1):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', ('none'))
             oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[0]))
-            #oOutputParameterHandler.addParameter('sThumbnail', str(aEntry[1]))
-            #oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, '', oOutputParameterHandler)
-            oOutputParameterHandler.addParameter('searchtext', showTitle(str(aEntry[0]),  str('none')))
-            oGui.addMovie('globalSearch', 'showSearch', sTitle, '', sThumbnail, '', oOutputParameterHandler)
+            #oOutputParameterHandler.addParameter('sThumb', str(aEntry[1]))
+            #oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('searchtext', showTitle(str(aEntry[0]), str('none')))
+            oGui.addMovie('globalSearch', 'showSearch', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -205,9 +204,8 @@ def showMovies(sSearch = '', page = 1):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a\shref="([^"]+?)"class="lister-page-next'
-
     oParser = cParser()
+    sPattern = '<a\shref="([^"]+?)"class="lister-page-next'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -247,7 +245,7 @@ def showTitle(sMovieTitle, sUrl):
     #print 'apres ' + sMovieTitle
     #modif ici
     if sExtraTitle:
-        sMovieTitle = sMovieTitle.replace('%C3%A9','e').replace('%C3%A0','a')
+        sMovieTitle = sMovieTitle.replace('%C3%A9', 'e').replace('%C3%A0', 'a')
         sMovieTitle = sMovieTitle + sExtraTitle
     else:
         sMovieTitle = sMovieTitle
