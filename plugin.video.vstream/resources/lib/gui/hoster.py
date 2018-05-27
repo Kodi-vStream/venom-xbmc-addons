@@ -295,8 +295,6 @@ class cHosterGui:
             return self.getHoster('gorillavid')
         if ('daclips' in sHostName):
             return self.getHoster('daclips')
-        if ('kvid' in sHostName):
-            return self.getHoster('kvid')
         if ('estream' in sHostName):
             return self.getHoster('estream')
         if ('hdvid' in sHostName):
