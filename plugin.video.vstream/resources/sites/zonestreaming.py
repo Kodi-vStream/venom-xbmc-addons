@@ -9,7 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+#from resources.lib.util import cUtil
 import re
 
 #from base64 import urlsafe_b64encode
@@ -226,6 +226,9 @@ def showMovies(sSearch = ''):
 
             sUrl2 = str(aEntry[0])
             sTitle = str(aEntry[1]).replace('&#8217;', '\'').replace('&prime;', '\'')
+            #on vire le tiret laisser le 'Sai'
+            if ' - Saison' in sTitle:
+                sTitle = sTitle.replace(' - Sai', 'Sai')
             sThumb = str(aEntry[2])
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -233,7 +236,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            #Mange et Series fonctionnent pareil
+            #Mangas et Series fonctionnent pareil
             if '/series-tv/' in sUrl or '-saison-' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             else:
@@ -252,6 +255,7 @@ def showMovies(sSearch = ''):
 
 def showSeries():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -261,7 +265,7 @@ def showSeries():
     sHtmlContent = oRequestHandler.request()
 
     #Nettoyage du code, a simplifier, mais je trouve pas ce qui ne va pas
-    sHtmlContent = sHtmlContent.decode('utf-8',"replace")
+    sHtmlContent = sHtmlContent.decode('utf-8', "replace")
     sHtmlContent = unicodedata.normalize('NFD', sHtmlContent).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
     sHtmlContent = sHtmlContent.encode('utf-8')#On remet en utf-8
 
@@ -272,9 +276,17 @@ def showSeries():
     #supprimme pour récuperer les new regex different
     sHtmlContent = sHtmlContent.replace('<span style="color: #ff9900;">New</span>', '')
 
-    #sPattern = '<span style="color: #33cccc;"><strong>([^<]+)|>(Episode[^<]{2,12})<(?!\/a>)(.+?)(?:<.p|<br|<.div)'
+    try:#récupération des Synopsis
+        sDesc = ''
+        sPattern = '(?:<p style="text-align: center;"|<p align="center")>([^<]+)<\/p>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0]
+            sDesc = sDesc.replace('&#8230;', '...')
+    except:
+        pass
+
     sPattern = '<span style="color: #33cccc; font-size: large;"><b>([^<]+)|>(Episode[^<]{2,12})<(?!\/a>)(.{0,10}a href="http.+?)(?:<.p|<br|<.div)'
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     #astuce en cas d'episode unique
@@ -294,13 +306,14 @@ def showSeries():
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
             else:
-                sTitle = sMovieTitle + ' ' + aEntry[1]
+                sTitle = sMovieTitle.replace('[Complete]', '') + ' ' + str(aEntry[1])
+                sUrl = str(aEntry[2])
 
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -319,6 +332,7 @@ def __checkForNextPage(sHtmlContent):
 
 def showHosters():
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -330,7 +344,6 @@ def showHosters():
     sHtmlContent = sHtmlContent.replace('<iframe src="//ads.ad-center.com', '')
 
     sPattern = 'large button.+?href="(.+?)"'
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
