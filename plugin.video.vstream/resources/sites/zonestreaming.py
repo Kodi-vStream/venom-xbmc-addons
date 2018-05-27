@@ -355,10 +355,11 @@ def showHosters():
                 break
 
             sHosterUrl = str(aEntry)
+            #nettoyage du titre
+            sMovieTitle = re.sub('\[\w+ \w+]', '', sMovieTitle)
+            sMovieTitle = re.sub('\[\w+]', '', sMovieTitle)
 
-            #oHoster = __checkHoster(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
