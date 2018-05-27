@@ -500,6 +500,12 @@ def parseWebM3U(sUrl):
         line = re.compile('#.+,(.+?)\n(.+?)\n').findall(html)
     for sTitle, sUrl2 in line:
         sUrl2 = sUrl2.replace('\r','')
+
+        #with open('D:\\playlist.m3u', 'r+b') as f:
+        #    f.seek(0,2)
+        #    f.write('\n'+'#EXTINF:-1,'+sTitle)
+        #    f.write('\n'+sUrl2)
+        
         icon = "tv.png"
         if '.ts' in sUrl2:
             sUrl2 = 'plugin://plugin.video.f4mTester/?url='+urllib.quote_plus(sUrl2)+'&amp;streamtype=TSDOWNLOADER&name='+urllib.quote(sTitle)
