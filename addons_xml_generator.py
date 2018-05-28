@@ -59,7 +59,9 @@ class Generator:
                 # create path
                 _path = os.path.join( addon, "addon.xml" )
                 # split lines for stripping
-                xml_lines = open( _path, "r",  encoding ="UTF-8" ).read().splitlines()
+                #xml_lines = open( _path, "r",  encoding ="UTF-8" ).read().splitlines()
+                xml_lines = open( _path, "r").read().splitlines()
+
                 # new addon
                 addon_xml = ""
                 # loop thru cleaning each line
