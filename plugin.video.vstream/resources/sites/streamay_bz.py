@@ -10,6 +10,9 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 import re, xbmcgui, urllib, unicodedata
 
+try:    import json
+except: import simplejson as json
+
 SITE_IDENTIFIER = 'streamay_bz'
 SITE_NAME = 'Streamay'
 SITE_DESC = 'Films, Séries & Mangas en streaming'
@@ -33,7 +36,7 @@ ANIM_ANNEES = (URL_MAIN + 'mangas/annee/', 'showMovies')
 
 URL_SEARCH = ('', 'showResultSearch')
 URL_SEARCH_MOVIES = ('', 'showResultSearch')
-#URL_SEARCH_SERIES = ('', 'showResultSearch')
+URL_SEARCH_SERIES = ('', 'showResultSearch')
 FUNCTION_SEARCH = 'showResultSearch'
 
 def load():
@@ -210,49 +213,60 @@ def showResultSearch(sSearch = ''):
 
     sHtmlContent = oRequest.request()
 
-    sHtmlContent = unicode(sHtmlContent,'utf-8')
-    sHtmlContent = unicodedata.normalize('NFD', sHtmlContent).encode('ascii', 'ignore').decode("unicode_escape")
-    sHtmlContent = sHtmlContent.encode("utf-8")
-    sHtmlContent = sHtmlContent.replace("\n", "")
-    sHtmlContent = re.sub('"img":"([^"]+)","synopsis":"([^"]+)"','"synopsis":"\g<2>","img":"\g<1>"', sHtmlContent) #pattern en ordre img et syn inversé parfois
+    # sHtmlContent = unicode(sHtmlContent,'utf-8')
+    # sHtmlContent = unicodedata.normalize('NFD', sHtmlContent).encode('ascii', 'ignore').decode("unicode_escape")
+    # sHtmlContent = sHtmlContent.encode("utf-8")
+    # sHtmlContent = sHtmlContent.replace("\n", "")
+    # sHtmlContent = re.sub('"img":"([^"]+)","synopsis":"([^"]+)"','"synopsis":"\g<2>","img":"\g<1>"', sHtmlContent) #pattern en ordre img et syn inversé parfois
 
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
 
-    sPattern = '\"id\":.+?,\"title\":\"([^\"]+)\".+?\"qualite\":\"([^\"]+)\",\"img\":\"([^\"]+)\",.+?\"url\":\"([^\"]+)\"'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    # sPattern = '\"id\":.+?,\"title\":\"([^\"]+)\".+?\"qualite\":\"([^\"]+)\",\"img\":\"([^\"]+)\",.+?\"url\":\"([^\"]+)\"'
+    # aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
+    #[{"result":{"id":"1082","title":"<strong>Westworld<\/strong>","originalTitle":"Westworld","codeAllo":"16930","slug":"westworld","dateStart":"2016-10-02","format":"0","synopsis":"Un parc d'attractions peupl\u00e9 de robots propose aux visiteurs de se replonger dans plusieurs \u00e9poques. Lanc\u00e9s dans l'ouest sauvage, deux amis se retrouvent plong\u00e9s en plein cauchemar quand l'un des andro\u00efdes se d\u00e9traque et les prend en chasse...","img":"2823_westworld_qONX.jpg","trailer":null,"banner":"7241_westworld_rRTq.jpg","status":"En production","published":true,"views":"255128","votes":"42","rating":"190","urating":"0.000000","stoun":null,"updato":"2018-05-09 10:58:59","created_at":"2016-10-03 21:31:35","updated_at":"2018-05-28 03:04:43","url":"http:\/\/streamay.la\/series\/westworld","count_seasons":[{"serie_id":"1082","count":"2"}],"count_episodes":[{"serie_id":"1082","count":"13"}]},"type":"S\u00e9rie"}]
+    #[{"result":{"id":"544","title":"Avatar","originalTitle":null,"codeAllo":null,"story":"Malgr\u00e9 sa paralysie, Jake Sully, un ancien marine immobilis\u00e9 dans un fauteuil roulant, est rest\u00e9 un combattant au plus profond de son \u00eatre. Il est recrut\u00e9 pour se rendre \u00e0 des ann\u00e9es-lumi\u00e8re de la Terre, sur Pandora, o\u00f9 de puissants groupes industriels exploitent un minerai rarissime destin\u00e9 \u00e0 r\u00e9soudre la crise \u00e9nerg\u00e9tique sur Terre. Parce que l'atmosph\u00e8re de Pandora est toxique pour les humains, ceux-ci ont cr\u00e9\u00e9 le Programme Avatar, qui permet \u00e0 des \" pilotes \" humains de lier leur esprit \u00e0 un avatar, un corps biologique command\u00e9 \u00e0 distance, capable de survivre dans cette atmosph\u00e8re l\u00e9tale. Ces avatars sont des hybrides cr\u00e9\u00e9s g\u00e9n\u00e9tiquement en croisant l'ADN humain avec celui des Na'vi, les autochtones de Pandora.Sous sa forme d'avatar, Jake peut de nouveau marcher. On lui confie une mission d'infiltration aupr\u00e8s des Na'vi, devenus un obstacle trop cons\u00e9quent \u00e0 l'exploitation du pr\u00e9cieux minerai. Mais tout va changer lorsque Neytiri, une tr\u00e8s belle Na'vi, sauve la vie de Jake...","slug":"avatarvf","anneeProduction":"2009","dateSortie":null,"qualite":"DVDRIP","img":"3474_avatar_KZU5.jpg","langue":"Fran\u00e7ais (VF)","trailer":null,"duree":"10140","views":"353048","votes":"703","rating":"2920","urating":"0.000000","stoun":"","manual":"0","published":true,"boxoffice":false,"created_at":"2013-01-23 06:21:54","updated_at":"2018-05-28 02:13:02","mafia":"aventure,science-fiction,americain","vv":5,"genre":"Aventure","url":"http:\/\/streamay.la\/544-avatarvf.html","genres":[{"id":"16","name":"Aventure","slug":"aventure","pivot":{"movies_id":"544","genres_id":"16"}},{"id":"9","name":"Science Fiction","slug":"science-fiction","pivot":{"movies_id":"544","genres_id":"9"}}]},"type":"Film"},{"result":{"id":"420","title":"<strong>Avatar<\/strong> : La L\u00e9gende de Korra","originalTitle":"","origine":"","acteurs":"","format":"25","studios":"","dateSortie":"","year":"2012","img":"4406_avatar-la-legende-de-korra_qEEz.jpg","synopsis":"70 ans apr\u00e8s les \u00e9v\u00e9nements d'Avatar, le Dernier Ma\u00eetre de l'Air,\nvoici les aventures du nouvel \u00e9lu, une adolescente passionn\u00e9e,\ncourageuse et intr\u00e9pide de la Tribu d'eau du Sud nomm\u00e9e Korra. \nMa\u00eetrisant 3 des 4 \u00e9l\u00e9ments, c'est sous la tutelle du fils d'Aang,\nTenzin, que Korra commence sa formation pour ma\u00eetriser le dernier \u00e9l\u00e9ment : l'air.\nMais le parcours de notre jeune prodige sera sem\u00e9 d'emb\u00fbches, le danger gronde...","stoun":null,"slug":"avatar-la-legende-de-korra","published":true,"views":"10813","votes":"0","rating":"0","created_at":"2016-04-19 03:18:47","updated_at":"2018-05-28 04:00:07","url":"http:\/\/streamay.la\/mangas\/avatar-la-legende-de-korra"},"type":"Manga"}]
+ 
+    
+    content = json.loads(sHtmlContent)    
+
+    sType = "Film"
+    
+
+    if not content:
         oGui.addText(SITE_IDENTIFIER)
 
-    if (aResult[0] == True):
-        total = len(aResult[1])
+    if content:
+        total = len(content)
         dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
+        for x in content:
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
 
-            sTitle = aEntry[0]
-            sQual = aEntry[1]
-            sTitle = cUtil().removeHtmlTags(sTitle)
-            sUrl = aEntry[3]
-            sThumb = URL_MAIN + 'cdn/img/' + aEntry[2]
+            sTitle = cUtil().removeHtmlTags(x['result']['title']).encode('UTF-8')
+            sUrl = x['result']['url']
+            sThumb = URL_MAIN + 'cdn/img/' + x['result']['img']
             sDesc = ''
+            sType = x['type'].encode('UTF-8')
 
-            sDisplayTitle =  ('%s [%s]') % (sTitle, sQual)
+            try:
+                sMovieTitle = '%s [%s]' % (sTitle, x['result']['qualite'])
+            except:
+                sMovieTitle = sTitle
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            if '/serie' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-            elif '/mangas' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showAnime', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            if 'Série' in sType:
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sMovieTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            elif 'Manga' in sType:
+                oGui.addTV(SITE_IDENTIFIER, 'showAnime', sMovieTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sMovieTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
