@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+#from resources.lib.util import cUtil
 import urllib2, urllib, re
 
 SITE_IDENTIFIER = 'voirfilms_org'
@@ -163,7 +163,7 @@ def showGenres():
 def showMovieAnnees():
     oGui = cGui()
 
-    for i in reversed (xrange(1913, 2018)):
+    for i in reversed (xrange(1913, 2019)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee-' + Year)
@@ -174,7 +174,7 @@ def showMovieAnnees():
 def showSerieAnnees():
     oGui = cGui()
 
-    for i in reversed (xrange(1936, 2018)):
+    for i in reversed (xrange(1936, 2019)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee-' + Year)
@@ -240,6 +240,7 @@ def showAlpha():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
 
     if sSearch:
         #on redecode la recherche codé il y a meme pas une seconde par l'addon
@@ -258,7 +259,7 @@ def showMovies(sSearch = ''):
 
         sHtmlContent = oRequest.request()
 
-        sPattern = '<div class="imagefilm">.+?<img src="(.+?)".+?<a href="([^<>]+?)".+?titreunfilm" style="width:145px;"> *(.+?) *<\/div>'
+        sPattern = '<div class="imagefilm">.+?<img src="([^"]+)".+?<a href="([^<>]+?)".+?titreunfilm" style="width:145px;"> *(.+?) *<\/div>'
         type = '1'
 
     else:
@@ -268,19 +269,18 @@ def showMovies(sSearch = ''):
         sHtmlContent = oRequestHandler.request()
 
         if 'animes/' in sUrl:
-            sPattern = '<div class="imagefilm">.+?<a href="([^<>]+?)".+?<img src="(.+?)".+?titreunfilm" style="width:145px;">(.+?)<\/div>'
+            sPattern = '<div class="imagefilm">.+?<a href="([^<>]+?)".+?<img src="([^"]+)".+?titreunfilm" style="width:145px;">(.+?)<\/div>'
             type = '2'
         else:
-            sPattern = '<div class="imagefilm">.+?<img src="(.+?)".+?<a href="([^<>]+?)".+?titreunfilm" style="width:145px;">(.+?)<\/div>'
+            sPattern = '<div class="imagefilm">.+?<img src="([^"]+)".+?<a href="([^<>]+?)".+?titreunfilm" style="width:145px;">(.+?)<\/div>'
             type = '1'
 
     sHtmlContent = sHtmlContent.replace('\n', '')
 
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if not (aResult[0] == False):
         total = len(aResult[1])
@@ -298,7 +298,8 @@ def showMovies(sSearch = ''):
                 sThumb = str(aEntry[0])
                 sUrl = str(aEntry[1])
 
-            sTitle = cUtil().unescape(aEntry[2])
+            #sTitle = cUtil().unescape(aEntry[2])#ancien traitement du titre
+            sTitle = str(aEntry[2])
 
             if not 'http' in sThumb:
                 sThumb = URL_MAIN + sThumb
@@ -311,8 +312,8 @@ def showMovies(sSearch = ''):
             #sTitle = sTitle.encode('ascii', 'ignore').decode('ascii')
 
             #Vstream don't work with unicode url for the moment
-            sThumb = unicode(sThumb, "UTF-8")
-            sThumb = sThumb.encode('ascii', 'ignore').decode('ascii')
+            #sThumb = unicode(sThumb, "UTF-8")
+            #sThumb = sThumb.encode('ascii', 'ignore').decode('ascii')
             #sThumb=sThumb.decode('utf8')
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -378,17 +379,15 @@ def showHosters():
 
             sUrl = aEntry[0]
             sHost = aEntry[1].capitalize()
-            sLang = aEntry[2].replace('L', '')
-            sTitle = '%s [%s] [COLOR coral]%s[/COLOR]' %(sMovieTitle, sLang.upper(), sHost)
+            sLang = aEntry[2].replace('L', '').upper()
+            sTitle = '%s (%s) [COLOR coral]%s[/COLOR]' %(sMovieTitle, sLang, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
-
-            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sDisplayTitle , '', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -437,12 +436,10 @@ def serieHosters():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            sDisplayTitle = cUtil().DecoTitle(sTitle)
-
             if '-episode-' in aEntry[0] or '/anime' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -488,8 +485,7 @@ def showHostersLink():
     sHosterUrl = sUrl
     oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
-        sDisplayTitle = cUtil().DecoTitle(sMovieTitle)
-        oHoster.setDisplayName(sDisplayTitle)
+        oHoster.setDisplayName(sMovieTitle)
         oHoster.setFileName(sMovieTitle)
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 

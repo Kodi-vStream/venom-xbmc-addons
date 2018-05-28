@@ -8,7 +8,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib import util
 from resources.lib.config import cConfig
-import re,xbmcgui,unicodedata
+import re, xbmcgui, unicodedata
 
 #clone de dpstreaming.tv
 
@@ -25,6 +25,7 @@ MOVIE_GENRES = (True, 'showGenres')
 
 SERIE_SERIES = (URL_MAIN + 'category/series-tv/', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'category/series-tv/', 'showMovies')
+SERIE_LIST = (True, 'showList')
 SERIE_VIEWS = (URL_MAIN + 'most-viewed/', 'showMovies')
 SERIE_COMMENTS = (URL_MAIN + 'most-popular/', 'showMovies')
 SERIE_NOTES = (URL_MAIN + 'most-like/', 'showMovies')
@@ -74,8 +75,8 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Séries (Les mieux Notés)', 'series_notes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries (Liste)', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste)', 'listes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
@@ -136,7 +137,7 @@ def showGenres():
     liste.append( ['BLURAY 3D', URL_MAIN + 'category/films/bluray-3d/'] )
     liste.append( ['Emissions TV', URL_MAIN + 'category/emissions-tv/'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -158,11 +159,11 @@ def showList():
     liste.append( ['S-T-U', URL_MAIN + 'category/series-tv/s-t-u/'] )
     liste.append( ['V-W-X-Y-Z', URL_MAIN + 'category/series-tv/v-w-x-y-z/'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettres [COLOR coral]' + sTitle + '[/COLOR]', 'listes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettres [COLOR coral]' + sTitle + '[/COLOR]', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -186,7 +187,7 @@ def showMovies(sSearch = ''):
         sHtmlContent = sHtmlContent.replace('listes-des-series-annulees-et-renouvelees', '<>')
 
     oParser = cParser()
-    sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<>"]+)".+?\/> *<\/a> *<div class="movief"><a href="([^<]+)">([^<]+)<\/a><\/div>'
+    sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<>"]+)".+?\/> *<\/a> *<div class="movief"><a href="([^<]+)">([^<]+)<\/a>.+?<p>(.+?)<\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -213,8 +214,7 @@ def showMovies(sSearch = ''):
             sTitle = sTitle.replace(' [Telecharger]', '').replace(' [Telechargement]', '')
             sTitle = sTitle.replace(' [Complète]', '').replace(' [Complete]', '')
             sTitle = sTitle.replace('&#8217;', '\'')
-
-            sDisplayTitle = util.cUtil().DecoTitle(sTitle)
+            sDesc = str(aEntry[3]).replace('[&hellip;]', '').replace('&rsquo;', '\'').replace('&#8230;', '...')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -226,9 +226,9 @@ def showMovies(sSearch = ''):
             elif 'quelle-est-votre-serie-preferee' in aEntry[1]:
                 pass
             elif 'series' in sUrl or re.match('.+?saison [0-9]+', sTitle, re.IGNORECASE):
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -253,6 +253,7 @@ def __checkForNextPage(sHtmlContent):
 
 def showSeries(sLoop = False):
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -265,7 +266,16 @@ def showSeries(sLoop = False):
     sHtmlContent = unicodedata.normalize('NFD', sHtmlContent).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
     sHtmlContent = sHtmlContent.encode('utf-8')#On remet en utf-8
 
-    oParser = cParser()
+
+    try:#récupération des Synopsis
+        sDesc = ''
+        sPattern = '</p><p style="text-align: center;">([^<]+)<\/p><p style="text-align: center;">'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0]
+            sDesc = sDesc.replace('&#8230;', '...')
+    except:
+        pass
 
     sPattern = '<span style="color: #33cccc;[^<>"]*">(?:<(?:strong|b)>)*((?:Stream|Telec)[^<>]+)|>(Episode[^<]{2,12})<(?!\/a>)(.+?a href="http.+?)(?:<.p|<br|<.div)'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -290,14 +300,13 @@ def showSeries(sLoop = False):
             #episode
             else:
                 sUrl = str(aEntry[2])
-                sTitle = sMovieTitle + ' ' + str(aEntry[1])
-                sDisplayTitle = util.cUtil().DecoTitle(sTitle)
+                sTitle = sMovieTitle.replace(' -', '') + ' ' + str(aEntry[1])
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         util.finishDialog(dialog)
 
@@ -319,11 +328,11 @@ def showHosters(sLoop = False):
 
     #1 er version
     sPattern = '<iframe[^<>]+?src=[\'|"](http.+?)[\'|"]'
-    aResult1 = re.findall( sPattern, sHtmlContent)
+    aResult1 = re.findall(sPattern, sHtmlContent)
 
     #seconde version
     sPattern = '<a class="large.+?href="(.+?)" target="vid">'
-    aResult2 = re.findall( sPattern, sHtmlContent)
+    aResult2 = re.findall(sPattern, sHtmlContent)
 
     #3eme version
     sPattern = '<a class="large.+?href="([^<>"]+?)" target="(?:_blank|vid)"'
@@ -347,8 +356,7 @@ def showHosters(sLoop = False):
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
-                sDisplayTitle = util.cUtil().DecoTitle(sMovieTitle)
-                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
@@ -382,8 +390,7 @@ def serieHosters():
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
-                sDisplayTitle = util.cUtil().DecoTitle(sTitle)
-                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 

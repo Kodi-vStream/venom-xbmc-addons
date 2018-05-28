@@ -144,7 +144,7 @@ def LoadLinks(htmlcode):
                 continue
                 
             #pour test
-            if ('.js' not in sUrl) and ('.cgi' not in sUrl):
+            if ('.js' not in sUrl) or ('.cgi' not in sUrl):
                 continue
             #if 'flashx' in sUrl:
                 #continue
@@ -428,7 +428,7 @@ class cHoster(iHoster):
             sRefresh = aResult[0]
             
             #on recupere le script de debloquage
-            sPattern = 'type="text\/javascript" src="([^"]+checkembed[^"]+)"><\/script>'
+            sPattern = '<script async class.+?src="([^"]+)"><\/script>'
             aResult = re.findall(sPattern,sHtmlContent)
             if not aResult:
                 return False,False

@@ -37,7 +37,7 @@ headers = {'User-Agent': USER_AGENT,
 
 icon = 'tv.png'
 sRootArt = cConfig().getRootArt()
-
+addon_handle = int(sys.argv[1])
 
 class track():
     def __init__(self, length, title, path, icon,data=''):
@@ -69,40 +69,22 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
     oGui.addDir(SITE_IDENTIFIER, 'showWeb', oConfig.getlanguage(30203), 'tv.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', LISTE_AIZEN)
-    oGui.addDir(SITE_IDENTIFIER, 'showAizenListe', "Liste d'AizenKnower", 'tv.png', oOutputParameterHandler)
-
     oGui.setEndOfDirectory()
 
 def showIptvSite():
     oGui = cGui()
 
     liste = []
-    liste.append( ['IptvSource', 'https://www.iptvsource.com/category/europe-iptv-lists/france-iptv-lists/'] )
+    liste.append( ['IptvSource', 'https://www.iptvsource.com/'] )
     liste.append( ['Iptv Gratuit', 'http://iptvgratuit.com/'] )
     liste.append( ['Daily Iptv List', 'https://www.dailyiptvlist.com/'])
+    liste.append( ['IptvSatLink (site utiliser par ultimate iptv)', 'http://iptvsatlinks.blogspot.fr/search?max-results=40'])
 
     for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oGui.addDir(SITE_IDENTIFIER, 'showDailyList', sTitle, 'films_genres.png', oOutputParameterHandler)
-
-    oGui.setEndOfDirectory()
-
-def showAizenListe():
-    oGui = cGui()
-
-    liste = []
-    liste.append( ["Linux-App valable  jusqu'en novembre 2018 (environ)", 'http://linux-app.tv:8080/get.php?type=m3u&username=Reda&password=Reda'] )
-    liste.append( ["P4.giffy valable jusqu'au 6 juin (environ)", 'http://p4.giffy.be:8080/get.php?username=thalia&password=thalia&type=m3u'] )
-
-    for sTitle, sUrl in liste:
-
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showWebIptvSource', sTitle, 'films_genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -118,7 +100,9 @@ def showDailyList():
     sHtmlContent = page.read()
     #cConfig().log(str(sHtmlContent))
 
-    if 'iptvsource.com' in sUrl:
+    if 'iptvsatlinks.blogspot.fr' in sUrl:
+        sPattern = "<h3 class='post-title entry-title' itemprop='name'>\s*<a href='(.+?)'>(.+?)</a>"
+    elif 'iptvsource.com' in sUrl:
         sPattern = '<h3 class="entry-title td-module-title"><a href="(.+?)" rel="bookmark" title="(.+?)"'
     elif 'iptvgratuit.com' in sUrl:
         sPattern = '<header class="entry-header"><h2 class="entry-title"> <a href="(.+?)" rel="bookmark">(.+?)</a></h2>'
@@ -145,7 +129,10 @@ def showDailyList():
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
-            oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, '', oOutputParameterHandler)
+            if 'iptvsatlinks.blogspot.fr/'in sUrl:
+                oGui.addDir(SITE_IDENTIFIER, 'showWebIptvSource', sTitle, '', oOutputParameterHandler)
+            else:
+                oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -158,7 +145,15 @@ def showDailyList():
     oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class="next page-numbers" href="(.+?)">'
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    if 'iptvsatlinks.blogspot.fr/' in sUrl:
+        sPattern = "<a class='blog-pager-older-link' href='(.+?) id='Blog1_blog-pager-older-link' title='Older Posts'>Older Posts</a>"
+    elif 'https://www.iptvsource.com/' in sUrl:
+        sPattern = ' class="last" title=".+?">.+?</a><a href="(.+?)"><i class="td-icon-menu-right"></i>'
+    else:
+        sPattern = '<a class="next page-numbers" href="(.+?)">'
         
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -224,7 +219,41 @@ def showWebIptvSource():
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    parseWebM3U(sUrl)
+
+    if 'iptvsatlinks.blogspot.fr/' and 'daily-m3u-playlist'in sUrl:
+        html = getHtml(sUrl)
+        DailyM3uList = True
+        sPattern = '<br />http([^<]+)/(.+?)<br />'
+
+        oParser = cParser()
+        aResult = oParser.parse(html, sPattern)
+        if (aResult[0] == True):
+            total = len(aResult[1])
+
+            dialog = cConfig().createDialog(SITE_NAME)
+
+            for aEntry in aResult[1]:
+                cConfig().updateDialog(dialog, total)
+                if dialog.iscanceled():
+                    break
+                
+                sUrl2 = 'http'+str(aEntry[0])+'/'+str(aEntry[1])
+                sUrl2 = sUrl2.replace('&amp;','&')
+                sUrl2 = sUrl2.replace('<br />','')
+                sTitle = 'Lien: ' + sUrl2
+            
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+
+                oGui.addDir(SITE_IDENTIFIER, 'showWebIptvSource', sTitle, '', oOutputParameterHandler)
+
+            cConfig().finishDialog(dialog)
+
+        oGui.setEndOfDirectory()
+    
+    else:
+        parseWebM3U(sUrl)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
       
 def showWeb():
@@ -460,14 +489,23 @@ def getHtml(sUrl, referer=None, hdr=None, data=None):
     return data
 
 def parseWebM3U(sUrl):
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    
     html = getHtml(sUrl)
 
-    #cConfig().log(str(line))
-    #if not line.startswith('#EXTM3U'):
-        #return
-    line = re.compile('#.+,(.+?)\n(.+?)\n').findall(html)
+    if 'iptvsatlinks.blogspot.fr/' in sUrl:
+        line = re.compile('#EXTINF:-1,(.+?)<br />(.+?)<').findall(html)
+    else:
+        line = re.compile('#.+,(.+?)\n(.+?)\n').findall(html)
     for sTitle, sUrl2 in line:
         sUrl2 = sUrl2.replace('\r','')
+
+        #with open('D:\\playlist.m3u', 'r+b') as f:
+        #    f.seek(0,2)
+        #    f.write('\n'+'#EXTINF:-1,'+sTitle)
+        #    f.write('\n'+sUrl2)
+        
         icon = "tv.png"
         if '.ts' in sUrl2:
             sUrl2 = 'plugin://plugin.video.f4mTester/?url='+urllib.quote_plus(sUrl2)+'&amp;streamtype=TSDOWNLOADER&name='+urllib.quote(sTitle)
