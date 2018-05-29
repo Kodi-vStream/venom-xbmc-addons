@@ -248,16 +248,20 @@ class CloudflareBypass(object):
             #Add saved cookies
             opener.addheaders.append (('Cookie', cookies))
 
-            self.HttpReponse = opener.open(url,postdata)
-            htmlcontent = self.HttpReponse.read()
-            head = self.HttpReponse.headers
-
+            try:
+                self.HttpReponse = opener.open(url,postdata)
+                htmlcontent = self.HttpReponse.read()
+                head = self.HttpReponse.headers
+                self.HttpReponse.close()
+                
+            except urllib2.HTTPError, e:
+                if e.code == 503:
+                    htmlcontent = e.read()
+                    head = e.headers
+                    
             if not CheckIfActive(htmlcontent):
                 # ok no more protection
-                self.HttpReponse.close()
                 return htmlcontent
-
-            self.HttpReponse.close()
 
             #Arf, problem, cookies not working, delete them
             xbmc.log('Cookies Out of date', xbmc.LOGNOTICE)
