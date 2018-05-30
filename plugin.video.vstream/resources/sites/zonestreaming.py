@@ -275,6 +275,8 @@ def showSeries():
     sHtmlContent = sHtmlContent.replace('<iframe src="//ads.ad-center.com', '')
     #supprimme pour récuperer les new regex different
     sHtmlContent = sHtmlContent.replace('<span style="color: #ff9900;">New</span>', '')
+    #pour récuperer tous les liens
+    sHtmlContent = sHtmlContent.replace('https://linkrag.com/st?api=5821799852a075f4ad9432eefa73332cf053130f&amp;url=', '')
 
     try:#récupération des Synopsis
         sDesc = ''
@@ -339,11 +341,13 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('<iframe src="http://ads.affbuzzads.com', '')
     sHtmlContent = sHtmlContent.replace('<iframe src="//ads.ad-center.com', '')
+    #pour récuperer tous les liens
+    sHtmlContent = sHtmlContent.replace('https://linkrag.com/st?api=5821799852a075f4ad9432eefa73332cf053130f&amp;url=', '')
 
-    sPattern = 'large button.+?href="(.+?)"'
+    sPattern = '<span style="color: #ff990.+?>(Qua.+?)<|large button.+?href="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -354,16 +358,19 @@ def showHosters():
             if dialog.iscanceled():
                 break
 
-            sHosterUrl = str(aEntry)
-            #nettoyage du titre
-            sMovieTitle = re.sub('\[\w+ \w+]', '', sMovieTitle)
-            sMovieTitle = re.sub('\[\w+]', '', sMovieTitle)
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+            else:
+                sHosterUrl = str(aEntry[1])
+                #nettoyage du titre
+                sMovieTitle = re.sub('\[\w+ \w+]', '', sMovieTitle)
+                sMovieTitle = re.sub('\[\w+]', '', sMovieTitle)
 
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         cConfig().finishDialog(dialog)
 
