@@ -277,7 +277,7 @@ class cHoster(iHoster):
         return sHtmlContent
 
     def __getIdFromUrl(self, sUrl):
-        sPattern = "https*:\/\/((?:www.|play.)?flashx.tv)\/(?:playvid-)?(?:embed-)?(?:embed.+?=)?(-*[0-9a-zA-Z]+)?(?:.html)?"
+        sPattern = "https*:\/\/((?:www.|play.)?flashx.+?)\/(?:playvid-)?(?:embed-)?(?:embed.+?=)?(-*[0-9a-zA-Z]+)?(?:.html)?"
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
