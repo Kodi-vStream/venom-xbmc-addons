@@ -353,7 +353,12 @@ def showLinks():
     except:
         pass
 
-    sPattern = 'class="langue">.*?<span>(.*?)<\/span>|<a onclick=".+?">.+?</i>\s*([^<>]+)\s*<\/a>\s*<input name="levideo" value="([^"]+)"'
+    #filtre pour ne pas afficher les langues en telechargement
+    sStart = '<div class="player-container">'
+    sEnd = '<div class="iframe-vid-container">'
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+
+    sPattern = '<span>(vf|vo)</span>|<a onclick=".+?">.+?</i>\s*([^<>]+)\s*<\/a>\s*<input name="levideo" value="([^"]+)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -366,7 +371,7 @@ def showLinks():
                 sHost = str(aEntry[1]).strip().capitalize()
                 sHost = sHost.replace('.to', '').replace('.com', '').replace('.me', '').replace('.ec', '').replace('.co', '').replace('.eu', '').replace('.sx', '').replace('.net', '')
                 #on filtre les hosters hs
-                if 'Auroravid' in sHost:
+                if 'Auroravid' in sHost or 'Vidtodo' in sHost:
                     continue
                 sPost = str(aEntry[2])
                 sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
@@ -392,9 +397,10 @@ def showHosters():
     oRequestHandler.setRequestType(1)
     oRequestHandler.addParameters('levideo', sPost)
     sHtmlContent = oRequestHandler.request()
+    sHtmlContent = sHtmlContent.replace('src="https://www.youtube.com/embed/', '')
 
     oParser = cParser()
-    sPattern = '<iframe src=["\']([^"\']+)["\']'
+    sPattern = '<iframe.+?src=["\']([^"\']+)["\']'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
