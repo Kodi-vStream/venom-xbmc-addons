@@ -162,16 +162,18 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            sName = aEntry[2].replace(' Streaming Ultra-HD', '').replace(' Streaming Full-HD', '')
-            sName = sName.replace(' en Streaming HD', '').replace(' Streaming HD', '').replace(' streaming HD', '')
-            sName = sName.decode('utf8')
-            sName = cUtil().unescape(sName)
+            sTitle = aEntry[2].replace(' Streaming Ultra-HD', '').replace(' Streaming Full-HD', '')
+            sTitle = sTitle.replace(' en Streaming HD', '').replace(' Streaming HD', '').replace(' streaming', '').replace('HD', '')
+            if '' in sTitle:
+                sTitle = sTitle.replace(' -', '')
+            sTitle = sTitle.decode('utf8')
+            sTitle = cUtil().unescape(sTitle)
             try:
-                sName = sName.encode("utf-8")
+                sTitle = sTitle.encode("utf-8")
             except:
                 pass
 
-            sTitle = sName + ' [' + aEntry[3] + ']'
+            sDisplayTitle = sTitle + ' [' + aEntry[3] + ']'
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
             if sThumb.startswith('//'):
@@ -179,18 +181,18 @@ def showMovies(sSearch = ''):
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sName) == 0:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
                     continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sName)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if re.match('.+?saison [0-9]+', sTitle, re.IGNORECASE):
-                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
+            if re.match('.+?saison [0-9]+', sDisplayTitle, re.IGNORECASE):
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
