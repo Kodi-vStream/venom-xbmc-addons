@@ -74,6 +74,12 @@ def load():
 def showIptvSite():
     oGui = cGui()
 
+    #test f4mTester
+    sPath = xbmc.translatePath('special://home/addons/plugin.video.f4mTester')
+
+    if not os.path.exists(sPath):
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red]plugin.video.f4mTester : L'addon n'est pas présent[/COLOR]")
+
     liste = []
     liste.append( ['IptvSource', 'https://www.iptvsource.com/'] )
     liste.append( ['Iptv Gratuit', 'http://iptvgratuit.com/'] )
