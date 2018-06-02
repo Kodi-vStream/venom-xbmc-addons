@@ -189,36 +189,36 @@ def showFolder(sHtmlContent=''):
     oGui.setEndOfDirectory()
 
 def AddmyAccount():
-    if (cConfig().getSetting('hoster_uptobox_username') == '') and (cConfig().getSetting('hoster_uptobox_password') == ''):
-        return
-    oInputParameterHandler = cInputParameterHandler()
-    sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
+    UptomyAccount()
+    
+    # oInputParameterHandler = cInputParameterHandler()
+    # sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
 
-    sId = sMediaUrl.rsplit('/', 1)[1]
+    # sId = sMediaUrl.rsplit('/', 1)[1]
 
-    Upurl = URL_MAIN + '?op=my_files&add_my_acc=' + sId
+    # Upurl = URL_MAIN + '?op=my_files&add_my_acc=' + sId
 
-    oPremiumHandler = cPremiumHandler('uptobox')
-    if (GestionCookie().Readcookie('uptobox') != ''):
+    # oPremiumHandler = cPremiumHandler('uptobox')
+    # if (GestionCookie().Readcookie('uptobox') != ''):
 
-        cookies = GestionCookie().Readcookie('uptobox')
-        sHtmlContent = oPremiumHandler.GetHtmlwithcookies(Upurl, None, cookies)
-        if (len(sHtmlContent) > 25):
+        # cookies = GestionCookie().Readcookie('uptobox')
+        # sHtmlContent = oPremiumHandler.GetHtmlwithcookies(Upurl, None, cookies)
+        # if (len(sHtmlContent) > 25):
 
-            oPremiumHandler.Authentificate()
-            cookies = GestionCookie().Readcookie('uptobox')
-            sHtmlContent = oPremiumHandler.GetHtmlwithcookies(Upurl, None, cookies)
+            # oPremiumHandler.Authentificate()
+            # cookies = GestionCookie().Readcookie('uptobox')
+            # sHtmlContent = oPremiumHandler.GetHtmlwithcookies(Upurl, None, cookies)
 
-    else:
-        sHtmlContent = oPremiumHandler.GetHtml(Upurl)
+    # else:
+        # sHtmlContent = oPremiumHandler.GetHtml(Upurl)
 
-    xbmc.executebuiltin("Dialog.Close(all,true)")
-    if ('dded to your account' in sHtmlContent):
-        xbmcgui.Dialog().notification('Info upload', 'Fichier ajouté à votre compte', xbmcgui.NOTIFICATION_INFO, 2000, False)
-    elif ('nvalid file' in sHtmlContent):
-        xbmcgui.Dialog().notification('Info upload', 'Fichier introuvable', xbmcgui.NOTIFICATION_INFO, 2000, False)
-    else:
-        xbmcgui.Dialog().notification('Info upload', 'Erreur', xbmcgui.NOTIFICATION_ERROR, 2000, False)
+    # xbmc.executebuiltin("Dialog.Close(all,true)")
+    # if ('dded to your account' in sHtmlContent):
+        # xbmcgui.Dialog().notification('Info upload', 'Fichier ajouté à votre compte', xbmcgui.NOTIFICATION_INFO, 2000, False)
+    # elif ('nvalid file' in sHtmlContent):
+        # xbmcgui.Dialog().notification('Info upload', 'Fichier introuvable', xbmcgui.NOTIFICATION_INFO, 2000, False)
+    # else:
+        # xbmcgui.Dialog().notification('Info upload', 'Erreur', xbmcgui.NOTIFICATION_ERROR, 2000, False)
 
 def UptomyAccount():
     if (cConfig().getSetting('hoster_uptobox_username') == '') and (cConfig().getSetting('hoster_uptobox_password') == ''):
@@ -231,9 +231,13 @@ def UptomyAccount():
     sHtmlContent = oPremiumHandler.GetHtml(URL_MAIN)
     cookies = GestionCookie().Readcookie('uptobox')
 
-    aResult = re.search("request.open\('POST', '([^']+)'\);", sHtmlContent, re.DOTALL)
+    aResult = re.search('<form id="fileupload" action="([^"]+)"', sHtmlContent, re.DOTALL)
     if (aResult):
-        UPurl = aResult.group(1)
+        UPurl = aResult.group(1).replace('upload?','remote?')
+
+        if UPurl.startswith('//'):
+            UPurl = 'https:' + UPurl
+            
         fields = {'urls':'["' + sMediaUrl + '"]'}
         mpartdata = MPencode(fields)
 
@@ -241,23 +245,42 @@ def UptomyAccount():
         req.add_header('Content-Type', mpartdata[0].replace(',', ';'))
         req.add_header('Cookie', cookies)
         req.add_header('Content-Length', len(mpartdata[1]))
+        
+        #penible ce dialog auth
+        xbmc.executebuiltin("Dialog.Close(all,true)")
+        xbmcgui.Dialog().notification('Requete envoyé', 'vous pouvez faire autre chose', xbmcgui.NOTIFICATION_INFO, 4000, False)
 
-        xbmcgui.Dialog().notification('Info upload', 'Envoi de la requete patienter ..', xbmcgui.NOTIFICATION_INFO, 2000, False)
         try:
             rep = urllib2.urlopen(req)
         except urllib2.URLError, e:
-            #VSlog(e.code)
-            #VSlog(e.reason)
             return ''
 
         sHtmlContent = rep.read()
-        #VSlog(sHtmlContent)
         rep.close()
-        xbmc.executebuiltin("Dialog.Close(all,true)")
-        if 'success' in sHtmlContent:
-           xbmcgui.Dialog().notification('Info upload', 'Upload réussie', xbmcgui.NOTIFICATION_INFO, 2000, False)
+
+        sPattern = '{"id":.+?,(?:"size":|"progress":)([0-9]+)'
+        oParser = cParser()
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            total = aResult[1][0]
+            del aResult[1][0]
+
+            dialog = xbmcgui.DialogProgressBG()
+            dialog.create(SITE_NAME, 'Transfert de fichiers sur votre compte Uptobox')
+
+            for aEntry in aResult[1]:
+                dialog.update(int(aEntry) * 100 / int(total),'Upload en cours...')
+
+                xbmc.sleep(500)
+            dialog.close()
+
+
         else:
-           xbmcgui.Dialog().notification('Info upload', 'Fichier introuvable', xbmcgui.NOTIFICATION_INFO, 2000, False)
+            #penible ce dialog auth
+            xbmc.executebuiltin("Dialog.Close(all,true)")
+            xbmcgui.Dialog().notification('Info upload', 'Fichier introuvable', xbmcgui.NOTIFICATION_INFO, 2000, False)
     else:
+        #penible ce dialog auth
+        xbmc.executebuiltin("Dialog.Close(all,true)")
         xbmcgui.Dialog().notification('Info upload', 'Erreur pattern', xbmcgui.NOTIFICATION_ERROR, 2000, False)
 
