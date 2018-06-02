@@ -38,7 +38,7 @@ URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 # menu films existant dans l'acceuil (Home)
-MOVIE_NEWS = (URL_MAIN , 'showMovies') #films (derniers ajouts = trie par date)
+MOVIE_NEWS = (URL_MAIN, 'showMovies') #films (derniers ajouts = trie par date)
 MOVIE_MOVIE = ('http://', 'load') #films (load source)
 MOVIE_HD = (URL_MAIN + 'url', 'showMovies') #films HD
 MOVIE_VIEWS = (URL_MAIN + 'url', 'showMovies') #films (les plus vus = populaire)
@@ -201,7 +201,7 @@ def showGenres(): #affiche les genres
     liste.append( ['Western', URL_MAIN + 'western/'] )
     liste.append( ['Divers', URL_MAIN + 'divers/'] )
 
-    for sTitle,sUrl in liste: #boucle
+    for sTitle, sUrl in liste: #boucle
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl) #sortie de l'url en parametre
@@ -214,7 +214,7 @@ def showGenres(): #affiche les genres
 def showMovieYears():#creer une liste inversée d'annees
     oGui = cGui()
 
-    for i in reversed (xrange(1913, 2018)):
+    for i in reversed (xrange(1913, 2019)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'films/annee-' + Year)
@@ -226,7 +226,7 @@ def showMovieYears():#creer une liste inversée d'annees
 def showSerieYears():
     oGui = cGui()
 
-    for i in reversed (xrange(1936, 2018)):
+    for i in reversed (xrange(1936, 2019)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'series/annee-' + Year)
@@ -267,7 +267,7 @@ def showMovies(sSearch = ''):
 
     #affiche une information si aucun resulat
     if (aResult[0] == False):
-		oGui.addText(SITE_IDENTIFIER)
+        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -296,7 +296,7 @@ def showMovies(sSearch = ''):
             sTitle = ('%s [%s] (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sQual, sLang.upper(), sHoster)
             #mettre les information de streaming entre [] et le reste entre () vstream s'occupe de la couleur automatiquement.
 
-	    #Utile que si les liens recuperer ne commence pas par (http://www.nomdusite.com/)
+        #Utile que si les liens recuperer ne commence pas par (http://www.nomdusite.com/)
             #sUrl2 = URL_MAIN + sUrl2
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -346,7 +346,7 @@ def showHosters(): #recherche et affiche les hotes
     sThumb = oInputParameterHandler.getValue('sThumb') #appelle le poster
 
     oRequestHandler = cRequestHandler(sUrl) #requete sur l'url
-    sHtmlContent = oRequestHandler.request(); #requete sur l'url
+    sHtmlContent = oRequestHandler.request() #requete sur l'url
 
     oParser = cParser()
     sPattern = '<iframe.+?src="(.+?)"'
