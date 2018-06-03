@@ -15,11 +15,11 @@ SITE_IDENTIFIER = 'libertyland_tv'
 SITE_NAME = 'Libertyland'
 SITE_DESC = 'Les films et séries récentes en streaming et en téléchargement'
 
-URL_MAIN = 'https://libertyvf.net/'
+URL_MAIN = 'https://libertyvf.com/'
 
 URL_SEARCH = (URL_MAIN + 'v2/recherche/', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + 'v2/recherche/', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'v2/recherche/', 'showMovies')
+URL_SEARCH_MOVIES = ('', 'showMovies')
+URL_SEARCH_SERIES = ('', 'showMovies')
 
 FUNCTION_SEARCH = 'showMovies'
 
@@ -89,12 +89,12 @@ def typeSearch():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('type', 'film')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Film', 'films.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('sCat', '1')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Films', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('type', 'serie')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Série', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('sCat', '2')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Séries', 'series.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -206,29 +206,23 @@ def showMovies(sSearch = ''):
         scategorie = ''
         sUrl = ''
 
-        sType = oInputParameterHandler.getValue('type')
+        sCat = oInputParameterHandler.getValue('sCat')
 
-        if (sType == 'serie'):#serie
+        if (sCat == '2'):#serie
             scategorie = 'series'
-        elif (sType == 'film'):#film
+        elif (sCat == '1'):#film
             scategorie = 'films'
         else:#tout le reste
             scategorie = 'films'
 
-        sPOST = 'categorie=' + scategorie + '&mot_search=' + sSearch.replace(URL_SEARCH[0], '')
+        sUrl = URL_MAIN + 'v2/recherche/'
 
-        request = urllib2.Request(URL_SEARCH[0],sPOST)
-        request.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:56.0) Gecko/20100101 Firefox/56.0')
-        request.add_header('Content-Type', 'application/x-www-form-urlencoded')
-
-        sHtmlContent = ''
-        try:
-            reponse = urllib2.urlopen(request)
-            sHtmlContent = reponse.read()
-            reponse.close()
-        except URLError, e:
-            print e.read()
-            print e.reason
+        oRequestHandler = cRequestHandler(sUrl)
+        #oRequestHandler.addHeaderEntry('Referer', 'https://libertyvf.com/v2/recherche/')
+        oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
+        oRequestHandler.addParameters('categorie', scategorie)
+        oRequestHandler.addParameters('mot_search', sSearch)
+        sHtmlContent = oRequestHandler.request()
 
         sPattern = '<h2 class="heading">\s*<a href="([^<>"]+)">([^<]+)<\/a>.+?<img class="img-responsive" *src="(.+?)"'
 
