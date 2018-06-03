@@ -19,7 +19,7 @@ SITE_IDENTIFIER = 'cineiz'
 SITE_NAME = 'Cineiz'
 SITE_DESC = 'Films, Séries et mangas en streaming'
 
-URL_MAIN = 'http://www.cineiz.io/'
+URL_MAIN = 'https://www.cineiz.io/'
 
 URL_SEARCH = ('', 'showMovieSearch')
 URL_SEARCH_MOVIES = ('', 'showMovieSearch')
@@ -291,10 +291,10 @@ def showMovieSearch(sSearch = ''):
     if not sSearch:
         return
     else:
-        sUrl = URL_MAIN + 'recherche'
+        sUrl = URL_MAIN+'recherche'
 
     oRequestHandler = cRequestHandler(sUrl)
-
+    #oRequestHandler.addHeaderEntry('Referer', 'https://www.cineiz.io/recherche')
     oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
     oRequestHandler.addParameters('action', 'recherche')
     oRequestHandler.addParameters('story', sSearch)
