@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'cinemavf'
 SITE_NAME = 'CinemaVF'
 SITE_DESC = 'Films, Séries & Mangas en streaming.'
 
-URL_MAIN = 'http://filmstreamin.cc/'
+URL_MAIN = 'http://filmstreamin.org/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -25,7 +25,7 @@ URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'film-streaming', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
 SERIE_NEWS = (URL_MAIN + 'serie/', 'showMovies')
@@ -224,14 +224,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
 
-    #Decoupage pour cibler une partie Film
-    sPattern = '<div class="section-box">(.+?)</body>'
-
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    sHtmlContent = aResult
-
-    #regex pour listage films sur la partie decoupée
-    sPattern = '<div class="thumb">.+?<img src="([^<]+)" alt="(.+?)".+?<a href="(.+?)"'
+    sPattern = '<a title=".+?href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?class="ExcerptContent">(.+?)</div>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -247,9 +240,10 @@ def showMovies(sSearch = ''):
             if dialog.iscanceled():
                 break
 
-            sTitle = str(aEntry[1]).decode("unicode_escape").encode("latin-1")#.replace('&#8217;', '\'')
-            sUrl2 = str(aEntry[2])
-            sThumb = str(aEntry[0])
+            sUrl2 = str(aEntry[0])
+            sThumb = str(aEntry[1])
+            sTitle = str(aEntry[2]).decode("unicode_escape").encode("latin-1")#.replace('&#8217;', '\'')
+            sDesc = str(aEntry[3])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -257,12 +251,13 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb )
 
             if '/serie' in sUrl or '/mangas' in sUrl or '/serie' in sUrl2 or '/mangas' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'ShowSaisons', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'ShowSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -296,7 +291,7 @@ def ShowSaisons():
     #probleme de redirection non finalisée sur leur site
     sUrl = oRequestHandler.getRealUrl()
 
-    sPattern = '<div class="season">.+?<h3>(.+?)</h3>|<a class="num_episode" href="(.+?)">(.+?)<span>'
+    sPattern = '<div class="season">.+?<h3>(.+?)</h3>|<a class="num_episode" href="(.+?)"><span>(.+?)<\/span>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -314,7 +309,7 @@ def ShowSaisons():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
             else:
                 sUrl2 = str(aEntry[1])
-                sTitle = str(aEntry[2]) + sMovieTitle
+                sTitle = str(aEntry[2])
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -328,6 +323,7 @@ def ShowSaisons():
 
 def showLinks():
     oGui = cGui()
+    oParser = cParser()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -336,7 +332,6 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    oParser = cParser()
 
     #cConfig().log(str(sUrl))
 
@@ -346,19 +341,24 @@ def showLinks():
     try:#récupération des Synopsis
         sDesc = ''
         if '/serie/' in sUrl:
-            sPattern = '<p>.+?<p>(.+?)<\/p>'
+            sPattern = '<p>(.+?)<\/p>'
         elif '/mangas/' in sUrl:
-            sPattern = '<br />(.+?)<\/p>'
+            sPattern = '<p>(.+?)<\/p>'
         else:
-            sPattern = '<strong>Histoire du film.+?<p>(.+?)<\/p>'
+            sPattern = '<p><span>(.+?)<\/span></p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-            sDesc = sDesc.replace('<br />', ' ').replace('\\', '').replace('&#8230;', '...')
+            sDesc = sDesc.replace('\\', '').replace('&#8230;', '...').replace('<br />', ' ')
     except:
         pass
 
-    sPattern = '<div class="langue.*?">.*?<span>(.*?)<\/span>|<a onclick=".+?">\s*([^<>]+)\s*<\/a>\s*<input name="levideo" value="([^"]+)"'
+    #filtre pour ne pas afficher les langues en telechargement
+    sStart = '<div class="player-container">'
+    sEnd = '<div class="iframe-vid-container">'
+    sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
+
+    sPattern = '<span>(vf|vo)</span>|<a onclick=".+?">.+?</i>\s*([^<>]+)\s*<\/a>\s*<input name="levideo" value="([^"]+)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -370,6 +370,9 @@ def showLinks():
             else:
                 sHost = str(aEntry[1]).strip().capitalize()
                 sHost = sHost.replace('.to', '').replace('.com', '').replace('.me', '').replace('.ec', '').replace('.co', '').replace('.eu', '').replace('.sx', '').replace('.net', '')
+                #on filtre les hosters hs
+                if 'Auroravid' in sHost or 'Vidtodo' in sHost:
+                    continue
                 sPost = str(aEntry[2])
                 sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
@@ -394,6 +397,7 @@ def showHosters():
     oRequestHandler.setRequestType(1)
     oRequestHandler.addParameters('levideo', sPost)
     sHtmlContent = oRequestHandler.request()
+    sHtmlContent = sHtmlContent.replace('src="https://www.youtube.com/embed/', '')
 
     oParser = cParser()
     sPattern = '<iframe.+?src=["\']([^"\']+)["\']'

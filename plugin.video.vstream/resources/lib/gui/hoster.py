@@ -97,13 +97,14 @@ class cHosterGui:
             oContext.setTitle(util.VSlang(30326))
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)
+            
         #Upload menu
-        if cInputParameterHandler().getValue('site') != 'siteuptobox' and cConfig().getSetting('hoster_uptobox_premium') == 'true' and oHoster.getPluginIdentifier() == 'uptobox' or oHoster.getPluginIdentifier() == 'uptostream':
-            oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteuptobox', 'siteuptobox', 'AddmyAccount', util.VSlang(30325))
-
-        #Upload url vers upto
-        if cConfig().getSetting('hoster_uptobox_premium') == 'true' and oHoster.getPluginIdentifier() == 'onefichier' or oHoster.getPluginIdentifier() == 'uplea':
-            oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteuptobox', 'siteuptobox', 'UptomyAccount', util.VSlang(30325))
+        if cInputParameterHandler().getValue('site') != 'siteuptobox' and cConfig().getSetting('hoster_uptobox_premium') == 'true' :
+            host = oHoster.getPluginIdentifier()
+            accept = ['uptobox','uptostream','onefichier','uploaded','uplea']
+            for i in accept:
+                if host == i :
+                    oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteuptobox', 'siteuptobox', 'UptomyAccount', util.VSlang(30325))
 
         #context FAV menu
         oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
@@ -325,7 +326,7 @@ class cHosterGui:
             return self.getHoster('iframe_secured')
         if ('iframe-secure' in sHostName):
             return self.getHoster('iframe_secure')
-        if ('goo.gl' in sHostName or 'bit.ly' in sHostName):
+        if ('goo.gl' in sHostName or 'bit.ly' in sHostName or 'streamcrypt.net' in sHostName):
             return self.getHoster('allow_redirects')
 
 

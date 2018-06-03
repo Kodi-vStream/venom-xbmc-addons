@@ -74,6 +74,12 @@ def load():
 def showIptvSite():
     oGui = cGui()
 
+    #test f4mTester
+    sPath = xbmc.translatePath('special://home/addons/plugin.video.f4mTester')
+
+    if not os.path.exists(sPath):
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red]plugin.video.f4mTester : L'addon n'est pas présent[/COLOR]")
+
     liste = []
     liste.append( ['IptvSource', 'https://www.iptvsource.com/'] )
     liste.append( ['Iptv Gratuit', 'http://iptvgratuit.com/'] )
@@ -105,7 +111,7 @@ def showDailyList():
     elif 'iptvsource.com' in sUrl:
         sPattern = '<h3 class="entry-title td-module-title"><a href="(.+?)" rel="bookmark" title="(.+?)"'
     elif 'iptvgratuit.com' in sUrl:
-        sPattern = '<header class="entry-header"><h2 class="entry-title"> <a href="(.+?)" rel="bookmark">(.+?)</a></h2>'
+        sPattern = '<header class="entry-header">\s*<h2 class="entry-title">\s*<a href="(.+?)" rel="bookmark">(.+?)</a>'
     elif 'dailyiptvlist.com' in sUrl:
         sPattern = '</a><h2 class="post-title"><a href="(.+?)">(.+?)</a></h2><div class="excerpt"><p>.+?</p>'
 
@@ -129,7 +135,7 @@ def showDailyList():
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
-            if 'iptvsatlinks.blogspot.fr/'in sUrl:
+            if 'iptvsatlinks.blogspot.fr/' in sUrl:
                 oGui.addDir(SITE_IDENTIFIER, 'showWebIptvSource', sTitle, '', oOutputParameterHandler)
             else:
                 oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, '', oOutputParameterHandler)
@@ -175,7 +181,6 @@ def showAllPlaylist():
     req = urllib2.Request(sUrl,headers=headers)
     page = urllib2.urlopen(req)
     sHtmlContent = page.read()
-    #cConfig().log(str(sHtmlContent))
 
     if 'iptvgratuit.com' in sUrl:
         sPattern = '<strong>2. Cliquez sur le lien pour télécharger la liste des chaînes .+?</strong></p><h4><a class="more-link" title="(.+?)" href="(.+?)" target="_blank"'
@@ -493,11 +498,13 @@ def parseWebM3U(sUrl):
     sUrl = oInputParameterHandler.getValue('siteUrl')
     
     html = getHtml(sUrl)
+    #cConfig().log(str(sUrl))
 
-    if 'iptvsatlinks.blogspot.fr/' in sUrl:
+    if 'iptvsatlinks.blogspot' in sUrl:
         line = re.compile('#EXTINF:-1,(.+?)<br />(.+?)<').findall(html)
     else:
         line = re.compile('#.+,(.+?)\n(.+?)\n').findall(html)
+        
     for sTitle, sUrl2 in line:
         sUrl2 = sUrl2.replace('\r','')
 

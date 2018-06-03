@@ -8,7 +8,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0'
 
 SITE_IDENTIFIER = 'cinemegatoil_org'
 SITE_NAME = 'CineMegaToil'
@@ -80,7 +80,7 @@ def showGenres():
     liste.append( ['Vieux Film', URL_MAIN + 'vieux-film'] )
     liste.append( ['Western', URL_MAIN + 'western'] )
 
-    for sTitle,sUrl in liste:
+    for sTitle, sUrl in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -91,6 +91,8 @@ def showGenres():
 
 def showMovies(sSearch = ''):
     oGui = cGui()
+    oParser = cParser()
+
     if sSearch:
         if URL_SEARCH[0] in sSearch:
             sUrl = sSearch
@@ -103,10 +105,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    oParser = cParser()
-
     sPattern = '<div class="short_content">.+?<a href="(.+?)">.+?<img src="([^"]+)".+?<div class="short_header">(.+?)<\/div>.+?<div class="qulabel">(.+?)<\/div>'
-
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -120,12 +119,12 @@ def showMovies(sSearch = ''):
             cConfig().updateDialog(dialog, total)
             if dialog.iscanceled():
                 break
-                
+
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
             if sThumb.startswith('//'):
                 sThumb = 'http:' + sThumb
-                
+
             sTitle = str(aEntry[2])
             sQual = str(aEntry[3])
 
@@ -188,7 +187,7 @@ def showHosters():
                         def http_response(self, request, response):
                             return response
 
-                    url8 = str(aEntry).replace('https','http')
+                    url8 = str(aEntry).replace('https', 'http')
 
                     opener = urllib2.build_opener(NoRedirection)
                     opener.addheaders.append (('User-Agent', UA))

@@ -14,15 +14,15 @@ SITE_DESC = 'replay tv, documentaire, reportage'
 
 URL_MAIN = 'http://www.documentaires-streaming.com/'
 
-DOC_NEWS = (URL_MAIN+'category/documentaire/', 'showMovies')
+DOC_NEWS = (URL_MAIN + 'category/documentaire/', 'showMovies')
 DOC_DOCS = ('http://', 'load')
 DOC_GENRES = (True, 'showDocuGenres')
 
-REPLAYTV_NEWS = (URL_MAIN+'category/replay_tv/', 'showMovies')
+REPLAYTV_NEWS = (URL_MAIN + 'category/replay_tv/', 'showMovies')
 REPLAYTV_REPLAYTV = ('http://', 'load')
 REPLAYTV_GENRES = (True, 'showReplayGenres')
 
-REPORTAGE_NEWS = (URL_MAIN+'category/reportages/', 'showMovies')
+REPORTAGE_NEWS = (URL_MAIN + 'category/reportages/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
@@ -59,10 +59,10 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = URL_SEARCH[0] + sSearchText
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return
+        sUrl = URL_SEARCH[0] + sSearchText
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return
 
 def showDocuGenres():
     oGui = cGui()
@@ -171,7 +171,6 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-
 
 def showHosters():
     oGui = cGui()
