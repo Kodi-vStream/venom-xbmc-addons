@@ -314,7 +314,7 @@ def getWatchlist():
     oInputParameterHandler = cInputParameterHandler()
 
 
-    sCat = oInputParameterHandler.getValue('sType')
+    sCat = oInputParameterHandler.getValue('sCat')
     if not sCat:
         return
 

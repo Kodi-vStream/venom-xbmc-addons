@@ -38,7 +38,6 @@ class cHosterGui:
 
         oGuiElement.setFileName(oHoster.getFileName())
         oGuiElement.getInfoLabel()
-        oGuiElement.setCat(4)
         #oGuiElement.setThumbnail(xbmc.getInfoLabel('ListItem.Art(thumb)'))
         if sThumbnail:
             oGuiElement.setThumbnail(sThumbnail)
@@ -63,7 +62,10 @@ class cHosterGui:
         #nouveaux pour la lecture.
         if (oInputParameterHandler.exist('sCat')):
             sType = oInputParameterHandler.getValue('sCat')
-            oOutputParameterHandler.addParameter('sType', sType)
+            oGuiElement.setCat(sType)
+            oOutputParameterHandler.addParameter('sCat', sCat)
+        else:
+            oGuiElement.setCat('4')
 
         #existe dans le menu krypton 17
         if not util.isKrypton():
