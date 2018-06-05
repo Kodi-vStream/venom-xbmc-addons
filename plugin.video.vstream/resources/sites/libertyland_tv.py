@@ -403,7 +403,8 @@ def showLinks():
             oOutputParameterHandler.addParameter('sType', sType)
             oOutputParameterHandler.addParameter('idMov', idMov)
             oOutputParameterHandler.addParameter('idHeb', idHeb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            #oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

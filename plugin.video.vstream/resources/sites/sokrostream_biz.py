@@ -529,14 +529,15 @@ def showLink():
             if '29702' in aEntry[1]:
                 continue
 
-            sDisplayTitle = "%s [COLOR coral]%s[/COLOR]" % (sMovieTitle, sHost)
+            sTitle = "%s [COLOR coral]%s[/COLOR]" % (sMovieTitle, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sCode', aEntry[1])
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addDir(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, oOutputParameterHandler)
+            #oGui.addDir(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 

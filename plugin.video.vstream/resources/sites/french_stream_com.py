@@ -403,7 +403,7 @@ def showSeries(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 
@@ -473,7 +473,7 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
-def showLinks():
+def showEpisode():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
