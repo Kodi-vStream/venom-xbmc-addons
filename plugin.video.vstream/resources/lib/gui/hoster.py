@@ -61,8 +61,8 @@ class cHosterGui:
 
         #nouveaux pour la lecture.
         if (oInputParameterHandler.exist('sCat')):
-            sType = oInputParameterHandler.getValue('sCat')
-            oGuiElement.setCat(sType)
+            sCat = oInputParameterHandler.getValue('sCat')
+            oGuiElement.setCat(sCat)
             oOutputParameterHandler.addParameter('sCat', sCat)
         else:
             oGuiElement.setCat('4')

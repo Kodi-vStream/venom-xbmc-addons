@@ -244,8 +244,13 @@ class cDb:
     def insert_favorite(self, meta):
 
         title = self.str_conv(meta['title'])
-        siteurl = urllib.quote_plus(meta['siteurl'])      
-        sIcon = meta['icon']
+        siteurl = urllib.quote_plus(meta['siteurl'])
+
+        try: 
+            sIcon = meta['icon'].decode('UTF-8') 
+        except:
+            sIcon = meta['icon']
+
         
         try:
             ex = "INSERT INTO favorite (title, siteurl, site, fav, cat, icon, fanart) VALUES (?, ?, ?, ?, ?, ?, ?)"

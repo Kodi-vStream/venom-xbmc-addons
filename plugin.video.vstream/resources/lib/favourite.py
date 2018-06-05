@@ -107,6 +107,11 @@ class cFav:
             except:
                 title = data[1]
 
+            try:
+                thumbnail = data[6].encode('utf-8')
+            except:
+                thumbnail = data[6]
+
 
             try:
 
@@ -114,7 +119,6 @@ class cFav:
                 site = data[3]
                 function = data[4]
                 cat = data[5]
-                thumbnail = data[6]
                 fanart = data[7]
 
                 if thumbnail == '':
