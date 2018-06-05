@@ -302,7 +302,7 @@ def showEpisode():
             else:
                 #ce ne sont pas les mêmes tirets ne pas supprimer
                 if 'Saison' in sMovieTitle:
-                    sMovieTitle = sMovieTitle.replace(' – ', ' ').replace(' - ', ' ')
+                    sMovieTitle = sMovieTitle.replace(' – Saison', ' Saison').replace(' - Saison', ' Saison')
                 sTitle = sMovieTitle + ' episode ' + aEntry[2]
                 sUrl = aEntry[1]
 
