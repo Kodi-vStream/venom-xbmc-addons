@@ -330,6 +330,8 @@ class cHosterGui:
             return self.getHoster('iframe_secure')
         if ('goo.gl' in sHostName or 'bit.ly' in sHostName or 'streamcrypt.net' in sHostName):
             return self.getHoster('allow_redirects')
+        if ('jawcloud' in sHostName):
+            return self.getHoster('jawcloud')
 
 
         #Lien telechargeable a convertir en stream
