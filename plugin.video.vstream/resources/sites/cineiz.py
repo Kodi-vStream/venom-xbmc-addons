@@ -4,16 +4,12 @@
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-#from resources.lib.util import cUtil #outils pouvant etre utiles
-
-import re, xbmc
-
+import re
 
 SITE_IDENTIFIER = 'cineiz'
 SITE_NAME = 'Cineiz'
