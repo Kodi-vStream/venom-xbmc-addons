@@ -507,8 +507,8 @@ def showLinks():
     oRequestHandler.addParameters('levideo', '123456')
     sHtmlContent = oRequestHandler.request().replace('<span class="telecharger_sur_uptobox"></span>', '')
 
+    sDesc = ''
     try:
-        sDesc = ''
         sPattern = '<p>Synopsis.+?</strong> :(.+?)<\/p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
