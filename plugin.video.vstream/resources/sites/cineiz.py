@@ -287,7 +287,7 @@ def showMovieSearch(sSearch = ''):
     if not sSearch:
         return
     else:
-        sUrl = URL_MAIN+'recherche'
+        sUrl = URL_MAIN + 'recherche'
 
     oRequestHandler = cRequestHandler(sUrl)
     #oRequestHandler.addHeaderEntry('Referer', 'https://www.cineiz.io/recherche')
@@ -438,7 +438,7 @@ def showSaisons():
 
             sUrl2 = str(aEntry[0])
             #sTitle = str(aEntry[1]) + sMovieTitle
-            sTitle = '%s %s' %(aEntry[1], sMovieTitle)
+            sTitle = ('%s %s') % (aEntry[1], sMovieTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -537,7 +537,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             #oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             #dispo a la version 0.6.2
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb,'', oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
