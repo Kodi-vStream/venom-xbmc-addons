@@ -35,7 +35,7 @@ class cGuiElement:
         self.__Season = ''
         self.__Episode = ''
         self.__sIcon = self.DEFAULT_FOLDER_ICON
-        self.__sFanart = self.__sRootArt+'fanart.jpg'
+        self.__sFanart = self.__sRootArt + 'fanart.jpg'
         self.__sDecoColor = cConfig().getSetting('deco_color')
 
         #For meta search
@@ -45,17 +45,17 @@ class cGuiElement:
         self.__ImdbId = ''
         self.__Year = ''
 
-        self.__sFanart_search = self.__sRootArt+'search_fanart.jpg'
-        self.__sFanart_tv = self.__sRootArt+'tv_fanart.jpg'
-        self.__sFanart_films = self.__sRootArt+'films_fanart.jpg'
-        self.__sFanart_series = self.__sRootArt+'series_fanart.jpg'
-        self.__sFanart_animes = self.__sRootArt+'animes_fanart.jpg'
-        self.__sFanart_doc = self.__sRootArt+'doc_fanart.jpg'
-        self.__sFanart_sport = self.__sRootArt+'sport_fanart.jpg'
-        self.__sFanart_buzz = self.__sRootArt+'buzz_fanart.jpg'
-        self.__sFanart_mark = self.__sRootArt+'mark_fanart.jpg'
-        self.__sFanart_host = self.__sRootArt+'host_fanart.jpg'
-        self.__sFanart_download = self.__sRootArt+'download_fanart.jpg'
+        self.__sFanart_search = self.__sRootArt + 'search_fanart.jpg'
+        self.__sFanart_tv = self.__sRootArt + 'tv_fanart.jpg'
+        self.__sFanart_films = self.__sRootArt + 'films_fanart.jpg'
+        self.__sFanart_series = self.__sRootArt + 'series_fanart.jpg'
+        self.__sFanart_animes = self.__sRootArt + 'animes_fanart.jpg'
+        self.__sFanart_doc = self.__sRootArt + 'doc_fanart.jpg'
+        self.__sFanart_sport = self.__sRootArt + 'sport_fanart.jpg'
+        self.__sFanart_buzz = self.__sRootArt + 'buzz_fanart.jpg'
+        self.__sFanart_mark = self.__sRootArt + 'mark_fanart.jpg'
+        self.__sFanart_host = self.__sRootArt + 'host_fanart.jpg'
+        self.__sFanart_download = self.__sRootArt + 'download_fanart.jpg'
 
         self.__aItemValues = {}
         self.__aProperties = {}
@@ -110,19 +110,19 @@ class cGuiElement:
     def getTrailerUrl(self):
         return self.__sTrailerUrl
 
-    def setTmdbId(self,data):
+    def setTmdbId(self, data):
         self.__TmdbId = data
 
     def getTmdbId(self):
         return self.__TmdbId
 
-    def setImdbId(self,data):
+    def setImdbId(self, data):
         self.__ImdbId = data
 
     def getImdbId(self):
         return self.__ImdbId
 
-    def setYear(self,data):
+    def setYear(self, data):
         self.__Year = data
 
     def setMeta(self, sMeta):
@@ -179,16 +179,16 @@ class cGuiElement:
         #recherche l'année, uniquement si entre caractere special a cause de 2001 odysse de l'espace ou k2000
         string = re.search('([^\w ][0-9]{4}[^\w ])', sTitle)
         if string:
-            sTitle = sTitle.replace(string.group(0),'')
+            sTitle = sTitle.replace(string.group(0), '')
             self.__Year = str(string.group(0)[1:5])
             self.addItemValues('Year', self.__Year)
 
         #recherche une date
         string = re.search('([\d]{2}[\/|-]\d{2}[\/|-]\d{4})', sTitle)
         if string:
-            sTitle = sTitle.replace(string.group(0),'')
+            sTitle = sTitle.replace(string.group(0), '')
             self.__Date = str(string.group(0))
-            sTitle = "%s (%s) " %(sTitle ,self.__Date)
+            sTitle = "%s (%s) " % (sTitle, self.__Date)
 
         #~ #recherche Lang
         #~ index = { ' vostfr' : ' [VOSTFR]', ' vf' : ' [VF]', ' truefrench' : ' [TrueFrench]' }
@@ -205,7 +205,7 @@ class cGuiElement:
             SXEX = ''
 
             #m = re.search( ur'(?i)(\wpisode ([0-9\.\-\_]+))',sTitle,re.UNICODE)
-            m = re.search(ur'(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle,re.UNICODE)
+            m = re.search(ur'(?i)(?:^|[^a-z])((?:E|(?:\wpisode\s?))([0-9]+(?:[\-\.][0-9\?]+)*))', sTitle, re.UNICODE)
             if m:
                 #ok y a des episodes
                 sTitle = sTitle.replace(m.group(1),'')
@@ -216,9 +216,9 @@ class cGuiElement:
                 self.addItemValues('Episode', self.__Episode)
 
                 #pr les saisons
-                m = re.search(ur'(?i)(s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle,re.UNICODE)
+                m = re.search(ur'(?i)(s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle, re.UNICODE)
                 if m:
-                    sTitle = sTitle.replace(m.group(1),'')
+                    sTitle = sTitle.replace(m.group(1), '')
                     sa = m.group(2)
                     if len(sa) == 1:
                         sa = '0' + sa
@@ -228,9 +228,9 @@ class cGuiElement:
             else:
                 #pas d'episode mais y a t il des saisons ?
                 #m = re.search('(?i)(s(?:aison +)*([0-9]+[0-9\-\?]*))(?:$| )', sTitle)
-                m = re.search(ur'(?i)(s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle,re.UNICODE)
+                m = re.search(ur'(?i)(s(?:aison +)*([0-9]+(?:\-[0-9\?]+)*))', sTitle, re.UNICODE)
                 if m:
-                    sTitle = sTitle.replace(m.group(1),'')
+                    sTitle = sTitle.replace(m.group(1), '')
                     sa = m.group(2)
                     if len(sa) == 1:
                         sa = '0' + sa
@@ -240,17 +240,17 @@ class cGuiElement:
         #supr les -
         #sTitle = sTitle.replace('-',' ') # A gerer dans le fichier site plutot, car il peut etre utile dans certain cas
         #vire doubles espaces
-        sTitle = re.sub(' +',' ',sTitle)
-        sTitle = sTitle.replace('()','').replace('- -','-')
+        sTitle = re.sub(' +', ' ', sTitle)
+        sTitle = sTitle.replace('()', '').replace('[]', '').replace('- -', '-')
 
-        #vire espace a la fin et les - (attention, il y a 2 tirets differents meme si invisible a l'oeuil nu et un est en unicode)
-        sTitle = re.sub(ur'[- –]+$','',sTitle)
+        #vire espace a la fin et les - (attention, il y a 2 tirets differents meme si invisible a l'oeil nu et un est en unicode)
+        sTitle = re.sub(ur'[- –]+$', '', sTitle)
         #et en debut
         if sTitle.startswith(' '):
             sTitle = sTitle[1:]
 
         #recherche les Tags restant : () ou [] sauf tag couleur
-        sTitle = re.sub(ur'([\(|\[](?!\/*COLOR)[^\)\(\]\[]+?[\]|\)])','[COLOR '+self.__sDecoColor+']\\1[/COLOR]', sTitle)
+        sTitle = re.sub(ur'([\(|\[](?!\/*COLOR)[^\)\(\]\[]+?[\]|\)])','[COLOR ' + self.__sDecoColor + ']\\1[/COLOR]', sTitle)
 
         #on reformate SXXEXX Titre [tag] (Annee)
         sTitle2 = ''
@@ -259,12 +259,12 @@ class cGuiElement:
         if self.__Episode:
             sTitle2 = sTitle2 + 'E' + self.__Episode
         if sTitle2:
-            sTitle2 = "[COLOR %s]%s[/COLOR] "%(self.__sDecoColor,sTitle2)
+            sTitle2 = "[COLOR %s]%s[/COLOR] " % (self.__sDecoColor, sTitle2)
 
         sTitle2 = sTitle2 + sTitle
 
         if self.__Year:
-            sTitle2 = "%s [COLOR %s](%s)[/COLOR]"%(sTitle2,self.__sDecoColor,self.__Year)
+            sTitle2 = "%s [COLOR %s](%s)[/COLOR]" % (sTitle2, self.__sDecoColor, self.__Year)
 
         #xbmc.log('>>' + sTitle2, xbmc.LOGNOTICE)
 
@@ -275,9 +275,9 @@ class cGuiElement:
 
         string = re.search('(?i)(e(?:[a-z]+sode\s?)*([0-9]+))', str(sTitle))
         if string:
-            sTitle = sTitle.replace(string.group(1),'')
+            sTitle = sTitle.replace(string.group(1), '')
             self.__Episode = ("%02d" % int(string.group(2)))
-            sTitle = "%s [COLOR %s]E%s[/COLOR]"%(sTitle, self.__sDecoColor, self.__Episode)
+            sTitle = "%s [COLOR %s]E%s[/COLOR]" % (sTitle, self.__sDecoColor, self.__Episode)
             self.addItemValues('Episode', self.__Episode)
             return sTitle, True
 
@@ -323,7 +323,7 @@ class cGuiElement:
         if (sFanart != ''):
             self.__sFanart = sFanart
         else:
-            self.__sFanart = self.__sRootArt+'fanart.jpg'
+            self.__sFanart = self.__sRootArt + 'fanart.jpg'
 
 
     def setMovieFanart(self):
@@ -403,7 +403,7 @@ class cGuiElement:
         self.__sIcon = sIcon
 
     def getIcon(self):
-        #return self.__sRootArt+self.__sIcon
+        #return self.__sRootArt + self.__sIcon
         return os.path.join(unicode(self.__sRootArt, 'utf-8'), self.__sIcon)
 
     def addItemValues(self, sItemKey, mItemValue):
@@ -428,7 +428,7 @@ class cGuiElement:
             watched = {}
             #sTitle = self.getTitle()
             #sId = self.getSiteName()
-            watched_db = os.path.join(cConfig().getSettingCache(), "watched.db" ).decode("utf-8")
+            watched_db = os.path.join(cConfig().getSettingCache(), "watched.db").decode("utf-8")
 
             if not os.path.exists(watched_db):
                 file(watched_db, "w").write("%r" % watched)
@@ -454,16 +454,16 @@ class cGuiElement:
             data = data.decode('utf8')
 
         import unicodedata
-        data = unicodedata.normalize('NFKD', data).encode('ascii','ignore')
+        data = unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
         #cherche la saison et episode puis les balises [color]titre[/color]
         #data, saison = self.getSaisonTitre(data)
         #data, episode = self.getEpisodeTitre(data)
         #supprimer les balises
-        data=re.sub(r'\[.*\]|\(.*\)',r'',str(data))
-        data=data.replace('VF','').replace('VOSTFR','').replace('FR','')
-        #data=re.sub(r'[0-9]+?',r'',str(data))
-        data=data.replace('-','')
-        data=data.replace('-','').replace('Saison','').replace('saison','').replace('Season','').replace('Episode','').replace('episode','')
+        data=re.sub(r'\[.*\]|\(.*\)', r'', str(data))
+        data=data.replace('VF', '').replace('VOSTFR', '').replace('FR', '')
+        #data=re.sub(r'[0-9]+?', r'', str(data))
+        data=data.replace('-', '')
+        data=data.replace('-', '').replace('Saison', '').replace('saison', '').replace('Season', '').replace('Episode', '').replace('episode', '')
         data = re.sub('[^%s]' % string.ascii_lowercase, ' ', data.lower())
         #data = urllib.quote_plus(data)
 
@@ -517,12 +517,12 @@ class cGuiElement:
     def getMetadonne(self):
 
         #sTitle = self.__sTitle.decode('latin-1').encode("utf-8")
-        #sTitle=re.sub(r'\[.*\]|\(.*\)',r'',str(self.__sFileName))
-        #sTitle=sTitle.replace('VF','').replace('VOSTFR','').replace('FR','')
+        #sTitle=re.sub(r'\[.*\]|\(.*\)', r'', str(self.__sFileName))
+        #sTitle=sTitle.replace('VF', '').replace('VOSTFR', '').replace('FR', '')
 
         #get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', overlay=6, update=False):
         sType = '1'
-        sType = str(self.getMeta()).replace('1','movie').replace('2','tvshow')
+        sType = str(self.getMeta()).replace('1', 'movie').replace('2', 'tvshow')
 
         if sType:
             from resources.lib.tmdb import cTMDb
@@ -548,7 +548,7 @@ class cGuiElement:
         # if self.getMeta() == 1:
             # try:
                 # from metahandler import metahandlers
-                # grab = metahandlers.MetaData(preparezip=False,  tmdb_api_key=cConfig().getSetting('api_tmdb'))
+                # grab = metahandlers.MetaData(preparezip=False, tmdb_api_key=cConfig().getSetting('api_tmdb'))
                 # args = ("movie", self.__sFileName)
                 # kwargs = {}
                 # if (self.__TmdbId) or (self.__Year):
