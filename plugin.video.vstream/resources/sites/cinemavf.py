@@ -338,18 +338,14 @@ def showLinks():
     #probleme de redirection non finalisée sur leur site
     sUrl = oRequestHandler.getRealUrl()
 
-    try:#récupération des Synopsis
-        sDesc = ''
-        if '/serie/' in sUrl:
-            sPattern = '<p>(.+?)<\/p>'
-        elif '/mangas/' in sUrl:
-            sPattern = '<p>(.+?)<\/p>'
-        else:
-            sPattern = '<p><span>(.+?)<\/span></p>'
+    #récupération des Synopsis
+    sDesc = ''
+    try:
+        sPattern = '<p>(.+?)<\/p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-            sDesc = sDesc.replace('\\', '').replace('&#8230;', '...').replace('<br />', ' ')
+            sDesc = sDesc.replace('\\', '').replace('&#8230;', '...').replace('<br />', ' ').replace('<span>', '').replace('</span>', '')
     except:
         pass
 
