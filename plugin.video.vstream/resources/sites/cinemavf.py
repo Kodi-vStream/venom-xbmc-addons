@@ -309,7 +309,7 @@ def ShowSaisons():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
             else:
                 sUrl2 = str(aEntry[1])
-                sTitle = str(aEntry[2])
+                sTitle = str(aEntry[2]).replace(' streaming', '')
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -365,7 +365,8 @@ def showLinks():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]).upper() + '[/COLOR]')
             else:
                 sHost = str(aEntry[1]).strip().capitalize()
-                sHost = sHost.replace('.to', '').replace('.com', '').replace('.me', '').replace('.ec', '').replace('.co', '').replace('.eu', '').replace('.sx', '').replace('.net', '')
+                sHost = sHost.replace('.to', '').replace('.com', '').replace('.me', '').replace('.ec', '').replace('.co', '').replace('.eu', '')
+                sHost = sHost.replace('.sx', '').replace('.net', '').replace('.tv', '')
                 #on filtre les hosters hs
                 if 'Auroravid' in sHost or 'Vidtodo' in sHost:
                     continue
