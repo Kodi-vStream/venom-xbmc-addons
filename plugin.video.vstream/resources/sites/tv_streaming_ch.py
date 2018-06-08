@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 #Venom.
+#site HS le 03/06/18
+return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler

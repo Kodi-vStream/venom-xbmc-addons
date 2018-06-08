@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'filmstreamvk_com'
 SITE_NAME = 'Filmstreamvk'
 SITE_DESC = 'Films, Séries & Mangas en Streaming'
 
-URL_MAIN = 'http://filmstreamvk.info/'
+URL_MAIN = 'http://filmstreamvk.la/'
 
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -180,7 +180,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '/series/' in sUrl or '/manga/' in sUrl:
+            if '/series/' in sUrl or '/serie/' in sUrl or '/manga/' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
@@ -259,7 +259,8 @@ def showLinks():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            #oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -300,6 +301,9 @@ def showEpisode():
                 sLang = cUtil().unescape(sLang).encode("utf8")
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sLang + '[/COLOR]')
             else:
+                #ce ne sont pas les mêmes tirets ne pas supprimer
+                if 'Saison' in sMovieTitle:
+                    sMovieTitle = sMovieTitle.replace(' – Saison', ' Saison').replace(' - Saison', ' Saison')
                 sTitle = sMovieTitle + ' episode ' + aEntry[2]
                 sUrl = aEntry[1]
 

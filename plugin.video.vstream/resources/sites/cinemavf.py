@@ -309,7 +309,7 @@ def ShowSaisons():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
             else:
                 sUrl2 = str(aEntry[1])
-                sTitle = str(aEntry[2])
+                sTitle = str(aEntry[2]).replace(' streaming', '')
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -338,18 +338,14 @@ def showLinks():
     #probleme de redirection non finalisée sur leur site
     sUrl = oRequestHandler.getRealUrl()
 
-    try:#récupération des Synopsis
-        sDesc = ''
-        if '/serie/' in sUrl:
-            sPattern = '<p>(.+?)<\/p>'
-        elif '/mangas/' in sUrl:
-            sPattern = '<p>(.+?)<\/p>'
-        else:
-            sPattern = '<p><span>(.+?)<\/span></p>'
+    #récupération des Synopsis
+    sDesc = ''
+    try:
+        sPattern = '<p>(.+?)<\/p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-            sDesc = sDesc.replace('\\', '').replace('&#8230;', '...').replace('<br />', ' ')
+            sDesc = sDesc.replace('\\', '').replace('&#8230;', '...').replace('<br />', ' ').replace('<span>', '').replace('</span>', '')
     except:
         pass
 
@@ -369,7 +365,8 @@ def showLinks():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]).upper() + '[/COLOR]')
             else:
                 sHost = str(aEntry[1]).strip().capitalize()
-                sHost = sHost.replace('.to', '').replace('.com', '').replace('.me', '').replace('.ec', '').replace('.co', '').replace('.eu', '').replace('.sx', '').replace('.net', '')
+                sHost = sHost.replace('.to', '').replace('.com', '').replace('.me', '').replace('.ec', '').replace('.co', '').replace('.eu', '')
+                sHost = sHost.replace('.sx', '').replace('.net', '').replace('.tv', '')
                 #on filtre les hosters hs
                 if 'Auroravid' in sHost or 'Vidtodo' in sHost:
                     continue
@@ -381,7 +378,8 @@ def showLinks():
                 oOutputParameterHandler.addParameter('sPost', sPost)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                #oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

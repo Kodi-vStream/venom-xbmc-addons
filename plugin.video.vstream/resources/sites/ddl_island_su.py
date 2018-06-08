@@ -27,7 +27,6 @@ URL_PROTECT = 'http://www.dl-protect.ru'
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'recherche.php?categorie=99&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'recherche.php?categorie=98&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
-
 URL_SEARCH_ANIMES = (URL_MAIN + 'recherche.php?categorie=5&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
 URL_SEARCH_MANGAS = (URL_MAIN + 'recherche.php?categorie=3&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
 URL_SEARCH_EMISSIONS_TV = (URL_MAIN + 'recherche.php?categorie=17&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
@@ -42,7 +41,7 @@ MOVIE_3D = (URL_MAIN + 'telechargement/films-3d-21.html&order=2', 'showMovies') 
 MOVIE_SD_VIEWS = (URL_MAIN + 'telechargement/films-1.html&order=3', 'showMovies') # derniers films en SD
 MOVIE_HD_VIEWS = (URL_MAIN + 'telechargement/films-hd-13.html&order=3', 'showMovies') # derniers films en HD
 MOVIE_3D_VIEWS = (URL_MAIN + 'telechargement/films-3d-21.html&order=3', 'showMovies') # derniers films en 3D
-MOVIE_TOP = (URL_MAIN +'telechargement-top-films', 'showMovies') # derniers films en 3D
+MOVIE_TOP = (URL_MAIN + 'telechargement-top-films', 'showMovies') # derniers films en 3D
 MOVIE_GENRES_HD = (True, 'showGenreMoviesHD')
 MOVIE_GENRES_SD = (True, 'showGenreMoviesSD')
 
@@ -58,7 +57,7 @@ SERIES_SD = (URL_MAIN + 'telechargement/series-tv-6.html&order=2', 'showMovies')
 SERIES_HD = (URL_MAIN + 'telechargement/series-hd-20.html&order=2', 'showMovies') # derniers films en HD
 SERIES_SD_VIEWS = (URL_MAIN + 'telechargement/series-tv-6.html&order=3', 'showMovies') # derniers films en SD
 SERIES_HD_VIEWS = (URL_MAIN + 'telechargement/series-tv-6.html&order=3', 'showMovies') # derniers films en HD
-SERIES_TOP = (URL_MAIN +'telechargement-top-series', 'showMovies') # derniers films en 3D
+SERIES_TOP = (URL_MAIN + 'telechargement-top-series', 'showMovies') # derniers films en 3D
 SERIES_GENRES_SD = (True, 'showGenreSeriesSD')
 SERIES_GENRES_HD = (True, 'showGenreSeriesHD')
 
@@ -75,7 +74,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showMenuDessinsAnimes', 'Dessins Animés', 'animes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuDessinsAnimes', 'Dessins Animés', 'animes_enfants.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -120,7 +119,7 @@ def showMenuFilms():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_3D_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_3D_VIEWS[1], 'Films 3D (Les plus vus)', 'films_views.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_3D_VIEWS[1], 'Films en 3D (Les plus vus)', 'films_views.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP[0])
@@ -419,14 +418,14 @@ def showMovies(sSearch = ''):
 
             sUrl2 = aEntry[0]
             if ('-films-' in sUrl2) or ('-series-' in sUrl2):
-                sQual = '(SD)'
+                sQual = 'SD'
                 if '-hd-' in aEntry[0]:
-                    sQual = '(HD)'
+                    sQual = 'HD'
                 if '-3d-' in aEntry[0]:
-                    sQual = '(3D)'
+                    sQual = '3D'
             else:
-                sQual = '(' + aEntry[3] + ')'
-            sDesc = str(aEntry[4])
+                sQual = str(aEntry[3])
+            sDesc = str(aEntry[4]).replace('&rsquo;', '\'').replace('&ldquo;', '"').replace('&rdquo;', '"').replace('&hellip;', '...')
             sTitle = str(aEntry[2])
             #print sUrl2
             #sFanart =aEntry[1]
@@ -446,9 +445,9 @@ def showMovies(sSearch = ''):
                 sSaison = a[0]
                 sSaison = sSaison.replace('Saison ', 'S')
             if 'VOSTFR' in sTitle2:
-                sLang = '[VOSTFR]'
+                sLang = 'VOSTFR'
             #Temp test
-            sDisplayTitle = '%s %s %s %s' %(sSaison, sTitle, sLang, sQual)
+            sDisplayTitle = ('%s %s [%s] (%s)') % (sSaison, sTitle, sQual, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -492,6 +491,8 @@ def __checkForNextPage(sHtmlContent):
     return False
 
 def showMoviesReleases():
+    oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
@@ -502,9 +503,6 @@ def showMoviesReleases():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    oGui = cGui()
-
-    oParser = cParser()
     #cut de la zone des releases
     sPattern = 'Toutes</option>(.+?)>Hébergeur'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -512,11 +510,6 @@ def showMoviesReleases():
 
     sPattern = '<option value="([^"]+)"  id="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #print aResult
-
-    #Affichage du menu
-    #oGui.addText(SITE_IDENTIFIER,sMovieTitle)
-    #oGui.addText2(SITE_IDENTIFIER,'[COLOR olive]Releases disponibles pour ce film :[/COLOR]')
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -530,14 +523,14 @@ def showMoviesReleases():
                 break
 
             if ('rapidgator' not in aEntry[1]) and ('turbobit' not in aEntry[1]) and ('uploaded' not in aEntry[1]) and ('uptobox' not in aEntry[1]):
-                #sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR]'
-                sTitle = str(aEntry[1])
 
+                sUrl = str(aEntry[0])
+                sTitle = str(aEntry[1])
                 sTitle = sTitle.decode("iso-8859-1", 'ignore')
                 sTitle = sTitle.encode("utf-8", 'ignore')
 
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
@@ -674,8 +667,9 @@ def showHosters():
             if dialog.iscanceled():
                 break
 
-            #sTitle = '[COLOR skyblue]' + aEntry[0] + '[/COLOR] ' + sMovieTitle
-            sTitle = '%s (%s)' %(sMovieTitle, aEntry[0])
+            sHost = str(aEntry[0])
+            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)

@@ -307,7 +307,8 @@ def showHosters():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+            #oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
 
         cConfig().finishDialog(dialog)
 

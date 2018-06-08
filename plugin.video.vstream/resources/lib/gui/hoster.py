@@ -38,7 +38,6 @@ class cHosterGui:
 
         oGuiElement.setFileName(oHoster.getFileName())
         oGuiElement.getInfoLabel()
-        oGuiElement.setCat(4)
         #oGuiElement.setThumbnail(xbmc.getInfoLabel('ListItem.Art(thumb)'))
         if sThumbnail:
             oGuiElement.setThumbnail(sThumbnail)
@@ -62,8 +61,11 @@ class cHosterGui:
 
         #nouveaux pour la lecture.
         if (oInputParameterHandler.exist('sCat')):
-            sType = oInputParameterHandler.getValue('sCat')
-            oOutputParameterHandler.addParameter('sType', sType)
+            sCat = oInputParameterHandler.getValue('sCat')
+            oGuiElement.setCat(sCat)
+            oOutputParameterHandler.addParameter('sCat', sCat)
+        else:
+            oGuiElement.setCat('4')
 
         #existe dans le menu krypton 17
         if not util.isKrypton():
@@ -328,6 +330,8 @@ class cHosterGui:
             return self.getHoster('iframe_secure')
         if ('goo.gl' in sHostName or 'bit.ly' in sHostName or 'streamcrypt.net' in sHostName):
             return self.getHoster('allow_redirects')
+        if ('jawcloud' in sHostName):
+            return self.getHoster('jawcloud')
 
 
         #Lien telechargeable a convertir en stream

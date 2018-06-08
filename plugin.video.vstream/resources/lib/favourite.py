@@ -63,17 +63,13 @@ class cFav:
         oOutputParameterHandler.addParameter('sCat', '6')
         oGui.addDir(SITE_IDENTIFIER, 'getFav', 'TV (' + str(compt[6]) + ')', 'mark.png', oOutputParameterHandler)
 
-        oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sCat', '4')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Sources (' + str(compt[4]) + ')', 'mark.png', oOutputParameterHandler)
-
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('sCat', '7')
         # oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Recherche Visuelle (' + str(compt[7]) + ')', 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('sCat', '5')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Divers (' + str(compt[5]) + ')', 'mark.png', oOutputParameterHandler)
+        total = compt[3]+compt[4]+compt[5]
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', 'Divers (' + str(total) + ')', 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sAll', 'true')
@@ -94,19 +90,27 @@ class cFav:
 
         #aParams = oInputParameterHandler.getAllParameter()
 
-        if (oInputParameterHandler.exist('sCat')):
-            sCat = oInputParameterHandler.getValue('sCat')
-        else:
-            sCat = '5'
-
         row = cDb().get_favorite()
 
-        for data in row:
+        if (oInputParameterHandler.exist('sCat')):
+            sCat = oInputParameterHandler.getValue('sCat')
+            gen = (x for x in row if x[5] in sCat)
+        else:
+            sCat = '5'
+            gen = (x for x in row if x[5] not in ('1', '2', '6'))
+
+
+        for data in gen:
 
             try:
                 title = data[1].encode('utf-8')
             except:
                 title = data[1]
+
+            try:
+                thumbnail = data[6].encode('utf-8')
+            except:
+                thumbnail = data[6]
 
 
             try:
@@ -115,7 +119,6 @@ class cFav:
                 site = data[3]
                 function = data[4]
                 cat = data[5]
-                thumbnail = data[6]
                 fanart = data[7]
 
                 if thumbnail == '':
@@ -135,35 +138,35 @@ class cFav:
                     oOutputParameterHandler.addParameter('sFileName', oHoster.getFileName())
                     oOutputParameterHandler.addParameter('sMediaUrl', siteurl)
 
-                if (cat == sCat):
-                    oGuiElement = cGuiElement()
 
-                    oGuiElement.setSiteName(site)
-                    oGuiElement.setFunction(function)
-                    oGuiElement.setTitle(title)
-                    oGuiElement.setFileName(title)
-                    oGuiElement.setIcon("mark.png")
-                    if (cat  == '1'):
-                        cGui.CONTENT = 'movies'
-                        oGuiElement.setMeta(cat)
-                        oGuiElement.setCat(1)
-                    elif (cat == '2'):
-                        cGui.CONTENT = 'tvshows'
-                        oGuiElement.setMeta(cat)
-                        oGuiElement.setCat(2)
-                    else:
-                        oGuiElement.setMeta(0)
-                        oGuiElement.setCat(cat)
-                    oGuiElement.setThumbnail(thumbnail)
-                    oGuiElement.setFanart(fanart)
+                oGuiElement = cGuiElement()
 
-                    #self.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
-                    oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','delFavouritesMenu',cConfig().getlanguage(30412))
+                oGuiElement.setSiteName(site)
+                oGuiElement.setFunction(function)
+                oGuiElement.setTitle(title)
+                oGuiElement.setFileName(title)
+                oGuiElement.setIcon("mark.png")
+                if (cat  == '1'):
+                    cGui.CONTENT = 'movies'
+                    oGuiElement.setMeta(cat)
+                    oGuiElement.setCat(1)
+                elif (cat == '2'):
+                    cGui.CONTENT = 'tvshows'
+                    oGuiElement.setMeta(cat)
+                    oGuiElement.setCat(2)
+                else:
+                    oGuiElement.setMeta(0)
+                    oGuiElement.setCat(cat)
+                oGuiElement.setThumbnail(thumbnail)
+                oGuiElement.setFanart(fanart)
 
-                    if (function == 'play'):
-                        oGui.addHost(oGuiElement, oOutputParameterHandler)
-                    else:
-                        oGui.addFolder(oGuiElement, oOutputParameterHandler)
+                #self.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
+                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','delFavouritesMenu',cConfig().getlanguage(30412))
+
+                if (function == 'play'):
+                    oGui.addHost(oGuiElement, oOutputParameterHandler)
+                else:
+                    oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
                     #oGui.addFav(site, function, title, "mark.png", thumbnail, fanart, oOutputParameterHandler)
 

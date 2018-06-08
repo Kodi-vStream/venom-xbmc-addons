@@ -894,7 +894,7 @@ class cTrakt:
 
         #xbmc.log(str(oInputParameterHandler.getAllParameter()))
 
-        sType = oInputParameterHandler.getValue('sType')
+        sType = oInputParameterHandler.getValue('sCat')
         if not sType:
             sType = self.getType()
         #entrer imdb ? venant d'ou?

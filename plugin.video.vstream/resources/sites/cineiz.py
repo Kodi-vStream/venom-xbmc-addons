@@ -4,22 +4,18 @@
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-#from resources.lib.util import cUtil #outils pouvant etre utiles
-
-import re, xbmc
-
+import re
 
 SITE_IDENTIFIER = 'cineiz'
 SITE_NAME = 'Cineiz'
 SITE_DESC = 'Films, Séries et mangas en streaming'
 
-URL_MAIN = 'http://www.cineiz.io/'
+URL_MAIN = 'https://www.cineiz.io/'
 
 URL_SEARCH = ('', 'showMovieSearch')
 URL_SEARCH_MOVIES = ('', 'showMovieSearch')
@@ -294,7 +290,7 @@ def showMovieSearch(sSearch = ''):
         sUrl = URL_MAIN + 'recherche'
 
     oRequestHandler = cRequestHandler(sUrl)
-
+    #oRequestHandler.addHeaderEntry('Referer', 'https://www.cineiz.io/recherche')
     oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
     oRequestHandler.addParameters('action', 'recherche')
     oRequestHandler.addParameters('story', sSearch)
@@ -441,7 +437,8 @@ def showSaisons():
                 break
 
             sUrl2 = str(aEntry[0])
-            sTitle = str(aEntry[1]) + sMovieTitle
+            #sTitle = str(aEntry[1]) + sMovieTitle
+            sTitle = ('%s %s') % (aEntry[1], sMovieTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -510,8 +507,8 @@ def showLinks():
     oRequestHandler.addParameters('levideo', '123456')
     sHtmlContent = oRequestHandler.request().replace('<span class="telecharger_sur_uptobox"></span>', '')
 
+    sDesc = ''
     try:
-        sDesc = ''
         sPattern = '<p>Synopsis.+?</strong> :(.+?)<\/p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
@@ -538,9 +535,9 @@ def showLinks():
             oOutputParameterHandler.addParameter('sPost', sPost)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            #oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             #dispo a la version 0.6.2
-            #oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

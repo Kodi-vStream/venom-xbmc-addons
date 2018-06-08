@@ -156,9 +156,9 @@ class cHoster(iHoster):
             _pass = ''
             
             iss = GetIp()
-            vid = re.search('var vid *= *"([^"]+)";', data, re.DOTALL).group(1)
-            at = re.search('var at *= *"([^"]+)";', data, re.DOTALL).group(1)
-            r = re.search('var http_referer *= *"([^"]+)";', data, re.DOTALL)
+            vid = re.search('&vid=([^&]+)', data, re.DOTALL).group(1)
+            at = re.search('&at=([^&]+)', data, re.DOTALL).group(1)
+            r = re.search('&http_referer=([^&]+)', data, re.DOTALL)
             if r:
                 http_referer = r.group(1)
             
