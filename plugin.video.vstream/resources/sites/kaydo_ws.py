@@ -26,6 +26,7 @@ MOVIE_NOTES = (URL_MAIN + 'films.php?s=go&sort=rating', 'showMovies')
 MOVIE_TOP = (URL_MAIN + 'top-films.php', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'films.php', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
+MOVIE_RANDOM = (URL_MAIN + 'random.php', 'showMovies')
 
 SERIE_NEWS = (URL_MAIN + 'series-latest.php', 'showMovies')
 SERIE_SERIES = (URL_MAIN + 'series.php', 'showMovies')
@@ -69,6 +70,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_RANDOM[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_RANDOM[1], 'Films Aleatoires', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -222,7 +227,10 @@ def showMovies():
 
     sPattern1 = '<img src="([^"]+?)" width=".+?<h2>(.+?)</h2>.*?<h3>(.+?)</h3>.+?<p>([^<]+)</p><a class="btn.+?href="(.+?)"'
 
-    sPattern2 = '<img src="([^"]+)" width=".+?<a href="([^"]+)">.+?title="(.+?)".+?data-tooltip="Synopsis *: *([^<]+)">.+?<h3>(.+?)</h3>'
+    if  'add&g' in sUrl:
+        sPattern2 = '<img src="([^"]+)" width=".+?<a href="([^"]+)">.+?data-tooltip="Synopsis *: *([^<]+)">.+?<h2>(.+?)</h2>.+?<h3>(.+?)</h3>'
+    else:
+        sPattern2 = '<img src="([^"]+)" width=".+?<a href="([^"]+)">.+?title="(.+?)".+?data-tooltip="Synopsis *: *([^<]+)">.+?<h3>(.+?)</h3>'
 
     aResult = oParser.parse(sHtmlContent, sPattern2)
 
@@ -237,12 +245,12 @@ def showMovies():
             if dialog.iscanceled():
                 break
 
-            if  'genre' in sUrl:
+            if  'add&g' in sUrl:
                 sThumb = URL_MAIN + str(aEntry[0])
-                siteUrl = URL_MAIN + str(aEntry[4])
-                sDesc = str(aEntry[3])
-                sDisplayTitle = ('%s (%s)') % (str(aEntry[1]), str(aEntry[2]).replace(' - COMP', 'COMP'))
-                sTitle = aEntry[1]
+                siteUrl = URL_MAIN + str(aEntry[1])
+                sDesc = str(aEntry[2])
+                sDisplayTitle = ('%s (%s)') % (str(aEntry[3]), str(aEntry[4]).replace(' - COMP', 'COMP'))
+                sTitle = aEntry[3]
             else:
                 sThumb = URL_MAIN + str(aEntry[0])
                 siteUrl = URL_MAIN + str(aEntry[1])
@@ -261,18 +269,21 @@ def showMovies():
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
-
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+                
+        if 'random.php' in sUrl:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl',sUrl)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Trouvez moi d autres films >>>[/COLOR]', oOutputParameterHandler)  
 
     oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    oParser = cParser()
+    oParser = cParser()     
     sPattern = 'class="pagination">.*?<li class="active">.+?<li><a href="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
