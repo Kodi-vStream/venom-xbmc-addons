@@ -55,6 +55,7 @@ def unescape(text):
 
 MOVIE_WORLD = (URL_MAIN + 'search/title?groups=top_1000&sort=user_rating,desc&start=1', 'showMovies')
 MOVIE_TOP250 = (URL_MAIN + 'search/title?count=100&groups=top_250', 'showMovies')
+MOVIE_TOP2018 = (URL_MAIN + 'search/title?year=2018,2018&title_type=feature&explore=languages', 'showMovies')
 MOVIE_TOP2017 = (URL_MAIN + 'search/title?year=2017,2017&title_type=feature&explore=languages', 'showMovies')
 MOVIE_TOP2016 = (URL_MAIN + 'search/title?year=2016,2016&title_type=feature&explore=languages', 'showMovies')
 MOVIE_TOP2015 = (URL_MAIN + 'search/title?year=2015,2015&title_type=feature&explore=languages', 'showMovies')
