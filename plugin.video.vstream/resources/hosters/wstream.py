@@ -17,7 +17,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -95,7 +95,7 @@ class cHoster(iHoster):
             url=[]
             qua=[]
         
-            #Replissage des tableaux
+            #Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
@@ -104,7 +104,7 @@ class cHoster(iHoster):
             if (url):
             #Afichage du tableau
                 dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
+                ret = dialog2.select('Select Quality', qua)
                 if (ret > -1):
                     api_call = url[ret]
 
