@@ -25,7 +25,7 @@ SITE_NAME = '[COLOR orange]Top 1000 IMDb[/COLOR]'
 SITE_DESC = 'Base de donnees videos.'
 
 
-URL_MAIN = 'http://imdb.com/'
+URL_MAIN = 'https://www.imdb.com/'
 
 #URL_SEARCH = (URL_MAIN + '/find?ref_=nv_sr_fn&s=all&q=', 'showMovies')
 #URL_SEARCH = (URL_MAIN + '/find?ref_=nv_sr_fn&q=&s=tt', 'showMovies')
@@ -55,6 +55,7 @@ def unescape(text):
 
 MOVIE_WORLD = (URL_MAIN + 'search/title?groups=top_1000&sort=user_rating,desc&start=1', 'showMovies')
 MOVIE_TOP250 = (URL_MAIN + 'search/title?count=100&groups=top_250', 'showMovies')
+MOVIE_TOP2018 = (URL_MAIN + 'search/title?year=2018,2018&title_type=feature&explore=languages', 'showMovies')
 MOVIE_TOP2017 = (URL_MAIN + 'search/title?year=2017,2017&title_type=feature&explore=languages', 'showMovies')
 MOVIE_TOP2016 = (URL_MAIN + 'search/title?year=2016,2016&title_type=feature&explore=languages', 'showMovies')
 MOVIE_TOP2015 = (URL_MAIN + 'search/title?year=2015,2015&title_type=feature&explore=languages', 'showMovies')
@@ -100,6 +101,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP250[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP250[1], 'Top 250', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2018[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_TOP2018[1], 'Top Films 2018', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_TOP2017[0])
@@ -193,7 +198,7 @@ def showMovies(sSearch = '', page = 1):
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]' , oOutputParameterHandler)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     #tPassage en mode vignette sauf en cas de recherche globale
     if not bGlobal_Search:
@@ -209,7 +214,7 @@ def __checkForNextPage(sHtmlContent):
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        sUrl = ('%s/search/title%s')% (URL_MAIN, aResult[1][0])
+        sUrl = ('%s/search/title%s') % (URL_MAIN, aResult[1][0])
         return sUrl
 
     return False
@@ -234,12 +239,12 @@ def showTitle(sMovieTitle, sUrl):
 
     sMovieTitle = urllib.quote(sMovieTitle)
 
-    sMovieTitle = re.sub('\(.+?\)',' ', sMovieTitle) #vire les tags entre parentheses
+    sMovieTitle = re.sub('\(.+?\)', ' ', sMovieTitle) #vire les tags entre parentheses
 
     #modif venom si le titre comporte un - il doit le chercher
     sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle) #vire les caracteres a la con qui peuvent trainer
 
-    #sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)',' ', sMovieTitle) #vire les articles
+    #sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)', ' ', sMovieTitle) #vire les articles
 
     sMovieTitle = re.sub(' +',' ',sMovieTitle) #vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
     #print 'apres ' + sMovieTitle
