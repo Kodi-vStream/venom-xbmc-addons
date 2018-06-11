@@ -346,7 +346,7 @@ def VSerror(e):
     xbmcgui.Dialog().notification('Vstream','Erreur: '+str(e),xbmcgui.NOTIFICATION_ERROR,2000)
     VSlog('Erreur: ' + str(e))
 
-def VSshowInfo(sTitle, sDescription, iSeconds=0,sound = True):
+def VSshowInfo(sTitle, sDescription, iSeconds=0,sound = False):
     if (iSeconds == 0):
         iSeconds = 1000
     else:
@@ -355,6 +355,7 @@ def VSshowInfo(sTitle, sDescription, iSeconds=0,sound = True):
     # On ne peut pas aller voir si l'option est activee car on doit recharger la classe cConfig > aussi lourd a executer
     #if self.getSetting('Block_Noti_sound') == 'true':
     #    sound = False
+    #Ok mais par default le sound et off.
 
     xbmcgui.Dialog().notification(str(sTitle), str(sDescription),xbmcgui.NOTIFICATION_INFO,iSeconds,sound)
 
