@@ -11,6 +11,8 @@ import sys,xbmcplugin
 COUNT = 0
 DIALOG2 = None
 
+ADDON = xbmcaddon.Addon('plugin.video.vstream')
+
 class cUtil:
 
     def CheckOrd(self, label):
@@ -362,7 +364,7 @@ def VSshowInfo(sTitle, sDescription, iSeconds=0,sound = False):
 def VStranslatePathAddon(location):
     #Note, location = (author,changelog,description,disclaimer,fanart,icon,id,name,path,profile,stars,summary,type,version)
     #ex util.VStranslatePathAddon("profile")
-    return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo(location)).decode("utf-8")
+    return xbmc.translatePath(ADDON.getAddonInfo(location)).decode("utf-8")
 
 def VStranslatePath(location):
     #ex util.VStranslatePath("special://logpath/") > http://kodi.wiki/view/Special_protocol
@@ -371,7 +373,15 @@ def VStranslatePath(location):
 def VSlang(lang):
     #util.VSlang(30003)
     #Bug avec accent return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang)).decode("utf-8")
-    return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang))
+    return xbmc.translatePath(ADDON.getLocalizedString(lang))
+
+def VSsetting(name, value=False):
+    #use util.VSsetting('name') pour getsetting
+    #use util.VSsetting('name', 'value) pour setsetting
+    if value:
+        return ADDON.setSetting(name, value)
+    else:
+        return ADDON.getSetting(name)
 
 def VSshowYear(sUrl,start = '',end = '',endswithslash = ''):
     if start and end:
