@@ -15,7 +15,7 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 SITE_IDENTIFIER = 'full_stream_org'
 SITE_NAME = 'Full-Stream'
 SITE_DESC = 'Films, Séries & Animés en Streaming HD'
-URL_MAIN = 'http://full-stream.im/'
+URL_MAIN = 'http://full-stream.site/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
@@ -238,7 +238,7 @@ def showLink():
             else:
                 sUrl2 = URL_MAIN[:-1] + aEntry[1]
                 sHost = re.sub('\.\w+', '', aEntry[2]).strip()
-                sTitle = '%s [COLOR coral]%s[/COLOR]' % (sMovieTitle, sHost)
+                sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
                 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -278,7 +278,7 @@ def showEpisode():
             if (aEntry[0]):
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
             else:
-                sTitle = '%s %s' % (sMovieTitle, aEntry[1])
+                sTitle = ('%s %s') % (sMovieTitle, aEntry[1])
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
