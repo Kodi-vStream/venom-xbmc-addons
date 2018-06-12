@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 #Venom.
-from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.pluginHandler import cPluginHandler
@@ -11,9 +10,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.db import cDb
 from resources.lib import util
 
-import os
-import urllib
-import xbmc, xbmcgui
+import xbmcgui
 
 SITE_IDENTIFIER = 'cHome'
 SITE_NAME = 'Home'
@@ -29,9 +26,8 @@ class cHome:
 
     def load(self):
         oGui = cGui()
-        oConfig = cConfig()
 
-        if (oConfig.getSetting('home_update') == 'true'):
+        if (util.VSsetting('home_update') == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
             oGui.addDir(SITE_IDENTIFIER, 'showUpdate', util.VSlang(30418), 'update.png', oOutputParameterHandler)
@@ -46,7 +42,7 @@ class cHome:
 
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        # oGui.addDir('freebox', 'load', oConfig.getlanguage(30115), 'tv.png', oOutputParameterHandler)
+        # oGui.addDir('freebox', 'load', util.VSlang(30115), 'tv.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -101,7 +97,7 @@ class cHome:
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
         oGui.addDir('cFav', 'getFavourites', util.VSlang(30207), 'mark.png', oOutputParameterHandler)
 
-        if (oConfig.getSetting("history-view") == 'true'):
+        if (util.VSsetting("history-view") == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
             oGui.addDir('cHome', 'showHistory', util.VSlang(30308), 'annees.png', oOutputParameterHandler)
@@ -113,12 +109,12 @@ class cHome:
 
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        # oGui.addDir('globalParametre', 'showSources', '[COLOR teal]'+oConfig.getlanguage(30023)+'[/COLOR]', 'param.png', oOutputParameterHandler)
+        # oGui.addDir('globalParametre', 'showSources', '[COLOR teal]'+util.VSlang(30023)+'[/COLOR]', 'param.png', oOutputParameterHandler)
 
 
         view = False
-        if (oConfig.getSetting("active-view") == 'true'):
-            view = oConfig.getSetting('accueil-view')
+        if (util.VSsetting("active-view") == 'true'):
+            view = util.VSsetting('accueil-view')
 
         oGui.setEndOfDirectory(view)
 
@@ -133,178 +129,171 @@ class cHome:
 
     def showDocs(self):
         oGui = cGui()
-        oConfig = cConfig()
 
         # Affiche les Nouveautés Documentaires
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'DOC_NEWS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30112), oConfig.getlanguage(30101)), 'news.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30112), util.VSlang(30101)), 'news.png', oOutputParameterHandler)
 
         # Affiche les Genres Documentaires
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'DOC_GENRES')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30112), oConfig.getlanguage(30105)), 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30112), util.VSlang(30105)), 'genres.png', oOutputParameterHandler)
 
         # Affiche les Sources Documentaires
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'DOC_DOCS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', oConfig.getlanguage(30138), 'host.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', util.VSlang(30138), 'host.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
     def showNets(self):
         oGui = cGui()
-        oConfig = cConfig()
 
         # Affiche les Nouveautés Vidéos
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'NETS_NEWS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30114), oConfig.getlanguage(30101)), 'news.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30114), util.VSlang(30101)), 'news.png', oOutputParameterHandler)
 
         # Affiche les Genres Vidéos
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'NETS_GENRES')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30114), oConfig.getlanguage(30105)), 'genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30114), util.VSlang(30105)), 'genres.png', oOutputParameterHandler)
 
         # Affiche les Sources Vidéos
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'NETS_NETS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', oConfig.getlanguage(30138), 'host.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', util.VSlang(30138), 'host.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
     def showMovies(self):
         oGui = cGui()
-        oConfig = cConfig()
 
         oOutputParameterHandler = cOutputParameterHandler()
-        #self.__callpluging('MOVIE_NEWS', 'films_news.png')
         oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_NEWS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30120), oConfig.getlanguage(30101)), 'films_news.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30120), util.VSlang(30101)), 'films_news.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_HD')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30120), oConfig.getlanguage(30160)), 'films_hd.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30120), util.VSlang(30160)), 'films_hd.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_VIEWS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30120), oConfig.getlanguage(30102)), 'films_views.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30120), util.VSlang(30102)), 'films_views.png', oOutputParameterHandler)
 
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_COMMENTS')
-        # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30120), oConfig.getlanguage(30103)), 'films_comments.png', oOutputParameterHandler)
+        # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30120), util.VSlang(30103)), 'films_comments.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_NOTES')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30120), oConfig.getlanguage(30104)), 'films_notes.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30120), util.VSlang(30104)), 'films_notes.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_GENRES')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30120), oConfig.getlanguage(30105)), 'films_genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30120), util.VSlang(30105)), 'films_genres.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_ANNEES')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30120), oConfig.getlanguage(30106)), 'films_annees.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30120), util.VSlang(30106)), 'films_annees.png', oOutputParameterHandler)
 
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_VF')
-        # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '[COLOR '+color_films+']'+oConfig.getlanguage(30134)+'[/COLOR]', 'films_vf.png', oOutputParameterHandler)
+        # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '[COLOR '+color_films+']'+util.VSlang(30134)+'[/COLOR]', 'films_vf.png', oOutputParameterHandler)
 
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_VOSTFR')
-        # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '[COLOR '+color_films+']'+oConfig.getlanguage(30135)+'[/COLOR]', 'films_vostfr.png', oOutputParameterHandler)
+        # oGui.addDir(SITE_IDENTIFIER, 'callpluging', '[COLOR '+color_films+']'+util.VSlang(30135)+'[/COLOR]', 'films_vostfr.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'MOVIE_MOVIE')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', oConfig.getlanguage(30138), 'films_host.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', util.VSlang(30138), 'films_host.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
     def showSeries(self):
         oGui = cGui()
-        oConfig = cConfig()
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'SERIE_NEWS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30121), oConfig.getlanguage(30101)), 'series_news.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30121), util.VSlang(30101)), 'series_news.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'SERIE_HD')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30121), oConfig.getlanguage(30160)), 'films_hd.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30121), util.VSlang(30160)), 'films_hd.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'SERIE_GENRES')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30121), oConfig.getlanguage(30105)), 'series_genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30121), util.VSlang(30105)), 'series_genres.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'SERIE_ANNEES')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30121), oConfig.getlanguage(30106)), 'series_annees.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30121), util.VSlang(30106)), 'series_annees.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'SERIE_VFS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30121), oConfig.getlanguage(30107)), 'series_vf.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30121), util.VSlang(30107)), 'series_vf.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'SERIE_VOSTFRS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30121), oConfig.getlanguage(30108)), 'series_vostfr.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30121), util.VSlang(30108)), 'series_vostfr.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'SERIE_SERIES')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', oConfig.getlanguage(30138), 'series_host.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', util.VSlang(30138), 'series_host.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
     def showAnimes(self):
         oGui = cGui()
-        oConfig = cConfig()
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_NEWS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30122), oConfig.getlanguage(30101)), 'animes_news.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30122), util.VSlang(30101)), 'animes_news.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_VFS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30122), oConfig.getlanguage(30107)), 'animes_vf.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30122), util.VSlang(30107)), 'animes_vf.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_VOSTFRS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30122), oConfig.getlanguage(30108)), 'animes_vostfr.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30122), util.VSlang(30108)), 'animes_vostfr.png', oOutputParameterHandler)
 
         #non utiliser ANIM_MOVIES
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_GENRES')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30122), oConfig.getlanguage(30105)), 'animes_genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30122), util.VSlang(30105)), 'animes_genres.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_ANNEES')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30122), oConfig.getlanguage(30106)), 'animes_annees.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30122), util.VSlang(30106)), 'animes_annees.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_ENFANTS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30122), oConfig.getlanguage(30109)), 'animes_enfants.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30122), util.VSlang(30109)), 'animes_enfants.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'ANIM_ANIMS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', oConfig.getlanguage(30138), 'animes_host.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', util.VSlang(30138), 'animes_host.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
     def showReplay(self):
         oGui = cGui()
-        oConfig = cConfig()
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'REPLAYTV_NEWS')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30117), oConfig.getlanguage(30101)), 'replay_news.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30117), util.VSlang(30101)), 'replay_news.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'REPLAYTV_GENRES')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (oConfig.getlanguage(30117), oConfig.getlanguage(30105)), 'replay_genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', '%s (%s)' % (util.VSlang(30117), util.VSlang(30105)), 'replay_genres.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'REPLAYTV_REPLAYTV')
-        oGui.addDir(SITE_IDENTIFIER, 'callpluging', oConfig.getlanguage(30138), 'replay_host.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'callpluging', util.VSlang(30138), 'replay_host.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -335,7 +324,7 @@ class cHome:
         # oOutputParameterHandler.addParameter('disp', sDisp)
         # oOutputParameterHandler.addParameter('type', sType)
         # oOutputParameterHandler.addParameter('readdb', 'True')
-        # oGui.addDir('globalSearch', 'none', '%s: %s' % (oConfig.getlanguage(30076), sSearchText), 'search.png', oOutputParameterHandler)
+        # oGui.addDir('globalSearch', 'none', '%s: %s' % (util.VSlang(30076), sSearchText), 'search.png', oOutputParameterHandler)
         # oGui.setEndOfDirectory()
 
     def showSearch(self, searchtext=cInputParameterHandler().getValue('searchtext')):
@@ -347,11 +336,10 @@ class cHome:
         xbmcgui.Window(10101).clearProperty('search_text')
 
         oGui = cGui()
-        oConfig = cConfig()
 
         #print xbmc.getInfoLabel('ListItem.Property(Category)')
 
-        oGui.addText('globalSearch', oConfig.getlanguage(30077) % (searchtext), 'none.png')
+        oGui.addText('globalSearch', util.VSlang(30077) % (searchtext), 'none.png')
 
         #utilisation de guielement pour ajouter la bonne catégories
 
@@ -362,8 +350,8 @@ class cHome:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName('globalSearch')
         oGuiElement.setFunction('showSearch')
-        oGuiElement.setTitle(oConfig.getlanguage(30078))
-        oGuiElement.setFileName(oConfig.getlanguage(30078))
+        oGuiElement.setTitle(util.VSlang(30078))
+        oGuiElement.setFileName(util.VSlang(30078))
         oGuiElement.setIcon('search.png')
         oGuiElement.setMeta(0)
         #oGuiElement.setThumbnail(sThumbnail)
@@ -379,8 +367,8 @@ class cHome:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName('globalSearch')
         oGuiElement.setFunction('showSearch')
-        oGuiElement.setTitle(oConfig.getlanguage(30079))
-        oGuiElement.setFileName(oConfig.getlanguage(30079))
+        oGuiElement.setTitle(util.VSlang(30079))
+        oGuiElement.setFileName(util.VSlang(30079))
         oGuiElement.setIcon('search.png')
         oGuiElement.setMeta(0)
         #oGuiElement.setThumbnail(sThumbnail)
@@ -396,8 +384,8 @@ class cHome:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName('globalSearch')
         oGuiElement.setFunction('showSearch')
-        oGuiElement.setTitle(oConfig.getlanguage(30080))
-        oGuiElement.setFileName(oConfig.getlanguage(30080))
+        oGuiElement.setTitle(util.VSlang(30080))
+        oGuiElement.setFileName(util.VSlang(30080))
         oGuiElement.setIcon('search.png')
         oGuiElement.setMeta(0)
         #oGuiElement.setThumbnail(sThumbnail)
@@ -419,18 +407,17 @@ class cHome:
     def showHistory(self):
 
         oGui = cGui()
-        oConfig = cConfig()
 
         row = cDb().get_history()
         if row:
-            oGui.addText(SITE_IDENTIFIER, oConfig.getlanguage(30416))
+            oGui.addText(SITE_IDENTIFIER, util.VSlang(30416))
         else :
             oGui.addText(SITE_IDENTIFIER)
         for match in row:
             oOutputParameterHandler = cOutputParameterHandler()
 
             #code to get type with disp
-            type = oConfig.getSetting('search' + match[2][-1:] + '_type')
+            type = util.VSsetting('search' + match[2][-1:] + '_type')
             if type:
                 oOutputParameterHandler.addParameter('type', type)
                 xbmcgui.Window(10101).setProperty('search_type', type)
@@ -448,14 +435,14 @@ class cHome:
             oGuiElement.setFileName(match[1])
             oGuiElement.setCat(match[2])
             oGuiElement.setIcon("search.png")
-            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,'cHome','delSearch', oConfig.getlanguage(30412))
+            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,'cHome','delSearch', util.VSlang(30412))
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
         if row:
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'delSearch', oConfig.getlanguage(30413), 'search.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'delSearch', util.VSlang(30413), 'search.png', oOutputParameterHandler)
 
 
         oGui.setEndOfDirectory()
@@ -480,24 +467,6 @@ class cHome:
 
         oPluginHandler = cSiteHandler()
         aPlugins = oPluginHandler.getAvailablePlugins(sSiteUrl)
-        for aPlugin in aPlugins:
-            try:
-                #exec "import "+aPlugin[1]
-                #exec "sSiteUrl = "+aPlugin[1]+"."+sVar
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', aPlugin[0])
-                icon = 'sites/%s.png' % (aPlugin[2])
-                oGui.addDir(aPlugin[2], aPlugin[3], aPlugin[1], icon, oOutputParameterHandler)
-            except:
-                pass
-
-        oGui.setEndOfDirectory()
-
-    #plus utiliser depuis le 16/03/2017
-    def __callpluging(self, sVar, sIcon):
-        oGui = cGui()
-        oPluginHandler = cSiteHandler()
-        aPlugins = oPluginHandler.getAvailablePlugins(sVar)
         for aPlugin in aPlugins:
             try:
                 #exec "import "+aPlugin[1]

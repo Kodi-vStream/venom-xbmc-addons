@@ -291,7 +291,7 @@ def showSerieSaisons():
 
             sUrl2   = aEntry[0]
             sSaison = aEntry[1]
-            sTitle  = sSaison + sMovieTitle
+            sTitle  = ("(%s) %s") % (sSaison, sMovieTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
