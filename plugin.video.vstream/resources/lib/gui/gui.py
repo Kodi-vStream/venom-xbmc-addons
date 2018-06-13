@@ -3,7 +3,7 @@
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
 
-from resources.lib.config import cConfig
+#from resources.lib.config import cConfig
 from resources.lib.db import cDb
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -41,7 +41,6 @@ def CleanName(str):
         str = str[:-1]
     return str
 
-
 class cGui():
 
     SITE_NAME = 'cGui'
@@ -50,8 +49,7 @@ class cGui():
     #modif 22/06
     listing = []
 
-
-    if cConfig().isKrypton():
+    if util.isKrypton():
         CONTENT = 'addons'
 
 
@@ -182,7 +180,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sFav', sFunction)
 
         #context parametre
-        if (cConfig().isKrypton() == True):
+        if util.isKrypton():
             self.createContexMenuSettings(oGuiElement, oOutputParameterHandler)
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
@@ -351,7 +349,7 @@ class cGui():
     #affiche les liens playable
     def addHost(self, oGuiElement, oOutputParameterHandler=''):
 
-        if cConfig().isKrypton():
+        if util.isKrypton():
             cGui.CONTENT = 'movies'
 
         if oOutputParameterHandler.getValue('siteUrl'):
@@ -414,12 +412,9 @@ class cGui():
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'setFavorite', util.VSlang(30207))
 
     def createContexMenuTrakt(self, oGuiElement, oOutputParameterHandler= ''):
-        #pas de menu si pas de meta.
-        #if cConfig().getSetting("meta-view") == 'false':
-        #    return
+
         oOutputParameterHandler.addParameter('sImdbId', oGuiElement.getImdbId())
         oOutputParameterHandler.addParameter('sTmdbId', oGuiElement.getTmdbId())
-        #ajout de filename nettoyage deja fait
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
 
         sType = cGui.CONTENT.replace('tvshows', 'shows')
@@ -427,12 +422,9 @@ class cGui():
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cTrakt', 'cTrakt', 'getAction', util.VSlang(30214))
 
     def createContexMenuTMDB(self, oGuiElement, oOutputParameterHandler= ''):
-        #pas de menu si pas de meta.
-        #if cConfig().getSetting("meta-view") == 'false':
-        #    return
+
         oOutputParameterHandler.addParameter('sImdbId', oGuiElement.getImdbId())
         oOutputParameterHandler.addParameter('sTmdbId', oGuiElement.getTmdbId())
-        #ajout de filename nettoyage deja fait
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
 
         self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'themoviedb_org', 'themoviedb_org', 'getAction', 'TMDB')
@@ -515,40 +507,6 @@ class cGui():
 
             oListItem.addContextMenuItems(aContextMenus, True)
 
-        #Ajout de voir marque page
-        #supprimer le 24/07
-        # oContextItem = cContextElement()
-        # oContextItem.setFile('cFav')
-        # oContextItem.setSiteName('cFav')
-        # oContextItem.setTitle(cConfig().getlanguage(30210))
-        # oContextItem.setFunction('getFavourites')
-        # oOutputParameterHandler = oContextItem.getOutputParameterHandler()
-        # sParams = oOutputParameterHandler.getParameterAsUri()
-        # sTest = '%s?site=%s&function=%s&contextFav=true&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-        # aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.Container.Update(%s)" % (sTest,),)]
-        # oListItem.addContextMenuItems(aContextMenus)
-
-        #Menu speciaux si metadata
-        #supprimer depuis la recherche interne de bande annonce
-        # if  oGuiElement.getTrailerUrl():
-            # oOutputParameterHandler = cOutputParameterHandler()
-            # oOutputParameterHandler.addParameter('sHosterIdentifier', 'youtube')
-            # oOutputParameterHandler.addParameter('sMediaUrl', oGuiElement.getTrailerUrl())
-            # oOutputParameterHandler.addParameter('sFileName', oGuiElement.getTitle())
-            # oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
-            # oContextItem = cContextElement()
-            # oContextItem.setFile('cHosterGui')
-            # oContextItem.setSiteName('cHosterGui')
-            # oContextItem.setTitle('[COLOR azure]Bande Annonce[/COLOR]')
-            # oContextItem.setFunction('play')
-            # oContextItem.setOutputParameterHandler(oOutputParameterHandler)
-
-            # oOutputParameterHandler = oContextItem.getOutputParameterHandler()
-            # sParams = oOutputParameterHandler.getParameterAsUri()
-            # sTest = '%s?site=%s&function=%s&%s' % (sPluginPath, oContextItem.getFile(), oContextItem.getFunction(), sParams)
-            # aContextMenus+= [ ( oContextItem.getTitle(), "XBMC.RunPlugin(%s)" % (sTest,),)]
-            # oListItem.addContextMenuItems(aContextMenus)
-
         return oListItem
 
     def __ContextMenu(self, oGuiElement, oListItem):
@@ -601,14 +559,14 @@ class cGui():
         if (ForceViewMode):
             xbmc.executebuiltin('Container.SetViewMode(' + str(ForceViewMode) + ')')
         else:
-            if (cConfig().getSetting("active-view") == 'true'):
+            if util.VSsetting('active-view'):
                 if cGui.CONTENT == "movies":
                     #xbmc.executebuiltin('Container.SetViewMode(507)')
-                    xbmc.executebuiltin('Container.SetViewMode(%s)' % cConfig().getSetting('movie-view'))
+                    xbmc.executebuiltin('Container.SetViewMode(%s)' % util.VSsetting('movie-view'))
                 elif cGui.CONTENT == "tvshows":
-                    xbmc.executebuiltin('Container.SetViewMode(%s)' % cConfig().getSetting('serie-view'))
+                    xbmc.executebuiltin('Container.SetViewMode(%s)' % util.VSsetting('serie-view'))
                 elif cGui.CONTENT == "files":
-                    xbmc.executebuiltin('Container.SetViewMode(%s)' % cConfig().getSetting('default-view'))
+                    xbmc.executebuiltin('Container.SetViewMode(%s)' % util.VSsetting('default-view'))
 
     def updateDirectory(self):
         xbmc.executebuiltin("Container.Refresh")
@@ -717,7 +675,7 @@ class cGui():
 
         xbmc.executebuiltin( 'Container.Refresh' )
 
-    #24/07 plus utiliser passe par la popup information voir cConfig WindowsBoxes id 11
+
     def viewBA(self):
         oInputParameterHandler = cInputParameterHandler()
         sFileName = oInputParameterHandler.getValue('sFileName')
@@ -729,6 +687,9 @@ class cGui():
 
 
     def viewinfo(self):
+
+        #import config a la demande pour plus tard deplacer la fonction
+        from resources.lib.config import cConfig
 
         oGuiElement = cGuiElement()
         oInputParameterHandler = cInputParameterHandler()
@@ -792,12 +753,9 @@ class cGui():
 
 
     def openSettings(self):
-        cConfig().showSettingsWindow()
+        return False
 
     def showNofication(self, sTitle, iSeconds=0):
-        if (cConfig().isDharma() == False):
-            return
-
         if (iSeconds == 0):
             iSeconds = 1000
         else:
@@ -806,9 +764,6 @@ class cGui():
         xbmc.executebuiltin("Notification(%s,%s,%s)" % ('vStream', str(sTitle), iSeconds))
 
     def showError(self, sTitle, sDescription, iSeconds=0):
-        if (cConfig().isDharma() == False):
-            return
-
         if (iSeconds == 0):
             iSeconds = 1000
         else:
@@ -817,9 +772,6 @@ class cGui():
         xbmc.executebuiltin("Notification(%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds))
 
     def showInfo(self, sTitle, sDescription, iSeconds=0):
-        if (cConfig().isDharma() == False):
-            return
-
         if (iSeconds == 0):
             iSeconds = 1000
         else:

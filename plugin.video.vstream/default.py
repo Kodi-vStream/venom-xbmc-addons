@@ -13,7 +13,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.config import cConfig
 from resources.lib.db import cDb
-from resources.lib.util import cUtil
+from resources.lib import util
 
 import xbmc, xbmcgui, sys
 
@@ -100,8 +100,8 @@ class main:
                 oPluginHandler = cPluginHandler()
                 aPlugins = oPluginHandler.getAvailablePlugins()
                 if (len(aPlugins) == 0):
-                    oGui.openSettings()
-                    oGui.updateDirectory()
+                    util.VSopenSetting()
+                    xbmc.executebuiltin("Container.Refresh")
                 else:
                     for aPlugin in aPlugins:
 
@@ -114,7 +114,7 @@ class main:
                 return
 
             if sSiteName == 'globalParametre':
-                cConfig().showSettingsWindow()
+                util.VSopenSetting()
                 return
             #if (isAboutGui(sSiteName, sFunction) == True):
                 #return
@@ -231,8 +231,6 @@ def searchGlobal():
 
     #affichage
     total=len(oGui.searchResults)
-    #filtre
-    int_1 = cUtil().CheckOrd(sSearchText)
 
     for count,result in enumerate(oGui.searchResults):
         text = '%s/%s - %s' % ((count+1/total), total, result['guiElement'].getTitle())

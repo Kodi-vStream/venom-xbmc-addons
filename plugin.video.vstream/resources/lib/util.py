@@ -383,6 +383,9 @@ def VSsetting(name, value=False):
     else:
         return ADDON.getSetting(name)
 
+def VSopenSetting(name='plugin.video.vstream'):
+    return xbmcaddon.Addon(name).openSettings()
+
 def VSshowYear(sUrl,start = '',end = '',endswithslash = ''):
     if start and end:
         fstart = start
