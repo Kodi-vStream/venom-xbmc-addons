@@ -11,7 +11,7 @@ from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.parser import cParser
 from resources.lib import util
 
-import xbmc, sys
+import xbmc
 import xbmcgui
 import xbmcplugin
 import urllib
