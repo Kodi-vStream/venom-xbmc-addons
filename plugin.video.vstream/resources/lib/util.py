@@ -368,6 +368,7 @@ def VStranslatePathAddon(location):
 
 def VStranslatePath(location):
     #ex util.VStranslatePath("special://logpath/") > http://kodi.wiki/view/Special_protocol
+    #d'apres Kodi ne doit pas etre utiliser sur les special://
     return xbmc.translatePath(location).decode("utf-8")
 
 def VSlang(lang):

@@ -579,6 +579,10 @@ class cConfig():
                 if action.getId() in ( 9, 10, 11, 30, 92, 216, 247, 257, 275, 61467, 61448, ):
                     self.close()
 
-        wd = XMLDialog('DialogInfo.xml', self.__oPath.decode("utf-8") , 'default', '720p')
+
+        #path = xbmc.translatePath("special://home/addons/plugin.video.vstream").decode("utf-8")
+        path = "special://home/addons/plugin.video.vstream".decode("utf-8")
+        #self.__oPath.decode("utf-8")
+        wd = XMLDialog('DialogInfo.xml', path , 'default', '720p')
         wd.doModal()
         del wd
