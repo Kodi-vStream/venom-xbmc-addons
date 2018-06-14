@@ -164,8 +164,8 @@ def showMovies(sSearch = ''):
 
             sTitle = aEntry[2].replace(' Streaming Ultra-HD', '').replace(' Streaming Full-HD', '')
             sTitle = sTitle.replace(' en Streaming HD', '').replace(' Streaming HD', '').replace(' streaming', '').replace('HD', '')
-            if 'Saison' in sTitle:
-                sTitle = sTitle.replace(' - Saison', ' Saison')
+            #delete du tiret
+            sTitle = sTitle.replace(' - Saison', ' Saison')
             sTitle = sTitle.decode('utf8')
             sTitle = cUtil().unescape(sTitle)
             try:
