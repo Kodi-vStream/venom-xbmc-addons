@@ -66,7 +66,8 @@ def showSerieYears():
     oGui = cGui()
     from itertools import chain
     generator = chain([1936,1940,1941,1944,1950,1952],xrange(1958,2019))#desordre
-    for i in list(generator):
+
+    for i in reversed(list(generator)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'annee/' + Year)
