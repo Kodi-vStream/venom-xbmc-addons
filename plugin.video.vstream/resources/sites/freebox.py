@@ -24,8 +24,6 @@ URL_MAIN = 'http://mafreebox.freebox.fr/freeboxtv/playlist.m3u'
 URL_WEB = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/Beta/repo/resources/webtv2.m3u'
 URL_RADIO = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/repo/resources/radio.m3u'
 
-LISTE_AIZEN = (True, 'showAizenListe')
-
 MOVIE_IPTVSITE = (True, 'showIptvSite')
 
 UA = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
@@ -59,7 +57,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_IPTVSITE)
-    oGui.addDir(SITE_IDENTIFIER, 'showIptvSite', "Liste site Iptv (Beta - Necessite f4mTester)", 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showIptvSite', 'Liste site Iptv', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
@@ -256,9 +254,10 @@ def showWebIptvSource():
             cConfig().finishDialog(dialog)
 
         oGui.setEndOfDirectory()
-    
+        
     else:
         parseWebM3U(sUrl)
+        
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
       
 def showWeb():
@@ -269,14 +268,12 @@ def showWeb():
 
     playlist = parseWebM3URegex(sUrl)
 
-
     if (oInputParameterHandler.exist('AZ')):
         sAZ = oInputParameterHandler.getValue('AZ')
         string = filter(lambda t: t.title.strip().capitalize().startswith(sAZ), playlist)
         playlist = sorted(string, key=lambda t: t.title.strip().capitalize())
     else :
         playlist = sorted(playlist, key=lambda t: t.title.strip().capitalize())
-
 
     if not playlist:
         oOutputParameterHandler = cOutputParameterHandler()
@@ -353,7 +350,6 @@ def showAZ():
         oGui.addDir(SITE_IDENTIFIER, 'showTV', i, 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
 
 def showAZRadio():
 
@@ -494,6 +490,8 @@ def getHtml(sUrl, referer=None, hdr=None, data=None):
     return data
 
 def parseWebM3U(sUrl):
+    oGui = cGui()
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     
@@ -516,15 +514,21 @@ def parseWebM3U(sUrl):
         icon = "tv.png"
         if '.ts' in sUrl2:
             sUrl2 = 'plugin://plugin.video.f4mTester/?url='+urllib.quote_plus(sUrl2)+'&amp;streamtype=TSDOWNLOADER&name='+urllib.quote(sTitle)
-                
+
         ok = True
         liz = xbmcgui.ListItem(sTitle, iconImage="DefaultVideo.png", thumbnailImage=icon)
+        commands = []
+        direct_epg_url= "plugin://plugin.video.vstream/?site=freebox&function=direct_epg&sMovieTitle="+urllib.quote(sTitle)+"&siteUrl="+urllib.quote_plus(sUrl2)+"&sFav=play__&sThumbnail="+urllib.quote(icon)+"&sId=freebox&sCat=6"
+        commands.append(( "Direct Epg" , 'RunPlugin('+ direct_epg_url +')'))
+        soir_epg_url = "plugin://plugin.video.vstream/?site=freebox&function=soir_epg&sMovieTitle="+urllib.quote(sTitle)+"&siteUrl="+urllib.quote_plus(sUrl2)+"&sFav=play__&sThumbnail="+urllib.quote(icon)+"&sId=freebox&sCat=6"
+        commands.append(( "Soir Epg" , 'RunPlugin('+ soir_epg_url +')'))
+        liz.addContextMenuItems( commands )
         liz.setArt({'thumb': icon, 'icon': icon})
-        #liz.setProperty('IsPlayable', 'true')
         liz.setInfo(type="Video", infoLabels={"Title": sTitle})
         video_streaminfo = {'codec': 'h264'}
         liz.addStreamInfo('video', video_streaminfo)
         ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=sUrl2, listitem=liz, isFolder=False)
+        
     return ok
     
 def parseWebM3URegex(infile):
@@ -595,7 +599,6 @@ def parseM3U(infile):
 
     return playlist
 
-
 #http://libretv.me/Liste-m3u/Liste-anonymes/(PB)Marchannel.m3u
 def parseLibretvM3U(infile):
 
@@ -653,7 +656,6 @@ def parseLibretvM3U(infile):
     inf.close()
     return playlist
 
-
 def play__():
     oGui = cGui()
 
@@ -687,7 +689,7 @@ def play__():
     return
 
 def GetRealUrl(chain):
-
+    
     oParser = cParser()
 
     UA2 = UA
@@ -733,7 +735,6 @@ def GetRealUrl(chain):
     url = url + '|User-Agent=' + UA2
 
     return url
-
 
 def openwindows():
     xbmc.executebuiltin( "ActivateWindow(%d, return)" % ( 10601, ) )
