@@ -1,7 +1,7 @@
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 
 class cHoster(iHoster):
@@ -28,31 +28,10 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return True
 
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
-        
-    def __getIdFromUrl(self):
-        sPattern = "v=([^<]+)"
-        oParser = cParser()
-        aResult = oParser.parse(self.__sUrl, sPattern)
-
-        if (aResult[0] == True):
-            return aResult[1][0]
-
-        return ''
-        
-    def __modifyUrl(self, sUrl):
-        return sUrl;
-        
-    def __getKey(self):
-        return ''
-
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        sPattern =  '(?:http:\/\/|\/\/)(?:www.|embed.|)mystream.(?:la|com)\/(?:video\/|external\/|embed-)([0-9a-zA-Z]+)'
+
+        sPattern =  '(?:https*:\/\/|\/\/)(?:www.|embed.|)mystream.(?:la|com|to)\/(?:video\/|external\/|embed-|)([0-9a-zA-Z]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         self.__sUrl = 'http://www.mystream.la/external/' + str(aResult[1][0])
@@ -71,7 +50,7 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        sPattern =  'file: *[\'"](.+?)["\'],'
+        sPattern =  '<source src="([^"]+)" type="video.+?"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         
