@@ -6,20 +6,19 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import VSshowYear
 
 SITE_IDENTIFIER = 'streamiz_co'
 SITE_NAME = 'Streamiz'
 SITE_DESC = 'Tous vos films en streaming gratuitement'
 
-URL_MAIN = 'http://streamiz.to/'
-URL_API = 'https://api.streamiz.to/movies/'
+URL_MAIN = 'http://film.streamiz.co/'
+URL_API = 'https://api.streamiz.co/movies/'
 
 MOVIE_NEWS = (URL_MAIN + 'recemment-ajoute/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'les-plus-vus/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
-MOVIE_ANNEES = (URL_MAIN + 'annee/', 'showYear')
+MOVIE_ANNEES = ('http/venom', 'showYears')
 
 URL_SEARCH = (URL_API + 'search/?query=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_API + 'search/?query=', 'showMovies')
@@ -84,22 +83,27 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-def showYear():
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sCheck = VSshowYear(sUrl, 1995, 2019, endswithslash = '/')
-    if not sCheck == None:
-        showMovies(yearUrl = sCheck)
+def showYears():
+    #for i in itertools.chain(xrange(5, 7), [8, 9]): afficher dans l'ordre (pense bete ne pas effacer)
+    oGui = cGui()
+    from itertools import chain
+    generator = chain([1998,1999],xrange(2000,2019))#desordre
+    for i in reversed(list(generator)):
+        Year = str(i)
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', ('%s%s%s%s') % (URL_MAIN, 'annee/', Year, '/'))
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'films_annees.png', oOutputParameterHandler)
+        
+    oGui.setEndOfDirectory()
+    
+def showMovies(sSearch = ''):
 
-def showMovies(sSearch = '', yearUrl = ''):
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
 
     if sSearch:
         sUrl = sSearch
-    elif yearUrl:
-        sUrl = yearUrl
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -180,13 +184,15 @@ def showHosters():
         if sHtmlContent:
             sHtmlContent = sHtmlContent.replace('\\', '')
             sHtmlContent = sHtmlContent.strip('[""]')
+            sHtmlContent = sHtmlContent.replace('"', '')
+            sHtmlContent = sHtmlContent.split(',')
 
-            sHosterUrl = sHtmlContent
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            for aEntry in sHtmlContent:
+                sHosterUrl = aEntry
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
