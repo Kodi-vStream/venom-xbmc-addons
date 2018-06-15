@@ -3,6 +3,7 @@
 #Modif pour vStream
 
 from resources.lib.config import cConfig
+from resources.lib import util
 
 import json, os, copy, time, urllib2
 from urllib import quote_plus, urlopen, urlencode
@@ -10,10 +11,10 @@ import xbmc
 
 try:
     from sqlite3 import dbapi2 as sqlite
-    cConfig().log('SQLITE 3 as DB engine')
+    util.VSlog('SQLITE 3 as DB engine')
 except:
     from pysqlite2 import dbapi2 as sqlite
-    cConfig().log('SQLITE 2 as DB engine')
+    util.VSlog('SQLITE 2 as DB engine')
 
 
 # https://developers.themoviedb.org/3
@@ -22,7 +23,7 @@ except:
 class cTMDb:
     URL = "http://api.themoviedb.org/3/"
 
-    def __init__(self, api_key, debug=False, lang='fr'):
+    def __init__(self, api_key=util.VSsetting('api_tmdb'), debug=False, lang='fr'):
         self.api_key = api_key
         self.debug = debug
         self.lang = lang
@@ -423,14 +424,14 @@ class cTMDb:
             self.dbcur.execute(sql_select)
             matchedrow = self.dbcur.fetchone()
         except Exception, e:
-            xbmc.log('************* Error selecting from cache db: %s' % e, 4)
+            util.VSlog('************* Error selecting from cache db: %s' % e, 4)
             return None
 
         if matchedrow:
-            xbmc.log('Found meta information by name in cache table')
+            util.VSlog('Found meta information by name in cache table')
             return dict(matchedrow)
         else:
-            xbmc.log('No match in local DB', 0)
+            util.VSlog('No match in local DB')
             return None
 
     def _cache_save(self, meta, name, media_type, season, overlay):
@@ -488,9 +489,9 @@ class cTMDb:
 
 
             self.db.commit()
-            cConfig().log('SQL INSERT Successfully')
+            util.VSlog('SQL INSERT Successfully')
         except Exception, e:
-            cConfig().log('SQL ERROR INSERT')
+            util.VSlog('SQL ERROR INSERT')
             pass
         self.db.close()
 
@@ -508,9 +509,9 @@ class cTMDb:
                     self.dbcur.execute(sql, (meta['imdb_id'], s['id'], s['season_number'], s['air_date'], s['air_date'], s['poster_path'], 6))
 
                     self.db.commit()
-                    cConfig().log('SQL INSERT Successfully')
+                    util.VSlog('SQL INSERT Successfully')
                 except Exception, e:
-                    cConfig().log('SQL ERROR INSERT')
+                    util.VSlog('SQL ERROR INSERT')
                     pass
 
     def get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', season='', episode='', overlay=6, update=False):
@@ -534,8 +535,8 @@ class cTMDb:
             DICT of meta data or None if cannot be found.
         '''
 
-        xbmc.log('vstream Meta', 0)
-        xbmc.log('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id), 0)
+        #xbmc.log('vstream Meta', 0)
+        util.VSlog('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id))
         #recherche dans la base de donner
         if not update:
             meta = self._cache_search(media_type, self._clean_title(name), tmdb_id, year, season, episode)

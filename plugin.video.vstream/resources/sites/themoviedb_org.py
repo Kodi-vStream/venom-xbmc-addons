@@ -35,7 +35,7 @@ FANART_URL = 'https://image.tmdb.org/t/p/w1280'
 
 #https://api.themoviedb.org/3/movie/popular?api_key=92ab39516970ab9d86396866456ec9b6
 
-grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
+grab = cTMDb()
 view = '500'
 view = cConfig().getSetting('visuel-view')
 tmdb_session = cConfig().getSetting('tmdb_session')
