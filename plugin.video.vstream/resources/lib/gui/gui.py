@@ -559,7 +559,7 @@ class cGui():
         if (ForceViewMode):
             xbmc.executebuiltin('Container.SetViewMode(' + str(ForceViewMode) + ')')
         else:
-            if util.VSsetting('active-view'):
+            if (util.VSsetting('active-view') == 'true'):
                 if cGui.CONTENT == "movies":
                     #xbmc.executebuiltin('Container.SetViewMode(507)')
                     xbmc.executebuiltin('Container.SetViewMode(%s)' % util.VSsetting('movie-view'))

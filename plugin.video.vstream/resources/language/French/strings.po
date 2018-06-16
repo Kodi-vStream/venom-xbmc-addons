@@ -668,3 +668,7 @@ msgstr "Activer/Désactiver les sources"
 msgctxt "#30421"
 msgid "Go to [COLOR teal]%s[CR]%s[/COLOR][CR],Valid vStream, only then click YES"
 msgstr "Rendez vous sur [COLOR teal]%s[CR]%s[/COLOR][CR],Valider vStream, seulement ensuite cliquer OUI"
+
+msgctxt "#30422"
+msgid "Enable log records"
+msgstr "Activer les notices de log"

@@ -270,8 +270,10 @@ def QuotePlus(sUrl):
 def QuoteSafe(sUrl):
     return urllib.quote(sUrl,safe=':/')
 
-def VSlog(e):
-    xbmc.log('\t[PLUGIN] Vstream: '+str(e), xbmc.LOGDEBUG)
+def VSlog(e, level=xbmc.LOGDEBUG):
+    if (VSsetting('debug') == 'true'):
+        level = xbmc.LOGNOTICE
+    xbmc.log('\t[PLUGIN] Vstream: '+str(e), level)
 
 def VSupdate(self):
     xbmc.executebuiltin("Container.Refresh")
