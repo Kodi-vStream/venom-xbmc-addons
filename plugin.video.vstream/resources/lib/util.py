@@ -296,26 +296,10 @@ def VScreateDialogYesNo(label):
     qst = oDialog.yesno("vStream", label)
     return qst
 
-def VScreateDialogSelect(label,sTitle=''):
+def VScreateDialogSelect(label,sTitle='vStream'):
     oDialog = xbmcgui.Dialog()
-    if sTitle:
-        ret = oDialog.select(sTitle, label)
-    else:
-        ret = oDialog.select('Sélectionner une qualité', label)
-
+    ret = oDialog.select(sTitle, label)
     return ret
-
-def VSDialogSelectQual(list_qual,list_url):
-    if len(list_url) == 0:
-        return ''
-    if len(list_url) == 1:
-        return list_url[0]
-
-    oDialog = xbmcgui.Dialog()
-    ret = oDialog.select('Sélectionner une qualité', list_qual)
-    if ret > -1:
-        return list_url[ret]
-    return ''
 
 def createDialog(sSite):
     global DIALOG2
@@ -350,7 +334,7 @@ def VSerror(e):
     xbmcgui.Dialog().notification('Vstream','Erreur: '+str(e),xbmcgui.NOTIFICATION_ERROR,2000)
     VSlog('Erreur: ' + str(e))
 
-def VSshowInfo(sTitle, sDescription, iSeconds=0,sound = False):
+def VSshowInfo(sDescription, sTitle='vStream', iSeconds=0,sound = False):
     if (iSeconds == 0):
         iSeconds = 1000
     else:

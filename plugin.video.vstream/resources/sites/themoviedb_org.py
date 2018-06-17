@@ -8,7 +8,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib import util
-import unicodedata, re
 import xbmcgui, xbmc
 from resources.lib.tmdb import cTMDb
 
@@ -183,16 +182,12 @@ def showMyTmdb():
 
 
 def ouTMyTmdb():
-
-        oGui = cGui()
-
-        util.VSsetting('tmdb_session', '')
-        util.VSsetting('tmdb_account', '')
-        oGui.showNofication(util.VSlang(30320))
-        xbmc.executebuiltin("Container.Refresh")
-        showMyTmdb()
-
-        return
+    util.VSsetting('tmdb_session', '')
+    util.VSsetting('tmdb_account', '')
+    util.VSshowInfo('Vstream',util.VSlang(30320))
+    xbmc.executebuiltin("Container.Refresh")
+    showMyTmdb()
+    return
 
 def getContext():
 
