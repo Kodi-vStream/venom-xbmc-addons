@@ -226,9 +226,8 @@ def showMovies(sSearch = ''):
 
             sUrl2 = str(aEntry[0])
             sTitle = str(aEntry[1]).replace('&#8217;', '\'').replace('&prime;', '\'')
-            #on vire le tiret laisser le 'Sai'
-            if ' - Saison' in sTitle:
-                sTitle = sTitle.replace(' - Sai', 'Sai')
+            #on vire le tiret laisser les deux ils sont different
+            sTitle = sTitle.replace(' – Saison', ' Saison').replace(' - Saison', ' Saison')
             sThumb = str(aEntry[2])
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -278,8 +277,8 @@ def showSeries():
     #pour récuperer tous les liens
     sHtmlContent = sHtmlContent.replace('https://linkrag.com/st?api=5821799852a075f4ad9432eefa73332cf053130f&amp;url=', '')
 
+    sDesc = ''
     try:#récupération des Synopsis
-        sDesc = ''
         sPattern = '(?:<p style="text-align: center;"|<p align="center")>([^<]+)<\/p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
@@ -308,7 +307,10 @@ def showSeries():
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
             else:
-                sTitle = sMovieTitle.replace('[Complete]', '') + ' ' + str(aEntry[1])
+                #on vire le tiret laisser les tiret ils sont different
+                sMovieTitle = sMovieTitle.replace(' – Saison', ' Saison').replace(' - Saison', ' Saison')
+                sMovieTitle = sMovieTitle.replace('[Complete]', '')
+                sTitle = sMovieTitle + ' ' + str(aEntry[1])
                 sUrl = str(aEntry[2])
 
                 oOutputParameterHandler = cOutputParameterHandler()
