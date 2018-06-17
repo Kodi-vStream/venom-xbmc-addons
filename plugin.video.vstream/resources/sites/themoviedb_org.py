@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.config import cConfig
+#from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -8,7 +8,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib import util
-import urllib, urllib2, unicodedata, re
+import unicodedata, re
 import xbmcgui, xbmc
 from resources.lib.tmdb import cTMDb
 
@@ -27,9 +27,8 @@ API_KEY = '92ab39516970ab9d86396866456ec9b6'
 API_VERS = '3'
 API_URL = URL_MAIN + API_VERS
 
-POSTER_URL = 'https://image.tmdb.org/t/p/w396'
-#FANART_URL = 'https://image.tmdb.org/t/p/w780/'
-FANART_URL = 'https://image.tmdb.org/t/p/w1280'
+POSTER_URL = ('https://image.tmdb.org/t/p/%s') % (util.VSsetting('poster_tmdb'))
+FANART_URL = ('https://image.tmdb.org/t/p/%s') % (util.VSsetting('backdrop_tmdb'))
 #FANART_URL = 'https://image.tmdb.org/t/p/original/'
 
 
@@ -37,9 +36,9 @@ FANART_URL = 'https://image.tmdb.org/t/p/w1280'
 
 grab = cTMDb()
 view = '500'
-view = cConfig().getSetting('visuel-view')
-tmdb_session = cConfig().getSetting('tmdb_session')
-tmdb_account = cConfig().getSetting('tmdb_account')
+view = util.VSsetting('visuel-view')
+tmdb_session = util.VSsetting('tmdb_session')
+tmdb_account = util.VSsetting('tmdb_account')
 
 xbmcgui.Window(10101).clearProperty('search_disp')
 
@@ -106,7 +105,7 @@ def showMyTmdb():
     if tmdb_session == '':
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'https://')
-        oGui.addDir(SITE_IDENTIFIER, 'getToken', cConfig().getlanguage(30305), 'trakt.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getToken', util.VSlang(30305), 'trakt.png', oOutputParameterHandler)
     else :
 
         #pas de deco possible avec l'api donc on test l'username sinon ont supprime tous
@@ -115,12 +114,12 @@ def showMyTmdb():
         if 'username' in result and result['username']:
 
             #pas de menu sans ID user c'est con
-            cConfig().setSetting('tmdb_account', str(result['id']))
+            util.VSsetting('tmdb_account', str(result['id']))
 
             sUsername = result['username']
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
-            oGui.addText(SITE_IDENTIFIER, (cConfig().getlanguage(30306)) % (sUsername))
+            oGui.addText(SITE_IDENTIFIER, (util.VSlang(30306)) % (sUsername))
 
             oOutputParameterHandler = cOutputParameterHandler()
             #/account/{account_id}/favorite/movies
@@ -187,9 +186,9 @@ def ouTMyTmdb():
 
         oGui = cGui()
 
-        cConfig().setSetting('tmdb_session', '')
-        cConfig().setSetting('tmdb_account', '')
-        oGui.showNofication(cConfig().getlanguage(30320))
+        util.VSsetting('tmdb_session', '')
+        util.VSsetting('tmdb_account', '')
+        oGui.showNofication(util.VSlang(30320))
         xbmc.executebuiltin("Container.Refresh")
         showMyTmdb()
 
@@ -197,8 +196,9 @@ def ouTMyTmdb():
 
 def getContext():
 
-    if not tmdb_account:
-        return
+    if tmdb_account == "":
+        util.VSerror("Vous devez être connecté")
+        return False, False, False
 
     disp = []
     lang = []
@@ -272,7 +272,7 @@ def getAction():
     sEpisode = oInputParameterHandler.getValue('sEpisode')
 
     sCat = sCat.replace('1', 'movie').replace('2', 'tv')
-    grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
+
     if not sTMDB:
         sTMDB = grab.get_idbyname(oInputParameterHandler.getValue('sFileName'), '', sCat)
     if not sTMDB:
@@ -324,7 +324,7 @@ def getWatchlist():
     sEpisode = oInputParameterHandler.getValue('sEpisode')
 
     sCat = sCat.replace('1', 'movie').replace('2', 'tv')
-    grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
+ 
     if not sTMDB:
         sTMDB = grab.get_idbyname(oInputParameterHandler.getValue('sFileName'), '', sCat)
     if not sTMDB:
@@ -512,7 +512,6 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sTmdbId', sId)
             oOutputParameterHandler.addParameter('type', 'film')
-            #oOutputParameterHandler.addParameter('searchtext', showTitle(sTitle,  str('none')))
             oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
 
             #oGui.addMovieDB('globalSearch', 'showHosters', sTitle, 'films.png', sThumb, sFanart, oOutputParameterHandler)
@@ -684,12 +683,12 @@ def showSeriesSaison():
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName('globalSearch')
     oGuiElement.setFunction('searchMovie')
-    oGuiElement.setTitle(cConfig().getlanguage(30414))
+    oGuiElement.setTitle(util.VSlang(30414))
     oGuiElement.setCat(2)
     oGuiElement.setIcon("searchtmdb.png")
     oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-    #oGui.addDir('cHome', 'showSearch', cConfig().getlanguage(30414), 'searchtmdb.png', oOutputParameterHandler)
+    #oGui.addDir('cHome', 'showSearch', util.VSlang(30414), 'searchtmdb.png', oOutputParameterHandler)
     #fin
 
     result = grab.getUrl(sUrl)
@@ -781,12 +780,12 @@ def showSeriesEpisode():
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName('globalSearch')
     oGuiElement.setFunction('searchMovie')
-    oGuiElement.setTitle(cConfig().getlanguage(30415))
+    oGuiElement.setTitle(util.VSlang(30415))
     oGuiElement.setCat(2)
     oGuiElement.setIcon("searchtmdb.png")
     oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-    #oGui.addDir('cHome', 'showSearch', cConfig().getlanguage(30415), 'searchtmdb.png', oOutputParameterHandler)
+    #oGui.addDir('cHome', 'showSearch', util.VSlang(30415), 'searchtmdb.png', oOutputParameterHandler)
     #fin
 
     result = grab.getUrl(sUrl)
@@ -826,7 +825,6 @@ def showSeriesEpisode():
             oOutputParameterHandler.addParameter('sSeason', sSeason)
             oOutputParameterHandler.addParameter('sEpisode', sEpNumber)
             oOutputParameterHandler.addParameter('type', 'serie')
-            #oOutputParameterHandler.addParameter('searchtext', showTitle(sMovieTitle,  sMovieTitle + '|' + sExtraTitle))
             oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sMovieTitle))
 
             #oGui.addTVDB('globalSearch', 'showHosters', sTitle, 'series.png', sThumb, sFanart, oOutputParameterHandler)
@@ -946,7 +944,8 @@ def showFilmActor():
 
 
             try:
-                sTitle = unicodedata.normalize('NFKD', sTitle).encode('ascii', 'ignore')
+                #sTitle = unicodedata.normalize('NFKD', sTitle).encode('ascii', 'ignore')
+                sTitle = sTitle.encode("utf-8")
 
             except: sTitle = "Aucune information"
 
@@ -960,15 +959,12 @@ def showFilmActor():
             except :
                 sFanart = ''
 
-            #sTitle = sTitle.encode("utf-8")
-
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://tmdb/%s' % sId)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sTmdbId', sId)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('type', 'film')
-            #oOutputParameterHandler.addParameter('searchtext', showTitle(sTitle,  str('none')))
             oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
 
             #oGui.addMovieDB('globalSearch', 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
@@ -1095,43 +1091,3 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-
-
-def showTitle(sMovieTitle, sUrl):
-
-    sExtraTitle = ''
-    #si c'est une serie
-    if sUrl != 'none':
-        sExtraTitle = sUrl.split('|')[1]
-        sMovieTitle = sUrl.split('|')[0]
-
-    #nettoyage du nom pr la recherche
-
-    #ancien decodage
-    sMovieTitle = unicode(sMovieTitle, 'utf-8')#converti en unicode pour aider aux convertions
-    sMovieTitle = unicodedata.normalize('NFD', sMovieTitle).encode('ascii', 'ignore').decode("unicode_escape")#vire accent et '\'
-    sMovieTitle = sMovieTitle.encode("utf-8").lower() #on repasse en utf-8
-
-    sMovieTitle = urllib.quote(sMovieTitle)
-
-    sMovieTitle = re.sub('\(.+?\)', ' ', sMovieTitle) #vire les tags entre parentheses
-
-    #modif venom si le titre comporte un - il doit le chercher
-    sMovieTitle = re.sub(r'[^a-z -]', ' ', sMovieTitle) #vire les caracteres a la con qui peuvent trainer
-    #Mais on le vire si entre 2 espaces
-    sMovieTitle=sMovieTitle.replace(' - ', '')
-
-    #sMovieTitle = re.sub('( |^)(le|la|les|du|au|a|l)( |$)', ' ', sMovieTitle) #vire les articles
-
-    sMovieTitle = re.sub(' +', ' ', sMovieTitle) #vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
-
-    #je pense pas que ce soir utile car la fonction de le ligne 595 vire les accent, a tester
-    sMovieTitle = sMovieTitle.replace('%C3%A9', 'e').replace('%C3%A0', 'a')
-
-    if (False):
-        if sExtraTitle:
-            sMovieTitle = sMovieTitle + sExtraTitle
-        else:
-            sMovieTitle = sMovieTitle
-
-    return sMovieTitle

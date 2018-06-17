@@ -27,8 +27,8 @@ class cTMDb:
         self.api_key = api_key
         self.debug = debug
         self.lang = lang
-        self.poster = 'https://image.tmdb.org/t/p/%s' % cConfig().getSetting('poster_tmdb')
-        self.fanart = 'https://image.tmdb.org/t/p/%s'  % cConfig().getSetting('backdrop_tmdb')
+        self.poster = 'https://image.tmdb.org/t/p/%s' % util.VSsetting('poster_tmdb')
+        self.fanart = 'https://image.tmdb.org/t/p/%s'  % util.VSsetting('backdrop_tmdb')
         self.cache = cConfig().getFileCache()
 
         try:
