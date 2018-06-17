@@ -626,8 +626,8 @@ msgid "Divers"
 msgstr "Divers"
 
 msgctxt "#30411"
-msgid "Block sounds notifications"
-msgstr "Bloquer les sons des notifications"
+msgid "Enable sounds notifications"
+msgstr "Activer les sons des notifications"
 
 msgctxt "#30412"
 msgid "[COLOR red]Delete entry[/COLOR]"

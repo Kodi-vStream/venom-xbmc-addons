@@ -626,7 +626,7 @@ msgid "Divers"
 msgstr ""
 
 msgctxt "#30411"
-msgid "Block sounds notifications"
+msgid "Enable sounds notifications"
 msgstr ""
 
 msgctxt "#30412"

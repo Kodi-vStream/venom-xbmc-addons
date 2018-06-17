@@ -11,8 +11,6 @@ import sys,xbmcplugin
 COUNT = 0
 DIALOG2 = None
 
-ADDON = xbmcaddon.Addon('plugin.video.vstream')
-
 class cUtil:
 
     def CheckOrd(self, label):
@@ -340,17 +338,15 @@ def VSshowInfo(sDescription, sTitle='vStream', iSeconds=0,sound = False):
     else:
         iSeconds = iSeconds * 1000
 
-    # On ne peut pas aller voir si l'option est activee car on doit recharger la classe cConfig > aussi lourd a executer
-    #if self.getSetting('Block_Noti_sound') == 'true':
-    #    sound = False
-    #Ok mais par default le sound et off.
+    if VSsetting('Block_Noti_sound') == 'true':
+        sound = True
 
     xbmcgui.Dialog().notification(str(sTitle), str(sDescription),xbmcgui.NOTIFICATION_INFO,iSeconds,sound)
 
 def VStranslatePathAddon(location):
     #Note, location = (author,changelog,description,disclaimer,fanart,icon,id,name,path,profile,stars,summary,type,version)
     #ex util.VStranslatePathAddon("profile")
-    return xbmc.translatePath(ADDON.getAddonInfo(location)).decode("utf-8")
+    return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo(location)).decode("utf-8")
 
 def VStranslatePath(location):
     #ex util.VStranslatePath("special://logpath/") > http://kodi.wiki/view/Special_protocol
@@ -360,15 +356,15 @@ def VStranslatePath(location):
 def VSlang(lang):
     #util.VSlang(30003)
     #Bug avec accent return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang)).decode("utf-8")
-    return xbmc.translatePath(ADDON.getLocalizedString(lang))
+    return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang))
 
 def VSsetting(name, value=False):
     #use util.VSsetting('name') pour getsetting
     #use util.VSsetting('name', 'value) pour setsetting
     if value:
-        return ADDON.setSetting(name, value)
+        return xbmcaddon.Addon('plugin.video.vstream').setSetting(name, value)
     else:
-        return ADDON.getSetting(name)
+        return xbmcaddon.Addon('plugin.video.vstream').getSetting(name)
 
 def VSopenSetting(name='plugin.video.vstream'):
     return xbmcaddon.Addon(name).openSettings()
