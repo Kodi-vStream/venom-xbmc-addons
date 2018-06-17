@@ -221,9 +221,10 @@ def showMovies(sSearch = ''):
 
             sTitle = str(aEntry[2])
             #on vire le tiret des series
-            if ' - Saison' in sTitle:
-                sTitle = sTitle.replace(' -', '')
+            sTitle = sTitle.replace(' - Saison', ' Saison')
             sDisplayTitle = sTitle
+            #nettoyage du titre
+            sTitle = sTitle.replace('[COMPLETE]', '').replace('[Complete]', '')
             sUrl2 = str(aEntry[0])
 
             #traite les qualités
@@ -287,7 +288,7 @@ def showMoviesLinks():
 
     sDesc = ''
     #Affichage du menu
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]' + 'Qualités disponibles pour ce film :' + '[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]' + 'Qualités disponibles pour ce film :' + '[/COLOR]')
 
     #on recherche d'abord la qualité courante
     sPattern = '<div style="[^"]+?"> *Qualité (.+?)<\/div>'
