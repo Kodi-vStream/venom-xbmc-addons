@@ -524,7 +524,7 @@ def parseWebM3URegex(infile):#Ancien fonction pour traiter les m3u
                 song.path=line
                 playlist.append(song)
                 song=track(None,None,None,None)
-
+                
     inf.close()
 
     return playlist
@@ -569,25 +569,31 @@ def play__():#Lancer les liens
     if '[' in sUrl and ']' in sUrl:
         sUrl = GetRealUrl(sUrl)
 
-    oGuiElement = cGuiElement()
-    oGuiElement.setSiteName(SITE_IDENTIFIER)
-    oGuiElement.setTitle(sTitle)
-    sUrl = sUrl.replace(' ','%20')
-    oGuiElement.setMediaUrl(sUrl)
-    oGuiElement.setThumbnail(sThumbnail)
+    playmode = ''
 
-    #cConfig().log("Hoster - play " + str(sTitle))
-    oPlayer = cPlayer()
-    oPlayer.clearPlayList()
-    oPlayer.addItemToPlaylist(oGuiElement)
-    #tout repetter
-    xbmc.executebuiltin("xbmc.playercontrol(RepeatAll)")
+    if playmode == 0:
+        stype = ''
+        if '.ts' in sUrl:
+            stype = 'TSDOWNLOADER'
+        elif '.m3u' in sUrl:
+            stype = 'HLS'
+        if stype:
+            from F4mProxy import f4mProxyHelper
+            f4mp=f4mProxyHelper()
+            xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=False)
+            f4mp.playF4mLink(sUrl,sTitle,proxy=None,use_proxy_for_chunks=False, maxbitrate=0, simpleDownloader=False, auth=None, streamtype=stype,setResolved=False,swf=None , callbackpath="",callbackparam="", iconImage=sThumbnail)
+            return
+    
+    listitem = xbmcgui.ListItem(sTitle, iconImage="DefaultVideo.png", thumbnailImage=sThumbnail)
+    listitem.setInfo('video', {'Title': sTitle})
+    listitem.setProperty("IsPlayable","true")
+    xbmc.Player().play(sUrl, listitem)
 
-    if 'f4mTester' in sUrl:
-        xbmc.executebuiltin('XBMC.RunPlugin('+sUrl+')')
-    else:
-        xbmc.Player().play(sUrl)
-    return
+    #if 'f4mTester' in sUrl:
+    #    xbmc.executebuiltin('XBMC.RunPlugin('+sUrl+')')
+    #else:
+    #    xbmc.Player().play(sUrl)
+    #return
 
 def GetRealUrl(chain):#Recupere les liens des regex
 
