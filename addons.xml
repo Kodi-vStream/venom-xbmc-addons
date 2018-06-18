@@ -6,6 +6,7 @@
         <import addon="plugin.video.youtube" version="2.9.2"/>
         <import addon="script.module.simplejson" version="2.0.10"/>
         <import addon="script.module.urlresolver" optional="true"/>
+	<import addon="script.video.F4mProxy" optional="true"/>
         <import addon="repository.vstream" version="0.0.3"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
