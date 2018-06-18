@@ -6,6 +6,7 @@
         <import addon="script.module.simplejson" version="3.3.0"/>
         <import addon="script.module.urlresolver" optional="true"/>
         <import addon="script.module.requests" version="2.9.1"/>
+	<import addon="script.video.F4mProxy" optional="true"/>
         <import addon="repository.vstream" version="0.0.3"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
