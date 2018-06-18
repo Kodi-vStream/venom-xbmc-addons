@@ -25,13 +25,13 @@ addons2.openSettings()
 
 class addon(xbmcaddon.Addon):
 
-    def __init__(self, id='plugin.video.vstream'):
-        xbmcaddon.__init__(id)
-        print 'initttttttttt xbmcaddon'
-        pass
+    #def __init__(self, id='plugin.video.vstream'):
+    #    xbmcaddon.__init__(id)
+    #    pass
 
     def lang(self, lang):
         return self.getLocalizedString(lang)
+        #xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang))
 
     def setting(self, name, value=False):
     #adons = addon()
@@ -55,10 +55,9 @@ dialogs.info('test')
 
 class dialog(xbmcgui.Dialog):
 
-    def __init__(self):
-        xbmcgui.__init__('')
-        print 'initttttttttt xbmcgui'
-        pass
+    #def __init__(self):
+    #    xbmcgui.__init__('')
+    #    pass
 
     def info(self, desc, title = 'vStream', iseconds=0,sound = False):
         if (iseconds == 0):
