@@ -51,7 +51,7 @@ class cHoster(iHoster):
         oParser = cParser()
 
         #On ne charge les sous titres uniquement si vostfr se trouve dans le titre.
-        if re.search('<head\s*.+?>\s*<title>[^<>]+VOSTFR[^<>]*<\/title>',sHtmlContent,re.IGNORECASE):
+        if re.search('<div class=[\'"]theater-background[\'"]></div>\s*<h1>[^<>]+VOSTFR[^<>]*</h1>',sHtmlContent,re.IGNORECASE):
         
             sPattern = '<track type=[\'"].+?[\'"] kind=[\'"]subtitles[\'"] src=[\'"]([^\'"]+).vtt[\'"] srclang=[\'"].+?[\'"] label=[\'"]([^\'"]+)[\'"]>'
             aResult = oParser.parse(sHtmlContent, sPattern)
@@ -88,7 +88,7 @@ class cHoster(iHoster):
                 self.stream = False
             #mode stream
             elif ret == 0:
-                self.__sUrl = self.__sUrl.replace('uptobox.com/','uptostream.com/iframe/')
+                self.__sUrl = self.__sUrl.replace('uptobox.com/','uptostream.com/')
             else:
                 return False
         
@@ -101,7 +101,7 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         self.stream = True
-        self.__sUrl = self.__sUrl.replace('uptobox.com/','uptostream.com/iframe/')
+        self.__sUrl = self.__sUrl.replace('uptobox.com/','uptostream.com/')
         
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
