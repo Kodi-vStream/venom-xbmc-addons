@@ -672,3 +672,48 @@ msgstr "Rendez vous sur [COLOR teal]%s[CR]%s[/COLOR][CR],Valider vStream, seulem
 msgctxt "#30422"
 msgid "Enable log records"
 msgstr "Activer les notices de log"
+
+msgctxt "#30423"
+msgid "Search (Movies)"
+msgstr "Recherche (Films)"
+
+msgctxt "#30424"
+msgid "Search (TV Shows)"
+msgstr "Recherche (Séries)"
+
+msgctxt "#30425"
+msgid "Movies (Popular)"
+msgstr "Films (Populaires)"
+
+msgctxt "#30426"
+msgid "Movies (Theater)"
+msgstr "Films (en Salle)"
+
+msgctxt "#30427"
+msgid "Movies (Top Rated)"
+msgstr "Films (Les mieux notés)"
+
+msgctxt "#30428"
+msgid "Movies (Kinds)"
+msgstr "Films (Genres)"
+
+msgctxt "#30429"
+msgid "TV Shows (Popular)"
+msgstr "Séries (Populaires)"
+
+msgctxt "#30430"
+msgid "TV Shows (on TV)"
+msgstr "Séries (à la TV)"
+
+msgctxt "#30431"
+msgid "TV Shows (Top Rated)"
+msgstr "Séries (Les mieux notés)"
+
+msgctxt "#30432"
+msgid "TV Shows (Kinds)"
+msgstr "Séries (Genres)"
+
+msgctxt "#30433"
+msgid "Actors (Popular)"
+msgstr "Acteurs (Populaires)"
+

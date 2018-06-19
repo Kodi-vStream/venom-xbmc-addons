@@ -671,3 +671,47 @@ msgstr ""
 msgctxt "#30422"
 msgid "Enable log records"
 msgstr ""
+
+msgctxt "#30423"
+msgid "Search (Movies)"
+msgstr ""
+
+msgctxt "#30424"
+msgid "Search (TV Shows)"
+msgstr ""
+
+msgctxt "#30425"
+msgid "Movies (Popular)"
+msgstr ""
+
+msgctxt "#30426"
+msgid "Movies (Theater)"
+msgstr ""
+
+msgctxt "#30427"
+msgid "Movies (Top Rated)"
+msgstr ""
+
+msgctxt "#30428"
+msgid "Movies (Kinds)"
+msgstr ""
+
+msgctxt "#30429"
+msgid "TV Shows (Popular)"
+msgstr ""
+
+msgctxt "#30430"
+msgid "TV Shows (on TV)"
+msgstr ""
+
+msgctxt "#30431"
+msgid "TV Shows (Top Rated)"
+msgstr ""
+
+msgctxt "#30432"
+msgid "TV Shows (Kinds)"
+msgstr ""
+
+msgctxt "#30433"
+msgid "Actors (Popular)"
+msgstr ""
