@@ -75,13 +75,13 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.replace('http://uptostream.com/', '')
         self.__sUrl = self.__sUrl.replace('https://uptostream.com/', '')
         self.__sUrl = self.__sUrl.replace('iframe/', '')
-        self.__sUrl = 'https://uptostream.com/iframe/' + str(self.__sUrl)
+        self.__sUrl = 'https://uptostream.com/' + str(self.__sUrl)
 
     def checkSubtitle(self,sHtmlContent):
         oParser = cParser()
 
         #On ne charge les sous titres uniquement si vostfr se trouve dans le titre.
-        if re.search('<head\s*.+?>\s*<title>[^<>]+VOSTFR[^<>]*<\/title>',sHtmlContent,re.IGNORECASE):
+        if re.search('<div class=[\'"]theater-background[\'"]></div>\s*<h1>[^<>]+VOSTFR[^<>]*</h1>',sHtmlContent,re.IGNORECASE):
         
             sPattern = '<track type=[\'"].+?[\'"] kind=[\'"]subtitles[\'"] src=[\'"]([^\'"]+).vtt[\'"] srclang=[\'"].+?[\'"] label=[\'"]([^\'"]+)[\'"]>'
             aResult = oParser.parse(sHtmlContent, sPattern)
