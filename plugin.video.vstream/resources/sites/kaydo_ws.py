@@ -224,13 +224,17 @@ def showMovies():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('Bande-Annonce', '')
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent.replace('\n', ''))
+    #fh.close()
 
-    sPattern1 = '<img src="([^"]+?)" width=".+?<h2>(.+?)</h2>.*?<h3>(.+?)</h3>.+?<p>([^<]+)</p><a class="btn.+?href="(.+?)"'
+    sPattern1 = '<img src="([^"]+?)" width=.+?<h2>(.+?)</h2>.*?<h3>(.+?)<\/h3>.+?<p>([^<]+)</p><a class="btn.+?href="(.+?)"'
 
     if  'add&g' in sUrl:
-        sPattern2 = '<img src="([^"]+)" width=".+?<a href="([^"]+)">.+?data-tooltip="Synopsis *: *([^<]+)">.+?<h2>(.+?)</h2>.+?<h3>(.+?)</h3>'
+        sPattern2 = '<img src="([^"]+)" width=.+?<a href="([^"]+)">.+?data-tooltip="Synopsis *: *([^<]+)">.+?<h2>(.+?)</h2>.+?<h3>(.+?)<\/h3>'
     else:
-        sPattern2 = '<img src="([^"]+)" width=".+?<a href="([^"]+)">.+?title="(.+?)".+?data-tooltip="Synopsis *: *([^<]+)">.+?<h3>(.+?)</h3>'
+        sPattern2 = '<img src="([^"]+)" width=.+?<a href="([^"]+)">.+?title="(.+?)".+?data-tooltip="Synopsis *: *([^<]+)">.+?<h3>(.+?)<\/h3>'
 
     aResult = oParser.parse(sHtmlContent, sPattern2)
 
