@@ -49,7 +49,7 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        sPattern =  'sources: *\[{file:"([^"]+)",label:"([^"]+)"}'
+        sPattern =  'src: "([^"]+)"[^\}]+label:\'([^\']+)\''
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
