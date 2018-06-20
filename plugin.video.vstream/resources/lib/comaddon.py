@@ -111,11 +111,11 @@ class progress(xbmcgui.DialogProgress):
         else:
             return DIALOG2
 
-    def VSupdate(self, dialog, total):
+    def VSupdate(self, dialog, total, text=''):
         global COUNT
         COUNT += 1
         iPercent = int(float(COUNT * 100) / total)
-        self.update(iPercent, 'Loading: '+str(COUNT)+'/'+str(total))
+        self.update(iPercent, 'Loading: '+str(COUNT)+'/'+str(total), text)
 
         
 """
