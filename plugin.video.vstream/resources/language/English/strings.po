@@ -715,3 +715,59 @@ msgstr ""
 msgctxt "#30433"
 msgid "Actors (Popular)"
 msgstr ""
+
+msgctxt "#30434"
+msgid "Movies (Favorites)"
+msgstr ""
+
+msgctxt "#30435"
+msgid "Movies (Rated)"
+msgstr ""
+
+msgctxt "#30436"
+msgid "Movies (Watched)"
+msgstr ""
+
+msgctxt "#30437"
+msgid "TV Shows (Favorites)"
+msgstr ""
+
+msgctxt "#30438"
+msgid "TV Shows (Rated)"
+msgstr ""
+
+msgctxt "#30439"
+msgid "Episodes (Rated)"
+msgstr ""
+
+msgctxt "#30440"
+msgid "TV Shows (Watched)"
+msgstr ""
+
+msgctxt "#30441"
+msgid "My Lists"
+msgstr ""
+
+msgctxt "#30442"
+msgid "You must be logged in"
+msgstr ""
+
+msgctxt "#30443"
+msgid "Add: rated"
+msgstr ""
+
+msgctxt "#30444"
+msgid "Add: Watched"
+msgstr ""
+
+msgctxt "#30445"
+msgid "Add: Favorites"
+msgstr ""
+
+msgctxt "#30446"
+msgid "[COLOR red]Delete: Watched[/COLOR]"
+msgstr ""
+
+msgctxt "#30447"
+msgid "[COLOR red]Delete: Favorites[/COLOR]"
+msgstr ""

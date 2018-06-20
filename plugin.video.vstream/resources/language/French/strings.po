@@ -717,3 +717,59 @@ msgctxt "#30433"
 msgid "Actors (Popular)"
 msgstr "Acteurs (Populaires)"
 
+msgctxt "#30434"
+msgid "Movies (Favorites)"
+msgstr "Films (Favoris)"
+
+msgctxt "#30435"
+msgid "Movies (Rated)"
+msgstr "Films (Notés)"
+
+msgctxt "#30436"
+msgid "Movies (Watched)"
+msgstr "Films (Regardés)"
+
+msgctxt "#30437"
+msgid "TV Shows (Favorites)"
+msgstr "Séries (Favories)"
+
+msgctxt "#30438"
+msgid "TV Shows (Rated)"
+msgstr "Séries (Notées)"
+
+msgctxt "#30439"
+msgid "Episodes (Rated)"
+msgstr "Episodes (Notés)"
+
+msgctxt "#30440"
+msgid "TV Shows (Watched)"
+msgstr "Séries (Regardées)"
+
+msgctxt "#30441"
+msgid "My Lists"
+msgstr "Mes Listes"
+
+msgctxt "#30442"
+msgid "You must be logged in"
+msgstr "Vous devez être connecté"
+
+msgctxt "#30443"
+msgid "Add: rated"
+msgstr "Ajouter: Vote"
+
+msgctxt "#30444"
+msgid "Add: Watched"
+msgstr "Ajouter: Regardé"
+
+msgctxt "#30445"
+msgid "Add: Favorites"
+msgstr "Ajouter: Favoris"
+
+msgctxt "#30446"
+msgid "[COLOR red]Delete: Watched[/COLOR]"
+msgstr "[COLOR red]Supprimer: Regardé[/COLOR]"
+
+msgctxt "#30447"
+msgid "[COLOR red]Delete: Favorites[/COLOR]"
+msgstr "[COLOR red]Supprimer: Favoris[/COLOR]"
+

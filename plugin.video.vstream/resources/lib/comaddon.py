@@ -85,7 +85,39 @@ class dialog(xbmcgui.Dialog):
     def VSerror(self, e):
         return self.notification('Vstream','Erreur: '+str(e),xbmcgui.NOTIFICATION_ERROR,2000), log('Erreur: ' + str(e))
         
+"""
+from resources.lib.comaddon import progress
+ou
+from resources.lib.comaddon import *
+dialog = progress()
+dialog.VScreate(SITE_NAME)
+dialog.VSupdate(dialog, total)
+dialog.close()
+http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/xbmcgui.html#DialogProgress
+"""
 
+COUNT = 0
+DIALOG2 = None
+
+class progress(xbmcgui.DialogProgress):
+
+    
+    def VScreate(self, title='vStream', desc=''):
+        global DIALOG2
+        if DIALOG2 == None:
+            dialog = self.create(title, desc)
+            DIALOG2 = dialog
+            return dialog
+        else:
+            return DIALOG2
+
+    def VSupdate(self, dialog, total):
+        global COUNT
+        COUNT += 1
+        iPercent = int(float(COUNT * 100) / total)
+        self.update(iPercent, 'Loading: '+str(COUNT)+'/'+str(total))
+
+        
 """
 from resources.lib.comaddon import window
 ou
