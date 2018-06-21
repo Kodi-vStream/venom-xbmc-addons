@@ -123,6 +123,8 @@
 
         <setting visible="false" id="plugin_malaisetv" type="bool" label="Malaise tv" default="true"/>
 
+        <setting visible="false" id="plugin_mamcin" type="bool" label="Mamcin" default="true"/>
+
         <setting visible="false" id="plugin_mangacity_org" type="bool" label="Ianime" default="true"/>
 
         <setting visible="false" id="plugin_mareplaytv" type="bool" label="Mareplay TV" default="true"/>
@@ -182,6 +184,8 @@
         <setting visible="false" id="plugin_tv_streaming_ch" type="bool" label="TV-Streaming" default="true"/>
 
         <setting visible="false" id="plugin_tvrex_net" type="bool" label="Tvrex" default="true"/>
+
+        <setting visible="false" id="plugin_tvseriestreaming" type="bool" label="TV Serie Streaming" default="true"/>
 
         <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
 

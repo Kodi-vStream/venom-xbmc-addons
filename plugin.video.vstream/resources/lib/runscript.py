@@ -179,7 +179,7 @@ class cClear:
                     self.button.setLabel('OK')
                     listitems = []
                     oPluginHandler = cPluginHandler()
-                    aPlugins = oPluginHandler.getSearchPlugins()
+                    aPlugins = oPluginHandler.getAllPlugins()
 
                     for aPlugin in aPlugins:
                         #teste si deja dans le dsip

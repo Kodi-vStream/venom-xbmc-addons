@@ -147,7 +147,8 @@ xbmc.log
 
 #xbmc des fonctions pas des class
 def VSlog(e, level=xbmc.LOGDEBUG):
-    if (addon().getSetting('debug') == 'true'):
+    #rapelle l'ID de l'addon pour être apeller hors addon
+    if (addon('plugin.video.vstream').getSetting('debug') == 'true'):
         level = xbmc.LOGNOTICE
     return xbmc.log('\t[PLUGIN] Vstream: '+str(e), level)
 
