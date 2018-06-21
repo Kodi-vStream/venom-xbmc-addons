@@ -555,7 +555,7 @@ def showMovies(sSearch = ''):
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        dialog.close()
+        dialog.VSclose(dialog)
 
         if (iPage > 0):
             iNextPage = int(iPage) + 1
@@ -670,7 +670,7 @@ def showSeries(sSearch=''):
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        dialog.close()
+        dialog.VSclose(dialog)
 
         if (iPage > 0):
             iNextPage = int(iPage) + 1
@@ -785,7 +785,7 @@ def showSeriesSaison():
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        dialog.close()
+        dialog.VSclose(dialog)
     #test pr chnagement mode
     #xbmc.executebuiltin('Container.SetViewMode(500)')
     view = addons.getSetting('visuel-view')
@@ -893,7 +893,7 @@ def showSeriesEpisode():
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        dialog.close()
+        dialog.VSclose(dialog)
     #test pr chnagement mode
     #xbmc.executebuiltin('Container.SetViewMode(50)')
     view = addons.getSetting('visuel-view')
@@ -958,7 +958,7 @@ def showActors():
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        dialog.close()
+        dialog.VSclose(dialog)
 
 
         if (iPage > 0):
@@ -1048,7 +1048,7 @@ def showFilmActor():
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        dialog.close()
+        dialog.VSclose(dialog)
          #pas de paramettre de page
         # if (iPage > 0):
             # iNextPage = int(iPage) + 1
@@ -1149,7 +1149,7 @@ def showLists():
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        dialog.close()
+        dialog.VSclose(dialog)
 
     view = addons.getSetting('visuel-view')
     oGui.setEndOfDirectory(view)

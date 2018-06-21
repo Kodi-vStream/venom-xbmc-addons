@@ -15,6 +15,8 @@ from resources.lib.config import cConfig
 from resources.lib.db import cDb
 from resources.lib import util
 
+from resources.lib.comaddon import *
+
 import xbmc, xbmcgui, sys
 
 #http://kodi.wiki/view/InfoLabels
@@ -204,7 +206,10 @@ def searchGlobal():
 
     #xbmc.log(str(aPlugins), xbmc.LOGNOTICE)
 
-    dialog = cConfig().createDialog("vStream")
+    #dialog = cConfig().createDialog("vStream")
+    dialog = progress()
+    dialog.VScreate()
+  
     #kodi 17 vire la fenetre busy qui ce pose au dessus de la barre de Progress
     try:
         xbmc.executebuiltin("Dialog.Close(busydialog)")
@@ -216,7 +221,7 @@ def searchGlobal():
     for count, plugin in enumerate(aPlugins):
 
         text = '%s/%s - %s' % ((count+1), total, plugin['name'])
-        cConfig().updateDialogSearch(dialog, total, text)
+        dialog.VSupdate(dialog, total, plugin['name'])
         if dialog.iscanceled():
             cancel = True
             dialog.close()
@@ -235,10 +240,13 @@ def searchGlobal():
     for count,result in enumerate(oGui.searchResults):
         text = '%s/%s - %s' % ((count+1/total), total, result['guiElement'].getTitle())
 
-        if(count == 0):
-            cConfig().updateDialogSearch(dialog, total, text,True)
-        else:
-            cConfig().updateDialogSearch(dialog, total, text)
+        #if(count == 0):
+        #    cConfig().updateDialogSearch(dialog, total, text,True)
+        #else:
+        #    cConfig().updateDialogSearch(dialog, total, text)
+        dialog.VSupdate(dialog, total, result['guiElement'].getTitle())
+
+
 
         #result['params'].addParameter('VSTRMSEARCH','True')
 
@@ -251,7 +259,8 @@ def searchGlobal():
             else:
                 break
 
-    cConfig().finishDialog(dialog)
+    #cConfig().finishDialog(dialog)
+    dialog.VSclose(dialog)
 
     oGui.setEndOfDirectory()
 

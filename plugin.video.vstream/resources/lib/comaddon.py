@@ -92,7 +92,7 @@ from resources.lib.comaddon import *
 dialog = progress()
 dialog.VScreate(SITE_NAME)
 dialog.VSupdate(dialog, total)
-dialog.close()
+dialog.VSclose(dialog)
 http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/xbmcgui.html#DialogProgress
 """
 
@@ -100,22 +100,29 @@ COUNT = 0
 DIALOG2 = None
 
 class progress(xbmcgui.DialogProgress):
-
     
     def VScreate(self, title='vStream', desc=''):
         global DIALOG2
         if DIALOG2 == None:
-            dialog = self.create(title, desc)
-            DIALOG2 = dialog
-            return dialog
-        else:
-            return DIALOG2
+            self.create(title, desc)
+            VSlog('create dialog')
+            DIALOG2 = self
+            return self
+        else: return DIALOG2
 
     def VSupdate(self, dialog, total, text=''):
         global COUNT
         COUNT += 1
         iPercent = int(float(COUNT * 100) / total)
-        self.update(iPercent, 'Loading: '+str(COUNT)+'/'+str(total), text)
+        dialog.update(iPercent, 'Loading: '+str(COUNT)+'/'+str(total), text)
+
+    def VSclose(self, dialog):
+        if window(10101).getProperty('search') == 'true':
+            return
+        dialog.close()
+        VSlog('close dialog')
+        del dialog
+        return False
 
         
 """
@@ -137,9 +144,9 @@ VSlog('testtttttttttttt')
 """
 #xbmc des fonctions pas des class
 def VSlog(e, level=xbmc.LOGDEBUG):
-    if (addon().getSetting('Block_Noti_sound') == 'true'):
+    if (addon().getSetting('debug') == 'true'):
         level = xbmc.LOGNOTICE
-    return xbmc.log('\t[PLUGIN] Vstream: '+str(e), xbmc.LOGDEBUG)
+    return xbmc.log('\t[PLUGIN] Vstream: '+str(e), level)
 
 def VSupdate():
     return xbmc.executebuiltin("Container.Refresh")

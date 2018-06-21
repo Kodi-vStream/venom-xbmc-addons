@@ -6,6 +6,8 @@ import xbmcgui
 import xbmcaddon
 import unicodedata
 
+from resources.lib.comaddon import *
+
 DIALOG2 = None
 
 #-----------------------
@@ -200,13 +202,7 @@ class cConfig():
         return qst
 
     def createDialog(self, sSite):
-	global DIALOG2
-        if DIALOG2 == None:
-            oDialog = xbmcgui.DialogProgress()
-            oDialog.create(sSite)
-            DIALOG2 = oDialog
-            return oDialog
-        else: return DIALOG2
+        return progress().VScreate(sSite)
 
     def updateDialog(self, dialog, total):
         if xbmcgui.Window(10101).getProperty('search') != 'true':
@@ -227,11 +223,7 @@ class cConfig():
         dialog.update(0, 'Chargement: '+str(label))
 
     def finishDialog(self, dialog):
-        if xbmcgui.Window(10101).getProperty('search') != 'true':
-            dialog.close()
-            xbmc.log('\t[PLUGIN] Vstream: close dialog')
-            del dialog
-            return False
+        return dialog.VSclose(dialog)
 
     def showInfo(self, sTitle, sDescription, iSeconds=0,sound = True):
         if (self.__bIsDharma == False):
