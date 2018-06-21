@@ -1,10 +1,9 @@
 #-*- coding: utf-8 -*-
-from resources.lib.config import cConfig
+#from resources.lib.config import cConfig
 
 from resources.lib.comaddon import *
 
 import sys
-import os
 import xbmcvfs
 
 class cPluginHandler:
@@ -65,32 +64,35 @@ class cPluginHandler:
             sPluginSettingsName = 'plugin_' + sName
             return sSiteName, sPluginSettingsName, sSiteDesc
         except Exception, e:
-            cConfig().log("Cant import plugin " + str(sName))
+            VSlog("Cant import plugin " + str(sName))
             return False, False
 
-    def getRootFolder(self):
-        sRootFolder = cConfig().getAddonPath()
-        cConfig().log("Root Folder " + sRootFolder)
-        return sRootFolder
+    # def getRootFolder(self):
+    #     sRootFolder = cConfig().getAddonPath()
+    #     cConfig().log("Root Folder " + sRootFolder)
+    #     return sRootFolder
 
-    def getRootArt(self):
-        oConfig = cConfig()
+    # def getRootArt(self):
+    #     oConfig = cConfig()
 
-        sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/art/').decode("utf-8")
+    #     sFolder =  self.getRootFolder()
+    #     sFolder = os.path.join(sFolder, 'resources/art/').decode("utf-8")
 
-        sFolder = sFolder.replace('\\', '/')
-        return sFolder
+    #     sFolder = sFolder.replace('\\', '/')
+    #     return sFolder
 
     def getAvailablePlugins(self):
-        oConfig = cConfig()
+        #oConfig = cConfig()
+        addons = addon()
 
-        sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/sites')
+        #sFolder =  self.getRootFolder()
+        #sFolder = os.path.join(sFolder, 'resources/sites')
+        sFolder = "special://home/addons/plugin.video.vstream/resources/sites"
 
         # xbox hack
         sFolder = sFolder.replace('\\', '/')
-        cConfig().log("Sites Folder " + sFolder)
+        #cConfig().log("Sites Folder " + sFolder)
+        VSlog("Sites Folder " + sFolder)
 
         aFileNames = self.__getFileNamesFromFolder(sFolder)
 
@@ -104,7 +106,7 @@ class cPluginHandler:
                 sSiteDesc = aPlugin[2]
 
                 # existieren zu diesem plugin die an/aus settings
-                bPlugin = oConfig.getSetting(sPluginSettingsName)
+                bPlugin = addons.getSetting(sPluginSettingsName)
                 if (bPlugin != ''):
                     # settings gefunden
                     if (bPlugin == 'true'):
@@ -117,7 +119,7 @@ class cPluginHandler:
 
 
     def getAllPlugins(self):
-        oConfig = cConfig()
+        #oConfig = cConfig()
 
         #sFolder =  self.getRootFolder()
         #sFolder = os.path.join(sFolder, 'resources/sites')
@@ -127,7 +129,7 @@ class cPluginHandler:
         sFolder = "special://home/addons/plugin.video.vstream/resources/sites"
 
         # xbox hack
-        #sFolder = sFolder.replace('\\', '/')
+        sFolder = sFolder.replace('\\', '/')
         VSlog("Sites Folder " + sFolder)
 
         aFileNames = self.__getFileNamesFromFolder(sFolder)
@@ -143,45 +145,6 @@ class cPluginHandler:
 
                 # settings nicht gefunden, also schalten wir es trotzdem sichtbar
                 aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName, sSiteDesc))
-
-        return aPlugins
-
-
-#plus utiliser depuis le 21/06/08
-    def getSearchPlugins(self):
-        oConfig = cConfig()
-
-        sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/sites')
-
-        # xbox hack
-        sFolder = sFolder.replace('\\', '/')
-        cConfig().log("Sites Folder " + sFolder)
-
-        aFileNames = self.__getFileNamesFromFolder(sFolder)
-
-        aPlugins = []
-        for sFileName in aFileNames:
-            cConfig().log("Load Plugin " + str(sFileName))
-
-            aPlugin = self.__importPlugin(sFileName)
-            if (aPlugin[0] != False):
-                sSiteName = aPlugin[0]
-                sPluginSettingsName = aPlugin[1]
-                sSiteDesc = aPlugin[2]
-
-                # tester si active ou pas
-                bPlugin = oConfig.getSetting(sPluginSettingsName)
-                #test si une recherche et possible
-                try:
-                    exec "from resources.sites import " + sFileName
-                    exec "sSearch = " + sFileName + ".URL_SEARCH"
-                    sPlugin = True
-                except:
-                    sPlugin = False
-                
-                if  sPlugin == True:
-                    aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName, sSiteDesc))
 
         return aPlugins
 

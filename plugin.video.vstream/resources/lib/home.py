@@ -2,8 +2,8 @@
 #Venom.
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
-from resources.lib.handler.pluginHandler import cPluginHandler
-from resources.lib.handler.rechercheHandler import cRechercheHandler
+#from resources.lib.handler.pluginHandler import cPluginHandler
+#from resources.lib.handler.rechercheHandler import cRechercheHandler
 from resources.lib.handler.siteHandler import cSiteHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
@@ -112,7 +112,7 @@ class cHome:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        oGui.addDir('globalSources', 'showSources', addons.VSlang(30138), 'host.png', oOutputParameterHandler)
+        oGui.addDir('globalSources', 'globalSources', addons.VSlang(30138), 'host.png', oOutputParameterHandler)
 
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
@@ -310,18 +310,18 @@ class cHome:
 
         oGui.setEndOfDirectory()
 
-    def showSources(self):
-        oGui = cGui()
+    # def showSources(self):
+    #     oGui = cGui()
 
-        oPluginHandler = cPluginHandler()
-        aPlugins = oPluginHandler.getAvailablePlugins()
-        for aPlugin in aPlugins:
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            icon = 'sites/%s.png' % (aPlugin[1])
-            oGui.addDir(aPlugin[1], 'load', aPlugin[0], icon, oOutputParameterHandler)
+    #     oPluginHandler = cPluginHandler()
+    #     aPlugins = oPluginHandler.getAvailablePlugins()
+    #     for aPlugin in aPlugins:
+    #         oOutputParameterHandler = cOutputParameterHandler()
+    #         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
+    #         icon = 'sites/%s.png' % (aPlugin[1])
+    #         oGui.addDir(aPlugin[1], 'load', aPlugin[0], icon, oOutputParameterHandler)
 
-        oGui.setEndOfDirectory()
+    #     oGui.setEndOfDirectory()
 
     def showSearchText(self):
         oGui = cGui()
@@ -439,7 +439,7 @@ class cHome:
 
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName('globalSearch')
-            oGuiElement.setFunction('searchMovie')
+            oGuiElement.setFunction('globalSearch')
             oGuiElement.setTitle("- "+match[1])
             oGuiElement.setFileName(match[1])
             oGuiElement.setCat(match[2])
@@ -455,13 +455,6 @@ class cHome:
 
 
         oGui.setEndOfDirectory()
-
-    def searchMovie2(self):
-        oInputParameterHandler = cInputParameterHandler()
-        sDisp = oInputParameterHandler.getValue('disp')
-        oHandler = cRechercheHandler()
-        liste = oHandler.getAvailablePlugins(sDisp)
-        self.__callsearch(liste, sDisp)
 
     def delSearch(self):
         cDb().del_history()
@@ -489,17 +482,17 @@ class cHome:
 
         oGui.setEndOfDirectory()
 
-    def searchMovie(self):
-        oGui = cGui()
-        oInputParameterHandler = cInputParameterHandler()
-        sSearchText = oInputParameterHandler.getValue('searchtext')
-        sReadDB = oInputParameterHandler.getValue('readdb')
-        sDisp = oInputParameterHandler.getValue('disp')
+    # def searchMovie(self):
+    #     oGui = cGui()
+    #     oInputParameterHandler = cInputParameterHandler()
+    #     sSearchText = oInputParameterHandler.getValue('searchtext')
+    #     sReadDB = oInputParameterHandler.getValue('readdb')
+    #     sDisp = oInputParameterHandler.getValue('disp')
 
-        oHandler = cRechercheHandler()
-        oHandler.setText(sSearchText)
-        oHandler.setDisp(sDisp)
-        oHandler.setRead(sReadDB)
-        aPlugins = oHandler.getAvailablePlugins()
+    #     oHandler = cRechercheHandler()
+    #     oHandler.setText(sSearchText)
+    #     oHandler.setDisp(sDisp)
+    #     oHandler.setRead(sReadDB)
+    #     aPlugins = oHandler.getAvailablePlugins()
 
-        oGui.setEndOfDirectory()
+    #     oGui.setEndOfDirectory()

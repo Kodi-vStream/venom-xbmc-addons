@@ -1,13 +1,10 @@
 #-*- coding: utf-8 -*-
-from resources.lib.config import cConfig
-from resources.lib.gui.gui import cGui
+#from resources.lib.config import cConfig
+from resources.lib.comaddon import *
 from resources.lib.db import cDb
 
 import sys
-import os
-import urllib
-import xbmcgui
-import xbmc
+import xbmcvfs
 
 class cRechercheHandler:
 
@@ -32,9 +29,6 @@ class cRechercheHandler:
 
     def setText(self, sText):
         if not sText:
-            # oGui = cGui()
-            # sSearchText = oGui.showKeyBoard()
-            # sText = urllib.quote(sSearchText)
             return False
         self.__sText = sText
         return self.__sText
@@ -54,14 +48,6 @@ class cRechercheHandler:
 
     def setDisp(self, sDisp):
         if not sDisp:
-            # disp = ['search1','search2','search3','search4','search5','search10'] #modif
-            # dialog2 = xbmcgui.Dialog()
-            # dialog_select = [cConfig().getSetting('search1_label'), cConfig().getSetting('search2_label'), cConfig().getSetting('search3_label'), cConfig().getSetting('search4_label'), cConfig().getlanguage(30092),'Recherche Alluc_ee']#modif
-            #
-            # ret = dialog2.select(cConfig().getlanguage(30093),dialog_select)
-            #
-            # if ret > -1:
-            #     sDisp = disp[ret]
             return False
         self.__sDisp = sDisp
         return self.__sDisp
@@ -72,15 +58,18 @@ class cRechercheHandler:
     def __getFileNamesFromFolder(self, sFolder):
         aNameList = []
         #items = os.listdir(sFolder)
-        items = os.listdir(unicode(sFolder, 'utf-8'))
+        #items = os.listdir(unicode(sFolder, 'utf-8'))
+        folder, items = xbmcvfs.listdir(sFolder)
+        items.sort()
 
         for sItemName in items:
             #sFilePath = os.path.join(sFolder, sItemName)
-            sFilePath = os.path.join(unicode(sFolder, 'utf-8'), sItemName)
+            #sFilePath = os.path.join(unicode(sFolder, 'utf-8'), sItemName)
+            sFilePath = "/".join([sFolder, sItemName])
             # xbox hack
             sFilePath = sFilePath.replace('\\', '/')
 
-            if (os.path.isdir(sFilePath) == False):
+            if (xbmcvfs.exists(sFilePath) == True):
                 #if (str(sFilePath.lower()).endswith('py')):
                 if (sFilePath.lower().endswith('py')):
                     sItemName = sItemName.replace('.py', '')
@@ -90,9 +79,10 @@ class cRechercheHandler:
 
     def __importPlugin(self, sName, sCat):
         pluginData = {}
-        oConfig = cConfig()
+        #oConfig = cConfig()
+        addons = addon()
         sPluginSettingsName = 'plugin_' + sName
-        bPlugin = oConfig.getSetting(sPluginSettingsName)
+        bPlugin = addons.getSetting(sPluginSettingsName)
         #multicherche
         # if sLabel == 'search5':
         #     bPlugin = 'true'
@@ -122,23 +112,24 @@ class cRechercheHandler:
                 return False
 
 
-    def getRootFolder(self):
-        sRootFolder = cConfig().getAddonPath()
-        cConfig().log("Root Folder: " + sRootFolder)
-        return sRootFolder
+    # def getRootFolder(self):
+    #     sRootFolder = cConfig().getAddonPath()
+    #     cConfig().log("Root Folder: " + sRootFolder)
+    #     return sRootFolder
 
-    def getRootArt(self):
-        oConfig = cConfig()
+    # def getRootArt(self):
+    #     oConfig = cConfig()
 
-        sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/art/').decode("utf-8")
+    #     sFolder =  self.getRootFolder()
+    #     sFolder = os.path.join(sFolder, 'resources/art/').decode("utf-8")
 
-        sFolder = sFolder.replace('\\', '/')
-        return sFolder
+    #     sFolder = sFolder.replace('\\', '/')
+    #     return sFolder
 
     def getAvailablePlugins(self):
 
-        oConfig = cConfig()
+        #oConfig = cConfig()
+        addons = addon()
         sText = self.getText()
         if not sText:
             return False
@@ -148,19 +139,21 @@ class cRechercheHandler:
 
         #historique
         try:
-            if (cConfig().getSetting("history-view") == 'true'):
+            if (addons.getSetting("history-view") == 'true'):
                 meta = {}
                 meta['title'] = sText
                 meta['disp'] = sCat
                 cDb().insert_history(meta)
         except: pass
 
-        sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/sites')
+        #sFolder =  self.getRootFolder()
+        #sFolder = os.path.join(sFolder, 'resources/sites')
+        
+        sFolder = "special://home/addons/plugin.video.vstream/resources/sites"
 
         # xbox hack
         sFolder = sFolder.replace('\\', '/')
-        cConfig().log("Sites Folder: " + sFolder)
+        VSlog("Sites Folder: " + sFolder)
 
         aFileNames = self.__getFileNamesFromFolder(sFolder)
 
@@ -169,22 +162,6 @@ class cRechercheHandler:
             aPlugin = self.__importPlugin(sFileName, sCat)
             if aPlugin:
                 aPlugins.append(aPlugin)
-
-        # #multiselect
-        # if sLabel == 'search5':
-        #     multi = []
-        #     for plugin in aPlugins:
-        #         multi.append(plugin['identifier'])
-        #     dialog = xbmcgui.Dialog()
-        #     ret = dialog.multiselect(cConfig().getlanguage(30094), multi)
-        #     NewFileNames = []
-        #     if ret > -1:
-        #         for i in ret:
-        #             NewFileNames.append(aPlugins[i])
-        #
-        #     aPlugins = NewFileNames
-        # #fin multiselect
-
         return aPlugins
 
     def __createAvailablePluginsItem(self, sPluginName, sPluginIdentifier, sPluginDesc):
