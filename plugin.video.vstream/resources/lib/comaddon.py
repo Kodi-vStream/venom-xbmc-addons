@@ -141,7 +141,10 @@ class window(xbmcgui.Window):
 """
 from resources.lib.comaddon import *
 VSlog('testtttttttttttt')
+ou
+xbmc.log
 """
+
 #xbmc des fonctions pas des class
 def VSlog(e, level=xbmc.LOGDEBUG):
     if (addon().getSetting('debug') == 'true'):

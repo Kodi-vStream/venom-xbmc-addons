@@ -8,7 +8,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib import util
-import xbmcgui, xbmc
+import xbmcgui
 from resources.lib.tmdb import cTMDb
 
 from resources.lib.comaddon import *
