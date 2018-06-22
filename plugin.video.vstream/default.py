@@ -70,9 +70,6 @@ class main:
             VSlog('load site ' + sSiteName + ' and call function ' + sFunction)
             cStatistic().callStartPlugin(sSiteName, sTitle)
 
-            print "siteeeeeeee %s" % sSiteName
-
-
             if (isHosterGui(sSiteName, sFunction) == True):
                 return
 
