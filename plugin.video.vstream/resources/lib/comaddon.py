@@ -33,6 +33,7 @@ class addon(xbmcaddon.Addon):
         return xbmc.translatePath(self.getLocalizedString(lang))
         #xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang))
 
+    #deprecier utiliser addons.setSetting et addons.getSetting
     def VSsetting(self, name, value=False):
         #adons = addon()
         #use addons.setting('name') pour getsetting
@@ -138,6 +139,22 @@ class window(xbmcgui.Window):
     def __init__(self, id):
         pass
 
+
+"""
+from resources.lib.comaddon import listitem
+ou
+from resources.lib.comaddon import *
+listitem.setLabel('test')
+http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/xbmcgui.html#ListItem
+"""
+
+class listitem(xbmcgui.ListItem):
+
+    #ListItem([label, label2, iconImage, thumbnailImage, path])
+    
+    def __init__(self, label="", label2="", iconImage="", thumbnailImage="", path=""):
+        pass
+
 """
 from resources.lib.comaddon import *
 VSlog('testtttttttttttt')
@@ -162,3 +179,13 @@ def VShide_busy():
     xbmc.executebuiltin('Dialog.Close(busydialog)')
     while xbmc.getCondVisibility('Window.IsActive(busydialog)'):
         xbmc.sleep(100)
+
+def isKrypton():
+    try:
+        version = xbmc.getInfoLabel('system.buildversion')
+        if version[0:2] >= "17":
+            return True
+        else:
+            return False
+    except:
+        return False

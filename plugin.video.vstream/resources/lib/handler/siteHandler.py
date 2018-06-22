@@ -85,7 +85,6 @@ class cSiteHandler:
 
             # wir versuchen das plugin zu importieren
             aPlugin = self.__importPlugin(sFileName, sLabel)
-            print aPlugin
             if (aPlugin[0] != False):
                 sSiteUrl = aPlugin[0]
                 sPluginSettingsName = aPlugin[1]

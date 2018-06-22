@@ -11,8 +11,11 @@ from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.parser import cParser
 from resources.lib import util
 
-import xbmc
-import xbmcgui
+from resources.lib.comaddon import *
+
+#dejas importer par comaddon
+#import xbmc
+
 import xbmcplugin
 import urllib
 import unicodedata, re
@@ -49,7 +52,7 @@ class cGui():
     #modif 22/06
     listing = []
 
-    if util.isKrypton():
+    if isKrypton():
         CONTENT = 'addons'
 
 
@@ -180,7 +183,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sFav', sFunction)
 
         #context parametre
-        if util.isKrypton():
+        if isKrypton():
             self.createContexMenuSettings(oGuiElement, oOutputParameterHandler)
 
         self.addFolder(oGuiElement, oOutputParameterHandler)
@@ -206,10 +209,12 @@ class cGui():
         return self.addText(sId)
 
 
-    def addText(self, sId, sLabel=util.VSlang(30204), sIcon='none.png'):
+    def addText(self, sId, sLabel="", sIcon='none.png'):
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction('DoNothing')
+        if not sLabel:
+            sLabel = addon().VSlang(30204)
         oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon(sIcon)
         oGuiElement.setThumbnail(oGuiElement.getIcon())
@@ -263,7 +268,7 @@ class cGui():
     def addFolder(self, oGuiElement, oOutputParameterHandler='', _isFolder=True):
 
         #recherche append les reponses
-        if  xbmcgui.Window(10101).getProperty('search') == 'true':
+        if  window(10101).getProperty('search') == 'true':
             import copy
             cGui.searchResults.append({'guiElement':oGuiElement, 'params':copy.deepcopy(oOutputParameterHandler)})
             return
@@ -332,7 +337,7 @@ class cGui():
 
     def createListItem(self, oGuiElement):
 
-        oListItem = xbmcgui.ListItem(oGuiElement.getTitle())
+        oListItem = listitem(oGuiElement.getTitle())
         oListItem.setInfo(oGuiElement.getType(), oGuiElement.getItemValues())
         #oListItem.setThumbnailImage(oGuiElement.getThumbnail())
         #oListItem.setIconImage(oGuiElement.getIcon())
@@ -349,7 +354,7 @@ class cGui():
     #affiche les liens playable
     def addHost(self, oGuiElement, oOutputParameterHandler=''):
 
-        if util.isKrypton():
+        if isKrypton():
             cGui.CONTENT = 'movies'
 
         if oOutputParameterHandler.getValue('siteUrl'):
@@ -374,7 +379,7 @@ class cGui():
 
     #Marquer vu/Non vu
     def createContexMenuWatch(self, oGuiElement, oOutputParameterHandler= ''):
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'setWatched', util.VSlang(30206))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'setWatched', addon().VSlang(30206))
 
     def createContexMenuPageSelect(self, oGuiElement, oOutputParameterHandler):
         #sSiteUrl = oGuiElement.getSiteName()
@@ -409,7 +414,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
         oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
 
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'setFavorite', util.VSlang(30207))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'setFavorite', addon().VSlang(30207))
 
     def createContexMenuTrakt(self, oGuiElement, oOutputParameterHandler= ''):
 
@@ -419,7 +424,7 @@ class cGui():
 
         sType = cGui.CONTENT.replace('tvshows', 'shows')
         oOutputParameterHandler.addParameter('sType', sType)
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cTrakt', 'cTrakt', 'getAction', util.VSlang(30214))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cTrakt', 'cTrakt', 'getAction', addon().VSlang(30214))
 
     def createContexMenuTMDB(self, oGuiElement, oOutputParameterHandler= ''):
 
@@ -432,18 +437,20 @@ class cGui():
     def createContexMenuDownload(self, oGuiElement, oOutputParameterHandler= '', status = '0'):
 
         if status == '0':
-            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'StartDownloadOneFile', util.VSlang(30215))
+            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'StartDownloadOneFile', addon().VSlang(30215))
 
         if status == '0' or status == '2':
-            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'delDownload', util.VSlang(30216))
-            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'DelFile', util.VSlang(30217))
+            addons = addon()
+            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'delDownload', addons.VSlang(30216))
+            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'DelFile', addons.VSlang(30217))
 
         if status == '1':
-            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'StopDownloadList', util.VSlang(30218))
+            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'StopDownloadList', addon().VSlang(30218))
 
         if status == '2':
-            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'ReadDownload', util.VSlang(30219))
-            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'ResetDownload', util.VSlang(30220))
+            addons = addon()
+            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'ReadDownload', addons.VSlang(30219))
+            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'ResetDownload', addons.VSlang(30220))
 
 
     #Information
@@ -455,7 +462,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
 
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewinfo', util.VSlang(30208))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewinfo', addon().VSlang(30208))
 
     def createContexMenuba(self, oGuiElement, oOutputParameterHandler= ''):
 
@@ -463,7 +470,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
 
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewBA', util.VSlang(30212))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewBA', addon().VSlang(30212))
 
 
     def createContexMenuSimil(self, oGuiElement, oOutputParameterHandler= ''):
@@ -473,7 +480,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
         oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
 
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewsimil', util.VSlang(30213))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewsimil', addon().VSlang(30213))
 
     def CreateSimpleMenu(self,oGuiElement, oOutputParameterHandler, file, name, function, title):
         oContext = cContextElement()
@@ -487,10 +494,10 @@ class cGui():
         oGuiElement.addContextItem(oContext)
 
     def createContexMenuDelFav(self, oGuiElement, oOutputParameterHandler= ''):
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'delFavouritesMenu', util.VSlang(30209))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'delFavouritesMenu', addon().VSlang(30209))
 
     def createContexMenuSettings(self, oGuiElement, oOutputParameterHandler= ''):
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'globalParametre', 'globalParametre', 'opensetting', util.VSlang(30023))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'globalParametre', 'globalParametre', 'opensetting', addon().VSlang(30023))
 
 
     def __createContextMenu(self, oGuiElement, oListItem):
@@ -544,6 +551,7 @@ class cGui():
     def setEndOfDirectory(self, ForceViewMode = False):
 
         iHandler = cPluginHandler().getPluginHandle()
+        addons = addon()
         #modif 22/06
         if not self.listing:
             self.addText('cGui')
@@ -559,14 +567,14 @@ class cGui():
         if (ForceViewMode):
             xbmc.executebuiltin('Container.SetViewMode(' + str(ForceViewMode) + ')')
         else:
-            if (util.VSsetting('active-view') == 'true'):
+            if (addons.getSetting('active-view') == 'true'):
                 if cGui.CONTENT == "movies":
                     #xbmc.executebuiltin('Container.SetViewMode(507)')
-                    xbmc.executebuiltin('Container.SetViewMode(%s)' % util.VSsetting('movie-view'))
+                    xbmc.executebuiltin('Container.SetViewMode(%s)' % addons.getSetting('movie-view'))
                 elif cGui.CONTENT == "tvshows":
-                    xbmc.executebuiltin('Container.SetViewMode(%s)' % util.VSsetting('serie-view'))
+                    xbmc.executebuiltin('Container.SetViewMode(%s)' % addons.getSetting('serie-view'))
                 elif cGui.CONTENT == "files":
-                    xbmc.executebuiltin('Container.SetViewMode(%s)' % util.VSsetting('default-view'))
+                    xbmc.executebuiltin('Container.SetViewMode(%s)' % addons.getSetting('default-view'))
 
     def updateDirectory(self):
         xbmc.executebuiltin("Container.Refresh")
@@ -743,8 +751,8 @@ class cGui():
         return False
 
     def showNumBoard(self, sDefaultNum=''):
-        dialog = xbmcgui.Dialog()
-        numboard = dialog.numeric(0, 'Entrer la page', sDefaultNum)
+        dialogs = dialog()
+        numboard = dialogs.numeric(0, 'Entrer la page', sDefaultNum)
         #numboard.doModal()
         if numboard != None:
                 return numboard
