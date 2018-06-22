@@ -47,10 +47,11 @@ class main:
 
             #mise a jour
             try:
-                from resources.lib.about import cAbout
-                cAbout().getUpdate()
-                #exec "from resources.lib.about import cAbout as plugin"
-                #exec "plugin.getUpdate()"
+                #from resources.lib.about import cAbout
+                #cAbout().getUpdate()
+                plugins = __import__('resources.lib.about', fromlist=['about']).cAbout()
+                function = getattr(plugins, 'getUpdate')
+                function()
             except:
                 pass
 
