@@ -60,7 +60,8 @@
     <category label="30138">
         <setting label="30116" type="lsep"/>
         <setting type="sep"/>
-        <setting label="30420" type="action"  action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, search)" />
+        <!--<setting label="30420" type="action"  action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, search)" />-->
+        <setting label="30420" type="action"  action="XBMC.RunScript(plugin.video.vstream, search, ?site=globalRun&function=search)" />
 
         <setting type="sep"/>
         <setting subsetting="true" label="Choisissez vos sources cliquez OK [CR]- Pour Valider les modifications cliquez encore sur OK" type="lsep"/>
@@ -205,23 +206,39 @@
 
         <setting label="30034" type="lsep"/>
         <setting type="sep"/>
-        <setting label="30036" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, changelog)"/>
-        <setting label="30035" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, soutient)"/>
+        <!--<setting label="30036" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, changelog)"/>-->
+        <setting label="30036" type="action" action="XBMC.RunScript(plugin.video.vstream, changelog, ?site=globalRun&function=changelog)"/>
 
+        <!--<setting label="30035" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, soutient)"/>-->
+        <setting label="30035" type="action" action="XBMC.RunScript(plugin.video.vstream, soutient, ?site=globalRun&function=soutient)"/>
         <setting label="30033" type="lsep"/>
         <setting type="sep"/>
         <setting id="service_time" type="text" label="Derniere MAJ auto le:" default="" enable="false"/>
         <setting id="debug" type="bool" label="30422" default="false"/>
-        <setting label="Upload kodi.log" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, uplog)"/>
-        <setting label="Supprimer une BDD" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, clean)"/>
+        
+        <!--<setting label="Upload kodi.log" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, uplog)"/>-->
+        <setting label="Upload kodi.log" type="action" action="XBMC.RunScript(plugin.video.vstream, uplog, ?site=globalRun&function=uplog)"/>
+        
+        <!--<setting label="Supprimer une BDD" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, clean)"/>-->
+        <setting label="Supprimer une BDD" type="action" action="XBMC.RunScript(plugin.video.vstream, clean, ?site=globalRun&function=clear)"/>
         <setting subsetting="true" label="Supprime une par une les BDD par sélection (Relancer l'addon une fois réussies)" type="lsep"/>
-        <setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>
+        
+        <!--<setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>-->       
+        <setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(plugin.video.vstream, addon, ?site=globalRun&function=addon)"/>
+
         <setting subsetting="true" label="Supprime la BDD du cache pour les métadonnées (Relancer l'addon une fois réussies)" type="lsep"/>
-        <setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, xbmc)"/>
+        
+        <!--<setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, xbmc)"/>-->
+        <setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(plugin.video.vstream, xbmc, ?site=globalRun&function=xbmc)"/>
+
         <setting subsetting="true" label="Supprime les fichiers temporaire de Kodi (Relancer Kodi une fois réussies)" type="lsep"/>
-        <setting label="Clear .fi Files" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, fi)"/>
+
+        <!--<setting label="Clear .fi Files" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, fi)"/>-->
+        <setting label="Clear .fi Files" type="action" action="XBMC.RunScript(plugin.video.vstream, fi, ?site=globalRun&function=fi)"/>
+
         <setting subsetting="true" label="Supprime les fichiers de navigation temporaire de Kodi (Relancer Kodi une fois réussies)" type="lsep"/>
-        <setting label="Clear Thumbnails" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, thumb)"/>
+        <!--<setting label="Clear Thumbnails" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, thumb)"/>-->
+        <setting label="Clear Thumbnails" type="action" action="XBMC.RunScript(plugin.video.vstream, thumb, ?site=globalRun&function=thumb)"/>
         <setting subsetting="true" label="Supprime les fichiers images temporaire de Kodi physique et BDD (Relancer Kodi une fois réussies)" type="lsep"/>
         <setting label="Refresh Skin" type="action" action="XBMC.ReloadSkin()"/>
 
@@ -291,7 +308,8 @@
         <setting subsetting="true" label="A moins d'avoir un débrideur, [CR] cocher cette case vous apportera plus de problèmes que d'avantages." type="lsep"/>
         <setting type="sep"/>
         <setting id="UserUrlResolver" type="bool" label="Passer par UrlResolver" default="false"/>
-        <setting label="Configurer UrlResolver" type="action" option="close" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, urlresolver)" />
+        <!--<setting label="Configurer UrlResolver" type="action" option="close" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, urlresolver)" />-->
+        <setting label="Configurer UrlResolver" type="action" option="close" action="XBMC.RunScript(plugin.video.vstream, urlresolver, ?site=globalRun&function=urlresolver)" />
     </category>
 
     <!--<category label="30026">

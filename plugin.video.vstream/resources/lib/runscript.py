@@ -8,12 +8,9 @@ import urllib, urllib2
 #sLibrary = xbmc.translatePath(vstream.getAddonInfo("path")).decode("utf-8")
 #sys.path.append (sLibrary)
 
-vstream = xbmcaddon.Addon('plugin.video.vstream')
-sLibrary = xbmc.translatePath(vstream.getAddonInfo("path")).decode("utf-8")
-sys.path.insert (0,sLibrary)
-
-
 from resources.lib.config import cConfig
+
+from resources.lib.comaddon import *
 #from util import VStranslatePath
 #from resources.lib.util import VStranslatePath
 
@@ -37,7 +34,7 @@ class cClear:
     def main(self, env):
 
         if (env == 'urlresolver'):
-            xbmcaddon.Addon('script.module.urlresolver').openSettings()
+            addon('script.module.urlresolver').openSettings()
             return
 
         elif (env == 'metahandler'):

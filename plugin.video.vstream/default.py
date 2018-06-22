@@ -32,6 +32,8 @@ class main:
         #xbmc.log('Debug 2 >>' + str(xbmc.getInfoLabel('Container.FolderPath')) , xbmc.LOGNOTICE)
 
         oInputParameterHandler = cInputParameterHandler()
+        oInputParameterHandler.getAllParameter()
+        
         if (oInputParameterHandler.exist('function')):
             sFunction = oInputParameterHandler.getValue('function')
         else:
@@ -68,6 +70,8 @@ class main:
             VSlog('load site ' + sSiteName + ' and call function ' + sFunction)
             cStatistic().callStartPlugin(sSiteName, sTitle)
 
+            print "siteeeeeeee %s" % sSiteName
+
 
             if (isHosterGui(sSiteName, sFunction) == True):
                 return
@@ -92,6 +96,12 @@ class main:
 
             if sSiteName == 'globalSearch':
                 searchGlobal()
+                return
+
+            if sSiteName == 'globalRun':
+                __import__('resources.lib.runscript', fromlist=['runscript'])
+                #function = getattr(plugins, sFunction)
+                #function()
                 return
 
             if sSiteName == 'globalSources':
