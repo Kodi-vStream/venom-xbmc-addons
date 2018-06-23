@@ -7,8 +7,10 @@ import xbmc, xbmcgui, xbmcaddon
 import xbmcvfs
 import sys, datetime, time, os
 
-sLibrary = xbmc.translatePath(cConfig().getAddonPath()).decode("utf-8")
-sys.path.append (sLibrary) 
+#sLibrary = xbmc.translatePath(cConfig().getAddonPath()).decode("utf-8")
+#sys.path.append (sLibrary) 
+
+from resources.lib.comaddon import *
 
 from resources.lib.handler.requestHandler import cRequestHandler
 
@@ -21,11 +23,16 @@ class cAbout:
     #retourne True si les 2 fichiers sont present mais pas avec les meme tailles
     def checksize(self, filepath,size):
         try:
-            file=open(filepath)
-            Content = file.read()
-            file.close()
+            #f=open(xbmc.translatePath(filepath))
+            #Content = file.read()
+            #file.close()
+            #len(Content)
 
-            if len(Content) == size:
+            f = xbmcvfs.File(filepath)
+            s = f.size()
+            f.close()
+
+            if s == size:
                 #ok fichier existe et meme taille
                 return False
             #fichier existe mais pas la meme taille 
@@ -55,9 +62,38 @@ class cAbout:
             time_service = self.__strptime(service_time, "%Y-%m-%d %H:%M:%S.%f")
             #pour test
             #time_service = time_service - datetime.timedelta(hours=50)
+            #if (time_sleep):
             if (time_now - time_service > time_sleep):
                 #test les fichier pour mise a jour
-                self.checkupdate()
+                #self.checkupdate()
+                result = self.resultGit()          
+                sDown = 0
+                
+                if result:
+                    for i in result:
+                        try: 
+                            #rootpath = self.getRootPath(i['path'])
+
+                            folder = "special://home/addons"
+                            path = "/".join([folder, i['path']])        
+                            
+                            if self.checksize(path,i['size']):
+                                sDown = sDown+1
+                                break #Si on en trouve un, pas besoin de tester les autres.
+                                
+                        except:
+                            cConfig().log('Erreur durant verification MAJ' )
+                            return
+                    
+                    if (sDown != 0):
+                        cConfig().setSetting('home_update', str('true')) 
+                        cConfig().setSetting('service_time', str(datetime.datetime.now()))
+                        dialog = cConfig().showInfo("vStream", "Mise à jour disponible")   
+                    else:
+                        #cConfig().showInfo('vStream', 'Fichier a jour')
+                        cConfig().setSetting('service_time', str(datetime.datetime.now()))
+                        cConfig().setSetting('home_update', str('false'))
+
             else:
                 cConfig().log('Prochaine verification de MAJ le : ' + str(time_sleep + time_service) )
                 #Pas besoin de memoriser la date, a cause du cache kodi > pas fiable.
@@ -151,7 +187,7 @@ class cAbout:
             
         return
 
-    def checkdownload(self):
+    def secu_checkdownload(self):
 
         result = self.resultGit()
         total = len(result)
