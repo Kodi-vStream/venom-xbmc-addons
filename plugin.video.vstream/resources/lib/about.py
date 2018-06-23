@@ -187,7 +187,7 @@ class cAbout:
             
         return
 
-    def secu_checkdownload(self):
+    def checkdownload(self):
 
         result = self.resultGit()
         total = len(result)
