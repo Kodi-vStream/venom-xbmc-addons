@@ -601,7 +601,7 @@ def showHosters():
                 sHosterUrl = ExtractLink(sHtmlContent)
 
             #Passe par lien .asx ??
-            sPattern = '(http:\/\/www.ianime[^\/\\]+\/[0-9a-zA-Z_-]+\.asx)'
+            sPattern = '(https*:\/\/www.ianime[^\/\\]+\/[0-9a-zA-Z_-]+\.asx)'
             aResult = oParser.parse(sHosterUrl, sPattern)
             if aResult[0] :
                 #on telecharge la page
@@ -652,7 +652,7 @@ def showHosters():
                     sHosterUrl = aResult[1][0]
 
             #Derniere en date
-            sPattern = "(http:\/\/www.ianime[^\/\\]+\/[^']+)"
+            sPattern = "(https*:\/\/www.ianime[^\/\\]+\/[^']+)"
             aResult = oParser.parse(sHosterUrl, sPattern)
             #VSlog('1>>' + str(sHosterUrl))
             if aResult[0]:
