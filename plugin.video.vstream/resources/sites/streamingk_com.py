@@ -210,7 +210,7 @@ def showMovies(sSearch = ''):
             sThumb = str(aEntry[0])
             sUrl = str(aEntry[1])
             sTitle = str(aEntry[2])
-            sTitle = sTitle.replace(' [Streaming]', '')
+            sTitle = sTitle.replace(' [Streaming]', '').replace(' - Saison', ' Saison')
             sTitle = sTitle.replace(' [Telecharger]', '').replace(' [Telechargement]', '')
             sTitle = sTitle.replace(' [Complète]', '').replace(' [Complete]', '')
             sTitle = sTitle.replace('&#8217;', '\'')
@@ -300,7 +300,7 @@ def showSeries(sLoop = False):
             #episode
             else:
                 sUrl = str(aEntry[2])
-                sTitle = sMovieTitle.replace(' -', '') + ' ' + str(aEntry[1])
+                sTitle = sMovieTitle + ' ' + str(aEntry[1])
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
