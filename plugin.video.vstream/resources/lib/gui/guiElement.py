@@ -49,7 +49,7 @@ class cGuiElement:
         self.__Episode = ''
         self.__sIcon = self.DEFAULT_FOLDER_ICON
         self.__sFanart = self.__sRootArt + 'fanart.jpg'
-        self.__sDecoColor = "FF37BCB5"
+        self.__sDecoColor = self.ADDON.getSetting("deco_color")
 
         #For meta search
         #TmdbId the movie database https://developers.themoviedb.org/
@@ -434,31 +434,6 @@ class cGuiElement:
 
         data = cDb().get_watched(meta)
         return data
-
-
-    def setWatched(self, sId, sTitle):
-        try:
-            watched = {}
-            #sTitle = self.getTitle()
-            #sId = self.getSiteName()
-            watched_db = os.path.join(cConfig().getSettingCache(), "watched.db").decode("utf-8")
-
-            if not os.path.exists(watched_db):
-                file(watched_db, "w").write("%r" % watched)
-
-            if os.path.exists(watched_db):
-                watched = eval(open(watched_db).read() )
-                watched[ sId ] = watched.get( sId ) or []
-                #add to watched
-                if sTitle not in watched[sId]:
-                     watched[ sId ].append( sTitle )
-                else:
-                    del watched[ sId ][ watched[ sId ].index( sTitle ) ]
-
-            file(watched_db, "w").write("%r" % watched)
-            watched_db.close()
-        except:
-            return
 
 
     def str_conv(self, data):
