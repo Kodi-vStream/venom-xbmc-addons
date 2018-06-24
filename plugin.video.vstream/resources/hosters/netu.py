@@ -113,6 +113,14 @@ class cHoster(iHoster):
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
+        
+    def GetHost(self,sUrl):
+        oParser = cParser()
+        sPattern = 'https*:\/\/(.+?)\/'
+        aResult = oParser.parse(sUrl, sPattern)
+        if aResult[0]:
+            return aResult[1][0]
+        return ''
 
     def __getMediaLinkForGuest(self):
     
@@ -142,7 +150,7 @@ class cHoster(iHoster):
             VSlog(e.reason)
             html = e.read()
 
-        Host = 'https://hqq.watch/'
+        Host = 'https://'+ self.GetHost(player_url) + '/'
 
         data = ''
         code_crypt = re.search('(;eval\(function\(w,i,s,e\){.+?\)\);)\s*<', html, re.DOTALL)
