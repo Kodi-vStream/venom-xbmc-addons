@@ -5,6 +5,12 @@ from resources.lib.db import cDb
 
 import os, re, urllib, string, xbmc
 
+#rouge E26543
+#jaune F7D571
+#bleau clair 87CEEC  ou skyblue / hoster
+#vert 37BCB5
+#bleau foncer 08435A / non utiliser
+
 class cGuiElement:
 
     DEFAULT_FOLDER_ICON = 'icon.png'
@@ -36,7 +42,7 @@ class cGuiElement:
         self.__Episode = ''
         self.__sIcon = self.DEFAULT_FOLDER_ICON
         self.__sFanart = self.__sRootArt + 'fanart.jpg'
-        self.__sDecoColor = cConfig().getSetting('deco_color')
+        self.__sDecoColor = "FF37BCB5"
 
         #For meta search
         #TmdbId the movie database https://developers.themoviedb.org/
