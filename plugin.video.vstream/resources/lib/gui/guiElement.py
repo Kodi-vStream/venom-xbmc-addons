@@ -1,6 +1,9 @@
 #-*- coding: utf-8 -*-
 #Venom.
 from resources.lib.config import cConfig
+
+from resources.lib.comaddon import *
+
 from resources.lib.db import cDb
 
 import os, re, urllib, string, xbmc
@@ -11,18 +14,22 @@ import os, re, urllib, string, xbmc
 #vert 37BCB5
 #bleau foncer 08435A / non utiliser
 
+
 class cGuiElement:
 
     DEFAULT_FOLDER_ICON = 'icon.png'
     COUNT = 0
+    ADDON = addon()
 
     def __init__(self):
-        self.__sRootArt = cConfig().getRootArt()
+
+        #self.__sRootArt = cConfig().getRootArt()
+        self.__sRootArt = 'special://home/addons/plugin.video.vstream/resources/art/'
         self.__sType = 'Video'
         self.__sMeta = 0
         self.__sPlaycount = 0
         self.__sTrailerUrl = ''
-        self.__sMetaAddon = cConfig().getSetting('meta-view')
+        self.__sMetaAddon = self.ADDON.getSetting('meta-view')
         self.__sImdb = ''
         self.__sTmdb = ''
         self.__sMediaUrl = ''
@@ -343,51 +350,51 @@ class cGuiElement:
 
     def setDirFanart(self, sIcon):
         if (sIcon == 'search.png'):
-            self.__sFanart = cConfig().getSetting('images_cherches')
+            self.__sFanart = self.ADDON.getSetting('images_cherches')
 
         elif (sIcon == 'searchtmdb.png'):
-            self.__sFanart = cConfig().getSetting('images_cherchev')
+            self.__sFanart = self.ADDON.getSetting('images_cherchev')
 
         elif sIcon == 'tv.png':
-            self.__sFanart = cConfig().getSetting('images_tvs')
+            self.__sFanart = self.ADDON.getSetting('images_tvs')
         elif ('replay' in sIcon):
-            self.__sFanart = cConfig().getSetting('images_replaytvs')
+            self.__sFanart = self.ADDON.getSetting('images_replaytvs')
 
         elif ('films' in sIcon):
-            self.__sFanart = cConfig().getSetting('images_films')
+            self.__sFanart = self.ADDON.getSetting('images_films')
 
         elif ('series' in sIcon):
-            self.__sFanart = cConfig().getSetting('images_series')
+            self.__sFanart = self.ADDON.getSetting('images_series')
 
         elif ('animes' in sIcon):
-            self.__sFanart = cConfig().getSetting('images_anims')
+            self.__sFanart = self.ADDON.getSetting('images_anims')
 
         elif sIcon == 'doc.png':
-            self.__sFanart = cConfig().getSetting('images_docs')
+            self.__sFanart = self.ADDON.getSetting('images_docs')
 
         elif sIcon == 'sport.png':
-            self.__sFanart = cConfig().getSetting('images_sports')
+            self.__sFanart = self.ADDON.getSetting('images_sports')
 
         elif sIcon == 'buzz.png':
-            self.__sFanart = cConfig().getSetting('images_videos')
+            self.__sFanart = self.ADDON.getSetting('images_videos')
 
         elif sIcon == 'mark.png':
-            self.__sFanart = cConfig().getSetting('images_marks')
+            self.__sFanart = self.ADDON.getSetting('images_marks')
 
         elif sIcon == 'host.png':
-            self.__sFanart = cConfig().getSetting('images_hosts')
+            self.__sFanart = self.ADDON.getSetting('images_hosts')
 
         elif sIcon == 'download.png':
-            self.__sFanart = cConfig().getSetting('images_downloads')
+            self.__sFanart = self.ADDON.getSetting('images_downloads')
 
         elif sIcon == 'update.png':
-            self.__sFanart = cConfig().getSetting('images_updates')
+            self.__sFanart = self.ADDON.getSetting('images_updates')
 
         elif sIcon == 'library.png':
-            self.__sFanart = cConfig().getSetting('images_librarys')
+            self.__sFanart = self.ADDON.getSetting('images_librarys')
 
         elif sIcon == 'trakt.png':
-            self.__sFanart = cConfig().getSetting('images_trakt')
+            self.__sFanart = self.ADDON.getSetting('images_trakt')
 
         elif sIcon == 'actor.png':
             self.__sFanart = self.__sFanart
@@ -532,7 +539,7 @@ class cGuiElement:
 
         if sType:
             from resources.lib.tmdb import cTMDb
-            grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
+            grab = cTMDb()
             args = (sType, self.__sFileName)
             kwargs = {}
             if (self.__ImdbId):

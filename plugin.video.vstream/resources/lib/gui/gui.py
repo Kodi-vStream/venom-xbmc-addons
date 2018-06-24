@@ -51,6 +51,7 @@ class cGui():
     searchResults = []
     #modif 22/06
     listing = []
+    ADDON = addon()
 
     if isKrypton():
         CONTENT = 'addons'
@@ -214,7 +215,7 @@ class cGui():
         oGuiElement.setSiteName(sId)
         oGuiElement.setFunction('DoNothing')
         if not sLabel:
-            sLabel = addon().VSlang(30204)
+            sLabel = self.ADDON.VSlang(30204)
         oGuiElement.setTitle(sLabel)
         oGuiElement.setIcon(sIcon)
         oGuiElement.setThumbnail(oGuiElement.getIcon())
@@ -379,7 +380,7 @@ class cGui():
 
     #Marquer vu/Non vu
     def createContexMenuWatch(self, oGuiElement, oOutputParameterHandler= ''):
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'setWatched', addon().VSlang(30206))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'setWatched', self.ADDON.VSlang(30206))
 
     def createContexMenuPageSelect(self, oGuiElement, oOutputParameterHandler):
         #sSiteUrl = oGuiElement.getSiteName()
@@ -414,7 +415,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sFav', oGuiElement.getFunction())
         oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
 
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'setFavorite', addon().VSlang(30207))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'setFavorite', self.ADDON.VSlang(30207))
 
     def createContexMenuTrakt(self, oGuiElement, oOutputParameterHandler= ''):
 
@@ -424,7 +425,7 @@ class cGui():
 
         sType = cGui.CONTENT.replace('tvshows', 'shows')
         oOutputParameterHandler.addParameter('sType', sType)
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cTrakt', 'cTrakt', 'getAction', addon().VSlang(30214))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cTrakt', 'cTrakt', 'getAction', self.ADDON.VSlang(30214))
 
     def createContexMenuTMDB(self, oGuiElement, oOutputParameterHandler= ''):
 
@@ -437,20 +438,18 @@ class cGui():
     def createContexMenuDownload(self, oGuiElement, oOutputParameterHandler= '', status = '0'):
 
         if status == '0':
-            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'StartDownloadOneFile', addon().VSlang(30215))
+            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'StartDownloadOneFile', self.ADDON.VSlang(30215))
 
         if status == '0' or status == '2':
-            addons = addon()
-            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'delDownload', addons.VSlang(30216))
-            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'DelFile', addons.VSlang(30217))
+            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'delDownload', self.ADDON.VSlang(30216))
+            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'DelFile', self.ADDON.VSlang(30217))
 
         if status == '1':
-            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'StopDownloadList', addon().VSlang(30218))
+            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'StopDownloadList', self.ADDON.VSlang(30218))
 
         if status == '2':
-            addons = addon()
-            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'ReadDownload', addons.VSlang(30219))
-            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'ResetDownload', addons.VSlang(30220))
+            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'ReadDownload', self.ADDON.VSlang(30219))
+            self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cDownload', 'cDownload', 'ResetDownload', self.ADDON.VSlang(30220))
 
 
     #Information
@@ -462,7 +461,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sId', oGuiElement.getSiteName())
         oOutputParameterHandler.addParameter('sMeta', oGuiElement.getMeta())
 
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewinfo', addon().VSlang(30208))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewinfo', self.ADDON.VSlang(30208))
 
     def createContexMenuba(self, oGuiElement, oOutputParameterHandler= ''):
 
@@ -470,7 +469,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
         oOutputParameterHandler.addParameter('sFileName', oGuiElement.getFileName())
 
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewBA', addon().VSlang(30212))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewBA', self.ADDON.VSlang(30212))
 
 
     def createContexMenuSimil(self, oGuiElement, oOutputParameterHandler= ''):
@@ -480,7 +479,7 @@ class cGui():
         oOutputParameterHandler.addParameter('sTitle', oGuiElement.getTitle())
         oOutputParameterHandler.addParameter('sCat', oGuiElement.getCat())
 
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewsimil', addon().VSlang(30213))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cGui', oGuiElement.getSiteName(), 'viewsimil', self.ADDON.VSlang(30213))
 
     def CreateSimpleMenu(self,oGuiElement, oOutputParameterHandler, file, name, function, title):
         oContext = cContextElement()
@@ -494,10 +493,10 @@ class cGui():
         oGuiElement.addContextItem(oContext)
 
     def createContexMenuDelFav(self, oGuiElement, oOutputParameterHandler= ''):
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'delFavouritesMenu', addon().VSlang(30209))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cFav', 'cFav', 'delFavouritesMenu', self.ADDON.VSlang(30209))
 
     def createContexMenuSettings(self, oGuiElement, oOutputParameterHandler= ''):
-        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'globalParametre', 'globalParametre', 'opensetting', addon().VSlang(30023))
+        self.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'globalParametre', 'globalParametre', 'opensetting', self.ADDON.VSlang(30023))
 
 
     def __createContextMenu(self, oGuiElement, oListItem):
@@ -551,7 +550,6 @@ class cGui():
     def setEndOfDirectory(self, ForceViewMode = False):
 
         iHandler = cPluginHandler().getPluginHandle()
-        addons = addon()
         #modif 22/06
         if not self.listing:
             self.addText('cGui')
@@ -567,14 +565,14 @@ class cGui():
         if (ForceViewMode):
             xbmc.executebuiltin('Container.SetViewMode(' + str(ForceViewMode) + ')')
         else:
-            if (addons.getSetting('active-view') == 'true'):
+            if (self.ADDON.getSetting('active-view') == 'true'):
                 if cGui.CONTENT == "movies":
                     #xbmc.executebuiltin('Container.SetViewMode(507)')
-                    xbmc.executebuiltin('Container.SetViewMode(%s)' % addons.getSetting('movie-view'))
+                    xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('movie-view'))
                 elif cGui.CONTENT == "tvshows":
-                    xbmc.executebuiltin('Container.SetViewMode(%s)' % addons.getSetting('serie-view'))
+                    xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('serie-view'))
                 elif cGui.CONTENT == "files":
-                    xbmc.executebuiltin('Container.SetViewMode(%s)' % addons.getSetting('default-view'))
+                    xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('default-view'))
 
     def updateDirectory(self):
         xbmc.executebuiltin("Container.Refresh")
