@@ -214,8 +214,8 @@ def searchGlobal():
 
     #xbmc.log(str(aPlugins), xbmc.LOGNOTICE)
 
-    dialog = progress()
-    dialog.VScreate()
+    progress_ = progress()
+    progress_.VScreate()
   
     #kodi 17 vire la fenetre busy qui ce pose au dessus de la barre de Progress
     try:
@@ -229,10 +229,10 @@ def searchGlobal():
     for count, plugin in enumerate(aPlugins):
 
         text = '%s/%s - %s' % ((count+1), total, plugin['name'])
-        dialog.VSupdate(dialog, total, plugin['name'])
-        if dialog.iscanceled():
+        progress_.VSupdate(progress_, total, plugin['name'])
+        if progress_.iscanceled():
             cancel = True
-            dialog.close()
+            progress_.close()
             break
 
         #nom du site
@@ -252,7 +252,7 @@ def searchGlobal():
         #    cConfig().updateDialogSearch(dialog, total, text,True)
         #else:
         #    cConfig().updateDialogSearch(dialog, total, text)
-        dialog.VSupdate(dialog, total, result['guiElement'].getTitle())
+        progress_.VSupdate(progress_, total, result['guiElement'].getTitle())
 
 
 
@@ -261,14 +261,14 @@ def searchGlobal():
         oGui.addFolder(result['guiElement'],result['params'])
         #xbmc.log('%s - %s' % (middle,old_label),  xbmc.LOGNOTICE)
 
-        if dialog.iscanceled():
+        if progress_.iscanceled():
             if cancel == True:
                 continue
             else:
                 break
 
     #cConfig().finishDialog(dialog)
-    dialog.VSclose(dialog)
+    progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 

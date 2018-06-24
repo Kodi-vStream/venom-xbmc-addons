@@ -1,11 +1,11 @@
 #-*- coding: utf-8 -*-
 #Venom.
-from config import cConfig
+#from config import cConfig
    
-import urllib, urllib2
-import xbmc, xbmcgui, xbmcaddon
+import urllib
+
 import xbmcvfs
-import sys, datetime, time, os
+import datetime, time
 
 #sLibrary = xbmc.translatePath(cConfig().getAddonPath()).decode("utf-8")
 #sys.path.append (sLibrary) 
@@ -46,12 +46,13 @@ class cAbout:
         
     
     def getUpdate(self):
-        service_time = cConfig().getSetting('service_time')
+        addons = addon()
+        service_time = addons.getSetting('service_time')
         
         #Si pas d'heure indique = premiere install
         if not (service_time):
             #On memorise la date d'aujourdhui
-            cConfig().setSetting('service_time', str(datetime.datetime.now()))
+            addons.setSetting('service_time', str(datetime.datetime.now()))
             #Mais on force la maj avec une date a la con
             service_time = '2000-09-23 10:59:50.877000'
         
@@ -61,41 +62,37 @@ class cAbout:
             time_now = datetime.datetime.now()
             time_service = self.__strptime(service_time, "%Y-%m-%d %H:%M:%S.%f")
             #pour test
-            #time_service = time_service - datetime.timedelta(hours=50)
             #if (time_sleep):
             if (time_now - time_service > time_sleep):
                 #test les fichier pour mise a jour
                 #self.checkupdate()
-                result = self.resultGit()          
+                result = self.resultGit()        
                 sDown = 0
                 
                 if result:
                     for i in result:
                         try: 
-                            #rootpath = self.getRootPath(i['path'])
-
-                            folder = "special://home/addons"
-                            path = "/".join([folder, i['path']])        
+                            rootpath = self.getRootPath(i['path'])       
                             
-                            if self.checksize(path,i['size']):
+                            if self.checksize(rootpath,i['size']):
                                 sDown = sDown+1
                                 break #Si on en trouve un, pas besoin de tester les autres.
                                 
                         except:
-                            cConfig().log('Erreur durant verification MAJ' )
+                            VSlog('erreur : verification MAJ' )
                             return
                     
                     if (sDown != 0):
-                        cConfig().setSetting('home_update', str('true')) 
-                        cConfig().setSetting('service_time', str(datetime.datetime.now()))
-                        dialog = cConfig().showInfo("vStream", "Mise à jour disponible")   
+                        addons.setSetting('home_update', str('true')) 
+                        addons.setSetting('service_time', str(datetime.datetime.now()))
+                        dialog().VSinfo("Mise à jour disponible")   
                     else:
                         #cConfig().showInfo('vStream', 'Fichier a jour')
-                        cConfig().setSetting('service_time', str(datetime.datetime.now()))
-                        cConfig().setSetting('home_update', str('false'))
+                        addons.setSetting('service_time', str(datetime.datetime.now()))
+                        addons.setSetting('home_update', str('false'))
 
             else:
-                cConfig().log('Prochaine verification de MAJ le : ' + str(time_sleep + time_service) )
+                VSlog('Prochaine verification de MAJ le : ' + str(time_sleep + time_service) )
                 #Pas besoin de memoriser la date, a cause du cache kodi > pas fiable.
         return
       
@@ -106,29 +103,9 @@ class cAbout:
         except TypeError:
             date = datetime.datetime(*(time.strptime(date, format)[0:6]))
         return date
-     
-    def __checkversion(self):
-        service_version = cConfig().getSetting('service_version')
-        if (service_version):          
-            version = cConfig().getAddonVersion()
-            if (version > service_version):
-                try:
-                    sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/changelog.txt'
-                    oRequest =  urllib2.Request(sUrl)
-                    oResponse = urllib2.urlopen(oRequest)
-                    sContent = oResponse.read()
-                    self.TextBoxes('Changelog', sContent)
-                    cConfig().setSetting('service_version', str(cConfig().getAddonVersion()))
-                    return
-                except:            
-                    cConfig().error("%s,%s" % (cConfig().getlanguage(30205), sUrl))
-                    return
-        else:
-            cConfig().setSetting('service_version', str(cConfig().getAddonVersion()))
-            return
         
 
-    def getRootPath(self, folder):
+    def getRootPath_old(self, folder):
         sMath = cConfig().getAddonPath().replace('plugin.video.vstream', '').decode("utf-8")
         
         sFolder = os.path.join(sMath , folder)
@@ -136,6 +113,12 @@ class cAbout:
         # xbox hack        
         sFolder = sFolder.replace('\\', '/')
         return sFolder
+
+    def getRootPath(self, folder):
+
+        path = "special://home/addons"
+        path = "/".join([path, folder]) 
+        return path
     
     
     def resultGit(self):
@@ -145,22 +128,26 @@ class cAbout:
         try: 
             sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/sites.json'
             oRequestHandler = cRequestHandler(sUrl)
-            sHtmlContent = oRequestHandler.request();
+            sHtmlContent = oRequestHandler.request()
             result = json.loads(sHtmlContent)
             
             sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/hosts.json'
             oRequestHandler = cRequestHandler(sUrl)
-            sHtmlContent = oRequestHandler.request();
+            sHtmlContent = oRequestHandler.request()
             result += json.loads(sHtmlContent)
+            #filtre trash & _init
+            result = filter(lambda x: x['name']!="trash", result)
+            result = filter(lambda x: x['name']!="__init__.py", result)
         except:
             return False
         return result
     
-    
+
+  #plus utiliser depuis le 24/06/18
     def checkupdate(self):
                   
         #dialog = cConfig().showInfo("vStream", "Cherche les mises a jour")            
-        result = self.resultGit()          
+        result = self.resultGit()        
         sDown = 0
         
         if result:
@@ -173,7 +160,7 @@ class cAbout:
                         break #Si on en trouve un, pas besoin de tester les autres.
                         
                 except:
-                    cConfig().log('Erreur durant verification MAJ' )
+                    VSlog('Erreur durant verification MAJ' )
                     return
              
             if (sDown != 0):
@@ -190,15 +177,19 @@ class cAbout:
     def checkdownload(self):
 
         result = self.resultGit()
+
         total = len(result)
-        dialog = cConfig().createDialog('Update')
+        progress_ = progress()
+        progress_.VScreate('Update')
+
+        addons = addon()
         site = []
         sdown = 0
 
         if result: 
             
             for i in result:
-                cConfig().updateDialog(dialog, total)
+                progress_.VSupdate(progress_, total)
 
                 rootpath = self.getRootPath(i['path'])
                 
@@ -212,16 +203,15 @@ class cAbout:
                         sdown = sdown+1
                         pass
 
-            cConfig().finishDialog(dialog)
+            progress_.VSclose(progress_)
+
             sContent = "Fichier mise à jour %s / %s \n %s" %  (sdown, total, site)
-            #self.TextBoxes('vStream mise à Jour', sContent)
             
-            cConfig().setSetting('service_time', str(datetime.datetime.now()))
-            cConfig().setSetting('home_update', str('false'))
-            #cConfig().setSetting('service_last', str(datetime.datetime.now()))
+            addons.setSetting('service_time', str(datetime.datetime.now()))
+            addons.setSetting('home_update', str('false'))
             
-            fin = cConfig().createDialogOK(sContent)
-            cConfig().update()
+            fin = dialog().VSok(sContent)
+            xbmc.executebuiltin("Container.Refresh")
         return
             
     def __download(self, WebUrl, RootUrl):
@@ -249,7 +239,7 @@ class cAbout:
                 # activate the text viewer window
                 xbmc.executebuiltin( "ActivateWindow(%d)" % ( self.WINDOW, ) )
                 # get window
-                self.win = xbmcgui.Window( self.WINDOW )
+                self.win = window( self.WINDOW )
                 # give window time to initialize
                 xbmc.sleep( 500 )
                 self.setControls()

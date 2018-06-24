@@ -90,10 +90,13 @@ class dialog(xbmcgui.Dialog):
 from resources.lib.comaddon import progress
 ou
 from resources.lib.comaddon import *
-dialog = progress()
-dialog.VScreate(SITE_NAME)
-dialog.VSupdate(dialog, total)
-dialog.VSclose(dialog)
+progress_ = progress()
+progress_.VScreate(SITE_NAME)
+progress_.VSupdate(progress_, total)
+progress_.VSclose(progress_)
+
+dialog = progress() non recommander
+progress = progress() non recommander
 http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/xbmcgui.html#DialogProgress
 """
 
