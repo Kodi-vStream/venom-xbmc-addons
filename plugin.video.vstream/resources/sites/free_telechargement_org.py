@@ -771,24 +771,93 @@ def get_response(img,cookie):
     downloaded_image.write(htmlcontent)
     downloaded_image.close()
 
-    #on affiche le dialogue
+#on affiche le dialogue
     solution = ''
-    try:
-        img = xbmcgui.ControlImage(450, 250, 400, 130, filename)
-        wdlg = xbmcgui.WindowDialog()
-        wdlg.addControl(img)
-        wdlg.show()
-        #xbmc.sleep(3000)
-        kb = xbmc.Keyboard('', 'Tapez les Lettres/chiffres de l\'image', False)
-        kb.doModal()
-        if (kb.isConfirmed()):
-            solution = kb.getText()
+
+    if (True):
+        ####nouveau captcha
+        try:
+            ##affichage du dialog perso
+            class XMLDialog(xbmcgui.WindowXMLDialog):
+                #"""
+                #Dialog class for captcha
+                #"""
+                def __init__(self, *args, **kwargs):
+                    xbmcgui.WindowXMLDialog.__init__(self)
+                    pass
+
+                def onInit(self):
+                    #image background captcha
+                    self.getControl(1).setImage(filename.encode("utf-8"), False)
+                    #image petit captcha memory fail
+                    self.getControl(2).setImage(filename.encode("utf-8"), False)
+                    self.getControl(2).setVisible(False)
+                    ##Focus clavier
+                    self.setFocus(self.getControl(21))
+
+                def onClick(self, controlId):
+                    if controlId == 20:
+                        #button Valider
+                        solution = self.getControl(5000).getLabel()
+                        xbmcgui.Window(10101).setProperty('captcha', str(solution))
+                        self.close()
+                        return
+
+                    elif controlId == 30:
+                        #button fermer
+                        self.close()
+                        return
+
+                    elif controlId == 21:
+                        #button clavier
+                        self.getControl(2).setVisible(True)
+                        kb = xbmc.Keyboard(self.getControl(5000).getLabel(), '', False)
+                        kb.doModal()
+
+                        if (kb.isConfirmed()):
+                            self.getControl(5000).setLabel(kb.getText())
+                            self.getControl(2).setVisible(False)
+                        else:
+                            self.getControl(2).setVisible(False)
+
+                def onFocus(self, controlId):
+                    self.controlId = controlId
+
+                def _close_dialog(self):
+                    self.close()
+
+                def onAction(self, action):
+                    #touche return 61448
+                    if action.getId() in ( 9, 10, 11, 30, 92, 216, 247, 257, 275, 61467, 61448):
+                        self.close()
+
+            wd = XMLDialog('DialogCaptcha.xml', cConfig().getAddonPath().decode("utf-8"), 'default', '720p')
+            wd.doModal()
+            del wd
+        finally:
+
+            solution = xbmcgui.Window(10101).getProperty('captcha')
             if solution == '':
                 cConfig().showInfo("Erreur", 'Vous devez taper le captcha', 4)
-        else:
-            cConfig().showInfo("Erreur", 'Vous devez taper le captcha', 4)
-    finally:
-        wdlg.removeControl(img)
-        wdlg.close()
+
+    else:
+        #ancien Captcha
+        try:
+            img = xbmcgui.ControlImage(450, 0, 400, 130, filename.encode("utf-8"))
+            wdlg = xbmcgui.WindowDialog()
+            wdlg.addControl(img)
+            wdlg.show()
+            #xbmc.sleep(3000)
+            kb = xbmc.Keyboard('', 'Tapez les Lettres/chiffres de l\'image', False)
+            kb.doModal()
+            if (kb.isConfirmed()):
+                solution = kb.getText()
+                if solution == '':
+                    cConfig().showInfo("Erreur", 'Vous devez taper le captcha', 4)
+            else:
+                cConfig().showInfo("Erreur", 'Vous devez taper le captcha', 4)
+        finally:
+            wdlg.removeControl(img)
+            wdlg.close()
 
     return solution, NewCookie
