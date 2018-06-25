@@ -573,7 +573,7 @@ class cConfig():
 
 
         #path = xbmc.translatePath("special://home/addons/plugin.video.vstream").decode("utf-8")
-        path = "special://home/addons/plugin.video.vstream".decode("utf-8")
+        path = "special://home/addons/plugin.video.vstream"
         #self.__oPath.decode("utf-8")
         wd = XMLDialog('DialogInfo.xml', path , 'default', '720p')
         wd.doModal()

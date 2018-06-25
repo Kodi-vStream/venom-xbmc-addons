@@ -1,12 +1,12 @@
 #-*- coding: utf-8 -*-
 #Venom.
-from resources.lib.config import cConfig
+#from resources.lib.config import cConfig
 
 from resources.lib.comaddon import *
 
 from resources.lib.db import cDb
 
-import os, re, urllib, string, xbmc
+import os, re, urllib, string
 
 #rouge E26543
 #jaune F7D571
@@ -18,7 +18,7 @@ import os, re, urllib, string, xbmc
 class cGuiElement:
 
     DEFAULT_FOLDER_ICON = 'icon.png'
-    COUNT = 0
+    #COUNT = 0
     ADDON = addon()
 
     def __init__(self):
@@ -48,7 +48,7 @@ class cGuiElement:
         self.__Season = ''
         self.__Episode = ''
         self.__sIcon = self.DEFAULT_FOLDER_ICON
-        self.__sFanart = self.__sRootArt + 'fanart.jpg'
+        self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/films_fanart.jpg"
         self.__sDecoColor = self.ADDON.getSetting("deco_color")
 
         #For meta search
@@ -58,17 +58,17 @@ class cGuiElement:
         self.__ImdbId = ''
         self.__Year = ''
 
-        self.__sFanart_search = self.__sRootArt + 'search_fanart.jpg'
-        self.__sFanart_tv = self.__sRootArt + 'tv_fanart.jpg'
-        self.__sFanart_films = self.__sRootArt + 'films_fanart.jpg'
-        self.__sFanart_series = self.__sRootArt + 'series_fanart.jpg'
-        self.__sFanart_animes = self.__sRootArt + 'animes_fanart.jpg'
-        self.__sFanart_doc = self.__sRootArt + 'doc_fanart.jpg'
-        self.__sFanart_sport = self.__sRootArt + 'sport_fanart.jpg'
-        self.__sFanart_buzz = self.__sRootArt + 'buzz_fanart.jpg'
-        self.__sFanart_mark = self.__sRootArt + 'mark_fanart.jpg'
-        self.__sFanart_host = self.__sRootArt + 'host_fanart.jpg'
-        self.__sFanart_download = self.__sRootArt + 'download_fanart.jpg'
+        # self.__sFanart_search = self.__sRootArt + 'search_fanart.jpg'
+        # self.__sFanart_tv = self.__sRootArt + 'tv_fanart.jpg'
+        # self.__sFanart_films = self.__sRootArt + 'films_fanart.jpg'
+        # self.__sFanart_series = self.__sRootArt + 'series_fanart.jpg'
+        # self.__sFanart_animes = self.__sRootArt + 'animes_fanart.jpg'
+        # self.__sFanart_doc = self.__sRootArt + 'doc_fanart.jpg'
+        # self.__sFanart_sport = self.__sRootArt + 'sport_fanart.jpg'
+        # self.__sFanart_buzz = self.__sRootArt + 'buzz_fanart.jpg'
+        # self.__sFanart_mark = self.__sRootArt + 'mark_fanart.jpg'
+        # self.__sFanart_host = self.__sRootArt + 'host_fanart.jpg'
+        # self.__sFanart_download = self.__sRootArt + 'download_fanart.jpg'
 
         self.__aItemValues = {}
         self.__aProperties = {}
@@ -78,12 +78,12 @@ class cGuiElement:
         #1 - movies , 2 - tvshow, - 3 misc,
         #oGuiElement.setCat(1)
         self.__sCat = ''
-        cGuiElement.COUNT += 1
+        #cGuiElement.COUNT += 1
 
     #def __len__(self): return self.__sCount
 
-    def getCount(self):
-        return cGuiElement.COUNT
+    # def getCount(self):
+    #     return cGuiElement.COUNT
 
     def setType(self, sType):
         self.__sType = sType
@@ -336,65 +336,66 @@ class cGuiElement:
         if (sFanart != ''):
             self.__sFanart = sFanart
         else:
-            self.__sFanart = self.__sRootArt + 'fanart.jpg'
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/fanart.jpg"
 
 
     def setMovieFanart(self):
-            self.__sFanart = self.__sFanart_films
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/films_fanart.jpg"
 
     def setTvFanart(self):
-            self.__sFanart = self.__sFanart_series
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/series_fanart.jpg"
 
     def setDirectTvFanart(self):
-            self.__sFanart = self.__sFanart_tv
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/tv_fanart.jpg"
 
     def setDirFanart(self, sIcon):
         if (sIcon == 'search.png'):
-            self.__sFanart = self.ADDON.getSetting('images_cherches')
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/search_fanart.jpg"
 
         elif (sIcon == 'searchtmdb.png'):
-            self.__sFanart = self.ADDON.getSetting('images_cherchev')
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/vsearch_fanart.jpg"
 
         elif sIcon == 'tv.png':
-            self.__sFanart = self.ADDON.getSetting('images_tvs')
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/tv_fanart.jpg"
+
         elif ('replay' in sIcon):
-            self.__sFanart = self.ADDON.getSetting('images_replaytvs')
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/replay_fanart.jpg"
 
         elif ('films' in sIcon):
-            self.__sFanart = self.ADDON.getSetting('images_films')
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/films_fanart.jpg"
 
         elif ('series' in sIcon):
-            self.__sFanart = self.ADDON.getSetting('images_series')
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/series_fanart.jpg"
 
         elif ('animes' in sIcon):
-            self.__sFanart = self.ADDON.getSetting('images_anims')
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/animes_fanart.jpg"
 
         elif sIcon == 'doc.png':
-            self.__sFanart = self.ADDON.getSetting('images_docs')
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/doc_fanart.jpg"
 
         elif sIcon == 'sport.png':
-            self.__sFanart = self.ADDON.getSetting('images_sports')
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/sport_fanart.jpg"
 
         elif sIcon == 'buzz.png':
-            self.__sFanart = self.ADDON.getSetting('images_videos')
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/buzz_fanart.jpg"
 
         elif sIcon == 'mark.png':
-            self.__sFanart = self.ADDON.getSetting('images_marks')
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/mark_fanart.jpg"
 
         elif sIcon == 'host.png':
-            self.__sFanart = self.ADDON.getSetting('images_hosts')
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/host_fanart.jpg"
 
         elif sIcon == 'download.png':
-            self.__sFanart = self.ADDON.getSetting('images_downloads')
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/download_fanart.jpg"
 
         elif sIcon == 'update.png':
-            self.__sFanart = self.ADDON.getSetting('images_updates')
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/update_fanart.jpg"
 
         elif sIcon == 'library.png':
-            self.__sFanart = self.ADDON.getSetting('images_librarys')
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/library_fanart.jpg"
 
         elif sIcon == 'trakt.png':
-            self.__sFanart = self.ADDON.getSetting('images_trakt')
+            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/trakt_fanart.jpg"
 
         elif sIcon == 'actor.png':
             self.__sFanart = self.__sFanart
@@ -416,8 +417,10 @@ class cGuiElement:
         self.__sIcon = sIcon
 
     def getIcon(self):
-        #return self.__sRootArt + self.__sIcon
-        return os.path.join(unicode(self.__sRootArt, 'utf-8'), self.__sIcon)
+        folder = "special://home/addons/plugin.video.vstream/resources/art"
+        path = "/".join([folder, self.__sIcon]) 
+        #return os.path.join(unicode(self.__sRootArt, 'utf-8'), self.__sIcon)
+        return path
 
     def addItemValues(self, sItemKey, mItemValue):
         self.__aItemValues[sItemKey] = mItemValue
