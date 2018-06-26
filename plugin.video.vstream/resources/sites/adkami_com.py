@@ -186,7 +186,7 @@ def showList():
                 break
 
             sUrl = aEntry[0]
-            sTitle = str(aEntry[1])
+            sTitle = str(aEntry[1]).decode("unicode_escape").encode("latin-1")
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
