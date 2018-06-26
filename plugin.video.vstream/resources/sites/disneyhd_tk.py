@@ -13,7 +13,7 @@ SITE_IDENTIFIER = 'disneyhd_tk'
 SITE_NAME = 'Disney HD'
 SITE_DESC = 'Disney HD: Tous les films Disney en streaming'
 
-URL_MAIN = 'http://disneyhd.tk/'
+URL_MAIN = 'https://disneyhd.tk/'
 URL_LISTE = URL_MAIN + 'liste_mosaique.php'
 
 ANIM_ENFANTS = ('http://', 'load')
