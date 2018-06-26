@@ -3,14 +3,14 @@
 #
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
-from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
-from resources.lib.db import cDb
-from resources.lib.util import VSlog,isKrypton,VSerror
 
-import xbmc, xbmcgui, xbmcplugin
+from resources.lib.comaddon import *
+#xbmc, xbmcgui dejas importer par comadon
 
-import time, urllib2
+import xbmcplugin
+
+import time
 
 #pour les sous titres
 #https://github.com/amet/service.subtitles.demo/blob/master/service.subtitles.demo/service.py
@@ -18,6 +18,9 @@ import time, urllib2
 #http://mirrors.xbmc.org/docs/python-docs/stable/xbmc.html#Player
 
 class cPlayer(xbmc.Player):
+
+    ADDON = addon()
+    DIALOG = dialog()
     
     def __init__(self, *args):
         
@@ -89,7 +92,7 @@ class cPlayer(xbmc.Player):
             except:
                 VSlog("Can't load subtitle :" + str(self.Subtitles_file))
                 
-        player_conf = cConfig().getSetting("playerPlay")
+        player_conf = self.ADDON.getSetting("playerPlay")
 
         #Si lien dash, methode prioritaire
         if sUrl.endswith('.mpd'):
@@ -123,12 +126,12 @@ class cPlayer(xbmc.Player):
             
         #active/desactive les sous titres suivant l'option choisie dans la config 
         if (self.SubtitleActive):
-            if (cConfig().getSetting("srt-view") == 'true'):
+            if (self.ADDON.getSetting("srt-view") == 'true'):
                 self.showSubtitles(True)
-                cGui().showInfo("Sous titre charges", "Sous-Titres", 5)
+                self.DIALOG.VSinfo("Sous titre charges", "Sous-Titres", 5)
             else:
                 self.showSubtitles(False)
-                cGui().showInfo("Sous titre charges, Vous pouvez les activer", "Sous-Titres", 15)
+                self.DIALOG.VSinfo("Sous titre charges, Vous pouvez les activer", "Sous-Titres", 15)
 		
        
         while self.isPlaying() and not self.forcestop:
@@ -170,21 +173,12 @@ class cPlayer(xbmc.Player):
         VSlog("player stoped")
         
         self.playBackStoppedEventReceived = True
-        
-        try:
-            self.__setWatched()
-        except:
-            pass
-        try:
-            self.__setResume()
-        except:
-            pass
 
         try:
-            tmdb_session = cConfig().getSetting('tmdb_session')
+            tmdb_session = self.ADDON.getSetting('tmdb_session')
             if tmdb_session:
                 self.__getWatchlist('tmdb')
-            bstoken = cConfig().getSetting("bstoken")
+            bstoken = self.ADDON.getSetting("bstoken")
             if bstoken:
                 self.__getWatchlist('trakt')
         except:
@@ -202,10 +196,6 @@ class cPlayer(xbmc.Player):
             return
         
         self.playBackEventReceived = True
-        
-        #inutile sur les dernieres version > Dharma
-        if not (cConfig().isDharma()):
-            self.__getResume()
 
     def __getWatchlist(self, sAction):
 
@@ -225,72 +215,9 @@ class cPlayer(xbmc.Player):
             
         return
 
-
-            
-    def __getResume(self):
-        
-        meta = {}      
-        meta['title'] = self.sTitle
-        #meta['hoster'] = self.sHosterIdentifier
-        meta['site'] = self.sSite
-        
-        try:
-            data = cDb().get_resume(meta)
-            if not data == '':
-                time = float(data[0][3]) / 60
-                label = '%s %.2f minutes' % ('Reprendre:', time)     
-                oDialog = cConfig().createDialogYesNo(label)
-                if (oDialog == 1):
-                    seekTime = float(data[0][3])
-                    self.seekTime(seekTime)
-                else: 
-                    pass
-        except:
-            pass        
-                
-    def __setResume(self):
-        
-        #inutile sur les dernieres version > Dharma
-        if (cConfig().isDharma()):
-            return
-        
-        #Faut pas deconner quand meme
-        if self.currentTime < 30:
-            return
-        
-        meta = {}      
-        meta['title'] = self.sTitle
-        #meta['hoster'] = self.sHosterIdentifier
-        meta['site'] = self.sSite
-        meta['point'] = str(self.currentTime)
-        
-        try:
-            cDb().insert_resume(meta)
-        except:
-            pass
-            
-    def __setWatched(self):
-        
-        #inutile sur les dernieres version > Dharma
-        if (cConfig().isDharma()):
-            return
-        
-        #Faut pas deconner quand meme
-        if self.currentTime < 30:
-            return
-        
-        meta = {}      
-        meta['title'] = self.sTitle
-        meta['site'] = self.sSite
-        
-        try:
-            cDb().insert_watched(meta)
-        except:
-            pass
         
     def __getPlayerType(self):
-        oConfig = cConfig()
-        sPlayerType = oConfig.getSetting('playerType')
+        sPlayerType = self.ADDON.getSetting('playerType')
         
         try:
             if (sPlayerType == '0'):

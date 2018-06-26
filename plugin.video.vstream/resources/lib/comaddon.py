@@ -192,3 +192,13 @@ def isKrypton():
             return False
     except:
         return False
+
+def VSread(sHtmlContent):
+    import xbmcvfs
+    file = "special://userdata/addon_data/plugin.video.vstream/html.txt"
+    if xbmcvfs.exists(file):
+        xbmcvfs.delete(file)
+
+    f = xbmcvfs.File (file, 'w')
+    result = f.write(sHtmlContent)
+    f.close()
