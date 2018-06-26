@@ -409,11 +409,11 @@ class cHosterGui:
                 oPlayer.run(oGuiElement, oHoster.getFileName(), aLink[1])
                 return
             else:
-                self.DIALOG.error("Fichier introuvable")
+                self.DIALOG.VSerror("Fichier introuvable")
                 return
 
         except:
-            self.DIALOG.error("Fichier introuvable")
+            self.DIALOG.VSerror("Fichier introuvable")
             return
 
         oGui.setEndOfDirectory()
