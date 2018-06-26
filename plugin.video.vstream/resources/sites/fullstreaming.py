@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'fullstreaming'
 SITE_NAME = 'Full Streaming'
 SITE_DESC = 'Films et Séries en streaming HD'
 
-URL_MAIN = 'http://fullstreaming.win/'
+URL_MAIN = 'https://fullstreaming.cc/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -30,8 +30,8 @@ MOVIE_MOVIE = (URL_MAIN , '')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 
-SERIE_NEWS = (URL_MAIN + 'films/serie-tv/', 'showMovies')
-SERIE_SERIES = (URL_MAIN + 'films/serie-tv/', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'serie-tv/', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'serie-tv/', 'showMovies')
 SERIE_GENRES = (True, '')
 
 def load():
@@ -133,7 +133,7 @@ def showMovies(sSearch = ''):
 
             sUrl = str(aEntry[0])
             sThumb = str(aEntry[1])
-            sTitle = str(aEntry[2]).replace('&#8217;', '\'')
+            sTitle = str(aEntry[2]).replace('&#8217;', '\'').replace(' - Saison', ' Saison')
             sQual = str(aEntry[3])
             sDesc = ''
 
@@ -188,8 +188,11 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #réécriture des liens beclic
+    #réécriture des liens beclic pour recuperer les bons hosters
+    sHtmlContent = sHtmlContent.replace('https://beclic.pw/op.php?s=', 'https://oload.site/embed/')
     sHtmlContent = sHtmlContent.replace('http://beclic.pw/op.php?s=', 'https://oload.site/embed/')
+    sHtmlContent = sHtmlContent.replace('https://beclic.pw/jaja.php?s=', 'https://jawcloud.co/embed-')
+    sHtmlContent = sHtmlContent.replace('https://beclic.pw/rapid.php?s=', 'https://www.rapidvideo.com/e/')
 
     sPattern = '<iframe.+?src="(.+?)"'
 
@@ -199,6 +202,8 @@ def showHosters():
         for aEntry in aResult[1]:
 
             sHosterUrl = str(aEntry)
+            if 'jawcloud' in sHosterUrl:
+                sHosterUrl = sHosterUrl + '.html'
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
@@ -220,6 +225,7 @@ def seriesHosters():
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace(' class="selected"', '')
     #réécriture des liens beclic
+    sHtmlContent = sHtmlContent.replace('https://beclic.pw/op.php?s=', 'https://oload.site/embed/')
     sHtmlContent = sHtmlContent.replace('http://beclic.pw/op.php?s=', 'https://oload.site/embed/')
 
     sEpisodesList= {}
