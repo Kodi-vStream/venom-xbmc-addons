@@ -84,7 +84,7 @@ class dialog(xbmcgui.Dialog):
         return self.notification(str(title), str(desc),xbmcgui.NOTIFICATION_INFO,iseconds,sound)
 
     def VSerror(self, e):
-        return self.notification('Vstream','Erreur: '+str(e),xbmcgui.NOTIFICATION_ERROR,2000), log('Erreur: ' + str(e))
+        return self.notification('Vstream','Erreur: '+str(e),xbmcgui.NOTIFICATION_ERROR,2000), VSlog('Erreur: ' + str(e))
         
 """
 from resources.lib.comaddon import progress
