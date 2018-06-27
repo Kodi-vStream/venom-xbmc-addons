@@ -1,6 +1,5 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
-from resources.lib.config import cConfig
 #from ctypes import *
 import time
 import random
@@ -11,19 +10,6 @@ class cStatistic:
     STATISTIC_ID = 'UA-53463976-1'
 
     def callStartPlugin(self, sPluginName, sTitle):
-        oConfig = cConfig()
-        bStatistic = oConfig.getSetting('statistic')
-
-        #oRequestHandler2 = cRequestHandler("http://exodieno.free.fr/index.html")
-        #oRequestHandler2.addHeaderEntry('Referer', 'http://www.google.com/')
-        #sHtmlContent = oRequestHandler2.request();
-
-        #aHeader = oRequestHandler2.getResponseHeader();
-        #sReponseCookie = aHeader.getheader("Set-Cookie")
-
-        if (bStatistic == 'False'):
-            return;
-
         try:
             oRequestHandler = cRequestHandler(self.STATISTIC_URL)
 

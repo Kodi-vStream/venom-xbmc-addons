@@ -5,11 +5,14 @@ import urllib
 import urllib2
 
 from urllib2 import HTTPError, URLError
-from resources.lib.config import cConfig
+
+from resources.lib.comaddon import *
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
     REQUEST_TYPE_POST = 1
+    DIALOG = dialog()
+    ADDON = addon()
       
     def __init__(self, sUrl):
         self.__sUrl = sUrl
@@ -153,12 +156,11 @@ class cRequestHandler:
                     self.__sRealUrl,self.__sResponseHeader = CF.GetReponseInfo()
 
             if not sContent:
-                cConfig().error("%s (%d),%s" % (cConfig().getlanguage(30205), e.code , self.__sUrl))
+                self.DIALOG.VSerror("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code , self.__sUrl))
                 return ''
                 
         except urllib2.URLError, e:
-            cConfig().log(e.reason)
-            cConfig().error("%s (%s),%s" % (cConfig().getlanguage(30205), e.reason , self.__sUrl))
+            self.DIALOG.VSerror("%s (%s),%s" % (self.ADDON.VSlang(30205), e.reason , self.__sUrl))
             return ''           
         
         if (self.__bRemoveNewLines == True):
