@@ -1,20 +1,23 @@
 # -*- coding: utf-8 -*-
 #Code de depart par AnthonyBloomer
 #Modif pour vStream
+#https://github.com/Kodi-vStream/venom-xbmc-addons/
 
-from resources.lib.config import cConfig
-from resources.lib import util
+#from resources.lib.config import cConfig
+#from resources.lib import util
 
-import json, os, copy, time, urllib2
+from resources.lib.comaddon import *
+
+import json, urllib2
 from urllib import quote_plus, urlopen, urlencode
-import xbmc
+import xbmcvfs
 
 try:
     from sqlite3 import dbapi2 as sqlite
-    util.VSlog('SQLITE 3 as DB engine')
+    VSlog('SQLITE 3 as DB engine')
 except:
     from pysqlite2 import dbapi2 as sqlite
-    util.VSlog('SQLITE 2 as DB engine')
+    VSlog('SQLITE 2 as DB engine')
 
 
 # https://developers.themoviedb.org/3
@@ -22,31 +25,41 @@ except:
 
 class cTMDb:
     URL = "http://api.themoviedb.org/3/"
+    CACHE = "special://userdata/addon_data/plugin.video.vstream/video_cache.db"
+    #important seul xbmcvfs peux lire le special
+    REALCACHE = xbmc.translatePath(CACHE).decode("utf-8")
+    
+    ADDON = addon()
+    DIALOG = dialog()
 
-    def __init__(self, api_key=util.VSsetting('api_tmdb'), debug=False, lang='fr'):
-        self.api_key = api_key
+    def __init__(self, api_key='', debug=False, lang='fr'):
+
+        self.api_key = self.ADDON.getSetting('api_tmdb')
         self.debug = debug
         self.lang = lang
-        self.poster = 'https://image.tmdb.org/t/p/%s' % util.VSsetting('poster_tmdb')
-        self.fanart = 'https://image.tmdb.org/t/p/%s'  % util.VSsetting('backdrop_tmdb')
-        self.cache = cConfig().getFileCache()
+        self.poster = 'https://image.tmdb.org/t/p/%s' % self.ADDON.getSetting('poster_tmdb')
+        self.fanart = 'https://image.tmdb.org/t/p/%s'  % self.ADDON.getSetting('backdrop_tmdb')
+        #self.cache = cConfig().getFileCache()
 
         try:
-            if not os.path.exists(self.cache):
-                f = open(self.cache,'w')
-                f.close()
-                self.db = sqlite.connect(self.cache)
+            #if not os.path.exists(self.cache):
+            if not xbmcvfs.exists(self.CACHE):
+                #f = open(self.cache,'w')
+                #f.close()
+                self.db = sqlite.connect(self.REALCACHE)
                 self.db.row_factory = sqlite.Row
                 self.dbcur = self.db.cursor()
                 self.__createdb()
         except:
+            VSlog('erreur: Impossible d ecrire sur %s' % self.REALCACHE )
             pass
 
         try:
-            self.db = sqlite.connect(self.cache)
+            self.db = sqlite.connect(self.REALCACHE)
             self.db.row_factory = sqlite.Row
             self.dbcur = self.db.cursor()
         except:
+            VSlog('erreur: Impossible de ce connecter sur %s' % self.REALCACHE )
             pass
 
     def __createdb(self):
@@ -78,7 +91,7 @@ class cTMDb:
         try:
             self.dbcur.execute(sql_create)
         except:
-            xbmc.log("non")
+            VSlog("erreur: ne peux pas creer de table")
 
         sql_create = "CREATE TABLE IF NOT EXISTS tvshow ("\
                            "imdb_id TEXT, "\
@@ -137,7 +150,7 @@ class cTMDb:
                            ");"
 
         self.dbcur.execute(sql_create)
-        xbmc.log("table creer")
+        VSlog("table creer")
 
     def __del__(self):
         ''' Cleanup db when object destroyed '''
@@ -156,9 +169,9 @@ class cTMDb:
         if (total > 0):
             #self.__Token  = result['token']
             url = 'https://www.themoviedb.org/authenticate/'
-            sText = (cConfig().getlanguage(30421)) % (url, result['request_token'] )
+            sText = (self.ADDON.VSlang(30421)) % (url, result['request_token'] )
 
-            oDialog = cConfig().createDialogYesNo(sText)
+            oDialog = self.DIALOG.VSyesno(sText)
             if (oDialog == 0):
                 return False
 
@@ -168,11 +181,11 @@ class cTMDb:
                 result = self._call('authentication/session/new', 'request_token='+ result['request_token'])
 
                 if 'success' in result and result['success']:
-                    cConfig().setSetting('tmdb_session', str(result['session_id']))
-                    cGui().showNofication(cConfig().getlanguage(30000))
+                    self.ADDON.setSetting('tmdb_session', str(result['session_id']))
+                    self.DIALOG.VSinfo(self.ADDON.VSlang(30000))
                     return
                 else:
-                    cGui().showNofication('Erreur'+cConfig().getlanguage(30000))
+                    self.DIALOG.VSerror('Erreur'+self.ADDON.VSlang(30000))
                     return
 
 
@@ -424,19 +437,18 @@ class cTMDb:
             self.dbcur.execute(sql_select)
             matchedrow = self.dbcur.fetchone()
         except Exception, e:
-            util.VSlog('************* Error selecting from cache db: %s' % e, 4)
+            VSlog('************* Error selecting from cache db: %s' % e, 4)
             return None
 
         if matchedrow:
-            util.VSlog('Found meta information by name in cache table')
+            VSlog('Found meta information by name in cache table')
             return dict(matchedrow)
         else:
-            util.VSlog('No match in local DB')
+            VSlog('No match in local DB')
             return None
 
     def _cache_save(self, meta, name, media_type, season, overlay):
 
-        #metadb = copy.copy(meta)
         meta['title'] = name
 
         if 'external_ids' in meta:
@@ -489,9 +501,9 @@ class cTMDb:
 
 
             self.db.commit()
-            util.VSlog('SQL INSERT Successfully')
+            VSlog('SQL INSERT Successfully')
         except Exception, e:
-            util.VSlog('SQL ERROR INSERT')
+            VSlog('SQL ERROR INSERT')
             pass
         self.db.close()
 
@@ -509,9 +521,9 @@ class cTMDb:
                     self.dbcur.execute(sql, (meta['imdb_id'], s['id'], s['season_number'], s['air_date'], s['air_date'], s['poster_path'], 6))
 
                     self.db.commit()
-                    util.VSlog('SQL INSERT Successfully')
+                    VSlog('SQL INSERT Successfully')
                 except Exception, e:
-                    util.VSlog('SQL ERROR INSERT')
+                    VSlog('SQL ERROR INSERT')
                     pass
 
     def get_meta(self, media_type, name, imdb_id='', tmdb_id='', year='', season='', episode='', overlay=6, update=False):
@@ -536,7 +548,7 @@ class cTMDb:
         '''
 
         #xbmc.log('vstream Meta', 0)
-        util.VSlog('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id))
+        VSlog('Attempting to retrieve meta data for %s: %s %s %s %s' % (media_type, name, year, imdb_id, tmdb_id))
         #recherche dans la base de donner
         if not update:
             meta = self._cache_search(media_type, self._clean_title(name), tmdb_id, year, season, episode)
@@ -600,7 +612,7 @@ class cTMDb:
 
     def getPostUrl(self, action, post, page=1):
 
-        tmdb_session = cConfig().getSetting('tmdb_session')
+        tmdb_session = self.ADDON.getSetting('tmdb_session')
         if not tmdb_session:
             return
 
