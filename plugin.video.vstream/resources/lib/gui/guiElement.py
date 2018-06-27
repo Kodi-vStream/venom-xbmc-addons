@@ -20,6 +20,7 @@ class cGuiElement:
     DEFAULT_FOLDER_ICON = 'icon.png'
     #COUNT = 0
     ADDON = addon()
+    DB = cDb()
 
     def __init__(self):
 
@@ -435,7 +436,7 @@ class cGuiElement:
         meta['title'] = urllib.quote_plus(self.getTitle())
         meta['site'] = self.getSiteUrl()
 
-        data = cDb().get_watched(meta)
+        data = self.DB.get_watched(meta)
         return data
 
 
