@@ -6,15 +6,18 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib import util
+
+from resources.lib.comaddon import *
 
 import urllib
-import xbmc
 
 SITE_IDENTIFIER = 'cFav'
 SITE_NAME = 'Fav'
 
 class cFav:
+
+    DIALOG = dialog()
+    ADDON = addon()
 
     #effacement direct par menu
     def delFavouritesMenu(self):
@@ -23,7 +26,7 @@ class cFav:
 
     #avec confirmation pour les autres
     def delFavourites(self):
-        if util.VScreateDialogYesNo("Voulez vous vraiment supprimer toute cette liste"):
+        if self.DIALOG.VSyesno("Voulez vous vraiment supprimer toute cette liste"):
             cDb().del_favorite()
         return True
 
@@ -44,11 +47,11 @@ class cFav:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '1')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (util.VSlang(30120), str(compt[1])), 'mark.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30120), str(compt[1])), 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '2')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s/%s (%s)') % (util.VSlang(30121), util.VSlang(30122), str(compt[2])), 'mark.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s/%s (%s)') % (self.ADDON.VSlang(30121), self.ADDON.VSlang(30122), str(compt[2])), 'mark.png', oOutputParameterHandler)
 
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('sCat', '3')
@@ -56,7 +59,7 @@ class cFav:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', '6')
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (util.VSlang(30332), str(compt[6])), 'mark.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30332), str(compt[6])), 'mark.png', oOutputParameterHandler)
 
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('sCat', '7')
@@ -64,11 +67,11 @@ class cFav:
 
         oOutputParameterHandler = cOutputParameterHandler()
         total = compt[3]+compt[4]+compt[5]
-        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (util.VSlang(30410), str(total)), 'mark.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getFav', ('%s (%s)') % (self.ADDON.VSlang(30410), str(total)), 'mark.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sAll', 'true')
-        oGui.addDir(SITE_IDENTIFIER, 'delFavourites', util.VSlang(30209), 'trash.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'delFavourites', self.ADDON.VSlang(30209), 'trash.png', oOutputParameterHandler)
 
         #A virer dans les versions future, pour le moment c'est juste pr supprimer les liens bugges
         if compt[0] > 0:
@@ -156,7 +159,7 @@ class cFav:
                 oGuiElement.setFanart(fanart)
 
                 #self.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
-                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','delFavouritesMenu',util.VSlang(30412))
+                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','delFavouritesMenu',self.ADDON.VSlang(30412))
 
                 if (function == 'play'):
                     oGui.addHost(oGuiElement, oOutputParameterHandler)
@@ -170,7 +173,7 @@ class cFav:
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sCat', sCat)
-        oGui.addDir(SITE_IDENTIFIER, 'delFavourites', util.VSlang(30211), 'trash.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'delFavourites', self.ADDON.VSlang(30211), 'trash.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -180,11 +183,11 @@ class cFav:
         oInputParameterHandler = cInputParameterHandler()
 
         if oInputParameterHandler.getValue('sId') == 'kepliz_com':
-            util.VSshowInfo('Error','Non possible pour ce site')
+            self.DIALOG.VSinfo('Error','Non possible pour ce site')
             return
 
         if int(oInputParameterHandler.getValue('sCat')) < 1:
-            util.VSshowInfo('Error','Mise en Favoris non possible pour ce lien')
+            self.DIALOG.VSinfo('Error','Mise en Favoris non possible pour ce lien')
             return
 
         meta = {}
