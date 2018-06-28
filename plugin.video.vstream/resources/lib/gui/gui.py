@@ -161,7 +161,7 @@ class cGui():
         oGuiElement.setDescription(sDesc)
         oGuiElement.setMeta(0)
         oGuiElement.setDirFanart('')
-        
+
         oInputParameterHandler = cInputParameterHandler()
         sCat = oInputParameterHandler.getValue('sCat')
         if sCat:
@@ -573,6 +573,9 @@ class cGui():
                     xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('serie-view'))
                 elif cGui.CONTENT == "files":
                     xbmc.executebuiltin('Container.SetViewMode(%s)' % self.ADDON.getSetting('default-view'))
+
+        #bug affichage Kodi 18
+        del self.listing [:]
 
     def updateDirectory(self):
         xbmc.executebuiltin("Container.Refresh")
