@@ -60,6 +60,7 @@ class dialog(xbmcgui.Dialog):
     #def __init__(self):
     #    xbmcgui.__init__('')
     #    pass
+    
     def VSok(self, desc, title='vStream'):
         dialog = self.ok(title, desc)
         return dialog
@@ -68,9 +69,9 @@ class dialog(xbmcgui.Dialog):
         dialog = self.yesno(title, desc)
         return dialog
 
-    def VSselect(desc, title='vStream'):
-        dialog = self.select(sTitle, desc)
-        return dialog
+    def VSselect(self, desc, title='vStream'):
+        ret = self.select(title, desc)
+        return ret
 
     def VSinfo(self, desc, title='vStream', iseconds=0, sound = False):
         if (iseconds == 0):

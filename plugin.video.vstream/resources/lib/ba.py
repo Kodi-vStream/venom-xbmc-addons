@@ -3,7 +3,8 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.player import cPlayer
-from resources.lib import util
+from resources.lib.comaddon import *
+
 import re, urllib2
 import ssl
 
@@ -60,7 +61,7 @@ class cShowBA:
                 oPlayer.startPlayer()
 
             except:
-                util.VSshowInfo('Vstream',util.VSlang(30204))
+                dialog().VSinfo(addon().VSlang(30204))
                 return
             return
 

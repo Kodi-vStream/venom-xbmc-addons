@@ -771,3 +771,7 @@ msgstr ""
 msgctxt "#30447"
 msgid "[COLOR red]Delete: Favorites[/COLOR]"
 msgstr ""
+
+msgctxt "#30448"
+msgid "Select a quality"
+msgstr ""

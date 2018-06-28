@@ -1,4 +1,3 @@
-
 class iHoster:
 
     def getDisplayName(self):
@@ -36,3 +35,16 @@ class iHoster:
 
     def getMediaLink(self):
         raise NotImplementedError()
+
+    def getDialogQual(self, list_qual, list_url):
+        from resources.lib.comaddon import addon, dialog
+
+        if len(list_url) == 0:
+            return ''
+        if len(list_url) == 1:
+            return list_url[0]
+        
+        ret = dialog().VSselect(list_qual, addon().VSlang(30448))
+        if ret > -1:
+            return list_url[ret]
+        return ''
