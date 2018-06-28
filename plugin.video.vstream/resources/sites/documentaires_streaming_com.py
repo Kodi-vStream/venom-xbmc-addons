@@ -154,6 +154,8 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumb, sDesc, oOutputParameterHandler)
 
+        cConfig().finishDialog(dialog)
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -183,7 +185,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/', '')
 
-    sPattern = '<IFRAME SRC="(.+?)".+?</IFRAME>'
+    sPattern = '<iframe.+?src="(.+?)".+?</iframe>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -192,11 +194,7 @@ def showHosters():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
 
             sHosterUrl = str(aEntry)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
