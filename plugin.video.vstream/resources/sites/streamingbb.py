@@ -37,11 +37,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -194,6 +194,7 @@ def showLinks():
         if (aResult[0] == True):
             sDesc = aResult[1][0]
             sDesc = re.sub('<[^<]+?>', '', sDesc)
+            sDesc = sDesc.replace('&#8230;', '...')
     except:
         pass
 
@@ -212,8 +213,7 @@ def showLinks():
             if dialog.iscanceled():
                 break
 
-            sHost = str(aEntry[0]).replace('.net', '').replace('.com', '').replace('.tv', '')
-            sHost = sHost.replace('.to', '').replace('.co', '').replace('.me', '').replace('.ec', '').replace('.eu', '').replace('.sx', '')
+            sHost = re.sub('\.\w+', '', str(aEntry[0]))
             sHost = sHost.capitalize()
             sPost = str(aEntry[1])
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
