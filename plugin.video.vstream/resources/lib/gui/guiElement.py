@@ -49,7 +49,7 @@ class cGuiElement:
         self.__Season = ''
         self.__Episode = ''
         self.__sIcon = self.DEFAULT_FOLDER_ICON
-        self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/films_fanart.jpg"
+        self.__sFanart = "special://home/addons/plugin.video.vstream/fanart.jpg"
         self.__sDecoColor = self.ADDON.getSetting("deco_color")
 
         #For meta search

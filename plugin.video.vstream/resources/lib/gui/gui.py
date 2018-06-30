@@ -68,7 +68,7 @@ class cGui():
         oGuiElement.setPoster(sThumbnail)
         oGuiElement.setMeta(1)
         oGuiElement.setDescription(sDesc)
-        oGuiElement.setMovieFanart()
+        #oGuiElement.setMovieFanart()
         oGuiElement.setCat(1)
 
         if oOutputParameterHandler.getValue('sMovieTitle'):
@@ -89,7 +89,7 @@ class cGui():
         oGuiElement.setPoster(sThumbnail)
         oGuiElement.setMeta(2)
         oGuiElement.setDescription(sDesc)
-        oGuiElement.setTvFanart()
+        #oGuiElement.setTvFanart()
         oGuiElement.setCat(2)
 
         # if oOutputParameterHandler.getValue('season'):
@@ -117,7 +117,7 @@ class cGui():
         oGuiElement.setThumbnail(sThumbnail)
         #oGuiElement.setPoster(sThumbnail)
         oGuiElement.setMeta(0)
-        oGuiElement.setDirFanart(sIcon)
+        #oGuiElement.setDirFanart(sIcon)
         oGuiElement.setCat(5)
 
         oGuiElement.setDescription(sDesc)
@@ -160,7 +160,7 @@ class cGui():
         oGuiElement.setPoster(sThumbnail)
         oGuiElement.setDescription(sDesc)
         oGuiElement.setMeta(0)
-        oGuiElement.setDirFanart('')
+        #oGuiElement.setDirFanart('')
 
         oInputParameterHandler = cInputParameterHandler()
         sCat = oInputParameterHandler.getValue('sCat')
@@ -179,7 +179,7 @@ class cGui():
         oGuiElement.setIcon(sIcon)
         oGuiElement.setThumbnail(oGuiElement.getIcon())
         oGuiElement.setMeta(0)
-        oGuiElement.setDirFanart(sIcon)
+        #oGuiElement.setDirFanart(sIcon)
 
         oOutputParameterHandler.addParameter('sFav', sFunction)
 
@@ -197,7 +197,7 @@ class cGui():
         oGuiElement.setIcon('next.png')
         oGuiElement.setThumbnail(oGuiElement.getIcon())
         oGuiElement.setMeta(0)
-        oGuiElement.setDirFanart('next.png')
+        #oGuiElement.setDirFanart('next.png')
         oGuiElement.setCat(5)
 
         self.createContexMenuPageSelect(oGuiElement, oOutputParameterHandler)
