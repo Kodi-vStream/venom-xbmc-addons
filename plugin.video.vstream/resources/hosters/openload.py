@@ -193,7 +193,11 @@ class cHoster(iHoster):
             
         cGui().showInfo(self.__sDisplayName, 'Ok, lien decode.' , 15)
         
-        api_call = self.__getHost() + "/stream/" + url + "?mime=true" 
+        api_call = self.__getHost() + "/stream/" + url + "?mime=true"
+        
+        if '::' in api_call:
+            cGui().showInfo(self.__sDisplayName, 'Possibles problemes d\'ip V6' , 5)
+            xbmc.sleep(5*1000)
         
         cConfig().log(api_call)
         
@@ -398,4 +402,3 @@ def decodek(k):
         i += 1
 
     return "".join(p)
- 
