@@ -1,14 +1,14 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
+return False
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.lib.parser import cParser
+from resources.lib.comaddon import progress
 import re
 
 SITE_IDENTIFIER = 'cineiz'
@@ -307,10 +307,11 @@ def showMovieSearch(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
+
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl2 = str(aEntry[0])
@@ -330,7 +331,7 @@ def showMovieSearch(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -357,10 +358,11 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
+
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl2 = str(aEntry[0])
@@ -388,7 +390,7 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -430,10 +432,11 @@ def showSaisons():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
+
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl2 = str(aEntry[0])
@@ -446,7 +449,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -468,10 +471,11 @@ def showEpisodes():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
+
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sTitle = str(aEntry[1]) + str(aEntry[2]) + ' ' + sMovieTitle
@@ -486,7 +490,7 @@ def showEpisodes():
 
             oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -549,9 +553,6 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sPost = oInputParameterHandler.getValue('sPost')
 
-    #cConfig().log(sUrl)
-    #cConfig().log(sPost)
-
     oRequestHandler = cRequestHandler(sUrl)
     oRequestHandler.setRequestType(1)
     oRequestHandler.addParameters('levideo', sPost)
@@ -571,7 +572,6 @@ def showHosters():
                 continue
 
             if 'vimple.org' in sHosterUrl:
-                #cConfig().log(sHosterUrl)
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 oRequestHandler.addHeaderEntry('Referer', sUrl)
                 sHtmlContent2 = oRequestHandler.request()
@@ -579,7 +579,6 @@ def showHosters():
                     sHosterUrl = re.search('url=([^"]+)"', sHtmlContent2, re.DOTALL).group(1)
                 except:
                     sHosterUrl = str(oRequestHandler.getRealUrl())
-                #cConfig().log(sHosterUrl)
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):

@@ -1,13 +1,14 @@
 #-*- coding: utf-8 -*-
-#Venom.
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
-#from resources.lib.util import cUtil
+
+from resources.lib.comaddon import progress
+
 import re
 
 #Ce site a des probleme en http/1.1 >> incomplete read error
@@ -133,25 +134,17 @@ def showAZ():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    dialog = cConfig().createDialog(SITE_NAME)
-
     for i in range(0, 27):
-        cConfig().updateDialog(dialog, 36)
-        if dialog.iscanceled():
-            break
 
         if (i < 1):
             sTitle = '123'
         else:
             sTitle = chr(64 + i)
-        cConfig().log(sUrl)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
         oOutputParameterHandler.addParameter('sLetter', sTitle)
         oGui.addDir(SITE_IDENTIFIER, 'showList', '[COLOR teal] Lettre [COLOR red]' + sTitle + '[/COLOR][/COLOR]', 'series_az.png', oOutputParameterHandler)
-
-    cConfig().finishDialog(dialog)
 
     oGui.setEndOfDirectory()
 
@@ -178,11 +171,11 @@ def showList():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl = aEntry[0]
@@ -197,39 +190,40 @@ def showList():
             else:
                 oGui.addDir(SITE_IDENTIFIER, 'showEpisode', sTitle, 'series.png', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
-def showMoviesAZ():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sAZ = oInputParameterHandler.getValue('sLetter')
+#pas trouver d'ou ça vient ATTENTION cConfig() n'exite plus
+# def showMoviesAZ():
+#     oGui = cGui()
+#     oInputParameterHandler = cInputParameterHandler()
+#     sUrl = oInputParameterHandler.getValue('siteUrl')
+#     sAZ = oInputParameterHandler.getValue('sLetter')
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    sPattern = '<li><a href="([^<]+)">.+?<span class="bold">(.+?)</span></p>'
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
-        for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
-                break
+#     oRequestHandler = cRequestHandler(sUrl)
+#     sHtmlContent = oRequestHandler.request()
+#     sPattern = '<li><a href="([^<]+)">.+?<span class="bold">(.+?)</span></p>'
+#     oParser = cParser()
+#     aResult = oParser.parse(sHtmlContent, sPattern)
+#     if (aResult[0] == True):
+#         total = len(aResult[1])
+#         dialog = cConfig().createDialog(SITE_NAME)
+#         for aEntry in aResult[1]:
+#             cConfig().updateDialog(dialog, total)
+#             if dialog.iscanceled():
+#                 break
 
-            if len(sAZ)>0 and aEntry[1].upper()[0] == sAZ :
+#             if len(sAZ)>0 and aEntry[1].upper()[0] == sAZ :
 
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
-                oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
-                oGui.addDir(SITE_IDENTIFIER, 'showEpisode', sTitle, 'az.png', oOutputParameterHandler)
+#                 oOutputParameterHandler = cOutputParameterHandler()
+#                 oOutputParameterHandler.addParameter('siteUrl', str(aEntry[0]))
+#                 oOutputParameterHandler.addParameter('sMovieTitle', str(aEntry[1]))
+#                 oGui.addDir(SITE_IDENTIFIER, 'showEpisode', sTitle, 'az.png', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+#         cConfig().finishDialog(dialog)
 
-    oGui.setEndOfDirectory()
+#     oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):
     oGui = cGui()
@@ -250,10 +244,11 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
+
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl = str(aEntry[0])
@@ -268,7 +263,7 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, 'animes.png', '', '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -303,12 +298,7 @@ def showEpisode():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        dialog = cConfig().createDialog(SITE_NAME)
-        cConfig().updateDialog(dialog, 1)
-
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + 'Animé licencié' + '[/COLOR]')
-
-        cConfig().finishDialog(dialog)
 
     else:
 
@@ -317,10 +307,11 @@ def showEpisode():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             total = len(aResult[1])
-            dialog = cConfig().createDialog(SITE_NAME)
+
+            progress_ = progress().VScreate(SITE_NAME)
             for aEntry in aResult[1]:
-                cConfig().updateDialog(dialog, total)
-                if dialog.iscanceled():
+                progress_.VSupdate(progress_, total)
+                if progress_.iscanceled():
                     break
 
                 if aEntry[0]:
@@ -336,7 +327,7 @@ def showEpisode():
                     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                     oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle , 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
-            cConfig().finishDialog(dialog)
+            progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -348,8 +339,6 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    #cConfig().log(sUrl)
 
     sPattern = '<div class="video-video"><iframe[^<>]+src="([^"]+)"|<a rel="nofollow" target="_back" href="([^"]+)" [^<>]+">[^<>]+Redirection<\/a>'
     oParser = cParser()
