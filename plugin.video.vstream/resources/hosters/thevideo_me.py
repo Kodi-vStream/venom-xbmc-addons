@@ -4,10 +4,9 @@
 #http://thevideo.me/embed-xxx-xxx.html
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.hosters.hoster import iHoster
-from resources.lib.util import VScreateDialogSelect
 from resources.lib.packer import cPacker
-from resources.lib.util import VSlog
+from resources.hosters.hoster import iHoster
+from resources.lib.comaddon import dialog, VSlog
 
 
 import re,xbmc,urllib,urllib2
@@ -251,14 +250,8 @@ class cHoster(iHoster):
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
                 
-            #Si  1 url
-            if len(url) == 1:
-                api_call = url[0]
-            #Affichage du tableau
-            elif len(url) > 1:
-                ret = VScreateDialogSelect(qua)
-                if (ret > -1):
-                    api_call = url[ret]
+            #dialog qualiter
+            api_call = dialog().VSselectqual(qua,url)
 
         #xbmc.sleep(5000)
                     

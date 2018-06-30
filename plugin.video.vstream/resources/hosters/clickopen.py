@@ -2,6 +2,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
+from resources.lib.comaddon import dialog
 import re
 import base64
 
@@ -87,7 +88,7 @@ class cHoster(iHoster):
                         url.append(str(i[0]))
                         qua.append(str(i[1]))
                 #Si une seule url
-                    api_call = iHoster().getDialogQual(qua,url)
+                    api_call = dialog().VSselectqual(qua,url)
 
         if (api_call):
             return True, api_call

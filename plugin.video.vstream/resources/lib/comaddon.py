@@ -73,6 +73,18 @@ class dialog(xbmcgui.Dialog):
         ret = self.select(title, desc)
         return ret
 
+    def VSselectqual(self, list_qual, list_url):
+        
+        if len(list_url) == 0:
+            return ''
+        if len(list_url) == 1:
+            return list_url[0]
+        
+        ret = self.select(addon().VSlang(30448), list_qual)
+        if ret > -1:
+            return list_url[ret]
+        return ''
+
     def VSinfo(self, desc, title='vStream', iseconds=0, sound = False):
         if (iseconds == 0):
             iseconds = 1000

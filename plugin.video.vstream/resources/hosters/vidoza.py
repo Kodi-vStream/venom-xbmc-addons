@@ -4,6 +4,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler 
 from resources.lib.parser import cParser 
 from resources.hosters.hoster import iHoster
+from resources.lib.comaddon import dialog
 
 class cHoster(iHoster):
 
@@ -62,7 +63,7 @@ class cHoster(iHoster):
                 qua.append(str(i[1]))
     
             #dialog qualiter
-            api_call = iHoster().getDialogQual(qua,url)
+            api_call = dialog().VSselectqual(qua,url)
   
         if (api_call):
             return True, api_call 

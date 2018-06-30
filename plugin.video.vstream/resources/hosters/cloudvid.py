@@ -5,7 +5,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
-from resources.lib.util import VScreateDialogSelect
+from resources.lib.comaddon import dialog
 
 class cHoster(iHoster):
 
@@ -90,14 +90,7 @@ class cHoster(iHoster):
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
                 
-            #Si  1 url
-            if len(url) == 1:
-                api_call = url[0]
-            #Affichage du tableau
-            elif len(url) > 1:
-                ret = VScreateDialogSelect(qua)
-                if (ret > -1):
-                    api_call = url[ret]
+            api_call = dialog().VSselectqual(qua,url)
 
         if (api_call):
             return True, api_call

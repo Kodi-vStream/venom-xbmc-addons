@@ -9,6 +9,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
+from resources.lib.comaddon import dialog, VSlog
 from resources.lib import util
 import re
 import json
@@ -91,13 +92,13 @@ class cHoster(iHoster):
                     if bracket_count == 0:
                         break
             else:
-                util.VSlog("Cannot get JSON from HTML")
+                VSlog("Cannot get JSON from HTML")
 
             index = i + 1
             data = json.loads(player_conf[:index])
 
         except Exception as e:
-            util.VSlog("Cannot decode JSON: {0}"+str(e))
+            VSlog("Cannot decode JSON: {0}"+str(e))
 
 
         stream_map = parse_stream_map(data["args"]["url_encoded_fmt_stream_map"])
@@ -111,15 +112,11 @@ class cHoster(iHoster):
             for i in video_urls:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))   
-            # Si une seule url
-            if len(url) == 1:
-                return True, url[0]
-            # si plus de une
-            elif len(url) > 1:
-            # Afichage du tableau
-                ret = util.VScreateDialogSelect(qua)
-                if (ret > -1):
-                    return True, url[ret]
+
+            #dialog qualiter
+            api_call = dialog().VSselectqual(qua,url)
+            if api_call:
+                return True, api_call
         else:
             return False
             
@@ -147,15 +144,9 @@ class cHoster(iHoster):
                 b = re.sub('&title=.+','',i[1]) #testé xx fois ok
                 url.append(str(b))
                 qua.append(str(i[0]))   
-            # Si une seule url
-            if len(url) == 1:
-                api_call = url[0]
-            # si plus de une
-            elif len(url) > 1:
-            # Afichage du tableau
-                ret = util.VScreateDialogSelect(qua)
-                if (ret > -1):
-                    api_call = url[ret]
+
+            #dialog qualiter
+            api_call = dialog().VSselectqual(qua,url)
 
         if (api_call):
             return True, api_call

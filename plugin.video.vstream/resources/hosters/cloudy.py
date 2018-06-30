@@ -1,12 +1,12 @@
 #-*- coding: utf-8 -*-
+#https://github.com/Kodi-vStream/venom-xbmc-addons
 #https://www.cloudy.ec/embed.php?id=etc...
 #http://www.cloudy.ec/v/etc...
 #
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-from resources.lib.util import VSlog,VScreateDialogSelect
+from resources.lib.comaddon import dialog, VSlog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
 
@@ -84,15 +84,7 @@ class cHoster(iHoster):
                 url.append(x[0])
                 qua.append(x[1])
 
-            #Si une seule url
-            if len(url) == 1:
-                api_call = url[0]
-            #si plus de une
-            elif len(url) > 1:
-            #Affichage du tableau
-                ret = VScreateDialogSelect(qua)
-                if (ret > -1):
-                    api_call = url[ret]
+            api_call = dialog().VSselectqual(qua,url)
                     
         if (api_call):
             return True, api_call + '|User-Agent=' + UA 

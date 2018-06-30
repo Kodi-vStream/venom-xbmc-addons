@@ -2,7 +2,8 @@
 from resources.lib.handler.requestHandler import cRequestHandler 
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.util import cUtil,VScreateDialogSelect
+from resources.lib.comaddon import dialog
+from resources.lib.util import cUtil
 import json
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
@@ -106,14 +107,8 @@ class cHoster(iHoster):
                     url.append(url2)
                     qua.append(repr(x['label'])+ '  m3u8')
                     
-
-                if len(url) == 1:
-                    api_call = url[0]
-
-                elif len(url) > 1:
-                    ret = VScreateDialogSelect(qua)
-                    if (ret > -1):
-                        api_call = url[ret]
+                #dialog qualiter
+                api_call = dialog().VSselectqual(qua,url)
 
             if (api_call):
                 return True, api_call + '|User-Agent=' + UA 

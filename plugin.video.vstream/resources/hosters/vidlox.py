@@ -2,13 +2,13 @@
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler 
 from resources.lib.parser import cParser 
-from resources.lib import util
 from resources.hosters.hoster import iHoster
+from resources.lib.comaddon import dialog, isKrypton
 
 class cHoster(iHoster):
 
     def __init__(self):
-        if not (util.isKrypton() == True):
+        if not (isKrypton() == True):
             self.__sDisplayName = '(Windows\Android Nécessite Kodi17)' + ' ' + 'Vidlox'
         else:
             self.__sDisplayName = 'Vidlox'        
@@ -79,15 +79,8 @@ class cHoster(iHoster):
             for i in aResult[1]:
                 url.append(str(i))
 
-            #Si une seule url
-            if len(url) == 1:
-                api_call = url[0]
-            #si plus de une
-            elif len(url) > 1:
-                #Afichage du tableau
-                ret = util.VScreateDialogSelect(qua)
-                if (ret > -1):
-                    api_call = url[ret]
+            #dialog qualiter
+            api_call = dialog().VSselectqual(qua,url)
   
         if (api_call):
             return True, api_call 

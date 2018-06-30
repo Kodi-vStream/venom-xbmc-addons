@@ -7,7 +7,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-from resources.lib.util import VScreateDialogSelect
+from resources.lib.comaddon import dialog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 #Novamov Auroravid
@@ -69,14 +69,7 @@ class cHoster(iHoster):
                 serv.append('Liens '+str(No))
                 No += 1
             #Si une seule url
-            if len(url) == 1:
-                api_call = url[0]
-            #si plus de une
-            elif len(url) > 1:
-            #Afichage du tableau
-                ret = VScreateDialogSelect(serv)
-                if (ret > -1):
-                    api_call = url[ret]
+            api_call = dialog().VSselectqual(serv,url)
 
         if (api_call):
             return True, api_call + '|User-Agent=' + UA 

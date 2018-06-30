@@ -5,7 +5,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-from resources.lib.util import VScreateDialogSelect
+from resources.lib.comaddon import dialog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
 class cHoster(iHoster):
@@ -71,15 +71,8 @@ class cHoster(iHoster):
                 url.append(aEntry[0])
                 qua.append(aEntry[1])
 
-            #Si une seule url
-            if len(url) == 1:
-                api_call = url[0]
-            #si plus de une
-            elif len(url) > 1:
-                #Afichage du tableau
-                ret = VScreateDialogSelect(qua)
-                if (ret > -1):
-                    api_call = url[ret]
+            #dialog qualiter
+            api_call = dialog().VSselectqual(qua,url)
                     
         if (api_call):
             return True,api_call + '|User-Agent=' + UA 
