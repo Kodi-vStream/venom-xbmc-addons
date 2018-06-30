@@ -1,5 +1,5 @@
 #from resources.lib.config import cConfig
-from resources.lib.comaddon import *
+from resources.lib.comaddon import VSlog
 from resources.lib.parser import cParser
 from resources.lib.handler.requestHandler import cRequestHandler
 

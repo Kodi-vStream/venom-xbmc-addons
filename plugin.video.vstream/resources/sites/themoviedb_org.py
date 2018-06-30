@@ -7,8 +7,6 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib import util
-import xbmcgui
 from resources.lib.tmdb import cTMDb
 
 from resources.lib.comaddon import *
@@ -722,12 +720,12 @@ def showSeriesSaison():
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName('globalSearch')
     oGuiElement.setFunction('searchMovie')
-    oGuiElement.setTitle(util.VSlang(30414))
+    oGuiElement.setTitle(addons.VSlang(30414))
     oGuiElement.setCat(2)
     oGuiElement.setIcon("searchtmdb.png")
     oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-    #oGui.addDir('cHome', 'showSearch', util.VSlang(30414), 'searchtmdb.png', oOutputParameterHandler)
+    #oGui.addDir('cHome', 'showSearch', addons.VSlang(30414), 'searchtmdb.png', oOutputParameterHandler)
     #fin
 
     result = grab.getUrl(sUrl)
@@ -827,12 +825,12 @@ def showSeriesEpisode():
     oGuiElement = cGuiElement()
     oGuiElement.setSiteName('globalSearch')
     oGuiElement.setFunction('searchMovie')
-    oGuiElement.setTitle(util.VSlang(30415))
+    oGuiElement.setTitle(addons.VSlang(30415))
     oGuiElement.setCat(2)
     oGuiElement.setIcon("searchtmdb.png")
     oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-    #oGui.addDir('cHome', 'showSearch', util.VSlang(30415), 'searchtmdb.png', oOutputParameterHandler)
+    #oGui.addDir('cHome', 'showSearch', addons.VSlang(30415), 'searchtmdb.png', oOutputParameterHandler)
     #fin
 
     result = grab.getUrl(sUrl)

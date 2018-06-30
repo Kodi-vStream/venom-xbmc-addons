@@ -6,7 +6,9 @@ import urllib2
 
 from urllib2 import HTTPError, URLError
 
-from resources.lib.comaddon import *
+from resources.lib.comaddon import addon, dialog
+
+
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0

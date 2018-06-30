@@ -3,6 +3,12 @@
 
 import xbmcaddon, xbmcgui, xbmc
 
+"""le vrais system d'importation pour eviter de faire *
+
+from resources.lib.comaddon import addon, dialog, VSlog, xbmcgui, xbmc
+
+"""
+
 """
 from resources.lib.comaddon import addon
 ou

@@ -6,7 +6,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-from resources.lib.util import VSlog
+from resources.lib.comaddon import VSlog
 import urllib2,urllib,xbmcgui,re,xbmc
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'}

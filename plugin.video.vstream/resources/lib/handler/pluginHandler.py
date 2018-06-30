@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 #from resources.lib.config import cConfig
 
-from resources.lib.comaddon import *
+from resources.lib.comaddon import addon, VSlog
 
 import sys
 import xbmcvfs

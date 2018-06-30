@@ -268,6 +268,7 @@ def QuotePlus(sUrl):
 def QuoteSafe(sUrl):
     return urllib.quote(sUrl,safe=':/')
 
+#deprecier utiliser comaddon VSlog()
 def VSlog(e, level=xbmc.LOGDEBUG):
     if (VSsetting('debug') == 'true'):
         level = xbmc.LOGNOTICE
@@ -284,16 +285,19 @@ def VS_hide_busy_dialog():
     while xbmc.getCondVisibility('Window.IsActive(busydialog)'):
         xbmc.sleep(100)
 
+#deprecier utiliser comaddon dialog()
 def VScreateDialogOK(label):
     oDialog = xbmcgui.Dialog()
     oDialog.ok('vStream', label)
     return oDialog
 
+#deprecier utiliser comaddon dialog()
 def VScreateDialogYesNo(label):
     oDialog = xbmcgui.Dialog()
     qst = oDialog.yesno("vStream", label)
     return qst
 
+#deprecier utiliser comaddon dialog()
 def VScreateDialogSelect(label,sTitle='vStream'):
     oDialog = xbmcgui.Dialog()
     ret = oDialog.select(sTitle, label)
@@ -328,10 +332,12 @@ def updateDialogSearch(dialog, total, site):
     iPercent = int(float(COUNT * 100) / total)
     dialog.update(iPercent, 'Chargement: '+str(site))
 
+#deprecier utiliser comaddon dialog()
 def VSerror(e):
     xbmcgui.Dialog().notification('Vstream','Erreur: '+str(e),xbmcgui.NOTIFICATION_ERROR,2000)
     VSlog('Erreur: ' + str(e))
 
+#deprecier utiliser comaddon dialog()
 def VSshowInfo(sDescription, sTitle='vStream', iSeconds=0,sound = False):
     if (iSeconds == 0):
         iSeconds = 1000
@@ -353,11 +359,13 @@ def VStranslatePath(location):
     #d'apres Kodi ne doit pas etre utiliser sur les special://
     return xbmc.translatePath(location).decode("utf-8")
 
+#deprecier utiliser comaddon addon()
 def VSlang(lang):
     #util.VSlang(30003)
     #Bug avec accent return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang)).decode("utf-8")
     return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang))
 
+#deprecier utiliser comaddon addon()
 def VSsetting(name, value=False):
     #use util.VSsetting('name') pour getsetting
     #use util.VSsetting('name', 'value) pour setsetting
@@ -366,6 +374,7 @@ def VSsetting(name, value=False):
     else:
         return xbmcaddon.Addon('plugin.video.vstream').getSetting(name)
 
+#deprecier utiliser comaddon addon()
 def VSopenSetting(name='plugin.video.vstream'):
     return xbmcaddon.Addon(name).openSettings()
 
@@ -391,6 +400,7 @@ def VSshowYear(sUrl,start = '',end = '',endswithslash = ''):
         xbmc.sleep(500) #sleep obligatoire
         xbmc.executebuiltin("Action(Back)") #back evite erreur du au clic sur un dossier qui mene nulle part
 
+#deprecier utiliser comaddon VSread
 def VSread(sHtmlContent):
     #from resources.lib import util
     #util.VSread(sHtmlContent)
