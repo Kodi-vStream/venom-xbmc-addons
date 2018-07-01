@@ -1,15 +1,15 @@
 #-*- coding: utf-8 -*-
-#Venom.
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import urllib2, urllib, re, xbmc
-import unicodedata, htmlentitydefs
+from resources.lib.comaddon import progress #,VSlog
+import urllib2, urllib, re
+import unicodedata
 
 #Je garde le nom kepliz pour pas perturber
 SITE_IDENTIFIER = 'kepliz_com'
@@ -144,11 +144,11 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl2 = str(aEntry[0])
@@ -166,7 +166,7 @@ def showMovies(sSearch = ''):
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', '', '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -344,8 +344,6 @@ def showHostersLink2():
                #'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                }
 
-    #cConfig().log(sLink)
-
     req = urllib2.Request(sLink)
     response = urllib2.urlopen(req)
     data = response.read()
@@ -408,7 +406,7 @@ def showHostersLink3():
                #'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                }
 
-    #cConfig().log(sLink)
+    #VSlog(sLink)
 
     req = urllib2.Request(sLink)
     response = urllib2.urlopen(req)
@@ -421,18 +419,18 @@ def showHostersLink3():
 
     # Si il existe, suivi du lien
     if ( aResult[0] == True ):
-        # cConfig().log(aResult[1][0])
+        #VSlog(aResult[1][0])
         sLink = sLink.rsplit('/', 1)[0] # supprime la dernière partie de l'url de l'iframe
-        # cConfig().log(sLink)
+        #VSlog(sLink)
         href = sLink + '/' + aResult[1][0] # concaténation du résultat avec le href trouvé via regex
-        # cConfig().log(href)
+        #VSlog(href)
 
         req = urllib2.Request(href, None, headers)
         response = urllib2.urlopen(req)
         data = response.read()
         response.close()
 
-    # cConfig().log(data)
+    #VSlog(data)
 
     sPattern = 'file:"(.+?)".+?label:"(.+?)"'
     aResult = oParser.parse(data, sPattern)

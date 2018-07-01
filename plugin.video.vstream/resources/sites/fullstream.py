@@ -1,21 +1,14 @@
 #-*- coding: utf-8 -*-
-#
-# Votre nom ou pseudo
-#
-#
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
+
 from resources.lib.parser import cParser
-
-#from resources.lib.util import cUtil #outils pouvant etre utiles
-
-import xbmc
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'fullstream'
 SITE_NAME = 'Full Stream'
@@ -154,10 +147,10 @@ def AlphaDisplay():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl = str(aEntry[0])
@@ -169,7 +162,7 @@ def AlphaDisplay():
 
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'series.png', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -252,21 +245,17 @@ def showMovies(sSearch = ''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #le plus simple et de faire un  cConfig().log(str(aResult))
-    #dans le fichier log d'xbmc vous pourrez voir un array de ce que recupere le script
-    #et modifier sPattern si besoin
-    cConfig().log(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl2 = str(aEntry[0])
@@ -293,7 +282,7 @@ def showMovies(sSearch = ''):
             #il existe aussi addMisc(identifiant, function, titre, icon, poster, description, sortie parametre)
             #la difference et pour les metadonner serie, films ou sans
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
@@ -353,11 +342,11 @@ def showEpisodes():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in ListeUrl:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sTitle = sMovieTitle + str(aEntry[1]).replace('Ep', 'episode').replace('EP', 'episode ')
@@ -370,7 +359,7 @@ def showEpisodes():
 
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     #si un seul episode
     else:
@@ -396,7 +385,6 @@ def showHosters():
     sPattern = '<a href="([^"]+)".+?class="link_a".+?<td>.+?</td><td>([^<]+)</td>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #pensez a faire un xbmc.log(str(aResult)) pour verifier
 
     #si un lien ne s'affiche pas peux etre que l'hote n'est pas supporte par l'addon
     if (aResult[0] == True):

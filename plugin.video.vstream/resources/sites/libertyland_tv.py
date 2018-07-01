@@ -8,8 +8,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 #from resources.lib.util import cUtil
-from resources.lib.config import cConfig
-import re, urllib2
+from resources.lib.comaddon import progress
+import re
 
 SITE_IDENTIFIER = 'libertyland_tv'
 SITE_NAME = 'Libertyland'
@@ -246,10 +246,12 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
 
             if sSearch or '/series' in sUrl:
                 sTitle = aEntry[1].replace('Regarder ', '').replace('en Streaming', '')
@@ -283,7 +285,7 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     sNextPage = __checkForNextPage(sHtmlContent)
     if (sNextPage != False):
@@ -334,10 +336,10 @@ def showSaisons():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             if aEntry[0]:
@@ -353,7 +355,7 @@ def showSaisons():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 

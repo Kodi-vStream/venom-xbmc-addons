@@ -1,13 +1,14 @@
 #-*- coding: utf-8 -*-
-#Venom.
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
+
+from resources.lib.comaddon import progress
 import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
@@ -145,11 +146,6 @@ def showMovies(sSearch = ''):
      
         sHtmlContent = oRequestHandler2.request()
     
-    #cConfig().log(sUrl)
-    #fh = open('c:\\test.txt', "w")
-    #fh.write(sHtmlContent)
-    #fh.close()
-    
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -157,10 +153,10 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sThumb = str(aEntry[0])
@@ -194,7 +190,7 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -269,10 +265,10 @@ def showEpisode():
 
     if (aResult):
         total = len(aResult)
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
                 
             if (aEntry[0]):
@@ -288,7 +284,7 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('reftitle', aEntry[2])
                 oGui.addTV(SITE_IDENTIFIER, 'showLinkSerie', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
     
@@ -354,7 +350,7 @@ def showHosters():
         test3 = [x.strip('"') for x in aResult[1][0][2].split(',')]
         
         sHtmlContent2 = unescape(test1, test2, test3)
-        # cConfig().log(sHtmlContent2)
+
         if sHtmlContent2:
             sHtmlContent = cUtil().unescape(sHtmlContent2)
             sHtmlContent = sHtmlContent.replace('\\', '')

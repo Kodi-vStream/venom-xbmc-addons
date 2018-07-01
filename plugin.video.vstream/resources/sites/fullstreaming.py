@@ -1,17 +1,14 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
-#from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-#from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
-import xbmc
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'fullstreaming'
 SITE_NAME = 'Full Streaming'
@@ -124,11 +121,11 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl = str(aEntry[0])
@@ -154,7 +151,7 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
@@ -235,17 +232,14 @@ def seriesHosters():
         for i in aResult[1]:
             sEpisodesList[i[0]] = i[1]
 
-    #cConfig().log(sEpisodesList)
 
     sPattern = '<div id="(div[^"]+)">.+?<iframe.+?src="(.+?)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #cConfig().log(str(aResult))
+
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-
-            #cConfig().log(aEntry)
 
             div = str(aEntry[0])
             sEpisodes = sEpisodesList.get(div, "Error")

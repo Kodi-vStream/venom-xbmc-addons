@@ -5,10 +5,10 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re, xbmc, base64
+from resources.lib.comaddon import progress, VSlog
+import re, base64
 
 #copie du site http://www.kaydo.ws/
 #copie du site https://www.hds.to/
@@ -127,10 +127,10 @@ def sHowResultSearch(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl = URL_MAIN+aEntry[1]
@@ -151,7 +151,7 @@ def sHowResultSearch(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -243,10 +243,10 @@ def showMovies():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             if  'add&g' in sUrl:
@@ -311,10 +311,10 @@ def showSeries():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sThumb = URL_MAIN + str(aEntry[0])
@@ -328,7 +328,7 @@ def showSeries():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -404,9 +404,9 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            cConfig().log('A decoder' + str(aEntry))
+            VSlog('A decoder' + str(aEntry))
             url = Decode(str(aEntry))
-            cConfig().log('donne ' + url)
+            VSlog('donne ' + url)
 
             if url.startswith('http'):
                 if 'manifest.mpd' in url:
@@ -432,7 +432,7 @@ def showHosters():
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
-                    oHoster.setDisplayName(xbmc.getInfoLabel('ListItem.title'))
+                    oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
 
