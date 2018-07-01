@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
-# Par chataigne73
 # https://github.com/Kodi-vStream/venom-xbmc-addons
+# Par chataigne73
 return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -8,10 +8,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
-from resources.lib.config import cConfig
+from resources.lib.comaddon import progress #, VSlog
 
-import re, urllib, urllib2, xbmc
+import re, urllib
 
 SITE_IDENTIFIER = 'sokrostream_biz'
 SITE_NAME = 'Sokrostream'
@@ -319,16 +318,16 @@ def showMovies(sSearch = ''):
             aResult[0] = True
             aResult[1] += datas
 
-    #cConfig().log(repr(aResult))
+    #VSlog(repr(aResult))
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
+            progress_.VSupdate(progress_, total)
 
             sUrl2 = aEntry[1]
             if sUrl2.startswith('/'):
@@ -355,7 +354,7 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLink', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -411,7 +410,7 @@ def __genUrl(e, t):
     url = re.sub(r"[\'\/%]|\s+", '-', url)
 
     url = '/' + t + '/' + url.lower() + '-' + str(e['customID']) + '.html'
-    #cConfig().log( url )
+    #VSlog( url )
     return url
 
 def showSaisons():
@@ -433,10 +432,10 @@ def showSaisons():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sTitle = sMovieTitle + ' ' + aEntry[2]
@@ -451,7 +450,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -474,10 +473,10 @@ def showEpisode():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sTitle = sMovieTitle + ' ' + aEntry[1]
@@ -491,7 +490,7 @@ def showEpisode():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -514,10 +513,10 @@ def showLink():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sHost = str(aEntry[0]).capitalize()
@@ -539,7 +538,7 @@ def showLink():
             #oGui.addDir(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, oOutputParameterHandler)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 

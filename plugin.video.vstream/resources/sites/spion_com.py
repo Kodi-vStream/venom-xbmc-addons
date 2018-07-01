@@ -1,16 +1,17 @@
 #-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 #Par jojotango
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.lib.parser import cParser
+from resources.lib.comaddon import progress, dialog
 
 SITE_IDENTIFIER = 'spion_com'
 SITE_NAME = 'Spi0n'
-SITE_DESC = 'Toute l\'actualité insolite du web est chaque jour sur Spi0n.com'
+SITE_DESC = 'Insolite du web'
 
 URL_MAIN = 'https://www.spi0n.com/'
 
@@ -31,7 +32,7 @@ LOGO_CSA = "http://a398.idata.over-blog.com/1/40/34/11/archives/0/16588469.jpg"
 def showCensure():
 
     content = "Pour activer le contenu (+18) mettre: \n[COLOR coral]SPION_CENSURE = False[/COLOR]\ndans le fichier:\n[COLOR coral]plugin.video.vstream/resources/sites/spion_com.py[/COLOR]"
-    cConfig().createDialogOK(content)
+    dialog().VSok(content)
 
 def load():
     oGui = cGui()
@@ -122,10 +123,12 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
 
             sUrlp   = str(aEntry[2])
             sTitle  = str(aEntry[3])
@@ -153,7 +156,7 @@ def showMovies(sSearch = ''):
                  else:
                      oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sPoster,'', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):

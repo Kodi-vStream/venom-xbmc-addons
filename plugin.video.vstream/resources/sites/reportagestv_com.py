@@ -1,12 +1,11 @@
 #-*- coding: utf-8 -*-
-#Venom.
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 
 SITE_IDENTIFIER = 'reportagestv_com'
 SITE_NAME = 'Reportages TV'

@@ -5,9 +5,9 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil, VSlog
+from resources.lib.util import cUtil
+from resources.lib.comaddon import progress #,VSlog
 import urllib2, urllib, re
 import unicodedata, random
 
@@ -277,11 +277,11 @@ def ShowAlpha(url = None):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl = URL_MAIN + str(aEntry[0])
@@ -291,7 +291,7 @@ def ShowAlpha(url = None):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [B][COLOR red]' + sLetter + '[/COLOR][/B]', 'az.png', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -344,11 +344,11 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in list(set(aResult[1])):
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sThumb = URL_MAIN + str(aEntry[0])
@@ -391,7 +391,7 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
         if sSearch:
             sNextPage = False
@@ -446,10 +446,10 @@ def showEpisode():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sTitle = unicode(aEntry[2], 'iso-8859-1')
@@ -471,7 +471,7 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -565,7 +565,7 @@ def showHosters():
     sPattern = 'document\.write\(unescape\("(%3c%.+?)"\)\);'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        VSlog("methode 3")
+        #VSlog("methode 3")
         for aEntry in aResult[1]:
             tmp = urllib.unquote(aEntry)
 
@@ -674,7 +674,7 @@ def showHosters():
                 #VSlog(sHosterUrl2)
                 
                 if 'intern_player2.png' in sHosterUrl2:
-                    VSlog('fausse image')
+                    #VSlog('fausse image')
                     #VSlog(sHtmlContent)
                     
                     xx = str(random.randint(300, 350))#347
@@ -740,7 +740,7 @@ def GetTinyUrl(url):
     #On va chercher le vrai lien
     else:
 
-        VSlog('Decodage lien tinyurl : ' + str(url))
+        #VSlog('Decodage lien tinyurl : ' + str(url))
 
         class NoRedirection(urllib2.HTTPErrorProcessor):
             def http_response(self, request, response):

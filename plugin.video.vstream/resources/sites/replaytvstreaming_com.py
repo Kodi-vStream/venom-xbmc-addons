@@ -1,12 +1,14 @@
 #-*- coding: utf-8 -*-
-#Venom.kodigoal
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#Venom, kodigoal
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
+
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'replaytvstreaming_com'
 SITE_NAME = 'Replay Tv Streaming'
@@ -102,7 +104,13 @@ def showMovies(sSearch = ''):
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
+
         for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
 
             sUrl = str(aEntry[0])
             sTitle = str(aEntry[2])
@@ -118,6 +126,8 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumb, sDesc, oOutputParameterHandler)
 
+        progress_.VSclose(progress_)
+        
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()

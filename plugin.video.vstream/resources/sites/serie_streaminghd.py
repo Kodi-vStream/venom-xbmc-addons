@@ -5,8 +5,8 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.lib.parser import cParser
+from resources.lib.comaddon import progress
 #from resources.lib.util import cUtil
 
 
@@ -83,10 +83,10 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sThumb = str(aEntry[0])
@@ -104,7 +104,7 @@ def showMovies(sSearch = ''):
 
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -157,13 +157,13 @@ def showHosters():
 
         if (aResult[0] == True):
             total = len(aResult[1])
-            dialog = cConfig().createDialog(SITE_NAME)
+            progress_ = progress().VScreate(SITE_NAME)
 
             oGui.addText(SITE_IDENTIFIER, '[COLOR red]Langue VOSTFR[/COLOR]')
 
             for aEntry in aResult[1]:
-                cConfig().updateDialog(dialog, total)
-                if dialog.iscanceled():
+                progress_.VSupdate(progress_, total)
+                if progress_.iscanceled():
                    break
 
                 sHosterUrl = str(aEntry[0])
@@ -185,13 +185,13 @@ def showHosters():
                 total2 = len(aResult[1])
                 #update total dialog si liens vostfr puis vf
                 total3 = total + total2
-                dialog = cConfig().createDialog(SITE_NAME)
+                progress_ = progress().VScreate(SITE_NAME)
 
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]Langue VF[/COLOR]')
 
                 for aEntry in aResult[1]:
-                    cConfig().updateDialog(dialog, total3)
-                    if dialog.iscanceled():
+                    progress_.VSupdate(progress_, total3)
+                    if progress_.iscanceled():
                        break
 
                     sHosterUrl = str(aEntry[0])
@@ -204,6 +204,6 @@ def showHosters():
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
 
-    cConfig().finishDialog(dialog)
+    progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
