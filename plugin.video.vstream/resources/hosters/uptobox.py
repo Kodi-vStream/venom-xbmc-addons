@@ -51,7 +51,7 @@ class cHoster(iHoster):
         oParser = cParser()
 
         #On ne charge les sous titres uniquement si vostfr se trouve dans le titre.
-        if re.search('<div class=[\'"]theater-background[\'"]></div>\s*<h1>[^<>]+VOSTFR[^<>]*</h1>',sHtmlContent,re.IGNORECASE):
+        if re.search('<div class=[\'"]theater-background[\'"]></div>\s*<h1>[^<>]+(?:MULTI|VOSTFR)[^<>]*</h1>',sHtmlContent,re.IGNORECASE):
         
             sPattern = '<track type=[\'"].+?[\'"] kind=[\'"]subtitles[\'"] src=[\'"]([^\'"]+).vtt[\'"] srclang=[\'"].+?[\'"] label=[\'"]([^\'"]+)[\'"]>'
             aResult = oParser.parse(sHtmlContent, sPattern)
