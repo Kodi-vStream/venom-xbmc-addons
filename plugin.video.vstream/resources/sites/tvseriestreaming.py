@@ -15,13 +15,13 @@ SITE_IDENTIFIER = 'tvseriestreaming'
 SITE_NAME = 'Tv_seriestreaming'
 SITE_DESC = 'Séries & Animés en Streaming'
 
-URL_MAIN = 'https://tv.seriestreaming.site/'
+URL_MAIN = 'https://vf.seriestreaming.site/'
 
 SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = (URL_MAIN + 'nouveaux-episodes', 'showMovies')
 SERIE_LIST = (URL_MAIN, 'showAZ')
-SERIE_GENRES = ('http://venom', 'showGenres')
-SERIE_ANNEES = ('http://venom', 'showSerieYears')
+SERIE_GENRES = (True, 'showGenres')
+SERIE_ANNEES = (True, 'showSerieYears')
 
 URL_SEARCH_SERIES = (URL_MAIN + 'search?q=', 'showMovies')
 
@@ -65,7 +65,7 @@ def showSerieYears():
     #for i in itertools.chain(xrange(5, 7), [8, 9]): afficher dans l'ordre (pense bete ne pas effacer)
     oGui = cGui()
     from itertools import chain
-    generator = chain([1936,1940,1941,1944,1950,1952],xrange(1958,2019))#desordre
+    generator = chain([1936, 1940, 1941, 1944, 1950, 1952], xrange(1958, 2019))#desordre
 
     for i in reversed(list(generator)):
         Year = str(i)
@@ -88,7 +88,7 @@ def showAZ():
             
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sLetter', sLetter)
-        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', 'Lettre - [COLOR coral]' + aLetter + '[/COLOR]', 'series_az.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', 'Lettre [COLOR coral]' + aLetter + '[/COLOR]', 'series_az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -102,7 +102,7 @@ def AlphaDisplay():
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = oParser.abParse(sHtmlContent, '<h1>Listes des séries:</h1>', '<div class="container"><br>')
 
-    sPattern = '<a title="('+sLetter+'.+?)" href="([^"]+)"'
+    sPattern = '<a title="(' + sLetter + '.+?)" href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True) :
         total = len(aResult[1])
@@ -213,10 +213,10 @@ def showMovies(sSearch=''):
                 
             if 'nouveaux' in sUrl:
                 sUrl2 = aEntry[0]
-                sTitle = aEntry[1] + aEntry[2].replace(' ','')
+                sTitle = aEntry[1].replace(' -', ' ') + aEntry[2].replace(' ', '')
                 sThumb = 'series_news.png'
             else:
-                sTitle = aEntry[0].replace('Streaming','')
+                sTitle = aEntry[0].replace('Streaming', '')
                 sUrl2 = aEntry[1]
                 sThumb = aEntry[2]
 
@@ -227,9 +227,9 @@ def showMovies(sSearch=''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             
             if 'nouveaux' in sUrl:
-                oGui.addDir(SITE_IDENTIFIER, 'showLink', sTitle,sThumb,oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showLink', sTitle, sThumb, oOutputParameterHandler)
             else:
-                oGui.addMisc(SITE_IDENTIFIER, 'showS_E', sTitle, '', sThumb,'',oOutputParameterHandler)
+                oGui.addMisc(SITE_IDENTIFIER, 'showS_E', sTitle, '', sThumb, '', oOutputParameterHandler)
                 
         cConfig().finishDialog(dialog)
 
@@ -338,9 +338,10 @@ def showLink():
             if dialog.iscanceled():
                 break
 
-            sHost = re.sub('\..+','',aEntry[0])
+            sHost = re.sub('\..+', '', aEntry[0]).capitalize()
             sUrl = URL_MAIN + 'link/' + aEntry[2]
-            sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, aEntry[1], sHost)
+            sLang = str(aEntry[1])
+            sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
