@@ -815,7 +815,6 @@ def get_response(img, cookie):
         image_on_web = urllib2.urlopen(req)
         if image_on_web.headers.maintype == 'image':
             buf = image_on_web.read()
-            print filename
             #downloaded_image = file(filename, "wb")
             downloaded_image = xbmcvfs.File(filename, 'wb')
             downloaded_image.write(buf)

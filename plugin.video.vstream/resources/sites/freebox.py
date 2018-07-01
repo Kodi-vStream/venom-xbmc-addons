@@ -1,7 +1,5 @@
 #-*- coding: utf-8 -*-
-#Venom.
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
+#vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -10,11 +8,12 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
-from resources.lib.config import cConfig
-from resources.lib.epg import cePg
 
-import re, urllib2, urllib, os, time, unicodedata, sys
-import xbmc, xbmcgui, xbmcplugin
+from resources.lib.epg import cePg
+from resources.lib.comaddon import progress, addon, xbmc, xbmcgui
+
+import re, urllib2, urllib, sys
+import xbmcplugin, xbmcvfs
 
 SITE_IDENTIFIER = 'freebox'
 SITE_NAME = '[COLOR orange]Télévision Direct / Stream[/COLOR]'
@@ -34,8 +33,9 @@ headers = {'User-Agent': USER_AGENT,
            'Connection': 'keep-alive'}
 
 icon = 'tv.png'
-sRootArt = cConfig().getRootArt()
-addon_handle = int(sys.argv[1])
+#/home/lordvenom/.kodi/
+#sRootArt = cConfig().getRootArt()
+sRootArt = "special://home/addons/plugin.video.vstream/resources/art/tv"
 
 class track():
     def __init__(self, length, title, path, icon,data=''):
@@ -46,13 +46,12 @@ class track():
         self.data = data
         
 def load():
-    linktv = cConfig().getSetting('pvr-view')
     oGui = cGui()
-    oConfig = cConfig()
+    addons = addon()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_WEB)
-    oGui.addDir(SITE_IDENTIFIER, 'showWeb', oConfig.getlanguage(30332), 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showWeb', addons.VSlang(30332), 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_IPTVSITE)
@@ -60,21 +59,22 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
-    oGui.addDir(SITE_IDENTIFIER, 'showAZRadio', oConfig.getlanguage(30203)+' (A-Z)', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showAZRadio', addons.VSlang(30203)+' (A-Z)', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
-    oGui.addDir(SITE_IDENTIFIER, 'showWeb', oConfig.getlanguage(30203), 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showWeb', addons.VSlang(30203), 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
 def showIptvSite():
+
     oGui = cGui()
 
     #test f4mTester
-    sPath = xbmc.translatePath('special://home/addons/plugin.video.f4mTester')
+    sPath = "special://home/addons/plugin.video.f4mTester/default.py"
 
-    if not os.path.exists(sPath):
+    if not xbmcvfs.exists(sPath):
         oGui.addText(SITE_IDENTIFIER, "[COLOR red]plugin.video.f4mTester : L'addon n'est pas présent[/COLOR]")
 
     liste = []
@@ -87,7 +87,7 @@ def showIptvSite():
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showDailyList', sTitle, 'films_genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showDailyList', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -114,11 +114,11 @@ def showDailyList(): #On recupere les dernier playlist ajouter au site
     if (aResult[0] == True):
         total = len(aResult[1])
 
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
         
             sTitle = str(aEntry[1])
@@ -129,11 +129,11 @@ def showDailyList(): #On recupere les dernier playlist ajouter au site
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
             if 'iptvsatlinks.blogspot.fr/' in sUrl: #iptvsatlinks est traiter differament par rapport au autre
-                oGui.addDir(SITE_IDENTIFIER, 'showWebIptvSource', sTitle, '', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showWebIptvSource', sTitle, 'tv.png', oOutputParameterHandler)
             else:
-                oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, '', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, 'tv.png', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -183,12 +183,11 @@ def showAllPlaylist():#On recuepere les differente playlist si il y en a
 
     if (aResult[0] == True):
         total = len(aResult[1])
-
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             if 'iptvgratuit.com' in sUrl:
@@ -207,7 +206,7 @@ def showAllPlaylist():#On recuepere les differente playlist si il y en a
             else:
                 oGui.addDir(SITE_IDENTIFIER, 'showWebIptvSource', sTitle, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -229,7 +228,7 @@ def showWorldIptvGratuit():#On recupere les liens qui sont dans les playlist "Wo
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
-        oGui.addDir(SITE_IDENTIFIER, 'parseWebM3U', sTitle, '', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'parseWebM3U', sTitle, 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
     
@@ -247,12 +246,11 @@ def showWebIptvSource():#On traite les liens WebIptvSources
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             total = len(aResult[1])
-
-            dialog = cConfig().createDialog(SITE_NAME)
+            progress_ = progress().VScreate(SITE_NAME)
 
             for aEntry in aResult[1]:
-                cConfig().updateDialog(dialog, total)
-                if dialog.iscanceled():
+                progress_.VSupdate(progress_, total)
+                if progress_.iscanceled():
                     break
                 
                 sUrl2 = 'http'+str(aEntry[0])+'/'+str(aEntry[1])
@@ -264,9 +262,9 @@ def showWebIptvSource():#On traite les liens WebIptvSources
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
-                oGui.addDir(SITE_IDENTIFIER, 'showWebIptvSource', sTitle, '', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'showWebIptvSource', sTitle, 'tv.png', oOutputParameterHandler)
 
-            cConfig().finishDialog(dialog)
+            progress_.VSclose(progress_)
 
         oGui.setEndOfDirectory()
     
@@ -347,11 +345,12 @@ def showWeb():#Code qui s'occupe de liens TV du Web
 
             #les + ne peuvent pas passer
             url2 = str(track.path).replace('+','P_L_U_S')
+            thumb = "/".join([sRootArt, sThumb]) 
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', url2)
             oOutputParameterHandler.addParameter('sMovieTitle', str(track.title))
-            oOutputParameterHandler.addParameter('sThumbnail', str(sRootArt + '/tv/' + sThumb))
+            oOutputParameterHandler.addParameter('sThumbnail', thumb)
 
             #oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt+'/tv/'+sThumb, oOutputParameterHandler)
 
@@ -362,7 +361,7 @@ def showWeb():#Code qui s'occupe de liens TV du Web
             oGuiElement.setFileName(track.title)
             oGuiElement.setIcon('tv.png')
             oGuiElement.setMeta(0)
-            oGuiElement.setThumbnail(sRootArt+'/tv/'+sThumb)
+            oGuiElement.setThumbnail(thumb)
             oGuiElement.setDirectTvFanart()
             oGuiElement.setCat(6)
 
@@ -446,7 +445,7 @@ def showTV():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         #affiche par
         if (oInputParameterHandler.exist('AZ')):
@@ -458,16 +457,14 @@ def showTV():
 
         total = len(string)
         for aEntry in string:
-            cConfig().updateDialog(dialog, total)
-
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', aEntry[0])
             oOutputParameterHandler.addParameter('sThumbnail', str('tv.png'))
-            oOutputParameterHandler.addParameter('sThumbnail', str(sRootArt + '/tv.png'))
 
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(SITE_IDENTIFIER)
@@ -485,7 +482,7 @@ def showTV():
             oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
    
