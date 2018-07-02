@@ -11,10 +11,7 @@ from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.parser import cParser
 from resources.lib import util
 
-from resources.lib.comaddon import *
-
-#dejas importer par comaddon
-#import xbmc
+from resources.lib.comaddon import listitem, addon, dialog, isKrypton, window, xbmc
 
 import xbmcplugin
 import urllib

@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
-# Venom.
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#
+# Venom.
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.contextElement import cContextElement
@@ -11,7 +10,7 @@ from resources.lib.player import cPlayer
 
 from resources.lib.handler.requestHandler import cRequestHandler
 
-from resources.lib.comaddon import *
+from resources.lib.comaddon import dialog, addon, VSlog, isKrypton
 
 
 class cHosterGui:
@@ -40,7 +39,6 @@ class cHosterGui:
 
         oGuiElement.setFileName(oHoster.getFileName())
         oGuiElement.getInfoLabel()
-        #oGuiElement.setThumbnail(xbmc.getInfoLabel('ListItem.Art(thumb)'))
         if sThumbnail:
             oGuiElement.setThumbnail(sThumbnail)
 

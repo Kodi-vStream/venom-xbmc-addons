@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.
-import xbmc, xbmcgui, xbmcaddon
+import xbmc, xbmcaddon
 import sys, os
 import urllib, urllib2
 
@@ -10,22 +11,25 @@ import urllib, urllib2
 
 from resources.lib.config import cConfig
 
-from resources.lib.comaddon import *
+from resources.lib.comaddon import addon, dialog, VSlog, xbmcgui
 #from util import VStranslatePath
 #from resources.lib.util import VStranslatePath
 
 try:
     from sqlite3 import dbapi2 as sqlite
-    cConfig().log('SQLITE 3 as DB engine')
+    VSlog('SQLITE 3 as DB engine')
 except:
     from pysqlite2 import dbapi2 as sqlite
-    cConfig().log('SQLITE 2 as DB engine')
+    VSlog('SQLITE 2 as DB engine')
 
 
 SITE_IDENTIFIER = 'runscript'
 SITE_NAME = 'runscript'
 
 class cClear:
+
+    DIALOG = dialog()
+    ADDON = addon()
 
     def __init__(self):
         self.main(sys.argv[1])
@@ -38,7 +42,7 @@ class cClear:
             return
 
         elif (env == 'metahandler'):
-            xbmcaddon.Addon('script.module.metahandler').openSettings()
+            addon('script.module.metahandler').openSettings()
             return
 
         elif (env == 'changelog'):
@@ -50,7 +54,7 @@ class cClear:
                 from resources.lib.about import cAbout
                 cAbout().TextBoxes('vStream Changelog', sContent)
             except:
-                cConfig().error("%s,%s" % (cConfig().getlanguage(30205), sUrl))
+                self.DIALOG.VSerror("%s,%s" % (self.ADDON.VSlang(30205), sUrl))
             return
 
         elif (env == 'soutient'):
@@ -62,7 +66,7 @@ class cClear:
                 from resources.lib.about import cAbout
                 cAbout().TextBoxes('vStream Soutient', sContent)
             except:
-                cConfig().error("%s,%s" % (cConfig().getlanguage(30205), sUrl))
+                self.DIALOG.VSerror("%s,%s" % (self.ADDON.VSlang(30205), sUrl))
             return
 
         elif (env == 'addon'):
@@ -71,13 +75,12 @@ class cClear:
                 cached_Cache = cConfig().getFileCache()
                 cached_Cache = xbmc.translatePath(cached_Cache).decode("utf-8")
                 self.ClearDir2(cached_Cache,True)
-                xbmc.executebuiltin("XBMC.Notification(Clear Addon Cache,Successful,5000,"")")
+                self.DIALOG.VSinfo('Clear Addon Cache,Successful')
             return
 
         elif (env == 'clean'):
-            dialog = xbmcgui.Dialog()
             liste = ['Historiques', 'Lecture en cours', 'Marqués vues', 'Marque-Pages', 'Téléchargements']
-            ret = dialog.select('BDD à supprimer', liste)
+            ret = self.DIALOG.select('BDD à supprimer', liste)
             cached_DB = cConfig().getFileDB()
 
             sql_drop = ""
@@ -102,23 +105,21 @@ class cClear:
                     db.commit()
                     dbcur.close()
                     db.close()
-                    xbmc.executebuiltin("XBMC.Notification(Suppression BDD,Successful,5000,"")")
+                    self.DIALOG.VSinfo("Suppression BDD,Successful")
                 except:
-                    xbmc.executebuiltin("XBMC.Notification(Suppresion BDD,Error,5000,"")")
+                    self.DIALOG.VSerror("Suppresion BDD,Error")
 
             return
 
         elif (env == 'xbmc'):
-            dialog = xbmcgui.Dialog()
-            if dialog.yesno('vStream', 'Êtes-vous sûr ?','','','Non', 'Oui'):
+            if self.DIALOG.VSyesno('Êtes-vous sûr ?'):
                 temp = xbmc.translatePath('special://temp/').decode("utf-8")
                 self.ClearDir(temp,True)
                 xbmc.executebuiltin("XBMC.Notification(Clear XBMC Cache,Successful,5000,"")")
             return
 
         elif (env == 'fi'):
-            dialog = xbmcgui.Dialog()
-            if dialog.yesno('vStream', 'Êtes-vous sûr ?','','','Non', 'Oui'):
+            if self.DIALOG.VSyesno('Êtes-vous sûr ?'):
                 xbmc.executebuiltin("XBMC.Notification(Clear .fi Files ,Successful,2000,"")")
                 path = xbmc.translatePath('special://temp/').decode("utf-8")
                 filenames = next(os.walk(path))[2]
@@ -128,8 +129,7 @@ class cClear:
             return
 
         elif (env == 'uplog'):
-            dialog = xbmcgui.Dialog()
-            if dialog.yesno('vStream', 'Êtes-vous sûr ?','','','Non', 'Oui'):
+            if self.DIALOG.VSyesno('Êtes-vous sûr ?'):
                 path = xbmc.translatePath('special://logpath/').decode("utf-8")
                 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
                 headers = { 'User-Agent' : UA }
@@ -151,7 +151,7 @@ class cClear:
                         reponse = urllib2.urlopen(request)
                         code = reponse.geturl().replace('http://slexy.org/view/','')
                         reponse.close()
-                        cConfig().createDialogOK('Ce code doit être transmis lorsque vous ouvrez une issue veuillez le noter:' + '  ' + code)
+                        self.DIALOG.VSok('Ce code doit être transmis lorsque vous ouvrez une issue veuillez le noter:' + '  ' + code)
             return
 
         elif (env == 'search'):
@@ -163,6 +163,8 @@ class cClear:
 
             class XMLDialog(xbmcgui.WindowXMLDialog):
 
+                ADDON = addon()
+
                 def __init__(self, *args, **kwargs):
                     xbmcgui.WindowXMLDialog.__init__( self )
                     pass
@@ -172,7 +174,7 @@ class cClear:
                     self.container = self.getControl(6)
                     self.button = self.getControl(5)
                     self.getControl(3).setVisible(False)
-                    self.getControl(1).setLabel(cConfig().getlanguage(30094))
+                    self.getControl(1).setLabel(self.ADDON.VSlang(30094))
                     self.button.setLabel('OK')
                     listitems = []
                     oPluginHandler = cPluginHandler()
@@ -181,7 +183,7 @@ class cClear:
                     for aPlugin in aPlugins:
                         #teste si deja dans le dsip
                         sPluginSettingsName = 'plugin_' +aPlugin[1]
-                        bPlugin = cConfig().getSetting(sPluginSettingsName)
+                        bPlugin = self.ADDON.getSetting(sPluginSettingsName)
 
                         icon = os.path.join(unicode(cConfig().getRootArt(), 'utf-8'), 'sites', aPlugin[1]+'.png')
                         stitle = aPlugin[0].replace('[COLOR violet]','').replace('[COLOR orange]','').replace('[/COLOR]','')
@@ -199,10 +201,6 @@ class cClear:
 
 
                     self.setFocus(self.container)
-
-                def message(self, message):
-                    dialog = xbmcgui.Dialog()
-                    dialog.ok(" My message title", message)
 
                 def onClick(self, controlId):
                     if controlId == 5:
@@ -225,13 +223,13 @@ class cClear:
                             item.setLabel(label)
                             item.select(False)
                             sPluginSettingsName = ('plugin_%s') % (item.getProperty('sitename'))
-                            cConfig().setSetting(sPluginSettingsName, str('false'))
+                            self.ADDON.setSetting(sPluginSettingsName, str('false'))
                         else :
                             label = ('%s %s') % (item.getLabel(), valid)
                             item.setLabel(label)
                             item.select(True)
                             sPluginSettingsName = ('plugin_%s') % (item.getProperty('sitename'))
-                            cConfig().setSetting(sPluginSettingsName, str('true'))
+                            self.ADDON.setSetting(sPluginSettingsName, str('true'))
                         return
 
                 def onFocus(self, controlId):
@@ -250,9 +248,9 @@ class cClear:
             return
 
         elif (env == 'thumb'):
-            dialog = xbmcgui.Dialog()
-            if dialog.yesno('vStream', 'Êtes-vous sûr ? Ceci effacera toutes les thumbnails ','','','Non', 'Oui'):
-                xbmc.executebuiltin("XBMC.Notification(Clear Thumbnails ,Successful,2000,"")")
+ 
+            if self.DIALOG.VSyesno('Êtes-vous sûr ? Ceci effacera toutes les thumbnails '):
+                self.DIALOG.VSinfo("Clear Thumbnails ,Successful")
                 path = xbmc.translatePath('special://userdata/Thumbnails/').decode("utf-8")
                 path2 = xbmc.translatePath('special://userdata/Database/').decode("utf-8")
                 for i in os.listdir(path):

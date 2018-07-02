@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -9,7 +8,7 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.tmdb import cTMDb
 
-from resources.lib.comaddon import *
+from resources.lib.comaddon import progress, addon, dialog
 
 try:    import json
 except: import simplejson as json
@@ -35,9 +34,6 @@ API_URL = URL_MAIN + API_VERS
 view = '500'
 tmdb_session = ''
 tmdb_account = ''
-
-#n'est pas set ?
-#xbmcgui.Window(10101).clearProperty('search_disp')
 
 
 def load():
@@ -504,14 +500,12 @@ def showMovies(sSearch = ''):
 
     total = len(result)
     if (total > 0):
+        total = len(result['results'])
+        progress_ = progress().VScreate(SITE_NAME)
 
-        dialog = progress()
-        dialog.VScreate(SITE_NAME)
         for i in result['results']:
-
-            total = len(result['results'])
-            dialog.VSupdate(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sId, sTitle, sOtitle, sThumb, sFanart, sDesc = i['id'], i['title'], i['original_title'], i['poster_path'], i['backdrop_path'], i['overview']
@@ -553,7 +547,7 @@ def showMovies(sSearch = ''):
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        dialog.VSclose(dialog)
+        progress_.VSclose(progress_)
 
         if (iPage > 0):
             iNextPage = int(iPage) + 1
@@ -566,8 +560,7 @@ def showMovies(sSearch = ''):
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
 
 
-    #test pr chnagement mode
-    #xbmc.executebuiltin('Container.SetViewMode(500)')
+    #chnagement mode
     view = addons.getSetting('visuel-view')
 
     oGui.setEndOfDirectory(view)
@@ -610,15 +603,13 @@ def showSeries(sSearch=''):
 
     total = len(result)
 
-    dialog = progress()
-    dialog.VScreate(SITE_NAME)
-
     if (total > 0):
-        for i in result['results']:
+        total = len(result['results'])
+        progress_ = progress().VScreate(SITE_NAME)
 
-            total = len(result['results'])
-            dialog.VSupdate(dialog, total)
-            if dialog.iscanceled():
+        for i in result['results']:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sId, sTitle, sOtitle, sThumb, sFanart, sDesc = i['id'], i['name'], i['original_name'], i['poster_path'], i['backdrop_path'], i['overview']
@@ -668,7 +659,7 @@ def showSeries(sSearch=''):
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        dialog.VSclose(dialog)
+        progress_.VSclose(progress_)
 
         if (iPage > 0):
             iNextPage = int(iPage) + 1
@@ -681,8 +672,7 @@ def showSeries(sSearch=''):
                 oOutputParameterHandler.addParameter('genre', oInputParameterHandler.getValue('genre'))
             oGui.addNext(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
 
-    #test pr chnagement mode
-    #xbmc.executebuiltin('Container.SetViewMode(500)')
+    #chnagement mode
     view = addons.getSetting('visuel-view')
 
     oGui.setEndOfDirectory(view)
@@ -732,15 +722,14 @@ def showSeriesSaison():
 
     total = len(result)
 
-    dialog = progress()
-    dialog.VScreate(SITE_NAME)
-
     if (total > 0):
-        for i in result['seasons']:
 
-            total = len(result['seasons'])
-            dialog.VSupdate(dialog, total)
-            if dialog.iscanceled():
+        total = len(result['seasons'])
+        progress_ = progress().VScreate(SITE_NAME)
+
+        for i in result['seasons']:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sdate, sNbreEp, sIdSeason, sThumb, SSeasonNum = i['air_date'], i['episode_count'], i['id'], i['poster_path'], i['season_number']
@@ -783,9 +772,9 @@ def showSeriesSaison():
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        dialog.VSclose(dialog)
-    #test pr chnagement mode
-    #xbmc.executebuiltin('Container.SetViewMode(500)')
+        progress_.VSclose(progress_)
+
+    #chnagement mode
     view = addons.getSetting('visuel-view')
 
     oGui.setEndOfDirectory(view)
@@ -839,11 +828,12 @@ def showSeriesEpisode():
     dialog = progress()
     dialog.VScreate(SITE_NAME)
     if (total > 0):
-        for i in result['episodes']:
+        total = len(result['episodes'])
+        progress_ = progress().VScreate(SITE_NAME)
 
-            total = len(result['episodes'])
-            dialog.VSupdate(dialog, total)
-            if dialog.iscanceled():
+        for i in result['episodes']:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             #sId, sTitle, sOtitle, sThumb, sFanart = i['id'], i['name'], i['original_name'], i['poster_path'], i['backdrop_path']
@@ -891,9 +881,9 @@ def showSeriesEpisode():
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        dialog.VSclose(dialog)
-    #test pr chnagement mode
-    #xbmc.executebuiltin('Container.SetViewMode(50)')
+        progress_.VSclose(progress_)
+    
+    #tchnagement mode
     view = addons.getSetting('visuel-view')
     oGui.setEndOfDirectory(view)
 
@@ -919,11 +909,12 @@ def showActors():
     dialog.VScreate(SITE_NAME)
 
     if (total > 0):
-        for i in result['results']:
+        total = len(result['results'])
+        progress_ = progress().VScreate(SITE_NAME)
 
-            total = len(result['results'])
-            dialog.VSupdate(dialog, total)
-            if dialog.iscanceled():
+        for i in result['results']:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sName, sThumb = i['name'], i['profile_path']
@@ -956,7 +947,7 @@ def showActors():
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        dialog.VSclose(dialog)
+        progress_.VSclose(progress_)
 
 
         if (iPage > 0):
@@ -987,16 +978,13 @@ def showFilmActor():
     result = grab.getUrl(sUrl, iPage)
 
     total = len(result)
-
-    dialog = progress()
-    dialog.VScreate(SITE_NAME)
-
     if (total > 0):
-        for i in result['cast']:
+        total = len(result['cast'])
+        progress_ = progress().VScreate(SITE_NAME)
 
-            total = len(result['cast'])
-            dialog.VSupdate(dialog, total)
-            if dialog.iscanceled():
+        for i in result['cast']:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
 
@@ -1046,7 +1034,7 @@ def showFilmActor():
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        dialog.VSclose(dialog)
+        progress_.VSclose(progress_)
          #pas de paramettre de page
         # if (iPage > 0):
             # iNextPage = int(iPage) + 1
@@ -1080,16 +1068,14 @@ def showLists():
     oGui = cGui()
 
     total = len(result)
-    
-    dialog = progress()
-    dialog.VScreate(SITE_NAME)
 
     if (total > 0):
-        for i in result['items']:
+        total = len(result['items'])
+        progress_ = progress().VScreate(SITE_NAME)
 
-            total = len(result['items'])
-            dialog.VSupdate(dialog, total)
-            if dialog.iscanceled():
+        for i in result['items']:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sId, sType, sThumb, sFanart, sVote, sDesc = i['id'], i['media_type'], i['poster_path'], i['backdrop_path'], i['vote_average'], i['overview']
@@ -1147,7 +1133,7 @@ def showLists():
 
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
-        dialog.VSclose(dialog)
+        progress_.VSclose(progress_)
 
     view = addons.getSetting('visuel-view')
     oGui.setEndOfDirectory(view)

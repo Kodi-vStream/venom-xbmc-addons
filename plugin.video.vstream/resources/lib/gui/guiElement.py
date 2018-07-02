@@ -1,9 +1,7 @@
 #-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.
-#from resources.lib.config import cConfig
-
-from resources.lib.comaddon import *
-
+from resources.lib.comaddon import addon, xbmc
 from resources.lib.db import cDb
 
 import os, re, urllib, string

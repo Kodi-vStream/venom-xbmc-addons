@@ -1,24 +1,15 @@
 #-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.mino60.TmpName
-from resources.lib.config import cConfig
-from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.rechercheHandler import cRechercheHandler
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.favourite import cFav
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-#from resources.lib.util import cUtil
-import urllib, unicodedata, re
-import xbmcgui
-import xbmc
-#import sqlalchemy
+from resources.lib.comaddon import progress
 
-try:    import json
-except: import simplejson as json
+import urllib, unicodedata, re
+#import sqlalchemy
 
 SITE_IDENTIFIER = 'topimdb'
 SITE_NAME = '[COLOR orange]Top 1000 IMDb[/COLOR]'
@@ -163,10 +154,10 @@ def showMovies(sSearch = '', page = 1):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sTitle = unicode(aEntry[0], 'utf-8')#converti en unicode
@@ -192,7 +183,7 @@ def showMovies(sSearch = '', page = 1):
             oOutputParameterHandler.addParameter('searchtext', showTitle(str(aEntry[0]), str('none')))
             oGui.addMovie('globalSearch', 'showSearch', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -200,12 +191,8 @@ def showMovies(sSearch = '', page = 1):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
-    #tPassage en mode vignette sauf en cas de recherche globale
-    if not bGlobal_Search:
-        xbmc.executebuiltin('Container.SetViewMode(500)')
-
     if not sSearch:
-        oGui.setEndOfDirectory()
+        oGui.setEndOfDirectory('500')
 
 
 def __checkForNextPage(sHtmlContent):

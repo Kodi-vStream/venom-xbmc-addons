@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-import re
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'youtitou_com'
 SITE_NAME = 'YouTitou'
@@ -73,7 +73,14 @@ def showMovies():
     sPattern = '<p style="text-align: center;"><a href="(http:\/\/www.youtitou.com\/videos.+?)">.+?<img.+?src="([^"]+)"'
     aResult = oParser.parse(sHtml, sPattern)
     if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
+
         for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+
             sUrl = aEntry[0]
             if sUrl.endswith('//'):
                 sUrl = sUrl[:-1]
@@ -86,6 +93,8 @@ def showMovies():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMovie(SITE_IDENTIFIER, 'showEpisode', sTitle, 'animes_enfants.png', sThumb, '', oOutputParameterHandler)
+
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 

@@ -1,20 +1,13 @@
 #-*- coding: utf-8 -*-
-#
+# Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Votre nom ou pseudo
-#
-#
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-
-import xbmc
-import re
 
 SITE_IDENTIFIER = 'voirfilm'
 SITE_NAME = 'Voir Film'

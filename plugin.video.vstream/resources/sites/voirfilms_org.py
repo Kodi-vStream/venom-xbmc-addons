@@ -1,12 +1,13 @@
 #-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.lib.parser import cParser
+from resources.lib.comaddon import progress #, VSlog
 #from resources.lib.util import cUtil
 import urllib2, urllib, re
 
@@ -98,10 +99,10 @@ def AlphaSearch():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    dialog = cConfig().createDialog(SITE_NAME)
+    progress_ = progress().VScreate(SITE_NAME)
 
     for i in range(0, 27) :
-        cConfig().updateDialog(dialog, 36)
+        progress_.VSupdate(progress_, 36)
 
         if (i > 0):
             sTitle = chr(64 + i)
@@ -113,7 +114,7 @@ def AlphaSearch():
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Lettre [COLOR coral]' + sTitle + '[/COLOR]', 'az.png', oOutputParameterHandler)
 
-    cConfig().finishDialog(dialog)
+    progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -284,11 +285,11 @@ def showMovies(sSearch = ''):
 
     if not (aResult[0] == False):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             if type == '2':
@@ -328,7 +329,7 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
         if not sSearch:
             sNextPage = __checkForNextPage(sHtmlContent)
@@ -371,10 +372,10 @@ def showHosters():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl = aEntry[0]
@@ -389,7 +390,7 @@ def showHosters():
 
             oGui.addMovie(SITE_IDENTIFIER, 'showHostersLink', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -417,10 +418,10 @@ def serieHosters():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sEp = str(aEntry[1])
@@ -441,7 +442,7 @@ def serieHosters():
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -468,8 +469,8 @@ def showHostersLink():
     #    redirection_target = response.headers['Location']
     #response.close()
 
-    #cConfig().log('red > ' + redirection_target)
-    #cConfig().log('cod > ' + sHtmlContent)
+    #VSlog('red > ' + redirection_target)
+    #VSlog('cod > ' + sHtmlContent)
 
     #attention fake redirection
     #sUrl = redirection_target

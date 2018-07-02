@@ -3,7 +3,7 @@
 
 import xbmcaddon, xbmcgui, xbmc
 
-"""le vrais system d'importation pour eviter de faire *
+"""System d'importation
 
 from resources.lib.comaddon import addon, dialog, VSlog, xbmcgui, xbmc
 
@@ -11,8 +11,6 @@ from resources.lib.comaddon import addon, dialog, VSlog, xbmcgui, xbmc
 
 """
 from resources.lib.comaddon import addon
-ou
-from resources.lib.comaddon import *
 
 addons = addon() en haut de page.
 
@@ -52,8 +50,6 @@ class addon(xbmcaddon.Addon):
 
 """
 from resources.lib.comaddon import dialog
-ou
-from resources.lib.comaddon import *
 
 ne peux pas utiliser les autres fonction que dialog 
 dialogs = dialog()
@@ -107,8 +103,7 @@ class dialog(xbmcgui.Dialog):
         
 """
 from resources.lib.comaddon import progress
-ou
-from resources.lib.comaddon import *
+
 progress_ = progress()
 progress_.VScreate(SITE_NAME)
 progress_.VSupdate(progress_, total)
@@ -150,8 +145,7 @@ class progress(xbmcgui.DialogProgress):
         
 """
 from resources.lib.comaddon import window
-ou
-from resources.lib.comaddon import *
+
 window(10101).getProperty('test')
 http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/xbmcgui.html#Window
 """
@@ -164,8 +158,6 @@ class window(xbmcgui.Window):
 
 """
 from resources.lib.comaddon import listitem
-ou
-from resources.lib.comaddon import *
 listitem.setLabel('test')
 http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/xbmcgui.html#ListItem
 """
@@ -178,7 +170,7 @@ class listitem(xbmcgui.ListItem):
         pass
 
 """
-from resources.lib.comaddon import *
+from resources.lib.comaddon import VSlog
 VSlog('testtttttttttttt')
 ou
 xbmc.log

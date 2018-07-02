@@ -14,7 +14,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 #from resources.lib.config import cConfig
 from resources.lib.db import cDb
 
-from resources.lib.comaddon import *
+from resources.lib.comaddon import progress, VSlog, addon, window, xbmc
 
 #http://kodi.wiki/view/InfoLabels
 #http://kodi.wiki/view/List_of_boolean_conditions
@@ -212,7 +212,7 @@ def searchGlobal():
     if not aPlugins: return True
     total = len(aPlugins)
 
-    #xbmc.log(str(aPlugins), xbmc.LOGNOTICE)
+    #VSlog(str(aPlugins), xbmc.LOGNOTICE)
 
     progress_ = progress()
     progress_.VScreate()
@@ -259,7 +259,7 @@ def searchGlobal():
         #result['params'].addParameter('VSTRMSEARCH','True')
 
         oGui.addFolder(result['guiElement'],result['params'])
-        #xbmc.log('%s - %s' % (middle,old_label),  xbmc.LOGNOTICE)
+        #VSlog('%s - %s' % (middle,old_label),  xbmc.LOGNOTICE)
 
         if progress_.iscanceled():
             if cancel == True:
@@ -267,7 +267,6 @@ def searchGlobal():
             else:
                 break
 
-    #cConfig().finishDialog(dialog)
     progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()

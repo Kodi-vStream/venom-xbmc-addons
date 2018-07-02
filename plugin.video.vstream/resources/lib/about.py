@@ -1,18 +1,16 @@
 #-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.
-#from config import cConfig
-   
-import urllib
-
-import xbmcvfs
-import datetime, time
 
 #sLibrary = xbmc.translatePath(cConfig().getAddonPath()).decode("utf-8")
 #sys.path.append (sLibrary) 
 
-from resources.lib.comaddon import *
-
+from resources.lib.comaddon import addon, dialog, xbmc
 from resources.lib.handler.requestHandler import cRequestHandler
+
+import urllib
+import xbmcvfs
+import datetime, time
 
 SITE_IDENTIFIER = 'about'
 SITE_NAME = 'About'

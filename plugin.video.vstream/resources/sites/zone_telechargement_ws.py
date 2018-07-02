@@ -1,21 +1,15 @@
 #-*- coding: utf-8 -*-
-
-from resources.lib.config import cConfig
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.rechercheHandler import cRechercheHandler
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.favourite import cFav
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
+from resources.lib.comaddon import progress, dialog, VSlog
 
 import urllib, re, urllib2
-import xbmcgui
-import xbmc
 import random
 
 
@@ -201,7 +195,7 @@ def showMovies(sSearch = ''):
 
     reponse = urllib2.urlopen(request)
     sHtmlContent = reponse.read()
-    #xbmc.log(sHtmlContent)
+    #VSlog(sHtmlContent)
     reponse.close()
 
     oParser = cParser()
@@ -213,10 +207,10 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sTitle = str(aEntry[2])
@@ -253,7 +247,7 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -277,7 +271,7 @@ def __checkForNextPage(sHtmlContent):
 
 
 def showMoviesLinks():
-    #xbmc.log('mode film')
+    #VSlog('mode film')
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -316,10 +310,10 @@ def showMoviesLinks():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl = URL_MAIN[:-1] + str(aEntry[0])
@@ -333,12 +327,12 @@ def showMoviesLinks():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
 def showSeriesLinks():
-    #xbmc.log('mode serie')
+    #VSlog('mode serie')
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -384,10 +378,10 @@ def showSeriesLinks():
 
     if (aResult1[0] == True):
         total = len(aResult1[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult1[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl = URL_MAIN + 'telecharger-series' + str(aEntry[0])
@@ -401,7 +395,7 @@ def showSeriesLinks():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     #on regarde si dispo d'autres saisons
     sHtmlContent2 = CutSais(sHtmlContent)
@@ -427,7 +421,7 @@ def showSeriesLinks():
     oGui.setEndOfDirectory()
 
 def showHosters():
-    #xbmc.log('showHosters')
+    #VSlog('showHosters')
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -462,11 +456,11 @@ def showHosters():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             if aEntry[0]:
@@ -497,12 +491,12 @@ def showHosters():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
 def showSeriesHosters():
-    #xbmc.log('showSeriesHosters')
+    #VSlog('showSeriesHosters')
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -526,11 +520,11 @@ def showSeriesHosters():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             if aEntry[0]:
@@ -553,7 +547,7 @@ def showSeriesHosters():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -584,7 +578,7 @@ def showStreamingHosters():
     oGui.setEndOfDirectory()
 
 def Display_protected_link():
-    #xbmc.log('Display_protected_link')
+    #VSlog('Display_protected_link')
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -629,7 +623,7 @@ def Display_protected_link():
                 aResult_dlprotecte = oParser.parse(sHtmlContent, sPattern_dlprotecte)
 
         else:
-            oDialog = cConfig().createDialogOK('Erreur décryptage du lien')
+            oDialog = dialog().VSok('Erreur décryptage du lien')
             aResult_dlprotecte = (False, False)
 
     #Si lien normal
@@ -714,7 +708,8 @@ def CutPremiumlinks(sHtmlContent):
 
 def DecryptDlProtecte(url):
 
-    cConfig().log('DecryptDlProtecte : ' + url)
+    VSlog('DecryptDlProtecte : ' + url)
+    dialogs = dialog()
 
     if not (url):
         return ''
@@ -735,7 +730,7 @@ def DecryptDlProtecte(url):
     #url2 = 'https://www.protect-zt.com/php/Qaptcha.jquery.php'
     url2 = 'https://' + url.split('/')[2] + '/php/Qaptcha.jquery.php'
 
-    #cConfig().log(url2)
+    #VSlog(url2)
 
     #Make random key
     s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN_-#@";
@@ -754,41 +749,41 @@ def DecryptDlProtecte(url):
     try:
         reponse = urllib2.urlopen(request, timeout = 5)
     except urllib2.URLError, e:
-        cGui().showInfo("Erreur", 'Site Dl-Protecte HS', 5)
-        cConfig().log( e.read() )
-        cConfig().log( e.reason )
+        dialogs.VSinfo("Site Dl-Protecte HS", "Erreur", 5)
+        VSlog( e.read() )
+        VSlog( e.reason )
         return ''
     except urllib2.HTTPError, e:
-        cGui().showInfo("Erreur", 'Site Dl-Protecte HS', 5)
-        cConfig().log( e.read() )
-        cConfig().log( e.reason )
+        dialogs.VSinfo("Site Dl-Protecte HS", "Erreur", 5)
+        VSlog( e.read() )
+        VSlog( e.reason )
         return ''
     except timeout:
-        cConfig().log('timeout')
-        cGui().showInfo("Erreur", 'Site Dl-Protecte HS', 5)
+        VSlog('timeout')
+        dialogs.VSinfo("Site Dl-Protecte HS", "Erreur", 5)
         return ''
 
     sHtmlContent = reponse.read()
 
-    #cConfig().log( 'result'  + str(sHtmlContent))
+    #VSlog( 'result'  + str(sHtmlContent))
 
     #Recuperatioen et traitement cookies ???
     cookies=reponse.info()['Set-Cookie']
     c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);', cookies)
     if not c2:
-        cConfig().log( 'Probleme de cookies')
+        VSlog( 'Probleme de cookies')
         return ''
     cookies = ''
     for cook in c2:
         cookies = cookies + cook[0] + '=' + cook[1] + ';'
 
-    #cConfig().log( 'Cookie'  + str(cookies))
+    #VSlog( 'Cookie'  + str(cookies))
 
     reponse.close()
 
     if not '"error":false' in sHtmlContent:
-        cConfig().log('Captcha rate')
-        cConfig().log(sHtmlContent)
+        VSlog('Captcha rate')
+        VSlog(sHtmlContent)
         return
 
     #Creation Header
@@ -812,8 +807,8 @@ def DecryptDlProtecte(url):
     multipart_form_data = { RandomKey : '', 'submit' : 'Valider' }
     data, headersMulti = encode_multipart(multipart_form_data, {}, boundary)
     headers2.update(headersMulti)
-    #cConfig().log( 'header 2'  + str(headersMulti))
-    #cConfig().log( 'data 2'  + str(data))
+    #VSlog( 'header 2'  + str(headersMulti))
+    #VSlog( 'data 2'  + str(data))
 
     #rajout des cookies
     headers2.update({'Cookie': cookies})
@@ -821,7 +816,7 @@ def DecryptDlProtecte(url):
     #Modifications
     headers2.update({'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'})
 
-    #cConfig().log( str(headers2) )
+    #VSlog( str(headers2) )
 
     #Requete
     request = urllib2.Request(url, data, headers2)
