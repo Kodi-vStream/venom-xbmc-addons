@@ -122,6 +122,8 @@ class cAbout:
     def resultGit(self):
         try:    import json
         except: import simplejson as json
+
+        print test
         
         try: 
             sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/sites.json'
