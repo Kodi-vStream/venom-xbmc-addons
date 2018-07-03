@@ -253,8 +253,8 @@ msgid "Beta Tester (not recommended)"
 msgstr "Bêta testeur (Non recommandé)"
 
 msgctxt "#30127"
-msgid "Tool/About"
-msgstr "Outil/A propos"
+msgid "Tool"
+msgstr "Outil"
 
 msgctxt "#30128"
 msgid "Clear Cache Addon"
@@ -277,8 +277,8 @@ msgid "Movies VOSTFR"
 msgstr "VOSTFR"
 
 msgctxt "#30138"
-msgid "Sources"
-msgstr "Sources"
+msgid "About/Sources"
+msgstr "A propos/Sources"
 
 msgctxt "#30145"
 msgid "Download folder"

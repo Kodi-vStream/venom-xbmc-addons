@@ -253,7 +253,7 @@ msgid "Beta Tester (not recommended)"
 msgstr ""
 
 msgctxt "#30127"
-msgid "Tool/About"
+msgid "Tool"
 msgstr ""
 
 msgctxt "#30128"
@@ -277,7 +277,7 @@ msgid "Movies VOSTFR"
 msgstr ""
 
 msgctxt "#30138"
-msgid "Sources"
+msgid "About/Sources"
 msgstr ""
 
 msgctxt "#30145"

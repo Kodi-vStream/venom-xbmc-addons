@@ -1,17 +1,15 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.
-import xbmc, xbmcaddon, xbmcvfs
-import sys, os
-import urllib, urllib2
 
 #vstream = xbmcaddon.Addon('plugin.video.vstream')
 #sLibrary = xbmc.translatePath(vstream.getAddonInfo("path")).decode("utf-8")
 #sys.path.append (sLibrary)
 
-from resources.lib.config import cConfig
-
-from resources.lib.comaddon import addon, dialog, VSlog, xbmcgui, window
+from resources.lib.comaddon import addon, dialog, VSlog, xbmc, xbmcgui, window
+import xbmcvfs
+import sys
+import urllib2
 #from util import VStranslatePath
 #from resources.lib.util import VStranslatePath
 
@@ -75,9 +73,9 @@ class cClear:
                 #self.ClearDir2(cached_Cache,True)
                 try:
                     xbmcvfs.delete(cached_Cache)
-                    self.DIALOG.VSinfo('Clear Addon Cache,Successful')
+                    self.DIALOG.VSinfo('Clear Addon Cache, Successful[CR](Important relancer vStream)')
                 except:
-                    self.DIALOG.VSerror('Clear Addon Cache,Error')
+                    self.DIALOG.VSerror('Clear Addon Cache, Error')
 
             return
 
@@ -111,9 +109,9 @@ class cClear:
                     db.commit()
                     dbcur.close()
                     db.close()
-                    self.DIALOG.VSinfo("Suppression BDD,Successful")
+                    self.DIALOG.VSok("Suppression BDD, Successful[CR](Important relancer vStream)")
                 except:
-                    self.DIALOG.VSerror("Suppresion BDD,Error")
+                    self.DIALOG.VSerror("Suppresion BDD, Error")
 
             return
 
@@ -124,9 +122,9 @@ class cClear:
                 #self.ClearDir(temp,True)
                 try:
                     xbmcvfs.rmdir(path, True)
-                    self.DIALOG.VSinfo('Clear Temp Cache,Successful')
+                    self.DIALOG.VSok('Clear Temp Cache, Successful[CR](Important relancer Kodi)')
                 except:
-                    self.DIALOG.VSerror('Clear Temp Cache,Error')
+                    self.DIALOG.VSerror('Clear Temp Cache, Error')
             return
 
         elif (env == 'fi'):
@@ -135,9 +133,9 @@ class cClear:
                 path = "special://temp/archive_cache/"
                 try:
                     xbmcvfs.rmdir(path, True)
-                    self.DIALOG.VSinfo('Clear Archive_cache Cache,Successful')
+                    self.DIALOG.VSok('Clear Archive_cache Cache, Successful[CR](Important relancer Kodi)')
                 except:
-                    self.DIALOG.VSerror('Clear Archive_cache Cache,Error')
+                    self.DIALOG.VSerror('Clear Archive_cache Cache, Error')
                 # filenames = next(os.walk(path))[2]
                 # for i in filenames:
                 #     if ".fi" in i:
@@ -177,8 +175,6 @@ class cClear:
 
             from resources.lib.handler.pluginHandler import cPluginHandler
             valid = '[COLOR green][x][/COLOR]'
-
-
 
             class XMLDialog(xbmcgui.WindowXMLDialog):
 
@@ -272,54 +268,74 @@ class cClear:
         elif (env == 'thumb'):
  
             if self.DIALOG.VSyesno('Êtes-vous sûr ? Ceci effacera toutes les thumbnails '):
-                
-                self.DIALOG.VSinfo("Clear Thumbnails ,Successful")
-                path = xbmc.translatePath('special://userdata/Thumbnails/').decode("utf-8")
-                path2 = xbmc.translatePath('special://userdata/Database/').decode("utf-8")
-                for i in os.listdir(path):
-                    folders = os.path.join(path, i).encode('utf-8')
-                    if os.path.isdir(folders):
-                        p = next(os.walk(folders))[2]
-                        for x in p:
-                            os.remove(os.path.join(folders, x).encode('utf-8'))
 
-                filenames = next(os.walk(path2))[2]
-                for x in filenames:
-                    if "exture" in x:
-                        con = sqlite.connect(os.path.join(path2, x).encode('utf-8'))
-                        cursor = con.cursor()
-                        cursor.execute("DELETE FROM texture")
-                        con.commit()
-                        cursor.close()
-                        con.close()
+                text = False
+                #path = xbmc.translatePath('special://userdata/Thumbnails/').decode("utf-8")
+                path = "special://userdata/Thumbnails/"
+                path_DB = "special://userdata/Database"
+                try:
+                    xbmcvfs.rmdir(path, True)
+                    text = 'Clear Thumbnail Folder, Successful[CR]'
+                except:
+                    text = 'Clear Thumbnail Folder, Error[CR]'
+                #for i in os.listdir(path):
+                    # folders = os.path.join(path, i).encode('utf-8')
+                    # if os.path.isdir(folders):
+                    #     p = next(os.walk(folders))[2]
+                    #     for x in p:
+                    #         os.remove(os.path.join(folders, x).encode('utf-8'))
+
+                #filenames = next(os.walk(path2))[2]
+                folder, items = xbmcvfs.listdir(path_DB)
+                items.sort()
+                for sItemName in items:
+                    if "extures" in sItemName:
+                            cached_Cache = "/".join([path_DB, sItemName])
+                            try:
+                                xbmcvfs.delete(cached_Cache)
+                                text += 'Clear Thumbnail DB, Successful[CR]'
+                            except:
+                                text += 'Clear Thumbnail DB, Error[CR]'  
+
+                if text:
+                    text = "%s (Important relancer Kodi)" % text
+                    self.DIALOG.VSok(text)
+                # for x in filenames:
+                #     if "exture" in x:
+                #         con = sqlite.connect(os.path.join(path2, x).encode('utf-8'))
+                #         cursor = con.cursor()
+                #         cursor.execute("DELETE FROM texture")
+                #         con.commit()
+                #         cursor.close()
+                #         con.close()
             return
 
         else:
                 return
         return
 
-    def ClearDir(self, dir, clearNested = False):
-        try:
-            dir = dir.decode("utf8")
-        except:
-            pass
-        for the_file in os.listdir(dir):
-            file_path = os.path.join(dir, the_file).encode('utf-8')
-            if clearNested and os.path.isdir(file_path):
-                self.ClearDir(file_path, clearNested)
-                try: os.rmdir(file_path)
-                except Exception, e: print str(e)
-            else:
-                try:os.unlink(file_path)
-                except Exception, e: print str(e)
+    # def ClearDir(self, dir, clearNested = False):
+    #     try:
+    #         dir = dir.decode("utf8")
+    #     except:
+    #         pass
+    #     for the_file in os.listdir(dir):
+    #         file_path = os.path.join(dir, the_file).encode('utf-8')
+    #         if clearNested and os.path.isdir(file_path):
+    #             self.ClearDir(file_path, clearNested)
+    #             try: os.rmdir(file_path)
+    #             except Exception, e: print str(e)
+    #         else:
+    #             try:os.unlink(file_path)
+    #             except Exception, e: print str(e)
 
-    def ClearDir2(self, dir, clearNested = False):
-        try:
-            dir = dir.decode("utf8")
-        except:
-            pass
-        try:os.unlink(dir)
-        except Exception, e: print str(e)
+    # def ClearDir2(self, dir, clearNested = False):
+    #     try:
+    #         dir = dir.decode("utf8")
+    #     except:
+    #         pass
+    #     try:os.unlink(dir)
+    #     except Exception, e: print str(e)
 
 
     def TextBoxes(self, heading, anounce):
