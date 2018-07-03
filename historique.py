@@ -3,6 +3,8 @@ url = "https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/commits?page=
 
 import re,urllib, json, time, datetime
 
+print test
+
 try:
     # For Python 3.0 and later
     from urllib.request import urlopen
