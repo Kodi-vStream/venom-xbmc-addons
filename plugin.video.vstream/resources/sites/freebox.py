@@ -44,7 +44,7 @@ class track():
         self.path = path
         self.icon = icon
         self.data = data
-        
+
 def load():
     oGui = cGui()
     addons = addon()
@@ -120,10 +120,10 @@ def showDailyList(): #On recupere les dernier playlist ajouter au site
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
-        
+
             sTitle = str(aEntry[1])
             sUrl2 = str(aEntry[0])
-                
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -153,7 +153,7 @@ def __checkForNextPage(sHtmlContent): #Affiche les page suivant si il y en a
         sPattern = ' class="last" title=".+?">.+?</a><a href="(.+?)"><i class="td-icon-menu-right"></i>'
     else:
         sPattern = '<a class="next page-numbers" href="(.+?)">'
-        
+
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -168,13 +168,13 @@ def showAllPlaylist():#On recuepere les differente playlist si il y en a
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     #cConfig().log(str(sUrl))
-    
+
     sHtmlContent = getHtml(sUrl)
 
     if 'iptvgratuit.com' in sUrl:
         sPattern = '<strong>2. Cliquez sur le lien pour télécharger la liste des chaînes .+?</strong></p><h4><a class="more-link" title="(.+?)" href="(.+?)" target="_blank"'
     elif 'dailyiptvlist.com' in sUrl:
-        sPattern = '<p></br><br /><strong>2. Click on link to download .+? iptv channels list</strong></p>\s*.+?<a href="(.+?)">Download (.+?)</a>'   
+        sPattern = '<p></br><br /><strong>2. Click on link to download .+? iptv channels list</strong></p>\s*.+?<a href="(.+?)">Download (.+?)</a>'
     elif 'iptvsource.com':
         sPattern = '<a href="(.+?)">Download as(.+?)</a>'
 
@@ -218,12 +218,12 @@ def showWorldIptvGratuit():#On recupere les liens qui sont dans les playlist "Wo
 
     sHtmlContent = getHtml(sUrl)
     line = re.compile('http(.+?)\n').findall(sHtmlContent)
-        
+
     for sUrl2 in line:
         sUrl2 = 'http'+sUrl2
         sTitle = 'Lien: '+sUrl2
         #cConfig().log(str(sHtmlContent))
-            
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -231,7 +231,7 @@ def showWorldIptvGratuit():#On recupere les liens qui sont dans les playlist "Wo
         oGui.addDir(SITE_IDENTIFIER, 'parseWebM3U', sTitle, 'tv.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-    
+
 def showWebIptvSource():#On traite les liens WebIptvSources
     oGui = cGui()
 
@@ -252,12 +252,12 @@ def showWebIptvSource():#On traite les liens WebIptvSources
                 progress_.VSupdate(progress_, total)
                 if progress_.iscanceled():
                     break
-                
+
                 sUrl2 = 'http'+str(aEntry[0])+'/'+str(aEntry[1])
                 sUrl2 = sUrl2.replace('&amp;','&')
                 sUrl2 = sUrl2.replace('<br />','')
                 sTitle = 'Lien: ' + sUrl2
-            
+
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -267,21 +267,21 @@ def showWebIptvSource():#On traite les liens WebIptvSources
             progress_.VSclose(progress_)
 
         oGui.setEndOfDirectory()
-    
+
     else:
         parseWebM3U()
 
 def getHtml(sUrl, referer=None, hdr=None, data=None):#S'occupe des requete
     req = urllib2.Request(sUrl, data, headers)
     response = urllib2.urlopen(req)
-    data = response.read()    
+    data = response.read()
     response.close()
     return data
 
 def parseWebM3U():#Traite les m3u
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    
+
     sHtmlContent = getHtml(sUrl)
     #cConfig().log(str(sUrl))
 
@@ -289,7 +289,7 @@ def parseWebM3U():#Traite les m3u
         line = re.compile('#EXTINF:-1,(.+?)<br />(.+?)<').findall(sHtmlContent)
     else:
         line = re.compile('#.+,(.+?)\n(.+?)\n').findall(sHtmlContent)
-        
+
     for sTitle, sUrl2 in line:
         sUrl2 = sUrl2.replace('\r','')
 
@@ -297,7 +297,7 @@ def parseWebM3U():#Traite les m3u
         #    f.seek(0,2)
         #    f.write('\n'+'#EXTINF:-1,'+sTitle)
         #    f.write('\n'+sUrl2)
-        
+
         icon = "tv.png"
         if '.ts' in sUrl2:
             sUrl2 = 'plugin://plugin.video.f4mTester/?url='+urllib.quote_plus(sUrl2)+'&amp;streamtype=TSDOWNLOADER&name='+urllib.quote(sTitle)
@@ -314,9 +314,9 @@ def parseWebM3U():#Traite les m3u
         liz.setInfo(type="Video", infoLabels={"Title": sTitle})
         video_streaminfo = {'codec': 'h264'}
         liz.addStreamInfo('video', video_streaminfo)
-        ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=sUrl2, listitem=liz, isFolder=False) 
+        ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=sUrl2, listitem=liz, isFolder=False)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
-      
+
 def showWeb():#Code qui s'occupe de liens TV du Web
     oGui = cGui()
 
@@ -345,7 +345,7 @@ def showWeb():#Code qui s'occupe de liens TV du Web
 
             #les + ne peuvent pas passer
             url2 = str(track.path).replace('+','P_L_U_S')
-            thumb = "/".join([sRootArt, sThumb]) 
+            thumb = "/".join([sRootArt, sThumb])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', url2)
@@ -485,7 +485,7 @@ def showTV():
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
-   
+
 def parseWebM3URegex(infile):#Ancien fonction pour traiter les m3u
     site= infile
     user_agent = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
@@ -521,7 +521,7 @@ def parseWebM3URegex(infile):#Ancien fonction pour traiter les m3u
                 song.path=line
                 playlist.append(song)
                 song=track(None,None,None,None)
-                
+
     inf.close()
 
     return playlist
@@ -580,17 +580,17 @@ def play__():#Lancer les liens
             xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=False)
             f4mp.playF4mLink(sUrl,sTitle,proxy=None,use_proxy_for_chunks=False, maxbitrate=0, simpleDownloader=False, auth=None, streamtype=stype,setResolved=False,swf=None , callbackpath="",callbackparam="", iconImage=sThumbnail)
             return
-    
+
     listitem = xbmcgui.ListItem(sTitle, iconImage="DefaultVideo.png", thumbnailImage=sThumbnail)
     listitem.setInfo('video', {'Title': sTitle})
     listitem.setProperty("IsPlayable","true")
-    xbmc.Player().play(sUrl, listitem)
+    #xbmc.Player().play(sUrl, listitem)
 
-    #if 'f4mTester' in sUrl:
-    #    xbmc.executebuiltin('XBMC.RunPlugin('+sUrl+')')
-    #else:
-    #    xbmc.Player().play(sUrl)
-    #return
+    if 'f4mTester' in sUrl:
+        xbmc.executebuiltin('XBMC.RunPlugin('+sUrl+')')
+    else:
+        xbmc.Player().play(sUrl, listitem)
+    return
 
 def GetRealUrl(chain):#Recupere les liens des regex
 
