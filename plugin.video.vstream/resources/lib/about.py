@@ -2,15 +2,20 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.
 
-#sLibrary = xbmc.translatePath(cConfig().getAddonPath()).decode("utf-8")
+#sLibrary = xbmc.translatePath("special://home/addons/plugin.video.vstream").decode("utf-8")
 #sys.path.append (sLibrary) 
 
-from resources.lib.comaddon import addon, dialog, xbmc
+from resources.lib.comaddon import addon, dialog, VSlog, xbmc
 from resources.lib.handler.requestHandler import cRequestHandler
 
 import urllib
 import xbmcvfs
 import datetime, time
+
+try:
+    import json
+except: 
+    import simplejson as json
 
 SITE_IDENTIFIER = 'about'
 SITE_NAME = 'About'
@@ -45,6 +50,7 @@ class cAbout:
     def getUpdate(self):
         addons = addon()
         service_time = addons.getSetting('service_time')
+        service_version = addons.getSetting('service_version')
         
         #Si pas d'heure indique = premiere install
         if not (service_time):
@@ -52,31 +58,37 @@ class cAbout:
             addons.setSetting('service_time', str(datetime.datetime.now()))
             #Mais on force la maj avec une date a la con
             service_time = '2000-09-23 10:59:50.877000'
+
+        if not (service_version):
+            #version de l'addon
+            service_version = addons.getAddonInfo("version")
         
         if (service_time):
-            #delay mise a jour            
+            #delay mise a jour           
             time_sleep = datetime.timedelta(hours=72)
             time_now = datetime.datetime.now()
             time_service = self.__strptime(service_time, "%Y-%m-%d %H:%M:%S.%f")
             #pour test
-            if (time_sleep):
-            #if (time_now - time_service > time_sleep):
+            #if (time_sleep):
+            if (time_now - time_service > time_sleep):
                 #test les fichier pour mise a jour
-                #self.checkupdate()
-                #result = self.resultGit() 
-                result = self.exist_update()                
-                if result:                    
+                #addons.setSetting('service_version', str("test5"))
+                
+                sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/releases/latest'
+                oRequestHandler = cRequestHandler(sUrl)
+                sHtmlContent = oRequestHandler.request()
+                result = json.loads(sHtmlContent)
+            
+                if (result['tag_name'] > service_version):
+                    print "passsss"
+                    addons.setSetting('service_version', str(result['tag_name']))
                     addons.setSetting('home_update', str('true')) 
                     addons.setSetting('service_time', str(datetime.datetime.now()))
-                    dialog().VSinfo("Mise à jour disponible")   
+                    dialog().VSinfo("Mise à jour disponible") 
                 else:
-                    #cConfig().showInfo('vStream', 'Fichier a jour')
                     addons.setSetting('service_time', str(datetime.datetime.now()))
                     addons.setSetting('home_update', str('false'))
-
-            else:
-                VSlog('Prochaine verification de MAJ le : ' + str(time_sleep + time_service) )
-                #Pas besoin de memoriser la date, a cause du cache kodi > pas fiable.
+                    VSlog('Prochaine verification de MAJ le : ' + str(time_sleep + time_service) )
         return
     
     def getUpdate_old(self):
@@ -155,26 +167,33 @@ class cAbout:
         return path
 
 
-    def exist_update(self):
-        try:    import json
-        except: import simplejson as json
-
+    def getExistUpdate(self):
         addons = addon()
-        invers = addons.getSetting('service_version')
-        print addons.getAddonInfo("version")
+
+        addons.setSetting('service_version', str("test4"))
         
+       
+        service_version = addons.getSetting('service_version')
+        print "testt %s" % service_version
+        if not (service_version):
+            addons.setSetting('service_version', str('0.6.32'))
+            #service_version = addons.getAddonInfo("version")
         
-        try: 
-            sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/tags'
-            oRequestHandler = cRequestHandler(sUrl)
-            sHtmlContent = oRequestHandler.request()
-            result = json.loads(sHtmlContent)
+        # try: 
+        #     sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/releases/latest'
+        #     oRequestHandler = cRequestHandler(sUrl)
+        #     sHtmlContent = oRequestHandler.request()
+        #     result = json.loads(sHtmlContent)
+
+        #     print result['tag_name']
+        #     print service_version
             
-            for i in result:
-                if i['name'] > invers:
-                    return True
-        except:
-            return False
+        #     if (result['tag_name'] > service_version):
+        #         addons.setSetting('service_version', str(result['tag_name']))
+        #         return True
+        # except:
+        #     VSlog('erreur exist_update')
+        #     return False
 
         return False
 
