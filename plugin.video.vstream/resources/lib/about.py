@@ -5,7 +5,7 @@
 #sLibrary = xbmc.translatePath("special://home/addons/plugin.video.vstream").decode("utf-8")
 #sys.path.append (sLibrary) 
 
-from resources.lib.comaddon import addon, dialog, VSlog, xbmc
+from resources.lib.comaddon import addon, progress, dialog, VSlog, xbmc
 from resources.lib.handler.requestHandler import cRequestHandler
 
 import urllib
@@ -51,6 +51,7 @@ class cAbout:
         addons = addon()
         service_time = addons.getSetting('service_time')
         service_version = addons.getSetting('service_version')
+        #service_version = ""
         
         #Si pas d'heure indique = premiere install
         if not (service_time):
@@ -61,6 +62,7 @@ class cAbout:
 
         if not (service_version):
             #version de l'addon
+            addons.setSetting('service_version', str(addons.getAddonInfo("version")))
             service_version = addons.getAddonInfo("version")
         
         if (service_time):
@@ -71,17 +73,17 @@ class cAbout:
             #pour test
             #if (time_sleep):
             if (time_now - time_service > time_sleep):
-                #test les fichier pour mise a jour
-                #addons.setSetting('service_version', str("test5"))
+                #verifier la nouvelle version
                 
                 sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/releases/latest'
                 oRequestHandler = cRequestHandler(sUrl)
                 sHtmlContent = oRequestHandler.request()
                 result = json.loads(sHtmlContent)
+
+                print "passss"
             
                 if (result['tag_name'] > service_version):
-                    print "passsss"
-                    addons.setSetting('service_version', str(result['tag_name']))
+                    addons.setSetting('service_futur', str(result['tag_name']))
                     addons.setSetting('home_update', str('true')) 
                     addons.setSetting('service_time', str(datetime.datetime.now()))
                     dialog().VSinfo("Mise à jour disponible") 
@@ -165,38 +167,6 @@ class cAbout:
         path = "special://home/addons"
         path = "/".join([path, folder]) 
         return path
-
-
-    def getExistUpdate(self):
-        addons = addon()
-
-        addons.setSetting('service_version', str("test4"))
-        
-       
-        service_version = addons.getSetting('service_version')
-        print "testt %s" % service_version
-        if not (service_version):
-            addons.setSetting('service_version', str('0.6.32'))
-            #service_version = addons.getAddonInfo("version")
-        
-        # try: 
-        #     sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/releases/latest'
-        #     oRequestHandler = cRequestHandler(sUrl)
-        #     sHtmlContent = oRequestHandler.request()
-        #     result = json.loads(sHtmlContent)
-
-        #     print result['tag_name']
-        #     print service_version
-            
-        #     if (result['tag_name'] > service_version):
-        #         addons.setSetting('service_version', str(result['tag_name']))
-        #         return True
-        # except:
-        #     VSlog('erreur exist_update')
-        #     return False
-
-        return False
-
     
     
     def resultGit(self):
@@ -254,42 +224,56 @@ class cAbout:
 
     def checkdownload(self):
 
-        result = self.resultGit()
-
-        total = len(result)
-        progress_ = progress()
-        progress_.VScreate('Update')
-
         addons = addon()
-        site = []
-        sdown = 0
+        dialogs = dialog()
+        if dialogs.VSyesno("Êtes-vous sûr ?"):
 
-        if result: 
-            
-            for i in result:
-                progress_.VSupdate(progress_, total)
+            service_futur = addons.getSetting('service_futur')
+            service_version = addons.getSetting('service_version')
 
-                rootpath = self.getRootPath(i['path'])
+            result = self.resultGit()
+            sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/compare/%s...%s' % (service_version, service_futur)
+            oRequestHandler = cRequestHandler(sUrl)
+            sHtmlContent = oRequestHandler.request()
+            result = json.loads(sHtmlContent)
+
+            total = len(result['files'])
+            progress_ = progress()
+            progress_.VScreate('Update')
+
+            addons = addon()
+            site = ''
+            sdown = 0
+            schange = 0
+
+            if result: 
                 
-                if self.checksize(rootpath,i['size']):
+                for i in result['files']:
+                    progress_.VSupdate(progress_, total)
+
+                    rootpath = self.getRootPath(i['filename'])
+
                     try:
-                        self.__download(i['download_url'], rootpath)
-                        site.append("[COLOR green]"+i['name'].encode("utf-8")+"[/COLOR]")
+                        self.__download(i['raw_url'], rootpath)
+                        site += "[COLOR green]"+i['filename'].encode("utf-8")+"[/COLOR][CR]"
                         sdown = sdown+1
+                        schange += i['changes']
                     except:
-                        site.append("[COLOR red]"+i['name'].encode("utf-8")+"[/COLOR]")
+                        site += "[COLOR red]"+i['filename'].encode("utf-8")+"[/COLOR][CR]"
                         sdown = sdown+1
                         pass
 
-            progress_.VSclose(progress_)
+                progress_.VSclose(progress_)
 
-            sContent = "Fichier mise à jour %s / %s \n %s" %  (sdown, total, site)
-            
-            addons.setSetting('service_time', str(datetime.datetime.now()))
-            addons.setSetting('home_update', str('false'))
-            
-            fin = dialog().VSok(sContent)
-            xbmc.executebuiltin("Container.Refresh")
+                sContent = "Fichier mise à jour %s / %s changement (%s)[CR]" %  (sdown, total, schange)
+                sContent += "%s" %  (site)
+                
+                addons.setSetting('service_time', str(datetime.datetime.now()))
+                addons.setSetting('service_version', str(service_futur))
+                addons.setSetting('home_update', str('false'))
+                
+                fin = dialog().VSok(sContent)
+                xbmc.executebuiltin("Container.Refresh")
         return
             
     def __download(self, WebUrl, RootUrl):
@@ -304,31 +288,3 @@ class cAbout:
 
         return
         
-            
-        
-    def TextBoxes(self, heading, anounce):
-        class TextBox():
-            # constants
-            WINDOW = 10147
-            CONTROL_LABEL = 1
-            CONTROL_TEXTBOX = 5
-
-            def __init__( self, *args, **kwargs):
-                # activate the text viewer window
-                xbmc.executebuiltin( "ActivateWindow(%d)" % ( self.WINDOW, ) )
-                # get window
-                self.win = window( self.WINDOW )
-                # give window time to initialize
-                xbmc.sleep( 500 )
-                self.setControls()
-
-            def setControls( self ):
-                # set heading
-                self.win.getControl( self.CONTROL_LABEL ).setLabel(heading)
-                try:
-                    f = open(anounce)
-                    text = f.read()
-                except: text=anounce
-                self.win.getControl( self.CONTROL_TEXTBOX ).setText(text)
-                return
-        TextBox()

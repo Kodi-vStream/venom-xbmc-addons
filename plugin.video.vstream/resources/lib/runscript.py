@@ -24,8 +24,6 @@ except:
 SITE_IDENTIFIER = 'runscript'
 SITE_NAME = 'runscript'
 
-print test
-
 class cClear:
 
     DIALOG = dialog()
