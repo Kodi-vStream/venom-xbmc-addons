@@ -79,8 +79,6 @@ class cAbout:
                 oRequestHandler = cRequestHandler(sUrl)
                 sHtmlContent = oRequestHandler.request()
                 result = json.loads(sHtmlContent)
-
-                print "passss"
             
                 if (result['tag_name'] > service_version):
                     addons.setSetting('service_futur', str(result['tag_name']))
@@ -249,19 +247,21 @@ class cAbout:
             if result: 
                 
                 for i in result['files']:
-                    progress_.VSupdate(progress_, total)
 
-                    rootpath = self.getRootPath(i['filename'])
+                    if 'plugin.video.vstream' in i['filename']: 
+                        progress_.VSupdate(progress_, total)
 
-                    try:
-                        self.__download(i['raw_url'], rootpath)
-                        site += "[COLOR green]"+i['filename'].encode("utf-8")+"[/COLOR][CR]"
-                        sdown = sdown+1
-                        schange += i['changes']
-                    except:
-                        site += "[COLOR red]"+i['filename'].encode("utf-8")+"[/COLOR][CR]"
-                        sdown = sdown+1
-                        pass
+                        rootpath = self.getRootPath(i['filename'])
+
+                        try:
+                            self.__download(i['raw_url'], rootpath)
+                            site += "[COLOR green]"+i['filename'].encode("utf-8")+"[/COLOR][CR]"
+                            sdown = sdown+1
+                            schange += i['changes']
+                        except:
+                            site += "[COLOR red]"+i['filename'].encode("utf-8")+"[/COLOR][CR]"
+                            sdown = sdown+1
+                            pass
 
                 progress_.VSclose(progress_)
 
