@@ -41,9 +41,45 @@ class cAbout:
 
         #au cas ou ....
         return False
-        
-    
+
     def getUpdate(self):
+        addons = addon()
+        service_time = addons.getSetting('service_time')
+        
+        #Si pas d'heure indique = premiere install
+        if not (service_time):
+            #On memorise la date d'aujourdhui
+            addons.setSetting('service_time', str(datetime.datetime.now()))
+            #Mais on force la maj avec une date a la con
+            service_time = '2000-09-23 10:59:50.877000'
+        
+        if (service_time):
+            #delay mise a jour            
+            time_sleep = datetime.timedelta(hours=72)
+            time_now = datetime.datetime.now()
+            time_service = self.__strptime(service_time, "%Y-%m-%d %H:%M:%S.%f")
+            #pour test
+            if (time_sleep):
+            #if (time_now - time_service > time_sleep):
+                #test les fichier pour mise a jour
+                #self.checkupdate()
+                #result = self.resultGit() 
+                result = self.exist_update()                
+                if result:                    
+                    addons.setSetting('home_update', str('true')) 
+                    addons.setSetting('service_time', str(datetime.datetime.now()))
+                    dialog().VSinfo("Mise à jour disponible")   
+                else:
+                    #cConfig().showInfo('vStream', 'Fichier a jour')
+                    addons.setSetting('service_time', str(datetime.datetime.now()))
+                    addons.setSetting('home_update', str('false'))
+
+            else:
+                VSlog('Prochaine verification de MAJ le : ' + str(time_sleep + time_service) )
+                #Pas besoin de memoriser la date, a cause du cache kodi > pas fiable.
+        return
+    
+    def getUpdate_old(self):
         addons = addon()
         service_time = addons.getSetting('service_time')
         
@@ -117,6 +153,31 @@ class cAbout:
         path = "special://home/addons"
         path = "/".join([path, folder]) 
         return path
+
+
+    def exist_update(self):
+        try:    import json
+        except: import simplejson as json
+
+        addons = addon()
+        invers = addons.getSetting('service_version')
+        print addons.getAddonInfo("version")
+        
+        
+        try: 
+            sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/tags'
+            oRequestHandler = cRequestHandler(sUrl)
+            sHtmlContent = oRequestHandler.request()
+            result = json.loads(sHtmlContent)
+            
+            for i in result:
+                if i['name'] > invers:
+                    return True
+        except:
+            return False
+
+        return False
+
     
     
     def resultGit(self):
