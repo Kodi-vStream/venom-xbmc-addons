@@ -1,13 +1,13 @@
+#coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
-from resources.lib.config import cConfig
-import urllib, urllib2,re
+from resources.lib.comaddon import VSlog, xbmcgui
+import urllib2, re
 #import cookielib
 #import json
 #import simplejson
-import xbmcgui
 
 
 
@@ -72,7 +72,7 @@ class cHoster(iHoster):
             if 'https://lh3.googleusercontent.com' in self.__sUrl:
                 #Nouveaute, avec cookie now
                                     
-                cConfig().log(self.__sUrl)
+                VSlog(self.__sUrl)
                 
                 import requests
                 r = requests.get(self.__sUrl, allow_redirects=False)
@@ -87,15 +87,15 @@ class cHoster(iHoster):
                 #HttpReponse = opener.open(self.__sUrl)
                 #htmlcontent = HttpReponse.read()
                 #head = HttpReponse.headers
-                #cConfig().log(str(head))
+                #VSlog(str(head))
                 
-                cConfig().log(url)
-                cConfig().log(cookies)
+                VSlog(url)
+                VSlog(cookies)
                 
                 return True, url+ '|Cookie=' + cookies
             #Peut etre un peu brutal, peut provoquer des bugs
             if 'lh3.googleusercontent.com' in self.__sUrl:
-                cConfig().log('Attention :lien sans cookies')
+                VSlog('Attention :lien sans cookies')
                 return True, self.__sUrl
 
         web_url = self.getUrl(r[0],r[1])

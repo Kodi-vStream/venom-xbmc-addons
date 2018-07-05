@@ -1,9 +1,9 @@
+#coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import re,urllib2
-import xbmcgui
+
 
 class cHoster(iHoster):
 
@@ -60,15 +60,10 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
 
         url = self.__sUrl
-        print url
     
         oRequestHandler = cRequestHandler(url)
         #oRequestHandler.addParameters('login', '1')
         sHtmlContent = oRequestHandler.request()
-        
-        #fh = open('c:\\fileup.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
         
         oParser = cParser()
         sPattern = 'type: "video\/mp4", *src: "([^<>"{}]+?)"'

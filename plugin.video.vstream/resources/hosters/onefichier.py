@@ -1,16 +1,14 @@
-#coding: utf-8
+#-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-from resources.lib.gui.gui import cGui
-
+from resources.lib.comaddon import dialog, VSlog #, xbmc
 from resources.lib.handler.premiumHandler import cPremiumHandler
 
 import urllib,urllib2
-import xbmc
+
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
@@ -75,10 +73,8 @@ class cHoster(iHoster):
         
         import sys
         if ('site=cDownload&function' not in sys.argv[2]) and not (self.oPremiumHandler.isPremiumModeAvailable()):
-            oDialog = cConfig().createDialogOK('ATTENTION, Pas de streaming sans premium\nPour voir le film passer par l\'option "DL et Visualiser" du menu contextuel.')
+            oDialog = dialog().VSok('Pas de streaming sans premium\nPour voir le film passer par l\'option "DL et Visualiser" du menu contextuel.')
             return False,False
-
-        cGui().showInfo('Resolve', self.__sDisplayName, 5)
         
         if (self.oPremiumHandler.isPremiumModeAvailable()):
             return self.__getMediaLinkByPremiumUser()
@@ -87,6 +83,7 @@ class cHoster(iHoster):
 
         
     def __getMediaLinkByPremiumUser(self):
+        api_call = False
         
         if not self.oPremiumHandler.Authentificate():
             return False, False
@@ -109,7 +106,7 @@ class cHoster(iHoster):
         
         api_call = url + '|' + self.oPremiumHandler.AddCookies()
         
-        cConfig().log( api_call )
+        #VSlog( api_call )
         
         if (api_call):
             return True, api_call
@@ -118,6 +115,7 @@ class cHoster(iHoster):
         
     def __getMediaLinkForGuest(self):
         import random
+        api_call = False
         url = 'https://1fichier.com/?' + self.__getIdFromUrl(self.__sUrl)
         
         headers = {'User-Agent': UA ,
@@ -163,11 +161,12 @@ class cHoster(iHoster):
     def GetMedialinkDL(self,sHtmlContent):
         
         oParser = cParser()
+        api_call = False
         
         sPattern = 'Vous devez attendre encore [0-9]+ minutes'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            cGui().showInfo('Erreur - Limitation', aResult[1][0] , 5)
+            dialog().VSinfo('Erreur - Limitation %s' % aResult[1][0])
             return False
         
         sPattern = '<a href="([^<>"]+?)"  style="float:none;margin:auto;font-weight:bold;padding: 10px;margin: 10px;font-size:\+1\.6em;border:2px solid red" class="ok btn-general btn-orange">'
@@ -177,7 +176,7 @@ class cHoster(iHoster):
         
         if (aResult[0] == True):
             #xbmc.sleep(1*1000)
-            cConfig().log(  aResult[1][0] )
+            #VSlog(  aResult[1][0] )
             api_call = aResult[1][0] + '|User-Agent=' + UA# + '&Referer=' + self.__sUrl
             return api_call
         

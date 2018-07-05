@@ -1,12 +1,12 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-
 from resources.lib.handler.requestHandler import cRequestHandler 
-from resources.lib.config import cConfig 
 from resources.hosters.hoster import iHoster
-from resources.lib.parser import cParser 
+from resources.lib.parser import cParser
+from resources.lib.comaddon import dialog 
 
-import urllib2,urllib,re,xbmcgui,xbmc
+import urllib2
+
 
 class cHoster(iHoster):
 
@@ -61,6 +61,7 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+        api_call = False
 
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
@@ -111,18 +112,11 @@ class cHoster(iHoster):
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))   
-            #Si une seule url
-            if len(url) == 1:
-                api_call = 'http:' + url[0]
-            #si plus de une
-            elif len(url) > 1:
+
             #Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
-                if (ret > -1):
-                    api_call = 'http:' + url[ret]
+            api_call = dialog().VSselectqual(qua, url)
                     
         if (api_call):
-            return True, api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
+            return True, 'http:' + api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
             
         return False, False

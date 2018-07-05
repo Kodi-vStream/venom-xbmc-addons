@@ -1,9 +1,10 @@
+#-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import re,urllib2
-import xbmcgui
+
 
 class cHoster(iHoster):
 
@@ -62,8 +63,6 @@ class cHoster(iHoster):
         api_call = self.__sUrl
         
         api_call = api_call + '|Referer=http://www.mangacity.org/jwplayer/player.swf'
-        
-        print api_call
 
         if (api_call):
             return True, api_call

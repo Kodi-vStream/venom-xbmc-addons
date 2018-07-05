@@ -1,13 +1,11 @@
-#-*- coding: utf8 -*-
+#-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
-from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-import urllib, urllib2, re
+import re
 import base64
 
-from resources.lib.packer import cPacker
 
 class cHoster(iHoster):
 
@@ -62,6 +60,7 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+        api_call = False
         
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
@@ -78,13 +77,11 @@ class cHoster(iHoster):
         if (url2):
             url = url + url2[0]
         
-        url3 = base64.b64decode(url)
+        api_call = base64.b64decode(url)
         
-        if (url3):
+        if (api_call):
             #UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0'
             #url3 = url3 + '|User-Agent=' + UA + '&Referer=' + self.__sUrl
-            return True , url3
-        
-        cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
+            return True , api_call
         
         return False, False

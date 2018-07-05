@@ -1,8 +1,10 @@
+#-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import re,xbmcgui
+from resources.lib.comaddon import dialog
+
 
 class cHoster(iHoster):
 
@@ -39,7 +41,7 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
+        return ''
 
     def __getIdFromUrl(self, sUrl):
         sPattern = "http://easywatch.tv/embed-([^<]+)"
@@ -63,6 +65,7 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+        api_call = False
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
@@ -70,8 +73,6 @@ class cHoster(iHoster):
         sPattern = 'file:"([^"]+)"(?:,label:"([^"]+)")*';
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        api_call = False
 
         if (aResult[0] == True):
             #initialisation des tableaux
@@ -82,14 +83,9 @@ class cHoster(iHoster):
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
-                
-            #Si au moins 1 url
-            if (url):
+
             #Affichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality', qua)
-                if (ret > -1):
-                    api_call = url[ret]
+            api_call = dialog().VSselectqual(qua, url)           
  
         if (api_call):
             return True, api_call
