@@ -6,10 +6,10 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog
+from resources.lib.comaddon import dialog, VSlog, xbmc
 
+import re, urllib2
 
-import re,xbmc,urllib,urllib2
 
 UA = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:55.0) Gecko/20100101 Firefox/55.0"
 
@@ -22,7 +22,7 @@ def LoadLinks(htmlcode):
     sPattern ='[\("\'](https*:)*(\/[^,"\'\)\s]+)[\)\'"]'
     aResult = re.findall(sPattern, htmlcode, re.DOTALL)
 
-    #xbmc.log(str(aResult))
+    #VSlog(str(aResult))
     for http,urlspam in aResult:
         sUrl = urlspam
             
@@ -91,14 +91,14 @@ def LoadLinks(htmlcode):
                     VSlog('Worked ' + sUrl)
                 except urllib2.HTTPError, e:
                     VSlog(str(e.code))
-                    #xbmc.log(e.read())
+                    #VSlog(e.read())
                     VSlog('Redirection Blocked ' + sUrl + ' Red ' + e.geturl())
                     pass
             else:
                 VSlog('Blocked ' + sUrl)
                 VSlog(str(e.code))
                 VSlog('>>' + e.geturl())
-                #cConfig().log(e.read())
+                #VSlog(e.read())
     
     VSlog('fin des unlock')
 

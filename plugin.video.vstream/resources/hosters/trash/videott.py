@@ -1,10 +1,11 @@
+#-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 #from t0mm0.common.net import Net
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import urllib, urllib2,re
-import xbmcgui
+from resources.lib.comaddon import dialog
+import urllib2, re
 
 try:    import json
 except: import simplejson as json
@@ -74,7 +75,6 @@ class cHoster(iHoster):
         vUrl = False
         
         try:
-            print 'debut2'
 
             reponse = urllib2.urlopen(json_url)
             
@@ -98,8 +98,8 @@ class cHoster(iHoster):
                             vid_list.extend(['Video TT - %sp' % quality])
                             url_list.extend([index[u'u']])
                             
-                        result = xbmcgui.Dialog().select('Choose a link', vid_list)
-                        if result != -1:
+                        result = dialog().VSselectqual(vid_list, url_list)
+                        if result:
                             vUrl = url_list[result].decode('base-64')
 
         except urllib2.URLError, e:

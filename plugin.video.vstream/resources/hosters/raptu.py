@@ -1,10 +1,10 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.handler.requestHandler import cRequestHandler 
-from resources.lib.config import cConfig 
+from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser 
-import re,xbmcgui
+from resources.lib.comaddon import xbmcgui
+
 
 class cHoster(iHoster):
 
