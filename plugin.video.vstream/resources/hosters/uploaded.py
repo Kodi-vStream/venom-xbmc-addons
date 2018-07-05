@@ -1,13 +1,12 @@
+#-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-from resources.lib.gui.gui import cGui
+from resources.lib.comaddon import dialog
 
 from resources.lib.handler.premiumHandler import cPremiumHandler
 
-import urllib,urllib2
-import xbmc
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
@@ -65,15 +64,14 @@ class cHoster(iHoster):
         print self.oPremiumHandler.isPremiumModeAvailable()
 
         if (not self.oPremiumHandler.isPremiumModeAvailable()):
-            oDialog = cConfig().createDialogOK('ATTENTION, Pas de streaming sans premium.')
+            oDialog = dialog().VSok('ATTENTION, Pas de streaming sans premium.')
             return False,False
-
-        cGui().showInfo('Resolve', self.__sDisplayName, 5)
 
         return self.__getMediaLinkByPremiumUser()
 
 
     def __getMediaLinkByPremiumUser(self):
+        api_call = False
 
         if not self.oPremiumHandler.Authentificate():
             return False, False

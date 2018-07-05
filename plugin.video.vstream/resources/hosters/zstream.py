@@ -1,9 +1,10 @@
+#coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import re,urllib2,urllib,time
-import xbmcgui
+from resources.lib.comaddon import dialog
+
 
 class cHoster(iHoster):
 
@@ -40,7 +41,7 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
+        return ''
         
     def __getIdFromUrl(self):
         sPattern = 'http:\/\/zstream.+?\/(.+)'
@@ -127,14 +128,9 @@ class cHoster(iHoster):
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
-                
-            #Si au moins 1 url
-            if (url):
-            #Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
-                if (ret > -1):
-                    api_call = url[ret]
+
+            #tableau
+            api_call = dialog().VSselectqual(qua, url)
 
         #print api_call
         

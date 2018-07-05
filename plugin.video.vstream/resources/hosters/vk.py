@@ -1,8 +1,10 @@
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import xbmcgui
+from resources.lib.comaddon import xbmcgui
+
 
 class cHoster(iHoster):
 
@@ -61,7 +63,7 @@ class cHoster(iHoster):
             self.__sUrl = sRealUrl
             return self.__getIdFromUrl()
 
-        return sUrl;
+        return sUrl
         
     def __getKey(self):
         oRequestHandler = cRequestHandler(self.__sUrl)
@@ -99,7 +101,7 @@ class cHoster(iHoster):
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            cConfig().showInfo(self.__sDisplayName, 'Streaming')
+
             for aEntry in aResult[1]:
                  url.append(aEntry[0])
                  qua.append(str(aEntry[1]))
@@ -108,9 +110,8 @@ class cHoster(iHoster):
             ret = dialog2.select('Select Quality',qua)
             #sUrl = url[ret]+'.'+qua[ret]+'.mp4'
             api_call = ('%s.%s.mp4') % (url[ret], qua[ret])
-            return True, api_call
-        else:
-            cConfig().showInfo(self.__sDisplayName, 'Fichier introuvable')
-            return False, False
+            
+            if api_call:
+                return True, api_call
         
         return False, False

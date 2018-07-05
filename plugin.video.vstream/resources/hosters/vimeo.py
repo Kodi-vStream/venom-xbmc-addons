@@ -1,8 +1,10 @@
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import xbmcgui
+from resources.lib.comaddon import dialog
+
 
 class cHoster(iHoster):
 
@@ -63,6 +65,7 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+        api_call = False
    
         id = self.__getIdFromUrl(self.__sUrl)
 
@@ -78,26 +81,14 @@ class cHoster(iHoster):
             #initialisation des tableaux
             url=[]
             qua=[]
-            api_call = ''
 
             #Replissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
 
-            #Si une seule url
-            if len(url) == 1:
-                api_call = url[0]
-            #si plus de une
-            elif len(url) > 1:
-                #Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
-                if (ret > -1):
-                    api_call = url[ret]
-                else: 
-                    return False, False
-     
+            #tableau
+            api_call = dialog().VSselectqual(qua, url)     
             
             if (api_call):
                 return True, api_call 

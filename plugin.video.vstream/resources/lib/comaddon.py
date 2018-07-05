@@ -213,3 +213,13 @@ def VSread(sHtmlContent):
     f = xbmcvfs.File (file, 'w')
     result = f.write(sHtmlContent)
     f.close()
+
+def VSkeyboard(self, sDefaultText=''):
+    keyboard = xbmc.Keyboard(sDefaultText)
+    keyboard.doModal()
+    if (keyboard.isConfirmed()):
+        sSearchText = keyboard.getText()
+        if (len(sSearchText)) > 0:
+            return sSearchText
+
+    return False
