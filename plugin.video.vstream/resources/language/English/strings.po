@@ -277,7 +277,7 @@ msgid "Movies VOSTFR"
 msgstr ""
 
 msgctxt "#30138"
-msgid "About/Sources"
+msgid "Sources"
 msgstr ""
 
 msgctxt "#30145"
@@ -774,4 +774,8 @@ msgstr ""
 
 msgctxt "#30448"
 msgid "Select a quality"
+msgstr ""
+
+msgctxt "#30449"
+msgid "About/Sources"
 msgstr ""

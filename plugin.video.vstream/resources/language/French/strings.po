@@ -277,8 +277,8 @@ msgid "Movies VOSTFR"
 msgstr "VOSTFR"
 
 msgctxt "#30138"
-msgid "About/Sources"
-msgstr "A propos/Sources"
+msgid "Sources"
+msgstr "Sources"
 
 msgctxt "#30145"
 msgid "Download folder"
@@ -776,4 +776,8 @@ msgstr "[COLOR red]Supprimer: Favoris[/COLOR]"
 msgctxt "#30448"
 msgid "Select a quality"
 msgstr "Sélectionner une qualité"
+
+msgctxt "#30449"
+msgid "About/Sources"
+msgstr "A propos/Sources"
 
