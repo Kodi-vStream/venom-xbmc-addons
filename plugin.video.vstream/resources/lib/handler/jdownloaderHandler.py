@@ -1,52 +1,51 @@
-from resources.lib.util import cUtil
-from resources.lib.config import cConfig
+#-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.comaddon import addon, dialog, VSlog
+
 
 class cJDownloaderHandler:
 
+    ADDON = addon()
+    DIALOG = dialog()
+
     def sendToJDownloader(self, sUrl):
         if (self.__checkConfig() == False):
-            cGui().showError('JDownloader', 'Settings ueberpruefen (XBMC)', 5)
+            VSlog('Settings ueberpruefen (XBMC)')
             return False
 
         if (self.__checkConnection() == False):
-            cGui().showError('JDownloader', 'Verbindung fehlgeschlagen (JD aus?)', 5)
+            VSlog('Verbindung fehlgeschlagen (JD aus?)')
             return False
 
         bDownload = self.__download(sUrl)
         if (bDownload == True):
-            cGui().showInfo('JDownloader', 'Link gesendet', 5)
+            self.DIALOG.VSinfo('Link gesendet', 'JDownloader')
         
 
     def __checkConfig(self):
-        cConfig().log("Check JD Addon settings")
-        oConfig = cConfig()
-        bEnabled = oConfig.getSetting('jd_enabled')
+        bEnabled = self.ADDON.getSetting('jd_enabled')
         if (bEnabled == 'true'):
             return True
 
         return False
 
     def __getHost(self):
-        oConfig = cConfig()
-        return oConfig.getSetting('jd_host')
+        return self.ADDON.getSetting('jd_host')
 
     def __getPort(self):
-        oConfig = cConfig()
-        return oConfig.getSetting('jd_port')
+        return self.ADDON.getSetting('jd_port')
 
     def __getAutomaticStart(self):
-        oConfig = cConfig()
-        bAutomaticStart = oConfig.getSetting('jd_automatic_start')
+        bAutomaticStart = self.ADDON.getSetting('jd_automatic_start')
         if (bAutomaticStart == 'true'):
             return True
 
         return False
 
     def __getLinkGrabber(self):
-        oConfig = cConfig()
-        bAutomaticStart = oConfig.getSetting('jd_grabber')
+        bAutomaticStart = self.ADDON.getSetting('jd_grabber')
         if (bAutomaticStart == 'true'):
             return True
 
@@ -59,10 +58,10 @@ class cJDownloaderHandler:
         bLinkGrabber = self.__getLinkGrabber()
 
         sLinkForJd = self.__createJDUrl(sFileUrl, sHost, sPort, bAutomaticDownload, bLinkGrabber)
-        cConfig().log("JD Link " + str(sLinkForJd))
+        VSlog("JD Link " + str(sLinkForJd))
                 
         oRequestHandler = cRequestHandler(sLinkForJd)
-        oRequestHandler.request();
+        oRequestHandler.request()
         return True
 
     def __createJDUrl(self, sFileUrl, sHost, sPort, bAutomaticDownload, bLinkGrabber):
@@ -78,7 +77,7 @@ class cJDownloaderHandler:
         return sUrl
 
     def __checkConnection(self):
-        cConfig().log("check JD Connection")
+        VSlog("check JD Connection")
         sHost = self.__getHost()
         sPort = self.__getPort()
 

@@ -107,6 +107,8 @@ from resources.lib.comaddon import progress
 progress_ = progress()
 progress_.VScreate(SITE_NAME)
 progress_.VSupdate(progress_, total)
+if progress_.iscanceled():
+    break
 progress_.VSclose(progress_)
 
 dialog = progress() non recommander

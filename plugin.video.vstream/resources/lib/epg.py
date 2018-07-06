@@ -1,13 +1,12 @@
 #-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.
-from resources.lib.config import cConfig
-#from resources.lib.gui.gui import cGui
-#from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-import xbmc
+from resources.lib.comaddon import dialog, xbmc, window
+
 from datetime import datetime
 
 
@@ -19,6 +18,7 @@ date = d.strftime("%d-%m-%Y")
 
 
 class cePg:
+
     
     def get_url(self, sTitle):
         
@@ -81,15 +81,15 @@ class cePg:
                 #retour line
                 text += "\r\n"
                 
-            cConfig().TextBoxes(sTitle,text)
+            self.TextBoxes(sTitle,text)
         else:
-            cConfig().error('Impossible de trouver le guide tv')
+            dialog().VSinfo('Impossible de trouver le guide tv')
             
     def get_oneepg(self, sTitle):
         
         sUrl = self.get_url(sTitle)
         if not sUrl:
-            cConfig().showInfo('EPG', 'EPG introuvable')
+            dialog().VSinfo('EPG introuvable')
             return
         
         oRequestHandler = cRequestHandler(sUrl)
@@ -117,3 +117,17 @@ class cePg:
             return text
         else:
             return ''
+
+    
+    def TextBoxes(self, heading, anounce):
+        # activate the text viewer window
+        xbmc.executebuiltin( "ActivateWindow(%d)" % ( 10147, ) )
+        # get window
+        win = window(10147)
+        #win.show()
+        # give window time to initialize
+        xbmc.sleep(100)
+        # set heading
+        win.getControl(1).setLabel(heading)
+        win.getControl(5).setText(anounce)
+        return

@@ -1,19 +1,14 @@
 #-*- coding: utf-8 -*-
-#Venom.
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui #systeme de recherche pour l'hote
-from resources.lib.handler.hosterHandler import cHosterHandler #systeme de recherche pour l'hote
 from resources.lib.gui.gui import cGui #systeme d'affichage pour xbmc
-from resources.lib.gui.guiElement import cGuiElement #systeme d'affichage pour xbmc
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler #entree des parametres
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler #sortie des parametres
 from resources.lib.handler.requestHandler import cRequestHandler #requete url
-from resources.lib.config import cConfig #config
 from resources.lib.parser import cParser #recherche de code
+from resources.lib.comaddon import progress #, VSlog
 #from resources.lib.util import cUtil #outils pouvant etre utiles
-import urllib2,urllib,re
-import unicodedata,htmlentitydefs
 
-import xbmc
 
 #11/12/17 le site fonctionne mais pas regarder.
 
@@ -96,10 +91,12 @@ def showMovies(sSearch = ''):
     if (aResult[0] == True):
         total = len(aResult[1])
         #dialog barre de progression
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total) #dialog update
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
 
             #L'array affiche vos info dans l'orde de sPattern en commencant a 0
             sTitle = aEntry[1]
@@ -118,7 +115,7 @@ def showMovies(sSearch = ''):
             #il existe aussis addMisc(identifiant, function, titre, icon, poster, description, sortie parametre)
             #la difference et pour les metadonner serie, films ou sans
 
-        cConfig().finishDialog(dialog)# fin du dialog
+        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)#cherche la page suivante
         if (sNextPage != False):
@@ -145,10 +142,11 @@ def showMovies2(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
+
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -159,7 +157,7 @@ def showMovies2(sSearch = ''):
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', aEntry[1], 'animes.png', '', '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -226,7 +224,7 @@ def seriesListEpisodes(): #cherche les episode de series
     #fh.write(sHtmlContent)
     #fh.close()
 
-    xbmc.log(str(aResult))
+    #VSlog(str(aResult))
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -234,13 +232,9 @@ def seriesListEpisodes(): #cherche les episode de series
             sTitle = aEntry[1]
             sUrl2  = aEntry[0]
 
-            xbmc.log(sUrl2)
-
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oGui.addTV(SITE_IDENTIFIER, 'showHosters',sTitle, 'series.png', '', '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
-#Voila c'est un peux brouillon mais ça devrais aider un peux, n'esiter a poser vos question et meme a partager vos source

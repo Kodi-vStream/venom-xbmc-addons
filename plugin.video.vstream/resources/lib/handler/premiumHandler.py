@@ -1,14 +1,12 @@
 #-*- coding: utf-8 -*-
-#Venom.
-from resources.lib.config import cConfig
-from resources.lib.gui.gui import cGui
+# https://github.com/Kodi-vStream/venom-xbmc-addons
+
 from resources.lib.parser import cParser
 from resources.lib.config import GestionCookie
+from resources.lib.comaddon import addon, dialog, VSlog
 
 import urllib2,urllib
-import xbmc
-import xbmcaddon
-import re,os
+
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 headers = { 'User-Agent' : UA }
@@ -23,6 +21,9 @@ class NoRedirection(urllib2.HTTPErrorProcessor):
     
 class cPremiumHandler:
 
+    ADDON = addon()
+    DIALOG = dialog()
+
     def __init__(self, sHosterIdentifier):
         self.__sHosterIdentifier = sHosterIdentifier.lower()
         self.__sDisplayName = 'Premium mode'
@@ -31,22 +32,22 @@ class cPremiumHandler:
         self.__ssl = False
         
         self.__Ispremium = False
-        bIsPremium = cConfig().getSetting('hoster_' + str(self.__sHosterIdentifier) + '_premium')        
+        bIsPremium = self.ADDON.getSetting('hoster_' + str(self.__sHosterIdentifier) + '_premium')        
         if (bIsPremium == 'true'):
-            cConfig().log("Utilise compte premium pour hoster " +  str(self.__sHosterIdentifier))
+            VSlog("Utilise compte premium pour hoster " +  str(self.__sHosterIdentifier))
             self.__Ispremium = True
         else:
-            cConfig().log("Utilise compte gratuit pour hoster: " + str(self.__sHosterIdentifier))
+            VSlog("Utilise compte gratuit pour hoster: " + str(self.__sHosterIdentifier))
 
     def isPremiumModeAvailable(self):
         return self.__Ispremium
 
     def getUsername(self):
-        sUsername = cConfig().getSetting('hoster_' + str(self.__sHosterIdentifier) + '_username')
+        sUsername = self.ADDON.getSetting('hoster_' + str(self.__sHosterIdentifier) + '_username')
         return sUsername
 
     def getPassword(self):
-        sPassword = cConfig().getSetting('hoster_' + str(self.__sHosterIdentifier) + '_password')
+        sPassword = self.ADDON.getSetting('hoster_' + str(self.__sHosterIdentifier) + '_password')
         return sPassword
         
     def AddCookies(self):
@@ -133,16 +134,16 @@ class cPremiumHandler:
             except urllib2.URLError, e:
                 if getattr(e, "code", None) == 403:
                 #login denied
-                    cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
+                    self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
                 elif getattr(e, "code", None) == 502:
                 #login denied
-                    cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
+                    self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
                 elif getattr(e, "code", None) == 234:
                 #login denied
-                    cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
+                    self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
                 else:
-                    cConfig().log("debug" + str(getattr(e, "code", None)))
-                    cConfig().log("debug" + str(getattr(e, "reason", None)))
+                    VSlog("debug" + str(getattr(e, "code", None)))
+                    VSlog("debug" + str(getattr(e, "reason", None)))
 
                 self.isLogin = False
                 return False
@@ -156,19 +157,19 @@ class cPremiumHandler:
             if 'xfss' in head['Set-Cookie']:
                 self.isLogin = True
             else:
-                cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
+                self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
                 return False
         elif 'onefichier' in self.__sHosterIdentifier:
             if 'You are logged in. This page will redirect you.' in sHtmlContent:
                 self.isLogin = True
             else:
-                cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
+                self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
                 return False
         elif 'uploaded' in self.__sHosterIdentifier:
             if sHtmlContent == '':
                 self.isLogin = True
             else:
-                cGui().showInfo(self.__sDisplayName, 'Authentification rate' , 5)
+                self.DIALOG.VSinfo('Authentification rate', self.__sDisplayName)
                 return False     
         else:
             return False
@@ -187,8 +188,8 @@ class cPremiumHandler:
         #save cookie
         GestionCookie().SaveCookie(self.__sHosterIdentifier,cookies)
         
-        cGui().showInfo(self.__sDisplayName, 'Authentification reussie' , 5)
-        cConfig().log( 'Auhentification reussie' )
+        self.DIALOG.VSinfo('Authentification reussie', self.__sDisplayName)
+        VSlog( 'Auhentification reussie' )
         
         return True
         
@@ -226,7 +227,7 @@ class cPremiumHandler:
         
         #Les cookies ne sont plus valables, mais on teste QUE si la personne n'a pas essaye de s'authentifier
         if not(self.Checklogged(sHtmlContent)) and not self.__LoginTry and self.__Ispremium :
-            cConfig().log('Cookies non valables')
+            VSlog('Cookies non valables')
             self.Authentificate()
             if (self.isLogin):
                 cookies = GestionCookie().Readcookie(self.__sHosterIdentifier)

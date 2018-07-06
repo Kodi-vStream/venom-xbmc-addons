@@ -1,22 +1,18 @@
 #-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.
-from resources.lib.config import cConfig
-from resources.lib.db import cDb
 from resources.lib.util import cUtil
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
-from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.rechercheHandler import cRechercheHandler
+from resources.lib.comaddon import addon, dialog, progress, VSlog, xbmc
 
 
 import urllib, urllib2, re
-import xbmc, xbmcgui
-import time, md5 ,math
 import unicodedata
-
 import datetime, time
 
 try:    import json
@@ -38,6 +34,8 @@ MAXRESULT = 10
 class cTrakt:
 
     CONTENT = '0'
+    ADDON = addon()
+    DIALOG = dialog()
 
     def __init__(self):
         #self.__sFile = cConfig().getFileFav()
@@ -58,7 +56,7 @@ class cTrakt:
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
         result = json.loads(sHtmlContent)
-        # xbmc.log(str(result))
+        # VSlog(str(result))
         response.close()
 
         #{"device_code":"a434135042b5a76159628bc974eed2f266fb47df9f438d5738ce40396d531490","user_code":"EBDFD843","verification_url":"https://trakt.tv/activate","expires_in":600,"interval":5}
@@ -67,15 +65,17 @@ class cTrakt:
 
         if (total > 0):
             #self.__Token  = result['token']
-            sText = (cConfig().getlanguage(30304)) % (result['verification_url'], result['user_code'])
-            dialog = cConfig().createDialog('vStream')
-            dialog.update(0, sText)
+            sText = (self.ADDON.VSlang(30304)) % (result['verification_url'], result['user_code'])
+   
+            progress_ = progress().VScreate(SITE_NAME)
+            progress_.VSupdate(progress_, 0)
+
 
             for i in range(0, result['expires_in']):
                 try:
-                    dialog.update(i)
+                    progress_.VSupdate(progress_, i)
                     time.sleep(1)
-                    if dialog.iscanceled():
+                    if progress_.iscanceled():
                         break
 
                     headers = {'Content-Type': 'application/json'}
@@ -89,13 +89,14 @@ class cTrakt:
                     response.close()
 
                     if result['access_token']:
-                        cConfig().setSetting('bstoken', str(result['access_token']))
-                        cGui().showNofication(cConfig().getlanguage(30000))
+                        self.ADDON.setSetting('bstoken', str(result['access_token']))
+                        self.DIALOG.VSinfo(self.ADDON.VSlang(30000))
                         return
 
                 except:
                     pass
-            cConfig().finishDialog(dialog)
+
+            progress_.VSclose(progress_)
 
             #xbmc.executebuiltin("Container.Refresh")
             return
@@ -123,15 +124,15 @@ class cTrakt:
         oGui = cGui()
 
 
-        if cConfig().getSetting("bstoken") == '':
-            xbmc.log('er')
+        if self.ADDON.getSetting("bstoken") == '':
+            VSlog('bstoken invalid')
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'movie')
-            oGui.addDir(SITE_IDENTIFIER, 'getToken()', cConfig().getlanguage(30305), 'trakt.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'getToken()', self.ADDON.VSlang(30305), 'trakt.png', oOutputParameterHandler)
         else:
             #nom de luser
-            headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
+            headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting("bstoken")}
             #post = {'client_id': API_KEY, 'client_secret': API_SECRET, 'code': result['device_code']}
             #post = json.dumps(post)
 
@@ -150,33 +151,33 @@ class cTrakt:
                 sUsername = result['username']
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'https://')
-                oGui.addText(SITE_IDENTIFIER, (cConfig().getlanguage(30306)) % (sUsername))
+                oGui.addText(SITE_IDENTIFIER, (self.ADDON.VSlang(30306)) % (sUsername))
 
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'movie')
-            oGui.addDir(SITE_IDENTIFIER, 'search', cConfig().getlanguage(30330), 'search.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'search', self.ADDON.VSlang(30330), 'search.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'movie')
-            oGui.addDir(SITE_IDENTIFIER, 'getLists', cConfig().getlanguage(30120), 'films.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30120), 'films.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://')
             oOutputParameterHandler.addParameter('type', 'show')
-            oGui.addDir(SITE_IDENTIFIER, 'getLists', cConfig().getlanguage(30121), 'series.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30121), 'series.png', oOutputParameterHandler)
             
-            if cConfig().getSetting("trakt_show_lists"):
+            if self.ADDON.getSetting("trakt_show_lists"):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', 'https://')
                 oOutputParameterHandler.addParameter('type', 'custom-lists')
-                oGui.addDir(SITE_IDENTIFIER, 'getLists', cConfig().getlanguage(30360), 'trakt.png', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'getLists', self.ADDON.VSlang(30360), 'trakt.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/users/me/history?page=1&limit=' + str(MAXRESULT))
-            oGui.addDir(SITE_IDENTIFIER, 'getTrakt', cConfig().getlanguage(30308), 'trakt.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'getTrakt', self.ADDON.VSlang(30308), 'trakt.png', oOutputParameterHandler)
 
             # oOutputParameterHandler = cOutputParameterHandler()
             # oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/users/me/watching')
@@ -184,11 +185,11 @@ class cTrakt:
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/oauth/revoke')
-            oGui.addDir(SITE_IDENTIFIER, 'getCalendrier', cConfig().getlanguage(30331), 'trakt.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'getCalendrier', self.ADDON.VSlang(30331), 'trakt.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'https://api.trakt.tv/oauth/revoke')
-            oGui.addDir(SITE_IDENTIFIER, 'getBsout', cConfig().getlanguage(30309), 'trakt.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'getBsout', self.ADDON.VSlang(30309), 'trakt.png', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
 
@@ -233,7 +234,7 @@ class cTrakt:
         sType = oInputParameterHandler.getValue('type')
 
 
-        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
+        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting("bstoken")}
         #stats user
         req2 = urllib2.Request('https://api.trakt.tv/users/me/stats', None,headers)
         response2 = urllib2.urlopen(req2)
@@ -248,58 +249,58 @@ class cTrakt:
 
         liste = []
         if sType == 'movie':
-            liste.append( [ '%s (%s)' % (cConfig().getlanguage(30310), result2['movies']['collected'] ),'https://api.trakt.tv/users/me/collection/movies?page=1&limit=' + str(MAXRESULT)] )
+            liste.append( [ '%s (%s)' % (self.ADDON.VSlang(30310), result2['movies']['collected'] ),'https://api.trakt.tv/users/me/collection/movies?page=1&limit=' + str(MAXRESULT)] )
             
-            if cConfig().getSetting("trakt_movies_show_watchlist") == 'true':
-                liste.append( [cConfig().getlanguage(30311),'https://api.trakt.tv/users/me/watchlist/movies?page=1&limit=' + str(MAXRESULT) ] )
+            if self.ADDON.getSetting("trakt_movies_show_watchlist") == 'true':
+                liste.append( [self.ADDON.VSlang(30311),'https://api.trakt.tv/users/me/watchlist/movies?page=1&limit=' + str(MAXRESULT) ] )
             
-            if cConfig().getSetting("trakt_movies_show_watched") == 'true':
-                liste.append( ['%s (%s)' % (cConfig().getlanguage(30312), result2['movies']['watched'] ),'https://api.trakt.tv/users/me/watched/movies?page=1&limit=' + str(MAXRESULT)] )
+            if self.ADDON.getSetting("trakt_movies_show_watched") == 'true':
+                liste.append( ['%s (%s)' % (self.ADDON.VSlang(30312), result2['movies']['watched'] ),'https://api.trakt.tv/users/me/watched/movies?page=1&limit=' + str(MAXRESULT)] )
             
-            if cConfig().getSetting("trakt_movies_show_recommended") == 'true':
-                liste.append( [cConfig().getlanguage(30313),'https://api.trakt.tv/recommendations/movies'] )
+            if self.ADDON.getSetting("trakt_movies_show_recommended") == 'true':
+                liste.append( [self.ADDON.VSlang(30313),'https://api.trakt.tv/recommendations/movies'] )
             
-            if cConfig().getSetting("trakt_movies_show_boxoffice") == 'true':
-                liste.append( [cConfig().getlanguage(30314),'https://api.trakt.tv/movies/boxoffice'] )
+            if self.ADDON.getSetting("trakt_movies_show_boxoffice") == 'true':
+                liste.append( [self.ADDON.VSlang(30314),'https://api.trakt.tv/movies/boxoffice'] )
             
-            if cConfig().getSetting("trakt_movies_show_popular") == 'true':
-                liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/movies/popular?page=1&limit=' + str(MAXRESULT)] )
+            if self.ADDON.getSetting("trakt_movies_show_popular") == 'true':
+                liste.append( [self.ADDON.VSlang(30315),'https://api.trakt.tv/movies/popular?page=1&limit=' + str(MAXRESULT)] )
             
-            if cConfig().getSetting("trakt_movies_show_most_weekly") == 'true':
-                liste.append( [cConfig().getlanguage(30316),'https://api.trakt.tv/movies/played/weekly?page=1&limit=' + str(MAXRESULT)] )
+            if self.ADDON.getSetting("trakt_movies_show_most_weekly") == 'true':
+                liste.append( [self.ADDON.VSlang(30316),'https://api.trakt.tv/movies/played/weekly?page=1&limit=' + str(MAXRESULT)] )
 
-            if cConfig().getSetting("trakt_movies_show_most_monthly") == 'true':
-                liste.append( [cConfig().getlanguage(30317),'https://api.trakt.tv/movies/played/monthly?page=1&limit=' + str(MAXRESULT)] )
+            if self.ADDON.getSetting("trakt_movies_show_most_monthly") == 'true':
+                liste.append( [self.ADDON.VSlang(30317),'https://api.trakt.tv/movies/played/monthly?page=1&limit=' + str(MAXRESULT)] )
             
             #liste.append( ['historique de Films','https://api.trakt.tv/users/me/history/movies'] )
 
 
         elif sType == 'show':
-            liste.append( ['%s (%s)' % (cConfig().getlanguage(30310), result2['shows']['collected'] ),'https://api.trakt.tv/users/me/collection/shows?page=1&limit=' + str(MAXRESULT)] )
+            liste.append( ['%s (%s)' % (self.ADDON.VSlang(30310), result2['shows']['collected'] ),'https://api.trakt.tv/users/me/collection/shows?page=1&limit=' + str(MAXRESULT)] )
             
-            if cConfig().getSetting("trakt_tvshows_show_watchlist") == 'true':
-                liste.append( [cConfig().getlanguage(30311),'https://api.trakt.tv/users/me/watchlist/shows?page=1&limit=' + str(MAXRESULT) ] )
+            if self.ADDON.getSetting("trakt_tvshows_show_watchlist") == 'true':
+                liste.append( [self.ADDON.VSlang(30311),'https://api.trakt.tv/users/me/watchlist/shows?page=1&limit=' + str(MAXRESULT) ] )
             
-            if cConfig().getSetting("trakt_tvshows_show_watchlist_seasons") == 'true':
-                liste.append( [cConfig().getlanguage(30318),'https://api.trakt.tv/users/me/watchlist/seasons?page=1&limit=' + str(MAXRESULT)] )
+            if self.ADDON.getSetting("trakt_tvshows_show_watchlist_seasons") == 'true':
+                liste.append( [self.ADDON.VSlang(30318),'https://api.trakt.tv/users/me/watchlist/seasons?page=1&limit=' + str(MAXRESULT)] )
             
-            if cConfig().getSetting("trakt_tvshows_show_watchlist_episodes") == 'true':
-                liste.append( [cConfig().getlanguage(30319),'https://api.trakt.tv/users/me/watchlist/episodes?page=1&limit=' + str(MAXRESULT)] )
+            if self.ADDON.getSetting("trakt_tvshows_show_watchlist_episodes") == 'true':
+                liste.append( [self.ADDON.VSlang(30319),'https://api.trakt.tv/users/me/watchlist/episodes?page=1&limit=' + str(MAXRESULT)] )
             
-            if cConfig().getSetting("trakt_tvshows_show_watched") == 'true':
-                liste.append( ['%s (%s)' % (cConfig().getlanguage(30312), result2['movies']['watched'] ),'https://api.trakt.tv/users/me/watched/shows?page=1&limit=' + str(MAXRESULT)] )
+            if self.ADDON.getSetting("trakt_tvshows_show_watched") == 'true':
+                liste.append( ['%s (%s)' % (self.ADDON.VSlang(30312), result2['movies']['watched'] ),'https://api.trakt.tv/users/me/watched/shows?page=1&limit=' + str(MAXRESULT)] )
             
-            if cConfig().getSetting("trakt_tvshows_show_recommended") == 'true':
-                liste.append( [cConfig().getlanguage(30313),'https://api.trakt.tv/recommendations/shows'] )
+            if self.ADDON.getSetting("trakt_tvshows_show_recommended") == 'true':
+                liste.append( [self.ADDON.VSlang(30313),'https://api.trakt.tv/recommendations/shows'] )
                 
-            if cConfig().getSetting("trakt_tvshows_show_popular") == 'true':
-                liste.append( [cConfig().getlanguage(30315),'https://api.trakt.tv/shows/popular?page=1&limit=' + str(MAXRESULT)] )
+            if self.ADDON.getSetting("trakt_tvshows_show_popular") == 'true':
+                liste.append( [self.ADDON.VSlang(30315),'https://api.trakt.tv/shows/popular?page=1&limit=' + str(MAXRESULT)] )
             
-            if cConfig().getSetting("trakt_tvshows_show_most_weekly") == 'true':
-                liste.append( [cConfig().getlanguage(30316),'https://api.trakt.tv/shows/played/weekly?page=1&limit=' + str(MAXRESULT)] )
+            if self.ADDON.getSetting("trakt_tvshows_show_most_weekly") == 'true':
+                liste.append( [self.ADDON.VSlang(30316),'https://api.trakt.tv/shows/played/weekly?page=1&limit=' + str(MAXRESULT)] )
             
-            if cConfig().getSetting("trakt_tvshows_show_most_monthly") == 'true':
-                liste.append( [cConfig().getlanguage(30317),'https://api.trakt.tv/shows/played/monthly?page=1&limit=' + str(MAXRESULT)] )
+            if self.ADDON.getSetting("trakt_tvshows_show_most_monthly") == 'true':
+                liste.append( [self.ADDON.VSlang(30317),'https://api.trakt.tv/shows/played/monthly?page=1&limit=' + str(MAXRESULT)] )
             
             #liste.append( ['Historique de séries','https://api.trakt.tv/users/me/history/shows'] )
             
@@ -329,8 +330,8 @@ class cTrakt:
 
         oGui = cGui()
 
-        headers = {'Content-Type': 'application/x-www-form-urlencoded', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
-        post = {'token': cConfig().getSetting("bstoken")}
+        headers = {'Content-Type': 'application/x-www-form-urlencoded', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting("bstoken")}
+        post = {'token': self.ADDON.getSetting("bstoken")}
         post = json.dumps(post)
 
         req = urllib2.Request(sUrl, post,headers)
@@ -341,8 +342,8 @@ class cTrakt:
         total = len(sHtmlContent)
 
         if (total > 0):
-            cConfig().setSetting('bstoken', '')
-            oGui.showNofication(cConfig().getlanguage(30320))
+            self.ADDON.setSetting('bstoken', '')
+            self.DIALOG.VSinfo(self.ADDON.VSlang(30320))
             xbmc.executebuiltin("Container.Refresh")
 
         return
@@ -358,7 +359,7 @@ class cTrakt:
 
         oGui = cGui()
 
-        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
+        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting("bstoken")}
         #post = {'extended': 'metadata'}
         # post = json.dumps(post)
         req = urllib2.Request(sUrl, None,headers)
@@ -384,10 +385,11 @@ class cTrakt:
         sId = SITE_IDENTIFIER
         searchtext = ''
         if (total > 0):
-            dialog = cConfig().createDialog(SITE_NAME)
+            progress_ = progress().VScreate(SITE_NAME)
+
             for i in result:
-                cConfig().updateDialog(dialog, total)
-                if dialog.iscanceled():
+                progress_.VSupdate(progress_, total)
+                if progress_.iscanceled():
                     break
 
                 if 'collection' in sUrl:
@@ -637,7 +639,7 @@ class cTrakt:
                 self.getFolder(oGui, sId, sTitle, sFile, sFunction, sImdb, sTmdb, oOutputParameterHandler)
                 sKey += 1
 
-            cConfig().finishDialog(dialog)
+            progress_.VSclose(progress_)
 
             if (sPage < sMaxPage):
                 sNextPage = sUrl.replace('page=' + str(sPage),'page=' + str(int(sPage)+1))
@@ -658,7 +660,7 @@ class cTrakt:
 
         oGui = cGui()
 
-        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
+        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting("bstoken")}
         #post = {'extended': 'metadata'}
         # post = json.dumps(post)
 
@@ -700,7 +702,7 @@ class cTrakt:
     
     def getLocalizedTitle(self, item, what):
         headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 
-                   'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
+                   'Authorization': 'Bearer %s' % self.ADDON.getSetting("bstoken")}
         
         try:
             if not 'episode' in what:
@@ -739,7 +741,7 @@ class cTrakt:
         oGui = cGui()
         cTrakt.CONTENT = '2'
 
-        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
+        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting("bstoken")}
         #post = {'extended': 'metadata'}
         # post = json.dumps(post)
 
@@ -797,7 +799,7 @@ class cTrakt:
         oGuiElement.setImdbId(sImdb)
         oGuiElement.setTmdbId(sTmdb)
 
-        if cConfig().getSetting("meta-view") == 'false':
+        if self.ADDON.getSetting("meta-view") == 'false':
             #self.getTmdbInfo(sTmdb, oGuiElement)
             oGuiElement.setMetaAddon('true')
 
@@ -827,27 +829,25 @@ class cTrakt:
         disp = []
         lang = []
         disp.append('https://api.trakt.tv/sync/collection')
-        lang.append('Ajouter: '+cConfig().getlanguage(30310))
+        lang.append('Ajouter: '+self.ADDON.VSlang(30310))
 
         disp.append('https://api.trakt.tv/sync/collection/remove')
-        lang.append('[COLOR red]Supprimer: '+cConfig().getlanguage(30310)+'[/COLOR]')
+        lang.append('[COLOR red]Supprimer: '+self.ADDON.VSlang(30310)+'[/COLOR]')
 
         disp.append('https://api.trakt.tv/sync/watchlist')
-        lang.append('Ajouter: '+cConfig().getlanguage(30311))
+        lang.append('Ajouter: '+self.ADDON.VSlang(30311))
 
         disp.append('https://api.trakt.tv/sync/watchlist/remove')
-        lang.append('[COLOR red]Supprimer: '+cConfig().getlanguage(30311)+'[/COLOR]')
+        lang.append('[COLOR red]Supprimer: '+self.ADDON.VSlang(30311)+'[/COLOR]')
 
         disp.append('https://api.trakt.tv/sync/history')
-        lang.append('Ajouter: '+cConfig().getlanguage(30312))
+        lang.append('Ajouter: '+self.ADDON.VSlang(30312))
 
         disp.append('https://api.trakt.tv/sync/history/remove')
-        lang.append('[COLOR red]Supprimer: '+cConfig().getlanguage(30312)+'[/COLOR]')
+        lang.append('[COLOR red]Supprimer: '+self.ADDON.VSlang(30312)+'[/COLOR]')
 
 
-        import xbmcgui
-        dialog2 = xbmcgui.Dialog()
-        ret = dialog2.select('Trakt',lang)
+        ret = self.DIALOG.select('Trakt',lang)
 
         if ret > -1:
             self.__sAction = disp[ret]
@@ -855,9 +855,8 @@ class cTrakt:
 
     def getType(self):
 
-        import xbmcgui
         disp = ['movies','shows']
-        dialog2 = xbmcgui.Dialog()
+        dialog2 = self.DIALOG.Dialog()
         dialog_select = 'Films', 'Series'
 
         ret = dialog2.select('Trakt',dialog_select)
@@ -874,13 +873,13 @@ class cTrakt:
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
         result = json.loads(sHtmlContent)
-        xbmc.log(str(result))
-        for i in result:
-            xbmc.log(str(i['movie']['title'].encode('utf-8')) + '=' + str(i['movie']['ids']['imdb']))
+        #VSlog(str(result))
+        #for i in result:
+            #VSlog(str(i['movie']['title'].encode('utf-8')) + '=' + str(i['movie']['ids']['imdb']))
 
     def getAction(self):
 
-        if cConfig().getSetting("bstoken") == "":
+        if self.ADDON.getSetting("bstoken") == "":
             cGui().showNofication("Vous devez être connecté")
             return
 
@@ -916,7 +915,7 @@ class cTrakt:
         else:
             sPost = {sType: [{"ids": {"imdb": sImdb}}]}
 
-        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
+        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting("bstoken")}
 
         sPost = json.dumps(sPost)
 
@@ -958,7 +957,7 @@ class cTrakt:
 
     def getWatchlist(self):
 
-        if not cConfig().getSetting("bstoken"):
+        if not self.ADDON.getSetting("bstoken"):
             return
 
         oInputParameterHandler = cInputParameterHandler()
@@ -987,7 +986,7 @@ class cTrakt:
         else:
             sPost = {sCat_trakt: [{"ids": {"imdb": sImdb}}]}
 
-        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % cConfig().getSetting("bstoken")}
+        headers = {'Content-Type': 'application/json', 'trakt-api-key': API_KEY, 'trakt-api-version': API_VERS, 'Authorization': 'Bearer %s' % self.ADDON.getSetting("bstoken")}
 
         sPost = json.dumps(sPost)
 
@@ -1028,12 +1027,12 @@ class cTrakt:
     def createContexTrakt(self, oGui, oGuiElement, oOutputParameterHandler= ''):
 
         liste = []
-        liste.append( ['[COLOR teal]Ajouter: '+cConfig().getlanguage(30310)+'[/COLOR]','https://api.trakt.tv/sync/collection'] )
-        liste.append( ['[COLOR red]Supprimer: '+cConfig().getlanguage(30310)+'[/COLOR]','https://api.trakt.tv/sync/collection/remove'] )
-        liste.append( ['[COLOR teal]Ajouter: '+cConfig().getlanguage(30311)+'[/COLOR]','https://api.trakt.tv/sync/watchlist'] )
-        liste.append( ['[COLOR red]Supprimer: '+cConfig().getlanguage(30311)+'[/COLOR]','https://api.trakt.tv/sync/watchlist/remove'] )
-        liste.append( ['[COLOR teal]Ajouter: '+cConfig().getlanguage(30312)+'[/COLOR]','https://api.trakt.tv/sync/history'] )
-        liste.append( ['[COLOR red]Supprimer: '+cConfig().getlanguage(30312)+'[/COLOR]','https://api.trakt.tv/sync/history/remove'] )
+        liste.append( ['[COLOR teal]Ajouter: '+self.ADDON.VSlang(30310)+'[/COLOR]','https://api.trakt.tv/sync/collection'] )
+        liste.append( ['[COLOR red]Supprimer: '+self.ADDON.VSlang(30310)+'[/COLOR]','https://api.trakt.tv/sync/collection/remove'] )
+        liste.append( ['[COLOR teal]Ajouter: '+self.ADDON.VSlang(30311)+'[/COLOR]','https://api.trakt.tv/sync/watchlist'] )
+        liste.append( ['[COLOR red]Supprimer: '+self.ADDON.VSlang(30311)+'[/COLOR]','https://api.trakt.tv/sync/watchlist/remove'] )
+        liste.append( ['[COLOR teal]Ajouter: '+self.ADDON.VSlang(30312)+'[/COLOR]','https://api.trakt.tv/sync/history'] )
+        liste.append( ['[COLOR red]Supprimer: '+self.ADDON.VSlang(30312)+'[/COLOR]','https://api.trakt.tv/sync/history/remove'] )
         for sTitle,sUrl in liste:
             oOutputParameterHandler = cOutputParameterHandler()
             if cTrakt.CONTENT == '2':
@@ -1071,8 +1070,7 @@ class cTrakt:
         sMovieTitle = re.sub(' +',' ',sMovieTitle) #vire les espaces multiples et on laisse les espaces sans modifs car certains codent avec %20 d'autres avec +
 
 
-        dialog3 = xbmcgui.Dialog()
-        ret = dialog3.select('Selectionner un Moteur de Recherche',['Vstream (Fiable mais plus complexe)','Alluc (Simple mais resultats non garantis)'])
+        ret = self.DIALOG.select('Selectionner un Moteur de Recherche',['Vstream (Fiable mais plus complexe)','Alluc (Simple mais resultats non garantis)'])
 
         if ret == 0:
             self.VstreamSearch(sMovieTitle)
@@ -1110,7 +1108,7 @@ class cTrakt:
         return
 
         if not sTmdb:
-            xbmc.log('Probleme sTmdb')
+            VSlog('Probleme sTmdb')
             return
 
         oRequestHandler = cRequestHandler('https://api.themoviedb.org/3/movie/'+str(sTmdb))
@@ -1155,7 +1153,7 @@ class cTrakt:
         oInputParameterHandler = cInputParameterHandler()
 
         from resources.lib.tmdb import cTMDb
-        grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
+        grab = cTMDb(api_key=self.ADDON.getSetting('api_tmdb'))
 
         if sType == 'show' or sType == 'shows':
             sType = 'tv'
@@ -1179,79 +1177,3 @@ class cTrakt:
         meta = grab.get_idbyname(oInputParameterHandler.getValue('sFileName'), annee, sType)
 
         return int(meta)
-
-    def getTmdbID_old(self,sTitle,sType):
-
-        if sType == 'show' or sType == 'shows':
-            sType = 'tv'
-
-        if sType == 'movies':
-            sType = 'movie'
-
-        ret = 0
-        SaisonEpisode = ''
-        annee = ''
-
-        if sType == 'tv':
-            sTitle = cUtil().FormatSerie(sTitle)
-            r = re.search('((?:[S|E][0-9\.\-\_]+){1,2})', sTitle)
-            if r:
-                SaisonEpisode = r.group(0)
-                sTitle = sTitle.replace(SaisonEpisode,'')
-
-        #on cherche l'annee
-        r = re.search('(\([0-9]{4}\))', sTitle)
-        if r:
-            annee = str(r.group(0))
-            sTitle = sTitle.replace(annee,'')
-
-        #Nettoyage nom
-        sTitle = sTitle.replace('-','')
-        sTitle = sTitle.replace(':','')
-        sTitle = re.sub(' +',' ',sTitle)
-        sTitle = sTitle.strip()
-
-        xbmc.log('Recherche de : ' + sTitle)
-        xbmc.log('Saison/episode : ' + SaisonEpisode)
-        xbmc.log('Annee : ' + annee)
-        xbmc.log('Type : ' + sType)
-
-        url = 'http://api.themoviedb.org/3/search/'+ sType +'?query=' + urllib.quote_plus(sTitle)
-
-        if annee:
-            url = url + '&year=' + str(annee)
-
-        oRequestHandler = cRequestHandler(url)
-        oRequestHandler.addParameters('api_key', '92ab39516970ab9d86396866456ec9b6')
-        oRequestHandler.addParameters('language', 'fr')
-
-        sHtmlContent = oRequestHandler.request()
-        result = json.loads(sHtmlContent)
-        #xbmc.log(str(result))
-
-        n = 0
-        d = 100
-
-        n3 = sTitle.count(' ') + 1
-        for i in result['results']:
-            #xbmc.log( i['title'].encode("utf-8") + ' ' + str(i['id'] ))
-            #compare le nombre de mot identique ET le nombre de mot total
-            if 'title' in i:
-                sTitle2 = i['title'].encode("utf-8")
-            else:
-                sTitle2 = i['name'].encode("utf-8")
-
-            #xbmc.log(sTitle2 + ' = ' + str(i['id']))
-
-            #nombre de mots identiques
-            n2 = cUtil().CheckOccurence(sTitle,sTitle2)
-            #nombre de mot different entre les 2 titres, doit etre le plus petit possible
-            d2 = math.fabs( sTitle2.count(' ') + 1 - n3 ) - n2
-
-            if  (n2 >= n) and (d2 < d):
-                n = n2
-                d = d2
-                ret = i['id']
-
-        xbmc.log('Id trouve : ' + str(ret))
-        return ret

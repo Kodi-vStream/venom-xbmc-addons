@@ -6,7 +6,7 @@
 #from resources.lib.config import cConfig
 #from resources.lib import util
 
-from resources.lib.comaddon import *
+from resources.lib.comaddon import addon, dialog, VSlog, xbmc
 
 import json, urllib2
 from urllib import quote_plus, urlopen, urlencode
