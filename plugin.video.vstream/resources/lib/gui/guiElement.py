@@ -413,7 +413,10 @@ class cGuiElement:
         return self.__sFanart
 
     def setIcon(self, sIcon):
-        self.__sIcon = unicode(sIcon, 'utf-8')
+        try:
+            self.__sIcon = unicode(sIcon, 'utf-8')
+        except:
+            self.__sIcon = sIcon
         self.__sIcon = self.__sIcon.encode("utf-8")
         self.__sIcon = urllib.quote_plus(self.__sIcon, safe=':/')
 
