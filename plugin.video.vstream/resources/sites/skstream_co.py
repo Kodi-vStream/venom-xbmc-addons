@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
+return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -238,20 +239,25 @@ def showQlt():
     oGui.setEndOfDirectory()
 
 def showYears():
+    oGui = cGui()
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sCheck = VSshowYear(sUrl)
-    if not sCheck == None:
-        showMovies(yearUrl = sCheck)
 
-def showMovies(sSearch = '', yearUrl = ''):
+    for i in reversed(range(2000,2019)):
+        Year = str(i)
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', ('%s%s') % (sUrl,  Year))
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'films_annees.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
 
     if sSearch:
         sUrl = sSearch
-    elif yearUrl:
-        sUrl = yearUrl
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -262,9 +268,6 @@ def showMovies(sSearch = '', yearUrl = ''):
     sPattern = '<a class="unfilm" *HREF="([^"]+)">.+?title="(.+?)".+?src="([^"]+)">'
 
     aResult = oParser.parse(sHtmlContent,sPattern)
-
-    if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:

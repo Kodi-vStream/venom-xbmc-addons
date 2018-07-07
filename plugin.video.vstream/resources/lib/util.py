@@ -11,6 +11,10 @@ import sys,xbmcplugin
 COUNT = 0
 DIALOG2 = None
 
+#function util n'utilise pas xbmc, xbmcgui, xbmcaddon ect...
+
+#reste a transformer la class en fonction distancte.
+
 class cUtil:
 
     def CheckOrd(self, label):
@@ -259,12 +263,6 @@ def QuotePlus(sUrl):
 def QuoteSafe(sUrl):
     return urllib.quote(sUrl,safe=':/')
 
-#deprecier utiliser comaddon dialog()
-def VScreateDialogSelect(label,sTitle='vStream'):
-    oDialog = xbmcgui.Dialog()
-    ret = oDialog.select(sTitle, label)
-    return ret
-
 
 #deprecier utiliser comaddon dialog()
 # def updateDialogSearch(dialog, total, site):
@@ -280,25 +278,3 @@ def VStranslatePath(location):
     #d'apres Kodi ne doit pas etre utiliser sur les special://
     return xbmc.translatePath(location).decode("utf-8")
 
-#hummm juste pour 1 fichier ?
-def VSshowYear(sUrl,start = '',end = '',endswithslash = ''):
-    if start and end:
-        fstart = start
-        fend = end
-    else:
-        fstart = 1936
-        fend = 2018
-
-    lstYear = []
-    lstUrl = []
-    for i in reversed(xrange(fstart,fend)):
-        lstYear.append(str(i))
-        lstUrl.append(sUrl+str(i)+endswithslash)
-
-    ret = VScreateDialogSelect(lstYear,sTitle='Sélectionner une année')
-    if (ret > -1):
-        return lstUrl[ret]
-    else:
-        xbmcplugin.endOfDirectory(int(sys.argv[1]),True,False,False)
-        xbmc.sleep(500) #sleep obligatoire
-        xbmc.executebuiltin("Action(Back)") #back evite erreur du au clic sur un dossier qui mene nulle part

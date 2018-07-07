@@ -87,9 +87,11 @@ def showGenres():
 def showYears():
     #for i in itertools.chain(xrange(5, 7), [8, 9]): afficher dans l'ordre (pense bete ne pas effacer)
     oGui = cGui()
-    from itertools import chain
-    generator = chain([1998,1999],xrange(2000,2019))#desordre
-    for i in reversed(list(generator)):
+    #compliquer pour rien.
+    # from itertools import chain
+    # generator = chain([1998,1999],xrange(2000,2019))#desordre
+    # for i in reversed(list(generator)):
+    for i in reversed(range(2000,2019)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', ('%s%s%s%s') % (URL_MAIN, 'annee/', Year, '/'))
