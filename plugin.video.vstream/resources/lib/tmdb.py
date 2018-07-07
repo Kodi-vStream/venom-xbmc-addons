@@ -3,9 +3,6 @@
 #Modif pour vStream
 #https://github.com/Kodi-vStream/venom-xbmc-addons/
 
-#from resources.lib.config import cConfig
-#from resources.lib import util
-
 from resources.lib.comaddon import addon, dialog, VSlog, xbmc
 
 import json, urllib2

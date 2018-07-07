@@ -5,7 +5,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.gui.gui import cGui
 
-from resources.lib.comaddon import addon, dialog, xbmc, VSlog
+from resources.lib.comaddon import addon, dialog, xbmc, isKrypton, VSlog
 
 import xbmcplugin
 
@@ -102,7 +102,7 @@ class cPlayer(xbmc.Player):
                 xbmcplugin.setResolvedUrl(sPluginHandle, True, listitem=item)
                 VSlog('Player use inputstream addon')
             else:
-                VSerror('Nécessite kodi 17 minimum')
+                dialog().VSerror('Nécessite kodi 17 minimum')
                 return
         #1 er mode de lecture
         elif (player_conf == '0'):

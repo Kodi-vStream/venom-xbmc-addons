@@ -36,6 +36,7 @@ class addon(xbmcaddon.Addon):
     def VSlang(self, lang):
         return xbmc.translatePath(self.getLocalizedString(lang))
         #xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang))
+        #Bug avec accent xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang)).decode("utf-8")
 
     #deprecier utiliser addons.setSetting et addons.getSetting
     def VSsetting(self, name, value=False):

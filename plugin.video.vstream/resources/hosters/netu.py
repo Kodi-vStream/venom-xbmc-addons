@@ -4,7 +4,8 @@ from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib import unwise
-from resources.lib.util import cUtil, VSlog
+from resources.lib.util import cUtil
+from resources.lib.comaddon import VSlog
 import urllib, urllib2
 import re
 import base64

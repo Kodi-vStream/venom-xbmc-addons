@@ -8,7 +8,7 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.tmdb import cTMDb
 
-from resources.lib.comaddon import progress, addon, dialog
+from resources.lib.comaddon import progress, addon, dialog, VSupdate
 
 try:    import json
 except: import simplejson as json
