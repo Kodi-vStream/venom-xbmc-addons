@@ -5,7 +5,7 @@
 #sLibrary = xbmc.translatePath("special://home/addons/plugin.video.vstream").decode("utf-8")
 #sys.path.append (sLibrary) 
 
-from resources.lib.comaddon import addon, progress, dialog, VSlog, xbmc
+from resources.lib.comaddon import addon, progress, dialog, window, VSlog, xbmc
 from resources.lib.handler.requestHandler import cRequestHandler
 
 import urllib
@@ -64,6 +64,12 @@ class cAbout:
             #version de l'addon
             addons.setSetting('service_version', str(addons.getAddonInfo("version")))
             service_version = addons.getAddonInfo("version")
+
+        #si addon = 0.7.0 et service_version 0.6.35 pas de mise ajour.
+        if (addons.getAddonInfo("version") > service_version):
+            addons.setSetting('service_version', str(addons.getAddonInfo("version")))
+            service_version = addons.getAddonInfo("version")
+
         
         if (service_time):
             #delay mise a jour           
@@ -80,7 +86,8 @@ class cAbout:
                 sHtmlContent = oRequestHandler.request()
                 result = json.loads(sHtmlContent)
             
-                if (result['tag_name'] > service_version):
+                #if (result['tag_name'] > service_version):
+                if (result['tag_name'] > 1):
                     addons.setSetting('service_futur', str(result['tag_name']))
                     addons.setSetting('home_update', str('true')) 
                     addons.setSetting('service_time', str(datetime.datetime.now()))
@@ -229,8 +236,10 @@ class cAbout:
             service_futur = addons.getSetting('service_futur')
             service_version = addons.getSetting('service_version')
 
-            result = self.resultGit()
+            #result = self.resultGit()
             sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/compare/%s...%s' % (service_version, service_futur)
+            #sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/compare/0.6.3...0.6.31'
+
             oRequestHandler = cRequestHandler(sUrl)
             sHtmlContent = oRequestHandler.request()
             result = json.loads(sHtmlContent)
@@ -243,9 +252,11 @@ class cAbout:
             site = ''
             sdown = 0
             schange = 0
+            text = ''
 
             if result: 
                 
+                #boucle download fichier
                 for i in result['files']:
 
                     if 'plugin.video.vstream' in i['filename']: 
@@ -255,7 +266,8 @@ class cAbout:
 
                         try:
                             self.__download(i['raw_url'], rootpath)
-                            site += "[COLOR green]"+i['filename'].encode("utf-8")+"[/COLOR][CR]"
+                            #site += "[COLOR green]"+i['filename'].encode("utf-8")+"[/COLOR][CR]"
+                            site += "Add: [B]%s[/B] | Del: [B]%s[/B] | [COLOR green]%s[/COLOR][CR]" % (i['additions'], i['deletions'], i['filename'].encode("utf-8"))
                             sdown = sdown+1
                             schange += i['changes']
                         except:
@@ -264,16 +276,26 @@ class cAbout:
                             pass
 
                 progress_.VSclose(progress_)
+                
 
-                sContent = "Fichier mise à jour %s / %s changement (%s)[CR]" %  (sdown, total, schange)
+                #boucle commit
+                for i in result['commits']:
+                    try:
+                        text += "[B]%s[/B]: %s[CR]" % (i['commit']['author']['name'], i['commit']['message'].encode("utf-8"))
+                    except:
+                        text += "[B]%s[/B]: nop[CR]" % (i['commit']['author']['name'])
+                        pass
+                
+                sContent = "Changement (%s) | Fichier mise à jour %s / %s [CR]" %  (schange, sdown, total)
+                sContent += "%s" %  (text.encode("utf-8"))
                 sContent += "%s" %  (site)
                 
                 addons.setSetting('service_time', str(datetime.datetime.now()))
                 addons.setSetting('service_version', str(service_futur))
                 addons.setSetting('home_update', str('false'))
                 
-                fin = dialog().VSok(sContent)
-                xbmc.executebuiltin("Container.Refresh")
+                #fin = dialog().VSok(sContent)
+                fin =  self.TextBoxes(sContent)
         return
             
     def __download(self, WebUrl, RootUrl):
@@ -286,5 +308,23 @@ class cAbout:
         inf.close()
         f.close()
 
+        return
+
+    def TextBoxes(self, anounce):
+        # activate the text viewer window
+        xbmc.executebuiltin( "ActivateWindow(%d)" % ( 10147, ) )
+        # get window
+        win = window(10147)
+        #win.show()
+        # give window time to initialize
+        xbmc.sleep(100)
+        # set heading
+        win.getControl(1).setLabel("vStream mise à jour")
+        win.getControl(5).setText(anounce)
+        while xbmc.getCondVisibility("Window.IsActive(10147)"):
+            xbmc.sleep(100)
+        ret = dialog().VSok('Mise à jour terminée')
+        if ret:
+            xbmc.executebuiltin("Container.Refresh")
         return
         
