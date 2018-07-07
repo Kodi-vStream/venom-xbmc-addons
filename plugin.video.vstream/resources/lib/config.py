@@ -5,6 +5,7 @@ import xbmcplugin
 import xbmcgui
 import xbmcaddon
 import unicodedata
+import xbmcvfs
 
 from resources.lib.comaddon import *
 
@@ -15,28 +16,43 @@ DIALOG2 = None
 #------------------------
 
 class GestionCookie():
-    PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile")).decode("utf-8")
+    #PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile")).decode("utf-8")
+    PathCache = "special://userdata/addon_data/plugin.video.vstream"
 
     def DeleteCookie(self,Domain):
-        file = os.path.join(self.PathCache,'Cookie_'+ str(Domain) +'.txt')
-        os.remove(os.path.join(self.PathCache,file))
+        #file = os.path.join(self.PathCache,'Cookie_'+ str(Domain) +'.txt')
+        Name = "/".join([self.PathCache, "cookie_%s.txt"]) % (Domain)
+        #os.remove(os.path.join(self.PathCache,file))
+        xbmcvfs.delete(Name)
 
     def SaveCookie(self,Domain,data):
-        Name = os.path.join(self.PathCache,'Cookie_'+ str(Domain) +'.txt')
+        #Name = os.path.join(self.PathCache,'Cookie_'+ str(Domain) +'.txt')
+        Name = "/".join([self.PathCache, "cookie_%s.txt"]) % (Domain)
 
         #save it
-        file = open(Name,'w')
-        file.write(data)
+        #file = open(Name,'w')
+        #file.write(data)
+        #file.close()
 
-        file.close()
+        f = xbmcvfs.File(Name, 'w')
+        f.write(data)
+        f.close()
 
     def Readcookie(self,Domain):
-        Name = os.path.join(self.PathCache,'Cookie_'+ str(Domain) +'.txt')
+        #Name = os.path.join(self.PathCache,'Cookie_'+ str(Domain) +'.txt')
+        Name = "/".join([self.PathCache, "cookie_%s.txt"]) % (Domain)
+
+        # try:
+        #     file = open(Name,'r')
+        #     data = file.read()
+        #     file.close()
+        # except:
+        #     return ''
 
         try:
-            file = open(Name,'r')
-            data = file.read()
-            file.close()
+            f = xbmcvfs.File(Name)
+            data = f.read()
+            f.close()
         except:
             return ''
 
