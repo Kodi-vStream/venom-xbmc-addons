@@ -397,7 +397,7 @@ def showMovies(sSearch = ''):
     if 'top' in sUrl:
         sPattern = '<div class="fiche_top20"><a class="top20" href="([^"]+)"><img src="([^"]+)" title="([^\|]+)\|\|[^\|]+?\|\|([^\|]+)\|\|[^\|]+?\|\|([^"]+)" /></a></div>'
     else:
-        sPattern = '<div class="fiche_listing"><a href="([^"]+)"><img src="([^"]+)" alt="Télécharger([^"]+)"[^\|]+?\| *Qualité : ([^<]+)<br /><br />([^<]+)<br /><br />'
+        sPattern = '<div class="fiche_listing"><a href="([^"]+)"><img src="([^"]+)" alt="T.+?charger([^"]+)"[^\|]+?\| *Qualit&eacute; : ([^<]+)<br /><br />([^<]+)<br /><br />'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
