@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'planet_streaming'
 SITE_NAME = 'Planet Streaming'
 SITE_DESC = 'Films en Streaming complet  VF HD'
 
-URL_MAIN = 'http://ww2.planet-streaming.com/'
+URL_MAIN = 'http://ww4.planet-streaming.com/'
 
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'regarder-film/', 'showMovies')

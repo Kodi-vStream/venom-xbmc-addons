@@ -132,10 +132,19 @@ class progress(xbmcgui.DialogProgress):
         else: return DIALOG2
 
     def VSupdate(self, dialog, total, text=''):
+        if window(10101).getProperty('search') == 'true':
+            return
         global COUNT
         COUNT += 1
         iPercent = int(float(COUNT * 100) / total)
         dialog.update(iPercent, 'Loading: '+str(COUNT)+'/'+str(total), text)
+
+    def VSupdatesearch(self, dialog, total, text=''):
+        global COUNT
+        COUNT += 1
+        iPercent = int(float(COUNT * 100) / total)
+        dialog.update(iPercent, 'Loading: '+str(COUNT)+'/'+str(total), text)
+
 
     def VSclose(self, dialog):
         if window(10101).getProperty('search') == 'true':

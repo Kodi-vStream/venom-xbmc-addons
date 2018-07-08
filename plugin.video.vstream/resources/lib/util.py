@@ -2,15 +2,8 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 import urllib
-import xbmc
-import xbmcgui
-import xbmcaddon
 import htmlentitydefs
 import unicodedata
-import sys,xbmcplugin
-
-COUNT = 0
-DIALOG2 = None
 
 #function util n'utilise pas xbmc, xbmcgui, xbmcaddon ect...
 
@@ -87,11 +80,6 @@ class cUtil:
 
     def quotePlus(self, sUrl):
         return urllib.quote_plus(sUrl)
-
-    def dialog(self, sName):
-        oDialog = xbmcgui.DialogProgress()
-        oDialog.create(sName)
-        return oDialog
 
     def DecoTitle(self, string):
         return string
@@ -274,8 +262,8 @@ def QuoteSafe(sUrl):
 
 
 
-def VStranslatePath(location):
-    #ex util.VStranslatePath("special://logpath/") > http://kodi.wiki/view/Special_protocol
-    #d'apres Kodi ne doit pas etre utiliser sur les special://
-    return xbmc.translatePath(location).decode("utf-8")
+# def VStranslatePath(location):
+#     #ex util.VStranslatePath("special://logpath/") > http://kodi.wiki/view/Special_protocol
+#     #d'apres Kodi ne doit pas etre utiliser sur les special://
+#     return xbmc.translatePath(location).decode("utf-8")
 

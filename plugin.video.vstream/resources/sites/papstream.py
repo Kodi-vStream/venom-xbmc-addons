@@ -187,13 +187,17 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
 
     if sSearch:
+        
         oRequestHandler.addHeaderEntry('Referer', URL_SEARCH[0])
         oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Host', 'www.papstream.org')
+        oRequestHandler.addHeaderEntry('Origin', 'http://www.papstream.org')
         oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
         oRequestHandler.addParametersLine('do=search')
         oRequestHandler.addParametersLine('subaction=search')
         oRequestHandler.addParametersLine('story=' + sSearch)
+        
 
     sHtmlContent = oRequestHandler.request()
 
