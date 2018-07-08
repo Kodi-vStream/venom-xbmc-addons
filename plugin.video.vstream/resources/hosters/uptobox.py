@@ -4,10 +4,9 @@
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import VSlog
-import urllib2,urllib,xbmcgui,re,xbmc
+from resources.lib.comaddon import xbmcgui, VSlog
+import urllib2,urllib,re
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'}
 
@@ -92,7 +91,6 @@ class cHoster(iHoster):
             else:
                 return False
         
-            cGui().showInfo('Resolve', self.__sDisplayName, 3)
             return self.__getMediaLinkByPremiumUser()
             
         else:
@@ -120,7 +118,6 @@ class cHoster(iHoster):
             else:
                 return True, api_call
             
-        cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
         return False, False
         
         
@@ -150,7 +147,6 @@ class cHoster(iHoster):
                     else:
                         return True, api_call
 
-                cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
                 return False, False
         
     def GetMedialinkDL(self,sHtmlContent):
@@ -207,7 +203,6 @@ class cHoster(iHoster):
                 
             return stream_url
         else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
             return False
         
         return False

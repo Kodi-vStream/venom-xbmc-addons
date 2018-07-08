@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, xbmc
+from resources.lib.comaddon import progress, xbmc, dialog
 
 
 SITE_IDENTIFIER = 'serie_streaming_watch'
@@ -292,7 +292,7 @@ def ProtectstreamBypass(url):
     if (aResult[0] == True):
         postdata = 'k=' + aResult[1][0]
         
-        cGui().showInfo("Patientez", 'Décodage en cours', 5)
+        dialog().VSinfo('Décodage en cours', "Patientez", 5)
         xbmc.sleep(5000)
 
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
@@ -310,7 +310,7 @@ def ProtectstreamBypass(url):
         #Test de fonctionnement
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            cGui().showInfo("Erreur", 'Lien encore protégé', 5)
+            dialog().VSinfo('Lien encore protégé', "Erreur", 5)
             return ''
 
         #recherche du lien embed

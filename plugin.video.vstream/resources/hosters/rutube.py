@@ -1,9 +1,12 @@
 #-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.hosters.hoster import iHoster
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
-import urllib,xbmc,xbmcgui
+from resources.lib.comaddon import dialog
+
+import urllib
 
 class cHoster(iHoster):
 
@@ -77,6 +80,7 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+        stream_url = False
 
         oParser = cParser()
 
@@ -107,8 +111,6 @@ class cHoster(iHoster):
         sPattern = '(http.+?\?i=)([0-9x_]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        stream_url = ''
-
         if (aResult[0] == True):
             url=[]
             qua=[]
@@ -117,21 +119,12 @@ class cHoster(iHoster):
                 url.append(aEntry[0]+aEntry[1])
                 qua.append(aEntry[1])
 
-            #Si une seule url
-            if len(url) == 1:
-                stream_url = url[0]
-            #si plus de une
-            elif len(url) > 1:
-                #Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
-                if (ret > -1):
-                    stream_url = url[ret]
+            #tableau
+            stream_url = dialog().VSselectqual(qua, url)
 
         if (stream_url):
-            return True,stream_url
+            return True, stream_url
         else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
             return False, False
 
         return False, False

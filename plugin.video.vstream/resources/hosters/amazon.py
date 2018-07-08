@@ -1,6 +1,7 @@
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
 import urllib,urllib2
 from urllib2 import URLError
@@ -61,7 +62,6 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        cGui().showInfo('Resolve', self.__sDisplayName, 5)
         
         id = ''
         
@@ -95,10 +95,8 @@ class cHoster(iHoster):
             if (aResult[0] == True):
                 return True, aResult[1][0]
             else:
-                cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
                 return False, False
         else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
             return False, False
         
         return False, False

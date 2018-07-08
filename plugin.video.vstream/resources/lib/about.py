@@ -194,38 +194,6 @@ class cAbout:
         except:
             return False
         return result
-    
-
-  #plus utiliser depuis le 24/06/18
-    def checkupdate(self):
-                  
-        #dialog = cConfig().showInfo("vStream", "Cherche les mises a jour")            
-        result = self.resultGit()        
-        sDown = 0
-        
-        if result:
-            for i in result:
-                try: 
-                    rootpath = self.getRootPath(i['path'])
-                    
-                    if self.checksize(rootpath,i['size']):
-                        sDown = sDown+1
-                        break #Si on en trouve un, pas besoin de tester les autres.
-                        
-                except:
-                    VSlog('Erreur durant verification MAJ' )
-                    return
-             
-            if (sDown != 0):
-                cConfig().setSetting('home_update', str('true')) 
-                cConfig().setSetting('service_time', str(datetime.datetime.now()))
-                dialog = cConfig().showInfo("vStream", "Mise à jour disponible")   
-            else:
-                #cConfig().showInfo('vStream', 'Fichier a jour')
-                cConfig().setSetting('service_time', str(datetime.datetime.now()))
-                cConfig().setSetting('home_update', str('false'))
-            
-        return
 
     def checkdownload(self):
 

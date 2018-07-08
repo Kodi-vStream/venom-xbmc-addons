@@ -2,8 +2,9 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
+from resources.lib.gui.gui import cGui
 from resources.lib.util import cUtil
-from resources.lib.comaddon import addon, dialog, VSlog, VSkeyboard, xbmc
+from resources.lib.comaddon import addon, dialog, VSlog, xbmc
 
 import xbmcvfs
 import urllib,re
@@ -73,7 +74,7 @@ class cLibrary:
             folder = self.__sMovieFolder
 
             sTitle = cUtil().CleanName(sTitle)
-            sTitle = VSkeyboard(sTitle)
+            sTitle =  cGui().showKeyBoard(sTitle)
 
             try:
                 # folder = folder + '/' + sTitle + '/'
@@ -92,7 +93,7 @@ class cLibrary:
 
             sTitle = cUtil().FormatSerie(sTitle)
             sTitle = cUtil().CleanName(sTitle)
-            sTitle = VSkeyboard(sTitle)
+            sTitle =  cGui().showKeyBoard(sTitle)
             
             sTitleGlobal = re.sub('((?:[s|e][0-9]+){1,2})','',sTitle)
             

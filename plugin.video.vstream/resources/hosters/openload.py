@@ -4,13 +4,12 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.gui.gui import cGui
 
 from resources.lib.aadecode import AADecoder
 from resources.lib.jjdecode import JJDecoder
 from resources.lib.packer import cPacker
 
-from resources.lib.comaddon import addon, VSlog
+from resources.lib.comaddon import dialog, VSlog, xbmc
 #Pour le futur
 from resources.lib.jsparser import JsParser
 
@@ -166,7 +165,7 @@ class cHoster(iHoster):
 
         VSlog('Code JS extrait')
 
-        cGui().showInfo(self.__sDisplayName, 'Decodage : Peut durer plus d une minute.' , 15)
+        dialog().VSinfo('Decodage : Peut durer plus d une minute.' , self.__sDisplayName, 15)
 
         #interpreteur JS
         JP = JsParser()
@@ -187,12 +186,12 @@ class cHoster(iHoster):
             VSlog('Rate, debug: ' + str(Liste_var))
             return False,False
 
-        cGui().showInfo(self.__sDisplayName, 'Ok, lien decode.' , 15)
+        dialog().VSinfo('Ok, lien decode.' , self.__sDisplayName, 15)
 
         api_call = self.__getHost() + "/stream/" + url + "?mime=true"
 
         if '::' in api_call:
-            cGui().showInfo(self.__sDisplayName, 'Possibles problemes d\'ip V6' , 5)
+            dialog().VSinfo('Possibles problemes d\'ip V6' , self.__sDisplayName, 5)
             xbmc.sleep(5*1000)
 
         VSlog(api_call)
@@ -341,21 +340,21 @@ def GetOpenloadUrl(url,referer):
         finalurl = res.geturl()
 
 
-        xbmc.log('Url decodee : ' + finalurl)
+        VSlog('Url decodee : ' + finalurl)
 
         #autres infos
         #xbmc.log(str(res.info()))
         #xbmc.log(res.info()['Content-Length'])
 
         if 'KDA_8nZ2av4/x.mp4' in finalurl:
-            xbmc.log('pigeon url : ' + url)
+            VSlog('pigeon url : ' + url)
             finalurl = ''
         if 'Content-Length' in res.info():
             if res.info()['Content-Length'] == '33410733':
-                xbmc.log('pigeon url : ' + url)
+                VSlog('pigeon url : ' + url)
                 finalurl = ''
         if url == finalurl:
-            xbmc.log('Bloquage')
+            VSlog('Bloquage')
             finalurl = ''
 
         return finalurl

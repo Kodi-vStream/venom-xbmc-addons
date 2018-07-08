@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress, xbmc #, VSlog
+from resources.lib.comaddon import progress, dialog, xbmc #, VSlog
 
 import urllib2
 
@@ -40,7 +40,7 @@ def ProtectstreamBypass(url):
 
     if (aResult[0] == True):
 
-        cGui().showInfo("Patientez", 'Décodage en cours', 5)
+        dialog().VSinfo('Décodage en cours', "Patientez", 5)
         xbmc.sleep(5000)
 
         #postdata = urllib.urlencode( { 'k': aResult[1][0] } )
@@ -77,7 +77,7 @@ def ProtectstreamBypass(url):
         #Test de fonctionnement
         aResult = oParser.parse(data, sPattern)
         if aResult[0]:
-            cGui().showInfo("Erreur", 'Lien encore protegé', 5)
+            dialog().VSinfo('Lien encore protegé', "Erreur", 5)
             return ''
 
         #recherche du lien embed

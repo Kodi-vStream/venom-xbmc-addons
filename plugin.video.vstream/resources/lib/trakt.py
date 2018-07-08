@@ -880,7 +880,7 @@ class cTrakt:
     def getAction(self):
 
         if self.ADDON.getSetting("bstoken") == "":
-            cGui().showNofication("Vous devez être connecté")
+            self.DIALOG.VSinfo("Vous devez être connecté")
             return
 
         oInputParameterHandler = cInputParameterHandler()
@@ -946,7 +946,7 @@ class cTrakt:
                 sText = 'Entree deja presente'
         except: pass
 
-        cGui().showNofication(sText)
+        self.DIALOG.VSinfo(sText)
 
         #{u'not_found': {u'movies': [], u'seasons': [], u'people': [], u'episodes': [], u'shows': []}, u'updated': {u'movies': 0, u'episodes': 0}, u'added': {u'movies': 1, u'episodes': 0}, u'existing': {u'movies': 0, u'episodes': 0}}
         #{u'deleted': {u'movies': 0, u'episodes': 55}, u'not_found': {u'movies': [], u'seasons': [], u'people': [], u'episodes': [], u'shows': []}}
@@ -1019,7 +1019,7 @@ class cTrakt:
         except: pass
 
         if sText:
-            cGui().showNofication(sText)
+            self.DIALOG.VSinfo(sText)
 
         return
         

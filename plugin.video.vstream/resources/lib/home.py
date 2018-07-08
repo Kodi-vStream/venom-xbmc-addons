@@ -321,10 +321,10 @@ class cHome:
 
     def showSearchText(self):
         oGui = cGui()
-
         sSearchText = oGui.showKeyBoard()
         if sSearchText:
             self.showSearch(sSearchText)
+            oGui.setEndOfDirectory()
         else :
             return False
 

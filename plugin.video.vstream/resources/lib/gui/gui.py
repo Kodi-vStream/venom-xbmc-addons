@@ -761,25 +761,10 @@ class cGui():
         return False
 
     def showNofication(self, sTitle, iSeconds=0):
-        if (iSeconds == 0):
-            iSeconds = 1000
-        else:
-            iSeconds = iSeconds * 1000
-
-        xbmc.executebuiltin("Notification(%s,%s,%s)" % ('vStream', str(sTitle), iSeconds))
+        return False
 
     def showError(self, sTitle, sDescription, iSeconds=0):
-        if (iSeconds == 0):
-            iSeconds = 1000
-        else:
-            iSeconds = iSeconds * 1000
-
-        xbmc.executebuiltin("Notification(%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds))
+        return False
 
     def showInfo(self, sTitle, sDescription, iSeconds=0):
-        if (iSeconds == 0):
-            iSeconds = 1000
-        else:
-            iSeconds = iSeconds * 1000
-
-        xbmc.executebuiltin("Notification(%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds))
+        return False

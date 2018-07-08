@@ -10,7 +10,7 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.db import cDb
 from resources.lib.util import cUtil
 
-from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate, VSkeyboard, xbmc , xbmcgui
+from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate, xbmc , xbmcgui
 
 import urllib2,urllib
 import xbmcplugin
@@ -648,7 +648,7 @@ class cDownload:
         #titre fichier
         sTitle = self.__createTitle(sUrl, sTitle)
         sTitle = self.__createDownloadFilename(sTitle)
-        sTitle = VSkeyboard(sTitle)
+        sTitle =  cGui().showKeyBoard(sTitle)
 
         if (sTitle != False and len(sTitle) > 0):
 

@@ -226,12 +226,6 @@ def VSread(sHtmlContent):
     result = f.write(sHtmlContent)
     f.close()
 
-def VSkeyboard(self, sDefaultText=''):
-    keyboard = xbmc.Keyboard(sDefaultText)
-    keyboard.doModal()
-    if (keyboard.isConfirmed()):
-        sSearchText = keyboard.getText()
-        if (len(sSearchText)) > 0:
-            return sSearchText
-
+#use cGui.showKeyBoard
+def VSkeyboard(sDefaultText=''):
     return False

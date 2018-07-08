@@ -3,12 +3,9 @@
 #
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
-from resources.lib.util import cUtil
 from resources.hosters.hoster import iHoster
-
 from resources.lib.packer import cPacker
-import re,xbmc
+import re
 
 #import resources.lib.pyaes as pyaes (no module name pyaes found)
 
@@ -109,7 +106,6 @@ class cHoster(iHoster):
         if (url_stream): 
             return True, url_stream
         else:
-                cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
-                return False, False
+            return False, False
         
         return False, False
