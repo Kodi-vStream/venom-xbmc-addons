@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-#Venom.
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.gui.guiElement import cGuiElement
 
@@ -694,8 +694,7 @@ class cGui():
 
     def viewinfo(self):
 
-        #import config a la demande pour plus tard deplacer la fonction
-        from resources.lib.config import cConfig
+        from resources.lib.config import WindowsBoxes
 
         oGuiElement = cGuiElement()
         oInputParameterHandler = cInputParameterHandler()
@@ -716,7 +715,7 @@ class cGui():
             sCleanTitle = re.sub('(?i)S[0-9]+E[0-9]+', '', sCleanTitle)
             sCleanTitle = re.sub('(?i)[S|E][0-9]+', '', sCleanTitle)
 
-        ui = cConfig().WindowsBoxes(sTitle, sCleanTitle, sMeta, sYear)
+        ui = WindowsBoxes(sTitle, sCleanTitle, sMeta, sYear)
 
     def __createItemUrl(self, oGuiElement, oOutputParameterHandler=''):
         if (oOutputParameterHandler == ''):
