@@ -13,15 +13,15 @@ SITE_IDENTIFIER = 'filmstreamvk_com'
 SITE_NAME = 'Filmstreamvk'
 SITE_DESC = 'Films, Séries & Mangas en Streaming'
 
-URL_MAIN = 'http://filmstreamvk.la/'
+URL_MAIN = 'http://filmstreamvk.site/'
 
-MOVIE_MOVIE = (URL_MAIN, 'showMovies')
-MOVIE_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_MOVIE = ('http', 'load')
+MOVIE_NEWS = (URL_MAIN+ 'film-streaming-vf', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'les-plus-vues-films', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
-SERIE_SERIES = (URL_MAIN + 'series', 'showMovies')
-SERIE_NEWS = (URL_MAIN + 'series', 'showMovies')
+SERIE_SERIES = (URL_MAIN + 'serie', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'serie', 'showMovies')
 
 ANIM_ANIMS = (URL_MAIN + 'manga', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'manga', 'showMovies')
@@ -187,7 +187,6 @@ def showMovies(sSearch = ''):
 
         progress_.VSclose(progress_)
 
-    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
