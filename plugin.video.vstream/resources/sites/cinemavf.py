@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'cinemavf'
 SITE_NAME = 'CinemaVF'
 SITE_DESC = 'Films, Séries & Mangas en streaming.'
 
-URL_MAIN = 'http://filmstreamin.org/'
+URL_MAIN = 'http://filmstreamin.co/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -221,7 +221,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
 
-    sPattern = '<a title=".+?href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?class="ExcerptContent">(.+?)</div>'
+    sPattern = '<a title=".+?href="(.+?)">.+?<div class=".+?">.+?<img src="(.+?)" alt="(.+?)" />.+?</ul>.+?<div class="ExcerptContent">(.+?)</div>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
