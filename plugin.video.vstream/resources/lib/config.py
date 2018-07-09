@@ -66,115 +66,48 @@ class GestionCookie():
 
 class cConfig():
 
+    # def __init__(self):
 
-    def __check(self):
-        try:
-            import xbmcaddon
-            self.__bIsDharma = True
-        except ImportError:
-            self.__bIsDharma = False
-
-        try:
-            version = xbmc.getInfoLabel('system.buildversion')
-            if version[0:2] >= "17":
-                self.__bIsKrypton = True
-            else :
-                self.__bIsKrypton = False
-        except:
-            self.__bIsKrypton = False
-
-
-    def __init__(self):
-        self.__check()
-
-        if (self.__bIsDharma):
-            import xbmcaddon
-            self.__oSettings = xbmcaddon.Addon(self.getPluginId())
-            self.__aLanguage = self.__oSettings.getLocalizedString
-            self.__setSetting = self.__oSettings.setSetting
-            self.__getSetting = self.__oSettings.getSetting
-            self.__oVersion = self.__oSettings.getAddonInfo("version")
-            self.__oId = self.__oSettings.getAddonInfo("id")
-            self.__oPath = self.__oSettings.getAddonInfo("path")
-            self.__oName = self.__oSettings.getAddonInfo("name")
-            self.__oCache = xbmc.translatePath(self.__oSettings.getAddonInfo("profile"))
-            self.__sRootArt = os.path.join(self.__oPath, 'resources' , 'art', '')
-            self.__sIcon = os.path.join(self.__oPath,'resources', 'art','icon.png')
-            self.__sFanart = os.path.join(self.__oPath,'resources','art','fanart.jpg')
-            self.__sFileFav = os.path.join(self.__oCache,'favourite.db').decode("utf-8")
-            self.__sFileDB = os.path.join(self.__oCache,'vstream.db').decode("utf-8")
-            self.__sFileCache = os.path.join(self.__oCache,'video_cache.db').decode("utf-8")
+        # import xbmcaddon
+        # self.__oSettings = xbmcaddon.Addon(self.getPluginId())
+        # self.__aLanguage = self.__oSettings.getLocalizedString
+        # self.__setSetting = self.__oSettings.setSetting
+        # self.__getSetting = self.__oSettings.getSetting
+        # self.__oVersion = self.__oSettings.getAddonInfo("version")
+        # self.__oId = self.__oSettings.getAddonInfo("id")
+        # self.__oPath = self.__oSettings.getAddonInfo("path")
+        # self.__oName = self.__oSettings.getAddonInfo("name")
+        # self.__oCache = xbmc.translatePath(self.__oSettings.getAddonInfo("profile"))
+        # self.__sRootArt = os.path.join(self.__oPath, 'resources' , 'art', '')
+        # self.__sIcon = os.path.join(self.__oPath,'resources', 'art','icon.png')
+        # self.__sFanart = os.path.join(self.__oPath,'resources','art','fanart.jpg')
+        # self.__sFileFav = os.path.join(self.__oCache,'favourite.db').decode("utf-8")
+        # self.__sFileDB = os.path.join(self.__oCache,'vstream.db').decode("utf-8")
+        # self.__sFileCache = os.path.join(self.__oCache,'video_cache.db').decode("utf-8")
 
 
     def isDharma(self):
         return self.__bIsDharma
 
     def getSettingCache(self):
-        return self.__oCache
-
-    def getAddonPath(self):
-        return self.__oPath
-
-    def getRootArt(self):
-        return self.__sRootArt
-
-    def getAddonVersion(self):
-        return self.__oVersion
-
-    def getFileFav(self):
-        return self.__sFileFav
-
-    def getFileDB(self):
-        return self.__sFileDB
-
-    def getFileCache(self):
-        return self.__sFileCache
-
-    def getFileIcon(self):
-        return self.__sIcon
-
-    def getFileFanart(self):
-        return self.__sFanart
-
-    def html_decode(self, s):
-        htmlCodes = [
-        ["'", "&#39;"],
-        ["'", "&#039;"],
-        ["<", "&lt;"],
-        [">", "&gt;"],
-        [" ", "&quot;"],
-        ]
-        for code in htmlCodes:
-            s = s.replace(code[1], code[0])
-        return s
-
-    def getlanguage(self, sCode):
-        if (self.__bIsDharma):
-            return self.__aLanguage(sCode).encode("utf-8")
-        else:
-            try:
-		return xbmc.getLocalizedString(sCode).encode("utf-8")
-            except:
-		return ''
-
-    def showKeyBoard(self, sDefaultText=''):
-        keyboard = xbmc.Keyboard(sDefaultText)
-        keyboard.doModal()
-        if (keyboard.isConfirmed()):
-            sSearchText = keyboard.getText()
-            if (len(sSearchText)) > 0:
-                return sSearchText
-
         return False
 
-    # def updateDialogSearch(self, dialog, total, site, resetCount = False):
+    def getAddonPath(self):
+        return False
 
-    #     if (resetCount == True):
-    #         cConfig.COUNT=0
+    def getRootArt(self):
+        return False
 
-    #     iPercent = int(float(cConfig.COUNT * 100) / total)
-    #     dialog.update(iPercent, 'Chargement: '+str(site))
-    #     cConfig.COUNT += 1
+    def getFileFav(self):
+        return False
+
+    def getFileDB(self):
+        return False
+
+    def getFileCache(self):
+        return False
+
+
 
 def WindowsBoxes(sTitle, sFileName, num,year = ''):
 

@@ -17,29 +17,6 @@ import xbmcplugin
 import urllib
 import unicodedata, re
 
-def CleanName(str):
-
-    #vire accent et '\'
-    try:
-        str = unicode(str, 'utf-8')#converti en unicode pour aider aux convertions
-    except:
-        pass
-    str = unicodedata.normalize('NFD', str).encode('ascii', 'ignore').decode("unicode_escape")
-    str = str.encode("utf-8") #on repasse en utf-8
-
-    #vire tag
-    str = re.sub('[\(\[].+?[\)\]]', '', str)
-    #vire caractere special
-    str = re.sub("[^a-zA-Z0-9 ]", "", str)
-    #tout en minuscule
-    str = str.lower()
-    #vire espace double
-    str = re.sub(' +', ' ', str)
-
-    #vire espace a la fin
-    if str.endswith(' '):
-        str = str[:-1]
-    return str
 
 class cGui():
 
@@ -706,7 +683,7 @@ class cGui():
         sMeta = oInputParameterHandler.getValue('sMeta')
 
         #sMeta = 1 >> film sMeta = 2 >> serie
-        sCleanTitle = CleanName(sFileName)
+        sCleanTitle = util.cUtil().CleanName(sFileName)
 
         #on vire saison et episode
         if (True):#sMeta == 2:
