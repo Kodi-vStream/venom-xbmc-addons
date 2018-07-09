@@ -220,11 +220,12 @@ def showHosters():
                 else:
                     oRequestHandler = cRequestHandler(str(aEntry))
 
-                sHtmlContent = oRequestHandler.request()
-                sPattern = '<iframe.+?src="(.+?)"'
-                aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0] == True):
-                    sHosterUrl = aResult[1][0]
+                oRequestHandler.request()
+                sHosterUrl = oRequestHandler.getRealUrl()
+                # sPattern = '<iframe.+?src="(.+?)"'
+                # aResult = oParser.parse(sHtmlContent, sPattern)
+                # if (aResult[0] == True):
+                #     sHosterUrl = aResult[1][0]
 
             else:
                 sHosterUrl = str(aEntry)
