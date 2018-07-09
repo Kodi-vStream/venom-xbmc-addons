@@ -57,18 +57,6 @@ class cGuiElement:
         self.__ImdbId = ''
         self.__Year = ''
 
-        # self.__sFanart_search = self.__sRootArt + 'search_fanart.jpg'
-        # self.__sFanart_tv = self.__sRootArt + 'tv_fanart.jpg'
-        # self.__sFanart_films = self.__sRootArt + 'films_fanart.jpg'
-        # self.__sFanart_series = self.__sRootArt + 'series_fanart.jpg'
-        # self.__sFanart_animes = self.__sRootArt + 'animes_fanart.jpg'
-        # self.__sFanart_doc = self.__sRootArt + 'doc_fanart.jpg'
-        # self.__sFanart_sport = self.__sRootArt + 'sport_fanart.jpg'
-        # self.__sFanart_buzz = self.__sRootArt + 'buzz_fanart.jpg'
-        # self.__sFanart_mark = self.__sRootArt + 'mark_fanart.jpg'
-        # self.__sFanart_host = self.__sRootArt + 'host_fanart.jpg'
-        # self.__sFanart_download = self.__sRootArt + 'download_fanart.jpg'
-
         self.__aItemValues = {}
         self.__aProperties = {}
         self.__aContextElements = []
@@ -334,80 +322,18 @@ class cGuiElement:
     def setFanart(self, sFanart):
         if (sFanart != ''):
             self.__sFanart = sFanart
-        else:
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/fanart.jpg"
-
 
     def setMovieFanart(self):
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/films_fanart.jpg"
+        self.__sFanart = self.__sFanart
 
     def setTvFanart(self):
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/series_fanart.jpg"
+        self.__sFanart = self.__sFanart
 
     def setDirectTvFanart(self):
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/tv_fanart.jpg"
+        self.__sFanart = self.__sFanart
 
     def setDirFanart(self, sIcon):
-        if (sIcon == 'search.png'):
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/search_fanart.jpg"
-
-        elif (sIcon == 'searchtmdb.png'):
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/vsearch_fanart.jpg"
-
-        elif sIcon == 'tv.png':
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/tv_fanart.jpg"
-
-        elif ('replay' in sIcon):
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/replay_fanart.jpg"
-
-        elif ('films' in sIcon):
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/films_fanart.jpg"
-
-        elif ('series' in sIcon):
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/series_fanart.jpg"
-
-        elif ('animes' in sIcon):
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/animes_fanart.jpg"
-
-        elif sIcon == 'doc.png':
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/doc_fanart.jpg"
-
-        elif sIcon == 'sport.png':
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/sport_fanart.jpg"
-
-        elif sIcon == 'buzz.png':
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/buzz_fanart.jpg"
-
-        elif sIcon == 'mark.png':
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/mark_fanart.jpg"
-
-        elif sIcon == 'host.png':
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/host_fanart.jpg"
-
-        elif sIcon == 'download.png':
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/download_fanart.jpg"
-
-        elif sIcon == 'update.png':
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/update_fanart.jpg"
-
-        elif sIcon == 'library.png':
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/library_fanart.jpg"
-
-        elif sIcon == 'trakt.png':
-            self.__sFanart = "special://home/addons/plugin.video.vstream/resources/art/trakt_fanart.jpg"
-
-        elif sIcon == 'actor.png':
-            self.__sFanart = self.__sFanart
-
-        elif sIcon == 'star.png':
-            self.__sFanart = self.__sFanart
-
-        elif xbmc.getInfoLabel('ListItem.Art(fanart)') != '':
-            self.__sFanart = xbmc.getInfoLabel('ListItem.Art(fanart)')
-
-        else :
-            self.__sFanart = self.__sFanart
-        return self.__sFanart
+        self.__sFanart = self.__sFanart
 
     def getFanart(self):
         return self.__sFanart
