@@ -1,7 +1,7 @@
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.util import cUtil
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
 
 class cHoster(iHoster):
@@ -59,13 +59,10 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
-    def __getMediaLinkForGuest(self):
-        cGui().showInfo('Resolve', self.__sDisplayName, 5)
-        
+    def __getMediaLinkForGuest(self):        
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         if not sHtmlContent:
-            cGui().showInfo('Not Url', self.__sDisplayName, 5)
             return False, False            
         
         sPattern = 'var/type/(.+?)/.+?/provider/mp4/([^<]+)/flash/';

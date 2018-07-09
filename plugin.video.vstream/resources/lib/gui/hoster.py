@@ -1,22 +1,23 @@
 #-*- coding: utf-8 -*-
-# Venom.
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#
+# Venom.
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.contextElement import cContextElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.player import cPlayer
-from resources.lib.db import cDb
+
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
-from resources.lib import util
+
+from resources.lib.comaddon import dialog, addon, VSlog, isKrypton
 
 
 class cHosterGui:
 
     SITE_NAME = 'cHosterGui'
+    ADDON = addon()
+    DIALOG = dialog()
 
     # step 1 - bGetRedirectUrl in ein extra optionsObject verpacken
     def showHoster(self, oGui, oHoster, sMediaUrl, sThumbnail, bGetRedirectUrl = False):
@@ -38,7 +39,6 @@ class cHosterGui:
 
         oGuiElement.setFileName(oHoster.getFileName())
         oGuiElement.getInfoLabel()
-        #oGuiElement.setThumbnail(xbmc.getInfoLabel('ListItem.Art(thumb)'))
         if sThumbnail:
             oGuiElement.setThumbnail(sThumbnail)
 
@@ -68,7 +68,7 @@ class cHosterGui:
             oGuiElement.setCat('4')
 
         #existe dans le menu krypton 17
-        if not util.isKrypton():
+        if not isKrypton():
             oGui.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
 
         #context playlit menu
@@ -76,7 +76,7 @@ class cHosterGui:
         oContext.setFile('cHosterGui')
         oContext.setSiteName(self.SITE_NAME)
         oContext.setFunction('addToPlaylist')
-        oContext.setTitle(util.VSlang(30201))
+        oContext.setTitle(self.ADDON.VSlang(30201))
         oContext.setOutputParameterHandler(oOutputParameterHandler)
         oGuiElement.addContextItem(oContext)
 
@@ -86,7 +86,7 @@ class cHosterGui:
             oContext.setFile('cDownload')
             oContext.setSiteName('cDownload')
             oContext.setFunction('AddtoDownloadList')
-            oContext.setTitle(util.VSlang(30202))
+            oContext.setTitle(self.ADDON.VSlang(30202))
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)
 
@@ -96,23 +96,23 @@ class cHosterGui:
             oContext.setFile('cDownload')
             oContext.setSiteName('cDownload')
             oContext.setFunction('AddtoDownloadListandview')
-            oContext.setTitle(util.VSlang(30326))
+            oContext.setTitle(self.ADDON.VSlang(30326))
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)
             
         #Upload menu
-        if cInputParameterHandler().getValue('site') != 'siteuptobox' and cConfig().getSetting('hoster_uptobox_premium') == 'true' :
+        if cInputParameterHandler().getValue('site') != 'siteuptobox' and self.ADDON.getSetting('hoster_uptobox_premium') == 'true' :
             host = oHoster.getPluginIdentifier()
             accept = ['uptobox','uptostream','onefichier','uploaded','uplea']
             for i in accept:
                 if host == i :
-                    oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteuptobox', 'siteuptobox', 'UptomyAccount', util.VSlang(30325))
+                    oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteuptobox', 'siteuptobox', 'UptomyAccount', self.ADDON.VSlang(30325))
 
         #context FAV menu
         oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
 
         #context Library menu
-        oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cLibrary', 'cLibrary', 'setLibrary', util.VSlang(30324))
+        oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'cLibrary', 'cLibrary', 'setLibrary', self.ADDON.VSlang(30324))
 
         #bug
         oGui.addHost(oGuiElement, oOutputParameterHandler)
@@ -135,7 +135,7 @@ class cHosterGui:
             sHostName = sHosterUrl
 
         #L'user a active l'url resolver ?
-        if cConfig().getSetting('UserUrlResolver') == 'true':
+        if self.ADDON.getSetting('UserUrlResolver') == 'true':
             import urlresolver
             hmf = urlresolver.HostedMediaFile(url=sHosterUrl)
             if hmf.valid_url():
@@ -332,6 +332,8 @@ class cHosterGui:
             return self.getHoster('allow_redirects')
         if ('jawcloud' in sHostName):
             return self.getHoster('jawcloud')
+        if ('kvid' in sHostName):
+            return self.getHoster('kvid')
 
 
         #Lien telechargeable a convertir en stream
@@ -375,13 +377,13 @@ class cHosterGui:
         if (bGetRedirectUrl == 'True'):
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
-        util.VSlog("Hoster - play " + sMediaUrl)
+        VSlog("Hoster - play " + sMediaUrl)
 
         oHoster = self.getHoster(sHosterIdentifier)
         oHoster.setFileName(sFileName)
 
         sHosterName = oHoster.getDisplayName()
-        cConfig().showInfo(sHosterName, 'Resolve')
+        self.DIALOG.VSinfo(sHosterName, 'Resolve')
 
         try:
 
@@ -405,17 +407,18 @@ class cHosterGui:
                 oPlayer.run(oGuiElement, oHoster.getFileName(), aLink[1])
                 return
             else:
-                cConfig().error("Fichier introuvable")
+                self.DIALOG.VSerror("Fichier introuvable")
                 return
 
         except:
-            cConfig().error("Fichier introuvable")
+            self.DIALOG.VSerror("Fichier introuvable")
             return
 
         oGui.setEndOfDirectory()
 
     def addToPlaylist(self):
         oGui = cGui()
+ 
         oInputParameterHandler = cInputParameterHandler()
 
         sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
@@ -426,7 +429,7 @@ class cHosterGui:
         if (bGetRedirectUrl == 'True'):
             sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
-        util.VSlog("Hoster - play " + sMediaUrl)
+        VSlog("Hoster - playlist " + sMediaUrl)
         oHoster = self.getHoster(sHosterIdentifier)
         oHoster.setFileName(sFileName)
 
@@ -441,7 +444,7 @@ class cHosterGui:
 
             oPlayer = cPlayer()
             oPlayer.addItemToPlaylist(oGuiElement)
-            oGui.showInfo('Playlist', str(oHoster.getFileName()), 5)
+            self.DIALOG.VSinfo(str(oHoster.getFileName()), 'Playlist')
             return
 
         oGui.setEndOfDirectory()

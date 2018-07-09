@@ -1,7 +1,7 @@
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
-from resources.lib.util import cUtil
 from resources.hosters.hoster import iHoster
 
 class cHoster(iHoster):
@@ -63,10 +63,8 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True): 
-            cGui().showInfo(self.__sDisplayName, 'Streaming', 5)
             return True, aResult[1][0]
         else:
-                cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
-                return False, False
+            return False, False
         
         return False, False

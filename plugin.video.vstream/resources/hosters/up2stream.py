@@ -1,11 +1,11 @@
+#-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
-from resources.hosters.hoster import iHoster
-import re,urllib2
-import xbmcgui,xbmc
-
 from resources.lib.packer import cPacker
+from resources.hosters.hoster import iHoster
+#from resources.lib.comaddon import VSlog
+
 
 class cHoster(iHoster):
 
@@ -61,12 +61,12 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
 
-        api_call =''
+        api_call = False
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        #xbmc.log(str(self.__sUrl))
+        #VSlog(str(self.__sUrl))
         
         oParser = cParser()
         sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
@@ -76,14 +76,14 @@ class cHoster(iHoster):
         if (aResult[0] == True):
             sHtmlContent = cPacker().unpack(aResult[1][0])
         
-        #xbmc.log(str(sHtmlContent))
+        #VSlog(str(sHtmlContent))
         
         sPattern = '\("src","([^"]+)"\)'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0]):
             api_call = aResult[1][0]
         
-        #xbmc.log(str(api_call))
+        #VSlog(str(api_call))
         
         if (api_call):
             return True, api_call

@@ -6,8 +6,8 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil, VSshowYear
-from resources.lib.config import cConfig
+from resources.lib.util import cUtil
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'skstream_co'
 SITE_NAME = 'Skstream'
@@ -238,20 +238,25 @@ def showQlt():
     oGui.setEndOfDirectory()
 
 def showYears():
+    oGui = cGui()
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sCheck = VSshowYear(sUrl)
-    if not sCheck == None:
-        showMovies(yearUrl = sCheck)
 
-def showMovies(sSearch = '', yearUrl = ''):
+    for i in reversed(range(2000,2019)):
+        Year = str(i)
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', ('%s%s') % (sUrl,  Year))
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'films_annees.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
 
     if sSearch:
         sUrl = sSearch
-    elif yearUrl:
-        sUrl = yearUrl
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -262,9 +267,6 @@ def showMovies(sSearch = '', yearUrl = ''):
     sPattern = '<a class="unfilm" *HREF="([^"]+)">.+?title="(.+?)".+?src="([^"]+)">'
 
     aResult = oParser.parse(sHtmlContent,sPattern)
-
-    if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
@@ -326,10 +328,10 @@ def showEpisode():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             if aEntry[0]:
@@ -347,7 +349,7 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 

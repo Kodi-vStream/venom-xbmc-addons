@@ -1,8 +1,9 @@
+#coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
-from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
+from resources.hosters.hoster import iHoster
 
 import re
 
@@ -78,6 +79,7 @@ class cHoster(iHoster):
         return False
 
     def __getMediaLinkForGuest(self):
+        api_call = False
         
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
@@ -86,7 +88,7 @@ class cHoster(iHoster):
         
         # jwplayer("vplayer").setup({sources:[{file:"http://94.242.57.154/l7z7fz25dmnhgn4vfkbbeauaqogvhaabb62mkm4zvaxq3iodhdvlahybe6sa/v.flv",label:"SD"}],image:"http://94.242.57.154/i/03/00249/d8g74g00wtuv.jpg",skin:"",duration:"5314",width:680,height:390,primary:"flash",startparam:"start",plugins:{"http://letwatch.us/player6/lightsout.js
      
-        sPattern = 'sources:\[{file:"(.+?)"';
+        sPattern = 'sources:\[{file:"(.+?)"'
         
         oParser = cParser()
         aResult = oParser.parse(sUnpacked, sPattern)

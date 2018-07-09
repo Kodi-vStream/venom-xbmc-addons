@@ -1,10 +1,11 @@
+#-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-from resources.lib.config import cConfig
+from resources.lib.comaddon import dialog, xbmc
 
-import xbmc,urllib,urllib2
+import urllib2
 
 class cHoster(iHoster):
 
@@ -62,7 +63,7 @@ class cHoster(iHoster):
     def getMediaLink(self):
         import sys
         if 'site=cDownload&function' not in sys.argv[2]:
-            oDialog = cConfig().createDialogOK('ATTENTION, Pas de streaming sans premium\nPour voir le film passer par l\'option "DL et Visualiser" du menu contextuel.')
+            oDialog = dialog().VSok('ATTENTION, Pas de streaming sans premium\nPour voir le film passer par l\'option "DL et Visualiser" du menu contextuel.')
             return False,False
         return self.__getMediaLinkForGuest()
 
@@ -129,14 +130,11 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
         
         if (aResult[0] == True):
-            cGui().showInfo(self.__sDisplayName, 'Waiting time' , waitingtime)
+            dialog.VSinfo('Waiting time' , self.__sDisplayName, waitingtime)
             xbmc.sleep(waitingtime*1000)
             
-            print aResult[1][0]
+            #print aResult[1][0]
             
             return True, aResult[1][0] + '|User-Agent=' + UA# + '&Referer=' + self.__sUrl
-        else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
-            return False, False
         
         return False, False

@@ -3,13 +3,11 @@
 #
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
-from resources.hosters.hoster import iHoster
-
-import re,urllib2,urllib
-import xbmcgui
 from resources.lib.packer import cPacker
-import xbmc
+from resources.hosters.hoster import iHoster
+from resources.lib.comaddon import dialog, VSlog
+
+import re,urllib2
 
 #Remarque : meme code que vodlocker
 
@@ -59,7 +57,7 @@ def UnlockUrl(url2=None):
     if not url1.startswith('http'):
         url1 = 'https:' + url1
 
-    cConfig().log('Test unlock url :' + url1)
+    VSlog('Test unlock url :' + url1)
     
     oRequest = cRequestHandler(url1)
     oRequest.addParameters('User-Agent', UA)
@@ -72,9 +70,9 @@ def UnlockUrl(url2=None):
     url = ''
     if not code:
         url = oRequest.getRealUrl()
-        cConfig().log('Redirection :' + url)
+        VSlog('Redirection :' + url)
     else:
-        #cConfig().log(code)
+        #VSlog(code)
         aResult = re.search("!= null\){\s*\$.get\('([^']+)', *{(.+?)}", code, re.DOTALL)
         if aResult:
             dat = aResult.group(2)
@@ -92,23 +90,23 @@ def UnlockUrl(url2=None):
     #url = 'https://www.flashx.tv/flashx.php?fxfx=6'
     
     if url:
-        cConfig().log('Good Url :' + url1)
-        cConfig().log(url)
+        VSlog('Good Url :' + url1)
+        VSlog(url)
         GetHtml(url,headers9)
         return True
         
-    cConfig().log('Bad Url :' + url1)
+    VSlog('Bad Url :' + url1)
         
     return False
 
 def LoadLinks(htmlcode):
-        xbmc.log('Scan des liens')
+        VSlog('Scan des liens')
     
         host = 'https://www.flashx.tv'
         sPattern ='[\("\'](https*:)*(\/[^,"\'\)\s]+)[\)\'"]'
         aResult = re.findall(sPattern, htmlcode, re.DOTALL)
 
-        #xbmc.log(str(aResult))
+        #VSlog(str(aResult))
         for http,urlspam in aResult:
             sUrl = urlspam
                 
@@ -126,7 +124,7 @@ def LoadLinks(htmlcode):
             if '.jpg' in sUrl or '.png' in sUrl:
                 continue
             
-            #xbmc.log('test : ' + sUrl)
+            #VSlog('test : ' + sUrl)
             
             if '\\x' in sUrl or '\\u' in sUrl:
                 sUrl = ASCIIDecode(sUrl)
@@ -159,7 +157,7 @@ def LoadLinks(htmlcode):
                 reponse = urllib2.urlopen(request)
                 sCode = reponse.read()
                 reponse.close()
-                #cConfig().log('Worked ' + sUrl)
+                #VSlog('Worked ' + sUrl)
             except urllib2.HTTPError, e:
                 if not e.geturl() == sUrl:
                     try:
@@ -173,19 +171,19 @@ def LoadLinks(htmlcode):
                         reponse = urllib2.urlopen(request)
                         sCode = reponse.read()
                         reponse.close()
-                        #cConfig().log('Worked ' + sUrl)
+                        #VSlog('Worked ' + sUrl)
                     except urllib2.HTTPError, e:
-                        xbmc.log(str(e.code))
-                        #xbmc.log(e.read())
-                        cConfig().log('Redirection Blocked ' + sUrl + ' Red ' + e.geturl())
+                        VSlog(str(e.code))
+                        #VSlog(e.read())
+                        VSlog('Redirection Blocked ' + sUrl + ' Red ' + e.geturl())
                         pass
                 else:
-                    #cConfig().log('Blocked ' + sUrl)
-                    xbmc.log(str(e.code))
-                    xbmc.log('>>' + e.geturl())
-                    xbmc.log(e.read())
+                    #VSlog('Blocked ' + sUrl)
+                    VSlog(str(e.code))
+                    VSlog('>>' + e.geturl())
+                    VSlog(e.read())
         
-        xbmc.log('fin des unlock')
+        VSlog('fin des unlock')
 
 class cHoster(iHoster):
 
@@ -242,7 +240,7 @@ class cHoster(iHoster):
             #headers2 = headers
             #headers2['Host'] = self.GetHost(web_url)
             
-            cConfig().log(str(MaxRedirection) + ' Test sur : ' + web_url)
+            VSlog(str(MaxRedirection) + ' Test sur : ' + web_url)
             request = urllib2.Request(web_url,None,headers)
       
             redirection_target = web_url
@@ -261,15 +259,15 @@ class cHoster(iHoster):
                 if (e.code == 301) or  (e.code == 302):
                     redirection_target = e.headers['Location']
                 else:
-                    #cConfig().log(str(e.code))
-                    #cConfig().log(str(e.read()))
+                    #VSlog(str(e.code))
+                    #VSlog(str(e.read()))
                     return False
                 
             web_url = redirection_target
             
             if 'embed' in redirection_target and NoEmbed:
                 #rattage, on a pris la mauvaise url
-                cConfig().log('2')
+                VSlog('2')
                 return False
             
             MaxRedirection = MaxRedirection - 1
@@ -307,7 +305,7 @@ class cHoster(iHoster):
 
     def CheckGoodUrl(self,url):
         
-        xbmc.log('test de ' + url)
+        #VSlog('test de ' + url)
         headers = {'User-Agent': UA
                    #'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                    #'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
@@ -319,11 +317,11 @@ class cHoster(iHoster):
         req = urllib2.Request(url)#,None,headers)
         res = urllib2.urlopen(req)
         #pour afficher contenu
-        #xbmc.log(res.read())
+        #VSlog(res.read())
         #pour afficher header
-        xbmc.log(str(res.info()))
+        #VSlog(str(res.info()))
         #Pour afficher redirection
-        xbmc.log('red ' + res.geturl())
+        #VSlog('red ' + res.geturl())
         
         if 'embed' is res.geturl():
             return false
@@ -335,6 +333,7 @@ class cHoster(iHoster):
         return res
         
     def __getMediaLinkForGuest(self):
+        api_call = False
         
         oParser = cParser()
         
@@ -344,7 +343,7 @@ class cHoster(iHoster):
         #on recupere l'ID
         sId = self.__getIdFromUrl(self.__sUrl)
         if sId == '':
-            cConfig().log("Id prb")
+            VSlog("Id prb")
             return False,False
         
         #on ne garde que les chiffres
@@ -359,7 +358,7 @@ class cHoster(iHoster):
 
         sPattern = 'href=["\'](https*:\/\/www\.flashx[^"\']+)'
         AllUrl = re.findall(sPattern,sHtmlContent,re.DOTALL)
-        cConfig().log(str(AllUrl))
+        #VSlog(str(AllUrl))
 
         #Disabled for the moment
         if (False):
@@ -383,21 +382,21 @@ class cHoster(iHoster):
         unlock = False
         url2 = re.findall('["\']([^"\']+?\.js\?cache.+?)["\']', sHtmlContent, re.DOTALL)
         if not url2:
-            cConfig().log('No special unlock url find')
+            VSlog('No special unlock url find')
         for i in url2:
             unlock = UnlockUrl(i)
             if unlock:
                 break
                 
         if not unlock:
-            cConfig().log('No special unlock url working')
+            VSlog('No special unlock url working')
             return False,False
                
         #get the page
         sHtmlContent = self.GetRedirectHtml(web_url, sId, True)
         
         if sHtmlContent == False:
-            cConfig().log('Passage en mode barbare')
+            VSlog('Passage en mode barbare')
             #ok ca a rate on passe toutes les url de AllUrl
             for i in AllUrl:
                 if not i == web_url:
@@ -408,14 +407,8 @@ class cHoster(iHoster):
         if not sHtmlContent:
             return False,False
 
-        #fh = open('c:\\test2.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
-        
-        cConfig().log('Page obtenue')
-
         if 'reload the page!' in sHtmlContent:
-            cConfig().log("page bloquée")
+            #VSlog("page bloquée")
             
             #On recupere la bonne url
             sGoodUrl = web_url
@@ -453,14 +446,13 @@ class cHoster(iHoster):
             aResult = re.findall(sPattern,sHtmlContent)
                     
             if (aResult):
-                cConfig().log( "lien code")
+                #VSlog( "lien code")
                 
                 AllPacked = re.findall('(eval\(function\(p,a,c,k.*?)\s+<\/script>', sHtmlContent, re.DOTALL)
                 if AllPacked:
                     for i in AllPacked:
                         sUnpacked = cPacker().unpack(i)
                         sHtmlContent = sUnpacked
-                        #xbmc.log(sHtmlContent)
                         if "file" in sHtmlContent:
                             break
                 else:
@@ -470,10 +462,8 @@ class cHoster(iHoster):
         sPattern = '{file:"([^",]+)",label:"([^"<>,]+)"}'
         sPattern = '{src: *\'([^"\',]+)\'.+?label: *\'([^"<>,\']+)\''
         aResult = oParser.parse(sHtmlContent, sPattern)
-
-        api_call = ''
         
-        #xbmc.log(str(aResult))
+        #VSlog(str(aResult))
         
         if (aResult[0] == True):
             #initialisation des tableaux
@@ -484,19 +474,9 @@ class cHoster(iHoster):
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
-                
-            #Si une seule url
-            if len(url) == 1:
-                api_call = url[0]
-            #si plus de une
-            elif len(url) > 1:
-            #Affichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality', qua)
-                if (ret > -1):
-                    api_call = url[ret]
 
-        #print api_call
+            #Affichage du tableau
+            api_call = dialog().VSselectqual(qua, url)
         
         if (api_call):
             return True, api_call

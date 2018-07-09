@@ -1,19 +1,22 @@
-# -*- coding: utf-8 -*-
+#coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 # Pour l'utiliser
 # from resources.lib.captcha import Captcha_Get_Reponse
 #
-from resources.lib.config import cConfig
 
-import xbmc,xbmcgui,xbmcaddon
-import os,urllib2
+from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui
+
+import xbmcvfs
+import urllib2
 
 NewMethod = True
 
 def Captcha_Get_Reponse(img,cookie):
     #on telecharge l'image
-    PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
-    filename  = os.path.join(PathCache,'Captcha.raw').decode("utf-8")
+    #PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
+    #filename  = os.path.join(PathCache,'Captcha.raw').decode("utf-8")
+    filename = "special://home/userdata/addon_data/plugin.video.vstream/Captcha.raw"
 
     headers2 = {
         'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0',
@@ -33,7 +36,8 @@ def Captcha_Get_Reponse(img,cookie):
         image_on_web = urllib2.urlopen(req)
         if image_on_web.headers.maintype == 'image':
             buf = image_on_web.read()
-            downloaded_image = file(filename, "wb")
+            #downloaded_image = file(filename, "wb")
+            downloaded_image = xbmcvfs.File(filename, 'wb')
             downloaded_image.write(buf)
             downloaded_image.close()
             image_on_web.close()
@@ -102,14 +106,15 @@ def Captcha_Get_Reponse(img,cookie):
                     if action.getId() in ( 9, 10, 11, 30, 92, 216, 247, 257, 275, 61467,61448):
                         self.close()
 
-            wd = XMLDialog('DialogCaptcha.xml', cConfig().getAddonPath().decode("utf-8"), 'default', '720p')
+            path = "special://home/addons/plugin.video.vstream"
+            wd = XMLDialog('DialogCaptcha.xml', path, 'default', '720p')
             wd.doModal()
             del wd
         finally:
             
             solution = xbmcgui.Window(10101).getProperty('captcha')
             if solution == '':
-                cConfig().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
+                dialogs.VSinfo("Vous devez taper le captcha")
 
     else:
         #ancien Captcha   
@@ -124,9 +129,9 @@ def Captcha_Get_Reponse(img,cookie):
             if (kb.isConfirmed()):
                 solution = kb.getText()
                 if solution == '':
-                    cConfig().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
+                    dialogs.VSinfo("Vous devez taper le captcha")
             else:
-                cConfig().showInfo("Erreur", 'Vous devez taper le captcha' , 4)
+                dialogs.VSinfo("Vous devez taper le captcha")
         finally:
             wdlg.removeControl(img)
             wdlg.close()

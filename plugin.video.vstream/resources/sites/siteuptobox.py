@@ -5,13 +5,14 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.parser import cParser
-from resources.lib.util import VSlog
-from resources.lib.config import cConfig
+
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import MPencode
 from resources.lib.config import GestionCookie
 
-import xbmc, xbmcgui, urllib2, re
+from resources.lib.comaddon import progress, dialog, addon, xbmc, xbmcgui
+
+import urllib2, re
 
 SITE_IDENTIFIER = 'siteuptobox'
 SITE_NAME = '[COLOR dodgerblue]' + 'VotreCompteUptobox' + '[/COLOR]'
@@ -23,9 +24,10 @@ headers = { 'User-Agent' : UA }
 
 def load():
     oGui = cGui()
+    addons = addon()
     oPremiumHandler = cPremiumHandler('uptobox')
 
-    if (cConfig().getSetting('hoster_uptobox_username') == '') and (cConfig().getSetting('hoster_uptobox_password') == ''):
+    if (addons.getSetting('hoster_uptobox_username') == '') and (addons.getSetting('hoster_uptobox_password') == ''):
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + 'Nécessite Un Compte Uptobox Premium ou Gratuit' + '[/COLOR]')
     else:
         if (GestionCookie().Readcookie('uptobox') != ''):
@@ -45,7 +47,7 @@ def load():
         else:
             Connection = oPremiumHandler.Authentificate()
             if (Connection == False):
-                xbmcgui.Dialog().notification('Info connexion', 'Connexion refusée', xbmcgui.NOTIFICATION_ERROR, 2000, False)
+                dialog().VSinfo('Connexion refusée')
                 return
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -95,10 +97,10 @@ def showFile():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sTitle = aEntry[1]
@@ -110,7 +112,7 @@ def showFile():
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -168,10 +170,10 @@ def showFolder(sHtmlContent=''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sTitle = aEntry[1]
@@ -184,7 +186,7 @@ def showFolder(sHtmlContent=''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oGui.addDir(SITE_IDENTIFIER, 'showFile', sTitle, 'genres.png', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -221,7 +223,9 @@ def AddmyAccount():
         # xbmcgui.Dialog().notification('Info upload', 'Erreur', xbmcgui.NOTIFICATION_ERROR, 2000, False)
 
 def UptomyAccount():
-    if (cConfig().getSetting('hoster_uptobox_username') == '') and (cConfig().getSetting('hoster_uptobox_password') == ''):
+    addons = addon()
+
+    if (addons.getSetting('hoster_uptobox_username') == '') and (addons.getSetting('hoster_uptobox_password') == ''):
         return
     oInputParameterHandler = cInputParameterHandler()
     sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')

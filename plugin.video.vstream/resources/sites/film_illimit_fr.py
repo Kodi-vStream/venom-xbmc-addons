@@ -1,15 +1,15 @@
 #-*- coding: utf-8 -*-
-#Venom.
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
+from resources.lib.comaddon import progress
 from resources.lib.sucuri import SucurieBypass
-import re,urllib
+import re,urllib, urllib2
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'film_illimit_fr'
 SITE_NAME = 'Film illimité'
 SITE_DESC = 'Films, Séries HD en streaming'
 
-URL_MAIN = 'https://official-film-illimite.co/'
+URL_MAIN = 'https://official-film-illimite.ws/'
 
 MOVIE_NEWS = (URL_MAIN , 'showMovies')
 MOVIE_MOVIE = (URL_MAIN , 'showMovies')
@@ -155,17 +155,17 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sTitle = aEntry[2].replace(' Streaming Ultra-HD', '').replace(' Streaming Full-HD', '')
             sTitle = sTitle.replace(' en Streaming HD', '').replace(' Streaming HD', '').replace(' streaming', '').replace('HD', '')
-            if '' in sTitle:
-                sTitle = sTitle.replace(' -', '')
+            #delete du tiret
+            sTitle = sTitle.replace(' - Saison', ' Saison')
             sTitle = sTitle.decode('utf8')
             sTitle = cUtil().unescape(sTitle)
             try:
@@ -194,7 +194,7 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
         if not sSearch:
             sNextPage = __checkForNextPage(sHtmlContent)
@@ -242,7 +242,6 @@ def showHosters():
 
             sHosterUrl = str(aEntry)
             if '//goo.gl' in sHosterUrl:
-                import urllib2
                 try:
                     class NoRedirection(urllib2.HTTPErrorProcessor):
                         def http_response(self, request, response):
@@ -324,8 +323,6 @@ def ShowSpecialHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-
-    #cConfig().log(sUrl)
 
     data = re.sub('(.+?f=)', '', sUrl)
     data = data.replace('&c=', '')

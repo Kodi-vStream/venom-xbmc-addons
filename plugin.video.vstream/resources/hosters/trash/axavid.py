@@ -1,8 +1,9 @@
+#-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import re
+
 
 class cHoster(iHoster):
 
@@ -67,7 +68,7 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
         
         
-        sPattern = 'file: "([^"]+)"';
+        sPattern = 'file: "([^"]+)"'
         
         oParser = cParser()
         sHtmlContent=sHtmlContent.replace('|','/')

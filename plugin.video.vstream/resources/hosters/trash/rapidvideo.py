@@ -1,14 +1,13 @@
 #-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 # Ne marche pas, ne marchera que sous kodi V17
-#
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
+from resources.lib.comaddon import dialog
 
-import xbmc,xbmcgui
 #import ssl,urllib2
 #context = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
 
@@ -67,7 +66,8 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
 
-        xbmc.log(self.__sUrl)
+        #VSlog(self.__sUrl)
+        api_call = False
           
         oRequest = cRequestHandler(self.__sUrl)
         #oRequest.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0')
@@ -84,8 +84,6 @@ class cHoster(iHoster):
         sPattern =  '"file":"([^"]+)","label":"([0-9]+)p"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         
-        api_call = ''
-        
         if (aResult[0]):
             url=[]
             qua=[]
@@ -93,25 +91,11 @@ class cHoster(iHoster):
             for aEntry in aResult[1]:
                 url.append(aEntry[0])
                 qua.append(aEntry[1])
-                
-            #Si une seule url
-            if len(url) == 1:
-                stream_url = url[0]
-            #si plus de une
-            elif len(url) > 1:
-                #Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
-                if (ret > -1):
-                    stream_url = url[ret]
-                else:
-                    return False, False
-            else:
-                return False, False
+
+            #tableau
+            api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):
             return True, api_call
-        else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
         
         return False, False

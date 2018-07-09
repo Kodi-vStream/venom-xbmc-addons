@@ -1,5 +1,6 @@
-from resources.lib.handler.requestHandler import cRequestHandler 
-from resources.lib.config import cConfig 
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
+from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 import re
 
@@ -84,7 +85,7 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        r1 = re.search("srces\.push\({type:\"video/mp4\",src:\w+\('([^']+)',(\d+)", sHtmlContent)
+        r1 = re.search("{type:\"video/mp4\",src:\w+\('([^']+)',(\d+)", sHtmlContent)
         if (r1):
             api_call = self.decode(r1.group(1), int(r1.group(2)))
             api_call = 'http:' + api_call

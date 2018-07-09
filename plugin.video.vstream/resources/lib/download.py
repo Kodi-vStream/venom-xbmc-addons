@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-from resources.lib.config import cConfig
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 #from resources.lib.handler.hosterHandler import cHosterHandler
@@ -10,13 +10,13 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.db import cDb
 from resources.lib.util import cUtil
 
+from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate, xbmc , xbmcgui
+
 import urllib2,urllib
-import xbmcplugin, xbmc
-import xbmcgui
+import xbmcplugin
 import xbmcvfs
 import re,sys
 import threading
-import xbmc
 
 # try:
 #     import StorageServer
@@ -42,6 +42,10 @@ SITE_IDENTIFIER = 'cDownload'
 
 
 class cDownloadProgressBar(threading.Thread):
+
+    DIALOG = dialog()
+
+
     def __init__(self, *args, **kwargs):
 
         self.__sTitle = ''
@@ -97,7 +101,7 @@ class cDownloadProgressBar(threading.Thread):
 
         #mise a jour pour info taille
         self.__updatedb(TotDown,iTotalSize)
-        cConfig().showInfo('vStream', 'Téléchargement Démarré')
+        self.DIALOG.VSinfo('Téléchargement Démarré')
 
         while not (self.processIsCanceled or diag.isFinished()):
 
@@ -141,8 +145,8 @@ class cDownloadProgressBar(threading.Thread):
             meta['status'] = 2
             try:
                 cDb().update_download(meta)
-                cConfig().showInfo('Téléchargements Termine', self.__sTitle)
-                print 'Téléchargements Termine : %s' % self.__sTitle
+                self.DIALOG.VSinfo('Téléchargements Termine', self.__sTitle)
+                #print 'Téléchargements Termine : %s' % self.__sTitle
                 self.RefreshDownloadList()
             except:
                 pass
@@ -150,8 +154,8 @@ class cDownloadProgressBar(threading.Thread):
             meta['status'] = 0
             try:
                 cDb().update_download(meta)
-                cConfig().showInfo('Téléchargements Arrete', self.__sTitle)
-                print 'Téléchargements Arrete : %s' % self.__sTitle
+                self.DIALOG.VSinfo('Téléchargements Arrete', self.__sTitle)
+                #print 'Téléchargements Arrete : %s' % self.__sTitle
                 self.RefreshDownloadList()
             except:
                 pass
@@ -178,7 +182,6 @@ class cDownloadProgressBar(threading.Thread):
 
             try:
                 cDb().update_download(meta)
-                #cConfig().update()
                 self.RefreshDownloadList()
             except:
                 pass
@@ -218,17 +221,17 @@ class cDownloadProgressBar(threading.Thread):
             #self.__instance = repr(self)
             self.file = xbmcvfs.File(self.__fPath, 'w')
         except:
-            xbmc.log('download error')
-            xbmc.log(self.__sUrl)
-            cConfig().showInfo('Erreur initialisation', 'Download error')
+            VSlog('download error')
+            VSlog(self.__sUrl)
+            self.DIALOG.VSinfo('Erreur initialisation', 'Download error')
             return
 
         # if not Memorise.lock("VstreamDownloaderLock"):
-        #     cConfig().showInfo('Telechargements deja demarrés', 'Download error')
+        #     self.DIALOG.VSinfo('Telechargements deja demarrés', 'Download error')
         #     return
 
         if xbmc.getCondVisibility("Window.IsVisible(10151)"):
-            cConfig().showInfo('Telechargements deja demarrés', 'Erreur')
+            self.DIALOG.VSinfo('Telechargements deja demarrés', 'Erreur')
             return
 
         self._StartDownload()
@@ -258,10 +261,15 @@ class cDownloadProgressBar(threading.Thread):
     def RefreshDownloadList(self):
         #print xbmc.getInfoLabel('Container.FolderPath')
         if 'function=getDownload' in xbmc.getInfoLabel('Container.FolderPath'):
-            cConfig().update()
+            VSupdate()
 
 
 class cDownload:
+
+    DIALOG = dialog()
+    ADDON = addon()
+
+
     def __init__(self):
         pass
 
@@ -298,7 +306,7 @@ class cDownload:
     def download(self, sDBUrl, sTitle,sDownloadPath,FastMode = False):
 
         if self.isDownloading():
-            cConfig().showInfo('Telechargements deja demarrés', 'Erreur')
+            self.DIALOG.VSinfo('Telechargements deja demarrés', 'Erreur')
             return False
 
         self.__sTitle = sTitle
@@ -314,15 +322,15 @@ class cDownload:
             sUrl = aLink[1]
         else:
             print 'Lien non resolvable'
-            cConfig().showInfo('Lien non resolvable', sTitle)
+            self.DIALOG.VSinfo('Lien non resolvable', sTitle)
             return False
 
         if (not sUrl.startswith('http')) or sUrl.split('|')[0].endswith('.m3u8') :
-            cConfig().showInfo('Format non supporte', sTitle)
+            self.DIALOG.VSinfo('Format non supporte', sTitle)
             return False
 
         try:
-            cConfig().log("Telechargement " + str(sUrl))
+            VSlog("Telechargement " + str(sUrl))
 
             #background download task
             if FastMode:
@@ -330,14 +338,14 @@ class cDownload:
             else:
                 cDownloadProgressBar(title = self.__sTitle , url = sUrl , Dpath = sDownloadPath ).start()
 
-            cConfig().log("Telechargement ok")
-            cConfig().log(sDownloadPath)
+            VSlog("Telechargement ok")
+            VSlog(sDownloadPath)
 
 
         except:
             #print_exc()
-            cConfig().showInfo('Telechargement impossible', sTitle)
-            cConfig().log("Telechargement impossible")
+            self.DIALOG.VSinfo('Telechargement impossible', sTitle)
+            VSlog("Telechargement impossible")
             return False
 
         return True
@@ -373,8 +381,7 @@ class cDownload:
         sPluginPath = cPluginHandler().getPluginPath()
         sItemUrl = '%s?site=%s&function=%s&title=%s' % (sPluginPath, SITE_IDENTIFIER, 'StartDownloadList', 'tittle')
         meta = {'title': 'Demarrer la liste'}
-        item = xbmcgui.ListItem('Demarrer la liste', iconImage=cConfig().getRootArt()+'download.png')
-        item.setProperty("Fanart_Image", cConfig().getSetting('images_downloads'))
+        item = xbmcgui.ListItem('Demarrer la liste', iconImage='special://home/addons/plugin.video.vstream/resources/art/download.png')
 
         #item.setInfo(type="Video", infoLabels = meta)
 
@@ -398,8 +405,8 @@ class cDownload:
 
         try:
             cDb().clean_download()
-            cConfig().showInfo('vStream', 'Liste mise a jour')
-            #cConfig().update()
+            self.DIALOG.VSinfo('Liste mise a jour')
+            #VSupdate()
         except:
             pass
 
@@ -424,8 +431,8 @@ class cDownload:
 
         try:
             cDb().reset_download(meta)
-            cConfig().showInfo('vStream', 'Liste mise a jour')
-            cConfig().update()
+            self.DIALOG.VSinfo('Liste mise a jour')
+            VSupdate()
         except:
             pass
 
@@ -456,7 +463,7 @@ class cDownload:
         oInputParameterHandler = cInputParameterHandler()
         path = oInputParameterHandler.getValue('sPath')
 
-        oDialog = cConfig().createDialogYesNo('Voulez vous vraiment supprimer ce fichier ? Operation non reversible.')
+        oDialog = self.DIALOG.VSyesno('Voulez vous vraiment supprimer ce fichier ? Operation non reversible.')
         if (oDialog == 1):
             meta = {}
             meta['url'] = ''
@@ -465,10 +472,10 @@ class cDownload:
             try:
                 cDb().del_download(meta)
                 xbmcvfs.delete(path)
-                cConfig().showInfo('vStream', 'Fichier supprimé')
-                cConfig().update()
+                self.DIALOG.VSinfo('Fichier supprimé')
+                VSupdate()
             except:
-                cConfig().showInfo('vStream', 'Erreur, fichier non supprimable')
+                self.DIALOG.VSinfo('Erreur, fichier non supprimable')
 
     def GetNextFile(self):
         row = cDb().get_Download()
@@ -509,7 +516,7 @@ class cDownload:
         self.download(url,title,path)
 
     def StartDownloadList(self):
-        cConfig().showInfo('Information', 'Demarrage de la liste complete')
+        self.DIALOG.VSinfo('Demarrage de la liste complete')
         #Memorise.set('SimpleDownloaderQueue', '1')
         xbmcgui.Window(10101).setProperty('SimpleDownloaderQueue', '1')
         data = self.GetNextFile()
@@ -538,7 +545,7 @@ class cDownload:
         #On remet tout les status a 0 ou 2
         cDb().Cancel_download()
 
-        cConfig().update()
+        VSupdate()
 
         return
 
@@ -604,7 +611,6 @@ class cDownload:
                 oGuiElement.setFunction('ReadDownload')
             oGuiElement.setTitle(sTitle)
             oGuiElement.setIcon('download.png')
-            oGuiElement.setFanart(cConfig().getRootArt()+'download_fanart.jpg')
             oGuiElement.setMeta(0)
             oGuiElement.setThumbnail(thumbnail)
 
@@ -627,8 +633,8 @@ class cDownload:
 
         try:
             cDb().del_download(meta)
-            cConfig().showInfo('vStream', 'Liste mise a jour')
-            cConfig().update()
+            self.DIALOG.VSinfo('Liste mise a jour')
+            VSupdate()
         except:
             pass
 
@@ -639,33 +645,31 @@ class cDownload:
         sTitle = meta['title']
         sUrl = meta['url']
 
-        oGui = cConfig()
-
         #titre fichier
         sTitle = self.__createTitle(sUrl, sTitle)
         sTitle = self.__createDownloadFilename(sTitle)
-        sTitle = oGui.showKeyBoard(sTitle)
+        sTitle =  cGui().showKeyBoard(sTitle)
 
         if (sTitle != False and len(sTitle) > 0):
 
             #chemin de sauvegarde
-            sPath2 = xbmc.translatePath(cConfig().getSetting('download_folder'))
+            sPath2 = xbmc.translatePath(self.ADDON.getSetting('download_folder'))
 
             dialog = xbmcgui.Dialog()
             sPath = dialog.browse(3, 'Downloadfolder', 'files', '', False, False , sPath2)
 
             if (sPath != ''):
-                cConfig().setSetting('download_folder',sPath)
+                self.ADDON.setSetting('download_folder',sPath)
                 sDownloadPath = xbmc.translatePath(sPath +  '%s' % (sTitle, ))
 
                 if xbmcvfs.exists(sDownloadPath):
-                    cConfig().showInfo('Nom deja utilise', sTitle)
+                    self.DIALOG.VSinfo('Nom deja utilise', sTitle)
                     return self.AddDownload(meta)
                 else:
                     xbmcvfs.File(sDownloadPath, 'w')
 
                 try:
-                    cConfig().log("Rajout en liste de telechargement " + str(sUrl))
+                    VSlog("Rajout en liste de telechargement " + str(sUrl))
                     meta['title'] = sTitle
                     meta['path'] = sDownloadPath
 
@@ -675,8 +679,8 @@ class cDownload:
 
                 except:
                     #print_exc()
-                    cConfig().showInfo('Telechargement impossible', sTitle)
-                    cConfig().log("Telechargement impossible")
+                    self.DIALOG.VSinfo('Telechargement impossible', sTitle)
+                    VSlog("Telechargement impossible")
 
         return False
 
@@ -693,7 +697,7 @@ class cDownload:
         #if (bGetRedirectUrl == 'True'):
         #    sMediaUrl = self.__getRedirectUrl(sMediaUrl)
 
-        cConfig().log("Telechargement " + sMediaUrl)
+        VSlog("Telechargement " + sMediaUrl)
 
         meta = {}
         meta['url'] = sMediaUrl
@@ -718,7 +722,7 @@ class cDownload:
         sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
         sFileName = oInputParameterHandler.getValue('sFileName')
 
-        cConfig().log("Telechargement " + sMediaUrl)
+        VSlog("Telechargement " + sMediaUrl)
 
         meta = {}
         meta['url'] = sMediaUrl
@@ -741,18 +745,17 @@ class cDownload:
 
                         #ok on attend un peu, et on lance le stream
                         tempo = 100
-                        dialog = cConfig().createDialog('Creation buffer')
+                        progress_ = progress().VScreate('Creation buffer')
 
                         while (tempo > 0):
                             #if canceled do nothing
-                            if dialog.iscanceled():
+                            if progress_.iscanceled():
                                 return
-
-                            cConfig().updateDialog(dialog, 100)
+                            progress_.VSupdate(progress_, 100)
                             tempo = tempo - 1
                             xbmc.sleep(500)
 
-                        cConfig().finishDialog(dialog)
+                        progress_.VSclose(progress_)
 
                         oGuiElement = cGuiElement()
                         oGuiElement.setSiteName(SITE_IDENTIFIER)
@@ -770,5 +773,5 @@ class cDownload:
                             oPlayer.startPlayer()
 
                     else:
-                        cConfig().showInfo('Echec du telechargement', 'Erreur')
+                        self.DIALOG.VSinfo('Echec du telechargement', 'Erreur')
         return

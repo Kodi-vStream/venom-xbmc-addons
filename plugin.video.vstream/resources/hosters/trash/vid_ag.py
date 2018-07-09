@@ -1,10 +1,10 @@
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
-from resources.lib.util import cUtil
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
-import xbmcgui, re
+import re
 
 class cHoster(iHoster):
 
@@ -94,7 +94,6 @@ class cHoster(iHoster):
             api_call = aResult[1][0]
             return True, api_call
         else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
             return False, False
         
         return False, False

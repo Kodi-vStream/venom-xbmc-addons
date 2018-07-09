@@ -1,10 +1,11 @@
+#coding: utf-8
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
-import xbmcgui
-import xbmc
+from resources.lib.comaddon import dialog
+
 
 class cHoster(iHoster):
 
@@ -17,7 +18,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -41,7 +42,7 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
+        return ''
         
     def __getIdFromUrl(self):
         sPattern = 'http:\/\/wstream.+?\/(.+)'
@@ -68,7 +69,7 @@ class cHoster(iHoster):
    
         api_call = False
         
-        #xbmc.log(self.__sUrl)
+        #VSlog(self.__sUrl)
         
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
@@ -95,19 +96,13 @@ class cHoster(iHoster):
             url=[]
             qua=[]
         
-            #Replissage des tableaux
+            #Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
-                
-            #Si au moins 1 url
-            if (url):
-            #Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
-                if (ret > -1):
-                    api_call = url[ret]
 
+            #tableau
+            api_call = dialog().VSselectqual(qua, url)
         #print api_call
         
         if (api_call):

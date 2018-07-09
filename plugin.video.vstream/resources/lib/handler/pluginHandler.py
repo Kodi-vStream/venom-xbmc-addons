@@ -1,8 +1,10 @@
 #-*- coding: utf-8 -*-
-from resources.lib.config import cConfig
+#from resources.lib.config import cConfig
+
+from resources.lib.comaddon import addon, VSlog
 
 import sys
-import os
+import xbmcvfs
 
 class cPluginHandler:
 
@@ -20,31 +22,34 @@ class cPluginHandler:
 
     def __getFileNamesFromFolder(self, sFolder):
         aNameList = []
-        #items = os.listdir(sFolder)
-        items = os.listdir(unicode(sFolder, 'utf-8'))
+        #items = os.listdir(unicode(sFolder, 'utf-8'))
+        folder, items = xbmcvfs.listdir(sFolder)
         items.sort()
         for sItemName in items:
             
             if not sItemName.endswith(".py"):
                 continue
             
-            #sFilePath = os.path.join(sFolder, sItemName)
-            sFilePath = os.path.join(unicode(sFolder, 'utf-8'), sItemName)
+
+            #sFilePath = os.path.join(unicode(sFolder, 'utf-8'), sItemName)
+            sFilePath = "/".join([sFolder, sItemName])
             #size
-            sSize = 0
-            try:
-                file=open(sFilePath)
-                Content = file.read()
-                sSize = len(Content)
-                file.close()
-            except: pass
+            # sSize = 0
+            # try:
+            #     file=open(sFilePath)
+            #     Content = file.read()
+            #     sSize = len(Content)
+            #     file.close()
+            # except: pass
 
             # xbox hack
             sFilePath = sFilePath.replace('\\', '/')
 
-            cConfig().log("Load Plugin %s : Size %s" % (sItemName, sSize))
+            #cConfig().log("Load Plugin %s : Size %s" % (sItemName, sSize))
+            VSlog("Load Plugin %s" % (sItemName))
 
-            if (os.path.isdir(sFilePath) == False):
+            #if (os.path.isdir(sFilePath) == False):
+            if (xbmcvfs.exists(sFilePath) == True):
                 #if (str(sFilePath.lower()).endswith('py')):
                 if (sFilePath.lower().endswith('py')):
                     sItemName = sItemName.replace('.py', '')
@@ -59,32 +64,35 @@ class cPluginHandler:
             sPluginSettingsName = 'plugin_' + sName
             return sSiteName, sPluginSettingsName, sSiteDesc
         except Exception, e:
-            cConfig().log("Cant import plugin " + str(sName))
+            VSlog("Cant import plugin " + str(sName))
             return False, False
 
-    def getRootFolder(self):
-        sRootFolder = cConfig().getAddonPath()
-        cConfig().log("Root Folder " + sRootFolder)
-        return sRootFolder
+    # def getRootFolder(self):
+    #     sRootFolder = cConfig().getAddonPath()
+    #     cConfig().log("Root Folder " + sRootFolder)
+    #     return sRootFolder
 
-    def getRootArt(self):
-        oConfig = cConfig()
+    # def getRootArt(self):
+    #     oConfig = cConfig()
 
-        sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/art/').decode("utf-8")
+    #     sFolder =  self.getRootFolder()
+    #     sFolder = os.path.join(sFolder, 'resources/art/').decode("utf-8")
 
-        sFolder = sFolder.replace('\\', '/')
-        return sFolder
+    #     sFolder = sFolder.replace('\\', '/')
+    #     return sFolder
 
     def getAvailablePlugins(self):
-        oConfig = cConfig()
+        #oConfig = cConfig()
+        addons = addon()
 
-        sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/sites')
+        #sFolder =  self.getRootFolder()
+        #sFolder = os.path.join(sFolder, 'resources/sites')
+        sFolder = "special://home/addons/plugin.video.vstream/resources/sites"
 
         # xbox hack
         sFolder = sFolder.replace('\\', '/')
-        cConfig().log("Sites Folder " + sFolder)
+        #cConfig().log("Sites Folder " + sFolder)
+        VSlog("Sites Folder " + sFolder)
 
         aFileNames = self.__getFileNamesFromFolder(sFolder)
 
@@ -98,7 +106,7 @@ class cPluginHandler:
                 sSiteDesc = aPlugin[2]
 
                 # existieren zu diesem plugin die an/aus settings
-                bPlugin = oConfig.getSetting(sPluginSettingsName)
+                bPlugin = addons.getSetting(sPluginSettingsName)
                 if (bPlugin != ''):
                     # settings gefunden
                     if (bPlugin == 'true'):
@@ -110,40 +118,33 @@ class cPluginHandler:
         return aPlugins
 
 
-    def getSearchPlugins(self):
-        oConfig = cConfig()
+    def getAllPlugins(self):
+        #oConfig = cConfig()
 
-        sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/sites')
+        #sFolder =  self.getRootFolder()
+        #sFolder = os.path.join(sFolder, 'resources/sites')
+        #print sFolder
+        
+
+        sFolder = "special://home/addons/plugin.video.vstream/resources/sites"
 
         # xbox hack
         sFolder = sFolder.replace('\\', '/')
-        cConfig().log("Sites Folder " + sFolder)
+        VSlog("Sites Folder " + sFolder)
 
         aFileNames = self.__getFileNamesFromFolder(sFolder)
 
         aPlugins = []
         for sFileName in aFileNames:
-            cConfig().log("Load Plugin " + str(sFileName))
-
+            # wir versuchen das plugin zu importieren
             aPlugin = self.__importPlugin(sFileName)
             if (aPlugin[0] != False):
                 sSiteName = aPlugin[0]
                 sPluginSettingsName = aPlugin[1]
                 sSiteDesc = aPlugin[2]
 
-                # tester si active ou pas
-                bPlugin = oConfig.getSetting(sPluginSettingsName)
-                #test si une recherche et possible
-                try:
-                    exec "from resources.sites import " + sFileName
-                    exec "sSearch = " + sFileName + ".URL_SEARCH"
-                    sPlugin = True
-                except:
-                    sPlugin = False
-                
-                if  sPlugin == True:
-                    aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName, sSiteDesc))
+                # settings nicht gefunden, also schalten wir es trotzdem sichtbar
+                aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName, sSiteDesc))
 
         return aPlugins
 

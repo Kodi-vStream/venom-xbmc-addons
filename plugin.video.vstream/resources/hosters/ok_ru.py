@@ -3,9 +3,10 @@
 #
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
+from resources.lib.comaddon import dialog
+from resources.lib.util import cUtil
 import urllib2
 import json
-from resources.lib.util import cUtil,VScreateDialogSelect
 
 class cHoster(iHoster):
 
@@ -96,10 +97,8 @@ class cHoster(iHoster):
 
             # Si au moins 1 url
             if (url):
-            # Afichage du tableau
-                ret = VScreateDialogSelect(qua)
-                if (ret > -1):
-                    api_call = url[ret]
+                #dialog qualiter
+                api_call = dialog().VSselectqual(qua,url)
 
         
         if (api_call):

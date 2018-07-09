@@ -1,4 +1,5 @@
 #-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -6,9 +7,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib import util
-from resources.lib.config import cConfig
-import re, xbmcgui, unicodedata
+from resources.lib.util import cUtil
+from resources.lib.comaddon import progress
+import re, unicodedata
 
 #clone de dpstreaming.tv
 
@@ -195,22 +196,22 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        #plante la recherche global dialog = util.createDialog(SITE_NAME)
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
+
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
-                if util.cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
                     continue
 
             sThumb = str(aEntry[0])
             sUrl = str(aEntry[1])
             sTitle = str(aEntry[2])
-            sTitle = sTitle.replace(' [Streaming]', '')
+            sTitle = sTitle.replace(' [Streaming]', '').replace(' - Saison', ' Saison')
             sTitle = sTitle.replace(' [Telecharger]', '').replace(' [Telechargement]', '')
             sTitle = sTitle.replace(' [Complète]', '').replace(' [Complete]', '')
             sTitle = sTitle.replace('&#8217;', '\'')
@@ -230,7 +231,7 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -288,10 +289,11 @@ def showSeries(sLoop = False):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = util.createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
+
         for aEntry in aResult[1]:
-            util.updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             #langue
@@ -300,7 +302,7 @@ def showSeries(sLoop = False):
             #episode
             else:
                 sUrl = str(aEntry[2])
-                sTitle = sMovieTitle.replace(' -', '') + ' ' + str(aEntry[1])
+                sTitle = sMovieTitle + ' ' + str(aEntry[1])
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -308,7 +310,7 @@ def showSeries(sLoop = False):
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oGui.addMisc(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        util.finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 

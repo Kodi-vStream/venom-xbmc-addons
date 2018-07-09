@@ -5,11 +5,11 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
+from resources.lib.comaddon import progress, dialog, xbmc #, VSlog
 
-import urllib, urllib2, xbmc
+import urllib2
 
 SITE_IDENTIFIER = 'streaming_series_xyz'
 SITE_NAME = 'Streaming-Series.cx'
@@ -40,7 +40,7 @@ def ProtectstreamBypass(url):
 
     if (aResult[0] == True):
 
-        cGui().showInfo("Patientez", 'Décodage en cours', 5)
+        dialog().VSinfo('Décodage en cours', "Patientez", 5)
         xbmc.sleep(5000)
 
         #postdata = urllib.urlencode( { 'k': aResult[1][0] } )
@@ -57,8 +57,8 @@ def ProtectstreamBypass(url):
                    'Content-Length' : len(postdata),
                    'Content-Type': 'application/x-www-form-urlencoded'}
 
-        #cConfig().log(postdata)
-        #cConfig().log(str(headers))
+        #VSlog(postdata)
+        #VSlog(str(headers))
 
         req = urllib2.Request('https://www.protect-stream.com/secur2.php', postdata, headers)
         try:
@@ -77,7 +77,7 @@ def ProtectstreamBypass(url):
         #Test de fonctionnement
         aResult = oParser.parse(data, sPattern)
         if aResult[0]:
-            cGui().showInfo("Erreur", 'Lien encore protegé', 5)
+            dialog().VSinfo('Lien encore protegé', "Erreur", 5)
             return ''
 
         #recherche du lien embed
@@ -190,10 +190,10 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl = str(aEntry[0])
@@ -208,7 +208,7 @@ def showMovies(sSearch = ''):
 
             oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -254,10 +254,10 @@ def showSeries():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl = str(aEntry[0])
@@ -269,7 +269,7 @@ def showSeries():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -290,10 +290,10 @@ def showHosters():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
 
@@ -310,7 +310,7 @@ def showHosters():
             #oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             oGui.addLink(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 

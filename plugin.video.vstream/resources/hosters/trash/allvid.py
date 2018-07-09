@@ -1,9 +1,11 @@
+#-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
-import re,xbmcgui
+from resources.lib.comaddon import dialog
+
 
 class cHoster(iHoster):
 
@@ -40,7 +42,7 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
+        return ''
         
     def __getIdFromUrl(self, sUrl):
         return ''
@@ -58,14 +60,11 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        print self.__sUrl
+        #print self.__sUrl
+        api_call = False
         
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
         
         oParser = cParser()
         
@@ -85,7 +84,6 @@ class cHoster(iHoster):
         sPattern = 'file:"([^"]+\.mp4)"(?:,label:"([^"]+)")*'
         aResult = oParser.parse(sHtmlContent, sPattern)
         
-        api_call = False
 
         if (aResult[0] == True):
             
@@ -98,16 +96,8 @@ class cHoster(iHoster):
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
                 
-            #Si une seule url
-            if len(url) == 1:
-                api_call = url[0]
-            #si plus de une
-            elif len(url) > 1:
-                #Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
-                if (ret > -1):
-                    api_call = url[ret]
+            #Afichage du tableau
+            api_call = dialog().VSselectqual(qua, url)
  
         if (api_call):
             return True, api_call

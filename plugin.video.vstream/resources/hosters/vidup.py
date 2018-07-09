@@ -4,8 +4,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
-from resources.lib.util import VScreateDialogSelect
-from resources.lib.util import VSlog
+from resources.lib.comaddon import dialog
+
 import re
 
 #Meme code que thevideo
@@ -65,8 +65,6 @@ class cHoster(iHoster):
         
         #sId = self.__getIdFromUrl(self.__sUrl)
         #sUrl = 'http://vidup.tv/embed-' + sId + '.html'
-
-        VSlog(sUrl)
         
         stream_url = ''
         oRequest = cRequestHandler(sUrl)
@@ -77,7 +75,7 @@ class cHoster(iHoster):
         code = ''
         maxboucle = 3
         while (maxboucle > 0):
-            VSlog('loop : ' + str(maxboucle))
+            #VSlog('loop : ' + str(maxboucle))
             sHtmlContent3 = CheckCpacker(sHtmlContent3)
             #sHtmlContent3 = CheckJJDecoder(sHtmlContent3)           
             #sHtmlContent3 = CheckAADecoder(sHtmlContent3)
@@ -109,8 +107,6 @@ class cHoster(iHoster):
             ee = ee[:-1]
             
         url2 = 'https://vidup.tv/' + ee + '/' + key
-        
-        VSlog(url2)
 
         oRequest = cRequestHandler(url2)
         sHtmlContent2 = oRequest.request()
@@ -139,14 +135,8 @@ class cHoster(iHoster):
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
                 
-            #Si  1 url
-            if len(url) == 1:
-                api_call = url[0]
-            #Affichage du tableau
-            elif len(url) > 1:
-                ret = VScreateDialogSelect(qua)
-                if (ret > -1):
-                    api_call = url[ret]
+            #dialog qualiter
+            api_call = dialog().VSselectqual(qua,url)
 
         #xbmc.sleep(5000)
                     

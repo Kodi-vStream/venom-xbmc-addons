@@ -9,275 +9,223 @@ Merci au contributeur de la bêta.
 - Razorex/Kodigoal/Arias800/chataigne73
 =============================================================================
 =============================================================================
-- Version 0.6.2 - 28.05.2018
+- Version 0.6.4 - 09.07.2018
 =============================================================================
-27-05-2018 -- @razorex -- Update zonestreaming.py  Nettoyage du titre dans showHosters
-27-05-2018 -- @razorex -- Update zonestreaming.py  Ajout des synopsis pour ce qui transite par showSeries. Retrait du tiret pour les Saisons.
-27-05-2018 -- @razorex -- Update zone_telechargement_ws.py  Nettoyage du fichier. Traitement sur les titres. et url du site.
-27-05-2018 -- @Arias800 -- Donne la possibilite de sauvegarder une playlist en local
-27-05-2018 -- @johngf -- Update flashx.py
-27-05-2018 -- @johngf -- Update hoster.py
-27-05-2018 -- @johngf -- Delete kvid.py
-26-05-2018 -- @razorex -- Update youtitou_com.py
-26-05-2018 -- @razorex -- Update voirfilms_org.py  Débeug de la fonction de recherche (HS). je n ai pas supprimer juste déclaré les lignesen commentaires.
- -Ajout d iptv sat link -- Amelioration  -Ajout du next page pour iptvsource
-26-05-2018 -- @razorex -- Update voirfilms_org.py  delete decotitle
-26-05-2018 -- @razorex -- Update videobuzzy_com.py
-26-05-2018 -- @razorex -- Update tv_streaming_ch.py  Retrait de cUtil. on ne propose plus qu une page lors de la recherche.
-26-05-2018 -- @razorex -- Update topreplay.py  Url du site
-26-05-2018 -- @razorex -- Update topimdb.py
-26-05-2018 -- @razorex -- Update themoviedb_org.py
-26-05-2018 -- @razorex -- Update streamzzz_com.py  Affichage du synopsis dans showLink.
-26-05-2018 -- @razorex -- Update streamiz_co.py  Ajout de la qualité. Retrait du synopsis pour la recherche, on affichait l url. Retrait de cUtil.
-26-05-2018 -- @johngf -- Update speedvid.py  beaucoup de (timeout  ou coupure)  pour l instant bonne url teste sur zone stream 2 3 video fo a suivrele reste non
-25-05-2018 -- @johngf -- Update onefichier.py
-25-05-2018 -- @razorex -- Update streamingk_com.py  Ajout de synopsis. delete decotitle. retrait du tiret dans le titre des series.
-25-05-2018 -- @TmpName -- Update sites.json
-25-05-2018 -- @TmpName -- Merge pull request #2093 from Kodi-vStream/master  Master
-25-05-2018 -- @TmpName -- Merge pull request #2092 from Kodi-vStream/Beta  MAJ 25/05
-25-05-2018 -- @razorex -- Update streaming_series_xyz.py  Delete DecoTitle. Récupération des synopsis.
-25-05-2018 -- @razorex -- Update streaming_series_org.py  J ai remis ta modif @johngf, utile pour qq serie comme "Derry Girls". dsl pas facile de trouver des séries avec 1 épisode. épuration de alphaearch.
-25-05-2018 -- @johngf -- evite de parser inutilement archive = nouveauté
- Ceci est utile   sHtmlContent = sHtmlContent.replace( <p><script ,  <iframe )  permet la récupération de liens Netu.
-25-05-2018 -- @LordVenom -- french_stream
-25-05-2018 -- @razorex -- Update streamelite.py  Affichage de la langue.
-25-05-2018 -- @razorex -- Update streamelite.py  Filtre lors de la recherche. Désactivation de la liste.
-24-05-2018 -- @razorex -- Update streamcomplet.py  Je met mes modifs même si le site a été désactivé.
-24-05-2018 -- @razorex -- Update streamay_bz.py  Retrait de nextPage dans la recherche. Récupération des Synopsis. Affichage des titres. delete DecoTitle. Désactivation de la recherche pour les séries, ne fonctionnent que pour les films.
-     -Réduction des temps de chargement pour les grand playlist
-24-05-2018 -- @razorex -- Update spion_com.py  Url du site
-24-05-2018 -- @razorex -- Update skstream_co.py
-24-05-2018 -- @razorex -- Update siteuptobox.py  Delete DecoTitle
-23-05-2018 -- @razorex -- Update serie_streaminghd.py  Ajout d un menu
-23-05-2018 -- @razorex -- Update serie_streaming_watch.py  Récupération du synopsis. Plus de menu "liste".
-23-05-2018 -- @razorex -- Update robindesdroits.py  url du site. Rajout de genre et de menus.
- Fix IptvGratuitlace pour la modif pour f4mTesterjout des liste AizenKnower
-22-05-2018 -- @johngf -- Update streaming_series_org.py  fix pas de carousel + un seul episode
-22-05-2018 -- @razorex -- Update reportagestv_com.py  Delete de genres
-21-05-2018 -- @razorex -- Update replaytvstreaming_com.py  Ce site propose qq films, donc ajout d un menu mais pas de recherche global surles films pas assez de propositions.
- Changement dans la manière d’accéder au différent siteout de 2 site
-21-05-2018 -- @johngf -- reste un soucis de nextage  debut de la premiere page avec les autres pages
-21-05-2018 -- @johngf -- Update streaming_series_org.py
-21-05-2018 -- @LordVenom -- bug & co
-20-05-2018 -- @razorex -- Update regarder_films.py  Delete decotitle.
-20-05-2018 -- @razorex -- Update planet_streaming.py  Delete barre de dialogue dans showHoster.
-20-05-2018 -- @razorex -- Update papstream.py  Travail du titre
-20-05-2018 -- @razorex -- Update otakufr_com.py  Retrait du tiret dans le titre. Delete Decotitle.
-20-05-2018 -- @TmpName -- Merge pull request #2088 from Kodi-vStream/Beta  fghg
-20-05-2018 -- @TmpName -- Update sites.json
-20-05-2018 -- @TmpName -- Merge pull request #2087 from Kodi-vStream/master  Master
-20-05-2018 -- @TmpName -- Merge pull request #2086 from Kodi-vStream/Beta  MAJ 20/05
-20-05-2018 -- @TmpName -- Update cloudflare.py
-20-05-2018 -- @LordVenom -- sktream and vidtoto
-20-05-2018 -- @Arias800 -- Fix crash kodi 18
-20-05-2018 -- @TmpName -- Update requestHandler.py
-20-05-2018 -- @TmpName -- Update cloudflare.py
-20-05-2018 -- @razorex -- Update neuf_docu.py  nouvelle url. Delete DecoTitle.
-20-05-2018 -- @razorex -- Update navixsport_com.py  Ce site a développé une appli pour smartphone.
-20-05-2018 -- @razorex -- Update mangacity_org.py  Travail du titre. Delete DecoTitle. Bug affichage des N° de saison. Beaucoup de mise enforme.
-     -Ajout d une liste (pour le moment down faut voir plus tard)
-20-05-2018 -- @Arias800 -- Fix recherche
-20-05-2018 -- @razorex -- Update mamcin.py  Désactivation des genres, il n y en a qu un et même résultat que la page d accueuil.
-20-05-2018 -- @razorex -- Update filmstreamvk_com.py  Pas de nextPage en cas de recherche
-20-05-2018 -- @razorex -- Update libre_stream_org.py  Suppression du tiret si c est un série.
-19-05-2018 -- @TmpName -- Merge pull request #2080 from Kodi-vStream/razorex-patch-3  Update kaydo_ws.py
-19-05-2018 -- @razorex -- Update libertyland_tv.py  Nouvelle url. Retrait de DecoTitle. Correction affichage des N° de saisons (regex). Affichage des titres revu. Correction regex des séries, seulement la moitié était affiché. Et un peu de mise en page.
-19-05-2018 -- @razorex -- Update les_docus.py
-19-05-2018 -- @razorex -- Update les_debiles.py
-19-05-2018 -- @razorex -- Update les_debiles.py  Rajout d un menu Catégorie.
-19-05-2018 -- @Arias800 -- Vstream peut maitenent scraper un site de list iptv
-19-05-2018 -- @razorex -- Update kepliz_com.py  Delete DecoTitle. Idem pour les barre de dialogue  dans les showHosterLinks
-19-05-2018 -- @razorex -- Update film_illimit_fr.py  Retrait decotitle
-19-05-2018 -- @LordVenom -- Function perdu
-19-05-2018 -- @razorex -- Update kaydo_ws.py  Beug corrigé. encore dsl
-19-05-2018 -- @razorex -- Update kaydo_ws.py  Travail de mise en page.
-19-05-2018 -- @LordVenom -- update
-18-05-2018 -- @razorex -- Update gum_gum_streaming_com.py
-18-05-2018 -- @razorex -- Update gum_gum_streaming_com.py
-18-05-2018 -- @TmpName -- Update hoster.py
-18-05-2018 -- @TmpName -- Delete filez.py
-18-05-2018 -- @razorex -- Update gum_gum_streaming_com.py  Traitement pour l affichage des langues. Regex du synopsis qui ne récupérait pas tout pour certains manga, idem pour sThumb dans showEpisode. Nettoyage du fichier. Simplification de sHosterUrl dans showHoster.
-18-05-2018 -- @TmpName -- Create downace.py
-18-05-2018 -- @TmpName -- Create megadrive.py
-18-05-2018 -- @Arias800 -- Correction du probleme d affichage des saison (oui enfin) x)
-18-05-2018 -- @TmpName -- Merge pull request #2079 from Kodi-vStream/razorex-patch-2  Update fullstreaming.py
-18-05-2018 -- @razorex -- Update fullstreaming.py  Filtre sur la recherche, un oubli.
-18-05-2018 -- @razorex -- Update fullstreaming.py  Retrait de resources. QQ pourrait me dire si j ai bien fait de réécrire les liens Beclic en Openload. Cà fonctionne mais est-ce la bonne façon ou y en a t il une autre??
-18-05-2018 -- @razorex -- Update fullstreaming.py  Réécriture des liens beclic en openload. Pas de nextPage en cas de recherche, pas assezprécise.
-18-05-2018 -- @razorex -- Rename plugin.video.vstream/resources/sites/trash/streamingbb.py to plugin.video.vstream/resources/sites/streamingbb.py  StreamingBB est valide.. dsl @TmpName ont c est mal compris.
-18-05-2018 -- @razorex -- Update full_stream_org.py  Travail du titre. Renvoi du synopsis jusqu au hoster. Pas d affichage de la barre de dialogue dans "les" showLinks. Retrait de DecoTitle.
-18-05-2018 -- @johngf -- Update vidbom.py
-17-05-2018 -- @razorex -- Update french_stream_com.py  Pour reprendre l idée du renvoi par MOVIE_MOVIE et SERIE_SERIES dans le menu, création de sous menu pour que movie renvoi sur les films et série sur les séries. Suppression des DecoTitle. Récupération des synopsis pour lesséries. Suppression de la barre de dialogue dans showLinks.
-17-05-2018 -- @razorex -- Update free_telechargement_org.py  Repositionnement de l image captchca, elle était derriere le texte "Tapez leslettres...... Complété l affichage barre de dialogue dans showMovies, retirer dans showHosters. Retrait des DecoTitle. Rajout des renvoi de synopsis pour affichage jusqu au hoster.
-17-05-2018 -- @razorex -- Update filmzenstream_com.py  Remis la recherche par année. Url de la recherche a changé. Suppression DecoTitle.
-17-05-2018 -- @LordVenom -- addLink
-17-05-2018 -- @razorex -- Update filmsvostfr_biz.py
-17-05-2018 -- @razorex -- Update filmstreamvk_com.py  Ajout des synopsis. Delete barre de dialogue dans les hosters et showLinks, j ai volontairement laisser celle des séries parce que certaine ont bc d épisodes..
-17-05-2018 -- @johngf -- Update french_stream_com.py
-17-05-2018 -- @johngf -- Update cloudvid.py
-16-05-2018 -- @razorex -- Update film_illimit_fr.py  Correction du nextPage l ancien ne récupérait pas la bonne url. Retrait des barre de dialogue dans les showhosters.
-16-05-2018 -- @johngf -- faitsait planté la recherche globale
-16-05-2018 -- @TmpName -- Merge pull request #2073 from Kodi-vStream/Beta  nvb
-16-05-2018 -- @TmpName -- Update hosts.json
-16-05-2018 -- @TmpName -- Update sites.json
-16-05-2018 -- @TmpName -- Merge pull request #2072 from Kodi-vStream/master  Master
-16-05-2018 -- @TmpName -- Merge pull request #2071 from Kodi-vStream/Beta  MAJ 16/05
-16-05-2018 -- @TmpName -- Delete streamingbb.py
-16-05-2018 -- @TmpName -- Create streamingbb.py
-16-05-2018 -- @TmpName -- Merge pull request #2070 from Kodi-vStream/razorex-patch-1  Delete hots.png
-16-05-2018 -- @johngf -- Update tvrex_net.py
-16-05-2018 -- @razorex -- Delete hots.png  Pas utilisé. C est host il me semble??
-16-05-2018 -- @razorex -- Update libre_stream_org.py  Suppression boite de dialogue dans showHosters et seriesHosters, et de DecoTitle.
-16-05-2018 -- @johngf -- Update multihost.py
-16-05-2018 -- @johngf -- refonte showlink et showhoster + recherche
-16-05-2018 -- @johngf -- Update hoster.py
-16-05-2018 -- @razorex -- Update cinemay_com.py  Récupération du synopsis
-16-05-2018 -- @razorex -- Update cinemavf.py  Suppression de la barre de dialogue dans showLinks. modif menu.
-16-05-2018 -- @razorex -- Update buzzmonclick_com.py  Nettoyage du fichier.
-16-05-2018 -- @razorex -- Update cineiz.py  Modif dans showLink, filtre dans les sHost et retrait de la barre de dialogue.
-16-05-2018 -- @johngf -- Update streamcomplet.py
-16-05-2018 -- @johngf -- Rename plugin.video.vstream/resources/sites/frenchddl_com.py to plugin.video.vstream/resources/sites/trash/frenchddl_com.py
-16-05-2018 -- @johngf -- Update serie_streaming_watch.py
-16-05-2018 -- @johngf -- Update vshare.py
-16-05-2018 -- @johngf -- Update uptostream.py
-16-05-2018 -- @johngf -- Update uptobox.py
-15-05-2018 -- @razorex -- Update adkami_com.py  Filtrage des séries et animés par une liste Alphabétique. Récupération des Thumb et des sDesc. Nettoyage du fichier. Modifications du menu.
-15-05-2018 -- @razorex -- Update adkami_com.py  Suppression barre de dialogue dans showHoster + petite correction et travail du titre. D autres suivront (création de liste alpha).
-15-05-2018 -- @johngf -- Update netu.py
-15-05-2018 -- @johngf -- Update topreplay.py
-15-05-2018 -- @johngf -- Create mixloads.py
-15-05-2018 -- @johngf -- Update hoster.py
-14-05-2018 -- @razorex -- Update film_illimit_fr.py
-14-05-2018 -- @razorex -- Update ddl_island_su.py
-14-05-2018 -- @razorex -- Update documentaires_streaming_com.py
-14-05-2018 -- @razorex -- Update disneyhd_tk.py  Barre de dialogue.
-14-05-2018 -- @razorex -- Delete regarderfilm.PNG  Doublon StreamingBB
-14-05-2018 -- @razorex -- Update and rename plugin.video.vstream/resources/sites/regarderfilm.py to plugin.video.vstream/resources/sites/trash/regarderfilm.py  Site en doublon "StreamingBB"
-14-05-2018 -- @razorex -- Update streamingbb.py  qq modif d affichage
-14-05-2018 -- @TmpName -- Merge pull request #2067 from Kodi-vStream/Beta  hfg
-14-05-2018 -- @TmpName -- Update hosts.json
-14-05-2018 -- @TmpName -- Update sites.json
-14-05-2018 -- @TmpName -- Merge pull request #2066 from Kodi-vStream/master  Master
-14-05-2018 -- @TmpName -- Merge pull request #2065 from Kodi-vStream/Beta  MAJ 14/05
-14-05-2018 -- @razorex -- Update filmsvostfr_biz.py  Plus qu un seul nextPage, dans les genres des séries et des animes les nextPage ne fon Affichage du titre dans showLinks.ncait pas par  http .
-14-05-2018 -- @razorex -- Update streamfilmzzz.py  Affichage du titre. Trie des hosters. Affichage des barres de dialogue.
-14-05-2018 -- @razorex -- Update cinemay_com.py  Url derniers ajouts
-13-05-2018 -- @razorex -- Update cinemavf.py  Url du site. Affichage des hosters. Affichage des synopsis.
-13-05-2018 -- @razorex -- Update cineiz.py  Récupération du synopsis pour les films et les séries. Affichage de l’hôte.
-13-05-2018 -- @razorex -- Update streamzzz_com.py  petit oubli et correction.
-13-05-2018 -- @razorex -- Update streamzzz_com.py  Tri de la liste (étape supplémentaire) et affichage des titres.
-13-05-2018 -- @razorex -- Update regarder_films.py
-13-05-2018 -- @razorex -- Update sokrostream_biz.py  Intégration de modifications dans le cas ou le site redeviendrait opérationnel.
-13-05-2018 -- @razorex -- Update filmzenstream_com.py  Url du site
-13-05-2018 -- @LordVenom -- addon.xml
-13-05-2018 -- @LordVenom -- Merge branch  Beta  of https://github.com/Kodi-vStream/venom-xbmc-addons into Beta
-13-05-2018 -- @LordVenom -- bug icon - thumbs
-13-05-2018 -- @johngf -- Update streamingk_com.py
-13-05-2018 -- @johngf -- Update speedvid.py
-13-05-2018 -- @johngf -- Update thevid.py
-12-05-2018 -- @razorex -- Update regarderfilm.py  Url du site et épurage du code.
-12-05-2018 -- @TmpName -- Update mangacity_org.py
-12-05-2018 -- @johngf -- zone tel  si ça continue voir pour récup la bonne url avant de lancer la recherche
-12-05-2018 -- @johngf -- Update streamingbb.py
-12-05-2018 -- @LordVenom -- cineiz
-12-05-2018 -- @LordVenom -- setting
-12-05-2018 -- @johngf -- urlmain
-12-05-2018 -- @johngf -- Update sokrostream_biz.py
-11-05-2018 -- @Arias800 -- Rererereremodif de url_main
-11-05-2018 -- @razorex -- Update filmstreamvk_com.py  Url du site
-10-05-2018 -- @razorex -- Update streamiz_co.py
-10-05-2018 -- @razorex -- Update zonestreaming.py  Affichage de la langue qui ne fonctionnait pas. Modif menu. Remis le nom d origine, plus facile à retrouver s il faut faire des corrections.
-10-05-2018 -- @LordVenom -- zonestreaming
-09-05-2018 -- @razorex -- Update cinemay_com.py  Nouvelle Url du site et des menus. Affichage des hotes. Désactivation de la ressource cUtil et DecoTitle dans showHosters.
-09-05-2018 -- @LordVenom -- Merge pull request #2063 from Kodi-vStream/Beta  Update sites.json
-09-05-2018 -- @LordVenom -- Update sites.json
-09-05-2018 -- @LordVenom -- Merge pull request #2062 from Kodi-vStream/Beta  09/05
-09-05-2018 -- @LordVenom -- remove thread
-09-05-2018 -- @LordVenom -- Merge pull request #2061 from Kodi-vStream/master  Master
-09-05-2018 -- @LordVenom -- Merge pull request #2060 from Kodi-vStream/Beta  09/05
-09-05-2018 -- @LordVenom -- Update hosts.json
-09-05-2018 -- @LordVenom -- Update sites.json
-09-05-2018 -- @LordVenom -- Merge pull request #2059 from Kodi-vStream/Beta  09/05
-08-05-2018 -- @Arias800 -- Changement url_main
-07-05-2018 -- @razorex -- Update streamzzz_com.py  Ajout d une section Films.
-07-05-2018 -- @LordVenom -- thread
-07-05-2018 -- @LordVenom -- threading
-06-05-2018 -- @razorex -- Update tv_streaming_ch.py  Changement Url du site. Mais à priori plus de liens valide sur le site.
-06-05-2018 -- @razorex -- Update videobuzzy_com.py  Travail sur la description.
-06-05-2018 -- @razorex -- Update voirfilms_org.py  Affichage du titre.
-06-05-2018 -- @razorex -- Update tvrex_net.py  correction pattern
-06-05-2018 -- @razorex -- Update streaming_series_org.py  Affichage de la langue ce site n est pas constant.
-06-05-2018 -- @razorex -- Update streaming_series_org.py  Affichage de la langue.
-06-05-2018 -- @razorex -- Update netu.py
-06-05-2018 -- @razorex -- Update streaming_series_org.py  Nouvelle Url du site et changement dans les regex. Récupération d un hoster supplémentaire (Netu). Modif menu.
-05-05-2018 -- @Arias800 -- Trop de gens ne font pas le lien
-05-05-2018 -- @TmpName -- Merge pull request #2055 from Nux007/Beta  Youtitou fix.
-05-05-2018 -- @nux007 -- Fixed youtitou regex and removed the old one ( small change )
-05-05-2018 -- @nux007 -- Fixed youtitou regex
-05-05-2018 -- @razorex -- Update planet_streaming.py
-05-05-2018 -- @razorex -- Update serie_streaminghd.py  Url du site (URL_MAIN)
-03-05-2018 -- @johngf -- Update streamiz_co.py
-03-05-2018 -- @LordVenom -- dialog info
-03-05-2018 -- @LordVenom -- dialoginfo
-02-05-2018 -- @razorex -- Update fullstreaming.py
-01-05-2018 -- @razorex -- Update fullstreaming.py
-30-04-2018 -- @razorex -- Update reportagestv_com.py  Correction des regex.
-29-04-2018 -- @razorex -- Update streamingbb.py  Remplacer par regarderfilm.
-29-04-2018 -- @razorex -- Rename regarderfilm.py to plugin.video.vstream/resources/sites/regarderfilm.py
-29-04-2018 -- @razorex -- Add files via upload
-29-04-2018 -- @razorex -- Create regarderfilm.py  Remplace StreamingBB
-29-04-2018 -- @razorex -- Update regarder_films.py  Ajout de genres. Suppression des liens "streamzzz", ils ne sont plus valide. Récupération de sThumb depuis showSeries. Travail du titre.
-29-04-2018 -- @razorex -- Add files via upload
-28-04-2018 -- @razorex -- Delete fullmoviz_org.png
-28-04-2018 -- @razorex -- Create fullstreaming
-28-04-2018 -- @razorex -- Delete fullstreaming.png  Erreur de dossier
-28-04-2018 -- @razorex -- Create fullstreaming
-28-04-2018 -- @razorex -- Create fullstreaming.py
-28-04-2018 -- @LordVenom -- addlink
-26-04-2018 -- @johngf -- Update hoster.py
-26-04-2018 -- @johngf -- cloud cartel
-26-04-2018 -- @razorex -- Update streaming_series_xyz.py  Url et travail du titre.
-25-04-2018 -- @LordVenom -- kepliz
-25-04-2018 -- @TmpName -- Update speedvid.py
-25-04-2018 -- @TmpName -- Update speedvid.py
-25-04-2018 -- @TmpName -- Update streamingk_com.py
-24-04-2018 -- @TmpName -- Merge pull request #2043 from Kodi-vStream/Beta  gfjg
-24-04-2018 -- @TmpName -- Update sites.json
-24-04-2018 -- @TmpName -- Merge pull request #2042 from Kodi-vStream/master  Merge pull request #2041 from Kodi-vStream/Beta
-24-04-2018 -- @TmpName -- Merge pull request #2041 from Kodi-vStream/Beta  MAJ 24/04
-24-04-2018 -- @johngf -- Merge pull request #2040 from 1shad/dev  Update kepliz
-24-04-2018 -- @1shad -- Update kepliz
-24-04-2018 -- @LordVenom -- Merge branch  Beta  of https://github.com/Kodi-vStream/venom-xbmc-addons into Beta
-24-04-2018 -- @LordVenom -- gui
-24-04-2018 -- @razorex -- Update frenchddl_com.py  Le site down
-24-04-2018 -- @LordVenom -- runscript
-24-04-2018 -- @LordVenom -- Merge pull request #2039 from jordigarnacho/Beta  Ajout de la source Mamcin
-23-04-2018 -- @razorex -- Update film_illimit_fr.py  Url du site
-23-04-2018 -- @jordigarnacho -- Add files via upload
-23-04-2018 -- @jordigarnacho -- Add files via upload
-23-04-2018 -- @LordVenom -- runscript
-22-04-2018 -- @LordVenom -- runscript
-22-04-2018 -- @LordVenom -- runscript
-22-04-2018 -- @TmpName -- Update kaydo_ws.py  Freeze
-22-04-2018 -- @TmpName -- Update ba.py
-18-04-2018 -- @jordigarnacho -- Add files via upload
-17-04-2018 -- @LordVenom -- Merge pull request #2030 from Kodi-vStream/master  Master
-17-04-2018 -- @LordVenom -- Merge pull request #2029 from Kodi-vStream/Beta  Host & site
-17-04-2018 -- @LordVenom -- Update hosts.json
-17-04-2018 -- @LordVenom -- Update sites.json
-17-04-2018 -- @LordVenom -- Merge pull request #2028 from Kodi-vStream/Beta  news 0.6.1
-17-04-2018 -- @LordVenom -- news zip
-17-04-2018 -- @johngf -- Update thevideo_me.py
-16-04-2018 -- @TmpName -- Update premiumHandler.py
-15-04-2018 -- @razorex -- Update cinemavf.py
-15-04-2018 -- @razorex -- Site down
-15-04-2018 -- @LordVenom -- film_illimit
-15-04-2018 -- @LordVenom -- cloud
-14-04-2018 -- @LordVenom -- Merge pull request #2022 from Kodi-vStream/master  Master
-14-04-2018 -- @LordVenom -- Merge pull request #2021 from Kodi-vStream/Beta  site & host 0.6.1
-14-04-2018 -- @LordVenom -- Update hosts.json
-14-04-2018 -- @LordVenom -- Update sites.json
-14-04-2018 -- @LordVenom -- Merge pull request #2020 from Kodi-vStream/Beta  version 0.6.1
+09-07-2018 -- @LordVenom -- nop
+09-07-2018 -- @LordVenom -- 0.6.4
+09-07-2018 -- @LordVenom -- version 0.6.4
+09-07-2018 -- @LordVenom -- remove fanart
+09-07-2018 -- @LordVenom -- filmensteam
+09-07-2018 -- @LordVenom -- remove fonction cConfig
+09-07-2018 -- @Arias800 -- Fix showMovie et changement URL_MAIN
+09-07-2018 -- @Arias800 -- Fix regex sSearch et showHoster
+08-07-2018 -- @LordVenom -- remove cGui fonction
+08-07-2018 -- @LordVenom -- skstream back
+08-07-2018 -- @LordVenom -- progress recherche
+08-07-2018 -- @Arias800 -- Correction regex showMovie
+08-07-2018 -- @LordVenom -- suppression en masse de fonction.
+07-07-2018 -- @LordVenom -- path cookie
+07-07-2018 -- @LordVenom -- sokro Trash
+07-07-2018 -- @LordVenom -- doublon fonction et site HS
+07-07-2018 -- @LordVenom -- import et menage.
+07-07-2018 -- @LordVenom -- About
+07-07-2018 -- @TmpName -- Update thevideo_me.py
+ -Récupération des différente qualité et saison pour les sériess film
+06-07-2018 -- @LordVenom -- range setting
+06-07-2018 -- @TmpName -- Update guiElement.py  Gros bug, dsl.
+06-07-2018 -- @razorex -- Rename plugin.video.vstream/resources/sites/k_streaming.py to plugin.video.vstream/resources/sites/trash/k_streaming.py
+06-07-2018 -- @LordVenom -- traduction
+06-07-2018 -- @LordVenom -- progress Fin enfin je pense...
+05-07-2018 -- @LordVenom -- import plus que 388
+05-07-2018 -- @LordVenom -- import
+05-07-2018 -- @LordVenom -- menage import hoster  plus que 500
+04-07-2018 -- @LordVenom -- oups le print
+04-07-2018 -- @LordVenom -- update pas encore fini mais ça tourne
+04-07-2018 -- @TmpName -- Update guiElement.py  L image ne s afffiche pas, mais plus de bug
+04-07-2018 -- @LordVenom -- modif mise ajour
+04-07-2018 -- @LordVenom -- testt
+04-07-2018 -- @LordVenom -- test
+03-07-2018 -- @LordVenom -- Back To The Future
+03-07-2018 -- @LordVenom -- re test
+03-07-2018 -- @LordVenom -- test
+03-07-2018 -- @LordVenom -- runsript et settings
+03-07-2018 -- @Arias800 -- Fix bug qui intervient dans des cas rare
+03-07-2018 -- @Arias800 -- Correction progress pour kodi 18
+02-07-2018 -- @LordVenom -- debut de modif pour runscript
+02-07-2018 -- @LordVenom -- progress et import  Trop de modif XD
+02-07-2018 -- @razorex -- Delete vkstreamingfilm_biz.png  Site down
+01-07-2018 -- @razorex -- Rename plugin.video.vstream/resources/sites/vkstreamingfilm_biz.py to plugin.video.vstream/resources/sites/trash/vkstreamingfilm_biz.py  Down
+01-07-2018 -- @razorex -- Update tvseriestreaming.py  Ajout de menus
+01-07-2018 -- @LordVenom -- progress plus que 699
+01-07-2018 -- @razorex -- Create
+01-07-2018 -- @razorex -- Update tvseriestreaming.py
+01-07-2018 -- @LordVenom -- progress  Plus que 878
+01-07-2018 -- @Arias800 -- Prise en charge des sous-titre pour les fichier multi langue
+01-07-2018 -- @Arias800 -- Prise en charge des sous-titre pour les fichier multi langue
+01-07-2018 -- @Arias800 -- progress et nettoyage import
+01-07-2018 -- @LordVenom -- Progress  plus que 4530 et c est bon XD
+01-07-2018 -- @Arias800 -- Oups
+01-07-2018 -- @Arias800 -- Create voirfilm.py  @LordVenom sur ce site j ai déjà fait les modif pour remplacer cConfig par les nouvelle fonction j ai fait la même chose pour openload je le mets sur la beta ou tu veux que je te laisse faire ?
+30-06-2018 -- @LordVenom -- le debut de la fin  progress sur les sites plus menage d import.
+30-06-2018 -- @LordVenom -- fanart  supression du multi fanart
+30-06-2018 -- @LordVenom -- optimisation
+30-06-2018 -- @TmpName -- Update openload.py
+30-06-2018 -- @LordVenom -- vselect
+30-06-2018 -- @Arias800 -- Fix dialog kodi 18 + regex showHoster
+29-06-2018 -- @razorex -- Update streamingbb.py
+28-06-2018 -- @LordVenom -- select qua nouvelle fonction pour les hosters
+28-06-2018 -- @Arias800 -- Update regex et fix Dialog  Les fenêtre Dialog pour showMovies pouvait ne pas se fermer et donc obliger l utilisa Suppression de Dialog pour les showHoster pas utile pour 1 liens
+28-06-2018 -- @Arias800 -- Correction bug d affichage Kodi 18
+27-06-2018 -- @LordVenom -- update  vslog et autre dialog
+27-06-2018 -- @LordVenom -- favorite
+27-06-2018 -- @LordVenom -- optimisation tdmb guielement path db
+27-06-2018 -- @LordVenom -- tmdb
+26-06-2018 -- @razorex -- Update disneyhd_tk.py  Url
+26-06-2018 -- @LordVenom -- player
+26-06-2018 -- @razorex -- Update adkami_com.py  Traitement du titre.
+26-06-2018 -- @razorex -- Update fullstreaming.py  Url du site et des séries. Suppression du tiret des séries. Ajout de hosters par réécriture des liens.
+26-06-2018 -- @LordVenom -- bug dialog
+26-06-2018 -- @LordVenom -- bug dialog
+25-06-2018 -- @LordVenom -- setting
+25-06-2018 -- @LordVenom -- hoster
+25-06-2018 -- @LordVenom -- Menage guielement
+25-06-2018 -- @Arias800 -- Afficher le captcha en plein ecran
+24-06-2018 -- @LordVenom -- Color Remise en fonction des couleurs perso
+24-06-2018 -- @LordVenom -- Carrefour j optimisme optimisation de xmbcaddon
+24-06-2018 -- @LordVenom -- suppression choix couleur
+24-06-2018 -- @LordVenom -- about
+24-06-2018 -- @TmpName -- Update mangacity_org.py
+24-06-2018 -- @TmpName -- Update netu.py
+24-06-2018 -- @razorex -- Update streamingk_com.py  Meilleur traitement du tiret
+23-06-2018 -- @LordVenom -- oups
+23-06-2018 -- @LordVenom -- path about
+22-06-2018 -- @LordVenom -- Coming Soon about.py
+22-06-2018 -- @LordVenom -- default
+22-06-2018 -- @LordVenom -- deplacement runscript
+22-06-2018 -- @LordVenom -- xbmcgui.ListItem
+21-06-2018 -- @LordVenom -- modification de tous les import site recherche
+21-06-2018 -- @LordVenom -- special:// et handler
+21-06-2018 -- @LordVenom -- Update CONTRIBUTING.md
+21-06-2018 -- @LordVenom -- Update CONTRIBUTING.md
+21-06-2018 -- @LordVenom -- Delete feature_request.md
+21-06-2018 -- @LordVenom -- Delete feature.md
+21-06-2018 -- @LordVenom -- Delete custom.md
+21-06-2018 -- @LordVenom -- Delete bug_report.md
+21-06-2018 -- @LordVenom -- Update issue templates
+21-06-2018 -- @LordVenom -- Update issue templates
+21-06-2018 -- @LordVenom -- Update issue templates
+21-06-2018 -- @Arias800 -- Create CONTRIBUTING.md
+21-06-2018 -- @LordVenom -- news default
+21-06-2018 -- @LordVenom -- popup
+20-06-2018 -- @LordVenom -- comaddon
+20-06-2018 -- @TmpName -- Update vidoza.py
+20-06-2018 -- @TmpName -- Update kaydo_ws.py
+20-06-2018 -- @TmpName -- Update film_illimit_fr.py
+20-06-2018 -- @LordVenom -- lang comaddon ect...
+19-06-2018 -- @LordVenom -- translate tmdb
+19-06-2018 -- @Arias800 -- Fix sous-titre
+19-06-2018 -- @Arias800 -- Fix sous-titre
+19-06-2018 -- @LordVenom -- finish home
+19-06-2018 -- @LordVenom -- beta home comaddon
+18-06-2018 -- @LordVenom -- sans init
+18-06-2018 -- @LordVenom -- comaddon class gui xbmc
+18-06-2018 -- @LordVenom -- comaddon oui j ai pas trouver mieux comme nom
+18-06-2018 -- @Arias800 -- Ajout de F4mProxy  Chez moi il permets d’éviter le moment ou l image ce bloque
+18-06-2018 -- @Arias800 -- Ajout F4mProxy
+18-06-2018 -- @Arias800 -- Ajout de F4mProxy pour l iptv
+ -Toute les requête passe par la fonction getHtmltvM3U (car inutile)
+17-06-2018 -- @razorex -- Update zone_telechargement_ws.py  Retrait du tiret avant Saison.
+17-06-2018 -- @razorex -- Update zonestreaming.py  Tiret des séries  suite .
+17-06-2018 -- @LordVenom -- j ai plus d idée de texte pour le commit
+17-06-2018 -- @LordVenom -- more
+17-06-2018 -- @LordVenom -- bug et amelioration
+16-06-2018 -- @LordVenom -- debug
+15-06-2018 -- @johngf -- Update streamiz_co.py
+15-06-2018 -- @johngf -- Update and rename Tv_seriestreaming.py to tvseriestreaming.py  oubli
+15-06-2018 -- @johngf -- Update mystream.py
+15-06-2018 -- @LordVenom -- Merge branch  Beta  of https://github.com/Kodi-vStream/venom-xbmc-addons into Beta
+15-06-2018 -- @LordVenom -- log et modif tmdb
+15-06-2018 -- @Arias800 -- Nettoyage + retour de l epg
+14-06-2018 -- @razorex -- Add files via upload
+14-06-2018 -- @razorex -- Add files via upload
+14-06-2018 -- @razorex -- Add files via upload  Multihosters
+14-06-2018 -- @razorex -- Add files via upload  Création
+14-06-2018 -- @razorex -- Create k_streaming.py  Source en kvid
+14-06-2018 -- @razorex -- Update film_illimit_fr.py
+14-06-2018 -- @razorex -- Update film_illimit_fr.py  Un oubli.
+14-06-2018 -- @razorex -- Update hoster.py  Ajout de kvid.
+14-06-2018 -- @razorex -- Create kvid.py  Hoster tjrs disponible.
+14-06-2018 -- @LordVenom -- special
+13-06-2018 -- @LordVenom -- del
+13-06-2018 -- @LordVenom -- gui
+13-06-2018 -- @LordVenom -- util et rangement
+12-06-2018 -- @razorex -- Update gui.py  Pb de synopsis dans la bêta avec addLink. Ligne 152 retrait du #.
+12-06-2018 -- @razorex -- Delete papystreaming_org.png  Plus sur vstream
+12-06-2018 -- @razorex -- Delete megastream.png  Plus sur vstream
+12-06-2018 -- @razorex -- Delete coco_stream.png  Plus sur vstream
+12-06-2018 -- @LordVenom -- home
+11-06-2018 -- @razorex -- Update full_stream_org.py  url du site
+11-06-2018 -- @LordVenom -- util
+11-06-2018 -- @LordVenom -- Fav
+10-06-2018 -- @razorex -- Merge pull request #2117 from mino60/patch-10  Update topimdb
+10-06-2018 -- @razorex -- Update topimdb.py  Ta modif n était pas complète. Pense au menu aussi @mino60. en plus l adresse du site a changé.
+10-06-2018 -- @razorex -- Update wstream.py
+10-06-2018 -- @mino60 -- Update topimdb  And new section top film 2018
+10-06-2018 -- @Arias800 -- Ajout de la section aleatoire et fix genre
+09-06-2018 -- @johngf -- Update streamango.py
+08-06-2018 -- @TmpName -- Update hosts.json
+08-06-2018 -- @TmpName -- Update sites.json
+08-06-2018 -- @TmpName -- Merge pull request #2114 from Kodi-vStream/master  Master
+08-06-2018 -- @TmpName -- Merge pull request #2113 from Kodi-vStream/Beta  MAj 08/06
+08-06-2018 -- @razorex -- Update ddl_island_su.py  Affichage du titre.
+08-06-2018 -- @razorex -- Update guiElement.py  Ajout de  .replace( [] ,   )  dans le cas ou on affiche pas de qualité. J ai triché sur certains fichiers en mettant des (.
+08-06-2018 -- @razorex -- Update cinemavf.py
+08-06-2018 -- @razorex -- Update cinemavf.py  Un regex pour les synopsis.
+08-06-2018 -- @razorex -- Update filmstreamvk_com.py  url du site
+07-06-2018 -- @LordVenom -- cineiz
+07-06-2018 -- @razorex -- Update cineiz.py  Affichage du synopsis. il y a un souci avec la fonction addLink on affiche pas la synopsis.
+07-06-2018 -- @LordVenom -- title et addlink
+06-06-2018 -- @johngf -- Update cineiz.py
+06-06-2018 -- @johngf -- Create Tv_seriestreaming.py  Premier jet
+06-06-2018 -- @johngf -- Update netu.py
+06-06-2018 -- @LordVenom -- jawcloud
+05-06-2018 -- @LordVenom -- bug sCat et bug thumb utf8
+05-06-2018 -- @LordVenom -- addlink
+05-06-2018 -- @razorex -- Update filmstreamvk_com.py  Petite correction pour ne supprimer que le tiret précédent "Saison".
+04-06-2018 -- @LordVenom -- favorite
+03-06-2018 -- @razorex -- Update filmstreamvk_com.py  Retrait du tiret des Saisons. pb de redirection des series.
+03-06-2018 -- @LordVenom -- False
+03-06-2018 -- @LordVenom --  .com et recherche
+03-06-2018 -- @LordVenom -- https pour cineiz
+03-06-2018 -- @TmpName -- Merge pull request #2108 from Kodi-vStream/Beta  gdfgf
+03-06-2018 -- @TmpName -- Update hosts.json
+03-06-2018 -- @TmpName -- Update sites.json
+03-06-2018 -- @TmpName -- Merge pull request #2107 from Kodi-vStream/master  Merge pull request #2106 from Kodi-vStream/Beta
+03-06-2018 -- @TmpName -- Merge pull request #2106 from Kodi-vStream/Beta  MAJ 03/06
+02-06-2018 -- @razorex -- Update documentaires_streaming_com.py
+02-06-2018 -- @razorex -- Update ajouter_une_source.py
+02-06-2018 -- @Arias800 -- Fix iptvsatli_ks.blogspot et iptvgratu_t
+02-06-2018 -- @johngf -- Update hoster.py
+02-06-2018 -- @johngf -- Update siteuptobox.py
+02-06-2018 -- @LordVenom -- test f4M
+01-06-2018 -- @LordVenom -- jarvis import
+01-06-2018 -- @razorex -- Update film_illimit_fr.py  Retrait du tiret pour les séries.
+31-05-2018 -- @razorex -- Update cinemay_com.py  url films
+31-05-2018 -- @razorex -- Update cinemegatoil_org.py
+31-05-2018 -- @razorex -- Update cinemavf.py  modif pour affichage de la VO
+31-05-2018 -- @razorex -- Update cinemavf.py  Changement d url et de regex. ajout du synopsis.
+31-05-2018 -- @johngf -- Update hoster.py
+31-05-2018 -- @johngf -- Update flashx.py
+31-05-2018 -- @LordVenom -- Merge pull request #2104 from Kodi-vStream/razorex-patch-4  Update zonestreaming.py
+30-05-2018 -- @razorex -- Update zonestreaming.py  récupération des liens Upvid pour les films et les séries, et affichage de la qualité pour les films. Présence de liens pour JWplayer mais pas dans les hosters, les liens flashx ne sont pas récupéré non plus. On ne récupère pas non plus les liens pour jheberg en téléchargement.
+29-05-2018 -- @TmpName -- Update cloudflare.py
+28-05-2018 -- @LordVenom -- streamay
+28-05-2018 -- @LordVenom -- Merge pull request #2101 from Kodi-vStream/master  Master
+28-05-2018 -- @LordVenom -- Merge pull request #2100 from Kodi-vStream/Beta  site & host 0.6.2
+28-05-2018 -- @LordVenom -- Update hosts.json
+28-05-2018 -- @LordVenom -- Update sites.json
+28-05-2018 -- @LordVenom -- Merge pull request #2099 from Kodi-vStream/Beta  Master 0.6.2
+28-05-2018 -- @LordVenom -- Version 0.6.2
 14-04-2018 -- @LordVenom -- v0.6.1
 03-03-2018 -- @LordVenom -- V0.6.0
 26-01-2018 -- @LordVenom -- v0.5.9

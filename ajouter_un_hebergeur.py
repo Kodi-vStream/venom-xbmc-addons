@@ -1,11 +1,12 @@
 #-*- coding: utf-8 -*-
-#Auteur
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#Votre pseudo
 from resources.lib.handler.requestHandler import cRequestHandler #requete url
 from resources.lib.parser import cParser #recherche de code
-from resources.lib.config import cConfig #config
-from resources.lib.gui.gui import cGui #systeme d'affichage pour xbmc
 from resources.hosters.hoster import iHoster
 #from resources.lib.util import cUtil #Autres fonctions utiles
+#et comaddon, exemple
+#from resources.lib.comaddon import addon, dialog, VSlog, xbmcgui, xbmc
 
 #AAdecoder
 #from resources.lib.aadecode import AADecoder
@@ -17,8 +18,7 @@ from resources.hosters.hoster import iHoster
 #from resources.lib.handler.premiumHandler import cPremiumHandler
 
 #Ne garder que celles qui vous servent
-import re,urllib2,urllib
-import xbmcgui,xbmc
+import re, urllib2, urllib
 
 class cHoster(iHoster):
 
@@ -95,6 +95,7 @@ class cHoster(iHoster):
 
     #Extraction du lien et decodage si besoin
     def __getMediaLinkForGuest(self):
+        api_call = False
 
         oRequest = cRequestHandler(self.__sUrl)
         #oRequest.addHeaderEntry('Referer','http://www.google.fr/') #Rajoute un header
@@ -104,7 +105,6 @@ class cHoster(iHoster):
         sPattern =  'file: *"([^<>"]+?mp4)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         
-        api_call = ''
         
         if (aResult[0]):
             api_call = aResult[1][0]
@@ -113,8 +113,6 @@ class cHoster(iHoster):
             #Rajout d'un header ?
             #api_call = api_call + '|User-Agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
             return True, api_call
-        else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable', 5)
         
         return False, False
 
@@ -125,25 +123,21 @@ class cHoster(iHoster):
 #Code pour selection de plusieurs liens
 #--------------------------------------
 #
+#            from resources.lib.comaddon import dialog
+#           
 #            url=[]
 #            qua=[]
+#            api_call = False
 #            
 #            for aEntry in aResult[1]:
 #                url.append(aEntry[0])
 #                qua.append(aEntry[1])
+#
+#            #Afichage du tableau
+#            api_call = dialog().VSselectqual(qua, url)
 #                
-#            #Si une seule url
-#            if len(url) == 1:
-#                stream_url = url[0]
-#            #si plus de une
-#            elif len(url) > 1:
-#                #Afichage du tableau
-#                dialog2 = xbmcgui.Dialog()
-#                ret = dialog2.select('Select Quality',qua)
-#                if (ret > -1):
-#                    stream_url = url[ret]
-#                else:
-#                    return False, False
-#            else:
-#                return False, False
+#             if (api_call):
+#                  return True, api_call
+
+#             return False, False
 #

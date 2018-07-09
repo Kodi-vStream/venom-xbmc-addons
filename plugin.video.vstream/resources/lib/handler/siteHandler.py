@@ -1,8 +1,9 @@
 #-*- coding: utf-8 -*-
-from resources.lib.config import cConfig
+#from resources.lib.config import cConfig
+from resources.lib.comaddon import addon, VSlog
 
 import sys
-import os
+import xbmcvfs
 
 class cSiteHandler:
 
@@ -21,15 +22,17 @@ class cSiteHandler:
     def __getFileNamesFromFolder(self, sFolder):
         aNameList = []
         #items = os.listdir(sFolder)
-        items = os.listdir(unicode(sFolder, 'utf-8'))
+        #items = os.listdir(unicode(sFolder, 'utf-8'))
+        folder, items = xbmcvfs.listdir(sFolder)
         items.sort()
         for sItemName in items:
             #sFilePath = os.path.join(sFolder, sItemName)
-            sFilePath = os.path.join(unicode(sFolder, 'utf-8'), sItemName)
+            #sFilePath = os.path.join(unicode(sFolder, 'utf-8'), sItemName)
+            sFilePath = "/".join([sFolder, sItemName])
             # xbox hack
             sFilePath = sFilePath.replace('\\', '/')
             
-            if (os.path.isdir(sFilePath) == False):
+            if (xbmcvfs.exists(sFilePath) == True):
                 #if (str(sFilePath.lower()).endswith('py')):
                 if (sFilePath.lower().endswith('py')):
                     sItemName = sItemName.replace('.py', '')
@@ -45,38 +48,40 @@ class cSiteHandler:
             sPluginSettingsName = 'plugin_' + sName
             return sSearch[0], sPluginSettingsName, sSearch[1], sSiteName
         except Exception, e:
-            cConfig().log("cant import plugin: " + str(sName))            
+            VSlog("cant import plugin: " + str(sName))            
             return False, False
 
-    def getRootFolder(self):        
-        sRootFolder = cConfig().getAddonPath()
-        cConfig().log("Root Folder: " + sRootFolder)
-        return sRootFolder
+    # def getRootFolder(self):        
+    #     sRootFolder = cConfig().getAddonPath()
+    #     cConfig().log("Root Folder: " + sRootFolder)
+    #     return sRootFolder
         
-    def getRootArt(self):
-        oConfig = cConfig()
+    # def getRootArt(self):
+    #     oConfig = cConfig()
 
-        sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/art/')
+    #     sFolder =  self.getRootFolder()
+    #     sFolder = os.path.join(sFolder, 'resources/art/')
        
-        sFolder = sFolder.replace('\\', '/')
-        return sFolder
+    #     sFolder = sFolder.replace('\\', '/')
+    #     return sFolder
 
     def getAvailablePlugins(self, sLabel):
-        oConfig = cConfig()
+        #oConfig = cConfig()
+        addons = addon()
 
-        sFolder =  self.getRootFolder()
-        sFolder = os.path.join(sFolder, 'resources/sites')
+        #sFolder =  self.getRootFolder()
+        #sFolder = os.path.join(sFolder, 'resources/sites')
+        sFolder = "special://home/addons/plugin.video.vstream/resources/sites"
 
         # xbox hack        
         sFolder = sFolder.replace('\\', '/')
-        cConfig().log("Sites Folder: " + sFolder)
+        VSlog("Sites Folder: " + sFolder)
         
         aFileNames = self.__getFileNamesFromFolder(sFolder)
 
         aPlugins = []
         for sFileName in aFileNames:
-            cConfig().log("Load Plugin: " + str(sFileName))
+            VSlog("Load Plugin: " + str(sFileName))
 
             # wir versuchen das plugin zu importieren
             aPlugin = self.__importPlugin(sFileName, sLabel)
@@ -87,7 +92,7 @@ class cSiteHandler:
                 sSiteName = aPlugin[3]
 
                 # existieren zu diesem plugin die an/aus settings
-                bPlugin = oConfig.getSetting(sPluginSettingsName)
+                bPlugin = addons.getSetting(sPluginSettingsName)
                 if (bPlugin != ''):
                     # settings gefunden
                     if (bPlugin == 'true'):

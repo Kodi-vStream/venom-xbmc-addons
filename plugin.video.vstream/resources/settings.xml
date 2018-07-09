@@ -8,7 +8,7 @@
         <setting id="playerType" type="enum" values="Auto|MPlayer|DVDPlayer" label="30001" default="2" enable="eq(-1,0)"/>
         <setting id="srt-view" type="bool" label="30002" default="false"/>
         <setting id="deco_color" type="select" label="30010" values="aliceblue|lemonchiffon|lightblue|lightcoral|lightcyan|lightgrey|lightgreen|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lavender|moccasin|pink|plum|powderblue|seashell|coral" default="lightcoral"/>
-    <!-- setting id="param_timeout" label="30027" type="number" default="1000"/-->
+        <!-- <setting id="param_timeout" label="30027" type="number" default="1000"/-->
 
         <setting label="30031" type="lsep"/>
         <setting type="sep"/>
@@ -36,31 +36,22 @@
         <setting id="movie-view" type="number" label="30404" default="500" enable="eq(-3,true)"/>
         <setting id="serie-view" type="number" label="30405" default="500" enable="eq(-4,true)"/>
 
-
-        <!--utilisation masquer de chemin pour les fanart -->
-        <setting  visible="false" label="Recherches: Image" type="image" id="images_cherches" default="special://home/addons/plugin.video.vstream/resources/art/search_fanart.jpg"/>
-        <setting  visible="false" label="Recherches visuelles: Image" type="image" id="images_cherchev" default="special://home/addons/plugin.video.vstream/resources/art/vsearch_fanart.jpg"/>
-        <setting  visible="false" label="Télévisions: Image" type="image" id="images_tvs" default="special://home/addons/plugin.video.vstream/resources/art/tv_fanart.jpg"/>
-        <setting  visible="false" label="Télévisions Replays: Image" type="image" id="images_replaytvs" default="special://home/addons/plugin.video.vstream/resources/art/replay_fanart.jpg"/>
-        <setting  visible="false" label="Films: Image" type="image" id="images_films" default="special://home/addons/plugin.video.vstream/resources/art/films_fanart.jpg"/>
-        <setting  visible="false" label="Séries: Image" type="image" id="images_series" default="special://home/addons/plugin.video.vstream/resources/art/series_fanart.jpg"/>
-        <setting  visible="false" label="Animés: Image" type="image" id="images_anims" default="special://home/addons/plugin.video.vstream/resources/art/animes_fanart.jpg"/>
-        <setting  visible="false" label="Documentaires: Images" type="image" id="images_docs" default="special://home/addons/plugin.video.vstream/resources/art/doc_fanart.jpg"/>
-        <setting  visible="false" label="Sports: Image" type="image" id="images_sports" default="special://home/addons/plugin.video.vstream/resources/art/sport_fanart.jpg"/>
-        <setting  visible="false" label="Vidéos: Image" type="image" id="images_videos" default="special://home/addons/plugin.video.vstream/resources/art/buzz_fanart.jpg"/>
-        <setting visible="false" label="Images Fav" type="image" id="images_marks" default="special://home/addons/plugin.video.vstream/resources/art/mark_fanart.jpg"/>
-        <setting visible="false" label="Images sources" type="image" id="images_hosts" default="special://home/addons/plugin.video.vstream/resources/art/host_fanart.jpg"/>
-        <setting visible="false" label="Images update" type="image" id="images_updates" default="special://home/addons/plugin.video.vstream/resources/art/update_fanart.jpg"/>
-        <setting visible="false" label="Images download" type="image" id="images_downloads" default="special://home/addons/plugin.video.vstream/resources/art/download_fanart.jpg"/>
-        <setting visible="false" label="Images library" type="image" id="images_librarys" default="special://home/addons/plugin.video.vstream/resources/art/library_fanart.jpg"/>
-        <setting visible="false" label="Trakt" type="image" id="images_trakt" default="special://home/addons/plugin.video.vstream/resources/art/trakt_fanart.jpg"/>
-
     </category>
 
-    <category label="30138">
+    <category label="30449">
+        <setting label="30034" type="lsep"/>
+        <setting type="sep"/>
+        <setting id="service_time" type="text" label="Derniere MAJ auto le:" default="" enable="false"/>
+        <setting id="service_version" type="text" label="Version:" default="" enable="false"/>
+        <!--<setting label="30036" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, changelog)"/>-->
+        <setting label="30036" type="action" action="XBMC.RunScript(plugin.video.vstream, changelog, ?site=globalRun&function=changelog)"/>
+
+        <!--<setting label="30035" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, soutient)"/>-->
+        <setting label="30035" type="action" action="XBMC.RunScript(plugin.video.vstream, soutient, ?site=globalRun&function=soutient)"/>
         <setting label="30116" type="lsep"/>
         <setting type="sep"/>
-        <setting label="30420" type="action"  action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, search)" />
+        <!--<setting label="30420" type="action"  action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, search)" />-->
+        <setting label="30420" type="action"  action="XBMC.RunScript(plugin.video.vstream, search, ?site=globalRun&function=search)" />
 
         <setting type="sep"/>
         <setting subsetting="true" label="Choisissez vos sources cliquez OK [CR]- Pour Valider les modifications cliquez encore sur OK" type="lsep"/>
@@ -68,8 +59,6 @@
 
         <!--activation invisible des sources -->
         <setting visible="false" id="plugin_adkami_com" type="bool" label="ADKami" default="true"/>
-
-        <setting visible="false" id="plugin_alluc_ee" type="bool" label="Alluc" default="true"/>
 
         <setting visible="false" id="plugin_buzzmonclick_com" type="bool" label="BuzzMonClick" default="true"/>
 
@@ -80,8 +69,6 @@
         <setting visible="false" id="plugin_cinemay_com" type="bool" label="Cinemay" default="true"/>
 
         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
-
-        <setting visible="false" id="plugin_coco_stream" type="bool" label="Cinemegatoil" default="true"/>
 
         <setting visible="false" id="plugin_ddl_island_su" type="bool" label="DDL Island" default="true"/>
 
@@ -103,9 +90,11 @@
         
         <setting visible="false" id="plugin_french_stream_com" type="bool" label="French Stream" default="true"/>
 
-        <setting visible="false" id="plugin_frenchddl_com" type="bool" label="FrenchDDL" default="true"/>
-
         <setting visible="false" id="plugin_full_stream_org" type="bool" label="Full Stream" default="true"/>
+
+        <setting visible="false" id="plugin_fullstream" type="bool" label="Full Stream" default="true"/>
+
+        <setting visible="false" id="plugin_fullstreaming" type="bool" label="Full Streaming" default="true"/>
 
         <setting visible="false" id="plugin_gum_gum_streaming_com" type="bool" label="Gum-Gum-Streaming" default="true"/>
 
@@ -121,13 +110,9 @@
 
         <setting visible="false" id="plugin_libre_stream_org" type="bool" label="Libre-stream" default="true"/>
 
-        <setting visible="false" id="plugin_malaisetv" type="bool" label="Malaise tv" default="true"/>
+        <setting visible="false" id="plugin_mamcin" type="bool" label="Mamcin" default="true"/>
 
         <setting visible="false" id="plugin_mangacity_org" type="bool" label="Ianime" default="true"/>
-
-        <setting visible="false" id="plugin_mareplaytv" type="bool" label="Mareplay TV" default="true"/>
-
-        <setting visible="false" id="plugin_navixsport_com" type="bool" label="Navixsport" default="true"/>
 
         <setting visible="false" id="plugin_neuf_docu" type="bool" label="9Docu" default="true"/>
 
@@ -149,17 +134,11 @@
 
         <setting visible="false" id="plugin_serie_streaminghd" type="bool" label="Série-StreamingHD" default="true"/>
 
-        <setting visible="false" id="plugin_series_en_streaming_tv" type="bool" label="Series En Streaming" default="true"/>
-
         <setting visible="false" id="plugin_skstream_co" type="bool" label="Skstream" default="true"/>
-
-        <setting visible="false" id="plugin_sokrostream_biz" type="bool" label="Sokrostream" default="true"/>
 
         <setting visible="false" id="plugin_spion_com" type="bool" label="Spion" default="true"/>
 
         <setting visible="false" id="plugin_streamay_bz" type="bool" label="Streamay" default="true"/>
-
-        <setting visible="false" id="plugin_streamcomplet" type="bool" label="StreamComplet" default="true"/>
         
         <setting visible="false" id="plugin_streamelite" type="bool" label="StreamElite" default="true"/>
 
@@ -179,13 +158,13 @@
 
         <setting visible="false" id="plugin_topreplay" type="bool" label="TopReplay" default="true"/>
 
-        <setting visible="false" id="plugin_tv_streaming_ch" type="bool" label="TV-Streaming" default="true"/>
-
         <setting visible="false" id="plugin_tvrex_net" type="bool" label="Tvrex" default="true"/>
+
+        <setting visible="false" id="plugin_tvseriestreaming" type="bool" label="TV Serie Streaming" default="true"/>
 
         <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
 
-        <setting visible="false" id="plugin_vkstreamingfilm_biz" type="bool" label="Vk Streaming Film" default="true"/>
+        <setting visible="false" id="plugin_voirfilm" type="bool" label="VoirFilms" default="true"/>
 
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
 
@@ -198,26 +177,40 @@
     </category>
 
     <category label="30127">
-
-        <setting label="30034" type="lsep"/>
-        <setting type="sep"/>
-        <setting label="30036" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, changelog)"/>
-        <setting label="30035" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, soutient)"/>
-
         <setting label="30033" type="lsep"/>
+        
         <setting type="sep"/>
-        <setting id="service_time" type="text" label="Derniere MAJ auto le:" default="" enable="false"/>
-        <setting label="Upload kodi.log" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, uplog)"/>
-        <setting label="Supprimer une BDD" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, clean)"/>
-        <setting subsetting="true" label="Supprime une par une les BDD par sélection (Relancer l'addon une fois réussies)" type="lsep"/>
-        <setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>
-        <setting subsetting="true" label="Supprime la BDD du cache pour les métadonnées (Relancer l'addon une fois réussies)" type="lsep"/>
-        <setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, xbmc)"/>
-        <setting subsetting="true" label="Supprime les fichiers temporaire de Kodi (Relancer Kodi une fois réussies)" type="lsep"/>
-        <setting label="Clear .fi Files" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, fi)"/>
-        <setting subsetting="true" label="Supprime les fichiers de navigation temporaire de Kodi (Relancer Kodi une fois réussies)" type="lsep"/>
-        <setting label="Clear Thumbnails" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, thumb)"/>
-        <setting subsetting="true" label="Supprime les fichiers images temporaire de Kodi physique et BDD (Relancer Kodi une fois réussies)" type="lsep"/>
+        <setting id="debug" type="bool" label="30422" default="false"/>
+        <!--<setting label="Upload kodi.log" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, uplog)"/>-->
+        <setting label="Upload kodi.log" type="action" action="XBMC.RunScript(plugin.video.vstream, uplog, ?site=globalRun&function=uplog)"/>
+        <setting id="service_log" type="text" label="Url de votre log:" default="" enable="false"/>
+
+        <setting type="sep"/> 
+        <setting subsetting="true" label="Supprime les BDD de vStream" type="lsep"/>   
+        <!--<setting label="Supprimer une BDD" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, clean)"/>-->
+        <setting label="Supprimer une BDD" type="action" action="XBMC.RunScript(plugin.video.vstream, clean, ?site=globalRun&function=clear)"/>
+
+        <setting type="sep"/> 
+        <setting subsetting="true" label="Supprime la BDD du cache pour les métadonnées" type="lsep"/>
+        <!--<setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>-->       
+        <setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(plugin.video.vstream, addon, ?site=globalRun&function=addon)"/>
+
+        <setting type="sep"/>
+        <setting subsetting="true" label="Supprime les fichiers temporaire de Kodi" type="lsep"/>
+        <!--<setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, xbmc)"/>-->
+        <setting label="Clear Cache XBMC" type="action" action="XBMC.RunScript(plugin.video.vstream, xbmc, ?site=globalRun&function=xbmc)"/>
+
+        <setting type="sep"/>
+        <setting subsetting="true" label="Supprime les fichiers de navigation temporaire de Kodi" type="lsep"/>
+        <!--<setting label="Clear .fi Files" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, fi)"/>-->
+        <setting label="Clear .fi Files" type="action" action="XBMC.RunScript(plugin.video.vstream, fi, ?site=globalRun&function=fi)"/>
+
+        <setting type="sep"/>
+        <setting subsetting="true" label="Supprime les fichiers images temporaire de Kodi physique et BDD" type="lsep"/>
+        <!--<setting label="Clear Thumbnails" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, thumb)"/>-->
+        <setting label="Clear Thumbnails" type="action" action="XBMC.RunScript(plugin.video.vstream, thumb, ?site=globalRun&function=thumb)"/>
+        
+        <setting type="sep"/>
         <setting label="Refresh Skin" type="action" action="XBMC.ReloadSkin()"/>
 
     </category>
@@ -286,7 +279,8 @@
         <setting subsetting="true" label="A moins d'avoir un débrideur, [CR] cocher cette case vous apportera plus de problèmes que d'avantages." type="lsep"/>
         <setting type="sep"/>
         <setting id="UserUrlResolver" type="bool" label="Passer par UrlResolver" default="false"/>
-        <setting label="Configurer UrlResolver" type="action" option="close" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, urlresolver)" />
+        <!--<setting label="Configurer UrlResolver" type="action" option="close" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, urlresolver)" />-->
+        <setting label="Configurer UrlResolver" type="action" option="close" action="XBMC.RunScript(plugin.video.vstream, urlresolver, ?site=globalRun&function=urlresolver)" />
     </category>
 
     <!--<category label="30026">

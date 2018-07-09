@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.config import cConfig
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -12,9 +11,10 @@ from resources.lib.cloudflare import CloudflareBypass
 from resources.lib.cloudflare import NoRedirection
 from resources.lib.config import GestionCookie
 
-import re, xbmc, xbmcgui, xbmcaddon, os
+from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui
 
-PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
+import re
+
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
 SITE_IDENTIFIER = 'free_telechargement_org'
@@ -445,11 +445,11 @@ def showMovies():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sQual = 'SD'
@@ -477,16 +477,13 @@ def showMovies():
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
-
-    #Merci de ne pas faire ça
-    #xbmc.executebuiltin('Container.SetViewMode(500)')
 
     oGui.setEndOfDirectory()
 
@@ -617,12 +614,12 @@ def showSeriesHosters():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         oGui.addText(SITE_IDENTIFIER, sMovieTitle + aResult1[1][0])
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -638,7 +635,7 @@ def showSeriesHosters():
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -664,7 +661,7 @@ def Display_protected_link():
                 aResult_dlprotect = oParser.parse(sHtmlContent, sPattern_dlprotect)
 
         else:
-            oDialog = cConfig().createDialogOK('Désolé, problème de captcha.\n Veuillez en rentrer un directement sur le site, le temps de réparer')
+            oDialog = dialog().VSok('Désolé, problème de captcha.\n Veuillez en rentrer un directement sur le site, le temps de réparer')
             aResult_dlprotect = (False, False)
 
     #Si lien normal
@@ -696,6 +693,7 @@ def DecryptddlProtect(url):
     host = tmp[0] + '//' + tmp[2] + '/'
 
     cookies = ''
+    dialogs = dialog()
     #try to get previous cookie
     cookies = GestionCookie().Readcookie('liens_free-telechargement_org')
 
@@ -736,11 +734,11 @@ def DecryptddlProtect(url):
         sHtmlContent = oRequestHandler.request()
 
         if 'Code de securite incorrect' in sHtmlContent:
-            cConfig().showInfo("Erreur", 'Mauvais Captcha', 5)
+            dialogs.VSinfo("Mauvais Captcha")
             return 'rate'
 
         if 'Veuillez recopier le captcha ci-dessus' in sHtmlContent:
-            cConfig().showInfo("Erreur", 'Rattage', 5)
+            dialogs.VSinfo("Rattage")
             return 'rate'
 
         #si captcha reussi
@@ -751,6 +749,13 @@ def DecryptddlProtect(url):
 
 def get_response(img,cookie):
     #on telecharge l'image
+    import xbmcvfs
+
+    dialogs = dialog()
+
+    filename = "special://home/userdata/addon_data/plugin.video.vstream/Captcha.raw"
+    #PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
+    #filename  = os.path.join(PathCache, 'Captcha.raw')
 
     hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)', '\\1', img)
     host = re.sub(r'https*:\/\/', '', hostComplet)
@@ -765,30 +770,100 @@ def get_response(img,cookie):
 
     NewCookie = oRequestHandler.GetCookies()
 
-    filename  = os.path.join(PathCache, 'Captcha.raw')
-
-    downloaded_image = file(filename, "wb")
+    downloaded_image = xbmcvfs.File(filename, 'wb')
+    #downloaded_image = file(filename, "wb")
     downloaded_image.write(htmlcontent)
     downloaded_image.close()
 
-    #on affiche le dialogue
+#on affiche le dialogue
     solution = ''
-    try:
-        img = xbmcgui.ControlImage(450, 250, 400, 130, filename)
-        wdlg = xbmcgui.WindowDialog()
-        wdlg.addControl(img)
-        wdlg.show()
-        #xbmc.sleep(3000)
-        kb = xbmc.Keyboard('', 'Tapez les Lettres/chiffres de l\'image', False)
-        kb.doModal()
-        if (kb.isConfirmed()):
-            solution = kb.getText()
+
+    if (True):
+        ####nouveau captcha
+        try:
+            ##affichage du dialog perso
+            class XMLDialog(xbmcgui.WindowXMLDialog):
+                #"""
+                #Dialog class for captcha
+                #"""
+                def __init__(self, *args, **kwargs):
+                    xbmcgui.WindowXMLDialog.__init__(self)
+                    pass
+
+                def onInit(self):
+                    #image background captcha
+                    self.getControl(1).setImage(filename.encode("utf-8"), False)
+                    #image petit captcha memory fail
+                    self.getControl(2).setImage(filename.encode("utf-8"), False)
+                    self.getControl(2).setVisible(False)
+                    ##Focus clavier
+                    self.setFocus(self.getControl(21))
+
+                def onClick(self, controlId):
+                    if controlId == 20:
+                        #button Valider
+                        solution = self.getControl(5000).getLabel()
+                        xbmcgui.Window(10101).setProperty('captcha', str(solution))
+                        self.close()
+                        return
+
+                    elif controlId == 30:
+                        #button fermer
+                        self.close()
+                        return
+
+                    elif controlId == 21:
+                        #button clavier
+                        self.getControl(2).setVisible(True)
+                        kb = xbmc.Keyboard(self.getControl(5000).getLabel(), '', False)
+                        kb.doModal()
+
+                        if (kb.isConfirmed()):
+                            self.getControl(5000).setLabel(kb.getText())
+                            self.getControl(2).setVisible(False)
+                        else:
+                            self.getControl(2).setVisible(False)
+
+                def onFocus(self, controlId):
+                    self.controlId = controlId
+
+                def _close_dialog(self):
+                    self.close()
+
+                def onAction(self, action):
+                    #touche return 61448
+                    if action.getId() in ( 9, 10, 11, 30, 92, 216, 247, 257, 275, 61467, 61448):
+                        self.close()
+
+            path = "special://home/addons/plugin.video.vstream"
+            #path = cConfig().getAddonPath().decode("utf-8")
+            wd = XMLDialog('DialogCaptcha.xml', path, 'default', '720p')
+            wd.doModal()
+            del wd
+        finally:
+
+            solution = xbmcgui.Window(10101).getProperty('captcha')
             if solution == '':
-                cConfig().showInfo("Erreur", 'Vous devez taper le captcha', 4)
-        else:
-            cConfig().showInfo("Erreur", 'Vous devez taper le captcha', 4)
-    finally:
-        wdlg.removeControl(img)
-        wdlg.close()
+                dialogs.VSinfo("Vous devez taper le captcha")
+
+    else:
+        #ancien Captcha
+        try:
+            img = xbmcgui.ControlImage(450, 0, 400, 130, filename.encode("utf-8"))
+            wdlg = xbmcgui.WindowDialog()
+            wdlg.addControl(img)
+            wdlg.show()
+            #xbmc.sleep(3000)
+            kb = xbmc.Keyboard('', 'Tapez les Lettres/chiffres de l\'image', False)
+            kb.doModal()
+            if (kb.isConfirmed()):
+                solution = kb.getText()
+                if solution == '':
+                    dialogs.VSinfo("Vous devez taper le captcha")
+            else:
+                dialogs.VSinfo("Vous devez taper le captcha")
+        finally:
+            wdlg.removeControl(img)
+            wdlg.close()
 
     return solution, NewCookie

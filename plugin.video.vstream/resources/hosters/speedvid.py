@@ -3,11 +3,11 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.util import VSlog
 from resources.lib.aadecode import AADecoder
 from resources.lib.jjdecode import JJDecoder
 from resources.lib.packer import cPacker
 from resources.lib.jsparser import JsParser
+from resources.lib.comaddon import VSlog
 
 import re
 

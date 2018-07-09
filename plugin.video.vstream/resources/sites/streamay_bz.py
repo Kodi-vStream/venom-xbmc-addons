@@ -5,10 +5,11 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re, xbmcgui, urllib, unicodedata
+from resources.lib.comaddon import progress, dialog
+
+import urllib, unicodedata
 
 try:    import json
 except: import simplejson as json
@@ -106,8 +107,8 @@ def showSearch():
         return
 
 def showNumBoard(sDefaultNum=''):
-    dialog = xbmcgui.Dialog()
-    numboard = dialog.numeric(0, 'Entrer une année ex: 2005', sDefaultNum)
+    dialogs = dialog()
+    numboard = dialogs.numeric(0, 'Entrer une année ex: 2005', sDefaultNum)
     if numboard != None:
        return numboard
     return False
@@ -240,10 +241,10 @@ def showResultSearch(sSearch = ''):
 
     if content:
         total = len(content)
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for x in content:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sTitle = cUtil().removeHtmlTags(x['result']['title']).encode('UTF-8')
@@ -268,7 +269,7 @@ def showResultSearch(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sMovieTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -299,10 +300,10 @@ def showMovies():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sTitle = aEntry[3].decode("utf-8")
@@ -327,7 +328,7 @@ def showMovies():
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -362,10 +363,10 @@ def showSaisons():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             if aEntry[0]:
@@ -381,7 +382,7 @@ def showSaisons():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -414,10 +415,10 @@ def showHosters():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             if 'stfr' in aEntry[1]:
@@ -438,7 +439,7 @@ def showHosters():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMovie(SITE_IDENTIFIER, 'GetLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -457,10 +458,10 @@ def GetLink():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sHosterUrl = str(aEntry)
@@ -473,7 +474,7 @@ def GetLink():
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -500,10 +501,10 @@ def showAnime():
         aResult = oParser.parse(sHtmlContent,sPattern)
         if (aResult[0] == True):
             total = len(aResult[1])
-            dialog = cConfig().createDialog(SITE_NAME)
+            progress_ = progress().VScreate(SITE_NAME)
             for aEntry in aResult[1]:
-                cConfig().updateDialog(dialog, total)
-                if dialog.iscanceled():
+                progress_.VSupdate(progress_, total)
+                if progress_.iscanceled():
                    break
 
                 sTitle = sMovieTitle + 'episode' + ' ' + aEntry[0]
@@ -518,7 +519,7 @@ def showAnime():
                 oOutputParameterHandler.addParameter('sDesc', sDesc)
                 oGui.addMovie(SITE_IDENTIFIER, 'showAnimeHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-            cConfig().finishDialog(dialog)
+            progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -541,10 +542,10 @@ def showAnimeHosters():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             if aEntry[0]:
@@ -563,6 +564,6 @@ def showAnimeHosters():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oGui.addMovie(SITE_IDENTIFIER, 'GetLink', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()

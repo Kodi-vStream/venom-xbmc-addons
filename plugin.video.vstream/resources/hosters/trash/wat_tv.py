@@ -1,9 +1,9 @@
+#-*- coding: utf-8 -*-
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import re,urllib2
-import xbmcgui
+
 import md5,time
 
 # ok >> http://2med.wat.tv/get/d4d32aa6402e3434fe328d1dae98f202/5679c3b0/2/H264-384x288/94/95/3729495.h264?bu=WAT&login=ai-yazawa&i=31.38.252.7&u=2a6410b4de355b415dfa41e542cb90f5&sum=eea9050289e876f2c90474e17b04e1bf&st=FbX5GqQMX5tW9IPj55LRdQ&e=1450950128&t=1450820528&seek=wat&start=0
@@ -96,8 +96,7 @@ class cHoster(iHoster):
         return token
 
     def __getMediaLinkForGuest(self):
-        
-        print self.__sUrl
+        api_call = False
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'
         
         sID = self.__getIdFromUrl(self.__sUrl)

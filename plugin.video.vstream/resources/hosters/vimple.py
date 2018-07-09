@@ -1,8 +1,9 @@
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
 
-import re,urllib2
+import urllib2
 
 #http://player.vimple.ru/iframe/XXXXXXXXXXXXXXXXXXXXX
 
@@ -41,7 +42,7 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
+        return ''
         
     def __getIdFromUrl(self, sUrl):
         return ''

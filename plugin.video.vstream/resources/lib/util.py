@@ -1,15 +1,13 @@
 #-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 import re
 import urllib
-import xbmc
-import xbmcgui
-import xbmcaddon
 import htmlentitydefs
 import unicodedata
-import sys,xbmcplugin
 
-COUNT = 0
-DIALOG2 = None
+#function util n'utilise pas xbmc, xbmcgui, xbmcaddon ect...
+
+#reste a transformer la class en fonction distancte.
 
 class cUtil:
 
@@ -82,11 +80,6 @@ class cUtil:
 
     def quotePlus(self, sUrl):
         return urllib.quote_plus(sUrl)
-
-    def dialog(self, sName):
-        oDialog = xbmcgui.DialogProgress()
-        oDialog.create(sName)
-        return oDialog
 
     def DecoTitle(self, string):
         return string
@@ -243,15 +236,6 @@ class cUtil:
 #Pour les avoir
 #from resources.lib import util
 #puis util.VSlog('test')
-def isKrypton():
-    try:
-        version = xbmc.getInfoLabel('system.buildversion')
-        if version[0:2] >= "17":
-            return True
-        else:
-            return False
-    except:
-        return False
 
 def Unquote(sUrl):
     return urllib.unquote(sUrl)
@@ -268,140 +252,18 @@ def QuotePlus(sUrl):
 def QuoteSafe(sUrl):
     return urllib.quote(sUrl,safe=':/')
 
-def VSlog(e):
-    xbmc.log('\t[PLUGIN] Vstream: '+str(e), xbmc.LOGNOTICE)
 
-def VSupdate(self):
-    xbmc.executebuiltin("Container.Refresh")
-
-def VS_show_busy_dialog():
-    xbmc.executebuiltin('ActivateWindow(busydialog)')
-
-def VS_hide_busy_dialog():
-    xbmc.executebuiltin('Dialog.Close(busydialog)')
-    while xbmc.getCondVisibility('Window.IsActive(busydialog)'):
-        xbmc.sleep(100)
-
-def VScreateDialogOK(label):
-    oDialog = xbmcgui.Dialog()
-    oDialog.ok('vStream', label)
-    return oDialog
-
-def VScreateDialogYesNo(label):
-    oDialog = xbmcgui.Dialog()
-    qst = oDialog.yesno("vStream", label)
-    return qst
-
-def VScreateDialogSelect(label,sTitle=''):
-    oDialog = xbmcgui.Dialog()
-    if sTitle:
-        ret = oDialog.select(sTitle, label)
-    else:
-        ret = oDialog.select('Sélectionner une qualité', label)
-
-    return ret
-
-def VSDialogSelectQual(list_qual,list_url):
-    if len(list_url) == 0:
-        return ''
-    if len(list_url) == 1:
-        return list_url[0]
-
-    oDialog = xbmcgui.Dialog()
-    ret = oDialog.select('Sélectionner une qualité', list_qual)
-    if ret > -1:
-        return list_url[ret]
-    return ''
-
-def createDialog(sSite):
-    global DIALOG2
-    if DIALOG2 == None:
-        oDialog = xbmcgui.DialogProgress()
-        oDialog.create(sSite)
-        DIALOG2 = oDialog
-        return oDialog
-    else:
-        return DIALOG2
+#deprecier utiliser comaddon dialog()
+# def updateDialogSearch(dialog, total, site):
+#     global COUNT
+#     COUNT += 1
+#     iPercent = int(float(COUNT * 100) / total)
+#     dialog.update(iPercent, 'Chargement: '+str(site))
 
 
-def updateDialog(dialog,total):
-    if xbmcgui.Window(10101).getProperty('search') != 'true':
-       global COUNT
-       COUNT += 1
-       iPercent = int(float(COUNT * 100) / total)
-       dialog.update(iPercent, 'Chargement: '+str(COUNT)+'/'+str(total))
 
-def finishDialog(dialog):
-    if xbmcgui.Window(10101).getProperty('search') != 'true':
-       dialog.close()
-       del dialog
+# def VStranslatePath(location):
+#     #ex util.VStranslatePath("special://logpath/") > http://kodi.wiki/view/Special_protocol
+#     #d'apres Kodi ne doit pas etre utiliser sur les special://
+#     return xbmc.translatePath(location).decode("utf-8")
 
-def updateDialogSearch(dialog, total, site):
-    global COUNT
-    COUNT += 1
-    iPercent = int(float(COUNT * 100) / total)
-    dialog.update(iPercent, 'Chargement: '+str(site))
-
-def VSerror(e):
-    xbmcgui.Dialog().notification('Vstream','Erreur: '+str(e),xbmcgui.NOTIFICATION_ERROR,2000)
-    VSlog('Erreur: ' + str(e))
-
-def VSshowInfo(sTitle, sDescription, iSeconds=0,sound = True):
-    if (iSeconds == 0):
-        iSeconds = 1000
-    else:
-        iSeconds = iSeconds * 1000
-
-    # On ne peut pas aller voir si l'option est activee car on doit recharger la classe cConfig > aussi lourd a executer
-    #if self.getSetting('Block_Noti_sound') == 'true':
-    #    sound = False
-
-    xbmcgui.Dialog().notification(str(sTitle), str(sDescription),xbmcgui.NOTIFICATION_INFO,iSeconds,sound)
-
-def VStranslatePathAddon(location):
-    #Note, location = (author,changelog,description,disclaimer,fanart,icon,id,name,path,profile,stars,summary,type,version)
-    #ex util.VStranslatePathAddon("profile")
-    return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo(location)).decode("utf-8")
-
-def VStranslatePath(location):
-    #ex util.VStranslatePath("special://logpath/") > http://kodi.wiki/view/Special_protocol
-    return xbmc.translatePath(location).decode("utf-8")
-
-def VSlang(lang):
-    #util.VSlang(30003)
-    #Bug avec accent return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang)).decode("utf-8")
-    return xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getLocalizedString(lang))
-
-def VSshowYear(sUrl,start = '',end = '',endswithslash = ''):
-    if start and end:
-        fstart = start
-        fend = end
-    else:
-        fstart = 1936
-        fend = 2018
-
-    lstYear = []
-    lstUrl = []
-    for i in reversed(xrange(fstart,fend)):
-        lstYear.append(str(i))
-        lstUrl.append(sUrl+str(i)+endswithslash)
-
-    ret = VScreateDialogSelect(lstYear,sTitle='Sélectionner une année')
-    if (ret > -1):
-        return lstUrl[ret]
-    else:
-        xbmcplugin.endOfDirectory(int(sys.argv[1]),True,False,False)
-        xbmc.sleep(500) #sleep obligatoire
-        xbmc.executebuiltin("Action(Back)") #back evite erreur du au clic sur un dossier qui mene nulle part
-
-def VSread(sHtmlContent):
-    #from resources.lib import util
-    #util.VSread(sHtmlContent)
-    import xbmcvfs
-    file = xbmc.translatePath("special://userdata/addon_data/plugin.video.vstream/html.txt").decode("utf-8")
-    if xbmcvfs.exists(file):
-        xbmcvfs.delete(file)
-
-    f = xbmcvfs.File (file, 'w')
-    result = f.write(sHtmlContent)
-    f.close()

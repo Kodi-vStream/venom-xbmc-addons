@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #
+#alors la j'ai pas le courage
 from __future__ import division
 
 import re,os

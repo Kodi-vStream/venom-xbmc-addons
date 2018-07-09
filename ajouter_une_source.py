@@ -1,21 +1,15 @@
 #-*- coding: utf-8 -*-
-#
+#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Votre nom ou pseudo
-#
-#
 from resources.lib.gui.hoster import cHosterGui #systeme de recherche pour l'hote
-from resources.lib.handler.hosterHandler import cHosterHandler #systeme de recherche pour l'hote
 from resources.lib.gui.gui import cGui #systeme d'affichage pour xbmc
-from resources.lib.gui.guiElement import cGuiElement #systeme d'affichage pour xbmc
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler #entree des parametres
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler #sortie des parametres
 from resources.lib.handler.requestHandler import cRequestHandler #requete url
-from resources.lib.config import cConfig #config
 from resources.lib.parser import cParser #recherche de code
+from resources.lib.comaddon import progress, VSlog #import du dialog progress
 
 #from resources.lib.util import cUtil #outils pouvant etre utiles
-
-import xbmc
 
 #Si vous créez une source et la deposez dans le dossier "sites" elle sera directement visible sous xbmc
 
@@ -260,10 +254,10 @@ def showMovies(sSearch = ''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #le plus simple et de faire un  cConfig().log(str(aResult))
+    #le plus simple et de faire un  VSlog(str(aResult))
     #dans le fichier log d'xbmc vous pourrez voir un array de ce que recupere le script
     #et modifier sPattern si besoin
-    cConfig().log(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
+    VSlog(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
 
     #affiche une information si aucun resulat
     if (aResult[0] == False):
@@ -272,11 +266,11 @@ def showMovies(sSearch = ''):
     if (aResult[0] == True):
         total = len(aResult[1])
         #dialog barre de progression
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total) #dialog update
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total) #dialog update
+            if progress_.iscanceled():
                 break
 
             #L'array affiche vos info dans l'orde de sPattern en commencant a 0, attention dans ce cas la on recupere 6 information
@@ -314,7 +308,7 @@ def showMovies(sSearch = ''):
             #il existe aussi addMisc(identifiant, function, titre, icon, poster, description, sortie parametre)
             #la difference et pour les metadonner serie, films ou sans
 
-        cConfig().finishDialog(dialog) #fin du dialog
+        progress_.VSclose(progress_) #fin du dialog
 
         sNextPage = __checkForNextPage(sHtmlContent) #cherche la page suivante
         if (sNextPage != False):
@@ -353,7 +347,7 @@ def showHosters(): #recherche et affiche les hotes
     #ici nous cherchons toute les sources iframe
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #pensez a faire un xbmc.log(str(aResult)) pour verifier
+    #pensez a faire un VSlog(str(aResult)) pour verifier
 
     #si un lien ne s'affiche pas peux etre que l'hote n'est pas supporte par l'addon
     if (aResult[0] == True):
@@ -389,11 +383,11 @@ def ShowSerieSaisonEpisodes():
     if (aResult[0] == True):
         total = len(aResult[1])
 
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sTitle = sMovieTitle + str(aEntry[1])
@@ -406,7 +400,7 @@ def ShowSerieSaisonEpisodes():
 
             oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 

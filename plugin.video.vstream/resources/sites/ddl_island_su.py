@@ -1,20 +1,18 @@
 #-*- coding: utf-8 -*-
-
-from resources.lib.config import cConfig
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
+
+from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui
 
 from resources.lib.config import GestionCookie
 
 import re, urllib2
-import xbmcgui
-import xbmc
-import xbmcaddon, os
+
 
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
@@ -399,7 +397,7 @@ def showMovies(sSearch = ''):
     if 'top' in sUrl:
         sPattern = '<div class="fiche_top20"><a class="top20" href="([^"]+)"><img src="([^"]+)" title="([^\|]+)\|\|[^\|]+?\|\|([^\|]+)\|\|[^\|]+?\|\|([^"]+)" /></a></div>'
     else:
-        sPattern = '<div class="fiche_listing"><a href="([^"]+)"><img src="([^"]+)" alt="Télécharger([^"]+)"[^\|]+?\| *Qualité : ([^<]+)<br /><br />([^<]+)<br /><br />'
+        sPattern = '<div class="fiche_listing"><a href="([^"]+)"><img src="([^"]+)" alt="T.+?charger([^"]+)"[^\|]+?\| *Qualit&eacute; : ([^<]+)<br /><br />([^<]+)<br /><br />'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -410,10 +408,10 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl2 = aEntry[0]
@@ -459,6 +457,8 @@ def showMovies(sSearch = ''):
                 oGui.addTV(SITE_IDENTIFIER, 'showSeriesReleases', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showMoviesReleases', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+
+        progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -516,10 +516,10 @@ def showMoviesReleases():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             if ('rapidgator' not in aEntry[1]) and ('turbobit' not in aEntry[1]) and ('uploaded' not in aEntry[1]) and ('uptobox' not in aEntry[1]):
@@ -535,7 +535,7 @@ def showMoviesReleases():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-            cConfig().finishDialog(dialog)
+            progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -564,10 +564,10 @@ def showSaisons():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sTitle = aEntry[1]
@@ -578,7 +578,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('sDesc', sDesc)
             oGui.addTV(SITE_IDENTIFIER, 'showSeriesReleases', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -623,10 +623,10 @@ def showSeriesReleases():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             if ('rapidgator' not in aEntry[1]) and ('turbobit' not in aEntry[1]) and ('uploaded' not in aEntry[1]) and ('uptobox' not in aEntry[1]) :
@@ -637,7 +637,7 @@ def showSeriesReleases():
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
                 oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -661,10 +661,10 @@ def showHosters():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sHost = str(aEntry[0])
@@ -676,7 +676,7 @@ def showHosters():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMisc(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -705,7 +705,7 @@ def Display_protected_link():
                 aResult_dlprotect = oParser.parse(sHtmlContent, sPattern_dlprotect)
 
         else:
-            oDialog = cConfig().createDialogOK('Désolé, problème de captcha.\n Veuillez en rentrer un directement sur le site, le temps de réparer')
+            oDialog = dialog().VSok('Désolé, problème de captcha.\n Veuillez en rentrer un directement sur le site, le temps de réparer')
             aResult_dlprotect = (False, False)
 
     #Si lien normal
@@ -732,8 +732,7 @@ def Display_protected_link():
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                sDisplayTitle = cUtil().DecoTitle(sTitle)
-                oHoster.setDisplayName(sDisplayTitle)
+                oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
@@ -782,7 +781,7 @@ def DecryptddlProtect(url):
 
         #print sHtmlContent
         if 'Erreur : Le code n\'est pas valide' in sHtmlContent:
-            cConfig().showInfo("Erreur", 'Mauvais Captcha', 5)
+            dialog().VSinfo("Mauvais Captcha")
             return 'rate'
 
         #si captcha reussi
@@ -792,9 +791,15 @@ def DecryptddlProtect(url):
     return sHtmlContent
 
 def get_response(img, cookie):
+
+    import xbmcvfs
     #on telecharge l'image
-    PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
-    filename  = os.path.join(PathCache,'Captcha.raw').decode("utf-8")
+    #PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
+    #filename  = os.path.join(PathCache,'Captcha.raw').decode("utf-8")
+    filename = "special://home/userdata/addon_data/plugin.video.vstream/Captcha.raw"
+    #/home/lordvenom/.kodi/userdata/
+
+    dialogs = dialog()
 
     headers2 = {
         'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0',
@@ -812,7 +817,8 @@ def get_response(img, cookie):
         image_on_web = urllib2.urlopen(req)
         if image_on_web.headers.maintype == 'image':
             buf = image_on_web.read()
-            downloaded_image = file(filename, "wb")
+            #downloaded_image = file(filename, "wb")
+            downloaded_image = xbmcvfs.File(filename, 'wb')
             downloaded_image.write(buf)
             downloaded_image.close()
             image_on_web.close()
@@ -881,14 +887,15 @@ def get_response(img, cookie):
                     if action.getId() in ( 9, 10, 11, 30, 92, 216, 247, 257, 275, 61467, 61448):
                         self.close()
 
-            wd = XMLDialog('DialogCaptcha.xml', cConfig().getAddonPath().decode("utf-8"), 'default', '720p')
+            path = "special://home/addons/plugin.video.vstream"
+            wd = XMLDialog('DialogCaptcha.xml', path, 'default', '720p')
             wd.doModal()
             del wd
         finally:
 
             solution = xbmcgui.Window(10101).getProperty('captcha')
             if solution == '':
-                cConfig().showInfo("Erreur", 'Vous devez taper le captcha', 4)
+                dialogs.VSinfo("Vous devez taper le captcha")
 
     else:
         #ancien Captcha
@@ -903,9 +910,9 @@ def get_response(img, cookie):
             if (kb.isConfirmed()):
                 solution = kb.getText()
                 if solution == '':
-                    cConfig().showInfo("Erreur", 'Vous devez taper le captcha', 4)
+                    dialogs.VSinfo("Vous devez taper le captcha")
             else:
-                cConfig().showInfo("Erreur", 'Vous devez taper le captcha', 4)
+                dialogs.VSinfo("Vous devez taper le captcha")
         finally:
             wdlg.removeControl(img)
             wdlg.close()

@@ -5,10 +5,10 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-import re, xbmc, base64
+from resources.lib.comaddon import progress, VSlog
+import re, base64
 
 #copie du site http://www.kaydo.ws/
 #copie du site https://www.hds.to/
@@ -26,6 +26,7 @@ MOVIE_NOTES = (URL_MAIN + 'films.php?s=go&sort=rating', 'showMovies')
 MOVIE_TOP = (URL_MAIN + 'top-films.php', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'films.php', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
+MOVIE_RANDOM = (URL_MAIN + 'random.php', 'showMovies')
 
 SERIE_NEWS = (URL_MAIN + 'series-latest.php', 'showMovies')
 SERIE_SERIES = (URL_MAIN + 'series.php', 'showMovies')
@@ -69,6 +70,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_RANDOM[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_RANDOM[1], 'Films Aleatoires', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -122,10 +127,10 @@ def sHowResultSearch(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl = URL_MAIN+aEntry[1]
@@ -146,7 +151,7 @@ def sHowResultSearch(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -219,10 +224,17 @@ def showMovies():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('Bande-Annonce', '')
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent.replace('\n', ''))
+    #fh.close()
 
-    sPattern1 = '<img src="([^"]+?)" width=".+?<h2>(.+?)</h2>.*?<h3>(.+?)</h3>.+?<p>([^<]+)</p><a class="btn.+?href="(.+?)"'
+    sPattern1 = '<img src="([^"]+?)" width=.+?<h2>(.+?)</h2>.*?<h3>(.+?)<\/h3>.+?<p>([^<]+)</p><a class="btn.+?href="(.+?)"'
 
-    sPattern2 = '<img src="([^"]+)" width=".+?<a href="([^"]+)">.+?title="(.+?)".+?data-tooltip="Synopsis *: *([^<]+)">.+?<h3>(.+?)</h3>'
+    if  'add&g' in sUrl:
+        sPattern2 = '<img src="([^"]+)" width=.+?<a href="([^"]+)">.+?data-tooltip="Synopsis *: *([^<]+)">.+?<h2>(.+?)</h2>.+?<h3>(.+?)<\/h3>'
+    else:
+        sPattern2 = '<img src="([^"]+)" width=.+?<a href="([^"]+)">.+?title="(.+?)".+?data-tooltip="Synopsis *: *([^<]+)">.+?<h3>(.+?)<\/h3>'
 
     aResult = oParser.parse(sHtmlContent, sPattern2)
 
@@ -231,18 +243,18 @@ def showMovies():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
-            if  'genre' in sUrl:
+            if  'add&g' in sUrl:
                 sThumb = URL_MAIN + str(aEntry[0])
-                siteUrl = URL_MAIN + str(aEntry[4])
-                sDesc = str(aEntry[3])
-                sDisplayTitle = ('%s (%s)') % (str(aEntry[1]), str(aEntry[2]).replace(' - COMP', 'COMP'))
-                sTitle = aEntry[1]
+                siteUrl = URL_MAIN + str(aEntry[1])
+                sDesc = str(aEntry[2])
+                sDisplayTitle = ('%s (%s)') % (str(aEntry[3]), str(aEntry[4]).replace(' - COMP', 'COMP'))
+                sTitle = aEntry[3]
             else:
                 sThumb = URL_MAIN + str(aEntry[0])
                 siteUrl = URL_MAIN + str(aEntry[1])
@@ -261,18 +273,21 @@ def showMovies():
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
-
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+                
+        if 'random.php' in sUrl:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl',sUrl)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Trouvez moi d autres films >>>[/COLOR]', oOutputParameterHandler)  
 
     oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    oParser = cParser()
+    oParser = cParser()     
     sPattern = 'class="pagination">.*?<li class="active">.+?<li><a href="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -296,10 +311,10 @@ def showSeries():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sThumb = URL_MAIN + str(aEntry[0])
@@ -313,7 +328,7 @@ def showSeries():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'seriesHosters', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -389,9 +404,9 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            cConfig().log('A decoder' + str(aEntry))
+            VSlog('A decoder' + str(aEntry))
             url = Decode(str(aEntry))
-            cConfig().log('donne ' + url)
+            VSlog('donne ' + url)
 
             if url.startswith('http'):
                 if 'manifest.mpd' in url:
@@ -417,7 +432,7 @@ def showHosters():
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
-                    oHoster.setDisplayName(xbmc.getInfoLabel('ListItem.title'))
+                    oHoster.setDisplayName(sMovieTitle)
                     oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
 

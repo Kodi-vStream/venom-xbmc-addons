@@ -1,12 +1,12 @@
 #-*- coding: utf-8 -*-
-#Par jojotango
+#vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-import re
+
 SITE_IDENTIFIER = 'les_docus'
 SITE_NAME = 'Les docus'
 SITE_DESC = 'Documentaires reportages et vidéos en streaming en francais.'

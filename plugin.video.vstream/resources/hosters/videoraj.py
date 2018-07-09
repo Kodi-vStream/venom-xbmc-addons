@@ -1,6 +1,7 @@
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
 import urllib
 
@@ -82,7 +83,6 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        cGui().showInfo('Resolve', self.__sDisplayName, 5)
 
         api_call = ('http://www.videoraj.to/api/player.api.php?user=undefined&codes=1&file=%s&pass=undefined&key=%s') % (self.__getIdFromUrl(), self.__getKey())
 
@@ -96,7 +96,6 @@ class cHoster(iHoster):
             stream_url = urllib.unquote(aResult[1][0])
             return True, stream_url
         else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
             return False, False
         
         return False, False

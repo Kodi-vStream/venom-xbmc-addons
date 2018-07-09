@@ -1,11 +1,10 @@
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.config import cConfig
 from resources.hosters.hoster import iHoster
-import re,urllib2
-#import xbmcgui
+#from resources.lib.comaddon import VSlog
 
-import xbmc
 
 class cHoster(iHoster):
 
@@ -63,7 +62,7 @@ class cHoster(iHoster):
 
         api_call =''
         
-        #xbmc.log(self.__sUrl)
+        #VSlog(self.__sUrl)
         
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
@@ -72,11 +71,11 @@ class cHoster(iHoster):
         sPattern = 'file:"([^"]+.mp4)",label:"([0-9]+)"}'
         aResult = oParser.parse(sHtmlContent, sPattern)
         
-        #xbmc.log(str(aResult))
+        #VSlog(str(aResult))
         if (aResult[0] == True):
             api_call = aResult[1][0][0]
         
-        #xbmc.log(api_call)
+        #VSlog(api_call)
         
         if (api_call):
             return True, api_call

@@ -1,23 +1,20 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.config import cConfig
-from resources.lib.parser import cParser
-#from resources.lib.util import cUtil #outils pouvant etre utiles
 
-import xbmc
+from resources.lib.parser import cParser
+
+from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'cinemavf'
 SITE_NAME = 'CinemaVF'
 SITE_DESC = 'Films, Séries & Mangas en streaming.'
 
-URL_MAIN = 'http://filmstreamin.org/'
+URL_MAIN = 'http://filmstreamin.co/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -224,7 +221,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
 
-    sPattern = '<a title=".+?href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)".+?class="ExcerptContent">(.+?)</div>'
+    sPattern = '<a title=".+?href="(.+?)">.+?<div class=".+?">.+?<img src="(.+?)" alt="(.+?)" />.+?</ul>.+?<div class="ExcerptContent">(.+?)</div>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -233,11 +230,11 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sUrl2 = str(aEntry[0])
@@ -255,7 +252,7 @@ def showMovies(sSearch = ''):
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
@@ -298,11 +295,11 @@ def ShowSaisons():
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
 
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             if (aEntry[0]):
@@ -317,7 +314,7 @@ def ShowSaisons():
                 oOutputParameterHandler.addParameter('sThumb', sThumb )
                 oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -332,8 +329,6 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    #cConfig().log(str(sUrl))
 
     #probleme de redirection non finalisée sur leur site
     sUrl = oRequestHandler.getRealUrl()
@@ -402,10 +397,6 @@ def showHosters():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    #cConfig().log(str(sUrl))
-    #cConfig().log(sPost)
-    #cConfig().log(str(aResult))
-
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
@@ -414,8 +405,6 @@ def showHosters():
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 tmp = oRequestHandler.request()
                 sHosterUrl = oRequestHandler.getRealUrl()
-
-            #cConfig().log(str(sHosterUrl))
 
             if sHosterUrl.startswith('/'):
                 sHosterUrl = 'http:' + sHosterUrl

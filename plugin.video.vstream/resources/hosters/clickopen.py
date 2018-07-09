@@ -2,7 +2,8 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-import xbmcgui,re
+from resources.lib.comaddon import dialog
+import re
 import base64
 
 class cHoster(iHoster):
@@ -87,15 +88,7 @@ class cHoster(iHoster):
                         url.append(str(i[0]))
                         qua.append(str(i[1]))
                 #Si une seule url
-                    if len(url) == 1:
-                        api_call = url[0]
-                #si plus de une
-                    elif len(url) > 1:
-                #Affichage du tableau
-                        dialog2 = xbmcgui.Dialog()
-                        ret = dialog2.select('Select Quality', qua)
-                        if (ret > -1):
-                            api_call = url[ret]
+                    api_call = dialog().VSselectqual(qua,url)
 
         if (api_call):
             return True, api_call

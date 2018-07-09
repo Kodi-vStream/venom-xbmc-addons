@@ -1,22 +1,34 @@
 #-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom.
-from resources.lib.config import cConfig
+from resources.lib.comaddon import addon, xbmc
 from resources.lib.db import cDb
 
-import os, re, urllib, string, xbmc
+import os, re, urllib, string
+
+#rouge E26543
+#jaune F7D571
+#bleau clair 87CEEC  ou skyblue / hoster
+#vert 37BCB5
+#bleau foncer 08435A / non utiliser
+
 
 class cGuiElement:
 
     DEFAULT_FOLDER_ICON = 'icon.png'
-    COUNT = 0
+    #COUNT = 0
+    ADDON = addon()
+    DB = cDb()
 
     def __init__(self):
-        self.__sRootArt = cConfig().getRootArt()
+
+        #self.__sRootArt = cConfig().getRootArt()
+        self.__sRootArt = 'special://home/addons/plugin.video.vstream/resources/art/'
         self.__sType = 'Video'
         self.__sMeta = 0
         self.__sPlaycount = 0
         self.__sTrailerUrl = ''
-        self.__sMetaAddon = cConfig().getSetting('meta-view')
+        self.__sMetaAddon = self.ADDON.getSetting('meta-view')
         self.__sImdb = ''
         self.__sTmdb = ''
         self.__sMediaUrl = ''
@@ -35,8 +47,8 @@ class cGuiElement:
         self.__Season = ''
         self.__Episode = ''
         self.__sIcon = self.DEFAULT_FOLDER_ICON
-        self.__sFanart = self.__sRootArt + 'fanart.jpg'
-        self.__sDecoColor = cConfig().getSetting('deco_color')
+        self.__sFanart = "special://home/addons/plugin.video.vstream/fanart.jpg"
+        self.__sDecoColor = self.ADDON.getSetting("deco_color")
 
         #For meta search
         #TmdbId the movie database https://developers.themoviedb.org/
@@ -44,18 +56,6 @@ class cGuiElement:
         #ImdbId pas d'api http://www.imdb.com/
         self.__ImdbId = ''
         self.__Year = ''
-
-        self.__sFanart_search = self.__sRootArt + 'search_fanart.jpg'
-        self.__sFanart_tv = self.__sRootArt + 'tv_fanart.jpg'
-        self.__sFanart_films = self.__sRootArt + 'films_fanart.jpg'
-        self.__sFanart_series = self.__sRootArt + 'series_fanart.jpg'
-        self.__sFanart_animes = self.__sRootArt + 'animes_fanart.jpg'
-        self.__sFanart_doc = self.__sRootArt + 'doc_fanart.jpg'
-        self.__sFanart_sport = self.__sRootArt + 'sport_fanart.jpg'
-        self.__sFanart_buzz = self.__sRootArt + 'buzz_fanart.jpg'
-        self.__sFanart_mark = self.__sRootArt + 'mark_fanart.jpg'
-        self.__sFanart_host = self.__sRootArt + 'host_fanart.jpg'
-        self.__sFanart_download = self.__sRootArt + 'download_fanart.jpg'
 
         self.__aItemValues = {}
         self.__aProperties = {}
@@ -65,12 +65,12 @@ class cGuiElement:
         #1 - movies , 2 - tvshow, - 3 misc,
         #oGuiElement.setCat(1)
         self.__sCat = ''
-        cGuiElement.COUNT += 1
+        #cGuiElement.COUNT += 1
 
     #def __len__(self): return self.__sCount
 
-    def getCount(self):
-        return cGuiElement.COUNT
+    # def getCount(self):
+    #     return cGuiElement.COUNT
 
     def setType(self, sType):
         self.__sType = sType
@@ -322,89 +322,35 @@ class cGuiElement:
     def setFanart(self, sFanart):
         if (sFanart != ''):
             self.__sFanart = sFanart
-        else:
-            self.__sFanart = self.__sRootArt + 'fanart.jpg'
-
 
     def setMovieFanart(self):
-            self.__sFanart = self.__sFanart_films
+        self.__sFanart = self.__sFanart
 
     def setTvFanart(self):
-            self.__sFanart = self.__sFanart_series
+        self.__sFanart = self.__sFanart
 
     def setDirectTvFanart(self):
-            self.__sFanart = self.__sFanart_tv
+        self.__sFanart = self.__sFanart
 
     def setDirFanart(self, sIcon):
-        if (sIcon == 'search.png'):
-            self.__sFanart = cConfig().getSetting('images_cherches')
-
-        elif (sIcon == 'searchtmdb.png'):
-            self.__sFanart = cConfig().getSetting('images_cherchev')
-
-        elif sIcon == 'tv.png':
-            self.__sFanart = cConfig().getSetting('images_tvs')
-        elif ('replay' in sIcon):
-            self.__sFanart = cConfig().getSetting('images_replaytvs')
-
-        elif ('films' in sIcon):
-            self.__sFanart = cConfig().getSetting('images_films')
-
-        elif ('series' in sIcon):
-            self.__sFanart = cConfig().getSetting('images_series')
-
-        elif ('animes' in sIcon):
-            self.__sFanart = cConfig().getSetting('images_anims')
-
-        elif sIcon == 'doc.png':
-            self.__sFanart = cConfig().getSetting('images_docs')
-
-        elif sIcon == 'sport.png':
-            self.__sFanart = cConfig().getSetting('images_sports')
-
-        elif sIcon == 'buzz.png':
-            self.__sFanart = cConfig().getSetting('images_videos')
-
-        elif sIcon == 'mark.png':
-            self.__sFanart = cConfig().getSetting('images_marks')
-
-        elif sIcon == 'host.png':
-            self.__sFanart = cConfig().getSetting('images_hosts')
-
-        elif sIcon == 'download.png':
-            self.__sFanart = cConfig().getSetting('images_downloads')
-
-        elif sIcon == 'update.png':
-            self.__sFanart = cConfig().getSetting('images_updates')
-
-        elif sIcon == 'library.png':
-            self.__sFanart = cConfig().getSetting('images_librarys')
-
-        elif sIcon == 'trakt.png':
-            self.__sFanart = cConfig().getSetting('images_trakt')
-
-        elif sIcon == 'actor.png':
-            self.__sFanart = self.__sFanart
-
-        elif sIcon == 'star.png':
-            self.__sFanart = self.__sFanart
-
-        elif xbmc.getInfoLabel('ListItem.Art(fanart)') != '':
-            self.__sFanart = xbmc.getInfoLabel('ListItem.Art(fanart)')
-
-        else :
-            self.__sFanart = self.__sFanart
-        return self.__sFanart
+        self.__sFanart = self.__sFanart
 
     def getFanart(self):
         return self.__sFanart
 
     def setIcon(self, sIcon):
-        self.__sIcon = sIcon
+        try:
+            self.__sIcon = unicode(sIcon, 'utf-8')
+        except:
+            self.__sIcon = sIcon
+        self.__sIcon = self.__sIcon.encode("utf-8")
+        self.__sIcon = urllib.quote_plus(self.__sIcon, safe=':/')
 
     def getIcon(self):
-        #return self.__sRootArt + self.__sIcon
-        return os.path.join(unicode(self.__sRootArt, 'utf-8'), self.__sIcon)
+        folder = "special://home/addons/plugin.video.vstream/resources/art"
+        path = "/".join([folder, self.__sIcon]) 
+        #return os.path.join(unicode(self.__sRootArt, 'utf-8'), self.__sIcon)
+        return path
 
     def addItemValues(self, sItemKey, mItemValue):
         self.__aItemValues[sItemKey] = mItemValue
@@ -419,33 +365,8 @@ class cGuiElement:
         meta['title'] = urllib.quote_plus(self.getTitle())
         meta['site'] = self.getSiteUrl()
 
-        data = cDb().get_watched(meta)
+        data = self.DB.get_watched(meta)
         return data
-
-
-    def setWatched(self, sId, sTitle):
-        try:
-            watched = {}
-            #sTitle = self.getTitle()
-            #sId = self.getSiteName()
-            watched_db = os.path.join(cConfig().getSettingCache(), "watched.db").decode("utf-8")
-
-            if not os.path.exists(watched_db):
-                file(watched_db, "w").write("%r" % watched)
-
-            if os.path.exists(watched_db):
-                watched = eval(open(watched_db).read() )
-                watched[ sId ] = watched.get( sId ) or []
-                #add to watched
-                if sTitle not in watched[sId]:
-                     watched[ sId ].append( sTitle )
-                else:
-                    del watched[ sId ][ watched[ sId ].index( sTitle ) ]
-
-            file(watched_db, "w").write("%r" % watched)
-            watched_db.close()
-        except:
-            return
 
 
     def str_conv(self, data):
@@ -526,7 +447,7 @@ class cGuiElement:
 
         if sType:
             from resources.lib.tmdb import cTMDb
-            grab = cTMDb(api_key=cConfig().getSetting('api_tmdb'))
+            grab = cTMDb()
             args = (sType, self.__sFileName)
             kwargs = {}
             if (self.__ImdbId):

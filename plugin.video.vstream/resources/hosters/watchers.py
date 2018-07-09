@@ -1,12 +1,11 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-
-from resources.lib.handler.requestHandler import cRequestHandler 
-from resources.lib.config import cConfig 
+from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser 
 from resources.lib.packer import cPacker
-import re,xbmcgui
+from resources.lib.comaddon import dialog
+
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0'
 
@@ -63,6 +62,7 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+        api_call = False
     
         sUrl = self.__sUrl
         
@@ -97,22 +97,15 @@ class cHoster(iHoster):
             #Replissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[1]))
-                qua.append(str(i[0]))   
-            #Si une seule url
-            if len(url) == 1:
-                api_call = url[0]
-            #si plus de une
-            elif len(url) > 1:
-            #Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
-                if (ret > -1):
-                    api_call = url[ret]
+                qua.append(str(i[0])) 
+            
+            #tableau
+            api_call = dialog().VSselectqual(qua, url)
                     
-        # ne fonctionne pas a partir des fichiers mp4 (video de 3 minutes) meme sur firefox ???      
-        api_call = api_call + '|User-Agent='+ UA
-        api_call = api_call + '&Referer=http://watchers.to/player7/jwplayer.flash.swf'
-        
+            # ne fonctionne pas a partir des fichiers mp4 (video de 3 minutes) meme sur firefox ???      
+            api_call = api_call + '|User-Agent='+ UA
+            api_call = api_call + '&Referer=http://watchers.to/player7/jwplayer.flash.swf'
+            
         if (api_call):
             return True, api_call
             

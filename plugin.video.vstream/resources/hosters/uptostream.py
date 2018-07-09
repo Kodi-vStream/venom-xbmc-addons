@@ -5,9 +5,10 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-#from resources.lib.config import cConfig
+from resources.lib.comaddon import dialog #,VSlog
 
-import urllib,xbmcgui,xbmc,re
+import urllib,re
+
 
 class cHoster(iHoster):
 
@@ -56,7 +57,7 @@ class cHoster(iHoster):
             self.__sUrl = sRealUrl
             return self.__getIdFromUrl()
 
-        return sUrl;
+        return sUrl
         
     def __getKey(self):
         oRequestHandler = cRequestHandler(self.__sUrl)
@@ -75,13 +76,13 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.replace('http://uptostream.com/', '')
         self.__sUrl = self.__sUrl.replace('https://uptostream.com/', '')
         self.__sUrl = self.__sUrl.replace('iframe/', '')
-        self.__sUrl = 'https://uptostream.com/iframe/' + str(self.__sUrl)
+        self.__sUrl = 'https://uptostream.com/' + str(self.__sUrl)
 
     def checkSubtitle(self,sHtmlContent):
         oParser = cParser()
 
         #On ne charge les sous titres uniquement si vostfr se trouve dans le titre.
-        if re.search('<head\s*.+?>\s*<title>[^<>]+VOSTFR[^<>]*<\/title>',sHtmlContent,re.IGNORECASE):
+        if re.search('<div class=[\'"]theater-background[\'"]></div>\s*<h1>[^<>]+(?:MULTI|VOSTFR)[^<>]*</h1>',sHtmlContent,re.IGNORECASE):
         
             sPattern = '<track type=[\'"].+?[\'"] kind=[\'"]subtitles[\'"] src=[\'"]([^\'"]+).vtt[\'"] srclang=[\'"].+?[\'"] label=[\'"]([^\'"]+)[\'"]>'
             aResult = oParser.parse(sHtmlContent, sPattern)
@@ -111,27 +112,20 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        cGui().showInfo('Resolve', self.__sDisplayName, 5)
+        api_call = False
         
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
-        #cConfig().log(self.__sUrl)
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
-        
         SubTitle = ''
         SubTitle = self.checkSubtitle(sHtmlContent)
-        #cConfig().log(SubTitle)
+        #VSlog(SubTitle)
         
         oParser = cParser()
         sPattern =  'src":[\'"]([^<>\'"]+)[\'"],"type":[\'"][^\'"><]+?[\'"],"label":[\'"]([0-9]+p)[\'"].+?"lang":[\'"]([^\'"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
         
-        #cConfig().log(str(aResult))
-        
-        stream_url = ''
+        #VSlog(str(aResult))
         
         if (aResult[0] == True):
             url=[]
@@ -146,33 +140,19 @@ class cHoster(iHoster):
                     if 'unknow' not in aEntry[2]:
                         tmp_qua = tmp_qua + ' (' + aEntry[2] + ')'
                 qua.append(tmp_qua)
-                
-            #Si une seule url
-            if len(url) == 1:
-                stream_url = url[0]
-            #si plus de une
-            elif len(url) > 1:
-                #Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
-                if (ret > -1):
-                    stream_url = url[ret]
+
+            api_call = dialog().VSselectqual(qua, url)         
+
+            if (api_call):
+
+                api_call = urllib.unquote(api_call)
+            
+                if not api_call.startswith('http'):
+                    api_call = 'http:' + api_call
+
+                if SubTitle:
+                    return True, api_call, SubTitle
                 else:
-                    return False, False
-            else:
-                return False, False
-            
-            stream_url = urllib.unquote(stream_url)
-            
-            if not stream_url.startswith('http'):
-                stream_url = 'http:' + stream_url
-            
-            if SubTitle:
-                return True, stream_url,SubTitle
-            else:
-                return True, stream_url
-        else:
-            cGui().showInfo(self.__sDisplayName, 'Fichier introuvable' , 5)
-            return False, False
+                    return True, api_call
         
         return False, False

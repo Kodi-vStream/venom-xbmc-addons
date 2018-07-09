@@ -11,11 +11,10 @@ from resources.lib.handler.pluginHandler import cPluginHandler
 from resources.lib.handler.rechercheHandler import cRechercheHandler
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.config import cConfig
-from resources.lib.db import cDb
-from resources.lib.util import cUtil
 
-import xbmc, xbmcgui, sys
+from resources.lib.db import cDb
+
+from resources.lib.comaddon import progress, VSlog, addon, window, xbmc
 
 #http://kodi.wiki/view/InfoLabels
 #http://kodi.wiki/view/List_of_boolean_conditions
@@ -27,15 +26,18 @@ class main:
 
     def parseUrl(self):
 
+        #import sys
         #xbmc.log('arg :' + str(sys.argv), xbmc.LOGNOTICE)
         #xbmc.log('Debug 1 >>' + str(xbmc.getInfoLabel('Container().CurrentPage')) , xbmc.LOGNOTICE)
         #xbmc.log('Debug 2 >>' + str(xbmc.getInfoLabel('Container.FolderPath')) , xbmc.LOGNOTICE)
 
         oInputParameterHandler = cInputParameterHandler()
+        oInputParameterHandler.getAllParameter()
+        
         if (oInputParameterHandler.exist('function')):
             sFunction = oInputParameterHandler.getValue('function')
         else:
-            cConfig().log('call load methode')
+            VSlog('call load methode')
             sFunction = "load"
 
         if (sFunction=='DoNothing'):
@@ -45,10 +47,11 @@ class main:
 
             #mise a jour
             try:
-                from resources.lib.about import cAbout
-                cAbout().getUpdate()
-                #exec "from resources.lib.about import cAbout as plugin"
-                #exec "plugin.getUpdate()"
+                #from resources.lib.about import cAbout
+                #cAbout().getUpdate()
+                plugins = __import__('resources.lib.about', fromlist=['about']).cAbout()
+                function = getattr(plugins, 'getUpdate')
+                function()
             except:
                 pass
 
@@ -65,9 +68,8 @@ class main:
                 sTitle = oInputParameterHandler.getValue('title')
             else: sTitle = "none";
 
-            cConfig().log('load site ' + sSiteName + ' and call function ' + sFunction)
+            VSlog('load site ' + sSiteName + ' and call function ' + sFunction)
             cStatistic().callStartPlugin(sSiteName, sTitle)
-
 
             if (isHosterGui(sSiteName, sFunction) == True):
                 return
@@ -94,14 +96,21 @@ class main:
                 searchGlobal()
                 return
 
+            if sSiteName == 'globalRun':
+                __import__('resources.lib.runscript', fromlist=['runscript'])
+                #function = getattr(plugins, sFunction)
+                #function()
+                return
+
             if sSiteName == 'globalSources':
 
                 oGui = cGui()
                 oPluginHandler = cPluginHandler()
                 aPlugins = oPluginHandler.getAvailablePlugins()
                 if (len(aPlugins) == 0):
-                    oGui.openSettings()
-                    oGui.updateDirectory()
+                    addons = addon()
+                    addons.openSettings()
+                    xbmc.executebuiltin("Container.Refresh")
                 else:
                     for aPlugin in aPlugins:
 
@@ -114,7 +123,8 @@ class main:
                 return
 
             if sSiteName == 'globalParametre':
-                cConfig().showSettingsWindow()
+                addons = addon()
+                addons.openSettings()
                 return
             #if (isAboutGui(sSiteName, sFunction) == True):
                 #return
@@ -127,7 +137,7 @@ class main:
                 function = getattr(plugins, sFunction)
                 function()
             except Exception as e:
-                cConfig().log('could not load site: ' + sSiteName + ' error: ' + str(e))
+                VSlog('could not load site: ' + sSiteName + ' error: ' + str(e))
                 import traceback
                 traceback.print_exc()
                 return
@@ -188,9 +198,9 @@ def isTrakt(sSiteName, sFunction):
 def searchGlobal():
     cancel = False
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
+    addons = addon()
 
-    #print xbmc.getInfoLabel('ListItem.Property(Category)')
+    oInputParameterHandler = cInputParameterHandler()
 
     sSearchText = oInputParameterHandler.getValue('searchtext')
     sCat = oInputParameterHandler.getValue('sCat')
@@ -202,24 +212,26 @@ def searchGlobal():
     if not aPlugins: return True
     total = len(aPlugins)
 
-    #xbmc.log(str(aPlugins), xbmc.LOGNOTICE)
+    #VSlog(str(aPlugins), xbmc.LOGNOTICE)
 
-    dialog = cConfig().createDialog("vStream")
+    progress_ = progress().VScreate()
+  
     #kodi 17 vire la fenetre busy qui ce pose au dessus de la barre de Progress
     try:
         xbmc.executebuiltin("Dialog.Close(busydialog)")
     except: pass
-    xbmcgui.Window(10101).setProperty('search', 'true')
+    
+    window(10101).setProperty('search', 'true')
 
-    oGui.addText('globalSearch', cConfig().getlanguage(30081) % (sSearchText), 'none.png')
+    oGui.addText('globalSearch', addons.VSlang(30081) % (sSearchText), 'none.png')
 
     for count, plugin in enumerate(aPlugins):
 
-        text = '%s/%s - %s' % ((count+1), total, plugin['name'])
-        cConfig().updateDialogSearch(dialog, total, text)
-        if dialog.iscanceled():
+        #text = '%s/%s - %s' % ((count+1), total, plugin['name'])
+        progress_.VSupdatesearch(progress_, total, plugin['name'])
+        if progress_.iscanceled():
             cancel = True
-            dialog.close()
+            progress_.close()
             break
 
         #nom du site
@@ -227,33 +239,35 @@ def searchGlobal():
         #recherche import
         _pluginSearch(plugin, sSearchText)
 
-    xbmcgui.Window(10101).setProperty('search', 'false')
+    window(10101).setProperty('search', 'false')
+    progress_.VSclose(progress_)
 
     #affichage
     total=len(oGui.searchResults)
-    #filtre
-    int_1 = cUtil().CheckOrd(sSearchText)
 
     for count,result in enumerate(oGui.searchResults):
         text = '%s/%s - %s' % ((count+1/total), total, result['guiElement'].getTitle())
 
-        if(count == 0):
-            cConfig().updateDialogSearch(dialog, total, text,True)
-        else:
-            cConfig().updateDialogSearch(dialog, total, text)
+        #if(count == 0):
+        #    cConfig().updateDialogSearch(dialog, total, text,True)
+        #else:
+        #    cConfig().updateDialogSearch(dialog, total, text)
+        #progress_.VSupdatesearch(progress_, total, result['guiElement'].getTitle())
+
+
 
         #result['params'].addParameter('VSTRMSEARCH','True')
 
         oGui.addFolder(result['guiElement'],result['params'])
-        #xbmc.log('%s - %s' % (middle,old_label),  xbmc.LOGNOTICE)
+        #VSlog('%s - %s' % (middle,old_label),  xbmc.LOGNOTICE)
 
-        if dialog.iscanceled():
-            if cancel == True:
-                continue
-            else:
-                break
+        # if progress_.iscanceled():
+        #     if cancel == True:
+        #         continue
+        #     else:
+        #         break
 
-    cConfig().finishDialog(dialog)
+    #progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
@@ -265,8 +279,8 @@ def _pluginSearch(plugin, sSearchText):
         function = getattr(plugins, plugin['search'][1])
         sUrl = plugin['search'][0]+str(sSearchText)
         function(sUrl)
-        cConfig().log("Load Recherche: " + str(plugin['identifier']))
+        VSlog("Load Recherche: " + str(plugin['identifier']))
     except:
-        cConfig().log(plugin['identifier']+': search failed')
+        VSlog(plugin['identifier']+': search failed')
 
 main()

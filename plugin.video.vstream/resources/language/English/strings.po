@@ -253,7 +253,7 @@ msgid "Beta Tester (not recommended)"
 msgstr ""
 
 msgctxt "#30127"
-msgid "Tool/About"
+msgid "Tool"
 msgstr ""
 
 msgctxt "#30128"
@@ -626,7 +626,7 @@ msgid "Divers"
 msgstr ""
 
 msgctxt "#30411"
-msgid "Block sounds notifications"
+msgid "Enable sounds notifications"
 msgstr ""
 
 msgctxt "#30412"
@@ -666,4 +666,116 @@ msgstr ""
 
 msgctxt "#30421"
 msgid "Go to [COLOR teal]%s[CR]%s[/COLOR][CR],Valid vStream, only then click YES"
+msgstr ""
+
+msgctxt "#30422"
+msgid "Enable log records"
+msgstr ""
+
+msgctxt "#30423"
+msgid "Search (Movies)"
+msgstr ""
+
+msgctxt "#30424"
+msgid "Search (TV Shows)"
+msgstr ""
+
+msgctxt "#30425"
+msgid "Movies (Popular)"
+msgstr ""
+
+msgctxt "#30426"
+msgid "Movies (Theater)"
+msgstr ""
+
+msgctxt "#30427"
+msgid "Movies (Top Rated)"
+msgstr ""
+
+msgctxt "#30428"
+msgid "Movies (Kinds)"
+msgstr ""
+
+msgctxt "#30429"
+msgid "TV Shows (Popular)"
+msgstr ""
+
+msgctxt "#30430"
+msgid "TV Shows (on TV)"
+msgstr ""
+
+msgctxt "#30431"
+msgid "TV Shows (Top Rated)"
+msgstr ""
+
+msgctxt "#30432"
+msgid "TV Shows (Kinds)"
+msgstr ""
+
+msgctxt "#30433"
+msgid "Actors (Popular)"
+msgstr ""
+
+msgctxt "#30434"
+msgid "Movies (Favorites)"
+msgstr ""
+
+msgctxt "#30435"
+msgid "Movies (Rated)"
+msgstr ""
+
+msgctxt "#30436"
+msgid "Movies (Watched)"
+msgstr ""
+
+msgctxt "#30437"
+msgid "TV Shows (Favorites)"
+msgstr ""
+
+msgctxt "#30438"
+msgid "TV Shows (Rated)"
+msgstr ""
+
+msgctxt "#30439"
+msgid "Episodes (Rated)"
+msgstr ""
+
+msgctxt "#30440"
+msgid "TV Shows (Watched)"
+msgstr ""
+
+msgctxt "#30441"
+msgid "My Lists"
+msgstr ""
+
+msgctxt "#30442"
+msgid "You must be logged in"
+msgstr ""
+
+msgctxt "#30443"
+msgid "Add: rated"
+msgstr ""
+
+msgctxt "#30444"
+msgid "Add: Watched"
+msgstr ""
+
+msgctxt "#30445"
+msgid "Add: Favorites"
+msgstr ""
+
+msgctxt "#30446"
+msgid "[COLOR red]Delete: Watched[/COLOR]"
+msgstr ""
+
+msgctxt "#30447"
+msgid "[COLOR red]Delete: Favorites[/COLOR]"
+msgstr ""
+
+msgctxt "#30448"
+msgid "Select a quality"
+msgstr ""
+
+msgctxt "#30449"
+msgid "About/Sources"
 msgstr ""
