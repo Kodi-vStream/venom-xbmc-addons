@@ -15,14 +15,14 @@ import random
 
 #from resources.lib.dl_deprotect import DecryptDlProtect
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'
+UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0'
 headers = { 'User-Agent' : UA }
 
 SITE_IDENTIFIER = 'zone_telechargement_ws'
 SITE_NAME = '[COLOR violet]Zone-Telechargement[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_MAIN = 'https://1ww.zone-telechargement1.com/'
+URL_MAIN = 'https://2ww.zone-telechargement1.com/'
 URL_DECRYPT =  ''
 
 URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
@@ -185,7 +185,7 @@ def showMovies(sSearch = ''):
 
         data = urllib.urlencode(query_args)
         request = urllib2.Request(URL_SEARCH[0], data, headers)
-        sPattern = '<div style="height:[0-9]{3}px;"> *<a href="([^"]+)" *><img class="[^"]+?" data-newsid="[^"]+?" src="([^<"]+)".+?<div class="[^"]+?" style="[^"]+?"> *<a href="[^"]+?" *> ([^<]+?)<'
+        sPattern = '<a href="(.+?)" ><img class=".+?" data-newsid=".+?" src="(.+?)" width=".+?" height=".+?".+?</div>.+?<div style=".+?">.+?</div>.+?<div style=".+?"><div class=".+?">.+?<div class=".+?" style=".+?">.+?<a href=".+?" >(.+?)<'
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -451,7 +451,7 @@ def showHosters():
         #print sHtmlContent
     oParser = cParser()
 
-    sPattern = '<font color=red>([^<]+?)</font>|<div style="font-weight:bold;[^"]+?">([^>]+?)</div></b><b><a target="_blank" href="([^<>"]+?)">T&eacute;l&eacute;charger<\/a>|>\[(Liens Premium) \]<|<span style="color:#FF0000">(.+?)</div></b><b><a target="_blank" href=href="https://([^"]+)/([^"]+?)">'
+    sPattern = '<font color=red>([^<]+?)</font>|<div style="font-weight:bold.+?">([^>]+?)</div></b><b><a target="_blank" href="([^<>"]+?)">T.+?charger<\/a>|>\[(Liens Premium) \]<|<span style="color:#FF0000">(.+?)</div></b><b><a target="_blank" href=href="https://([^"]+)/([^"]+?)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
