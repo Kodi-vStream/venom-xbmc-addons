@@ -60,8 +60,6 @@
         <!--activation invisible des sources -->
         <setting visible="false" id="plugin_adkami_com" type="bool" label="ADKami" default="true"/>
 
-        <setting visible="false" id="plugin_alluc_ee" type="bool" label="Alluc" default="true"/>
-
         <setting visible="false" id="plugin_buzzmonclick_com" type="bool" label="BuzzMonClick" default="true"/>
 
         <setting visible="false" id="plugin_cineiz" type="bool" label="cineiz" default="true"/>
@@ -71,8 +69,6 @@
         <setting visible="false" id="plugin_cinemay_com" type="bool" label="Cinemay" default="true"/>
 
         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
-
-        <setting visible="false" id="plugin_coco_stream" type="bool" label="Cinemegatoil" default="true"/>
 
         <setting visible="false" id="plugin_ddl_island_su" type="bool" label="DDL Island" default="true"/>
 
@@ -94,9 +90,11 @@
         
         <setting visible="false" id="plugin_french_stream_com" type="bool" label="French Stream" default="true"/>
 
-        <setting visible="false" id="plugin_frenchddl_com" type="bool" label="FrenchDDL" default="true"/>
-
         <setting visible="false" id="plugin_full_stream_org" type="bool" label="Full Stream" default="true"/>
+
+        <setting visible="false" id="plugin_fullstream" type="bool" label="Full Stream" default="true"/>
+
+        <setting visible="false" id="plugin_fullstreaming" type="bool" label="Full Streaming" default="true"/>
 
         <setting visible="false" id="plugin_gum_gum_streaming_com" type="bool" label="Gum-Gum-Streaming" default="true"/>
 
@@ -112,15 +110,9 @@
 
         <setting visible="false" id="plugin_libre_stream_org" type="bool" label="Libre-stream" default="true"/>
 
-        <setting visible="false" id="plugin_malaisetv" type="bool" label="Malaise tv" default="true"/>
-
         <setting visible="false" id="plugin_mamcin" type="bool" label="Mamcin" default="true"/>
 
         <setting visible="false" id="plugin_mangacity_org" type="bool" label="Ianime" default="true"/>
-
-        <setting visible="false" id="plugin_mareplaytv" type="bool" label="Mareplay TV" default="true"/>
-
-        <setting visible="false" id="plugin_navixsport_com" type="bool" label="Navixsport" default="true"/>
 
         <setting visible="false" id="plugin_neuf_docu" type="bool" label="9Docu" default="true"/>
 
@@ -142,17 +134,11 @@
 
         <setting visible="false" id="plugin_serie_streaminghd" type="bool" label="Série-StreamingHD" default="true"/>
 
-        <setting visible="false" id="plugin_series_en_streaming_tv" type="bool" label="Series En Streaming" default="true"/>
-
         <setting visible="false" id="plugin_skstream_co" type="bool" label="Skstream" default="true"/>
-
-        <setting visible="false" id="plugin_sokrostream_biz" type="bool" label="Sokrostream" default="true"/>
 
         <setting visible="false" id="plugin_spion_com" type="bool" label="Spion" default="true"/>
 
         <setting visible="false" id="plugin_streamay_bz" type="bool" label="Streamay" default="true"/>
-
-        <setting visible="false" id="plugin_streamcomplet" type="bool" label="StreamComplet" default="true"/>
         
         <setting visible="false" id="plugin_streamelite" type="bool" label="StreamElite" default="true"/>
 
@@ -172,15 +158,13 @@
 
         <setting visible="false" id="plugin_topreplay" type="bool" label="TopReplay" default="true"/>
 
-        <setting visible="false" id="plugin_tv_streaming_ch" type="bool" label="TV-Streaming" default="true"/>
-
         <setting visible="false" id="plugin_tvrex_net" type="bool" label="Tvrex" default="true"/>
 
         <setting visible="false" id="plugin_tvseriestreaming" type="bool" label="TV Serie Streaming" default="true"/>
 
         <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
 
-        <setting visible="false" id="plugin_vkstreamingfilm_biz" type="bool" label="Vk Streaming Film" default="true"/>
+        <setting visible="false" id="plugin_voirfilm" type="bool" label="VoirFilms" default="true"/>
 
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
 
