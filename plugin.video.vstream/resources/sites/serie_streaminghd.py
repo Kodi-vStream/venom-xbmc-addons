@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'serie_streaminghd'
 SITE_NAME = 'Série-StreamingHD'
 SITE_DESC = 'Séries en streaming vf, vostfr'
 
-URL_MAIN = 'http://ww2.serie-streaminghd.com/'
+URL_MAIN = 'http://ww4.serie-streaminghd.com/'
 
 SERIE_NEWS = (URL_MAIN, 'showMovies')
 SERIE_SERIES = (URL_MAIN, 'showMovies')
