@@ -5,7 +5,7 @@ from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import xbmcgui, VSlog
+from resources.lib.comaddon import dialog, VSlog
 import urllib2,urllib,re
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'}
@@ -79,8 +79,7 @@ class cHoster(iHoster):
     def getMediaLink(self):
         self.oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
         if (self.oPremiumHandler.isPremiumModeAvailable()):
-            dialog3 = xbmcgui.Dialog()
-            ret = dialog3.select('Choissisez votre mode de fonctionnement',['Passer en Streaming (via Uptostream)','Rester en direct (via Uptobox)'])
+            ret = dialog().select('Choissisez votre mode de fonctionnement',['Passer en Streaming (via Uptostream)','Rester en direct (via Uptobox)'])
 
             #mode DL
             if ret == 1:
@@ -180,19 +179,11 @@ class cHoster(iHoster):
                     if 'unknow' not in aEntry[2]:
                         tmp_qua = tmp_qua + ' (' + aEntry[2] + ')'
                 qua.append(tmp_qua)
-                
-            #Si une seule url
-            if len(url) == 1:
-                stream_url = url[0]
-            #si plus de une
-            elif len(url) > 1:
-                #Afichage du tableau
-                dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
-                if (ret > -1):
-                    stream_url = url[ret]
-                else:
-                    return False
+
+            #tableau qualiter
+            seelect = dialog().VSselectqual(qua, url)
+            if (select):
+                stream_url = select
             else:
                 return False
             
