@@ -88,6 +88,9 @@ class cHoster(iHoster):
         r1 = re.search("{type:\"video/mp4\",src:\w+\('([^']+)',(\d+)", sHtmlContent)
         if (r1):
             api_call = self.decode(r1.group(1), int(r1.group(2)))
+            if api_call.endswith('@'):
+               api_call = api_call[:-1]
+
             api_call = 'http:' + api_call
  
         if (api_call):
