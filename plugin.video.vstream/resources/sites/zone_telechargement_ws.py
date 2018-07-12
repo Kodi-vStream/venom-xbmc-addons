@@ -22,7 +22,7 @@ SITE_IDENTIFIER = 'zone_telechargement_ws'
 SITE_NAME = '[COLOR violet]Zone-Telechargement[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_MAIN = 'https://2ww.zone-telechargement1.com/'
+URL_MAIN = 'https://zone-telechargement1.ws/'
 URL_DECRYPT =  ''
 
 URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
@@ -185,7 +185,7 @@ def showMovies(sSearch = ''):
 
         data = urllib.urlencode(query_args)
         request = urllib2.Request(URL_SEARCH[0], data, headers)
-        sPattern = '<a href="(.+?)" ><img class=".+?" data-newsid=".+?" src="(.+?)" width=".+?" height=".+?".+?</div>.+?<div style=".+?">.+?</div>.+?<div style=".+?"><div class=".+?">.+?<div class=".+?" style=".+?">.+?<a href=".+?" >(.+?)<'
+        sPattern = '<a href="(.+?)" ><img class=".+?" src="(.+?)".+?\s*<.+?>\s*<div style=".+?">\s*<.+?>\s*<div style=".+?"><div class=".+?">\s*<div class=".+?\s*<a href=".+?" >(.+?)<'
 
     else:
         oInputParameterHandler = cInputParameterHandler()
