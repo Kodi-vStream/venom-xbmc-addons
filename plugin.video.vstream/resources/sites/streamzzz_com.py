@@ -2,7 +2,6 @@
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 # Razorex.TmpName
 #voir redirection vers regarder film et episode avec ex: 2 x 1 au lieu de 2 - 1
-return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
