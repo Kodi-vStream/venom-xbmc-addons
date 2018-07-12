@@ -12,7 +12,6 @@ from resources.lib.comaddon import progress, dialog, VSlog
 import urllib, re, urllib2
 import random
 
-
 #from resources.lib.dl_deprotect import DecryptDlProtect
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0'
@@ -22,7 +21,7 @@ SITE_IDENTIFIER = 'zone_telechargement_ws'
 SITE_NAME = '[COLOR violet]Zone-Telechargement[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_MAIN = 'https://zone-telechargement1.ws/'
+URL_MAIN = 'http://zone-telechargement1.ws/' #Le https ne marche pas bien sur zt erreur SSL
 URL_DECRYPT =  ''
 
 URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
