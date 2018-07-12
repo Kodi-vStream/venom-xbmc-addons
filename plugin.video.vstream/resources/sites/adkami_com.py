@@ -324,39 +324,81 @@ def showEpisode():
 
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                    oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle , 'series.png', sThumb, sDesc, oOutputParameterHandler)
+                    oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                    oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle , 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
             progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
+def showLinks():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    #sPattern = '<div class="video-video"><iframe[^<>]+src="([^"]+)"|<a rel="nofollow" target="_back" href="([^"]+)" [^<>]+">[^<>]+Redirection<\/a>'
+    sPattern = '(?:<div class="title">(.+?)</div>.+?<div class="iframe".+?|<div class="video-video".+?)data-src="([^"]+)"'
+    oParser = cParser()
+    aResult = re.findall(sPattern,sHtmlContent,re.DOTALL)
+
+    if (aResult):
+        for aEntry in aResult:
+            if (aEntry[0]):
+                sHost = aEntry[0].replace('Ouvrir ','')
+                sTitle = ('%s [%s]') % (sMovieTitle, sHost)
+                sUrl = aEntry[1].replace('https://www.youtube.com/embed/','').replace('+','plus')
+            else:
+                sUrl = aEntry[1].replace('https://www.youtube.com/embed/','').replace('+','plus')
+                sTitle = ('%s [%s]') % (sMovieTitle, 'inconnu')
+                
+ 
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
+            
+    oGui.setEndOfDirectory()
+    
+    
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<div class="video-video"><iframe[^<>]+src="([^"]+)"|<a rel="nofollow" target="_back" href="([^"]+)" [^<>]+">[^<>]+Redirection<\/a>'
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-
-            if (aEntry[0]):
-                sHosterUrl = str(aEntry[0])
-            else:
-                sHosterUrl = str(aEntry[1])
-
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+    #bidouille facile
+    sUrl = sUrl.replace('plus','+')
+    
+    sHosterUrl = decodex(sUrl)
+    if sHosterUrl.startswith('//'):
+        sHosterUrl = 'http:' + sHosterUrl
+       
+    if (sHosterUrl):
+        oHoster = cHosterGui().checkHoster(sHosterUrl)
+        if (oHoster != False):
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
 
     oGui.setEndOfDirectory()
+    
+def decodex(x):
+    from itertools import chain
+    import base64
+
+    e = base64.b64decode(x)
+    t = ''
+    r = "ETEfazefzeaZa13MnZEe"
+    a = 0
+
+    px = chain(e)
+    for y in list(px):
+        t += chr(int(175 ^ ord(y[0])) - ord(r[a]))
+        a = 0 if a > len(r) - 2 else a+1
+    return t    
