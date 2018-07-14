@@ -183,6 +183,8 @@ class cPremiumHandler:
             #print aResult
             if (aResult[0] == True):
                 for cook in aResult[1]:
+                    if 'deleted' in cook[1]:
+                        continue
                     cookies = cookies + cook[0] + '=' + cook[1]+ ';'
 
         #save cookie
