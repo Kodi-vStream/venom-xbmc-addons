@@ -39,7 +39,7 @@ class cHome:
         if (self.ADDON.getSetting('home_update') == 'true'):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-            oGui.addDir(SITE_IDENTIFIER, 'showUpdate', '%s (%s)' % (self.ADDON.VSlang(30418), self.ADDON.getSetting('service_version')), 'update.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showUpdate', '%s (%s)' % (self.ADDON.VSlang(30418), self.ADDON.getSetting('service_futur')), 'update.png', oOutputParameterHandler)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
