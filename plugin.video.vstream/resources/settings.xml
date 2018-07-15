@@ -43,6 +43,7 @@
         <setting type="sep"/>
         <setting id="service_time" type="text" label="Derniere MAJ auto le:" default="" enable="false"/>
         <setting id="service_version" type="text" label="Version:" default="" enable="false"/>
+        <setting id="service_futur" type="text" label="" default="" visible="false"/>
         <!--<setting label="30036" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, changelog)"/>-->
         <setting label="30036" type="action" action="XBMC.RunScript(plugin.video.vstream, changelog, ?site=globalRun&function=changelog)"/>
 
