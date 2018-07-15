@@ -146,6 +146,8 @@ class cHosterGui:
                 return tmp
 
         #Gestion classique
+        if ('xdrive' in sHostName):
+            return self.getHoster('xdrive')
         if ('facebook' in sHostName):
             return self.getHoster('facebook')
         if ('cloudcartel' in sHostName):
