@@ -2,11 +2,13 @@
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #test sur http://vshare.eu/embed-wuqinr62cpn6-703x405.html
 #         http://vshare.eu/embed-cxmr4o8l2waa-703x405.html
+#         http://vshare.eu/embed-cxmr4o8l2waa703x405.html erreur code streambb
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
-import xbmcgui
+import re,xbmcgui
 
 class cHoster(iHoster):
 
@@ -41,7 +43,9 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-
+        self.__sUrl = re.sub('-*\d{3,3}x\d{3,3}','',self.__sUrl)
+        self.__sUrl = self.__sUrl.replace('https','http')
+        
     def checkUrl(self, sUrl):
         return True
 
