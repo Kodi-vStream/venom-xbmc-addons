@@ -43,7 +43,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = re.sub('-*\d{3,3}x\d{3,3}','',self.__sUrl)
+        self.__sUrl = re.sub('-*\d{3,4}x\d{3,4}','',self.__sUrl)
         self.__sUrl = self.__sUrl.replace('https','http')
         
     def checkUrl(self, sUrl):
