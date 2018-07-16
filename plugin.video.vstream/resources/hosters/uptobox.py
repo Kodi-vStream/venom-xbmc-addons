@@ -45,23 +45,23 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.replace('https://uptobox.com/', '')
         self.__sUrl = self.__sUrl.replace('iframe/', '')
         self.__sUrl = 'https://uptobox.com/' + str(self.__sUrl)
-        
+
     def checkSubtitle(self,sHtmlContent):
         oParser = cParser()
 
         #On ne charge les sous titres uniquement si vostfr se trouve dans le titre.
         if re.search('<div class=[\'"]theater-background[\'"]></div>\s*<h1>[^<>]+(?:MULTI|VOSTFR)[^<>]*</h1>',sHtmlContent,re.IGNORECASE):
-        
+
             sPattern = '<track type=[\'"].+?[\'"] kind=[\'"]subtitles[\'"] src=[\'"]([^\'"]+).vtt[\'"] srclang=[\'"].+?[\'"] label=[\'"]([^\'"]+)[\'"]>'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            
+
             if (aResult[0] == True):
                 Files = []
                 for aEntry in aResult[1]:
                     url = aEntry[0]
                     label = aEntry[1]
                     url = url + '.srt'
-                    
+
                     if not url.startswith('http'):
                         url = 'http:' + url
                     if 'Forc' not in label:
@@ -89,9 +89,9 @@ class cHoster(iHoster):
                 self.__sUrl = self.__sUrl.replace('uptobox.com/','uptostream.com/')
             else:
                 return False
-        
+
             return self.__getMediaLinkByPremiumUser()
-            
+        
         else:
             VSlog('no premium')
             return self.__getMediaLinkForGuest()
@@ -99,29 +99,28 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
         self.stream = True
         self.__sUrl = self.__sUrl.replace('uptobox.com/','uptostream.com/')
-        
+
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+
         SubTitle = ''
         SubTitle = self.checkSubtitle(sHtmlContent)
-        
+
         if (self.stream):
             api_call = self.GetMedialinkStreaming(sHtmlContent)
         else:
             api_call = self.GetMedialinkDL(sHtmlContent)
-            
+
         if api_call:
-            if SubTitle:               
+            if SubTitle:
                 return True, api_call,SubTitle
             else:
                 return True, api_call
-            
+
         return False, False
-        
-        
+
     def __getMediaLinkByPremiumUser(self):
-        
+
         if not self.oPremiumHandler.Authentificate():
             return self.__getMediaLinkForGuest()
 
@@ -131,15 +130,15 @@ class cHoster(iHoster):
             if 'you can wait' in sHtmlContent or 'time-remaining' in sHtmlContent:
                 VSlog('no premium')
                 return self.__getMediaLinkForGuest()
-            else:    
+            else:
                 SubTitle = ''
                 SubTitle = self.checkSubtitle(sHtmlContent)
-        
+
                 if (self.stream):
                     api_call = self.GetMedialinkStreaming(sHtmlContent)
                 else:
                     api_call = self.GetMedialinkDL(sHtmlContent)
-            
+
                 if api_call:
                     if SubTitle:
                         return True, api_call,SubTitle
@@ -147,17 +146,17 @@ class cHoster(iHoster):
                         return True, api_call
 
                 return False, False
-        
+
     def GetMedialinkDL(self,sHtmlContent):
 
         oParser = cParser()
 
         sPattern =  '<a href *=[\'"](?!http:\/\/uptostream.+)([^<>]+?)[\'"] *class=\'big-button-green-flat mt-4 mb-4\''
         aResult = oParser.parse(sHtmlContent, sPattern)
-  
+
         if (aResult[0]):
             return urllib.quote(aResult[1][0], safe=":/")
-        
+
         return False
 
     def GetMedialinkStreaming(self,sHtmlContent):
@@ -165,13 +164,13 @@ class cHoster(iHoster):
         oParser = cParser()
         sPattern =  'src":[\'"]([^<>\'"]+)[\'"],"type":[\'"][^\'"><]+?[\'"],"label":[\'"]([0-9]+p)[\'"].+?"lang":[\'"]([^\'"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
+
         stream_url = ''
-        
+
         if (aResult[0] == True):
             url=[]
             qua=[]
-            
+
             for aEntry in aResult[1]:
                 url.append(aEntry[0])
                 tmp_qua = aEntry[1]
@@ -180,20 +179,27 @@ class cHoster(iHoster):
                         tmp_qua = tmp_qua + ' (' + aEntry[2] + ')'
                 qua.append(tmp_qua)
 
+            #Si une seule url
+            if len(url) == 1:
+                stream_url = url[0]
+            #si plus de une
+            elif len(url) > 1:
             #tableau qualiter
-            seelect = dialog().VSselectqual(qua, url)
-            if (select):
-                stream_url = select
+                select = dialog().VSselectqual(qua, url)
+                if (select):
+                    stream_url = select
+                else:
+                    return False
             else:
                 return False
-            
+
             stream_url = urllib.unquote(stream_url)
-            
+
             if not stream_url.startswith('http'):
                 stream_url = 'http:' + stream_url
-                
+
             return stream_url
         else:
             return False
-        
+
         return False
