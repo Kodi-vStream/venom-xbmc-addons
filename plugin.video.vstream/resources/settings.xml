@@ -228,8 +228,8 @@
         <setting id="download_folder" type="folder" label="30145" default=""/>
         <setting label="30300" type="lsep"/>
         <setting type="sep"/>
-        <setting id="Library_folder_Movies" type="folder" label="Films" default="special://userdata/addon_data/plugin.video.vstream/Films" />
-        <setting id="Library_folder_TVs" type="folder" label="Séries" default="special://userdata/addon_data/plugin.video.vstream/Series" />
+        <setting id="Library_folder_Movies" enable="False" type="folder" label="Films" default="special://userdata/addon_data/plugin.video.vstream/Films" />
+        <setting id="Library_folder_TVs" enable="False" type="folder" label="Séries" default="special://userdata/addon_data/plugin.video.vstream/Series" />
         <setting type="lsep" label="30301" />
         <setting type="sep" />
         <setting id="update_auto" type="bool" label="30302" default="true" />
