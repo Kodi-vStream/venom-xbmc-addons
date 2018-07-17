@@ -19,10 +19,10 @@ SITE_IDENTIFIER = 'cinemay_com'
 SITE_NAME = 'Cinemay'
 SITE_DESC = 'Films & Séries en streaming'
 
-URL_MAIN = 'http://streaming.cinemay.com/'
+URL_MAIN = 'http://film2018.cinemay.com/'
 
-MOVIE_NEWS = (URL_MAIN + 'film-en-streaming-vf-gratuit/', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming-vf-gratuit/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film-en-streaming-vf-2018/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming-vf-2018/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
 SERIE_NEWS = (URL_MAIN ,'showSeriesNews')
