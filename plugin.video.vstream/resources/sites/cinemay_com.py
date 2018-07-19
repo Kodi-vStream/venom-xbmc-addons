@@ -5,10 +5,8 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-
 
 import re, unicodedata, urllib2
 
@@ -43,11 +41,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
@@ -55,7 +53,7 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste)', 'series_az.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste)', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -91,7 +89,7 @@ def showMovieGenres():
     for sTitle, sUrl in liste:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'films_genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -316,8 +314,8 @@ def showLinks():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHost = aEntry[1].replace(' ', '').replace('.com', '').replace('.co', '').replace('.io', '').replace('.tv', '').replace('.ec', '')
-            sHost = sHost.replace('.to', '').replace('.me', '').replace('.la', '').replace('.sx', '').replace('.eu', '').replace('.ok.ru', 'ok.ru')
+            sHost = aEntry[1].replace(' ', '').replace('.ok.ru', 'ok.ru')
+            sHost = re.sub('\.\w+', '', sHost)
             if 'nowvideo' in sHost:
                 continue
             sHost = sHost.capitalize()
