@@ -286,7 +286,7 @@ def showMoviesLinks():
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]' + 'Qualités disponibles pour ce film :' + '[/COLOR]')
 
     #on recherche d'abord la qualité courante
-    sPattern = '<meta name="description" content="Telecharger.+?Qualit(.+?)[|](.+?) '
+    sPattern = '<div style=".+?">.+?Qualité (.+?) [|] (.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
 
@@ -585,7 +585,7 @@ def Display_protected_link():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb=oInputParameterHandler.getValue('sThumb')
-    
+
     #Ne marche pas
     if (False):
         code = {
@@ -666,7 +666,7 @@ def Display_protected_link():
 
 def CutQual(sHtmlContent):
     oParser = cParser()
-    sPattern = '<h3>Qualit&eacute;s &eacute;galement disponibles pour cette saison:</h3>(.+?)</div>'
+    sPattern = '<h3>Qualit.+?galement disponibles pour cette saison:</h3>(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):
@@ -678,7 +678,7 @@ def CutQual(sHtmlContent):
 
 def CutSais(sHtmlContent):
     oParser = cParser()
-    sPattern = '<h3>Saisons &eacute;galement disponibles pour cette saison:</h3>(.+?)<h3>Qualit&eacute;s &eacute;galement disponibles pour cette saison:</h3>'
+    sPattern = '<h3>Saisons.+?galement disponibles pour cette saison:</h3>(.+?)<h3>Qualit.+?galement disponibles pour cette saison:</h3>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):
