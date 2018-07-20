@@ -21,8 +21,8 @@ class cLibrary:
     DIALOG = dialog()
 
     def __init__(self):
-        self.__sMovieFolder = xbmc.translatePath(self.ADDON.getSetting('Library_folder_Movies')).decode("utf-8")
-        self.__sTVFolder = xbmc.translatePath(self.ADDON.getSetting('Library_folder_TVs')).decode("utf-8")
+        self.__sMovieFolder = self.ADDON.getSetting('Library_folder_Movies')
+        self.__sTVFolder = self.ADDON.getSetting('Library_folder_TVs')
 
         if not self.__sMovieFolder:
             #PathCache = cConfig().getSettingCache()
@@ -77,10 +77,12 @@ class cLibrary:
             sTitle =  cGui().showKeyBoard(sTitle)
 
             try:
-                # folder = folder + '/' + sTitle + '/'
+                folder = '%s%s/' % (folder, sTitle)
 
                 # if not os.path.exists(folder):
                     # os.mkdir(folder)
+                if not xbmcvfs.exists(folder):
+                    xbmcvfs.mkdir(folder)
 
                 self.MakeFile(folder,sTitle,sLink)
                 #xbmc.executebuiltin('UpdateLibrary(video, '+ folder + ')')
@@ -105,7 +107,8 @@ class cLibrary:
             try:
                 #print folder
 
-                folder2 = folder + '/' + sTitleGlobal + '/'
+                #folder2 = folder + '/' + sTitleGlobal + '/'
+                folder2 = '%s%s/' % (folder, sTitleGlobal)
 
                 #if not os.path.exists(folder2):
                     #os.mkdir(folder2)
@@ -122,7 +125,7 @@ class cLibrary:
         #stream = os.path.join(folder, str(name) + '.strm')
         stream = "%s%s.strm" % (folder, str(name))
         #f = open(stream, 'w')
-        f = xbmcvfs.File(stream, 'w', True)
+        f = xbmcvfs.File(stream, 'w')
         result = f.write(str(content))
         f.close()
         if result:

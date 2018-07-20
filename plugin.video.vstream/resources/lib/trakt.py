@@ -66,18 +66,14 @@ class cTrakt:
         if (total > 0):
             #self.__Token  = result['token']
             sText = (self.ADDON.VSlang(30304)) % (result['verification_url'], result['user_code'])
-   
-            progress_ = progress().VScreate(SITE_NAME)
-            progress_.VSupdate(progress_, 0)
 
+            oDialog = self.DIALOG.VSyesno(sText)
+            if (oDialog == 0):
+                return False
 
-            for i in range(0, result['expires_in']):
+            if (oDialog == 1):
                 try:
-                    progress_.VSupdate(progress_, i)
-                    time.sleep(1)
-                    if progress_.iscanceled():
-                        break
-
+                    
                     headers = {'Content-Type': 'application/json'}
                     post = {'client_id': API_KEY, 'client_secret': API_SECRET, 'code': result['device_code']}
                     post = json.dumps(post)
@@ -95,8 +91,6 @@ class cTrakt:
 
                 except:
                     pass
-
-            progress_.VSclose(progress_)
 
             #xbmc.executebuiltin("Container.Refresh")
             return
@@ -902,6 +896,8 @@ class cTrakt:
         sSeason = oInputParameterHandler.getValue('sSeason')
         sEpisode = oInputParameterHandler.getValue('sEpisode')
 
+        sType = sType.replace('1','movies').replace('2','shows')
+
         if not sImdb:
             sPost = {}
             if not sTMDB:
@@ -1148,12 +1144,13 @@ class cTrakt:
             oGuiElement.addItemValues(key, value)
 
         return
+
     def getTmdbID(self,sTitle,sType):
 
         oInputParameterHandler = cInputParameterHandler()
 
         from resources.lib.tmdb import cTMDb
-        grab = cTMDb(api_key=self.ADDON.getSetting('api_tmdb'))
+        grab = cTMDb()
 
         if sType == 'show' or sType == 'shows':
             sType = 'tv'

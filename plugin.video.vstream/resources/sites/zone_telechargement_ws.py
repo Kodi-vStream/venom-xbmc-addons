@@ -218,7 +218,7 @@ def showMovies(sSearch = ''):
             sDisplayTitle = sTitle
             #nettoyage du titre
             sTitle = sTitle.replace('[COMPLETE]', '').replace('[Complete]', '')
-            sUrl2 = str(aEntry[0])
+            sUrl2 = str(aEntry[0]).replace('https','http')
 
             #traite les qualités
             liste = ['4k', '1080p', '720p', 'bdrip', 'hdrip', 'dvdrip', 'cam-md']
@@ -286,7 +286,7 @@ def showMoviesLinks():
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]' + 'Qualités disponibles pour ce film :' + '[/COLOR]')
 
     #on recherche d'abord la qualité courante
-    sPattern = '<meta name="description" content="Telecharger.+?Qualit(.+?)[|](.+?) '
+    sPattern = '<div style=".+?">.+?Qualité (.+?) [|] (.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
 
@@ -360,7 +360,7 @@ def showSeriesLinks():
     if (aResult[1]):
         sQual = aResult[1][0]
 
-    sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sQual)
+    sDisplayTitle = ('%s [%s]') % (sMovieTitle, sQual.replace('|',''))
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -477,13 +477,14 @@ def showHosters():
                     #oGui.addText(SITE_IDENTIFIER, '[COLOR red]'+str(aEntry[1])+'[/COLOR]')
 
             else:
+
                 sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR] ' + sMovieTitle
                 URL_DECRYPT = aEntry[3]
                 oOutputParameterHandler = cOutputParameterHandler()
-                if sUrl.startswith ('http'):
-                    oOutputParameterHandler.addParameter('siteUrl', str(aEntry[2]))
+                if sUrl.startswith('http'):
+                    oOutputParameterHandler.addParameter('siteUrl', aEntry[2].replace('https','http'))
                 else:
-                    sUrl2 = 'https://' + str(aEntry[3]) + '/' + str(aEntry[4])
+                    sUrl2 = 'http://' + str(aEntry[3]) + '/' + str(aEntry[4])
                     oOutputParameterHandler.addParameter('siteUrl', sUrl2)
 
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -535,7 +536,7 @@ def showSeriesHosters():
                 sName = str(aEntry[3])
                 sName = sName.replace('Télécharger', '')
                 sName = sName.replace('pisodes', 'pisode')
-                sUrl2 = 'https://' + aEntry[1] +  '/' + aEntry[2]
+                sUrl2 = 'http://' + aEntry[1] +  '/' + aEntry[2]
 
                 sTitle = sMovieTitle + ' ' + sName
                 URL_DECRYPT = aEntry[1]
@@ -665,7 +666,7 @@ def Display_protected_link():
 
 def CutQual(sHtmlContent):
     oParser = cParser()
-    sPattern = '<h3>Qualit&eacute;s &eacute;galement disponibles pour cette saison:</h3>(.+?)</div>'
+    sPattern = '<h3>Qualit.+?galement disponibles pour cette saison:</h3>(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):
@@ -677,7 +678,7 @@ def CutQual(sHtmlContent):
 
 def CutSais(sHtmlContent):
     oParser = cParser()
-    sPattern = '<h3>Saisons &eacute;galement disponibles pour cette saison:</h3>(.+?)<h3>Qualit&eacute;s &eacute;galement disponibles pour cette saison:</h3>'
+    sPattern = '<h3>Saisons.+?galement disponibles pour cette saison:</h3>(.+?)<h3>Qualit.+?galement disponibles pour cette saison:</h3>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):

@@ -141,7 +141,7 @@ def showMovies():
 
             sUrl = URL_MAIN + aEntry[0]
             sThumb = URL_MAIN + aEntry[1]
-            sTitle = aEntry[2].replace('streaming', '')
+            sTitle = aEntry[2].replace('streaming', '').replace(' 1080p', '')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)

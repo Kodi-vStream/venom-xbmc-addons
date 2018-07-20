@@ -9,7 +9,7 @@
 from resources.lib.comaddon import addon, dialog, VSlog, xbmc, xbmcgui, window
 import xbmcvfs
 import sys
-import urllib2
+import urllib,urllib2
 #from util import VStranslatePath
 #from resources.lib.util import VStranslatePath
 

@@ -7,12 +7,11 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 
-from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui
-
+from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui, VSlog
 from resources.lib.config import GestionCookie
 
-import re, urllib2
-
+import re, urllib, urllib2
+import random
 
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
@@ -21,7 +20,7 @@ SITE_NAME = '[COLOR violet]DDL-Island[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
 URL_MAIN = 'http://www.ddl-island.su/'
-URL_PROTECT = 'http://www.dl-protect.ru'
+URL_DECRYPT = 'http://www.dl-protect.ru'
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'recherche.php?categorie=99&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + 'recherche.php?categorie=98&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
@@ -453,10 +452,11 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            if 'series' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeriesReleases', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+
+            if 'saries' in sUrl2:
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showMoviesReleases', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -503,11 +503,6 @@ def showMoviesReleases():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #cut de la zone des releases
-    sPattern = 'Toutes</option>(.+?)>Hébergeur'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    sHtmlContent = aResult[1][0]
-
     sPattern = '<option value="([^"]+)"  id="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -524,7 +519,6 @@ def showMoviesReleases():
 
             if ('rapidgator' not in aEntry[1]) and ('turbobit' not in aEntry[1]) and ('uploaded' not in aEntry[1]) and ('uptobox' not in aEntry[1]):
 
-                sUrl = str(aEntry[0])
                 sTitle = str(aEntry[1])
                 sTitle = sTitle.decode("iso-8859-1", 'ignore')
                 sTitle = sTitle.encode("utf-8", 'ignore')
@@ -647,13 +641,14 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb=oInputParameterHandler.getValue('sThumb')
+    sUrl = sUrl.replace('.html', '')
 
     #print sUrl
     sUrl = sUrl.replace(' & ', '+%26+').replace(' ', '+')
-    #print sUrl
+    #VSlog(sUrl)
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #print sHtmlContent
+    #VSlog(sHtmlContent)
     oParser = cParser()
 
     sPattern = '<span class=\'providers.+?\' title=\'([^\']+)\'>.+?<a href=\'([^\']+)\' target=\'_blank\' title="([^"]+)"'
@@ -668,253 +663,316 @@ def showHosters():
                 break
 
             sHost = str(aEntry[0])
-            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
+            sTitle = str(aEntry[2]).replace('.mkv', '')
+            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, sHost)
 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMisc(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, '', oOutputParameterHandler)
+            #test si le host et supporter par vstream.
+            oHoster = cHosterGui().checkHoster(sHost.lower())
+            if (oHoster != False):
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
 def Display_protected_link():
+    #VSlog('Display_protected_link')
     oGui = cGui()
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb=oInputParameterHandler.getValue('sThumb')
 
-    oParser = cParser()
-    sUrl = sUrl.replace(URL_PROTECT,URL_PROTECT + '/other?id=')
-    #print sUrl
-    #xbmc.log(sUrl)
+    #Ne marche pas
+    if (False):
+        code = {
+            '123455600123455602123455610123455615': 'http://uptobox.com/',
+            '1234556001234556071234556111234556153': 'http://turbobit.net/',
+            '123455600123455605123455615': 'http://ul.to/',
+            '123455600123455608123455610123455615': 'http://nitroflare.com/',
+            '123455601123455603123455610123455615123455617': 'https://1fichier.com/?',
+            '123455600123455606123455611123455615': 'http://rapidgator.net/'
+        }
+
+        for k in code:
+            match = re.search(k + '(.+)$', sUrl)
+            if match:
+                sHosterUrl = code[k] + match.group(1)
+                sHosterUrl = sHosterUrl.replace('123455615', '/')
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                oGui.setEndOfDirectory()
+                return
 
     #Est ce un lien dl-protect ?
-    if URL_PROTECT in sUrl:
-        sHtmlContent = DecryptddlProtect(sUrl)
-        #print sHtmlContent
+    if URL_DECRYPT in sUrl:
+        sHtmlContent = DecryptDlProtecte(sUrl)
+
         if sHtmlContent:
             #Si redirection
             if sHtmlContent.startswith('http'):
-                aResult_dlprotect = (True, [sHtmlContent])
+                aResult_dlprotecte = (True, [sHtmlContent])
             else:
-                sPattern_dlprotect = 'Lien :</b></td><td><a href="(.+?)"'
-                aResult_dlprotect = oParser.parse(sHtmlContent, sPattern_dlprotect)
+                sPattern_dlprotecte = '<b>Lien :</b></td><td><a href="(.+?)">'
+                aResult_dlprotecte = oParser.parse(sHtmlContent, sPattern_dlprotecte)
 
         else:
-            oDialog = dialog().VSok('Désolé, problème de captcha.\n Veuillez en rentrer un directement sur le site, le temps de réparer')
-            aResult_dlprotect = (False, False)
+            oDialog = dialog().VSok('Erreur décryptage du lien')
+            aResult_dlprotecte = (False, False)
 
     #Si lien normal
     else:
         if not sUrl.startswith('http'):
             sUrl = 'http://' + sUrl
-        aResult_dlprotect = (True, [sUrl])
+        aResult_dlprotecte = (True, [sUrl])
 
-    #print aResult_dlprotect
+    #print aResult_dlprotecte
 
-    if (aResult_dlprotect[0]):
+    if (aResult_dlprotecte[0]):
 
         episode = 1
 
-        for aEntry in aResult_dlprotect[1]:
+        for aEntry in aResult_dlprotecte[1]:
             sHosterUrl = aEntry
             #print sHosterUrl
 
             sTitle = sMovieTitle
-            if len(aResult_dlprotect[1]) > 1:
+            if len(aResult_dlprotecte[1]) > 1:
                 sTitle = sMovieTitle + ' episode ' + str(episode)
+
 
             episode+=1
 
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            if 'stream' in str(sHosterUrl):
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oGui.addMovie(SITE_IDENTIFIER, 'showStreamingHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            else:
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sTitle)
+                    oHoster.setFileName(sTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
-def DecryptddlProtect(url):
+def DecryptDlProtecte(url):
 
-    if not (url): return ''
+    VSlog('DecryptDlProtecte : ' + url)
+    dialogs = dialog()
 
+    if not (url):
+        return ''
+
+    #url=url.replace('https','http')
+
+    headersBase = {
+    'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0',
+    'Referer' : url,
+    #'Origin' : 'https://www.dl-protecte.com',
+    'Accept' : 'application/json, text/javascript, */*; q=0.01',
+    'Accept-Language': 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4',
+    #'Pragma' : '',
+    #'Accept-Charset' : ''
+    }
+
+    #url2 = 'https://www.dl-protecte.org/php/Qaptcha.jquery.php'
+    #url2 = 'https://www.protect-zt.com/php/Qaptcha.jquery.php'
+    url2 = 'https://' + url.split('/')[2] + '/php/Qaptcha.jquery.php'
+
+    #VSlog(url2)
+
+    #Make random key
+    s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN_-#@";
+    RandomKey = ''.join(random.choice(s) for i in range(32))
+
+    query_args = ( ('action' , 'qaptcha') , ('qaptcha_key' , RandomKey) )
+    data = urllib.urlencode(query_args)
+
+    #Creation Header
+    headers1 = dict(headersBase)
+    headers1.update({'X-Requested-With':'XMLHttpRequest'})
+    headers1.update({'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'})
+
+    #Requete
+    request = urllib2.Request(url2, data, headers1)
+    try:
+        reponse = urllib2.urlopen(request, timeout = 5)
+    except urllib2.URLError, e:
+        dialogs.VSinfo("Site Dl-Protecte HS", "Erreur", 5)
+        VSlog( e.read() )
+        VSlog( e.reason )
+        return ''
+    except urllib2.HTTPError, e:
+        dialogs.VSinfo("Site Dl-Protecte HS", "Erreur", 5)
+        VSlog( e.read() )
+        VSlog( e.reason )
+        return ''
+    except timeout:
+        VSlog('timeout')
+        dialogs.VSinfo("Site Dl-Protecte HS", "Erreur", 5)
+        return ''
+
+    sHtmlContent = reponse.read()
+
+    #VSlog( 'result'  + str(sHtmlContent))
+
+    #Recuperatioen et traitement cookies ???
+    cookies=reponse.info()['Set-Cookie']
+    c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);', cookies)
+    if not c2:
+        VSlog( 'Probleme de cookies')
+        return ''
     cookies = ''
-    #try to get previous cookie
-    cookies = GestionCookie().Readcookie('dl_protect.ru')
+    for cook in c2:
+        cookies = cookies + cook[0] + '=' + cook[1] + ';'
 
-    oRequestHandler = cRequestHandler(url)
-    if cookies:
-        oRequestHandler.addHeaderEntry('Cookie', cookies)
-    sHtmlContent = oRequestHandler.request()
+    #VSlog( 'Cookie'  + str(cookies))
 
-    #Si ca demande le captcha
-    if 'value="Submit form"' in sHtmlContent:
-        if cookies:
-            GestionCookie().DeleteCookie('dl_protect.ru')
-            oRequestHandler = cRequestHandler(url)
-            sHtmlContent = oRequestHandler.request()
+    reponse.close()
 
-        cookies = oRequestHandler.GetCookies()
+    if not '"error":false' in sHtmlContent:
+        VSlog('Captcha rate')
+        VSlog(sHtmlContent)
+        return
 
-        #save cookies
-        GestionCookie().SaveCookie('dl_protect.ru', cookies)
+    #Creation Header
+    headers2 = dict(headersBase)
 
-        s = re.findall('<img id="captcha" src="([^<>"]+?)"', sHtmlContent)
-        if URL_PROTECT in s[0]:
-            image = s[0]
-        else:
-            image = URL_PROTECT + s[0]
+    #tempo pas necessaire
+    #cGui().showInfo("Patientez", 'Décodage en cours', 2)
+    #xbmc.sleep(1000)
 
-        captcha = get_response(image,cookies)
-        id = url[-7:]
+    #Ancienne methode avec POST
+    #query_args = ( ( 'YnJYHKk4xYUUu4uWQdxxuH@JEJ2yrmJS' , '' ) , ('submit' , 'Valider' ) )
+    #data = urllib.urlencode(query_args)
 
-        oRequestHandler = cRequestHandler(url)
-        oRequestHandler.setRequestType(1)
-        oRequestHandler.addParameters( 'captcha_code' , captcha)
-        oRequestHandler.addParameters( 'submit' , 'Valider')
-        oRequestHandler.addHeaderEntry('Cookie', cookies)
-        sHtmlContent = oRequestHandler.request()
+    #Nouvelle methode avec multipart
+    #multipart_form_data = { RandomKey : '', 'submit' : 'Valider'  }
 
-        #print sHtmlContent
-        if 'Erreur : Le code n\'est pas valide' in sHtmlContent:
-            dialog().VSinfo("Mauvais Captcha")
-            return 'rate'
+    import string
+    _BOUNDARY_CHARS = string.digits + string.ascii_letters
+    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(30))
 
-        #si captcha reussi
-        #save cookies
-        GestionCookie().SaveCookie('dl_protect.ru', cookies)
+    multipart_form_data = { RandomKey : '', 'submit' : 'Valider' }
+    data, headersMulti = encode_multipart(multipart_form_data, {}, boundary)
+    headers2.update(headersMulti)
+    #VSlog( 'header 2'  + str(headersMulti))
+    #VSlog( 'data 2'  + str(data))
+
+    #rajout des cookies
+    headers2.update({'Cookie': cookies})
+
+    #Modifications
+    headers2.update({'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'})
+
+    #VSlog( str(headers2) )
+
+    #Requete
+    request = urllib2.Request(url, data, headers2)
+    try:
+        reponse = urllib2.urlopen(request)
+    except urllib2.URLError, e:
+        print e.read()
+        print e.reason
+
+    sHtmlContent = reponse.read()
+
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
+
+    reponse.close()
 
     return sHtmlContent
 
-def get_response(img, cookie):
+#******************************************************************************
+#from http://code.activestate.com/recipes/578668-encode-multipart-form-data-for-uploading-files-via/
 
-    import xbmcvfs
-    #on telecharge l'image
-    #PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
-    #filename  = os.path.join(PathCache,'Captcha.raw').decode("utf-8")
-    filename = "special://home/userdata/addon_data/plugin.video.vstream/Captcha.raw"
-    #/home/lordvenom/.kodi/userdata/
+"""Encode multipart form data to upload files via POST."""
 
-    dialogs = dialog()
+def encode_multipart(fields, files, boundary = None):
+    r"""Encode dict of form fields and dict of files as multipart/form-data.
+    Return tuple of (body_string, headers_dict). Each value in files is a dict
+    with required keys 'filename' and 'content', and optional 'mimetype' (if
+    not specified, tries to guess mime type or uses 'application/octet-stream').
 
-    headers2 = {
-        'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0',
-        #'Referer' : url ,
-        'Host' : 'protect.ddl-island.su',
-        'Accept' : 'image/png,image/*;q=0.8,*/*;q=0.5',
-        'Accept-Language': 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4',
-        'Accept-Encoding' : 'gzip, deflate',
-        #'Content-Type' : 'application/x-www-form-urlencoded',
-        'Cookie' : cookie
-        }
+    >>> body, headers = encode_multipart({'FIELD': 'VALUE'},
+    ...                                  {'FILE': {'filename': 'F.TXT', 'content': 'CONTENT'}},
+    ...                                  boundary='BOUNDARY')
+    >>> print('\n'.join(repr(l) for l in body.split('\r\n')))
+    '--BOUNDARY'
+    'Content-Disposition: form-data; name="FIELD"'
+    ''
+    'VALUE'
+    '--BOUNDARY'
+    'Content-Disposition: form-data; name="FILE"; filename="F.TXT"'
+    'Content-Type: text/plain'
+    ''
+    'CONTENT'
+    '--BOUNDARY--'
+    ''
+    >>> print(sorted(headers.items()))
+    [('Content-Length', '193'), ('Content-Type', 'multipart/form-data; boundary=BOUNDARY')]
+    >>> len(body)
+    193
+    """
 
-    try:
-        req = urllib2.Request(img, None, headers2)
-        image_on_web = urllib2.urlopen(req)
-        if image_on_web.headers.maintype == 'image':
-            buf = image_on_web.read()
-            #downloaded_image = file(filename, "wb")
-            downloaded_image = xbmcvfs.File(filename, 'wb')
-            downloaded_image.write(buf)
-            downloaded_image.close()
-            image_on_web.close()
+    import mimetypes
+    import random
+    import string
+
+    _BOUNDARY_CHARS = string.digits + string.ascii_letters
+
+    def escape_quote(s):
+        return s.replace('"', '\\"')
+
+    if boundary is None:
+        boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(30))
+    lines = []
+
+    for name, value in fields.items():
+        lines.extend((
+            '--{0}'.format(boundary),
+            'Content-Disposition: form-data; name="{0}"'.format(escape_quote(name)),
+            '',
+            str(value),
+        ))
+
+    for name, value in files.items():
+        filename = value['filename']
+        if 'mimetype' in value:
+            mimetype = value['mimetype']
         else:
-            return ''
-    except:
-        return ''
+            mimetype = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
+        lines.extend((
+            '--{0}'.format(boundary),
+            'Content-Disposition: form-data; name="{0}"; filename="{1}"'.format(
+                    escape_quote(name), escape_quote(filename)),
+            'Content-Type: {0}'.format(mimetype),
+            '',
+            value['content'],
+        ))
 
-    #on affiche le dialogue
-    solution = ''
+    lines.extend((
+        '--{0}--'.format(boundary),
+        '',
+    ))
+    body = '\r\n'.join(lines)
 
-    if (True):
-        ####nouveau captcha
-        try:
-            ##affichage du dialog perso
-            class XMLDialog(xbmcgui.WindowXMLDialog):
-                #"""
-                #Dialog class for captcha
-                #"""
-                def __init__(self, *args, **kwargs):
-                    xbmcgui.WindowXMLDialog.__init__(self)
-                    pass
+    headers = {
+        'Content-Type': 'multipart/form-data; boundary={0}'.format(boundary),
+        'Content-Length': str(len(body)),
+    }
 
-                def onInit(self):
-                    #image background captcha
-                    self.getControl(1).setImage(filename.encode("utf-8"), False)
-                    #image petit captcha memory fail
-                    self.getControl(2).setImage(filename.encode("utf-8"), False)
-                    self.getControl(2).setVisible(False)
-                    ##Focus clavier
-                    self.setFocus(self.getControl(21))
-
-                def onClick(self, controlId):
-                    if controlId == 20:
-                        #button Valider
-                        solution = self.getControl(5000).getLabel()
-                        xbmcgui.Window(10101).setProperty('captcha', str(solution))
-                        self.close()
-                        return
-
-                    elif controlId == 30:
-                        #button fermer
-                        self.close()
-                        return
-
-                    elif controlId == 21:
-                        #button clavier
-                        self.getControl(2).setVisible(True)
-                        kb = xbmc.Keyboard(self.getControl(5000).getLabel(), '', False)
-                        kb.doModal()
-
-                        if (kb.isConfirmed()):
-                            self.getControl(5000).setLabel(kb.getText())
-                            self.getControl(2).setVisible(False)
-                        else:
-                            self.getControl(2).setVisible(False)
-
-                def onFocus(self, controlId):
-                    self.controlId = controlId
-
-                def _close_dialog(self):
-                    self.close()
-
-                def onAction(self, action):
-                    #touche return 61448
-                    if action.getId() in ( 9, 10, 11, 30, 92, 216, 247, 257, 275, 61467, 61448):
-                        self.close()
-
-            path = "special://home/addons/plugin.video.vstream"
-            wd = XMLDialog('DialogCaptcha.xml', path, 'default', '720p')
-            wd.doModal()
-            del wd
-        finally:
-
-            solution = xbmcgui.Window(10101).getProperty('captcha')
-            if solution == '':
-                dialogs.VSinfo("Vous devez taper le captcha")
-
-    else:
-        #ancien Captcha
-        try:
-            img = xbmcgui.ControlImage(450, 0, 400, 130, filename.encode("utf-8"))
-            wdlg = xbmcgui.WindowDialog()
-            wdlg.addControl(img)
-            wdlg.show()
-            #xbmc.sleep(3000)
-            kb = xbmc.Keyboard('', 'Tapez les Lettres/chiffres de l\'image', False)
-            kb.doModal()
-            if (kb.isConfirmed()):
-                solution = kb.getText()
-                if solution == '':
-                    dialogs.VSinfo("Vous devez taper le captcha")
-            else:
-                dialogs.VSinfo("Vous devez taper le captcha")
-        finally:
-            wdlg.removeControl(img)
-            wdlg.close()
-
-    return solution
+    return (body, headers)

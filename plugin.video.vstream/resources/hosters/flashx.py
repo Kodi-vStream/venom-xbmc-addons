@@ -409,7 +409,7 @@ class cHoster(iHoster):
 
         if 'reload the page!' in sHtmlContent:
             #VSlog("page bloquée")
-            
+ 
             #On recupere la bonne url
             sGoodUrl = web_url
 
@@ -419,15 +419,20 @@ class cHoster(iHoster):
             if not aResult:
                 return False,False
             sRefresh = aResult[0]
+
             
             #on recupere le script de debloquage
-            sPattern = '<script async class.+?src="([^"]+)"><\/script>'
+            sPattern = "<script type='text/javascript' src='([^']+)'><\/script>"
             aResult = re.findall(sPattern,sHtmlContent)
             if not aResult:
                 return False,False
-            
-            #on debloque la page (en test ca a l'air inutile)
-            sHtmlContent = self.GetRedirectHtml(aResult[0],sId)
+                
+            deblockurl = aResult[0]
+            if deblockurl.startswith('//'):
+                deblockurl = 'http:' + deblockurl 
+                
+            #on debloque la page 
+            sHtmlContent = self.GetRedirectHtml(deblockurl,sId)
             
             #lien speciaux ?
             if sRefresh.startswith('./'):

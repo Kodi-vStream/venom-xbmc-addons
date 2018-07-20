@@ -87,7 +87,7 @@ class cAbout:
                 result = json.loads(sHtmlContent)
             
                 #if (result['tag_name'] > service_version):
-                if (result['tag_name'] > 1):
+                if (result['tag_name']):
                     addons.setSetting('service_futur', str(result['tag_name']))
                     addons.setSetting('home_update', str('true')) 
                     addons.setSetting('service_time', str(datetime.datetime.now()))
@@ -203,6 +203,10 @@ class cAbout:
 
             service_futur = addons.getSetting('service_futur')
             service_version = addons.getSetting('service_version')
+            if not service_futur:
+                return self.getUpdate()
+            if not service_version:
+                return self.getUpdate()
 
             #result = self.resultGit()
             sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/compare/%s...%s' % (service_version, service_futur)
