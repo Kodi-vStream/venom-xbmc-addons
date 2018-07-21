@@ -136,7 +136,7 @@ class cRequestHandler:
                 gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
                 oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout,context=gcontext)
             else:
-                oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout,context=gcontext)
+                oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout)
                 
             sContent = oResponse.read()
             
