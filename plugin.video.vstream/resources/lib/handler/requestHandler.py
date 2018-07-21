@@ -9,7 +9,7 @@ from urllib2 import HTTPError, URLError
 
 from resources.lib.comaddon import addon, dialog
 
-BUG_SSl = False
+BUG_SSL = False
 
 if BUG_SSL:
     import ssl
