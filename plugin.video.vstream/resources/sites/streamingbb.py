@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#Razorex
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -136,7 +135,7 @@ def showMovies(sSearch = ''):
 
             sUrl = str(aEntry[0])
             sThumb = str(aEntry[1])
-            sTitle = str(aEntry[2]).replace('&#8217;', '\'')#.decode("unicode_escape").encode("latin-1")
+            sTitle = str(aEntry[2])#.decode("unicode_escape").encode("latin-1")
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
@@ -221,7 +220,6 @@ def showLinks():
             oOutputParameterHandler.addParameter('sPost', sPost)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            #oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
