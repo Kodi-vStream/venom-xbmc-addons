@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'streamingk_com'
 SITE_NAME = 'StreamingK'
 SITE_DESC = 'Films, Séries & Mangas en streaming. Tout les meilleurs streaming en illimité.'
 
-URL_MAIN = 'http://streamingk.com/'
+URL_MAIN = 'https://streamingk.com/'
 
 MOVIE_NEWS = (URL_MAIN + 'category/films/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'category/films/', 'showMovies')
@@ -215,7 +215,7 @@ def showMovies(sSearch = ''):
             sTitle = sTitle.replace(' [Telecharger]', '').replace(' [Telechargement]', '')
             sTitle = sTitle.replace(' [Complète]', '').replace(' [Complete]', '')
             sTitle = sTitle.replace('&#8217;', '\'')
-            sDesc = str(aEntry[3]).replace('[&hellip;]', '').replace('&rsquo;', '\'').replace('&#8230;', '...')
+            sDesc = str(aEntry[3]).replace('[&hellip;]', '').replace('&rsquo;', '\'').replace('&#8230;', '...').replace('&#8217;', '\'')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
