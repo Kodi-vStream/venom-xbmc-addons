@@ -26,7 +26,6 @@ REPORTAGE_NEWS = (URL_MAIN + 'category/reportages/', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
-
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -50,7 +49,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPORTAGE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, REPORTAGE_NEWS[1], 'Reportages', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, REPORTAGE_NEWS[1], 'Reportages', 'doc.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -125,7 +124,8 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8217;', '\'')
+    sHtmlContent = sHtmlContent.replace('&#039;', '\'').replace('&#8212;', '-').replace('&#8217;', '\'').replace('&#8230;', '...')
+    sHtmlContent = sHtmlContent.replace('[&hellip;]', '...')
 
     sPattern = '<div class="item-thumbnail">.*?<a href="([^"]+)".*?<img src="([^"]+)" alt="([^"]+)"(?:.+?<div class="item-content hidden"><p>([^<]+)</p>|)'
 
@@ -144,10 +144,10 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[2]#.replace('&laquo;', '<<').replace('&raquo;', '>>').replace('&nbsp;', '')
-            sUrl = aEntry[0]
-            sThumb = aEntry[1]
-            sDesc = aEntry[3].replace('[&hellip;]', '...')
+            sUrl = str(aEntry[0])
+            sThumb = str(aEntry[1])
+            sTitle = str(aEntry[2])#.replace('&laquo;', '<<').replace('&raquo;', '>>').replace('&nbsp;', '')
+            sDesc = str(aEntry[3])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
