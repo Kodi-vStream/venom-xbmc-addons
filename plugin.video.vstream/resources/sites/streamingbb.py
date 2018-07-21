@@ -136,7 +136,7 @@ def showMovies(sSearch = ''):
 
             sUrl = str(aEntry[0])
             sThumb = str(aEntry[1])
-            sTitle = str(aEntry[2])#.decode("unicode_escape").encode("latin-1")
+            sTitle = str(aEntry[2]).replace('&#8217;', '\'')#.decode("unicode_escape").encode("latin-1")
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
