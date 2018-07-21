@@ -173,6 +173,8 @@ class cGuiElement:
 
         try:
             sTitle = sTitle.decode("utf-8")
+            #traitement du titre pour les caracteres speciaux
+            sTitle = sTitle.replace('&#8217;', '\'')
         except:
             pass
 
