@@ -132,7 +132,7 @@ def showGenres():
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'films_genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -171,9 +171,9 @@ def showMovies(sSearch = ''):
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
                     continue
 
-            sThumb = aEntry[0]
-            sUrl = aEntry[1]
-            sTitle = aEntry[2].replace('&#8217;', '\'').replace('&#8230;', '...')
+            sThumb = str(aEntry[0])
+            sUrl = str(aEntry[1])
+            sTitle = str(aEntry[2])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -247,8 +247,8 @@ def showLinks():
     if (aResult[0] == True):
         for aEntry in ListeUrl:
 
-            sHost = str(aEntry[1])#.capitalize()
-            sTitle = ('%s (%s)') % (sMovieTitle, sHost)
+            sHost = str(aEntry[1]).capitalize()
+            sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
             if 'pisode' in aEntry[1]:
                 sTitle = sMovieTitle
             sUrl = aEntry[0]
@@ -257,7 +257,6 @@ def showLinks():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            #oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -274,8 +273,8 @@ def showEpisode():
     sHtmlContent = oRequestHandler.request()
 
     #recuperation du synopsis
+    sDesc = ''
     try:
-        sDesc = ''
         sPattern = '<div class="konuozet">.+?</b>(.+?)<br>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
@@ -301,8 +300,7 @@ def showEpisode():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sLang + '[/COLOR]')
             else:
                 #ce ne sont pas les mêmes tirets ne pas supprimer
-                if 'Saison' in sMovieTitle:
-                    sMovieTitle = sMovieTitle.replace(' – Saison', ' Saison').replace(' - Saison', ' Saison')
+                sMovieTitle = sMovieTitle.replace(' – Saison', ' Saison').replace(' - Saison', ' Saison')
                 sTitle = sMovieTitle + ' episode ' + aEntry[2]
                 sUrl = aEntry[1]
 
