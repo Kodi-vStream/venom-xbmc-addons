@@ -4,11 +4,15 @@
 import urllib
 import urllib2
 
+
 from urllib2 import HTTPError, URLError
 
 from resources.lib.comaddon import addon, dialog
 
+BUG_SSl = False
 
+if BUG_SSL:
+    import ssl
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
@@ -127,7 +131,13 @@ class cRequestHandler:
 
         sContent = ''
         try:
-            oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout)
+            
+            if BUG_SSL:
+                gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+                oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout,context=gcontext)
+            else:
+                oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout,context=gcontext)
+                
             sContent = oResponse.read()
             
             self.__sResponseHeader = oResponse.info()
