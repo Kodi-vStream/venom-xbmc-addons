@@ -13,11 +13,11 @@ SITE_IDENTIFIER = 'serie_streaming_watch'
 SITE_NAME = 'Serie-Streaming-Watch'
 SITE_DESC = 'Séries & Animés en Streaming'
 
-URL_MAIN = 'http://series-en-streaming.xyz/'
+URL_MAIN = 'https://series-en-streaming.xyz/'
 
 SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = (URL_MAIN + 'category/series/?orderby=date', 'showMovies')
-#SERIE_LIST = (URL_MAIN + 'category/series/', 'showMovies')
+SERIE_LIST = (URL_MAIN + 'category/series/', 'showMovies')
 SERIE_GENRES = (True, 'showGenres')
 
 ANIM_ENFANTS = (URL_MAIN + 'category/series/dessin-anime/', 'showMovies')
@@ -35,15 +35,15 @@ def load():
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
     
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
-    #oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Series (Liste)', 'liste.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Series (Liste)', 'listes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -181,8 +181,8 @@ def ShowEpisode():
     sHtmlContent = oRequestHandler.request()
 
     #récupération des Synopsis
+    sDesc = ''
     try:
-        sDesc = ''
         sPattern = '<b>Synopsis :</b>(.+?)<\/p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
