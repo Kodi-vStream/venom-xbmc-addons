@@ -34,7 +34,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animes (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animes (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_POPULAR[0])
@@ -42,7 +42,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'animes_vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -88,15 +88,15 @@ def showMovies(sSearch = ''):
             sUrl = aEntry[0]
             sThumb = aEntry[2]
             sThumb = urllib.quote(sThumb, safe=':/')
-            sType = ''
+            sLang = ''
             if 'vostfr' in sUrl or 'Vostfr' in sUrl:
-                sType = 'VOSTFR'
+                sLang = 'VOSTFR'
             elif 'VF' in sUrl or 'vf' in sUrl:
-                sType = 'VF'
+                sLang = 'VF'
             else:
-                sType = 'VOSTFR'
+                sLang = 'VOSTFR'
 
-            sTitle =  aEntry[1] + ' (' + sType + ')'
+            sTitle =  aEntry[1] + ' (' + sLang + ')'
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)

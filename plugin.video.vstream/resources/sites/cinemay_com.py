@@ -95,6 +95,7 @@ def showMovieGenres():
 
 def showMovies(sSearch=''):
     oGui = cGui()
+    oParser = cParser()
     
     if sSearch:
         sUrl = sSearch
@@ -105,10 +106,9 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    oParser = cParser()
-
     sPattern = '<a href="([^"]+)" data-url=".+?" class=".+?" title="([^"]+)"><img.+?src="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
         
@@ -124,7 +124,7 @@ def showMovies(sSearch=''):
             #encode/decode pour affichage des accents
             sTitle = unicode(aEntry[1], 'utf-8')
             sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore').decode("unicode_escape")
-            sTitle = sTitle.encode("latin-1").replace('&#8230;', '...').replace('&#8217;', '\'').replace('&#8212;', '-')
+            sTitle = sTitle.encode("latin-1")
 
             sThumb = aEntry[2]
             sUrl = aEntry[0]
@@ -216,8 +216,8 @@ def showSeriesList():
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
             else:
-                sUrl = aEntry[1]
-                sTitle =  aEntry[2].replace('&lsquo;', '\'').replace('&#8230;', '...').replace('&#8212;', '-')
+                sUrl = str(aEntry[1])
+                sTitle =  str(aEntry[2])
             
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -285,8 +285,8 @@ def showLinks():
     oRequestHandler = cRequestHandler(sRefUrl)
     sHtmlContent = oRequestHandler.request()
     
+    sDesc = ''
     try:
-        sDesc = ''
         sPattern = '<p>([^<>"]+)<\/p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
@@ -319,7 +319,7 @@ def showLinks():
             if 'nowvideo' in sHost:
                 continue
             sHost = sHost.capitalize()
-            sLang = aEntry[2].upper()
+            sLang = str(aEntry[2]).upper()
 
             sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
 
@@ -331,7 +331,6 @@ def showLinks():
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sRefUrl', sRefUrl)
             oOutputParameterHandler.addParameter('cookies', cookies)
-            #oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()

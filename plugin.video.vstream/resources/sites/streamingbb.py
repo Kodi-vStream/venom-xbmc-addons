@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#Razorex
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -221,7 +220,6 @@ def showLinks():
             oOutputParameterHandler.addParameter('sPost', sPost)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            #oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)

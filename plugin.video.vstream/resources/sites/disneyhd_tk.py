@@ -37,17 +37,17 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
     oOutputParameterHandler.addParameter('filtre', 'ajouts')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Ajouts récents', 'animes_enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Ajouts récents', 'enfants.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
     oOutputParameterHandler.addParameter('filtre', 'nouveautes')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Nouveautés', 'animes_enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Nouveautés', 'enfants.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_LISTE)
     oOutputParameterHandler.addParameter('filtre', 'liste')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Liste des films', 'animes_enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Liste des films', 'enfants.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -98,7 +98,7 @@ def sHowResultSearch(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'animes_enfants.png', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'enfants.png', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -147,7 +147,7 @@ def showMovies():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'animes_enfants.png', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'enfants.png', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 

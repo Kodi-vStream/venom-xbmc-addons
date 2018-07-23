@@ -240,7 +240,7 @@ class cHosterGui:
             return self.getHoster('openload')
         if ('oload.' in sHostName):
             return self.getHoster('openload')
-        if (('thevideo.me' in sHostName) or ('video.tt' in sHostName)):
+        if (('thevideo.' in sHostName) or ('video.tt' in sHostName) or ('vev.io' in sHostName)):
             return self.getHoster('thevideo_me')
         if ('vid.me' in sHostName):
             return self.getHoster('vidme')
@@ -256,8 +256,6 @@ class cHosterGui:
             return self.getHoster('amazon')
         if ('filepup' in sHostName):
             return self.getHoster('filepup')
-        if ('thevid' in sHostName):
-            return self.getHoster('thevid')
         if ('nosvideo' in sHostName):
             return self.getHoster('nosvideo')
         if ('vimple.ru' in sHostName):

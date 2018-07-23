@@ -18,8 +18,8 @@ SITE_DESC = 'Film streaming HD gratuit complet'
 
 URL_MAIN = 'https://filmzenstream.to/'
 
-MOVIE_NEWS = (URL_MAIN , 'showMovies')
-MOVIE_MOVIE = (URL_MAIN , 'showMovies')
+MOVIE_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 
@@ -35,15 +35,15 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'films_annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -88,7 +88,7 @@ def showGenres():
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'films_genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -108,8 +108,8 @@ def showYears():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sUrl = aEntry[0]
-            sTitle = aEntry[1]
+            sUrl = str(aEntry[0])
+            sTitle = str(aEntry[1])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -145,8 +145,7 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sName = str(aEntry[2])#.replace(' Streaming Ultra-HD', '').replace(' Streaming Full-HD', '')
-#            sName = sName.replace(' en Streaming HD', '').replace(' Streaming HD', '').replace(' streaming HD', '')
+            sName = str(aEntry[2])
 #            sName = sName.decode('utf8')
 #            sName = cUtil().unescape(sName)
 #            try:
@@ -154,11 +153,12 @@ def showMovies(sSearch = ''):
 #            except:
 #                pass
 
-            sTitle = sName + ' [' + aEntry[3] + ']'
+            sQual = Str(aEntry[3])
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
             if sThumb.startswith('//'):
                 sThumb = 'http:' + sThumb
+            sTitle = ('%s [%s]') % (sName, sQual)
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
@@ -170,7 +170,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sName)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 

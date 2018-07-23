@@ -50,7 +50,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'movie/popular')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30425), 'films_comments.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30425), 'comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'movie/now_playing')
@@ -58,15 +58,15 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'movie/top_rated')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30427), 'films_notes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30427), 'notes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'genre/movie/list')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenreMovie', addons.VSlang(30428), 'films_genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenreMovie', addons.VSlang(30428), 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'tv/popular')
-    oGui.addDir(SITE_IDENTIFIER, 'showSeries', addons.VSlang(30429), 'series_comments.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSeries', addons.VSlang(30429), 'comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'tv/on_the_air')
@@ -74,11 +74,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'tv/top_rated')
-    oGui.addDir(SITE_IDENTIFIER, 'showSeries', addons.VSlang(30431), 'series_notes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSeries', addons.VSlang(30431), 'notes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'genre/tv/list')
-    oGui.addDir(SITE_IDENTIFIER, 'showGenreTV', addons.VSlang(30432), 'series_genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showGenreTV', addons.VSlang(30432), 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'person/popular')
@@ -130,13 +130,13 @@ def showMyTmdb():
             #/account/{account_id}/rated/movies
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/rated/movies' % int(result['id']))
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30435), 'films_notes.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30435), 'notes.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             #/account/{account_id}/watchlist/movies
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/watchlist/movies' % int(result['id']))
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30436), 'films_views.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30436), 'views.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             #/account/{account_id}/favorite/tv
@@ -149,19 +149,19 @@ def showMyTmdb():
             #/account/{account_id}/rated/tv
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/rated/tv' % int(result['id']))
-            oGui.addDir(SITE_IDENTIFIER, 'showSeries', addons.VSlang(30438), 'series_notes.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showSeries', addons.VSlang(30438), 'notes.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             #/account/{account_id}/watchlist/tv
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/watchlist/tv' % int(result['id']))
-            oGui.addDir(SITE_IDENTIFIER, 'showSeries', addons.VSlang(30440), 'series_views.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showSeries', addons.VSlang(30440), 'views.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             #/account/{account_id}/rated/tv/episodes
             oOutputParameterHandler.addParameter('session_id', tmdb_session)
             oOutputParameterHandler.addParameter('siteUrl', 'account/%s/rated/tv/episodes' % int(result['id']))
-            oGui.addDir(SITE_IDENTIFIER, 'showSeries', addons.VSlang(30439), 'series_notes.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showSeries', addons.VSlang(30439), 'notes.png', oOutputParameterHandler)
 
             oOutputParameterHandler = cOutputParameterHandler()
             #/account/{account_id}/lists

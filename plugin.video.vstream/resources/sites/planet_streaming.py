@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#Venom.
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -16,13 +15,13 @@ SITE_DESC = 'Films en Streaming complet  VF HD'
 
 URL_MAIN = 'http://ww4.planet-streaming.com/'
 
-MOVIE_NEWS = (URL_MAIN , 'showMovies')
+MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'regarder-film/', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'xfsearch/hd/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
-URL_SEARCH = ('' , 'showMovies')
-URL_SEARCH_MOVIES = ('' , 'showMovies')
+URL_SEARCH = ('', 'showMovies')
+URL_SEARCH_MOVIES = ('', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -34,11 +33,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films (HD)', 'films_hd.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films (HD)', 'hd.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
@@ -46,7 +45,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#Venom.
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -17,7 +16,7 @@ SITE_IDENTIFIER = 'streamingk_com'
 SITE_NAME = 'StreamingK'
 SITE_DESC = 'Films, Séries & Mangas en streaming. Tout les meilleurs streaming en illimité.'
 
-URL_MAIN = 'http://streamingk.com/'
+URL_MAIN = 'https://streamingk.com/'
 
 MOVIE_NEWS = (URL_MAIN + 'category/films/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'category/films/', 'showMovies')
@@ -53,27 +52,27 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'films_news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'films_genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus Vues)', 'series_views.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus vues)', 'views.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENTS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENTS[1], 'Séries (Les plus Commentées)', 'series_comments.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENTS[1], 'Séries (Les plus commentées)', 'comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NOTES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Séries (Les mieux Notés)', 'series_notes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NOTES[1], 'Séries (Les mieux notées)', 'notes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
@@ -81,15 +80,15 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF)', 'series_vf.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF)', 'vf.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFR[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFR[1], 'Séries (VOSTFR)', 'series_vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFR[1], 'Séries (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'animes_news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
@@ -142,7 +141,7 @@ def showGenres():
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'films_genres.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -210,12 +209,15 @@ def showMovies(sSearch = ''):
 
             sThumb = str(aEntry[0])
             sUrl = str(aEntry[1])
-            sTitle = str(aEntry[2])
-            sTitle = sTitle.replace(' [Streaming]', '').replace(' - Saison', ' Saison')
+            sTitle = str(aEntry[2]).replace('&#8217;', '\'').replace(' - Saison', ' Saison')
+            sTitle = sTitle.replace(' [Streaming]', '')
             sTitle = sTitle.replace(' [Telecharger]', '').replace(' [Telechargement]', '')
-            sTitle = sTitle.replace(' [Complète]', '').replace(' [Complete]', '')
-            sTitle = sTitle.replace('&#8217;', '\'')
-            sDesc = str(aEntry[3]).replace('[&hellip;]', '').replace('&rsquo;', '\'').replace('&#8230;', '...')
+            sDisplayTitle = sTitle.replace(' [Complète]', '').replace(' [Complete]', '')
+            sDisplayTitle = sTitle
+            #on retire la qualité
+            sTitle = re.sub('\[\w+]', '', sTitle)
+            sTitle = re.sub('\[\w+ \w+]', '', sTitle)
+            sDesc = str(aEntry[3]).replace('[&hellip;]', '').replace('&rsquo;', '\'').replace('&#8230;', '...').replace('&#8217;', '\'')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -227,9 +229,9 @@ def showMovies(sSearch = ''):
             elif 'quelle-est-votre-serie-preferee' in aEntry[1]:
                 pass
             elif 'series' in sUrl or re.match('.+?saison [0-9]+', sTitle, re.IGNORECASE):
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -268,13 +270,14 @@ def showSeries(sLoop = False):
     sHtmlContent = sHtmlContent.encode('utf-8')#On remet en utf-8
 
 
-    try:#récupération des Synopsis
-        sDesc = ''
+    #récupération du Synopsis
+    sDesc = ''
+    try:
         sPattern = '</p><p style="text-align: center;">([^<]+)<\/p><p style="text-align: center;">'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-            sDesc = sDesc.replace('&#8230;', '...')
+            sDesc = sDesc.replace('&#8230;', '...').replace('&#8217;', '\'')
     except:
         pass
 
