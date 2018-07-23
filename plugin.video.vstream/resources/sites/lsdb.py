@@ -168,7 +168,7 @@ def showIsdb(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sTitle = oInputParameterHandler.getValue('sMovieTitle')
+        sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -189,7 +189,7 @@ def showIsdb(sSearch = ''):
                 break
 
             sUrl2 = str(aEntry[0])
-            sTitle = sTitle
+            sTitle = sMovieTitle
             sHoster = str(aEntry[1])
             sThumb = ''
             sDesc = ''
@@ -209,7 +209,6 @@ def showIsdb(sSearch = ''):
 
     if not sSearch:
         oGui.setEndOfDirectory()
-
 
 def showEvents(sSearch = ''):
     oGui = cGui()
