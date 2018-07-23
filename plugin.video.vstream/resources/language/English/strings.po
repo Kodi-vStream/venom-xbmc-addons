@@ -779,3 +779,7 @@ msgstr ""
 msgctxt "#30449"
 msgid "About/Sources"
 msgstr ""
+
+msgctxt "#30450"
+msgid "Search (Actor,Actress)"
+msgstr ""
