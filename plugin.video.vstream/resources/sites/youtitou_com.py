@@ -32,31 +32,31 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', AGE_2A4ANS[0])
-    oGui.addDir(SITE_IDENTIFIER, AGE_2A4ANS[1], 'Dessins animés 2 à 4 ans', 'animes_enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, AGE_2A4ANS[1], 'Dessins animés 2 à 4 ans', 'enfants.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', VIDEO_EDU2_4[0])
-    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU2_4[1], 'Videos éducative 2 à 4 ans', 'animes_enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU2_4[1], 'Videos éducative 2 à 4 ans', 'enfants.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', AGE_4A6ANS[0])
-    oGui.addDir(SITE_IDENTIFIER, AGE_4A6ANS[1], 'Dessins animés 4 à 6 ans', 'animes_enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, AGE_4A6ANS[1], 'Dessins animés 4 à 6 ans', 'enfants.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', VIDEO_EDU4_6[0])
-    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU4_6[1], 'Videos éducative 4 à 6 ans', 'animes_enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU4_6[1], 'Videos éducative 4 à 6 ans', 'enfants.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', AGE_6A8ANS[0])
-    oGui.addDir(SITE_IDENTIFIER, AGE_6A8ANS[1], 'Dessins animés 6 à 8 ans', 'animes_enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, AGE_6A8ANS[1], 'Dessins animés 6 à 8 ans', 'enfants.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', VIDEO_EDU6_8[0])
-    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU6_8[1], 'Videos éducative 6 à 8 ans', 'animes_enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU6_8[1], 'Videos éducative 6 à 8 ans', 'enfants.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', COMPIL[0])
-    oGui.addDir(SITE_IDENTIFIER, COMPIL[1], 'Compilation dessins animés', 'animes_enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, COMPIL[1], 'Compilation dessins animés', 'enfants.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -92,7 +92,7 @@ def showMovies():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showEpisode', sTitle, 'animes_enfants.png', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showEpisode', sTitle, 'enfants.png', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -125,7 +125,7 @@ def showEpisode():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'animes_enfants.png', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'enfants.png', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

@@ -57,7 +57,7 @@ SERIE_VOSTFRS = (URL_MAIN + 'series/', 'showMovies') #séries Vostfr
 
 ANIM_ANIMS = ('http://', 'load') #animés (load source)
 ANIM_NEWS = (URL_MAIN + 'animes/', 'showMovies') #animés (derniers ajouts = trie par date)
-ANIM_VIEWS =  (URL_MAIN + 'url', 'showMovies') #animes_views.png #animés (les plus vus = populaire)
+ANIM_VIEWS =  (URL_MAIN + 'url', 'showMovies') #views.png #animés (les plus vus = populaire)
 ANIM_GENRES = (True, 'showGenres') #anime genres
 ANIM_ANNEES = (True, 'showAnimesYears') #anime (par années)
 ANIM_VFS = (URL_MAIN + 'animes', 'showMovies') #animés VF
