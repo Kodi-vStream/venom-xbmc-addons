@@ -781,3 +781,6 @@ msgctxt "#30449"
 msgid "About/Sources"
 msgstr "A propos/Sources"
 
+msgctxt "#30450"
+msgid "Search (Actor,Actress)"
+msgstr "Recherche (Acteur,Actrice)"
