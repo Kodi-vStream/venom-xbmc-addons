@@ -47,7 +47,11 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'search/tv')
     oGui.addDir(SITE_IDENTIFIER, 'showSearchSerie', addons.VSlang(30424), 'search.png', oOutputParameterHandler)
-
+    
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'search/person')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearchActor', addons.VSlang(30450), 'search.png', oOutputParameterHandler)
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'movie/popular')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', addons.VSlang(30425), 'comments.png', oOutputParameterHandler)
@@ -367,7 +371,16 @@ def showSearchSerie():
         showSeries(sSearchText)
         #oGui.setEndOfDirectory()
         return
+        
+def showSearchActor():
+    oGui = cGui()
 
+    sSearchText = oGui.showKeyBoard()
+    if (sSearchText != False):
+        showActors(sSearchText)
+        #oGui.setEndOfDirectory()
+        return
+        
 def showGenreMovie():
     oGui = cGui()
     grab = cTMDb()
@@ -887,7 +900,7 @@ def showSeriesEpisode():
     view = addons.getSetting('visuel-view')
     oGui.setEndOfDirectory(view)
 
-def showActors():
+def showActors(sSearch = ''):
     oGui = cGui()
     grab = cTMDb()
     addons = addon()
@@ -902,7 +915,16 @@ def showActors():
     if (oInputParameterHandler.exist('page')):
         iPage = oInputParameterHandler.getValue('page')
 
-    result = grab.getUrl(sUrl, iPage)
+    if (oInputParameterHandler.exist('sSearch')):
+        sSearch = oInputParameterHandler.getValue('sSearch')
+
+    if sSearch:
+        #format obligatoire evite de modif le format de l'url dans la lib >> _call
+        #a cause d'un ? pas ou il faut pour ça >> invalid api key
+        result = grab.getUrl(sUrl,iPage,'query=' + sSearch) 
+
+    else:
+        result = grab.getUrl(sUrl, iPage)
 
     total = len(result)
     dialog = progress()
@@ -911,6 +933,9 @@ def showActors():
     if (total > 0):
         total = len(result['results'])
         progress_ = progress().VScreate(SITE_NAME)
+        
+        #récup le nombre de page pour NextPage
+        nbrpage = result['total_pages']
 
         for i in result['results']:
             progress_.VSupdate(progress_, total)
@@ -949,10 +974,14 @@ def showActors():
 
         progress_.VSclose(progress_)
 
-
-        if (iPage > 0):
+        if (int(iPage) < int(nbrpage)):
             iNextPage = int(iPage) + 1
             oOutputParameterHandler = cOutputParameterHandler()
+            
+            #ajoute param sSearch pour garder le bon format d'url avec grab url
+            if sSearch:
+                oOutputParameterHandler.addParameter('sSearch', sSearch)
+
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('page', iNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showActors', '[COLOR teal]Page ' + str(iNextPage) + ' >>>[/COLOR]', oOutputParameterHandler)
