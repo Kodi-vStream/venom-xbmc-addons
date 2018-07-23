@@ -242,10 +242,13 @@ def showHosters():
 
     if (aResult):
         for aEntry in aResult:
-            sHosterUrl = base64.b64decode(aEntry[0])
+            sHtmlContent = base64.b64decode(aEntry[0])
             
+            sUrl = re.search('src="([^"]+)"',sHtmlContent)
+            if sUrl:
+                sHosterUrl = sUrl.group(1)
+                
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle + ' ['+ aEntry[1]+ ']')
                 oHoster.setFileName(sMovieTitle)
