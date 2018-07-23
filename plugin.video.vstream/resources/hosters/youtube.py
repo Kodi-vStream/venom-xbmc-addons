@@ -14,7 +14,7 @@ from resources.lib import util
 import re
 import json
 
-URL_MAIN = 'http://keepvid.com/?url='
+URL_MAIN = 'https://www.keepvid.site/download/?link='
 
 class cHoster(iHoster):
 
@@ -128,12 +128,12 @@ class cHoster(iHoster):
         
         oRequest = cRequestHandler('%s%s' % (URL_MAIN,sUrl))
         sHtmlContent = oRequest.request()
-        
-        sHtmlContent1 = oParser.abParse(sHtmlContent,'>Download Pro</a></td>','<table class="result-table video-only"')
+
+        sHtmlContent1 = oParser.abParse(sHtmlContent,'<div class="download-box">','<div class="delimiter"></div>')
         if not sHtmlContent1:
             return False,False
         
-        sPattern = '<td class="al".+?">(.+?)</td>.+?<a href="([^"]+)"' 
+        sPattern = '<div class="button-text"><p>(.+?)</p>.+?<a href="([^"]+)"' 
         aResult = oParser.parse(sHtmlContent1,sPattern)
         if (aResult[0] == True):
             # initialisation des tableaux
@@ -155,7 +155,9 @@ class cHoster(iHoster):
         
     
 def parse_stream_map(sHtml):
-    if 'signature' in sHtml:
+
+    if not '&sp=signature' in sHtml:
+
         videoinfo = {"itag": [],
                      "url": [],
                      "quality": [],
