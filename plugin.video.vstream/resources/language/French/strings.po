@@ -221,8 +221,8 @@ msgid "Web video"
 msgstr "Vidéos du net"
 
 msgctxt "#30115"
-msgid "Television / Radio"
-msgstr "Télévision / Radio"
+msgid "Television/Radio"
+msgstr "Télévision/Radio"
 
 msgctxt "#30116"
 msgid "All the sources"
@@ -358,7 +358,7 @@ msgstr "Trakt"
 
 msgctxt "#30215"
 msgid "Start download"
-msgstr "Demarrer ce telechargement"
+msgstr "Démarrer le téléchargement"
 
 msgctxt "#30216"
 msgid "Remove from list"
@@ -366,11 +366,11 @@ msgstr "Supprimer de la liste"
 
 msgctxt "#30217"
 msgid "[COLOR red]Delete definitely[/COLOR]"
-msgstr "[COLOR red]Supprimer definitivement[/COLOR]"
+msgstr "[COLOR red]Supprimer définitivement[/COLOR]"
 
 msgctxt "#30218"
 msgid "Stop download"
-msgstr "Arreter le telechargement"
+msgstr "Arrêter le téléchargement"
 
 msgctxt "#30219"
 msgid "Read"
@@ -391,7 +391,7 @@ msgstr "A configurer dans kodi si vous voulez qu'ils soient importés"
 
 msgctxt "#30302"
 msgid "Auto update"
-msgstr "Mise a jour à chaque ajout"
+msgstr "Mise à jour à chaque ajout"
 
 msgctxt "#30303"
 msgid "Enable/Disable"
@@ -667,7 +667,7 @@ msgstr "Activer/Désactiver les sources"
 
 msgctxt "#30421"
 msgid "Go to [COLOR teal]%s[CR]%s[/COLOR][CR],Valid vStream, only then click YES"
-msgstr "Rendez vous sur [COLOR teal]%s[CR]%s[/COLOR][CR],Valider vStream, seulement ensuite cliquer OUI"
+msgstr "Rendez vous sur [COLOR teal]%s[CR]%s[/COLOR][CR], Valider vStream, seulement ensuite cliquer OUI"
 
 msgctxt "#30422"
 msgid "Enable log records"
@@ -707,7 +707,7 @@ msgstr "Séries (à la TV)"
 
 msgctxt "#30431"
 msgid "TV Shows (Top Rated)"
-msgstr "Séries (Les mieux notés)"
+msgstr "Séries (Les mieux notées)"
 
 msgctxt "#30432"
 msgid "TV Shows (Kinds)"
@@ -783,4 +783,4 @@ msgstr "A propos/Sources"
 
 msgctxt "#30450"
 msgid "Search (Actor,Actress)"
-msgstr "Recherche (Acteur,Actrice)"
+msgstr "Recherche (Acteur, Actrice)"
