@@ -46,9 +46,9 @@ MOVIE_VOSTFR = (URL_MAIN + 'url', 'showMovies') #films VOSTFR
 
 # menu serie existant dans l'acceuil (Home)
 SERIE_SERIES = ('http://', 'load') #séries (load source)
-SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies') #series_news.png ou series.png | séries (derniers ajouts = trie par date)
-SERIE_VIEWS =  (URL_MAIN + 'url', 'showMovies') #series_views.png | series (les plus vus = populaire)
-SERIE_HD = (URL_MAIN + 'series/', 'showMovies') #series_hd.png | séries HD
+SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies') #news.png ou series.png | séries (derniers ajouts = trie par date)
+SERIE_VIEWS =  (URL_MAIN + 'url', 'showMovies') #views.png | series (les plus vus = populaire)
+SERIE_HD = (URL_MAIN + 'series/', 'showMovies') #hd.png | séries HD
 SERIE_GENRES = (True, 'showGenres') #séries genres
 SERIE_ANNEES = (True, 'showSerieYears') #séries (par années)
 SERIE_VFS = (URL_MAIN + 'series/', 'showMovies') #séries VF
@@ -128,7 +128,7 @@ def load(): #fonction chargee automatiquement par l'addon l'index de votre navig
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series_news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
@@ -136,19 +136,19 @@ def load(): #fonction chargee automatiquement par l'addon l'index de votre navig
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'series_genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par Années)', 'series_annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par Années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF) ', 'series_vf.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF) ', 'vf.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries (VOSTFR)', 'series_vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory() #ferme l'affichage
 
