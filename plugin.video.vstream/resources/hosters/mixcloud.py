@@ -87,7 +87,7 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('Referer','http://www.google.fr/')
-        sHtmlContent = oRequest.request()
+        #sHtmlContent = oRequest.request()
         VSlog(sHtmlContent)
 
         oParser = cParser()
