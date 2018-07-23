@@ -336,6 +336,8 @@ class cHosterGui:
             return self.getHoster('kvid')
         if ('soundcloud' in sHostName):
             return self.getHoster('soundcloud')
+        if ('mixcloud' in sHostName):
+            return self.getHoster('mixcloud')
 
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
