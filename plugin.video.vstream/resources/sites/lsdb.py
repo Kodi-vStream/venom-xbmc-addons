@@ -147,7 +147,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             #oGui.addMovie(SITE_IDENTIFIER, 'showIsdb', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-            oGui.addMisc(SITE_IDENTIFIER, 'showIsdb', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showIsdb', sTitle, 'replay.png', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -191,7 +191,7 @@ def showIsdb(sSearch = ''):
             sUrl2 = str(aEntry[0])
             sTitle = sMovieTitle
             sHoster = str(aEntry[1])
-            sThumb = ''
+            sThumb = 'special://home/addons/plugin.video.vstream/resources/art/replay.png'
             sDesc = ''
 
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, sHoster)
@@ -200,7 +200,7 @@ def showIsdb(sSearch = ''):
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
