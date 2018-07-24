@@ -175,7 +175,7 @@ def showMovies(sSearch = ''):
             sLang = aEntry[3]
             sQual = aEntry[4]
             
-            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
+            sDisplayTitle = ('%s (%s) (%s)') % (sTitle, sQual, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -284,7 +284,7 @@ def showSaisons():
                 break
 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR olive]' + str(aEntry[0]) + '[/COLOR]')
 
             else:
                 if aEntry[3] == 'nothing':
@@ -292,7 +292,7 @@ def showSaisons():
                    
                 sUrl = aEntry[1]
 
-                sDisplayTitle = "%s %s [%s]" % (sMovieTitle, aEntry[2].replace(',',''), aEntry[3])
+                sDisplayTitle = "%s %s (%s)" % (sMovieTitle, aEntry[2].replace(',',''), aEntry[3])
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -327,7 +327,8 @@ def showLink():
             sHost = aEntry[2]
             sCode2 = aEntry[1]
             
-            sDisplayTitle = "%s [%s %s]" % (sMovieTitle, sHost, sLang)
+            #sDisplayTitle = "%s [%s %s]" % (sMovieTitle, sHost, sLang)
+            sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sCode', sCode)
