@@ -281,29 +281,34 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sPattern = '<div class="video-container"><iframe.+?src="([^<>"]+?)"'
-    aResult = oParser.parse(sHtmlContent, sPattern)
+    sPattern1 = '<div class="video-container"><iframe.+?src="[^<>]+(?:wakanim|crunchyroll)[^<>]*"'
+    aResult1 = oParser.parse(sHtmlContent, sPattern1)
 
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-            sHosterUrl = str(aEntry)
-            if not sHosterUrl.startswith('http'):
-                sHosterUrl = 'http:' + sHosterUrl
+    if (aResult1[0] == True):
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et legalement sur crunchyroll ou wakanim[/COLOR]")
+    else:
+        aResult = oParser.parse(sHtmlContent, sPattern)
+
+        if (aResult[0] == True):
+            for aEntry in aResult[1]:
+                sHosterUrl = str(aEntry)
+                if not sHosterUrl.startswith('http'):
+                    sHosterUrl = 'http:' + sHosterUrl
+
+                # if 'goo.gl' in sHosterUrl or 'bit.ly' in sHosterUrl:
+                #     try:
+                #         import requests
+                #         url = sHosterUrl
+                #         session = requests.Session()  # so connections are recycled
+                #         resp = session.head(url, allow_redirects=True)
+                #         sHosterUrl = resp.url
+                #     except:
+                #         pass
 
 
-            # if 'goo.gl' in sHosterUrl or 'bit.ly' in sHosterUrl:
-            #     try:
-            #         import requests
-            #         url = sHosterUrl
-            #         session = requests.Session()  # so connections are recycled
-            #         resp = session.head(url, allow_redirects=True)
-            #         sHosterUrl = resp.url
-            #     except:
-            #         pass
-
-
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sTitle)
+                    oHoster.setFileName(sTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
     oGui.setEndOfDirectory()
