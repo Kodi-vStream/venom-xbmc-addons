@@ -10,7 +10,7 @@ from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
 
 from resources.lib.epg import cePg
-from resources.lib.comaddon import progress, addon, xbmc, xbmcgui
+from resources.lib.comaddon import progress, addon, xbmc, xbmcgui, VSlog
 
 import re, urllib2, urllib, sys
 import xbmcplugin, xbmcvfs
@@ -81,7 +81,6 @@ def showIptvSite():
     liste.append( ['IptvSource', 'https://www.iptvsource.com/'] )
     liste.append( ['Iptv Gratuit', 'http://iptvgratuit.com/'] )
     liste.append( ['Daily Iptv List', 'https://www.dailyiptvlist.com/'])
-    liste.append( ['IptvSatLink (site utiliser par ultimate iptv)', 'http://iptvsatlinks.blogspot.fr/search?max-results=40'])
 
     for sTitle, sUrl in liste:
 
@@ -97,11 +96,9 @@ def showDailyList(): #On recupere les dernier playlist ajouter au site
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sHtmlContent = getHtml(sUrl)#On recupere le contenue de la page
-    #cConfig().log(str(sHtmlContent))
+    #VSlog(str(sHtmlContent))
 
-    if 'iptvsatlinks.blogspot.fr' in sUrl:
-        sPattern = "<h3 class='post-title entry-title' itemprop='name'>\s*<a href='(.+?)'>(.+?)</a>"
-    elif 'iptvsource.com' in sUrl:
+    if 'iptvsource.com' in sUrl:
         sPattern = '<h3 class="entry-title td-module-title"><a href="(.+?)" rel="bookmark" title="(.+?)"'
     elif 'iptvgratuit.com' in sUrl:
         sPattern = '<header class="entry-header">\s*<h2 class="entry-title">\s*<a href="(.+?)" rel="bookmark">(.+?)</a>'
@@ -128,10 +125,7 @@ def showDailyList(): #On recupere les dernier playlist ajouter au site
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
-            if 'iptvsatlinks.blogspot.fr/' in sUrl: #iptvsatlinks est traiter differament par rapport au autre
-                oGui.addDir(SITE_IDENTIFIER, 'showWebIptvSource', sTitle, 'tv.png', oOutputParameterHandler)
-            else:
-                oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, 'tv.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, 'tv.png', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -147,9 +141,7 @@ def __checkForNextPage(sHtmlContent): #Affiche les page suivant si il y en a
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    if 'iptvsatlinks.blogspot.fr/' in sUrl:
-        sPattern = "<a class='blog-pager-older-link' href='(.+?) id='Blog1_blog-pager-older-link' title='Older Posts'>Older Posts</a>"
-    elif 'https://www.iptvsource.com/' in sUrl:
+    if 'https://www.iptvsource.com/' in sUrl:
         sPattern = ' class="last" title=".+?">.+?</a><a href="(.+?)"><i class="td-icon-menu-right"></i>'
     else:
         sPattern = '<a class="next page-numbers" href="(.+?)">'
@@ -176,7 +168,7 @@ def showAllPlaylist():#On recuepere les differente playlist si il y en a
     elif 'dailyiptvlist.com' in sUrl:
         sPattern = '<p></br><br /><strong>2. Click on link to download .+? iptv channels list</strong></p>\s*.+?<a href="(.+?)">Download (.+?)</a>'
     elif 'iptvsource.com':
-        sPattern = '<a href="(.+?)">Download as(.+?)</a>'
+        sPattern = '<a href="([^"]+)">Download as([^"]+)</a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -204,7 +196,7 @@ def showAllPlaylist():#On recuepere les differente playlist si il y en a
             if 'iptvgratuit' and 'world-iptv-links-m3u-playlist-' in sUrl:
                 oGui.addDir(SITE_IDENTIFIER, 'showWorldIptvGratuit', sTitle, '', oOutputParameterHandler)
             else:
-                oGui.addDir(SITE_IDENTIFIER, 'showWebIptvSource', sTitle, '', oOutputParameterHandler)
+                oGui.addDir(SITE_IDENTIFIER, 'parseWebM3U', sTitle, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -232,50 +224,12 @@ def showWorldIptvGratuit():#On recupere les liens qui sont dans les playlist "Wo
 
     oGui.setEndOfDirectory()
 
-def showWebIptvSource():#On traite les liens WebIptvSources
-    oGui = cGui()
-
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-
-    if 'iptvsatlinks.blogspot.fr/' and 'daily-m3u-playlist'in sUrl:
-        sHtmlContent = getHtml(sUrl)
-        sPattern = '<br />http([^<]+)/(.+?)<br />'
-
-        oParser = cParser()
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            total = len(aResult[1])
-            progress_ = progress().VScreate(SITE_NAME)
-
-            for aEntry in aResult[1]:
-                progress_.VSupdate(progress_, total)
-                if progress_.iscanceled():
-                    break
-
-                sUrl2 = 'http'+str(aEntry[0])+'/'+str(aEntry[1])
-                sUrl2 = sUrl2.replace('&amp;','&')
-                sUrl2 = sUrl2.replace('<br />','')
-                sTitle = 'Lien: ' + sUrl2
-
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-
-                oGui.addDir(SITE_IDENTIFIER, 'showWebIptvSource', sTitle, 'tv.png', oOutputParameterHandler)
-
-            progress_.VSclose(progress_)
-
-        oGui.setEndOfDirectory()
-
-    else:
-        parseWebM3U()
-
 def getHtml(sUrl, referer=None, hdr=None, data=None):#S'occupe des requete
     req = urllib2.Request(sUrl, data, headers)
     response = urllib2.urlopen(req)
     data = response.read()
     response.close()
+    VSlog(data)
     return data
 
 def parseWebM3U():#Traite les m3u
@@ -285,10 +239,7 @@ def parseWebM3U():#Traite les m3u
     sHtmlContent = getHtml(sUrl)
     #cConfig().log(str(sUrl))
 
-    if 'iptvsatlinks.blogspot' in sUrl:
-        line = re.compile('#EXTINF:-1,(.+?)<br />(.+?)<').findall(sHtmlContent)
-    else:
-        line = re.compile('#.+,(.+?)\n(.+?)\n').findall(sHtmlContent)
+    line = re.compile('EXTINF:.+?,(.+?)\n(.+?)\n').findall(sHtmlContent)
 
     for sTitle, sUrl2 in line:
         sUrl2 = sUrl2.replace('\r','')
