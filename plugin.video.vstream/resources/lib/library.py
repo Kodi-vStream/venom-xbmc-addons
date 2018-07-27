@@ -27,7 +27,7 @@ class cLibrary:
         if not self.__sMovieFolder:
             #PathCache = cConfig().getSettingCache()
             #self.__sMovieFolder = os.path.join(PathCache,'Movies\\').decode("utf-8")
-            self.__sMovieFolder = "special://userdata/addon_data/plugin.video.vstream/Films/"
+            self.__sMovieFolder = "special://userdata/addon_data/plugin.video.vstream/Films"
             self.ADDON.setSetting('Library_folder_Movies',self.__sMovieFolder)
         if not xbmcvfs.exists(self.__sMovieFolder):
                 xbmcvfs.mkdir(self.__sMovieFolder)
@@ -67,55 +67,58 @@ class cLibrary:
 
         sTitle = sFileName
 
-        folder = self.__sMovieFolder
+        #folder = self.__sMovieFolder
 
         #film
         if sCat == '1':
-            folder = self.__sMovieFolder
+            #folder = self.__sMovieFolder
 
             sTitle = cUtil().CleanName(sTitle)
-            sTitle =  cGui().showKeyBoard(sTitle)
+            sTitle =  self.showKeyBoard(sTitle, 'Nom du dossier et du fichier')
 
             try:
-                folder = '%s%s/' % (folder, sTitle)
+                #folder = '%s%s/' % (folder, sTitle)
+                sPath = "/".join([self.__sMovieFolder, sTitle])
 
                 # if not os.path.exists(folder):
                     # os.mkdir(folder)
-                if not xbmcvfs.exists(folder):
-                    xbmcvfs.mkdir(folder)
+                if not xbmcvfs.exists(sPath):
+                    xbmcvfs.mkdir(sPath)
 
-                self.MakeFile(folder,sTitle,sLink)
+                self.MakeFile(sPath,sTitle,sLink)
                 #xbmc.executebuiltin('UpdateLibrary(video, '+ folder + ')')
             except:
                 self.DIALOG.VSinfo('Rajout impossible')
 
         #serie
         elif sCat == '2':
-            folder = self.__sTVFolder
 
-            sTitle = cUtil().FormatSerie(sTitle)
+            #sTitle = cUtil().FormatSerie(sTitle)
             sTitle = cUtil().CleanName(sTitle)
-            sTitle =  cGui().showKeyBoard(sTitle)
+            sFTitle =  self.showKeyBoard(sTitle, 'Recommandé Nomdeserie/Saison00')
             
-            sTitleGlobal = re.sub('((?:[s|e][0-9]+){1,2})','',sTitle)
+            #sTitleGlobal = re.sub('((?:[s|e][0-9]+){1,2})','',sTitle)
             
-            if sTitleGlobal.endswith(' '):
-                sTitleGlobal = sTitleGlobal[:-1]
-            if sTitleGlobal.endswith('FINAL'):
-                 sTitleGlobal = sTitleGlobal[:-5]
+            # if sTitleGlobal.endswith(' '):
+            #     sTitleGlobal = sTitleGlobal[:-1]
+            # if sTitleGlobal.endswith('FINAL'):
+            #      sTitleGlobal = sTitleGlobal[:-5]
 
             try:
                 #print folder
 
                 #folder2 = folder + '/' + sTitleGlobal + '/'
-                folder2 = '%s%s/' % (folder, sTitleGlobal)
+                #folder2 = '%s%s/' % (self.__sTVFolder, sTitleGlobal)
+                sPath = "/".join([self.__sTVFolder, sFTitle])
 
                 #if not os.path.exists(folder2):
                     #os.mkdir(folder2)
-                if not xbmcvfs.exists(folder2):
-                    xbmcvfs.mkdir(folder2)
+                if not xbmcvfs.exists(sPath):
+                    xbmcvfs.mkdir(sPath)
 
-                self.MakeFile(folder2,sTitle,sLink)
+                sTitle =  self.showKeyBoard(sTitle, 'Recommandé NomdeserieS00E00')
+
+                self.MakeFile(sPath,sTitle,sLink)
                 #xbmc.executebuiltin('UpdateLibrary(video, '+ folder + ')')
             except:
                 self.DIALOG.VSinfo('Rajout impossible')
@@ -123,7 +126,8 @@ class cLibrary:
 
     def MakeFile(self,folder,name,content):
         #stream = os.path.join(folder, str(name) + '.strm')
-        stream = "%s%s.strm" % (folder, str(name))
+        #stream = "%s%s.strm" % (folder, str(name))
+        stream = "/".join([folder, str(name)]) + '.strm'
         #f = open(stream, 'w')
         f = xbmcvfs.File(stream, 'w')
         result = f.write(str(content))
@@ -156,3 +160,14 @@ class cLibrary:
         oInputParameterHandler = cInputParameterHandler()
         sFolder = oInputParameterHandler.getValue('folder')
         xbmc.executebuiltin("Container.Update(" + sFolder + ")")
+
+    def showKeyBoard(self, sDefaultText='', Heading=''):
+        keyboard = xbmc.Keyboard(sDefaultText)
+        keyboard.setHeading(Heading) # optional
+        keyboard.doModal()
+        if (keyboard.isConfirmed()):
+            sSearchText = keyboard.getText()
+            if (len(sSearchText)) > 0:
+                return sSearchText
+
+        return False
