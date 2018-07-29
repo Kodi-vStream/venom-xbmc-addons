@@ -100,13 +100,21 @@ class cHosterGui:
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)
             
-        #Upload menu
+        #Upload menu uptobox
         if cInputParameterHandler().getValue('site') != 'siteuptobox' and self.ADDON.getSetting('hoster_uptobox_premium') == 'true' :
             host = oHoster.getPluginIdentifier()
             accept = ['uptobox','uptostream','onefichier','uploaded','uplea']
             for i in accept:
                 if host == i :
                     oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteuptobox', 'siteuptobox', 'UptomyAccount', self.ADDON.VSlang(30325))
+
+        #onefichier
+        if cInputParameterHandler().getValue('site') != 'siteonefichier' and self.ADDON.getSetting('hoster_onefichier_premium') == 'true' :
+            host = oHoster.getPluginIdentifier()
+            accept = 'onefichier' #les autres ne fonctionnent pas
+            if host == accept :
+                oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteonefichier', 'siteonefichier', 'UptomyAccount', '1fichier')
+                
 
         #context FAV menu
         oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
