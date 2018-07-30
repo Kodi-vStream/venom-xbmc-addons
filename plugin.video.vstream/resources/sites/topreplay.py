@@ -207,6 +207,8 @@ def checkforHoster(sHosterUrl):
             return 'http://exashare.com/embed-' + code.group(2) + '.html'
         elif 'estream' in sHosterUrl:
             return 'https://estream.to/' + code.group(2) + '.html'
+        elif 'gounlimited' in sHosterUrl:
+            return 'https://gounlimited.to/embed-' + code.group(2) + '.html'  
         elif 'uptostream' in sHosterUrl:
             return 'https://uptostream.com/' + code.group(2)
         elif 'mail.ru' in sHosterUrl:
