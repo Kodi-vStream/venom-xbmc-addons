@@ -154,6 +154,8 @@ class cHosterGui:
                 return tmp
 
         #Gestion classique
+        if ('gounlimited' in sHostName):
+            return self.getHoster('gounlimited')
         if ('xdrive' in sHostName):
             return self.getHoster('xdrive')
         if ('facebook' in sHostName):
