@@ -1,20 +1,19 @@
-#coding: utf-8
-#Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#http://www.novamov.com/video/xxx
-#http://www.auroravid.to/embed/?v=xxx
-
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
+#https://gounlimited.to/embed-xxx.html
+#top_replay
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog
+from resources.lib.comaddon import dialog,VSlog
+from resources.lib.packer import cPacker
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
-#Novamov Auroravid
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
+
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Auroravid'
+        self.__sDisplayName = 'Gounlimited'
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
@@ -30,16 +29,13 @@ class cHoster(iHoster):
         return self.__sFileName
 
     def getPluginIdentifier(self):
-        return 'auroravid'
+        return 'gounlimited'
 
     def isDownloadable(self):
         return True
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.rsplit('/', 1)[1] 
-        self.__sUrl = self.__sUrl.replace('?v=', '')
-        self.__sUrl = 'http://www.auroravid.to/embed/?v=' + str(self.__sUrl)
 
     def checkUrl(self, sUrl):
         return True
@@ -51,25 +47,21 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-
+        api_call = False
+        oParser = cParser()
+        
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        sPattern =  '<source src="(.+?)"'
-        oParser = cParser()
+        sPattern = '(\s*eval\s*\(\s*function\(p,a,c,k,e(?:.|\s)+?)<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            #tableau choix de serveur
-            url=[]
-            serv=[]
+            sHtmlContent = cPacker().unpack(aResult[1][0])
             
-            No = 1
-            for i in aResult[1]:
-                url.append(str(i))
-                serv.append('Liens '+str(No))
-                No += 1
-            #Si une seule url
-            api_call = dialog().VSselectqual(serv,url)
+            sPattern =  '{sources:\["([^"]+)"\]'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                api_call = aResult[1][0]
 
         if (api_call):
             return True, api_call + '|User-Agent=' + UA 

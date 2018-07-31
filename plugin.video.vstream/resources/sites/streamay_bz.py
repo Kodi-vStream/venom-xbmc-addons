@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, dialog
-import base64,re
+import base64, re
 
 
 
@@ -16,9 +16,11 @@ SITE_NAME = 'Streamay'
 SITE_DESC = 'Films, Séries & Mangas en streaming'
 URL_MAIN = 'http://streaming.streamay.com/'
 
-MOVIE_NEWS = (URL_MAIN , 'showMovies')
-MOVIE_MOVIE = (URL_MAIN, 'AlphaSearch')
+MOVIE_MOVIE = ('http://', 'load')
+MOVIE_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_VIEWS = (URL_MAIN + '?v_sortby=views&v_orderby=desc', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films', 'showGenres')
+MOVIE_LIST = (URL_MAIN, 'AlphaSearch')
 
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
@@ -38,12 +40,16 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'views.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films (Liste) ', 'az.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Liste) ', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -76,25 +82,23 @@ def AlphaSearch():
     
 def showGenres():
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-
     oParser = cParser()
-
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
 
-    sHtmlContent = oParser.abParse(sHtmlContent, '<a target="_blank">Genres</a>', 'id="menu-item-20645"')
+    sHtmlContent = oParser.abParse(sHtmlContent, '<div class="Title">Film Streaming Par Genres</div>', '</div></aside>')
 
-    sPattern = '<a href="([^"]+)">(.+?)<\/a><\/li>'
+    sPattern = '<a href="([^"]+)" >([^"]+)<\/a>(.+?)<\/li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sUrl = aEntry[0]
-            sTitle = aEntry[1]
+            sUrl = str(aEntry[0])
+            sTitle = str(aEntry[1]) + str(aEntry[2])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies2', sTitle, 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
     
@@ -128,7 +132,7 @@ def showMovieslist():
             sUrl = aEntry[0]
 
             sQual = aEntry[4]
-            sThumb = aEntry[1].replace('w92','w300')
+            sThumb = aEntry[1].replace('w92','w342')
             if not sThumb.startswith('http'):
                sThumb = 'http:' + sThumb
                
@@ -182,7 +186,7 @@ def showMovies(sSearch = ''):
 
             sTitle = aEntry[2]
             sUrl = aEntry[1]
-            sThumb = aEntry[0]
+            sThumb = aEntry[0].replace('w154', 'w342')
             if not sThumb.startswith('http'):
                sThumb = 'http:' + sThumb
                
@@ -236,9 +240,9 @@ def showHosters():
     sHtmlContent = oParser.abParse(sHtmlContent, '<div class="VideoPlayer">', '<div class="Image">')
 
     sPattern2 = '<div id="VideoOption\d+" class="Vid.+?">(.+?)</div>'
-    aResult2 = re.findall(sPattern2, sHtmlContent,re.DOTALL)
+    aResult2 = re.findall(sPattern2, sHtmlContent, re.DOTALL)
     
-    aResult = zip(aResult2,[x[0] + ' ' + x[1] for x in aResult1])
+    aResult = zip(aResult2, [x[0] + ' ' + x[1] for x in aResult1])
 
     if (aResult):
         for aEntry in aResult:

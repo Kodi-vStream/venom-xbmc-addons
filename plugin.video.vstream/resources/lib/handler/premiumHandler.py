@@ -58,6 +58,11 @@ class cPremiumHandler:
         if 'uptobox' in self.__sHosterIdentifier:
             if '//uptobox.com/?op=logout">Logout</a>' in code:
                 return True
+                
+        if 'onefichier' in self.__sHosterIdentifier:
+            if 'premium' in code or 'jqueryFileTree' in code or '1fichier.com/logout' in code: #test ok mais pas convaincu....
+                return True
+                
         return False
         
     def CheckCookie(self):

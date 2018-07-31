@@ -1,70 +1,40 @@
 #EXTM3U
-#EXTINF:-1 tvg-logo="radio.png", 100 % 
-http://gisv3.tv-radio.com/station/centpourcent-mp3/centpourcent-mp3-128k.m3u
-#EXTINF:-1 tvg-logo="radio.png", 102FM
-http://102fm.livestreaming.rundev.com:8000/listen.pls
 #EXTINF:-1 tvg-logo="radio.png", 4U Classic Rock
-http://www.4uradios.com/classicrock.m3u
-#EXTINF:-1 tvg-logo="radio.png", 4U Rock N Metal
-http://www.4uradios.com/4urocknmetal.m3u
-#EXTINF:-1 tvg-logo="radio.png", 48 FM
-http://213.186.61.62:9000/listen.pls
+http://str4uice.streamakaci.com/4uclassicrock.mp3
+#EXTINF:-1 tvg-logo="radio.png", 4U 70s
+http://listen.radionomy.com/4u-70s
 #EXTINF:-1 tvg-logo="radio.png", 77 FM
 http://www.77fm.net/77FM.m3u
-#EXTINF:-1 tvg-logo="radio.png", Accent 4
-http://str0.creacast.com:900/listen.pls
-#EXTINF:-1 tvg-logo="radio.png", Activ radio 
-http://activradio.free.fr/www/m3u/activadsl.m3u 
 #EXTINF:-1 tvg-logo="radio.png", Addict Radio Alternative 
-http://www.addictradio.net/extern/pl/alternative/hdlinuxpedia.m3u 
+http://www.addictradio.net/files/winamp_alternative.m3u
 #EXTINF:-1 tvg-logo="radio.png", Addict Radio Lounge 
-http://www.addictradio.net/extern/pl/lounge/hdlinuxpedia.m3u 
+http://www.addictradio.net/files/winamp_lounge.m3u
 #EXTINF:-1 tvg-logo="radio.png", Addict Radio Rock 
-http://www.addictradio.net/extern/pl/rock/hdlinuxpedia.m3u 
+http://www.addictradio.net/files/winamp_rock.m3u 
 #EXTINF:-1 tvg-logo="radio.png", Addict Radio Star 
-http://www.addictradio.net/extern/pl/star/hdlinuxpedia.m3u 
+http://www.addictradio.net/files/winamp_star.m3u 
 #EXTINF:-1 tvg-logo="radio.png", Ado FM 
-http://broadcast.infomaniak.ch/start-adofm-high.mp3.m3u  
+http://broadcast.infomaniak.ch/start-adofm-high.mp3 
 #EXTINF:-1 tvg-logo="radio.png", Alouette 
-http://www.alouette.fr/alouette.m3u 
-#EXTINF:-1 tvg-logo="radio.png", Alternantes 
-http://www.alternantesfm.net/alternantes_mp3.m3u 
+http://alouette.ice.infomaniak.ch:80/alouette-high.mp3 
 #EXTINF:-1 tvg-logo="radio.png", Alpes 1 
-http://broadcast.infomaniak.ch/alpes1gap-high.mp3 
-#EXTINF:-1 tvg-logo="radio.png", Altermusica 
-http://213.251.129.18:8000/live.m3u 
-#EXTINF:-1 tvg-logo="radio.png", Ange Radio 
-http://players.creacast.com/creacast/ange_radio/playlist.pls 
-#EXTINF:-1 tvg-logo="radio.png", ARL 
-http://gisv3.tv-radio.com/station/arl/arl.m3u 
+http://broadcast.infomaniak.ch/alpes1gap-high.mp3
 #EXTINF:-1 tvg-logo="radio.png", Atlantis FM 
-http://www.radioatlantis.fr:8000/listen.pls 
-#EXTINF:-1 tvg-logo="radio.png", AlwaDj Radio 
-http://www.radionomy.com/fr/radio/alwadj/listen 
-#EXTINF:-1 tvg-logo="radio.png", AlwaDj Radio 
-http://listen.radionomy.com/alwadj.m3u 
-#EXTINF:-1 tvg-logo="radio.png", AlwaDj Radio 
-http://alwadj.jimdo.com/?logout=1 
-#EXTINF:-1 tvg-logo="radio.png", Aufilduson80s 
-http://listen.radionomy.com/aufilduson80s
+http://radio8.pro-fhi.net:9005/atlantis320 
+#EXTINF:-1 tvg-logo="radio.png", Jamando lounge 
+http://streaming.radionomy.com/JamendoLounge
+#EXTINF:-1 tvg-logo="radio.png", Aufilduson80s
+http://streaming.radionomy.com/aufilduson80s
 #EXTINF:-1 tvg-logo="radio.png", BBC Radio 1 
-http://bbc.co.uk/radio/listen/live/r1.asx 
-#EXTINF:-1 tvg-logo="radio.png", BBC Radio 1 
-http://www.bbc.co.uk/radio/listen/live/r1_aaclca.pls 
-#EXTINF:-1 tvg-logo="radio.png", BBC World Service 
-http://www.bbc.co.uk/worldservice/meta/tx/nb/live/eneuk.pls 
-#EXTINF:-1 tvg-logo="radio.png", Be.radio 
-http://www.beradio.net/radio/beradio.m3u
-#EXTINF:-1 tvg-logo="radio.png", Beaub Fm 
-http://gisv3.tv-radio.com/station/beaub/beaub.m3u
-#EXTINF:-1 tvg-logo="radio.png", Ben Ben Radio 
-http://benbenradio2.free.fr/benbenradio2.m3u
-#EXTINF:-1 tvg-logo="radio.png", BestRadio 
-http://www.best-radio.net/streams/64.m3u
-#EXTINF:-1 tvg-logo="radio.png", BFM 
-http://viphttpplayers.yacast.net/V4/bfm/bfm.m3u
-#EXTINF:-1 tvg-logo="radio.png", BFM Business
-http://bfmbusiness.cdn.dvmr.fr/bfmbusiness
+http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio1_mf_p 
+#EXTINF:-1 tvg-logo="radio.png", BBC Radio 1 X
+http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio1xtra_mf_p
+#EXTINF:-1 tvg-logo="radio.png", BBC Radio 2 
+http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio2_mf_p
+#EXTINF:-1 tvg-logo="radio.png", BBC Radio 3
+http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio3_mf_p
+#EXTINF:-1 tvg-logo="radio.png", RMC 
+http://rmc.bfmtv.com/rmcinfo-mp3
 #EXTINF:-1 tvg-logo="radio.png", Bide et Musique 
 http://www.bide-et-musique.com/playlist-hq.m3u
 #EXTINF:-1 tvg-logo="radio.png", Booster FM 

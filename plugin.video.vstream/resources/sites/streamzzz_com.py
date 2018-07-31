@@ -32,6 +32,8 @@ SERIE_NOTES = (URL_MAIN + 'ratings/', 'showMovies')
 SERIE_LIST = (URL_MAIN + 'series-list/', 'showAlpha')
 SERIE_GENRES = (True, 'showGenres')
 
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
+
 def load():
     oGui = cGui()
 
@@ -288,6 +290,8 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    cook = oRequestHandler.GetCookies()
+    
 
     try:#récupération du Synopsis
         sDesc = ''
@@ -299,7 +303,7 @@ def showLinks():
     except:
         pass
 
-    sPattern = "domain=(.+?)\".+?document.getElementsByName\(\'iframe\'\).+?src\'.+?\'(.+?)\'\);.+?<\/td><td>(.+?)<\/td>"
+    sPattern = "domain=(.+?)\".+?document.getElementsByName\(\'iframe\'\).+?src\'.+?\'(.+?)\'\);.+?<td>(.+?)<\/td>"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -323,25 +327,28 @@ def showLinks():
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb )
-
+            oOutputParameterHandler.addParameter('sCook', cook)
             #oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
-
+ 
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sCook = oInputParameterHandler.getValue('sCook')
+    
+    oRequest = cRequestHandler(sUrl)
+    oRequest.addHeaderEntry('User-Agent', UA)
+    oRequest.addHeaderEntry('Cookie', sCook)
+    sHtmlContent = oRequest.request()
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    sHosterUrl = oRequestHandler.getRealUrl()
+    sHosterUrl = oRequest.getRealUrl()
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
@@ -350,3 +357,5 @@ def showHosters():
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+    
+    

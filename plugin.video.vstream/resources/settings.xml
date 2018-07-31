@@ -57,6 +57,10 @@
         <setting label="30035" type="action" action="XBMC.RunScript(plugin.video.vstream, soutient, ?site=globalRun&function=soutient)"/>
         <setting label="30116" type="lsep"/>
         <setting type="sep"/>
+		
+	<!--parametre qui enregistre l'url actuel de zt -->
+	<setting id="ZT" type="text" label="" default="" visible="false"/>
+		
         <!--<setting label="30420" type="action"  action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, search)" />-->
         <setting label="30420" type="action"  action="XBMC.RunScript(plugin.video.vstream, search, ?site=globalRun&function=search)" />
 
