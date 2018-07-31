@@ -167,7 +167,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     #lien direct mp4
-    sPattern = 'file: "([^"]+)"'
+    sPattern = "<source src='([^']+)' type='video/mp4'"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
      #lien dailymotion
@@ -189,6 +189,22 @@ def showHosters():
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     else:
-        oGui.addText(SITE_IDENTIFIER, '(Video non visible, Lien Premium)')
+        #play premium vid
+        vidpremium = sHtmlContent.find('alt="Video Premium"')
+        if vidpremium != -1:
+            sPattern = "window.location.href = '([^']+)';"
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                sHosterUrl = aResult[1][0].replace('download-','').replace('.html','')
+
+                sHosterUrl = 'http://videos.lesdebiles.com/' + sHosterUrl + '.mp4'
+
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+        else:
+            oGui.addText(SITE_IDENTIFIER, '(Video non visible)')
 
     oGui.setEndOfDirectory()
