@@ -197,6 +197,11 @@
         <setting id="service_log" type="text" label="Url de votre log:" default="" enable="false"/>
 
         <setting type="sep"/> 
+        <setting subsetting="true" label="Import/Export la BDD (Marque-Page, Historique, etc..)" type="lsep"/>
+        <!--<setting label="Clear Cache Addon" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, addon)"/>-->       
+        <setting label="Import/Export" type="action" action="XBMC.RunScript(plugin.video.vstream, sauv, ?site=globalRun&function=sauv)"/>
+
+        <setting type="sep"/> 
         <setting subsetting="true" label="Supprime les BDD de vStream" type="lsep"/>   
         <!--<setting label="Supprimer une BDD" type="action" action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, clean)"/>-->
         <setting label="Supprimer une BDD" type="action" action="XBMC.RunScript(plugin.video.vstream, clean, ?site=globalRun&function=clear)"/>

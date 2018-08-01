@@ -310,8 +310,31 @@ class cClear:
                 #         con.close()
             return
 
-        else:
+        elif (env == 'sauv'):
+            #dialog.select('Choose a playlist', ['Playlist #1', 'Playlist #2, 'Playlist #3'])
+            select = self.DIALOG.VSselect(['Import','Export'])
+            DB = "special://home/userdata/addon_data/plugin.video.vstream/vstream.db"
+            if select >= 0:
+                #new = self.DIALOG.browse(3, 'vStream', 'files')
+                new = self.DIALOG.browse(3, 'vStream', "files")
+                if new:
+                    try:
+                        if select == 0:
+                            xbmcvfs.delete(DB)
+                            #copy(source, destination)--copy file to destination, returns true/false.
+                            xbmcvfs.copy(new + 'vstream.db', DB)
+                        elif select == 1:
+                            #copy(source, destination)--copy file to destination, returns true/false.
+                            xbmcvfs.copy(DB, new + 'vstream.db')
+                        self.DIALOG.VSinfo('Import/Export DB, Successful')
+                    except:
+                        self.DIALOG.VSerror('Import/Export DB, Error')
+
                 return
+
+        else:
+            return
+
         return
 
     # def ClearDir(self, dir, clearNested = False):
