@@ -6,8 +6,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, addon
 import re
+sColor = addon().getSetting("deco_color")
 
 SITE_IDENTIFIER = 'tfarjo'
 SITE_NAME = 'Tfarjo'
@@ -284,7 +285,7 @@ def showSaisons():
                 break
 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR olive]' + str(aEntry[0]) + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
 
             else:
                 if aEntry[3] == 'nothing':
@@ -327,8 +328,7 @@ def showLink():
             sHost = aEntry[2]
             sCode2 = aEntry[1]
             
-            #sDisplayTitle = "%s [%s %s]" % (sMovieTitle, sHost, sLang)
-            sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
+            sDisplayTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang, sColor, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sCode', sCode)
