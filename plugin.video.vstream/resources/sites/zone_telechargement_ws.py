@@ -28,7 +28,7 @@ def GetURL_MAIN():
     ADDON = addon()
     MemorisedHost = ''
     oInputParameterHandler = cInputParameterHandler()
-    MemorisedHost_2 = oInputParameterHandler.getValue('siteUrl')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     Sources = oInputParameterHandler.getValue('function')
 
     # z = oInputParameterHandler.getAllParameter()
@@ -36,8 +36,8 @@ def GetURL_MAIN():
 
     # quand vstream load tous les sites on passe >> globalSources
     # quand vstream load a partir du menu home on passe >> callplugin
-    # quand l'url ne contient pas celle déjà enregistrer dans settings on active.
-    if not (Sources == 'callpluging' or Sources == 'globalSources' ) and not ADDON.getSetting('ZT')[6:] in MemorisedHost_2 :
+    # quand l'url ne contient pas celle déjà enregistrer dans settings et que c'est pas dlprotect on active.
+    if not (Sources == 'callpluging' or Sources == 'globalSources' ) and not ADDON.getSetting('ZT')[6:] in sUrl and not 'dl-protect1.com' in sUrl:
         oRequestHandler = cRequestHandler(URL_HOST)
         sHtmlContent = oRequestHandler.request()
         MemorisedHost = oRequestHandler.getRealUrl()
