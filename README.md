@@ -76,5 +76,3 @@ Pour participer directement au projet:
 Merci à tous nos généreux donateurs et donatrices.
 
 Bon Film ++
-
-testt
