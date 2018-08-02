@@ -6,9 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-
 from resources.lib.comaddon import progress
-import re
 
 SITE_IDENTIFIER = 'disneyhd_tk'
 SITE_NAME = 'Disney HD'
@@ -104,7 +102,15 @@ def sHowResultSearch(sSearch = ''):
 
     if not sSearch:
         oGui.setEndOfDirectory()
-
+        
+def order(sList,sIndex):
+    #remet en ordre le résultat du parser par un index ici par le titre qui est en position 2
+    #exemple: ('http://venom', 'sThumb', 'sTitle')
+    #          aResult = order(aResult[1],2)
+    aResult = sorted(sList, key=lambda a:a[sIndex])
+    #retourne au format du parser
+    return True,aResult
+    
 def showMovies():
     oGui = cGui()
     oParser = cParser()
@@ -116,17 +122,16 @@ def showMovies():
     sHtmlContent = oRequestHandler.request()
 
     if 'ajouts' in sFiltre:
-        sPattern = '<i>Derniers films.+?</i>(.+?)<i>Dernières sorties.+?</i>'
-        sHtmlContent = re.search(sPattern, sHtmlContent, re.DOTALL)
-        aResult = oParser.parse(sHtmlContent.group(1), sPattern1)
-    elif 'nouveautes' in sFiltre:
-        sPattern = '<i>Dernières sorties.+?</i>(.+?)<b>Visionnés en ce moment :</b>'
-        sHtmlContent = re.search(sPattern, sHtmlContent, re.DOTALL)
-        aResult = oParser.parse(sHtmlContent.group(1), sPattern1)
-    else:
+        sHtmlContent = oParser.abParse(sHtmlContent, '<i>Derniers films', '<i>Dernières sorties')
         aResult = oParser.parse(sHtmlContent, sPattern1)
-        aResult[1].sort()
-
+    elif 'nouveautes' in sFiltre:
+        sHtmlContent = oParser.abParse(sHtmlContent, '<i>Dernières sorties', '<b>Visionnés en ce moment')
+        aResult = oParser.parse(sHtmlContent, sPattern1)
+    else:
+        sHtmlContent = oParser.abParse(sHtmlContent, 'par date de sortie', '</html>')
+        aResult = oParser.parse(sHtmlContent, sPattern1)
+        aResult = order(aResult[1],2)
+        
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
@@ -162,16 +167,14 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<p.+?<(?:iframe|video).+?src="(.+?)"'
+    
     oParser = cParser()
+
+    #film
+    sPattern = '<p.+?<(?:iframe|video).+?src="([^"]+(?<!,))".+?<\/video>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
-
     if (aResult[0] == True):
-        
         for aEntry in aResult[1]:
 
             sHosterUrl = str(aEntry)
@@ -202,5 +205,22 @@ def showHosters():
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
+    else:
+        #playlist-serie lien direct http pour le moment
+        sPattern = '<li data-trackurl="([^"]+)">(.+?)<\/li>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            for aEntry in aResult[1]:
+                sHosterUrl = aEntry[0]
+                sTitle = aEntry[1]
+                
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sTitle)
+                    oHoster.setFileName(sTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+             
+        else:
+            oGui.addText(SITE_IDENTIFIER)
+            
     oGui.setEndOfDirectory()
