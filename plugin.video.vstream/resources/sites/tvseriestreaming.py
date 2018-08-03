@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'tvseriestreaming'
 SITE_NAME = 'Tv_seriestreaming'
 SITE_DESC = 'Séries & Animés en Streaming'
 
-URL_MAIN = 'https://vf.seriestreaming.site/'
+URL_MAIN = 'https://seriestreaming.to/'
 
 SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = (URL_MAIN + 'nouveaux-episodes', 'showMovies')
@@ -273,7 +273,7 @@ def showS_E():
     oRequestHandler = cRequestHandler(rUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<img class="img-flu.+?".+?src=([^\s]+)|<a class="btn btn-primary btn-blo.+?" href="([^"]+)">(.+?)<\/a><\/div>'
+    sPattern = '<img class="img-flu.+?".+?src=(http.+?(?:.jpe*g|.png))|<a class="btn btn-primary btn-blo.+?" href="([^"]+)">(.+?)<\/a><\/div>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
