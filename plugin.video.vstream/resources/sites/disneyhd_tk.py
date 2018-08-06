@@ -187,6 +187,7 @@ def showHosters():
                     class NoRedirection(urllib2.HTTPErrorProcessor):
                         def http_response(self, request, response):
                             return response
+                        https_response = http_response
 
                     url8 = sHosterUrl.replace('https', 'http')
 
