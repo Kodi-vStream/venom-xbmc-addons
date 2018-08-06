@@ -13,6 +13,7 @@ UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/20080924
 class NoRedirection(urllib2.HTTPErrorProcessor):    
     def http_response(self, request, response):
         return response
+    https_response = http_response
 
 class SucurieBypass(object):
 
