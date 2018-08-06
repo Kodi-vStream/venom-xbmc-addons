@@ -189,8 +189,6 @@ def showHosters():
                             return response
                         https_response = http_response
 
-                    url8 = sHosterUrl.replace('https', 'http')
-
                     opener = urllib2.build_opener(NoRedirection)
                     opener.addheaders.append (('User-Agent', UA))
                     opener.addheaders.append (('Connection', 'keep-alive'))
