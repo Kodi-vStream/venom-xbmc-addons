@@ -418,9 +418,10 @@ def showSeries(sSearch = ''):
                 sThumb = URL_MAIN[:-1] + sThumb
 
             #filtre pour réorienter les mangas
-            sType = ''
             if '/mangas/' in sUrl:
                 sType = 'mangas'
+            else:
+                sType = 'autre'
 
             sTitle = aEntry[2].replace('- Saison', ' Saison')
 

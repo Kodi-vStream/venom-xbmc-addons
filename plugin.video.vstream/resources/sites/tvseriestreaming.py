@@ -6,9 +6,10 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
-
+from resources.lib.comaddon import progress,addon
 import re
+
+sColor = addon().getSetting("deco_color")
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101 Firefox/60.0'
 
@@ -16,7 +17,7 @@ SITE_IDENTIFIER = 'tvseriestreaming'
 SITE_NAME = 'Tv_seriestreaming'
 SITE_DESC = 'Séries & Animés en Streaming'
 
-URL_MAIN = 'https://vf.seriestreaming.site/'
+URL_MAIN = 'https://seriestreaming.to/'
 
 SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = (URL_MAIN + 'nouveaux-episodes', 'showMovies')
@@ -99,7 +100,7 @@ def showAZ():
             
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sLetter', sLetter)
-        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', 'Lettre [COLOR coral]' + aLetter + '[/COLOR]', 'az.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', "%s [COLOR %s]%s[/COLOR]" % ("Lettre", sColor, aLetter), 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -272,7 +273,7 @@ def showS_E():
     oRequestHandler = cRequestHandler(rUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<img class="img-flu.+?".+?src=(.+?)>|<a class="btn btn-primary btn-blo.+?" href="([^"]+)">(.+?)</a></div>'
+    sPattern = '<img class="img-flu.+?".+?src=(http.+?(?:.jpe*g|.png))|<a class="btn btn-primary btn-blo.+?" href="([^"]+)">(.+?)<\/a><\/div>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -352,7 +353,7 @@ def showLink():
             sHost = re.sub('\..+', '', aEntry[0]).capitalize()
             sUrl = URL_MAIN + 'link/' + aEntry[2]
             sLang = str(aEntry[1])
-            sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
+            sTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang, sColor, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)

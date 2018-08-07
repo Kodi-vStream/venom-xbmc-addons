@@ -19,6 +19,7 @@ SITE_DESC = 'Fichiers sur compte 1Fichier'
 URL_MAIN = 'https://1fichier.com/'
 URL_FILE = URL_MAIN + 'console/files.pl'
 URL_REMOTE = URL_MAIN + 'console/remote.pl'
+URL_VERIF = URL_MAIN + 'check_links.pl?links[]='
 
 def load():
     addons = addon()
@@ -121,20 +122,23 @@ def UptomyAccount():
     sMediaUrl = oInputParameterHandler.getValue('sMediaUrl')
 
     oPremiumHandler = cPremiumHandler('onefichier')
-    #requete
-    sHtmlContent = oPremiumHandler.GetHtml(URL_REMOTE,"%s%s%s" % ("links=", sMediaUrl, "&did=0"))
-    #sleep au cas ou
-    xbmc.sleep(2000)
-    #on verifie que le liens est dans la liste d'attente
-    aResult = oPremiumHandler.GetHtml('%s%s' % (URL_REMOTE,'?c=todo'))
-    if (aResult):
-        sCheck = aResult.find(sMediaUrl)
+    #verif du lien
+    sHtmlContent = oPremiumHandler.GetHtml("%s" % (URL_VERIF + sMediaUrl))
+    if (sHtmlContent):
+        sCheck = sHtmlContent.find('NOT FOUND')
         if sCheck != -1:
             #penible ce dialog auth
             xbmc.executebuiltin("Dialog.Close(all,true)")
-            xbmcgui.Dialog().notification('Info upload', 'OK', xbmcgui.NOTIFICATION_INFO, 2000, False)
-        else:
-            #penible ce dialog auth
-            xbmc.executebuiltin("Dialog.Close(all,true)")
             xbmcgui.Dialog().notification('Info upload', 'Fichier introuvable', xbmcgui.NOTIFICATION_INFO, 2000, False)
+        
+        else:
+            # si liens ok >> requete
+            sHtmlContent = oPremiumHandler.GetHtml(URL_REMOTE,"%s%s%s" % ("links=", sMediaUrl, "&did=0"))
+            if (sHtmlContent):
+                sCheck = sHtmlContent.find('1 liens')
+                if sCheck != -1:
+                    #penible ce dialog auth
+                    xbmc.executebuiltin("Dialog.Close(all,true)")
+                    xbmcgui.Dialog().notification('Info upload', 'Ajouter a votre compte', xbmcgui.NOTIFICATION_INFO, 2000, False)
+
 

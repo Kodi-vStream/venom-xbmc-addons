@@ -10,7 +10,7 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, VSlog
 
 SITE_IDENTIFIER = 'lsdb'
-SITE_NAME = 'Liveset Database (beta)'
+SITE_NAME = 'Liveset Database (bêta)'
 SITE_DESC = 'liveset podcast et autre de musique électronique'
 
 URL_MAIN = 'https://lsdb.eu' #Pas de / car peut poser probleme
@@ -37,27 +37,27 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, NETS_NEWS[1], 'les nouveaux liveset', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, NETS_NEWS[1], 'Les nouveaux liveset', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'les genres musicaux', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, NETS_GENRES[1], 'Les genres musicaux', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_EVENTS[0])
-    oGui.addDir(SITE_IDENTIFIER, NETS_EVENTS[1], 'les évènements ', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, NETS_EVENTS[1], 'Les évènements ', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_SHOWS[0])
-    oGui.addDir(SITE_IDENTIFIER, NETS_SHOWS[1], 'les shows', 'replay.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, NETS_SHOWS[1], 'Les shows', 'replay.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_PODCAST[0])
-    oGui.addDir(SITE_IDENTIFIER, NETS_PODCAST[1], 'les podcasts', 'replay.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, NETS_PODCAST[1], 'Les podcasts', 'replay.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', NETS_PROMO[0])
-    oGui.addDir(SITE_IDENTIFIER, NETS_PROMO[1], 'les promotions', 'replay.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, NETS_PROMO[1], 'Les promotions', 'replay.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -134,8 +134,8 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sTitle = str(aEntry[1])
-            sUrl2 = str(aEntry[0])
+            sTitle = aEntry[1]
+            sUrl2 = aEntry[0]
             sThumb = ''
             sDesc = ''
 
@@ -146,7 +146,6 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            #oGui.addMovie(SITE_IDENTIFIER, 'showIsdb', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             oGui.addMisc(SITE_IDENTIFIER, 'showIsdb', sTitle, 'replay.png', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -159,7 +158,7 @@ def showMovies(sSearch = ''):
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
-        oGui.setEndOfDirectory() #ferme l'affichage
+        oGui.setEndOfDirectory()
 
 def showIsdb(sSearch = ''):
     oGui = cGui()
@@ -188,9 +187,9 @@ def showIsdb(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl2 = str(aEntry[0])
+            sUrl2 = aEntry[0]
             sTitle = sMovieTitle
-            sHoster = str(aEntry[1])
+            sHoster = aEntry[1].capitalize()
             sThumb = 'special://home/addons/plugin.video.vstream/resources/art/replay.png'
             sDesc = ''
 
@@ -239,8 +238,8 @@ def showEvents(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sTitle = str(aEntry[1])
-            sUrl2 = str(aEntry[0])
+            sTitle = aEntry[1]
+            sUrl2 = aEntry[0]
             sThumb = ''
             sDesc = ''
 
@@ -251,7 +250,6 @@ def showEvents(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            #oGui.addMovie(SITE_IDENTIFIER, 'showMovies', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'annees.png', oOutputParameterHandler)
 
 
@@ -273,10 +271,10 @@ def showShows(sSearch = ''):
       sUrl = sSearch
     else:
         oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl') #recupere l'url sortie en parametre
+        sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    oRequestHandler = cRequestHandler(sUrl) #envoye une requete a l'url
-    sHtmlContent = oRequestHandler.request() #requete aussi
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
 
     sPattern = '<i class=".+?"></i>\s* <a href="([^"]+)">\s*([^"]+)\s*</a>'
 
@@ -296,8 +294,8 @@ def showShows(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sTitle = str(aEntry[1])
-            sUrl2 = str(aEntry[0])
+            sTitle = aEntry[1]
+            sUrl2 = aEntry[0]
             sThumb = ''
             sDesc = ''
 
@@ -308,7 +306,6 @@ def showShows(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            #oGui.addMovie(SITE_IDENTIFIER, 'showMovies', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'replay.png', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -352,8 +349,8 @@ def showPodcast(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sTitle = str(aEntry[1])
-            sUrl2 = str(aEntry[0])
+            sTitle = aEntry[1]
+            sUrl2 = aEntry[0]
             sThumb = ''
             sDesc = ''
 
@@ -364,7 +361,6 @@ def showPodcast(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            #oGui.addMovie(SITE_IDENTIFIER, 'showMovies', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'replay.png', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -408,8 +404,8 @@ def showPromo(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sTitle = str(aEntry[1])
-            sUrl2 = str(aEntry[0])
+            sTitle = aEntry[1]
+            sUrl2 = aEntry[0]
             sThumb = ''
             sDesc = ''
 
@@ -420,7 +416,6 @@ def showPromo(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            #oGui.addMovie(SITE_IDENTIFIER, 'showMovies', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'replay.png', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -464,7 +459,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)

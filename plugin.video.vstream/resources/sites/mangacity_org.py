@@ -746,6 +746,7 @@ def GetTinyUrl(url):
         class NoRedirection(urllib2.HTTPErrorProcessor):
             def http_response(self, request, response):
                 return response
+            https_response = http_response
 
         headers9 = [('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'), ('Referer', URL_MAIN)]
 

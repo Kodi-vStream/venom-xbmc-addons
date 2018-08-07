@@ -48,11 +48,10 @@ class cHoster(iHoster):
         oParser = cParser()
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
-        sPattern =  'src: "([^"]+)"[^\}]+label:\'([^\']+)\''
+
+        sPattern =  'src: *"([^"]+)".+?label:"([^"]+)"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-
         if (aResult[0] == True):
             #initialisation des tableaux
             url=[]

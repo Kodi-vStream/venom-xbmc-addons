@@ -177,7 +177,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = '<div class="poster".+?img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">'
+        sPattern = '<div class="poster".+?img src="(http[^"]+)" alt="(.+?)".+?<a href="([^"]+)">'
 
 
     oRequestHandler = cRequestHandler(sUrl)

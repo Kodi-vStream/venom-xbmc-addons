@@ -6,8 +6,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, addon
 import re
+sColor = addon().getSetting("deco_color")
 
 SITE_IDENTIFIER = 'tfarjo'
 SITE_NAME = 'Tfarjo'
@@ -37,7 +38,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
@@ -45,7 +46,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
@@ -110,15 +111,15 @@ def showGenres():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-    
+
 def getcode(sHtmlContent):
     sPattern1 = '<input type="hidden" name="csrf_test_name" id="csrf_test_name" value="([^"]+)">'
-    sCode = re.search(sPattern1,sHtmlContent)
+    sCode = re.search(sPattern1, sHtmlContent)
     if sCode:
         return sCode.group(1)
     else:
         return ''
-        
+
 def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
@@ -127,19 +128,19 @@ def showMovies(sSearch = ''):
         oRequest = cRequestHandler(URL_MAIN)
         sHtmlContent = oRequest.request()
         cook = oRequest.GetCookies()
-        
+
         sCode = getcode(sHtmlContent)
-  
+
         sText = sSearch
         oRequest = cRequestHandler(URL_SEARCH_MOVIES[0])
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer', URL_MAIN)
         oRequest.addHeaderEntry('Cookie', cook)
-        oRequest.addParametersLine('search='+sText+'&csrf_test_name='+sCode)
+        oRequest.addParametersLine('search=' + sText + '&csrf_test_name=' + sCode)
 
         sHtmlContent = oRequest.request()
-        sHtmlContent = re.sub('<h2></h2>','<span class="Langue..."></span><span class="qalite">Qualité...</span>',sHtmlContent) #recherche pas de qualité,langue
+        sHtmlContent = re.sub('<h2></h2>', '<span class="Langue..."></span><span class="qalite">Qualité...</span>', sHtmlContent) #recherche pas de qualité,langue
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -147,10 +148,10 @@ def showMovies(sSearch = ''):
 
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        
-        #parfois pas de qualité,langue,liens >> BA 
-        sHtmlContent = re.sub('<span class="bientot"></span>','<span class="nothing"></span><span class="qalite">nothing</span>',sHtmlContent)
-    
+
+        #parfois pas de qualité,langue,liens >> BA
+        sHtmlContent = re.sub('<span class="bientot"></span>', '<span class="nothing"></span><span class="qalite">nothing</span>', sHtmlContent)
+
     sPattern = '<div class="image">.+?<a href="([^"]+)".+?<img src="([^"]+)".+?title="(.+?)">.+?<span class="(.+?)"></span><span class="qalite">(.+?)</span>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -168,14 +169,14 @@ def showMovies(sSearch = ''):
 
             if aEntry[3] == 'nothing' and aEntry[4] == 'nothing': #pas de qualité,langue,liens >> BA
                 continue
-  
+
             sUrl = aEntry[0]
             sThumb = aEntry[1]
             sTitle = aEntry[2]
             sLang = aEntry[3]
             sQual = aEntry[4]
-            
-            sDisplayTitle = ('%s (%s) (%s)') % (sTitle, sQual, sLang)
+
+            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -215,12 +216,12 @@ def showSeries():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     oParser = cParser()
     sPattern = '<div class="image">.+?<a href="([^"]+)".+?<img src="([^"]+)".+?title="(.+?)">'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
- 
+
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
@@ -265,11 +266,11 @@ def showSaisons():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     sHtmlContent = oParser.abParse(sHtmlContent, 'begin seasons', 'end seasons')
     #pas encore d'épisode >> timer avant sortie
-    sHtmlContent = re.sub('<kbd><span','<kbd>nothing</span>',sHtmlContent)
-    
+    sHtmlContent = re.sub('<kbd><span', '<kbd>nothing</span>', sHtmlContent)
+
     sPattern = '<h3 class="panel-title"><a href=".+?">(saison *\d+)<\/a>|href="([^"]+)">.+?<\/span>(.+?)<\/a>.+?<kbd>(.+?)<\/span>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -284,15 +285,15 @@ def showSaisons():
                 break
 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR olive]' + str(aEntry[0]) + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
 
             else:
                 if aEntry[3] == 'nothing':
                     continue
-                   
+
                 sUrl = aEntry[1]
 
-                sDisplayTitle = "%s %s (%s)" % (sMovieTitle, aEntry[2].replace(',',''), aEntry[3])
+                sDisplayTitle = "%s %s (%s)" % (sMovieTitle, aEntry[2].replace(',', ''), aEntry[3])
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -317,18 +318,17 @@ def showLink():
     sHtmlContent = oRequest.request()
     cook = oRequest.GetCookies()
     sCode = getcode(sHtmlContent)
-    
+
     sPattern2 = "<button *class=\"players(?:(vf|vo|vostfr))\" *onclick=\"getIframe\('([^']+)'\).+?title=\"([^\"]+)\""
     aResult = oParser.parse(sHtmlContent, sPattern2)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-        
-            sLang = aEntry[0].capitalize()
-            sHost = aEntry[2]
+
+            sLang = aEntry[0].upper()
+            sHost = aEntry[2].capitalize()
             sCode2 = aEntry[1]
-            
-            #sDisplayTitle = "%s [%s %s]" % (sMovieTitle, sHost, sLang)
-            sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
+
+            sDisplayTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang, sColor, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('sCode', sCode)
@@ -352,7 +352,7 @@ def showHosters():
     sCode2 = oInputParameterHandler.getValue('sCode2')
     sCook = oInputParameterHandler.getValue('sCook')
 
-    
+
     oParser = cParser()
 
     oRequest = cRequestHandler(URL_MAIN + 'getlink')
@@ -360,15 +360,15 @@ def showHosters():
     oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Referer', sUrl)
     oRequest.addHeaderEntry('Cookie', sCook)
-    oRequest.addParametersLine('csrf_test_name='+sCode+'&movie='+sCode2)
+    oRequest.addParametersLine('csrf_test_name=' + sCode + '&movie=' + sCode2)
 
     sHtmlContent = oRequest.request()
-    sHtmlContent = sHtmlContent.replace('\\','')
-    
+    sHtmlContent = sHtmlContent.replace('\\', '')
+
     sPattern = '<iframe.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        
+
         sHosterUrl = aResult[1][0]
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
