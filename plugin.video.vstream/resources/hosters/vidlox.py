@@ -39,24 +39,9 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return True
 
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
-    
-    def __getIdFromUrl(self, sUrl):
-        return ''
-
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
 
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return
-    
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
@@ -66,13 +51,16 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         
+        #accelère le traitement
+        sHtmlContent = oParser.abParse(sHtmlContent, 'var player', 'vvplay')
+
         sPattern =  '([^"]+\.mp4)'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             #initialisation des tableaux
             url=[]
-            qua=["HD","SD"] #bidouille evite m3u8
+            qua=["HD","SD"] #sd en 2eme pos generalement quand sd
             api_call = ''
 
             #Replissage des tableaux

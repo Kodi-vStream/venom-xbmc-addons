@@ -9,6 +9,8 @@ import urllib2,urllib
 import xbmc
 import xbmcaddon
 
+Mode_Debug = False
+
 #---------------------------------------------------------
 #Gros probleme, mais qui a l'air de passer
 #Le headers "Cookie" apparait 2 fois, il faudrait lire la precedente valeur
@@ -39,7 +41,7 @@ import xbmcaddon
 # sHtmlContent = CloudflareBypass().GetHtml(sUrl)
 
 PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
-UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
 def parseIntOld(chain):
 
@@ -134,10 +136,12 @@ def showInfo(sTitle, sDescription, iSeconds=0):
     else:
         iSeconds = iSeconds * 1000
     xbmc.executebuiltin("Notification(%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds))
-
+        
 class NoRedirection(urllib2.HTTPErrorProcessor):
     def http_response(self, request, response):
         return response
+        
+    https_response = http_response
 
 class CloudflareBypass(object):
 
@@ -145,6 +149,9 @@ class CloudflareBypass(object):
         self.state = False
         self.HttpReponse = None
         self.Memorised_Headers = None
+        self.Memorised_PostData = None
+        self.Header = None
+        self.RedirectionUrl = None
 
     def DeleteCookie(self,Domain):
         xbmc.log('Effacement cookies')
@@ -204,195 +211,169 @@ class CloudflareBypass(object):
         calcul = parseInt(line1[0][2])
 
         AllLines = re.findall(';' + varname + '([*\-+])=([^;]+)',htmlcontent)
-        
-        #print(">>>>>>>>>>>>>>>>: " + format(calcul,'.17g'))
 
         for aEntry in AllLines:
             calcul = eval( format(calcul,'.17g') + str(aEntry[0]) + format(parseInt(aEntry[1]),'.17g'))
-            #print(">>>>>>>>>>>>>>>>: " + format(calcul,'.17g')+ '\n')
 
         rep = calcul + len(self.host)
 
         return format(rep,'.10f')
 
     def GetReponseInfo(self):
-        return self.HttpReponse.geturl(), self.HttpReponse.info()
+        return self.RedirectionUrl, self.Header
 
-    def GetHtml(self,url,htmlcontent = '',cookies = '',postdata = '',Gived_headers = ''):
-    
+    def GetHtml(self,url,htmlcontent = '',cookies = '',postdata = None,Gived_headers = ''):
+ 
         #Memorise headers
         self.Memorised_Headers = Gived_headers
+        
+        #Memorise postdata
+        self.Memorised_PostData = postdata
 
         #For debug
-        if (False):
+        if (Mode_Debug):
             xbmc.log('Headers present ' + str(Gived_headers), xbmc.LOGNOTICE)
             xbmc.log('url ' + url, xbmc.LOGNOTICE)
             if (htmlcontent):
                 xbmc.log('code html ok', xbmc.LOGNOTICE)
             xbmc.log('cookies passés' + cookies, xbmc.LOGNOTICE)
+            xbmc.log('post data :' + str(postdata), xbmc.LOGNOTICE)
 
         self.hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',url)
         self.host = re.sub(r'https*:\/\/','',self.hostComplet)
-
         self.url = url
 
         cookieMem = self.Readcookie(self.host.replace('.','_'))
         if not (cookieMem == ''):
-
             cookies = cookieMem
             xbmc.log('cookies present sur disque', xbmc.LOGNOTICE)
+            
+        #Max 3 loop
+        loop = 3
+        while (loop > 0):
+            loop -= 1
 
-            #Redirection possible
-            opener = urllib2.build_opener()
+            #Redirection possible ?
+            if (True):
+                opener = urllib2.build_opener(NoRedirection)
+            else:
+                opener = urllib2.build_opener()
+                
             opener.addheaders = self.SetHeader()
 
-            #Add saved cookies
-            opener.addheaders.append (('Cookie', cookies))
+            if ('cf_clearance' not in cookies) and htmlcontent and ('__cfduid=' in cookies):
+                
+                xbmc.log("******  Decodage *****", xbmc.LOGNOTICE)
+
+                #recuperation parametres
+                hash = re.findall('<input type="hidden" name="jschl_vc" value="(.+?)"\/>',htmlcontent)[0]
+                passe = re.findall('<input type="hidden" name="pass" value="(.+?)"\/>',htmlcontent)[0]
+
+                #calcul de la reponse
+                rep = self.GetResponse(htmlcontent)
+
+                #Temporisation
+                #showInfo("Information", 'Decodage protection CloudFlare' , 5)
+                xbmc.sleep(6000)
+
+                url = self.hostComplet + '/cdn-cgi/l/chk_jschl?jschl_vc='+ urllib.quote_plus(hash) +'&pass=' + urllib.quote_plus(passe) + '&jschl_answer=' + rep
+                
+                #No post data here
+                postdata = None
+
+                #To avoid captcha
+                if not "'Accept'" in str(opener.addheaders):
+                    opener.addheaders.append(('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'))
+                    
+                #opener.addheaders.append(('Connection', 'keep-alive'))
+                #opener.addheaders.append(('Accept-Encoding', 'gzip, deflate, br'))
+                #opener.addheaders.append(('Cache-Control', 'max-age=0'))
+                
+            #Add cookies
+            if cookies:
+                opener.addheaders.append (('Cookie', cookies))               
+                
+            if not 'Referer' in str(opener.addheaders):
+                opener.addheaders.append(('Referer', self.url))
+            #if not 'Accept' in str(opener.addheaders):
+            #    opener.addheaders.append(('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'))
+                
+            xbmc.log("Url demandee " + str(url), xbmc.LOGNOTICE )
 
             try:
-                self.HttpReponse = opener.open(url,postdata)
+                if postdata:
+                    self.HttpReponse = opener.open(url,postdata)
+                else:
+                    self.HttpReponse = opener.open(url)
                 htmlcontent = self.HttpReponse.read()
-                head = self.HttpReponse.headers
+                self.Header = self.HttpReponse.headers
+                self.RedirectionUrl = self.HttpReponse.geturl()
                 self.HttpReponse.close()
-                
             except urllib2.HTTPError, e:
-                if e.code == 503:
-                    htmlcontent = e.read()
-                    head = e.headers
-                    
+                xbmc.log("Error " + str(e.code), xbmc.LOGNOTICE)
+                htmlcontent = e.read()
+                self.Header = e.headers
+                self.RedirectionUrl = e.geturl()
+                
+            url = self.RedirectionUrl
+            postdata = self.Memorised_PostData
+                
+            #For debug
+            if (Mode_Debug):
+                xbmc.log("Headers send " + str(opener.addheaders), xbmc.LOGNOTICE)
+                xbmc.log("cookie send " + str(cookies), xbmc.LOGNOTICE)
+                xbmc.log("header recu " + str(self.Header), xbmc.LOGNOTICE)
+                xbmc.log("Url obtenue " + str(self.RedirectionUrl), xbmc.LOGNOTICE)
+                
+            if 'Please complete the security check' in htmlcontent:
+                #fh = open('c:\\test.txt', "w")
+                #fh.write(htmlcontent)
+                #fh.close()
+                xbmc.log("Probleme protection Cloudflare : Protection captcha", xbmc.LOGNOTICE)
+                showInfo("Erreur", 'Probleme CloudFlare, pls Retry' , 5)
+                return ''
+                
             if not CheckIfActive(htmlcontent):
                 # ok no more protection
-                return htmlcontent
+                xbmc.log("Page ok", xbmc.LOGNOTICE)
+                #need to save cookies ?
+                if not cookieMem:
+                    self.SaveCookie(self.host.replace('.','_'),cookies)
+                    
+                #fh = open('c:\\test.txt', "w")
+                #fh.write(htmlcontent)
+                #fh.close()
+                
+                url2 = self.Header.get('Location','')
+                if url2:
+                    url = url2
+                else:
+                    return htmlcontent
+                    
+            else:
 
-            #Arf, problem, cookies not working, delete them
-            xbmc.log('Cookies Out of date', xbmc.LOGNOTICE)
-            self.DeleteCookie(self.host.replace('.','_'))
+                #Arf, problem, cookies not working, delete them
+                if cookieMem:
+                    xbmc.log('Cookies Out of date', xbmc.LOGNOTICE)
+                    self.DeleteCookie(self.host.replace('.','_'))
+                    cookieMem = ''
+                    
+            #Get new cookies
+            if 'Set-Cookie' in self.Header:
+                cookies2 = str(self.Header.get('Set-Cookie'))
 
-            #Get the first new cookie, we already have the new html code
-            cookies = ''
-            if 'Set-Cookie' in head:
-                cookies = head['Set-Cookie']
-                cookies = cookies.split(';')[0]
+                c1 = re.findall('__cfduid=(.+?);',cookies2)
+                c2 = re.findall('cf_clearance=(.+?);',cookies2)
+                
+                if c2 and not c1:
+                    c1 = re.findall('__cfduid=([0-9a-z]+)',cookies)
+                    
+                if c1 and c2:
+                    cookies = '__cfduid=' + c1[0] + '; cf_clearance=' + c2[0]
+                elif c1:
+                    cookies = '__cfduid=' + c1[0]
 
-        #if we need a first load
-        if (htmlcontent == '') or (cookies == ''):
-
-            opener = urllib2.build_opener(NoRedirection)
-            opener.addheaders = self.SetHeader()
-
-            self.HttpReponse = opener.open(url,postdata)
-
-            #code
-            htmlcontent = self.HttpReponse.read()
-
-            #fh = open('c:\\test.txt', "r")
-            #htmlcontent = fh.read()
-            #fh.close()
-
-            #if no protection
-            head = self.HttpReponse.headers
-            if not CheckIfActive(htmlcontent):
-                return htmlcontent
-
-            xbmc.log("Page protegée, tout a charger", xbmc.LOGNOTICE)
-            #cookie
-            head = self.HttpReponse.headers
-            if 'Set-Cookie' in head:
-                cookies = head['Set-Cookie']
-                cookies = cookies.split(';')[0]
-
-            self.HttpReponse.close()
-            
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(htmlcontent)
-        #fh.close()
-
-        #2 eme etape recuperation parametres
-        hash = re.findall('<input type="hidden" name="jschl_vc" value="(.+?)"\/>',htmlcontent)[0]
-        passe = re.findall('<input type="hidden" name="pass" value="(.+?)"\/>',htmlcontent)[0]
-
-        #calcul de la reponse
-        rep = self.GetResponse(htmlcontent)
-
-        #Temporisation
-        #j'en peux plus de cette popup xD
-        #showInfo("Information", 'Decodage protection CloudFlare' , 5)
-        xbmc.sleep(5000)
-
-        NewUrl = self.hostComplet + '/cdn-cgi/l/chk_jschl?jschl_vc='+ urllib.quote_plus(hash) +'&pass=' + urllib.quote_plus(passe) + '&jschl_answer=' + rep
-
-        opener = urllib2.build_opener(NoRedirection)
-        opener.addheaders = self.SetHeader()
-
-        #Add first cookie
-        if not cookies == '':
-            opener.addheaders.append(('Cookie', cookies))
-        
-        #Rajout headers manquants
-        if 'Referer' not in opener.addheaders:
-            opener.addheaders.append(('Referer', self.url))
-        if 'Accept' not in opener.addheaders:
-            opener.addheaders.append(('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'))
-
-        self.HttpReponse = opener.open(NewUrl,postdata)
-        
-        #xbmc.log("Headers send " + str(opener.addheaders), xbmc.LOGNOTICE)
-        #xbmc.log("cookie send " + str(cookies), xbmc.LOGNOTICE)
-        #xbmc.log("header recu " + str(self.HttpReponse.headers), xbmc.LOGNOTICE)
-        #xbmc.log("Url " + str(NewUrl), xbmc.LOGNOTICE)
-
-        if 'Set-Cookie' in self.HttpReponse.headers:
-            cookies2 = str(self.HttpReponse.headers.get('Set-Cookie'))
-            c1 = re.findall('__cfduid=(.+?);',cookies2)
-            c2 = re.findall('cf_clearance=(.+?);',cookies2)
-
-            #If we have only cf_clearance, it's still ok, it s the more important
-            if c2 and not c1:
-                c1 = re.findall('__cfduid=([0-9a-z]+)',cookies)
-
-            if not c1 or not c2:
-                xbmc.log("Probleme protection Cloudflare : Decodage rate", xbmc.LOGNOTICE)
-                showInfo("Erreur", 'Probleme protection CloudFlare' , 5)
-                self.HttpReponse.close()
-                return ''
-
-            cookies = '__cfduid=' + c1[0] + '; cf_clearance=' + c2[0]
-        elif 'Please complete the security check' in self.HttpReponse.read():
-            #fh = open('c:\\test.txt', "w")
-            #fh.write(self.HttpReponse.read())
-            #fh.close()
-            xbmc.log("Probleme protection Cloudflare : Protection captcha", xbmc.LOGNOTICE)
-            showInfo("Erreur", 'Probleme CloudFlare, pls Retry' , 5)
-            self.HttpReponse.close()
-            return ''           
-        else:
-            xbmc.log("Probleme protection Cloudflare : Cookies manquants", xbmc.LOGNOTICE)
-            showInfo("Erreur", 'Probleme protection CloudFlare' , 5)
-            self.HttpReponse.close()
-            return ''
-
-        self.HttpReponse.close()
-
-        #Memorisation
-        self.SaveCookie(self.host.replace('.','_'),cookies)
-
-        #3 eme etape : on refait la requete mais avec les nouveaux cookies
-        opener = urllib2.build_opener()
-        opener.addheaders = self.SetHeader()
-
-        #Add the two cookies
-        opener.addheaders.append (('Cookie', cookies))
-
-        self.HttpReponse = opener.open(url,postdata)
-        htmlcontent = self.HttpReponse.read()
-        head = self.HttpReponse.headers
-        if CheckIfActive(htmlcontent):
-            #Arf new cookie not working
-            xbmc.log("New cookie not working", xbmc.LOGNOTICE)
-            #self.DeleteCookie(self.host.replace('.','_'))
-            self.HttpReponse.close()
-            return ''
-
-        self.HttpReponse.close()
-
-        return htmlcontent
+ 
+        xbmc.log("Probleme protection Cloudflare : Cookies manquants", xbmc.LOGNOTICE)
+        showInfo("Erreur", 'Probleme protection CloudFlare' , 5)
+        return ''
