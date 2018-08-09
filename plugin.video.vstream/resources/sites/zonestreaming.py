@@ -19,7 +19,7 @@ SITE_IDENTIFIER = 'zonestreaming'
 SITE_NAME = 'Zone Streaming'
 SITE_DESC = 'NC'
 
-URL_MAIN = 'http://voirfilms.cool/'
+URL_MAIN = 'https://voirfilms.cool/'
 
 MOVIE_NEWS = (URL_MAIN + 'category/films/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'category/films/', 'showMovies')
@@ -109,7 +109,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (A-Z)', 'az.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
@@ -151,7 +151,7 @@ def showAZ():
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
-        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'az.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -223,11 +223,11 @@ def showMovies(sSearch = ''):
             #sTitle = unescape(str(sTitle))
             #sTitle = sTitle.encode( "utf-8")
 
-            sUrl2 = str(aEntry[0])
-            sTitle = str(aEntry[1]).replace('&#8217;', '\'').replace('&prime;', '\'')
+            sUrl2 = aEntry[0]
+            sTitle = aEntry[1].replace('&prime;', '\'')
             #on vire le tiret laisser les deux ils sont different
             sTitle = sTitle.replace(' – Saison', ' Saison').replace(' - Saison', ' Saison')
-            sThumb = str(aEntry[2])
+            sThumb = aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -282,7 +282,7 @@ def showSeries():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-            sDesc = sDesc.replace('&#8230;', '...')
+            sDesc = sDesc.replace('&#8230;', '...').replace('&#8217;', '\'')
     except:
         pass
 
@@ -309,8 +309,8 @@ def showSeries():
                 #on vire le tiret laisser les tiret ils sont different
                 sMovieTitle = sMovieTitle.replace(' – Saison', ' Saison').replace(' - Saison', ' Saison')
                 sMovieTitle = sMovieTitle.replace('[Complete]', '')
-                sTitle = sMovieTitle + ' ' + str(aEntry[1])
-                sUrl = str(aEntry[2])
+                sTitle = sMovieTitle + ' ' + aEntry[1]
+                sUrl = aEntry[2]
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -362,7 +362,7 @@ def showHosters():
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
             else:
-                sHosterUrl = str(aEntry[1])
+                sHosterUrl = aEntry[1]
                 #nettoyage du titre
                 sMovieTitle = re.sub('\[\w+ \w+]', '', sMovieTitle)
                 sMovieTitle = re.sub('\[\w+]', '', sMovieTitle)
@@ -405,7 +405,7 @@ def serieHosters():
                 sTitle = sTitle + ' (' + str(index) + ') '
                 index = index + 1
             #print aEntry
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             #oHoster = __checkHoster(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
