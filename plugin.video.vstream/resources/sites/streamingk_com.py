@@ -207,17 +207,17 @@ def showMovies(sSearch = ''):
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
                     continue
 
-            sThumb = str(aEntry[0])
-            sUrl = str(aEntry[1])
-            sTitle = str(aEntry[2]).replace('&#8217;', '\'').replace(' - Saison', ' Saison')
+            sThumb = aEntry[0]
+            sUrl = aEntry[1]
+            sTitle = aEntry[2].replace(' - Saison', ' Saison')
             sTitle = sTitle.replace(' [Streaming]', '')
             sTitle = sTitle.replace(' [Telecharger]', '').replace(' [Telechargement]', '')
-            sDisplayTitle = sTitle.replace(' [Complète]', '').replace(' [Complete]', '')
+            #sDisplayTitle = sTitle.replace(' [Complète]', '').replace(' [Complete]', '')
             sDisplayTitle = sTitle
             #on retire la qualité
             sTitle = re.sub('\[\w+]', '', sTitle)
             sTitle = re.sub('\[\w+ \w+]', '', sTitle)
-            sDesc = str(aEntry[3]).replace('[&hellip;]', '').replace('&rsquo;', '\'').replace('&#8230;', '...').replace('&#8217;', '\'')
+            sDesc = aEntry[3].replace('[&hellip;]', '').replace('&rsquo;', '\'').replace('&#8230;', '...').replace('&#8217;', '\'')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -301,11 +301,11 @@ def showSeries(sLoop = False):
 
             #langue
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             #episode
             else:
-                sUrl = str(aEntry[2])
-                sTitle = sMovieTitle + ' ' + str(aEntry[1])
+                sUrl = aEntry[2]
+                sTitle = sMovieTitle + ' ' + aEntry[1]
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -357,7 +357,7 @@ def showHosters(sLoop = False):
     if (len(aResult) > 0):
         for aEntry in aResult:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
@@ -391,7 +391,7 @@ def serieHosters():
             if '&url=' in aEntry:
                 aEntry = aEntry.split('=')[2]
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
