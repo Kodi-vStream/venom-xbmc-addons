@@ -13,9 +13,9 @@ from resources.lib.comaddon import dialog, VSlog, xbmc
 #Pour le futur
 from resources.lib.jsparser import JsParser
 
-import re,urllib2, base64, math
+import re,urllib2,urllib, base64, math
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 
 class cHoster(iHoster):
 
@@ -60,7 +60,7 @@ class cHoster(iHoster):
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
         self.__sUrl = self.__sUrl.replace('openload.io','openload.co')
-        #self.__sUrl = self.__sUrl.replace('/embed/', '/f/')
+        self.__sUrl = urllib.quote(sUrl, safe=':/')
         if self.__sUrl[-4:-3] == '.':
             self.__sUrl = self.__sUrl.replace(self.__sUrl.split('/')[-1],"")
 

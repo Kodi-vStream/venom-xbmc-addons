@@ -326,17 +326,46 @@ def seriesHosters():
 
     sPattern = '<div class="e-number">.+?<iframe src="(.+?)".+?class="episode-id">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sTitle = sMovieTitle + ' ' + str(aEntry[1])
+            if 'player.php?id' in aEntry[0]:
+                sTitle = sMovieTitle + '(Redirection ' + aEntry[0].split('/')[3].replace('cht','') +')'
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb )
+                oGui.addLink(SITE_IDENTIFIER, 'redirectHosters', sTitle, sThumb, '', oOutputParameterHandler)
+                
+            else:
+                sTitle = sMovieTitle + ' ' + aEntry[1]
+                sHosterUrl = aEntry[0]
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sTitle)
+                    oHoster.setFileName(sTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
-            sHosterUrl = str(aEntry[0])
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    oGui.setEndOfDirectory()
+    
+def redirectHosters():
+    oGui = cGui()
+    UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+
+    oRequest = cRequestHandler(sUrl)
+    oRequest.addHeaderEntry('User-Agent', UA)
+    oRequest.request()
+
+    sHosterUrl = oRequest.getRealUrl()
+
+    oHoster = cHosterGui().checkHoster(sHosterUrl)
+    if (oHoster != False):
+        oHoster.setDisplayName(sMovieTitle)
+        oHoster.setFileName(sMovieTitle)
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
