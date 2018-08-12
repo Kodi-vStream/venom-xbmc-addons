@@ -281,7 +281,8 @@ def showSerieSaisons():
 
 def showLinks():
     oGui = cGui()
-
+    import base64
+    
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
@@ -290,8 +291,9 @@ def showLinks():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+
     cook = oRequestHandler.GetCookies()
-    
+
 
     try:#récupération du Synopsis
         sDesc = ''
@@ -303,7 +305,7 @@ def showLinks():
     except:
         pass
 
-    sPattern = "domain=(.+?)\".+?document.getElementsByName\(\'iframe\'\).+?src\'.+?\'(.+?)\'\);.+?<td>(.+?)<\/td>"
+    sPattern = 'href="#play.+?" onclick=".+?">(.+?)</a>.+?var *iframe.+?setAttribute\("rel","([^"]+)"\);.+?<td>(.+?)</td>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -314,12 +316,12 @@ def showLinks():
             if progress_.iscanceled():
                 break
 
-            sHost = str(aEntry[0]).replace('.com', '').replace('.co', '').replace('.tv', '').replace('.sx', '').replace('.org', '').replace('.ch', '')
+            sHost = str(aEntry[0]).replace('.com', '').replace('.co', '').replace('.tv', '').replace('.sx', '').replace('.org', '').replace('.ch', '').replace('.net', '')
             if 'nowvideo' in sHost or 'youvid' in sHost:
                 continue
             sHost = sHost.capitalize()
-            sUrl2 = str(aEntry[1])
-            sLang = str(aEntry[2])
+            sUrl2 = base64.b64decode(aEntry[1])
+            sLang = aEntry[2]
 
             sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
 
@@ -328,6 +330,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb )
             oOutputParameterHandler.addParameter('sCook', cook)
+            oOutputParameterHandler.addParameter('ref',sUrl)
             #oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
@@ -342,10 +345,26 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sCook = oInputParameterHandler.getValue('sCook')
+    sRef = oInputParameterHandler.getValue('ref')
     
+    # pdata = 'action=url&episode='+sUrl
+    
+    # oRequest = cRequestHandler('http://streamzzz.top/wp-content/themes/streamzzz/action.php')
+    # oRequest.setRequestType(1)
+    # oRequest.addHeaderEntry('User-Agent', UA)
+    # oRequest.addHeaderEntry('Cookie', sCook)
+    # oRequest.addHeaderEntry('Referer', ref)
+    # oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    # oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+
+    # oRequest.addParametersLine(pdata)
+
+    # sUrl2 = oRequest.request()
+
     oRequest = cRequestHandler(sUrl)
     oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Cookie', sCook)
+    oRequest.addHeaderEntry('Referer', sRef)
     sHtmlContent = oRequest.request()
 
     sHosterUrl = oRequest.getRealUrl()
