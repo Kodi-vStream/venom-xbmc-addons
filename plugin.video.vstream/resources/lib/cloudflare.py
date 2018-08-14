@@ -357,6 +357,9 @@ class CloudflareBypass(object):
                     xbmc.log('Cookies Out of date', xbmc.LOGNOTICE)
                     self.DeleteCookie(self.host.replace('.','_'))
                     cookieMem = ''
+                    #one more loop, and reset all cookies, event only cf_clearance is needed
+                    loop += 1
+                    cookies = ''
                     
             #Get new cookies
             if 'Set-Cookie' in self.Header:
