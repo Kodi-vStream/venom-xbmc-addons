@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'tfarjo'
 SITE_NAME = 'Tfarjo'
 SITE_DESC = 'Films & Séries en streaming VO | VF | VOSTFR'
 
-URL_MAIN = 'https://www.tfarjo.ws/'
+URL_MAIN = 'https://www1.tfarjo.ws/'
 
 MOVIE_NEWS = (URL_MAIN + 'films', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films', 'showMovies')
