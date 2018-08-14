@@ -7,7 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress #, VSlog
+from resources.lib.comaddon import progress , VSlog
 #from resources.lib.util import cUtil
 import urllib2, urllib, re
 
@@ -453,27 +453,40 @@ def showHostersLink():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    
+    VSlog('org > ' + sUrl)
+    
+    #Attention ne marche pas dans tout les cas, certain site retourne aussi un 302 et la lib n'en gere qu'un
+    if (False):
+        #On recupere la redirection
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('User-agent', UA)
+        oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+        sHtmlContent = oRequestHandler.request()
+        redirection_target = oRequestHandler.getRealUrl()
 
-    #On recupere la redirection
-    oRequestHandler = cRequestHandler(sUrl)
-    oRequestHandler.addHeaderEntry('User-agent', UA)
-    oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
-    sHtmlContent = oRequestHandler.request()
-    redirection_target = oRequestHandler.getRealUrl()
+    else:
+        class NoRedirection(urllib2.HTTPErrorProcessor):
+            def http_response(self, request, response):
+                return response
+                
+            https_response = http_response
+            
+        opener = urllib2.build_opener(NoRedirection)
+        opener.addheaders = [('User-agent', UA)]
+        #opener.addheaders = [('Referer', URL_MAIN)]
+        response = opener.open(sUrl)
+        sHtmlContent = response.read()
+        if response.code == 302:
+            redirection_target = response.headers['Location']
+        response.close()
 
-    #opener = urllib2.build_opener(NoRedirection)
-    #opener.addheaders = [('User-agent', UA)]
-    #response = opener.open(sUrl)
-    #sHtmlContent = response.read()
-    #if response.code == 302:
-    #    redirection_target = response.headers['Location']
-    #response.close()
-
-    #VSlog('red > ' + redirection_target)
-    #VSlog('cod > ' + sHtmlContent)
+        #VSlog('cod > ' + sHtmlContent)
+        
+    VSlog('red > ' + redirection_target)
 
     #attention fake redirection
-    #sUrl = redirection_target
+    sUrl = redirection_target
     m = re.search(r'url=([^"]+)', sHtmlContent)
     if m:
         sUrl = m.group(1)
