@@ -139,7 +139,8 @@ class cLibrary:
 
 
     def getLibrary(self):
-        xbmc.executebuiltin('ActivateWindow(Videos,"special://userdata/addon_data/plugin.video.vstream/")', True)
+        xbmc.executebuiltin("Container.Update(special://userdata/addon_data/plugin.video.vstream/)", True)
+        #xbmc.executebuiltin('ActivateWindow(Videos,"special://userdata/addon_data/plugin.video.vstream/")', True)
         return True
 
 
