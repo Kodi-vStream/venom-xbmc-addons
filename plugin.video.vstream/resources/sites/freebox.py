@@ -59,11 +59,15 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
-    oGui.addDir(SITE_IDENTIFIER, 'showAZRadio', addons.VSlang(30203)+' (A-Z)', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showAZRadio', addons.VSlang(30203)+' (A-Z)', 'music.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
-    oGui.addDir(SITE_IDENTIFIER, 'showWeb', addons.VSlang(30203), 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showWeb', addons.VSlang(30203), 'music.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://')
+    oGui.addDir('lsdb', 'load', 'Liveset Database', 'music.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 

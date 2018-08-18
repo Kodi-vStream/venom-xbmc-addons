@@ -221,8 +221,8 @@ msgid "Web video"
 msgstr "Vidéos du net"
 
 msgctxt "#30115"
-msgid "Television/Radio"
-msgstr "Télévision/Radio"
+msgid "Television/Music"
+msgstr "Télévision/Musique"
 
 msgctxt "#30116"
 msgid "All the sources"
