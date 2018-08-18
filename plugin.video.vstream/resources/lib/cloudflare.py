@@ -231,9 +231,9 @@ class CloudflareBypass(object):
         self.Memorised_Cookies = cookies
         
         #cookies in headers ?
-        if Gived_headers['Cookie']:
+        if Gived_headers.get('Cookie',None):
             if cookies:
-                self.Memorised_Cookies = cookies + '; ' + Gived_headers['Cookie']
+                self.Memorised_Cookies = cookies + '; ' + Gived_headers.get('Cookie')
             else:
                 self.Memorised_Cookies = Gived_headers['Cookie']
 
