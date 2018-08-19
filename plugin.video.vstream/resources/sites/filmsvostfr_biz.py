@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'filmsvostfr_biz'
 SITE_NAME = 'Filmsvostfr'
 SITE_DESC = 'Films/Séries/Animés'
 
-URL_MAIN = 'http://filmsvostfr.io/'
+URL_MAIN = 'https://filmsvostfr.io/'
 
 MOVIE_NEWS = (URL_MAIN + 'films-en-streaming', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films-en-streaming', 'showMovies')
@@ -377,9 +377,9 @@ def showLinks():
             if sUrl.endswith('&c=') or '?p=0&c=' in sUrl: #vide ou redirection
                 continue
 
-            sHost = str(aEntry[1]).capitalize()
-            sQual = str(aEntry[2])
-            sLang = str(aEntry[3])
+            sHost = aEntry[1].capitalize()
+            sQual = aEntry[2]
+            sLang = aEntry[3]
             sTitle = '%s [%s] (%s) [COLOR coral]%s[/COLOR]' % (sMovieTitle, sQual, sLang, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
