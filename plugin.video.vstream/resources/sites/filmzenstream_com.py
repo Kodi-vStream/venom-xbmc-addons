@@ -153,7 +153,7 @@ def showMovies(sSearch = ''):
 #            except:
 #                pass
 
-            sQual = Str(aEntry[3])
+            sQual = aEntry[3]
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
             if sThumb.startswith('//'):
