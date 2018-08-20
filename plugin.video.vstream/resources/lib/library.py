@@ -4,7 +4,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.gui.gui import cGui
 from resources.lib.util import cUtil
-from resources.lib.comaddon import addon, dialog, VSlog, xbmc
+from resources.lib.comaddon import addon, dialog, window, VSlog, xbmc
 
 import xbmcvfs
 import urllib,re
@@ -139,7 +139,8 @@ class cLibrary:
 
 
     def getLibrary(self):
-        xbmc.executebuiltin("Container.Update(special://userdata/addon_data/plugin.video.vstream/)")
+        xbmc.executebuiltin("Container.Update(special://userdata/addon_data/plugin.video.vstream/)", True)
+        #xbmc.executebuiltin('ActivateWindow(Videos,"special://userdata/addon_data/plugin.video.vstream/")', True)
         return True
 
 

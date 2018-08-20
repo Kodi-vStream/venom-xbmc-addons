@@ -13,7 +13,7 @@ SITE_IDENTIFIER = 'filmstreamvk_com'
 SITE_NAME = 'Filmstreamvk'
 SITE_DESC = 'Films, Séries & Mangas en Streaming'
 
-URL_MAIN = 'http://filmstreamvk.pw/'
+URL_MAIN = 'http://filmstreamvk1.net/'
 
 MOVIE_MOVIE = ('http', 'load')
 MOVIE_NEWS = (URL_MAIN + 'film-streaming-vf', 'showMovies')
@@ -171,9 +171,9 @@ def showMovies(sSearch = ''):
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[2]) == 0:
                     continue
 
-            sThumb = str(aEntry[0])
-            sUrl = str(aEntry[1])
-            sTitle = str(aEntry[2])
+            sThumb = aEntry[0]
+            sUrl = aEntry[1]
+            sTitle = aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)

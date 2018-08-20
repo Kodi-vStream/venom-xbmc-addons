@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#
+return False
 #clone de voirfilm_org
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui

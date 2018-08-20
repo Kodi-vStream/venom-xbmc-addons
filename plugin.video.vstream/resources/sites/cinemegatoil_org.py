@@ -16,10 +16,9 @@ SITE_DESC = 'Films - Films HD'
 
 URL_MAIN = 'https://www.cinemegatoil.org/'
 
-MOVIE_NEWS = (URL_MAIN + 'index.php?do=cat&category=film', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film', 'showMovies')
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_GENRES = (True, 'showGenres')
-
 
 URL_SEARCH = (URL_MAIN + '?do=search&mode=advanced&subaction=search&titleonly=3&story=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?do=search&mode=advanced&subaction=search&titleonly=3&story=', 'showMovies')
@@ -47,10 +46,10 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-            sUrl = sSearchText
-            showMovies(sUrl)
-            oGui.setEndOfDirectory()
-            return
+        sUrl = sSearchText
+        showMovies(sUrl)
+        oGui.setEndOfDirectory()
+        return
 
 def showGenres():
     oGui = cGui()
@@ -105,7 +104,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="short_content">.+?<a href="(.+?)">.+?<img src="([^"]+)".+?<div class="short_header">(.+?)<\/div>.+?<div class="qulabel">(.+?)<\/div>'
+    sPattern = '<div class="poster.+?img src="([^"]+)".+?<div class="quality">(.+?)<\/div>.+?<div class="title"><a href="([^"]+)".+?title="(.+?)".+?<li class="label">Ann.+?<li>(.+?)</li>.+?<div class="shortStory">(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -120,22 +119,23 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl2 = aEntry[0]
-            sThumb = aEntry[1]
+            sUrl2 = aEntry[2]
+            sThumb = aEntry[0]
             if sThumb.startswith('//'):
                 sThumb = 'http:' + sThumb
 
-            sTitle = str(aEntry[2])
-            sQual = str(aEntry[3])
-
-            sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
+            sTitle = aEntry[3]
+            sQual = aEntry[1]
+            sYear = aEntry[4]
+            sDesc = aEntry[5]
+            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -150,7 +150,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<b class="next"><a href="(.+?)">'
+    sPattern = '<span class="prev-next">.+?href="([^"]+)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -160,7 +160,7 @@ def __checkForNextPage(sHtmlContent):
 
 def showHosters():
     oGui = cGui()
-
+    oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
@@ -168,15 +168,17 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     #Vire les bandes annonces
     sHtmlContent = sHtmlContent.replace('src="https://www.youtube.com/', '')
-
+    
+    sHtmlContent = oParser.abParse(sHtmlContent, '<div class="tcontainer video-box">', '<div class="tcontainer video-box" id=')
+    
     sPattern = '<iframe.+?src="(.+?)"'
-
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
+    if not aResult[0] == True:
+        sPattern = '<div class="dllink"><a href="([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 

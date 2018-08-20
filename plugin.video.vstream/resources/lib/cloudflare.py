@@ -9,6 +9,8 @@ import urllib2,urllib
 import xbmc
 import xbmcaddon
 
+from resources.lib.config import GestionCookie
+
 Mode_Debug = False
 
 #---------------------------------------------------------
@@ -150,44 +152,36 @@ class CloudflareBypass(object):
         self.HttpReponse = None
         self.Memorised_Headers = None
         self.Memorised_PostData = None
+        self.Memorised_Cookies = None
         self.Header = None
         self.RedirectionUrl = None
-
-    def DeleteCookie(self,Domain):
-        xbmc.log('Effacement cookies')
-        file = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt')
-        os.remove(os.path.join(PathCache,file).decode("utf-8"))
-
-    def SaveCookie(self,Domain,data):
-        Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt').decode("utf-8")
-
-        #save it
-        file = open(Name,'w')
-        file.write(data)
-
-        file.close()
-
-    def Readcookie(self,Domain):
-        Name = os.path.join(PathCache,'Cookie_'+ str(Domain) +'.txt').decode("utf-8")
-
-        try:
-            file = open(Name,'r')
-            data = file.read()
-            file.close()
-        except:
-            return ''
-
-        return data
 
     #Return param for head
     def GetHeadercookie(self,url):
         #urllib.quote_plus()
         Domain = re.sub(r'https*:\/\/([^/]+)(\/*.*)','\\1',url)
-        cook = self.Readcookie(Domain.replace('.','_'))
+        cook = GestionCookie().Readcookie(Domain.replace('.','_'))
         if cook == '':
             return ''
 
         return '|' + urllib.urlencode({'User-Agent':UA,'Cookie': cook })
+        
+    def ParseCookies(self,data):
+        list = []
+            
+        sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?)(?:$|;)'
+        aResult = re.findall(sPattern,data)
+        #xbmc.log(str(aResult), xbmc.LOGNOTICE)
+        if (aResult):
+            for cook in aResult:
+                if 'deleted' in cook[1]:
+                    continue
+                list.append((cook[0],cook[1]))
+                #cookies = cookies + cook[0] + '=' + cook[1]+ ';'
+                
+        #xbmc.log(str(list), xbmc.LOGNOTICE)        
+                
+        return list
 
     def SetHeader(self):
         head=[]
@@ -199,6 +193,9 @@ class CloudflareBypass(object):
             head.append(('Content-Type', 'text/html; charset=utf-8'))
         else:
             for i in self.Memorised_Headers:
+                #Remove cookies
+                if ('Cookie' in i):
+                    continue
                 if ('Content-Type' not in i) and ('Accept-charset' not in i):
                     head.append((i,self.Memorised_Headers[i]))
         return head
@@ -229,6 +226,16 @@ class CloudflareBypass(object):
         
         #Memorise postdata
         self.Memorised_PostData = postdata
+        
+        #Memorise cookie
+        self.Memorised_Cookies = cookies
+        
+        #cookies in headers ?
+        if Gived_headers.get('Cookie',None):
+            if cookies:
+                self.Memorised_Cookies = cookies + '; ' + Gived_headers.get('Cookie')
+            else:
+                self.Memorised_Cookies = Gived_headers['Cookie']
 
         #For debug
         if (Mode_Debug):
@@ -236,17 +243,20 @@ class CloudflareBypass(object):
             xbmc.log('url ' + url, xbmc.LOGNOTICE)
             if (htmlcontent):
                 xbmc.log('code html ok', xbmc.LOGNOTICE)
-            xbmc.log('cookies passés' + cookies, xbmc.LOGNOTICE)
+            xbmc.log('cookies passés' + self.Memorised_Cookies, xbmc.LOGNOTICE)
             xbmc.log('post data :' + str(postdata), xbmc.LOGNOTICE)
 
         self.hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',url)
         self.host = re.sub(r'https*:\/\/','',self.hostComplet)
         self.url = url
 
-        cookieMem = self.Readcookie(self.host.replace('.','_'))
+        cookieMem = GestionCookie().Readcookie(self.host.replace('.','_'))
         if not (cookieMem == ''):
-            cookies = cookieMem
-            xbmc.log('cookies present sur disque', xbmc.LOGNOTICE)
+            xbmc.log('cookies present sur disque :' + cookieMem , xbmc.LOGNOTICE)
+            if not (self.Memorised_Cookies):
+                cookies = cookieMem
+            else:
+                cookies = self.Memorised_Cookies + '; ' + cookieMem
             
         #Max 3 loop
         loop = 3
@@ -338,7 +348,7 @@ class CloudflareBypass(object):
                 xbmc.log("Page ok", xbmc.LOGNOTICE)
                 #need to save cookies ?
                 if not cookieMem:
-                    self.SaveCookie(self.host.replace('.','_'),cookies)
+                    GestionCookie().SaveCookie(self.host.replace('.','_'),cookies)
                     
                 #fh = open('c:\\test.txt', "w")
                 #fh.write(htmlcontent)
@@ -355,23 +365,33 @@ class CloudflareBypass(object):
                 #Arf, problem, cookies not working, delete them
                 if cookieMem:
                     xbmc.log('Cookies Out of date', xbmc.LOGNOTICE)
-                    self.DeleteCookie(self.host.replace('.','_'))
+                    GestionCookie().DeleteCookie(self.host.replace('.','_'))
                     cookieMem = ''
+                    #one more loop, and reset all cookies, event only cf_clearance is needed
+                    loop += 1
+                    cookies = self.Memorised_Cookies
                     
             #Get new cookies
             if 'Set-Cookie' in self.Header:
                 cookies2 = str(self.Header.get('Set-Cookie'))
-
-                c1 = re.findall('__cfduid=(.+?);',cookies2)
-                c2 = re.findall('cf_clearance=(.+?);',cookies2)
                 
-                if c2 and not c1:
-                    c1 = re.findall('__cfduid=([0-9a-z]+)',cookies)
-                    
-                if c1 and c2:
-                    cookies = '__cfduid=' + c1[0] + '; cf_clearance=' + c2[0]
-                elif c1:
-                    cookies = '__cfduid=' + c1[0]
+                listcookie = self.ParseCookies(cookies2)
+                listcookie2 = self.ParseCookies(cookies)
+                
+                cookies = ""
+                
+                #New cookies
+                for a,b in listcookie:
+                    if len(cookies) > 0:
+                        cookies = cookies + '; '
+                    cookies = cookies + str(a) + '=' + str(b)
+                
+                #old cookies only is needed
+                for a,b in listcookie2:
+                    if not str(a) in cookies:
+                        if len(cookies) > 0:
+                            cookies = cookies + '; '
+                        cookies = cookies + str(a) + '=' + str(b)
 
  
         xbmc.log("Probleme protection Cloudflare : Cookies manquants", xbmc.LOGNOTICE)
