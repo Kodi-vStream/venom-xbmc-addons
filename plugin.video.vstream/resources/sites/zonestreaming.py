@@ -273,8 +273,6 @@ def showSeries():
     sHtmlContent = sHtmlContent.replace('<iframe src="//ads.ad-center.com', '')
     #supprimme pour récuperer les new regex different
     sHtmlContent = sHtmlContent.replace('<span style="color: #ff9900;">New</span>', '')
-    #pour récuperer tous les liens
-    sHtmlContent = sHtmlContent.replace('https://linkrag.com/st?api=5821799852a075f4ad9432eefa73332cf053130f&amp;url=', '')
 
     sDesc = ''
     try:#récupération des Synopsis
@@ -304,7 +302,7 @@ def showSeries():
                 break
 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             else:
                 #on vire le tiret laisser les tiret ils sont different
                 sMovieTitle = sMovieTitle.replace(' – Saison', ' Saison').replace(' - Saison', ' Saison')
@@ -345,8 +343,6 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('<iframe src="http://ads.affbuzzads.com', '')
     sHtmlContent = sHtmlContent.replace('<iframe src="//ads.ad-center.com', '')
-    #pour récuperer tous les liens
-    sHtmlContent = sHtmlContent.replace('https://linkrag.com/st?api=5821799852a075f4ad9432eefa73332cf053130f&amp;url=', '')
 
     sPattern = '<span style="color: #ff990.+?>(Qua.+?)<|large button.+?href="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -360,9 +356,14 @@ def showHosters():
                 break
 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             else:
+
                 sHosterUrl = aEntry[1]
+                #pour récuperer tous les liens
+                if '&url=' in aEntry[1]:
+                    sHosterUrl = aEntry[1].split('=')[2]
+
                 #nettoyage du titre
                 sMovieTitle = re.sub('\[\w+ \w+]', '', sMovieTitle)
                 sMovieTitle = re.sub('\[\w+]', '', sMovieTitle)
@@ -404,9 +405,12 @@ def serieHosters():
             if liste:
                 sTitle = sTitle + ' (' + str(index) + ') '
                 index = index + 1
-            #print aEntry
+
+            #pour récuperer tous les liens
+            if '&url=' in aEntry:
+                aEntry = aEntry.split('=')[2]
+
             sHosterUrl = aEntry
-            #oHoster = __checkHoster(sHosterUrl)
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
