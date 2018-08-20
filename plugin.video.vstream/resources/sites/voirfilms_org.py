@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'voirfilms_org'
 SITE_NAME = 'VoirFilms'
 SITE_DESC = 'Films, Séries & Animés en Streaming'
 
-URL_MAIN = 'http://www.voirfilms.ws/'
+URL_MAIN = 'https://ww1.voirfilms.ws/'
 
 MOVIE_MOVIE = (URL_MAIN + 'alphabet', 'showAlpha')
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming', 'showMovies')
@@ -474,9 +474,10 @@ def showHostersLink():
             
         opener = urllib2.build_opener(NoRedirection)
         opener.addheaders = [('User-agent', UA)]
-        #opener.addheaders = [('Referer', URL_MAIN)]
+        opener.addheaders = [('Referer', URL_MAIN)]
         response = opener.open(sUrl)
         sHtmlContent = response.read()
+        redirection_target = sUrl
         if response.code == 302:
             redirection_target = response.headers['Location']
         response.close()
