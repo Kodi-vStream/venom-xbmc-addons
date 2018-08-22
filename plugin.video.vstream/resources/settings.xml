@@ -276,6 +276,7 @@
         <setting id="hoster_uptobox_premium" type="bool" label="30403" default="false"/>
         <setting id="hoster_uptobox_username" type="text" label="30401" default=""/>
         <setting id="hoster_uptobox_password" type="text" label="30402" default="" option="hidden"/>
+        <setting id="hoster_uptobox_mode_default" type="enum" label="30451" lvalues="30452|30453|30454" default="0" />
 
         <setting label="1Fichier" type="lsep"/>
         <setting type="sep"/>

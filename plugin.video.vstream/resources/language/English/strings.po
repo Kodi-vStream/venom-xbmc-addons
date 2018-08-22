@@ -783,3 +783,19 @@ msgstr ""
 msgctxt "#30450"
 msgid "Search (Actor, Actress)"
 msgstr ""
+
+msgctxt "#30451"
+msgid "Default mode"
+msgstr ""
+
+msgctxt "#30452"
+msgid "Always ask me"
+msgstr ""
+
+msgctxt "#30453"
+msgid "Continue streaming via Uptostream"
+msgstr ""
+
+msgctxt "#30454"
+msgid "Continue direct via Uptobox"
+msgstr ""
