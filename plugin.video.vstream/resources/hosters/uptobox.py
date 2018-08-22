@@ -5,7 +5,7 @@ from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog
+from resources.lib.comaddon import dialog, VSlog, addon
 import urllib2,urllib,re
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'}
@@ -13,6 +13,7 @@ headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/201
 class cHoster(iHoster):
 
     def __init__(self):
+        self.ADDON = addon()
         self.__sDisplayName = 'Uptobox'
         self.__sFileName = self.__sDisplayName
         self.oPremiumHandler = None
@@ -79,8 +80,18 @@ class cHoster(iHoster):
     def getMediaLink(self):
         self.oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
         if (self.oPremiumHandler.isPremiumModeAvailable()):
-            ret = dialog().select('Choissisez votre mode de fonctionnement',['Passer en Streaming (via Uptostream)','Rester en direct (via Uptobox)'])
-
+            
+            try:
+                mDefault = int(self.ADDON.getSetting("hoster_uptobox_mode_default"))  
+            except AttributeError:
+                mDefault = 0
+                
+            if mDefault is 0:
+                ret = dialog().select('Choissisez votre mode de fonctionnement',['Passer en Streaming (via Uptostream)','Rester en direct (via Uptobox)'])
+            else:
+                # 0 is ask me, so 1 is uptostream and so on...
+                ret = mDefault - 1 
+            
             #mode DL
             if ret == 1:
                 self.stream = False
