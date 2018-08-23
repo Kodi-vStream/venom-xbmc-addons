@@ -79,6 +79,11 @@ class cHoster(iHoster):
         #Special pour mangacity
         if 'pixsil' in api_call:
             api_call = api_call.split('|')[0] + '|Referer=http://www.mangacity.org/jwplayer/player.swf'
+
+        #Modif pr aliez 
+        if 'aliez.me' in api_call:
+            UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
+            api_call = api_call + '|User-Agent=' + UA 
             
         #Special pour hd-stream.in et film-streaming.co
         if 'playlist.m3u8' in api_call:
