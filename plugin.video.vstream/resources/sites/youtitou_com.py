@@ -36,7 +36,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', VIDEO_EDU2_4[0])
-    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU2_4[1], 'Videos éducative 2 à 4 ans', 'enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU2_4[1], 'Vidéos éducative 2 à 4 ans', 'enfants.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', AGE_4A6ANS[0])
@@ -44,7 +44,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', VIDEO_EDU4_6[0])
-    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU4_6[1], 'Videos éducative 4 à 6 ans', 'enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU4_6[1], 'Vidéos éducative 4 à 6 ans', 'enfants.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', AGE_6A8ANS[0])
@@ -52,7 +52,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', VIDEO_EDU6_8[0])
-    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU6_8[1], 'Videos éducative 6 à 8 ans', 'enfants.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, VIDEO_EDU6_8[1], 'Vidéos éducative 6 à 8 ans', 'enfants.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', COMPIL[0])
@@ -145,7 +145,7 @@ def showHosters():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             if sHosterUrl.startswith('//'):
                 sHosterUrl = 'https:' + sHosterUrl
 
@@ -181,10 +181,12 @@ def showEdu():
 
             sId = sHosterUrl.rsplit('/', 1)[1]
             sTitle = aEntry[0]
+            sThumb = 'https://i.ytimg.com/vi/' + sId + '/mqdefault.jpg'
+
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, 'https://i.ytimg.com/vi/' + sId + '/mqdefault.jpg')
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
