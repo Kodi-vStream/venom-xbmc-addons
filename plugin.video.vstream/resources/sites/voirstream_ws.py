@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-return False
+return False 
 #clone de voirfilm_org
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -51,7 +51,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Par ordre Alphabétique)', 'az.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Par ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -59,7 +59,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
@@ -67,7 +67,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Par ordre Alphabétique)', 'az.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Par ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
@@ -75,7 +75,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
@@ -83,7 +83,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_LIST[1], 'Animés (Par ordre Alphabétique)', 'az.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_LIST[1], 'Animés (Par ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VIEWS[0])
@@ -281,11 +281,11 @@ def showMovies(sSearch = ''):
                 break
 
             ##pas les memes url
-            sUrl = str(aEntry[0]).replace(URL_MAIN, '')
+            sUrl = aEntry[0].replace(URL_MAIN, '')
             sUrl = URL_MAIN + sUrl
-            sThumb = str(aEntry[1]).replace(URL_MAIN, '')
+            sThumb = aEntry[1].replace(URL_MAIN, '')
             sThumb = URL_MAIN + sThumb
-            sTitle = str(aEntry[2])
+            sTitle = aEntry[2]
 
             if aEntry[3]:
                 sDisplayTitle = ('%s (%s)') % (sTitle, aEntry[3])
@@ -348,11 +348,11 @@ def showSaisons():
 
         for aEntry in aResult[1]:
 
-            sUrl2 = str(aEntry[0]).replace(URL_MAIN, '')
+            sUrl2 = aEntry[0].replace(URL_MAIN, '')
             sUrl2 = URL_MAIN + sUrl2
-            #sTitle = str(aEntry[1]) + sMovieTitle
-            sTitle = str(aEntry[1])
-            sThumb = str(aEntry[2]).replace(URL_MAIN, '')
+            #sTitle = aEntry[1] + sMovieTitle
+            sTitle = aEntry[1]
+            sThumb = aEntry[2].replace(URL_MAIN, '')
             sThumb = URL_MAIN + sThumb
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -383,8 +383,8 @@ def showEpisodes():
 
         for aEntry in aResult[1]:
 
-            sTitle = str(aEntry[0])
-            sUrl2 = str(aEntry[1]).replace(URL_MAIN, '')
+            sTitle = aEntry[0]
+            sUrl2 = aEntry[1].replace(URL_MAIN, '')
             sUrl2 = URL_MAIN + sUrl2
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -415,9 +415,9 @@ def showLinks():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sUrl = str(aEntry[0])
-            sLang = str(aEntry[1]).replace('L', '')
-            sHost = str(aEntry[2]).capitalize()
+            sUrl = aEntry[0]
+            sLang = aEntry[1].replace('L', '')
+            sHost = aEntry[2].capitalize()
 
             sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang.upper(), sHost)
 
