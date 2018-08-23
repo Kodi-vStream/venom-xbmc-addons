@@ -297,7 +297,7 @@ def showEpisode():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + 'Animé licencié' + '[/COLOR]')
+        oGui.addText(SITE_IDENTIFIER, '[COLOR red]Animé licencié[/COLOR]')
 
     else:
 
@@ -314,9 +314,9 @@ def showEpisode():
                     break
 
                 if aEntry[0]:
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]).capitalize() + '[/COLOR]')
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0].capitalize() + '[/COLOR]')
                 else:
-                    sUrl = str(aEntry[1])
+                    sUrl = aEntry[1]
                     sTitle = sMovieTitle + ' ' + aEntry[2]
                     sTitle = re.sub(' vf',' [VF]', sTitle, re.IGNORECASE)
                     sTitle = re.sub(' vostfr',' [VOSTFR]', sTitle, re.IGNORECASE)
