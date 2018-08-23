@@ -77,7 +77,6 @@ MOVIE_HD = (URL_MAIN + 'films-bluray-hd/', 'showMovies') # films en HD
 MOVIE_HDLIGHT = (URL_MAIN + 'x265-x264-hdlight/', 'showMovies') # films en x265 et x264
 MOVIE_VOSTFR = (URL_MAIN + 'filmsenvostfr/', 'showMovies') # films VOSTFR
 MOVIE_4K = (URL_MAIN + 'film-ultra-hd-4k/', 'showMovies') # films "4k"
-
 MOVIE_GENRES = (URL_MAIN , 'showGenre')
 
 MOVIE_ANIME = (URL_MAIN + 'dessins-animes/', 'showMovies') # dessins animes
@@ -232,7 +231,7 @@ def showMovies(sSearch = ''):
 
         if URL_SEARCH[0] in sSearch:
             bGlobal_Search = True
-            sSearch=sSearch.replace(URL_SEARCH[0],'')
+            sSearch=sSearch.replace(URL_SEARCH[0], '')
 
         if Nextpagesearch:
             query_args = (('do', 'search'), ('subaction', 'search') ,('search_start', Nextpagesearch),('story', sSearch) , ('titleonly', '3') )
@@ -249,7 +248,7 @@ def showMovies(sSearch = ''):
         oRequestHandler.addParametersLine(data)
         oRequestHandler.addParameters('User-Agent', UA)
         sHtmlContent = oRequestHandler.request()
-        sHtmlContent = oParser.abParse(sHtmlContent,'de la recherche','Nous contacter')
+        sHtmlContent = oParser.abParse(sHtmlContent, 'de la recherche', 'Nous contacter')
 
     else:
         #sPattern = '<div style="height:[0-9]{3}px;"> *<a href="([^"]+)"><img class="[^"]+?" data-newsid="[^"]+?" src="([^<"]+)".+?<div class="[^"]+?" style="[^"]+?"> *<a href="[^"]+?"> ([^<]+?)<'
@@ -271,13 +270,13 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sTitle = str(aEntry[2])
+            sTitle = aEntry[2]
             #on vire le tiret des series
             sTitle = sTitle.replace(' - Saison', ' Saison')
             sDisplayTitle = sTitle
             #nettoyage du titre
             sTitle = sTitle.replace('[COMPLETE]', '').replace('[Complete]', '')
-            sUrl2 = str(aEntry[0]).replace('https','http')
+            sUrl2 = aEntry[0].replace('https','http')
 
             #traite les qualités
             liste = ['4k', '1080p', '720p', 'bdrip', 'hdrip', 'dvdrip', 'cam-md']
@@ -291,7 +290,7 @@ def showMovies(sSearch = ''):
                 if cUtil().CheckOccurence(sSearch, sTitle) == 0:
                     continue
 
-            sThumb = str(aEntry[1])
+            sThumb = aEntry[1]
             if not sThumb.startswith('http'):
                 sThumb = URL_MAIN + sThumb
 
@@ -352,7 +351,7 @@ def showMoviesLinks():
 
     sDesc = ''
     #Affichage du menu
-    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]' + 'Qualités disponibles pour ce film :' + '[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles pour ce film:[/COLOR]')
 
     #on recherche d'abord la qualité courante
     sPattern = '<div style=".+?">.+?Qualité (.+?) [|] (.+?)</div>'
@@ -362,7 +361,7 @@ def showMoviesLinks():
     sQual = ''
     if (aResult[0]):
         sQual = aResult[1][0]
-        sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sQual)
+        sTitle = ('%s [%s]') % (sMovieTitle, sQual)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -385,9 +384,9 @@ def showMoviesLinks():
             if progress_.iscanceled():
                 break
 
-            sUrl = URL_MAIN[:-1] + str(aEntry[0])
-            sQual = str(aEntry[1])
-            sLang = str(aEntry[2])
+            sUrl = URL_MAIN[:-1] + aEntry[0]
+            sQual = aEntry[1]
+            sLang = aEntry[2]
             sTitle = ('%s [%s] %s') % (sMovieTitle, sQual, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -419,7 +418,7 @@ def showSeriesLinks():
     if (aResult[0]):
         sMovieTitle = aResult[1][0][0] + aResult[1][0][1] + aResult[1][0][2]
 
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Qualités disponibles pour cette saison :[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles pour cette saison:[/COLOR]')
 
     #on recherche d'abord la qualité courante
     sPattern = '<div style="[^"]+?">.+?Qualité (.+?)<'
@@ -430,7 +429,7 @@ def showSeriesLinks():
     if (aResult[1]):
         sQual = aResult[1][0]
 
-    sDisplayTitle = ('%s [%s]') % (sMovieTitle, sQual.replace('|',''))
+    sDisplayTitle = ('%s [%s]') % (sMovieTitle, sQual.replace('|', ''))
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -474,11 +473,11 @@ def showSeriesLinks():
     #print aResult2
 
     if (aResult2[0] == True):
-        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Autres Saisons disponibles pour cette série :[/COLOR]')
+        oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Autres Saisons disponibles pour cette série:[/COLOR]')
 
         for aEntry in aResult2[1]:
 
-            sUrl = URL_MAIN + 'telecharger-series' + str(aEntry[0])
+            sUrl = URL_MAIN + 'telecharger-series' + aEntry[0]
             sTitle = '[COLOR skyblue]' + aEntry[1] + aEntry[2] + aEntry[3] + aEntry[4] + '[/COLOR]'
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -534,17 +533,17 @@ def showHosters():
 
             if aEntry[0]:
                 if ('Interchangeables' not in aEntry[0]):
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
             #elif aEntry[1]:
                 #oOutputParameterHandler = cOutputParameterHandler()
-                #oOutputParameterHandler.addParameter('siteUrl', str(sUrl))
-                #oOutputParameterHandler.addParameter('sMovieTitle', str(sMovieTitle))
-                #oOutputParameterHandler.addParameter('sThumb', str(sThumb))
+                #oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                #oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                #oOutputParameterHandler.addParameter('sThumb', sThumb)
                 #if 'Télécharger' in aEntry[1]:
-                    #oGui.addText(SITE_IDENTIFIER, '[COLOR olive]'+str(aEntry[1])+'[/COLOR]')
+                    #oGui.addText(SITE_IDENTIFIER, '[COLOR olive]' + aEntry[1] + '[/COLOR]')
                 #else:
-                    #oGui.addText(SITE_IDENTIFIER, '[COLOR red]'+str(aEntry[1])+'[/COLOR]')
+                    #oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[1] + '[/COLOR]')
 
             else:
 
@@ -552,9 +551,9 @@ def showHosters():
                 URL_DECRYPT = aEntry[3]
                 oOutputParameterHandler = cOutputParameterHandler()
                 if sUrl.startswith('http'):
-                    oOutputParameterHandler.addParameter('siteUrl', aEntry[2].replace('https','http'))
+                    oOutputParameterHandler.addParameter('siteUrl', aEntry[2].replace('https', 'http'))
                 else:
-                    sUrl2 = 'http://' + str(aEntry[3]) + '/' + str(aEntry[4])
+                    sUrl2 = 'http://' + aEntry[3] + '/' + aEntry[4]
                     oOutputParameterHandler.addParameter('siteUrl', sUrl2)
 
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -599,11 +598,11 @@ def showSeriesHosters():
 
             if aEntry[0]:
                 if 'Télécharger' in aEntry[0]:
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]' + str(aEntry[0]) + '[/COLOR]')
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]' + aEntry[0] + '[/COLOR]')
                 else:
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             else:
-                sName = str(aEntry[3])
+                sName = aEntry[3]
                 sName = sName.replace('Télécharger', '')
                 sName = sName.replace('pisodes', 'pisode')
                 sUrl2 = 'http://' + aEntry[1] +  '/' + aEntry[2]
@@ -714,7 +713,7 @@ def Display_protected_link():
 
             sTitle = sMovieTitle
             if len(aResult_dlprotecte[1]) > 1:
-                sTitle = sMovieTitle + ' episode ' + str(episode)
+                sTitle = sMovieTitle + ' episode ' + episode
 
 
             episode+=1
