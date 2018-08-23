@@ -236,10 +236,10 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl2 = str(aEntry[0])
-            sThumb = str(aEntry[1])
-            sTitle = str(aEntry[2]).decode("unicode_escape").encode("latin-1")
-            sDesc = str(aEntry[3])
+            sUrl2 = aEntry[0]
+            sThumb = aEntry[1]
+            sTitle = aEntry[2].decode("unicode_escape").encode("latin-1")
+            sDesc = aEntry[3]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -301,11 +301,11 @@ def ShowSaisons():
             if progress_.iscanceled():
                 break
 
-            if (aEntry[0]):
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             else:
-                sUrl2 = str(aEntry[1])
-                sTitle = str(aEntry[2]).replace(' streaming', '')
+                sUrl2 = aEntry[1]
+                sTitle = aEntry[2].replace(' streaming', '')
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -355,15 +355,15 @@ def showLinks():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            if (aEntry[0]):
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]).upper() + '[/COLOR]')
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0].upper() + '[/COLOR]')
             else:
-                sHost = str(aEntry[1]).capitalize()
+                sHost = aEntry[1].capitalize()
                 sHost = re.sub('\.\w+', '', sHost)
                 #on filtre les hosters hs
                 if 'Auroravid' in sHost:
                     continue
-                sPost = str(aEntry[2])
+                sPost = aEntry[2]
                 sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -397,7 +397,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             if 'vid.php' in sHosterUrl:
                 oRequestHandler = cRequestHandler(sHosterUrl)
                 tmp = oRequestHandler.request()
