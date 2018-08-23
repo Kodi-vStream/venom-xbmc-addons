@@ -219,8 +219,8 @@ def showMovies(sSearch = ''):
             #listage game thread via reddit
             if 'reddit' in sUrl:
                 try:
-                    sUrl2 = str(aEntry[1])
-                    sTitle = str(aEntry[0])
+                    sUrl2 = aEntry[1]
+                    sTitle = aEntry[0]
                     sThumb = base64.b64decode(Logo_Reddit)
                     sTitle2= sTitle.split("(")
                     sTitle = sTitle2[0]
@@ -239,14 +239,14 @@ def showMovies(sSearch = ''):
 
                 if ('category/20' in sUrl):
 
-                    sTitle = str(aEntry[1])
-                    sUrl2 = str(aEntry[0])
+                    sTitle = aEntry[1]
+                    sUrl2 = aEntry[0]
                     sThumb = ' '
 
                 else:
-                    sTitle = str(aEntry[2])
-                    sUrl2 = str(aEntry[0])
-                    sThumb = str(aEntry[1])
+                    sTitle = aEntry[2]
+                    sUrl2 = aEntry[0]
+                    sThumb = aEntry[1]
 
             try:
                 if 'category/nba' in sUrl:
@@ -392,16 +392,16 @@ def showHosters():
             if 'reddit' in sUrl: #Live
 
                 sThumb = base64.b64decode(Logo_Nba)
-                sHosterUrl = str(aEntry[0]).replace('&amp;', '&')
+                sHosterUrl = aEntry[0].replace('&amp;', '&')
 
-                if ('yoursport' in aEntry[0]):
-                    sTitle = ('[%s] %s') % ('YourSportsinHD', str(aEntry[1]))
-                elif ('nbastream' in aEntry[0]):
-                    sTitle = ('[%s] %s') % ('NBAstreamspw', str(aEntry[1]))
-                elif ('eplstream' in aEntry[0]):
-                    sTitle = ('[%s] %s') % ('EPLstreams', str(aEntry[1]))
-                elif ('247hd' in aEntry[0]):
-                    sTitle = ('[%s] %s') % ('247HD', str(aEntry[1]))
+                if 'yoursport' in aEntry[0]:
+                    sTitle = ('[%s] %s') % ('YourSportsinHD', aEntry[1])
+                elif 'nbastream' in aEntry[0]:
+                    sTitle = ('[%s] %s') % ('NBAstreamspw', aEntry[1])
+                elif 'eplstream' in aEntry[0]:
+                    sTitle = ('[%s] %s') % ('EPLstreams', aEntry[1])
+                elif '247hd' in aEntry[0]:
+                    sTitle = ('[%s] %s') % ('247HD', aEntry[1])
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
@@ -412,25 +412,25 @@ def showHosters():
 
             else: #Replay
 
-                if (aEntry[0]):
-                    sHosterUrl = str(aEntry[0])
+                if aEntry[0]:
+                    sHosterUrl = aEntry[0]
 
-                if ('openload' in aEntry):
+                if 'openload' in aEntry:
                     sTitle = ('[%s]') % ('720p')
                     sHosterUrl = str(aEntry)
 
-                elif ('raptu' in aEntry):
+                elif 'raptu' in aEntry:
                     sTitle = ('[%s]') % ('720p')
                     sHosterUrl = str(aEntry)
 
-                elif ('youwatch' in aEntry[0]):
+                elif 'youwatch' in aEntry[0]:
                     sTitle = ('[%s]') % ('540p')
 
-                elif ('wstream' in aEntry[0]):
+                elif 'wstream' in aEntry[0]:
                     sTitle = ('[%s]') % ('720p')
 
                 else:
-                    sTitle = ('[%s]') % (str(aEntry[1]))
+                    sTitle = ('[%s]') % (aEntry[1])
 
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
