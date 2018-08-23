@@ -101,10 +101,10 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
+            sUrl = aEntry[0]
             sTitle = aEntry[1]
-            sThumb = str(aEntry[2])
-            sDesc = str(aEntry[3]).replace('&eacute;', 'é').replace('&agrave;', 'à').replace('&egrave;', 'è').replace('&ugrave;', 'ù')
+            sThumb = aEntry[2]
+            sDesc = aEntry[3].replace('&eacute;', 'é').replace('&agrave;', 'à').replace('&egrave;', 'è').replace('&ugrave;', 'ù')
             sDesc = sDesc.replace('&#39;', '\'').replace('&iuml;', 'ï').replace('&ccedil;', 'ç').replace('&ocirc;', 'ô').replace('&ecirc;', 'ê')
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -153,7 +153,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry[0])
+            sHosterUrl = aEntry[0]
             sTitle = sMovieTitle + ' | ' + aEntry[1]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
