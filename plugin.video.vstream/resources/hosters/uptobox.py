@@ -51,7 +51,7 @@ class cHoster(iHoster):
         oParser = cParser()
 
         #On ne charge les sous titres uniquement si vostfr se trouve dans le titre.
-        if re.search('<div class=[\'"]theater-background[\'"]></div>\s*<h1>[^<>]+(?:MULTI|VOSTFR)[^<>]*</h1>',sHtmlContent,re.IGNORECASE):
+        if re.search("<h1 class='file-title'>[^<>]+(?:MULTI|VOSTFR)[^<>]*</h1>",sHtmlContent,re.IGNORECASE):
 
             sPattern = '<track type=[\'"].+?[\'"] kind=[\'"]subtitles[\'"] src=[\'"]([^\'"]+).vtt[\'"] srclang=[\'"].+?[\'"] label=[\'"]([^\'"]+)[\'"]>'
             aResult = oParser.parse(sHtmlContent, sPattern)
@@ -80,18 +80,18 @@ class cHoster(iHoster):
     def getMediaLink(self):
         self.oPremiumHandler = cPremiumHandler(self.getPluginIdentifier())
         if (self.oPremiumHandler.isPremiumModeAvailable()):
-            
+
             try:
-                mDefault = int(self.ADDON.getSetting("hoster_uptobox_mode_default"))  
+                mDefault = int(self.ADDON.getSetting("hoster_uptobox_mode_default"))
             except AttributeError:
                 mDefault = 0
-                
+
             if mDefault is 0:
                 ret = dialog().select('Choissisez votre mode de fonctionnement',['Passer en Streaming (via Uptostream)','Rester en direct (via Uptobox)'])
             else:
                 # 0 is ask me, so 1 is uptostream and so on...
-                ret = mDefault - 1 
-            
+                ret = mDefault - 1
+
             #mode DL
             if ret == 1:
                 self.stream = False
@@ -102,7 +102,7 @@ class cHoster(iHoster):
                 return False
 
             return self.__getMediaLinkByPremiumUser()
-        
+
         else:
             VSlog('no premium')
             return self.__getMediaLinkForGuest()
