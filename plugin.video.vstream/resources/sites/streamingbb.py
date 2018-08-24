@@ -133,9 +133,9 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sThumb = str(aEntry[1])
-            sTitle = str(aEntry[2])#.decode("unicode_escape").encode("latin-1")
+            sUrl = aEntry[0]
+            sThumb = aEntry[1]
+            sTitle = aEntry[2]#.decode("unicode_escape").encode("latin-1")
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
@@ -210,9 +210,9 @@ def showLinks():
             if progress_.iscanceled():
                 break
 
-            sHost = re.sub('\.\w+', '', str(aEntry[0]))
+            sHost = re.sub('\.\w+', '', aEntry[0])
             sHost = sHost.capitalize()
-            sPost = str(aEntry[1])
+            sPost = aEntry[1]
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -256,7 +256,7 @@ def showHosters():
             if progress_.iscanceled():
                 break
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             if sHosterUrl.startswith('/'):
                 sHosterUrl = 'http:' + sHosterUrl
             oHoster = cHosterGui().checkHoster(sHosterUrl)
