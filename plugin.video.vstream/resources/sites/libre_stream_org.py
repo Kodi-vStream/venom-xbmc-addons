@@ -183,8 +183,8 @@ def AlphaDisplay():
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sTitle = str(aEntry[1])
+            sUrl = aEntry[0]
+            sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -231,10 +231,10 @@ def showMovies(sSearch = ''):
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[1]) == 0:
                     continue
 
-            sTitle = str(aEntry[1]).replace(' - Saison', ' Saison')
-            sUrl2 = str(aEntry[2])
-            sDesc = str(aEntry[3])
-            sThumb = str(aEntry[0])
+            sTitle = aEntry[1].replace(' - Saison', ' Saison')
+            sUrl2 = aEntry[2]
+            sDesc = aEntry[3]
+            sThumb = aEntry[0]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
@@ -242,14 +242,14 @@ def showMovies(sSearch = ''):
                 sDisplayTitle = sTitle
 
             if '/films/' in sUrl:
-                sQual = str(aEntry[4])
+                sQual = aEntry[4]
                 #on supprime [VOSTFR], [HD 720p] et DVDRIP du titre car affiche en tant que qualite sinon doublons
                 sMovieTitle = sTitle.replace('[VOSTFR]', '').replace('[HD 720p]', '').replace('DVDRIP ', '')
                 sDisplayTitle = sMovieTitle + ' [' + sQual + ']'
 
             if '/series/' in sUrl:
                 if not '/vostfr/' in sUrl and not '/version-francaise/' in sUrl:
-                    sLang = str(aEntry[4])
+                    sLang = aEntry[4]
                     sLang = sLang.replace('Version Française', 'VF')
                     sDisplayTitle = sTitle + ' (' + sLang + ')'
                 else:
@@ -304,7 +304,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
