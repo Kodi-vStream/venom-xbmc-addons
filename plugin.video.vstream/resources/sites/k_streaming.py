@@ -157,11 +157,10 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sTitle = str(aEntry[2]).replace('&#8217;', '\'')
+            sUrl2 = 'https:' + aEntry[0]
+            sThumb = 'https:' + aEntry[1]
             #delete du tiret pour les series
-            sTitle = sTitle.replace(' - Saison', ' Saison')
-            sUrl2 = 'https:' + str(aEntry[0])
-            sThumb = 'https:' + str(aEntry[1])
+            sTitle = aEntry[2].replace(' - Saison', ' Saison')
             sDesc = ''
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -224,6 +223,10 @@ def showEpisodes():
     ListeUrl = []
     sPattern = '<div class="keremiya_part"> *<span>([^<]+)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
         ListeUrl = [(sUrl, aResult[1][0])]
 
@@ -241,8 +244,8 @@ def showEpisodes():
             if progress_.iscanceled():
                 break
 
-            sTitle = sMovieTitle + str(aEntry[1])
-            sUrl2 = str(aEntry[0])
+            sTitle = sMovieTitle + aEntry[1]
+            sUrl2 = aEntry[0]
             if sUrl2.startswith ('/'):
                 sUrl2 = 'https:' + sUrl2
 
@@ -283,7 +286,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             if '//www.facebook.com/' in sHosterUrl:
                 continue
 
