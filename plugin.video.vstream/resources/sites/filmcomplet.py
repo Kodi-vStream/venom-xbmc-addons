@@ -64,7 +64,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     #ne fonctionne plus sur le site
     #oOutputParameterHandler = cOutputParameterHandler()
@@ -201,10 +201,10 @@ def showSearchResult(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sThumb = str(aEntry[1]).replace('w90', 'w342')
-            sTitle = str(aEntry[2])
-            sDesc = str(aEntry[3])
+            sUrl = aEntry[0]
+            sThumb = aEntry[1].replace('w90', 'w342')
+            sTitle = aEntry[2]
+            sDesc = aEntry[3]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -246,11 +246,11 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl2 = str(aEntry[0])
-            sThumb = str(aEntry[1]).replace('w185', 'w342')
-            sTitle = str(aEntry[2])
-            sQual = str(aEntry[3])
-            sDesc = str(aEntry[4])
+            sUrl2 = aEntry[0]
+            sThumb = aEntry[1].replace('w185', 'w342')
+            sTitle = aEntry[2]
+            sQual = aEntry[3]
+            sDesc = aEntry[4]
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
@@ -302,7 +302,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
