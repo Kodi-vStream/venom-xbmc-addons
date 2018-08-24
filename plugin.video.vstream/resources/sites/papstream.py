@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'papstream'
 SITE_NAME = 'PapStream'
 SITE_DESC = 'Films, Séries & Mangas'
 
-URL_MAIN = 'http://www.papstream.org'
+URL_MAIN = 'https://www.papstream.xyz/'
 
 URL_SEARCH = (URL_MAIN + '/rechercher', 'showMovies')
 URL_SEARCH_MOVIES = ('', 'showMovies')
@@ -75,7 +75,6 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        #sUrl = URL_SEARCH[0] + sSearchText
         showMovies( sSearchText )
         oGui.setEndOfDirectory()
         return
@@ -332,8 +331,8 @@ def ShowSerieEpisodes():
             if progress_.iscanceled():
                 break
 
-            sTitle = str(aEntry[0])
-            sUrl2 = URL_MAIN + str(aEntry[1])
+            sTitle = aEntry[0]
+            sUrl2 = URL_MAIN + aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -373,7 +372,7 @@ def showLink():
 
             sLang  = aEntry[2].replace('/images/', '').replace('.png', '')
             sQual  = aEntry[3].replace('(', '').replace(')', '')
-            sHost  = str(aEntry[1]).capitalize()
+            sHost  = aEntry[1].capitalize()
             sUrl2  = aEntry[0]
             sTitle = '%s [%s] (%s) [COLOR coral]%s[/COLOR]' %(sMovieTitle, sQual, sLang.upper(), sHost)
 
