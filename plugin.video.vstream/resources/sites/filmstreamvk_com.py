@@ -247,7 +247,7 @@ def showLinks():
     if (aResult[0] == True):
         for aEntry in ListeUrl:
 
-            sHost = str(aEntry[1]).capitalize()
+            sHost = aEntry[1].capitalize()
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
             if 'pisode' in aEntry[1]:
                 sTitle = sMovieTitle
@@ -341,7 +341,7 @@ def showHostersSerie():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             if sHosterUrl.startswith('/'):
                 sHosterUrl = 'http:' + sHosterUrl
 
@@ -373,7 +373,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
