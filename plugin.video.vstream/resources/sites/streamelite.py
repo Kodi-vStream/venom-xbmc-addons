@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-# Razorex
+#
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -61,7 +61,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -90,7 +90,7 @@ def showGenres():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sTitle = aEntry[1] + ' (' + (aEntry[2]) + ')'
+            sTitle = aEntry[1] + ' (' + aEntry[2] + ')'
             sUrl = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -155,8 +155,8 @@ def showYears():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sUrl = str(aEntry[0])
-            sTitle = str(aEntry[1])
+            sUrl = aEntry[0]
+            sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -192,14 +192,14 @@ def showMovies(sSearch = ''):
                 break
 
             try:
-                sDesc = re.sub('(\A.+?: )', '', str(aEntry[4]))
+                sDesc = re.sub('(\A.+?: )', '', aEntry[4])
             except:
                 sDesc= ''
 
-            sThumb = str(aEntry[0])
-            sTitle = str(aEntry[1])
-            sLang = str(aEntry[2]).upper()
-            sUrl2 = str(aEntry[3])
+            sThumb = aEntry[0]
+            sTitle = aEntry[1]
+            sLang = aEntry[2].upper()
+            sUrl2 = aEntry[3]
 
             sDisplayTitle = ('%s (%s)') % (sTitle, sLang)
 
@@ -254,7 +254,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
