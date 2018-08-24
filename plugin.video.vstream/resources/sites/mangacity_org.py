@@ -284,8 +284,8 @@ def ShowAlpha(url = None):
             if progress_.iscanceled():
                 break
 
-            sUrl = URL_MAIN + str(aEntry[0])
-            sLetter = str(aEntry[1])
+            sUrl = URL_MAIN + aEntry[0]
+            sLetter = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -351,7 +351,7 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sThumb = URL_MAIN + str(aEntry[0])
+            sThumb = URL_MAIN + aEntry[0]
 
             sTitle = str(aEntry[1])
             #sTitle = unicode(sTitle, errors='replace')
@@ -363,18 +363,18 @@ def showMovies(sSearch = ''):
             if ' - Episode' in sTitle:
                 sTitle = sTitle.replace(' -', '')
 
-            sUrl = URL_MAIN + str(aEntry[2])
+            sUrl = URL_MAIN + aEntry[2]
 
             #affichage de la langue
             sLang = ''
-            if 'VF' in str(aEntry[1]):
+            if 'VF' in aEntry[1]:
                 sLang = 'VF'
-            elif 'VOSTFR' in str(aEntry[1]):
+            elif 'VOSTFR' in aEntry[1]:
                 sLang = 'VOSTFR'
 
             #affichage de la qualité
             sQual = ''
-            if 'DVDRIP' in str(aEntry[1]):
+            if 'DVDRIP' in aEntry[1]:
                 sQual = 'DVDRIP'
 
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
@@ -458,12 +458,12 @@ def showEpisode():
 
             sTitle = cUtil().unescape(sTitle)
 
-            sUrl2 = str(cUtil().unescape(aEntry[1]))
+            sUrl2 = cUtil().unescape(aEntry[1])
             if not sUrl2.startswith('http'):
                 sUrl2 = URL_MAIN + sUrl2
 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
             else:
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -583,11 +583,11 @@ def showHosters():
             sHosterUrl = aEntry
 
             #Dans le cas ou l'adresse n'est pas directe,on cherche a l'extraire
-            if not (sHosterUrl[:4] == 'http'):
+            if not sHosterUrl[:4] == 'http':
                 sHosterUrl = ExtractLink(sHosterUrl)
 
             #Si aucun lien on arrete ici
-            if not (sHosterUrl):
+            if not sHosterUrl:
                 continue
 
             #si openload code
@@ -752,7 +752,7 @@ def GetTinyUrl(url):
 
         opener = urllib2.build_opener(NoRedirection)
         opener.addheaders = headers9
-        reponse = opener.open(url,None,5)
+        reponse = opener.open(url, None, 5)
 
         UrlRedirect = reponse.geturl()
 
