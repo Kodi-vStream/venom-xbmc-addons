@@ -42,7 +42,7 @@ MOVIE_GENRES_SD = (True, 'showGenreMoviesSD')
 
 ANIMES = (URL_MAIN + 'telechargement/dessins-animes-5.html&order=2', 'showMovies') # derniers dessins animés
 
-MANGAS = (URL_MAIN + 'telechargement/mangas-3.html&order=2', 'showMovies') # derniers dessins animés
+ANIM_ANIMS = (URL_MAIN + 'telechargement/mangas-3.html&order=2', 'showMovies') # derniers dessins animés
 
 EMISSIONS_TV = (URL_MAIN + 'telechargement/emissions-tv-17.html&order=2', 'showMovies') # dernieres émissions TV
 
@@ -188,8 +188,8 @@ def showMenuMangas():
     oGui.addDir(SITE_IDENTIFIER, 'showSearchMangas', 'Recherche de Mangas', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MANGAS[0])
-    oGui.addDir(SITE_IDENTIFIER, MANGAS[1], 'Mangas (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Mangas (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -412,18 +412,17 @@ def showMovies(sSearch = ''):
                 break
 
             sUrl2 = aEntry[0]
-            if ('-films-' in sUrl2) or ('-series-' in sUrl2):
+            if '-films-' in sUrl2 or '-series-' in sUrl2:
                 sQual = 'SD'
                 if '-hd-' in aEntry[0]:
                     sQual = 'HD'
                 if '-3d-' in aEntry[0]:
                     sQual = '3D'
             else:
-                sQual = str(aEntry[3])
-            sDesc = str(aEntry[4]).replace('&rsquo;', '\'').replace('&ldquo;', '"').replace('&rdquo;', '"').replace('&hellip;', '...')
-            sTitle = str(aEntry[2])
+                sQual = aEntry[3]
+            sDesc = aEntry[4].replace('&rsquo;', '\'').replace('&ldquo;', '"').replace('&rdquo;', '"').replace('&hellip;', '...')
+            sTitle = aEntry[2]
             #print sUrl2
-            #sFanart =aEntry[1]
             sThumb = aEntry[1]
             #Reformatage sDisplayTitle
             sSaison = ''
@@ -441,7 +440,7 @@ def showMovies(sSearch = ''):
                 sSaison = sSaison.replace('Saison ', 'S')
             if 'VOSTFR' in sTitle2:
                 sLang = 'VOSTFR'
-            #Temp test
+
             sDisplayTitle = ('%s %s [%s] (%s)') % (sSaison, sTitle, sQual, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -515,9 +514,9 @@ def showMoviesReleases():
             if progress_.iscanceled():
                 break
 
-            if ('rapidgator' not in aEntry[1]) and ('turbobit' not in aEntry[1]) and ('uploaded' not in aEntry[1]) and ('uptobox' not in aEntry[1]):
+            if 'rapidgator' not in aEntry[1] and 'turbobit' not in aEntry[1] and 'uploaded' not in aEntry[1] and 'uptobox' not in aEntry[1]:
 
-                sTitle = str(aEntry[1])
+                sTitle = aEntry[1]
                 sTitle = sTitle.decode("iso-8859-1", 'ignore')
                 sTitle = sTitle.encode("utf-8", 'ignore')
 
@@ -562,8 +561,8 @@ def showSaisons():
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sTitle = str(aEntry[1])
+            sUrl = aEntry[0]
+            sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -605,7 +604,7 @@ def showSeriesReleases():
 
     #Affichage du menu
     oGui.addText(SITE_IDENTIFIER, sMovieTitle)
-    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Episodes disponibles :[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Episodes disponibles:[/COLOR]')
 
     #Affichage des autres saisons
     oOutputParameterHandler = cOutputParameterHandler()
@@ -623,7 +622,7 @@ def showSeriesReleases():
             if progress_.iscanceled():
                 break
 
-            if ('rapidgator' not in aEntry[1]) and ('turbobit' not in aEntry[1]) and ('uploaded' not in aEntry[1]) and ('uptobox' not in aEntry[1]) :
+            if 'rapidgator' not in aEntry[1] and 'turbobit' not in aEntry[1] and 'uploaded' not in aEntry[1] and 'uptobox' not in aEntry[1]:
                 sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR]'
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
@@ -662,9 +661,9 @@ def showHosters():
             if progress_.iscanceled():
                 break
 
-            sHost = str(aEntry[0])
-            sUrl = str(aEntry[1])
-            sTitle = str(aEntry[2]).replace('.mkv', '')
+            sHost = aEntry[0]
+            sUrl = aEntry[1]
+            sTitle = aEntry[2].replace('.mkv', '')
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sTitle, sHost)
 
             #test si le host et supporter par vstream.
@@ -747,12 +746,12 @@ def Display_protected_link():
 
             sTitle = sMovieTitle
             if len(aResult_dlprotecte[1]) > 1:
-                sTitle = sMovieTitle + ' episode ' + str(episode)
+                sTitle = sMovieTitle + ' episode ' + episode
 
 
             episode+=1
 
-            if 'stream' in str(sHosterUrl):
+            if 'stream' in sHosterUrl:
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -797,7 +796,7 @@ def DecryptDlProtecte(url):
     s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN_-#@";
     RandomKey = ''.join(random.choice(s) for i in range(32))
 
-    query_args = ( ('action' , 'qaptcha') , ('qaptcha_key' , RandomKey) )
+    query_args = ( ('action', 'qaptcha') , ('qaptcha_key', RandomKey) )
     data = urllib.urlencode(query_args)
 
     #Creation Header
@@ -826,7 +825,7 @@ def DecryptDlProtecte(url):
 
     sHtmlContent = reponse.read()
 
-    #VSlog( 'result'  + str(sHtmlContent))
+    #VSlog( 'result'  + sHtmlContent)
 
     #Recuperatioen et traitement cookies ???
     cookies=reponse.info()['Set-Cookie']
@@ -855,11 +854,11 @@ def DecryptDlProtecte(url):
     #xbmc.sleep(1000)
 
     #Ancienne methode avec POST
-    #query_args = ( ( 'YnJYHKk4xYUUu4uWQdxxuH@JEJ2yrmJS' , '' ) , ('submit' , 'Valider' ) )
+    #query_args = ( ( 'YnJYHKk4xYUUu4uWQdxxuH@JEJ2yrmJS', '' ) , ('submit', 'Valider' ) )
     #data = urllib.urlencode(query_args)
 
     #Nouvelle methode avec multipart
-    #multipart_form_data = { RandomKey : '', 'submit' : 'Valider'  }
+    #multipart_form_data = { RandomKey : '', 'submit' : 'Valider' }
 
     import string
     _BOUNDARY_CHARS = string.digits + string.ascii_letters
@@ -947,7 +946,7 @@ def encode_multipart(fields, files, boundary = None):
             '--{0}'.format(boundary),
             'Content-Disposition: form-data; name="{0}"'.format(escape_quote(name)),
             '',
-            str(value),
+            value,
         ))
 
     for name, value in files.items():
