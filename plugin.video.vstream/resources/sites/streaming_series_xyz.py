@@ -196,10 +196,10 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sThumb = str(aEntry[1])
-            sTitle = str(aEntry[2]).replace(' Streaming', '').replace('&#8217;', '\'')
-            sDesc = str(aEntry[3])
+            sUrl = aEntry[0]
+            sThumb = aEntry[1]
+            sTitle = aEntry[2].replace(' Streaming', '')
+            sDesc = aEntry[3]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -239,8 +239,9 @@ def showSeries():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    try:#récupération du Synopsis
-        sDesc = ''
+    #récupération du Synopsis
+    sDesc = ''
+    try:
         sPattern = 'class="lab_syn">Synopsis :</span>(.+?)<\/p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
@@ -260,8 +261,8 @@ def showSeries():
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sTitle = sMovieTitle + ' episode ' + str(aEntry[1])
+            sUrl = aEntry[0]
+            sTitle = sMovieTitle + ' episode ' + aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -297,9 +298,9 @@ def showHosters():
                 break
 
 
-            sLang = str(aEntry[0])
-            sHost = str(aEntry[1])
-            sUrl = str(aEntry[2])
+            sLang = aEntry[0]
+            sHost = aEntry[1]
+            sUrl = aEntry[2]
 
             sDisplayTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
 
@@ -307,7 +308,7 @@ def showHosters():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            #oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+
             oGui.addLink(SITE_IDENTIFIER, 'serieHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
