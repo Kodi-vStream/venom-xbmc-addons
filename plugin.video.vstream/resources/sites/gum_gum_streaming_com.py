@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'gum_gum_streaming_com'
 SITE_NAME = 'Gum-Gum-Streaming'
 SITE_DESC = 'Animés VF/VOSTFR'
 
-URL_MAIN = 'http://gum-gum-streaming.com/'
+URL_MAIN = 'https://gum-gum-streaming.com/'
 
 ANIM_NEWS = (URL_MAIN, 'showNews')
 ANIM_ANIMS = (URL_MAIN, 'showNews')
@@ -68,13 +68,13 @@ def showNews():
             sLang = ''
             if '/vf/' in sUrl or '/vostfr/' in sUrl:
                 sLang = ''
-            elif 'VF' in str(aEntry[0]):
+            elif 'VF' in aEntry[0]:
                 sLang = 'VF'
-            elif 'VOSTFR' in str(aEntry[0]):
+            elif 'VOSTFR' in aEntry[0]:
                 sLang = 'VOSTFR'
 
-            sUrl = str(aEntry[1])
-            sTitle = str(aEntry[0]).replace(' VOSTFR', '').replace(' VF', '')
+            sUrl = aEntry[1]
+            sTitle = aEntry[0].replace(' VOSTFR', '').replace(' VF', '')
             sDisplayTitle = ('%s (%s)') % (sTitle, sLang)
 
             filter = re.search('(\d+)-(\d+)', sUrl)
@@ -109,8 +109,8 @@ def showAnimes():
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sTitle = str(aEntry[1])
+            sUrl = aEntry[0]
+            sTitle = aEntry[1]
 
             #traitement du titre pour compatibilite
             sTitle = sTitle.replace('(', ' ').replace(')', ' ')#.replace('-', ' ')
@@ -146,7 +146,7 @@ def showEpisodes():
     aSynResult = oParser.parse(sUsentContent, sPattern)
     if aSynResult[0]:
         sDesc = aSynResult[1][0]
-        sDesc = sDesc.replace('<br />', '').replace('&#8230;', '...').replace('&#8217;', '\'')
+        sDesc = sDesc.replace('<br />', '').replace('&#8217;', '\'').replace('&#8230;', '...')
 
     #récupération du poster
     sThumb = ''
@@ -169,7 +169,7 @@ def showEpisodes():
             aArcTitleEnd = [m.start() for m in re.finditer('</h3>', sSeasonContent)]
             for idxarc, valarc in enumerate(aArcIdx):
                 sArcTitle = re.split('>', sSeasonContent[valarc:aArcTitleEnd[idxarc]])[1]
-                oGui.addText(SITE_IDENTIFIER, '[COLOR teal]' + str(sArcTitle) + '[/COLOR]', 'sites/gum_gum_streaming_com.png')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR teal]' + sArcTitle + '[/COLOR]', 'sites/gum_gum_streaming_com.png')
 
                 sArcContent = str(sSeasonContent[valarc:aArcEndIdx[idxarc]])
                 sTitlePattern = '>• (.+?)</a>'
@@ -227,8 +227,8 @@ def showMovies():
             if progress_.iscanceled():
                 break
 
-            sTitle = str(aEntry[1])
-            sUrl = str(aEntry[0])
+            sTitle = aEntry[1]
+            sUrl = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -261,8 +261,8 @@ def showMovieList():
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sTitle = str(aEntry[1])
+            sUrl = aEntry[0]
+            sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -291,7 +291,7 @@ def showHosters():
 
         if (aResult[0] == True):
             for aEntry in aResult[1]:
-                sHosterUrl = str(aEntry)
+                sHosterUrl = aEntry
                 if not sHosterUrl.startswith('http'):
                     sHosterUrl = 'http:' + sHosterUrl
 
