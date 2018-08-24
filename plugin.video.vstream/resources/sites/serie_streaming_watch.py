@@ -134,11 +134,10 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sTitle = str(aEntry[2])
-            sTitle = sTitle.replace(' Streaming', '')
+            sUrl = aEntry[0]
+            sTitle = aEntry[2].replace(' Streaming', '')
 
-            sThumb = str(aEntry[1])
+            sThumb = aEntry[1]
             if not sThumb.startswith('http'):
                 sThumb = URL_MAIN + sThumb
 
@@ -202,8 +201,8 @@ def ShowEpisode():
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sTitle = sMovieTitle + ' episode ' + str(aEntry[1])
+            sUrl = aEntry[0]
+            sTitle = sMovieTitle + ' episode ' + aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -239,13 +238,12 @@ def showHosters():
             if progress_.iscanceled():
                 break
 
-            if (aEntry[0]):
-                sLang = str(aEntry[0]).replace('Langue(', 'Langue (')
+            if aEntry[0]:
+                sLang = aEntry[0].replace('Langue(', 'Langue (')
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sLang + '[/COLOR]')
             else:
-
-                sHost = str(aEntry[1]).capitalize()
-                sUrl = str(aEntry[2])
+                sHost = aEntry[1].capitalize()
+                sUrl = aEntry[2]
                 if sUrl.startswith('/'):
                     sUrl = URL_MAIN[:-1] + sUrl
       
