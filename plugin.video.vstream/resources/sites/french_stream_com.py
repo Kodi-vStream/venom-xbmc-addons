@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'french_stream_com'
 SITE_NAME = 'French-stream'
 SITE_DESC = 'films en streaming'
 
-URL_MAIN = 'http://french-stream.co/'
+URL_MAIN = 'http://french-stream.tv/'
 
 URL_SEARCH_MOVIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=9&story=', 'showMovies')
 URL_SEARCH_SERIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=10&story=', 'showSeries')
@@ -349,14 +349,14 @@ def showMovies(sSearch = ''):
                 if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_MOVIE[0], ''), aEntry[4]) == 0:
                     continue
 
-            sQual = str(aEntry[0])
-            sLang = str(aEntry[1])
-            sUrl2 = str(aEntry[2])
-            sThumb = str(aEntry[3]).replace('/img/french-stream.com.php?src=', '')
+            sQual = aEntry[0]
+            sLang = aEntry[1]
+            sUrl2 = aEntry[2]
+            sThumb = aEntry[3].replace('/img/french-stream.com.php?src=', '')
             sThumb = sThumb.split('&')[0]
             if sThumb.startswith ('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
-            sTitle = str(aEntry[4])
+            sTitle = aEntry[4]
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -411,8 +411,8 @@ def showSeries(sSearch = ''):
                 if cUtil().CheckOccurence(sUrl.replace(URL_SEARCH_SERIE[0], ''), aEntry[2]) == 0:
                     continue
 
-            sUrl2 = str(aEntry[0])
-            sThumb = str(aEntry[1]).replace('/img/french-stream.com.php?src=', '')
+            sUrl2 = aEntry[0]
+            sThumb = aEntry[1].replace('/img/french-stream.com.php?src=', '')
             sThumb = sThumb.split('&')[0]
             if sThumb.startswith ('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
@@ -525,17 +525,19 @@ def showEpisode():
     #aResult = oParser.parse(sHtmlContent, sPattern)
     aResult = re.findall(sPattern, sHtmlContent)
 
-    if (aResult):
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
 
+    if (aResult):
         for aEntry in aResult:
 
-            if str(aEntry[0]):
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
             else:
                 sId = aEntry[1]
-                sTitle = str(aEntry[2]) + ' ' + sMovieTitle
-                sData = str(aEntry[3])
+                sTitle = aEntry[2] + ' ' + sMovieTitle
+                sData = aEntry[3]
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -548,9 +550,6 @@ def showEpisode():
                     oGui.addTV(SITE_IDENTIFIER, 'mangaHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
                 else:
                     oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-
-    else:
-        oGui.addText(SITE_IDENTIFIER, '[COLOR red]indisponible[/COLOR]')
 
     oGui.setEndOfDirectory()
 
@@ -623,7 +622,7 @@ def mangaHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
