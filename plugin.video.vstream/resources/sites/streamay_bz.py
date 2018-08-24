@@ -9,12 +9,10 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, dialog
 import base64, re
 
-
-
 SITE_IDENTIFIER = 'streamay_bz'
 SITE_NAME = 'Streamay'
 SITE_DESC = 'Films, Séries & Mangas en streaming'
-URL_MAIN = 'http://streaming.streamay.com/'
+URL_MAIN = 'https://ww1.streamay.com/'
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
@@ -93,8 +91,8 @@ def showGenres():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sUrl = str(aEntry[0])
-            sTitle = str(aEntry[1]) + str(aEntry[2])
+            sUrl = aEntry[0]
+            sTitle = aEntry[1] + aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -132,7 +130,7 @@ def showMovieslist():
             sUrl = aEntry[0]
 
             sQual = aEntry[4]
-            sThumb = aEntry[1].replace('w92','w342')
+            sThumb = aEntry[1].replace('w92', 'w342')
             if not sThumb.startswith('http'):
                sThumb = 'http:' + sThumb
                
@@ -188,7 +186,7 @@ def showMovies(sSearch = ''):
             sUrl = aEntry[1]
             sThumb = aEntry[0].replace('w154', 'w342')
             if not sThumb.startswith('http'):
-               sThumb = 'http:' + sThumb
+                sThumb = 'http:' + sThumb
                
             sDesc = aEntry[3]
 
@@ -254,7 +252,7 @@ def showHosters():
                 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle + ' ['+ aEntry[1]+ ']')
+                oHoster.setDisplayName(sMovieTitle + ' [' + aEntry[1] + ']')
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
