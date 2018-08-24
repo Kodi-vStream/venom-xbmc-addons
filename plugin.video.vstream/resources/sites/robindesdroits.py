@@ -211,9 +211,9 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sThumb = str(aEntry[1])
-            sTitle = str(aEntry[2])
+            sUrl = aEntry[0]
+            sThumb = aEntry[1]
+            sTitle = aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -251,8 +251,8 @@ def showLinkGenres():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    sThumb = ''
     try:
-        sThumb = ''
         sPattern = '<p style="text-align: center;"><img src="([^"]+)".+?/>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
@@ -273,11 +273,11 @@ def showLinkGenres():
             if progress_.iscanceled():
                 break
 
-            if str(aEntry[0]):
-                oGui.addText(SITE_IDENTIFIER, '[COLOR gold]' + str(aEntry[0]) + '[/COLOR]')
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR gold]' + aEntry[0] + '[/COLOR]')
             else:
-                sUrl = str(aEntry[2])
-                sTitle =  str(aEntry[3])
+                sUrl = aEntry[2]
+                sTitle = aEntry[3]
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -307,12 +307,12 @@ def showLink():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sUrl = str(aEntry[0])
-            sHost = str(aEntry[1]).capitalize()
+            sUrl = aEntry[0]
+            sHost = aEntry[1].capitalize()
             sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
@@ -346,7 +346,7 @@ def showHosters():
                 sPattern = '{file:"([^"]+)"\,label:"([^"]+)"}'
                 aResult = oParser.parse(sHtmlContent, sPattern)
                 for aEntry in aResult[1]:
-                    sHosterUrl = str(aEntry[0])
+                    sHosterUrl = aEntry[0]
                     sDisplayTitle = ('[%s] %s') % (aEntry[1] + 'p', sMovieTitle)
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
                     if (oHoster != False):
