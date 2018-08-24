@@ -54,7 +54,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
@@ -162,7 +162,7 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sTitle = str(aEntry[2]).replace(' Streaming Ultra-HD', '').replace(' Streaming Full-HD', '')
+            sTitle = aEntry[2].replace(' Streaming Ultra-HD', '').replace(' Streaming Full-HD', '')
             sTitle = sTitle.replace(' en Streaming HD', '').replace(' Streaming HD', '').replace(' streaming', '').replace('HD', '')
             #delete du tiret
             sTitle = sTitle.replace(' - Saison', ' Saison')
@@ -173,11 +173,11 @@ def showMovies(sSearch = ''):
             except:
                 pass
 
-            sUrl2 = str(aEntry[0])
-            sThumb = str(aEntry[1])
+            sUrl2 = aEntry[0]
+            sThumb = aEntry[1]
             if sThumb.startswith('//'):
                 sThumb = 'http:' + sThumb
-            sQual = str(aEntry[3])
+            sQual = aEntry[3]
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
@@ -306,8 +306,8 @@ def showSaisons():
         i = 1
         for aEntry in aResult[1]:
 
-            sUrl = str(aEntry)
-            sTitle = '%s episode %s' % (sMovieTitle, str(i))
+            sUrl = aEntry
+            sTitle = '%s episode %s' % (sMovieTitle, i)
 
             i = i + 1
 
