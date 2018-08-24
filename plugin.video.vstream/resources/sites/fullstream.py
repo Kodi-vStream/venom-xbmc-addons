@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'fullstream'
 SITE_NAME = 'Full Stream'
 SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
 
-URL_MAIN = 'http://full-stream.name/'
+URL_MAIN = 'http://serie.full-stream.cc/'
 
 #definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
 #LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
@@ -64,7 +64,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VF[0])
@@ -99,12 +99,12 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Animés (VF) ', 'vf.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF) ', 'vf.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -153,8 +153,8 @@ def AlphaDisplay():
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sTitle = str(aEntry[1]).replace('&#8230;', '...')
+            sUrl = aEntry[0]
+            sTitle = aEntry[1]
 
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -250,11 +250,11 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl2 = str(aEntry[0])
-            sLang = str(aEntry[1])
-            sQual = str(aEntry[2])
-            sThumb = str(aEntry[3])
-            sTitle = str(aEntry[4])
+            sUrl2 = aEntry[0]
+            sLang = aEntry[1]
+            sQual = aEntry[2]
+            sThumb = aEntry[3]
+            sTitle = aEntry[4]
             sDesc = ''
 
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
@@ -336,8 +336,8 @@ def showEpisodes():
             if progress_.iscanceled():
                 break
 
-            sTitle = sMovieTitle + str(aEntry[1]).replace('Ep', 'episode').replace('EP', 'episode ')
-            sUrl2 = str(aEntry[0])
+            sTitle = sMovieTitle + aEntry[1].replace('Ep', 'episode').replace('EP', 'episode ')
+            sUrl2 = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -376,9 +376,9 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry[0])
+            sHosterUrl = aEntry[0]
             #on affiche à nouveau la langue pour ceux qui proposent vf et vostfr
-            sLang = str(aEntry[1])
+            sLang = aEntry[1]
 
             sDisplayTitle = ('%s (%s)') % (sMovieTitle, sLang)
 
