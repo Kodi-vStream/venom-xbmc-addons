@@ -149,13 +149,13 @@ def showMovies(sSearch = ''):
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[1]) == 0:
                     continue
 
-            sThumb = str(aEntry[0])
+            sThumb = aEntry[0]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
-            siteUrl = str(aEntry[2])
-            sTitle = str(aEntry[1])
-            sQual = cUtil().removeHtmlTags(str(aEntry[3]))
+            siteUrl = aEntry[2]
+            sTitle = aEntry[1]
+            sQual = cUtil().removeHtmlTags(aEntry[3])
             sQual = sQual.replace(':', '').replace(' ', '').replace(',', '/')
 
             sDisplayTitle = sTitle + ' [' + sQual + ']'
@@ -205,10 +205,10 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            if (aEntry[0]):
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
-            sHosterUrl = str(aEntry[1])
+            sHosterUrl = aEntry[1]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
