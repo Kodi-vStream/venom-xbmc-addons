@@ -7,6 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'cinemavf'
@@ -240,6 +241,11 @@ def showMovies(sSearch = ''):
             sThumb = aEntry[1]
             sTitle = aEntry[2].decode("unicode_escape").encode("latin-1")
             sDesc = aEntry[3]
+
+            #tris search
+            if sSearch and total > 3:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
