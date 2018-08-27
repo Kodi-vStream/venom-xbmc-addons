@@ -8,7 +8,7 @@ from resources.lib.comaddon import dialog, VSlog #, xbmc
 from resources.lib.handler.premiumHandler import cPremiumHandler
 
 import urllib,urllib2
-
+import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
