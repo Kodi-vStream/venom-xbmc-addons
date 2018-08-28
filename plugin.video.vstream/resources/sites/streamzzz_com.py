@@ -8,6 +8,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
 import re
 
 SITE_IDENTIFIER = 'streamzzz_com'
@@ -201,6 +202,12 @@ def showMovies(sSearch = ''):
             sTitle = aEntry[1].replace(':', '')
             sUrl2 = aEntry[2]
             sDesc = ''
+
+
+            #tris search
+            if sSearch and total > 3:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
