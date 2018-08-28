@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#Venom.
+#
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -8,6 +8,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.multihost import cJheberg
 #from resources.lib.util import cUtil
 import re
 
@@ -251,6 +252,17 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
+
+def __checkForNextPage(sHtmlContent):
+    sPattern = '<link rel="next" href="(.+?)"'
+    oParser = cParser()
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        return aResult[1][0]
+
+    return False
+
+
 def showSeries():
     oGui = cGui()
     oParser = cParser()
@@ -269,18 +281,19 @@ def showSeries():
 
     sHtmlContent = sHtmlContent.replace('<strong>Telechargement VOSTFR', '').replace('<strong>Telechargement VF', '').replace('<strong>Telechargement', '')
     sHtmlContent = sHtmlContent.replace('<a href="http://www.multiup.org', '')
-    sHtmlContent = sHtmlContent.replace('<iframe src="http://ads.affbuzzads.com', '')
-    sHtmlContent = sHtmlContent.replace('<iframe src="//ads.ad-center.com', '')
+    #sHtmlContent = sHtmlContent.replace('<iframe src="http://ads.affbuzzads.com', '')
+    #sHtmlContent = sHtmlContent.replace('<iframe src="//ads.ad-center.com', '')
     #supprimme pour récuperer les new regex different
     sHtmlContent = sHtmlContent.replace('<span style="color: #ff9900;">New</span>', '')
 
+    #récupération des Synopsis
     sDesc = ''
-    try:#récupération des Synopsis
+    try:
         sPattern = '(?:<p style="text-align: center;"|<p align="center")>([^<]+)<\/p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-            sDesc = sDesc.replace('&#8230;', '...').replace('&#8217;', '\'')
+            sDesc = sDesc.replace('&#8217;', '\'').replace('&#8230;', '...')
     except:
         pass
 
@@ -321,16 +334,6 @@ def showSeries():
     oGui.setEndOfDirectory()
 
 
-def __checkForNextPage(sHtmlContent):
-    sPattern = '<link rel="next" href="(.+?)"'
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        return aResult[1][0]
-
-    return False
-
-
 def showHosters():
     oGui = cGui()
     oParser = cParser()
@@ -341,8 +344,8 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sHtmlContent = sHtmlContent.replace('<iframe src="http://ads.affbuzzads.com', '')
-    sHtmlContent = sHtmlContent.replace('<iframe src="//ads.ad-center.com', '')
+    #sHtmlContent = sHtmlContent.replace('<iframe src="http://ads.affbuzzads.com', '')
+    #sHtmlContent = sHtmlContent.replace('<iframe src="//ads.ad-center.com', '')
 
     sPattern = '<span style="color: #ff990.+?>(Qua.+?)<|large button.+?href="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -368,11 +371,29 @@ def showHosters():
                 sMovieTitle = re.sub('\[\w+ \w+]', '', sMovieTitle)
                 sMovieTitle = re.sub('\[\w+]', '', sMovieTitle)
 
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
-                    oHoster.setDisplayName(sMovieTitle)
-                    oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                #pour récuperer les liens jheberg
+                if 'jheberg' in sHosterUrl:
+
+                    sHosterUrl = sHosterUrl.replace('captcha', 'mirrors')
+                    if not 'www.jheberg' in sHosterUrl:
+                        sHosterUrl = sHosterUrl.replace('jheberg', 'www.jheberg')
+
+                    aResult = cJheberg().GetUrls(sHosterUrl)
+                    for aEntry in aResult:
+                        sHosterUrl = aEntry
+
+                        oHoster = cHosterGui().checkHoster(sHosterUrl)
+                        if (oHoster != False):
+                            oHoster.setDisplayName(sMovieTitle)
+                            oHoster.setFileName(sMovieTitle)
+                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+                else:
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+                    if (oHoster != False):
+                        oHoster.setDisplayName(sMovieTitle)
+                        oHoster.setFileName(sMovieTitle)
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         progress_.VSclose(progress_)
 
@@ -403,7 +424,7 @@ def serieHosters():
 
             sTitle = sMovieTitle
             if liste:
-                sTitle = sTitle + ' (' + str(index) + ') '
+                sTitle = sTitle + ' (' + str(index) + ')'
                 index = index + 1
 
             #pour récuperer tous les liens
