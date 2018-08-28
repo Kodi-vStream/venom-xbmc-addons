@@ -73,7 +73,7 @@ class cLibrary:
         if sCat == '1':
             #folder = self.__sMovieFolder
 
-            sTitle = urllib.unquote_plus(sTitle)
+            sTitle = cUtil().CleanName(sTitle)
             sTitle =  self.showKeyBoard(sTitle, 'Nom du dossier et du fichier')
 
             try:
