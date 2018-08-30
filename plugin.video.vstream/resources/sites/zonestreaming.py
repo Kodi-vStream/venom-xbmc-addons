@@ -360,8 +360,8 @@ def showHosters():
 
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
-            else:
 
+            else:
                 sHosterUrl = aEntry[1]
                 #pour récuperer tous les liens
                 if '&url=' in aEntry[1]:
@@ -373,10 +373,6 @@ def showHosters():
 
                 #pour récuperer les liens jheberg
                 if 'jheberg' in sHosterUrl:
-
-                    sHosterUrl = sHosterUrl.replace('captcha', 'mirrors')
-                    if not 'www.jheberg' in sHosterUrl:
-                        sHosterUrl = sHosterUrl.replace('jheberg', 'www.jheberg')
 
                     aResult = cJheberg().GetUrls(sHosterUrl)
                     for aEntry in aResult:
