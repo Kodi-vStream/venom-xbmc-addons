@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#Venom, kodigoal
+#
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -355,10 +355,6 @@ def showHosters():
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         elif 'jheberg' in sUrl:
-
-            sUrl = sUrl.replace('captcha', 'mirrors')
-            if not 'www.jheberg' in sUrl:
-                sUrl = sUrl.replace('jheberg', 'www.jheberg')
 
             aResult = cJheberg().GetUrls(sUrl)
             for aEntry in aResult:
