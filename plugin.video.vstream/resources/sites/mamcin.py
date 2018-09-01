@@ -88,9 +88,9 @@ def showMovies(sSearch = ''):
 
             #first post filter
             if (str(aEntry[2]) != "https://www.mamcin.com/wp-content/uploads/2017/10/plus-belle-la-vie-episode-suivant-en-avance.jpg"):
-                sUrl    = str(aEntry[0])
-                sTitle  = str(aEntry[1])
-                sThumb = str(aEntry[2])
+                sUrl    = aEntry[0]
+                sTitle  = aEntry[1]
+                sThumb = aEntry[2]
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -138,7 +138,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sHosterUrl = str("http:"+aEntry)
+            sHosterUrl = "http:" + aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)
@@ -150,7 +150,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)

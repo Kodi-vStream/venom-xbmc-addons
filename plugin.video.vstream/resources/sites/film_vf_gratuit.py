@@ -57,7 +57,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -84,8 +84,8 @@ def showGenres():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sTitle = str(aEntry[1]) + ' (' + str(aEntry[2]) + ')'
-            sUrl = str(aEntry[0])
+            sTitle = aEntry[1] + ' (' + aEntry[2] + ')'
+            sUrl = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -106,8 +106,8 @@ def showMovieYears():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sTitle = str(aEntry[1])
-            sUrl = str(aEntry[0])
+            sTitle = aEntry[1]
+            sUrl = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -147,13 +147,13 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sThumb = str(aEntry[0]).replace('w92', 'w342').replace('w185', 'w342')
-            sTitle = str(aEntry[1])
-            sQual = str(aEntry[2])
-            sUrl2 = str(aEntry[3])
+            sThumb = aEntry[0].replace('w92', 'w342').replace('w185', 'w342')
+            sTitle = aEntry[1]
+            sQual = aEntry[2]
+            sUrl2 = aEntry[3]
             sDesc = ''
             if not 'tendance/' in sUrl and not 'evaluations/' in sUrl:
-                sDesc = str(aEntry[4]).replace('&#38;', '&')
+                sDesc = aEntry[4].replace('&#38;', '&')
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
@@ -206,7 +206,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):

@@ -144,7 +144,7 @@ def showMenuFilms():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -458,7 +458,7 @@ def showMovies():
                 sQual = '3D'
 
             sUrl2 = URL_MAIN + aEntry[0]
-            sTitle = str(aEntry[1]).replace(' - Saison', ' Saison').replace(' - saison', ' saison')
+            sTitle = aEntry[1].replace(' - Saison', ' Saison').replace(' - saison', ' saison')
             sDesc = aEntry[2]
             sDesc = sDesc.decode("unicode_escape").encode("latin-1")
             sThumb = aEntry[3]
@@ -802,7 +802,7 @@ def get_response(img,cookie):
                     if controlId == 20:
                         #button Valider
                         solution = self.getControl(5000).getLabel()
-                        xbmcgui.Window(10101).setProperty('captcha', str(solution))
+                        xbmcgui.Window(10101).setProperty('captcha', solution)
                         self.close()
                         return
 

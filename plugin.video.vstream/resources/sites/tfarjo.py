@@ -285,7 +285,7 @@ def showSaisons():
                 break
 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
             else:
                 if aEntry[3] == 'nothing':
@@ -321,6 +321,7 @@ def showLink():
 
     sPattern2 = "<button *class=\"players(?:(vf|vo|vostfr))\" *onclick=\"getIframe\('([^']+)'\).+?title=\"([^\"]+)\""
     aResult = oParser.parse(sHtmlContent, sPattern2)
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
@@ -338,7 +339,6 @@ def showLink():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
-
 
     oGui.setEndOfDirectory()
 

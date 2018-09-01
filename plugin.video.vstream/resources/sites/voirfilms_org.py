@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#Venom.
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -15,17 +14,17 @@ SITE_IDENTIFIER = 'voirfilms_org'
 SITE_NAME = 'VoirFilms'
 SITE_DESC = 'Films, Séries & Animés en Streaming'
 
-URL_MAIN = 'http://www.voirfilms.ws/'
+URL_MAIN = 'https://ww1.voirfilms.ws/'
 
 MOVIE_MOVIE = (URL_MAIN + 'alphabet', 'showAlpha')
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
-MOVIE_ANNEES = (True, 'showMovieAnnees')
+MOVIE_ANNEES = (True, 'showMovieYears')
 
 SERIE_SERIES = (URL_MAIN + 'series/alphabet', 'showAlpha')
 SERIE_NEWS = (URL_MAIN + 'series/page-1', 'showMovies')
 SERIE_GENRES = (URL_MAIN + 'series', 'showGenres')
-SERIE_ANNEES = (True, 'showSerieAnnees')
+SERIE_ANNEES = (True, 'showSerieYears')
 
 ANIM_ANIMS = (URL_MAIN + 'animes/alphabet/', 'AlphaSearch')
 ANIM_NEWS = (URL_MAIN + 'animes/', 'showMovies')
@@ -49,7 +48,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_MOVIE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films (Par ordre Alphabétique)', 'az.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MOVIE[1], 'Films (Par ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -57,7 +56,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
@@ -65,7 +64,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries (Par ordre Alphabétique)', 'az.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries (Par ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
@@ -73,7 +72,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
@@ -81,7 +80,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_ANIMS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés (Par ordre Alphabétique)', 'az.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_ANIMS[1], 'Animés (Par ordre alphabétique)', 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -161,7 +160,7 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-def showMovieAnnees():
+def showMovieYears():
     oGui = cGui()
 
     for i in reversed (xrange(1913, 2019)):
@@ -172,7 +171,7 @@ def showMovieAnnees():
 
     oGui.setEndOfDirectory()
 
-def showSerieAnnees():
+def showSerieYears():
     oGui = cGui()
 
     for i in reversed (xrange(1936, 2019)):
@@ -293,14 +292,14 @@ def showMovies(sSearch = ''):
                 break
 
             if type == '2':
-               sThumb = str(aEntry[1])
-               sUrl = str(aEntry[0])
+               sThumb = aEntry[1]
+               sUrl = aEntry[0]
             else:
-                sThumb = str(aEntry[0])
-                sUrl = str(aEntry[1])
+                sThumb = aEntry[0]
+                sUrl = aEntry[1]
 
             #sTitle = cUtil().unescape(aEntry[2])#ancien traitement du titre
-            sTitle = str(aEntry[2])
+            sTitle = aEntry[2]
 
             if not 'http' in sThumb:
                 sThumb = URL_MAIN + sThumb
@@ -404,8 +403,8 @@ def serieHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sHtmlContent = sHtmlContent.replace("\n","")
-    sHtmlContent = sHtmlContent.replace("\r\t","")
+    sHtmlContent = sHtmlContent.replace("\n", "")
+    sHtmlContent = sHtmlContent.replace("\r\t", "")
 
     if '-saison-' in sUrl or '/anime/' in sUrl:
         sPattern = '<li class="description132"><a class="n_episode2" title=".+?" href="(.+?)">(.+?)<\/a><\/li>'
@@ -424,11 +423,11 @@ def serieHosters():
             if progress_.iscanceled():
                 break
 
-            sEp = str(aEntry[1])
-            sEp = re.sub('<span>(.+?)<\/span>', 'Episode \\1', str(sEp))
+            sEp = aEntry[1]
+            sEp = re.sub('<span>(.+?)<\/span>', 'Episode \\1', sEp)
 
             sTitle = sMovieTitle + sEp
-            sUrl = str(aEntry[0])
+            sUrl = aEntry[0]
             if 'http' not in sUrl:
                 sUrl = URL_MAIN + sUrl
 
@@ -474,9 +473,10 @@ def showHostersLink():
             
         opener = urllib2.build_opener(NoRedirection)
         opener.addheaders = [('User-agent', UA)]
-        #opener.addheaders = [('Referer', URL_MAIN)]
+        opener.addheaders = [('Referer', URL_MAIN)]
         response = opener.open(sUrl)
         sHtmlContent = response.read()
+        redirection_target = sUrl
         if response.code == 302:
             redirection_target = response.headers['Location']
         response.close()

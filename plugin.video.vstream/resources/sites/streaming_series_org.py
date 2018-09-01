@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'streaming_series_org'
 SITE_NAME = 'Streaming Séries'
 SITE_DESC = 'Séries en streaming vf gratuitement sur Série Streaming'
 
-URL_MAIN = 'https://www.seriestreaming.watch/'
+URL_MAIN = 'https://www.streamingseries.biz/'
 
 SERIE_NEWS = (URL_MAIN + 'film-archive/', 'showMovies') #astuce anti caroussel
 SERIE_SERIES = ('http://', 'load')
@@ -45,11 +45,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus Vues)', 'views.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus vues)', 'views.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENTS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENTS[1], 'Séries (Les plus Commentées)', 'comments.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENTS[1], 'Séries (Les plus commentées)', 'comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
@@ -102,8 +102,8 @@ def AlphaDisplay():
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sTitle = str(aEntry[1])
+            sUrl = aEntry[0]
+            sTitle = aEntry[1]
 
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -141,9 +141,9 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sThumb = str(aEntry[1])
-            sTitle = str(aEntry[2])
+            sUrl = aEntry[0]
+            sThumb = aEntry[1]
+            sTitle = aEntry[2]
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
@@ -197,9 +197,9 @@ def showSaisons():
             if progress_.iscanceled():
                 break
 
-            sThumb = str(aEntry[0])
-            sUrl = str(aEntry[1])
-            sTitle = str(aEntry[2])
+            sThumb = aEntry[0]
+            sUrl = aEntry[1]
+            sTitle = aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -244,7 +244,7 @@ def showEpisodes():
                 break
 
             sUrl = aEntry[0]
-            sTitle = sMovieTitle + str(aEntry[1]).replace('Part', 'Episode')
+            sTitle = sMovieTitle + aEntry[1].replace('Part', 'Episode')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -294,10 +294,10 @@ def showHosters():
 
             #langue
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             #hote
             else:
-                sHosterUrl = str(aEntry[1])
+                sHosterUrl = aEntry[1]
                 if '//goo.gl' in sHosterUrl:
                     import urllib2
                     try:

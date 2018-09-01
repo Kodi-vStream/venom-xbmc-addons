@@ -89,12 +89,12 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sThumb = str(aEntry[0])
+            sThumb = aEntry[0]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
-            sTitle =  str(aEntry[1]).replace(' - Saison', ' Saison')
-            siteUrl = str(aEntry[2])
+            sTitle =  aEntry[1].replace(' - Saison', ' Saison')
+            siteUrl = aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', siteUrl)
@@ -163,7 +163,7 @@ def showHosters():
                 if progress_.iscanceled():
                    break
 
-                sHosterUrl = str(aEntry[0])
+                sHosterUrl = aEntry[0]
                 sMovieTitle2 = sMovieTitle + 'episode ' + aEntry[1]
 
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -191,7 +191,7 @@ def showHosters():
                     if progress_.iscanceled():
                        break
 
-                    sHosterUrl = str(aEntry[0])
+                    sHosterUrl = aEntry[0]
                     sMovieTitle2 = sMovieTitle + 'episode ' + aEntry[1]
 
                     oHoster = cHosterGui().checkHoster(sHosterUrl)

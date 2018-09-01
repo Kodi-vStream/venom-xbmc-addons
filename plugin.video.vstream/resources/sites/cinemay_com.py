@@ -7,6 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
 
 import re, unicodedata, urllib2
 
@@ -17,14 +18,14 @@ SITE_IDENTIFIER = 'cinemay_com'
 SITE_NAME = 'Cinemay'
 SITE_DESC = 'Films & Séries en streaming'
 
-URL_MAIN = 'http://film2018.cinemay.com/'
+URL_MAIN = 'http://cinemay.ws/'
 
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming-vf-2018/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming-vf-2018/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
-SERIE_NEWS = (URL_MAIN ,'showSeriesNews')
-SERIE_SERIES = (URL_MAIN ,'showSeriesNews')
+SERIE_NEWS = (URL_MAIN, 'showSeriesNews')
+SERIE_SERIES = (URL_MAIN, 'showSeriesNews')
 SERIE_LIST = (URL_MAIN + 'series-tv-streaming-vf/', 'showSeriesList')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
@@ -49,7 +50,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'series.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
@@ -128,6 +129,11 @@ def showMovies(sSearch=''):
 
             sThumb = aEntry[2]
             sUrl = aEntry[0]
+
+            #tris search
+            if sSearch and total > 3:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -214,10 +220,10 @@ def showSeriesList():
                 break
                 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             else:
-                sUrl = str(aEntry[1])
-                sTitle =  str(aEntry[2])
+                sUrl = aEntry[1]
+                sTitle =  aEntry[2]
             
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -290,7 +296,7 @@ def showLinks():
         sPattern = '<p>([^<>"]+)<\/p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
-            sDesc = aResult[1][0]
+            sDesc = aResult[1][0].replace('&#8217;', '\'').replace('&#8230;', '...')
     except:
         pass
 
@@ -319,7 +325,7 @@ def showLinks():
             if 'nowvideo' in sHost:
                 continue
             sHost = sHost.capitalize()
-            sLang = str(aEntry[2]).upper()
+            sLang = aEntry[2].upper()
 
             sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
 

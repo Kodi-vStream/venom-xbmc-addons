@@ -7,6 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, xbmc, dialog
+from resources.lib.util import cUtil
 
 
 SITE_IDENTIFIER = 'serie_streaming_watch'
@@ -134,13 +135,19 @@ def showMovies(sSearch=''):
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sTitle = str(aEntry[2])
-            sTitle = sTitle.replace(' Streaming', '')
+            sUrl = aEntry[0]
+            sTitle = aEntry[2].replace(' Streaming', '')
 
-            sThumb = str(aEntry[1])
+            sThumb = aEntry[1]
             if not sThumb.startswith('http'):
                 sThumb = URL_MAIN + sThumb
+
+
+            #tris search
+            if sSearch and total > 3:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                    continue
+
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -150,11 +157,12 @@ def showMovies(sSearch=''):
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+        if not sSearch:
+            sNextPage = __checkForNextPage(sHtmlContent)
+            if (sNextPage != False):
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
@@ -202,8 +210,8 @@ def ShowEpisode():
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sTitle = sMovieTitle + ' episode ' + str(aEntry[1])
+            sUrl = aEntry[0]
+            sTitle = sMovieTitle + ' episode ' + aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -239,13 +247,12 @@ def showHosters():
             if progress_.iscanceled():
                 break
 
-            if (aEntry[0]):
-                sLang = str(aEntry[0]).replace('Langue(', 'Langue (')
+            if aEntry[0]:
+                sLang = aEntry[0].replace('Langue(', 'Langue (')
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + sLang + '[/COLOR]')
             else:
-
-                sHost = str(aEntry[1]).capitalize()
-                sUrl = str(aEntry[2])
+                sHost = aEntry[1].capitalize()
+                sUrl = aEntry[2]
                 if sUrl.startswith('/'):
                     sUrl = URL_MAIN[:-1] + sUrl
       

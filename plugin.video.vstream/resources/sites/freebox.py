@@ -16,7 +16,7 @@ import re, urllib2, urllib, sys
 import xbmcplugin, xbmcvfs
 
 SITE_IDENTIFIER = 'freebox'
-SITE_NAME = '[COLOR orange]Télévision Direct / Stream[/COLOR]'
+SITE_NAME = '[COLOR orange]Télévision Direct/Stream[/COLOR]'
 SITE_DESC = 'Regarder la télévision'
 
 URL_MAIN = 'http://mafreebox.freebox.fr/freeboxtv/playlist.m3u'
@@ -59,7 +59,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
-    oGui.addDir(SITE_IDENTIFIER, 'showAZRadio', addons.VSlang(30203)+' (A-Z)', 'music.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showAZRadio', addons.VSlang(30203) +' (A-Z)', 'music.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
@@ -79,7 +79,7 @@ def showIptvSite():
     sPath = "special://home/addons/plugin.video.f4mTester/default.py"
 
     if not xbmcvfs.exists(sPath):
-        oGui.addText(SITE_IDENTIFIER, "[COLOR red]plugin.video.f4mTester : L'addon n'est pas présent[/COLOR]")
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red]plugin.video.f4mTester: L'addon n'est pas présent[/COLOR]")
 
     liste = []
     liste.append( ['IptvSource', 'https://www.iptvsource.com/'] )
@@ -122,8 +122,8 @@ def showDailyList(): #On recupere les dernier playlist ajouter au site
             if progress_.iscanceled():
                 break
 
-            sTitle = str(aEntry[1])
-            sUrl2 = str(aEntry[0])
+            sTitle = aEntry[1]
+            sUrl2 = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -158,7 +158,7 @@ def __checkForNextPage(sHtmlContent): #Affiche les page suivant si il y en a
 
     return False
 
-def showAllPlaylist():#On recuepere les differente playlist si il y en a
+def showAllPlaylist():#On recupere les differentes playlist si il y en a
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
@@ -187,11 +187,11 @@ def showAllPlaylist():#On recuepere les differente playlist si il y en a
                 break
 
             if 'iptvgratuit.com' in sUrl:
-                sTitle = str(aEntry[0])
-                sUrl2 = str(aEntry[1])
+                sTitle = aEntry[0]
+                sUrl2 = aEntry[1]
             else:
-                sTitle = str(aEntry[1])
-                sUrl2 = str(aEntry[0])
+                sTitle = aEntry[1]
+                sUrl2 = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -216,8 +216,8 @@ def showWorldIptvGratuit():#On recupere les liens qui sont dans les playlist "Wo
     line = re.compile('http(.+?)\n').findall(sHtmlContent)
 
     for sUrl2 in line:
-        sUrl2 = 'http'+sUrl2
-        sTitle = 'Lien: '+sUrl2
+        sUrl2 = 'http' + sUrl2
+        sTitle = 'Lien: ' + sUrl2
         #cConfig().log(str(sHtmlContent))
 
         oOutputParameterHandler = cOutputParameterHandler()
@@ -228,7 +228,7 @@ def showWorldIptvGratuit():#On recupere les liens qui sont dans les playlist "Wo
 
     oGui.setEndOfDirectory()
 
-def getHtml(sUrl, referer=None, hdr=None, data=None):#S'occupe des requete
+def getHtml(sUrl, referer=None, hdr=None, data=None):#S'occupe des requetes
     req = urllib2.Request(sUrl, data, headers)
     response = urllib2.urlopen(req)
     data = response.read()
@@ -241,29 +241,28 @@ def parseWebM3U():#Traite les m3u
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sHtmlContent = getHtml(sUrl)
-    #cConfig().log(str(sUrl))
 
     line = re.compile('EXTINF:.+?,(.+?)\n(.+?)\n').findall(sHtmlContent)
 
     for sTitle, sUrl2 in line:
-        sUrl2 = sUrl2.replace('\r','')
+        sUrl2 = sUrl2.replace('\r', '')
 
         #with open('D:\\playlist.m3u', 'r+b') as f:
         #    f.seek(0,2)
-        #    f.write('\n'+'#EXTINF:-1,'+sTitle)
+        #    f.write('\n'+'#EXTINF:-1, '+sTitle)
         #    f.write('\n'+sUrl2)
 
         icon = "tv.png"
         if '.ts' in sUrl2:
-            sUrl2 = 'plugin://plugin.video.f4mTester/?url='+urllib.quote_plus(sUrl2)+'&amp;streamtype=TSDOWNLOADER&name='+urllib.quote(sTitle)
+            sUrl2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(sUrl2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(sTitle)
 
         ok = True
         liz = xbmcgui.ListItem(sTitle, iconImage="DefaultVideo.png", thumbnailImage=icon)
         commands = []
-        direct_epg_url= "plugin://plugin.video.vstream/?site=freebox&function=direct_epg&sMovieTitle="+urllib.quote(sTitle)+"&siteUrl="+urllib.quote_plus(sUrl2)+"&sFav=play__&sThumbnail="+urllib.quote(icon)+"&sId=freebox&sCat=6"
-        commands.append(( "Direct Epg" , 'RunPlugin('+ direct_epg_url +')'))
-        soir_epg_url = "plugin://plugin.video.vstream/?site=freebox&function=soir_epg&sMovieTitle="+urllib.quote(sTitle)+"&siteUrl="+urllib.quote_plus(sUrl2)+"&sFav=play__&sThumbnail="+urllib.quote(icon)+"&sId=freebox&sCat=6"
-        commands.append(( "Soir Epg" , 'RunPlugin('+ soir_epg_url +')'))
+        direct_epg_url= "plugin://plugin.video.vstream/?site=freebox&function=direct_epg&sMovieTitle=" + urllib.quote(sTitle) + "&siteUrl=" + urllib.quote_plus(sUrl2) + "&sFav=play__&sThumbnail=" + urllib.quote(icon) + "&sId=freebox&sCat=6"
+        commands.append(( "Direct Epg", 'RunPlugin(' + direct_epg_url + ')'))
+        soir_epg_url = "plugin://plugin.video.vstream/?site=freebox&function=soir_epg&sMovieTitle=" + urllib.quote(sTitle) + "&siteUrl=" + urllib.quote_plus(sUrl2) + "&sFav=play__&sThumbnail=" + urllib.quote(icon) + "&sId=freebox&sCat=6"
+        commands.append(( "Soir Epg", 'RunPlugin(' + soir_epg_url + ')'))
         liz.addContextMenuItems( commands )
         liz.setArt({'thumb': icon, 'icon': icon})
         liz.setInfo(type="Video", infoLabels={"Title": sTitle})
@@ -290,7 +289,7 @@ def showWeb():#Code qui s'occupe de liens TV du Web
     if not playlist:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://')
-        oGui.addText(SITE_IDENTIFIER, "[COLOR red] Probleme de lecture avec la playlist[/COLOR] ")
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red] Problème de lecture avec la playlist[/COLOR] ")
 
     else:
         for track in playlist:
@@ -299,15 +298,15 @@ def showWeb():#Code qui s'occupe de liens TV du Web
                 sThumb = 'tv.png'
 
             #les + ne peuvent pas passer
-            url2 = str(track.path).replace('+','P_L_U_S')
+            url2 = track.path.replace('+', 'P_L_U_S')
             thumb = "/".join([sRootArt, sThumb])
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', url2)
-            oOutputParameterHandler.addParameter('sMovieTitle', str(track.title))
+            oOutputParameterHandler.addParameter('sMovieTitle', track.title)
             oOutputParameterHandler.addParameter('sThumbnail', thumb)
 
-            #oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt+'/tv/'+sThumb, oOutputParameterHandler)
+            #oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt + '/tv/' + sThumb, oOutputParameterHandler)
 
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(SITE_IDENTIFIER)
@@ -320,8 +319,8 @@ def showWeb():#Code qui s'occupe de liens TV du Web
             oGuiElement.setDirectTvFanart()
             oGuiElement.setCat(6)
 
-            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,SITE_IDENTIFIER,'direct_epg','Guide tv Direct')
-            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,SITE_IDENTIFIER,'soir_epg','Guide tv Soir')
+            oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
+            oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
             oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
@@ -333,14 +332,14 @@ def direct_epg():#Code qui gerent l'epg
     #aParams = oInputParameterHandler.getAllParameter()
     #print aParams
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sCom = cePg().get_epg(sTitle,'direct')
+    sCom = cePg().get_epg(sTitle, 'direct')
 
 def soir_epg():#Code qui gerent l'epg
     oGuiElement = cGuiElement()
     oInputParameterHandler = cInputParameterHandler()
 
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sCom = cePg().get_epg(sTitle,'soir')
+    sCom = cePg().get_epg(sTitle, 'soir')
 
 def showAZ():
 
@@ -419,7 +418,7 @@ def showTV():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', aEntry[1])
             oOutputParameterHandler.addParameter('sMovieTitle', aEntry[0])
-            oOutputParameterHandler.addParameter('sThumbnail', str('tv.png'))
+            oOutputParameterHandler.addParameter('sThumbnail', 'tv.png')
 
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName(SITE_IDENTIFIER)
@@ -432,8 +431,8 @@ def showTV():
             oGuiElement.setDirectTvFanart()
             oGuiElement.setCat(6)
 
-            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,SITE_IDENTIFIER,'direct_epg','Guide tv Direct')
-            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,SITE_IDENTIFIER,SITE_IDENTIFIER,'soir_epg','Guide tv Soir')
+            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
+            oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
             oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
             oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
@@ -445,7 +444,7 @@ def parseWebM3URegex(infile):#Ancien fonction pour traiter les m3u
     site= infile
     user_agent = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
     headers = {'User-Agent': user_agent}
-    req = urllib2.Request(site,headers=headers)
+    req = urllib2.Request(site, headers=headers)
     inf = urllib2.urlopen(req)
 
     line = inf.readline()
@@ -455,13 +454,13 @@ def parseWebM3URegex(infile):#Ancien fonction pour traiter les m3u
         #return
 
     playlist=[]
-    song=track(None,None,None,None)
+    song=track(None, None, None, None)
     ValidEntry = False
 
     for line in inf:
         line=line.strip()
         if line.startswith('#EXTINF:'):
-            length,title=line.split('#EXTINF:')[1].split(',',1)
+            length,title=line.split('#EXTINF:')[1].split(',', 1)
             try:
                 licon = line.split('#EXTINF:')[1].partition('tvg-logo=')[2]
                 icon = licon.split('"')[1]
@@ -469,41 +468,41 @@ def parseWebM3URegex(infile):#Ancien fonction pour traiter les m3u
                 icon = "tv.png"
             ValidEntry = True
 
-            song=track(length,title,None,icon)
+            song=track(length, title, None, icon)
         elif (len(line) != 0):
             if (ValidEntry) and (not (line.startswith('!') or line.startswith('#'))):
                 ValidEntry = False
                 song.path=line
                 playlist.append(song)
-                song=track(None,None,None,None)
+                song=track(None, None, None, None)
 
     inf.close()
 
     return playlist
 
 def parseM3U(infile):#Traite les m3u local
-    inf = open(infile,'r')
+    inf = open(infile, 'r')
 
     line = inf.readline()
     if not line.startswith('#EXTM3U'):
        return
 
     playlist=[]
-    song=track(None,None,None,None)
+    song=track(None, None, None, None)
     ValidEntry = False
 
     for line in inf:
         line=line.strip()
         if line.startswith('#EXTINF:'):
-            length,title=line.split('#EXTINF:')[1].split(',',1)
-            song=track(length,title,None,None)
+            length,title=line.split('#EXTINF:')[1].split(',', 1)
+            song=track(length, title, None, None)
             ValidEntry = True
         elif (len(line) != 0):
             if (not line.startswith('!') and ValidEntry):
                 ValidEntry = False
                 song.path=line
                 playlist.append(song)
-                song=track(None,None,None,None)
+                song=track(None, None, None, None)
 
     inf.close()
 
@@ -513,7 +512,7 @@ def play__():#Lancer les liens
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl').replace('P_L_U_S','+')
+    sUrl = oInputParameterHandler.getValue('siteUrl').replace('P_L_U_S', '+')
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
 
@@ -533,16 +532,16 @@ def play__():#Lancer les liens
             from F4mProxy import f4mProxyHelper
             f4mp=f4mProxyHelper()
             xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=False)
-            f4mp.playF4mLink(sUrl,sTitle,proxy=None,use_proxy_for_chunks=False, maxbitrate=0, simpleDownloader=False, auth=None, streamtype=stype,setResolved=False,swf=None , callbackpath="",callbackparam="", iconImage=sThumbnail)
+            f4mp.playF4mLink(sUrl, sTitle, proxy=None, use_proxy_for_chunks=False, maxbitrate=0, simpleDownloader=False, auth=None, streamtype=stype, setResolved=False, swf=None, callbackpath="", callbackparam="", iconImage=sThumbnail)
             return
 
     listitem = xbmcgui.ListItem(sTitle, iconImage="DefaultVideo.png", thumbnailImage=sThumbnail)
     listitem.setInfo('video', {'Title': sTitle})
-    listitem.setProperty("IsPlayable","true")
+    listitem.setProperty("IsPlayable", "true")
     #xbmc.Player().play(sUrl, listitem)
 
     if 'f4mTester' in sUrl:
-        xbmc.executebuiltin('XBMC.RunPlugin('+sUrl+')')
+        xbmc.executebuiltin('XBMC.RunPlugin(' + sUrl + ')')
     else:
         xbmc.Player().play(sUrl, listitem)
     return
@@ -574,7 +573,7 @@ def GetRealUrl(chain):#Recupere les liens des regex
         param = r.group(1)
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.setRequestType(1)
-        oRequestHandler.addHeaderEntry('Accept-Encoding','identity')
+        oRequestHandler.addHeaderEntry('Accept-Encoding', 'identity')
         oRequestHandler.addParametersLine(param)
         sHtmlContent = oRequestHandler.request()
     else:

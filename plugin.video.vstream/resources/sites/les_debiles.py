@@ -85,8 +85,8 @@ def showGenres():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sUrl = str(aEntry[0])
-            sTitle = str(aEntry[1])
+            sUrl = aEntry[0]
+            sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -124,9 +124,9 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sThumb = str(aEntry[0])
-            sUrl = str(aEntry[1])
-            sTitle = str(aEntry[2])
+            sThumb = aEntry[0]
+            sUrl = aEntry[1]
+            sTitle = aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -178,7 +178,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             # Certains URL "dailymotion" sont écrits : //www.dailymotion.com
             if sHosterUrl[:4] != 'http':
                 sHosterUrl = 'http:' + sHosterUrl

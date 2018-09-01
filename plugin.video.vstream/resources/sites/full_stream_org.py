@@ -7,7 +7,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-
 from resources.lib.comaddon import progress
 import re
 
@@ -16,7 +15,7 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 SITE_IDENTIFIER = 'full_stream_org'
 SITE_NAME = 'Full-Stream'
 SITE_DESC = 'Films, Séries & Animés en Streaming HD'
-URL_MAIN = 'http://full-stream.site/'
+URL_MAIN = 'https://ww3.full-stream.su/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
@@ -159,24 +158,24 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sThumb = str(aEntry[0])
+            sThumb = aEntry[0]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
 
-            sQual = str(aEntry[1]).replace('Haute-qualité', 'HQ').replace(' ', '')
-            sUrl2 = str(aEntry[2])
-            sDesc = str(aEntry[4]).replace('<br />', '')
+            sQual = aEntry[1].replace('Haute-qualité', 'HQ').replace(' ', '')
+            sUrl2 = aEntry[2]
+            sDesc = aEntry[4].replace('<br />', '')
 
             #traitement pour affichage de la langue
             sLang = ''
             if '/vf/' in sUrl or '/vostfr/' in sUrl:
                 sLang = ''
-            elif 'VF' in str(aEntry[3]):
+            elif 'VF' in aEntry[3]:
                 sLang = 'VF'
-            elif 'VOSTFR' in str(aEntry[3]):
+            elif 'VOSTFR' in aEntry[3]:
                 sLang = 'VOSTFR'
 
-            sTitle = str(aEntry[3]).replace('VOSTFR', '').replace('VF', '').replace('VOST', '')
+            sTitle = aEntry[3].replace('VOSTFR', '').replace('VF', '').replace('VOST', '')
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -229,7 +228,7 @@ def showLink():
         for aEntry in aResult[1]:
 
             if (aEntry[0]):
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
             else:
                 sUrl2 = URL_MAIN[:-1] + aEntry[1]
@@ -270,8 +269,8 @@ def showEpisode():
             if progress_.iscanceled():
                 break
                 
-            if (aEntry[0]):
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             else:
                 sTitle = ('%s %s') % (sMovieTitle, aEntry[1])
 

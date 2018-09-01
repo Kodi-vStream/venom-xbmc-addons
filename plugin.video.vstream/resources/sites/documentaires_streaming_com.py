@@ -144,10 +144,10 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sThumb = str(aEntry[1])
-            sTitle = str(aEntry[2])#.replace('&laquo;', '<<').replace('&raquo;', '>>').replace('&nbsp;', '')
-            sDesc = str(aEntry[3])
+            sUrl = aEntry[0]
+            sThumb = aEntry[1]
+            sTitle = aEntry[2]#.replace('&laquo;', '<<').replace('&raquo;', '>>').replace('&nbsp;', '')
+            sDesc = aEntry[3]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -197,7 +197,7 @@ def showHosters():
         total = len(aResult[1])
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)

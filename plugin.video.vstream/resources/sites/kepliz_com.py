@@ -151,8 +151,8 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl2 = str(aEntry[0])
-            sTitle = str(aEntry[1])
+            sUrl2 = aEntry[0]
+            sTitle = aEntry[1]
             sTitle = re.sub('<font color="#[0-9a-f]{6}" *><i>HD<\/i><\/font>', '[HD]', sTitle)
 
             #not found better way
@@ -307,15 +307,13 @@ def showHostersLink():
     aResult = oParser.parse(data, sPattern)
 
     if (aResult[0] == True):
-
         for aEntry in aResult[1]:
 
             sLink = aEntry[0]
             sQual = aEntry[1]
-            sTitle = sMovieTitle
-            sTitle = '[' + sQual + '] ' + sTitle
+            sTitle = sMovieTitle + ' [' + sQual + ']'
 
-            sHosterUrl = str(sLink)
+            sHosterUrl = sLink
             oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):
@@ -358,11 +356,10 @@ def showHostersLink2():
 
             sLink2 = aEntry[0].replace('\/', '/')
             sQual = aEntry[1]
-            sTitle = sMovieTitle.replace(' [HD]', '')
-            sTitle = '[' + sQual + '] ' + sTitle
+            sTitle = sMovieTitle + '[ ' + sQual + ']'
 
             #decodage des liens
-            req = urllib2.Request(sLink2,None,headers)
+            req = urllib2.Request(sLink2, None, headers)
 
             try:
                 response = urllib2.urlopen(req)
@@ -375,7 +372,7 @@ def showHostersLink2():
 
             except urllib2.URLError, e:
                 sLink2 = e.geturl()
-                sHosterUrl = str(sLink2)
+                sHosterUrl = sLink2
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
 
             if (oHoster != False):

@@ -134,7 +134,7 @@ def showAlpha():
             Link = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', str(URL_MAIN) + Link)
+            oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + Link)
             oOutputParameterHandler.addParameter('AZ', sLetter)
             oGui.addDir(SITE_IDENTIFIER, 'showAZ', 'Lettre - [COLOR coral]' + sLetter + '[/COLOR]', 'animes.png', oOutputParameterHandler)
 
@@ -157,8 +157,8 @@ def showAZ():
         for aEntry in aResult[1]:
             if aEntry[1].upper()[0] == dAZ or aEntry[1][0].isdigit() and dAZ == '#':
 
-               sUrl = str(aEntry[0])
-               sTitle =  str(aEntry[1])
+               sUrl = aEntry[0]
+               sTitle =  aEntry[1]
                sDisplayTitle = sTitle + ' (' + 'VOSTFR' + ')'
 
                oOutputParameterHandler = cOutputParameterHandler()
@@ -188,18 +188,17 @@ def showEpisodes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #thumbetsyno
+    #thumb et syno
+    sThumb = ''
+    sDesc = ''
     try:
-       #oParser = cParser()
-       sThumb = ''
-       sDesc = ''
-       sPattern = '<img class="cvr" src="([^"]+)".+?<b>Synopsis</b>:<br */>([^<]+)<\/p>'
-       aResult = oParser.parse(sHtmlContent, sPattern)
-       if aResult[0]:
-          sThumb = aResult[1][0][0]
-          sDesc = aResult[1][0][1]
+        sPattern = '<img class="cvr" src="([^"]+)".+?<b>Synopsis</b>:<br */>([^<]+)<\/p>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sThumb = aResult[1][0][0]
+            sDesc = aResult[1][0][1]
     except:
-       pass
+        pass
 
     sPattern = '<a class="lst" href="([^"]+)" title="([^"]+(?<!Episode Date)(?<!Episode News))"><b class="val">'#vire les non épisode
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -220,7 +219,7 @@ def showEpisodes():
             iliste = ['Ep-', '-Vostfr', 'Vostfr-', '-Non-Censure', 'VF-', ' -']
             for item in iliste:
                 if item in aEntry[1]:
-                   sTitle = sTitle.replace(item, '')
+                    sTitle = sTitle.replace(item, '')
 
             sUrl  = aEntry[0]
             sThumb = sThumb.replace(' ', '%20')
@@ -269,8 +268,8 @@ def showLinks():
             if 'brightcove' in filter or 'purevid' in filter or 'videomega' in filter:
                 continue
 
-            sUrl = str(aEntry[0])
-            sHost = str(aEntry[1])
+            sUrl = aEntry[0]
+            sHost = aEntry[1]
 
             sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 

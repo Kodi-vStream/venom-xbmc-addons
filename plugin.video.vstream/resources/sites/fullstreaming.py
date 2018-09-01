@@ -13,7 +13,7 @@ SITE_IDENTIFIER = 'fullstreaming'
 SITE_NAME = 'Full Streaming'
 SITE_DESC = 'Films et Séries en streaming HD'
 
-URL_MAIN = 'https://fullstreaming.cc/'
+URL_MAIN = 'https://one4streaming.cc/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -28,7 +28,6 @@ MOVIE_ANNEES = (True, 'showMovieYears')
 
 SERIE_NEWS = (URL_MAIN + 'serie-tv/', 'showMovies')
 SERIE_SERIES = (URL_MAIN + 'serie-tv/', 'showMovies')
-SERIE_GENRES = (True, '')
 
 def load():
     oGui = cGui()
@@ -47,11 +46,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries', 'news.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -127,10 +126,10 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sThumb = str(aEntry[1])
-            sTitle = str(aEntry[2]).replace(' - Saison', ' Saison')
-            sQual = str(aEntry[3])
+            sUrl = aEntry[0]
+            sThumb = aEntry[1]
+            sTitle = aEntry[2].replace(' - Saison', ' Saison')
+            sQual = aEntry[3]
             sDesc = ''
 
             #Si recherche et trop de resultat, on nettoye
@@ -197,7 +196,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             if 'jawcloud' in sHosterUrl:
                 sHosterUrl = sHosterUrl + '.html'
             oHoster = cHosterGui().checkHoster(sHosterUrl)
@@ -240,13 +239,13 @@ def seriesHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            div = str(aEntry[0])
+            div = aEntry[0]
             sEpisodes = sEpisodesList.get(div, "Error")
             sEpisodes = sEpisodes.replace('Épisodes ', 'E')
 
             sMovieTitle2 = sMovieTitle + sEpisodes
 
-            sHosterUrl = str(aEntry[1])
+            sHosterUrl = aEntry[1]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle2)

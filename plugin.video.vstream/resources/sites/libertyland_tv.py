@@ -58,7 +58,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
@@ -70,7 +70,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -254,15 +254,15 @@ def showMovies(sSearch = ''):
 
             if sSearch or '/series' in sUrl:
                 sTitle = aEntry[1].replace('Regarder ', '').replace('en Streaming', '')
-                sUrl2 = str(aEntry[0])
-                sThumb = str(aEntry[2])
+                sUrl2 = aEntry[0]
+                sThumb = aEntry[2]
                 sQual = ''
             else:
-                sTitle = str(aEntry[0])
-                sThumb = str(aEntry[1])
-                sUrl2 = str(aEntry[3])
+                sTitle = aEntry[0]
+                sThumb = aEntry[1]
+                sUrl2 = aEntry[3]
 
-                sQual = str(aEntry[2])
+                sQual = aEntry[2]
                 if sQual:
                     sQual = sQual.decode("utf-8").replace(u' qualit\u00E9', '').replace('et ', '/').replace(' ', '')
                     sQual = sQual.replace('Bonne', 'MQ').replace('Haute', 'HQ').replace('Mauvaise', 'SD').encode("utf-8")
@@ -331,6 +331,9 @@ def showSaisons():
     sPattern = '(?:<h2 class="heading-small">(Saison .+?)<)|(?:<li><a title=".+? \| (.+?)" class="num_episode" href="(.+?)">.+?<\/a><\/li>)'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -340,11 +343,11 @@ def showSaisons():
                 break
 
             if aEntry[0]:
-                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + str(aEntry[0]) + '[/COLOR]')
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
             else:
-                ePisode = str(aEntry[1]).replace(',', '')
+                ePisode = aEntry[1].replace(',', '')
                 sTitle = sMovieTitle + ' ' + ePisode
-                sUrl = str(aEntry[2])
+                sUrl = aEntry[2]
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -392,7 +395,7 @@ def showLinks():
                 sLang = 'VO'
 
             idHeb = aEntry[1]
-            sHost = str(aEntry[2]).capitalize()
+            sHost = aEntry[2].capitalize()
             sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -444,7 +447,7 @@ def showHosters():
             if sHosterUrl.startswith('//'):
                 sHosterUrl = 'http:' + sHosterUrl
 
-            sQual = str(aEntry[1])
+            sQual = aEntry[1]
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
@@ -459,7 +462,7 @@ def showHosters():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             for aEntry in aResult[1]:
-                sHosterUrl = str(aEntry)
+                sHosterUrl = aEntry
                 if sHosterUrl.startswith('//'):
                     sHosterUrl = 'http:' + sHosterUrl
 

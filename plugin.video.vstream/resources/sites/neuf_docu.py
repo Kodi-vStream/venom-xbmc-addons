@@ -80,7 +80,7 @@ def showGenres():
     liste.append( ['Education', URL_MAIN + 'categorie/education/'] )
     liste.append( ['Emission TV', URL_MAIN + 'categorie/emission/'] )
     liste.append( ['Emploi/Métier', URL_MAIN + 'categorie/emploi-metier/'] )
-    liste.append( ['Enquete', URL_MAIN + 'categorie/enquete/'] )
+    liste.append( ['Enquète', URL_MAIN + 'categorie/enquete/'] )
     liste.append( ['Environnement', URL_MAIN + 'categorie/environnement/'] )
     liste.append( ['Espionnage', URL_MAIN + 'categorie/espionnage/'] )
     liste.append( ['Famille', URL_MAIN + 'categorie/famille/'] )
@@ -104,7 +104,7 @@ def showGenres():
     liste.append( ['Sexualité', URL_MAIN + 'categorie/sexualite/'] )
     liste.append( ['Société', URL_MAIN + 'categorie/societe/'] )
     liste.append( ['Sport/Football/Auto/Moto', URL_MAIN + 'categorie/sport-football-auto-moto/'] )
-    liste.append( ['Telerealite', URL_MAIN + 'categorie/telerealite/'] )
+    liste.append( ['Téléréalite', URL_MAIN + 'categorie/telerealite/'] )
     liste.append( ['Tourisme', URL_MAIN + 'categorie/tourisme/'] )
     liste.append( ['Voyage/Decouverte', URL_MAIN + 'categorie/voyage-decouverte/'] )
 
@@ -143,10 +143,10 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sThumb = str(aEntry[0])
-            sUrl = str(aEntry[1])
-            sTitle = str(aEntry[2])
-            sDesc = str(aEntry[3])
+            sThumb = aEntry[0]
+            sUrl = aEntry[1]
+            sTitle = aEntry[2]
+            sDesc = aEntry[3]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -192,7 +192,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)

@@ -117,10 +117,10 @@ def showMovies(sSearch = ''):
 
             #mise en page
             sTitle = sTitle.replace('Permalien pour', '').replace('&prime;', '\'')
-            sTitle = re.sub('(?:,)* (?:Replay |Video )*du ([0-9]+ [a-zA-z]+ [0-9]+)', ' (\\1)', str(sTitle))
-            sTitle = re.sub(', (?:Replay|Video)$', '', str(sTitle))
-            sUrl = str(aEntry[2])
-            sThumb = str(aEntry[3])
+            sTitle = re.sub('(?:,)* (?:Replay |Video )*du ([0-9]+ [a-zA-z]+ [0-9]+)', ' (\\1)', sTitle)
+            sTitle = re.sub(', (?:Replay|Video)$', '', sTitle)
+            sUrl = aEntry[2]
+            sThumb = aEntry[3]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -166,7 +166,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)

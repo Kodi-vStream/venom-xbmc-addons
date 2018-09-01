@@ -9,6 +9,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 #from resources.lib.util import cUtil #outils pouvant etre utiles
+import re
 
 SITE_IDENTIFIER = 'streamfilmzzz'
 SITE_NAME = 'StreamFilmzzz'
@@ -42,7 +43,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -78,7 +79,7 @@ def showGenres():#recup les genres et la quantites sur le site
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[1] + ' (' + (aEntry[2]) + ')'
+            sTitle = aEntry[1] + ' (' + aEntry[2] + ')'
             sUrl = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -146,10 +147,10 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sThumb = str(aEntry[0])
-            sTitle = str(aEntry[1]).replace('&#8217;', '\'').replace('&#8230;', '!')
-            sUrl = str(aEntry[2])
-            sDesc = str(aEntry[3])
+            sThumb = aEntry[0]
+            sTitle = aEntry[1]
+            sUrl = aEntry[2]
+            sDesc = aEntry[3]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -203,14 +204,14 @@ def showLinks():
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sHost = str(aEntry[1]).replace('.co', '').replace('.to', '').capitalize()
+            sUrl = aEntry[0]
+            sHost = re.sub('\.\w+', '', aEntry[1]).capitalize()
             #on filtre les hosters
             if 'Nowvideo' in sHost or 'Youwatch' in sHost or 'Allvid' in sHost:
                 continue
 
-            sLang = str(aEntry[2])
-            sQual = str(aEntry[3])
+            sLang = aEntry[2]
+            sQual = aEntry[3]
             sTitle = ('%s [%s] (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sQual, sLang, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -218,7 +219,6 @@ def showLinks():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            #oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -249,7 +249,7 @@ def showHosters():
             if progress_.iscanceled():
                 break
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)

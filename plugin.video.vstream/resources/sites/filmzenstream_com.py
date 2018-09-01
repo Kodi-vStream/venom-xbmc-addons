@@ -43,7 +43,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -108,8 +108,8 @@ def showYears():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sUrl = str(aEntry[0])
-            sTitle = str(aEntry[1])
+            sUrl = aEntry[0]
+            sTitle = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -216,9 +216,9 @@ def showHosters():
             if 'belike' in aEntry:
 
                 if aEntry.startswith('/'):
-                    oRequestHandler = cRequestHandler('https:' + str(aEntry))
+                    oRequestHandler = cRequestHandler('https:' + aEntry)
                 else:
-                    oRequestHandler = cRequestHandler(str(aEntry))
+                    oRequestHandler = cRequestHandler(aEntry)
 
                 oRequestHandler.request()
                 sHosterUrl = oRequestHandler.getRealUrl()
@@ -228,7 +228,7 @@ def showHosters():
                 #     sHosterUrl = aResult[1][0]
 
             else:
-                sHosterUrl = str(aEntry)
+                sHosterUrl = aEntry
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):

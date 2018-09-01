@@ -12,7 +12,7 @@ SITE_IDENTIFIER = 'streamiz_co'
 SITE_NAME = 'Streamiz'
 SITE_DESC = 'Tous vos films en streaming gratuitement'
 
-URL_MAIN = 'http://film.streamiz.co/'
+URL_MAIN = 'https://streaming.streamiz.co/'
 URL_API = 'https://api.streamiz.co/movies/'
 
 MOVIE_NEWS = (URL_MAIN + 'recemment-ajoute/', 'showMovies')
@@ -38,7 +38,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les Plus Vus)', 'views.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'views.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
@@ -46,7 +46,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par Années)', 'annees.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -144,7 +144,7 @@ def showMovies(sSearch = ''):
             else:
                 sUrl = aEntry[0]
                 sThumb = aEntry[1]
-                sTitle = aEntry[2].replace('&#8217;', '\'')
+                sTitle = aEntry[2]
                 sQual = aEntry[3]
                 sDesc = aEntry[4].replace("&laquo;", '«').replace("&raquo;", '»').replace('  ', ' ')
                 sDisplayTitle = ('%s [%s]') % (sTitle, sQual)

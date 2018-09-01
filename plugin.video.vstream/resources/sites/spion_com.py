@@ -130,12 +130,12 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrlp   = str(aEntry[2])
-            sTitle  = str(aEntry[3])
-            sPoster = str(aEntry[1])
+            sUrlp   = aEntry[2]
+            sTitle  = aEntry[3]
+            sPoster = aEntry[1]
 
             #categorie video
-            sCat = str(aEntry[4])
+            sCat = aEntry[4]
 
             sDisplayTitle = ('%s') % (sTitle)
 
@@ -203,7 +203,7 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             # Certains URL "dailymotion" sont écrits : //www.dailymotion.com
             if sHosterUrl[:4] != 'http':
                 sHosterUrl = 'http:' + sHosterUrl

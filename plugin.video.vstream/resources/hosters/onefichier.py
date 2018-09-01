@@ -8,7 +8,7 @@ from resources.lib.comaddon import dialog, VSlog #, xbmc
 from resources.lib.handler.premiumHandler import cPremiumHandler
 
 import urllib,urllib2
-
+import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
@@ -89,7 +89,45 @@ class cHoster(iHoster):
             return False, False
 
         url = 'https://1fichier.com/?' + self.__getIdFromUrl(self.__sUrl)
-        
+        #La partie ci-dessous permet d'utiliser l'option "Forcer l'affichage du menu pour les téléchargements" permettant notamment de choisir depuis l'interface web de télécharger ou d'ajouter un fichier.
+        #Pour cela, on va ajouter le paramètre e=1 (cf. https://1fichier.com/hlp.html#dev ) à la requête permettant d'obtenir le lien direct
+        sHtmlContent = self.oPremiumHandler.GetHtml("%s" % url + '&e=1')
+        if(sHtmlContent):
+            #L'option est désactivée : la réponse serra de type "text/plain; charset=utf-8", exemple :
+            #https://serveur-2b.1fichier.com/lelienactif;Film.de.Jacquie.et.Michel.a.la.montagne.mkv;1234567890;0
+            m =  re.search('^(.*);.*;.*;.*$',sHtmlContent)
+            if(m):
+                url = m.group(1)
+            #L'option est activée : pour récupérer le lien direct il faut POSTer le formulaire demandant le download
+            else:
+                cookie = self.oPremiumHandler.AddCookies().replace('Cookie=','',1)
+                data = {
+                    'submit': 'download'
+                }
+                #Seul le Cookie est nécessaire, néanmoins autant rendre les headers cohérents
+                headers = {
+                    'User-Agent': UA,
+                    'Host': '1fichier.com',
+                    'Referer': url ,
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+                    'Cookie': cookie,
+                    'Content-Length': '15',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+                request = urllib2.Request(url,urllib.urlencode(data),headers)
+                try:
+                    response = urllib2.urlopen(request)
+                except URLError, e:
+                    print e.read()
+                    print e.reason
+                #Par défaut on suit la redirection (code: 302 + entête 'Location') dans la réponse
+                #on peut ainsi récupérer le lien direct
+                url = response.geturl()
+                response.close()
+        else:
+            return False, False
+
         #Mode = ''
         #Mode = {'dl_no_ssl' : 'on' , 'dlinline' : 'on'}
         #Mode = {'dl_no_ssl' : 'on' }

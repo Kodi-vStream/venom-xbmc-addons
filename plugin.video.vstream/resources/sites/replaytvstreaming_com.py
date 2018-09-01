@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#Venom, kodigoal
+#
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -112,12 +112,12 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sTitle = str(aEntry[2])
-            sThumb = str(aEntry[1])
+            sUrl = aEntry[0]
+            sTitle = aEntry[2]
+            sThumb = aEntry[1]
             sDesc = aEntry[3]
             if not sThumb.startswith('http'):
-               sThumb = URL_MAIN + sThumb
+                sThumb = URL_MAIN + sThumb
 
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -176,13 +176,13 @@ def showHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sPage = str(aEntry[1])
-            sVideoID = str(aEntry[0])
+            sPage = aEntry[1]
+            sVideoID = aEntry[0]
             sHosterUrl = showLinks(sPage, sVideoID)
 
-            sTitle = str(aEntry[2])
+            sTitle = aEntry[2]
 
-            if not ('Lecteur' in sTitle) and (sTest != sTitle):
+            if not 'Lecteur' in sTitle and sTest != sTitle:
                 oGui.addText(SITE_IDENTIFIER,'[COLOR olive]' + sTitle + '[/COLOR]')
                 sTest = sTitle
 

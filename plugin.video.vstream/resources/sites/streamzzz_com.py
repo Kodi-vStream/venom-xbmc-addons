@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-# Razorex.TmpName
 #voir redirection vers regarder film et episode avec ex: 2 x 1 au lieu de 2 - 1
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -9,6 +8,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from resources.lib.util import cUtil
+import re
 
 SITE_IDENTIFIER = 'streamzzz_com'
 SITE_NAME = 'Streamzzz'
@@ -93,7 +94,7 @@ def showGenres():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sTitle = aEntry[1] + ' (' + (aEntry[2]) + ')'
+            sTitle = aEntry[1] + ' (' + aEntry[2] + ')'
             sUrl = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -119,8 +120,8 @@ def showAlpha():
             if progress_.iscanceled():
                 break
 
-            sLetter = str(aEntry).replace('=', '')
-            dAZ = str(aEntry)
+            sLetter = aEntry.replace('=', '')
+            dAZ = aEntry
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('dAZ', dAZ)
@@ -159,7 +160,7 @@ def showList():
                 break
 
             sUrl = aEntry[0]
-            sTitle = str(aEntry[1]).decode("unicode_escape").encode("latin-1")#.replace('&#8217;', '\'').replace('&#8212;', '-')
+            sTitle = aEntry[1].decode("unicode_escape").encode("latin-1")
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -197,10 +198,16 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sThumb = str(aEntry[0])
-            sTitle = str(aEntry[1]).replace(':', '')
-            sUrl2 = str(aEntry[2])
+            sThumb = aEntry[0]
+            sTitle = aEntry[1].replace(':', '')
+            sUrl2 = aEntry[2]
             sDesc = ''
+
+
+            #tris search
+            if sSearch and total > 3:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -259,14 +266,14 @@ def showSerieSaisons():
             if progress_.iscanceled():
                 break
 
-            sUrl2 = str(aEntry[1])
+            sUrl2 = aEntry[1]
         #a voir
             if 'x' in aEntry[0]:
                 sSXXEXX = str(aEntry[0]).replace(' ', '').split('x')
             else:
                 sSXXEXX = str(aEntry[0]).replace(' ', '').split('-')
 
-            sTitle = "saison " + sSXXEXX[0]  + 'episode' + sSXXEXX[1] + ' ' + str(aEntry[2])
+            sTitle = "saison " + sSXXEXX[0]  + 'episode' + sSXXEXX[1] + ' ' + aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -294,9 +301,9 @@ def showLinks():
 
     cook = oRequestHandler.GetCookies()
 
-
-    try:#récupération du Synopsis
-        sDesc = ''
+    #récupération du Synopsis
+    sDesc = ''
+    try:
         sPattern = '<p>(.+?)<\/p>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
@@ -316,7 +323,7 @@ def showLinks():
             if progress_.iscanceled():
                 break
 
-            sHost = str(aEntry[0]).replace('.com', '').replace('.co', '').replace('.tv', '').replace('.sx', '').replace('.org', '').replace('.ch', '').replace('.net', '')
+            sHost = re.sub('\.\w+', '', aEntry[0])
             if 'nowvideo' in sHost or 'youvid' in sHost:
                 continue
             sHost = sHost.capitalize()
@@ -331,7 +338,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('sThumb', sThumb )
             oOutputParameterHandler.addParameter('sCook', cook)
             oOutputParameterHandler.addParameter('ref',sUrl)
-            #oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)

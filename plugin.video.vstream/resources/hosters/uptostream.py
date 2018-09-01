@@ -39,7 +39,7 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def __getIdFromUrl(self):
         sPattern = "id=([^<]+)"
         oParser = cParser()
@@ -48,7 +48,7 @@ class cHoster(iHoster):
             return aResult[1][0]
 
         return ''
-        
+
     def __modifyUrl(self, sUrl):
         if (sUrl.startswith('http://')):
             oRequestHandler = cRequestHandler(sUrl)
@@ -58,7 +58,7 @@ class cHoster(iHoster):
             return self.__getIdFromUrl()
 
         return sUrl
-        
+
     def __getKey(self):
         oRequestHandler = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequestHandler.request()
@@ -82,18 +82,18 @@ class cHoster(iHoster):
         oParser = cParser()
 
         #On ne charge les sous titres uniquement si vostfr se trouve dans le titre.
-        if re.search('<div class=[\'"]theater-background[\'"]></div>\s*<h1>[^<>]+(?:MULTI|VOSTFR)[^<>]*</h1>',sHtmlContent,re.IGNORECASE):
-        
+        if not re.search("<h1 class='file-title'>[^<>]+(?:TRUEFRENCH|FRENCH)[^<>]*</h1>",sHtmlContent,re.IGNORECASE):
+
             sPattern = '<track type=[\'"].+?[\'"] kind=[\'"]subtitles[\'"] src=[\'"]([^\'"]+).vtt[\'"] srclang=[\'"].+?[\'"] label=[\'"]([^\'"]+)[\'"]>'
             aResult = oParser.parse(sHtmlContent, sPattern)
-            
+
             if (aResult[0] == True):
                 Files = []
                 for aEntry in aResult[1]:
                     url = aEntry[0]
                     label = aEntry[1]
                     url = url + '.srt'
-                    
+
                     if not url.startswith('http'):
                         url = 'http:' + url
                     if 'Forc' not in label:
@@ -113,40 +113,40 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         api_call = False
-        
+
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+
         SubTitle = ''
         SubTitle = self.checkSubtitle(sHtmlContent)
         #VSlog(SubTitle)
-        
+
         oParser = cParser()
         sPattern =  'src":[\'"]([^<>\'"]+)[\'"],"type":[\'"][^\'"><]+?[\'"],"label":[\'"]([0-9]+p)[\'"].+?"lang":[\'"]([^\'"]+)'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
+
         #VSlog(str(aResult))
-        
+
         if (aResult[0] == True):
             url=[]
             qua=[]
             lang=[]
- 
+
             for aEntry in aResult[1]:
                 url.append(aEntry[0])
                 tmp_qua = aEntry[1]
-                
+
                 if (len(aEntry)>2):
                     if 'unknow' not in aEntry[2]:
                         tmp_qua = tmp_qua + ' (' + aEntry[2] + ')'
                 qua.append(tmp_qua)
 
-            api_call = dialog().VSselectqual(qua, url)         
+            api_call = dialog().VSselectqual(qua, url)
 
             if (api_call):
 
                 api_call = urllib.unquote(api_call)
-            
+
                 if not api_call.startswith('http'):
                     api_call = 'http:' + api_call
 
@@ -154,5 +154,5 @@ class cHoster(iHoster):
                     return True, api_call, SubTitle
                 else:
                     return True, api_call
-        
+
         return False, False
