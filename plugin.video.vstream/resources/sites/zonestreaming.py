@@ -10,6 +10,7 @@ from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 from resources.lib.multihost import cJheberg
 #from resources.lib.util import cUtil
+from resources.lib.comaddon import VSlog
 import re
 
 #from base64 import urlsafe_b64encode
@@ -373,16 +374,17 @@ def showHosters():
 
                 #pour récuperer les liens jheberg
                 if 'jheberg' in sHosterUrl:
-
+                    #VSlog(sHosterUrl)
                     aResult = cJheberg().GetUrls(sHosterUrl)
-                    for aEntry in aResult:
-                        sHosterUrl = aEntry
+                    if aResult:   
+                        for aEntry in aResult:
+                            sHosterUrl = aEntry
 
-                        oHoster = cHosterGui().checkHoster(sHosterUrl)
-                        if (oHoster != False):
-                            oHoster.setDisplayName(sMovieTitle)
-                            oHoster.setFileName(sMovieTitle)
-                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                            oHoster = cHosterGui().checkHoster(sHosterUrl)
+                            if (oHoster != False):
+                                oHoster.setDisplayName(sMovieTitle)
+                                oHoster.setFileName(sMovieTitle)
+                                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
                 else:
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
