@@ -357,14 +357,15 @@ def showHosters():
         elif 'jheberg' in sUrl:
 
             aResult = cJheberg().GetUrls(sUrl)
-            for aEntry in aResult:
-                sHosterUrl = aEntry
+            if (aResult):
+                for aEntry in aResult:
+                    sHosterUrl = aEntry
 
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
-                    oHoster.setDisplayName(sMovieTitle)
-                    oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+                    if (oHoster != False):
+                        oHoster.setDisplayName(sMovieTitle)
+                        oHoster.setFileName(sMovieTitle)
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         elif 'multiup' in sUrl:
 
