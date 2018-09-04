@@ -202,7 +202,7 @@ def showMovies(sSearch = ''):
 
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace(' [Streaming]', '').replace(' [Streaming', '').replace(' [Telecharger]', '').replace(' [Téléchargement]', '').replace(' [Telechargement]', '')
     sPattern = '<article class="latestPost.+?<a href="([^"]+)" title="([^"]+)".+?src="(.+?)"'
     oParser = cParser()
@@ -302,7 +302,7 @@ def showSeries():
     if (aResult[0] == False):
         #oGui.setEndOfDirectory()
         showHosters()
-        return;
+        return
 
     if (aResult[0] == True):
         total = len(aResult[1])
