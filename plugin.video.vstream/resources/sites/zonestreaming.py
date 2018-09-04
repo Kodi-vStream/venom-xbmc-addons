@@ -368,11 +368,14 @@ def showHosters():
                     sHosterUrl = sHosterUrl.split('&url=')[1]
 
                 if 'filmhdstream' in sHosterUrl:
+
+                    sTitle = sMovieTitle + '[COLOR coral]GoogleDrive[/COLOR]'
+
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
                     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
-                    oGui.addLink(SITE_IDENTIFIER, 'showHostersFhds', sMovieTitle + '[COLOR coral]GoogleDrive[/COLOR]', sThumb, '', oOutputParameterHandler)
+                    oGui.addLink(SITE_IDENTIFIER, 'showHostersFhds', sTitle, sThumb, '', oOutputParameterHandler)
 
                 #pour récuperer les liens jheberg
                 elif 'jheberg' in sHosterUrl:
@@ -407,24 +410,16 @@ def serieHosters():
 
     oParser = cParser()
 
-    liste = False
-
     sPattern = 'href="([^<]+)" target="_blank".+?</a>'
     aResult = oParser.parse(sUrl, sPattern)
 
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
-        index = 1
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
-
-            sTitle = sMovieTitle
-            if liste:
-                sTitle = sTitle + ' (' + str(index) + ')'
-                index = index + 1
 
             sHosterUrl = aEntry
             #pour récuperer tous les liens
@@ -432,11 +427,14 @@ def serieHosters():
                 sHosterUrl = sHosterUrl.split('&url=')[1]
 
             if 'filmhdstream' in sHosterUrl:
+
+                sTitle = sMovieTitle + '[COLOR coral]GoogleDrive[/COLOR]'
+
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addLink(SITE_IDENTIFIER, 'showHostersFhds', sTitle + '[COLOR coral]GoogleDrive[/COLOR]', sThumb, '', oOutputParameterHandler)
+                oGui.addLink(SITE_IDENTIFIER, 'showHostersFhds', sTitle, sThumb, '', oOutputParameterHandler)
 
             #pour récuperer les liens jheberg
             elif 'jheberg' in sHosterUrl:
@@ -447,15 +445,15 @@ def serieHosters():
 
                         oHoster = cHosterGui().checkHoster(sHosterUrl)
                         if (oHoster != False):
-                            oHoster.setDisplayName(sTitle)
-                            oHoster.setFileName(sTitle)
+                            oHoster.setDisplayName(sMovieTitle)
+                            oHoster.setFileName(sMovieTitle)
                             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
             else:
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
-                    oHoster.setDisplayName(sTitle)
-                    oHoster.setFileName(sTitle)
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         progress_.VSclose(progress_)
