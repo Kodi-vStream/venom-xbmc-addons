@@ -412,7 +412,7 @@ def showSeriesLinks():
     sHtmlContent = oRequestHandler.request()
 
     #Mise àjour du titre
-    sPattern = '<meta name="description" content="Telecharger (.+?)Qualité.+?\|[^\|](.+?) Episode .+?\|[^\|](.+?)      la serie'
+    sPattern = '<meta name="description" content="(?:Telecharger|)(.+?)Qualité.+?\|[^\|](.+?) Episode .+?\|[^\|](.+?)(?:la serie|Origine de la serie)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):
