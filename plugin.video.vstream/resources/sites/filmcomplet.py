@@ -9,7 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.comaddon import progress
 from resources.lib.parser import cParser
-#from resources.lib.util import cUtil #outils pouvant etre utiles
+from resources.lib.util import cUtil
 
 import xbmc
 
@@ -184,7 +184,7 @@ def showSearchResult(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="thumbnail animation-2"><a href="([^<]+)"><img src="([^<]+)" alt="([^<]+)".+?<p>(.+?)</p>'
+    sPattern = '<div class="thumbnail animation-2".+?href="([^"]+)".+?img src="([^"]+)" alt="([^"]+)".+?<p>(.+?)<'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -205,6 +205,11 @@ def showSearchResult(sSearch = ''):
             sThumb = aEntry[1].replace('w90', 'w342')
             sTitle = aEntry[2]
             sDesc = aEntry[3]
+
+            #tris search
+            if sSearch and total > 3:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                    continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -229,7 +234,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="poster"><a href="([^<]+)"><img src="([^<]+)" alt="([^<]+)".+?(?:|class="quality">([^<]+)<.+?)class="texto">(.+?)<'
+    sPattern = '<div class="poster"><img src="([^<]+)" alt="([^<]+)".+?(?:|class="quality">([^<]+)<.+?)<a href="([^"]+)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -246,11 +251,11 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl2 = aEntry[0]
-            sThumb = aEntry[1].replace('w185', 'w342')
-            sTitle = aEntry[2]
-            sQual = aEntry[3]
-            sDesc = aEntry[4]
+            sThumb = aEntry[0].replace('w185', 'w342')
+            sTitle = aEntry[1]
+            sQual = aEntry[2]
+            sUrl2 = aEntry[3]
+            sDesc = ''
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
