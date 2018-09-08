@@ -351,7 +351,9 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sThumb = URL_MAIN + aEntry[0]
+            sThumb = aEntry[0]
+            if not sThumb.startswith('http'):
+                sThumb = URL_MAIN + sThumb 
 
             sTitle = str(aEntry[1])
             #sTitle = unicode(sTitle, errors='replace')
@@ -363,7 +365,9 @@ def showMovies(sSearch = ''):
             if ' - Episode' in sTitle:
                 sTitle = sTitle.replace(' -', '')
 
-            sUrl = URL_MAIN + aEntry[2]
+            sUrl = aEntry[2]
+            if not sUrl.startswith('http'):
+                sUrl = URL_MAIN + aEntry[2]
 
             #affichage de la langue
             sLang = ''
