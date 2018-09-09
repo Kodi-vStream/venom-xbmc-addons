@@ -1,23 +1,24 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.handler.hosterHandler import cHosterHandler
+#from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
+#from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 
-import xbmc
+import re, urllib, urllib2
 
 SITE_IDENTIFIER = 'filmcomplet'
 SITE_NAME = 'Film Complet'
 SITE_DESC = 'Film Complet - film en streaming HD'
 
 URL_MAIN = 'https://filmcomplet.club/'
+UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'
 
 #definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
 #LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
@@ -264,7 +265,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -289,6 +290,54 @@ def __checkForNextPage(sHtmlContent):
     return False
 
 
+def showLinks():
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+    oParser = cParser()
+
+    sDesc = ''
+    try:
+        sPattern = '<p>([^<>]+)&#.+?<\/p>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            sDesc = aResult[1][0]
+    except:
+        pass
+
+    sPattern = '<li id="player-option-.+?" class="dooplay_player_option " data-post="(.+?)" data-nume="(.+?)">\s*.+?\s*<span class="title">(.+?)</span>\s*<span class="server">(.+?)</span>'
+
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+        oGui.addText(SITE_IDENTIFIER)
+
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+
+            sPost = aEntry[0]
+            sNume = aEntry[1]
+            sQual = aEntry[2]
+            sHost = re.sub('\.\w+', '', aEntry[3])
+            sHost = sHost.capitalize()
+            sTitle = ('%s [%s] [COLOR coral]%s[/COLOR]') % (sMovieTitle, sQual, sHost)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sPost', sPost)
+            oOutputParameterHandler.addParameter('sNume', sNume)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
 def showHosters():
     oGui = cGui()
     oParser = cParser()
@@ -296,12 +345,22 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sPost = oInputParameterHandler.getValue('sPost')
+    sNume = oInputParameterHandler.getValue('sNume')
 
-    oRequestHandler = cRequestHandler(sUrl)
+    sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
+
+    oRequestHandler = cRequestHandler(sUrl2)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addHeaderEntry('User-Agent',"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0")
+    oRequestHandler.addHeaderEntry('Content-Type','application/x-www-form-urlencoded; charset=UTF-8')
+    oRequestHandler.addParameters('action', 'doo_player_ajax')
+    oRequestHandler.addParameters('post', sPost)
+    oRequestHandler.addParameters('nume', sNume)
     sHtmlContent = oRequestHandler.request()
-    sHtmlContent = sHtmlContent.replace('https://www.youtube.com/embed/', '')
+    #VSlog(sHtmlContent)
 
-    sPattern = '<iframe.+?src="(.+?)"'
+    sPattern = "<iframe.+?src='(.+?)'"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
