@@ -6,12 +6,11 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 
 SITE_IDENTIFIER = 'fullstream'
-SITE_NAME = 'Full Stream'
+SITE_NAME = 'FullStream'
 SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
 
 URL_MAIN = 'http://serie.full-stream.cc/'
@@ -121,7 +120,7 @@ def showSearch():
 def AlphaSearch():
     oGui = cGui()
 
-    for i in range(0, 27) :
+    for i in range(0, 27):
 
         if (i < 1):
             sLetter = '[0-9]'

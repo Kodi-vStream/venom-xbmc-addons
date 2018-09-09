@@ -7,7 +7,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
+from resources.lib.multihost import cJheberg
 import re, unicodedata
 
 #clone de dpstreaming.tv
@@ -277,7 +278,7 @@ def showSeries(sLoop = False):
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-            sDesc = sDesc.replace('&#8230;', '...').replace('&#8217;', '\'')
+            sDesc = sDesc.replace('&#8217;', '\'').replace('&#8230;', '...')
     except:
         pass
 
@@ -287,8 +288,8 @@ def showSeries(sLoop = False):
     #astuce en cas d'episode unique
     if (aResult[0] == False) and (sLoop == False):
         #oGui.setEndOfDirectory()
-        showHosters(True)
-        return;
+        serieHosters(True)
+        return
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -305,7 +306,7 @@ def showSeries(sLoop = False):
             #episode
             else:
                 sUrl = aEntry[2]
-                sTitle = sMovieTitle + ' ' + aEntry[1]
+                sTitle = sMovieTitle + ' ' + aEntry[1].replace(' New', '')
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -325,28 +326,14 @@ def showHosters(sLoop = False):
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request();
+    sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/', '')
     sHtmlContent = sHtmlContent.replace("src='https://ad.a-ads.com", '')
 
     oParser = cParser()
 
-    #1 er version
-    sPattern = '<iframe[^<>]+?src=[\'|"](http.+?)[\'|"]'
-    aResult1 = re.findall(sPattern, sHtmlContent)
-
-    #seconde version
-    sPattern = '<a class="large.+?href="(.+?)" target="vid">'
-    aResult2 = re.findall(sPattern, sHtmlContent)
-
-    #3eme version
-    sPattern = '<a class="large.+?href="([^<>"]+?)" target="(?:_blank|vid)"'
-    aResult3 = re.findall( sPattern, sHtmlContent)
-
-    #fusion des resultats
-    aResult = []
-    aResult = list(set( aResult1 + aResult2 + aResult3 ))
-
+    sPattern = '<a class="large button.+?" href="([^<>"]+?)" target="(?:_blank|vid)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
 
     #Si il y a rien a afficher c'est peut etre une serie
     if (len(aResult) == 0) and (sLoop == False):
@@ -354,16 +341,43 @@ def showHosters(sLoop = False):
         showSeries(True)
         return
 
-    if (len(aResult) > 0):
-        for aEntry in aResult:
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            #pour récuperer tous les liens
+            if '&url=' in sHosterUrl:
+                sHosterUrl = sHosterUrl.split('&url=')[1]
 
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            if 'filmhdstream' in sHosterUrl:
+
+                sTitle = sMovieTitle + ' [COLOR coral]GoogleDrive[/COLOR]'
+
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oGui.addLink(SITE_IDENTIFIER, 'showHostersFhds', sTitle, sThumb, '', oOutputParameterHandler)
+
+            #pour récuperer les liens jheberg
+            elif 'jheberg' in sHosterUrl:
+                aResult = cJheberg().GetUrls(sHosterUrl)
+                if aResult:
+                    for aEntry in aResult:
+                        sHosterUrl = aEntry
+
+                        oHoster = cHosterGui().checkHoster(sHosterUrl)
+                        if (oHoster != False):
+                            oHoster.setDisplayName(sMovieTitle)
+                            oHoster.setFileName(sMovieTitle)
+                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+            else:
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
@@ -376,27 +390,71 @@ def serieHosters():
 
     oParser = cParser()
 
-    sPattern = 'href="([^<]+)" target="_blank"[^<>]*>.+?<\/a>'
+    sPattern = 'href="([^"]+)" target="_blank"'
     aResult = oParser.parse(sUrl, sPattern)
 
-    #affichage
     if (aResult[0] == True):
-        index = 1
         for aEntry in aResult[1]:
 
-            sTitle = sMovieTitle
-            sTitle = sTitle + ' (' + str(index) + ') '
-            index = index + 1
-	
-            if '&url=' in aEntry:
-                aEntry = aEntry.split('=')[2]
+            sHosterUrl = aEntry
+            #pour récuperer tous les liens
+            if '&url=' in sHosterUrl:
+                sHosterUrl = sHosterUrl.split('&url=')[1]
+
+            if 'filmhdstream' in sHosterUrl:
+
+                sTitle = sMovieTitle + ' [COLOR coral]GoogleDrive[/COLOR]'
+
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oGui.addLink(SITE_IDENTIFIER, 'showHostersFhds', sTitle, sThumb, '', oOutputParameterHandler)
+
+            #pour récuperer les liens jheberg
+            elif 'jheberg' in sHosterUrl:
+                aResult = cJheberg().GetUrls(sHosterUrl)
+                if aResult:
+                    for aEntry in aResult:
+                        sHosterUrl = aEntry
+                        oHoster = cHosterGui().checkHoster(sHosterUrl)
+                        if (oHoster != False):
+                            oHoster.setDisplayName(sMovieTitle)
+                            oHoster.setFileName(sMovieTitle)
+                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+            else:
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+    oGui.setEndOfDirectory()
+
+def showHostersFhds():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    oParser = cParser()
+    sPattern = '<iframe.+?src="(.+?)"'
+
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
 
             sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-
             if (oHoster != False):
-                oHoster.setDisplayName(sTitle)
-                oHoster.setFileName(sTitle)
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()

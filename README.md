@@ -1,7 +1,17 @@
-## A Savoir!
+## A Propos!
 
-Ce Github est un espace de discussions pour les contributeurs et le suivi de la programmation (bug, idée etc..).
-Si vous proposez des liens de téléchargement ou l'installation de vStream Merci de citer ce Github et les contributeurs.
+vStream est un addon pour xbmc qui vous permet de visionner en streaming un grand nombre de sources video (comme la télévision, les films, les séries, les mangas, les documentaires, etc..) il vous est même possible de télécharger certaine source, de les mettre en favoris ou de voir la bande annonce. Le tout depuis KODI et 100% français.
+
+## Tout Savoir!
+
+[![images](https://img.shields.io/badge/Visiter-vstream&#46;ga-yellowgreen.svg?style=for-the-badge)](http://vstream.ga)
+
+
+## Installer!
+
+Installez le zip du repository (pour avoir les mises à jour automatiques) ou installez la dernière version.
+
+[![images](https://img.shields.io/badge/T%C3%A9l%C3%A9charger-Repository-blue.svg?style=for-the-badge)](https://github.com/Kodi-vStream/venom-xbmc-addons/releases/tag/0.0.3)
 
 
 ## Contribuer!
@@ -24,3 +34,10 @@ Pour participer directement au projet:
 ## Faire un Don!
 
 [![paypal](https://img.shields.io/badge/Don-Paypal/CB-009CDE.svg?style=for-the-badge)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XGYW7QDKCLPCJ)
+
+
+## Merci!
+
+Merci à tous nos généreux donateurs et donatrices.
+
+Bon Film ++

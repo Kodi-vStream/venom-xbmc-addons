@@ -419,7 +419,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<a href="(.+?)">Suivant.+?</a>'
+    sPattern = '<a href="([^"]+)">Suivant &.+?</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -524,7 +524,7 @@ def showHosters():
     if 'saison' in sUrl:
         sPattern = '<div class="prez_7">([^"]+)</div>\s*<div style="padding.+?">|<a title=".+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
     else:
-        sPattern = '<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
+        sPattern = '<h2 style="text-align: center;"><span style=.+?>(.+?)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -539,15 +539,15 @@ def showHosters():
             if progress_.iscanceled():
                 break
 
-            if 'saison' in sUrl:
-                if aEntry[0]:
-                    oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
-                sTitle = aEntry[2] + ' ' + aEntry[1].replace('agrave;','a')
+            if 'saison' in sUrl:
+                sTitle = aEntry[2] + ' ' + aEntry[1].replace('&agrave;','a')
                 sUrl2 = aEntry[1]
             else:
-                sTitle = aEntry[1] + ' ' + aEntry[0]
-                sUrl2 = aEntry[0]
+                sTitle = aEntry[2] + ' ' + aEntry[1]
+                sUrl2 = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)

@@ -7,7 +7,6 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-
 import re
 
 #Ce site a des probleme en http/1.1 >> incomplete read error
@@ -25,13 +24,11 @@ ANIM_ANIMS = ('http://', 'load')
 ANIM_NEWS = (URL_MAIN + 'anime', 'showMovies')
 ANIM_VIEWS = (URL_MAIN + 'video?search=&t=0&order=3', 'showMovies')
 ANIM_LIST = (URL_MAIN + 'anime', 'showAZ')
-#ANIM_GENRES = (URL_MAIN + 'video?search=&t=0', 'showMovies')
 
 SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = (URL_MAIN + 'serie', 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'video?search=&t=1&order=3', 'showMovies')
 SERIE_LIST = (URL_MAIN + 'serie', 'showAZ')
-#SERIE_GENRES = (URL_MAIN + 'video?search=&t=1', 'showMovies')
 
 URL_SEARCH = (URL_MAIN + 'video?search=', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
@@ -53,12 +50,6 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_VIEWS[1], 'Animés (Les plus vus)', 'views.png', oOutputParameterHandler)
 
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    # oOutputParameterHandler.addParameter('type2', 0)
-    # oOutputParameterHandler.addParameter('title', 'Animés')
-    # oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Animés (Genres)', 'genres.png', oOutputParameterHandler)
-
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Séries (Liste)', 'az.png', oOutputParameterHandler)
@@ -66,12 +57,6 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus vues)', 'views.png', oOutputParameterHandler)
-
-    # oOutputParameterHandler = cOutputParameterHandler()
-    # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-    # oOutputParameterHandler.addParameter('type2', 1)
-    # oOutputParameterHandler.addParameter('title', 'Séries')
-    # oGui.addDir(SITE_IDENTIFIER, 'showGenre', 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -88,7 +73,6 @@ def showSearch():
 def showGenre():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    #sVersion = oInputParameterHandler.getValue('version')
     sType2 = oInputParameterHandler.getValue('type2')
 
     liste = []
@@ -234,8 +218,9 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = '<span class="top"><a href="([^"]+)"><span class="title">([^<>]+)<\/span>'
+
     oParser = cParser()
+    sPattern = '<span class="top"><a href="([^"]+)"><span class="title">([^<>]+)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -276,10 +261,9 @@ def showEpisode():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    #info anime et serie
     sThumb = ''
     sDesc = ''
-
-    #info anime et serie
     try:
         oParser = cParser()
         sPattern = '<img itemprop="image".+?src="([^<]+)">.+?<strong>(.+?)</strong>'
@@ -300,7 +284,6 @@ def showEpisode():
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]Animé licencié[/COLOR]')
 
     else:
-
         sPattern = '<li class="saison">([^<>]+)</li>|<a href="(https:\/\/www\.adkami\.com[^"]+)"[^<>]+>([^<>]+)<\/a><\/li>'
 
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -318,13 +301,14 @@ def showEpisode():
                 else:
                     sUrl = aEntry[1]
                     sTitle = sMovieTitle + ' ' + aEntry[2]
-                    sTitle = re.sub(' vf',' [VF]', sTitle, re.IGNORECASE)
-                    sTitle = re.sub(' vostfr',' [VOSTFR]', sTitle, re.IGNORECASE)
+                    sTitle = re.sub(' vf',' (VF)', sTitle, re.IGNORECASE)
+                    sDisplayTitle = re.sub(' vostfr',' (VOSTFR)', sTitle, re.IGNORECASE)
+                    sTitle = sDisplayTitle.replace(' (VF)', '').replace(' (VOSTFR)', '')
 
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                    oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle , 'series.png', sThumb, sDesc, oOutputParameterHandler)
+                    oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle , 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
             progress_.VSclose(progress_)
 
@@ -340,25 +324,23 @@ def showLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #sPattern = '<div class="video-video"><iframe[^<>]+src="([^"]+)"|<a rel="nofollow" target="_back" href="([^"]+)" [^<>]+">[^<>]+Redirection<\/a>'
     sPattern = '(?:<div class="title">(.+?)</div>.+?<div class="iframe".+?|<div class="video-video".+?)data-src="([^"]+)"'
     oParser = cParser()
     aResult = re.findall(sPattern, sHtmlContent, re.DOTALL)
 
     if (aResult):
         for aEntry in aResult:
-            if (aEntry[0]):
+            if aEntry[0]:
                 sHost = aEntry[0].replace('Ouvrir ', '')
                 sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
-                sUrl = aEntry[1].replace('https://www.youtube.com/embed/', '').replace('+', 'plus')
             else:
-                sUrl = aEntry[1].replace('https://www.youtube.com/embed/', '').replace('+', 'plus')
-                sTitle = ('%s [%s]') % (sMovieTitle, 'inconnu')
+                sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, 'Inconnu')
                 
+            sUrl = aEntry[1].replace('https://www.youtube.com/embed/', '').replace('+', 'plus')
  
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
             
@@ -399,5 +381,5 @@ def decodex(x):
     px = chain(e)
     for y in list(px):
         t += chr(int(175 ^ ord(y[0])) - ord(r[a]))
-        a = 0 if a > len(r) - 2 else a+1
+        a = 0 if a > len(r) - 2 else a + 1
     return t    

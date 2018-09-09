@@ -105,23 +105,18 @@ def showGenres():
 def showMovies(sSearch=''):
     oGui = cGui()
     oParser = cParser()
-    oInputParameterHandler = cInputParameterHandler()
 
     if sSearch:
-        sUrl = sSearch
-        sUrl = sUrl.replace('%20', '+')
-        sPattern = '<div class="fixwidth">\s*<a href="([^"]+)">.+?<img class="izimg" src="([^"]+)".+?title="([^"]+)"'
+        sUrl = sSearch.replace('%20', '+')
 
     else:
+        oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        if 'category' in sUrl:
-            sPattern = '<div class="fixwidth">\s*<a href="([^"]+)">.+?<img class="izimg" src="([^"]+)".+?title="([^"]+)"'
-        else:
-            sPattern = '<div class="video">.+?<a href="([^"]+)">.+?<img class="izimg" src="([^"]+)".+?title="([^"]+)"'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    sPattern = '<div class="(?:fixwidth|video)".+?a href="([^"]+)">.+?<img class="izimg" src="([^"]+)".+?title="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -142,12 +137,10 @@ def showMovies(sSearch=''):
             if not sThumb.startswith('http'):
                 sThumb = URL_MAIN + sThumb
 
-
             #tris search
             if sSearch and total > 3:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
                     continue
-
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -195,7 +188,7 @@ def ShowEpisode():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-            sDesc = sDesc.replace('\\', '').replace('&#8230;', '...')
+            sDesc = sDesc.replace('\\', '').replace('&#8217;', '\'').replace('&#8230;', '...')
     except:
         pass
 

@@ -7,15 +7,15 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress, dialog, xbmc #, VSlog
+from resources.lib.comaddon import progress, dialog, xbmc#, VSlog
 
-import urllib2
+import requests
 
 SITE_IDENTIFIER = 'streaming_series_xyz'
 SITE_NAME = 'Streaming-Series.cx'
 SITE_DESC = 'Séries en Streaming'
 
-URL_MAIN = 'https://dpstreaming-series.com/'
+URL_MAIN = 'https://dpstreaming.to/'
 
 SERIE_SERIES = (URL_MAIN + 'serie-category/series/', 'showMovies')
 SERIE_NEWS = (URL_MAIN + 'serie-category/series/', 'showMovies')
@@ -30,9 +30,26 @@ FUNCTION_SEARCH = 'showMovies'
 def ProtectstreamBypass(url):
 
     #lien commencant par VID_
-    Codedurl = url
-    oRequestHandler = cRequestHandler(Codedurl)
-    sHtmlContent = oRequestHandler.request()
+    # Codedurl = url
+    Codedurl = url.replace('http:', 'https:')
+
+    UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0'
+
+    session = requests.Session()
+    session.headers.update({
+        'User-Agent': UA,
+        'Referer' : 'https://dpstreaming.to/',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    })
+
+    try:
+        response = session.get( url, timeout=5 )
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print "erreur " + str(e)
+        return ''
+
+    sHtmlContent = response.text
 
     oParser = cParser()
     sPattern = 'var k=\"([^<>\"]*?)\";'
@@ -43,32 +60,27 @@ def ProtectstreamBypass(url):
         dialog().VSinfo('Décodage en cours', "Patientez", 5)
         xbmc.sleep(5000)
 
-        #postdata = urllib.urlencode( { 'k': aResult[1][0] } )
-        postdata = 'k=' + aResult[1][0]
+        postdata = aResult[1][0]
+        headers = {
+            'User-Agent' : UA,
+            'Accept' : '*/*',
+            'Referer' : url,
+            'Content-Type' : 'application/x-www-form-urlencoded',
+        }
+        session.headers.update( headers )
+        data = {'k' : postdata}
 
-        UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
-        headers = {'User-Agent': UA ,
-                   'Host' : 'www.protect-stream.com',
-                   'Referer': Codedurl,
-                   'Accept' :'*/*',
-                   'Connection':'keep-alive',
-                   #'Accept-Encoding' : 'gzip, deflate',
-                   #'Accept-Language' : 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-                   'Content-Length' : len(postdata),
-                   'Content-Type': 'application/x-www-form-urlencoded'}
-
-        #VSlog(postdata)
-        #VSlog(str(headers))
-
-        req = urllib2.Request('https://www.protect-stream.com/secur2.php', postdata, headers)
         try:
-            response = urllib2.urlopen(req)
-        except urllib2.URLError, e:
-            print e.read()
-            print e.reason
+            response = session.post( 'https://www.protect-stream.com/secur2.php', data=data )
+        except requests.exceptions.RequestException as e:
+            print "erreur" + str(e)
+            return ''
 
-        data = response.read()
-        response.close()
+        data = response.text
+        data = data.encode('utf-8', 'ignore')
+
+        #VSlog(type(data))
+        #VSlog(repr(data))
 
         #fh = open('c:\\test.txt', "w")
         #fh.write(data)

@@ -87,7 +87,6 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-
 def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
@@ -130,7 +129,6 @@ def showMovies(sSearch = ''):
             sDesc = aEntry[5]
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sYear)
 
-
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -138,7 +136,6 @@ def showMovies(sSearch = ''):
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
-
 
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
@@ -189,7 +186,7 @@ def showHosters():
                         def http_response(self, request, response):
                             return response
 
-                    url8 = str(aEntry).replace('https', 'http')
+                    url8 = aEntry.replace('https', 'http')
 
                     opener = urllib2.build_opener(NoRedirection)
                     opener.addheaders.append (('User-Agent', UA))
@@ -201,7 +198,7 @@ def showHosters():
                 except:
                     pass
             else:
-                sHosterUrl = str(aEntry)
+                sHosterUrl = aEntry
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):

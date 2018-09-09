@@ -62,9 +62,13 @@ class cHoster(iHoster):
         return ''
  
     def setUrl(self, sUrl):
-        sId = self.__getIdFromUrl( sUrl )
-        self.__sUrl = 'http://thevideo.me/embed-' + sId + '.html'
-
+        sId = self.__getIdFromUrl(sUrl)
+        #anciens lien
+        if 'video.' in sUrl :
+            self.__sUrl = 'http://thevideo.me/embed-' + sId + '.html'
+        else:
+            self.__sUrl = "https://vev.io/embed/" + sId
+            
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 

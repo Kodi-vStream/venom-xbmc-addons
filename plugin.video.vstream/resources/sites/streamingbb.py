@@ -249,12 +249,7 @@ def showHosters():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
-        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            progress_.VSupdate(progress_, total)
-            if progress_.iscanceled():
-                break
 
             sHosterUrl = aEntry
             if sHosterUrl.startswith('/'):

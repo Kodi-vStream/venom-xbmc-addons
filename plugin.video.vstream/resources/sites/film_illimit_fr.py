@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'film_illimit_fr'
 SITE_NAME = 'Film illimité'
 SITE_DESC = 'Films, Séries HD en streaming'
 
-URL_MAIN = 'https://official-film-illimite.ws/'
+URL_MAIN = 'https://ww1.official-film-illimite.ws/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
@@ -194,7 +194,7 @@ def showMovies(sSearch = ''):
             if re.match('.+?saison [0-9]+', sTitle, re.IGNORECASE):
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -205,7 +205,6 @@ def showMovies(sSearch = ''):
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
