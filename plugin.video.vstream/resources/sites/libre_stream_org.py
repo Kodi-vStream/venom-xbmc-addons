@@ -326,11 +326,12 @@ def seriesHosters():
 
     sPattern = '<div class="e-number">.+?<iframe src="(.+?)".+?class="episode-id">(.+?)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
             if 'player.php?id' in aEntry[0]:
-                sTitle = sMovieTitle + '(Redirection ' + aEntry[0].split('/')[3].replace('cht','') +')'
+                sTitle = sMovieTitle + aEntry[1] + '(Redirection ' + aEntry[0].split('/')[3].replace('cht','') +')'
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
