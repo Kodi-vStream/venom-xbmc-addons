@@ -4,7 +4,7 @@ vStream est un addon pour xbmc qui vous permet de visionner en streaming un gran
 
 ## Tout Savoir!
 
-[![images](https://img.shields.io/badge/site-web-yellowgreen.svg?style=for-the-badge)](http://vstream.ga)
+[![images](https://img.shields.io/badge/Visiter-vstream&#46;ga-yellowgreen.svg?style=for-the-badge)](http://vstream.ga)
 
 
 ## Installer!
