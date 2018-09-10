@@ -144,6 +144,11 @@ def showMovies(sSearch = ''):
                 break
 
             sThumb = aEntry[0]
+            if sThumb.startswith('/imgg='):
+                sThumb = 'http://' + sThumb.replace('/imgg=','')
+            elif sThumb.startswith('/uploads'):
+                sThumb = URL_MAIN + sThumb
+                
             sUrl = aEntry[1]
             sTitle = aEntry[2]
 
