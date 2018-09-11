@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'sokrostream_biz'
@@ -320,8 +320,10 @@ def showHosters():
     oRequest.addParametersLine('levideo=' + sCode)
 
     sHtmlContent = oRequest.request()
+    
+    #VSlog(sUrl)
 
-    sPattern = '<iframe.+?src="(.+?)"'
+    sPattern = '<iframe.+?src=["\'](.+?)["\']'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
