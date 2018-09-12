@@ -3,8 +3,6 @@
 from resources.lib.handler.requestHandler import cRequestHandler 
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
-from resources.lib.packer import cPacker
-
 
 class cHoster(iHoster):
 
@@ -35,26 +33,11 @@ class cHoster(iHoster):
         return self.__sHD
 
     def isDownloadable(self):
-        return False
-
-    def isJDownloaderable(self):
-        return False
-
-    def getPattern(self):
-        return ''
-    
-    def __getIdFromUrl(self, sUrl):
-        return ''
+        return True
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
 
-    def checkUrl(self, sUrl):
-        return True
-
-    def __getUrl(self, media_id):
-        return
-    
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
@@ -65,14 +48,10 @@ class cHoster(iHoster):
         
         oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
-            
         oParser = cParser()
-        #sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
-        #aResult = oParser.parse(sHtmlContent,sPattern)
-        #if (aResult[0] == True):
-        #    sHtmlContent = cPacker().unpack(aResult[1][0])
 
-        sPattern = 'mp4:"([^"]+)"' 
+
+        sPattern = "<source.+?src='([^']+)'"
         aResult = oParser.parse(sHtmlContent,sPattern)
         if (aResult[0] == True):
             api_call = aResult[1][0] #pas de choix qualité trouvé pour le moment
