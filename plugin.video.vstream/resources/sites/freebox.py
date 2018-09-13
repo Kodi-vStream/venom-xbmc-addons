@@ -10,7 +10,7 @@ from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
 
 from resources.lib.epg import cePg
-from resources.lib.comaddon import progress, addon, xbmc, xbmcgui, VSlog
+from resources.lib.comaddon import progress, addon, xbmc, xbmcgui, VSlog, dialog
 
 import re, urllib2, urllib, sys
 import xbmcplugin, xbmcvfs
@@ -55,7 +55,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_IPTVSITE)
-    oGui.addDir(SITE_IDENTIFIER, 'showIptvSite', 'Liste site Iptv', 'tv.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showIptvSite', 'Iptv (Sites)', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
@@ -233,10 +233,11 @@ def getHtml(sUrl, referer=None, hdr=None, data=None):#S'occupe des requetes
     response = urllib2.urlopen(req)
     data = response.read()
     response.close()
-    VSlog(data)
+    #VSlog(data)
     return data
 
 def parseWebM3U():#Traite les m3u
+    oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -252,24 +253,54 @@ def parseWebM3U():#Traite les m3u
         #    f.write('\n'+'#EXTINF:-1, '+sTitle)
         #    f.write('\n'+sUrl2)
 
-        icon = "tv.png"
+        #testtt
+
         if '.ts' in sUrl2:
             sUrl2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(sUrl2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(sTitle)
+        else : 
+            sUrl2 = urllib.quote_plus(sUrl2)
 
-        ok = True
-        liz = xbmcgui.ListItem(sTitle, iconImage="DefaultVideo.png", thumbnailImage=icon)
-        commands = []
-        direct_epg_url= "plugin://plugin.video.vstream/?site=freebox&function=direct_epg&sMovieTitle=" + urllib.quote(sTitle) + "&siteUrl=" + urllib.quote_plus(sUrl2) + "&sFav=play__&sThumbnail=" + urllib.quote(icon) + "&sId=freebox&sCat=6"
-        commands.append(( "Direct Epg", 'RunPlugin(' + direct_epg_url + ')'))
-        soir_epg_url = "plugin://plugin.video.vstream/?site=freebox&function=soir_epg&sMovieTitle=" + urllib.quote(sTitle) + "&siteUrl=" + urllib.quote_plus(sUrl2) + "&sFav=play__&sThumbnail=" + urllib.quote(icon) + "&sId=freebox&sCat=6"
-        commands.append(( "Soir Epg", 'RunPlugin(' + soir_epg_url + ')'))
-        liz.addContextMenuItems( commands )
-        liz.setArt({'thumb': icon, 'icon': icon})
-        liz.setInfo(type="Video", infoLabels={"Title": sTitle})
-        video_streaminfo = {'codec': 'h264'}
-        liz.addStreamInfo('video', video_streaminfo)
-        ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=sUrl2, listitem=liz, isFolder=False)
-    xbmcplugin.endOfDirectory(int(sys.argv[1]))
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+        oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+        oOutputParameterHandler.addParameter('sThumbnail', "tv.png")
+
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(SITE_IDENTIFIER)
+        oGuiElement.setFunction('play2__')
+        oGuiElement.setTitle(sTitle)
+        oGuiElement.setFileName(sTitle)
+        oGuiElement.setIcon('tv.png')
+        oGuiElement.setMeta(0)
+        oGuiElement.setThumbnail("tv.png")
+        oGuiElement.setCat(6)
+
+        oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'direct_epg', 'Guide tv Direct')
+        oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, SITE_IDENTIFIER, SITE_IDENTIFIER, 'soir_epg', 'Guide tv Soir')
+        oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
+        oGui.addFolder(oGuiElement, oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+        # icon = "tv.png"
+        # if '.ts' in sUrl2:
+        #     sUrl2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(sUrl2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(sTitle)
+
+        # ok = True
+        # liz = xbmcgui.ListItem(sTitle, iconImage="DefaultVideo.png", thumbnailImage=icon)
+        # commands = []
+        # direct_epg_url= "plugin://plugin.video.vstream/?site=freebox&function=direct_epg&sMovieTitle=" + urllib.quote(sTitle) + "&siteUrl=" + urllib.quote_plus(sUrl2) + "&sFav=play__&sThumbnail=" + urllib.quote(icon) + "&sId=freebox&sCat=6"
+        # commands.append(( "Direct Epg", 'RunPlugin(' + direct_epg_url + ')'))
+        # soir_epg_url = "plugin://plugin.video.vstream/?site=freebox&function=soir_epg&sMovieTitle=" + urllib.quote(sTitle) + "&siteUrl=" + urllib.quote_plus(sUrl2) + "&sFav=play__&sThumbnail=" + urllib.quote(icon) + "&sId=freebox&sCat=6"
+        # commands.append(( "Soir Epg", 'RunPlugin(' + soir_epg_url + ')'))
+        # liz.addContextMenuItems( commands )
+        # liz.setArt({'thumb': icon, 'icon': icon})
+        # liz.setInfo(type="Video", infoLabels={"Title": sTitle})
+        # video_streaminfo = {'codec': 'h264'}
+        # liz.addStreamInfo('video', video_streaminfo)
+        #ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=sUrl2, listitem=liz, isFolder=False)
+    #xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def showWeb():#Code qui s'occupe de liens TV du Web
     oGui = cGui()
@@ -330,7 +361,6 @@ def direct_epg():#Code qui gerent l'epg
     oGuiElement = cGuiElement()
     oInputParameterHandler = cInputParameterHandler()
     #aParams = oInputParameterHandler.getAllParameter()
-    #print aParams
     sTitle = oInputParameterHandler.getValue('sMovieTitle')
     sCom = cePg().get_epg(sTitle, 'direct')
 
@@ -544,6 +574,29 @@ def play__():#Lancer les liens
         xbmc.executebuiltin('XBMC.RunPlugin(' + sUrl + ')')
     else:
         xbmc.Player().play(sUrl, listitem)
+    return
+
+def play2__():#Lancer les liens iptv
+    oGui = cGui()
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl').replace('P_L_U_S', '+')
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+
+    listitem = xbmcgui.ListItem(sTitle, iconImage="DefaultVideo.png", thumbnailImage=sThumbnail)
+    listitem.setInfo('video', {'Title': sTitle})
+    listitem.setProperty("IsPlayable", "true")
+    #xbmc.Player().play(sUrl, listitem)
+
+
+    if 'f4mTester' in sUrl:
+        if not xbmc.executebuiltin('XBMC.RunPlugin(' + sUrl + ')'): 
+            dialog().VSerror('Verifer fM4Tester')
+    else:
+        if not xbmc.Player().play(sUrl, listitem):
+            dialog().VSerror('Connexion Impossible')
+
     return
 
 def GetRealUrl(chain):#Recupere les liens des regex

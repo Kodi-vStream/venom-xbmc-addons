@@ -309,8 +309,8 @@ msgid "Download"
 msgstr "Télécharger"
 
 msgctxt "#30203"
-msgid "Webradio"
-msgstr "Radio du web"
+msgid "Radio"
+msgstr "Radio"
 
 msgctxt "#30204"
 msgid "[COLOR red]No informations[/COLOR]"
@@ -498,8 +498,8 @@ msgid "Calendar"
 msgstr "Calendrier des sorties VO"
 
 msgctxt "#30332"
-msgid "WebTv"
-msgstr "Tv du web"
+msgid "Iptv (official)"
+msgstr "Iptv (officiel)"
 
 msgctxt "#30340"
 msgid "Trakt integration"
