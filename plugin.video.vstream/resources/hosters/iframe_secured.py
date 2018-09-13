@@ -1,9 +1,12 @@
-#coding: utf-8
+#-*- coding: utf-8 -*-
+# https://github.com/Kodi-vStream/venom-xbmc-addons
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-import xbmcgui,re
-import base64
+import re
+
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 
 class cHoster(iHoster):
 
@@ -27,27 +30,16 @@ class cHoster(iHoster):
         return 'iframe_secured'
 
     def isDownloadable(self):
-        return True
-
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return ''
-
-    def __getIdFromUrl(self):
-        return ''
-
-    def __modifyUrl(self, sUrl):
-        return '';
+        return False
 
     def setUrl(self, sUrl):
+
         #http://iframe-secured.com/embed/evovinec
         #http://iframe-secured.com/embed/iframe.php?u=evovinec
         self.__sUrl = sUrl.replace('http://iframe-secured.com/embed/','')
-        self.__sUrl = sUrl.replace('//iframe-secured.com/embed/','')
+        self.__sUrl = self.__sUrl.replace('//iframe-secured.com/embed/','')
         self.__sUrl = 'http://iframe-secured.com/embed/iframe.php?u=%s' % self.__sUrl
-
+        
     def checkUrl(self, sUrl):
         return True
 
@@ -60,8 +52,11 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
 
         api_call = ''
-
+        
+        oParser = cParser()
         oRequest = cRequestHandler(self.__sUrl)
+        oRequest.addHeaderEntry('User-Agent', UA)
+        oRequest.addHeaderEntry('Referer', self.__sUrl.replace('iframe.php?u=',''))
         sHtmlContent = oRequest.request()
 
         from resources.lib.packer import cPacker
@@ -71,12 +66,10 @@ class cHoster(iHoster):
         if (aResult):
             sUnpacked = cPacker().unpack(aResult[0])
             sHtmlContent = sUnpacked
-
             if (sHtmlContent):
 
                 #window.location.replace(\'//rutube.ru/play/embed/10622163?p=gaY1LJ7uN2y6xhfO2mUCoA\');
 
-                oParser = cParser()
                 sPattern = "replace\(.*'(.+?)'"
                 aResult = oParser.parse(sHtmlContent, sPattern)
 
