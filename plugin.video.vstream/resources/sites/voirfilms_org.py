@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'voirfilms_org'
 SITE_NAME = 'VoirFilms'
 SITE_DESC = 'Films, Séries & Animés en Streaming'
 
-URL_MAIN = 'https://ww1.voirfilms.ws/'
+URL_MAIN = 'https://www1.voirfilms.ws/'
 
 MOVIE_MOVIE = (URL_MAIN + 'alphabet', 'showAlpha')
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming', 'showMovies')
