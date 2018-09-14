@@ -7,10 +7,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.packer import cPacker
-import re
-
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 
 class cHoster(iHoster):
 
@@ -35,9 +32,6 @@ class cHoster(iHoster):
 
     def isDownloadable(self):
         return True
-        
-    def __getIdFromUrl(self):
-        return ''
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
@@ -59,6 +53,7 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
         
     def extractSmil(self,smil):
+        import re
         oRequest = cRequestHandler(smil)
         oRequest.addParameters('referer', self.__sUrl)
         sHtmlContent = oRequest.request()
@@ -73,23 +68,30 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('Referer', self.__sUrl)
         sHtmlContent = oRequest.request()
-  
-        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+
+        
+        sPattern = 'sources:* \[{file:"([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            sHtmlContent = cPacker().unpack(aResult[1][0])
-
-            sPattern = '{file: *"([^"]+smil)"}'
+            api_call = aResult[1][0]
+            
+        else:
+            sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
-                api_call = self.extractSmil(aResult[1][0])
-            else:
-                sPattern = '{file: *xpro\("(.+?)"'
+                from resources.lib.packer import cPacker
+                sHtmlContent = cPacker().unpack(aResult[1][0])
+  
+                sPattern = '{file: *"([^"]+smil)"}'
                 aResult = oParser.parse(sHtmlContent, sPattern)
                 if (aResult[0] == True):
-                    api_call = aResult[1][0].decode('rot13')
-
-  
+                    api_call = self.extractSmil(aResult[1][0])
+                else:
+                    sPattern = '{file: *xpro\("(.+?)"'
+                    aResult = oParser.parse(sHtmlContent, sPattern)
+                    if (aResult[0] == True):
+                        api_call = aResult[1][0].decode('rot13')
+            
         if (api_call):
             return True, api_call
             
