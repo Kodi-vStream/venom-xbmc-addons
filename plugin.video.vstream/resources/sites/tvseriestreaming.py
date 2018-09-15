@@ -338,10 +338,15 @@ def showLink():
 
         except:
             pass
-       
+            
+    linkid = ''        
+    sPattern = "link_id.+?'([^']+)';" 
+    aResult = oParser.parse(sHtmlContent, sPattern)
+    if (aResult[0] == True):
+        linkid = aResult[1][0]
+    
     sPattern = '<\/i> *Lien.+?</td>.+?alt="([^"]+)".+?center">(.+?)</td>.+?data-id="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -351,8 +356,8 @@ def showLink():
                 break
 
             sHost = re.sub('\..+', '', aEntry[0]).capitalize()
-            sUrl = URL_MAIN + 'link/' + aEntry[2]
-            sLang = str(aEntry[1])
+            sUrl = URL_MAIN + 'link/' + aEntry[2] + linkid
+            sLang = aEntry[1]
             sTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang, sColor, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -371,19 +376,24 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
+
     oRequest = cRequestHandler(sUrl)
     oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Referer', sUrl)
-    
-    sHtmlContent = oRequest.request()
-    sHosterUrl = oRequest.getRealUrl()
-    
-    oHoster = cHosterGui().checkHoster(sHosterUrl)
 
-    if (oHoster != False):
-        oHoster.setDisplayName(sMovieTitle)
-        oHoster.setFileName(sMovieTitle)
-        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    sHtmlContent = oRequest.request()
+    oParser = cParser()
+    
+    sPattern = '<iframe class="embed-responsive-.+?src=(.+?) *allowfullscreen><\/iframe>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        sHosterUrl = aResult[1][0]
+        oHoster = cHosterGui().checkHoster(sHosterUrl)
+
+        if (oHoster != False):
+            oHoster.setDisplayName(sMovieTitle)
+            oHoster.setFileName(sMovieTitle)
+            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
