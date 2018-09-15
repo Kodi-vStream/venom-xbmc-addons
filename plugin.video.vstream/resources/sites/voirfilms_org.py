@@ -345,7 +345,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        next = aResult[1][0].replace(URL_MAIN, '')
+        next = aResult[1][0].replace(URL_MAIN, '').replace('lesfilms2','lesfilms3') #pour l'instant bug sur le site
         return URL_MAIN + next
 
     return False
