@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'papstream'
 SITE_NAME = 'PapStream'
 SITE_DESC = 'Films, Séries & Mangas'
 
-URL_MAIN = 'https://www.papstream.xyz/'
+URL_MAIN = 'https://ww1.papstream.xyz/'
 
 URL_SEARCH = (URL_MAIN + 'rechercher', 'showMovies')
 
@@ -32,7 +32,7 @@ SERIE_GENRES = (True, 'showGenresTv')
 ANIM_ANIMS = (URL_MAIN + 'animes.html', 'showMovies')
 ANIM_GENRES = (True, 'showGenresManga')
 
-UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0'
+UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0'
 
 def load():
     oGui = cGui()
@@ -187,10 +187,10 @@ def showMovies(sSearch = ''):
 
     if sSearch:
         
-        oRequestHandler.addHeaderEntry('Referer', URL_SEARCH[0])
+        oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
         oRequestHandler.addHeaderEntry('User-Agent', UA)
-        oRequestHandler.addHeaderEntry('Host', 'www.papstream.xyz')
-        oRequestHandler.addHeaderEntry('Origin', URL_MAIN)
+        # oRequestHandler.addHeaderEntry('Host', 'www.papstream.xyz')
+        # oRequestHandler.addHeaderEntry('Origin', URL_MAIN)
         oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
         oRequestHandler.addParametersLine('do=search')
