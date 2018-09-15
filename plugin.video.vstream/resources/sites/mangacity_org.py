@@ -205,18 +205,12 @@ def showGenres():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sGenre = cUtil().unescape(aEntry[1]).decode("latin-1").encode("utf-8")
-            sUrl = cUtil().unescape(aEntry[0])
-            sUrl = URL_MAIN + Link
-
-            #sGenre = unicode(sGenre,'iso-8859-1')
-            #sGenre = sGenre.encode('ascii', 'ignore').decode('ascii')
-
-            #sTitle = aEntry[1].decode("latin-1").encode("utf-8")
+            sTitle = aEntry[1].decode("latin-1").encode("utf-8")
+            sUrl = URL_MAIN + aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sGenre, 'genres.png', oOutputParameterHandler)
+            oGui.addDir(SITE_IDENTIFIER, 'showMovies', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
