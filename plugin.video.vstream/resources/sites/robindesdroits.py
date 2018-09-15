@@ -332,6 +332,7 @@ def showHosters():
 
     sPattern = '<b><a href=".+?redirect\/\?url\=(.+?)\&id.+?">'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         sUrl = cUtil().urlDecode(aResult[1][0])
 
@@ -343,15 +344,15 @@ def showHosters():
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                 sHtmlContent = cPacker().unpack(aResult[1][0])
-                sPattern = '{file:"([^"]+)"\,label:"([^"]+)"}'
+
+                sPattern = '{sources:\["([^"]+)"'
                 aResult = oParser.parse(sHtmlContent, sPattern)
-                for aEntry in aResult[1]:
-                    sHosterUrl = aEntry[0]
-                    sDisplayTitle = ('[%s] %s') % (aEntry[1] + 'p', sMovieTitle)
+                if (aResult[0] == True):
+                    sHosterUrl = aResult[1][0]
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
                     if (oHoster != False):
-                        oHoster.setDisplayName(sDisplayTitle)
-                        oHoster.setFileName(sDisplayTitle)
+                        oHoster.setDisplayName(sMovieTitle)
+                        oHoster.setFileName(sMovieTitle)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         elif 'jheberg' in sUrl:
@@ -370,6 +371,7 @@ def showHosters():
         elif 'multiup' in sUrl:
 
             aResult = cMultiup().GetUrls(sUrl)
+            
             if (aResult):
                 for aEntry in aResult:
                     sHosterUrl = aEntry
