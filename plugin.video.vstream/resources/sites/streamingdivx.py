@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, addon
-#revoir genre pour serie
+
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 sColor = addon().getSetting("deco_color")
 
@@ -18,10 +18,10 @@ SITE_DESC = 'Films VF en streaming.'
 URL_MAIN = 'https://www.streamingdivx.co/'
 
 MOVIE_NEWS = (URL_MAIN + 'films.html', 'showMovies')
+MOVIE_GENRES = (URL_MAIN + 'films', 'showGenres')
 
 SERIE_NEWS = (URL_MAIN + 'series.html', 'showMovies')
-
-MOVIE_GENRES = ('http://venom', 'showGenres')
+SERIE_GENRES = (URL_MAIN + 'series', 'showGenres')
 
 URL_SEARCH = (URL_MAIN + '/recherche?q=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '/recherche?q=', 'showMovies')
@@ -46,7 +46,10 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
+    
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -61,28 +64,29 @@ def showSearch():
 
 def showGenres():
     oGui = cGui()
-
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     liste = []
 
-    liste.append( ['Action', URL_MAIN + 'films/action/'] )
-    liste.append( ['Animation', URL_MAIN + 'films/animation/'] )
-    liste.append( ['Aventure', URL_MAIN + 'films/aventure/'] )
-    liste.append( ['Biopic', URL_MAIN + 'films/biopic/'] )
-    liste.append( ['Comédie', URL_MAIN + 'films/comedie/'] )
-    liste.append( ['Comédie-dramatique', URL_MAIN + 'films/comedie-dramatique/'] )
-    liste.append( ['Comédie-musicale', URL_MAIN + 'films/comedie-musicale/'] )
-    liste.append( ['Documentaire', URL_MAIN + 'films/documentaire/'] )
-    liste.append( ['Drame', URL_MAIN + 'films/drame/'] )
-    liste.append( ['Divers', URL_MAIN + 'films/divers/'] )
-    liste.append( ['Epouvante Horreur', URL_MAIN + 'films/epouvante-horreur/'] )
-    liste.append( ['Famille', URL_MAIN + 'films/famille/'] )
-    liste.append( ['Fantastique', URL_MAIN + 'films/fantastique/'] )
-    liste.append( ['Guerre', URL_MAIN + 'films/guerre/'] )
-    liste.append( ['Opera', URL_MAIN + 'films/opera/'] )
-    liste.append( ['Policier', URL_MAIN + 'films/policier/'] )
-    liste.append( ['Romance', URL_MAIN + 'films/romance/'] )
-    liste.append( ['Science-fiction', URL_MAIN + 'films/science-fiction/'] )
-    liste.append( ['Thriller', URL_MAIN + 'films/thriller/'] )
+    liste.append( ['Action', sUrl + '/action/'] )
+    liste.append( ['Animation', sUrl + '/animation/'] )
+    liste.append( ['Aventure', sUrl + '/aventure/'] )
+    liste.append( ['Biopic', sUrl + '/biopic/'] )
+    liste.append( ['Comédie', sUrl + '/comedie/'] )
+    liste.append( ['Comédie-dramatique', sUrl + '/comedie-dramatique/'] )
+    liste.append( ['Comédie-musicale', sUrl + '/comedie-musicale/'] )
+    liste.append( ['Documentaire', sUrl + '/documentaire/'] )
+    liste.append( ['Drame', sUrl + '/drame/'] )
+    liste.append( ['Divers', sUrl + '/divers/'] )
+    liste.append( ['Epouvante Horreur', sUrl + '/epouvante-horreur/'] )
+    liste.append( ['Famille', sUrl + '/famille/'] )
+    liste.append( ['Fantastique', sUrl + '/fantastique/'] )
+    liste.append( ['Guerre', sUrl + '/guerre/'] )
+    liste.append( ['Opera', sUrl + '/opera/'] )
+    liste.append( ['Policier', sUrl + '/policier/'] )
+    liste.append( ['Romance', sUrl + '/romance/'] )
+    liste.append( ['Science-fiction', sUrl + '/science-fiction/'] )
+    liste.append( ['Thriller', sUrl + '/thriller/'] )
 
     for sTitle, sUrl in liste:
 
@@ -273,15 +277,16 @@ def showLinks():
     except:
         pass
 
-    sPattern2 = '<li class="stream.+?"><div data-num="([^"]+)" data-code="([^"]+)".+?<i class="([^"]+)">'
+    sPattern2 = '<li class="stream.+?"><div data-num="([^"]+)" data-code="([^"]+)".+?<i class="([^"]+)">.+?<img *src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern2)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
             sHost = aEntry[2].replace('server player-','').capitalize()
-
-            sDisplayTitle = ('%s [COLOR %s]%s[/COLOR]') % (sMovieTitle, sColor, sHost)
+            sLang = aEntry[3].replace('/images/','').replace('.png','')
+            
+            sDisplayTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang, sColor, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('datanum', aEntry[0])
@@ -314,7 +319,7 @@ def showHosters():
     opener.addheaders = [('User-agent', UA)]
     opener.addheaders = [('Referer', URL_MAIN)]
     response = opener.open(sUrl)
-
+    response.close()
     if response.code == 302:
         redirection_target = response.headers['Location']
         if redirection_target:
@@ -328,4 +333,3 @@ def showHosters():
 
                 oGui.setEndOfDirectory()
                 
-    response.close()
