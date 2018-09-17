@@ -296,8 +296,6 @@ def showLink():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
-    VSlog(sUrl)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -339,6 +337,59 @@ def showLink():
 
     oGui.setEndOfDirectory()
 
+def AdflyDecoder(url):
+    oRequestHandler = cRequestHandler(url)
+    sHtmlContent = oRequestHandler.request()
+    
+    oParser = cParser()
+    sPattern = "var ysmm = '([^']+)'"
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        
+        from base64 import b64decode
+        from math import isnan
+        code = aResult[1][0]
+        
+        VSlog(code)
+        
+        A = ''
+        B = ''
+        #First pass
+        for num,letter in enumerate(code):
+            if num % 2 == 0:
+                A += code[num]
+            else:
+                B = code[num] + B
+
+        code = A + B
+        
+        #Second pass
+        m = 0
+        code = list(code)
+        while m < len(code) :
+            if code[m].isdigit() :
+                R = m + 1
+                while R < len(code):
+                    if code[R].isdigit() :
+                        S = int(code[m]) ^ int(code[R])
+                        if (S < 10):
+                            code[m] = str(S)
+                        m = R
+                        R = len(code)
+                    R += 1
+            m += 1
+        
+        code = ''.join(code)
+        code = b64decode(code)
+        
+        code = code[16:]
+        code = code[:-16]
+        
+        return code
+                
+    return ''
+    
 def showHosters():
     oGui = cGui()
     oParser = cParser()
@@ -347,6 +398,13 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
+    VSlog(sUrl)
+    
+    if 'zipansion' in sUrl:
+        sUrl = AdflyDecoder(sUrl)
+        
+    VSlog(sUrl)
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
