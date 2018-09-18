@@ -8,8 +8,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 
-#from resources.lib.util import cUtil #outils pouvant etre utiles
-
 SITE_IDENTIFIER = 'k_streaming'
 SITE_NAME = 'K-Streaming'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
@@ -157,8 +155,9 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl2 = 'https:' + aEntry[0]
-            sThumb = 'https:' + aEntry[1]
+            sUrl2 = aEntry[0]
+
+            sThumb = aEntry[1]
             #delete du tiret pour les series
             sTitle = aEntry[2].replace(' - Saison', ' Saison')
             sDesc = ''
@@ -189,9 +188,8 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<a class="nextpostslink" rel="next" href="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
-        return 'https:' + aResult[1][0]
+        return aResult[1][0]
 
     return False
 
@@ -246,7 +244,7 @@ def showEpisodes():
 
             sTitle = sMovieTitle + aEntry[1]
             sUrl2 = aEntry[0]
-            if sUrl2.startswith ('/'):
+            if sUrl2.startswith('/'):
                 sUrl2 = 'https:' + sUrl2
 
             oOutputParameterHandler = cOutputParameterHandler()

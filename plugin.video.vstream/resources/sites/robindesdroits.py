@@ -11,7 +11,7 @@ from resources.lib.util import cUtil
 from resources.lib.multihost import cJheberg
 from resources.lib.multihost import cMultiup
 from resources.lib.packer import cPacker
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 SITE_IDENTIFIER = 'robindesdroits'
 SITE_NAME = 'Robin des Droits'
@@ -306,9 +306,9 @@ def showLink():
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-
             sUrl = aEntry[0]
             sHost = aEntry[1].capitalize()
+            
             sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -316,9 +316,80 @@ def showLink():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+    
+    #Second cas de figure
+    if (aResult[0] == False):
+        sPattern = '<a href="(http:\/\/zipansion\.com\/[^"]+)">(.+?)<\/a>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            for aEntry in aResult[1]:
+                sUrl = aEntry[0]
+                sHost = cUtil().removeHtmlTags(aEntry[1])
+                
+                sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
+
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+
 
     oGui.setEndOfDirectory()
 
+def AdflyDecoder(url):
+    oRequestHandler = cRequestHandler(url)
+    sHtmlContent = oRequestHandler.request()
+    
+    oParser = cParser()
+    sPattern = "var ysmm = '([^']+)'"
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        
+        from base64 import b64decode
+        from math import isnan
+        code = aResult[1][0]
+        
+        VSlog(code)
+        
+        A = ''
+        B = ''
+        #First pass
+        for num,letter in enumerate(code):
+            if num % 2 == 0:
+                A += code[num]
+            else:
+                B = code[num] + B
+
+        code = A + B
+        
+        #Second pass
+        m = 0
+        code = list(code)
+        while m < len(code) :
+            if code[m].isdigit() :
+                R = m + 1
+                while R < len(code):
+                    if code[R].isdigit() :
+                        S = int(code[m]) ^ int(code[R])
+                        if (S < 10):
+                            code[m] = str(S)
+                        m = R
+                        R = len(code)
+                    R += 1
+            m += 1
+        
+        code = ''.join(code)
+        code = b64decode(code)
+        
+        code = code[16:]
+        code = code[:-16]
+        
+        return code
+                
+    return ''
+    
 def showHosters():
     oGui = cGui()
     oParser = cParser()
@@ -327,11 +398,23 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
+    VSlog(sUrl)
+    
+    if 'zipansion' in sUrl:
+        sUrl = AdflyDecoder(sUrl)
+        
+    VSlog(sUrl)
+    
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent.replace('\n', ''))
+    #fh.close()
 
     sPattern = '<b><a href=".+?redirect\/\?url\=(.+?)\&id.+?">'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         sUrl = cUtil().urlDecode(aResult[1][0])
 
@@ -343,15 +426,15 @@ def showHosters():
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                 sHtmlContent = cPacker().unpack(aResult[1][0])
-                sPattern = '{file:"([^"]+)"\,label:"([^"]+)"}'
+
+                sPattern = '{sources:\["([^"]+)"'
                 aResult = oParser.parse(sHtmlContent, sPattern)
-                for aEntry in aResult[1]:
-                    sHosterUrl = aEntry[0]
-                    sDisplayTitle = ('[%s] %s') % (aEntry[1] + 'p', sMovieTitle)
+                if (aResult[0] == True):
+                    sHosterUrl = aResult[1][0]
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
                     if (oHoster != False):
-                        oHoster.setDisplayName(sDisplayTitle)
-                        oHoster.setFileName(sDisplayTitle)
+                        oHoster.setDisplayName(sMovieTitle)
+                        oHoster.setFileName(sMovieTitle)
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         elif 'jheberg' in sUrl:
@@ -370,6 +453,7 @@ def showHosters():
         elif 'multiup' in sUrl:
 
             aResult = cMultiup().GetUrls(sUrl)
+            
             if (aResult):
                 for aEntry in aResult:
                     sHosterUrl = aEntry

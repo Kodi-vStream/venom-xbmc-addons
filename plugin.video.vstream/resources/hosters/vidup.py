@@ -1,14 +1,20 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
+#Meme code que thevideo
+#https://vidup.me/embed-xxx-703x405.html
+#https://vidup.me/embed/xxx-703x405.html
+#https://vidup.me/xxx-703x405.html
+#https://vidup.io/embed/xxx
+#https://vidup.io/xxx
+
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.packer import cPacker
 from resources.lib.comaddon import dialog
+import urllib2
+import ssl,json
 
-import re
-
-#Meme code que thevideo
+UA = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"
 
 class cHoster(iHoster):
 
@@ -42,7 +48,7 @@ class cHoster(iHoster):
         return True
     
     def __getIdFromUrl(self, sUrl):
-        sPattern = 'https*://vidup.tv/([^<]+)'
+        sPattern = 'https*:\/\/vidup.+?\/(?:embed-)?(?:embed/)?([0-9a-zA-Z]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -60,116 +66,44 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-    
-        sUrl = self.__sUrl
-        
-        #sId = self.__getIdFromUrl(self.__sUrl)
-        #sUrl = 'http://vidup.tv/embed-' + sId + '.html'
-        
-        stream_url = ''
-        oRequest = cRequestHandler(sUrl)
-        sHtmlContent = oRequest.request()
-        
-        #decodage de la page html
-        sHtmlContent3 = sHtmlContent
-        code = ''
-        maxboucle = 3
-        while (maxboucle > 0):
-            #VSlog('loop : ' + str(maxboucle))
-            sHtmlContent3 = CheckCpacker(sHtmlContent3)
-            #sHtmlContent3 = CheckJJDecoder(sHtmlContent3)           
-            #sHtmlContent3 = CheckAADecoder(sHtmlContent3)
-            
-            maxboucle = maxboucle - 1   
-         
-        sHtmlContent = sHtmlContent3
-        
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent)
-        #fh.close()
-        
-        oParser = cParser()
-        
-        sPattern = "var thief='([^']+)';"
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if not (aResult[0]):
-            return False , False
-            
-        key = aResult[1][0].replace('+','')
-            
-        sPattern = "'rc=[^<>]+?\/(.+?)'\.concat"
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if not (aResult[0]):
-            return False , False
-            
-        ee = aResult[1][0]
-        if ee.endswith('\\'):
-            ee = ee[:-1]
-            
-        url2 = 'https://vidup.tv/' + ee + '/' + key
 
-        oRequest = cRequestHandler(url2)
-        sHtmlContent2 = oRequest.request()
         
+        api_call = False
+        aResult = False
         
-        #fh = open('c:\\test.txt', "w")
-        #fh.write(sHtmlContent2)
-        #fh.close()
-        
-        code = cPacker().unpack(sHtmlContent2)
-        sPattern = '"vt=([^"]+)'
-        r2 = re.search(sPattern,code)
-        if not (r2):
-            return False,False
-        
-        sPattern = '{"file":"([^"]+)","label":"(.+?)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
+        request_headers = {
+        "User-Agent": UA
+        }
 
-        if (aResult[0] == True):
-            #initialisation des tableaux
+        req = urllib2.Request(self.__sUrl,headers=request_headers)
+        gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+        response = urllib2.urlopen(req,context=gcontext)
+        self.__sUrl = response.geturl()
+
+        response.close()
+        
+        Json_url = "https://vidup.io/api/serve/video/" + self.__getIdFromUrl(self.__sUrl)
+        
+        req = urllib2.Request(Json_url,headers=request_headers)
+        gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+        response = urllib2.urlopen(req, data="{}" ,context=gcontext)
+        sHtmlContent = response.read()
+        aResult = json.loads(sHtmlContent)
+
+        response.close()
+        
+        if (aResult):
             url=[]
             qua=[]
-        
-            #Remplissage des tableaux
-            for i in aResult[1]:
-                url.append(str(i[0]))
-                qua.append(str(i[1]))
+
+            for i in aResult['qualities']:
+                url.append(aResult['qualities'][i])
+                qua.append(str(i))
                 
-            #dialog qualiter
+
             api_call = dialog().VSselectqual(qua,url)
 
-        #xbmc.sleep(5000)
-                    
         if (api_call):
-            api_call = api_call + '?direct=false&ua=1&vt=' + r2.group(1)
             return True, api_call
             
         return False, False
-
-        
-#-----------------------------------------------------------------------------------------
-def CheckCpacker(str):
-
-    sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\)\s*)<'
-    aResult = re.search(sPattern, str,re.DOTALL | re.UNICODE)
-    if (aResult):
-        #VSlog('Cpacker encryption')
-        str2 = aResult.group(1)
-        
-        if not str2.endswith(';'):
-            str2 = str2 + ';'
-
-        #if not str2.startswith('eval'):
-        #    str2 = 'eval(function' + str2[4:]
-        
-        try:
-            tmp = cPacker().unpack(str2)
-            #tmp = tmp.replace("\\'","'")
-        except:
-            tmp =''
-            
-        #VSlog(tmp)
-
-        return str[:(aResult.start() + 1)] + tmp + str[(aResult.end()-1):]
-        
-    return str

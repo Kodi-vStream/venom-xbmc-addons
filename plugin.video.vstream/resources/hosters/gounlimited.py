@@ -1,11 +1,10 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #https://gounlimited.to/embed-xxx.html
-#top_replay
+#top_replay robin des droits
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog,VSlog
 from resources.lib.packer import cPacker
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
@@ -48,21 +47,24 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         api_call = False
-        oParser = cParser()
-        
-        oRequest = cRequestHandler(self.__sUrl)
-        sHtmlContent = oRequest.request()
 
-        sPattern = '(\s*eval\s*\(\s*function\(p,a,c,k,e(?:.|\s)+?)<\/script>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if (aResult[0] == True):
-            sHtmlContent = cPacker().unpack(aResult[1][0])
-            
-            sPattern =  '{sources:\["([^"]+)"\]'
+        if not self.__sUrl.endswith('.mp4'):
+            oParser = cParser()
+            oRequest = cRequestHandler(self.__sUrl)
+            sHtmlContent = oRequest.request()
+ 
+            sPattern = '(\s*eval\s*\(\s*function\(p,a,c,k,e(?:.|\s)+?)<\/script>'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
-                api_call = aResult[1][0]
-
+                sHtmlContent = cPacker().unpack(aResult[1][0])
+            
+                sPattern =  '{sources:\["([^"]+)"\]'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                if (aResult[0] == True):
+                    api_call = aResult[1][0]
+        else:
+            api_call = self.__sUrl
+            
         if (api_call):
             return True, api_call + '|User-Agent=' + UA 
 

@@ -32,6 +32,7 @@ SERIE_HD = (URL_MAIN + 'serie-tv/', 'showMovies')
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
+FUNCTION_SEARCH = 'showMovies'
 
 def load():
     oGui = cGui()
@@ -205,6 +206,7 @@ def showMovies(sSearch = ''):
                 oOutputParameterHandler.addParameter('siteUrl', sNextPage)
                 oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
+    if not sSearch:
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):

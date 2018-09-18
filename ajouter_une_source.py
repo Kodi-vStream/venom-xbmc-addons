@@ -275,12 +275,12 @@ def showMovies(sSearch = ''):
 
             #L'array affiche vos info dans l'orde de sPattern en commencant a 0, attention dans ce cas la on recupere 6 information
             #Mais selon votre regex il ne peut y en avoir que 2 ou 3.
-            sTitle = str(aEntry[1])
-            sUrl2 = str(aEntry[2])
-            sThumb = str(aEntry[0])
-            sLang = str(aEntry[3])
-            sQual = str(aEntry[4])
-            sHoster = str(aEntry[5])
+            sTitle = aEntry[1]
+            sUrl2 = aEntry[2]
+            sThumb = aEntry[0]
+            sLang = aEntry[3]
+            sQual = aEntry[4]
+            sHoster = aEntry[5]
             sDesc = ''
 
             sTitle = sTitle.replace('En streaming', '')
@@ -290,7 +290,7 @@ def showMovies(sSearch = ''):
             sTitle = ('%s [%s] (%s) [COLOR coral]%s[/COLOR]') % (sTitle, sQual, sLang.upper(), sHoster)
             #mettre les information de streaming entre [] et le reste entre () vstream s'occupe de la couleur automatiquement.
 
-        #Utile que si les liens recuperer ne commence pas par (http://www.nomdusite.com/)
+            #Utile que si les liens recupere ne commencent pas par (http://www.nomdusite.com/)
             #sUrl2 = URL_MAIN + sUrl2
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -353,7 +353,7 @@ def showHosters(): #recherche et affiche les hotes
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl) #recherche l'hote dans l'addon
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle) #nom affiche
@@ -390,8 +390,8 @@ def ShowSerieSaisonEpisodes():
             if progress_.iscanceled():
                 break
 
-            sTitle = sMovieTitle + str(aEntry[1])
-            sUrl2 = str(aEntry[2])
+            sTitle = sMovieTitle + aEntry[0]
+            sUrl2 = aEntry[1]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -420,7 +420,7 @@ def seriesHosters(): #cherche les episodes de series
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry[0])
+            sHosterUrl = aEntry[0]
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(aEntry[1])

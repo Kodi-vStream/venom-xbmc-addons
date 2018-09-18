@@ -10,13 +10,11 @@ from resources.lib.util import cUtil
 from resources.lib.comaddon import progress
 from resources.lib.sucuri import SucurieBypass
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
-
 SITE_IDENTIFIER = 'filmzenstream_com'
 SITE_NAME = 'Filmzenstream'
 SITE_DESC = 'Film streaming HD gratuit complet'
 
-URL_MAIN = 'https://filmzenstream.to/'
+URL_MAIN = 'https://filmzenstream.cc/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
@@ -25,6 +23,7 @@ MOVIE_ANNEES = (True, 'showYears')
 
 URL_SEARCH = (URL_MAIN + 'index.php?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?s=', 'showMovies')
+FUNCTION_SEARCH = 'showMovies'
 
 def load():
     oGui = cGui()
@@ -128,9 +127,9 @@ def showMovies(sSearch = ''):
     #sHtmlContent = SucurieBypass().GetHtml(sUrl)
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
+    
     oParser = cParser()
-    sPattern = 'class="item"> *<a href="([^<]+)">.+?<img src="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">(.+?)<\/span>'
+    sPattern = 'class="item"> *<a href="([^<]+)">.+?<img.+?rc="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -145,13 +144,7 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sName = str(aEntry[2])
-#            sName = sName.decode('utf8')
-#            sName = cUtil().unescape(sName)
-#            try:
-#                sName = sName.encode("utf-8")
-#            except:
-#                pass
+            sName = aEntry[2]
 
             sQual = aEntry[3]
             sUrl2 = aEntry[0]
@@ -222,10 +215,6 @@ def showHosters():
 
                 oRequestHandler.request()
                 sHosterUrl = oRequestHandler.getRealUrl()
-                # sPattern = '<iframe.+?src="(.+?)"'
-                # aResult = oParser.parse(sHtmlContent, sPattern)
-                # if (aResult[0] == True):
-                #     sHosterUrl = aResult[1][0]
 
             else:
                 sHosterUrl = aEntry
