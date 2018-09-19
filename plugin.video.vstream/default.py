@@ -117,6 +117,7 @@ class main:
                         oOutputParameterHandler = cOutputParameterHandler()
                         oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
                         icon = 'sites/%s.png' % (aPlugin[1])
+                        # icon = 'http://identicon.org?t=%s&s=514&c=FFFFFF' % aPlugin[1]
                         oGui.addDir(aPlugin[1], 'load', aPlugin[0], icon, oOutputParameterHandler)
 
                 oGui.setEndOfDirectory()
