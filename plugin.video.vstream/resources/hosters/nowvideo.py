@@ -12,14 +12,14 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Nowvideo'
+        self.__sDisplayName = 'NowVideo'
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -41,15 +41,15 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        
-        sPattern =  'http:\/\/(?:www.|embed.)*nowvideo.[a-z]{2}\/(?:video\/|embed.+?\?.*?v=)([0-9a-z]+)' 
+
+        sPattern =  'http:\/\/(?:www.|embed.)*nowvideo.[a-z]{2}\/(?:video\/|embed.+?\?.*?v=)([0-9a-z]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if aResult[1]:
             self.__sUrl = 'http://embed.nowvideo.sx/embed.php?v=' + str(aResult[1][0])
         else:
             VSlog('ID error')
-            
+
 
     def checkUrl(self, sUrl):
         return True
@@ -61,35 +61,35 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
+
         api_call = ''
         oParser = cParser()
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
-        # 1 er lecteur
-        sDash = re.search("player.src.+?src: *'([^']+)", sHtmlContent,re.DOTALL)
+        #1er lecteur
+        sDash = re.search("player.src.+?src: *'([^']+)", sHtmlContent, re.DOTALL)
         if (sDash):
-            return True, sDash.group(1) 
+            return True, sDash.group(1)
+        #second lecteur
         else:
-            #second lecteur
             sPattern = '<source src="([^"]+)" type=\'([^"\']+)\'>'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                #initialisation des tableaux
                 url=[]
                 qua=[]
-               #Replissage des tableaux
+               #Remplissage des tableaux
                 for i in aResult[1]:
                    url.append(str(i[0]))
                    qua.append(str(i[1]))
 
-                #dialog qualiter
+                #dialogue qualité
                 api_call = dialog().VSselectqual(qua,url)
-                
-    
-            if (api_call):
-                return True, api_call + '|User-Agent=' + UA  
 
-            return False , False
+
+            if (api_call):
+                return True, api_call + '|User-Agent=' + UA
+
+            return False, False
