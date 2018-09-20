@@ -3,7 +3,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-import urllib,urllib2
+import urllib, urllib2
 from urllib2 import URLError
 
 #https://github.com/svn2github/jdownloader/blob/master/src/jd/plugins/hoster/AmazonCloud.java
@@ -62,41 +62,41 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
+
         id = ''
-        
+
         sId = self.__getIdFromUrl(self.__sUrl)
-        
+
         Url = 'https://www.amazon.fr/drive/v1/shares/' + sId + '?customerId=&resourceVersion=V2&ContentType=JSON&asset=ALL'
-       
+
         oRequest = cRequestHandler(Url)
         sHtmlContent = oRequest.request()
-        
+
         oParser = cParser()
-        
+
         sPattern = '"id":"(.+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
+
         if (aResult[0] == True):
             id = aResult[1][0]
-                   
+
             url2 = 'https://www.amazon.fr/drive/v1/nodes/' + id + '/children?customerId=&resourceVersion=V2&ContentType=JSON&limit=200&sort=%5B%22kind+DESC%22%2C+%22name+ASC%22%5D&tempLink=true&shareId=' + sId
 
             oRequest = cRequestHandler(url2)
             sHtmlContent = oRequest.request()
-            
+
             #fh = open('c:\\test.txt', "w")
             #fh.write(sHtmlContent)
             #fh.close()
-            
+
             sPattern = '"tempLink":"(.+?)"'
             aResult = oParser.parse(sHtmlContent, sPattern)
-        
+
             if (aResult[0] == True):
                 return True, aResult[1][0]
             else:
                 return False, False
         else:
             return False, False
-        
+
         return False, False
