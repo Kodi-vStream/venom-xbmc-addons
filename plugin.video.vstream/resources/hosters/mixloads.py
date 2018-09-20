@@ -1,7 +1,7 @@
 #coding: utf-8
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 #https://mixloads.com/embed-xxx.html sur topreplay
-from resources.lib.handler.requestHandler import cRequestHandler 
+from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 import xbmcgui
@@ -17,7 +17,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+ ' [/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + ' [/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -42,7 +42,7 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def __getIdFromUrl(self, sUrl):
         return ''
 
@@ -64,9 +64,9 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+
         sPattern = '{file:"([^"]+)",label:"([^"]+)"}'
-        aResult = oParser.parse(sHtmlContent,sPattern)
+        aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             url=[]
             qua=[]
@@ -79,11 +79,11 @@ class cHoster(iHoster):
 
             elif len(url) > 1:
                 dialog2 = xbmcgui.Dialog()
-                ret = dialog2.select('Select Quality',qua)
+                ret = dialog2.select('Select Quality', qua)
                 if (ret > -1):
                     api_call = url[ret]
 
         if (api_call):
             return True, api_call
-            
+
         return False, False
