@@ -8,7 +8,7 @@ from resources.lib.parser import cParser
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'hdvid'
+        self.__sDisplayName = 'HdVid'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
@@ -16,20 +16,20 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
-        
+
     def getFileName(self):
         return self.__sFileName
 
     def getPluginIdentifier(self):
         return 'hdvid'
-        
+
     def setHD(self, sHD):
         self.__sHD = ''
-        
+
     def getHD(self):
         return self.__sHD
 
@@ -38,7 +38,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-    
+
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
@@ -47,18 +47,18 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         oParser = cParser()
-        
-        sPattern =  '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\)\s*)<\/script>'
+
+        sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\)\s*)<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             sHtmlContent = cPacker().unpack(aResult[1][0])
-            sPattern =  'file:"([^"]+)",label:"[0-9]+"}'
+            sPattern = 'file:"([^"]+)",label:"[0-9]+"}'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                 api_call = aResult[1][0]
 
-                
+
         if (api_call):
-            return True, api_call 
+            return True, api_call
 
         return False, False
