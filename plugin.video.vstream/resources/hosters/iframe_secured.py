@@ -36,10 +36,10 @@ class cHoster(iHoster):
 
         #http://iframe-secured.com/embed/evovinec
         #http://iframe-secured.com/embed/iframe.php?u=evovinec
-        self.__sUrl = sUrl.replace('http://iframe-secured.com/embed/','')
-        self.__sUrl = self.__sUrl.replace('//iframe-secured.com/embed/','')
+        self.__sUrl = sUrl.replace('http://iframe-secured.com/embed/', '')
+        self.__sUrl = self.__sUrl.replace('//iframe-secured.com/embed/', '')
         self.__sUrl = 'http://iframe-secured.com/embed/iframe.php?u=%s' % self.__sUrl
-        
+
     def checkUrl(self, sUrl):
         return True
 
@@ -52,11 +52,11 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
 
         api_call = ''
-        
+
         oParser = cParser()
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('User-Agent', UA)
-        oRequest.addHeaderEntry('Referer', self.__sUrl.replace('iframe.php?u=',''))
+        oRequest.addHeaderEntry('Referer', self.__sUrl.replace('iframe.php?u=', ''))
         sHtmlContent = oRequest.request()
 
         from resources.lib.packer import cPacker
@@ -79,7 +79,7 @@ class cHoster(iHoster):
 
                     sHosterUrl = aResult[1][0]
 
-                    if not sHosterUrl.startswith('http:') and not sHosterUrl.startswith('https:'):
+                    if not sHosterUrl.startswith('http'):
                         sHosterUrl = 'http:%s' % sHosterUrl
 
                     sHosterUrl = sHosterUrl.replace('\\', '')
