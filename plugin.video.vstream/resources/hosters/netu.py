@@ -12,7 +12,7 @@ import base64
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0'
 #UA = 'Mozilla/6.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/8.0 Mobile/10A5376e Safari/8536.25'
-    
+
 def GetIp():
     if (False):
         oRequest = cRequestHandler('http://hqq.tv/player/ip.php?type=json')
@@ -71,7 +71,7 @@ def _decode2(file_url):
         return _local2
 
     return _xc13(K12K(file_url, 'e'))
-    
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -85,23 +85,23 @@ class cHoster(iHoster):
         self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
-	    self.__sFileName = sFileName
+        self.__sFileName = sFileName
 
     def getFileName(self):
-	    return self.__sFileName
-    
+        return self.__sFileName
+
     def setUrl(self, sUrl):
-        self.__sUrl = sUrl.replace('https','http')
-        self.__sUrl = self.__sUrl.replace('http://netu.tv/','http://hqq.tv/')
-        self.__sUrl = self.__sUrl.replace('http://waaw.tv/','http://hqq.tv/')
-        self.__sUrl = self.__sUrl.replace('http://hqq.tv/player/hash.php?hash=','http://hqq.tv/player/embed_player.php?vid=')
-        self.__sUrl = self.__sUrl.replace('http://hqq.tv/watch_video.php?v=','http://hqq.tv/player/embed_player.php?vid=')
-    
+        self.__sUrl = sUrl.replace('https', 'http')
+        self.__sUrl = self.__sUrl.replace('http://netu.tv/', 'http://hqq.tv/')
+        self.__sUrl = self.__sUrl.replace('http://waaw.tv/', 'http://hqq.tv/')
+        self.__sUrl = self.__sUrl.replace('http://hqq.tv/player/hash.php?hash=', 'http://hqq.tv/player/embed_player.php?vid=')
+        self.__sUrl = self.__sUrl.replace('http://hqq.tv/watch_video.php?v=', 'http://hqq.tv/player/embed_player.php?vid=')
+
     def __getIdFromUrl(self):
         sPattern = 'https*:\/\/hqq\.(?:tv|player|watch)\/player\/embed_player\.php\?vid=([0-9A-Za-z]+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
-        
+
         if (aResult[0] == True):
             return aResult[1][0]
         return ''
@@ -114,7 +114,7 @@ class cHoster(iHoster):
 
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
-        
+
     def GetHost(self,sUrl):
         oParser = cParser()
         sPattern = 'https*:\/\/(.+?)\/'
@@ -124,23 +124,23 @@ class cHoster(iHoster):
         return ''
 
     def __getMediaLinkForGuest(self):
-    
+
         api_call = ''
-    
+
         id = self.__getIdFromUrl()
-        
+
         self.__sUrl = 'http://hqq.tv/player/embed_player.php?vid=' + id + '&autoplay=no'
 
         headers = {'User-Agent': UA ,
-                   #'Host' : 'hqq.tv',
+                   #'Host': 'hqq.tv',
                    'Referer': 'http://hqq.tv/',
                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                   #'Accept-Encoding':'gzip, deflate, br',
+                   #'Accept-Encoding': 'gzip, deflate, br',
                    #'Content-Type': 'text/html; charset=utf-8'
                    }
-        
+
         player_url = self.__sUrl
-        
+
         req = urllib2.Request(player_url, None, headers)
         try:
             response = urllib2.urlopen(req)
@@ -151,31 +151,31 @@ class cHoster(iHoster):
             VSlog(e.reason)
             html = e.read()
 
-        Host = 'https://'+ self.GetHost(player_url) + '/'
+        Host = 'https://' + self.GetHost(player_url) + '/'
 
         data = ''
         code_crypt = re.search('(;eval\(function\(w,i,s,e\){.+?\)\);)\s*<', html, re.DOTALL)
         if code_crypt:
             data = unwise.unwise_process(code_crypt.group(1))
         else:
-            VSlog('prb1')       
-            
+            VSlog('prb1')
+
         if data:
             http_referer = ''
             _pass = ''
-            
+
             iss = GetIp()
             vid = re.search('&vid=([^&]+)', data, re.DOTALL).group(1)
             at = re.search('&at=([^&]+)', data, re.DOTALL).group(1)
             r = re.search('&http_referer=([^&]+)', data, re.DOTALL)
             if r:
                 http_referer = r.group(1)
-            
+
             url2 = Host + "sec/player/embed_player.php?iss=" + iss + "&vid=" + vid + "&at=" + at + "&autoplayed=yes&referer=on&http_referer=" + http_referer + "&pass=" + _pass + "&embed_from=&need_captcha=0"
             #VSlog( url2 )
-            
-            req = urllib2.Request(url2,None,headers)
-            
+
+            req = urllib2.Request(url2, None, headers)
+
             try:
                 response = urllib2.urlopen(req)
                 data = response.read()
@@ -190,17 +190,17 @@ class cHoster(iHoster):
             data = DecodeAllThePage(data)
 
             at = re.search(r'var\s*at\s*=\s*"([^"]*?)"', data)
-            
+
             l = re.search(r'link_1: ([a-zA-Z]+), server_1: ([a-zA-Z]+)', data)
-            
+
             vid_server = re.search(r'var ' + l.group(2) + ' = "([^"]+)"', data).group(1)
             vid_link = re.search(r'var ' + l.group(1) + ' = "([^"]+)"', data).group(1)
-            
+
             #new video id, not really usefull
             m = re.search(r' vid: "([a-zA-Z0-9]+)"}', data)
             if m:
                 id = m.group(1)
-            
+
             if vid_server and vid_link and at:
 
                 #get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '0/','b':'1','vid':id} #,'iss':'MzEuMz'
@@ -214,23 +214,23 @@ class cHoster(iHoster):
                 except urllib2.URLError, e:
                     VSlog(str(e.read()))
                     VSlog(str(e.reason))
-                    
+
                 data = response.read()
                 #VSlog(data)
                 response.close()
 
                 file_url = re.search(r'"obf_link"\s*:\s*"([^"]*?)"', data)
-               
+
                 if file_url:
                     list_url = decodeUN(file_url.group(1).replace('\\', ''))
-                    
+
                 #Hack, je sais pas si ca va durer longtemps, mais indispensable sur certains fichiers
                 #list_url = list_url.replace("?socket", ".mp4.m3u8")
-                
+
             else:
                 VSlog('prb2')
         #bricolage
-        api_call = list_url+'.mp4.m3u8'
+        api_call = list_url + '.mp4.m3u8'
 
 
         #use a fake headers
@@ -239,7 +239,7 @@ class cHoster(iHoster):
 
         if not (api_call == False):
             return True, api_call
-            
+
         return False, False
 
 #*******************************************************************************
@@ -251,19 +251,19 @@ def decodeUN(a):
     while i < len(a):
       s2 += ('\u0' + a[i:i+3])
       i = i + 3
-      
+
     s3 = s2.decode('unicode-escape')
     if not s3.startswith('http'):
         s3 = 'http:' + s3
-        
+
     return s3
-    
+
 def DecodeAllThePage(html):
-    
+
     #html = urllib.unquote(html)
-    
+
     Maxloop = 10
-    
+
     #unescape
     while (Maxloop > 0):
         Maxloop = Maxloop - 1
@@ -271,10 +271,10 @@ def DecodeAllThePage(html):
         r = re.search(r'unescape\("([^"]+)"\)', html, re.DOTALL | re.UNICODE)
         if not r:
             break
-        
+
         tmp = cUtil().unescape(r.group(1))
         html = html[:r.start()] + tmp + html[r.end():]
-        
+
     #unwise
     while (Maxloop > 0):
         Maxloop = Maxloop - 1
@@ -282,7 +282,7 @@ def DecodeAllThePage(html):
         r = re.search(r'(;eval\(function\(w,i,s,e\){.+?\)\);)\s*<', html, re.DOTALL | re.UNICODE)
         if not r:
             break
-        
+
         tmp = data = unwise.unwise_process(r.group(1))
         html = html[:r.start()] + tmp + html[r.end():]
 
