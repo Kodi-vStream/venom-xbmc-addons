@@ -1,9 +1,9 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.handler.requestHandler import cRequestHandler 
+from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
-from resources.lib.comaddon import dialog 
+from resources.lib.comaddon import dialog
 
 import urllib2
 
@@ -19,20 +19,20 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
-        
+
     def getFileName(self):
         return self.__sFileName
 
     def getPluginIdentifier(self):
         return 'mailru'
-        
+
     def setHD(self, sHD):
         self.__sHD = ''
-        
+
     def getHD(self):
         return self.__sHD
 
@@ -44,7 +44,7 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-    
+
     def __getIdFromUrl(self, sUrl):
         return ''
 
@@ -56,7 +56,7 @@ class cHoster(iHoster):
 
     def __getUrl(self, media_id):
         return
-    
+
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
@@ -67,7 +67,7 @@ class cHoster(iHoster):
 
         headers = {"User-Agent":UA}
 
-        req1 = urllib2.Request(self.__sUrl,None,headers)
+        req1 = urllib2.Request(self.__sUrl, None, headers)
         resp1 = urllib2.urlopen(req1)
         sHtmlContent = resp1.read()
         resp1.close()
@@ -77,15 +77,15 @@ class cHoster(iHoster):
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         vurl = 'http://my.mail.ru/' + aResult[1][0]
-        
-        req = urllib2.Request(vurl,None,headers)
-        
+
+        req = urllib2.Request(vurl, None, headers)
+
         try:
             response = urllib2.urlopen(req)
         except urllib2.URLError, e:
             print e.read()
             print e.reason
-        
+
         data = response.read()
         head = response.headers
         response.close()
@@ -99,8 +99,8 @@ class cHoster(iHoster):
             #print aResult
             if (aResult[0] == True):
                 for cook in aResult[1]:
-                    cookies = cookies + cook[0] + '=' + cook[1]+ ';'
-       
+                    cookies = cookies + cook[0] + '=' + cook[1] + ';'
+
 
         sPattern = '{"url":"([^"]+)",.+?"key":"(\d+p)"}'
         aResult = oParser.parse(data, sPattern)
@@ -108,15 +108,15 @@ class cHoster(iHoster):
             #initialisation des tableaux
             url=[]
             qua=[]
-            #Replissage des tableaux
+            #Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
-                qua.append(str(i[1]))   
+                qua.append(str(i[1]))
 
-            #Afichage du tableau
+            #Affichage du tableau
             api_call = dialog().VSselectqual(qua, url)
-                    
+
         if (api_call):
             return True, 'http:' + api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
-            
+
         return False, False
