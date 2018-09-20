@@ -35,7 +35,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.rsplit('/', 1)[1] 
+        self.__sUrl = self.__sUrl.rsplit('/', 1)[1]
         self.__sUrl = self.__sUrl.replace('?v=', '')
         self.__sUrl = 'http://www.cloudtime.to/embed/?v=' + str(self.__sUrl)
 
@@ -49,7 +49,7 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
+
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
@@ -60,17 +60,17 @@ class cHoster(iHoster):
             #tableau choix de serveur
             url=[]
             serv=[]
-            
+
             No = 1
             for i in aResult[1]:
                 url.append(str(i))
-                serv.append('Liens '+str(No))
+                serv.append('Liens ' + str(No))
                 No += 1
 
             #dialog qualiter
-            api_call = dialog().VSselectqual(serv,url)
+            api_call = dialog().VSselectqual(serv, url)
 
         if (api_call):
-            return True, api_call + '|User-Agent=' + UA 
+            return True, api_call + '|User-Agent=' + UA
 
         return False, False
