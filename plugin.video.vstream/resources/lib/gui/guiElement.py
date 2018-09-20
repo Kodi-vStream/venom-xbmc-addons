@@ -349,8 +349,8 @@ class cGuiElement:
         self.__sIcon = urllib.quote_plus(self.__sIcon, safe=':/')
 
     def getIcon(self):
-        # if 'http' in self.__sIcon:
-        #     return urllib.unquote_plus(self.__sIcon)
+        #if 'http' in self.__sIcon:
+        #    return urllib.unquote_plus(self.__sIcon)
         folder = "special://home/addons/plugin.video.vstream/resources/art"
         path = "/".join([folder, self.__sIcon]) 
         #return os.path.join(unicode(self.__sRootArt, 'utf-8'), self.__sIcon)
