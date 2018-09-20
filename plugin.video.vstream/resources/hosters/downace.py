@@ -16,20 +16,20 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
-        
+
     def getFileName(self):
         return self.__sFileName
 
     def getPluginIdentifier(self):
         return 'downace'
-        
+
     def setHD(self, sHD):
         self.__sHD = ''
-        
+
     def getHD(self):
         return self.__sHD
 
@@ -41,7 +41,7 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-    
+
     def __getIdFromUrl(self, sUrl):
         return ''
 
@@ -53,29 +53,29 @@ class cHoster(iHoster):
 
     def __getUrl(self, media_id):
         return
-    
+
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-    
+
         sUrl = self.__sUrl
-        
+
         oRequest = cRequestHandler(sUrl)
         sHtmlContent = oRequest.request()
-            
+
         oParser = cParser()
         #sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
         #aResult = oParser.parse(sHtmlContent,sPattern)
         #if (aResult[0] == True):
         #    sHtmlContent = cPacker().unpack(aResult[1][0])
 
-        sPattern = 'controls preload="none" src="([^"]+)"' 
-        aResult = oParser.parse(sHtmlContent,sPattern)
+        sPattern = 'controls preload="none" src="([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             api_call = aResult[1][0] #pas de choix qualité trouvé pour le moment
 
         if (api_call):
             return True, api_call
-            
+
         return False, False
