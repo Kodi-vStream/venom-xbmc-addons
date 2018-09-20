@@ -56,7 +56,7 @@ class cHoster(iHoster):
         if (aResult[0] == True):
             self.__sUrl = 'https://www.cloudy.ec/embed.php?id=' + aResult[1][0] + '&playerPage=1'
             #Patch en attendant kodi V17
-            self.__sUrl = self.__sUrl.replace('https','http')
+            self.__sUrl = self.__sUrl.replace('https', 'http')
         else:
             VSlog(self.__sUrl)
 
@@ -84,7 +84,7 @@ class cHoster(iHoster):
                 url.append(x[0])
                 qua.append(x[1])
 
-            api_call = dialog().VSselectqual(qua,url)
+            api_call = dialog().VSselectqual(qua, url)
                     
         if (api_call):
             return True, api_call + '|User-Agent=' + UA 
