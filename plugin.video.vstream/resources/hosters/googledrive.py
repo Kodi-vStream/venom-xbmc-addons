@@ -5,7 +5,7 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
 
-import re,urllib2
+import re, urllib2
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
@@ -47,7 +47,6 @@ class cHoster(iHoster):
         return ''
 
     def __getIdFromUrl(self, sUrl):
-        #sPattern = '\/([a-zA-Z0-9-_]{20,40})\/'
         sPattern = 'drive.google.+?([a-zA-Z0-9-_]{20,40})'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
@@ -75,34 +74,34 @@ class cHoster(iHoster):
         sUrl = 'https://drive.google.com/file/d/' + sId + '/view' #?pli=1
 
         #VSlog(sUrl)
-        
+
         req = urllib2.Request(sUrl)
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
         Headers = response.headers
         response.close()
-        
+
         #listage des cookies
         c = Headers['Set-Cookie']
-        c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);',c)
+        c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);', c)
         if c2:
             cookies = ''
             for cook in c2:
                 cookies = cookies + cook[0] + '=' + cook[1] + ';'
-                
+
         #VSlog(cookies)
 
         sPattern = '\["fmt_stream_map","([^"]+)"]\s*,\["fmt_list","([^"]+)"]'
-        
+
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if not aResult[0]:
             #sUrl = 'https://drive.google.com/uc?export=download&id=' + sId + '&confirm=make'
             if '"errorcode","150"]' in sHtmlContent:
-                dialog().VSinfo("Nombre de lectures max depasse")
+                dialog().VSinfo("Nombre de lectures max dépassé")
             return False,False
-            
+
         sListUrl = aResult[1][0][0]
         sListRes = aResult[1][0][1]
 
@@ -110,9 +109,9 @@ class cHoster(iHoster):
         url=[]
         qua=[]
         api_call = ''
-        
+
         #liste les qualitee
-        r = re.findall('([0-9]+)\|([^\|,]+)',sListUrl,re.DOTALL)
+        r = re.findall('([0-9]+)\|([^\|,]+)', sListUrl, re.DOTALL)
         for item in r:
             r2 = re.search( str(item[0]) + '\/([0-9x]+)\/', sListRes)
             if r2:
@@ -122,12 +121,12 @@ class cHoster(iHoster):
 
         #Afichage du tableau
         api_call = dialog().VSselectqual(qua, url)
-        
+
         api_call = api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
-        
+
         #VSlog(api_call)
-            
+
         if (api_call):
             return True, api_call
-            
+
         return False, False
