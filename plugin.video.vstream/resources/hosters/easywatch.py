@@ -5,11 +5,10 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
 
-
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Easywatch'
+        self.__sDisplayName = 'EasyWatch'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
@@ -69,8 +68,8 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
-        sPattern = 'file:"([^"]+)"(?:,label:"([^"]+)")*';
+
+        sPattern = 'file:"([^"]+)"(?:,label:"([^"]+)")*'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -78,16 +77,16 @@ class cHoster(iHoster):
             #initialisation des tableaux
             url=[]
             qua=[]
-            
+
             #Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
 
             #Affichage du tableau
-            api_call = dialog().VSselectqual(qua, url)           
- 
+            api_call = dialog().VSselectqual(qua, url)
+
         if (api_call):
             return True, api_call
-            
+
         return False, False
