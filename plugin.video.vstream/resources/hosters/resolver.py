@@ -30,7 +30,7 @@ class cHoster(iHoster):
 
     def setRealHost(self, sName):
         self.__sRealHost = sName
-        
+
     def setHD(self, sHD):
         self.__sHD = ''
 
@@ -45,8 +45,8 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
-    def __getIdFromUrl(self, sUrl):            
+
+    def __getIdFromUrl(self, sUrl):
         return ''
 
     def setUrl(self, sUrl):
@@ -63,15 +63,15 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         sUrl = self.__sUrl
-        
-        hmf = urlresolver.HostedMediaFile(url=sUrl)
+
+        hmf = urlresolver.HostedMediaFile(url = sUrl)
         if hmf.valid_url():
             stream_url = hmf.resolve()
             #VSlog(stream_url)
             if stream_url:
-                return True,stream_url
-            
+                return True, stream_url
+
         return False, False
-        
-       
-        
+
+
+
