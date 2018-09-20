@@ -43,7 +43,7 @@ class cHoster(iHoster):
 
     def __getIdFromUrl(self):
         return ''
-        
+
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
 
@@ -57,16 +57,16 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
+
         VSlog(self.__sUrl)
         api_call = ''
-        
+
         oRequest = cRequestHandler(self.__sUrl)
-        oRequest.addHeaderEntry('User-Agent',UA)
+        oRequest.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequest.request()
-        
+
         oParser = cParser()
-        
+
         #Magic number
         sPattern =  'soundcloud:\/\/sounds:([0-9]+)">'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -75,7 +75,7 @@ class cHoster(iHoster):
         else:
             VSlog('err magic number')
             return False
-        
+
         #search client id
         sPattern =  '<script crossorigin src="([^"]+)"><\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -86,11 +86,11 @@ class cHoster(iHoster):
         else:
             VSlog('err id1')
             return False
-            
+
         oRequest = cRequestHandler(url2)
-        oRequest.addHeaderEntry('User-Agent',UA)
+        oRequest.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequest.request()
-        
+
         sPattern =  'client_id:"([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
@@ -98,26 +98,26 @@ class cHoster(iHoster):
         else:
             VSlog('err id2')
             return False
-        
+
         #json call
         jsonurl = 'https://api.soundcloud.com/i1/tracks/' + n + '/streams?client_id=' + id
-        
+
         VSlog(jsonurl)
-        
+
         oRequest = cRequestHandler(jsonurl)
-        oRequest.addHeaderEntry('User-Agent',UA)
+        oRequest.addHeaderEntry('User-Agent', UA)
         sHtmlContent = oRequest.request()
-        
+
         #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
-        
+
         json_string = json.loads(sHtmlContent)
         api_call = json_string['http_mp3_128_url']
 
 
-                    
+
         if (api_call):
-            return True, api_call + '|User-Agent=' + UA 
-            
+            return True, api_call + '|User-Agent=' + UA
+
         return False, False
