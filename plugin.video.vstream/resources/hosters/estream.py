@@ -6,7 +6,6 @@ from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
 from resources.lib.comaddon import dialog
 
-
 class cHoster(iHoster):
 
     def __init__(self):
@@ -69,15 +68,15 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+
         #type1
         oParser = cParser()
         sPattern = '<source *src="([^"]+)" *type=\'video/.+?\''
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             api_call = aResult[1][0]
-            
-        #type2?   
+
+        #type2?
         sPattern =  '<script type=\'text/javascript\'>(.+?)</script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
@@ -87,7 +86,7 @@ class cHoster(iHoster):
             if (aResult[0] == True):
                 url=[]
                 qua=[]
-                
+
                 for aEntry in aResult[1]:
                     url.append(aEntry[0])
                     qua.append(aEntry[1][:3] + '*' + aEntry[1][3:])
@@ -95,6 +94,6 @@ class cHoster(iHoster):
                 api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):
-            return True,api_call 
+            return True, api_call
 
         return False, False
