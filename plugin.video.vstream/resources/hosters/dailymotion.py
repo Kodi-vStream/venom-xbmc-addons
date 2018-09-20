@@ -5,7 +5,7 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
 
-import urllib2 , re
+import urllib2, re
 
 class cHoster(iHoster):
 
@@ -64,7 +64,7 @@ class cHoster(iHoster):
             self.__sUrl = sRealUrl
             return self.__getIdFromUrl()
 
-        return sUrl;
+        return sUrl
         
     def __getKey(self):
         oRequestHandler = cRequestHandler(self.__sUrl)
@@ -73,7 +73,7 @@ class cHoster(iHoster):
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            aResult = aResult[1][0].replace('.','%2E')
+            aResult = aResult[1][0].replace('.', '%2E')
             return aResult
 
         return ''
@@ -120,7 +120,7 @@ class cHoster(iHoster):
         sHtmlContent = reponse.read()
         reponse.close()
 
-        sHtmlContent=sHtmlContent.replace("\/","\\")
+        sHtmlContent=sHtmlContent.replace("\/", "\\")
         
         #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent)
@@ -179,7 +179,7 @@ class cHoster(iHoster):
                 url.append(aEntry[1])
                 qua.append(str(aEntry[0]) + 'p')
 
-            api_call = dialog().VSselectqual(qua,url)
+            api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):
             return True, api_call
