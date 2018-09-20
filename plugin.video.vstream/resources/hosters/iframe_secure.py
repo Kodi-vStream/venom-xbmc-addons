@@ -40,11 +40,11 @@ class cHoster(iHoster):
         return ''
 
     def __modifyUrl(self, sUrl):
-        return '';
+        return ''
 
     def setUrl(self, sUrl):
-        self.__sUrl = sUrl.replace('http://www.iframe-secure.com/embed/','')
-        self.__sUrl = sUrl.replace('//iframe-secure.com/embed/','')
+        self.__sUrl = sUrl.replace('http://www.iframe-secure.com/embed/', '')
+        self.__sUrl = sUrl.replace('//iframe-secure.com/embed/', '')
         self.__sUrl = 'http://www.iframe-secure.com/embed/iframe.php?u=%s' % self.__sUrl
 
     def checkUrl(self, sUrl):
@@ -65,7 +65,7 @@ class cHoster(iHoster):
 
         from resources.lib.packer import cPacker
         sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
-        aResult = re.findall(sPattern,sHtmlContent)
+        aResult = re.findall(sPattern, sHtmlContent)
 
         if (aResult):
             sUnpacked = cPacker().unpack(aResult[0])
@@ -83,7 +83,7 @@ class cHoster(iHoster):
 
                     sHosterUrl = aResult[1][0]
 
-                    if not sHosterUrl.startswith('http:') and not sHosterUrl.startswith('https:'):
+                    if not sHosterUrl.startswith('http'):
                         sHosterUrl = 'http:%s' % sHosterUrl
 
                     sHosterUrl = sHosterUrl.replace('\\', '')
