@@ -18,7 +18,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -42,14 +42,14 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
-        
+        return ''
+
     def __getIdFromUrl(self, sUrl):
         return ''
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        
+
     def gethost(self, sUrl):
         sPattern = 'https*:\/\/(.+?)\/.+?'
         oParser = cParser()
@@ -57,14 +57,14 @@ class cHoster(iHoster):
         if (aResult[0] == True):
             return aResult[1][0][1]
 
-        return ''   
+        return ''
 
     def checkUrl(self, sUrl):
         return True
 
     def __getUrl(self, media_id):
         return
-        
+
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
@@ -74,20 +74,20 @@ class cHoster(iHoster):
         #full moviz lien direct final nowvideo
         if 'zerocdn.to' in api_call:
             UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
-            api_call = api_call + '|User-Agent=' + UA 
-            
+            api_call = api_call + '|User-Agent=' + UA
+
         #Special pour mangacity
         if 'pixsil' in api_call:
             api_call = api_call.split('|')[0] + '|Referer=http://www.mangacity.org/jwplayer/player.swf'
 
-        #Modif pr aliez 
+        #Modif pr aliez
         if 'aliez.me' in api_call:
             UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
-            api_call = api_call + '|User-Agent=' + UA 
-            
+            api_call = api_call + '|User-Agent=' + UA
+
         #Special pour hd-stream.in et film-streaming.co
         if 'playlist.m3u8' in api_call:
-            base = re.sub(r'(playlist.m3u8*.+)','',api_call)
+            base = re.sub(r'(playlist.m3u8*.+)', '', api_call)
             oRequest = cRequestHandler(api_call)
             sHtmlContent = oRequest.request()
             sPattern =  ',NAME="([^"]+)".+?(chunklist.+?.m3u8)'
@@ -98,16 +98,15 @@ class cHoster(iHoster):
                 url=[]
                 qua=[]
                 api_call = ''
-                #Replissage des tableaux
+                #Remplissage des tableaux
                 for i in aResult[1]:
                     url.append(str(i[1]))
                     qua.append(str(i[0]))
 
-                #Afichage du tableau
+                #Affichage du tableau
                 api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):
             return True, api_call
-            
+
         return False, False
- 
