@@ -13,14 +13,14 @@ from resources.lib.comaddon import dialog, VSlog, xbmc
 #Pour le futur
 from resources.lib.jsparser import JsParser
 
-import re,urllib2,urllib, base64, math
+import re, urllib2, urllib, base64, math
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Openload'
+        self.__sDisplayName = 'OpenLoad'
         self.__sFileName = self.__sDisplayName
         self.__sHD = ''
 
@@ -28,7 +28,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'#[COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'#[COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -52,17 +52,17 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
+        return ''
 
     def __getIdFromUrl(self, sUrl):
         return ''
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace('openload.io','openload.co')
+        self.__sUrl = self.__sUrl.replace('openload.io', 'openload.co')
         self.__sUrl = urllib.quote(sUrl, safe=':/')
         if self.__sUrl[-4:-3] == '.':
-            self.__sUrl = self.__sUrl.replace(self.__sUrl.split('/')[-1],"")
+            self.__sUrl = self.__sUrl.replace(self.__sUrl.split('/')[-1], "")
 
     def checkUrl(self, sUrl):
         return True
@@ -72,7 +72,7 @@ class cHoster(iHoster):
 
     def __getHost(self):
         parts = self.__sUrl.split('//', 1)
-        host = parts[0]+'//'+parts[1].split('/', 1)[0]
+        host = parts[0] + '//' + parts[1].split('/', 1)[0]
         return host
 
     def getMediaLink(self):
@@ -85,7 +85,7 @@ class cHoster(iHoster):
         #recuperation de la page
         #xbmc.log('url teste : ' + self.__sUrl)
         oRequest = cRequestHandler(self.__sUrl)
-        oRequest.addHeaderEntry('User-Agent',UA)
+        oRequest.addHeaderEntry('User-Agent', UA)
         sHtmlContent1 = oRequest.request()
 
         #fh = open('c:\\test.txt', "w")
@@ -96,26 +96,26 @@ class cHoster(iHoster):
         TabUrl = []
         #sPattern = '<span style="".+?id="([^"]+)">([^<]+)<\/span>'
         sPattern = '<p style=""[^"]+id="([^"]+)">([^<]+)<\/p>'
-        aResult = re.findall(sPattern,sHtmlContent1)
+        aResult = re.findall(sPattern, sHtmlContent1)
         if (aResult):
             TabUrl = aResult
         else:
             VSlog('OPL er 1')
-            return False,False
+            return False, False
 
         #xbmc.log("Nbre d'url : " + str(len(TabUrl)))
 
         #on essait de situer le code
         sPattern = '<script src="\/assets\/js\/video-js\/video\.js.+?.js"(.+)*'
 
-        aResult = re.findall(sPattern,sHtmlContent1, re.DOTALL)
+        aResult = re.findall(sPattern, sHtmlContent1, re.DOTALL)
         if (aResult):
             sHtmlContent3 = aResult[0]
         else:
             VSlog('OPL er 2')
-            return False,False
+            return False, False
 
-        #Deobfuscation, a otimiser pour accelerer le traitement
+        #Deobfuscation, a optimiser pour accelerer le traitement
         code = ''
         maxboucle = 4
         while (maxboucle > 0):
@@ -133,16 +133,16 @@ class cHoster(iHoster):
 
         id_final = ""
         sPattern = 'var srclink.*?\/stream\/.*?(#[^\'"]+).*?mime=true'
-        aResult = re.findall(sPattern,code)
+        aResult = re.findall(sPattern, code)
         if (aResult):
             id_final = aResult[0]
         else:
             VSlog('OPL er 9')
-            return False,False
+            return False, False
 
         if not (code):
             VSlog('OPL er 3')
-            return False,False
+            return False, False
 
         #Search the coded url
         Coded_url = ''
@@ -153,11 +153,11 @@ class cHoster(iHoster):
                 VSlog( Item_url + ' : ' + Coded_url )
 
         if not(Coded_url):
-            VSlog('Url codee non trouvee')
+            VSlog('Url codée non trouvée')
             return False, False
 
         #Nettoyage du code pr traitement
-        code = CleanCode(code,Coded_url)
+        code = CleanCode(code, Coded_url)
 
         #fh = open('c:\\JS.txt', "w")
         #fh.write(code)
@@ -165,14 +165,14 @@ class cHoster(iHoster):
 
         VSlog('Code JS extrait')
 
-        dialog().VSinfo('Decodage : Peut durer plus d une minute.' , self.__sDisplayName, 15)
+        dialog().VSinfo('Décodage: Peut durer plus d\'une minute.', self.__sDisplayName, 15)
 
         #interpreteur JS
         JP = JsParser()
         Liste_var = []
-        JP.AddHackVar(Item_url,Coded_url)
+        JP.AddHackVar(Item_url, Coded_url)
 
-        JP.ProcessJS(code,Liste_var)
+        JP.ProcessJS(code, Liste_var)
 
         url = None
         #for name in [ '#streamurl', '#streamuri', '#streamurj']:
@@ -184,14 +184,14 @@ class cHoster(iHoster):
 
         if not(url):
             VSlog('Rate, debug: ' + str(Liste_var))
-            return False,False
+            return False, False
 
-        dialog().VSinfo('Ok, lien decode.' , self.__sDisplayName, 15)
+        dialog().VSinfo('Ok, lien décodé.', self.__sDisplayName, 15)
 
         api_call = self.__getHost() + "/stream/" + url + "?mime=true"
 
         if '::' in api_call:
-            dialog().VSinfo('Possibles problemes d\'ip V6' , self.__sDisplayName, 5)
+            dialog().VSinfo('Possible problème d\'ip V6', self.__sDisplayName, 5)
             xbmc.sleep(5*1000)
 
         VSlog(api_call)
@@ -212,16 +212,16 @@ def ASCIIDecode(string):
     ret = ''
     while i < l:
         c =string[i]
-        if string[i:(i+2)] == '\\x':
-            c = chr(int(string[(i+2):(i+4)],16))
-            i+=3
-        if string[i:(i+2)] == '\\u':
-            cc = int(string[(i+2):(i+6)],16)
+        if string[i:(i + 2)] == '\\x':
+            c = chr(int(string[(i + 2):(i + 4)], 16))
+            i+= 3
+        if string[i:(i + 2)] == '\\u':
+            cc = int(string[(i + 2):(i + 6)], 16)
             if cc > 256:
                 #ok c'est de l'unicode, pas du ascii
                 return ''
             c = chr(cc)
-            i+=5
+            i+= 5
         ret = ret + c
         i = i + 1
 
@@ -234,12 +234,12 @@ def Hexa(string):
     return str(int(string, 0))
 
 def parseInt(sin):
-    return int(''.join([c for c in re.split(r'[,.]',str(sin))[0] if c.isdigit()])) if re.match(r'\d+', str(sin), re.M) and not callable(sin) else None
+    return int(''.join([c for c in re.split(r'[,.]', str(sin))[0] if c.isdigit()])) if re.match(r'\d+', str(sin), re.M) and not callable(sin) else None
 
 def CheckCpacker(str):
 
     sPattern = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
-    aResult = re.findall(sPattern,str)
+    aResult = re.findall(sPattern, str)
     if (aResult):
         str2 = aResult[0]
         if not str2.endswith(';'):
@@ -255,7 +255,7 @@ def CheckCpacker(str):
 def CheckJJDecoder(str):
 
     sPattern = '([a-z]=.+?\(\)\)\(\);)'
-    aResult = re.findall(sPattern,str)
+    aResult = re.findall(sPattern, str)
     if (aResult):
         print('JJ encryption')
         return JJDecoder(aResult[0]).decode()
@@ -263,7 +263,7 @@ def CheckJJDecoder(str):
     return str
 
 def CheckAADecoder(str):
-    aResult = re.search('([>;]\s*)(ﾟωﾟ.+?\(\'_\'\);)', str,re.DOTALL | re.UNICODE)
+    aResult = re.search('([>;]\s*)(ﾟωﾟ.+?\(\'_\'\);)', str, re.DOTALL | re.UNICODE)
     if (aResult):
         print('AA encryption')
         tmp = aResult.group(1) + AADecoder(aResult.group(2)).decode()
@@ -273,7 +273,7 @@ def CheckAADecoder(str):
 
 def CleanCode(code,Coded_url):
     #extract complete code
-    r = re.search(r'type="text\/javascript">(.+?)<\/script>', code,re.DOTALL)
+    r = re.search(r'type="text\/javascript">(.+?)<\/script>', code, re.DOTALL)
     if r:
         code = r.group(1)
 
@@ -286,7 +286,7 @@ def CleanCode(code,Coded_url):
 
     #extract first part
     P3 = "^(.+?)}\);\s*\$\(\"#videooverlay"
-    r = re.search(P3, code,re.DOTALL)
+    r = re.search(P3, code, re.DOTALL)
     if r:
         code = r.group(1)
     else:
@@ -294,28 +294,28 @@ def CleanCode(code,Coded_url):
         return False
 
     #hack a virer dans le futur
-    code = code.replace('!![]','true')
+    code = code.replace('!![]', 'true')
     P8 = '\$\(document\).+?\(function\(\){'
-    code= re.sub(P8,'\n',code)
+    code= re.sub(P8, '\n', code)
     P4 = 'if\(!_[0-9a-z_\[\(\'\)\]]+,document[^;]+\)\){'
-    code = re.sub(P4,'if (false) {',code)
+    code = re.sub(P4, 'if (false) {', code)
     P4 = 'if\(+\'toString\'[^;]+document[^;]+\){'
-    code = re.sub(P4,'if (false) {',code)
+    code = re.sub(P4, 'if (false) {', code)
 
     #hexa convertion
-    code = re.sub('([^_])(0x[0-9a-f]+)',SubHexa,code)
+    code = re.sub('([^_])(0x[0-9a-f]+)', SubHexa, code)
 
     #Saut de ligne
-    #code = code.replace(';',';\n')
-    code = code.replace('case','\ncase')
-    code = code.replace('}','\n}\n')
-    code = code.replace('{','{\n')
+    #code = code.replace(';', ';\n')
+    code = code.replace('case', '\ncase')
+    code = code.replace('}', '\n}\n')
+    code = code.replace('{', '{\n')
 
     #tab
-    code = code.replace('\t','')
+    code = code.replace('\t', '')
 
     #hack
-    code = code.replace('!![]','true')
+    code = code.replace('!![]', 'true')
 
     return code
 
@@ -327,14 +327,14 @@ def GetOpenloadUrl(url,referer):
     if 'openload.co/stream' in url:
 
         headers = {'User-Agent': UA,
-                   #'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                   #'Accept-Language':'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
-                   #'Accept-Encoding':'gzip, deflate, br',
-                   #'Host':'openload.co',
-                   'Referer':referer
+                   #'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                   #'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+                   #'Accept-Encoding': 'gzip, deflate, br',
+                   #'Host': 'openload.co',
+                   'Referer': referer
         }
 
-        req = urllib2.Request(url,None,headers)
+        req = urllib2.Request(url, None, headers)
         res = urllib2.urlopen(req)
         #xbmc.log(res.read())
         finalurl = res.geturl()
@@ -362,7 +362,7 @@ def GetOpenloadUrl(url,referer):
 
 #Code updated with code from https://gitlab.com/iptvplayer-for-e2
 def decodek(k):
-    y = ord(k[0]);
+    y = ord(k[0])
     e = y - 0x37
     d = max(2, e)
     e = min(d, len(k) - 0x24 - 2)
@@ -391,8 +391,8 @@ def decodek(k):
             h += 1
 
         A = g[i % 0xc]
-        f = f ^ 0xd5;
-        f = f ^ A;
+        f = f ^ 0xd5
+        f = f ^ A
         p.append(chr(f))
         i += 1
 
