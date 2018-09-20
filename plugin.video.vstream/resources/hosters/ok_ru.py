@@ -19,7 +19,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -43,8 +43,8 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
-        
+        return ''
+
     def getHostAndIdFromUrl(self, sUrl):
         sPattern = 'https*:\/\/((?:(?:ok)|(?:odnoklassniki))\.ru)\/.+?\/([0-9]+)'
         oParser = cParser()
@@ -82,7 +82,7 @@ class cHoster(iHoster):
 
         oParser = cParser()
 
-        sHtmlContent = oParser.abParse(sHtmlContent,'data-options=','" data-player-container',14)
+        sHtmlContent = oParser.abParse(sHtmlContent,'data-options=', '" data-player-container', 14)
         sHtmlContent = cUtil().removeHtmlTags(sHtmlContent)
         sHtmlContent = cUtil().unescape(sHtmlContent)#.decode('utf-8'))
 
@@ -97,13 +97,13 @@ class cHoster(iHoster):
 
             # Si au moins 1 url
             if (url):
-                #dialog qualiter
-                api_call = dialog().VSselectqual(qua,url)
+                #dialogue qualité
+                api_call = dialog().VSselectqual(qua, url)
 
-        
+
         if (api_call):
             api_call = '%s|User-Agent=%s&Accept=%s' % (api_call, HEADERS['User-Agent'], HEADERS['Accept'])
             api_call = api_call + '&Referer=' + self.__sUrl + '&Origin=http://ok.ru'
-            return True,api_call
-            
+            return True, api_call
+
         return False, False
