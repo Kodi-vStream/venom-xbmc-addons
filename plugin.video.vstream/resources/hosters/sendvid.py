@@ -16,7 +16,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -26,7 +26,7 @@ class cHoster(iHoster):
 
     def getPluginIdentifier(self):
         return 'sendvid'
-        
+
     def setHD(self, sHD):
         self.__sHD = ''
 
@@ -41,7 +41,7 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-    
+
     def __getIdFromUrl(self, sUrl):
         return ''
 
@@ -53,7 +53,7 @@ class cHoster(iHoster):
 
     def __getUrl(self, media_id):
         return
-    
+
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
@@ -66,14 +66,14 @@ class cHoster(iHoster):
         oParser = cParser()
         sPattern =  '<source src="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
+
         if (aResult[0]):
             api_call = aResult[1][0]
-            
+
         if not api_call.startswith('http'):
             api_call = 'http:' + api_call
-        
+
         if (api_call):
             return True, api_call
-        
+
         return False, False
