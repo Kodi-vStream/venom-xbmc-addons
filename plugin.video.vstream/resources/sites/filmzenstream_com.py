@@ -14,10 +14,10 @@ SITE_IDENTIFIER = 'filmzenstream_com'
 SITE_NAME = 'Filmzenstream'
 SITE_DESC = 'Film streaming HD gratuit complet'
 
-URL_MAIN = 'https://filmzenstream.cc/'
+URL_MAIN = 'https://filmzenstream.club/'
 
+MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
-MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showYears')
 
@@ -154,7 +154,7 @@ def showMovies(sSearch = ''):
             sTitle = ('%s [%s]') % (sName, sQual)
 
             #Si recherche et trop de resultat, on nettoye
-            if sSearch and total > 2:
+            if sSearch and total > 3:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH_MOVIES[0], ''), sName) == 0:
                     continue
 
@@ -200,14 +200,14 @@ def showHosters():
     #Vire les bandes annonces
     sHtmlContent = sHtmlContent.replace('src="//www.youtube.com/', '')
 
-    sPattern = '<iframe.+?src="(.+?)"'
+    sPattern = '<iframe.+?src="([^"]+)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            if 'belike' in aEntry:
 
+            if 'belike' in aEntry:
                 if aEntry.startswith('/'):
                     oRequestHandler = cRequestHandler('https:' + aEntry)
                 else:
