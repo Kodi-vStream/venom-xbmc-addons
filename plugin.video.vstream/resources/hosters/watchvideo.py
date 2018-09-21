@@ -18,7 +18,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -43,12 +43,12 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def __getIdFromUrl(self):
         sPattern = '(?://|\.)(watchvideo[0-9]?\.us)/(?:embed-)?([0-9a-zA-Z]+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
-        
+
         if (aResult[0] == True):
             return aResult[1][0]
         return ''
@@ -61,27 +61,27 @@ class cHoster(iHoster):
 
     def __getUrl(self, media_id):
         return
-        
+
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-   
+
         api_call = False
-        
+
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+
         oParser = cParser()
-    
+
         #Dean Edwards Packer
         sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
-        aResult = oParser.parse(sHtmlContent, sPattern)        
-        
-        
+        aResult = oParser.parse(sHtmlContent, sPattern)
+
+
         if (aResult[0] == True):
             sHtmlContent = cPacker().unpack(aResult[1][0])
-                
+
             sPattern = '{file:"([^"]+)"\,label:"([^"]+)"}'
             aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -89,16 +89,16 @@ class cHoster(iHoster):
             #initialisation des tableaux
             url=[]
             qua=[]
-        
-            #Replissage des tableaux
+
+            #Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
 
             #tableau
             api_call = dialog().VSselectqual(qua, url)
-        
+
         if (api_call):
             return True, api_call
-            
+
         return False, False
