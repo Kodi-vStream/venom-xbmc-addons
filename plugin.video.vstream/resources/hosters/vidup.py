@@ -12,7 +12,7 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
 import urllib2
-import ssl,json
+import ssl, json
 
 UA = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"
 
@@ -27,7 +27,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -37,7 +37,7 @@ class cHoster(iHoster):
 
     def getPluginIdentifier(self):
         return 'vidup'
-        
+
     def setHD(self, sHD):
         self.__sHD = ''
 
@@ -46,7 +46,7 @@ class cHoster(iHoster):
 
     def isDownloadable(self):
         return True
-    
+
     def __getIdFromUrl(self, sUrl):
         sPattern = 'https*:\/\/vidup.+?\/(?:embed-)?(?:embed/)?([0-9a-zA-Z]+)'
         oParser = cParser()
@@ -55,10 +55,10 @@ class cHoster(iHoster):
             return aResult[1][0]
 
         return ''
-        
+
     def setUrl(self, sUrl):
-        #self.__sUrl = str(sUrl).replace('beta.vidup.tv','vidup.tv')
-        #self.__sUrl = re.sub('(-\d+x\d+\.html)','',self.__sUrl)
+        #self.__sUrl = str(sUrl).replace('beta.vidup.tv', 'vidup.tv')
+        #self.__sUrl = re.sub('(-\d+x\d+\.html)', '', self.__sUrl)
         #self.__sUrl = self.__sUrl.replace('embed-', '')
         self.__sUrl = sUrl
 
@@ -67,10 +67,10 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
 
-        
+
         api_call = False
         aResult = False
-        
+
         request_headers = {
         "User-Agent": UA
         }
@@ -81,17 +81,17 @@ class cHoster(iHoster):
         self.__sUrl = response.geturl()
 
         response.close()
-        
+
         Json_url = "https://vidup.io/api/serve/video/" + self.__getIdFromUrl(self.__sUrl)
-        
-        req = urllib2.Request(Json_url,headers=request_headers)
+
+        req = urllib2.Request(Json_url, headers=request_headers)
         gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-        response = urllib2.urlopen(req, data="{}" ,context=gcontext)
+        response = urllib2.urlopen(req, data="{}", context = gcontext)
         sHtmlContent = response.read()
         aResult = json.loads(sHtmlContent)
 
         response.close()
-        
+
         if (aResult):
             url=[]
             qua=[]
@@ -99,11 +99,11 @@ class cHoster(iHoster):
             for i in aResult['qualities']:
                 url.append(aResult['qualities'][i])
                 qua.append(str(i))
-                
 
-            api_call = dialog().VSselectqual(qua,url)
+
+            api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):
             return True, api_call
-            
+
         return False, False
