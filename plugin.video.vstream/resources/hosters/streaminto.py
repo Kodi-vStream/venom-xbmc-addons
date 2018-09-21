@@ -19,17 +19,17 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
 
     def getFileName(self):
-	return self.__sFileName
-    
+        return self.__sFileName
+
     def setUrl(self, sUrl):
         self.__sUrl = sUrl
-    
+
     def __getIdFromUrl(self,sUrl):
         sPattern = 'v=([^-]+)'
         oParser = cParser()
@@ -38,7 +38,7 @@ class cHoster(iHoster):
             return aResult[1][0]
 
         return ''
-        
+
     def __modifyUrl(self, sUrl):
         return
 
@@ -52,7 +52,7 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
+        return ''
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
@@ -72,11 +72,11 @@ class cHoster(iHoster):
 
         web_url = 'http://streamin.to/embed-%s.html' % sId
 
-        api_call =''
+        api_call = ''
 
         oRequest = cRequestHandler(web_url)
         html = oRequest.request()
-        
+
         #fh = open('c:\\test.txt', "w")
         #fh.write(html)
         #fh.close()
@@ -93,9 +93,9 @@ class cHoster(iHoster):
         if (aResult[0] == True):
             api_call = aResult[1][0]
 
-            
+
         if (api_call):
             return True, api_call
-            
+
         return False, False
- 
+
