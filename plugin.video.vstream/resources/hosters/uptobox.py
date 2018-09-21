@@ -23,7 +23,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR violet]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR violet]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -51,7 +51,7 @@ class cHoster(iHoster):
         oParser = cParser()
 
         #On ne charge les sous titres uniquement si vostfr se trouve dans le titre.
-        if not re.search("<h1 class='file-title'>[^<>]+(?:TRUEFRENCH|FRENCH)[^<>]*</h1>",sHtmlContent,re.IGNORECASE):
+        if not re.search("<h1 class='file-title'>[^<>]+(?:TRUEFRENCH|FRENCH)[^<>]*</h1>", sHtmlContent, re.IGNORECASE):
 
             sPattern = '<track type=[\'"].+?[\'"] kind=[\'"]subtitles[\'"] src=[\'"]([^\'"]+).vtt[\'"] srclang=[\'"].+?[\'"] label=[\'"]([^\'"]+)[\'"]>'
             aResult = oParser.parse(sHtmlContent, sPattern)
@@ -87,7 +87,7 @@ class cHoster(iHoster):
                 mDefault = 0
 
             if mDefault is 0:
-                ret = dialog().select('Choissisez votre mode de fonctionnement',['Passer en Streaming (via Uptostream)','Rester en direct (via Uptobox)'])
+                ret = dialog().select('Choissisez votre mode de fonctionnement', ['Passer en Streaming (via Uptostream)', 'Rester en direct (via Uptobox)'])
             else:
                 # 0 is ask me, so 1 is uptostream and so on...
                 ret = mDefault - 1
@@ -97,7 +97,7 @@ class cHoster(iHoster):
                 self.stream = False
             #mode stream
             elif ret == 0:
-                self.__sUrl = self.__sUrl.replace('uptobox.com/','uptostream.com/')
+                self.__sUrl = self.__sUrl.replace('uptobox.com/', 'uptostream.com/')
             else:
                 return False
 
@@ -109,7 +109,7 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         self.stream = True
-        self.__sUrl = self.__sUrl.replace('uptobox.com/','uptostream.com/')
+        self.__sUrl = self.__sUrl.replace('uptobox.com/', 'uptostream.com/')
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
@@ -124,7 +124,7 @@ class cHoster(iHoster):
 
         if api_call:
             if SubTitle:
-                return True, api_call,SubTitle
+                return True, api_call, SubTitle
             else:
                 return True, api_call
 
@@ -152,13 +152,13 @@ class cHoster(iHoster):
 
                 if api_call:
                     if SubTitle:
-                        return True, api_call,SubTitle
+                        return True, api_call, SubTitle
                     else:
                         return True, api_call
 
                 return False, False
 
-    def GetMedialinkDL(self,sHtmlContent):
+    def GetMedialinkDL(self, sHtmlContent):
 
         oParser = cParser()
 
@@ -170,7 +170,7 @@ class cHoster(iHoster):
 
         return False
 
-    def GetMedialinkStreaming(self,sHtmlContent):
+    def GetMedialinkStreaming(self, sHtmlContent):
 
         oParser = cParser()
         sPattern =  'src":[\'"]([^<>\'"]+)[\'"],"type":[\'"][^\'"><]+?[\'"],"label":[\'"]([0-9]+p)[\'"].+?"lang":[\'"]([^\'"]+)'
@@ -205,7 +205,6 @@ class cHoster(iHoster):
                 return False
 
             stream_url = urllib.unquote(stream_url)
-
             if not stream_url.startswith('http'):
                 stream_url = 'http:' + stream_url
 
