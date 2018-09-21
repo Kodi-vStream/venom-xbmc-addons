@@ -15,7 +15,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -34,7 +34,7 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def __getIdFromUrl(self):
         sPattern = "id=([^<]+)"
         oParser = cParser()
@@ -43,7 +43,7 @@ class cHoster(iHoster):
             return aResult[1][0]
 
         return ''
-        
+
     def __modifyUrl(self, sUrl):
         if (sUrl.startswith('http://')):
             oRequestHandler = cRequestHandler(sUrl)
@@ -52,8 +52,8 @@ class cHoster(iHoster):
             self.__sUrl = sRealUrl
             return self.__getIdFromUrl()
 
-        return sUrl;
-        
+        return sUrl
+
     def __getKey(self):
         oRequestHandler = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequestHandler.request()
@@ -61,7 +61,7 @@ class cHoster(iHoster):
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            aResult = aResult[1][0].replace('.','%2E')
+            aResult = aResult[1][0].replace('.', '%2E')
             return aResult
 
         return ''
@@ -88,7 +88,7 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(api_call)
         sHtmlContent = oRequest.request()
-        
+
         sPattern =  'url=(.+?)&title'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -97,5 +97,5 @@ class cHoster(iHoster):
             return True, stream_url
         else:
             return False, False
-        
+
         return False, False
