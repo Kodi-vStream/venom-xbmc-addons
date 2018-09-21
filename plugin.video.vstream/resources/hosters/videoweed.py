@@ -8,6 +8,7 @@ from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -18,7 +19,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -43,7 +44,6 @@ class cHoster(iHoster):
         self.__sUrl = self.__sUrl.replace('&width=711&height=400', '')
         self.__sUrl = 'http://www.bitvid.sx/embed/?v=' + str(self.__sUrl)
 
-
     def checkUrl(self, sUrl):
         return True
 
@@ -58,7 +58,7 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+
         sPattern =  '<source src="([^"]+)" type=\'(.+?)\'>'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -72,10 +72,10 @@ class cHoster(iHoster):
                 qua.append(aEntry[1])
 
             #dialog qualiter
-            api_call = dialog().VSselectqual(qua,url)
-                    
+            api_call = dialog().VSselectqual(qua, url)
+
         if (api_call):
-            return True,api_call + '|User-Agent=' + UA 
-            
+            return True,api_call + '|User-Agent=' + UA
+
         return False, False
- 
+
