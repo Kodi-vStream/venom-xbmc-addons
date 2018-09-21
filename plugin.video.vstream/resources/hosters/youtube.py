@@ -1,8 +1,8 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 # type
-# https://www.youtube.com/embed/etc....        
-# https://www.youtube.com/watch?v=etc... 
+# https://www.youtube.com/embed/etc....
+# https://www.youtube.com/watch?v=etc...
 # http://www.youtube-nocookie.com/v/etc...
 # https://youtu.be/etc...
 
@@ -27,20 +27,20 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
-        
+
     def getFileName(self):
         return self.__sFileName
 
     def getPluginIdentifier(self):
         return 'youtube'
-        
+
     def setHD(self, sHD):
         self.__sHD = ''
-        
+
     def getHD(self):
         return self.__sHD
 
@@ -52,7 +52,7 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-    
+
     def __getIdFromUrl(self, sUrl):
         return ''
 
@@ -67,16 +67,16 @@ class cHoster(iHoster):
 
     def __getUrl(self, sUrl):
         return
-    
+
     def getMediaLink(self):
         first_test = self.__getMediaLinkForGuest2()
         if first_test != False:
             return first_test
         else:
             return self.__getMediaLinkForGuest()
-        
+
     def __getMediaLinkForGuest2(self):
-    
+
         oRequestHandler = cRequestHandler(self.__sUrl)
         sHtml = oRequestHandler.request()
 
@@ -98,62 +98,62 @@ class cHoster(iHoster):
             data = json.loads(player_conf[:index])
 
         except Exception as e:
-            VSlog("Cannot decode JSON: {0}"+str(e))
+            VSlog("Cannot decode JSON: {0}" + str(e))
 
 
         stream_map = parse_stream_map(data["args"]["url_encoded_fmt_stream_map"])
 
         if not (stream_map == False):
-            video_urls = zip(stream_map["url"],stream_map["quality"])
-            # initialisation des tableaux
+            video_urls = zip(stream_map["url"], stream_map["quality"])
+            #initialisation des tableaux
             url=[]
             qua=[]
-            # Replissage des tableaux
+            #Remplissage des tableaux
             for i in video_urls:
                 url.append(str(i[0]))
-                qua.append(str(i[1]))   
+                qua.append(str(i[1]))
 
-            #dialog qualiter
-            api_call = dialog().VSselectqual(qua,url)
+            #dialogue qualité
+            api_call = dialog().VSselectqual(qua, url)
             if api_call:
                 return True, api_call
         else:
             return False
-            
+
     def __getMediaLinkForGuest(self):
 
         oParser = cParser()
- 
+
         sUrl = util.QuotePlus(self.__sUrl)
-        
-        oRequest = cRequestHandler('%s%s' % (URL_MAIN,sUrl))
+
+        oRequest = cRequestHandler('%s%s' % (URL_MAIN, sUrl))
         sHtmlContent = oRequest.request()
 
-        sHtmlContent1 = oParser.abParse(sHtmlContent,'<div class="download-box">','<div class="delimiter"></div>')
+        sHtmlContent1 = oParser.abParse(sHtmlContent, '<div class="download-box">', '<div class="delimiter"></div>')
         if not sHtmlContent1:
-            return False,False
-        
-        sPattern = '<div class="button-text"><p>(.+?)</p>.+?<a href="([^"]+)"' 
+            return False, False
+
+        sPattern = '<div class="button-text"><p>(.+?)</p>.+?<a href="([^"]+)"'
         aResult = oParser.parse(sHtmlContent1,sPattern)
         if (aResult[0] == True):
-            # initialisation des tableaux
+            #initialisation des tableaux
             url=[]
             qua=[]
-            # Replissage des tableaux
+            #Remplissage des tableaux
             for i in aResult[1]:
-                b = re.sub('&title=.+','',i[1]) #testé xx fois ok
+                b = re.sub('&title=.+', '', i[1]) #testé xx fois ok
                 url.append(str(b))
-                qua.append(str(i[0]))   
+                qua.append(str(i[0]))
 
-            #dialog qualiter
-            api_call = dialog().VSselectqual(qua,url)
+            #dialogue qualité
+            api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):
             return True, api_call
-            
+
         return False, False
-        
-    
+
+
 def parse_stream_map(sHtml):
 
     if not '&sp=signature' in sHtml:
@@ -175,6 +175,6 @@ def parse_stream_map(sHtml):
                 videoinfo.get(key, []).append(util.Unquote(value))
 
         return videoinfo
-        
+
     else:
         return False
