@@ -2,7 +2,6 @@
 <addon id="plugin.video.vstream" name="vStream" version="0.6.5" provider-name="Venom,TmpName,Johngf">
     <requires>
         <import addon="xbmc.python" version="2.24.0"/>
-        <import addon="plugin.video.youtube" version="5.5.1"/>
         <import addon="script.module.simplejson" version="3.3.0"/>
         <import addon="script.module.urlresolver" optional="true"/>
         <import addon="script.module.requests" version="2.9.1"/>
@@ -14,19 +13,19 @@
     </extension>
     <extension point="xbmc.addon.metadata">
         <summary lang="fr_FR">vStream par Venom, TmpName, Johngf.</summary>
-        <description lang="fr_FR">vStream est un module de streaming français, trouvez tous vos films, séries et mangas.[CR][CR]Contributeur: Razorex, Kodigoal, Chataigne73, Arias800</description>
+        <description lang="fr_FR">vStream est un module de streaming français, trouvez tous vos films, séries et mangas.[CR][CR]Contributeur: Razorex, Kodigoal, Arias800</description>
         <disclaimer lang="fr_FR">vStream est un addon de streaming videos</disclaimer>
         <summary lang="fr_CA">vStream par Venom, TmpName, Johngf.</summary>
-        <description lang="fr_CA">vStream est un module de streaming français, trouvez tous vos films, séries et mangas.[CR][CR]Contributeur: Razorex, Kodigoal, Chataigne73, Arias800</description>
+        <description lang="fr_CA">vStream est un module de streaming français, trouvez tous vos films, séries et mangas.[CR][CR]Contributeur: Razorex, Kodigoal, Arias800</description>
         <disclaimer lang="fr_CA">vStream est un addon de streaming videos</disclaimer>
         <summary lang="en_GB">vStream by Venom, TmpName, Johngf.</summary>
-        <description lang="en_GB">vStream module and a french streaming, find all your movies, TV shows and mangas.[CR][CR]Contributeur: Razorex, Kodigoal, Chataigne73, Arias800</description>
+        <description lang="en_GB">vStream module and a french streaming, find all your movies, TV shows and mangas.[CR][CR]Contributeur: Razorex, Kodigoal, Arias800</description>
         <disclaimer lang="en_GB">vStream is a video streaming addon</disclaimer>
         <summary lang="en_NZ">vStream by Venom, TmpName, Johngf.</summary>
-        <description lang="en_NZ">vStream module and a french streaming, find all your movies, TV shows and mangas.[CR][CR]Contributeur: Razorex, Kodigoal, Chataigne73, Arias800</description>
+        <description lang="en_NZ">vStream module and a french streaming, find all your movies, TV shows and mangas.[CR][CR]Contributeur: Razorex, Kodigoal, Arias800</description>
         <disclaimer lang="en_NZ">vStream is a video streaming addon</disclaimer>
         <summary lang="en_US">vStream by Venom, TmpName, Johngf.</summary>
-        <description lang="en_US">vStream module and a french streaming, find all your movies, TV shows and mangas.[CR][CR]Contributeur: Razorex, Kodigoal, Chataigne73, Arias800</description>
+        <description lang="en_US">vStream module and a french streaming, find all your movies, TV shows and mangas.[CR][CR]Contributeur: Razorex, Kodigoal, Arias800</description>
         <disclaimer lang="en_US">vStream is a video streaming addon</disclaimer>
         <platform>all</platform>
         <license>GNU GENERAL PUBLIC LICENSE</license>
