@@ -17,7 +17,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -41,8 +41,8 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
-        
+        return ''
+
     def __getIdFromUrl(self, sUrl):
         sPattern = 'vimeo\.com\/(?:video\/)?([0-9]+)'
         oParser = cParser()
@@ -60,13 +60,13 @@ class cHoster(iHoster):
 
     def __getUrl(self, media_id):
         return
-        
+
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
         api_call = False
-   
+
         id = self.__getIdFromUrl(self.__sUrl)
 
         web_url = 'https://player.vimeo.com/video/' + id
@@ -82,15 +82,15 @@ class cHoster(iHoster):
             url=[]
             qua=[]
 
-            #Replissage des tableaux
+            #Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
 
             #tableau
-            api_call = dialog().VSselectqual(qua, url)     
-            
+            api_call = dialog().VSselectqual(qua, url)
+
             if (api_call):
-                return True, api_call 
+                return True, api_call
 
             return False, False
