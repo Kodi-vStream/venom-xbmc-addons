@@ -254,8 +254,6 @@ class cHosterGui:
             return self.getHoster('openload')
         if (('thevideo.' in sHostName) or ('video.tt' in sHostName) or ('vev.io' in sHostName)):
             return self.getHoster('thevideo_me')
-        if ('vid.me' in sHostName):
-            return self.getHoster('vidme')
         if ('zstream' in sHostName):
             return self.getHoster('zstream')
         if ('uqload.' in sHostName):
