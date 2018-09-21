@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-from resources.lib.handler.requestHandler import cRequestHandler 
+from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
@@ -19,20 +19,20 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
-        
+
     def getFileName(self):
         return self.__sFileName
 
     def getPluginIdentifier(self):
         return 'tune'
-        
+
     def setHD(self, sHD):
         self.__sHD = ''
-        
+
     def getHD(self):
         return self.__sHD
 
@@ -44,7 +44,7 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-    
+
     def __getIdFromUrl(self, sUrl):
         sPattern = 'vid=([0-9]+)'
         oParser = cParser()
@@ -62,7 +62,7 @@ class cHoster(iHoster):
 
     def __getUrl(self, media_id):
         return
-    
+
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
@@ -71,7 +71,7 @@ class cHoster(iHoster):
         url = []
         qua = []
         id = self.__getIdFromUrl(self.__sUrl)
-        
+
         sUrl = 'https://embed.tune.pk/play/' + id  + '?autoplay=no&ssl=yes&inline=true'
 
         oRequest = cRequestHandler(sUrl)
@@ -102,15 +102,15 @@ class cHoster(iHoster):
                 for x in content['sources']:
                     if 'Auto' in str(x['label']):
                         continue
-                    url2 = str(x['file']).replace('index',str(x['label']))
+                    url2 = str(x['file']).replace('index', str(x['label']))
 
                     url.append(url2)
                     qua.append(repr(x['label'])+ '  m3u8')
-                    
-                #dialog qualiter
-                api_call = dialog().VSselectqual(qua,url)
+
+                #dialogue qualité
+                api_call = dialog().VSselectqual(qua, url)
 
             if (api_call):
-                return True, api_call + '|User-Agent=' + UA 
+                return True, api_call + '|User-Agent=' + UA
 
             return False, False
