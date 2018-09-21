@@ -20,7 +20,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR violet]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR violet]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -65,10 +65,9 @@ class cHoster(iHoster):
 
         if (not self.oPremiumHandler.isPremiumModeAvailable()):
             oDialog = dialog().VSok('ATTENTION, Pas de streaming sans premium.')
-            return False,False
+            return False, False
 
         return self.__getMediaLinkByPremiumUser()
-
 
     def __getMediaLinkByPremiumUser(self):
         api_call = False
@@ -87,5 +86,5 @@ class cHoster(iHoster):
 
         return False, False
 
-    def GetMedialinkDL(self,sHtmlContent):
+    def GetMedialinkDL(self, sHtmlContent):
         return False
