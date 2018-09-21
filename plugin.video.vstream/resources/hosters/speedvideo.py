@@ -18,7 +18,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -42,8 +42,8 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
-        
+        return ''
+
     def __getIdFromUrl(self, sUrl):
         return ''
 
@@ -60,14 +60,14 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
+
         try:
             oRequest = cRequestHandler(self.__sUrl)
             sHtmlContent = oRequest.request()
-            
+
             linkfile=re.compile('var linkfile\s*=\s*"([A-Za-z0-9=]+)"').findall(sHtmlContent)[0]
             linkfileb=re.compile('var linkfile\s*=\s*base64_decode\(linkfile,\s*([A-Za-z0-9]+)\);').findall(sHtmlContent)[0]
-            linkfilec=re.compile('var '+linkfileb+'\s*=\s*(\d+);').findall(sHtmlContent)[0]
+            linkfilec=re.compile('var ' + linkfileb + '\s*=\s*(\d+);').findall(sHtmlContent)[0]
             linkfilec=int(linkfilec)
             linkfilez=linkfile[:linkfilec]+linkfile[(linkfilec+10):]
             stream_url=base64.b64decode(linkfilez)
@@ -77,7 +77,7 @@ class cHoster(iHoster):
         if not(stream_url == False):
             api_call = stream_url
             return True, api_call
-            
+
         return False, False
-        
-        
+
+
