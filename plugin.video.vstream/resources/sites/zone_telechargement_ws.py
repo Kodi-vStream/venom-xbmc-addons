@@ -647,32 +647,6 @@ def showSeriesHosters():
 
     oGui.setEndOfDirectory()
 
-def showStreamingHosters():
-    oGui = cGui()
-    oParser = cParser()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumb = oInputParameterHandler.getValue('sThumb')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<iframe.+?src="(.+?)"'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-            sHosterUrl = aEntry
-
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-    oGui.setEndOfDirectory()
-
 def Display_protected_link():
     #VSlog('Display_protected_link')
     oGui = cGui()
@@ -742,8 +716,7 @@ def Display_protected_link():
             if len(aResult_dlprotecte[1]) > 1:
                 sTitle = sMovieTitle + ' episode ' + episode
 
-
-            episode+=1
+            episode+= 1
 
             if 'stream' in str(sHosterUrl):
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -757,6 +730,32 @@ def Display_protected_link():
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+    oGui.setEndOfDirectory()
+
+def showStreamingHosters():
+    oGui = cGui()
+    oParser = cParser()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '<iframe.+?src="(.+?)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            sHosterUrl = aEntry
+
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
