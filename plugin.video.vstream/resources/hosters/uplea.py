@@ -63,7 +63,7 @@ class cHoster(iHoster):
     def getMediaLink(self):
         import sys
         if 'site=cDownload&function' not in sys.argv[2]:
-            oDialog = dialog().VSok('ATTENTION, Pas de streaming sans premium\nPour voir le film passer par l\'option "DL et Visualiser" du menu contextuel.')
+            oDialog = dialog().VSok('ATTENTION, Pas de streaming sans premium\nPour voir le film passer par l\'option "DL et Lire" du menu contextuel.')
             return False,False
         return self.__getMediaLinkForGuest()
 
