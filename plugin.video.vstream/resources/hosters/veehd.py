@@ -4,7 +4,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 
-import re,urllib
+import re, urllib
 
 
 class cHoster(iHoster):
@@ -18,7 +18,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -42,8 +42,8 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
-        
+        return ''
+
     def __getIdFromUrl(self, sUrl):
         return ''
 
@@ -65,28 +65,28 @@ class cHoster(iHoster):
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        sPattern = 'load_stream.+?{src : "([^"]+)"}' 
+        sPattern = 'load_stream.+?{src : "([^"]+)"}'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True):
-            sUrl = 'http://veehd.com'+ aResult[1][0]
+            sUrl = 'http://veehd.com' + aResult[1][0]
             oRequest = cRequestHandler(sUrl)
             sHtmlContent = oRequest.request()
 
             #avidivx
             sPattern = '<embed.+?src="([^"]+)"'
-            r2 = re.search(sPattern,sHtmlContent)
+            r2 = re.search(sPattern, sHtmlContent)
             if (r2):
                 api_call = r2.group(1)
 
             #mp4
             sPattern = ',"url":"([^"]+)","scaling":"fit"}'
-            r3 = re.search(sPattern,sHtmlContent)
+            r3 = re.search(sPattern, sHtmlContent)
             if (r3):
                 api_call = urllib.unquote(r3.group(1))
 
         if (api_call):
             return True, api_call
 
-        return False , False
+        return False, False
