@@ -16,20 +16,20 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
-        
+
     def getFileName(self):
         return self.__sFileName
 
     def getPluginIdentifier(self):
         return 'vidabc'
-        
+
     def setHD(self, sHD):
         self.__sHD = ''
-        
+
     def getHD(self):
         return self.__sHD
 
@@ -38,7 +38,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-    
+
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
