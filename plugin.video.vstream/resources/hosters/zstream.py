@@ -17,7 +17,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -42,12 +42,12 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def __getIdFromUrl(self):
         sPattern = 'http:\/\/zstream.+?\/(.+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
-        
+
         if (aResult[0] == True):
             return aResult[1][0]
         return ''
@@ -60,71 +60,71 @@ class cHoster(iHoster):
 
     def __getUrl(self, media_id):
         return
-        
+
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
+
         #print self.__sUrl
-   
+
         api_call = False
-        
+
         #print self.__sUrl
-        
+
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+
         # id = self.__getIdFromUrl()
-        
+
         # oParser = cParser()
         # sPattern = 'name="op" value="(.+?)">.+?name="fname" value="(.+?)">.+?name="hash" value="(.+?)">'
         # aResult = oParser.parse(sHtmlContent, sPattern)
 
         # if (aResult[0] == True):
-            
+
             # #Need to wait
             # time.sleep( 5 )
-            
+
             # UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
             # headers = {'User-Agent': UA ,
-                   # 'Host' : 'zstream.to',
+                   # 'Host': 'zstream.to',
                    # 'Referer': self.__sUrl,
                    # 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                   # #'Content-Type' : 'application/x-www-form-urlencoded',
+                   # #'Content-Type': 'application/x-www-form-urlencoded',
                    # #'Content-Length': '218',
                    # 'Connection': 'keep-alive' }
 
             # postdata = {'id': id , 'imhuman' : 'Proceed to video' , 'op' : aResult[1][0][0] , 'fname' : aResult[1][0][1] , 'hash' : aResult[1][0][2] }
-            
-            # req = urllib2.Request(self.__sUrl,urllib.urlencode(postdata),headers)
-            
-            
+
+            # req = urllib2.Request(self.__sUrl, urllib.urlencode(postdata), headers)
+
+
             # try:
                 # response = urllib2.urlopen(req)
             # except urllib2.URLError, e:
                 # print e.read()
                 # print e.reason
-            
+
             # sHtmlContent = response.read()
             # response.close()
-            
+
         #fh = open('c:\\zstream.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
-        
+
         oParser = cParser()
         sPattern = '{file:"(.+?)",label:"(.+?)"}'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
+
         #print aResult
 
         if (aResult[0] == True):
             #initialisation des tableaux
             url=[]
             qua=[]
-        
-            #Replissage des tableaux
+
+            #Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
@@ -133,8 +133,8 @@ class cHoster(iHoster):
             api_call = dialog().VSselectqual(qua, url)
 
         #print api_call
-        
+
         if (api_call):
             return True, api_call
-            
+
         return False, False
