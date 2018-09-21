@@ -8,7 +8,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
 from resources.lib.parser import cParser
 from resources.lib.packer import cPacker
-import re,xbmcgui
+import re, xbmcgui
 
 class cHoster(iHoster):
 
@@ -21,7 +21,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -43,9 +43,9 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = re.sub('-*\d{3,4}x\d{3,4}','',self.__sUrl)
-        self.__sUrl = self.__sUrl.replace('https','http')
-        
+        self.__sUrl = re.sub('-*\d{3,4}x\d{3,4}', '', self.__sUrl)
+        self.__sUrl = self.__sUrl.replace('https', 'http')
+
     def checkUrl(self, sUrl):
         return True
 
@@ -63,20 +63,20 @@ class cHoster(iHoster):
         sHtmlContent = oRequest.request()
 
         if '<div id="deleted">' in sHtmlContent:
-            return False,False
+            return False, False
 
         oParser = cParser()
         sPattern = '<source src="([^"]+)"'
-        aResult = oParser.parse(sHtmlContent,sPattern)
+        aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             api_call = aResult[1][0]
-        else:        
+        else:
             sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
-            aResult = oParser.parse(sHtmlContent,sPattern)
+            aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                 sHtmlContent = cPacker().unpack(aResult[1][0])
                 sPattern = '{file:"(http.+?vid.mp4)"'
-                aResult = oParser.parse(sHtmlContent,sPattern)
+                aResult = oParser.parse(sHtmlContent, sPattern)
                 if (aResult[0] == True):
                     api_call = aResult[1][0]
 
