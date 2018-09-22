@@ -21,7 +21,7 @@ SITE_IDENTIFIER = 'zone_telechargement_ws'
 SITE_NAME = '[COLOR violet]Zone-Telechargement[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_HOST = 'https://ww3.zone-telechargement1.org/'
+URL_HOST = 'https://zone-telechargement1.org/'
 
 
 def GetURL_MAIN():
