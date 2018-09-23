@@ -20,6 +20,11 @@ except:
     from pysqlite2 import dbapi2 as sqlite
     VSlog('SQLITE 2 as DB engine')
 
+try:
+    import json
+except: 
+    import simplejson as json
+
 
 SITE_IDENTIFIER = 'runscript'
 SITE_NAME = 'runscript'
@@ -43,7 +48,7 @@ class cClear:
             addon('script.module.metahandler').openSettings()
             return
 
-        elif (env == 'changelog'):
+        elif (env == 'changelog_old'):
             try:
                 sUrl = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/plugin.video.vstream/changelog.txt'
                 oRequest =  urllib2.Request(sUrl)
@@ -52,6 +57,65 @@ class cClear:
                 self.TextBoxes('vStream Changelog', sContent)
             except:
                 self.DIALOG.VSerror("%s,%s" % (self.ADDON.VSlang(30205), sUrl))
+            return
+
+        elif (env == 'changelog'):
+                
+            class XMLDialog(xbmcgui.WindowXMLDialog):
+
+                def __init__(self, *args, **kwargs):
+                    xbmcgui.WindowXMLDialog.__init__( self )
+                    pass
+
+                def onInit(self):
+
+                    self.container = self.getControl(6)
+                    self.button = self.getControl(5)
+                    self.getControl(3).setVisible(False)
+                    self.getControl(1).setLabel('ChangeLog')
+                    self.button.setLabel('OK')
+
+                    sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/commits'
+                    oRequest =  urllib2.Request(sUrl)
+                    oResponse = urllib2.urlopen(oRequest)
+                    sContent = oResponse.read()
+                    result = json.loads(sContent)
+                    listitems = []
+
+                    for item in result:
+                        #autor
+                        icon = item['author']['avatar_url']
+                        login = item['author']['login']
+                        #message
+                        try:
+                            desc = item['commit']['message'].encode("utf-8")
+                        except:
+                            desc = 'None'
+       
+                        listitem = xbmcgui.ListItem(label = login, label2 = desc)
+                        listitem.setArt({'icon' : icon, 'thumb' : icon})
+
+                        listitems.append(listitem)
+                    self.container.addItems(listitems)
+
+
+                    self.setFocus(self.container)
+
+                def onClick(self, controlId):
+                    self.close()
+                    return
+
+                def onFocus(self, controlId):
+                    self.controlId = controlId
+
+                def _close_dialog( self ):
+                    self.close()
+            
+            #path = cConfig().getAddonPath()
+            path = "special://home/addons/plugin.video.vstream"
+            wd = XMLDialog('DialogSelect.xml', path, "Default")
+            wd.doModal()
+            del wd
             return
 
         elif (env == 'soutient'):
