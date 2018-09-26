@@ -15,13 +15,15 @@ SITE_DESC = 'Disney HD: Tous les films Disney en streaming'
 URL_MAIN = 'https://disneyhd.tk/'
 URL_LISTE = URL_MAIN + 'liste_mosaique.php'
 
+MOVIE_HD = ('https://disneyhd.tk/liste_mosaique.php', 'showMovies')
+
 ANIM_ENFANTS = ('http://', 'load')
 
 URL_SEARCH = ('', 'sHowResultSearch')
 URL_SEARCH_MOVIES = ('', 'sHowResultSearch')
 FUNCTION_SEARCH = 'sHowResultSearch'
 
-sPattern1 = '<a href="([^"]+)".+?src="([^"]+)" alt="(.+?)".+?>'
+sPattern1 = '<a href="([^"]+)".+?src="([^"]+)" alt.*?="(.+?)".*?>'
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -39,8 +41,8 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
-    oOutputParameterHandler.addParameter('filtre', 'nouveautes')
-    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Nouveautés', 'enfants.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('filtre', 'populaires')
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Populaires', 'enfants.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_LISTE)
@@ -117,18 +119,21 @@ def showMovies():
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    sFiltre = oInputParameterHandler.getValue('filtre')
+    if oInputParameterHandler.exist('filtre'):
+        sFiltre = oInputParameterHandler.getValue('filtre')
+    else:
+        sFiltre = "none"
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     if 'ajouts' in sFiltre:
-        sHtmlContent = oParser.abParse(sHtmlContent, '<i>Derniers films', '<i>Dernières sorties')
+        sHtmlContent = oParser.abParse(sHtmlContent, '</i> Derniers ajouts', '</section>')
         aResult = oParser.parse(sHtmlContent, sPattern1)
-    elif 'nouveautes' in sFiltre:
-        sHtmlContent = oParser.abParse(sHtmlContent, '<i>Dernières sorties', '<b>Visionnés en ce moment')
-        aResult = oParser.parse(sHtmlContent, sPattern1)
+    elif 'populaires' in sFiltre:
+        sHtmlContent = oParser.abParse(sHtmlContent, '</i> Les plus populaires', '</i> Visionnés en ce moment')
+        aResult = oParser.parse(sHtmlContent, sPattern1) 
     else:
-        sHtmlContent = oParser.abParse(sHtmlContent, 'par date de sortie', '</html>')
+        sHtmlContent = oParser.abParse(sHtmlContent, 'style', '</html>')
         aResult = oParser.parse(sHtmlContent, sPattern1)
         aResult = order(aResult[1],2)
         

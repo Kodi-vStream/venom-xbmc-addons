@@ -43,12 +43,12 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def __getIdFromUrl(self):
         sPattern = 'http:\/\/wstream.+?\/(.+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
-        
+
         if (aResult[0] == True):
             return aResult[1][0]
         return ''
@@ -61,41 +61,41 @@ class cHoster(iHoster):
 
     def __getUrl(self, media_id):
         return
-        
+
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-   
+
         api_call = False
-        
+
         #VSlog(self.__sUrl)
-        
+
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+
         oParser = cParser()
-    
+
         #Dean Edwards Packer
         sPattern = "(\s*eval\s*\(\s*function(?:.|\s)+?)<\/script>"
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
-        
+
+
         if (aResult[0] == True):
             sUnpacked = cPacker().unpack(aResult[1][0])
             sHtmlContent = sUnpacked
-            
-        
+
+
         sPattern = '{file:"(.+?)",label:"(.+?)"}'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
+
         #print aResult
 
         if (aResult[0] == True):
             #initialisation des tableaux
             url=[]
             qua=[]
-        
+
             #Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
@@ -104,8 +104,8 @@ class cHoster(iHoster):
             #tableau
             api_call = dialog().VSselectqual(qua, url)
         #print api_call
-        
+
         if (api_call):
             return True, api_call
-            
+
         return False, False

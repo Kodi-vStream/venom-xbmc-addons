@@ -40,7 +40,7 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
+        return ''
 
     def __getIdFromUrl(self, sUrl):
         return ''
@@ -60,16 +60,16 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
 
         url = self.__sUrl
-    
+
         oRequestHandler = cRequestHandler(url)
         #oRequestHandler.addParameters('login', '1')
         sHtmlContent = oRequestHandler.request()
-        
+
         oParser = cParser()
         sPattern = 'type: "video\/mp4", *src: "([^<>"{}]+?)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True):
             return True, aResult[1][0]
-            
+
         return False, False

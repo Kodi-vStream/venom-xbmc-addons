@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'voirfilms_org'
 SITE_NAME = 'VoirFilms'
 SITE_DESC = 'Films, Séries & Animés en Streaming'
 
-URL_MAIN = 'https://www1.voirfilms.ws/'
+URL_MAIN = 'https://www2.voirfilms.ws/'
 
 MOVIE_MOVIE = (URL_MAIN + 'alphabet', 'showAlpha')
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming', 'showMovies')
@@ -453,6 +453,9 @@ def showHostersLink():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     
+    host = sUrl.split('/')[0:3]
+    host = host[0] + '//' + host[2] + '/'
+    
     VSlog('org > ' + sUrl)
     
     #Attention ne marche pas dans tout les cas, certain site retourne aussi un 302 et la lib n'en gere qu'un
@@ -460,7 +463,7 @@ def showHostersLink():
         #On recupere la redirection
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('User-agent', UA)
-        oRequestHandler.addHeaderEntry('Referer', URL_MAIN)
+        oRequestHandler.addHeaderEntry('Referer', host)
         sHtmlContent = oRequestHandler.request()
         redirection_target = oRequestHandler.getRealUrl()
 
@@ -473,7 +476,7 @@ def showHostersLink():
             
         opener = urllib2.build_opener(NoRedirection)
         opener.addheaders = [('User-agent', UA)]
-        opener.addheaders = [('Referer', URL_MAIN)]
+        opener.addheaders = [('Referer', host)]
         response = opener.open(sUrl)
         sHtmlContent = response.read()
         redirection_target = sUrl

@@ -52,20 +52,20 @@ class cHoster(iHoster):
             oParser = cParser()
             oRequest = cRequestHandler(self.__sUrl)
             sHtmlContent = oRequest.request()
- 
+
             sPattern = '(\s*eval\s*\(\s*function\(p,a,c,k,e(?:.|\s)+?)<\/script>'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
                 sHtmlContent = cPacker().unpack(aResult[1][0])
-            
+
                 sPattern =  '{sources:\["([^"]+)"\]'
                 aResult = oParser.parse(sHtmlContent, sPattern)
                 if (aResult[0] == True):
                     api_call = aResult[1][0]
         else:
             api_call = self.__sUrl
-            
+
         if (api_call):
-            return True, api_call + '|User-Agent=' + UA 
+            return True, api_call + '|User-Agent=' + UA
 
         return False, False

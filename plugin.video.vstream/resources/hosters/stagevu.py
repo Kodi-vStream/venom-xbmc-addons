@@ -16,7 +16,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -40,8 +40,8 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
-        
+        return ''
+
     def __getIdFromUrl(self, sUrl):
         return ''
 
@@ -57,12 +57,12 @@ class cHoster(iHoster):
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
-    def __getMediaLinkForGuest(self):        
+    def __getMediaLinkForGuest(self):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+
         sPattern = '<embed type=".+?" src="([^"]+)"'
-        
+
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -70,5 +70,5 @@ class cHoster(iHoster):
         if (aResult[0] == True):
             api_call = aResult[1][0]
             return True, api_call
-            
+
         return False, False

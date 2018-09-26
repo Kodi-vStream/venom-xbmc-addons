@@ -800,3 +800,8 @@ msgstr "Passer en Streaming (via Uptostream)"
 msgctxt "#30454"
 msgid "Continue direct via Uptobox"
 msgstr "Rester en direct (via Uptobox)"
+
+msgctxt "#30455"
+msgid "My accounts"
+msgstr "Mes Comptes"
+

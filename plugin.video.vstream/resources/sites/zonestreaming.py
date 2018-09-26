@@ -343,7 +343,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<span style="color: #ff990.+?>(Qua.+?)<|large button.+?href="(.+?)"'
+    sPattern = '<span style="color: #ff990.+?>([^<]+)<|large button.+?href="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -367,6 +367,7 @@ def showHosters():
                 if '&url=' in sHosterUrl:
                     sHosterUrl = sHosterUrl.split('&url=')[1]
 
+                #pour récuperer les liens jwplayer
                 if 'filmhdstream' in sHosterUrl:
 
                     sTitle = sMovieTitle + '[COLOR coral]GoogleDrive[/COLOR]'
@@ -426,6 +427,7 @@ def serieHosters():
             if '&url=' in sHosterUrl:
                 sHosterUrl = sHosterUrl.split('&url=')[1]
 
+            #pour récuperer les liens jwplayer
             if 'filmhdstream' in sHosterUrl:
 
                 sTitle = sMovieTitle + '[COLOR coral]GoogleDrive[/COLOR]'

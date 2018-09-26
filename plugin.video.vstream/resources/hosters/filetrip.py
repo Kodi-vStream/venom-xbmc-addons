@@ -52,7 +52,7 @@ class cHoster(iHoster):
             self.__sUrl = sRealUrl
             return self.__getIdFromUrl()
 
-        return sUrl;
+        return sUrl
 
     def __getKey(self):
         oRequestHandler = cRequestHandler(self.__sUrl)
@@ -68,7 +68,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-            
+
     def Reformat(url):
         url = url.replace('http://filetrip.net/', '')
         url = url.replace('embed?', '')
@@ -85,22 +85,22 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
+
         #lien deja decode
         if self.__sUrl[-4] == '.':
-            return True,self.__sUrl
-        
+            return True, self.__sUrl
+
         #Sinon on decode
         self.__sUrl = self.Reformat(self.__sUrl)
-        
+
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+
         sPattern =  "file': '(.+?)',"
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True):
             return True, aResult[1][0]
-        
+
         return False, False

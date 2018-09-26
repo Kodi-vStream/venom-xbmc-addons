@@ -5,7 +5,7 @@
 #sLibrary = xbmc.translatePath("special://home/addons/plugin.video.vstream").decode("utf-8")
 #sys.path.append (sLibrary) 
 
-from resources.lib.comaddon import addon, progress, dialog, window, VSlog, xbmc
+from resources.lib.comaddon import addon, progress, dialog, xbmcgui, window, VSlog, xbmc
 from resources.lib.handler.requestHandler import cRequestHandler
 
 import urllib
@@ -86,8 +86,9 @@ class cAbout:
                 sHtmlContent = oRequestHandler.request()
                 result = json.loads(sHtmlContent)
             
-                if (result['tag_name'] > service_version):
+                #pour test
                 #if (result['tag_name']):
+                if (result['tag_name'] > service_version):
                     addons.setSetting('service_futur', str(result['tag_name']))
                     addons.setSetting('home_update', str('true')) 
                     addons.setSetting('service_time', str(datetime.datetime.now()))
@@ -210,25 +211,29 @@ class cAbout:
 
             #result = self.resultGit()
             sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/compare/%s...%s' % (service_version, service_futur)
+            #pour test
             #sUrl = 'https://api.github.com/repos/Kodi-vStream/venom-xbmc-addons/compare/0.6.3...0.6.31'
 
             oRequestHandler = cRequestHandler(sUrl)
             sHtmlContent = oRequestHandler.request()
             result = json.loads(sHtmlContent)
 
-            total = len(result['files'])
             progress_ = progress()
             progress_.VScreate('Update')
 
             addons = addon()
-            site = ''
+            #site = ''
             sdown = 0
+            add = 0
+            dell = 0
             schange = 0
             text = ''
+            listitems = []
 
             if result: 
                 
                 #boucle download fichier
+                total = len(result['files'])
                 for i in result['files']:
 
                     if 'plugin.video.vstream' in i['filename']: 
@@ -238,36 +243,51 @@ class cAbout:
 
                         try:
                             self.__download(i['raw_url'], rootpath)
-                            #site += "[COLOR green]"+i['filename'].encode("utf-8")+"[/COLOR][CR]"
-                            site += "Add: [B]%s[/B] | Del: [B]%s[/B] | [COLOR green]%s[/COLOR][CR]" % (i['additions'], i['deletions'], i['filename'].encode("utf-8"))
+                            #site += "Add: [B]%s[/B] | Del: [B]%s[/B] | [COLOR green]%s[/COLOR][CR]" % (i['additions'], i['deletions'], i['filename'].encode("utf-8"))
+                            add += i['additions']
+                            dell += i['deletions']
                             sdown = sdown+1
                             schange += i['changes']
                         except:
-                            site += "[COLOR red]"+i['filename'].encode("utf-8")+"[/COLOR][CR]"
+                            #site += "[COLOR red]"+i['filename'].encode("utf-8")+"[/COLOR][CR]"
                             sdown = sdown+1
                             pass
 
                 progress_.VSclose(progress_)
                 
+                #donner fichier
+                sContent = "Ajouter (%s) | Supprimer (%s) | Changement (%s) [CR]Fichier mise à jour %s / %s" %  (add, dell, schange, sdown, total)
+                listitem = xbmcgui.ListItem(label = "vStream", label2 = sContent)
+                icon = "special://home/addons/plugin.video.vstream/resources/art/update.png"
+                listitem.setArt({'icon' : icon, 'thumb' : icon})
+                listitems.append(listitem)
 
                 #boucle commit
                 for i in result['commits']:
                     try:
-                        text += "[B]%s[/B]: %s[CR]" % (i['commit']['author']['name'], i['commit']['message'].encode("utf-8"))
+                        #text += "[B]%s[/B]: %s[CR]" % (i['commit']['author']['name'], i['commit']['message'].encode("utf-8"))
+                        icon = i['author']['avatar_url']
+                        login = i['author']['login']
+                        desc = i['commit']['message'].encode("utf-8")
+                        listitem = xbmcgui.ListItem(label = login, label2 = desc)
+                        listitem.setArt({'icon' : icon, 'thumb' : icon})
                     except:
-                        text += "[B]%s[/B]: nop[CR]" % (i['commit']['author']['name'])
+                        #text += "[B]%s[/B]: nop[CR]" % (i['commit']['author']['name'])
+                        listitem = xbmcgui.ListItem(label = 'None', label2 = 'none')
                         pass
+                    listitems.append(listitem)
                 
-                sContent = "Changement (%s) | Fichier mise à jour %s / %s [CR]" %  (schange, sdown, total)
-                sContent += "%s" %  (text.encode("utf-8"))
-                sContent += "%s" %  (site)
+                #sContent = "Changement (%s) | Fichier mise à jour %s / %s [CR]" %  (schange, sdown, total)
+                #sContent += "%s" %  (text.encode("utf-8"))
+                #sContent += "%s" %  (site)
                 
                 addons.setSetting('service_time', str(datetime.datetime.now()))
                 addons.setSetting('service_version', str(service_futur))
                 addons.setSetting('home_update', str('false'))
                 
                 #fin = dialog().VSok(sContent)
-                fin =  self.TextBoxes(sContent)
+                #fin =  self.TextBoxes(sContent)
+                fin = self.Box(listitems)
         return
             
     def __download(self, WebUrl, RootUrl):
@@ -298,5 +318,41 @@ class cAbout:
         ret = dialog().VSok('Mise à jour terminée')
         if ret:
             xbmc.executebuiltin("Container.Refresh")
+        return
+
+    def Box(self, listitems):
+            
+        class XMLDialog(xbmcgui.WindowXMLDialog):
+
+            def __init__(self, *args, **kwargs):
+                xbmcgui.WindowXMLDialog.__init__( self )
+                pass
+
+            def onInit(self):
+
+                self.container = self.getControl(6)
+                self.button = self.getControl(5)
+                self.getControl(3).setVisible(False)
+                self.getControl(1).setLabel('Mise à jour')
+                self.button.setLabel('OK')
+                self.container.addItems(listitems)
+                self.setFocus(self.container)
+
+            def onClick(self, controlId):
+                xbmc.executebuiltin("Container.Refresh")
+                self.close()
+                return
+
+            def onFocus(self, controlId):
+                self.controlId = controlId
+
+            def _close_dialog( self ):
+                xbmc.executebuiltin("Container.Refresh")
+                self.close()
+        
+        path = "special://home/addons/plugin.video.vstream"
+        wd = XMLDialog('DialogSelect.xml', path, "Default")
+        wd.doModal()
+        del wd
         return
         

@@ -2,13 +2,13 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-import xbmcgui,re
+import xbmcgui, re
 import requests
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'allow_redirects'
+        self.__sDisplayName = 'Allow_redirects'
         self.__sFileName = self.__sDisplayName
 
 
@@ -40,7 +40,7 @@ class cHoster(iHoster):
         return ''
 
     def __modifyUrl(self, sUrl):
-        return '';
+        return ''
 
     def setUrl(self, sUrl):
         self.__sUrl = sUrl
@@ -58,7 +58,7 @@ class cHoster(iHoster):
 
         url = self.__sUrl
 
-        session = requests.Session()  # so connections are recycled
+        session = requests.Session() #so connections are recycled
         resp = session.head(url, allow_redirects=True)
         sHosterUrl = resp.url
 

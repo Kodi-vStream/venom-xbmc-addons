@@ -18,7 +18,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+ ' [/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + ' [/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -43,7 +43,7 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def __getIdFromUrl(self, sUrl):
         return ''
 
@@ -61,15 +61,15 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
 
-        headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'}
-        req = urllib2.Request(self.__sUrl,None,headers)
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'}
+        req = urllib2.Request(self.__sUrl, None, headers)
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
         head = response.headers
         response.close()
 
         oParser = cParser()
-        
+
         cookies = ''
         if 'Set-Cookie' in head:
             sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?);'
@@ -84,10 +84,10 @@ class cHoster(iHoster):
 
         if (aResult[0] == True):
             url = aResult[1][0]
-            url = url.replace('\/','/')
+            url = url.replace('\/', '/')
 
             api_call = url + '|Cookie='+ cookies
-            
+
             return True, api_call
-            
+
         return False, False

@@ -15,20 +15,20 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
-        
+
     def getFileName(self):
         return self.__sFileName
 
     def getPluginIdentifier(self):
         return 'streamango'
-        
+
     def setHD(self, sHD):
         self.__sHD = ''
-        
+
     def getHD(self):
         return self.__sHD
 
@@ -76,7 +76,7 @@ class cHoster(iHoster):
 
     def __getUrl(self, media_id):
         return
-    
+
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
@@ -92,8 +92,8 @@ class cHoster(iHoster):
                api_call = api_call[:-1]
 
             api_call = 'http:' + api_call
- 
+
         if (api_call):
-            return True, api_call 
+            return True, api_call
 
         return False, False

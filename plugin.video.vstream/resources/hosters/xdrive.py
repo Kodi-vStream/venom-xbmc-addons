@@ -17,7 +17,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -58,7 +58,7 @@ class cHoster(iHoster):
 
         oParser = cParser()
         sPattern = '<source src="([^"]+)"'
-        aResult = oParser.parse(sHtmlContent,sPattern)
+        aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             api_call = aResult[1][0]
 

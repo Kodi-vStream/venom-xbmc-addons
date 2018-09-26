@@ -15,7 +15,7 @@ import random
 #from resources.lib.dl_deprotect import DecryptDlProtect
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0'
-headers = { 'User-Agent' : UA }
+headers = { 'User-Agent': UA }
 
 SITE_IDENTIFIER = 'zone_telechargement_ws'
 SITE_NAME = '[COLOR violet]Zone-Telechargement[/COLOR]'
@@ -41,20 +41,20 @@ def GetURL_MAIN():
         oRequestHandler = cRequestHandler(URL_HOST)
         sHtmlContent = oRequestHandler.request()
         MemorisedHost = oRequestHandler.getRealUrl()
-        ADDON.setSetting('ZT',MemorisedHost)
+        ADDON.setSetting('ZT', MemorisedHost)
 
-        VSlog("ZT url  >> " + str(MemorisedHost) + ' sauvgarder >> '+ ADDON.getSetting('ZT'))
+        VSlog("ZT url  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('ZT'))
 
         return ADDON.getSetting('ZT')
     else:
         # si pas de zt dans settings on récup l'url une fois dans le site
-        if not ADDON.getSetting('ZT') and not (Sources == 'callpluging' or Sources == 'globalSources' ):
+        if not ADDON.getSetting('ZT') and not (Sources == 'callpluging' or Sources == 'globalSources'):
             oRequestHandler = cRequestHandler(URL_HOST)
             sHtmlContent = oRequestHandler.request()
             MemorisedHost = oRequestHandler.getRealUrl()
-            ADDON.setSetting('ZT',MemorisedHost)
+            ADDON.setSetting('ZT', MemorisedHost)
 
-            VSlog("ZT url vide  >> " + str(MemorisedHost) + ' sauvgarder >> '+ ADDON.getSetting('ZT'))
+            VSlog("ZT url vide  >> " + str(MemorisedHost) + ' sauvegarder >> ' + ADDON.getSetting('ZT'))
 
             return ADDON.getSetting('ZT')
         else:
@@ -84,6 +84,7 @@ MOVIE_ANIME = (URL_MAIN + 'dessins-animes/', 'showMovies') # dessins animes
 SERIE_VFS = (URL_MAIN + 'series-vf/', 'showMovies') # serie VF
 SERIE_VOSTFRS = (URL_MAIN + 'series-vostfr/', 'showMovies') # serie VOSTFR
 
+ANIM_MANGAS = (URL_MAIN + 'films-mangas/', 'showMovies')
 ANIM_VFS = (URL_MAIN + 'animes-vf/', 'showMovies')
 ANIM_VOSTFRS = (URL_MAIN + 'animes-vostfr/', 'showMovies')
 
@@ -92,8 +93,8 @@ DOC_DOCS = ('http://', 'load')
 
 SPORT_SPORTS = (URL_MAIN + 'sport/', 'showMovies') # sports
 TV_NEWS = (URL_MAIN + 'emissions-tv/', 'showMovies') # dernieres emissions tv
-SPECT_NEWS = (URL_MAIN + 'spectacles/', 'showMovies') # dernieres spectacles
-CONCERT_NEWS = (URL_MAIN + 'concerts/', 'showMovies') # dernieres concerts
+SPECT_NEWS = (URL_MAIN + 'spectacles/', 'showMovies') # derniers spectacles
+CONCERT_NEWS = (URL_MAIN + 'concerts/', 'showMovies') # derniers concerts
 AUTOFORM_VID = (URL_MAIN + 'autoformations-videos/', 'showMovies')
 
 
@@ -118,7 +119,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_3D[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_3D[1], 'Films 3D', 'news.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_3D[1], 'Films (3D)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HDLIGHT[0])
@@ -126,31 +127,35 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_4K[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_4K[1], 'Films 4k', 'hd.png', oOutputParameterHandler)
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANIME[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANIME[1], 'Dessins Animés', 'animes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_4K[1], 'Films (4k)', 'hd.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANIME[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANIME[1], 'Dessins Animés', 'animes.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries VF (Derniers ajouts)', 'vf.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF)', 'vf.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries VOSTFR (Derniers ajouts)', 'vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIM_MANGAS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIM_MANGAS[1], 'Animés (Mangas)', 'animes.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés VF', 'vf.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF)', 'vf.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés VOSTFR', 'vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
@@ -234,7 +239,7 @@ def showMovies(sSearch = ''):
             sSearch=sSearch.replace(URL_SEARCH[0], '')
 
         if Nextpagesearch:
-            query_args = (('do', 'search'), ('subaction', 'search') ,('search_start', Nextpagesearch),('story', sSearch) , ('titleonly', '3') )
+            query_args = (('do', 'search'), ('subaction', 'search'), ('search_start', Nextpagesearch), ('story', sSearch) , ('titleonly', '3'))
         else:
             query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch), ('titleonly', '3'))
 
@@ -272,11 +277,13 @@ def showMovies(sSearch = ''):
 
             sTitle = aEntry[2]
             #on vire le tiret des series
-            sTitle = sTitle.replace(' - Saison', ' Saison')
-            sDisplayTitle = sTitle
+            sTitle = sTitle.replace(' - Saison', ' Saison').replace('COMPLETE', 'Complete')
+            if not '[Complete]' in sTitle:
+                sTitle = sTitle.replace('COMPLETE', '[Complete]')
+            sDisplayTitle = sTitle.replace('Complete', 'Complète')
             #nettoyage du titre
-            sTitle = sTitle.replace('[COMPLETE]', '').replace('[Complete]', '')
-            sUrl2 = aEntry[0].replace('https','http')
+            sTitle = re.sub('\[\w+]', '', sTitle)
+            sUrl2 = aEntry[0].replace('https', 'http')
 
             #traite les qualités
             liste = ['4k', '1080p', '720p', 'bdrip', 'hdrip', 'dvdrip', 'cam-md']
@@ -285,7 +292,7 @@ def showMovies(sSearch = ''):
                     sDisplayTitle = ('%s [%s]') % (sTitle, i.upper())
 
             #Si recherche et trop de resultat, on nettoye
-            #31/12/17 Ne fonctionne plus ?
+            #31/12/17 Ne fonctionne plus?
             if sSearch and total > 2:
                 if cUtil().CheckOccurence(sSearch, sTitle) == 0:
                     continue
@@ -329,13 +336,12 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<div class="navigation" align="center" >.+?<a href="([^"]+)">Suivant</a></div>'
+    sPattern = '<a href="([^"]+)">Suivant<'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return aResult[1][0]
 
     return False
-
 
 def showMoviesLinks():
     #VSlog('mode film')
@@ -349,9 +355,20 @@ def showMoviesLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sDesc = ''
-    #Affichage du menu
+    #Affichage du texte
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles pour ce film:[/COLOR]')
+
+    #récupération du Synopsis
+    sDesc = ''
+    try:
+        sPattern = '<em>(.+?)</em>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0]
+            sDesc = sDesc.replace('<span>', '').replace('<b><i>', '').replace('</i></b>', '').replace('</span>', '')
+            sDesc = sDesc.replace('<br>', ' ').replace('<br /><br />', ' ')
+    except:
+        pass
 
     #on recherche d'abord la qualité courante
     sPattern = '<div style=".+?">.+?Qualité (.+?) [|] (.+?)</div>'
@@ -411,14 +428,26 @@ def showSeriesLinks():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
+    #Affichage du texte
+    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles pour cette saison:[/COLOR]')
+
+    #récupération du Synopsis
+    sDesc = ''
+    try:
+        sPattern = '(?:<br><i>|<p><strong>|<i><span>)([^<]+)(?:</i>|</strong>|</span></i>)'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0]
+            sDesc = sDesc.replace('<span>', '').replace('<b><i>', '').replace('</i></b>', '').replace('</span>', '').replace('<br>', ' ')
+    except:
+        pass
+
     #Mise àjour du titre
     sPattern = '<meta name="description" content="(?:Telecharger|)(.+?)Qualité.+?\|[^\|](.+?) Episode .+?\|[^\|](.+?)(?:la serie|Origine de la serie)'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):
         sMovieTitle = aResult[1][0][0] + aResult[1][0][1] + aResult[1][0][2]
-
-    oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Qualités disponibles pour cette saison:[/COLOR]')
 
     #on recherche d'abord la qualité courante
     sPattern = '<div style="[^"]+?">.+?Qualité (.+?)<'
@@ -435,7 +464,7 @@ def showSeriesLinks():
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
     oOutputParameterHandler.addParameter('sThumb', sThumb)
-    oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+    oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     #on regarde si dispo dans d'autres qualités
     sHtmlContent1 = CutQual(sHtmlContent)
@@ -461,17 +490,16 @@ def showSeriesLinks():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     #on regarde si dispo d'autres saisons
     sHtmlContent2 = CutSais(sHtmlContent)
     sPattern2 = '<a href="([^"]+)"><span class="otherquality">([^<]+)<b>([^<]+)<span style="color:#.{6}">([^<]+)<\/span><span style="color:#.{6}">([^<]+)<\/b><\/span>'
-
     aResult2 = oParser.parse(sHtmlContent2, sPattern2)
-    #print aResult2
 
+    #Affichage du texte
     if (aResult2[0] == True):
         oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Autres Saisons disponibles pour cette série:[/COLOR]')
 
@@ -484,7 +512,7 @@ def showSeriesLinks():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showSeriesLinks', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -547,7 +575,7 @@ def showHosters():
 
             else:
 
-                sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR] ' + sMovieTitle
+                sTitle =  sMovieTitle + ' [COLOR coral]' + aEntry[1] + '[/COLOR] '
                 URL_DECRYPT = aEntry[3]
                 oOutputParameterHandler = cOutputParameterHandler()
                 if sUrl.startswith('http'):
@@ -583,7 +611,6 @@ def showSeriesHosters():
     if 'Premium' in sHtmlContent or 'PREMIUM' in sHtmlContent or 'premium' in sHtmlContent:
         sHtmlContent = CutPremiumlinks(sHtmlContent)
 
-
     sPattern = '<div style="font-weight:bold;color:[^"]+?">([^<]+)</div>|<a target="_blank" href="https://([^"]+)/([^"]+?)">([^<]+)<'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -614,35 +641,9 @@ def showSeriesHosters():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addMovie(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'Display_protected_link', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
-
-    oGui.setEndOfDirectory()
-
-def showStreamingHosters():
-    oGui = cGui()
-    oParser = cParser()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumb = oInputParameterHandler.getValue('sThumb')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-
-    sPattern = '<iframe.+?src="(.+?)"'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-            sHosterUrl = aEntry
-
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
@@ -715,8 +716,7 @@ def Display_protected_link():
             if len(aResult_dlprotecte[1]) > 1:
                 sTitle = sMovieTitle + ' episode ' + episode
 
-
-            episode+=1
+            episode+= 1
 
             if 'stream' in str(sHosterUrl):
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -730,6 +730,32 @@ def Display_protected_link():
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+    oGui.setEndOfDirectory()
+
+def showStreamingHosters():
+    oGui = cGui()
+    oParser = cParser()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+
+    oRequestHandler = cRequestHandler(sUrl)
+    sHtmlContent = oRequestHandler.request()
+
+    sPattern = '<iframe.+?src="(.+?)"'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        for aEntry in aResult[1]:
+            sHosterUrl = aEntry
+
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
@@ -786,13 +812,13 @@ def DecryptDlProtecte(url):
     #url=url.replace('https','http')
 
     headersBase = {
-    'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0',
-    'Referer' : url,
-    #'Origin' : 'https://www.dl-protecte.com',
-    'Accept' : 'application/json, text/javascript, */*; q=0.01',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0',
+    'Referer': url,
+    #'Origin': 'https://www.dl-protecte.com',
+    'Accept': 'application/json, text/javascript, */*; q=0.01',
     'Accept-Language': 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4',
-    #'Pragma' : '',
-    #'Accept-Charset' : ''
+    #'Pragma': '',
+    #'Accept-Charset': ''
     }
 
     #url2 = 'https://www.dl-protecte.org/php/Qaptcha.jquery.php'
@@ -805,7 +831,7 @@ def DecryptDlProtecte(url):
     s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN_-#@";
     RandomKey = ''.join(random.choice(s) for i in range(32))
 
-    query_args = ( ('action' , 'qaptcha') , ('qaptcha_key' , RandomKey) )
+    query_args = (('action' , 'qaptcha') , ('qaptcha_key' , RandomKey))
     data = urllib.urlencode(query_args)
 
     #Creation Header

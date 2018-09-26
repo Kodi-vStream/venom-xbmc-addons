@@ -7,20 +7,20 @@ from resources.lib.gui.gui import cGui
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog #,VSlog
 
-import urllib,re
+import urllib, re
 
 
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Uptostream'
+        self.__sDisplayName = 'UpToStream'
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -66,7 +66,7 @@ class cHoster(iHoster):
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            aResult = aResult[1][0].replace('.','%2E')
+            aResult = aResult[1][0].replace('.', '%2E')
             return aResult
 
         return ''
@@ -82,7 +82,7 @@ class cHoster(iHoster):
         oParser = cParser()
 
         #On ne charge les sous titres uniquement si vostfr se trouve dans le titre.
-        if not re.search("<h1 class='file-title'>[^<>]+(?:TRUEFRENCH|FRENCH)[^<>]*</h1>",sHtmlContent,re.IGNORECASE):
+        if not re.search("<h1 class='file-title'>[^<>]+(?:TRUEFRENCH|FRENCH)[^<>]*</h1>", sHtmlContent, re.IGNORECASE):
 
             sPattern = '<track type=[\'"].+?[\'"] kind=[\'"]subtitles[\'"] src=[\'"]([^\'"]+).vtt[\'"] srclang=[\'"].+?[\'"] label=[\'"]([^\'"]+)[\'"]>'
             aResult = oParser.parse(sHtmlContent, sPattern)

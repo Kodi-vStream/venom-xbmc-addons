@@ -799,3 +799,7 @@ msgstr ""
 msgctxt "#30454"
 msgid "Continue direct via Uptobox"
 msgstr ""
+
+msgctxt "#30455"
+msgid "My accounts"
+msgstr ""

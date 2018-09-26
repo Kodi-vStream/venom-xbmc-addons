@@ -9,7 +9,7 @@ import base64
 class cHoster(iHoster):
 
     def __init__(self):
-        self.__sDisplayName = 'Clickopen'
+        self.__sDisplayName = 'ClickOpen'
         self.__sFileName = self.__sDisplayName
 
     def getDisplayName(self):
@@ -40,7 +40,7 @@ class cHoster(iHoster):
         return ''
 
     def __modifyUrl(self, sUrl):
-        return '';
+        return ''
 
     def setUrl(self, sUrl):
         self.__sUrl = sUrl
@@ -88,7 +88,7 @@ class cHoster(iHoster):
                         url.append(str(i[0]))
                         qua.append(str(i[1]))
                 #Si une seule url
-                    api_call = dialog().VSselectqual(qua,url)
+                    api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):
             return True, api_call

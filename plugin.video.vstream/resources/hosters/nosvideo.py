@@ -42,8 +42,8 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
-        
+        return ''
+
     def __getIdFromUrl(self, sUrl):
         return ''
 
@@ -61,27 +61,27 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
         api_call = False
-        
+
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+
         #fh = open('c:\\test.txt', "w")
         #fh.write(sHtmlContent)
         #fh.close()
-        
+
         url = ''
-        url2 = re.findall('var\stracker\s*=\s*[\'|\"](.+?)[\'|\"]',sHtmlContent)
+        url2 = re.findall('var\stracker\s*=\s*[\'|\"](.+?)[\'|\"]', sHtmlContent)
         if (url2):
             url = url + url2[0]
-        url2 = re.findall("tracker *: *[\'|\"](.+?)[\'|\"]",sHtmlContent)
+        url2 = re.findall("tracker *: *[\'|\"](.+?)[\'|\"]", sHtmlContent)
         if (url2):
             url = url + url2[0]
-        
+
         api_call = base64.b64decode(url)
-        
+
         if (api_call):
             #UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0'
             #url3 = url3 + '|User-Agent=' + UA + '&Referer=' + self.__sUrl
-            return True , api_call
-        
+            return True, api_call
+
         return False, False

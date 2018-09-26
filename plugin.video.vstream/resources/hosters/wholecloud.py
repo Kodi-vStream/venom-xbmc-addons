@@ -17,7 +17,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -36,8 +36,8 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
-    def __getIdFromUrl(self,sUrl):
+
+    def __getIdFromUrl(self, sUrl):
         sPattern = 'v=([^<]+)'
         oParser = cParser()
         aResult = oParser.parse(self.__sUrl, sPattern)
@@ -45,7 +45,7 @@ class cHoster(iHoster):
             return aResult[1][0]
 
         return ''
-        
+
     def __getKey(self):
         return ''
 
@@ -65,21 +65,21 @@ class cHoster(iHoster):
         api_call = False
 
         id = self.__getIdFromUrl(self.__sUrl)
-        
+
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
 
         r = re.search('var fkzd="([^"]+)"', sHtmlContent)
         if (r):
-            url = 'http://www.wholecloud.net/api/player.api.php?key=' + r.group(1) +'&file=' + id
+            url = 'http://www.wholecloud.net/api/player.api.php?key=' + r.group(1) + '&file=' + id
             oRequest = cRequestHandler(url)
             sHtmlContent = oRequest.request()
             r2 = re.search('^url=([^&]+)&', sHtmlContent)
             if (r2):
                 api_call = r2.group(1)
-                
+
         if (api_call):
             return True, api_call
 
-        return False , False
-        
+        return False, False
+

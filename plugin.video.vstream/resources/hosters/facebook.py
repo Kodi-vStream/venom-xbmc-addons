@@ -73,11 +73,11 @@ class cHoster(iHoster):
             for aEntry in aResult[1]:
                 qua.append(str(aEntry[0]))
                 url.append(str(aEntry[1]))
-                
-            #dialog qualiter
-            api_call = dialog().VSselectqual(qua,url)
+
+            #dialogue qualité
+            api_call = dialog().VSselectqual(qua, url)
 
         if (api_call):
             return True, api_call
 
-        return False , False
+        return False, False

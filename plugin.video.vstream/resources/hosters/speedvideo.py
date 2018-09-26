@@ -3,9 +3,10 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-import re
-import base64
+from resources.lib.comaddon import VSlog
+import urllib2
 
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 
 class cHoster(iHoster):
 
@@ -18,7 +19,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -38,18 +39,17 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return False
 
-    def isJDownloaderable(self):
-        return True
-
-    def getPattern(self):
-        return '';
-        
-    def __getIdFromUrl(self, sUrl):
-        return ''
-
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-
+        
+        sPattern =  'https*:\/\/speedvideo.[a-z]{3}\/(?:embed-)?([0-9a-zA-Z]+)' 
+        oParser = cParser()
+        aResult = oParser.parse(sUrl, sPattern)
+        if (aResult[0] == True):
+            self.__sUrl = 'https://speedvideo.net/embed-' + aResult[1][0] + '.html'
+        else:
+            VSlog('ID error')
+            
     def checkUrl(self, sUrl):
         return True
 
@@ -60,24 +60,32 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+        api_call = False
         
-        try:
-            oRequest = cRequestHandler(self.__sUrl)
-            sHtmlContent = oRequest.request()
+        oRequest = cRequestHandler(self.__sUrl)
+        sHtmlContent = oRequest.request()
+        sPattern = 'var linkfile\s*=\s*"([^"]+)"'
+        
+        oParser = cParser()
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            sUrl = aResult[1][0]
+            class NoRedirection(urllib2.HTTPErrorProcessor):
+                def http_response(self, request, response):
+                    return response
+                
+                https_response = http_response
             
-            linkfile=re.compile('var linkfile\s*=\s*"([A-Za-z0-9=]+)"').findall(sHtmlContent)[0]
-            linkfileb=re.compile('var linkfile\s*=\s*base64_decode\(linkfile,\s*([A-Za-z0-9]+)\);').findall(sHtmlContent)[0]
-            linkfilec=re.compile('var '+linkfileb+'\s*=\s*(\d+);').findall(sHtmlContent)[0]
-            linkfilec=int(linkfilec)
-            linkfilez=linkfile[:linkfilec]+linkfile[(linkfilec+10):]
-            stream_url=base64.b64decode(linkfilez)
-        except:
-            stream_url = False
+            opener = urllib2.build_opener(NoRedirection)
+            opener.addheaders = [('User-agent', UA)]
+            opener.addheaders = [('Referer', self.__sUrl)]
+            response = opener.open(sUrl)
+            if response.code == 301 or response.code == 302:
+                api_call = response.headers['Location']
+                
+            response.close()
 
-        if not(stream_url == False):
-            api_call = stream_url
+        if (api_call):
             return True, api_call
             
         return False, False
-        
-        

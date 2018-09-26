@@ -13,7 +13,7 @@ import xbmc,xbmcgui
 sColor = addon().getSetting("deco_color")
 
 SITE_IDENTIFIER = 'siteonefichier'
-SITE_NAME = "[COLOR %s]%s[/COLOR] [COLOR %s](%s)[/COLOR]" % ("dodgerblue", "VotreCompte1fichier", sColor, "beta")
+SITE_NAME = "[COLOR %s]%s[/COLOR] [COLOR %s](%s)[/COLOR]" % ("dodgerblue", "Compte1fichier", sColor, "beta")
 
 SITE_DESC = 'Fichiers sur compte 1Fichier'
 URL_MAIN = 'https://1fichier.com/'
@@ -27,6 +27,10 @@ def load():
     if (addons.getSetting('hoster_onefichier_username') == '') and (addons.getSetting('hoster_onefichier_password') == ''):
         oGui = cGui()
         oGui.addText(SITE_IDENTIFIER, "[COLOR %s]%s[/COLOR]" % ("red", "Nécessite Un Compte 1Fichier Premium ou Gratuit"))
+        
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+        oGui.addDir(SITE_IDENTIFIER,'opensetting', addons.VSlang(30023), 'none.png', oOutputParameterHandler)
         oGui.setEndOfDirectory()
     else:
         if (GestionCookie().Readcookie('onefichier') != ''):
@@ -43,6 +47,8 @@ def load():
             else:
                 showFile(URL_FILE)
 
+def opensetting():
+    addon().openSettings()
 
 def showFile(sFileTree = ''):
     oGui = cGui()

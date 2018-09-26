@@ -18,7 +18,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -45,7 +45,7 @@ class cHoster(iHoster):
 
         return ''
 
-    def __getRestFromUrl(self,url):
+    def __getRestFromUrl(self, url):
         #sPattern = "\?([\w]=[\w-]+)"
         sPattern = "\?([^ ]+)"
         oParser = cParser()
@@ -68,7 +68,7 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
+        return ''
 
     def checkUrl(self, sUrl):
         return True
@@ -87,7 +87,7 @@ class cHoster(iHoster):
         sID = self.__getIdFromUrl(self.__sUrl)
         sRestUrl = self.__getRestFromUrl(self.__sUrl)
 
-        api = 'http://rutube.ru/api/play/options/' + sID+ '/?format=json&no_404=true&referer=' + urllib.quote(self.__sUrl,safe='')
+        api = 'http://rutube.ru/api/play/options/' + sID + '/?format=json&no_404=true&referer=' + urllib.quote(self.__sUrl, safe = '')
         api = api + '&' + sRestUrl
 
         oRequest = cRequestHandler(api)
@@ -116,7 +116,7 @@ class cHoster(iHoster):
             qua=[]
 
             for aEntry in aResult[1]:
-                url.append(aEntry[0]+aEntry[1])
+                url.append(aEntry[0] + aEntry[1])
                 qua.append(aEntry[1])
 
             #tableau

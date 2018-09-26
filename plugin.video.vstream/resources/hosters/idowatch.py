@@ -15,7 +15,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -39,8 +39,8 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
-        
+        return ''
+
     def __getIdFromUrl(self, sUrl):
         return ''
 
@@ -52,21 +52,21 @@ class cHoster(iHoster):
 
     def __getUrl(self, media_id):
         return
-        
+
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
 
         oRequest = cRequestHandler(self.__sUrl)
-        oRequest.addHeaderEntry('Referer','http://www.google.fr/')
+        oRequest.addHeaderEntry('Referer', 'http://www.google.fr/')
         sHtmlContent = oRequest.request()
 
         oParser = cParser()
         sPattern =  'file: *"([^<>"]+?mp4)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
+
         if (aResult[0] == True):
             return True, aResult[1][0]
-        
+
         return False, False

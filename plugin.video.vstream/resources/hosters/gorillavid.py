@@ -1,7 +1,7 @@
 #coding: utf-8
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.handler.requestHandler import cRequestHandler 
-from resources.lib.parser import cParser 
+from resources.lib.handler.requestHandler import cRequestHandler
+from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 
 import re
@@ -16,11 +16,11 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
-        
+
     def getFileName(self):
         return self.__sFileName
 
@@ -35,7 +35,7 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-    
+
     def __getIdFromUrl(self, sUrl):
         sPattern = 'http://gorillavid.in/embed.+?-([^<]+)-'
         oParser = cParser()
@@ -53,7 +53,7 @@ class cHoster(iHoster):
 
     def __getUrl(self, media_id):
         return
-    
+
     def getMediaLink(self):
         return self.__getMediaLinkForGuest()
 
@@ -69,17 +69,17 @@ class cHoster(iHoster):
         sPattern =  '<input type="hidden" name="([^"]+)" value="([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
-        if (aResult[0] == True): 
+        if (aResult[0] == True):
             oRequest.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
             for aEntry in aResult[1]:
-                oRequest.addParameters(aEntry[0], aEntry[1])     
+                oRequest.addParameters(aEntry[0], aEntry[1])
             oRequest.addParameters('referer', url)
             sHtmlContent = oRequest.request()
             r2 = re.search('file: "([^"]+)",', sHtmlContent)
             if (r2):
                 api_call = r2.group(1)
-                
+
         if (api_call):
             return True, api_call
 
-        return False , False
+        return False, False

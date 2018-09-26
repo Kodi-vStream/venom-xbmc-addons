@@ -17,7 +17,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -28,7 +28,7 @@ class cHoster(iHoster):
     def setHD(self, sHD):
         if 'hd' in sHD:
             self.__sHD = 'HD'
-        else: 
+        else:
             self.__sHD = ''
 
     def getHD(self):
@@ -45,7 +45,7 @@ class cHoster(iHoster):
 
     def getPattern(self):
         return ''
-        
+
     def __getIdFromUrl(self):
         sPattern = "?([^<]+)"
         oParser = cParser()
@@ -54,7 +54,7 @@ class cHoster(iHoster):
             return aResult[1][0]
 
         return ''
-        
+
     def __modifyUrl(self, sUrl):
         if (sUrl.startswith('http://')):
             oRequestHandler = cRequestHandler(sUrl)
@@ -64,7 +64,7 @@ class cHoster(iHoster):
             return self.__getIdFromUrl()
 
         return sUrl
-        
+
     def __getKey(self):
         oRequestHandler = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequestHandler.request()
@@ -72,7 +72,7 @@ class cHoster(iHoster):
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            aResult = aResult[1][0].replace('.','%2E')
+            aResult = aResult[1][0].replace('.', '%2E')
             return aResult
 
         return ''
@@ -92,12 +92,12 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
         url=[]
         qua=[]
-        
+
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+
         sPattern =  '"url.+?":"(.+?)\.(\d+).mp4'
-              
+
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
@@ -105,13 +105,13 @@ class cHoster(iHoster):
             for aEntry in aResult[1]:
                  url.append(aEntry[0])
                  qua.append(str(aEntry[1]))
-             
+
             dialog2 = xbmcgui.Dialog()
-            ret = dialog2.select('Select Quality',qua)
+            ret = dialog2.select('Select Quality', qua)
             #sUrl = url[ret]+'.'+qua[ret]+'.mp4'
             api_call = ('%s.%s.mp4') % (url[ret], qua[ret])
-            
+
             if api_call:
                 return True, api_call
-        
+
         return False, False

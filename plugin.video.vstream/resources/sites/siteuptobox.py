@@ -15,7 +15,7 @@ from resources.lib.comaddon import progress, dialog, addon, xbmc, xbmcgui
 import urllib2, re
 
 SITE_IDENTIFIER = 'siteuptobox'
-SITE_NAME = '[COLOR dodgerblue]' + 'VotreCompteUptobox' + '[/COLOR]'
+SITE_NAME = '[COLOR dodgerblue]' + 'CompteUptobox' + '[/COLOR]'
 SITE_DESC = 'Fichiers sur compte Uptobox'
 URL_MAIN = 'https://uptobox.com/'
 BURL = URL_MAIN + '?op=my_files'
@@ -29,6 +29,9 @@ def load():
 
     if (addons.getSetting('hoster_uptobox_username') == '') and (addons.getSetting('hoster_uptobox_password') == ''):
         oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + 'Nécessite Un Compte Uptobox Premium ou Gratuit' + '[/COLOR]')
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+        oGui.addDir(SITE_IDENTIFIER,'opensetting', addons.VSlang(30023), 'none.png', oOutputParameterHandler)
     else:
         if (GestionCookie().Readcookie('uptobox') != ''):
 
@@ -64,6 +67,9 @@ def load():
             oGui.addDir(SITE_IDENTIFIER, 'showFolder', 'Mes Dossiers', 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
+
+def opensetting():
+    addon().openSettings()
 
 def showSearch():
     oGui = cGui()

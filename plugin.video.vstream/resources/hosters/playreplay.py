@@ -4,7 +4,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-import urllib, urllib2,re
+import urllib, urllib2, re
 
 
 class cHoster(iHoster):
@@ -18,7 +18,7 @@ class cHoster(iHoster):
         return  self.__sDisplayName
 
     def setDisplayName(self, sDisplayName):
-        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]'+self.__sDisplayName+'[/COLOR] [COLOR khaki]'+self.__sHD+'[/COLOR]'
+        self.__sDisplayName = sDisplayName + ' [COLOR skyblue]' + self.__sDisplayName + '[/COLOR] [COLOR khaki]' + self.__sHD + '[/COLOR]'
 
     def setFileName(self, sFileName):
         self.__sFileName = sFileName
@@ -42,11 +42,11 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
-        
+        return ''
+
     def __getIdFromUrl(self, sUrl):
         sPattern = 'http:..playreplay.net\/framevideo\/(.+?)\?'
-        aResult = re.findall(sPattern,sUrl)
+        aResult = re.findall(sPattern, sUrl)
         if (aResult):
             return aResult[0]
 
@@ -69,32 +69,32 @@ class cHoster(iHoster):
         sId = self.__getIdFromUrl(self.__sUrl)
 
         query_args = {'r':'["tVL0gjqo5",["preview/flv_image",{"uid":"' + sId + '"}],["preview/flv_link",{"uid":"' + sId + '"}]]'}
-        
+
         data = urllib.urlencode(query_args)
-        headers = {'User-Agent' : 'Mozilla 5.10'}
+        headers = {'User-Agent': 'Mozilla 5.10'}
         url = 'http://api.letitbit.net'
         request = urllib2.Request(url,data,headers)
-        
+
         try:
             reponse = urllib2.urlopen(request)
         except URLError, e:
             print e.read()
             print e.reason
-     
-        html = reponse.read()  
-        
-        sHtmlContent = html.replace('\\','')
 
-        link = re.findall('"link":"(.+?)"',sHtmlContent)
+        html = reponse.read()
+
+        sHtmlContent = html.replace('\\', '')
+
+        link = re.findall('"link":"(.+?)"', sHtmlContent)
         if link:
             vUrl = link[0]
-        
+
         #print vUrl
-        
+
         if (vUrl):
             api_call = vUrl
             return True, api_call
-            
+
         return False, False
-        
-        
+
+

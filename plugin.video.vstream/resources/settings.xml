@@ -87,7 +87,13 @@
 
         <setting visible="false" id="plugin_documentaires_streaming_com" type="bool" label="Documentaires Streaming" default="true"/>
 
+        <setting visible="false" id="plugin_extreme_down" type="bool" label="ExtremeDown" default="true"/>
+        
         <setting visible="false" id="plugin_film_illimit_fr" type="bool" label="Film Illimité" default="true"/>
+
+        <setting visible="false" id="plugin_film_vf_gratuit" type="bool" label="Filmvf Gratuit" default="true"/>
+
+        <setting visible="false" id="plugin_filmcomplet" type="bool" label="FilmComplet" default="true"/>
 
         <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Film stream vk" default="true"/>
 
@@ -108,6 +114,8 @@
         <setting visible="false" id="plugin_fullstreaming" type="bool" label="Full Streaming" default="true"/>
 
         <setting visible="false" id="plugin_gum_gum_streaming_com" type="bool" label="Gum-Gum-Streaming" default="true"/>
+
+        <setting visible="false" id="plugin_k_streaming" type="bool" label="k_Streaming" default="true"/>
 
         <setting visible="false" id="plugin_kaydo_ws" type="bool" label="kaydo" default="true"/>
 
@@ -147,6 +155,8 @@
 
         <setting visible="false" id="plugin_skstream_co" type="bool" label="Skstream" default="true"/>
 
+        <setting visible="false" id="plugin_sokrostream_biz" type="bool" label="Sokrostream" default="true"/>
+
         <setting visible="false" id="plugin_spion_com" type="bool" label="Spion" default="true"/>
 
         <setting visible="false" id="plugin_streamay_bz" type="bool" label="Streamay" default="true"/>
@@ -161,11 +171,15 @@
 
         <setting visible="false" id="plugin_streamingbb" type="bool" label="StreamingBB" default="true"/>
 
+        <setting visible="false" id="plugin_streamingdivx" type="bool" label="StreamingDivx" default="true"/>
+
         <setting visible="false" id="plugin_streamingk_com" type="bool" label="StreamingK" default="true"/>
 
         <setting visible="false" id="plugin_streamiz_co" type="bool" label="Streamiz.co" default="true"/>
 
         <setting visible="false" id="plugin_streamzzz_com" type="bool" label="Streamzzz" default="true"/>
+
+        <setting visible="false" id="plugin_tfarjo" type="bool" label="Tfarjo" default="true"/>
 
         <setting visible="false" id="plugin_topreplay" type="bool" label="TopReplay" default="true"/>
 
@@ -174,8 +188,6 @@
         <setting visible="false" id="plugin_tvseriestreaming" type="bool" label="TV Serie Streaming" default="true"/>
 
         <setting visible="false" id="plugin_videobuzzy_com" type="bool" label="Videobuzzy" default="true"/>
-
-        <setting visible="false" id="plugin_voirfilm" type="bool" label="VoirFilms" default="true"/>
 
         <setting visible="false" id="plugin_voirfilms_org" type="bool" label="VoirFilms" default="true"/>
 

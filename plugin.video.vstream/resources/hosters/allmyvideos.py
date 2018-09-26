@@ -41,7 +41,7 @@ class cHoster(iHoster):
         return True
 
     def getPattern(self):
-        return '';
+        return ''
 
     def __getIdFromUrl(self, sUrl):
         return ''
@@ -59,32 +59,32 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-        
+
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-        
+
         oParser = cParser()
-		
+
         sPattern = '"file" *: *"(.+?)".+?"label" *: *"([0-9]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
-        
+
         api_call = False
 
         if (aResult[0] == True):
-            
+
             #initialisation des tableaux
             url=[]
             qua=[]
-            
+
             #Remplissage des tableaux
             for i in aResult[1]:
                 url.append(str(i[0]))
                 qua.append(str(i[1]))
-                
+
             #Affichage du tableau
-            api_call = dialog().VSselectqual(qua,url)
- 
+            api_call = dialog().VSselectqual(qua, url)
+
         if (api_call):
             return True, api_call
-            
+
         return False, False
