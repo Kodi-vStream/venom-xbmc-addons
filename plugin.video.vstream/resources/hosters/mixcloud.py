@@ -50,7 +50,7 @@ class cHoster(iHoster):
         sPattern = 'https://audiocdn.+?mixcloud.com/previews/(.+?).mp3'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
-            api_call = 'https://testcdn.mixcloud.com/secure/hls/' + aResult[1][0] + '.m4a/index.m3u8'
+            api_call = 'https://audio4.mixcloud.com/secure/hls/' + aResult[1][0] + '.m4a/index.m3u8'
 
 
         if (api_call):
