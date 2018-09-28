@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress,addon
+from resources.lib.comaddon import progress, addon
 import re
 
 sColor = addon().getSetting("deco_color")
@@ -37,19 +37,19 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VIEWS[1], 'Séries (Les plus vues)', 'views.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENT[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENT[1], 'Séries (Les plus commentées)', 'comments.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Series (Liste)', 'listes.png', oOutputParameterHandler)
@@ -57,11 +57,11 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par Années)', 'annees.png', oOutputParameterHandler)
-    
+    oGui.addDir(SITE_IDENTIFIER, SERIE_ANNEES[1], 'Séries (Par années)', 'annees.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -72,7 +72,7 @@ def showSearch():
         showMovies(URL_SEARCH_SERIES[0] + sSearchText)
         oGui.setEndOfDirectory()
         return
-      
+
 def showSerieYears():
     #for i in itertools.chain(xrange(5, 7), [8, 9]): afficher dans l'ordre (pense bete ne pas effacer)
     oGui = cGui()
@@ -86,7 +86,7 @@ def showSerieYears():
         oGui.addDir(SITE_IDENTIFIER, 'showMovies', Year, 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-    
+
 def showAZ():
     oGui = cGui()
 
@@ -97,7 +97,7 @@ def showAZ():
         else:
             sLetter = chr(64 + i)
             aLetter = sLetter
-            
+
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('sLetter', sLetter)
         oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', "%s [COLOR %s]%s[/COLOR]" % ("Lettre", sColor, aLetter), 'az.png', oOutputParameterHandler)
@@ -130,13 +130,13 @@ def AlphaDisplay():
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oGui.addDir(SITE_IDENTIFIER, 'showS_E', sTitle, 'series.png',oOutputParameterHandler)
-            
+            oGui.addDir(SITE_IDENTIFIER, 'showS_E', sTitle, 'series.png', oOutputParameterHandler)
+
         progress_.VSclose(progress_)
-        
+
     oGui.setEndOfDirectory()
 
-    
+
 def showGenres():
     oGui = cGui()
 
@@ -147,8 +147,8 @@ def showGenres():
     liste.append( ['Animation', URL_MAIN + 'category/animation'] )
     liste.append( ['Anime', URL_MAIN + 'category/anime'] )
     liste.append( ['Biographie', URL_MAIN + 'category/biography'] )
-    liste.append( ['Comédie', URL_MAIN + 'category/comedy'] )   
-    liste.append( ['Crime', URL_MAIN + 'category/crime'] )   
+    liste.append( ['Comédie', URL_MAIN + 'category/comedy'] )
+    liste.append( ['Crime', URL_MAIN + 'category/crime'] )
     liste.append( ['Criminel', URL_MAIN + 'category/criminel'] )
     liste.append( ['Documentaire', URL_MAIN + 'category/documentary'] )
     liste.append( ['Drama', URL_MAIN + 'category/drama'] )
@@ -200,10 +200,10 @@ def showMovies(sSearch=''):
         sUrl = sSearch
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #news    
+    #news
     if 'nouveaux' in sUrl:
         sPattern = '<a href="([^"]+)" class="list-group-item.+?>(.+?)<b>(.+?)</b>'
         sHtmlContent = oParser.abParse(sHtmlContent, "<h4>Les derniers episodes", "les plus vues")
@@ -222,7 +222,7 @@ def showMovies(sSearch=''):
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
-                
+
             if 'nouveaux' in sUrl:
                 sUrl2 = aEntry[0]
                 sTitle = aEntry[1].replace(' -', ' ') + aEntry[2].replace(' ', '')
@@ -232,17 +232,17 @@ def showMovies(sSearch=''):
                 sUrl2 = aEntry[1]
                 sThumb = aEntry[2]
 
-                
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            
+
             if 'nouveaux' in sUrl:
                 oGui.addDir(SITE_IDENTIFIER, 'showLink', sTitle, sThumb, oOutputParameterHandler)
             else:
                 oGui.addMisc(SITE_IDENTIFIER, 'showS_E', sTitle, '', sThumb, '', oOutputParameterHandler)
-                
+
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
@@ -262,7 +262,7 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-    
+
 def showS_E():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -284,27 +284,27 @@ def showS_E():
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
-    
+
             if '/saison/' in rUrl:#episode
                 if aEntry[0]:
                     sThumb = aEntry[0]
-                
+
                 else:
-                    sUrl = aEntry[1]    
+                    sUrl = aEntry[1]
                     sTitle = sMovieTitle + ' ' + aEntry[2]
-                
+
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                     oOutputParameterHandler.addParameter('sThumb', sThumb)
                     oGui.addTV(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, '', oOutputParameterHandler)
-                
+
             else:#saison
                 if aEntry[0]:
                     sThumb = aEntry[0]
-                
+
                 else:
-                    sUrl = aEntry[1]    
+                    sUrl = aEntry[1]
                     sTitle = sMovieTitle + ' ' + aEntry[2]
 
                     oOutputParameterHandler = cOutputParameterHandler()
@@ -329,7 +329,7 @@ def showLink():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    if len(sThumb) < 20 :
+    if len(sThumb) < 20:
         try:
             sPattern = '<img class=".+?" src=(.+?) *alt='
             aResult = oParser.parse(sHtmlContent, sPattern)
@@ -338,13 +338,13 @@ def showLink():
 
         except:
             pass
-            
-    linkid = ''        
-    sPattern = "link_id.+?'([^']+)';" 
+
+    linkid = ''
+    sPattern = "link_id.+?'([^']+)';"
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         linkid = aResult[1][0]
-    
+
     sPattern = '<\/i> *Lien.+?</td>.+?alt="([^"]+)".+?center">(.+?)</td>.+?data-id="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -383,7 +383,7 @@ def showHosters():
 
     sHtmlContent = oRequest.request()
     oParser = cParser()
-    
+
     sPattern = '<iframe class="embed-responsive-.+?src=(.+?) *allowfullscreen><\/iframe>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
