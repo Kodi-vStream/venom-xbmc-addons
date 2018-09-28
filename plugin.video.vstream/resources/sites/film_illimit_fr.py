@@ -9,7 +9,7 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.comaddon import progress
 from resources.lib.sucuri import SucurieBypass
-import re,urllib, urllib2
+import re, urllib, urllib2
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
@@ -195,7 +195,7 @@ def showMovies(sSearch = ''):
             if re.match('.+?saison [0-9]+', sTitle, re.IGNORECASE):
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addLink(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -270,7 +270,7 @@ def showHosters():
                 else:
                     sDisplayTitle = sMovieTitle
 
-                sDisplayTitle = sDisplayTitle + ' [COLOR skyblue]Google[/COLOR]'
+                sDisplayTitle = sDisplayTitle + ' [COLOR coral]Google[/COLOR]'
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -316,7 +316,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addLink(SITE_IDENTIFIER, 'ShowSpecialHosters', sTitle, sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'ShowSpecialHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
