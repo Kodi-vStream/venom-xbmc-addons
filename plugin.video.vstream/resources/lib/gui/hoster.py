@@ -222,8 +222,6 @@ class cHosterGui:
             return self.getHoster('googlevideo')
         if ('playreplay' in sHostName):
             return self.getHoster('playreplay')
-        if ('vodlocker' in sHostName):
-            return self.getHoster('vodlocker')
         if ('flashx' in sHostName):
             return self.getHoster('flashx')
         if (('ok.ru' in sHostName) or ('odnoklassniki' in sHostName)):
