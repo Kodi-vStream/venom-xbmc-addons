@@ -39,14 +39,11 @@ class cHoster(iHoster):
     def isDownloadable(self):
         return True
 
-    def isJDownloaderable(self):
-        return True
-
     def getPattern(self):
         return ''
 
-    def __getIdFromUrl(self, sUrl):
-        sPattern = 'vid=([0-9]+)'
+    def __getIdFromUrl(self, sUrl):#correction ancienne url >> embed depreciated
+        sPattern = '\/\/(?:tune|embed.tune).[a-z]{2}\/(?:play/|video/|embed\?videoid=|vid=)([0-9]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -67,37 +64,25 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+        api_call = ''
         oParser = cParser()
         url = []
         qua = []
         id = self.__getIdFromUrl(self.__sUrl)
 
-        sUrl = 'https://embed.tune.pk/play/' + id  + '?autoplay=no&ssl=yes&inline=true'
+        sUrl = "https://tune.pk/video/" + id 
 
         oRequest = cRequestHandler(sUrl)
         sHtmlContent1 = oRequest.request()
 
-        sPattern = '<meta itemprop="videoQuality" content="(.+?)".+?<meta itemprop="contentURL" content="([^"]+)"'
-        aResult = oParser.parse(sHtmlContent1, sPattern)
-        if (aResult[0] == True):
-            url.append(aResult[1][0][1])
-            qua.append(aResult[1][0][0] + '  mp4')
-
-        sPattern = "var requestURL *= *'([^']+)';.+?\"X-secret-Header\":\"(.+?)\"}"
-        aResult = oParser.parse(sHtmlContent1, sPattern)
-        if (aResult[0] == True):
-            vUrl = aResult[1][0][0]
-            Secret = aResult[1][0][1]
-            oRequest = cRequestHandler(vUrl)
-            oRequest.addHeaderEntry('User-Agent', UA)
-            oRequest.addHeaderEntry('X-secret-Header', Secret)
-            sHtmlContent = oRequest.request()
-
+        aResult = oParser.abParse(sHtmlContent1, 'new TunePlayer(', ',"video":', 15)
+        if (aResult):
+            sHtmlContent = aResult + '}}'
             sHtmlContent = cUtil().removeHtmlTags(sHtmlContent)
             sHtmlContent = cUtil().unescape(sHtmlContent)
 
             content = json.loads(sHtmlContent)
-            content = content["data"]["details"]["player"]
+            content = content["details"]["player"]
             if content:
                 for x in content['sources']:
                     if 'Auto' in str(x['label']):
@@ -105,10 +90,9 @@ class cHoster(iHoster):
                     url2 = str(x['file']).replace('index', str(x['label']))
 
                     url.append(url2)
-                    qua.append(repr(x['label'])+ '  m3u8')
-
-                #dialogue qualité
-                api_call = dialog().VSselectqual(qua, url)
+                    qua.append(repr(x['label']))
+                    
+                api_call = dialog().VSselectqual(qua,url)
 
             if (api_call):
                 return True, api_call + '|User-Agent=' + UA
