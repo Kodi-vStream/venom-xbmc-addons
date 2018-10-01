@@ -17,7 +17,14 @@ SITE_IDENTIFIER = 'film_illimit_fr'
 SITE_NAME = 'Film illimité'
 SITE_DESC = 'Films, Séries HD en streaming'
 
-URL_MAIN = 'https://ww1.official-film-illimite.ws/'
+def getRealUrl():
+    url = 'https://official-film-illimite.ws/'
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.request()
+    return oRequestHandler.getRealUrl()
+
+
+URL_MAIN = getRealUrl()
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
