@@ -17,7 +17,13 @@ SITE_IDENTIFIER = 'filmcomplet'
 SITE_NAME = 'Film Complet'
 SITE_DESC = 'Film Complet - film en streaming HD'
 
-URL_MAIN = 'https://filmcomplet.club/'
+def getRealUrl():
+    url = 'https://mesfilms.top/'
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.request()
+    return oRequestHandler.getRealUrl()
+
+URL_MAIN = getRealUrl()
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'
 
 #definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
