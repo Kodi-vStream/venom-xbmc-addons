@@ -18,10 +18,10 @@ SITE_DESC = 'Films VF en streaming.'
 URL_MAIN = 'https://www.streamingdivx.co/'
 
 MOVIE_NEWS = (URL_MAIN + 'films.html', 'showMovies')
-MOVIE_GENRES = (URL_MAIN + 'films', 'showGenres')
+MOVIE_GENRES = (URL_MAIN + 'films/', 'showGenres')
 
 SERIE_NEWS = (URL_MAIN + 'series.html', 'showMovies')
-SERIE_GENRES = (URL_MAIN + 'series', 'showGenres')
+SERIE_GENRES = (URL_MAIN + 'series/', 'showGenres')
 
 URL_SEARCH = (URL_MAIN + '/recherche?q=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '/recherche?q=', 'showMovies')
@@ -37,7 +37,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
@@ -49,7 +49,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
-    
+
     oGui.setEndOfDirectory()
 
 def showSearch():
@@ -66,27 +66,27 @@ def showGenres():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    liste = []
 
-    liste.append( ['Action', sUrl + '/action/'] )
-    liste.append( ['Animation', sUrl + '/animation/'] )
-    liste.append( ['Aventure', sUrl + '/aventure/'] )
-    liste.append( ['Biopic', sUrl + '/biopic/'] )
-    liste.append( ['Comédie', sUrl + '/comedie/'] )
-    liste.append( ['Comédie-dramatique', sUrl + '/comedie-dramatique/'] )
-    liste.append( ['Comédie-musicale', sUrl + '/comedie-musicale/'] )
-    liste.append( ['Documentaire', sUrl + '/documentaire/'] )
-    liste.append( ['Drame', sUrl + '/drame/'] )
-    liste.append( ['Divers', sUrl + '/divers/'] )
-    liste.append( ['Epouvante Horreur', sUrl + '/epouvante-horreur/'] )
-    liste.append( ['Famille', sUrl + '/famille/'] )
-    liste.append( ['Fantastique', sUrl + '/fantastique/'] )
-    liste.append( ['Guerre', sUrl + '/guerre/'] )
-    liste.append( ['Opera', sUrl + '/opera/'] )
-    liste.append( ['Policier', sUrl + '/policier/'] )
-    liste.append( ['Romance', sUrl + '/romance/'] )
-    liste.append( ['Science-fiction', sUrl + '/science-fiction/'] )
-    liste.append( ['Thriller', sUrl + '/thriller/'] )
+    liste = []
+    liste.append( ['Action', sUrl + 'action/'] )
+    liste.append( ['Animation', sUrl + 'animation/'] )
+    liste.append( ['Aventure', sUrl + 'aventure/'] )
+    liste.append( ['Biopic', sUrl + 'biopic/'] )
+    liste.append( ['Comédie', sUrl + 'comedie/'] )
+    liste.append( ['Comédie-dramatique', sUrl + 'comedie-dramatique/'] )
+    liste.append( ['Comédie-musicale', sUrl + 'comedie-musicale/'] )
+    liste.append( ['Documentaire', sUrl + 'documentaire/'] )
+    liste.append( ['Drame', sUrl + 'drame/'] )
+    liste.append( ['Divers', sUrl + 'divers/'] )
+    liste.append( ['Epouvante Horreur', sUrl + 'epouvante-horreur/'] )
+    liste.append( ['Famille', sUrl + 'famille/'] )
+    liste.append( ['Fantastique', sUrl + 'fantastique/'] )
+    liste.append( ['Guerre', sUrl + 'guerre/'] )
+    liste.append( ['Opera', sUrl + 'opera/'] )
+    liste.append( ['Policier', sUrl + 'policier/'] )
+    liste.append( ['Romance', sUrl + 'romance/'] )
+    liste.append( ['Science-fiction', sUrl + 'science-fiction/'] )
+    liste.append( ['Thriller', sUrl + 'thriller/'] )
 
     for sTitle, sUrl in liste:
 
@@ -103,7 +103,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        
+
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -122,13 +122,13 @@ def showMovies(sSearch = ''):
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
-                
+
             sUrl = aEntry[0]
             if sUrl.startswith('/'):
                 sUrl = URL_MAIN[:-1] + sUrl
-                
-            sTitle = aEntry[1].replace('Streaming','').replace('streaming','').replace('série','')
-            
+
+            sTitle = aEntry[1].replace('Streaming', '').replace('streaming', '').replace('série', '')
+
             sThumb = aEntry[2]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
@@ -140,19 +140,19 @@ def showMovies(sSearch = ''):
             sLang = ''
             if aEntry[4]:
                 sLang = aEntry[4]
-                
-            sDisplayTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sTitle, sLang, sColor, sQual)
-            
+
+            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            
+
             if 'series/' in sUrl:
                 oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-            
+
         progress_.VSclose(progress_)
 
         sNextPage = __checkForNextPage(sHtmlContent)
@@ -175,14 +175,14 @@ def __checkForNextPage(sHtmlContent):
             return aResult[1][0]
 
     return False
-    
+
 def showSaisons():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
+
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -195,23 +195,23 @@ def showSaisons():
             sDesc = aResult[1][0]
     except:
         pass
-        
-    sPattern = '<div class="short-images.+?<a href="([^"]+)" class="short-images.+?<img src="([^"]+)" alt="([^"]+)"'
 
+    sPattern = '<div class="short-images.+?<a href="([^"]+)" class="short-images.+?<img src="([^"]+)" alt="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
             sUrl = aEntry[0]
             if sUrl.startswith('/'):
                 sUrl = URL_MAIN[:-1] + sUrl
-            
+
             sThumb = aEntry[1]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
-                
-            sTitle = aEntry[2].replace('Streaming','').replace('streaming','').replace('série','')
-            
+
+            sTitle = aEntry[2].replace('Streaming', '').replace('streaming', '').replace('série', '')
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -219,14 +219,14 @@ def showSaisons():
             oGui.addTV(SITE_IDENTIFIER, 'showEp', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-    
+
 def showEp():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
+
     oParser = cParser()
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -244,7 +244,7 @@ def showEp():
                 sUrl = URL_MAIN[:-1] + sUrl
 
             sTitle = aEntry[1]
-            
+
             sDisplayTitle = ('%s %s') % (sMovieTitle, sTitle)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -254,7 +254,7 @@ def showEp():
             oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-    
+
 def showLinks():
     #streamer.php?p=169&c=V1RJeGMxcHVSbmhhUnpGMFltNU9kMWxYVW5sWlVUMDk=
     oGui = cGui()
@@ -283,9 +283,9 @@ def showLinks():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHost = aEntry[2].replace('server player-','').capitalize()
-            sLang = aEntry[3].replace('/images/','').replace('.png','')
-            
+            sHost = aEntry[2].replace('server player-', '').capitalize()
+            sLang = aEntry[3].replace('/images/', '').replace('.png', '')
+
             sDisplayTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang, sColor, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -304,17 +304,17 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
     datanum = oInputParameterHandler.getValue('datanum')
     datacode = oInputParameterHandler.getValue('datacode')
-    
+
     import urllib2
-    
-    sUrl = ('%s%s%s%s%s' % (URL_MAIN,'streamer.php?p=', datanum, '&c=', datacode))
-    
+
+    sUrl = ('%s%s%s%s%s' % (URL_MAIN, 'streamer.php?p=', datanum, '&c=', datacode))
+
     class NoRedirection(urllib2.HTTPErrorProcessor):
             def http_response(self, request, response):
                 return response
-                
+
             https_response = http_response
-            
+
     opener = urllib2.build_opener(NoRedirection)
     opener.addheaders = [('User-agent', UA)]
     opener.addheaders = [('Referer', URL_MAIN)]
@@ -332,4 +332,3 @@ def showHosters():
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
                 oGui.setEndOfDirectory()
-                
