@@ -6,7 +6,6 @@ import xbmc
 import xbmcaddon
 import base64
 
-
 PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
@@ -107,11 +106,16 @@ class SucurieBypass(object):
         #on cherche des precedents cookies
         cookies = self.Readcookie(self.host.replace('.','_'))
 
-        htmlcontent = self.htmlrequest(url,cookies,data)
+        htmlcontent,url2 = self.htmlrequest(url,cookies,data)
 
         if not self.CheckIfActive(htmlcontent):
             # ok pas de protection
-            return htmlcontent
+            #Pas de redirection ?
+            if url2 == url:            
+                return htmlcontent
+            else:
+                htmlcontent,dummy = self.htmlrequest(url2,cookies,data,False)
+                return htmlcontent
         
         #on cherche le nouveau cookie
         cookies = self.DecryptCookie(htmlcontent)
@@ -125,13 +129,17 @@ class SucurieBypass(object):
         self.SaveCookie(self.host.replace('.','_'),cookies)
         
         #et on recommence
-        htmlcontent = self.htmlrequest(url,cookies,data)
+        htmlcontent,dummy = self.htmlrequest(url,cookies,data)
         
         return htmlcontent
         
-    def htmlrequest(self,url,cookies,data):
+    def htmlrequest(self,url,cookies,data,Block_redirection = True):
         
-        opener = urllib2.build_opener(NoRedirection)
+        if Block_redirection:
+            opener = urllib2.build_opener(NoRedirection)
+        else:
+            opener = urllib2.build_opener()
+             
         opener.addheaders = self.SetHeader()
         
         if cookies:
@@ -139,6 +147,11 @@ class SucurieBypass(object):
         
         response = opener.open(url,data)
         htmlcontent = response.read()
+        
+        redirecturl = response.geturl()
+        if 'Location' in response.headers:
+            redirecturl = response.headers['Location']
+        
         response.close()
         
         if response.info().get('Content-Encoding') == 'gzip':
@@ -149,4 +162,4 @@ class SucurieBypass(object):
             f = gzip.GzipFile(fileobj=buf)
             htmlcontent = f.read()
             
-        return htmlcontent
+        return htmlcontent,redirecturl

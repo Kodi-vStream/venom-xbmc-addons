@@ -198,8 +198,6 @@ class cHosterGui:
             return self.getHoster('dailymotion')
         if ('filez.' in sHostName):
             return self.getHoster('flashx')
-        if ('vodlocker' in sHostName):
-            return self.getHoster('vodlocker')
         if ('mystream' in sHostName):
             return self.getHoster('mystream')
         if ('streamingentiercom/videophp?type=speed' in sHosterUrl):
@@ -224,12 +222,8 @@ class cHosterGui:
             return self.getHoster('googlevideo')
         if ('playreplay' in sHostName):
             return self.getHoster('playreplay')
-        if ('vodlocker' in sHostName):
-            return self.getHoster('vodlocker')
         if ('flashx' in sHostName):
             return self.getHoster('flashx')
-        if ('easywatch' in sHostName):
-            return self.getHoster('easywatch')
         if (('ok.ru' in sHostName) or ('odnoklassniki' in sHostName)):
             return self.getHoster('ok_ru')
         if ('vimeo.com' in sHostName):
@@ -250,14 +244,8 @@ class cHosterGui:
             return self.getHoster('amazon')
         if ('filepup' in sHostName):
             return self.getHoster('filepup')
-        if ('nosvideo' in sHostName):
-            return self.getHoster('nosvideo')
         if ('vimple.ru' in sHostName):
             return self.getHoster('vimple')
-        if ('allmyvideos.net' in sHostName):
-            return self.getHoster('allmyvideos')
-        if ('idowatch' in sHostName):
-            return self.getHoster('idowatch')
         if ('wstream.' in sHostName):
             return self.getHoster('wstream')
         if ('watchvideo' in sHostName):
@@ -284,8 +272,6 @@ class cHosterGui:
             return self.getHoster('vidlox')
         if ('stagevu' in sHostName):
             return self.getHoster('stagevu')
-        if ('veehd.' in sHostName):
-            return self.getHoster('veehd')
         if (('movshare' in sHostName) or ('wholecloud' in sHostName)):
             return self.getHoster('wholecloud')
         if ('gorillavid' in sHostName):
