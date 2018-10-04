@@ -17,27 +17,27 @@ SITE_IDENTIFIER = 'french_stream_com'
 SITE_NAME = 'French-stream'
 SITE_DESC = 'films en streaming'
 
-URL_MAIN = 'http://french-stream.tv/'
+URL_MAIN = 'http://french-stream.co/'
 
 URL_SEARCH_MOVIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=9&story=', 'showMovies')
 URL_SEARCH_SERIE = (URL_MAIN + 'index.php?do=search&subaction=search&catlist[]=10&story=', 'showSeries')
 FUNCTION_SEARCH = 'showMovies'
 
-MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film-streaming/', 'showMovies')
 MOVIE_MOVIE = (True, 'showMoviesMenu')
 MOVIE_VF = (URL_MAIN + 'films/vf/', 'showMovies')
 MOVIE_VOSTFR = (URL_MAIN + 'films/vostfr/', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'films/hd-vf/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
-SERIE_NEWS = (URL_MAIN + 'series/', 'showSeries')
+SERIE_NEWS = (URL_MAIN + 'serie-streaming/', 'showSeries')
 SERIE_SERIES = (True, 'showSeriesMenu')
 SERIE_VFS = (URL_MAIN + 'series/serie-en-vf-streaming/', 'showSeries')
 SERIE_VOSTFRS = (URL_MAIN + 'series/serie-en-vostfr-streaming/', 'showSeries')
 SERIE_GENRES = (True, 'showSerieGenres')
 
-ANIM_ANIMS = (URL_MAIN + 'mangas/', 'showMangasMenu')
-ANIM_NEWS = (URL_MAIN + 'mangas/', 'showSeries')
+ANIM_ANIMS = (URL_MAIN + 'manga-streaming/', 'showMangasMenu')
+ANIM_NEWS = (URL_MAIN + 'manga-streaming/', 'showSeries')
 
 def decode_url_Serie(url, id, tmp = ''):
 
