@@ -5,6 +5,8 @@ from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
 from resources.lib.parser import cParser
 
+#from resources.lib.comaddon import VSlog
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -47,11 +49,19 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
         oParser = cParser()
+        
+        api_call = False
 
         sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\)\)\s*)<\/script>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             sHtmlContent = cPacker().unpack(aResult[1][0])
+            sPattern = 'file:"([^"]+)",label:"[0-9]+"}'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                api_call = aResult[1][0]
+                
+        else:
             sPattern = 'file:"([^"]+)",label:"[0-9]+"}'
             aResult = oParser.parse(sHtmlContent, sPattern)
             if (aResult[0] == True):
