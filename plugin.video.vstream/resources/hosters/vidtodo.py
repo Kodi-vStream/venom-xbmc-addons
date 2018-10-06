@@ -8,6 +8,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 
+#from resources.lib.comaddon import VSlog
+
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 
 class cHoster(iHoster):
@@ -36,7 +38,6 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-        self.__sUrl = self.__sUrl.replace('.com', '.me')
         if not 'embed-' in self.__sUrl:
             self.__sUrl = self.__sUrl.rsplit('/', 1)[0] + '/embed-' + self.__sUrl.rsplit('/', 1)[1]
 
@@ -45,7 +46,6 @@ class cHoster(iHoster):
 
         if not self.__sUrl.endswith('.html'):
             self.__sUrl = self.__sUrl + '.html'
-
 
     def getUrl(self):
         return self.__sUrl
@@ -65,11 +65,13 @@ class cHoster(iHoster):
     def __getMediaLinkForGuest(self):
         api_call = ''
 
+        #VSlog(self.__sUrl)
+        
         oParser = cParser()
         oRequest = cRequestHandler(self.__sUrl)
-        oRequest.addHeaderEntry('Referer', self.__sUrl)
+        #oRequest.addHeaderEntry('Referer', self.__sUrl)
+        oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0')
         sHtmlContent = oRequest.request()
-
 
         sPattern = 'sources:* \[{file:"([^"]+)"'
         aResult = oParser.parse(sHtmlContent, sPattern)
