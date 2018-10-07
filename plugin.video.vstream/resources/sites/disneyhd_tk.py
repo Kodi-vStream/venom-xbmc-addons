@@ -13,14 +13,14 @@ SITE_NAME = 'Disney HD'
 SITE_DESC = 'Disney HD: Tous les films Disney en streaming'
 
 URL_MAIN = 'https://disneyhd.tk/'
-URL_LISTE = URL_MAIN + 'liste_mosaique.php'
+URL_LISTE = URL_MAIN + '?page=liste_new.php'
 
 MOVIE_HD = ('https://disneyhd.tk/liste_mosaique.php', 'showMovies')
 
 ANIM_ENFANTS = ('http://', 'load')
 
-URL_SEARCH = ('', 'sHowResultSearch')
-URL_SEARCH_MOVIES = ('', 'sHowResultSearch')
+#URL_SEARCH = ('', 'sHowResultSearch')
+#URL_SEARCH_MOVIES = ('', 'sHowResultSearch')
 FUNCTION_SEARCH = 'sHowResultSearch'
 
 sPattern1 = '<a href="([^"]+)".+?src="([^"]+)" alt.*?="(.+?)".*?>'
@@ -30,9 +30,9 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 def load():
     oGui = cGui()
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    # oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN)
