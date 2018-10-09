@@ -36,7 +36,11 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR) (A/M)', 'vostfr.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'https://gum-gum-streaming.com/vostfr2/')
+    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR) (N/Z)', 'vostfr.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_MOVIES[0])
@@ -98,7 +102,8 @@ def showAnimes():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<h2 style="text-align: center;"><a href="([^"]+)">(.+?)</a>'
+    #sPattern = '<h2 style="text-align: center;"><a href="([^"]+)">(.+?)</a>'
+    sPattern = 'class="menublocks".+?href="([^"]+)">([^<]+)</a>.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -111,6 +116,7 @@ def showAnimes():
 
             sUrl = aEntry[0]
             sTitle = aEntry[1]
+            sThumb = aEntry[2]
 
             #traitement du titre pour compatibilite
             sTitle = sTitle.replace('(', ' ').replace(')', ' ')#.replace('-', ' ')
@@ -121,8 +127,7 @@ def showAnimes():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
 
-            oGui.addDir(SITE_IDENTIFIER, 'showEpisodes', sTitle, 'sites/gum_gum_streaming_com.png', oOutputParameterHandler)
-
+            oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, 'anim.png', sThumb, '', oOutputParameterHandler)
         progress_.VSclose(progress_)
     oGui.setEndOfDirectory()
 

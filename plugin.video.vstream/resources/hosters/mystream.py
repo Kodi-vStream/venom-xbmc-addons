@@ -4,6 +4,11 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 
+from resources.lib.aadecode import AADecoder
+import re
+
+#from resources.lib.comaddon import VSlog
+
 class cHoster(iHoster):
 
     def __init__(self):
@@ -34,7 +39,7 @@ class cHoster(iHoster):
         sPattern =  '(?:https*:\/\/|\/\/)(?:www.|embed.|)mystream.(?:la|com|to)\/(?:video\/|external\/|embed-|)([0-9a-zA-Z]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
-        self.__sUrl = 'http://www.mystream.la/external/' + str(aResult[1][0])
+        self.__sUrl = 'https://mysembed.net/' + str(aResult[1][0])
 
     def checkUrl(self, sUrl):
         return True
@@ -46,16 +51,29 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+        
+        #VSlog(self.__sUrl)
 
         oRequest = cRequestHandler(self.__sUrl)
         sHtmlContent = oRequest.request()
-
-        sPattern =  '<source src="([^"]+)" type="video.+?"'
+        
         oParser = cParser()
+        
+        api_call = False
+        
+        sPattern =  '(?:[>;]\s*)(ﾟωﾟ.+?\(\'_\'\);)'
         aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            for i in aResult[1]:
+                decoded = AADecoder(i).decode()
+                r = re.search("\('src', '([^']+)'\);", decoded, re.DOTALL | re.UNICODE)
+                if r:
+                    api_call = r.group(1)
+                    break
+        
+        #VSlog(api_call)
 
-        if (aResult[0] == True):
-            return True, aResult[1][0]
+        if (api_call):
+            return True, api_call
 
         return False, False
-

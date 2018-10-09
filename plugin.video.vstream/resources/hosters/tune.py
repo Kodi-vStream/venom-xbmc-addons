@@ -6,7 +6,7 @@ from resources.lib.comaddon import dialog
 from resources.lib.util import cUtil
 import json
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'
 
 class cHoster(iHoster):
 
@@ -43,7 +43,7 @@ class cHoster(iHoster):
         return ''
 
     def __getIdFromUrl(self, sUrl):#correction ancienne url >> embed depreciated
-        sPattern = '\/\/(?:tune|embed.tune).[a-z]{2}\/(?:play/|video/|embed\?videoid=|vid=)([0-9]+)'
+        sPattern = '(?:play/|video/|embed\?videoid=|vid=)([0-9]+)'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -70,28 +70,32 @@ class cHoster(iHoster):
         qua = []
         id = self.__getIdFromUrl(self.__sUrl)
 
-        sUrl = "https://tune.pk/video/" + id 
+        sUrl = 'https://api.tune.pk/v3/videos/' + id
 
         oRequest = cRequestHandler(sUrl)
+        oRequest.addHeaderEntry('User-Agent', UA)
+        oRequest.addHeaderEntry('X-KEY', '777750fea4d3bd585bf47dc1873619fc')
+        oRequest.addHeaderEntry('X-REQ-APP', 'web') #pour les mp4
+        oRequest.addHeaderEntry('Referer', self.__sUrl) #au cas ou
         sHtmlContent1 = oRequest.request()
 
-        aResult = oParser.abParse(sHtmlContent1, 'new TunePlayer(', ',"video":', 15)
-        if (aResult):
-            sHtmlContent = aResult + '}}'
-            sHtmlContent = cUtil().removeHtmlTags(sHtmlContent)
-            sHtmlContent = cUtil().unescape(sHtmlContent)
+        if (sHtmlContent1):
+            sHtmlContent = cUtil().removeHtmlTags(sHtmlContent1)
+            sHtmlContent = cUtil().unescape(sHtmlContent1)
 
             content = json.loads(sHtmlContent)
-            content = content["details"]["player"]
+
+            content = content["data"]["videos"]["files"]
+
             if content:
-                for x in content['sources']:
-                    if 'Auto' in str(x['label']):
+                for x in content:
+                    if 'Auto' in str(content[x]['label']):
                         continue
-                    url2 = str(x['file']).replace('index', str(x['label']))
+                    url2 = str(content[x]['file']).replace('index', str(content[x]['label']))
 
                     url.append(url2)
-                    qua.append(repr(x['label']))
-                    
+                    qua.append(repr(content[x]['label']))
+
                 api_call = dialog().VSselectqual(qua,url)
 
             if (api_call):

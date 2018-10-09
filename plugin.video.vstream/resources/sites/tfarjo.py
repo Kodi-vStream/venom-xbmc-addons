@@ -25,8 +25,8 @@ SERIE_SERIES = (URL_MAIN + 'series', 'showSeries')
 #SERIE_VFS = (URL_MAIN + 'series/vf', 'showSeries')
 #SERIE_VOSTFRS = (URL_MAIN + 'series/vostfr', 'showSeries') #pas fiable et pareil que dernier ajouts
 
-URL_SEARCH_MOVIES = (URL_MAIN + 'search', 'showMovies')
-URL_SEARCH_SERIES = (URL_MAIN + 'search', 'showMovies')
+URL_SEARCH_MOVIES = ('', 'showMovies')
+URL_SEARCH_SERIES = ('', 'showMovies')
 
 FUNCTION_SEARCH = 'showMovies'
 
@@ -132,7 +132,7 @@ def showMovies(sSearch = ''):
         sCode = getcode(sHtmlContent)
 
         sText = sSearch
-        oRequest = cRequestHandler(URL_SEARCH_MOVIES[0])
+        oRequest = cRequestHandler(URL_MAIN + 'search')
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
         oRequest.addHeaderEntry('Referer', URL_MAIN)

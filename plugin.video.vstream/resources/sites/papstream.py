@@ -16,7 +16,7 @@ SITE_DESC = 'Films, Séries & Mangas'
 
 URL_MAIN = 'https://ww1.papstream.xyz/'
 
-URL_SEARCH = (URL_MAIN + 'rechercher', 'showMovies')
+URL_SEARCH = ('https://www2.papstream.xyz/rechercher', 'showMovies')
 
 URL_SEARCH_MOVIES = ('', 'showMovies')
 URL_SEARCH_SERIES = ('', 'showMovies')

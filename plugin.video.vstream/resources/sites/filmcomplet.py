@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
+
 from resources.lib.gui.hoster import cHosterGui
 #from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -17,13 +18,7 @@ SITE_IDENTIFIER = 'filmcomplet'
 SITE_NAME = 'Film Complet'
 SITE_DESC = 'Film Complet - film en streaming HD'
 
-def getRealUrl():
-    url = 'https://mesfilms.top/'
-    oRequestHandler = cRequestHandler(url)
-    oRequestHandler.request()
-    return oRequestHandler.getRealUrl()
-
-URL_MAIN = getRealUrl()
+URL_MAIN = 'https://mesfilms.top/'
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'
 
 #definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
@@ -354,7 +349,10 @@ def showHosters():
     sPost = oInputParameterHandler.getValue('sPost')
     sNume = oInputParameterHandler.getValue('sNume')
 
-    sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
+    #trouve la vrais url
+    oRequestHandler = cRequestHandler(URL_MAIN)
+    sHtmlContent = oRequestHandler.request()
+    sUrl2 = oRequestHandler.getRealUrl() + 'wp-admin/admin-ajax.php'
 
     oRequestHandler = cRequestHandler(sUrl2)
     oRequestHandler.setRequestType(1)
