@@ -8,7 +8,6 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.util import cUtil
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-
 import re
 
 SITE_IDENTIFIER = 'streamingbb'
@@ -51,7 +50,6 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
-
 
 def showGenres():
     oGui = cGui()
@@ -105,7 +103,6 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
@@ -138,7 +135,7 @@ def showMovies(sSearch = ''):
             sTitle = aEntry[2]#.decode("unicode_escape").encode("latin-1")
 
             #Si recherche et trop de resultat, on nettoye
-            if sSearch and total > 2:
+            if sSearch and total > 3:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
                     continue
 
@@ -151,6 +148,7 @@ def showMovies(sSearch = ''):
 
         progress_.VSclose(progress_)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -159,7 +157,6 @@ def showMovies(sSearch = ''):
 
     if not sSearch:
         oGui.setEndOfDirectory()
-
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
@@ -170,7 +167,6 @@ def __checkForNextPage(sHtmlContent):
         return aResult[1][0]
 
     return False
-
 
 def showLinks():
     oGui = cGui()
@@ -225,7 +221,6 @@ def showLinks():
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
-
 
 def showHosters():
     oGui = cGui()
