@@ -20,7 +20,7 @@ SITE_DESC = 'Séries & Animés en Streaming'
 URL_MAIN = 'https://fr.seriestreaming.site/'
 
 SERIE_SERIES = ('http://', 'load')
-SERIE_NEWS = (URL_MAIN + 'nouveaux-episodes', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'les-nouveaux-episodes', 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'top-series', 'showMovies')
 SERIE_COMMENT = (URL_MAIN + 'le-top-des-meilleures-serie', 'showMovies')
 SERIE_LIST = (URL_MAIN, 'showAZ')
@@ -77,7 +77,7 @@ def showSerieYears():
     #for i in itertools.chain(xrange(5, 7), [8, 9]): afficher dans l'ordre (pense bete ne pas effacer)
     oGui = cGui()
     from itertools import chain
-    generator = chain([1936, 1940, 1941, 1944, 1950, 1952], xrange(1958, 2019))#desordre
+    generator = chain([1936, 1940, 1941, 1950, 1955], xrange(1958, 2019))#desordre
 
     for i in reversed(list(generator)):
         Year = str(i)
@@ -345,7 +345,7 @@ def showLink():
     if (aResult[0] == True):
         linkid = aResult[1][0]
 
-    sPattern = '<\/i> *Lien.+?</td>.+?alt="([^"]+)".+?center">(.+?)</td>.+?data-id="([^"]+)">'
+    sPattern = '<\/i> *Lien.+?</td>.+?alt="([^"]+)".+?(?:|center">([^<]+)</td>.+?)data-id="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         total = len(aResult[1])
