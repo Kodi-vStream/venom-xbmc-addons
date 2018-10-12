@@ -241,19 +241,20 @@ def searchGlobal():
         _pluginSearch(plugin, sSearchText)
 
     window(10101).setProperty('search', 'false')
-    progress_.VSclose(progress_)
+    #progress_.VSclose(progress_)
 
     #affichage
     total=len(oGui.searchResults)
+    #progress_ = progress().VScreate()
 
     for count,result in enumerate(oGui.searchResults):
-        text = '%s/%s - %s' % ((count+1/total), total, result['guiElement'].getTitle())
+        #text = '%s/%s - %s' % ((count+1/total), total, result['guiElement'].getTitle())
 
         #if(count == 0):
         #    cConfig().updateDialogSearch(dialog, total, text,True)
         #else:
         #    cConfig().updateDialogSearch(dialog, total, text)
-        #progress_.VSupdatesearch(progress_, total, result['guiElement'].getTitle())
+        progress_.VSupdatesearch(progress_, total, "Patience...")
 
 
 
@@ -268,7 +269,7 @@ def searchGlobal():
         #     else:
         #         break
 
-    #progress_.VSclose(progress_)
+    progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
