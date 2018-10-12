@@ -356,7 +356,7 @@ def showLink():
                 break
 
             sHost = re.sub('\..+', '', aEntry[0]).capitalize()
-            sUrl = URL_MAIN + 'link/' + aEntry[2] + linkid
+            sUrl = URL_MAIN + 'link/' + aEntry[2] + '/' + linkid
             sLang = aEntry[1]
             sTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang, sColor, sHost)
 
