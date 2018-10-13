@@ -190,21 +190,26 @@ class cHoster(iHoster):
             data = DecodeAllThePage(data)
 
             at = re.search(r'var\s*at\s*=\s*"([^"]*?)"', data)
+            
+            l = re.search(r'\.get\( *"/player/get_md5.php",.+?link_1: *(.+?), *server_2: *(.+?), *vid: *"([^"]+)"}\)', data)
+            if l:
+               vid_server = re.search(r'var ' + l.group(2) + ' = "([^"]+)"', data).group(1)
 
-            l = re.search(r'link_1: ([a-zA-Z]+), server_1: ([a-zA-Z]+)', data)
+               vid_link = re.search(r'var ' + l.group(1) + ' = "([^"]+)"', data).group(1)
 
-            vid_server = re.search(r'var ' + l.group(2) + ' = "([^"]+)"', data).group(1)
-            vid_link = re.search(r'var ' + l.group(1) + ' = "([^"]+)"', data).group(1)
+               vid_key = l.group(3)
+            else:
+                VSlog("prob 3")
 
             #new video id, not really usefull
-            m = re.search(r' vid: "([a-zA-Z0-9]+)"}', data)
-            if m:
-                id = m.group(1)
-
-            if vid_server and vid_link and at:
+            # m = re.search(r' vid: "([a-zA-Z0-9]+)"}', data)
+            # if m:
+                # id = m.group(1)
+            
+            if vid_server and vid_link and at and vid_key:
 
                 #get_data = {'server': vid_server.group(1), 'link': vid_link.group(1), 'at': at.group(1), 'adb': '0/','b':'1','vid':id} #,'iss':'MzEuMz'
-                get_data = {'server_1': vid_server, 'link_1': vid_link, 'at': at.group(1), 'adb': '0/','b':'1','vid':id}
+                get_data = {'server_2': vid_server, 'link_1': vid_link, 'at': at.group(1), 'adb': '0/','b':'1','vid':vid_key}
 
                 headers['x-requested-with'] = 'XMLHttpRequest'
 
