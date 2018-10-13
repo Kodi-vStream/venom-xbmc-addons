@@ -840,46 +840,13 @@ def DecryptDlProtecte(url):
     headers1.update({'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'})
 
     #Requete
-    request = urllib2.Request(url2, data, headers1)
-    try:
-        reponse = urllib2.urlopen(request, timeout = 5)
-    except urllib2.URLError, e:
-        dialogs.VSinfo("Site Dl-Protecte HS", "Erreur", 5)
-        VSlog( e.read() )
-        VSlog( e.reason )
-        return ''
-    except urllib2.HTTPError, e:
-        dialogs.VSinfo("Site Dl-Protecte HS", "Erreur", 5)
-        VSlog( e.read() )
-        VSlog( e.reason )
-        return ''
-    except timeout:
-        VSlog('timeout')
-        dialogs.VSinfo("Site Dl-Protecte HS", "Erreur", 5)
-        return ''
-
-    sHtmlContent = reponse.read()
+    oRequestHandler = cRequestHandler(url)
+    reponse = oRequestHandler.request()
+    sHtmlContent = reponse
 
     #VSlog( 'result'  + str(sHtmlContent))
 
-    #Recuperatioen et traitement cookies ???
-    cookies=reponse.info()['Set-Cookie']
-    c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);', cookies)
-    if not c2:
-        VSlog( 'Probleme de cookies')
-        return ''
-    cookies = ''
-    for cook in c2:
-        cookies = cookies + cook[0] + '=' + cook[1] + ';'
-
     #VSlog( 'Cookie'  + str(cookies))
-
-    reponse.close()
-
-    if not '"error":false' in sHtmlContent:
-        VSlog('Captcha rate')
-        VSlog(sHtmlContent)
-        return
 
     #Creation Header
     headers2 = dict(headersBase)
@@ -896,30 +863,27 @@ def DecryptDlProtecte(url):
     #multipart_form_data = { RandomKey : '', 'submit' : 'Valider'  }
 
     import string
-    _BOUNDARY_CHARS = string.digits + string.ascii_letters
-    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(30))
+    _BOUNDARY_CHARS = string.digits
+    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(13))
 
-    multipart_form_data = { RandomKey : '', 'submit' : 'Valider' }
-    data, headersMulti = encode_multipart(multipart_form_data, {}, boundary)
+    multipart_form_data = {'submit':'Continuer'}
+    data, headersMulti, headers1 = encode_multipart(multipart_form_data, {}, boundary)
+
+    headers2.update({'Host' : URL_DECRYPT})
     headers2.update(headersMulti)
-    #VSlog( 'header 2'  + str(headersMulti))
-    #VSlog( 'data 2'  + str(data))
-
-    #rajout des cookies
-    headers2.update({'Cookie': cookies})
-
-    #Modifications
+    headers2.update(headers1)
+    headers2.update({'Referer': url})
     headers2.update({'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'})
+
+    VSlog( 'header 2'  + str(headersMulti))
+    VSlog(str(headers1))
+    VSlog( 'data 2'  + str(data))
 
     #VSlog( str(headers2) )
 
     #Requete
     request = urllib2.Request(url, data, headers2)
-    try:
-        reponse = urllib2.urlopen(request)
-    except urllib2.URLError, e:
-        print e.read()
-        print e.reason
+    reponse = urllib2.urlopen(request)
 
     sHtmlContent = reponse.read()
 
@@ -978,7 +942,7 @@ def encode_multipart(fields, files, boundary = None):
 
     for name, value in fields.items():
         lines.extend((
-            '--{0}'.format(boundary),
+            '-----------------------------{0}'.format(boundary),
             'Content-Disposition: form-data; name="{0}"'.format(escape_quote(name)),
             '',
             str(value),
@@ -1000,14 +964,16 @@ def encode_multipart(fields, files, boundary = None):
         ))
 
     lines.extend((
-        '--{0}--'.format(boundary),
+        '-----------------------------{0}--'.format(boundary),
         '',
     ))
     body = '\r\n'.join(lines)
 
     headers = {
-        'Content-Type': 'multipart/form-data; boundary={0}'.format(boundary),
-        'Content-Length': str(len(body)),
+        'Content-Type': 'multipart/form-data; boundary=---------------------------{0}--'.format(boundary)
+    }
+    headers1 = {
+        'Content-Length': str(len(body))
     }
 
-    return (body, headers)
+    return (body, headers, headers1)
