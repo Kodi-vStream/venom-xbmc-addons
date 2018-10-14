@@ -4,9 +4,10 @@
 import urllib
 import urllib2
 
+
 from urllib2 import HTTPError, URLError
 
-from resources.lib.comaddon import addon, dialog
+from resources.lib.comaddon import addon, dialog, VSlog
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
@@ -28,6 +29,7 @@ class cRequestHandler:
         self.__bRemoveNewLines = False
         self.__bRemoveBreakLines = False
         self.__sResponseHeader = ''
+        self.BUG_SSL = False
 
     def removeNewLines(self, bRemoveNewLines):
         self.__bRemoveNewLines = bRemoveNewLines
@@ -39,7 +41,7 @@ class cRequestHandler:
         self.__cType = cType
 
     def setTimeout(self, valeur):
-        self.__timeout = valeur
+        self.__timeout = valeur    
 
     def addHeaderEntry(self, sHeaderKey, sHeaderValue):
         for sublist in self.__aHeaderEntries:
@@ -72,7 +74,7 @@ class cRequestHandler:
     def GetCookies(self):
         if 'Set-Cookie' in self.__sResponseHeader:
             import re
-
+            
             #cookie_string = self.__sResponseHeader.getheaders('set-cookie')
             #c = ''
             #for i in cookie_string:
@@ -125,12 +127,14 @@ class cRequestHandler:
 
         sContent = ''
         try:
-            try:
-                oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout)
-            except Exception,e:
+
+            if self.BUG_SSL:
+                VSlog('Retrying with SSL bug')
                 import ssl
                 gcontext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
                 oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout,context=gcontext)
+            else:
+                oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout)
 
             sContent = oResponse.read()
 
@@ -153,7 +157,7 @@ class cRequestHandler:
                 #Protected by cloudFlare ?
                 from resources.lib import cloudflare
                 if cloudflare.CheckIfActive(e.read()):
-
+ 
                     cookies = self.GetCookies()
 
                     print 'Page protegee par cloudflare'
@@ -166,8 +170,12 @@ class cRequestHandler:
                 return ''
 
         except urllib2.URLError, e:
+            if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
+                self.BUG_SSL = True
+                return self.__callRequest()
+
             self.DIALOG.VSerror("%s (%s),%s" % (self.ADDON.VSlang(30205), e.reason , self.__sUrl))
-            return ''
+            return ''           
 
         if (self.__bRemoveNewLines == True):
             sContent = sContent.replace("\n","")
@@ -178,7 +186,7 @@ class cRequestHandler:
 
         return sContent
 
-    def getHeaderLocationUrl(self):
+    def getHeaderLocationUrl(self):        
         opened = urllib.urlopen(self.__sUrl)
         return opened.geturl()
 
@@ -213,7 +221,7 @@ def MPencode(fields):
 
 def __randy_boundary(length=10,reshuffle=False):
     import random,string
-
+    
     character_string = string.letters+string.digits
     boundary_string = []
     for i in range(0,length):
