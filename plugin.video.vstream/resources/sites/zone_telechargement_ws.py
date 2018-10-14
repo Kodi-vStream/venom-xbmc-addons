@@ -11,6 +11,7 @@ from resources.lib.comaddon import progress, dialog, VSlog, addon
 
 import urllib, re, urllib2
 import random
+import zlib
 
 #from resources.lib.dl_deprotect import DecryptDlProtect
 
@@ -808,81 +809,49 @@ def DecryptDlProtecte(url):
 
     if not (url):
         return ''
+    #VSlog(url)
 
     #url=url.replace('https','http')
 
-    headersBase = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0',
-    'Referer': url,
+    #headersBase = {
+    #'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0',
+    #'Referer': url,
     #'Origin': 'https://www.dl-protecte.com',
-    'Accept': 'application/json, text/javascript, */*; q=0.01',
-    'Accept-Language': 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4',
+    #'Accept': 'application/json, text/javascript, */*; q=0.01',
+    #'Accept-Language': 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4',
     #'Pragma': '',
     #'Accept-Charset': ''
-    }
+    #}
 
     #url2 = 'https://www.dl-protecte.org/php/Qaptcha.jquery.php'
     #url2 = 'https://www.protect-zt.com/php/Qaptcha.jquery.php'
-    url2 = 'https://' + url.split('/')[2] + '/php/Qaptcha.jquery.php'
+    #url2 = 'https://' + url.split('/')[2] + '/php/Qaptcha.jquery.php'
 
     #VSlog(url2)
 
     #Make random key
-    s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN_-#@";
-    RandomKey = ''.join(random.choice(s) for i in range(32))
+    #s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN_-#@";
+    #RandomKey = ''.join(random.choice(s) for i in range(32))
 
-    query_args = (('action' , 'qaptcha') , ('qaptcha_key' , RandomKey))
-    data = urllib.urlencode(query_args)
+    #query_args = (('action' , 'qaptcha') , ('qaptcha_key' , RandomKey))
+    #data = urllib.urlencode(query_args)
 
     #Creation Header
-    headers1 = dict(headersBase)
-    headers1.update({'X-Requested-With':'XMLHttpRequest'})
-    headers1.update({'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'})
+    #headers1 = dict(headersBase)
+    #headers1.update({'X-Requested-With':'XMLHttpRequest'})
+    #headers1.update({'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'})
 
     #Requete
-    request = urllib2.Request(url2, data, headers1)
-    try:
-        reponse = urllib2.urlopen(request, timeout = 5)
-    except urllib2.URLError, e:
-        dialogs.VSinfo("Site Dl-Protecte HS", "Erreur", 5)
-        VSlog( e.read() )
-        VSlog( e.reason )
-        return ''
-    except urllib2.HTTPError, e:
-        dialogs.VSinfo("Site Dl-Protecte HS", "Erreur", 5)
-        VSlog( e.read() )
-        VSlog( e.reason )
-        return ''
-    except timeout:
-        VSlog('timeout')
-        dialogs.VSinfo("Site Dl-Protecte HS", "Erreur", 5)
-        return ''
-
-    sHtmlContent = reponse.read()
+    oRequestHandler = cRequestHandler(url)
+    reponse = oRequestHandler.request()
+    sHtmlContent = reponse
 
     #VSlog( 'result'  + str(sHtmlContent))
 
-    #Recuperatioen et traitement cookies ???
-    cookies=reponse.info()['Set-Cookie']
-    c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);', cookies)
-    if not c2:
-        VSlog( 'Probleme de cookies')
-        return ''
-    cookies = ''
-    for cook in c2:
-        cookies = cookies + cook[0] + '=' + cook[1] + ';'
-
     #VSlog( 'Cookie'  + str(cookies))
 
-    reponse.close()
-
-    if not '"error":false' in sHtmlContent:
-        VSlog('Captcha rate')
-        VSlog(sHtmlContent)
-        return
-
     #Creation Header
-    headers2 = dict(headersBase)
+    headers2 = {}
 
     #tempo pas necessaire
     #cGui().showInfo("Patientez", 'Décodage en cours', 2)
@@ -896,34 +865,32 @@ def DecryptDlProtecte(url):
     #multipart_form_data = { RandomKey : '', 'submit' : 'Valider'  }
 
     import string
-    _BOUNDARY_CHARS = string.digits + string.ascii_letters
-    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(30))
+    _BOUNDARY_CHARS = string.digits
+    boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(13))
 
-    multipart_form_data = { RandomKey : '', 'submit' : 'Valider' }
+    multipart_form_data = {'submit':'continuer','submit':'Continuer'}
     data, headersMulti = encode_multipart(multipart_form_data, {}, boundary)
+
+    headers2.update({'Host' : 'www.dl-protect1.com'})
     headers2.update(headersMulti)
+    headers2.update({'Referer': url})
+    headers2.update({'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'})
+    headers2.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:64.0) Gecko/20100101 Firefox/64.0'})
+    headers2.update({'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3'})
+    headers2.update({'Accept-Encoding': 'gzip, deflate, br'})
+
     #VSlog( 'header 2'  + str(headersMulti))
     #VSlog( 'data 2'  + str(data))
-
-    #rajout des cookies
-    headers2.update({'Cookie': cookies})
-
-    #Modifications
-    headers2.update({'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'})
 
     #VSlog( str(headers2) )
 
     #Requete
     request = urllib2.Request(url, data, headers2)
-    try:
-        reponse = urllib2.urlopen(request)
-    except urllib2.URLError, e:
-        print e.read()
-        print e.reason
+    reponse = urllib2.urlopen(request)
 
-    sHtmlContent = reponse.read()
+    sHtmlContent = zlib.decompress(reponse.read(), 16+zlib.MAX_WBITS)
 
-    #fh = open('c:\\test.txt', "w")
+    #fh = open('d:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
 
@@ -967,18 +934,18 @@ def encode_multipart(fields, files, boundary = None):
     import random
     import string
 
-    _BOUNDARY_CHARS = string.digits + string.ascii_letters
+    _BOUNDARY_CHARS = string.digits
 
     def escape_quote(s):
         return s.replace('"', '\\"')
 
     if boundary is None:
-        boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(30))
+        boundary = ''.join(random.choice(_BOUNDARY_CHARS) for i in range(13))
     lines = []
 
     for name, value in fields.items():
         lines.extend((
-            '--{0}'.format(boundary),
+            '-----------------------------{0}'.format(boundary),
             'Content-Disposition: form-data; name="{0}"'.format(escape_quote(name)),
             '',
             str(value),
@@ -992,7 +959,7 @@ def encode_multipart(fields, files, boundary = None):
             mimetype = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
         lines.extend((
             '--{0}'.format(boundary),
-            'Content-Disposition: form-data; name="{0}"; filename="{1}"'.format(
+            'Content-Disposition: form-data; name="{0}"'.format(
                     escape_quote(name), escape_quote(filename)),
             'Content-Type: {0}'.format(mimetype),
             '',
@@ -1000,13 +967,13 @@ def encode_multipart(fields, files, boundary = None):
         ))
 
     lines.extend((
-        '--{0}--'.format(boundary),
+        '-----------------------------{0}--'.format(boundary),
         '',
     ))
     body = '\r\n'.join(lines)
 
     headers = {
-        'Content-Type': 'multipart/form-data; boundary={0}'.format(boundary),
+        'Content-Type': 'multipart/form-data; boundary=---------------------------{0}'.format(boundary),
         'Content-Length': str(len(body)),
     }
 
