@@ -25,7 +25,7 @@ class cHosterGui:
         oInputParameterHandler = cInputParameterHandler()
         sMovieTitle = oInputParameterHandler.getValue('title')
 
-        
+
 
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(self.SITE_NAME)
@@ -99,7 +99,7 @@ class cHosterGui:
             oContext.setTitle(self.ADDON.VSlang(30326))
             oContext.setOutputParameterHandler(oOutputParameterHandler)
             oGuiElement.addContextItem(oContext)
-            
+
         #Upload menu uptobox
         if cInputParameterHandler().getValue('site') != 'siteuptobox' and self.ADDON.getSetting('hoster_uptobox_premium') == 'true' :
             host = oHoster.getPluginIdentifier()
@@ -114,7 +114,7 @@ class cHosterGui:
             accept = 'onefichier' #les autres ne fonctionnent pas
             if host == accept :
                 oGui.CreateSimpleMenu(oGuiElement, oOutputParameterHandler, 'siteonefichier', 'siteonefichier', 'UptomyAccount', '1fichier')
-                
+
 
         #context FAV menu
         oGui.createContexMenuFav(oGuiElement, oOutputParameterHandler)
@@ -278,7 +278,7 @@ class cHosterGui:
             return self.getHoster('gorillavid')
         if ('daclips' in sHostName):
             return self.getHoster('daclips')
-        if ('estream' in sHostName):
+        if ('estream' in sHostName) and not ('widestream' in sHostName):
             return self.getHoster('estream')
         if ('hdvid' in sHostName):
             return self.getHoster('hdvid')
@@ -316,8 +316,6 @@ class cHosterGui:
             return self.getHoster('soundcloud')
         if ('mixcloud' in sHostName):
             return self.getHoster('mixcloud')
-        if ('ddlfr' in sHostName):
-            return self.getHoster('ddlfr')
 
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
@@ -337,7 +335,7 @@ class cHosterGui:
             return self.getHoster('lien_direct')
         #Cas special si parametre apres le lien_direct
         if (sHosterUrl.split('?')[0][-4:] in '.mp4.avi.flv.m3u8.webm'):
-            return self.getHoster('lien_direct')        
+            return self.getHoster('lien_direct')
 
         return False
 
@@ -404,7 +402,7 @@ class cHosterGui:
 
     def addToPlaylist(self):
         oGui = cGui()
- 
+
         oInputParameterHandler = cInputParameterHandler()
 
         sHosterIdentifier = oInputParameterHandler.getValue('sHosterIdentifier')
