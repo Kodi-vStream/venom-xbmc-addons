@@ -168,9 +168,9 @@ def showHosters():
     #Vire les bandes annonces
     sHtmlContent = sHtmlContent.replace('src="https://www.youtube.com/', '')
     
-    sHtmlContent = oParser.abParse(sHtmlContent, '<div class="tcontainer video-box">', '<div class="tcontainer video-box" id=')
+    #sHtmlContent = oParser.abParse(sHtmlContent, '<div class="tcontainer video-box">', '<div class="tcontainer video-box" id=')
     
-    sPattern = '<iframe.+?src="(.+?)"'
+    sPattern = 'src=\'([^\']+)\''
     aResult = oParser.parse(sHtmlContent, sPattern)
     if not aResult[0] == True:
         sPattern = '<div class="dllink"><a href="([^"]+)"'
