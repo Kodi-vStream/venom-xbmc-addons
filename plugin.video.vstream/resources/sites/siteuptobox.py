@@ -12,7 +12,7 @@ from resources.lib.config import GestionCookie
 
 from resources.lib.comaddon import progress, dialog, addon, xbmc, xbmcgui,VSlog
 
-import urllib2, re
+import urllib2, re,urllib
 import json
 
 SITE_IDENTIFIER = 'siteuptobox'
@@ -101,6 +101,10 @@ def showFile():
     if (oInputParameterHandler.exist('sToken')):
         sToken = oInputParameterHandler.getValue('sToken') 
 
+    sFoldername = ''
+    if (oInputParameterHandler.exist('sFoldername')):
+        sFoldername = oInputParameterHandler.getValue('sFoldername')
+        sUrl = sUrl + urllib.quote(sFoldername)
         
     oPremiumHandler = cPremiumHandler('uptobox')
 
@@ -145,12 +149,14 @@ def showFile():
 
                 for z in content[x]:
                     sTitle = z["name"]
-
-                    sUrl = API_URL.replace('none',sToken) + z["fld_name"]
+                    sFoldername = z["fld_name"]
+                    
+                    sUrl = API_URL.replace('none',sToken)
 
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                    oOutputParameterHandler.addParameter('sFoldername', sFoldername)
                     oOutputParameterHandler.addParameter('sToken', sToken)
                     oGui.addDir(SITE_IDENTIFIER, 'showFile', sTitle, 'genres.png', oOutputParameterHandler)
 
