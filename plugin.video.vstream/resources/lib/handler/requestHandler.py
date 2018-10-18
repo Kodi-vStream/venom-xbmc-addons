@@ -7,19 +7,14 @@ import urllib2
 
 from urllib2 import HTTPError, URLError
 
-from resources.lib.comaddon import addon, dialog
-
-BUG_SSL = False
-
-if BUG_SSL:
-    import ssl
+from resources.lib.comaddon import addon, dialog, VSlog
 
 class cRequestHandler:
     REQUEST_TYPE_GET = 0
     REQUEST_TYPE_POST = 1
     DIALOG = dialog()
     ADDON = addon()
-      
+
     def __init__(self, sUrl):
         self.__sUrl = sUrl
         self.__sRealUrl = ''
@@ -34,6 +29,7 @@ class cRequestHandler:
         self.__bRemoveNewLines = False
         self.__bRemoveBreakLines = False
         self.__sResponseHeader = ''
+        self.BUG_SSL = False
 
     def removeNewLines(self, bRemoveNewLines):
         self.__bRemoveNewLines = bRemoveNewLines
@@ -43,7 +39,7 @@ class cRequestHandler:
 
     def setRequestType(self, cType):
         self.__cType = cType
-        
+
     def setTimeout(self, valeur):
         self.__timeout = valeur    
 
@@ -56,10 +52,10 @@ class cRequestHandler:
 
     def addParameters(self, sParameterKey, mParameterValue):
         self.__aParamaters[sParameterKey] = mParameterValue
-        
+
     def addParametersLine(self, mParameterValue):
         self.__aParamatersLine = mParameterValue
-        
+
     #egg addMultipartFiled('sess_id':sId,'upload_type':'url','srv_tmp_url':sTmp)
     def addMultipartFiled(self,fields ):
         mpartdata = MPencode(fields)
@@ -70,11 +66,11 @@ class cRequestHandler:
     #Je sais plus si elle gere les doublons
     def getResponseHeader(self):
         return self.__sResponseHeader
-        
+
     # url after redirects
     def getRealUrl(self):
         return self.__sRealUrl
-        
+
     def GetCookies(self):
         if 'Set-Cookie' in self.__sResponseHeader:
             import re
@@ -84,7 +80,7 @@ class cRequestHandler:
             #for i in cookie_string:
             #    c = c + i + ', '
             c = self.__sResponseHeader.getheader('set-cookie')
-            
+
             c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);',c)
             if c2:
                 cookies = ''
@@ -131,31 +127,33 @@ class cRequestHandler:
 
         sContent = ''
         try:
-            
-            if BUG_SSL:
-                gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+
+            if self.BUG_SSL:
+                VSlog('Retrying with SSL bug')
+                import ssl
+                gcontext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
                 oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout,context=gcontext)
             else:
                 oResponse = urllib2.urlopen(oRequest, timeout = self.__timeout)
-                
+
             sContent = oResponse.read()
-            
+
             self.__sResponseHeader = oResponse.info()
-            
+
             #compressed page ?
             if self.__sResponseHeader.get('Content-Encoding') == 'gzip':
                 import zlib
                 sContent = zlib.decompress(sContent, zlib.MAX_WBITS|16)
-            
+
             #https://bugs.python.org/issue4773
             self.__sRealUrl = oResponse.geturl()
             self.__sResponseHeader = oResponse.info()
-        
+
             oResponse.close()
-            
+
         except urllib2.HTTPError, e:
             if e.code == 503:
-                
+
                 #Protected by cloudFlare ?
                 from resources.lib import cloudflare
                 if cloudflare.CheckIfActive(e.read()):
@@ -170,11 +168,15 @@ class cRequestHandler:
             if not sContent:
                 self.DIALOG.VSerror("%s (%d),%s" % (self.ADDON.VSlang(30205), e.code , self.__sUrl))
                 return ''
-                
+
         except urllib2.URLError, e:
+            if 'CERTIFICATE_VERIFY_FAILED' in str(e.reason) and self.BUG_SSL == False:
+                self.BUG_SSL = True
+                return self.__callRequest()
+
             self.DIALOG.VSerror("%s (%s),%s" % (self.ADDON.VSlang(30205), e.reason , self.__sUrl))
             return ''           
-        
+
         if (self.__bRemoveNewLines == True):
             sContent = sContent.replace("\n","")
             sContent = sContent.replace("\r\t","")
@@ -197,7 +199,7 @@ def MPencode(fields):
     content_type = "multipart/form-data, boundary=%s" % random_boundary
 
     form_data = []
-    
+
     if fields:
         for (key, value) in fields.iteritems():
             if not hasattr(value, 'read'):

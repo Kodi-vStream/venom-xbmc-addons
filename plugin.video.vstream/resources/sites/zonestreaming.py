@@ -9,7 +9,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, VSlog
 from resources.lib.multihost import cJheberg
-#from resources.lib.util import cUtil
+from resources.lib.util import cUtil
 import re
 
 #from base64 import urlsafe_b64encode
@@ -230,6 +230,11 @@ def showMovies(sSearch = ''):
             sTitle = sTitle.replace(' – Saison', ' Saison').replace(' - Saison', ' Saison')
             sThumb = aEntry[2]
 
+            #Filtre recherche
+            if sSearch and total > 3:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                    continue
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -243,6 +248,7 @@ def showMovies(sSearch = ''):
 
         progress_.VSclose(progress_)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -254,7 +260,7 @@ def showMovies(sSearch = ''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<link rel="next" href="(.+?)"'
+    sPattern = 'href="([^"]+)">Suivant<'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):

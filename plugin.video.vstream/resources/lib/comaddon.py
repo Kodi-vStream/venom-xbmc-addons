@@ -120,10 +120,28 @@ http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/xbmcgui.html#DialogProgress
 COUNT = 0
 DIALOG2 = None
 
+class empty():
+    
+    def VSupdate(self, dialog, total, text=''):
+        pass
+
+    def iscanceled(self):
+        pass
+
+    def VSclose(self, dialog):
+        pass
+
+
 class progress(xbmcgui.DialogProgress):
+
     
     def VScreate(self, title='vStream', desc=''):
         global DIALOG2
+        
+        current_window = xbmcgui.getCurrentWindowId()
+        if current_window == 10000:
+            return empty()
+
         if DIALOG2 == None:
             self.create(title, desc)
             VSlog('create dialog')

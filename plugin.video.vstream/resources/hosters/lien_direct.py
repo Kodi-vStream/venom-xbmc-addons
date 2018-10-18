@@ -85,6 +85,10 @@ class cHoster(iHoster):
             UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
             api_call = api_call + '|User-Agent=' + UA
 
+        if 'sport7' in api_call:
+            UA= 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
+            api_call = api_call + '|User-Agent=' + UA + '&referer=' + self.__sUrl
+
         #Special pour hd-stream.in et film-streaming.co
         if 'playlist.m3u8' in api_call:
             base = re.sub(r'(playlist.m3u8*.+)', '', api_call)
