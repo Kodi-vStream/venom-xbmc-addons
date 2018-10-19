@@ -209,7 +209,7 @@ def showMovies(sSearch=''):
         sHtmlContent = oParser.abParse(sHtmlContent, "<h4>Les derniers episodes", "les plus vues")
     #reste
     else:
-        sPattern = '<a class="image" title="(.+?)" href="([^"]+)"><img.+?src=(.+?)>'
+        sPattern = '<a class="image" title="(.+?)" href="([^"]+)".+?src="([^"]+)">'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == False):
@@ -268,12 +268,13 @@ def showS_E():
     oInputParameterHandler = cInputParameterHandler()
     rUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
 
     oParser = cParser()
     oRequestHandler = cRequestHandler(rUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<img class="img-flu.+?".+?src=(http.+?(?:.jpe*g|.png))|<a class="btn btn-primary btn-blo.+?" href="([^"]+)">(.+?)<\/a><\/div>'
+    sPattern = '<img class=".+?src="(http.+?(?:.jpe*g|.png))|<a class="btn btn-primary btn-blo.+?" href="([^"]+)">(.+?)<\/a><\/div>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -296,7 +297,6 @@ def showS_E():
                     oOutputParameterHandler = cOutputParameterHandler()
                     oOutputParameterHandler.addParameter('siteUrl', sUrl)
                     oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-                    oOutputParameterHandler.addParameter('sThumb', sThumb)
                     oGui.addTV(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, '', oOutputParameterHandler)
 
             else:#saison
@@ -323,21 +323,19 @@ def showLink():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumb = oInputParameterHandler.getValue('sThumb')
-    sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    if len(sThumb) < 20:
-        try:
-            sPattern = '<img class=".+?" src=(.+?) *alt='
-            aResult = oParser.parse(sHtmlContent, sPattern)
-            if aResult[0]:
-                sThumb = aResult[1][0]
+    sThumb = ''
+    try:
+        sPattern = '<img class=".+?" src="(.+?)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sThumb = aResult[1][0]
 
-        except:
-            pass
+    except:
+        pass
 
     linkid = ''
     sPattern = "link_id.+?'([^']+)';"
