@@ -136,9 +136,9 @@ def showFile():
             
             if x == "files":
                 for y in content[x]:
-                    sTitle = y["file_name"]
+                    sTitle = y["file_name"].encode('utf-8')
                     sHosterUrl = URL_MAIN + y["file_code"]
- 
+
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
                     if (oHoster != False):
                         oHoster.setDisplayName(sTitle)
@@ -148,8 +148,8 @@ def showFile():
             if x == "folders":
 
                 for z in content[x]:
-                    sTitle = z["name"]
-                    sFoldername = z["fld_name"]
+                    sTitle = z["name"].encode('utf-8')
+                    sFoldername = z["fld_name"].encode('utf-8')
                     
                     sUrl = API_URL.replace('none',sToken)
 
