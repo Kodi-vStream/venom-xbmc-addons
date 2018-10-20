@@ -250,7 +250,7 @@ def QuotePlus(sUrl):
     return urllib.quote_plus(sUrl)
 
 def QuoteSafe(sUrl):
-    return urllib.quote(sUrl,safe=':/')
+    return urllib.quote(sUrl,safe=':/?=')
 
 
 #deprecier utiliser comaddon dialog()
