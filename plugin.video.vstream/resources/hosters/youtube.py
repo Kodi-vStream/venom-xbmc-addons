@@ -14,7 +14,7 @@ from resources.lib import util
 import re
 import json
 
-URL_MAIN = 'https://www.keepvid.work/download/?link='
+URL_MAIN = 'https://www.keepvid.app/download/?link='
 
 class cHoster(iHoster):
 
