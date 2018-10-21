@@ -1,6 +1,9 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Votre nom ou pseudo
+
+# a nettoyer VSlog et commentaire merci
+return False
 from resources.lib.gui.hoster import cHosterGui #systeme de recherche pour l'hote
 from resources.lib.gui.gui import cGui #systeme d'affichage pour xbmc
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler #entree des parametres
