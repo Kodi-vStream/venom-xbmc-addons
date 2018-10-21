@@ -119,7 +119,7 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
-      sUrl = sSearch
+      sUrl = sSearch.replace(' ','+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
