@@ -246,6 +246,7 @@ def showMovies(sSearch = ''):
 
     if sSearch:
         #on redecode la recherche codé il y a meme pas une seconde par l'addon
+        sSearch = sSearch.replace(' ','+')
         sSearch = urllib2.unquote(sSearch)
 
         #pdata = 'action=recherche&story=' + sSearch
