@@ -13,7 +13,7 @@ SITE_IDENTIFIER = 'filmstreamvk_com'
 SITE_NAME = 'Filmstreamvk'
 SITE_DESC = 'Films, Séries & Mangas en Streaming'
 
-URL_MAIN = 'http://filmstreamvk.top/'
+URL_MAIN = 'http://filmstreamvk.club/'
 
 MOVIE_MOVIE = ('http', 'load')
 MOVIE_NEWS = (URL_MAIN + 'film-streaming-vf', 'showMovies')
