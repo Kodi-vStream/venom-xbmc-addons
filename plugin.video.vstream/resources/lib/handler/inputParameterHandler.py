@@ -18,7 +18,10 @@ class cInputParameterHandler:
                     sParamValue = self.__aParams[sParamName]
                     #return urllib.unquote_plus(sParamValue)
                     #en test depuis le 20/10
-                    return urllib.unquote(sParamValue)
+                    if not sParamValue.startswith('http'):
+                        return urllib.unquote_plus(sParamValue)
+                    else:
+                        return urllib.unquote(sParamValue)
             return False
 
     def exist(self, sParamName):
