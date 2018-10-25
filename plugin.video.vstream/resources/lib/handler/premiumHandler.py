@@ -56,7 +56,7 @@ class cPremiumHandler:
         
     def Checklogged(self,code):
         if 'uptobox' in self.__sHosterIdentifier:
-            if '//uptobox.com/?op=logout">Logout</a>' in code:
+            if '//uptobox.com/?op=logout&' in code or 'Success' in code:
                 return True
                 
         if 'onefichier' in self.__sHosterIdentifier:
