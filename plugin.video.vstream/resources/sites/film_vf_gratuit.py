@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'film_vf_gratuit'
 SITE_NAME = 'Film VF gratuit'
 SITE_DESC = 'Films en streaming'
 
-URL_MAIN = 'http://film-vf-gratuit.net/'
+URL_MAIN = 'http://voir.film-vf-gratuit.net/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
