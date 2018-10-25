@@ -31,19 +31,23 @@ FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_MOVIE = ('http://', 'load')
-MOVIE_VOSTFR = (URL_MAIN + 'films/vo-vostfr', 'showMovies')
+MOVIE_HD = (URL_MAIN + 'bluray/hd-1080p/', 'showMovies') #films HD
+MOVIE_VOSTFR = (URL_MAIN + 'films/vo-vostfr/', 'showMovies')
 
 SERIE_SERIES = ('http://', 'load') #séries (load source)
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
+SERIE_VFS = (URL_MAIN + 'series/vf/', 'showMovies') # serie VF
+SERIE_VOSTFRS = (URL_MAIN + 'series/vostfr/', 'showMovies') #serie VOSTFR
 
-ANIM_NEWS = (URL_MAIN + 'dessins-animes/', 'showMovies')
-ANIM_ENFANTS = (URL_MAIN + 'mangas/', 'showMovies')
+ANIM_ENFANTS = (URL_MAIN + 'dessins-animes/', 'showMovies')
+ANIM_NEWS = (URL_MAIN + 'mangas/', 'showMovies')
 
-DOC_NEWS = (URL_MAIN + 'replay-tv/documentaires/', 'showMovies')
+#avec capTcha
+#DOC_NEWS = (URL_MAIN + 'replay-tv/documentaires/', 'showMovies')
 
-SPORT_SPORTS = (URL_MAIN + 'replay-tv/sports/', 'showMovies')
+#SPORT_SPORTS = (URL_MAIN + 'replay-tv/sports/', 'showMovies')
 
-REPLAYTV_REPLAYTV = (URL_MAIN + 'replay-tv/emissions-tv-tele/', 'showMovies')
+#REPLAYTV_REPLAYTV = (URL_MAIN + 'replay-tv/emissions-tv-tele/', 'showMovies')
 
 def load():
     oGui = cGui()
@@ -64,6 +68,10 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF)', 'vf.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
@@ -75,17 +83,17 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés', 'animes.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
-    oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Replay TV', 'replay.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_REPLAYTV[0])
+    # oGui.addDir(SITE_IDENTIFIER, REPLAYTV_REPLAYTV[1], 'Replay TV', 'replay.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
-    oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
+    # oGui.addDir(SITE_IDENTIFIER, DOC_NEWS[1], 'Documentaires', 'doc.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
-    oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Sports', 'sport.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', SPORT_SPORTS[0])
+    # oGui.addDir(SITE_IDENTIFIER, SPORT_SPORTS[1], 'Sports', 'sport.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -116,22 +124,10 @@ def showMovies(sSearch = ''):
     #la fonction replace est pratique pour supprimer un code du resultat
 
     sPattern = '<a class="short-poster.+?" href="([^"]+)"><img itemprop="image" src="([^"]+)" alt="([^"]+)"\/>'
-    #pour faire simple recherche ce bout de code dans le code source de l'url
-    #- "([^"]+)" je veux cette partie de code qui se trouve entre guillemets mais pas de guillemets dans la chaine
-    #- .+? je ne veux pas cette partie et peux importe ceux qu'elle contient
-    #- >(.+?)< je veux cette partie de code qui se trouve entre < et > mais il peut y avoir n'inporte quoi entre les 2.
-    #- (https*://[^"]) je veux l'adresse qui commence par https ou http jusqu'au prochain guillemet.
-    #
-    #Pour tester vos Regex, vous pouvez utiliser le site https://regex101.com/ en mettant dans les modifiers "gmis"
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #le plus simple et de faire un  VSlog(str(aResult))
-    #dans le fichier log d'xbmc vous pourrez voir un array de ce que recupere le script
-    #et modifier sPattern si besoin
-    #VSlog(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
 
-    #affiche une information si aucun resulat
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
@@ -144,8 +140,6 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            #L'array affiche vos info dans l'orde de sPattern en commencant a 0, attention dans ce cas la on recupere 6 information
-            #Mais selon votre regex il ne peut y en avoir que 2 ou 3.
             sTitle = aEntry[2]
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]

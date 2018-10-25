@@ -9,7 +9,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 import re
-
+#le 25/10/18 affiche une erreur SSL
+return False
 SITE_IDENTIFIER = 'cineiz'
 SITE_NAME = 'Cineiz'
 SITE_DESC = 'Films, Séries et mangas en streaming'
