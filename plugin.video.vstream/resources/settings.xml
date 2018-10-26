@@ -58,8 +58,8 @@
         <setting label="30116" type="lsep"/>
         <setting type="sep"/>
 		
-	<!--parametre qui enregistre l'url actuel de zt -->
-	<setting id="ZT" type="text" label="" default="" visible="false"/>
+	   <!--parametre qui enregistre l'url actuel de zt -->
+	   <setting id="ZT" type="text" label="" default="" visible="false"/>
 		
         <!--<setting label="30420" type="action"  action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, search)" />-->
         <setting label="30420" type="action"  action="XBMC.RunScript(plugin.video.vstream, search, ?site=globalRun&function=search)" />
@@ -283,6 +283,13 @@
         <setting type="sep"/>
         <setting id="bs_login" type="text" label="30401" default=""/>
         <setting id="bs_pass" type="text" label="30402" default="" option="hidden"/> -->
+
+        <setting label="FirstOneTv" type="lsep"/>
+        <setting type="sep"/>
+        <setting id="hoster_firstonetv_premium" type="bool" label="30403" default="false"/>
+        <setting id="hoster_firstonetv_username" type="text" label="30401" default=""/>
+        <setting id="hoster_firstonetv_password" type="text" label="30402" default="" option="hidden"/>
+
         <setting label="Uptobox" type="lsep"/>
         <setting type="sep"/>
         <setting id="hoster_uptobox_premium" type="bool" label="30403" default="false"/>
