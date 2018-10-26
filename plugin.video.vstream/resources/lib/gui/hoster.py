@@ -322,6 +322,8 @@ class cHosterGui:
             return self.getHoster('ddlfr')
         if ('pdj' in sHostName):
             return self.getHoster('pdj')
+        if ('vidzstore' in sHostName):
+            return self.getHoster('vidzstore')
 
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
