@@ -190,6 +190,8 @@ class cHosterGui:
             return self.getHoster('vidtodo')
         if ('vidzi' in sHostName):
             return self.getHoster('vidzi')
+        if ('vcstream' in sHostName):
+            return self.getHoster('vidcloud')
         if ('filetrip' in sHostName):
             return self.getHoster('filetrip')
         if ('uptostream' in sHostName):

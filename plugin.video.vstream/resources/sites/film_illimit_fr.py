@@ -233,8 +233,10 @@ def showHosters():
     #Vire les bandes annonces
     sHtmlContent = sHtmlContent.replace('src="//www.youtube.com/', '')
 
+
     sPattern = '<iframe.+?src="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
@@ -262,7 +264,7 @@ def showHosters():
                 except:
                     pass
 
-            if 'official-film-illimite' in sHosterUrl:
+            if 'official-film-illimite' in sHosterUrl and not 'vcstream' in sHosterUrl:
 
                 #La vostfr n'existe que pour ce hoster
                 if '.srt' in sHosterUrl or 'VOSTFR' in sHosterUrl:
