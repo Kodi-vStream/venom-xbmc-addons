@@ -14,12 +14,12 @@ SITE_IDENTIFIER = 'filmzenstream_com'
 SITE_NAME = 'Filmzenstream'
 SITE_DESC = 'Film streaming HD gratuit complet'
 
-URL_MAIN = 'https://filmzenstream.club/'
+URL_MAIN = 'http://filmzenstream.online/'
 
 MOVIE_MOVIE = ('http://', 'load')
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
-MOVIE_ANNEES = (True, 'showYears')
+# MOVIE_ANNEES = (True, 'showYears')
 
 URL_SEARCH = (URL_MAIN + 'index.php?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?s=', 'showMovies')
@@ -40,9 +40,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
+    # oOutputParameterHandler = cOutputParameterHandler()
+    # oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANNEES[0])
+    # oGui.addDir(SITE_IDENTIFIER, MOVIE_ANNEES[1], 'Films (Par années)', 'annees.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -60,28 +60,26 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    #ne pas modifier les urls elles sont ecrits ainsi sur le site
-    liste.append( ['Action/Aventure', URL_MAIN + 'action/'] )
-    liste.append( ['Animation', URL_MAIN + 'animation/'] )
-    liste.append( ['Aventure', URL_MAIN + 'aventuree/'] )
-    liste.append( ['Comédie', URL_MAIN + 'comedie/'] )
-    liste.append( ['Crime', URL_MAIN + 'crime/'] )
-    liste.append( ['Documentaire', URL_MAIN + 'documentaire/'] )
-    liste.append( ['Drame', URL_MAIN + 'drame/'] )
-    liste.append( ['Etranger', URL_MAIN + 'etranger/'] )
-    liste.append( ['Famille', URL_MAIN + 'familial/'] )
-    liste.append( ['Fantastique', URL_MAIN + 'fantastiquee/'] )
-    liste.append( ['Guerre', URL_MAIN + 'guerre/'] )
-    liste.append( ['Histoire', URL_MAIN + 'histoire/'] )
-    liste.append( ['Horreur', URL_MAIN + 'horreur/'] )
-    liste.append( ['Musique', URL_MAIN + 'musique/'] )
-    liste.append( ['Mystère', URL_MAIN + 'mystere/'] )
-    liste.append( ['Romance', URL_MAIN + 'romance/'] )
-    liste.append( ['Science-fiction', URL_MAIN + 'science-fiction/'] )
-    liste.append( ['Téléfilm', URL_MAIN + 'telefilm/'] )
-    liste.append( ['Thriller', URL_MAIN + 'thrillerr/'] )
-    liste.append( ['Uncategorized', URL_MAIN + 'uncategorized/'] )
-    liste.append( ['Western', URL_MAIN + 'westernn/'] )
+    liste.append( ['Action', URL_MAIN + 'category/action/'] )
+    liste.append( ['Animation', URL_MAIN + 'category/animation/'] )
+    liste.append( ['Aventure', URL_MAIN + 'category/aventure/'] )
+    liste.append( ['Biographie', URL_MAIN + 'category/biographie/'] )
+    liste.append( ['Comédie', URL_MAIN + 'category/comedie/'] )
+    liste.append( ['Crime', URL_MAIN + 'category/crime/'] )
+    liste.append( ['Drame', URL_MAIN + 'category/drame/'] )
+    liste.append( ['Familial', URL_MAIN + 'category/familial/'] )
+    liste.append( ['Fantastique', URL_MAIN + 'category/fantastique/'] )
+    liste.append( ['Guerre', URL_MAIN + 'category/guerre/'] )
+    liste.append( ['Histoire', URL_MAIN + 'category/histoire/'] )
+    liste.append( ['Horreur', URL_MAIN + 'category/horreur/'] )
+    liste.append( ['Musical', URL_MAIN + 'category/musical/'] )
+    liste.append( ['Mystère', URL_MAIN + 'category/mystere/'] )
+    liste.append( ['Non classé', URL_MAIN + 'category/non-classe/'] )
+    liste.append( ['Romance', URL_MAIN + 'category/romance/'] )
+    liste.append( ['Science-fiction', URL_MAIN + 'category/science-fiction/'] )
+    liste.append( ['Sport', URL_MAIN + 'category/sport/'] )
+    liste.append( ['Thriller', URL_MAIN + 'category/thriller/'] )
+    liste.append( ['War', URL_MAIN + 'category/war/'] )
 
     for sTitle, sUrl in liste:
 
@@ -129,7 +127,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     
     oParser = cParser()
-    sPattern = 'class="item"> *<a href="([^<]+)">.+?<img.+?rc="([^<>"]+?)" alt="([^"]+?)".+?<span class="calidad2">(.+?)<\/span>'
+    sPattern = '<article id=".+?<a href="([^"]+)" title="([^"]+?)".+?<img.+?rc="([^"]+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -144,26 +142,23 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sName = aEntry[2]
-
-            sQual = aEntry[3]
             sUrl2 = aEntry[0]
-            sThumb = aEntry[1]
+            sTitle = aEntry[1]
+            sThumb = aEntry[2]
             if sThumb.startswith('//'):
                 sThumb = 'http:' + sThumb
-            sTitle = ('%s [%s]') % (sName, sQual)
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 3:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH_MOVIES[0], ''), sName) == 0:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH_MOVIES[0], ''), sTitle) == 0:
                     continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sName)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -178,7 +173,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<link rel="next" href="([^"]+?)"'
+    sPattern = '<a href="([^"]+?)">Page suivante'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -197,13 +192,11 @@ def showHosters():
 
     sHtmlContent = SucurieBypass().GetHtml(sUrl)
 
-    #Vire les bandes annonces
-    sHtmlContent = sHtmlContent.replace('src="//www.youtube.com/', '')
-
     sPattern = '<iframe.+?src="([^"]+)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
@@ -218,6 +211,9 @@ def showHosters():
 
             else:
                 sHosterUrl = aEntry
+                #Vire les bandes annonces
+                if 'youtube.com' in aEntry:
+                    continue
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
