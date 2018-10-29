@@ -20,8 +20,8 @@ SITE_DESC = 'Films & Séries en streaming'
 
 URL_MAIN = 'http://cinemay.ws/'
 
-MOVIE_NEWS = (URL_MAIN + 'film-en-streaming-vf-2018/', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming-vf-2018/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film-en-streaming-vf/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming-vf/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
 SERIE_NEWS = (URL_MAIN, 'showSeriesNews')
