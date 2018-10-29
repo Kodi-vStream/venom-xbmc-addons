@@ -455,8 +455,6 @@ def parseWebM3U():#Traite les m3u
 
         if '.ts' in sUrl2:
             sUrl2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(sUrl2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(sTitle)
-        else :
-            sUrl2 = urllib.quote_plus(sUrl2)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -703,15 +701,6 @@ def play__():#Lancer les liens
     if 'f4mTester' in sUrl:
         xbmc.executebuiltin('XBMC.RunPlugin(' + sUrl + ')')
         return
-    if 'firstonetv' or 'bouygtel' in sUrl:
-        sHosterUrl = sUrl
-        oHoster = cHosterGui().checkHoster(sHosterUrl)
-        if (oHoster != False):
-            oHoster.setDisplayName(sTitle)
-            oHoster.setFileName(sTitle)
-            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
-
-        oGui.setEndOfDirectory()
     else:
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(SITE_IDENTIFIER)
