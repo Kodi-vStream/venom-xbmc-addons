@@ -9,7 +9,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 from resources.lib.util import cUtil
-import re,urllib
+import re
 
 SITE_IDENTIFIER = 'streamzzz_com'
 SITE_NAME = 'Streamzzz'
@@ -215,9 +215,9 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb )
 
             if '/episodes/' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             elif '/movies/' in sUrl2:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addTV(SITE_IDENTIFIER, 'showSerieSaisons', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -280,12 +280,72 @@ def showSerieSaisons():
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb )
 
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
+def showLinks():
+    oGui = cGui()
+    
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    oParser = cParser()
+
+    oRequest = cRequestHandler(sUrl)
+    oRequest.addHeaderEntry('referer', URL_MAIN)
+    sHtmlContent = oRequest.request()
+    
+
+    cook = oRequest.GetCookies()
+
+    #récupération du Synopsis
+    sDesc = ''
+    try:
+        sPattern = '<p>(.+?)<\/p>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if aResult[0]:
+            sDesc = aResult[1][0]
+            sDesc = sDesc.replace('&#8230;', '...')
+    except:
+        pass
+
+    sPattern = '<a href="#playex".+?<img src=".+?.googleusercontent.com.+?domain=(.+?)">.+?document.getElementsByName.+?\(\'src\', \'(.+?)\'\);.+?<td>(.+?)<\/td><td>'
+    aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
+        for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
+
+            sHost = re.sub('\.\w+', '', aEntry[0])
+            if 'nowvideo' in sHost or 'youvid' in sHost:
+                continue
+            sHost = sHost.capitalize()
+            sUrl2 = aEntry[1]
+            sLang = aEntry[2]
+
+            sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
+
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb )
+            oOutputParameterHandler.addParameter('sCook', cook)
+            oOutputParameterHandler.addParameter('ref',sUrl)
+
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
+
+        progress_.VSclose(progress_)
+
+    oGui.setEndOfDirectory()
+ 
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -294,9 +354,9 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sCook = oInputParameterHandler.getValue('sCook')
     sRef = oInputParameterHandler.getValue('ref')
-
+    
     # pdata = 'action=url&episode='+sUrl
-
+    
     # oRequest = cRequestHandler('http://streamzzz.top/wp-content/themes/streamzzz/action.php')
     # oRequest.setRequestType(1)
     # oRequest.addHeaderEntry('User-Agent', UA)
@@ -309,30 +369,20 @@ def showHosters():
 
     # sUrl2 = oRequest.request()
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+    oRequest = cRequestHandler(sUrl)
+    oRequest.addHeaderEntry('User-Agent', UA)
+    oRequest.addHeaderEntry('Cookie', sCook)
+    oRequest.addHeaderEntry('Referer', sRef)
+    sHtmlContent = oRequest.request()
 
-    sPattern = "src', '(.+?)'.+?;"
+    sHosterUrl = oRequest.getRealUrl()
 
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-
-            sUrl = aEntry
-            oRequest = cRequestHandler(sUrl)
-            oRequest.addHeaderEntry('User-Agent', UA)
-            oRequest.addHeaderEntry('Cookie', sCook)
-            oRequest.addHeaderEntry('Referer', sRef)
-            sHtmlContent = oRequest.request()
-
-            sHosterUrl = oRequest.getRealUrl()
-
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+    oHoster = cHosterGui().checkHoster(sHosterUrl)
+    if (oHoster != False):
+        oHoster.setDisplayName(sMovieTitle)
+        oHoster.setFileName(sMovieTitle)
+        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+    
+    
