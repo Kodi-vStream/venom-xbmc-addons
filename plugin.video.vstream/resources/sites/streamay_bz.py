@@ -1,14 +1,12 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#tester le 30/10 ne fonctionne pas
-return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, dialog
+from resources.lib.comaddon import progress, dialog, VSlog
 from resources.lib.util import cUtil
 import base64, re
 
@@ -47,9 +45,10 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Liste) ', 'listes.png', oOutputParameterHandler)
+    #30/10 Ne marche le site ne renvoie rien
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
+    #oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Liste) ', 'listes.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -88,13 +87,13 @@ def showGenres():
 
     sHtmlContent = oParser.abParse(sHtmlContent, '<div class="Title">Film Streaming Par Genres</div>', '</div></aside>')
 
-    sPattern = '<a href="([^"]+)" >([^"]+)<\/a>(.+?)<\/li>'
+    sPattern = '<li class="cat-item cat-item-.+?"><a href="(.+?)">(.+?)</a> (.+?)</li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
-            sTitle = aEntry[1] + aEntry[2]
+            sTitle = aEntry[1] + ' ' +aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -234,7 +233,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
 
-    sPattern = 'data-VidOpt="VideoOption\d+".+?<p class="AAIco-language">(.+?)<\/p>.+?<p class="AAIco-equalizer">(.+?)</p>' #lang,qual,host
+    sPattern = 'data-vidopt="VideoOption.+?">.+?ecteur <span>(.+?)</span></div><p class="AAIco-language">(.+?)</p><p class="AAIco-dns">(.+?)</p><p class="AAIco-equalizer">(.+?)</p>' #lang,qual,host
     aResult1 = re.findall(sPattern, sHtmlContent, re.DOTALL)
 
     sHtmlContent = oParser.abParse(sHtmlContent, '<div class="VideoPlayer">', '<div class="Image">')
