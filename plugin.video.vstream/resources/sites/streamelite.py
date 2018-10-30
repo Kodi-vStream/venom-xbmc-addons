@@ -1,8 +1,6 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #
-#tester le 30/10 ne fonctionne pas
-return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.hosterHandler import cHosterHandler
 from resources.lib.gui.gui import cGui
@@ -11,7 +9,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 import re
 
@@ -171,6 +169,7 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     if sSearch:
         sUrl = sSearch
+        sUrl = sUrl.replace(' ','+')
         sPattern = '<div class="result-item">.+?<img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">.+?<p>(.+?)<\/p>'
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -198,10 +197,17 @@ def showMovies(sSearch = ''):
             except:
                 sDesc= ''
 
-            sThumb = aEntry[0]
-            sTitle = aEntry[1]
-            sLang = aEntry[2].upper()
-            sUrl2 = aEntry[3]
+            if sSearch:
+                sThumb = aEntry[0]
+                sTitle = aEntry[1]
+                sLang = ''
+                sUrl2 = aEntry[2]
+                sDesc = re.sub('(\A.+?: )', '', aEntry[3])
+            else:
+                sThumb = aEntry[0]
+                sTitle = aEntry[1]
+                sLang = aEntry[2].upper()
+                sUrl2 = aEntry[3]
 
             sDisplayTitle = ('%s (%s)') % (sTitle, sLang)
 
@@ -250,8 +256,12 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
 
-    sPattern = '<iframe src=["\'](.+?)["\']'
+    sPattern = '<IFRAME SRC="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+        sPattern = '<iframe class="metaframe rptss" src="(.+?)".+?></iframe>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
