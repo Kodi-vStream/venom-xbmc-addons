@@ -1,8 +1,5 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-
-#tester le 30/10 ne fonctionne pas
-return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -191,7 +188,10 @@ def showMovies(sSearch = ''):
         sHtmlContent = sHtmlContent.replace('listes-des-series-annulees-et-renouvelees', '<>')
 
     oParser = cParser()
-    sPattern = '<div class="moviefilm"> *<a href=".+?"> *<img src="([^<>"]+)".+?\/> *<\/a> *<div class="movief"><a href="([^<]+)">([^<]+)<\/a>.+?<p>(.+?)<\/p>'
+    if sSearch:
+        sPattern = 'src="([^<]+)" alt=.+?<a class="post-title-link" href="([^<]+)" rel=.+?title="([^<]+)"'
+    else:
+        sPattern = 'src="([^<]+)" alt=.+?<a class="post-title-link" href="([^<]+)" rel=.+?title="([^<]+)".+?<div class="post-excerpt">([^<]+)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -221,7 +221,10 @@ def showMovies(sSearch = ''):
             #on retire la qualité
             sTitle = re.sub('\[\w+]', '', sTitle)
             sTitle = re.sub('\[\w+ \w+]', '', sTitle)
-            sDesc = aEntry[3].replace('[&hellip;]', '').replace('&rsquo;', '\'').replace('&#8230;', '...').replace('&#8217;', '\'')
+            if sSearch:
+                sDesc = ''
+            else:
+                sDesc = aEntry[3].replace('[&hellip;]', '').replace('&rsquo;', '\'').replace('&#8230;', '...').replace('&#8217;', '\'')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
