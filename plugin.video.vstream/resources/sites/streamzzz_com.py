@@ -288,7 +288,6 @@ def showSerieSaisons():
 
 def showLinks():
     oGui = cGui()
-    import base64
     
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -296,10 +295,12 @@ def showLinks():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     oParser = cParser()
 
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
+    oRequest = cRequestHandler(sUrl)
+    oRequest.addHeaderEntry('referer', URL_MAIN)
+    sHtmlContent = oRequest.request()
+    
 
-    cook = oRequestHandler.GetCookies()
+    cook = oRequest.GetCookies()
 
     #récupération du Synopsis
     sDesc = ''
@@ -312,7 +313,7 @@ def showLinks():
     except:
         pass
 
-    sPattern = 'href="#play.+?" onclick=".+?">(.+?)</a>.+?var *iframe.+?setAttribute\("rel","([^"]+)"\);.+?<td>(.+?)</td>'
+    sPattern = '<a href="#playex".+?<img src=".+?.googleusercontent.com.+?domain=(.+?)">.+?document.getElementsByName.+?\(\'src\', \'(.+?)\'\);.+?<td>(.+?)<\/td><td>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -327,7 +328,7 @@ def showLinks():
             if 'nowvideo' in sHost or 'youvid' in sHost:
                 continue
             sHost = sHost.capitalize()
-            sUrl2 = base64.b64decode(aEntry[1])
+            sUrl2 = aEntry[1]
             sLang = aEntry[2]
 
             sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)

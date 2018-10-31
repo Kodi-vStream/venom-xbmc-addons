@@ -138,7 +138,10 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sHosterUrl = "http:" + aEntry
+            if not aEntry.startswith('http'):
+                sHosterUrl = "http:" + aEntry
+            else:
+                sHosterUrl = aEntry
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
                 oHoster.setDisplayName(sMovieTitle)

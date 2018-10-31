@@ -110,7 +110,7 @@ def showMovies(sSearch = ''):
     if sSearch :
         #limite de caractere sinon bug de la recherche
         sSearch = sSearch[:20]
-        sUrl = URL_MAIN + 'index.php?ordering=&searchphrase=all&option=com_search&searchword=' + sSearch
+        sUrl = URL_MAIN + 'index.php?ordering=&searchphrase=all&option=com_search&searchword=' + sSearch.replace(' ','+')
         sPattern = 'class="rahh".+?href="\/[0-9a-zA-Z]+\/(.+?)".+?>(.+?)</a>'
     else :
         oInputParameterHandler = cInputParameterHandler()

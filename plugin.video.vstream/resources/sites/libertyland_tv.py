@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 #from resources.lib.util import cUtil
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 import re
 
 SITE_IDENTIFIER = 'libertyland_tv'
@@ -424,11 +424,11 @@ def showHosters():
     if (oInputParameterHandler.exist('idMov')):
         idMov = oInputParameterHandler.getValue('idMov')
         pdata = 'id=' + idHeb + '&id_movie=' + idMov + '&type=' + sType
-        pUrl = 'http://linkcaptcha.net/getStreamingMovie.php'
+        pUrl = 'https://libertyvf.org/v2/video.php'
     else:
         #serie pas d'idmov
         pdata = 'id=' + idHeb + '&type=' + sType
-        pUrl = 'http://linkcaptcha.net/getStreamingEpisode.php'
+        pUrl = 'https://libertyvf.org/v2/video.php'
 
     oRequest = cRequestHandler(pUrl)
     oRequest.setRequestType(1)

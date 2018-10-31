@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, addon
+from resources.lib.comaddon import progress, addon, VSlog
 import re
 sColor = addon().getSetting("deco_color")
 
@@ -14,7 +14,8 @@ SITE_IDENTIFIER = 'tfarjo'
 SITE_NAME = 'Tfarjo'
 SITE_DESC = 'Films & Séries en streaming VO | VF | VOSTFR'
 
-URL_MAIN = 'https://www5.tfarjo.ws/'
+#URL_MAIN = 'https://www5.tfarjo.ws/'
+URL_MAIN = 'https://www.filmz.cc/'
 
 MOVIE_NEWS = (URL_MAIN + 'films', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films', 'showMovies')
@@ -319,7 +320,7 @@ def showLink():
     cook = oRequest.GetCookies()
     sCode = getcode(sHtmlContent)
 
-    sPattern2 = "<button *class=\"players(?:(vf|vo|vostfr))\" *onclick=\"getIframe\('([^']+)'\).+?title=\"([^\"]+)\""
+    sPattern2 = "<button *class=\"players(?:(vf|vo|vostfr))\" *onclick=\"getIframe\('([^']+)'\).+?<\/span>([^<]+)<"
     aResult = oParser.parse(sHtmlContent, sPattern2)
 
     if (aResult[0] == True):
@@ -351,7 +352,6 @@ def showHosters():
     sCode = oInputParameterHandler.getValue('sCode')
     sCode2 = oInputParameterHandler.getValue('sCode2')
     sCook = oInputParameterHandler.getValue('sCook')
-
 
     oParser = cParser()
 

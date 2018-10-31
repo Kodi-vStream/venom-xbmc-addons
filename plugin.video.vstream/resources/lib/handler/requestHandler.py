@@ -90,7 +90,8 @@ class cRequestHandler:
         return ''
 
     def request(self):
-        self.__sUrl = self.__sUrl.replace(' ', '+')
+        #Supprimee car deconne si url contient ' ' et '+' en meme temps
+        #self.__sUrl = self.__sUrl.replace(' ', '+')
         return self.__callRequest()
 
     def getRequestUri(self):

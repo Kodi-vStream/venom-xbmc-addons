@@ -233,6 +233,7 @@ def showHosters():
     #Vire les bandes annonces
     sHtmlContent = sHtmlContent.replace('src="//www.youtube.com/', '')
 
+
     sPattern = '<iframe.+?src="(.+?)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -262,26 +263,26 @@ def showHosters():
                 except:
                     pass
 
-            if 'official-film-illimite' in sHosterUrl:
+            # if 'official-film-illimite' in sHosterUrl and not 'vcstream' in sHosterUrl and not 'hd-stream.xyz' in sHosterUrl and not 'oload' in sHosterUrl:
 
-                #La vostfr n'existe que pour ce hoster
-                if '.srt' in sHosterUrl or 'VOSTFR' in sHosterUrl:
-                    sDisplayTitle = sMovieTitle + ' [VOSTFR]'
-                else:
-                    sDisplayTitle = sMovieTitle
+            #     #La vostfr n'existe que pour ce hoster
+            #     if '.srt' in sHosterUrl or 'VOSTFR' in sHosterUrl:
+            #         sDisplayTitle = sMovieTitle + ' [VOSTFR]'
+            #     else:
+            #         sDisplayTitle = sMovieTitle
 
-                sDisplayTitle = sDisplayTitle + ' [COLOR coral]Google[/COLOR]'
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addLink(SITE_IDENTIFIER, 'ShowSpecialHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
-            else:
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
-                    oHoster.setDisplayName(sMovieTitle)
-                    oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            #     sDisplayTitle = sDisplayTitle + ' [COLOR coral]Google[/COLOR]'
+            #     oOutputParameterHandler = cOutputParameterHandler()
+            #     oOutputParameterHandler.addParameter('siteUrl', sHosterUrl)
+            #     oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            #     oOutputParameterHandler.addParameter('sThumb', sThumb)
+            #     oGui.addLink(SITE_IDENTIFIER, 'ShowSpecialHosters', sDisplayTitle, sThumb, '', oOutputParameterHandler)
+            # else:
+            oHoster = cHosterGui().checkHoster(sHosterUrl)
+            if (oHoster != False):
+                oHoster.setDisplayName(sMovieTitle)
+                oHoster.setFileName(sMovieTitle)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 

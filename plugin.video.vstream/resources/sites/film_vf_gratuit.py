@@ -17,7 +17,7 @@ SITE_IDENTIFIER = 'film_vf_gratuit'
 SITE_NAME = 'Film VF gratuit'
 SITE_DESC = 'Films en streaming'
 
-URL_MAIN = 'http://film-vf-gratuit.net/'
+URL_MAIN = 'http://voir.film-vf-gratuit.net/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -119,7 +119,7 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
-      sUrl = sSearch
+      sUrl = sSearch.replace(' ','+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -160,7 +160,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 

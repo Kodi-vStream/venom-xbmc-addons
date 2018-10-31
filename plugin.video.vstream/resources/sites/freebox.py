@@ -8,11 +8,14 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
+from resources.lib.config import GestionCookie
+from resources.lib.gui.hoster import cHosterGui
+from resources.lib.jsunfuck import JSUnfuck
 
 from resources.lib.epg import cePg
 from resources.lib.comaddon import progress, addon, xbmc, xbmcgui, VSlog, dialog
 
-import re, urllib2, urllib, sys
+import re, urllib2, urllib, sys, requests, random, json, string
 import xbmcplugin, xbmcvfs
 
 SITE_IDENTIFIER = 'freebox'
@@ -36,6 +39,7 @@ icon = 'tv.png'
 #/home/lordvenom/.kodi/
 #sRootArt = cConfig().getRootArt()
 sRootArt = "special://home/addons/plugin.video.vstream/resources/art/tv"
+ADDON = addon()
 
 class track():
     def __init__(self, length, title, path, icon,data=''):
@@ -85,6 +89,9 @@ def showIptvSite():
     liste.append( ['IptvSource', 'https://www.iptvsource.com/'] )
     liste.append( ['Iptv Gratuit', 'http://iptvgratuit.com/'] )
     liste.append( ['Daily Iptv List', 'https://www.dailyiptvlist.com/'])
+    liste.append( ['Iptvurls (m3u8 playlist)', 'http://www.iptvurls.com/iptv-daily-m3u-playlist/'])
+    liste.append( ['My Free Tivi', 'https://www.myfree-tivi.com/livetv/pp67'])
+    liste.append( ['FirstOneTv', 'https://www.firstonetv.net/Live/France'])
 
     for sTitle, sUrl in liste:
 
@@ -100,14 +107,21 @@ def showDailyList(): #On recupere les dernier playlist ajouter au site
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sHtmlContent = getHtml(sUrl)#On recupere le contenue de la page
-    #VSlog(str(sHtmlContent))
+    #VSlog(sHtmlContent)
+    #VSlog(sUrl)
 
-    if 'iptvsource.com' in sUrl:
+    if 'firstonetv' in sUrl:
+        sPattern = '<div class="post-thumb">\s*<img src="(.+?)" alt="(.+?)">\s*<a href="(.+?)".+?>(?:\s*<img.+?\s*<.+?<b>(.+?)<.+?>(.+?)<.+?>.+?>(.+?)</text>.+?</b><br><br>(.+?)</span>|)'
+    elif 'iptvsource.com' in sUrl:
         sPattern = '<h3 class="entry-title td-module-title"><a href="(.+?)" rel="bookmark" title="(.+?)"'
     elif 'iptvgratuit.com' in sUrl:
         sPattern = '<header class="entry-header">\s*<h2 class="entry-title">\s*<a href="(.+?)" rel="bookmark">(.+?)</a>'
     elif 'dailyiptvlist.com' in sUrl:
         sPattern = '</a><h2 class="post-title"><a href="(.+?)">(.+?)</a></h2><div class="excerpt"><p>.+?</p>'
+    elif 'iptvurls' in sUrl:
+        sPattern = '<strong><span style=" font-size:10px; color:#06C">(.+?)</span.+?[|](.+?)-(.+?)-(.+?)</strong><br'
+    elif 'myfree-tivi' in sUrl:
+        sPattern = '<img.+?src="(.+?)">\s*</a>\s*</div>\s*<div class="list-item-detals">\s*<a href="(.+?)" title="(.+?)">\s*<.+?\s*<hr>\s*<p class="list-item-text">(.+?)</p>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -122,14 +136,38 @@ def showDailyList(): #On recupere les dernier playlist ajouter au site
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[1]
-            sUrl2 = aEntry[0]
+            if 'firstonetv' in sUrl:
+                sThumb = 'https://www.firstonetv.net' + aEntry[0]
+                sTitle = aEntry[1]
+                sUrl2 = 'https://www.firstonetv.net' + aEntry[2]
+                sDesc = ('[COLOR skyblue]%s de %s a %s[/COLOR] \n [COLOR coral]Synopsis :[/COLOR] %s') % (aEntry[3], aEntry[4], aEntry[5], aEntry[6])
+
+            if 'iptvurls' in sUrl:
+                sTitle = "Playlist du : " + aEntry[3] +  '-' + aEntry[2] + '-' + aEntry[1]
+            elif not 'myfree-tivi' in sUrl and not 'firstonetv' in sUrl:
+                sTitle = aEntry[1]
+
+            if 'myfree-tivi' in sUrl and not 'firstonetv' in sUrl:
+                sThumb = "https:" + aEntry[0]
+                sUrl2 = 'https://www.myfree-tivi.com'+ aEntry[1]
+                sTitle = aEntry[2]
+                sDesc = aEntry[3]
+            elif not 'myfree-tivi' in sUrl and not 'firstonetv' in sUrl:
+                sUrl2 = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            if 'firstonetv' in sUrl:
+                oOutputParameterHandler.addParameter('sDescription', sDesc)
+                oOutputParameterHandler.addParameter('sThumbnail', sThumb)
 
-            oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, 'tv.png', oOutputParameterHandler)
+            if 'myfree-tivi' in sUrl or 'firstonetv' in sUrl:
+                oGui.addMovie(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            elif 'iptvurls' in sUrl:
+                oGui.addDir(SITE_IDENTIFIER, 'parseWebM3U', sTitle, 'tv.png', oOutputParameterHandler)
+            else:
+                oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, 'tv.png', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -145,7 +183,9 @@ def __checkForNextPage(sHtmlContent): #Affiche les page suivant si il y en a
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    if 'https://www.iptvsource.com/' in sUrl:
+    if 'myfree-tivi' in sUrl:
+        sPattern = '<li class="page-item"><a class="page-link waves-effect" href="(.+?)" data-page=".+.?">.+?<div class="clearfix"></div></nav></div>'
+    elif 'https://www.iptvsource.com/' in sUrl:
         sPattern = ' class="last" title=".+?">.+?</a><a href="(.+?)"><i class="td-icon-menu-right"></i>'
     else:
         sPattern = '<a class="next page-numbers" href="(.+?)">'
@@ -154,7 +194,10 @@ def __checkForNextPage(sHtmlContent): #Affiche les page suivant si il y en a
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        return  aResult[1][0]
+        if 'myfree-tivi' in sUrl:
+            return 'https://www.myfree-tivi.com' + aResult[1][0]
+        else:
+            return  aResult[1][0]
 
     return False
 
@@ -163,11 +206,46 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    #cConfig().log(str(sUrl))
+    sTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumbnail')
+    sDesc = oInputParameterHandler.getValue('sDescription')
+    #VSlog(str(sUrl))
+    if 'firstonetv' and 'Register-Login' in sUrl:
+
+        session = requests.Session()
+        url = 'https://www.firstonetv.net/Register-Login'
+        data = {'usrmail':ADDON.getSetting('hoster_firstonetv_username'),
+                'password':ADDON.getSetting('hoster_firstonetv_password'),
+                'login':'Login+Now'}
+
+        headers = {'user-agent':UA,
+                    'Content-Type':'application/x-www-form-urlencoded',
+                    'Referer':'https://www.firstonetv.net/Index',
+                    'Content-Length': str(len(data))}
+
+        session.post(url, data=data, headers=headers)
+        cookiesDict = requests.utils.dict_from_cookiejar(session.cookies)
+        getUser = re.match("{'(.+?)': '(.+?)',",str(cookiesDict))
+        VSlog(cookiesDict)
+        cookies = str(getUser.group(1)) + '=' + str(getUser.group(2))
+        GestionCookie().SaveCookie('firstonetv', cookies)
+        dialog().VSinfo('Authentification reussie merci de recharger la page', "FirstOneTv", 15)
+        return
 
     sHtmlContent = getHtml(sUrl)
 
-    if 'iptvgratuit.com' in sUrl:
+    if 'myfree-tivi' in sUrl:
+        aResult = re.findall('<meta name="csrf-token" content="(.+?)">',sHtmlContent)
+        if aResult:
+            token = aResult[0]
+            VSlog(token)
+            sHtmlContent = getHtml(sUrl,token)
+
+    if 'firstonetv' in sUrl:
+        sPattern = '(?:"surl":"{\".+?|,.+?)"([^"]+)\".+?"http([^"]+).m3u8'
+    elif 'myfree-tivi' in sUrl:
+        sPattern = "thumb'.+?'(.+?)'.+?title.+?'(.+?)'.+?url'.+?'(.+?)'"
+    elif 'iptvgratuit.com' in sUrl:
         sPattern = '<strong>2. Cliquez sur le lien pour télécharger la liste des chaînes .+?</strong></p><h4><a class="more-link" title="(.+?)" href="(.+?)" target="_blank"'
     elif 'dailyiptvlist.com' in sUrl:
         sPattern = '<p></br><br /><strong>2. Click on link to download .+? iptv channels list</strong></p>\s*.+?<a href="(.+?)">Download (.+?)</a>'
@@ -186,21 +264,41 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
             if progress_.iscanceled():
                 break
 
-            if 'iptvgratuit.com' in sUrl:
+            if 'firstonetv' in sUrl:
+                sTitle = sTitle + aEntry[0]
+                sDesc = sDesc
+                sThumb = sThumb
+                sUrl2 = 'http' + aEntry[1].replace('\\\/','/').replace("\/","/") + '.m3u8|Referer='+sUrl+'&User-Agent='+UA+'&X-Requested-With=ShockwaveFlash/28.0.0.137&Origin=https://www.firstonetv.net'
+            elif 'myfree-tivi' in sUrl:
+                sTitle = str(aEntry[1])
+                sUrl2 = str(aEntry[2])
+                sThumb = 'https:' + str(aEntry[0])
+                sDesc = ''
+            elif 'iptvgratuit.com' in sUrl:
                 sTitle = aEntry[0]
                 sUrl2 = aEntry[1]
+                sThumb = ''
+                sDesc = ''
             else:
                 sTitle = aEntry[1]
                 sUrl2 = aEntry[0]
+                sThumb = ''
+                sDesc = ''
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            if 'myfree-tivi'  or 'firstonetv' in sUrl:
+                oOutputParameterHandler.addParameter('sThumbnail', sThumb)
 
-            if 'iptvgratuit' and 'world-iptv-links-m3u-playlist-' in sUrl:
+            if 'iptvgratuit' and 'world-iptv-links' in sUrl:
                 oGui.addDir(SITE_IDENTIFIER, 'showWorldIptvGratuit', sTitle, '', oOutputParameterHandler)
-            else:
+            elif 'firstonetv' in sUrl:
+                oGui.addMovie(SITE_IDENTIFIER, 'play__', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            elif not 'firstonetv' or not 'myfree-tivi' in sUrl:
                 oGui.addDir(SITE_IDENTIFIER, 'parseWebM3U', sTitle, '', oOutputParameterHandler)
+            else:
+                oGui.addMovie(SITE_IDENTIFIER, 'play__', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -228,11 +326,104 @@ def showWorldIptvGratuit():#On recupere les liens qui sont dans les playlist "Wo
 
     oGui.setEndOfDirectory()
 
-def getHtml(sUrl, referer=None, hdr=None, data=None):#S'occupe des requetes
-    req = urllib2.Request(sUrl, data, headers)
-    response = urllib2.urlopen(req)
-    data = response.read()
-    response.close()
+def getHtml(sUrl, data=None):#S'occupe des requetes
+    if 'firstonetv' in sUrl:
+        cookies = GestionCookie().Readcookie('firstonetv')
+    if 'myfree-tivi' and 'watch' in sUrl:
+        VSlog(data)
+        cookies = GestionCookie().Readcookie('myfree_tivi')
+        headers = {'Host': 'www.myfree-tivi.com',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:64.0) Gecko/20100101 Firefox/64.0',
+            'Accept': 'application/json, text/javascript, */*; q=0.01',
+            'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
+            'Referer': sUrl,
+            'X-CSRF-Token': data,
+            'Connection': 'keep-alive',
+            'Cookie':cookies,
+            'Content-Length':'0',
+            'TE': 'Trailers'}
+
+        r = requests.post('https://www.myfree-tivi.com/getdata', headers=headers)
+
+    elif 'firstonetv'and '/France/' in sUrl:#On passe les redirection
+        aResult = re.findall('Live/.+?/*[^<>]+(?:-)([^"]+)',sUrl)
+        idChannel = aResult[0]
+
+        apiNumber = random.uniform(0.0000000000000000,0.9999999999999999)
+        url = 'https://www.firstonetv.net/api/?cacheFucker=' + str(apiNumber)
+        oRequestHandler = cRequestHandler(url)
+        oRequestHandler.setRequestType(1)
+        oRequestHandler.addHeaderEntry('User-Agent',UA)
+        oRequestHandler.addHeaderEntry('Cookie',cookies)
+        oRequestHandler.addParameters('action','hiro')
+        oRequestHandler.addParameters('result','get')
+        data = oRequestHandler.request()
+        hiro = unFuckFirst(data)#On decode Hiro
+
+        sPattern = '"hiro":(.+?),"hash":"(.+?)","time":(.+?),'
+
+        oParser = cParser()
+        aResult = oParser.parse(hiro, sPattern)
+
+        for aEntry in aResult[1]:
+            hiro = aEntry[0]
+            Hash = aEntry[1]
+            time = aEntry[2]
+
+        apiNumber = random.uniform(0.0000000000000000,0.9999999999999999)
+        url = 'https://www.firstonetv.net/api/?cacheFucker=' + str(apiNumber)
+        oRequestHandler = cRequestHandler(url)
+        oRequestHandler.setRequestType(1)
+        oRequestHandler.addHeaderEntry('User-Agent',UA)
+        oRequestHandler.addHeaderEntry('Cookie',cookies)
+        oRequestHandler.addParameters('action','hiro')
+        oRequestHandler.addParameters('result',hiro)
+        oRequestHandler.addParameters('time',time)
+        oRequestHandler.addParameters('hash',Hash)
+        data = oRequestHandler.request()
+
+        aResult = re.findall('"ctoken":"(.+?)"}',data)
+        cToken = aResult[0]
+
+        apiNumber = random.uniform(0.0000000000000000,0.9999999999999999)
+        url = 'https://www.firstonetv.net/api/?cacheFucker=' + str(apiNumber)
+        oRequestHandler = cRequestHandler(url)
+        oRequestHandler.setRequestType(1)
+        oRequestHandler.addHeaderEntry('User-Agent',UA)
+        oRequestHandler.addHeaderEntry('Cookie',cookies)
+        oRequestHandler.addParameters('action','channel')
+        oRequestHandler.addParameters('ctoken',cToken)
+        oRequestHandler.addParameters('c','fr')
+        oRequestHandler.addParameters('id',idChannel)
+        oRequestHandler.addParameters('native_hls','0')
+        oRequestHandler.addParameters('unsecure_hls','0')
+        data = oRequestHandler.request()
+
+        return data
+    elif 'firstonetv' in sUrl:
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('User-Agent',UA)
+        oRequestHandler.addHeaderEntry('Host','www.firstonetv.net')
+        oRequestHandler.addHeaderEntry('Cookie',cookies)
+        data = oRequestHandler.request()
+        return data
+
+    if data == None and 'watch' in sUrl:
+        oRequestHandler = cRequestHandler(sUrl)
+        data = oRequestHandler.request()
+        cookies = oRequestHandler.GetCookies()
+        GestionCookie().SaveCookie('myfree_tivi', cookies)
+        return data
+
+    else:
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('User-Agent',UA)
+
+    if not data == None and 'watch' in sUrl:
+        data = r.json()
+        VSlog(data)
+    else:
+        data = oRequestHandler.request()
     #VSlog(data)
     return data
 
@@ -242,10 +433,17 @@ def parseWebM3U():#Traite les m3u
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sHtmlContent = getHtml(sUrl)
-
     line = re.compile('EXTINF:.+?,(.+?)\n(.+?)\n').findall(sHtmlContent)
 
+    if line:
+        total = len(line)
+
+    progress_ = progress().VScreate(SITE_NAME)
+
     for sTitle, sUrl2 in line:
+        progress_.VSupdate(progress_, total)
+        if progress_.iscanceled():
+            break
         sUrl2 = sUrl2.replace('\r', '')
 
         #with open('D:\\playlist.m3u', 'r+b') as f:
@@ -257,8 +455,6 @@ def parseWebM3U():#Traite les m3u
 
         if '.ts' in sUrl2:
             sUrl2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(sUrl2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(sTitle)
-        else : 
-            sUrl2 = urllib.quote_plus(sUrl2)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -267,7 +463,7 @@ def parseWebM3U():#Traite les m3u
 
         oGuiElement = cGuiElement()
         oGuiElement.setSiteName(SITE_IDENTIFIER)
-        oGuiElement.setFunction('play2__')
+        oGuiElement.setFunction('play__')
         oGuiElement.setTitle(sTitle)
         oGuiElement.setFileName(sTitle)
         oGuiElement.setIcon('tv.png')
@@ -281,26 +477,6 @@ def parseWebM3U():#Traite les m3u
         oGui.addFolder(oGuiElement, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
-
-        # icon = "tv.png"
-        # if '.ts' in sUrl2:
-        #     sUrl2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(sUrl2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(sTitle)
-
-        # ok = True
-        # liz = xbmcgui.ListItem(sTitle, iconImage="DefaultVideo.png", thumbnailImage=icon)
-        # commands = []
-        # direct_epg_url= "plugin://plugin.video.vstream/?site=freebox&function=direct_epg&sMovieTitle=" + urllib.quote(sTitle) + "&siteUrl=" + urllib.quote_plus(sUrl2) + "&sFav=play__&sThumbnail=" + urllib.quote(icon) + "&sId=freebox&sCat=6"
-        # commands.append(( "Direct Epg", 'RunPlugin(' + direct_epg_url + ')'))
-        # soir_epg_url = "plugin://plugin.video.vstream/?site=freebox&function=soir_epg&sMovieTitle=" + urllib.quote(sTitle) + "&siteUrl=" + urllib.quote_plus(sUrl2) + "&sFav=play__&sThumbnail=" + urllib.quote(icon) + "&sId=freebox&sCat=6"
-        # commands.append(( "Soir Epg", 'RunPlugin(' + soir_epg_url + ')'))
-        # liz.addContextMenuItems( commands )
-        # liz.setArt({'thumb': icon, 'icon': icon})
-        # liz.setInfo(type="Video", infoLabels={"Title": sTitle})
-        # video_streaminfo = {'codec': 'h264'}
-        # liz.addStreamInfo('video', video_streaminfo)
-        #ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=sUrl2, listitem=liz, isFolder=False)
-    #xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def showWeb():#Code qui s'occupe de liens TV du Web
     oGui = cGui()
@@ -510,34 +686,6 @@ def parseWebM3URegex(infile):#Ancien fonction pour traiter les m3u
 
     return playlist
 
-def parseM3U(infile):#Traite les m3u local
-    inf = open(infile, 'r')
-
-    line = inf.readline()
-    if not line.startswith('#EXTM3U'):
-       return
-
-    playlist=[]
-    song=track(None, None, None, None)
-    ValidEntry = False
-
-    for line in inf:
-        line=line.strip()
-        if line.startswith('#EXTINF:'):
-            length,title=line.split('#EXTINF:')[1].split(',', 1)
-            song=track(length, title, None, None)
-            ValidEntry = True
-        elif (len(line) != 0):
-            if (not line.startswith('!') and ValidEntry):
-                ValidEntry = False
-                song.path=line
-                playlist.append(song)
-                song=track(None, None, None, None)
-
-    inf.close()
-
-    return playlist
-
 def play__():#Lancer les liens
     oGui = cGui()
 
@@ -550,54 +698,25 @@ def play__():#Lancer les liens
     if '[' in sUrl and ']' in sUrl:
         sUrl = GetRealUrl(sUrl)
 
-    playmode = ''
-
-    if playmode == 0:
-        stype = ''
-        if '.ts' in sUrl:
-            stype = 'TSDOWNLOADER'
-        elif '.m3u' in sUrl:
-            stype = 'HLS'
-        if stype:
-            from F4mProxy import f4mProxyHelper
-            f4mp=f4mProxyHelper()
-            xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=False)
-            f4mp.playF4mLink(sUrl, sTitle, proxy=None, use_proxy_for_chunks=False, maxbitrate=0, simpleDownloader=False, auth=None, streamtype=stype, setResolved=False, swf=None, callbackpath="", callbackparam="", iconImage=sThumbnail)
-            return
-
-    listitem = xbmcgui.ListItem(sTitle, iconImage="DefaultVideo.png", thumbnailImage=sThumbnail)
-    listitem.setInfo('video', {'Title': sTitle})
-    listitem.setProperty("IsPlayable", "true")
-    #xbmc.Player().play(sUrl, listitem)
-
     if 'f4mTester' in sUrl:
         xbmc.executebuiltin('XBMC.RunPlugin(' + sUrl + ')')
+        return
     else:
-        xbmc.Player().play(sUrl, listitem)
-    return
+        oGuiElement = cGuiElement()
+        oGuiElement.setSiteName(SITE_IDENTIFIER)
+        oGuiElement.setTitle(sTitle)
+        sUrl = sUrl.replace(' ','%20')
+        oGuiElement.setMediaUrl(sUrl)
+        oGuiElement.setThumbnail(sThumbnail)
 
-def play2__():#Lancer les liens iptv
-    oGui = cGui()
+        oPlayer = cPlayer()
+        oPlayer.clearPlayList()
+        oPlayer.addItemToPlaylist(oGuiElement)
+        #tout repetter
+        xbmc.executebuiltin("xbmc.playercontrol(RepeatAll)")
 
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl').replace('P_L_U_S', '+')
-    sTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
-
-    listitem = xbmcgui.ListItem(sTitle, iconImage="DefaultVideo.png", thumbnailImage=sThumbnail)
-    listitem.setInfo('video', {'Title': sTitle})
-    listitem.setProperty("IsPlayable", "true")
-    #xbmc.Player().play(sUrl, listitem)
-
-
-    if 'f4mTester' in sUrl:
-        if not xbmc.executebuiltin('XBMC.RunPlugin(' + sUrl + ')'): 
-            dialog().VSerror('Verifer fM4Tester')
-    else:
-        if not xbmc.Player().play(sUrl, listitem):
-            dialog().VSerror('Connexion Impossible')
-
-    return
+        oPlayer.startPlayer()
+        return
 
 def GetRealUrl(chain):#Recupere les liens des regex
 
@@ -650,3 +769,21 @@ def GetRealUrl(chain):#Recupere les liens des regex
 def openwindows():
     xbmc.executebuiltin( "ActivateWindow(%d, return)" % ( 10601, ) )
     return
+
+def unFuckFirst(data):
+    try:
+        #lib.common.log("JairoDemyst: " + data)
+        p = 186
+        hiro = re.findall(r'"hiro":"(.*?)"', data)[0]
+        parts = re.findall('([^;]+)', hiro)
+        for part in parts:
+            if '(' in part:
+                f = re.findall('(.*?)\((.+)\)',part)[0]
+                exec(f[0] + JSUnfuck(f[1]).decode())
+            else:
+                exec(part)
+        data = re.sub(r'"hiro":"(.*?)"', '"hiro":%s'%str(n), data, count=1)
+
+        return data
+    except:
+        return data

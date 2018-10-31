@@ -58,8 +58,8 @@
         <setting label="30116" type="lsep"/>
         <setting type="sep"/>
 		
-	<!--parametre qui enregistre l'url actuel de zt -->
-	<setting id="ZT" type="text" label="" default="" visible="false"/>
+	   <!--parametre qui enregistre l'url actuel de zt -->
+	   <setting id="ZT" type="text" label="" default="" visible="false"/>
 		
         <!--<setting label="30420" type="action"  action="XBMC.RunScript(special://home/addons/plugin.video.vstream/resources/lib/runscript.py, search)" />-->
         <setting label="30420" type="action"  action="XBMC.RunScript(plugin.video.vstream, search, ?site=globalRun&function=search)" />
@@ -75,13 +75,13 @@
 
         <setting visible="false" id="plugin_cineiz" type="bool" label="cineiz" default="true"/>
 
-        <setting visible="false" id="plugin_cinemavf" type="bool" label="Cinemavf" default="true"/>
-
         <setting visible="false" id="plugin_cinemay_com" type="bool" label="Cinemay" default="true"/>
 
         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
 
         <setting visible="false" id="plugin_ddl_island_su" type="bool" label="DDL Island" default="true"/>
+
+        <setting visible="false" id="plugin_ddlfr" type="bool" label="Ddlfr" default="true"/>
 
         <setting visible="false" id="plugin_disneyhd_tk" type="bool" label="DisneyHD" default="true"/>
 
@@ -140,8 +140,6 @@
         <setting visible="false" id="plugin_papstream" type="bool" label="papstream" default="true"/>
 
         <setting visible="false" id="plugin_planet_streaming" type="bool" label="planet streaming" default="true"/>
-
-        <setting visible="false" id="plugin_regarder_films" type="bool" label="Regarder.films" default="true"/>
 
         <setting visible="false" id="plugin_replaytvstreaming_com" type="bool" label="ReplayTVstreaming" default="true"/>
 
@@ -283,6 +281,13 @@
         <setting type="sep"/>
         <setting id="bs_login" type="text" label="30401" default=""/>
         <setting id="bs_pass" type="text" label="30402" default="" option="hidden"/> -->
+
+        <setting label="FirstOneTv" type="lsep"/>
+        <setting type="sep"/>
+        <setting id="hoster_firstonetv_premium" type="bool" label="30403" default="false"/>
+        <setting id="hoster_firstonetv_username" type="text" label="30401" default=""/>
+        <setting id="hoster_firstonetv_password" type="text" label="30402" default="" option="hidden"/>
+
         <setting label="Uptobox" type="lsep"/>
         <setting type="sep"/>
         <setting id="hoster_uptobox_premium" type="bool" label="30403" default="false"/>

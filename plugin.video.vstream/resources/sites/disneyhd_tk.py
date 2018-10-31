@@ -140,6 +140,7 @@ def showMovies():
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
+
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -151,7 +152,7 @@ def showMovies():
 
             sUrl = URL_MAIN + aEntry[0]
             sThumb = URL_MAIN + aEntry[1]
-            sTitle = aEntry[2].replace('streaming', '').replace(' 1080p', '')
+            sTitle = aEntry[2].replace('streaming', '').replace(' 1080p', '').replace('_', ' ')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)

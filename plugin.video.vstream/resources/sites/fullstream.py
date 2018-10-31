@@ -9,6 +9,8 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 
+import base64
+
 SITE_IDENTIFIER = 'fullstream'
 SITE_NAME = 'FullStream'
 SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
@@ -368,18 +370,20 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<a href="([^"]+)".+?class="link_a".+?<td>.+?</td><td>([^<]+)</td>'
+    sPattern = '<a href="([^"]+)" target="seriePlayer">.+?</a></td><td>(.+?)</td><td>(.+?)</td>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = aEntry[0]
+            sHosterUrl = aEntry[0].replace('/vid.php?vid=','')
+            sHosterUrl = base64.b64decode(sHosterUrl)
             #on affiche à nouveau la langue pour ceux qui proposent vf et vostfr
-            sLang = aEntry[1]
+            sQual = aEntry[1]
+            sLang = aEntry[2]
 
-            sDisplayTitle = ('%s (%s)') % (sMovieTitle, sLang)
+            sDisplayTitle = ('%s (%s) [%s]') % (sMovieTitle, sLang, sQual)
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):

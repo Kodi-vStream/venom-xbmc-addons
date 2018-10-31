@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 #vStream https://github.com/Kodi-vStream/venom-xbmc-addons
+#tester le 30/10 ne fonctionne pas / SSL error
+return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler

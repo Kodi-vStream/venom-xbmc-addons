@@ -9,7 +9,7 @@ from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.comaddon import progress
 
-import re, base64
+import re, base64, urllib
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
 
@@ -205,7 +205,7 @@ def showSeriesMenu():
     oOutputParameterHandler.addParameter('siteUrl', SERIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_GENRES[1], 'Séries (Genres)', 'genres.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()   
+    oGui.setEndOfDirectory()
 
 def showMangasMenu():
     oGui = cGui()
@@ -214,7 +214,7 @@ def showMangasMenu():
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, ANIM_NEWS[1], 'Animés (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()   
+    oGui.setEndOfDirectory()
 
 def showSearch():
     oGui = cGui()
@@ -464,7 +464,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'href="([^"]+)" *id="([^"]+)" *target="seriePlayer".+?i class=[^>]+><\/i> ([^<]+) <'
+    sPattern = 'href="([^"]+)" *id="([^"]+)" *target="seriePlayer".+?i class=[^>]+>(?:<\/i> ([^<]+))'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -481,7 +481,9 @@ def showHosters():
             except:
                 pass
 
-            if 'hqq' in url:
+            if 'opsktp' in url:
+                sHosterUrl = urllib.urlopen(url).geturl()
+            elif 'hqq' or 'cloudvid' or 'openload' or 'vidlox' in url:
                 sHosterUrl = url
             else:
                 url = decode_url(url, aEntry[1], tmp)
@@ -587,10 +589,15 @@ def serieHosters():
                     tmp = re.search('input id="tmp".+?value="([^"]+)"', sHtmlContent, re.DOTALL).group(1)
                 except:
                     pass
-                url2 = decode_url_Serie(sUrl, aEntry[0], tmp)
+                if 'hqq' or 'cloudvid' or 'openload' or 'vidlox' in url:
+                    sHosterUrl = aEntry[0]
+                elif 'opsktp' in url:
+                    sHosterUrl = urllib.urlopen(url).geturl()
+                else:
+                    url2 = decode_url_Serie(sUrl, aEntry[0], tmp)
 
-                #second convertion
-                sHosterUrl = ResolveUrl(url2)
+                    #second convertion
+                    sHosterUrl = ResolveUrl(url2)
 
             else:
                 sHosterUrl = aEntry[1]

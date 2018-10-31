@@ -6,7 +6,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.config import GestionCookie
+from resources.lib.comaddon import progress, VSlog, dialog, xbmc, xbmcgui
+import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0'
 
@@ -96,6 +98,7 @@ def showMovies(sSearch = ''):
             sUrl = sSearch
         else:
             sUrl = URL_SEARCH[0] + sSearch
+        sUrl = sUrl.replace(' ','+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -167,43 +170,265 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
     #Vire les bandes annonces
     sHtmlContent = sHtmlContent.replace('src="https://www.youtube.com/', '')
-    
+
     #sHtmlContent = oParser.abParse(sHtmlContent, '<div class="tcontainer video-box">', '<div class="tcontainer video-box" id=')
-    
-    sPattern = 'src=\'([^\']+)\''
+
+    sPattern = '<a class="" rel="noreferrer" href="([^"]+)"> <i class="fa fa-download"></i> <img src="/templates/Flymix/images/streaming/(.+?).png" /></a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if not aResult[0] == True:
-        sPattern = '<div class="dllink"><a href="([^"]+)"'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        
+
     if (aResult[0] == True):
+        total = len(aResult[1])
+        progress_ = progress().VScreate(SITE_NAME)
+        oGui.addText(SITE_IDENTIFIER, sMovieTitle)
+
         for aEntry in aResult[1]:
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
+                break
 
-            if '//goo.gl' in aEntry:
-                import urllib2
-                try:
-                    class NoRedirection(urllib2.HTTPErrorProcessor):
-                        def http_response(self, request, response):
-                            return response
+            oOutputParameterHandler = cOutputParameterHandler()
+            sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR]'
+            sDesc = ''
+            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
 
-                    url8 = aEntry.replace('https', 'http')
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
+            oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
-                    opener = urllib2.build_opener(NoRedirection)
-                    opener.addheaders.append (('User-Agent', UA))
-                    opener.addheaders.append (('Connection', 'keep-alive'))
+        progress_.VSclose(progress_)
 
-                    HttpReponse = opener.open(url8)
-                    sHosterUrl = HttpReponse.headers['Location']
-                    sHosterUrl = sHosterUrl.replace('https', 'http')
-                except:
-                    pass
+    oGui.setEndOfDirectory()
+
+def Display_protected_link():
+    #print 'entering Display_protected_link'
+    oGui = cGui()
+    oParser = cParser()
+    oInputParameterHandler = cInputParameterHandler()
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+
+    #Est ce un lien dl-protect ?
+    if '/l.k.s/' in sUrl:
+        sHtmlContent = DecryptddlProtect(sUrl)
+
+        if sHtmlContent:
+            #Si redirection
+            if sHtmlContent.startswith('http'):
+                aResult_dlprotect = (True, [sHtmlContent])
             else:
-                sHosterUrl = aEntry
+                sPattern_dlprotect = '<p><a href="(.+?)">.+?</a></p>'
+                aResult_dlprotect = oParser.parse(sHtmlContent, sPattern_dlprotect)
+
+        else:
+            oDialog = dialog().VSok('Désolé, problème de captcha.\n Veuillez en rentrer un directement sur le site, le temps de réparer')
+            aResult_dlprotect = (False, False)
+
+    elif 'keeplinks' in sUrl:
+        oDialog = dialog().VSinfo('Keeplinks non pris en charge','cinemegatoil',10)
+    #Si lien normal
+    else:
+        if not sUrl.startswith('http'):
+            sUrl = 'http://' + sUrl
+        aResult_dlprotect = (True, [sUrl])
+
+    if (aResult_dlprotect[0]):
+        for aEntry in aResult_dlprotect[1]:
+            sHosterUrl = aEntry
+
+            sTitle = sMovieTitle
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
+                oHoster.setDisplayName(sTitle)
+                oHoster.setFileName(sTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
+def DecryptddlProtect(url):
+    #print 'entering DecryptddlProtect'
+    if not (url): return ''
+
+    #Get host
+    tmp = url.split('/')
+    host = tmp[0] + '//' + tmp[2] + '/'+ tmp[3] + '/'
+    host1 = tmp[2]
+
+    cookies = ''
+    dialogs = dialog()
+    #try to get previous cookie
+    cookies = GestionCookie().Readcookie('cinemegatoil_org')
+
+    oRequestHandler = cRequestHandler(url)
+    if cookies:
+        oRequestHandler.addHeaderEntry('Cookie', cookies)
+    sHtmlContent = oRequestHandler.request()
+
+    #A partir de la on a les bon cookies pr la protection cloudflare
+
+    #Si ca demande le captcha
+    if 'Vérification Captcha:' in sHtmlContent:
+        if cookies:
+            GestionCookie().DeleteCookie('cinemegatoil_org')
+            oRequestHandler = cRequestHandler(url)
+            sHtmlContent = oRequestHandler.request()
+
+        s = re.findall('<img src="([^<>"]+?)" /><br />', sHtmlContent)
+        if host in s[0]:
+            image = s[0]
+        else:
+            image = host + s[0]
+
+        captcha,cookies2 = get_response(image, cookies)
+        cookies = cookies2.replace(';','')
+
+        oRequestHandler = cRequestHandler(url)
+        oRequestHandler.setRequestType(1)
+        oRequestHandler.addHeaderEntry('Host',host1)
+        oRequestHandler.addHeaderEntry('User-Agent', UA)
+        oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4')
+        oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+        oRequestHandler.addHeaderEntry('Cookie', cookies)
+        oRequestHandler.addHeaderEntry('Referer', url)
+
+        oRequestHandler.addParameters('submit1', 'Submit')
+        oRequestHandler.addParameters('security_code', captcha)
+
+        sHtmlContent = oRequestHandler.request()
+
+        if 'Code de securite incorrect' in sHtmlContent:
+            dialogs.VSinfo("Mauvais Captcha")
+            return 'rate'
+
+        if 'Veuillez recopier le captcha ci-dessus' in sHtmlContent:
+            dialogs.VSinfo("Rattage")
+            return 'rate'
+
+        #si captcha reussi
+        #save cookies
+        GestionCookie().SaveCookie('cinemegatoil_org', cookies)
+
+    return sHtmlContent
+
+def get_response(img,cookie):
+    #on telecharge l'image
+    import xbmcvfs
+
+    dialogs = dialog()
+
+    filename = "special://home/userdata/addon_data/plugin.video.vstream/Captcha.raw"
+    #PathCache = xbmc.translatePath(xbmcaddon.Addon('plugin.video.vstream').getAddonInfo("profile"))
+    #filename  = os.path.join(PathCache, 'Captcha.raw')
+
+    hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)', '\\1', img)
+    host = re.sub(r'https*:\/\/', '', hostComplet)
+    url = img
+
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.addHeaderEntry('User-Agent' , UA)
+    #oRequestHandler.addHeaderEntry('Referer', url)
+    oRequestHandler.addHeaderEntry('Cookie', cookie)
+
+    htmlcontent = oRequestHandler.request()
+
+    NewCookie = oRequestHandler.GetCookies()
+
+    downloaded_image = xbmcvfs.File(filename, 'wb')
+    #downloaded_image = file(filename, "wb")
+    downloaded_image.write(htmlcontent)
+    downloaded_image.close()
+
+#on affiche le dialogue
+    solution = ''
+
+    if (True):
+        ####nouveau captcha
+        try:
+            ##affichage du dialog perso
+            class XMLDialog(xbmcgui.WindowXMLDialog):
+                #"""
+                #Dialog class for captcha
+                #"""
+                def __init__(self, *args, **kwargs):
+                    xbmcgui.WindowXMLDialog.__init__(self)
+                    pass
+
+                def onInit(self):
+                    #image background captcha
+                    self.getControl(1).setImage(filename.encode("utf-8"), False)
+                    #image petit captcha memory fail
+                    self.getControl(2).setImage(filename.encode("utf-8"), False)
+                    self.getControl(2).setVisible(False)
+                    ##Focus clavier
+                    self.setFocus(self.getControl(21))
+
+                def onClick(self, controlId):
+                    if controlId == 20:
+                        #button Valider
+                        solution = self.getControl(5000).getLabel()
+                        xbmcgui.Window(10101).setProperty('captcha', solution)
+                        self.close()
+                        return
+
+                    elif controlId == 30:
+                        #button fermer
+                        self.close()
+                        return
+
+                    elif controlId == 21:
+                        #button clavier
+                        self.getControl(2).setVisible(True)
+                        kb = xbmc.Keyboard(self.getControl(5000).getLabel(), '', False)
+                        kb.doModal()
+
+                        if (kb.isConfirmed()):
+                            self.getControl(5000).setLabel(kb.getText())
+                            self.getControl(2).setVisible(False)
+                        else:
+                            self.getControl(2).setVisible(False)
+
+                def onFocus(self, controlId):
+                    self.controlId = controlId
+
+                def _close_dialog(self):
+                    self.close()
+
+                def onAction(self, action):
+                    #touche return 61448
+                    if action.getId() in (9, 10, 11, 30, 92, 216, 247, 257, 275, 61467, 61448):
+                        self.close()
+
+            path = "special://home/addons/plugin.video.vstream"
+            #path = cConfig().getAddonPath().decode("utf-8")
+            wd = XMLDialog('DialogCaptcha.xml', path, 'default', '720p')
+            wd.doModal()
+            del wd
+        finally:
+
+            solution = xbmcgui.Window(10101).getProperty('captcha')
+            if solution == '':
+                dialogs.VSinfo("Vous devez taper le captcha")
+
+    else:
+        #ancien Captcha
+        try:
+            img = xbmcgui.ControlImage(450, 0, 400, 130, filename.encode("utf-8"))
+            wdlg = xbmcgui.WindowDialog()
+            wdlg.addControl(img)
+            wdlg.show()
+            #xbmc.sleep(3000)
+            kb = xbmc.Keyboard('', 'Tapez les Lettres/chiffres de l\'image', False)
+            kb.doModal()
+            if (kb.isConfirmed()):
+                solution = kb.getText()
+                if solution == '':
+                    dialogs.VSinfo("Vous devez taper le captcha")
+            else:
+                dialogs.VSinfo("Vous devez taper le captcha")
+        finally:
+            wdlg.removeControl(img)
+            wdlg.close()
+
+    return solution, NewCookie

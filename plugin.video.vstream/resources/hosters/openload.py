@@ -85,6 +85,7 @@ class cHoster(iHoster):
         #recuperation de la page
         #xbmc.log('url teste : ' + self.__sUrl)
         oRequest = cRequestHandler(self.__sUrl)
+        oRequest.addHeaderEntry('referer', self.__sUrl)
         oRequest.addHeaderEntry('User-Agent', UA)
         sHtmlContent1 = oRequest.request()
 

@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
+#tester le 30/10 ne fonctionne pas
+return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -99,7 +101,7 @@ def showGenres():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-        sUrl = sSearch
+        sUrl = sSearch.replace(' ','+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
