@@ -75,13 +75,13 @@
 
         <setting visible="false" id="plugin_cineiz" type="bool" label="cineiz" default="true"/>
 
-        <setting visible="false" id="plugin_cinemavf" type="bool" label="Cinemavf" default="true"/>
-
         <setting visible="false" id="plugin_cinemay_com" type="bool" label="Cinemay" default="true"/>
 
         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
 
         <setting visible="false" id="plugin_ddl_island_su" type="bool" label="DDL Island" default="true"/>
+
+        <setting visible="false" id="plugin_ddlfr" type="bool" label="Ddlfr" default="true"/>
 
         <setting visible="false" id="plugin_disneyhd_tk" type="bool" label="DisneyHD" default="true"/>
 
@@ -140,8 +140,6 @@
         <setting visible="false" id="plugin_papstream" type="bool" label="papstream" default="true"/>
 
         <setting visible="false" id="plugin_planet_streaming" type="bool" label="planet streaming" default="true"/>
-
-        <setting visible="false" id="plugin_regarder_films" type="bool" label="Regarder.films" default="true"/>
 
         <setting visible="false" id="plugin_replaytvstreaming_com" type="bool" label="ReplayTVstreaming" default="true"/>
 
