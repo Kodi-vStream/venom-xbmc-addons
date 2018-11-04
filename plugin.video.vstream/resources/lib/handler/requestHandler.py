@@ -86,6 +86,7 @@ class cRequestHandler:
                 cookies = ''
                 for cook in c2:
                     cookies = cookies + cook[0] + '=' + cook[1]+ ';'
+                cookies = cookies[:-1]
                 return cookies
         return ''
 
