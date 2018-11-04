@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, addon, VSlog
+from resources.lib.comaddon import progress, addon
 import re
 sColor = addon().getSetting("deco_color")
 
@@ -268,11 +268,11 @@ def showSaisons():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sHtmlContent = oParser.abParse(sHtmlContent, 'begin seasons', 'end seasons')
+    #sHtmlContent = oParser.abParse(sHtmlContent, 'begin seasons', 'end seasons')
     #pas encore d'épisode >> timer avant sortie
     sHtmlContent = re.sub('<kbd><span', '<kbd>nothing</span>', sHtmlContent)
 
-    sPattern = '<h3 class="panel-title"><a href=".+?">(saison *\d+)<\/a>|href="([^"]+)">.+?<\/span>(.+?)<\/a>.+?<kbd>(.+?)<\/span>'
+    sPattern = '<h3 class="panel-title"><a href=".+?">(saison *\d+)<\/a>|<div class="panel-body">.+?href="([^"]+)">.+?<\/span>(.+?)</a>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -289,12 +289,12 @@ def showSaisons():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
             else:
-                if aEntry[3] == 'nothing':
-                    continue
+                # if aEntry[3] == 'nothing':
+                    # continue
 
                 sUrl = aEntry[1]
 
-                sDisplayTitle = "%s %s (%s)" % (sMovieTitle, aEntry[2].replace(',', ''), aEntry[3])
+                sDisplayTitle = "%s %s" % (sMovieTitle, aEntry[2].replace(',', ''))
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -355,13 +355,18 @@ def showHosters():
 
     oParser = cParser()
 
-    oRequest = cRequestHandler(URL_MAIN + 'getlink')
+    if '/serie' in sUrl:
+        oRequest = cRequestHandler(URL_MAIN + 'getlinke')
+        oRequest.addParametersLine('csrf_test_name=' + sCode + '&episode=' + sCode2)
+    else:
+        oRequest = cRequestHandler(URL_MAIN + 'getlink')
+        oRequest.addParametersLine('csrf_test_name=' + sCode + '&movie=' + sCode2)
+        
     oRequest.setRequestType(1)
     oRequest.addHeaderEntry('User-Agent', UA)
     oRequest.addHeaderEntry('Referer', sUrl)
     oRequest.addHeaderEntry('Cookie', sCook)
-    oRequest.addParametersLine('csrf_test_name=' + sCode + '&movie=' + sCode2)
-
+    
     sHtmlContent = oRequest.request()
     sHtmlContent = sHtmlContent.replace('\\', '')
 
