@@ -326,7 +326,9 @@ class cHosterGui:
             return self.getHoster('vidzstore')
         if ('hd-stream' in sHostName):
             return self.getHoster('hd_stream')
-
+        if ('rapidstream' in sHostName):
+            return self.getHoster('rapidstream')
+        
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
             return self.getHoster('onefichier')
