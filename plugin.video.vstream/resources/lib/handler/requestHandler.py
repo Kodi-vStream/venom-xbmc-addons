@@ -56,10 +56,10 @@ class cRequestHandler:
     def addParametersLine(self, mParameterValue):
         self.__aParamatersLine = mParameterValue
 
-    #egg addMultipartFiled('sess_id':sId,'upload_type':'url','srv_tmp_url':sTmp)
+    #egg addMultipartFiled({'sess_id':sId,'upload_type':'url','srv_tmp_url':sTmp})
     def addMultipartFiled(self,fields ):
         mpartdata = MPencode(fields)
-        self.__aParamaters = mpartdata[1]
+        self.__aParamatersLine = mpartdata[1]
         self.addHeaderEntry('Content-Type', mpartdata[0] )
         self.addHeaderEntry('Content-Length', len(mpartdata[1]))
 
