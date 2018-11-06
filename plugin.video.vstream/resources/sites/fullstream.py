@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'fullstream'
 SITE_NAME = 'FullStream'
 SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
 
-URL_MAIN = 'http://serie.full-stream.cc/'
+URL_MAIN = 'https://ww2.full-stream.cc/'
 
 #definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
 #LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
