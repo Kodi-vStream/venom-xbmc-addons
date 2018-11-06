@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #tester le 30/10 ne fonctionne pas
-return False
+#return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'papstream'
 SITE_NAME = 'PapStream'
 SITE_DESC = 'Films, Séries & Mangas'
 
-URL_MAIN = 'https://ww1.papstream.xyz/'
+URL_MAIN = 'https://www2.papstream.xyz/'
 
 URL_SEARCH = ('https://www2.papstream.xyz/rechercher', 'showMovies')
 
@@ -361,23 +361,23 @@ def showLink():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    if (not sDesc):
-        sPattern = '<div class=["\']fstory-content.+?</h2>(.+?)<div'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-        if aResult[0]:
-            sDesc = aResult[1][0]
+    #if (not sDesc):
+        #sPattern = '<div class=["\']fstory-content.+?</h2>(.+?)<div'
+        #aResult = oParser.parse(sHtmlContent, sPattern)
+        #if aResult[0]:
+            #sDesc = aResult[1][0]
 
-    sPattern = 'id="fplay".+?rel="(.+?)".+?player_v_DIV_5">.+?<\/i>(.+?)<\/span>.+?<img src="(.+?)".+?<span.+?>(.+?)<'
+    sPattern = 'rel="([^"]+)".+?id="player".+?<i class="server player-.+?"></i>([^<>]+)</span>.+?<img src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
             sLang  = aEntry[2].replace('/images/', '').replace('.png', '')
-            sQual  = aEntry[3].replace('(', '').replace(')', '')
+            #sQual  = aEntry[3].replace('(', '').replace(')', '')
             sHost  = aEntry[1].capitalize()
             sUrl2  = aEntry[0]
-            sTitle = '%s [%s] (%s) [COLOR coral]%s[/COLOR]' %(sMovieTitle, sQual, sLang.upper(), sHost)
+            sTitle = '%s [%s] [COLOR coral]%s[/COLOR]' %(sMovieTitle, sLang.upper(), sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('refUrl', sUrl)
