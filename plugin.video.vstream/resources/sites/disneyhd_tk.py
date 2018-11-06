@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 SITE_IDENTIFIER = 'disneyhd_tk'
 SITE_NAME = 'Disney HD'
@@ -104,7 +104,7 @@ def sHowResultSearch(sSearch = ''):
 
     if not sSearch:
         oGui.setEndOfDirectory()
-        
+
 def order(sList,sIndex):
     #remet en ordre le résultat du parser par un index ici par le titre qui est en position 2
     #exemple: ('http://venom', 'sThumb', 'sTitle')
@@ -112,7 +112,7 @@ def order(sList,sIndex):
     aResult = sorted(sList, key=lambda a:a[sIndex])
     #retourne au format du parser
     return True,aResult
-    
+
 def showMovies():
     oGui = cGui()
     oParser = cParser()
@@ -131,12 +131,12 @@ def showMovies():
         aResult = oParser.parse(sHtmlContent, sPattern1)
     elif 'populaires' in sFiltre:
         sHtmlContent = oParser.abParse(sHtmlContent, '</i> Les plus populaires', '</i> Visionnés en ce moment')
-        aResult = oParser.parse(sHtmlContent, sPattern1) 
+        aResult = oParser.parse(sHtmlContent, sPattern1)
     else:
         sHtmlContent = oParser.abParse(sHtmlContent, 'style', '</html>')
         aResult = oParser.parse(sHtmlContent, sPattern1)
         aResult = order(aResult[1],2)
-        
+
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
@@ -173,17 +173,22 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     oParser = cParser()
 
     #film
-    sPattern = '<p.+?<(?:iframe|video).+?src="([^"]+(?<!,))".+?<\/video>'
+    if '<ol id="playlist">' in sHtmlContent:
+        sPattern = '<li data-trackurl="([^"]+)">(.+?)<\/li>'
+    else:
+        sPattern = '<span class="qualiteversion" data-qualurl="([^"]+)">([^"]+)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry[0]
+            sFinalTitle = sMovieTitle + ' ' + aEntry[1]
+
             if '/mp4/' in sHosterUrl and not 'http' in sHosterUrl:
                 sHosterUrl = 'http://disneyhd.tk%s' % sHosterUrl
 
@@ -207,25 +212,24 @@ def showHosters():
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
+                oHoster.setDisplayName(sFinalTitle)
+                oHoster.setFileName(sFinalTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     else:
         #playlist-serie lien direct http pour le moment
-        sPattern = '<li data-trackurl="([^"]+)">(.+?)<\/li>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if (aResult[0] == True):
             for aEntry in aResult[1]:
                 sHosterUrl = aEntry[0]
                 sTitle = aEntry[1]
-                
+
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
                 if (oHoster != False):
                     oHoster.setDisplayName(sTitle)
                     oHoster.setFileName(sTitle)
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-             
+
         else:
             oGui.addText(SITE_IDENTIFIER)
-            
+
     oGui.setEndOfDirectory()

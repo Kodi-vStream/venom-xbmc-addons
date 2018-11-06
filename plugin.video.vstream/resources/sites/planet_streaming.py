@@ -7,22 +7,26 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
+
+import urllib
 
 SITE_IDENTIFIER = 'planet_streaming'
 SITE_NAME = 'Planet Streaming'
 SITE_DESC = 'Films en Streaming complet  VF HD'
 
-URL_MAIN = 'http://1ww.planet-streaming.com/'
+URL_MAIN = 'http://ww5.planet-streaming.com/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'regarder-film/', 'showMovies')
 MOVIE_HD = (URL_MAIN + 'xfsearch/hd/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
-URL_SEARCH = ('', 'showMovies')
-URL_SEARCH_MOVIES = ('', 'showMovies')
+URL_SEARCH = (URL_MAIN + 'index.php?do=search', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
+
+UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0'
 
 def load():
     oGui = cGui()
@@ -101,20 +105,34 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
+    Nextpagesearch = oInputParameterHandler.getValue('Nextpagesearch')
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    bGlobal_Search = False
+
+    if Nextpagesearch:
+        sSearch = sUrl
 
     if sSearch:
 
+        if URL_SEARCH[0] in sSearch:
+            bGlobal_Search = True
+            sSearch=sSearch.replace(URL_SEARCH[0], '')
+
         #sType = oInputParameterHandler.getValue('type')
 
-        sUrl = URL_SEARCH[0]
+        if Nextpagesearch:
+            query_args = (('do', 'search'), ('subaction', 'search'), ('search_start', Nextpagesearch), ('story', sSearch))
+        else:
+            query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch))
 
-        oRequestHandler = cRequestHandler(URL_MAIN)
+        data = urllib.urlencode(query_args)
+
+        oRequestHandler = cRequestHandler(URL_SEARCH[0])
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
-        oRequestHandler.addParameters('Content-Type', 'application/x-www-form-urlencoded')
-        oRequestHandler.addParameters('Referer', URL_MAIN)
-        oRequestHandler.addParameters('do', 'search')
-        oRequestHandler.addParameters('subaction', 'search')
-        oRequestHandler.addParameters('story', sSearch)
+        oRequestHandler.addParametersLine(data)
+        oRequestHandler.addParameters('User-Agent', UA)
+        sHtmlContent = oRequestHandler.request()
 
         #if (sType):
         #    if sType == 'serie':
@@ -144,11 +162,6 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            #Si recherche et trop de resultat, on nettoye
-            if sSearch and total > 2:
-                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[1]) == 0:
-                    continue
-
             sThumb = aEntry[0]
             if sThumb.startswith('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
@@ -169,11 +182,24 @@ def showMovies(sSearch = ''):
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+        if sSearch:
+            sPattern = '<a name="nextlink" id="nextlink" onclick="javascript:list_submit\(([0-9]+)\); return\(false\)" href="#">Suivant'
+            aResult = oParser.parse(sHtmlContent, sPattern)
+            if (aResult[0] == True):
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sSearch)
+                oOutputParameterHandler.addParameter('Nextpagesearch', aResult[1][0])
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+
+        else:
+            sNextPage = __checkForNextPage(sHtmlContent)
+            if (sNextPage != False):
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+
+    if Nextpagesearch:
+        oGui.setEndOfDirectory()
 
     if not sSearch:
         oGui.setEndOfDirectory()
