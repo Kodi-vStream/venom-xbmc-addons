@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 #tester le 30/10 ne fonctionne pas
-return False
+#return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'skstream_co'
 SITE_NAME = 'Skstream'
 SITE_DESC = 'Films Series Mangas'
 
-URL_MAIN = 'https://skstream.info/'
+URL_MAIN = 'https://www2.skstream.info/'
 
 MOVIE_NEWS = (URL_MAIN + 'films', 'showMovies')
 MOVIE_MOVIE = ('http://films', 'showMenuMovies')
