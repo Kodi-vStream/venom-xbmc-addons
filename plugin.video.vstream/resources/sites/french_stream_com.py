@@ -418,10 +418,10 @@ def showSeries(sSearch = ''):
                 sThumb = URL_MAIN[:-1] + sThumb
 
             #filtre pour réorienter les mangas
-            if '/mangas/' in sUrl:
-                sType = 'mangas'
-            else:
-                sType = 'autre'
+            # if '/manga' in sUrl:
+                # sType = 'mangas'
+            # else:
+                # sType = 'autre'
 
             sTitle = aEntry[2].replace('- Saison', ' Saison')
 
@@ -429,9 +429,12 @@ def showSeries(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sType', sType)
+            # oOutputParameterHandler.addParameter('sType', sType)
 
-            oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
+            if '/manga' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'mangaHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            else:
+                oGui.addTV(SITE_IDENTIFIER, 'showEpisode', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -465,7 +468,6 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     sPattern = 'href="([^"]+)" *id="([^"]+)" *target="seriePlayer".+?i class=[^>]+>(?:<\/i> ([^<]+))'
-
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -483,16 +485,12 @@ def showHosters():
 
             if 'opsktp' in url:
                 sHosterUrl = urllib.urlopen(url).geturl()
-            elif 'hqq' or 'cloudvid' or 'openload' or 'vidlox' in url:
+            elif '/embed' in url:
                 sHosterUrl = url
             else:
                 url = decode_url(url, aEntry[1], tmp)
-
                 #second convertion
                 sHosterUrl = ResolveUrl(url)
-
-            #if not url.startswith('http'):
-            #    url = URL_MAIN[:-1] + url
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
@@ -524,7 +522,6 @@ def showEpisode():
         pass
 
     sPattern = '<\/i> (VF|VOSTFR) *<\/div>|<a id="([^"]+)".+?target="seriePlayer".+?"([^"]+)" data-rel="([^"]+)"'
-    #aResult = oParser.parse(sHtmlContent, sPattern)
     aResult = re.findall(sPattern, sHtmlContent)
 
     if (aResult[0] == False):
@@ -544,14 +541,11 @@ def showEpisode():
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sData', sData)
-                oOutputParameterHandler.addParameter('sId', sId)
+                # oOutputParameterHandler.addParameter('sId', sId)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-                if 'mangas' in sType:
-                    oGui.addTV(SITE_IDENTIFIER, 'mangaHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-                else:
-                    oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -583,19 +577,18 @@ def serieHosters():
 
             if aEntry[0]:
 
-                sUrl = aEntry[1]
+                url = aEntry[1]
                 tmp = ''
                 try:
                     tmp = re.search('input id="tmp".+?value="([^"]+)"', sHtmlContent, re.DOTALL).group(1)
                 except:
                     pass
-                if 'hqq' or 'cloudvid' or 'openload' or 'vidlox' in url:
-                    sHosterUrl = aEntry[0]
-                elif 'opsktp' in url:
+                if 'opsktp' in url:
                     sHosterUrl = urllib.urlopen(url).geturl()
+                elif '/embed' in url:
+                    sHosterUrl = url
                 else:
-                    url2 = decode_url_Serie(sUrl, aEntry[0], tmp)
-
+                    url2 = decode_url_Serie(url, aEntry[0], tmp)
                     #second convertion
                     sHosterUrl = ResolveUrl(url2)
 
@@ -618,23 +611,27 @@ def mangaHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    sId = oInputParameterHandler.getValue('sId')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a id="' + sId + '" *href="([^"]+)"'
+    sPattern = '<\/i> (VF|VOSTFR) *<\/div>|<a id=".+?" *href="([^"]+)".+?</i>([^<]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = aEntry
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            else:
+                sTitle = aEntry[2] + sMovieTitle
+                sHosterUrl = aEntry[1]
+
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sTitle)
+                    oHoster.setFileName(sTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
