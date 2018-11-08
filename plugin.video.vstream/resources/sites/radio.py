@@ -1,30 +1,24 @@
 #-*- coding: utf-8 -*-
 #vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #Venom 
-
-# pas fini
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
 from resources.lib.gui.hoster import cHosterGui
 
 
-from resources.lib.comaddon import progress, addon, xbmc, xbmcgui, VSlog, dialog
+from resources.lib.comaddon import progress, addon, xbmc
 
-import re, urllib2, urllib, sys, requests, random, json, string
+import re, random, string
 import xbmcplugin, xbmcvfs
 
 SITE_IDENTIFIER = 'radio'
 SITE_NAME = '[COLOR orange]Radio[/COLOR]'
 SITE_DESC = 'Radio'
-
-URL_RADIO = 'https://raw.githubusercontent.com/Kodi-vStream/venom-xbmc-addons/master/repo/resources/radio.m3u'
-
 
 UA = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
 
@@ -40,28 +34,62 @@ sRootArt = "special://home/addons/plugin.video.vstream/resources/art/tv"
 ADDON = addon()
 
 class track():
-    def __init__(self, length, title, path, icon,data=''):
-        self.length = length
+    def __init__(self, location, title, image, ident):
+        self.location = location
         self.title = title
-        self.path = path
-        self.icon = icon
-        self.data = data
+        self.image = image
+        self.ident = ident
+
 
 def load():
     oGui = cGui()
     addons = addon()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
-    oGui.addDir(SITE_IDENTIFIER, 'showGenresRadio', addons.VSlang(30203) +' (Genres)', 'music.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', 'http://')
+    oGui.addDir(SITE_IDENTIFIER, 'showGenres', addons.VSlang(30203) +' (Genres)', 'music.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
-    oGui.addDir(SITE_IDENTIFIER, 'showAZRadio', addons.VSlang(30203) +' (A-Z)', 'music.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', 'http://')
+    oGui.addDir(SITE_IDENTIFIER, 'showAZ', addons.VSlang(30203) +' (A-Z)', 'music.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
+    oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir(SITE_IDENTIFIER, 'showWeb', addons.VSlang(30203), 'music.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+
+def showGenres():
+    oGui = cGui()
+
+    liste = []
+    liste.append( ['70', '70'] )
+    liste.append( ['80', '80'] )
+    liste.append( ['90', '90'] )
+    liste.append( ['Classic', 'Classic'] )
+    liste.append( ['Clubbing', 'Clubbing'] )
+    liste.append( ['Dance', 'Dance'] )
+    liste.append( ['Electronic', 'Electronic'] )
+    liste.append( ['Funk', 'Funk'] )
+    liste.append( ['Hip-Hop', 'Hip-Hop'] )
+    liste.append( ['Hits', 'Hits'] )
+    liste.append( ['Jazz', 'Jazz'] )
+    liste.append( ['Lounge', 'Lounge'] )
+    liste.append( ['Love', 'Love'] )
+    liste.append( ['Metal', 'Metal'] )
+    liste.append( ['News', 'News'] )
+    liste.append( ['Pop', 'Pop'] )
+    liste.append( ['Rock', 'Rock'] )
+    liste.append( ['Slow', 'Slow'] )
+    liste.append( ['Trance', 'Trance'] )
+
+    for sTitle, sIdent in liste:
+
+        oOutputParameterHandler = cOutputParameterHandler()
+        oOutputParameterHandler.addParameter('siteUrl', '')
+        oOutputParameterHandler.addParameter('ident', sIdent)
+        oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -69,7 +97,7 @@ def parseWebM3U():#Traite les m3u
     playlist=[]
     song=track(None, None, None, None)
 
-    file = "special://home/addons/plugin.video.vstream/resources/extra/radio.m3u"
+    file = "special://home/addons/plugin.video.vstream/resources/extra/radio.xspf"
 
     if not xbmcvfs.exists(file):
         return
@@ -79,18 +107,16 @@ def parseWebM3U():#Traite les m3u
     f.close()
 
 
-    line = re.compile('EXTINF:.+?,(.+?)\n(.+?)\n').findall(sHtmlContent)
+    line = re.compile('<location>(.+?)<.+?<title>(.+?)<.+?<image>(.+?)<.+?<identifier>(.+?)<', re.MULTILINE | re.IGNORECASE | re.DOTALL).findall(sHtmlContent)
 
     if line:
         total = len(line)
 
-    for sTitle, sUrl2 in line:
-        sUrl2 = sUrl2.replace('\r', '')
+        for result in line:
+            #sUrl2 = result[0].replace('\r', '')
+            song=track(result[0], result[1], result[2], result[3])
+            playlist.append(song)
 
-        song=track(None, sTitle, sUrl2, 'tv.png')
-        playlist.append(song)
-
-    print playlist
     return playlist
 
 def showWeb():#Code qui s'occupe de liens TV du Web
@@ -100,34 +126,33 @@ def showWeb():#Code qui s'occupe de liens TV du Web
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     playlist = parseWebM3U()
-    print playlist
 
     if (oInputParameterHandler.exist('AZ')):
         sAZ = oInputParameterHandler.getValue('AZ')
         string = filter(lambda t: t.title.strip().capitalize().startswith(sAZ), playlist)
         playlist = sorted(string, key=lambda t: t.title.strip().capitalize())
+    elif (oInputParameterHandler.exist('ident')):
+        sIdent = oInputParameterHandler.getValue('ident')
+        string = filter(lambda t: t.ident.strip().capitalize().startswith(sIdent), playlist)
+        playlist = sorted(string, key=lambda t: t.ident.strip().capitalize())
     else :
         playlist = sorted(playlist, key=lambda t: t.title.strip().capitalize())
 
     if not playlist:
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://')
-        oGui.addText(SITE_IDENTIFIER, "[COLOR red] Problème de lecture avec la playlist[/COLOR] ")
+        oGui.addText(SITE_IDENTIFIER, "[COLOR red]Aucun résultat[/COLOR] ")
 
     else:
         for track in playlist:
-            sThumb = track.icon
+            sThumb = track.image
             if not sThumb:
                 sThumb = 'tv.png'
 
-            #les + ne peuvent pas passer
-            url2 = track.path.replace('+', 'P_L_U_S')
-            thumb = "/".join([sRootArt, sThumb])
-
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', url2)
+            oOutputParameterHandler.addParameter('siteUrl', track.location)
             oOutputParameterHandler.addParameter('sMovieTitle', track.title)
-            oOutputParameterHandler.addParameter('sThumbnail', thumb)
+            oOutputParameterHandler.addParameter('sThumbnail', sThumb)
 
             #oGui.addDirectTV(SITE_IDENTIFIER, 'play__', track.title, 'tv.png' , sRootArt + '/tv/' + sThumb, oOutputParameterHandler)
 
@@ -138,7 +163,7 @@ def showWeb():#Code qui s'occupe de liens TV du Web
             oGuiElement.setFileName(track.title)
             oGuiElement.setIcon('tv.png')
             oGuiElement.setMeta(0)
-            oGuiElement.setThumbnail(thumb)
+            oGuiElement.setThumbnail(sThumb)
             oGuiElement.setDirectTvFanart()
             oGuiElement.setCat(6)
 
@@ -147,11 +172,10 @@ def showWeb():#Code qui s'occupe de liens TV du Web
 
     oGui.setEndOfDirectory()
 
-def showAZRadio():
+def showAZ():
 
     import string
     oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -168,53 +192,6 @@ def showAZRadio():
         oGui.addDir(SITE_IDENTIFIER, 'showWeb', i, 'az.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-
-def parseWebM3URegex(infile):#Ancien fonction pour traiter les m3u
-    site= infile
-    import xbmcvfs
-    user_agent = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
-    headers = {'User-Agent': user_agent}
-    req = urllib2.Request(site, headers=headers)
-    file = "special://home/addons/plugin.video.vstream/resources/extra/radio.m3u"
-
-    #if xbmcvfs.exists(file):
-
-    f = xbmcvfs.File (file, 'w')
-    inf = f.read()
-    f.close()
-
-    line = inf.readline()
-
-    #cConfig().log(str(line))
-    #if not line.startswith('#EXTM3U'):
-        #return
-
-    playlist=[]
-    song=track(None, None, None, None)
-    ValidEntry = False
-
-    for line in inf:
-        line=line.strip()
-        if line.startswith('#EXTINF:'):
-            length,title=line.split('#EXTINF:')[1].split(',', 1)
-            try:
-                licon = line.split('#EXTINF:')[1].partition('tvg-logo=')[2]
-                icon = licon.split('"')[1]
-            except:
-                icon = "tv.png"
-            ValidEntry = True
-
-            song=track(length, title, None, icon)
-        elif (len(line) != 0):
-            if (ValidEntry) and (not (line.startswith('!') or line.startswith('#'))):
-                ValidEntry = False
-                song.path=line
-                playlist.append(song)
-                song=track(None, None, None, None)
-
-    inf.close()
-
-    return playlist
 
 def play__():#Lancer les liens
     oGui = cGui()
