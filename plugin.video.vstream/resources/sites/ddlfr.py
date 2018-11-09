@@ -21,13 +21,11 @@ URL_MAIN = 'https://ddlfr.pw/'
 #LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
 URL_SEARCH = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
 #recherche global films
-
-#affiche n'importe quoi
-#URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
 #recherche global serie, manga
-#URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_SERIES = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
 #recherche global divers
-#URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH_MISC = (URL_MAIN + 'index.php?do=search&subaction=search&story=', 'showMovies')
 #
 FUNCTION_SEARCH = 'showMovies'
 
