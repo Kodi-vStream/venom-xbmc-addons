@@ -720,8 +720,7 @@ class cGui():
         if (keyboard.isConfirmed()):
             sSearchText = keyboard.getText()
             if (len(sSearchText)) > 0:
-                return sSearchText
-
+                return urllib.quote_plus(sSearchText)
         return False
 
     def showNumBoard(self, sDefaultNum=''):
