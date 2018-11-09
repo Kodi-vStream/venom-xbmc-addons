@@ -62,12 +62,16 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, 'showIptvSite', 'Iptv (Sites)', 'tv.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
-    oGui.addDir(SITE_IDENTIFIER, 'showAZRadio', addons.VSlang(30203) +' (A-Z)', 'music.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', 'http://')
+    oGui.addDir('radio', 'showGenres', addons.VSlang(30203) +' (Genres)', 'music.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
-    oGui.addDir(SITE_IDENTIFIER, 'showWeb', addons.VSlang(30203), 'music.png', oOutputParameterHandler)
+    oGui.addDir('radio', 'showAZ', addons.VSlang(30203) +' (A-Z)', 'music.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', URL_RADIO)
+    oGui.addDir('radio', 'showWeb', addons.VSlang(30203), 'music.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
