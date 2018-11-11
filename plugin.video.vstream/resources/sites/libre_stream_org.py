@@ -330,10 +330,11 @@ def seriesHosters():
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            if 'player.php?id' in aEntry[0]:
-                sTitle = sMovieTitle + aEntry[1] + '(Redirection ' + aEntry[0].split('/')[3].replace('cht','') +')'
+            if '/player' in aEntry[0]:
+                sTitle = sMovieTitle + aEntry[1] + '(Redirection)'
+                sUrl1 = aEntry[0].replace('player.full-stream.co/player?id=','full-stream.co/player.php?id=')
                 oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
+                oOutputParameterHandler.addParameter('siteUrl', sUrl1)
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb )
                 oGui.addLink(SITE_IDENTIFIER, 'redirectHosters', sTitle, sThumb, '', oOutputParameterHandler)
