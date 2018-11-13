@@ -246,7 +246,7 @@ def showLinks():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sDesc = oInputParameterHandler.getValue('sDesc')
 
-    sUrl = urllib.quote(sUrl, safe=':/')
+    #sUrl = urllib.quote(sUrl, safe=':/')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()

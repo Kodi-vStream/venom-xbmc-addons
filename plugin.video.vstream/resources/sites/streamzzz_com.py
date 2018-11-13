@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-#voir redirection vers regarder film et episode avec ex: 2 x 1 au lieu de 2 - 1
+#voir episode avec ex: 2 x 1 au lieu de 2 - 1
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'streamzzz_com'
 SITE_NAME = 'Streamzzz'
 SITE_DESC = 'Séries VF & VOSTFR en streaming.'
 
-URL_MAIN = 'http://streamzzz.top/'
+URL_MAIN = 'https://streamzzz.top/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -174,17 +174,15 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
         sUrl = sSearch
-        sPattern = '<div class="result-item">.+?<img src="([^"]+)" alt="(.+?)".+?<a href="([^"]+)">'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = '<div class="poster".+?img src="(http[^"]+)" alt="(.+?)".+?<a href="([^"]+)">'
-
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
+    sPattern = '<div class="(?:poster|result-item)".+?img src="(http[^"]+)" alt="([^"]+)".+?href="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -253,7 +251,7 @@ def showSerieSaisons():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="numerando">(.+?)<\/div>.+?<a href="([^<]+)">(.+?)<\/a>'
+    sPattern = '<div class="numerando">([^<]+)<\/div>.+?<a href="([^"]+)">([^<]+)<\/a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -288,7 +286,7 @@ def showSerieSaisons():
 
 def showLinks():
     oGui = cGui()
-    
+
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sThumb = oInputParameterHandler.getValue('sThumb')
@@ -298,7 +296,6 @@ def showLinks():
     oRequest = cRequestHandler(sUrl)
     oRequest.addHeaderEntry('referer', URL_MAIN)
     sHtmlContent = oRequest.request()
-    
 
     cook = oRequest.GetCookies()
 
@@ -313,7 +310,7 @@ def showLinks():
     except:
         pass
 
-    sPattern = '<a href="#playex".+?<img src=".+?.googleusercontent.com.+?domain=(.+?)">.+?document.getElementsByName.+?\(\'src\', \'(.+?)\'\);.+?<td>(.+?)<\/td><td>'
+    sPattern = '<a href="#playex".+?<img src=".+?.googleusercontent.com.+?alt="([^"]+)">.+?document.getElementsByName.+?\(\'src\', \'(.+?)\'\);.+?<td>([^<]+)<\/td><td>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -345,7 +342,7 @@ def showLinks():
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
- 
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -354,9 +351,9 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
     sCook = oInputParameterHandler.getValue('sCook')
     sRef = oInputParameterHandler.getValue('ref')
-    
+
     # pdata = 'action=url&episode='+sUrl
-    
+
     # oRequest = cRequestHandler('http://streamzzz.top/wp-content/themes/streamzzz/action.php')
     # oRequest.setRequestType(1)
     # oRequest.addHeaderEntry('User-Agent', UA)
@@ -384,5 +381,5 @@ def showHosters():
         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
-    
-    
+
+

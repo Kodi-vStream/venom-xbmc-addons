@@ -106,7 +106,7 @@ class cHoster(iHoster):
         if (True):
             Realurl = ''
 
-            red = re.findall('location *= *[\'"]([^\'"]+)', sHtmlContent)
+            red = re.findall('location.href *= *[\'"]([^\'"]+)', sHtmlContent)
             if red:
                 Realurl = red[0]
             else:

@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.config import GestionCookie
-from resources.lib.comaddon import progress, VSlog, dialog, xbmc, xbmcgui
+from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui
 import re
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0'
@@ -98,7 +98,7 @@ def showMovies(sSearch = ''):
             sUrl = sSearch
         else:
             sUrl = URL_SEARCH[0] + sSearch
-        sUrl = sUrl.replace(' ','+')
+        sUrl = sUrl.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -106,7 +106,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="poster.+?img src="([^"]+)".+?<div class="quality">(.+?)<\/div>.+?<div class="title"><a href="([^"]+)".+?title="(.+?)".+?<li class="label">Ann.+?<li>(.+?)</li>.+?<div class="shortStory">(.+?)</div>'
+    sPattern = 'class="poster.+?img src="([^"]+)".+?class="quality">([^<]+)<\/div>.+?class="title"><a href="([^"]+)".+?title="([^"]+)".+?class="label">Ann.+?<li>([^<]+)</li>.+?class="shortStory">([^<]+)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -136,6 +136,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, 'films.png', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
@@ -165,6 +166,7 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    sDesc = oInputParameterHandler.getValue('sDesc')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -173,7 +175,7 @@ def showHosters():
 
     #sHtmlContent = oParser.abParse(sHtmlContent, '<div class="tcontainer video-box">', '<div class="tcontainer video-box" id=')
 
-    sPattern = '<a class="" rel="noreferrer" href="([^"]+)"> <i class="fa fa-download"></i> <img src="/templates/Flymix/images/streaming/(.+?).png" /></a>'
+    sPattern = '<a class="" rel="noreferrer" href="([^"]+)".+?<img src="/templates/Flymix/images/streaming/(.+?).png" /> *</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -187,14 +189,15 @@ def showHosters():
                 break
 
             oOutputParameterHandler = cOutputParameterHandler()
-            sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR]'
-            sDesc = ''
-            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
+            sHost = '[COLOR coral]' + aEntry[1].capitalize() + '[/COLOR]'
+            sHost = re.sub('\.\w+', '', sHost)
+            sUrl = aEntry[0]
 
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sTitle, sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'Display_protected_link', sHost, sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -226,7 +229,7 @@ def Display_protected_link():
             aResult_dlprotect = (False, False)
 
     elif 'keeplinks' in sUrl:
-        oDialog = dialog().VSinfo('Keeplinks non pris en charge','cinemegatoil',10)
+        oDialog = dialog().VSinfo('Keeplinks non pris en charge', 'cinemegatoil', 10)
     #Si lien normal
     else:
         if not sUrl.startswith('http'):
@@ -253,7 +256,7 @@ def DecryptddlProtect(url):
 
     #Get host
     tmp = url.split('/')
-    host = tmp[0] + '//' + tmp[2] + '/'+ tmp[3] + '/'
+    host = tmp[0] + '//' + tmp[2] + '/' + tmp[3] + '/'
     host1 = tmp[2]
 
     cookies = ''
@@ -282,7 +285,7 @@ def DecryptddlProtect(url):
             image = host + s[0]
 
         captcha,cookies2 = get_response(image, cookies)
-        cookies = cookies2.replace(';','')
+        cookies = cookies2.replace(';', '')
 
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.setRequestType(1)

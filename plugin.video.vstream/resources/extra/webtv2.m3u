@@ -1,0 +1,27 @@
+#EXTM3U
+#EXTINF:-1 tvg-id="FRA1.kazer.org" tvg-name="France 1" tvg-logo="tf1.png" group-title="Group 1",TF1
+[REGEX]"(http[^"]+)"[POSTFORM]udid=B85E0FCB-A255-48BD-9A71-3C1AB782A7BB&mediaId=L_TF1&appName=sdk%2FIphone%2F1.0&authKey=d7a5407b73696fc9b1e983c7be9009db%2F1409816606000&method=getLiveUrl[URL]http://api.wat.tv/services/Delivery
+
+#EXTINF:-1 tvg-id="FRA2.kazer.org" tvg-name="France 2" tvg-logo="france2.png" group-title="Group 2",France 2
+[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_2%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
+
+#EXTINF:-1 tvg-id="FRA3.kazer.org" tvg-name="France 3" tvg-logo="france3.png" group-title="Group 3",France 3
+[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_3%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
+
+#EXTINF:-1 tvg-id="FRA4.kazer.org" tvg-name="France 4" tvg-logo="france4.png" group-title="Group 4",France 4
+[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_4%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
+
+#EXTINF:-1 tvg-id="FRA5.kazer.org" tvg-name="France 5" tvg-logo="france5.png" group-title="Group 5",France 5
+[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_5%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
+
+#EXTINF:-1 tvg-id="FRA1.kazer.org" tvg-name="France O" tvg-logo="franceo.png" group-title="Group 65",France O
+[REGEX]{"url": "([^"]+)"}[URL]http://hdfauthftv-a.akamaihd.net/esi/TA?format=json&url=http%3A%2F%2Flive.francetv.fr%2Fsimulcast%2FFrance_O%2Fhls_v1%2Findex.m3u8&callback=_jsonp_loader_callback_request_2
+
+#EXTINF:-1 tvg-id="ART1.kazer.org" tvg-name="Arte" tvg-logo="arte.png" group-title="Group 14",Arte
+http://artelive-lh.akamaihd.net/i/artelive_fr@344805/master.m3u8
+
+#EXTINF:-1 tvg-id="GUL1.kazer.org" tvg-name="Gulli" tvg-logo="gulli.png" group-title="Group 165",Gulli
+[REGEX]file: '([^']+master.m3u8)'[URL]http://replay.gulli.fr/jwplayer/embedstreamtv
+
+#EXTINF:-1 tvg-id="NRJ1.kazer.org" tvg-name="NRJ12" tvg-logo="nrj12.png" group-title="Group 12",NRJ 12
+http://nrj-apple-live.adaptive.level3.net/apple/nrj/nrj/nrj12hi.m3u8
