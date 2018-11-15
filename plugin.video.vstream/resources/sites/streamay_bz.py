@@ -21,10 +21,10 @@ MOVIE_VIEWS = (URL_MAIN + '?v_sortby=views&v_orderby=desc', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films', 'showGenres')
 MOVIE_LIST = (URL_MAIN, 'AlphaSearch')
 
-URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH = ('', 'showSearchMovies')
+URL_SEARCH_MOVIES = ('', 'showSearchMovies')
 #URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
-FUNCTION_SEARCH = 'showResultSearch'
+FUNCTION_SEARCH = 'showSearchMovies'
 
 def load():
     oGui = cGui()
@@ -56,8 +56,7 @@ def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
-        showMovies(sUrl)
+        showSearchMovies(sSearchText)
         oGui.setEndOfDirectory()
         return
 
@@ -154,6 +153,56 @@ def showMovieslist():
             oGui.addNext(SITE_IDENTIFIER, 'showMovieslist', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
         oGui.setEndOfDirectory()
+
+def showSearchMovies(sSearch = ''):
+    oGui = cGui()
+    if sSearch:
+        sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
+
+        oRequestHandler = cRequestHandler(sUrl2)
+        oRequestHandler.setRequestType(1)
+        #oRequestHandler.addHeaderEntry('User-Agent',"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0")
+        #oRequestHandler.addHeaderEntry('Content-Type','application/x-www-form-urlencoded; charset=UTF-8')
+        oRequestHandler.addParameters('action', 'tr_livearch')
+
+        oRequestHandler.addParameters('nonce', 'ee075d89d4')
+
+        oRequestHandler.addParameters('trsearch', sSearch)
+        sHtmlContent = oRequestHandler.request()
+
+        sPattern = '<div class="TPost B">.+?<a href="([^"]+)">.+?<img src="([^"]+)".+?<div class="Title">(.+?)</div>'
+
+        oParser = cParser()
+        aResult = oParser.parse(sHtmlContent, sPattern)
+
+        if (aResult[0] == True):
+            total = len(aResult[1])
+            progress_ = progress().VScreate(SITE_NAME)
+            for aEntry in aResult[1]:
+                progress_.VSupdate(progress_, total)
+                if progress_.iscanceled():
+                    break
+
+                sTitle = aEntry[2]
+                sUrl = aEntry[0]
+                sThumb = aEntry[1].replace('w154', 'w342')
+                if not sThumb.startswith('http'):
+                    sThumb = 'http:' + sThumb
+
+
+                #tris search
+                if sSearch and total > 3:
+                    if cUtil().CheckOccurence(sSearch, sTitle) == 0:
+                        continue
+
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+
+            progress_.VSclose(progress_)
 
 def showMovies(sSearch = ''):
     oGui = cGui()
