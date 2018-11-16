@@ -445,18 +445,16 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
                 if aResult:
                     sHosterUrl = 'http://'+aResult[0]
 
-        if 'livestream' in url:#Je sais pas ne démarre pas de temps en temps
+        if 'livestream' in url:#fixé
             sPattern2 = '<td bgcolor=".+?" *align="center".+?\s*<iframe.+?src="https://([^"]+)/player?.+?</iframe>'
             aResult = re.findall(sPattern2, sHtmlContent)
             if aResult:
-                accountId = aResult[0]
-            jsonUrl = 'https://player-api.new.' + accountId + '?format=short'
-
-            oRequestHandler = cRequestHandler(jsonUrl)
-            sHtmlContent = oRequestHandler.request()
-
-            sPattern3 = '"m3u8_url":"(.+?)"'
-            aResult = re.findall(sPattern3, sHtmlContent)
+                accountid = aResult[0]
+                jsonUrl = 'https://player-api.new.' + accountid + '?format=short'
+                oRequestHandler = cRequestHandler(jsonUrl)
+                sHtmlContent = oRequestHandler.request()
+                sPattern3 = '"m3u8_url":"(.+?)"'
+                aResult = re.findall(sPattern3, sHtmlContent)
             if aResult:
                 sHosterUrl = aResult[0]
 
@@ -584,41 +582,51 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
                 #VSlog(sHtmlContent3)
 
 
-        #if 'socolive.net' in url:#Probleme avec ea et autre (tout changé lol)
-            #oRequestHandler = cRequestHandler(url)
-            #sHtmlContent2 = oRequestHandler.request()
-            #sPattern2 = 'channel=\'(.+?)\', g=\'(.+?)\''
-            #aResult = re.findall(sPattern2, sHtmlContent2)
-            #VSlog(aResult)
+        if 'socolive.net' in url:#Probleme avec ea et autre (tout changé lol)
+            oRequestHandler = cRequestHandler(url)
+            sHtmlContent2 = oRequestHandler.request()
+            sPattern2 = 'channel=\'(.+?)\', g=\'(.+?)\''
+            aResult = re.findall(sPattern2, sHtmlContent2)
+            VSlog(aResult)
 
-            #if aResult:
-                #for aEntry in aResult:
-                    #channel = aEntry[0]
-                    #g = aEntry[1]
+            if aResult:
+                for aEntry in aResult:
+                    channel = aEntry[0]
+                    g = aEntry[1]
                     #VSlog(channel)
                     #VSlog(g)
 
-            #UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'
-            #url2 = 'https://www.ucasterplayer.com/hembedplayer/'+ channel +'/'+ g +'/700/480'
+            UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'
+            url2 = 'https://www.ucasterplayer.com/hembedplayer/'+ channel +'/'+ g +'/700/480'
             #VSlog(url2)
-            #oRequestHandler = cRequestHandler(url2)
-            #oRequestHandler.addHeaderEntry('User-Agent',UA)
-            #oRequestHandler.addHeaderEntry('Referer','http://socolive.net/ch=.+?')
-            #sHtmlContent2 = oRequestHandler.request()
+            oRequestHandler = cRequestHandler(url2)
+            oRequestHandler.addHeaderEntry('User-Agent',UA)
+            oRequestHandler.addHeaderEntry('Referer','http://socolive.net/ch=.+?')
+            sHtmlContent2 = oRequestHandler.request()
             #VSlog(sHtmlContent2)
 
-            #sPattern3 = '"src", "https://" \+ ea \+ "([^"]+)"'
-            #sPattern4 = 'ea = "([^"]+)"'
-            #aResult2 = re.findall(sPattern4, sHtmlContent2)
-            #aResult1 = re.findall(sPattern3, sHtmlContent2)
-            #if aResult2:
-                #urldomaine = aResult2[0]
-                #VSlog(urldomaine)
-            #if aResult1:
-                #oRequestHandler.addHeaderEntry('User-Agent',UA)
-                #Referer = url2
-                #UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'
-                #sHosterUrl = 'http://'+ 'p15.quest123.top' + aResult1[0] + '|User-Agent=' + UA + '&referer=' + Referer
+            sPattern3 = '"src", "https://" \+ ea \+ "([^"]+)"'
+            sPattern4 = 'url: ".+?" \+ (.+?) \+'
+            aResult2 = re.findall(sPattern4, sHtmlContent2)
+            aResult1 = re.findall(sPattern3, sHtmlContent2)
+            if aResult2:
+                urldomaine = 'https://www.lquest123b.top/loadbalancer?'+aResult2[0] + '&'
+                oRequestHandler = cRequestHandler(urldomaine)
+                oRequestHandler.addHeaderEntry('User-Agent',UA)
+                oRequestHandler.addHeaderEntry('Referer',urldomaine)
+                sHtmlContent3 = oRequestHandler.request()
+                sPattern5 = 'redirect=(.+?top)'
+                aResult3 = re.findall(sPattern5, sHtmlContent3)
+                if aResult3:
+                    domaine = aResult3[0]
+                    VSlog(domaine)
+                    
+                    
+            if aResult1:
+                oRequestHandler.addHeaderEntry('User-Agent',UA)
+                Referer = url2
+                UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'
+                sHosterUrl = 'https://'+ domaine + aResult1[0] + '|User-Agent=' + UA + '&referer=' + Referer
                 #VSlog(sHosterUrl)
 
         if '1me.club' in url or 'sportz' in url:#Terminé
