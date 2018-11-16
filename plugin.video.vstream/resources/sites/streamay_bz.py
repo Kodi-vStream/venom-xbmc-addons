@@ -21,17 +21,17 @@ MOVIE_VIEWS = (URL_MAIN + '?v_sortby=views&v_orderby=desc', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films', 'showGenres')
 MOVIE_LIST = (URL_MAIN, 'AlphaSearch')
 
-URL_SEARCH = ('', 'showSearchMovies')
-URL_SEARCH_MOVIES = ('', 'showSearchMovies')
+#URL_SEARCH = ('', 'showSearchMovies')
+#URL_SEARCH_MOVIES = ('', 'showSearchMovies')
 #URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showSearchMovies'
 
 def load():
     oGui = cGui()
 
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    #oOutputParameterHandler = cOutputParameterHandler()
+    #oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    #oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -165,7 +165,8 @@ def showSearchMovies(sSearch = ''):
         #oRequestHandler.addHeaderEntry('Content-Type','application/x-www-form-urlencoded; charset=UTF-8')
         oRequestHandler.addParameters('action', 'tr_livearch')
 
-        oRequestHandler.addParameters('nonce', 'ee075d89d4')
+        #ça bloque ici id dynamique de recaptcha je pense.
+        oRequestHandler.addParameters('nonce', '2c1e4a26e9')
 
         oRequestHandler.addParameters('trsearch', sSearch)
         sHtmlContent = oRequestHandler.request()
