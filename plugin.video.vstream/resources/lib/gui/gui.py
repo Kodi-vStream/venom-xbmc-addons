@@ -285,21 +285,29 @@ class cGui():
         if (oGuiElement.getMeta() > 0):
             if cGui.CONTENT == "movies":
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuba(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
+                
+                self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuba(oGuiElement, oOutputParameterHandler)
+                
+                if self.ADDON.getSetting("bstoken"):
+                    self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
+                if self.ADDON.getSetting('tmdb_account'):
+                    self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
 
 
             elif cGui.CONTENT == "tvshows":
                 self.createContexMenuWatch(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuba(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuFav(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
-                self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
+                
+                self.createContexMenuinfo(oGuiElement, oOutputParameterHandler)
+                self.createContexMenuba(oGuiElement, oOutputParameterHandler)
+                
+                if self.ADDON.getSetting("bstoken"):
+                    self.createContexMenuTrakt(oGuiElement, oOutputParameterHandler)
+                if self.ADDON.getSetting('tmdb_account'):
+                    self.createContexMenuTMDB(oGuiElement, oOutputParameterHandler)
                 self.createContexMenuSimil(oGuiElement, oOutputParameterHandler)
 
         oListItem = self.__createContextMenu(oGuiElement, oListItem)
