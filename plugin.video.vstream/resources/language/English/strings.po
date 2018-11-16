@@ -803,3 +803,7 @@ msgstr ""
 msgctxt "#30455"
 msgid "My accounts"
 msgstr ""
+
+msgctxt "#30456"
+msgid "Are you sure ?"
+msgstr ""

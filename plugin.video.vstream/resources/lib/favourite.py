@@ -22,12 +22,13 @@ class cFav:
 
     #effacement direct par menu
     def delFavouritesMenu(self):
-        cDb().del_favorite()
+        if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
+            cDb().del_favorite()
         return True
 
     #avec confirmation pour les autres
     def delFavourites(self):
-        if self.DIALOG.VSyesno("Voulez vous vraiment supprimer toute cette liste"):
+        if self.DIALOG.VSyesno(self.ADDON.VSlang(30456)):
             cDb().del_favorite()
         return True
 

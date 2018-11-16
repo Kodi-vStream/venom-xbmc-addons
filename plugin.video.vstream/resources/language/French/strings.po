@@ -805,3 +805,7 @@ msgctxt "#30455"
 msgid "My accounts"
 msgstr "Mes Comptes"
 
+msgctxt "#30456"
+msgid "Are you sure ?"
+msgstr "Êtes-vous sûr ?"
+
