@@ -621,7 +621,7 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
                 #sHosterUrl = 'http://'+ 'p15.quest123.top' + aResult1[0] + '|User-Agent=' + UA + '&referer=' + Referer
                 #VSlog(sHosterUrl)
 
-        if '1me.club' in url:#Terminé
+        if '1me.club' in url or 'sportz' in url:#Terminé
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
             sPattern2 = '<iframe src="(.+?)"'
