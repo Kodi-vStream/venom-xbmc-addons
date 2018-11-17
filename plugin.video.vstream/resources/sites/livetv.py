@@ -492,7 +492,7 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
             sHtmlContent3 = oRequestHandler.request()
             #VSlog(sHtmlContent3)
 
-        if 'thesports4u.net' in url:#Il manque la variable time que je ne sais pas recueperer donc pas finit
+        if 'thesports4u.net' in url:#Finit
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
             sPattern2 = '<script>fid="(.+?)"'
