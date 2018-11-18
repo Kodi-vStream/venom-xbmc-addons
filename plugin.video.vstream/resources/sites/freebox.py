@@ -495,6 +495,28 @@ def parseWebM3U():#Traite les m3u
 
     oGui.setEndOfDirectory()
 
+def parseM3U(infile):#Traite les m3u local
+    inf = infile
+
+    playlist=[]
+    song=track(None, None, None, None)
+    ValidEntry = False
+
+    for line in inf:
+        line=line.strip()
+        if line.startswith('#EXTINF:'):
+            length,title=line.split('#EXTINF:')[1].split(',', 1)
+            song=track(length, title, None, None)
+            ValidEntry = True
+        elif (len(line) != 0):
+            if (not line.startswith('!') and ValidEntry):
+                ValidEntry = False
+                song.path=line
+                playlist.append(song)
+                song=track(None, None, None, None)
+
+    return playlist
+           
 def showWeb(sHtmlContent=''):#Code qui s'occupe de liens TV du Web
     oGui = cGui()
 
