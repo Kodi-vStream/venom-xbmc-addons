@@ -437,6 +437,19 @@ def parseWebM3U():#Traite les m3u
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sHtmlContent = getHtml(sUrl)
+           
+    if 'iptv4sat' in sUrl:
+        from zipfile import ZipFile
+        import io
+        zip_file = ZipFile(io.BytesIO(sHtmlContent))
+        files = zip_file.namelist()
+        with zip_file.open(files[0]) as f:
+            sHtmlContent = []
+            for line in f:
+                sHtmlContent.append(line)
+            showWeb(sHtmlContent)
+            return
+
     line = re.compile('EXTINF:.+?,(.+?)\n(.+?)\n').findall(sHtmlContent)
 
     if line:
@@ -482,13 +495,16 @@ def parseWebM3U():#Traite les m3u
 
     oGui.setEndOfDirectory()
 
-def showWeb():#Code qui s'occupe de liens TV du Web
+def showWeb(sHtmlContent=''):#Code qui s'occupe de liens TV du Web
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    playlist = parseWebM3URegex(sUrl)
+    if sHtmlContent != '':
+        playlist = parseM3U(sHtmlContent)
+    else:
+        playlist = parseWebM3URegex(sUrl)
 
     if (oInputParameterHandler.exist('AZ')):
         sAZ = oInputParameterHandler.getValue('AZ')
