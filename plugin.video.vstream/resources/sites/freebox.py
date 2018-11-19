@@ -250,7 +250,7 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
     elif 'myfree-tivi' in sUrl:
         sPattern = "thumb'.+?'(.+?)'.+?title.+?'(.+?)'.+?url'.+?'(.+?)'"
     elif 'iptvgratuit.com' in sUrl:
-        sPattern = '<strong>2. Cliquez sur le lien pour télécharger la liste des chaînes .+?</strong></p><h4><a class="more-link" title="(.+?)" href="(.+?)" target="_blank"'
+        sPattern = '<h4><a class="more-link" title="(.+?)" href="(.+?)" target="_blank" rel="noopener"><button>.+?</button></a></h4>'
     elif 'dailyiptvlist.com' in sUrl:
         sPattern = '<p></br><br /><strong>2. Click on link to download .+? iptv channels list</strong></p>\s*.+?<a href="(.+?)">Download (.+?)</a>'
     elif 'iptvsource.com':
@@ -437,6 +437,19 @@ def parseWebM3U():#Traite les m3u
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
     sHtmlContent = getHtml(sUrl)
+           
+    if 'iptv4sat' in sUrl:
+        from zipfile import ZipFile
+        import io
+        zip_file = ZipFile(io.BytesIO(sHtmlContent))
+        files = zip_file.namelist()
+        with zip_file.open(files[0]) as f:
+            sHtmlContent = []
+            for line in f:
+                sHtmlContent.append(line)
+            showWeb(sHtmlContent)
+            return
+
     line = re.compile('EXTINF:.+?,(.+?)\n(.+?)\n').findall(sHtmlContent)
 
     if line:
@@ -482,13 +495,38 @@ def parseWebM3U():#Traite les m3u
 
     oGui.setEndOfDirectory()
 
-def showWeb():#Code qui s'occupe de liens TV du Web
+def parseM3U(infile):#Traite les m3u local
+    inf = infile
+
+    playlist=[]
+    song=track(None, None, None, None)
+    ValidEntry = False
+
+    for line in inf:
+        line=line.strip()
+        if line.startswith('#EXTINF:'):
+            length,title=line.split('#EXTINF:')[1].split(',', 1)
+            song=track(length, title, None, None)
+            ValidEntry = True
+        elif (len(line) != 0):
+            if (not line.startswith('!') and ValidEntry):
+                ValidEntry = False
+                song.path=line
+                playlist.append(song)
+                song=track(None, None, None, None)
+
+    return playlist
+           
+def showWeb(sHtmlContent=''):#Code qui s'occupe de liens TV du Web
     oGui = cGui()
 
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    playlist = parseWebM3URegex(sUrl)
+    if sHtmlContent != '':
+        playlist = parseM3U(sHtmlContent)
+    else:
+        playlist = parseWebM3URegex(sUrl)
 
     if (oInputParameterHandler.exist('AZ')):
         sAZ = oInputParameterHandler.getValue('AZ')

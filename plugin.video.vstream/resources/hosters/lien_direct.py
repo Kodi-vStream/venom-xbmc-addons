@@ -3,7 +3,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog
+from resources.lib.comaddon import dialog, VSlog
 
 import re
 
@@ -81,7 +81,7 @@ class cHoster(iHoster):
             api_call = api_call.split('|')[0] + '|Referer=http://www.mangacity.org/jwplayer/player.swf'
 
         #Modif pr aliez
-        if 'aliez.me' in api_call:
+        if 'aplayer1.me' in api_call:
             UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'
             api_call = api_call + '|User-Agent=' + UA
 

@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'fullstream'
 SITE_NAME = 'FullStream'
 SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
 
-URL_MAIN = 'https://ww2.full-stream.cc/'
+URL_MAIN = 'https://ww1.full-stream.la/'
 
 #definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
 #LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
@@ -174,31 +174,32 @@ def showGenres():
     liste = []
     liste.append( ['Action', URL_MAIN + 'film-streaming/action/'] )
     liste.append( ['Animation', URL_MAIN + 'film-streaming/animation/'] )
-    liste.append( ['Arts Martiaux', URL_MAIN + 'film-streaming/arts-martiaux/'] )
+    # liste.append( ['Arts Martiaux', URL_MAIN + 'film-streaming/arts-martiaux/'] )
     liste.append( ['Aventure', URL_MAIN + 'film-streaming/aventure/'] )
     liste.append( ['Biopic', URL_MAIN + 'film-streaming/biopic/'] )
     liste.append( ['Comédie', URL_MAIN + 'film-streaming/comedie/'] )
+    liste.append( ['Crime', URL_MAIN + 'film-streaming/crime/'] )
     liste.append( ['Comédie Dramatique', URL_MAIN + 'film-streaming/comedie-dramatique/'] )
-    liste.append( ['Comédie Musicale', URL_MAIN + 'film-streaming/comedie-musicale/'] )
+    # liste.append( ['Comédie Musicale', URL_MAIN + 'film-streaming/comedie-musicale/'] )
     liste.append( ['Documentaire', URL_MAIN + 'film-streaming/documentaire/'] )
     liste.append( ['Drame', URL_MAIN + 'film-streaming/drame/'] )
     liste.append( ['Epouvante Horreur', URL_MAIN + 'film-streaming/epouvante-horreur/'] )
-    liste.append( ['Erotique', URL_MAIN + 'film-streaming/erotique'] )
-    liste.append( ['Espionnage', URL_MAIN + 'film-streaming/espionnage/'] )
-    liste.append( ['Famille', URL_MAIN + 'film-streaming/famille/'] )
+    # liste.append( ['Erotique', URL_MAIN + 'film-streaming/erotique'] )
+    # liste.append( ['Espionnage', URL_MAIN + 'film-streaming/espionnage/'] )
+    # liste.append( ['Famille', URL_MAIN + 'film-streaming/famille/'] )
     liste.append( ['Famille', URL_MAIN + 'famille/'] )
     liste.append( ['Fantastique', URL_MAIN + 'film-streaming/fantastique/'] )
     liste.append( ['Guerre', URL_MAIN + 'film-streaming/guerre/'] )
-    liste.append( ['Historique', URL_MAIN + 'film-streaming/historique/'] )
-    liste.append( ['Musical', URL_MAIN + 'film-streaming/musical/'] )
-    liste.append( ['Policier', URL_MAIN + 'film-streaming/policier/'] )
-    liste.append( ['Péplum', URL_MAIN + 'film-streaming/peplum/'] )
+    # liste.append( ['Historique', URL_MAIN + 'film-streaming/historique/'] )
+    # liste.append( ['Musical', URL_MAIN + 'film-streaming/musical/'] )
+    # liste.append( ['Policier', URL_MAIN + 'film-streaming/policier/'] )
+    # liste.append( ['Péplum', URL_MAIN + 'film-streaming/peplum/'] )
     liste.append( ['Romance', URL_MAIN + 'film-streaming/romance/'] )
     liste.append( ['Science Fiction', URL_MAIN + 'film-streaming/science-fiction/'] )
-    liste.append( ['Spectacle', URL_MAIN + 'film-streaming/spectacle/'] )
+    # liste.append( ['Spectacle', URL_MAIN + 'film-streaming/spectacle/'] )
     liste.append( ['Thriller', URL_MAIN + 'film-streaming/thriller/'] )
     liste.append( ['Western', URL_MAIN + 'film-streaming/western/'] )
-    liste.append( ['Divers', URL_MAIN + 'film-streaming/divers/'] )
+    # liste.append( ['Divers', URL_MAIN + 'film-streaming/divers/'] )
 
     for sTitle, sUrl in liste:
 
@@ -224,7 +225,7 @@ def showMovieYears():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-      sUrl = sSearch
+      sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -234,7 +235,7 @@ def showMovies(sSearch = ''):
 
     sHtmlContent = sHtmlContent.replace('<span class="likeThis">', '').replace('</span>', '')
 
-    sPattern = 'class="shortstory cf">.+?<a href="([^"]+)".+?class="positive-rate">([^<]+)<.+?class="xquality">([^<]+)<.+?<img src="([^"]+)".+?alt="(.+?)"'
+    sPattern = 'class="shortstory cf".+?href="([^"]+)".+?class="positive-rate">([^<]+)<.+?class="xquality">([^<]+)<.+?<img src="([^"]+)".+?alt="([^"]+)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -284,7 +285,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = 'a class="nextpostslink" rel="next" href="(.+?)"'
+    sPattern = 'a class="nextpostslink" rel="next" href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):

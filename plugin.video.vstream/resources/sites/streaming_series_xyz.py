@@ -185,7 +185,7 @@ def showMovies(sSearch = ''):
 
     if sSearch:
         sUrl = sSearch
-        sUrl = sUrl.replace('%20', '+')
+        sUrl = sUrl.replace('%20', '+').replace(' ', '+')
 
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')

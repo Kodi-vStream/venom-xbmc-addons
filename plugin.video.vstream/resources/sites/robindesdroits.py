@@ -319,8 +319,9 @@ def showLink():
     
     #Second cas de figure
     if (aResult[0] == False):
-        sPattern = '<a href="(http:\/\/zipansion\.com\/[^"]+)">(.+?)<\/a>'
+        sPattern = '<a href="(http:\/\/(?:zipansion|kudoflow)\.com\/[^"]+)">(.+?)<\/a>'
         aResult = oParser.parse(sHtmlContent, sPattern)
+
         if (aResult[0] == True):
             for aEntry in aResult[1]:
                 sUrl = aEntry[0]
@@ -336,7 +337,7 @@ def showLink():
 
 
     oGui.setEndOfDirectory()
-
+    
 def AdflyDecoder(url):
     oRequestHandler = cRequestHandler(url)
     sHtmlContent = oRequestHandler.request()
@@ -401,6 +402,9 @@ def showHosters():
     VSlog(sUrl)
     
     if 'zipansion' in sUrl:
+        sUrl = AdflyDecoder(sUrl)
+        
+    if 'kudoflow' in sUrl:
         sUrl = AdflyDecoder(sUrl)
         
     VSlog(sUrl)

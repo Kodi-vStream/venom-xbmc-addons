@@ -29,6 +29,7 @@ ANIM_NEWS = (URL_MAIN + 'manga', 'showMovies')
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
+
 FUNCTION_SEARCH = 'showMovies'
 
 def load():
@@ -142,9 +143,7 @@ def showMovies(sSearch = ''):
     oInputParameterHandler = cInputParameterHandler()
 
     if sSearch:
-        sUrl = sSearch
-        sUrl = sUrl.replace('%20', '+')
-
+        sUrl = sSearch.replace(' ', '+')
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
