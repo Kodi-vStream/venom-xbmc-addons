@@ -9,16 +9,16 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
-import urllib2
+#import urllib2
 
 
 SITE_IDENTIFIER = 'papstream'
 SITE_NAME = 'PapStream'
 SITE_DESC = 'Films, Séries & Mangas'
 
-URL_MAIN = 'https://www2.papstream.xyz/'
+URL_MAIN = 'https://ww2.papstream.xyz/'
 
-URL_SEARCH = ('https://www2.papstream.xyz/rechercher', 'showMovies')
+URL_SEARCH = ('https://ww2.papstream.xyz/rechercher', 'showMovies')
 
 URL_SEARCH_MOVIES = ('', 'showMovies')
 URL_SEARCH_SERIES = ('', 'showMovies')
@@ -367,7 +367,7 @@ def showLink():
         #if aResult[0]:
             #sDesc = aResult[1][0]
 
-    sPattern = 'rel="([^"]+)".+?id="player".+?<i class="server player-.+?"></i>([^<>]+)</span>.+?<img src="([^"]+)"'
+    sPattern = 'href="#" rel="([^"]+)".+?id="player".+?<i class="server player-.+?"></i>([^<>]+)</span>.+?<img src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -396,12 +396,20 @@ def showHosters():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    headers = {'User-Agent': UA, 'Referer': refUrl}
+    #headers = {'User-Agent': UA, 'Referer': refUrl}
 
-    request = urllib2.Request(sUrl, None, headers)
-    reponse = urllib2.urlopen(request)
-    vUrl = reponse.geturl()
-    reponse.close()
+    sUrl = URL_MAIN + sUrl
+
+    oRequestHandler = cRequestHandler(sUrl)
+    oRequestHandler.addHeaderEntry('Referer', refUrl)
+    oRequestHandler.request()
+    vUrl = oRequestHandler.getRealUrl()
+
+    #request = urllib2.Request(sUrl, None, headers)
+    #reponse = urllib2.urlopen(request)
+    #vUrl = reponse.geturl()
+    #reponse.close()
+
 
     if vUrl:
         sHosterUrl = vUrl
