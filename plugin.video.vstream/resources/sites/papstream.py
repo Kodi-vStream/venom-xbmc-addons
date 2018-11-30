@@ -16,9 +16,9 @@ SITE_IDENTIFIER = 'papstream'
 SITE_NAME = 'PapStream'
 SITE_DESC = 'Films, Séries & Mangas'
 
-URL_MAIN = 'https://ww2.papstream.xyz/'
+URL_MAIN = 'https://papstream.xyz/'
 
-URL_SEARCH = ('https://ww2.papstream.xyz/rechercher', 'showMovies')
+URL_SEARCH = ('https://papstream.xyz/rechercher', 'showMovies')
 
 URL_SEARCH_MOVIES = ('', 'showMovies')
 URL_SEARCH_SERIES = ('', 'showMovies')
