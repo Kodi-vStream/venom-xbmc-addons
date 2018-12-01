@@ -10,7 +10,7 @@ from resources.lib.util import cUtil
 from resources.lib.player import cPlayer
 from resources.lib.config import GestionCookie
 from resources.lib.gui.hoster import cHosterGui
-from resources.lib.jsunfuck import JSUnfuck
+from resources.lib.jsunfuck import unFuckFirst
 
 from resources.lib.enregistrement import cEnregistremement
 from resources.lib.epg import cePg
@@ -807,21 +807,3 @@ def GetRealUrl(chain):#Recupere les liens des regex
 def openwindows():
     xbmc.executebuiltin( "ActivateWindow(%d, return)" % ( 10601, ) )
     return
-
-def unFuckFirst(data):
-    try:
-        #lib.common.log("JairoDemyst: " + data)
-        p = 186
-        hiro = re.findall(r'"hiro":"(.*?)"', data)[0]
-        parts = re.findall('([^;]+)', hiro)
-        for part in parts:
-            if '(' in part:
-                f = re.findall('(.*?)\((.+)\)',part)[0]
-                exec(f[0] + JSUnfuck(f[1]).decode())
-            else:
-                exec(part)
-        data = re.sub(r'"hiro":"(.*?)"', '"hiro":%s'%str(n), data, count=1)
-
-        return data
-    except:
-        return data
