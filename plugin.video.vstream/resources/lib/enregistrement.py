@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 from resources.lib.gui.gui import cGui
 from resources.lib.comaddon import progress, addon, xbmc, xbmcgui, VSlog, dialog
 import xbmcvfs, datetime, time, _strptime, os
@@ -11,8 +12,8 @@ class cEnregistremement:
         oGui = cGui()
         ADDON = addon()
         if 'firstonetv' in sUrl or 'bouygtel' in sUrl:
-            sUrl = sUrl.replace('|Referer=','" -headers "Referer: ').replace('&User-Agent=Mozilla/5.0+(X11;+Linux+i686)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Ubuntu+Chromium/48.0.2564.116+Chrome/48.0.2564.116+Safari/537.36&X-Requested-With=ShockwaveFlash/28.0.0.137&Origin=https://www.firstonetv.net','" -headers "User-Agent: Mozilla/5.0+(X11;+Linux+i686)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Ubuntu+Chromium/48.0.2564.116+Chrome/48.0.2564.116+Safari/537.36" -headers "X-Requested-With: ShockwaveFlash/28.0.0.137" -headers "Origin: https://www.firstonetv.net" -sn -bsf:a aac_adtstoasc -c:v copy -c:a copy')
-            header = '-stream_loop -1 -y -i "' + sUrl
+            sUrl = sUrl.replace('|Referer=','" -headers "Referer: ').replace('&User-Agent=Mozilla/5.0+(X11;+Linux+i686)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Ubuntu+Chromium/48.0.2564.116+Chrome/48.0.2564.116+Safari/537.36&X-Requested-With=ShockwaveFlash/28.0.0.137&Origin=https://www.firstonetv.net','" -headers "User-Agent: Mozilla/5.0+(X11;+Linux+i686)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Ubuntu+Chromium/48.0.2564.116+Chrome/48.0.2564.116+Safari/537.36" -headers "X-Requested-With: ShockwaveFlash/28.0.0.137" -headers "Origin: https://www.firstonetv.net" -sn -c:v copy -c:a copy')
+            header = '-fflags +genpts+igndts -avoid_negative_ts -i "' + sUrl
         else:
             header = '-reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -analyzeduration 2000000 -f mpegts -re -flags +global_header -fflags +genpts+igndts -y -i "' + sUrl +'" -headers "User-Agent: Mozilla/5.0+(X11;+Linux+i686)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Ubuntu+Chromium/48.0.2564.116+Chrome/48.0.2564.116+Safari/537.36" -sn -c:v libx264 -c:a copy -map 0 -segment_format mpegts -segment_time 20'
 
@@ -20,9 +21,9 @@ class cEnregistremement:
         currentPath = ADDON.getSetting('path_enregistrement').replace('\\','/')
         ffmpeg = ADDON.getSetting('path_ffmpeg').replace('\\','/')
 
-        heureFichier = oGui.showKeyBoard(heading="Heure du debut d\'enregistrement au format Date-Heure-Minute")
-        heureFin = oGui.showKeyBoard(heading="Heure du fin d\'enregistrement au format Heure-Minute")
-        titre = oGui.showKeyBoard(heading="Titre de l\'enregistrement").replace("'","\\'")
+        heureFichier = oGui.showKeyBoard(heading="Heure du debut d'enregistrement au format Date-Heure-Minute")
+        heureFin = oGui.showKeyBoard(heading="Heure du fin d'enregistrement au format Heure-Minute")
+        titre = oGui.showKeyBoard(heading="Titre de l'enregistrement").replace("'","\\'")
 
         heureDebut = GetTimeObject(heureFichier,'%d-%H-%M')
 
@@ -33,14 +34,13 @@ class cEnregistremement:
         marge = ADDON.getSetting('marge_auto')
         timedelta = datetime.timedelta(minutes=int(marge))
         durer = durer + timedelta
-        realPath = xbmc.translatePath(pathEnregistrement + '/' + str(heureFichier) + '.py').replace('\\','\\\\')
-        VSlog(pathEnregistrement + '/' + str(heureFichier) + '.py')
 
-        f = xbmcvfs.File(pathEnregistrement + '/' + str(heureFichier) + '.py','w')
-        f = f.write('''from subprocess import Popen, PIPE
-import os
+        realPath = xbmc.translatePath(pathEnregistrement + '/' + str(heureFichier) + '.py').replace('\\','\\\\')
+
+        f = xbmcvfs.File(realPath,'w')
+        f = f.write('''import os,subprocess
 command = '"'''+ffmpeg+'''" '''+header+''' -t '''+str(durer)+''' "'''+currentPath+'''/'''+titre+'''.mkv"'
-proc = Popen(command, shell=False, stdout=PIPE)
+proc = subprocess.Popen(command, stdout=subprocess.PIPE)
 p_status = proc.wait()
 f = open("'''+currentPath+'''/test.txt",'w')
 f.write('Finit avec code erreur ' + str(p_status))
