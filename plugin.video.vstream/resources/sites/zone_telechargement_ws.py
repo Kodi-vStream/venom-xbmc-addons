@@ -22,8 +22,7 @@ SITE_IDENTIFIER = 'zone_telechargement_ws'
 SITE_NAME = '[COLOR violet]Zone-Telechargement[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_HOST = 'https://zone-telechargement1.org/'
-
+URL_HOST = 'https://www.annuaire-telechargement.com/'
 
 def GetURL_MAIN():
     ADDON = addon()
@@ -253,15 +252,19 @@ def showMovies(sSearch = ''):
         oRequestHandler.setRequestType(cRequestHandler.REQUEST_TYPE_POST)
         oRequestHandler.addParametersLine(data)
         oRequestHandler.addParameters('User-Agent', UA)
+        oRequestHandler.addParameters('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+        oRequestHandler.addParameters('Accept-Language','fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        oRequestHandler.addParameters('Accept-Encoding','gzip, deflate, br')
+        oRequestHandler.addParameters('Referer', URL_MAIN)
+        oRequestHandler.addParameters('Content-Type','application/x-www-form-urlencoded')
         sHtmlContent = oRequestHandler.request()
-        sHtmlContent = oParser.abParse(sHtmlContent, 'de la recherche', 'Nous contacter')
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
     else:
         #sPattern = '<div style="height:[0-9]{3}px;"> *<a href="([^"]+)"><img class="[^"]+?" data-newsid="[^"]+?" src="([^<"]+)".+?<div class="[^"]+?" style="[^"]+?"> *<a href="[^"]+?"> ([^<]+?)<'
         sPattern = '<div style="height:[0-9]{3}px;">\s*<a href="([^"]+)"><img class="[^"]+?" data-newsid="[^"]+?" src="([^<"]+)".+?<a href="[^"]+" *>([^<]+)<'
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -444,11 +447,11 @@ def showSeriesLinks():
         pass
 
     #Mise àjour du titre
-    sPattern = '<meta name="description" content="(?:Telecharger|)(.+?)Qualité.+?\|[^\|](.+?) Episode .+?\|[^\|](.+?)(?:la serie|Origine de la serie)'
+    sPattern = '<title>(?:Télecharger|)(.+?)-(.+?) (.+?) .+?</title>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):
-        sMovieTitle = aResult[1][0][0] + aResult[1][0][1] + aResult[1][0][2]
+        sMovieTitle = aResult[1][0][0].replace('&amp;','') + aResult[1][0][1] + ' ' + aResult[1][0][2]
 
     #on recherche d'abord la qualité courante
     sPattern = '<div style="[^"]+?">.+?Qualité (.+?)<'

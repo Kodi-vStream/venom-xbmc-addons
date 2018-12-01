@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'ddl_island_su'
 SITE_NAME = '[COLOR violet]DDL-Island[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_MAIN = 'http://www.ddl-island.su/'
+URL_MAIN = 'https://www2.ddl-island.su/'
 URL_DECRYPT = 'http://www.dl-protect.ru'
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'recherche.php?categorie=99&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
@@ -451,7 +451,7 @@ def showMovies(sSearch = ''):
 
 
             if 'saries' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSaisons', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -547,7 +547,7 @@ def showSaisons():
     #fh.close()
 
     oParser = cParser()
-    sPattern = "<li><a[^<>]+Saison[^<>]+?href='([^']+)'>([^<>]+)<\/a><\/li>"
+    sPattern = "<li><a[^<>]+Saison[^<>]+?href='([^']+)'>([^<>]+)<\/a>(?:&nbsp;<img src=.+?title=(.+?) width|)"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -569,7 +569,7 @@ def showSaisons():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sDesc', sDesc)
-            oGui.addTV(SITE_IDENTIFIER, 'showSeriesReleases', sTitle, '', sThumb, '', oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -606,14 +606,6 @@ def showSeriesReleases():
     oGui.addText(SITE_IDENTIFIER, sMovieTitle)
     oGui.addText(SITE_IDENTIFIER, '[COLOR olive]Episodes disponibles:[/COLOR]')
 
-    #Affichage des autres saisons
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', sUrl + '.html')
-    oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-    oOutputParameterHandler.addParameter('sThumb', sThumb)
-    oOutputParameterHandler.addParameter('sDesc', sDesc)
-    oGui.addMisc(SITE_IDENTIFIER, 'showSaisons', "[COLOR olive]Autres saisons >[/COLOR]", '', sThumb, '', oOutputParameterHandler)
-
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -622,13 +614,12 @@ def showSeriesReleases():
             if progress_.iscanceled():
                 break
 
-            if 'rapidgator' not in aEntry[1] and 'turbobit' not in aEntry[1] and 'uploaded' not in aEntry[1] and 'uptobox' not in aEntry[1]:
-                sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR]'
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            sTitle = '[COLOR skyblue]' + aEntry[1] + '[/COLOR]'
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', aEntry[0])
+            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -647,10 +638,10 @@ def showHosters():
     #VSlog(sUrl)
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    #VSlog(sHtmlContent)
     oParser = cParser()
 
-    sPattern = '<span class=\'providers.+?\' title=\'([^\']+)\'>.+?<a href=\'([^\']+)\' target=\'_blank\' title="([^"]+)"'
+    sPattern = '<span class=\'providers.+?\' title=\'([^\']+)\'>.+?<a href=\'([^\']+)\' target=\'_blank\' data-title="([^"]+)"'
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -774,18 +765,6 @@ def DecryptDlProtecte(url):
     if not (url):
         return ''
 
-    #url=url.replace('https','http')
-
-    headersBase = {
-    'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0',
-    'Referer' : url,
-    #'Origin' : 'https://www.dl-protecte.com',
-    'Accept' : 'application/json, text/javascript, */*; q=0.01',
-    'Accept-Language': 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4',
-    #'Pragma' : '',
-    #'Accept-Charset' : ''
-    }
-
     #url2 = 'https://www.dl-protecte.org/php/Qaptcha.jquery.php'
     #url2 = 'https://www.protect-zt.com/php/Qaptcha.jquery.php'
     url2 = 'https://' + url.split('/')[2] + '/php/Qaptcha.jquery.php'
@@ -796,58 +775,28 @@ def DecryptDlProtecte(url):
     s = "azertyupqsdfghjkmwxcvbn23456789AZERTYUPQSDFGHJKMWXCVBN_-#@";
     RandomKey = ''.join(random.choice(s) for i in range(32))
 
-    query_args = ( ('action', 'qaptcha') , ('qaptcha_key', RandomKey) )
-    data = urllib.urlencode(query_args)
+    oRequestHandler = cRequestHandler(url2)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addHeaderEntry('Host', 'www.dl-protect.ru')
+    oRequestHandler.addHeaderEntry('Referer', url)
+    oRequestHandler.addHeaderEntry('Accept', 'application/json, text/javascript, */*; q=0.01')
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Language', 'fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4')
+    oRequestHandler.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+    oRequestHandler.addHeaderEntry('X-Requested-With','XMLHttpRequest')
+    oRequestHandler.addParameters('action', 'qaptcha')
+    oRequestHandler.addParameters('qaptcha_key', RandomKey)
 
-    #Creation Header
-    headers1 = dict(headersBase)
-    headers1.update({'X-Requested-With':'XMLHttpRequest'})
-    headers1.update({'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'})
+    sHtmlContent = oRequestHandler.request()
 
-    #Requete
-    request = urllib2.Request(url2, data, headers1)
-    try:
-        reponse = urllib2.urlopen(request, timeout = 5)
-    except urllib2.URLError, e:
-        dialogs.VSinfo("Site Dl-Protecte HS", "Erreur", 5)
-        VSlog( e.read() )
-        VSlog( e.reason )
-        return ''
-    except urllib2.HTTPError, e:
-        dialogs.VSinfo("Site Dl-Protecte HS", "Erreur", 5)
-        VSlog( e.read() )
-        VSlog( e.reason )
-        return ''
-    except timeout:
-        VSlog('timeout')
-        dialogs.VSinfo("Site Dl-Protecte HS", "Erreur", 5)
-        return ''
-
-    sHtmlContent = reponse.read()
-
+    cookies = oRequestHandler.GetCookies()
+    GestionCookie().SaveCookie('dl_protect.ru',cookies)
     #VSlog( 'result'  + sHtmlContent)
-
-    #Recuperatioen et traitement cookies ???
-    cookies=reponse.info()['Set-Cookie']
-    c2 = re.findall('(?:^|,) *([^;,]+?)=([^;,\/]+?);', cookies)
-    if not c2:
-        VSlog( 'Probleme de cookies')
-        return ''
-    cookies = ''
-    for cook in c2:
-        cookies = cookies + cook[0] + '=' + cook[1] + ';'
-
-    #VSlog( 'Cookie'  + str(cookies))
-
-    reponse.close()
 
     if not '"error":false' in sHtmlContent:
         VSlog('Captcha rate')
         VSlog(sHtmlContent)
         return
-
-    #Creation Header
-    headers2 = dict(headersBase)
 
     #tempo pas necessaire
     #cGui().showInfo("Patientez", 'Décodage en cours', 2)
@@ -866,33 +815,30 @@ def DecryptDlProtecte(url):
 
     multipart_form_data = { RandomKey : '', 'submit' : 'Valider' }
     data, headersMulti = encode_multipart(multipart_form_data, {}, boundary)
-    headers2.update(headersMulti)
     #VSlog( 'header 2'  + str(headersMulti))
     #VSlog( 'data 2'  + str(data))
 
-    #rajout des cookies
-    headers2.update({'Cookie': cookies})
+    #2 eme requete pour avoir le lien
+    cookies = GestionCookie().Readcookie('dl_protect.ru')
+    oRequestHandler = cRequestHandler(url)
+    oRequestHandler.setRequestType(1)
+    oRequestHandler.addHeaderEntry('Host', 'www.dl-protect.ru')
+    oRequestHandler.addHeaderEntry('Referer', url)
+    oRequestHandler.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+    oRequestHandler.addHeaderEntry('User-Agent', UA)
+    oRequestHandler.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+    oRequestHandler.addHeaderEntry('Content-Length', headersMulti['Content-Length'])
+    oRequestHandler.addHeaderEntry('Content-Type', headersMulti['Content-Type'])
+    oRequestHandler.addHeaderEntry('Cookie', cookies)
+    oRequestHandler.addHeaderEntry('Accept-Encoding', 'gzip, deflate')
 
-    #Modifications
-    headers2.update({'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'})
+    oRequestHandler.addParametersLine(data)
 
-    #VSlog( str(headers2) )
+    sHtmlContent = oRequestHandler.request()
 
-    #Requete
-    request = urllib2.Request(url, data, headers2)
-    try:
-        reponse = urllib2.urlopen(request)
-    except urllib2.URLError, e:
-        print e.read()
-        print e.reason
-
-    sHtmlContent = reponse.read()
-
-    #fh = open('c:\\test.txt', "w")
+    #fh = open('d:\\test.txt', "w")
     #fh.write(sHtmlContent)
     #fh.close()
-
-    reponse.close()
 
     return sHtmlContent
 

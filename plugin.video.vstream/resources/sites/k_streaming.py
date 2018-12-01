@@ -12,7 +12,7 @@ SITE_IDENTIFIER = 'k_streaming'
 SITE_NAME = 'K-Streaming'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
-URL_MAIN = 'https://fr.k-streaming.com/'
+URL_MAIN = 'http://www.k-streaming.cc/'
 
 #definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
 #LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*

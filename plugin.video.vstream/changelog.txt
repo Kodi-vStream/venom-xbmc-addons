@@ -1,65 +1,14 @@
 =============================================================================
 - Version & Repository: https://github.com/Kodi-vStream/venom-xbmc-addons/releases
-- Question & Support: https://github.com/Kodi-vStream/venom-xbmc-addons/issues
+- Participer: https://github.com/Kodi-vStream/venom-xbmc-addons/issues
+- Support: https://vstream.ga/
 =============================================================================
 =============================================================================
-- Auteurs : Venom, TmpName, Johngf
+- Auteurs : Venom, TmpName, Johngf, Arias800
 =============================================================================
 Merci au contributeur de la bêta.
-- Razorex/Kodigoal/Arias800/chataigne73
+- Razorex/Kodigoal/chataigne73
 =============================================================================
 =============================================================================
-- Version 0.6.5 - 20.07.2018
+- https://github.com/Kodi-vStream/venom-xbmc-addons/commits/Beta
 =============================================================================
-20-07-2018 -- @LordVenom -- ddl_island
-19-07-2018 -- @razorex -- Update cinemay_com.py
-19-07-2018 -- @razorex -- Update filmstreamvk_com.py  Url du site
-19-07-2018 -- @Arias800 -- Modif current qualiter et saison
-19-07-2018 -- @LordVenom -- icon
-18-07-2018 -- @razorex -- Update voirstream_ws.py  Rajout des listes, dissociation des années.
-17-07-2018 -- @LordVenom -- library
-17-07-2018 -- @LordVenom -- trakt
-17-07-2018 -- @razorex -- Update disneyhd_tk.py
-17-07-2018 -- @razorex -- Update cinemay_com.py  Urls du site
-17-07-2018 -- @razorex -- Delete malaisetv.png  Down
-17-07-2018 -- @razorex -- Delete frenchddl_com.png
-17-07-2018 -- @razorex -- Add files via upload
-17-07-2018 -- @razorex -- Add files via upload
-17-07-2018 -- @razorex -- Add files via upload
-17-07-2018 -- @razorex -- Create film_vf_gratuit.py
-16-07-2018 -- @johngf -- j y crois pas trop au hd mais bon
-16-07-2018 -- @Arias800 -- Fix tableau qualiter
-16-07-2018 -- @LordVenom -- papstream
-15-07-2018 -- @LordVenom -- about
-15-07-2018 -- @johngf -- Update hoster.py
-15-07-2018 -- @johngf -- Create xdrive.py
-15-07-2018 -- @johngf -- zt pastebin d  @Arias800 et modif
-15-07-2018 -- @johngf -- vshare dxd et https
-15-07-2018 -- @johngf -- Update flashx.py
-14-07-2018 -- @LordVenom -- futur
-14-07-2018 -- @johngf -- Update premiumHandler.py
-14-07-2018 -- @johngf -- Update runscript.py
-12-07-2018 -- @johngf -- ad kam hoster
-12-07-2018 -- @LordVenom -- filmsvostfr_biz
-12-07-2018 -- @LordVenom -- streamzzz_com
-12-07-2018 -- @LordVenom -- site de retour
-12-07-2018 -- @LordVenom -- voirstream
-12-07-2018 -- @Arias800 -- J ai oublier d enlever le https
-12-07-2018 -- @Arias800 -- Correction sSearch
-11-07-2018 -- @LordVenom -- cineiz
-11-07-2018 -- @LordVenom -- voir film False
-11-07-2018 -- @LordVenom -- upto modif qui ne resoud rien.
-10-07-2018 -- @LordVenom -- serie_streaming
-09-07-2018 -- @johngf -- Rename plugin.video.vstream/resources/sites/trash/k_streaming.py to plugin.video.vstream/resources/sites/k_streaming.py
-09-07-2018 -- @johngf -- fix stream cherry
-09-07-2018 -- @LordVenom -- zip
-09-07-2018 -- @LordVenom -- Merge branch  Beta  of https://github.com/Kodi-vStream/venom-xbmc-addons into Beta
-09-07-2018 -- @johngf -- Update filmstreamvk_com.py
-09-07-2018 -- @LordVenom -- v0.6.4
-28-05-2018 -- @LordVenom -- v0.6.2
-14-04-2018 -- @LordVenom -- v0.6.1
-03-03-2018 -- @LordVenom -- V0.6.0
-26-01-2018 -- @LordVenom -- v0.5.9
-30-12-2017 -- @LordVenom -- v0.5.8
-08-12-2017 -- @LordVenom -- V0.5.7
-28-10-2017 -- @Lord Venom -- V0.5.6

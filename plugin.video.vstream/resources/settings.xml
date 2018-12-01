@@ -75,6 +75,8 @@
 
         <setting visible="false" id="plugin_cineiz" type="bool" label="cineiz" default="true"/>
 
+        <setting visible="false" id="plugin_cinemavf" type="bool" label="filmstreamin" default="true"/>
+
         <setting visible="false" id="plugin_cinemay_com" type="bool" label="Cinemay" default="true"/>
 
         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
@@ -140,6 +142,8 @@
         <setting visible="false" id="plugin_papstream" type="bool" label="papstream" default="true"/>
 
         <setting visible="false" id="plugin_planet_streaming" type="bool" label="planet streaming" default="true"/>
+
+        <setting visible="false" id="plugin_planet_regarderfilm" type="bool" label="RegarderFilm" default="true"/>
 
         <setting visible="false" id="plugin_replaytvstreaming_com" type="bool" label="ReplayTVstreaming" default="true"/>
 

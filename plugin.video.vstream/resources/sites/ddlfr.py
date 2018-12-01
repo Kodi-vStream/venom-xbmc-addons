@@ -8,7 +8,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, VSlog
-#from resources.lib.util import cUtil #outils pouvant etre utiles
+from resources.lib.util import cUtil
 import base64
 
 SITE_IDENTIFIER = 'ddlfr'
@@ -153,6 +153,11 @@ def showMovies(sSearch = ''):
             sTitle = sTitle.replace('HDTV', '')
             sTitle = sTitle.replace('720p', '')
             sTitle = sTitle.replace('1080p', '')
+
+            #tris search
+            if sSearch and total > 3:
+                if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
+                    continue
 
 
             oOutputParameterHandler = cOutputParameterHandler()
