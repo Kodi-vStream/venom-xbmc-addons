@@ -244,7 +244,7 @@ def showMovies(sSearch = ''):
             query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch), ('titleonly', '3'))
 
         #sPattern = '<a href="(.+?)" *><img class=".+?" src="(.+?)".+?\s*<.+?>\s*<div style=".+?">\s*<.+?>\s*<div style=".+?"><div class=".+?">\s*<div class=".+?\s*<a href=".+?" *>(.+?)<'
-        sPattern = '<a href="(.+?)" *><img class="mainimg.+?src="(.+?)"(?:.|\s)+?<a href=".+?" *>(.+?)<'
+        sPattern = '<a href="([^"]+)" *><img class="mainimg.+?src="([^"]+)"(?:.|\s)+?<a href=".+?" *>([^"]+)</a>'
 
         data = urllib.urlencode(query_args)
 
