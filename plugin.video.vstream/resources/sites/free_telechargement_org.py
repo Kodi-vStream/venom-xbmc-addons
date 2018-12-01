@@ -42,6 +42,7 @@ MOVIE_SD_CLASSIQUE = (URL_MAIN + '1/categorie-Films+Classiques/1.html', 'showMov
 MOVIE_SD_VIEWS = (URL_MAIN + '1/films/affichage', 'showMovies')
 MOVIE_GENRES_SD = (True, 'showGenreMoviesSD')
 MOVIE_HD = (URL_MAIN + '1/categorie-Films+BluRay+720p+et+1080p/1.html', 'showMovies')
+MOVIE_4K = (URL_MAIN + '1/categorie-Films+Bluray+4K/1.html', 'showMovies')
 MOVIE_HDLIGHT = (URL_MAIN + '1/films-hdlight/1.html', 'showMovies')
 MOVIE_3D = (URL_MAIN + '1/categorie-Films+BluRay+3D/1.html', 'showMovies')
 MOVIE_HD_VIEWS = (URL_MAIN + '1/films-bluray/affichage', 'showMovies')
@@ -121,6 +122,10 @@ def showMenuFilms():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HD[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_HD[1], 'Films HD 720p & 1080p (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_4K[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_4K[1], 'Films UHD 4K (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_HDLIGHT[0])
@@ -516,7 +521,7 @@ def showHosters():
 
     aResult1 = oParser.parse(sHtmlContent, sPattern)
     #print aResult1
-    
+
     if (aResult1[0] == True):
         if 'Forced' in aResult1[1][0]:
             aResult1[1][0]=''
@@ -552,7 +557,7 @@ def showHosters():
 
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
-    
+
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
@@ -561,7 +566,7 @@ def showHosters():
             else:
                 sHostName = aEntry[0]
                 sHostName = cUtil().removeHtmlTags(sHostName)
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             sTitle = '[COLOR skyblue]' + sHostName + '[/COLOR]'
             if '-multi' in aEntry:
@@ -639,7 +644,7 @@ def showSeriesHosters():
     oGui.setEndOfDirectory()
 
 def Display_protected_link():
-    #print 'entering Display_protected_link' 
+    #print 'entering Display_protected_link'
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
