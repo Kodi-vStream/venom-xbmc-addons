@@ -287,7 +287,7 @@ def showMovies(sSearch = ''):
             sDisplayTitle = sTitle.replace('Complete', 'Complète')
             #nettoyage du titre
             sTitle = re.sub('\[\w+]', '', sTitle)
-            sUrl2 = aEntry[0].replace('https', 'http')
+            sUrl2 = aEntry[0]
 
             #traite les qualités
             liste = ['4k', '1080p', '720p', 'bdrip', 'hdrip', 'dvdrip', 'cam-md']
@@ -302,7 +302,7 @@ def showMovies(sSearch = ''):
                     continue
 
             sThumb = aEntry[1]
-            if not sThumb.startswith('http'):
+            if not sThumb.startswith('https'):
                 sThumb = URL_MAIN + sThumb
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -582,10 +582,10 @@ def showHosters():
                 sTitle =  sMovieTitle + ' [COLOR coral]' + aEntry[1] + '[/COLOR] '
                 URL_DECRYPT = aEntry[3]
                 oOutputParameterHandler = cOutputParameterHandler()
-                if sUrl.startswith('http'):
-                    oOutputParameterHandler.addParameter('siteUrl', aEntry[2].replace('https', 'http'))
+                if sUrl.startswith('https'):
+                    oOutputParameterHandler.addParameter('siteUrl', aEntry[2])
                 else:
-                    sUrl2 = 'http://' + aEntry[3] + '/' + aEntry[4]
+                    sUrl2 = 'https://' + aEntry[3] + '/' + aEntry[4]
                     oOutputParameterHandler.addParameter('siteUrl', sUrl2)
 
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
@@ -636,7 +636,7 @@ def showSeriesHosters():
                 sName = aEntry[3]
                 sName = sName.replace('Télécharger', '')
                 sName = sName.replace('pisodes', 'pisode')
-                sUrl2 = 'http://' + aEntry[1] +  '/' + aEntry[2]
+                sUrl2 = 'https://' + aEntry[1] +  '/' + aEntry[2]
 
                 sTitle = sMovieTitle + ' ' + sName
                 URL_DECRYPT = aEntry[1]
