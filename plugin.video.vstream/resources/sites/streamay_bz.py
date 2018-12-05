@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, dialog, VSlog
+from resources.lib.comaddon import progress, dialog
 from resources.lib.util import cUtil
 import base64, re
 
@@ -21,17 +21,17 @@ MOVIE_VIEWS = (URL_MAIN + '?v_sortby=views&v_orderby=desc', 'showMovies')
 MOVIE_GENRES = (URL_MAIN + 'films', 'showGenres')
 MOVIE_LIST = (URL_MAIN, 'AlphaSearch')
 
-#URL_SEARCH = ('', 'showSearchMovies')
-#URL_SEARCH_MOVIES = ('', 'showSearchMovies')
-#URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
+URL_SEARCH = ('', 'showSearchMovies')
+URL_SEARCH_MOVIES = ('', 'showSearchMovies')
+URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showSearchMovies'
 
 def load():
     oGui = cGui()
 
-    #oOutputParameterHandler = cOutputParameterHandler()
-    #oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    #oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -158,18 +158,16 @@ def showSearchMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
         sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
+        
+        pdata = 'nonce=3119876a57&action=tr_livearch&trsearch=' + sSearch #voir si nonce change
 
-        oRequestHandler = cRequestHandler(sUrl2)
-        oRequestHandler.setRequestType(1)
-        #oRequestHandler.addHeaderEntry('User-Agent',"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0")
-        #oRequestHandler.addHeaderEntry('Content-Type','application/x-www-form-urlencoded; charset=UTF-8')
-        oRequestHandler.addParameters('action', 'tr_livearch')
+        oRequest = cRequestHandler(sUrl2)
+        oRequest.setRequestType(1)
+        oRequest.addHeaderEntry('User-Agent',"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0")
+        oRequest.addParameters('Referer', 'https://ww1.streamay.com/')
 
-        #ça bloque ici id dynamique de recaptcha je pense.
-        oRequestHandler.addParameters('nonce', '2c1e4a26e9')
-
-        oRequestHandler.addParameters('trsearch', sSearch)
-        sHtmlContent = oRequestHandler.request()
+        oRequest.addParametersLine(pdata)
+        sHtmlContent = oRequest.request()
 
         sPattern = '<div class="TPost B">.+?<a href="([^"]+)">.+?<img src="([^"]+)".+?<div class="Title">(.+?)</div>'
 
@@ -283,7 +281,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
     oParser = cParser()
 
-    sPattern = 'data-vidopt="VideoOption.+?">.+?ecteur <span>(.+?)</span></div><p class="AAIco-language">(.+?)</p><p class="AAIco-dns">(.+?)</p><p class="AAIco-equalizer">(.+?)</p>' #lang,qual,host
+    sPattern = 'data-.+?t="VideoOption.+?">.+?ecteur <span>(.+?)</span></div><p class="AAIco-language">(.+?)</p><p class="AAIco-dns">(.+?)</p><p class="AAIco-equalizer">(.+?)</p>' #lang,qual,host
     aResult1 = re.findall(sPattern, sHtmlContent, re.DOTALL)
 
     sHtmlContent = oParser.abParse(sHtmlContent, '<div class="VideoPlayer">', '<div class="Image">')
