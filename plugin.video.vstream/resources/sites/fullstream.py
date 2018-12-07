@@ -31,7 +31,7 @@ FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'film-streaming', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'film-streaming', 'showMovies')
-MOVIE_HD = (URL_MAIN + 'url', 'showMovies')
+MOVIE_HD = (URL_MAIN + 'film-streaming/films-hd', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 MOVIE_VF = (URL_MAIN + 'langues/vf', 'showMovies')
