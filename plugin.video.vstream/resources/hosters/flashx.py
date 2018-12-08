@@ -46,10 +46,10 @@ def GetHtml(url, headers):
 def UnlockUrl(url2=None):
     headers9 = {
     'User-Agent': UA,
-    'Referer': 'https://www.flashx.ws/dl?playthis'
+    'Referer': 'https://www.flashx.co/dl?playthis'
     }
 
-    url1 = 'https://www.flashx.ws/js/code.js'
+    url1 = 'https://www.flashx.co/js/code.js'
     if url2:
         url1 = url2
 
@@ -63,7 +63,7 @@ def UnlockUrl(url2=None):
     #oRequest.addParameters('Accept', '*/*')
     #oRequest.addParameters('Accept-Encoding', 'gzip, deflate, br')
     #oRequest.addParameters('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
-    oRequest.addParameters('Referer', 'https://www.flashx.ws/dl?playthis')
+    oRequest.addParameters('Referer', 'https://www.flashx.co/dl?playthis')
     code = oRequest.request()
 
     url = ''
