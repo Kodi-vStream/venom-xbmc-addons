@@ -416,7 +416,6 @@ def getHtml(sUrl, data=None):#S'occupe des requetes
         oRequestHandler.addParameters('native_hls','0')
         oRequestHandler.addParameters('unsecure_hls','0')
         data = oRequestHandler.request()
-
         return data
     elif 'firstonetv' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
@@ -450,7 +449,7 @@ def parseM3U(infile):#Traite les m3u local
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    if 'iptv4sat' in sUrl:
+    if 'iptv4sat' in sUrl or '.zip' in sUrl:
         sHtmlContent = getHtml(sUrl)
         from zipfile import ZipFile
         import io
@@ -544,7 +543,7 @@ def showWeb():#Code qui s'occupe de liens TV du Web
 
             #les + ne peuvent pas passer
             url2 = track.path.replace('+', 'P_L_U_S')
-            if not '[' in url2 and not ']' in url2:
+            if not '[' in url2 and not ']' in url2 and not '.m3u8' in url2:
                 url2 = 'plugin://plugin.video.f4mTester/?url=' + urllib.quote_plus(url2) + '&amp;streamtype=TSDOWNLOADER&name=' + urllib.quote(track.title)
 
             thumb = "/".join([sRootArt, sThumb])
@@ -798,7 +797,7 @@ def GetRealUrl(chain):#Recupere les liens des regex
         if (aResult2):
             url = aResult2[1][0]
 
-    #xbmc.log('Url recuperee : ' + url)
+    #VSlog('Url recuperee : ' + url)
 
     url = url + '|User-Agent=' + UA2
 
