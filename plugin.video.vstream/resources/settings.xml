@@ -201,6 +201,16 @@
 
     </category>
 
+    <category label="Enregistrement">
+        <setting id="path_ffmpeg" type="text" label="Chemin ffmpeg" default=""/>
+        <setting id="path_enregistrement" type="text" label="Chemin enregistrement" default=""/>
+        <setting id="path_enregistrement_programmation" type="text" label="" default="" visible="false"/>
+        <setting id="enregistrement_activer" type="bool" label="Activer l'enregistrement" default="false"/>
+        <setting id="marge_auto" type="number" label="Minute ajouter automatiquement a votre durer choisie (en minute)" default="0"/>
+        <setting id="heure_verification" type="number" label="Intervalle de temps entre chaque verification de l'heure (en seconde)" default="1"/>        
+
+    </category>	
+	
     <category label="30127">
         <setting label="30033" type="lsep"/>
         
