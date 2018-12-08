@@ -12,10 +12,12 @@ class cEnregistremement:
         oGui = cGui()
         ADDON = addon()
         if 'firstonetv' in sUrl or 'bouygtel' in sUrl:
-            sUrl = sUrl.replace('|Referer=','" -headers "Referer: ').replace('&User-Agent=Mozilla/5.0+(X11;+Linux+i686)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Ubuntu+Chromium/48.0.2564.116+Chrome/48.0.2564.116+Safari/537.36&X-Requested-With=ShockwaveFlash/28.0.0.137&Origin=https://www.firstonetv.net','" -headers "User-Agent: Mozilla/5.0+(X11;+Linux+i686)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Ubuntu+Chromium/48.0.2564.116+Chrome/48.0.2564.116+Safari/537.36" -headers "X-Requested-With: ShockwaveFlash/28.0.0.137" -headers "Origin: https://www.firstonetv.net" -sn -c:v copy -c:a copy')
-            header = '-fflags +genpts+igndts -avoid_negative_ts -i "' + sUrl
+            sUrl = sUrl.replace('|Referer=','" -headers "Referer:').replace('&User-Agent=Mozilla/5.0+(X11;+Linux+i686)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Ubuntu+Chromium/48.0.2564.116+Chrome/48.0.2564.116+Safari/537.36&X-Requested-With=ShockwaveFlash/28.0.0.137&Origin=https://www.firstonetv.net','" -headers "User-Agent:Mozilla/5.0+(X11;+Linux+i686)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Ubuntu+Chromium/48.0.2564.116+Chrome/48.0.2564.116+Safari/537.36" -headers "X-Requested-With:ShockwaveFlash/28.0.0.137" -headers "Origin:https://www.firstonetv.net" -sn -c:v copy -c:a copy')
+            header = '-fflags +genpts+igndts -y -i "' + sUrl
+        elif '.m3u8' in sUrl:
+            header = '-fflags +genpts+igndts -y -i "' + sUrl +'"'
         else:
-            header = '-reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -analyzeduration 2000000 -f mpegts -re -flags +global_header -fflags +genpts+igndts -y -i "' + sUrl +'" -headers "User-Agent: Mozilla/5.0+(X11;+Linux+i686)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Ubuntu+Chromium/48.0.2564.116+Chrome/48.0.2564.116+Safari/537.36" -sn -c:v libx264 -c:a copy -map 0 -segment_format mpegts -segment_time 20'
+            header = '-re -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 4294 -timeout 2000000000 -f mpegts -re -flags +global_header -fflags +genpts+igndts -y -i "' + sUrl +'" -headers "User-Agent: Mozilla/5.0+(X11;+Linux+i686)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Ubuntu+Chromium/48.0.2564.116+Chrome/48.0.2564.116+Safari/537.36" -sn -c:v libx264 -c:a copy -map 0 -segment_format mpegts -segment_time -1'
 
         pathEnregistrement = ADDON.getSetting('path_enregistrement_programmation')
         currentPath = ADDON.getSetting('path_enregistrement').replace('\\','/')
