@@ -20,7 +20,7 @@ SITE_IDENTIFIER = 'zonestreaming'
 SITE_NAME = 'Zone Streaming'
 SITE_DESC = 'NC'
 
-URL_MAIN = 'https://voirfilms.cool/'
+URL_MAIN = 'https://megastreaming.ws/'
 
 MOVIE_NEWS = (URL_MAIN + 'category/films/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'category/films/', 'showMovies')
@@ -204,7 +204,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     sHtmlContent = sHtmlContent.replace(' [Streaming]', '').replace(' [Streaming', '').replace(' [Telecharger]', '').replace(' [Téléchargement]', '').replace(' [Telechargement]', '')
-    sPattern = '<article class="latestPost.+?<a href="([^"]+)" title="([^"]+)".+?src="(.+?)"'
+    sPattern = '(?:<article class="latestPost|<div class="post-thumb is-).+?<a href="([^"]+)" title="([^"]+)".+?src="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
