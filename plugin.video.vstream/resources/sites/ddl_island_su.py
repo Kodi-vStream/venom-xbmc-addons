@@ -18,7 +18,7 @@ SITE_IDENTIFIER = 'ddl_island_su'
 SITE_NAME = '[COLOR violet]DDL-Island[/COLOR]'
 SITE_DESC = 'Fichier en DDL, HD'
 
-URL_MAIN = 'https://www2.ddl-island.su/'
+URL_MAIN = 'https://ww3.ddl-island.su/'
 URL_DECRYPT = 'http://www.dl-protect.ru'
 
 URL_SEARCH_MOVIES = (URL_MAIN + 'recherche.php?categorie=99&rechercher=Rechercher&fastr_type=ddl&find=', 'showMovies')
@@ -393,8 +393,10 @@ def showMovies(sSearch = ''):
     #sEpisode = ''
     if 'top' in sUrl:
         sPattern = '<div class="fiche_top20"><a class="top20" href="([^"]+)"><img src="([^"]+)" title="([^\|]+)\|\|[^\|]+?\|\|([^\|]+)\|\|[^\|]+?\|\|([^"]+)" /></a></div>'
-    else:
+    elif 'series' in sUrl:
         sPattern = '<div class="fiche_listing"><a href="([^"]+)"><img src="([^"]+)" alt="T.+?charger([^"]+)"[^\|]+?\| *Qualit&eacute; : ([^<]+)<br /><br />([^<]+)<br /><br />'
+    else:
+        sPattern = '<div class="fiche_listing"><a href="([^"]+)"><img src="([^"]+)" alt="T.+?charger([^"]+)"[^\|]+?".+?Cat&eacute;gorie :([^<]+)<br /><br />([^<]+)<br /><br />'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -659,6 +661,9 @@ def showHosters():
 
             #test si le host et supporter par vstream.
             oHoster = cHosterGui().checkHoster(sHost.lower())
+            if  sHost == 'Revivelink':
+                oHoster = True
+
             if (oHoster != False):
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
