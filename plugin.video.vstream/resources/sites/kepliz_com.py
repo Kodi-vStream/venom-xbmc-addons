@@ -15,7 +15,8 @@ import unicodedata
 SITE_IDENTIFIER = 'kepliz_com'
 SITE_NAME = 'Kepliz'
 SITE_DESC = 'Films en streaming'
-URL_HOST = 'http://fetayo.com/'
+URL_HOST = 'http://pirkip.com/' #Mirror fonctionnel au 09/12/2018
+#URL_HOST = 'http://fetayo.com/' #Url HS
 #URL_HOST = 'http://www.ozporo.com/'
 URL_MAIN = 'URL_MAIN'
 
