@@ -242,3 +242,21 @@ def cfunfuck(fuckedup):
         unfucker = fucker[0]+fucker[1]+unfucker
 
     return str(endunfuck)
+
+def unFuckFirst(data):
+    try:
+        #lib.common.log("JairoDemyst: " + data)
+        p = 186
+        hiro = re.findall(r'"hiro":"(.*?)"', data)[0]
+        parts = re.findall('([^;]+)', hiro)
+        for part in parts:
+            if '(' in part:
+                f = re.findall('(.*?)\((.+)\)',part)[0]
+                exec(f[0] + JSUnfuck(f[1]).decode())
+            else:
+                exec(part)
+        data = re.sub(r'"hiro":"(.*?)"', '"hiro":%s'%str(n), data, count=1)
+
+        return data
+    except:
+        return data

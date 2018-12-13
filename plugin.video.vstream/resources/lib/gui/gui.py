@@ -721,15 +721,16 @@ class cGui():
 
         #print sItemUrl
         return sItemUrl
-
-    def showKeyBoard(self, sDefaultText=''):
+    
+    def showKeyBoard(self, sDefaultText='', heading = ''):
         keyboard = xbmc.Keyboard(sDefaultText)
+        keyboard.setHeading(heading)
         keyboard.doModal()
         if (keyboard.isConfirmed()):
             sSearchText = keyboard.getText()
             if (len(sSearchText)) > 0:
                 return sSearchText
-
+            
         return False
 
     def showNumBoard(self, sDefaultNum=''):

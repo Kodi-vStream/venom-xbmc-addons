@@ -20,7 +20,7 @@ SITE_IDENTIFIER = 'zonestreaming'
 SITE_NAME = 'Zone Streaming'
 SITE_DESC = 'NC'
 
-URL_MAIN = 'https://voirfilms.cool/'
+URL_MAIN = 'https://megastreaming.ws/'
 
 MOVIE_NEWS = (URL_MAIN + 'category/films/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'category/films/', 'showMovies')
@@ -203,8 +203,8 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sHtmlContent = sHtmlContent.replace(' [Streaming]', '').replace(' [Streaming', '').replace(' [Telecharger]', '').replace(' [Téléchargement]', '').replace(' [Telechargement]', '')
-    sPattern = '<article class="latestPost.+?<a href="([^"]+)" title="([^"]+)".+?src="(.+?)"'
+    sHtmlContent = sHtmlContent.replace(' [Streaming]', '').replace(' [Telecharger]', '')#.replace(' [Streaming', '').replace(' [Téléchargement]', '').replace(' [Telechargement]', '')
+    sPattern = '(?:<article class="latestPost|<div class="post-thumb is-).+?<a href="([^"]+)" title="([^"]+)".+?src="(.+?)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -235,12 +235,17 @@ def showMovies(sSearch = ''):
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
                     continue
 
+            #Filtre pour supprimer les séries populaires présent sur la page film
+            if 'film' in sUrl and 'saison'in sUrl2:
+                continue
+            if 'quelle-est-votre-serie-preferee/' in sUrl2:
+                continue
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            #Mangas et Series fonctionnent pareil
             if '/series-tv/' in sUrl or '-saison-' in sUrl2:
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
             else:
@@ -260,7 +265,7 @@ def showMovies(sSearch = ''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = 'href="([^"]+)">Suivant<'
+    sPattern = '<a class="next page-numbers" href="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):

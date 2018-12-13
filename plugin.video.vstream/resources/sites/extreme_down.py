@@ -583,7 +583,7 @@ def getHoster():#Ouvrir le clavier + requete
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     sThumb = ''
-    sSearchText = oGui.showKeyBoard("Mettre ici le liens du hoster apres avoir passer les Recaptcha manuellement") #appelle le clavier xbmc
+    sSearchText = oGui.showKeyBoard(heading="Mettre ici le liens du hoster apres avoir passer les Recaptcha manuellement") #appelle le clavier xbmc
     if (sSearchText != False):
         sUrl = sSearchText
 
