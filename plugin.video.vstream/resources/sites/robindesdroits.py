@@ -296,6 +296,8 @@ def showLink():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    
+    VSlog(sUrl)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -319,7 +321,7 @@ def showLink():
     
     #Second cas de figure
     if (aResult[0] == False):
-        sPattern = '<a href="(http:\/\/(?:zipansion|kudoflow)\.com\/[^"]+)">(.+?)<\/a>'
+        sPattern = '<a href="(http:\/\/(?:zipansion|kudoflow|turboagram)\.com\/[^"]+)">(.+?)<\/a>'
         aResult = oParser.parse(sHtmlContent, sPattern)
 
         if (aResult[0] == True):
