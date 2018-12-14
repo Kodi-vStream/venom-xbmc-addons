@@ -7,7 +7,8 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress , VSlog
+
 import urllib2, urllib, re
 import unicodedata
 
@@ -172,14 +173,14 @@ def showMovies(sSearch = ''):
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sMainUrl + sNextPage)
+            oOutputParameterHandler.addParameter('siteUrl', URL_HOST + sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<span class="pagenav">.+?<.span>.+?<a title=".+?" href="\/[0-9a-zA-Z]+\/(.+?)" class="pagenav">'
+    sPattern = '<a href="/([^"]+)" title="Suivant">Suivant<\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -417,11 +418,14 @@ def showHostersLink3():
 
     # Si il existe, suivi du lien
     if ( aResult[0] == True ):
-        #VSlog(aResult[1][0])
-        sLink = sLink.rsplit('/', 1)[0] # supprime la dernière partie de l'url de l'iframe
-        #VSlog(sLink)
-        href = sLink + '/' + aResult[1][0] # concaténation du résultat avec le href trouvé via regex
-        #VSlog(href)
+        if (False):
+            VSlog(aResult[1][0])
+            sLink = sLink.rsplit('/', 1)[0] # supprime la dernière partie de l'url de l'iframe
+            VSlog(sLink)
+            href = sLink + '/' + aResult[1][0] # concaténation du résultat avec le href trouvé via regex
+            VSlog(href)
+        else:
+            href = aResult[1][0]
 
         req = urllib2.Request(href, None, headers)
         response = urllib2.urlopen(req)
