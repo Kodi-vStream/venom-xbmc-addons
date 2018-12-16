@@ -177,17 +177,21 @@ def WindowsBoxes(sTitle, sFileName, num,year = ''):
             color = ADDON.getSetting('deco_color')
             window(10000).setProperty('color', color)
 
-            #self.getControl(50).setVisible(False)
+            self.getControl(50).setVisible(False)
+            self.getControl(5200).setVisible(False)
             #self.getControl(50).reset()
-            self.getControl(5500).setVisible(False)
             listitems = []
+            cast = []
+        
             try:
                 for slabel, slabel2, sicon, sid in meta['cast']:
                     listitem_ = listitem(label = slabel, label2=slabel2, iconImage=sicon)
                 #listitem.setInfo('video', {'Title': 'test', 'RatingAndVotes':'6.8'})
                     listitem_.setProperty('id', str(sid))
                     listitems.append(listitem_)
+                    cast.append(slabel.encode('ascii', 'ignore'))
                 self.getControl(50).addItems(listitems)
+                window(10000).setProperty('ListItem.casting', str(cast))
             except: pass
             #title
             #self.getControl(1).setLabel(meta['title'])
@@ -196,6 +200,7 @@ def WindowsBoxes(sTitle, sFileName, num,year = ''):
             #self.getControl(49).setVisible(True)
             #self.getControl(2).setImage(meta['cover_url'])
             #self.getControl(3).setLabel(meta['rating'])
+ 
             for e in meta:
                 property = 'ListItem.%s' %(e)
                 if isinstance(meta[e], unicode):
@@ -219,13 +224,19 @@ def WindowsBoxes(sTitle, sFileName, num,year = ''):
                         sThumbnail = ''
                     sId = i['id']
 
+
                     listitem_ = listitem(label = sTitle, iconImage=sThumbnail)
-                    #listitem.setInfo('video', {'Title': 'test', 'RatingAndVotes':'6.8'})
+                    try:
+                        listitem_.setInfo('video', {'rating': i['vote_average'].encode('utf-8') })
+                    except:
+                        listitem_.setInfo('video', {'rating': str(i['vote_average'])})
+
                     #listitem.setProperty('id', str(sId))
                     listitems.append(listitem_)
                 self.getControl(5200).addItems(listitems)
+
             except: pass
-            self.getControl(5500).setVisible(True)
+            self.getControl(5200).setVisible(True)
             self.setFocusId(5200)
             #self.setFocus(self.getControl(5200))
 
@@ -253,9 +264,8 @@ def WindowsBoxes(sTitle, sFileName, num,year = ''):
                 bio = meta['biography'].replace('\n\n', '[CR]').replace('\n', '[CR]')
 
                 #self.getControl(5300).setLabel('[COLOR gold]test[/COLOR]')
-                #print meta
 
-                window(10000).setProperty('biography', bio)
+                #window(10000).setProperty('biography', bio)
                 window(10000).setProperty('birthday', meta['birthday'])
                 window(10000).setProperty('place_of_birth', meta['place_of_birth'])
                 window(10000).setProperty('deathday', meta['deathday'])
@@ -268,6 +278,7 @@ def WindowsBoxes(sTitle, sFileName, num,year = ''):
             #self.getControl(400).setText(meta['plot'])
 
         def onClick(self, controlId):
+            print controlId
             if controlId == 5:
                 self.getControl(400).setVisible(False)
                 self.getControl(50).setVisible(True)
@@ -279,6 +290,8 @@ def WindowsBoxes(sTitle, sFileName, num,year = ''):
                 self.setFocusId(5)
                 return
             elif controlId == 7:
+                self.getControl(50).setVisible(True)
+                self.setFocusId(50)
                 return
             elif controlId == 11:
                 from resources.lib.ba import cShowBA
@@ -367,7 +380,9 @@ def WindowsBoxes(sTitle, sFileName, num,year = ''):
             self.controlId = controlId
             if controlId != 5200:
                 #self.getControl(5500).reset()
-                self.getControl(5500).setVisible(False)
+                self.getControl(5200).setVisible(False)
+            if controlId != 50:
+                self.getControl(50).setVisible(False)
             #if controlId == 50:
                 #item = self.getControl(50).getSelectedItem()
                 #sid = item.getProperty('id')
@@ -378,10 +393,11 @@ def WindowsBoxes(sTitle, sFileName, num,year = ''):
 
         def onAction( self, action ):
             if action.getId() in ( 104, 105, 1, 2):
-                if self.controlId == 50:
-                    item = self.getControl(50).getSelectedItem()
-                    sid = item.getProperty('id')
-                    self.person(sid)
+                # if self.controlId == 50:
+                #     item = self.getControl(50).getSelectedItem()
+                #     sid = item.getProperty('id')
+                #     self.person(sid)
+                return
 
             if action.getId() in ( 9, 10, 11, 30, 92, 216, 247, 257, 275, 61467, 61448, ):
                 self.close()
@@ -390,6 +406,6 @@ def WindowsBoxes(sTitle, sFileName, num,year = ''):
     #path = xbmc.translatePath("special://home/addons/plugin.video.vstream").decode("utf-8")
     path = "special://home/addons/plugin.video.vstream"
     #self.__oPath.decode("utf-8")
-    wd = XMLDialog('DialogInfo.xml', path , 'default', '720p')
+    wd = XMLDialog('DialogInfo2.xml', path , 'default', '720p')
     wd.doModal()
     del wd

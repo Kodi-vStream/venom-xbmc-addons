@@ -807,3 +807,51 @@ msgstr ""
 msgctxt "#30456"
 msgid "Are you sure ?"
 msgstr ""
+
+msgctxt "#30457"
+msgid "Trailer"
+msgstr ""
+
+msgctxt "#30458"
+msgid "Recommended"
+msgstr ""
+
+msgctxt "#30459"
+msgid "Similar"
+msgstr ""
+
+msgctxt "#30460"
+msgid "Casting"
+msgstr ""
+
+msgctxt "#30461"
+msgid "Synopsis"
+msgstr ""
+
+msgctxt "#30462"
+msgid "Director"
+msgstr ""
+
+msgctxt "#30463"
+msgid "Release date"
+msgstr ""
+
+msgctxt "#30464"
+msgid "Duration"
+msgstr ""
+
+msgctxt "#30465"
+msgid "Minute"
+msgstr ""
+
+msgctxt "#30466"
+msgid "Actor/Role"
+msgstr ""
+
+msgctxt "#30467"
+msgid "Birth"
+msgstr ""
+
+msgctxt "#30468"
+msgid "Place"
+msgstr ""
