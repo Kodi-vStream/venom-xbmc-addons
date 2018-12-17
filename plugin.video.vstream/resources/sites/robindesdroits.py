@@ -408,7 +408,10 @@ def showHosters():
         
     if 'kudoflow' in sUrl:
         sUrl = AdflyDecoder(sUrl)
-        
+
+    if 'turboagram' in sUrl:
+        sUrl = AdflyDecoder(sUrl)
+
     VSlog(sUrl)
     
     oRequestHandler = cRequestHandler(sUrl)
