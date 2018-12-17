@@ -11,6 +11,9 @@ from resources.lib.comaddon import progress, VSlog
 from resources.lib.util import cUtil
 import base64
 
+#17/12/18 #ATTENTION site utiliant un mineur.
+return False
+
 SITE_IDENTIFIER = 'ddlfr'
 SITE_NAME = 'DDLFR (beta)'
 SITE_DESC = 'Films, séries, documentaires, replay et sports en streaming'
