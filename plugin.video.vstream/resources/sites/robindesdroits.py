@@ -301,14 +301,13 @@ def showLink():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #recup liens clictune
-    sPattern = '<a href=".+?(://www.clictune.+?)".+?<b>([^<]+)</b>'
+    sPattern = '<a href="([^"]+)">(?:<span.+?|)<b>([^<]+)</b>.+?</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-            sUrl = 'https' + aEntry[0]
-            sHost = aEntry[1].capitalize()
+            sUrl = aEntry[0]
+            sHost = cUtil().removeHtmlTags(aEntry[1])
 
             sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
@@ -317,24 +316,6 @@ def showLink():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-
-    #Second cas de figure
-    if (aResult[0] == False):
-        sPattern = '<a href="(http:\/\/(?:zipansion|kudoflow|turboagram)\.com\/[^"]+)">(.+?)<\/a>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-
-        if (aResult[0] == True):
-            for aEntry in aResult[1]:
-                sUrl = aEntry[0]
-                sHost = cUtil().removeHtmlTags(aEntry[1])
-
-                sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
-
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
