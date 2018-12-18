@@ -3,7 +3,7 @@
 # Votre nom ou pseudo
 #
 #17/12/18
-return False
+#return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -24,7 +24,7 @@ SITE_IDENTIFIER = 'extreme_down'
 SITE_NAME = 'Extreme-Download (beta)'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
-URL_MAIN = 'https://ww1.extreme-d0wn.com/'
+URL_MAIN = 'https://ww2.extreme-d0wn.com/'
 
 URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?', 'showMovies')
