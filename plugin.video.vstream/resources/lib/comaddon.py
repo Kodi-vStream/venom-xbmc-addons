@@ -130,7 +130,9 @@ class empty():
 
     def VSclose(self, dialog):
         pass
-
+    
+    def VSupdatesearch(self,dialog, total, text=''):
+        pass
 
 class progress(xbmcgui.DialogProgress):
 
