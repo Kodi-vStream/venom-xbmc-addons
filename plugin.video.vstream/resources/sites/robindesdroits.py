@@ -397,8 +397,10 @@ def showHosters():
     sPattern = '<b><a href=".+?redirect\/\?url\=(.+?)\&id.+?">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
-        sUrl = cUtil().urlDecode(aResult[1][0])
+
+    if (aResult[0] == True) or 'gounlimited' or 'jheberg' or 'multiup' in sUrl:
+        if (aResult[0] == True):
+            sUrl = cUtil().urlDecode(aResult[1][0])
 
         if 'gounlimited' in sUrl:
             oRequestHandler = cRequestHandler(sUrl)

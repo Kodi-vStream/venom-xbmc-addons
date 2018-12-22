@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 from resources.lib.multihost import cJheberg
 import re, unicodedata
 
@@ -176,7 +176,7 @@ def showMovies(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        sPattern = 'post-thumb is-image"><a href="([^"]+)" title="([^"]+)".+?src="([^"]+)".+?class="post-excerpt">([^<]+)<'
+        sPattern = 'post-thumb is-image"><a href="([^"]+)" title="([^"]+)".+?src="([^"]+(?:png|jpeg|jpg))".+?class="post-excerpt">([^<]+)<'
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -206,7 +206,7 @@ def showMovies(sSearch = ''):
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), aEntry[1]) == 0:
                     continue
 
-            sUrl = aEntry[0]
+            sUrl1 = aEntry[0]
             sTitle = aEntry[1].replace(' - Saison', ' Saison')
             sTitle = sTitle.replace(' [Streaming]', '')
             sTitle = sTitle.replace(' [Telecharger]', '').replace(' [Telechargement]', '')
@@ -215,13 +215,14 @@ def showMovies(sSearch = ''):
             sTitle = re.sub('\[\w+]', '', sTitle)
             sTitle = re.sub('\[\w+ \w+]', '', sTitle)
             sThumb = aEntry[2]
+
             if sSearch:
                 sDesc = ''
             else:
                 sDesc = aEntry[3].replace('[&hellip;]', '').replace('&rsquo;', '\'').replace('&#8217;', '\'').replace('&#8230;', '...')
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl1)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
@@ -229,8 +230,12 @@ def showMovies(sSearch = ''):
                 pass
             elif 'quelle-est-votre-serie-preferee' in aEntry[1]:
                 pass
-            elif 'series' in sUrl or re.match('.+?saison [0-9]+', sTitle, re.IGNORECASE):
+            elif 'series' in sUrl1 or re.match('.+?saison [0-9]+', sTitle, re.IGNORECASE):
                 oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            elif 'mangas' in sUrl:
+
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)    
+                
             else:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
