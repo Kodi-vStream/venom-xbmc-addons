@@ -2,8 +2,6 @@
 #
 # Votre nom ou pseudo
 #
-#17/12/18
-#return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -52,6 +50,8 @@ MOVIE_LIGHTBDRIP = (URL_MAIN + 'films-hd/bdrip-720p', 'showMovies')
 MOVIE_BDRIP = (URL_MAIN + 'films-sd/dvdrip', 'showMovies')
 MOVIE_OLDDVD = (URL_MAIN + 'films-sd/ancien-dvdrip', 'showMovies')
 MOVIE_FILMO = (URL_MAIN + 'films-sd/filmographie', 'showMovies')
+MOVIE_CLASSIQUE_SD = (URL_MAIN + 'films-classique/classiques-sd','showMovies')
+MOVIE_CLASSIQUE_HD = (URL_MAIN + 'films-classique/classiques-hd','showMovies')
 
 SERIE_SERIES = ('http://', 'showMenuSeries')
 SERIE_HD = (URL_MAIN + 'series-hd/1080p-series-vf', 'showMovies')
@@ -170,6 +170,15 @@ def showMenuFilms():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_FILMO[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_FILMO[1], 'Filmographie', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_CLASSIQUE_HD[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_CLASSIQUE_HD[1], 'Films Classique HD', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_CLASSIQUE_SD[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_CLASSIQUE_SD[1], 'Films Classique SD', 'films.png', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
 
 def showMenuSeries():
@@ -524,7 +533,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     if 'saison' in sUrl:
-        sPattern = '<div class="prez_7">([^"]+)</div>\s*<div style="padding.+?">|<a title=".+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
+        sPattern = '<div class="prez_7">([^"]+)</div>|<a title=".+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
     else:
         sPattern = '<h2 style="text-align: center;"><span style=.+?>(.+?)<span style=".+?</h2>|<a title="T.+?" href="([^"]+)" target="_blank"><strong class="hebergeur">*([^<>]+)*</strong>'
 

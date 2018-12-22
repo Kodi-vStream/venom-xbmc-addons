@@ -78,15 +78,32 @@ MOVIE_HDLIGHT = (URL_MAIN + 'x265-x264-hdlight/', 'showMovies') # films en x265 
 MOVIE_VOSTFR = (URL_MAIN + 'filmsenvostfr/', 'showMovies') # films VOSTFR
 MOVIE_4K = (URL_MAIN + 'film-ultra-hd-4k/', 'showMovies') # films "4k"
 MOVIE_GENRES = (URL_MAIN , 'showGenre')
-
 MOVIE_ANIME = (URL_MAIN + 'dessins-animes/', 'showMovies') # dessins animes
+MOVIE_BDRIP = (URL_MAIN + 'films-dvdrip-bdrip/', 'showMovies')
+MOVIE_TS_CAM = (URL_MAIN + 'scrr5tscam-films-2017/', 'showMovies')
+MOVIE_VFSTFR = (URL_MAIN + 'films-vfstfr/', 'showMovies')
+MOVIE_MKV = (URL_MAIN + 'films-mkv/', 'showMovies')
+MOVIE_VO = (URL_MAIN + 'films-vo/','showMovies')
+MOVIE_INTEGRAL = (URL_MAIN + 'collection-films-integrale/','showMovies')
 
-SERIE_VFS = (URL_MAIN + 'series-vf/', 'showMovies') # serie VF
-SERIE_VOSTFRS = (URL_MAIN + 'series-vostfr/', 'showMovies') # serie VOSTFR
+SERIE_VFS = (URL_MAIN + 'series-vf/', 'showMovies')
+SERIE_VF_720 = (URL_MAIN + 'series-vf-720p/','showMovies')
+SERIE_VF_1080 = (URL_MAIN + 'series-vf-1080p/','showMovies')
+SERIE_VOSTFRS = (URL_MAIN + 'series-vostfr/', 'showMovies')
+SERIE_VOSTFRS_720 = (URL_MAIN + 'series-vostfr-720p/','showMovies')
+SERIE_VOSTFRS_1080 = (URL_MAIN + 'series-vostfr-1080p/','showMovies')
+SERIE_VO = (URL_MAIN + 'series-vo/', 'showMovies')
+ANCIENNE_SERIE = (URL_MAIN + 'telecharger-series/ancienne-serie/', 'showMovies')
 
-ANIM_MANGAS = (URL_MAIN + 'films-mangas/', 'showMovies')
-ANIM_VFS = (URL_MAIN + 'animes-vf/', 'showMovies')
-ANIM_VOSTFRS = (URL_MAIN + 'animes-vostfr/', 'showMovies')
+ANIME_VFS = (URL_MAIN + 'animes-vf/', 'showMovies')
+ANIME_VF_720 = (URL_MAIN + 'animes-vf-720p/','showMovies')
+ANIME_VF_1080 = (URL_MAIN + 'animes-vf-1080p/','showMovies')
+ANIME_VOSTFRS = (URL_MAIN + 'animes-vostfr/', 'showMovies')
+ANIME_VOSTFRS_720 = (URL_MAIN + 'animes-vostfr-720p/','showMovies')
+ANIME_VOSTFRS_1080 = (URL_MAIN + 'animes-vostfr-1080p/','showMovies')
+ANIME_VOSTEN = (URL_MAIN + 'animes-vosten/', 'showMovies')
+FILM_ANIME = (URL_MAIN + 'films-mangas/','showMovies')
+OAV = (URL_MAIN + 'oav/','showMovies')
 
 DOC_NEWS = (URL_MAIN + 'documentaires-gratuit/', 'showMovies') # docs
 DOC_DOCS = ('http://', 'load')
@@ -97,13 +114,33 @@ SPECT_NEWS = (URL_MAIN + 'spectacles/', 'showMovies') # derniers spectacles
 CONCERT_NEWS = (URL_MAIN + 'concerts/', 'showMovies') # derniers concerts
 AUTOFORM_VID = (URL_MAIN + 'autoformations-videos/', 'showMovies')
 
-
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuFilms', 'Films', 'films.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuSeries', 'Séries', 'series.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuMangas', 'Animés', 'animes.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
+    oGui.addDir(SITE_IDENTIFIER, 'showMenuAutre', 'Autres', 'tv.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showMenuFilms():
+    oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
@@ -135,27 +172,110 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_ANIME[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANIME[1], 'Dessins Animés', 'animes.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_ANIME[1], 'Dessins Animés (Derniers ajouts)', 'animes.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_BDRIP[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_BDRIP[1], 'Films (BDRIP)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_TS_CAM[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_TS_CAM[1], 'Films (TS , CAM, R5 ,DVDSCR)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VFSTFR[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VFSTFR[1], 'Films en francais sous titre francais (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_MKV[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_MKV[1], 'Films (dvdrip mkv)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_VO[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_VO[1], 'Films en Version original (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_INTEGRAL[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_INTEGRAL[1], 'Integral de films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showMenuSeries():
+    oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VFS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries (VF)', 'vf.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VF_720[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries 720p (VF)', 'vf.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VF_1080[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VFS[1], 'Séries 1080p (VF)', 'vf.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS[1], 'Séries (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_MANGAS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_MANGAS[1], 'Animés (Mangas)', 'animes.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS_720[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS_720[1], 'Séries 720p (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_VFS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VFS[1], 'Animés (VF)', 'vf.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VOSTFRS_1080[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VOSTFRS_1080[1], 'Séries 1080p (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', ANIM_VOSTFRS[0])
-    oGui.addDir(SITE_IDENTIFIER, ANIM_VOSTFRS[1], 'Animés (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_VO[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_VO[1], 'Séries (VO)', 'vostfr.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANCIENNE_SERIE[0])
+    oGui.addDir(SITE_IDENTIFIER, ANCIENNE_SERIE[1], 'Ancienne series (Derniers)', 'series.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showMenuMangas():
+    oGui = cGui()
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIME_VFS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIME_VFS[1], 'Animes (VF)', 'vf.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIME_VF_720[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIME_VF_720[1], 'Animes 720p (VF)', 'vf.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIME_VF_1080[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIME_VF_1080[1], 'Animes 1080p (VF)', 'vf.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIME_VOSTFRS[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIME_VOSTFRS[1], 'Animes (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIME_VOSTFRS_720[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIME_VOSTFRS_720[1], 'Animes 720p (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIME_VOSTFRS_1080[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIME_VOSTFRS_1080[1], 'Animes 1080p (VOSTFR)', 'vostfr.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', FILM_ANIME[0])
+    oGui.addDir(SITE_IDENTIFIER, FILM_ANIME[1], 'Films d\'animes ', 'animes.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', ANIME_VOSTEN[0])
+    oGui.addDir(SITE_IDENTIFIER, ANIME_VOSTEN[1], 'Animes (VOSTEN)', 'series.png', oOutputParameterHandler)
+
+    oGui.setEndOfDirectory()
+
+def showMenuAutres():
+    oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
