@@ -23,10 +23,10 @@ SITE_DESC = 'NC'
 URL_MAIN = 'https://megastreaming.ws/'
 
 MOVIE_NEWS = (URL_MAIN + 'category/films/', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'category/films/', 'showMovies')
 MOVIE_VOSTFR = (URL_MAIN + 'category/films/vostfr-films/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'category/films-en-exclus/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
+MOVIE_MOVIE = ('http://', 'load')
 
 SERIE_SERIES = (URL_MAIN + 'category/series-tv/', 'showMovies')
 SERIE_VFS = (URL_MAIN + 'category/series-tv/series-streaming-vf/', 'showMovies')
@@ -79,7 +79,7 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_NEWS[1], 'Films (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-
+    
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_VIEWS[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'views.png', oOutputParameterHandler)
@@ -203,8 +203,9 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sHtmlContent = sHtmlContent.replace(' [Streaming]', '').replace(' [Telecharger]', '')#.replace(' [Streaming', '').replace(' [Téléchargement]', '').replace(' [Telechargement]', '')
-    sPattern = '(?:<article class="latestPost|<div class="post-thumb is-).+?<a href="([^"]+)" title="([^"]+)".+?src="(.+?)"'
+    
+    sHtmlContent = sHtmlContent.replace(' [Streaming]', '').replace(' [Streaming', '').replace(' [Telecharger]', '').replace(' [Téléchargement]', '').replace(' [Telechargement]', '')
+    sPattern = '<div class="post-thumb is-image"><a href="([^"]+)".+?title="([^"]+)".+?src="(.+?)".+?<p>(.+?)<\/p>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -219,37 +220,27 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            #sTitle = unicode(aEntry[2], 'utf-8')#converti en unicode
-            #sTitle = unicodedata.normalize('NFD', sTitle).encode('ascii', 'ignore')#vire accent
-            #sTitle = unescape(str(sTitle))
-            #sTitle = sTitle.encode( "utf-8")
-
             sUrl2 = aEntry[0]
             sTitle = aEntry[1].replace('&prime;', '\'')
             #on vire le tiret laisser les deux ils sont different
             sTitle = sTitle.replace(' – Saison', ' Saison').replace(' - Saison', ' Saison')
             sThumb = aEntry[2]
-
+            sDesc = aEntry[3]
             #Filtre recherche
             if sSearch and total > 3:
                 if cUtil().CheckOccurence(sSearch.replace(URL_SEARCH[0], ''), sTitle) == 0:
                     continue
-
-            #Filtre pour supprimer les séries populaires présent sur la page film
-            if 'film' in sUrl and 'saison'in sUrl2:
-                continue
-            if 'quelle-est-votre-serie-preferee/' in sUrl2:
-                continue
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
+            #Mangas et Series fonctionnent pareil
             if '/series-tv/' in sUrl or '-saison-' in sUrl2:
-                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, 'series.png', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showSeries', sTitle, 'series.png', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumb, '', oOutputParameterHandler)
+                oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, 'films.png', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -265,7 +256,7 @@ def showMovies(sSearch = ''):
 
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class="next page-numbers" href="([^"]+)"'
+    sPattern = '<a class="next page-numbers" href="([^"]+)">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
