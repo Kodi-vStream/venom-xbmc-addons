@@ -208,8 +208,8 @@ class cHosterGui:
             return self.getHoster('speedvideo')
         if ('speedvid' in sHostName):
             return self.getHoster('speedvid')
-        if (('netu' in sHostName) or ('hqq' in sHostName)):
-            return self.getHoster('netu')
+        # if (('netu' in sHostName) or ('hqq' in sHostName)):
+        #     return self.getHoster('netu')
         if ('waaw' in sHostName):
             return self.getHoster('netu')
         if ('mail.ru' in sHostName):
@@ -255,7 +255,7 @@ class cHosterGui:
         if ('drive.google.com' in sHostName):
             return self.getHoster('googledrive')
         if ('docs.google.com' in sHostName):
-            return self.getHoster('googledrive')
+            return self.getHoster('googledoc')
         if ('vidwatch' in sHostName):
             return self.getHoster('vidwatch')
         if ('up2stream' in sHostName):

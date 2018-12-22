@@ -750,7 +750,7 @@ class cDownload:
                         while (tempo > 0):
                             #if canceled do nothing
                             if progress_.iscanceled():
-                                return
+                                break
                             progress_.VSupdate(progress_, 100)
                             tempo = tempo - 1
                             xbmc.sleep(500)

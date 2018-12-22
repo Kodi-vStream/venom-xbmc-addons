@@ -263,7 +263,6 @@ def showLinkGenres():
     sPattern = '<span style="font-family: Arial, Helvetica,.+?font-size: 16pt;">(.+?)</span>|(<h3 class="entry-title mh-loop-title"|<li )><a href="([^"]+)".+?>(.+?)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -296,21 +295,20 @@ def showLink():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
+
     VSlog(sUrl)
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #recup liens clictune
-    sPattern = '<a href="(http://www.clictune.+?)".+?<b>(.+?)</b>'
+    sPattern = '<a href="([^"]+)">(?:<span.+?|)<b>([^<]+)</b>.+?</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
-            sHost = aEntry[1].capitalize()
-            
+            sHost = cUtil().removeHtmlTags(aEntry[1])
+
             sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -318,44 +316,25 @@ def showLink():
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-    
-    #Second cas de figure
-    if (aResult[0] == False):
-        sPattern = '<a href="(http:\/\/(?:zipansion|kudoflow|turboagram)\.com\/[^"]+)">(.+?)<\/a>'
-        aResult = oParser.parse(sHtmlContent, sPattern)
-
-        if (aResult[0] == True):
-            for aEntry in aResult[1]:
-                sUrl = aEntry[0]
-                sHost = cUtil().removeHtmlTags(aEntry[1])
-                
-                sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
-
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sUrl)
-                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-                oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
-
 
     oGui.setEndOfDirectory()
-    
+
 def AdflyDecoder(url):
     oRequestHandler = cRequestHandler(url)
     sHtmlContent = oRequestHandler.request()
-    
+
     oParser = cParser()
     sPattern = "var ysmm = '([^']+)'"
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        
+
         from base64 import b64decode
         from math import isnan
         code = aResult[1][0]
-        
+
         VSlog(code)
-        
+
         A = ''
         B = ''
         #First pass
@@ -366,7 +345,7 @@ def AdflyDecoder(url):
                 B = code[num] + B
 
         code = A + B
-        
+
         #Second pass
         m = 0
         code = list(code)
@@ -382,17 +361,17 @@ def AdflyDecoder(url):
                         R = len(code)
                     R += 1
             m += 1
-        
+
         code = ''.join(code)
         code = b64decode(code)
-        
+
         code = code[16:]
         code = code[:-16]
-        
+
         return code
-                
+
     return ''
-    
+
 def showHosters():
     oGui = cGui()
     oParser = cParser()
@@ -402,18 +381,15 @@ def showHosters():
     sThumb = oInputParameterHandler.getValue('sThumb')
 
     VSlog(sUrl)
-    
-    if 'zipansion' in sUrl:
-        sUrl = AdflyDecoder(sUrl)
-        
-    if 'kudoflow' in sUrl:
-        sUrl = AdflyDecoder(sUrl)
-        
-    VSlog(sUrl)
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
+    if 'AdF' in sHtmlContent:
+        sUrl = AdflyDecoder(sUrl)
+        oRequestHandler = cRequestHandler(sUrl)
+        sHtmlContent = oRequestHandler.request()
+
     #fh = open('c:\\test.txt', "w")
     #fh.write(sHtmlContent.replace('\n', ''))
     #fh.close()
@@ -421,8 +397,10 @@ def showHosters():
     sPattern = '<b><a href=".+?redirect\/\?url\=(.+?)\&id.+?">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    if (aResult[0] == True):
-        sUrl = cUtil().urlDecode(aResult[1][0])
+
+    if (aResult[0] == True) or 'gounlimited' or 'jheberg' or 'multiup' in sUrl:
+        if (aResult[0] == True):
+            sUrl = cUtil().urlDecode(aResult[1][0])
 
         if 'gounlimited' in sUrl:
             oRequestHandler = cRequestHandler(sUrl)
@@ -444,7 +422,6 @@ def showHosters():
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         elif 'jheberg' in sUrl:
-
             aResult = cJheberg().GetUrls(sUrl)
             if (aResult):
                 for aEntry in aResult:
@@ -457,9 +434,8 @@ def showHosters():
                         cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
         elif 'multiup' in sUrl:
-
             aResult = cMultiup().GetUrls(sUrl)
-            
+
             if (aResult):
                 for aEntry in aResult:
                     sHosterUrl = aEntry
