@@ -39,6 +39,56 @@ class youtube():
     def SetSearch(self,search):
         self.search = search.replace(' ','+')
 
+
+def youtube_search(q2, max_results):
+    youtube = build('https://www.googleapis.com/youtube/', 'V3/',developerKey=API_KEY,cache_discovery=False)
+
+    # Call the search.list method to retrieve results matching the specified
+    # query term.
+    search_response = youtube.search().list(
+        q=q2,
+        part='id,snippet',
+        relevanceLanguage='eu',
+        type='video',
+        maxResults=max_results
+    ).execute()
+
+    videos = []
+    channels = []
+    playlists = []
+
+    # Add each result to the appropriate list, and then display the lists of
+    # matching videos, channels, and playlists.
+    for search_result in search_response.get('items', []):
+       if search_result['id']['kind'] == 'youtube#video':
+          videos.append( (search_result['snippet']['title'],search_result['id']['videoId']))
+      
+        #elif search_result['id']['kind'] == 'youtube#channel':
+        #  channels.append('%s (%s)' % (search_result['snippet']['title'], search_result['id']['channelId']))
+    
+        #elif search_result['id']['kind'] == 'youtube#playlist':
+        #  playlists.append('%s (%s)' % (search_result['snippet']['title'], search_result['id']['playlistId']))
+    
+    
+    print( str(videos))
+    
+    print ('Playing ' + videos[0][0] + '\n')
+    print ('https://youtube.com/watch?v=' + videos[0][1] + '\n')
+    video = YouTube('https://youtube.com/watch?v=' + videos[0][1] )
+    
+    video_response = youtube.videos().list(
+        id = videos[0][1],
+        part='snippet'
+    ).execute()
+
+    print ('>>>>' + video_response.get('items')[0]['snippet']['title'] )
+  
+    #print (video.streams.filter(only_audio=True).all())
+  
+    url = video.streams.filter(only_audio=True ,subtype='mp4').first().url
+    
+    return url
+
 def load():
     oGui = cGui()
     addons = addon()
@@ -111,25 +161,51 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+def load_search_res(search_response):
+    videos, channels, playlists = [], [], []
+    for search_result in search_response.get("items", []):
+        if search_result["kind"] == "youtube#video":
+            videos.append({'title' : search_result["snippet"]["title"], "id" : search_result["id"], "channelId" : search_result["snippet"]["channelId"], "thumbnails" : search_result["snippet"]["thumbnails"]["high"]["url"] })
+        elif search_result["kind"] == "youtube#channel":
+            channels.append({'title' : search_result["snippet"]["title"], "id" : search_result["id"]})
+        elif search_result["kind"] == "youtube#playlist":
+            playlists.append({ 'title' : search_result["snippet"]["title"], "id" : search_result["id"]})
+
+    print(videos)
+    print(channels)
+    print(playlists)
+
 def showLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sCat = oInputParameterHandler.getValue('siteUrl')
 
-    url = URL_MAIN + "videos?part=snippet&chart=mostPopular&maxResults=20&videoCategoryId=%s&key=%s" % (sCat, API_KEY)
+    parms = {
+                'part': 'snippet',
+                'maxResults': 20,
+                'key': API_KEY,
+                'chart' : 'mostPopular',
+                'videoCategoryId' : sCat
+            }
+
+    url = URL_MAIN + "videos?"
 
     print url
-    req = urllib2.Request(url)
+    params = urllib.urlencode(parms)
+    req = urllib2.Request(url + params)
+    print params
     try:
         gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-        response = urllib2.urlopen(req,context=gcontext)
+        response = urllib2.urlopen(req, context=gcontext)
     except:
         response = urllib2.urlopen(req)
     sHtmlContent = response.read()
+    sHtmlContent = sHtmlContent.decode("utf-8")
     result = json.loads(sHtmlContent)
 
-    print result
     response.close()
+
+    load_search_res(result)
 
     for e in result['items']:
         print e['snippet']['title'].encode('utf-8')
