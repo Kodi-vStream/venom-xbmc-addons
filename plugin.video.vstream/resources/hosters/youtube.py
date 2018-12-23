@@ -14,7 +14,7 @@ from resources.lib import util
 import re
 import json
 
-URL_MAIN = 'https://www.keepvid.app/download/?link='
+URL_MAIN = 'https://keepvid.app/videos?url='
 
 class cHoster(iHoster):
 
@@ -126,23 +126,20 @@ class cHoster(iHoster):
 
         sUrl = util.QuotePlus(self.__sUrl)
 
-        oRequest = cRequestHandler('%s%s' % (URL_MAIN, sUrl))
+        oRequest = cRequestHandler(URL_MAIN + sUrl)
         sHtmlContent = oRequest.request()
 
-        sHtmlContent1 = oParser.abParse(sHtmlContent, '<div class="download-box">', '<div class="delimiter"></div>')
-        if not sHtmlContent1:
-            return False, False
+        sPattern = 'class="al">([^<]+)</td>.+?href="([^"]+)"'
 
-        sPattern = '<div class="button-text"><p>(.+?)</p>.+?<a href="([^"]+)"'
-        aResult = oParser.parse(sHtmlContent1,sPattern)
+        aResult = oParser.parse(sHtmlContent, sPattern)
+
         if (aResult[0] == True):
             #initialisation des tableaux
             url=[]
             qua=[]
             #Remplissage des tableaux
             for i in aResult[1]:
-                b = re.sub('&title=.+', '', i[1]) #testé xx fois ok
-                url.append(str(b))
+                url.append(str(i[1]))
                 qua.append(str(i[0]))
 
             #dialogue qualité

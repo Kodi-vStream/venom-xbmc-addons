@@ -25,6 +25,7 @@ SITE_DESC = 'Youtube'
 
 URL_MAIN = 'https://www.googleapis.com/youtube/v3/'
 API_KEY = 'AIzaSyC5grY-gOPMpUM_tn0sfTKV3pKUtf9---M'
+URL_VIEW = 'https://youtube.com/watch?v=%s'
 
 icon = 'tv.png'
 #/home/lordvenom/.kodi/
@@ -32,62 +33,50 @@ icon = 'tv.png'
 
 ADDON = addon()
 
-class youtube():
-    def __init__(self, search):
-        self.search = search
+class youtube:
+    def __init__(self, ctype='videos', params=''):
+        self.result = ''
 
-    def SetSearch(self,search):
-        self.search = search.replace(' ','+')
+        print "inittttttttttttttttttttt"
 
+        params = urllib.urlencode(params)
+        req = urllib2.Request(URL_MAIN + ctype +'?'+ params)
+        try:
+            gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+            response = urllib2.urlopen(req, context=gcontext)
+        except:
+            response = urllib2.urlopen(req)
+        sHtmlContent = response.read()
+        sHtmlContent = sHtmlContent.decode("utf-8")
+        self.result = json.loads(sHtmlContent)
+        response.close()
+        if self.result:
+            self.load_result()
+        return
 
-def youtube_search(q2, max_results):
-    youtube = build('https://www.googleapis.com/youtube/', 'V3/',developerKey=API_KEY,cache_discovery=False)
+    def load_result(self):
+        videos, channels, playlists = [], [], []
+        for search_result in self.result.get("items", []):
+            if search_result["kind"] == "youtube#video":
+                videos.append({'title' : search_result["snippet"]["title"], "id" : search_result["id"], "channelId" : search_result["snippet"]["channelId"], "thumbnails" : search_result["snippet"]["thumbnails"]["high"]["url"] })
+            elif search_result["kind"] == "youtube#channel":
+                channels.append({'title' : search_result["snippet"]["title"], "id" : search_result["id"]})
+            elif search_result["kind"] == "youtube#playlist":
+                playlists.append({ 'title' : search_result["snippet"]["title"], "id" : search_result["id"]})
 
-    # Call the search.list method to retrieve results matching the specified
-    # query term.
-    search_response = youtube.search().list(
-        q=q2,
-        part='id,snippet',
-        relevanceLanguage='eu',
-        type='video',
-        maxResults=max_results
-    ).execute()
+        self.videos = videos
+        self.channels = channels
+        self.playlists = playlists
+        return
 
-    videos = []
-    channels = []
-    playlists = []
+    def getVideos(self):
+        return self.videos
 
-    # Add each result to the appropriate list, and then display the lists of
-    # matching videos, channels, and playlists.
-    for search_result in search_response.get('items', []):
-       if search_result['id']['kind'] == 'youtube#video':
-          videos.append( (search_result['snippet']['title'],search_result['id']['videoId']))
-      
-        #elif search_result['id']['kind'] == 'youtube#channel':
-        #  channels.append('%s (%s)' % (search_result['snippet']['title'], search_result['id']['channelId']))
-    
-        #elif search_result['id']['kind'] == 'youtube#playlist':
-        #  playlists.append('%s (%s)' % (search_result['snippet']['title'], search_result['id']['playlistId']))
-    
-    
-    print( str(videos))
-    
-    print ('Playing ' + videos[0][0] + '\n')
-    print ('https://youtube.com/watch?v=' + videos[0][1] + '\n')
-    video = YouTube('https://youtube.com/watch?v=' + videos[0][1] )
-    
-    video_response = youtube.videos().list(
-        id = videos[0][1],
-        part='snippet'
-    ).execute()
+    def getChannels(self):
+        return self.channels
 
-    print ('>>>>' + video_response.get('items')[0]['snippet']['title'] )
-  
-    #print (video.streams.filter(only_audio=True).all())
-  
-    url = video.streams.filter(only_audio=True ,subtype='mp4').first().url
-    
-    return url
+    def getPlaylists(self):
+        return self.playlist
 
 def load():
     oGui = cGui()
@@ -161,26 +150,13 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
-def load_search_res(search_response):
-    videos, channels, playlists = [], [], []
-    for search_result in search_response.get("items", []):
-        if search_result["kind"] == "youtube#video":
-            videos.append({'title' : search_result["snippet"]["title"], "id" : search_result["id"], "channelId" : search_result["snippet"]["channelId"], "thumbnails" : search_result["snippet"]["thumbnails"]["high"]["url"] })
-        elif search_result["kind"] == "youtube#channel":
-            channels.append({'title' : search_result["snippet"]["title"], "id" : search_result["id"]})
-        elif search_result["kind"] == "youtube#playlist":
-            playlists.append({ 'title' : search_result["snippet"]["title"], "id" : search_result["id"]})
-
-    print(videos)
-    print(channels)
-    print(playlists)
 
 def showLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sCat = oInputParameterHandler.getValue('siteUrl')
 
-    parms = {
+    params = {
                 'part': 'snippet',
                 'maxResults': 20,
                 'key': API_KEY,
@@ -188,78 +164,39 @@ def showLinks():
                 'videoCategoryId' : sCat
             }
 
-    url = URL_MAIN + "videos?"
+    ytb = youtube('videos', params)
+    videos = ytb.getVideos()
+    #channel = result.getChannels()
 
-    print url
-    params = urllib.urlencode(parms)
-    req = urllib2.Request(url + params)
-    print params
-    try:
-        gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-        response = urllib2.urlopen(req, context=gcontext)
-    except:
-        response = urllib2.urlopen(req)
-    sHtmlContent = response.read()
-    sHtmlContent = sHtmlContent.decode("utf-8")
-    result = json.loads(sHtmlContent)
-
-    response.close()
-
-    load_search_res(result)
-
-    for e in result['items']:
-        print e['snippet']['title'].encode('utf-8')
-
-    if (aResult[0] == True):
-        total = len(aResult[1])
+    if (videos):
+        total = len(videos)
 
         progress_ = progress().VScreate(SITE_NAME)
 
-        for aEntry in aResult[1]:
+        for aEntry in videos:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
 
-            if 'firstonetv' in sUrl:
-                sThumb = 'https://www.firstonetv.net' + aEntry[0]
-                sTitle = aEntry[1]
-                sUrl2 = 'https://www.firstonetv.net' + aEntry[2]
-                sDesc = ('[COLOR skyblue]%s de %s a %s[/COLOR] \n [COLOR coral]Synopsis :[/COLOR] %s') % (aEntry[3], aEntry[4], aEntry[5], aEntry[6])
-
-            if 'pavandayal' in sUrl:
-                sTitle = aEntry[1]
-            elif not 'myfree-tivi' in sUrl and not 'firstonetv' in sUrl:
-                sTitle = aEntry[1]
-
-            if 'myfree-tivi' in sUrl and not 'firstonetv' in sUrl:
-                sThumb = "https:" + aEntry[2]
-                sUrl2 = 'https://www.myfree-tivi.com'+ aEntry[1]
-                sTitle = aEntry[0]
-                sDesc = aEntry[3]
-            elif not 'myfree-tivi' in sUrl and not 'firstonetv' in sUrl:
-                sUrl2 = aEntry[0]
+            sThumb = aEntry['thumbnails']
+            sID =  aEntry['id']
+            sTitle = aEntry['title'].encode('utf-8')
+            sUrl = URL_VIEW % sID
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            if 'firstonetv' in sUrl or 'myfree-tivi' in sUrl:
-                oOutputParameterHandler.addParameter('sDescription', sDesc)
-                oOutputParameterHandler.addParameter('sThumbnail', sThumb)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('sID', sID)
 
-            if 'myfree-tivi' in sUrl or 'firstonetv' in sUrl:
-                oGui.addMovie(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
-            elif 'pavandayal' in sUrl:
-                oGui.addDir(SITE_IDENTIFIER, 'showWeb', sTitle, 'tv.png', oOutputParameterHandler)
-            else:
-                oGui.addDir(SITE_IDENTIFIER, 'showAllPlaylist', sTitle, 'tv.png', oOutputParameterHandler)
+            oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'ytb.png', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-            oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+        # sNextPage = __checkForNextPage(sHtmlContent)
+        # if (sNextPage != False):
+        #     oOutputParameterHandler = cOutputParameterHandler()
+        #     oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+        #     oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
@@ -284,6 +221,21 @@ def __checkForNextPage(sHtmlContent): #Affiche les page suivant si il y en a
             return  aResult[1][0]
 
     return False
+
+def showHosters():
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+    print sUrl
+    oHoster = cHosterGui().checkHoster(sUrl)
+    if (oHoster != False):
+        oHoster.setDisplayName(sMovieTitle)
+        oHoster.setFileName(sMovieTitle)
+        cHosterGui().showHoster(oGui, oHoster, sUrl, sThumb)
+
+    oGui.setEndOfDirectory()
 
 def showAllPlaylist():#On recupere les differentes playlist si il y en a
     oGui = cGui()
@@ -829,58 +781,10 @@ def play__():#Lancer les liens
         oPlayer.clearPlayList()
         oPlayer.addItemToPlaylist(oGuiElement)
         #tout repetter
-        xbmc.executebuiltin("xbmc.playercontrol(RepeatAll)")
+        #xbmc.executebuiltin("xbmc.playercontrol(RepeatAll)")
 
         oPlayer.startPlayer()
         return
-
-def GetRealUrl(chain):#Recupere les liens des regex
-
-    oParser = cParser()
-
-    UA2 = UA
-    url = chain
-    regex = ''
-    sHtmlContent = ''
-
-    r = re.search('\[[REGEX]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
-    if (r):
-        regex = r.group(1)
-
-    r = re.search('\[[UA]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
-    if (r):
-        UA2 = r.group(1)
-
-    r = re.search('\[[URL]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
-    if (r):
-        url = r.group(1)
-
-    #post metehod ?
-    r = re.search('\[[POSTFORM]+\](.+?)(?:(?:\[[A-Z]+\])|$)', chain)
-    if (r):
-        param = r.group(1)
-        oRequestHandler = cRequestHandler(url)
-        oRequestHandler.setRequestType(1)
-        oRequestHandler.addHeaderEntry('Accept-Encoding', 'identity')
-        oRequestHandler.addParametersLine(param)
-        sHtmlContent = oRequestHandler.request()
-    else:
-        if (url):
-            oRequestHandler = cRequestHandler(url)
-            sHtmlContent = oRequestHandler.request()
-
-    #VSlog(sHtmlContent)
-
-    if regex:
-        aResult2 = oParser.parse(sHtmlContent, regex)
-        if (aResult2):
-            url = aResult2[1][0]
-
-    #VSlog('Url recuperee : ' + url)
-
-    url = url + '|User-Agent=' + UA2
-
-    return url
 
 def openwindows():
     xbmc.executebuiltin( "ActivateWindow(%d, return)" % ( 10601, ) )
