@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'voirfilms_org'
 SITE_NAME = 'VoirFilms'
 SITE_DESC = 'Films, Séries & Animés en Streaming'
 
-URL_MAIN = 'https://www2.voirfilms.ws/'
+URL_MAIN = 'https://www.voirfilms.ws/'
 
 MOVIE_MOVIE = (URL_MAIN + 'alphabet', 'showAlpha')
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming', 'showMovies')
@@ -455,12 +455,12 @@ def showHostersLink():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
+
     host = sUrl.split('/')[0:3]
     host = host[0] + '//' + host[2] + '/'
-    
+
     VSlog('org > ' + sUrl)
-    
+
     #Attention ne marche pas dans tout les cas, certain site retourne aussi un 302 et la lib n'en gere qu'un
     if (False):
         #On recupere la redirection
@@ -474,9 +474,9 @@ def showHostersLink():
         class NoRedirection(urllib2.HTTPErrorProcessor):
             def http_response(self, request, response):
                 return response
-                
+
             https_response = http_response
-            
+
         opener = urllib2.build_opener(NoRedirection)
         opener.addheaders = [('User-agent', UA)]
         opener.addheaders = [('Referer', host)]
@@ -488,7 +488,7 @@ def showHostersLink():
         response.close()
 
         #VSlog('cod > ' + sHtmlContent)
-        
+
     VSlog('red > ' + redirection_target)
 
     #attention fake redirection
