@@ -7,15 +7,14 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 import re
-#le 25/10/18 affiche une erreur SSL
-return False
+
 SITE_IDENTIFIER = 'cineiz'
 SITE_NAME = 'Cineiz'
 SITE_DESC = 'Films, Séries et mangas en streaming'
 
-URL_MAIN = 'https://ww1.cineiz.io/'
+URL_MAIN = 'https://ww3.cineiz.io/'
 
 URL_SEARCH = ('', 'showMovieSearch')
 URL_SEARCH_MOVIES = ('', 'showMovieSearch')
@@ -548,7 +547,7 @@ def showLinks():
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sUrl = oInputParameterHandler.getValue('siteUrl').replace('https://streamcomplet.cineiz.io',URL_MAIN)
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
     sPost = oInputParameterHandler.getValue('sPost')
@@ -559,14 +558,17 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '</div></div><iframe src="(.+?)"'
+    sPattern = '</script></div></div><iframe src="(.+?)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            url = URL_MAIN + aEntry
+            oRequestHandler = cRequestHandler(url)
+            sHtmlContent = oRequestHandler.request()
+            sHosterUrl = oRequestHandler.getRealUrl()
 
             if 'facebook.com' in sHosterUrl:
                 continue
