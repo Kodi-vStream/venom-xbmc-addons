@@ -36,10 +36,12 @@ ADDON = addon()
 class youtube:
     def __init__(self, ctype='videos', params=''):
         self.result = ''
+        self.next = ''
 
         print "inittttttttttttttttttttt"
 
         params = urllib.urlencode(params)
+        print URL_MAIN + ctype +'?'+ params
         req = urllib2.Request(URL_MAIN + ctype +'?'+ params)
         try:
             gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
@@ -55,10 +57,13 @@ class youtube:
         return
 
     def load_result(self):
+        if self.result.has_key('nextPageToken'):
+            self.next = self.result.get("nextPageToken", [])
+
         videos, channels, playlists = [], [], []
         for search_result in self.result.get("items", []):
             if search_result["kind"] == "youtube#video":
-                videos.append({'title' : search_result["snippet"]["title"], "id" : search_result["id"], "channelId" : search_result["snippet"]["channelId"], "thumbnails" : search_result["snippet"]["thumbnails"]["high"]["url"] })
+                videos.append({'title' : search_result["snippet"]["title"], "id" : search_result["id"], "channelId" : search_result["snippet"]["channelId"], "channelTitle" : search_result["snippet"]["channelTitle"], "thumbnails" : search_result["snippet"]["thumbnails"]["high"]["url"], "description" : search_result["snippet"]["description"] })
             elif search_result["kind"] == "youtube#channel":
                 channels.append({'title' : search_result["snippet"]["title"], "id" : search_result["id"]})
             elif search_result["kind"] == "youtube#playlist":
@@ -71,6 +76,9 @@ class youtube:
 
     def getVideos(self):
         return self.videos
+    
+    def getNext(self):
+        return self.next
 
     def getChannels(self):
         return self.channels
@@ -142,10 +150,10 @@ def showGenres():
     liste.append( ['43', 'Shows'])
     liste.append( ['44', 'Trailers'])
 
-    for sUrl, sTitle in liste:
+    for sCatID, sTitle in liste:
 
         oOutputParameterHandler = cOutputParameterHandler()
-        oOutputParameterHandler.addParameter('siteUrl', sUrl)
+        oOutputParameterHandler.addParameter('videoCategoryId', sCatID)
         oGui.addDir(SITE_IDENTIFIER, 'showLinks', sTitle, 'genres.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
@@ -154,15 +162,20 @@ def showGenres():
 def showLinks():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
-    sCat = oInputParameterHandler.getValue('siteUrl')
+    sCatID = oInputParameterHandler.getValue('videoCategoryId')
+    sNext = oInputParameterHandler.getValue('pageToken')
 
     params = {
                 'part': 'snippet',
                 'maxResults': 20,
                 'key': API_KEY,
                 'chart' : 'mostPopular',
-                'videoCategoryId' : sCat
+                'regionCode' : 'FR',
+                'videoCategoryId' : sCatID
             }
+
+    if sNext:
+        params['pageToken'] = sNext
 
     ytb = youtube('videos', params)
     videos = ytb.getVideos()
@@ -181,6 +194,7 @@ def showLinks():
             sThumb = aEntry['thumbnails']
             sID =  aEntry['id']
             sTitle = aEntry['title'].encode('utf-8')
+            sDesc = aEntry['description'].encode('utf-8')
             sUrl = URL_VIEW % sID
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -188,15 +202,16 @@ def showLinks():
             oOutputParameterHandler.addParameter('sID', sID)
 
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'ytb.png', sThumb, '', oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'ytb.png', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
-        # sNextPage = __checkForNextPage(sHtmlContent)
-        # if (sNextPage != False):
-        #     oOutputParameterHandler = cOutputParameterHandler()
-        #     oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-        #     oGui.addNext(SITE_IDENTIFIER, 'showDailyList', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+        _next = ytb.getNext() 
+        if _next:
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('videoCategoryId', sCatID)
+            oOutputParameterHandler.addParameter('pageToken', _next)
+            oGui.addNext(SITE_IDENTIFIER, 'showLinks', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
 
