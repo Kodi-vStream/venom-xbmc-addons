@@ -8,13 +8,14 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
+from urllib import quote_plus
 #from resources.lib.util import cUtil
 
 SITE_IDENTIFIER = 'neuf_docu'
 SITE_NAME = '9Docu'
 SITE_DESC = 'Site pour Telecharger ou Regarder des Documentaires et Emissions TV Gratuitement'
 
-URL_MAIN = 'https://9docu.com/'
+URL_MAIN = 'https://9docu.net/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
@@ -45,7 +46,7 @@ def showSearch():
     oGui = cGui()
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
+        sUrl = URL_SEARCH[0] + quote_plus(sSearchText)
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
