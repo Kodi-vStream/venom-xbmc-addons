@@ -38,6 +38,7 @@
 			</control>
 				
 			<control type="button" id="9003">
+				<visible>False</visible>
 				<right>-75</right>
 				<bottom>55</bottom>
 				<description>Menu</description>
@@ -783,11 +784,11 @@
 
 			<!--BUTTON icon -->
 			<control type="list" id="9001">	
-				<bottom>186</bottom>
-				<height>40</height>
-				<width>240</width>
-				<right>0</right>
-				<align>center</align>
+				<bottom>55</bottom>
+				<height>50</height>
+				<width>200</width>
+				<right>-65</right>
+				<align>left</align>
 
 				<onleft>9001</onleft>
 				<onright>9001</onright>
@@ -795,43 +796,39 @@
 				<ondown>9000</ondown>
 				<pagecontrol>-</pagecontrol>
 				<scroll>false</scroll>
-				<wrapmultiline>true</wrapmultiline>
+				<wrapmultiline>False</wrapmultiline>
 				<orientation>horizontal</orientation>
 
-				<itemlayout width="40" height="40">
+				<itemlayout width="20" height="40">
 
-					<control type="image">
-						<texture>nofocus.png</texture>
-					</control>
-
-					<control type="image">
+					<control type="label">
+						<left>25</left>
+						<width>186</width>
 						<height>20</height>
-						<width>20</width>
-						<left>10</left>
-						<right>10</right>
-						<top>10</top>
-						<bottom>10</bottom>
-						<colordiffuse>77FFFFFF</colordiffuse>
-						<info>ListItem.Icon</info>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<align>center</align>
+						<selectedcolor>green</selectedcolor>
+						<textcolor>grey</textcolor>
+						<info>-</info>
+						<angle>90</angle>
 					</control>
 	
 					</itemlayout>
-					<focusedlayout width="40" height="40">
+					<focusedlayout width="186" height="40">
 
-						<control type="image">
-							<texture>nofocus.png</texture>
-						</control>
-
-						<control type="image">
+						<control type="label">
+							<left>25</left>
+							<width>186</width>
 							<height>20</height>
-							<width>20</width>
-							<left>10</left>
-							<right>10</right>
-							<top>10</top>
-							<bottom>10</bottom>
-							<colordiffuse>$INFO[Window(Home).Property(color)]</colordiffuse>
-							<info>ListItem.Icon</info>
+							<font>font12</font>
+							<aligny>center</aligny>
+							<textcolor>77FFFFFF</textcolor>
+							<align>center</align>
+							<info>ListItem.Label</info>
+							<angle>90</angle>
 						</control>
+
 					</focusedlayout>
 					<content>
 						<item>
