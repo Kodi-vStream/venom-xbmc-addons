@@ -31,6 +31,8 @@ icon = 'tv.png'
 #/home/lordvenom/.kodi/
 #sRootArt = cConfig().getRootArt()
 
+#https://developers.google.com/youtube/v3/guides/implementation/pagination
+
 ADDON = addon()
 
 class youtube:
