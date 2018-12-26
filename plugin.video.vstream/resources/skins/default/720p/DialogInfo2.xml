@@ -89,7 +89,7 @@
 				<control type="list">
 					<height>150</height>
 					<bottom>13</bottom>
-					<left>210</left>
+					<left>40</left>
 					<right>40</right>
 					<onleft>49</onleft>
 					<onright>49</onright>
@@ -98,13 +98,11 @@
 					<orientation>horizontal</orientation>
 					<wrapmultiline>true</wrapmultiline>
 
-					<visible>!Control.HasFocus(50) + !Control.HasFocus(36) + !Control.HasFocus(5200)</visible>
-
 					<itemlayout width="340" height="32">
 						<control type="label">
 							<height>20</height>
+							<left>-170</left>
 							<font>font12</font>
-							<align>justify</align>
 							<aligny>center</aligny>
 							<textcolor>77FFFFFF</textcolor>
 							<shadowcolor>-</shadowcolor>
@@ -114,8 +112,8 @@
 					<focusedlayout width="340" height="32">
 						<control type="label">
 							<height>20</height>
+							<left>0</left>
 							<font>font12</font>
-							<align>justify</align>
 							<aligny>center</aligny>
 							<textcolor>77FFFFFF</textcolor>
 							<shadowcolor>-</shadowcolor>
@@ -124,16 +122,23 @@
 					</focusedlayout>
 					<content>
 						<item>
+							<label>TMDB NOTE</label>
+							<onclick>noop</onclick>
+						</item>
+						<item>
 							<label>[UPPERCASE]$ADDON[plugin.video.vstream 30105][/UPPERCASE]</label>
 							<onclick>noop</onclick>
+							<visible>!Control.HasFocus(50) + !Control.HasFocus(36) + !Control.HasFocus(5200)</visible>
 						</item>
 						<item>
 							<label>[UPPERCASE]$ADDON[plugin.video.vstream 30462][/UPPERCASE]</label>
 							<onclick>noop</onclick>
+							<visible>!Control.HasFocus(50) + !Control.HasFocus(36) + !Control.HasFocus(5200)</visible>
 						</item>
 						<item>
 							<label>[UPPERCASE]$ADDON[plugin.video.vstream 30461][/UPPERCASE]</label>
 							<onclick>noop</onclick>
+							<visible>!Control.HasFocus(50) + !Control.HasFocus(36) + !Control.HasFocus(5200)</visible>
 						</item>
 						<!--actor
 						<item>
@@ -211,6 +216,7 @@
 								<textcolor>white</textcolor>
 								<pagecontrol>-</pagecontrol>
 								<info>ListItem.Label</info>
+								<autoscroll>False</autoscroll>
 								<!--<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>-->
 								<!--<visible>!Control.IsVisible(50)</visible>-->
 							</control>
@@ -226,6 +232,7 @@
 								<textcolor>white</textcolor>
 								<pagecontrol>-</pagecontrol>
 								<info>ListItem.Label</info>
+								<autoscroll>False</autoscroll>
 								<!--<visible>!Control.IsVisible(50)</visible>-->
 								<visible>!Control.HasFocus(36)</visible>
 							</control>
@@ -269,24 +276,21 @@
 					<control type="list">
 						<height>150</height>
 						<bottom>13</bottom>
-						<left>210</left>
+						<left>40</left>
 						<right>40</right>
 						<onleft>49</onleft>
 						<onright>49</onright>
 						<onup>9000</onup>
 						<ondown>61</ondown>
 						<orientation>horizontal</orientation>
-						<wrapmultiline>true</wrapmultiline>
-
-						<visible>!Control.HasFocus(50) + !Control.HasFocus(36) + !Control.HasFocus(5200)</visible>
-						
+						<wrapmultiline>true</wrapmultiline>						
 
 						<itemlayout width="340" height="32">
 							<control type="label">
 								<top>65</top>
 								<height>20</height>
+								<left>-170</left>
 								<font>font12</font>
-								<align>justify</align>
 								<aligny>center</aligny>
 								<textcolor>77FFFFFF</textcolor>
 								<shadowcolor>-</shadowcolor>
@@ -296,23 +300,36 @@
 						<focusedlayout width="340" height="32">
 							<control type="label">
 								<top>65</top>
+								<left>38</left>
 								<height>20</height>
 								<font>font12</font>
-								<align>justify</align>
 								<aligny>center</aligny>
-								<textcolor>77FFFFFF</textcolor>
+								<align>left</align>
+								<textcolor>white</textcolor>
 								<shadowcolor>-</shadowcolor>
 								<info>ListItem.Label</info>
 							</control>
 						</focusedlayout>
 						<content>
 							<item>
+								<label>[B]$INFO[Window(Home).Property(ListItem.rating)][/B]</label>
+								<onclick>noop</onclick>
+								<visible>!Control.HasFocus(5200)</visible>
+							</item>
+							<item>
+								<label>[B]$INFO[Container(5200).ListItem.rating][/B]</label>
+								<onclick>noop</onclick>
+								<visible>Control.HasFocus(5200)</visible>
+							</item>
+							<item>
 								<label>[UPPERCASE]$ADDON[plugin.video.vstream 30463][/UPPERCASE] [COLOR=white]$INFO[Window(Home).Property(ListItem.premiered)][/COLOR]</label>
 								<onclick>noop</onclick>
+								<visible>!Control.HasFocus(50) + !Control.HasFocus(36) + !Control.HasFocus(5200)</visible>
 							</item>
 							<item>
 								<label>[UPPERCASE]$ADDON[plugin.video.vstream 30460][/UPPERCASE]</label>
 								<onclick>noop</onclick>
+								<visible>!Control.HasFocus(50) + !Control.HasFocus(36) + !Control.HasFocus(5200)</visible>
 							</item>
 						</content>
 					</control>
@@ -345,6 +362,7 @@
 								<textcolor>white</textcolor>
 								<pagecontrol>-</pagecontrol>
 								<info>ListItem.Label</info>
+								<autoscroll>False</autoscroll>
 								<!--<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>-->
 								<!--<visible>!Control.IsVisible(50)</visible>-->
 							</control>
@@ -360,6 +378,7 @@
 								<textcolor>white</textcolor>
 								<pagecontrol>-</pagecontrol>
 								<info>ListItem.Label</info>
+								<autoscroll>False</autoscroll>
 								<!--<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>-->
 								<!--<visible>!Control.IsVisible(50)</visible>-->
 							</control>
@@ -430,123 +449,75 @@
 
 			<!--rating image -->
 			<control type="group">
+				<bottom>50</bottom>
+				<left>50</left>
+				<width>80</width>
+				<height>80</height>
 
 				<control type="image">
 					<visible>[!Control.HasFocus(5200) + String.StartsWith(Window(Home).Property(ListItem.rating),1)] | String.StartsWith(Container(5200).ListItem.rating,1)</visible>
-					<bottom>50</bottom>
-					<left>55</left>
-					<width>70</width>
-					<height>70</height>
+					<width>100%</width>
+					<height>100%</height>
 					<texture background="true">2.png</texture>
 					<fadetime>0</fadetime>
 				</control>
 				<control type="image">
 					<visible>[!Control.HasFocus(5200) + String.StartsWith(Window(Home).Property(ListItem.rating),2)] | String.StartsWith(Container(5200).ListItem.rating,2)</visible>
-					<bottom>50</bottom>
-					<left>55</left>
-					<width>70</width>
-					<height>70</height>
+					<width>100%</width>
+					<height>100%</height>
 					<texture background="true">2.png</texture>
 					<fadetime>0</fadetime>
 				</control>
 				<control type="image">
 					<visible>[!Control.HasFocus(5200) + String.StartsWith(Window(Home).Property(ListItem.rating),3)] | String.StartsWith(Container(5200).ListItem.rating,3)</visible>
-					<bottom>50</bottom>
-					<left>55</left>
-					<width>70</width>
-					<height>70</height>
+					<width>100%</width>
+					<height>100%</height>
 					<texture background="true">4.png</texture>
 					<fadetime>0</fadetime>
 				</control>
 				<control type="image">
 					<visible>[!Control.HasFocus(5200) + String.StartsWith(Window(Home).Property(ListItem.rating),4)] | String.StartsWith(Container(5200).ListItem.rating,4)</visible>
-					<bottom>50</bottom>
-					<left>55</left>
-					<width>70</width>
-					<height>70</height>
+					<width>100%</width>
+					<height>100%</height>
 					<texture background="true">4.png</texture>
 					<fadetime>0</fadetime>
 				</control>
 				<control type="image">
 					<visible>[!Control.HasFocus(5200) + String.StartsWith(Window(Home).Property(ListItem.rating),5)] | String.StartsWith(Container(5200).ListItem.rating,5)</visible>
-					<bottom>50</bottom>
-					<left>55</left>
-					<width>70</width>
-					<height>70</height>
+					<width>100%</width>
+					<height>100%</height>
 					<texture background="true">5.png</texture>
 					<fadetime>0</fadetime>
 				</control>
 				<control type="image">
 					<visible>[!Control.HasFocus(5200) + String.StartsWith(Window(Home).Property(ListItem.rating),6)] | String.StartsWith(Container(5200).ListItem.rating,6)</visible>
-					<bottom>50</bottom>
-					<left>55</left>
-					<width>70</width>
-					<height>70</height>
+					<width>100%</width>
+					<height>100%</height>
 					<texture background="true">7.png</texture>
 					<fadetime>0</fadetime>
 				</control>
 				<control type="image">
 					<visible>[!Control.HasFocus(5200) + String.StartsWith(Window(Home).Property(ListItem.rating),7)] | String.StartsWith(Container(5200).ListItem.rating,7)</visible>
-					<bottom>50</bottom>
-					<left>55</left>
-					<width>70</width>
-					<height>70</height>
+					<width>100%</width>
+					<height>100%</height>
 					<texture background="true">7.png</texture>
 					<fadetime>0</fadetime>
 				</control>
 				<control type="image">
 					<visible>[!Control.HasFocus(5200) + String.StartsWith(Window(Home).Property(ListItem.rating),8)] | String.StartsWith(Container(5200).ListItem.rating,8)</visible>
-					<bottom>50</bottom>
-					<left>55</left>
-					<width>70</width>
-					<height>70</height>
+					<width>100%</width>
+					<height>100%</height>
 					<texture background="true">8.png</texture>
 					<fadetime>0</fadetime>
 				</control>
 				<control type="image">
 					<visible>[!Control.HasFocus(5200) + String.StartsWith(Window(Home).Property(ListItem.rating),9)] | String.StartsWith(Container(5200).ListItem.rating,9)</visible>
-					<bottom>50</bottom>
-					<left>55</left>
-					<width>70</width>
-					<height>70</height>
+					<width>100%</width>
+					<height>100%</height>
 					<texture background="true">9.png</texture>
 					<fadetime>0</fadetime>
 				</control>
 
-				<!--rating label -->
-				<control type="label" id="1">
-					<description>rating label</description>
-					<left>75</left>
-					<bottom>60</bottom>
-					<height>40</height>
-					<font>font32_title</font>
-					<label>$INFO[Window(Home).Property(ListItem.rating)]</label>
-					<shadowcolor>black</shadowcolor>
-					<textcolor>white</textcolor>
-					<visible>!Control.HasFocus(5200)</visible>
-				</control>
-				<control type="label" id="1">
-					<description>rating label</description>
-					<left>75</left>
-					<bottom>60</bottom>
-					<height>40</height>
-					<font>font32_title</font>
-					<label>$INFO[Container(5200).ListItem.rating]</label>
-					<shadowcolor>black</shadowcolor>
-					<textcolor>white</textcolor>
-					<visible>Control.HasFocus(5200)</visible>
-				</control>
-
-				<control type="label" id="1">
-					<description>rating label</description>
-					<left>40</left>
-					<bottom>125</bottom>
-					<height>40</height>
-					<font>font12</font>
-					<label>TMDB NOTE</label>
-					<shadowcolor>-</shadowcolor>
-					<textcolor>77FFFFFF</textcolor>
-				</control>
 			</control>
 			
 			<!-->
