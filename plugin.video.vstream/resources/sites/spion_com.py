@@ -23,7 +23,7 @@ NETS_NETS = ('http://', 'load')
 NETS_NEWS = (URL_MAIN + 'page/1/', 'showMovies')
 NETS_GENRES = (True, 'showGenres')
 
-# True : Contenu Censur�� | False : Contenu Non Censur��
+# True : Contenu Censuré | False : Contenu Non Censuré
 SPION_CENSURE = True
 
 #logo censure -18ans
