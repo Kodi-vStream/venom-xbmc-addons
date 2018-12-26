@@ -23,7 +23,7 @@ NETS_NETS = ('http://', 'load')
 NETS_NEWS = (URL_MAIN + 'page/1/', 'showMovies')
 NETS_GENRES = (True, 'showGenres')
 
-# True : Contenu Censuré | False : Contenu Non Censuré
+# True : Contenu Censur�� | False : Contenu Non Censur��
 SPION_CENSURE = True
 
 #logo censure -18ans
@@ -104,7 +104,7 @@ def showMovies(sSearch = ''):
     oGui = cGui()
 
     if sSearch:
-      sUrl = sSearch
+      sUrl = sSearch.replace(" ", "+")
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
