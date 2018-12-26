@@ -106,7 +106,8 @@ def showMovies(sSearch = ''):
     oInputParameterHandler = cInputParameterHandler()
 
     if sSearch:
-        sUrl = sSearch
+        idx = sSearch.rfind("?query=") + 8
+        sUrl = sSearch[:idx] + "".join([i for i in sSearch[idx:] if i.isalpha() or i in [" ", "/"]]).replace(" ", "+")
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
