@@ -14,7 +14,7 @@ SITE_IDENTIFIER = 'neuf_docu'
 SITE_NAME = '9Docu'
 SITE_DESC = 'Site pour Telecharger ou Regarder des Documentaires et Emissions TV Gratuitement'
 
-URL_MAIN = 'https://9docu.com/'
+URL_MAIN = 'https://9docu.net/'
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
@@ -120,7 +120,7 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
-      sUrl = sSearch
+      sUrl = sSearch.replace(" ", "+")
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
