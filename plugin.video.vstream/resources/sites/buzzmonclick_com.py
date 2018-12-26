@@ -7,7 +7,8 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.packer import cPacker
+from resources.lib.comaddon import progress, VSlog
 #from resources.lib.util import cUtil
 import re, unicodedata
 
@@ -159,18 +160,47 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'iframe src="(.+?)"'
     oParser = cParser()
+    sPattern = '<a href="([^"]+)" target="_blank" rel="noreferrer noopener">'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
+    if (aResult[0] == False):
+        sPattern = 'iframe src="([^"]+)"'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+    else:
+        oRequestHandler = cRequestHandler(''.join(aResult[1]))
+        sHtmlContent = oRequestHandler.request()
+
+        sPattern = '<a href="([^"]+)" target="_blank" class="link link--external" rel="nofollow '
+        aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = aEntry
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            if 'gounlimited' in aEntry:
+                oRequestHandler = cRequestHandler(aEntry)
+                sHtmlContent = oRequestHandler.request()
+
+                sPattern = '(eval\(function\(p,a,c,k,e(?:.|\s)+?\))<\/script>'
+                aResult = oParser.parse(sHtmlContent, sPattern)
+                if (aResult[0] == True):
+                    sHtmlContent = cPacker().unpack(aResult[1][0])
+
+                    sPattern = '{sources:\["([^"]+)"'
+                    aResult = oParser.parse(sHtmlContent, sPattern)
+                    if (aResult[0] == True):
+                        sHosterUrl = aResult[1][0]
+                        oHoster = cHosterGui().checkHoster(sHosterUrl)
+                        if (oHoster != False):
+                            oHoster.setDisplayName(sMovieTitle)
+                            oHoster.setFileName(sMovieTitle)
+                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            else:
+                sHosterUrl = aEntry
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
