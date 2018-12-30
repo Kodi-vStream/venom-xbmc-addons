@@ -343,8 +343,9 @@ def showLink():
     if (aResult[0] == True):
         linkid = aResult[1][0]
 
-    sPattern = '<\/i> *Lien.+?</td>.+?alt="([^"]+)".+?(?:|center">([^<]+)</td>.+?)data-id="([^"]+)">'
+    sPattern = '<\/i> *Lien.+?</td>.+?alt="([^"]+)".+?(?:|center">([^<]+)</td>.+?)(?:|data-uid="([^"]+)") data-id="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
+
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
@@ -354,7 +355,14 @@ def showLink():
                 break
 
             sHost = re.sub('\..+', '', aEntry[0]).capitalize()
-            sUrl = URL_MAIN + 'link/' + aEntry[2] + '/' + linkid
+
+            if aEntry[2] == '':
+                sUrl = URL_MAIN + 'link/' + aEntry[3] + '/' + linkid
+
+            else:
+                sUrl = URL_MAIN + 'links/' + aEntry[3] #ancienne methode du site tjr ok
+                
+
             sLang = aEntry[1]
             sTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang, sColor, sHost)
 
@@ -384,9 +392,12 @@ def showHosters():
 
     sPattern = '<iframe class="embed-responsive-.+?src=(.+?) *allowfullscreen><\/iframe>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         sHosterUrl = aResult[1][0]
+    else:
+        sHosterUrl = sHtmlContent #ancienne methode du site tjr ok
+        
+    if sHosterUrl:    
         oHoster = cHosterGui().checkHoster(sHosterUrl)
 
         if (oHoster != False):
