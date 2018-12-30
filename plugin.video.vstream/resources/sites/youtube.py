@@ -25,7 +25,7 @@ SITE_NAME = '[COLOR orange]Youtube[/COLOR]'
 SITE_DESC = 'Youtube'
 
 URL_MAIN = 'https://www.googleapis.com/youtube/v3/'
-API_KEY = 'AIzaSyC5grY-gOPMpUM_tn0sfTKV3pKUtf9---M'
+API_KEY = ''
 URL_VIEW = 'https://youtube.com/watch?v=%s'
 
 icon = 'tv.png'
@@ -41,10 +41,8 @@ class youtube:
         self.result = ''
         self.next = ''
 
-        print "inittttttttttttttttttttt"
-
         params = urllib.urlencode(params)
-        print URL_MAIN + ctype +'?'+ params
+
         req = urllib2.Request(URL_MAIN + ctype +'?'+ params)
         try:
             gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
@@ -246,7 +244,7 @@ def showHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    print sUrl
+
     oHoster = cHosterGui().checkHoster(sUrl)
     if (oHoster != False):
         oHoster.setDisplayName(sMovieTitle)
