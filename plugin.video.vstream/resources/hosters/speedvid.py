@@ -69,8 +69,9 @@ class cHoster(iHoster):
 
     def __getMediaLinkForGuest(self):
 
-        oRequest = cRequestHandler(self.__sUrl)
+        oRequest = cRequestHandler(self.__sUrl.replace('sn','embed'))
         oRequest.addHeaderEntry('User-Agent', UA)
+        oRequest.addHeaderEntry('Host', 'www.speedvid.net')
         sHtmlContent = oRequest.request()
 
         #suppression commentaires
@@ -215,5 +216,4 @@ def CheckAADecoder(str):
             return str[:aResult.start()] + tmp + str[aResult.end():]
         except:
             return ''
-
     return str

@@ -12,7 +12,7 @@ SITE_IDENTIFIER = 'documentaires_streaming_com'
 SITE_NAME = 'Documentaires Streaming'
 SITE_DESC = 'replay tv, documentaire, reportage'
 
-URL_MAIN = 'http://www.documentaires-streaming.com/'
+URL_MAIN = 'http://voir.documentaires-streaming.com/'
 
 DOC_NEWS = (URL_MAIN + 'category/documentaire/', 'showMovies')
 DOC_DOCS = ('http://', 'load')
@@ -117,7 +117,7 @@ def showReplayGenres():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-      sUrl = sSearch
+      sUrl = sSearch.replace(" ", "+")
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')

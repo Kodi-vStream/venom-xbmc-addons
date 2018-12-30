@@ -5,7 +5,7 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
 
-import re, urllib2
+import re, urllib, urllib2
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
 
@@ -47,7 +47,8 @@ class cHoster(iHoster):
         return ''
 
     def __getIdFromUrl(self, sUrl):
-        sPattern = 'drive.google.+?([a-zA-Z0-9-_]{20,40})'
+        #sPattern = 'drive.google.+?([a-zA-Z0-9-_]{20,40})'
+        sPattern = 'google.+?([a-zA-Z0-9-_]{20,40})'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
         if (aResult[0] == True):
@@ -68,6 +69,8 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
+
+        api_call = ''
 
         #reformatage du lien
         sId = self.__getIdFromUrl(self.__sUrl)
@@ -91,7 +94,8 @@ class cHoster(iHoster):
 
         #VSlog(cookies)
 
-        sPattern = '\["fmt_stream_map","([^"]+)"]\s*,\["fmt_list","([^"]+)"]'
+        #sPattern = '\["fmt_stream_map","([^"]+)"]\s*,\["fmt_list","([^"]+)"]'
+        sPattern = 'url_encoded_fmt_stream_map".+?url\\\u003d([^"]+)'
 
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -102,31 +106,10 @@ class cHoster(iHoster):
                 dialog().VSinfo("Nombre de lectures max dépassé")
             return False,False
 
-        sListUrl = aResult[1][0][0]
-        sListRes = aResult[1][0][1]
-
-        #initialisation des tableaux
-        url=[]
-        qua=[]
-        api_call = ''
-
-        #liste les qualitee
-        r = re.findall('([0-9]+)\|([^\|,]+)', sListUrl, re.DOTALL)
-        for item in r:
-            r2 = re.search( str(item[0]) + '\/([0-9x]+)\/', sListRes)
-            if r2:
-                #VSlog( r2.group(1) + ' >> ' + item[1].decode('unicode-escape') )
-                url.append(item[1].decode('unicode-escape'))
-                qua.append(r2.group(1))
-
-        #Afichage du tableau
-        api_call = dialog().VSselectqual(qua, url)
-
-        api_call = api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
-
-        #VSlog(api_call)
+        #api_call = api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
+        api_call = urllib.unquote(aResult[1][0]).decode('unicode-escape')
 
         if (api_call):
-            return True, api_call
+            return True, api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
 
         return False, False

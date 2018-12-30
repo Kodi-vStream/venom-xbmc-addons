@@ -19,7 +19,7 @@ URL_SEARCH_MISC = (URL_MAIN, 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 NETS_NETS = ('http://', 'load')
-NETS_NEWS = (URL_MAIN + 'videos-s0-1.html', 'showMovies')
+NETS_NEWS = (URL_MAIN, 'showMovies')
 NETS_GENRES = (True, 'showGenre')
 NETS_CATS = (True, 'showGenres')
 
@@ -49,7 +49,7 @@ def showSearch():
 
     sSearchText = oGui.showKeyBoard()
     if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText + '-s0-r1.html'
+        sUrl = URL_SEARCH[0] + sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
@@ -99,7 +99,8 @@ def showMovies(sSearch = ''):
     oParser = cParser()
 
     if sSearch:
-      sUrl = sSearch
+      idx = sSearch.rfind("/") + 1
+      sUrl = sSearch[:idx] + "".join([i for i in sSearch[idx:] if i.isalpha() or i in [" ", "/"]]).replace(" ", "-") + '-s0-r1.html'
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')

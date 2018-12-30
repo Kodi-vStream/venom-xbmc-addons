@@ -255,7 +255,7 @@ class cHosterGui:
         if ('drive.google.com' in sHostName):
             return self.getHoster('googledrive')
         if ('docs.google.com' in sHostName):
-            return self.getHoster('googledoc')
+            return self.getHoster('googledrive')
         if ('vidwatch' in sHostName):
             return self.getHoster('vidwatch')
         if ('up2stream' in sHostName):
