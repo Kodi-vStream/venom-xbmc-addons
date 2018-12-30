@@ -9,6 +9,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress, VSlog
 import re
+return false
 
 SITE_IDENTIFIER = 'cineiz'
 SITE_NAME = 'Cineiz'
