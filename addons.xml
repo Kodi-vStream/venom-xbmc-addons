@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.vstream" name="vStream" version="0.6.8" provider-name="Venom,TmpName,Johngf,Arias800">
+<addon id="plugin.video.vstream" name="vStream" version="0.6.9" provider-name="Venom,TmpName,Johngf,Arias800">
     <requires>
         <import addon="xbmc.python" version="2.24.0"/>
         <import addon="script.module.simplejson" version="3.3.0"/>
@@ -12,6 +12,7 @@
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
     </extension>
+    <extension point="xbmc.service" library="service.py" />
     <extension point="xbmc.addon.metadata">
         <summary lang="fr_FR">vStream par Venom, TmpName, Johngf, Arias800.</summary>
         <description lang="fr_FR">vStream est un module de streaming français, trouvez tous vos films, séries et mangas.[CR][CR]Contributeur: Razorex, Kodigoal</description>
