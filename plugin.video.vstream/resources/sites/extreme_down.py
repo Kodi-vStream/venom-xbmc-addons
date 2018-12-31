@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
-#
-# Votre nom ou pseudo
+#vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
@@ -50,8 +49,8 @@ MOVIE_LIGHTBDRIP = (URL_MAIN + 'films-hd/bdrip-720p', 'showMovies')
 MOVIE_BDRIP = (URL_MAIN + 'films-sd/dvdrip', 'showMovies')
 MOVIE_OLDDVD = (URL_MAIN + 'films-sd/ancien-dvdrip', 'showMovies')
 MOVIE_FILMO = (URL_MAIN + 'films-sd/filmographie', 'showMovies')
-MOVIE_CLASSIQUE_SD = (URL_MAIN + 'films-classique/classiques-sd','showMovies')
-MOVIE_CLASSIQUE_HD = (URL_MAIN + 'films-classique/classiques-hd','showMovies')
+MOVIE_CLASSIQUE_SD = (URL_MAIN + 'films-classique/classiques-sd', 'showMovies')
+MOVIE_CLASSIQUE_HD = (URL_MAIN + 'films-classique/classiques-hd', 'showMovies')
 
 SERIE_SERIES = ('http://', 'showMenuSeries')
 SERIE_HD = (URL_MAIN + 'series-hd/1080p-series-vf', 'showMovies')
@@ -78,9 +77,8 @@ REPLAYTV_NEWS = (URL_MAIN + 'emissions-tv/', 'showMovies')
 def load():
     oGui = cGui()
 
-    oGui.addText(SITE_IDENTIFIER, "[COLOR red]Cette source est compatible avec Chrome Launcher[/COLOR]")
-
-    oGui.addText(SITE_IDENTIFIER, "[COLOR red]Cette source fonctionne différement merci d'allez voir le wiki de vstream \npour plus d'informations[/COLOR]")
+    oGui.addText(SITE_IDENTIFIER, "[COLOR red]Cette source est compatible avec Chrome Launcher.[/COLOR]")
+    oGui.addText(SITE_IDENTIFIER, "[COLOR red]Elle fonctionne différemment. Merci d'allez voir le wiki de vStream \npour plus d'informations.[/COLOR]")
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -343,10 +341,10 @@ def showMovies(sSearch = ''):
 
         if URL_SEARCH[0] in sSearch:
             bGlobal_Search = True
-            sSearch=sSearch.replace(URL_SEARCH[0],'')
+            sSearch=sSearch.replace(URL_SEARCH[0], '')
 
         if Nextpagesearch:
-            query_args = (('do', 'search'), ('subaction', 'search') ,('search_start', Nextpagesearch),('story', sSearch) , ('titleonly', '3') )
+            query_args = (('do', 'search'), ('subaction', 'search'), ('search_start', Nextpagesearch), ('story', sSearch), ('titleonly', '3') )
         else:
             query_args = (('do', 'search'), ('subaction', 'search'), ('story', sSearch), ('titleonly', '3'))
 
@@ -366,11 +364,7 @@ def showMovies(sSearch = ''):
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-    #le plus simple et de faire un  cConfig().log(str(aResult))
-    #dans le fichier log d'xbmc vous pourrez voir un array de ce que recupere le script
-    #et modifier sPattern si besoin
 
-    #affiche une information si aucun resulat
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
@@ -402,7 +396,7 @@ def showMovies(sSearch = ''):
             if 'mangas' in sUrl:
                 oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showLinks', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -455,7 +449,7 @@ def showLinks():
     if (aResult[1]):
         sMovieTitle = aResult[1][0][1]
 
-    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Autres qualités disponibles :[/COLOR]')
+    oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Autres qualités disponibles:[/COLOR]')
 
     sPattern = '<meta property="og:title" content=".+? - (.+?)(VOSTFR|VF)*/>'
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -463,7 +457,7 @@ def showLinks():
 
     sQual = ''
     if (aResult[0]):
-        sQual = aResult[1][0][0].replace('"','')
+        sQual = aResult[1][0][0].replace('"', '')
 
     sDisplayTitle = ('%s (%s)') % (sMovieTitle, sQual)
 
@@ -506,7 +500,7 @@ def showLinks():
     #print aResult2
 
     if (aResult2[0] == True):
-        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Autres Saisons disponibles pour cette série:[/COLOR]')
+        oGui.addText(SITE_IDENTIFIER,'[COLOR olive]Autres saisons disponibles:[/COLOR]')
 
         for aEntry in aResult2[1]:
 
@@ -554,7 +548,7 @@ def showHosters():
                 oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
             if 'saison' in sUrl:
-                sTitle = aEntry[2] + ' ' + aEntry[1].replace('&agrave;','a')
+                sTitle = aEntry[2] + ' ' + aEntry[1].replace('&agrave;', 'a')
                 sUrl2 = aEntry[1]
             else:
                 sTitle = aEntry[2] + ' ' + aEntry[1]
@@ -571,7 +565,7 @@ def showHosters():
 
     oGui.setEndOfDirectory()
 
-def RecapchaBypass():#Ouverture de Chrome Launcher si il est intallez
+def RecapchaBypass():#Ouverture de Chrome Launcher s'il est intallez
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
