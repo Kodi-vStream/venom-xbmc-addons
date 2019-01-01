@@ -326,7 +326,7 @@ def showSearchResult(sSearch = ''):
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
 
-    sUrl = sSearch
+    sUrl = sSearch.replace(' ','+')
 
     HD = 0
     SD = 0
