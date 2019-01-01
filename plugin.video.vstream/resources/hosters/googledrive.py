@@ -115,8 +115,9 @@ class cHoster(iHoster):
        
         #Afichage du tableau
         api_call = dialog().VSselectqual(qua, url)
-
+        api_call = api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
+        
         if (api_call):
-            return True, api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
+            return True, api_call
 
         return False, False
