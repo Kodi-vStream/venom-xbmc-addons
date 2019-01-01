@@ -328,7 +328,7 @@ class cHosterGui:
             return self.getHoster('hd_stream')
         if ('rapidstream' in sHostName):
             return self.getHoster('rapidstream')
-        
+
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
             return self.getHoster('onefichier')
@@ -340,6 +340,8 @@ class cHosterGui:
             return self.getHoster('uploaded')
 
         if ('kaydo.ws' in sHostName):
+            return self.getHoster('lien_direct')
+        if ('fembed' in sHostName):
             return self.getHoster('lien_direct')
 
         #Si aucun hebergeur connu on teste les liens directs
