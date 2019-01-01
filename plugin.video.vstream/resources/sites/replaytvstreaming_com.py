@@ -81,7 +81,7 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
-        sUrl = URL_SEARCH[0] + sSearch
+        sUrl = URL_SEARCH[0] + sSearch.replace(' ','+')
 
 
         oRequestHandler = cRequestHandler(sUrl)
@@ -127,7 +127,7 @@ def showMovies(sSearch = ''):
             oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
-        
+
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()

@@ -361,7 +361,7 @@ def showMovies(sSearch = ''):
     if sSearch:
 
         #par defaut
-        sUrl = sSearch
+        sUrl = sSearch.replace(' ','+')
 
         if URL_SEARCH[0] in sSearch:
             bGlobal_Search = True

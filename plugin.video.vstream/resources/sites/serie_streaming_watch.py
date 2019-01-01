@@ -33,11 +33,11 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Series (Liste)', 'listes.png', oOutputParameterHandler)
@@ -107,7 +107,7 @@ def showMovies(sSearch=''):
     oParser = cParser()
 
     if sSearch:
-        sUrl = sSearch.replace('%20', '+')
+        sUrl = sSearch.replace(' ','+')
 
     else:
         oInputParameterHandler = cInputParameterHandler()
@@ -248,7 +248,7 @@ def showHosters():
                 sUrl = aEntry[2]
                 if sUrl.startswith('/'):
                     sUrl = URL_MAIN[:-1] + sUrl
-      
+
                 sDisplayTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -267,7 +267,7 @@ def serieHosters():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
+
     sHosterUrl = ProtectstreamBypass(sUrl)
     oHoster = cHosterGui().checkHoster(sHosterUrl)
 
@@ -291,12 +291,12 @@ def ProtectstreamBypass(url):
 
     if (aResult[0] == True):
         postdata = 'k=' + aResult[1][0]
-        
+
         dialog().VSinfo('Décodage en cours', "Patientez", 5)
         xbmc.sleep(5000)
 
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0'
-        
+
         oRequest = cRequestHandler(URL_MAIN + 'secur22.php')
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', UA)
