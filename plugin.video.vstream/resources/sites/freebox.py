@@ -96,7 +96,7 @@ def showIptvSite():
     liste.append( ['Daily Iptv List', 'https://www.dailyiptvlist.com/'])
     liste.append( ['pavandayal (m3u8 playlist)', 'https://pavandayal.com/iptv/links.php'])
     liste.append( ['My Free Tivi (Connection au compte impossible a cause de Recaptcha)', 'https://www.myfree-tivi.com/livetv/pp67'])
-    liste.append( ['FirstOneTv', 'https://www.firstonetv.net/Live/France'])
+    liste.append( ['FirstOneTv', 'https://www.firstonetv.live/Live/France'])
 
     for sTitle, sUrl in liste:
 
@@ -218,14 +218,14 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
     if 'firstonetv' and 'Register-Login' in sUrl:
 
         session = requests.Session()
-        url = 'https://www.firstonetv.net/Register-Login'
+        url = 'https://www.firstonetv.live/Register-Login'
         data = {'usrmail':ADDON.getSetting('hoster_firstonetv_username'),
                 'password':ADDON.getSetting('hoster_firstonetv_password'),
                 'login':'Login+Now'}
 
         headers = {'user-agent':UA,
                     'Content-Type':'application/x-www-form-urlencoded',
-                    'Referer':'https://www.firstonetv.net/Index',
+                    'Referer':'https://www.firstonetv.live/Index',
                     'Content-Length': str(len(data))}
 
         session.post(url, data=data, headers=headers)
@@ -273,7 +273,7 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
                 sTitle = sTitle + aEntry[0]
                 sDesc = sDesc
                 sThumb = sThumb
-                sUrl2 = 'http' + aEntry[1].replace('\\\/','/').replace("\/","/") + '.m3u8|Referer='+sUrl+'&User-Agent='+UA+'&X-Requested-With=ShockwaveFlash/28.0.0.137&Origin=https://www.firstonetv.net'
+                sUrl2 = 'http' + aEntry[1].replace('\\\/','/').replace("\/","/") + '.m3u8|Referer='+sUrl+'&User-Agent='+UA+'&X-Requested-With=ShockwaveFlash/28.0.0.137&Origin=https://www.firstonetv.live'
             elif 'myfree-tivi' in sUrl:
                 sTitle = str(aEntry[1])
                 sUrl2 = aEntry[0].replace('\\\/','/').replace("\/","/")
@@ -366,9 +366,10 @@ def getHtml(sUrl, data=None):#S'occupe des requetes
     elif 'firstonetv'and '/France/' in sUrl:#On passe les redirection
         aResult = re.findall('Live/.+?/*[^<>]+(?:-)([^"]+)',sUrl)
         idChannel = aResult[0]
+        VSlog(idChannel)
 
         apiNumber = random.uniform(0.0000000000000000,0.9999999999999999)
-        url = 'https://www.firstonetv.net/api/?cacheFucker=' + str(apiNumber)
+        url = 'https://www.firstonetv.live/api/?cacheFucker=' + str(apiNumber)
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('User-Agent',UA)
@@ -377,6 +378,7 @@ def getHtml(sUrl, data=None):#S'occupe des requetes
         oRequestHandler.addParameters('result','get')
         data = oRequestHandler.request()
         hiro = unFuckFirst(data)#On decode Hiro
+        VSlog(hiro)
 
         sPattern = '"hiro":(.+?),"hash":"(.+?)","time":(.+?),'
 
@@ -389,7 +391,7 @@ def getHtml(sUrl, data=None):#S'occupe des requetes
             time = aEntry[2]
 
         apiNumber = random.uniform(0.0000000000000000,0.9999999999999999)
-        url = 'https://www.firstonetv.net/api/?cacheFucker=' + str(apiNumber)
+        url = 'https://www.firstonetv.live/api/?cacheFucker=' + str(apiNumber)
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('User-Agent',UA)
@@ -404,7 +406,7 @@ def getHtml(sUrl, data=None):#S'occupe des requetes
         cToken = aResult[0]
 
         apiNumber = random.uniform(0.0000000000000000,0.9999999999999999)
-        url = 'https://www.firstonetv.net/api/?cacheFucker=' + str(apiNumber)
+        url = 'https://www.firstonetv.live/api/?cacheFucker=' + str(apiNumber)
         oRequestHandler = cRequestHandler(url)
         oRequestHandler.setRequestType(1)
         oRequestHandler.addHeaderEntry('User-Agent',UA)
@@ -420,7 +422,7 @@ def getHtml(sUrl, data=None):#S'occupe des requetes
     elif 'firstonetv' in sUrl:
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('User-Agent',UA)
-        oRequestHandler.addHeaderEntry('Host','www.firstonetv.net')
+        oRequestHandler.addHeaderEntry('Host','www.firstonetv.live')
         oRequestHandler.addHeaderEntry('Cookie',cookies)
         data = oRequestHandler.request()
         return data
