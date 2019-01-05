@@ -341,6 +341,7 @@ def showGenre():
     oGui.setEndOfDirectory()
 
 def showMovies(sSearch = ''):
+    ancienAffichage = False
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
@@ -386,13 +387,16 @@ def showMovies(sSearch = ''):
             sPattern = '<a href="([^"]+)" *><img class="mainimg.+?src="([^"]+)"(?:.|\s)+?<a href=".+?" *>([^"]+)</a>'
         else:
             sPattern = '<a title="([^"]+)" href="([^"]+)"><img class="mainimg".+?src="([^"]+)".+?</a>'
+
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
-        oGui.addText(SITE_IDENTIFIER)
+        sPattern = '<a href="([^"]+)" *><img class="mainimg.+?src="([^"]+)"(?:.|\s)+?<a href=".+?" *>([^"]+)</a>'
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        ancienAffichage = True #Si le site utile l'ancienne affichage
 
     if (aResult[0] == True):
         total = len(aResult[1])
@@ -402,7 +406,7 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            if sSearch or 'genres' in sUrl:
+            if sSearch or 'genres' in sUrl or ancienAffichage == True:
                 sTitle = aEntry[2]
                 sUrl2 = aEntry[0]
                 sThumb = aEntry[1]
@@ -478,10 +482,10 @@ def __checkForNextPage(sHtmlContent):
     sPattern = 'href="([^"]+)">Suivant</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
-        nextPage = URL_MAIN + aResult[1][0]
-        VSlog(nextPage)
+        nextPage = aResult[1][0]
+        if not nextPage.startswith('https'):
+            nextPage = URL_MAIN + nextPage
         return nextPage
-
     return False
 
 def showMoviesLinks():
