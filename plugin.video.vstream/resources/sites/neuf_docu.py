@@ -127,10 +127,9 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
-    sPattern = 'class="attachment-medium aligncenter" src="([^<]+)" \/><div class="data"><h2 class="entry-title" ><a href="([^<]+)"  rel="bookmark" title=".+?">([^<]+)<\/a><\/h2><p class="entry-meta"><p>(.+?)<\/p>'
+    sPattern = 'class="attachment-medium aligncenter" src="([^<]+)" />.+?<h2 class="entry-title"><a href="([^<]+)" rel="bookmark" title=".+?">(.+?)<\/a><\/h2>.+?entry-meta">.+?>(.+?)<\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
+        
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
