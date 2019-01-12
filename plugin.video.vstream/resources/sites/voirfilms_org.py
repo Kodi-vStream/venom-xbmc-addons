@@ -20,12 +20,12 @@ URL_MAIN = 'https://www.voirfilms.ws/'
 
 MOVIE_MOVIE = (URL_MAIN + 'alphabet', 'showAlpha')
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming', 'showMovies')
-MOVIE_GENRES = (True, 'showGenres')
+MOVIE_GENRES = (URL_MAIN , 'showGenres')
 MOVIE_ANNEES = (True, 'showMovieYears')
 
 SERIE_SERIES = (URL_MAIN + 'series/alphabet', 'showAlpha')
 SERIE_NEWS = (URL_MAIN + 'series-tv-streaming/', 'showMovies')
-SERIE_GENRES = (URL_MAIN + 'series', 'showGenres')
+SERIE_GENRES = (URL_MAIN + 'series/', 'showGenres')
 SERIE_ANNEES = (True, 'showSerieYears')
 
 ANIM_ANIMS = (URL_MAIN + 'animes/alphabet/', 'AlphaSearch')
@@ -124,35 +124,30 @@ def showGenres():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
 
-    if 'series' in sUrl:
-        code = URL_MAIN + 'series/'
-    else:
-        code = URL_MAIN
-
     liste = []
-    liste.append( ['Action', code + 'action_1'] )
-    liste.append( ['Animation', code + 'animation_1'] )
-    liste.append( ['Arts Martiaux', code + 'arts-martiaux_1'] )
-    liste.append( ['Aventure', code + 'aventure_1'] )
-    liste.append( ['Biopic', code + 'biopic_1'] )
-    liste.append( ['Comédie', code + 'film-comedie'] )
-    liste.append( ['Comédie Dramatique', code + 'comedie-dramatique_1'] )
-    liste.append( ['Documentaire', code + 'documentaire_1'] )
-    liste.append( ['Drame', code + 'drame_1'] )
-    liste.append( ['Epouvante Horreur', code + 'epouvante-horreur_1'] )
-    liste.append( ['Erotique', code + 'erotique_1'] )
-    liste.append( ['Espionnage', code + 'espionnage_1'] )
-    liste.append( ['Fantastique', code + 'fantastique_1'] )
-    liste.append( ['Guerre', code + 'guerre_1'] )
-    liste.append( ['Historique', code + 'historique_1'] )
-    liste.append( ['Musical', code + 'musical_1'] )
-    liste.append( ['Policier', code + 'policier_1'] )
-    liste.append( ['Romance', code + 'romance_1'] )
-    liste.append( ['Science Fiction', code + 'science-fiction_1'] )
-    liste.append( ['Série', code + 'series_1'] )
-    liste.append( ['Thriller', code + 'thriller_1'] )
-    liste.append( ['Western', code + 'western_1'] )
-    liste.append( ['Non classé', code + 'non-classe_1'] )
+    liste.append( ['Action', sUrl + 'action_1'] )
+    liste.append( ['Animation', sUrl + 'animation_1'] )
+    liste.append( ['Arts Martiaux', sUrl + 'arts-martiaux_1'] )
+    liste.append( ['Aventure', sUrl + 'aventure_1'] )
+    liste.append( ['Biopic', sUrl + 'biopic_1'] )
+    liste.append( ['Comédie', sUrl + 'film-comedie'] )
+    liste.append( ['Comédie Dramatique', sUrl + 'comedie-dramatique_1'] )
+    liste.append( ['Documentaire', sUrl + 'documentaire_1'] )
+    liste.append( ['Drame', sUrl + 'drame_1'] )
+    liste.append( ['Epouvante Horreur', sUrl + 'epouvante-horreur_1'] )
+    liste.append( ['Erotique', sUrl + 'erotique_1'] )
+    liste.append( ['Espionnage', sUrl + 'espionnage_1'] )
+    liste.append( ['Fantastique', sUrl + 'fantastique_1'] )
+    liste.append( ['Guerre', sUrl + 'guerre_1'] )
+    liste.append( ['Historique', sUrl + 'historique_1'] )
+    liste.append( ['Musical', sUrl + 'musical_1'] )
+    liste.append( ['Policier', sUrl + 'policier_1'] )
+    liste.append( ['Romance', sUrl + 'romance_1'] )
+    liste.append( ['Science Fiction', sUrl + 'science-fiction_1'] )
+    liste.append( ['Série', sUrl + 'series_1'] )
+    liste.append( ['Thriller', sUrl + 'thriller_1'] )
+    liste.append( ['Western', sUrl + 'western_1'] )
+    liste.append( ['Non classé', sUrl + 'non-classe_1'] )
 
     for sTitle, sUrl in liste:
 
@@ -297,7 +292,7 @@ def showMovies(sSearch = ''):
             sUrl = aEntry[0]
 
             #sTitle = cUtil().unescape(aEntry[2])#ancien traitement du titre
-            sTitle = aEntry[2]
+            sTitle = aEntry[2].replace('film ','') #genre
 
             if not 'http' in sThumb:
                 sThumb = URL_MAIN + sThumb
@@ -326,12 +321,12 @@ def showMovies(sSearch = ''):
 
         progress_.VSclose(progress_)
 
-        if not sSearch:
-            sNextPage = __checkForNextPage(sHtmlContent)
-            if (sNextPage != False):
-                oOutputParameterHandler = cOutputParameterHandler()
-                oOutputParameterHandler.addParameter('siteUrl', sNextPage)
-                oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
+
+        sNextPage = __checkForNextPage(sHtmlContent)
+        if (sNextPage != False):
+            oOutputParameterHandler = cOutputParameterHandler()
+            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
+            oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
