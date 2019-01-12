@@ -328,7 +328,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'film-ripz"><a href=".+?">([^<]+)</a>.+?film-verz"><a href=".+?">([^<]+)</a>.+?href="([^"]+)"><img src="([^"]+)".+?(?:alt|title)="(.+?)"'
+    sPattern = 'film-ripz"><a href=".+?">([^<]+)<\/a>.+?film-verz"><a href=".+?">([^<]+)<\/a>.+?href="([^"]+)">.+?data-src="([^"]+)".+?(?:alt|title)="(.+?)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
