@@ -17,17 +17,11 @@ SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
 
 URL_MAIN = 'https://fr.full-stream.cc/'
 
-#definis les url pour les catégories principale, ceci est automatique, si la definition est présente elle sera affichee.
-#LA RECHERCHE GLOBAL N'UTILE PAS showSearch MAIS DIRECTEMENT LA FONCTION INSCRITE DANS LA VARIABLE URL_SEARCH_*
-URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
-#recherche global films
-URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
-#recherche global serie, manga
-URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
-#recherche global divers
-URL_SEARCH_MISC = (URL_MAIN + '?s=', 'showMovies')
-#
-FUNCTION_SEARCH = 'showMovies'
+URL_SEARCH = (URL_MAIN + 'wp-json/dooplay/search/?keyword=', 'AlphaDisplay')
+URL_SEARCH_MOVIES = (URL_MAIN + 'wp-json/dooplay/search/?keyword=', 'AlphaDisplay')
+URL_SEARCH_SERIES = (URL_MAIN + 'wp-json/dooplay/search/?keyword=', 'AlphaDisplay')
+
+FUNCTION_SEARCH = 'AlphaDisplay'
 
 MOVIE_NEWS = (URL_MAIN + 'film', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'film', 'showMovies')
@@ -51,7 +45,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films & Series (Genres)', 'genres.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
@@ -74,14 +68,29 @@ def load():
     oGui.setEndOfDirectory()
 
 def showSearch():
-    oGui = cGui()
 
-    sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
-        sUrl = URL_SEARCH[0] + sSearchText
-        showMovies(sUrl)
-        oGui.setEndOfDirectory()
-        return
+    oGui = cGui()
+    nonce = get_nonce()
+    if not nonce == False:
+        sSearchText = oGui.showKeyBoard()
+        if (sSearchText != False):
+            sUrl = URL_MAIN + 'wp-json/dooplay/search/?keyword=' + sSearchText + '&nonce=' + nonce
+            AlphaDisplay(sUrl)
+            oGui.setEndOfDirectory()
+            return
+        
+def get_nonce(sHtmlContent = ''):
+    oParser = cParser()
+    if not sHtmlContent:
+        oRequestHandler = cRequestHandler(URL_MAIN)
+        sHtmlContent = oRequestHandler.request()
+        
+    sPattern1 = '"nonce":"([^"]+)"'
+    aResult = oParser.parse(sHtmlContent, sPattern1)
+    if (aResult[0] == True):
+        return aResult[1][0]
+    else:
+        return False
 
 def AlphaSearch():
     oGui = cGui()
@@ -97,33 +106,37 @@ def AlphaSearch():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    sPattern1 = '"nonce":"([^"]+)"'
-    aResult = oParser.parse(sHtmlContent, sPattern1)
-    if (aResult[0] == True):
-        nonce = aResult[1][0]
-    else:
-        return
+    nonce = get_nonce()
+    if not nonce == False:
+       sPattern = '<a class="lglossary" data-type=".+?" data-glossary="(.+?)">(.+?)<\/a>'
+       aResult = oParser.parse(sHtmlContent, sPattern)
+       if (aResult[0] == True):
+            for aEntry in aResult[1]:
+                sLetter = aEntry[1] 
+                sUrl = URL_MAIN + 'wp-json/dooplay/glossary/?term=' + aEntry[0].replace('#','09') + '&nonce=' + nonce + '&type=' + type
 
-    sPattern = '<a class="lglossary" data-type=".+?" data-glossary="(.+?)">(.+?)<\/a>'
-    aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-            sLetter = aEntry[1] 
-            sUrl = URL_MAIN + 'wp-json/dooplay/glossary/?term=' + aEntry[0].replace('#','09') + '&nonce=' + nonce + '&type=' + type
-
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', 'Lettre [COLOR coral]' + sLetter + '[/COLOR]', 'az.png', oOutputParameterHandler)
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oGui.addDir(SITE_IDENTIFIER, 'AlphaDisplay', 'Lettre [COLOR coral]' + sLetter + '[/COLOR]', 'az.png', oOutputParameterHandler)
 
 
     oGui.setEndOfDirectory()
 
-def AlphaDisplay():
+def AlphaDisplay(sSearch = ''):
     import json
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sSite = oInputParameterHandler.getValue('site')#globalsearch
+
+    if sSearch:
+        sUrl = sSearch.replace(' ', '+')
+    else:
+        oInputParameterHandler = cInputParameterHandler()
+        sUrl = oInputParameterHandler.getValue('siteUrl')
+        
+    if not '&nonce=' in sUrl: #globalsearch
+        sUrl = sUrl + '&nonce=' + get_nonce()
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -144,41 +157,30 @@ def AlphaDisplay():
         else:
             oGui.addMovie(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-    oGui.setEndOfDirectory()
+    if not sSite == 'globalSearch':#globalsearch
+        oGui.setEndOfDirectory()
 
 
 def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'film-streaming/action/'] )
-    liste.append( ['Animation', URL_MAIN + 'film-streaming/animation/'] )
-    # liste.append( ['Arts Martiaux', URL_MAIN + 'film-streaming/arts-martiaux/'] )
-    liste.append( ['Aventure', URL_MAIN + 'film-streaming/aventure/'] )
-    liste.append( ['Biopic', URL_MAIN + 'film-streaming/biopic/'] )
-    liste.append( ['Comédie', URL_MAIN + 'film-streaming/comedie/'] )
-    liste.append( ['Crime', URL_MAIN + 'film-streaming/crime/'] )
-    liste.append( ['Comédie Dramatique', URL_MAIN + 'film-streaming/comedie-dramatique/'] )
-    # liste.append( ['Comédie Musicale', URL_MAIN + 'film-streaming/comedie-musicale/'] )
-    liste.append( ['Documentaire', URL_MAIN + 'film-streaming/documentaire/'] )
-    liste.append( ['Drame', URL_MAIN + 'film-streaming/drame/'] )
-    liste.append( ['Epouvante Horreur', URL_MAIN + 'film-streaming/epouvante-horreur/'] )
-    # liste.append( ['Erotique', URL_MAIN + 'film-streaming/erotique'] )
-    # liste.append( ['Espionnage', URL_MAIN + 'film-streaming/espionnage/'] )
-    # liste.append( ['Famille', URL_MAIN + 'film-streaming/famille/'] )
-    liste.append( ['Famille', URL_MAIN + 'famille/'] )
-    liste.append( ['Fantastique', URL_MAIN + 'film-streaming/fantastique/'] )
-    liste.append( ['Guerre', URL_MAIN + 'film-streaming/guerre/'] )
-    # liste.append( ['Historique', URL_MAIN + 'film-streaming/historique/'] )
-    # liste.append( ['Musical', URL_MAIN + 'film-streaming/musical/'] )
-    # liste.append( ['Policier', URL_MAIN + 'film-streaming/policier/'] )
-    # liste.append( ['Péplum', URL_MAIN + 'film-streaming/peplum/'] )
-    liste.append( ['Romance', URL_MAIN + 'film-streaming/romance/'] )
-    liste.append( ['Science Fiction', URL_MAIN + 'film-streaming/science-fiction/'] )
-    # liste.append( ['Spectacle', URL_MAIN + 'film-streaming/spectacle/'] )
-    liste.append( ['Thriller', URL_MAIN + 'film-streaming/thriller/'] )
-    liste.append( ['Western', URL_MAIN + 'film-streaming/western/'] )
-    # liste.append( ['Divers', URL_MAIN + 'film-streaming/divers/'] )
+    liste.append( ['Action', URL_MAIN + 'genre/action'] )
+    liste.append( ['Animation', URL_MAIN + 'genre/animation'] )
+    liste.append( ['Aventure', URL_MAIN + 'genre/aventure'] )
+    liste.append( ['Comédie', URL_MAIN + 'genre/comedie'] )
+    liste.append( ['Crime', URL_MAIN + 'genre/crime'] )
+    liste.append( ['Drame', URL_MAIN + 'genre/drame'] )
+    liste.append( ['Horreur', URL_MAIN + 'genre/horreur'] )
+    liste.append( ['Familial', URL_MAIN + 'genre/familial'] )
+    liste.append( ['Fantastique', URL_MAIN + 'genre/fantastique'] )
+    liste.append( ['Guerre', URL_MAIN + 'genre/guerre'] )
+    liste.append( ['Histoire', URL_MAIN + 'genre/histoire'] )
+    liste.append( ['Mystère', URL_MAIN + 'genre/mystere'] )
+    liste.append( ['Romance', URL_MAIN + 'genre/romance'] )
+    liste.append( ['Science Fiction & Fantastique', URL_MAIN + 'genre/science-fiction-fantastique'] )
+    liste.append( ['Science Fiction', URL_MAIN + 'genre/science-fiction'] )
+    liste.append( ['Thriller', URL_MAIN + 'genre/thriller'] )
 
     for sTitle, sUrl in liste:
 
@@ -189,13 +191,11 @@ def showGenres():
     oGui.setEndOfDirectory()
 
 
-def showMovies(sSearch = ''):
+def showMovies():
     oGui = cGui()
-    if sSearch:
-      sUrl = sSearch.replace(' ', '+')
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -253,8 +253,7 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
-    if not sSearch:
-        oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
 
 
 def __checkForNextPage(sHtmlContent):
