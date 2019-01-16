@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 
 import re, base64, urllib
 
@@ -46,7 +46,12 @@ def decode_url_Serie(url, id, tmp = ''):
     if 'singh' in id:
         id2 = id[6:]
         fields = url.split('nbsp')
-        t = base64.b64encode(base64.b64encode(fields[1]))
+        try:
+            t = base64.b64encode(base64.b64encode(fields[1]))
+        except IndexError:
+            t = base64.b64encode(base64.b64encode(fields[0]))
+        else:
+            return
         v = "/s.php?p_id=1&&c_id=" + t
 
     if id == 'honey':
@@ -328,7 +333,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'film-ripz"><a href=".+?">([^<]+)<\/a>.+?film-verz"><a href=".+?">([^<]+)<\/a>.+?href="([^"]+)">.+?data-src="([^"]+)".+?(?:alt|title)="(.+?)"'
+    sPattern = 'film-ripz"><a href=".+?">([^<]+)<\/a>.+?film-verz"><a href=".+?">([^<]+)<\/a>.+?href="([^"]+)">.+?src="([^"]+)".+?(?:alt|title)="(.+?)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -467,12 +472,11 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = 'href="([^"]+)" *id="([^"]+)" *target="seriePlayer".+?i class=[^>]+>(?:<\/i> ([^<]+))'
+    sPattern = 'href="([^"]+)"id="([^"]+)"target="seriePlayer".+?i>([^"]+)</a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
-
             sTitle = aEntry[2] + ' ' + sMovieTitle
 
             url = aEntry[0]
@@ -483,9 +487,7 @@ def showHosters():
             except:
                 pass
 
-            if 'opsktp' in url:
-                sHosterUrl = urllib.urlopen(url).geturl()
-            elif '/embed' in url:
+            if '/embed' in url or 'opsktp' in url:
                 sHosterUrl = url
             else:
                 url = decode_url(url, aEntry[1], tmp)
@@ -583,9 +585,8 @@ def serieHosters():
                     tmp = re.search('input id="tmp".+?value="([^"]+)"', sHtmlContent, re.DOTALL).group(1)
                 except:
                     pass
-                if 'opsktp' in url:
-                    sHosterUrl = urllib.urlopen(url).geturl()
-                elif '/embed' in url:
+
+                if '/embed' in url or 'opsktp' in url:
                     sHosterUrl = url
                 else:
                     url2 = decode_url_Serie(url, aEntry[0], tmp)
