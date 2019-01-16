@@ -308,7 +308,7 @@ class cHosterGui:
             return self.getHoster('iframe_secured')
         if ('iframe-secure' in sHostName):
             return self.getHoster('iframe_secure')
-        if ('goo.gl' in sHostName or 'bit.ly' in sHostName or 'streamcrypt.net' in sHostName):
+        if ('goo.gl' in sHostName or 'bit.ly' in sHostName or 'streamcrypt.net' in sHostName or 'opsktp.com' in sHosterUrl):
             return self.getHoster('allow_redirects')
         if ('jawcloud' in sHostName):
             return self.getHoster('jawcloud')
@@ -330,7 +330,7 @@ class cHosterGui:
             return self.getHoster('rapidstream')
         if ('archive.' in sHostName):
             return self.getHoster('archive')
-        
+
         #Lien telechargeable a convertir en stream
         if ('1fichier' in sHostName):
             return self.getHoster('onefichier')
