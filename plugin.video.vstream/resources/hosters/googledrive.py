@@ -5,9 +5,9 @@ from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.comaddon import dialog
 
-import re, urllib, urllib2
+import re, urllib2
 
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:62.0) Gecko/20100101 Firefox/62.0'
 
 class cHoster(iHoster):
 
@@ -47,7 +47,6 @@ class cHoster(iHoster):
         return ''
 
     def __getIdFromUrl(self, sUrl):
-        #sPattern = 'drive.google.+?([a-zA-Z0-9-_]{20,40})'
         sPattern = 'google.+?([a-zA-Z0-9-_]{20,40})'
         oParser = cParser()
         aResult = oParser.parse(sUrl, sPattern)
@@ -58,7 +57,7 @@ class cHoster(iHoster):
 
     def setUrl(self, sUrl):
         self.__sUrl = str(sUrl)
-
+        
     def checkUrl(self, sUrl):
         return True
 
@@ -69,18 +68,18 @@ class cHoster(iHoster):
         return self.__getMediaLinkForGuest()
 
     def __getMediaLinkForGuest(self):
-
+        url=[]
+        qua=[]
         api_call = ''
-
+        
         #reformatage du lien
         sId = self.__getIdFromUrl(self.__sUrl)
         sUrl = 'https://drive.google.com/file/d/' + sId + '/view' #?pli=1
 
-        #VSlog(sUrl)
-
         req = urllib2.Request(sUrl)
         response = urllib2.urlopen(req)
         sHtmlContent = response.read()
+
         Headers = response.headers
         response.close()
 
@@ -92,24 +91,33 @@ class cHoster(iHoster):
             for cook in c2:
                 cookies = cookies + cook[0] + '=' + cook[1] + ';'
 
-        #VSlog(cookies)
-
-        #sPattern = '\["fmt_stream_map","([^"]+)"]\s*,\["fmt_list","([^"]+)"]'
-        sPattern = 'url_encoded_fmt_stream_map".+?url\\\u003d([^"]+)'
+        sPattern = '\["fmt_stream_map","([^"]+)"]'
 
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
-
         if not aResult[0]:
-            #sUrl = 'https://drive.google.com/uc?export=download&id=' + sId + '&confirm=make'
             if '"errorcode","150"]' in sHtmlContent:
                 dialog().VSinfo("Nombre de lectures max dépassé")
             return False,False
 
-        #api_call = api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
-        api_call = urllib.unquote(aResult[1][0]).decode('unicode-escape')
+        sListUrl = aResult[1][0]
 
+        if sListUrl:
+            aResult2 = oParser.parse(sHtmlContent, '([0-9]+)\/([0-9]+x[0-9]+)\/')
+
+        #liste les qualitee
+            r = oParser.parse(sListUrl, '([0-9]+)\|([^,]+)')
+            for item in r[1]:
+                url.append(item[1].decode('unicode-escape'))
+                for i in aResult2[1]:
+                    if item[0] == i[0]:
+                        qua.append(i[1])
+       
+        #Afichage du tableau
+        api_call = dialog().VSselectqual(qua, url)
+        api_call = api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
+        
         if (api_call):
-            return True, api_call + '|User-Agent=' + UA + '&Cookie=' + cookies
+            return True, api_call
 
         return False, False

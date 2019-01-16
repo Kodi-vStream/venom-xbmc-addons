@@ -199,7 +199,7 @@ def showMovies(sSearch = ''):
     oGui = cGui()
     oParser = cParser()
     if sSearch:
-      sUrl = sSearch
+      sUrl = sSearch.replace(' ','+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -338,7 +338,7 @@ def seriesHosters():
                 oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb )
                 oGui.addLink(SITE_IDENTIFIER, 'redirectHosters', sTitle, sThumb, '', oOutputParameterHandler)
-                
+
             else:
                 sTitle = sMovieTitle + ' ' + aEntry[1]
                 sHosterUrl = aEntry[0]
@@ -349,7 +349,7 @@ def seriesHosters():
                     cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
-    
+
 def redirectHosters():
     oGui = cGui()
     UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0'

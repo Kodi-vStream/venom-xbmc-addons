@@ -3,14 +3,14 @@
 #Venom.
 
 #tester le 30/10 ne fonctionne pas
-return False
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.config import GestionCookie
+from resources.lib.comaddon import progress, VSlog
 
 import re, urllib2
 import base64
@@ -56,23 +56,23 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/nba-replays/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'NBA Replay', 'tv.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://')
     oGui.addDir(SITE_IDENTIFIER, 'showFinals', 'NBA Finals Replay', 'tv.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', URL_MAIN + 'category/all-star-weekend/')
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'NBA All Star Weekend Replay', 'tv.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showGenres', 'NBA Replay (Par États/Équipes)', 'sport.png', oOutputParameterHandler)
-    
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REDDIT)
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'Live NBA Games (bêta)', 'tv.png', oOutputParameterHandler)
@@ -132,7 +132,7 @@ def showFinals():
 
     oGui.setEndOfDirectory()
 
-	
+
 def showGenres():
     oGui = cGui()
     liste = []
@@ -196,9 +196,10 @@ def showMovies(sSearch = ''):
 
     elif 'category/20' in sUrl:
         sPattern = '<a href="([^"]+)">([^<]+)</a></h2>'
-
+    elif sSearch:
+        sPattern = '<div class="col-sm-4 col-xs-6 item responsive-height">\s*<a title="([^"]+)" href="([^"]+)".+?src="([^"]+)"'
     else:
-        sPattern = '<div class="post-img".+?a href="([^"]+)".+?img src=".+?" data-hidpi="(.+?)" alt="([^"]+)"(?:width=".+?"|)'
+        sPattern = '<div id="post-.+?<a href="([^"]+)"><img.+?src="([^"]+)".+?<h.+?>([^"]+)–([^"]+)</a>'
 
     sDateReplay = ''
     sDate = ''
@@ -245,7 +246,10 @@ def showMovies(sSearch = ''):
                     sTitle = aEntry[1]
                     sUrl2 = aEntry[0]
                     sThumb = ' '
-
+                elif '?s=' in sUrl:
+                    sTitle = aEntry[0]
+                    sUrl2 = aEntry[1]
+                    sThumb = aEntry[2]
                 else:
                     sTitle = aEntry[2]
                     sUrl2 = aEntry[0]
@@ -289,7 +293,11 @@ def showMovies(sSearch = ''):
             except:
                 pass
 
-            sTitle = sTitle.replace(' vs ', '[COLOR gray] vs [/COLOR]').replace('@', '[COLOR gray] vs [/COLOR]')
+            try:
+                sTitle = sTitle.replace(' vs ', '[COLOR gray] vs [/COLOR]').replace('@', '[COLOR gray] vs [/COLOR]')
+            except AttributeError:
+                sTitle = ''.join(sTitle)
+                sTitle = sTitle.replace(' vs ', '[COLOR gray] vs [/COLOR]').replace('@', '[COLOR gray] vs [/COLOR]')
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -301,7 +309,7 @@ def showMovies(sSearch = ''):
 
         progress_.VSclose(progress_)
 
-        sNextPage = __checkForNextPage(sHtmlContent)
+        sNextPage = __checkForNextPage(sHtmlContent, sUrl)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
@@ -317,10 +325,13 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 
-def __checkForNextPage(sHtmlContent):
+def __checkForNextPage(sHtmlContent,sUrl):
 
     oParser = cParser()
-    sPattern = '<span class=\'current\'>.+?</span><a href=\'(.+?)\''
+    if '?s=' in sUrl:
+        sPattern = '<span class=\'current\'>.+?</span><a href=\'(.+?)\''
+    else:
+        sPattern = '<a href="([^"]+)"> <li class="next">Newer.+?</ul>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -520,7 +531,7 @@ def showLiveHosters():
         oGui.addText(SITE_IDENTIFIER, '(Erreur connection ou stream non disponible : UA pas bon/Lien protégé/code soluce à trouver)')
 
     oGui.setEndOfDirectory()
-    
+
 def showHosters4():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -528,29 +539,58 @@ def showHosters4():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumbnail = oInputParameterHandler.getValue('sThumbnail')
     oParser = cParser()
-    
+
     aResult = []
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    
-    sPattern = 'document.getElementById\(\'frame\'\).src=\'([^"]+)\'">.+?<span'
+    sPattern = 'onClick=.+?src=\'([^"]+)\''
     sPattern2 = '<iframe src="([^"]+)".+?</iframe></p>'
 
     aResult1 = re.findall(sPattern, sHtmlContent)
     aResult2 = re.findall(sPattern2, sHtmlContent)
     aResult = aResult1 + aResult2
+
     if (aResult):
         for aEntry in aResult:
             sHosterUrl = aEntry
             if not sHosterUrl.startswith('http'):
                 sHosterUrl = 'http:' + sHosterUrl
-                
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
+            if 'fembed' in sHosterUrl:
+                videoID = re.findall('v/([^"]+)',sHosterUrl)
+                oRequestHandler = cRequestHandler(sUrl)
+                sHtmlContent = oRequestHandler.request()
+                cookies = oRequestHandler.GetCookies()
+
+                apiUrl = 'https://www.fembed.com/api/source/'+videoID[0]
+                oRequestHandler = cRequestHandler(apiUrl)
+                oRequestHandler.setRequestType(1)
+                oRequestHandler.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0')
+                oRequestHandler.addHeaderEntry('Referer',sHosterUrl)
+                oRequestHandler.addHeaderEntry('Cookie',cookies)
+                oRequestHandler.addParameters('r','')
+                oRequestHandler.addParameters('d','www.fembed.com')
+                sHtmlContent = oRequestHandler.request()
+
+                aResult = re.findall('"file":"(.+?)"',sHtmlContent)
+                if (aResult):
+                    for aEntry in aResult:
+                        sHosterUrl = aEntry.replace('\/','\\')
+                        if not sHosterUrl.startswith('http'):
+                            sHosterUrl = 'https://www.fembed.com' + sHosterUrl
+
+                        oHoster = cHosterGui().checkHoster(sHosterUrl)
+                        if (oHoster != False):
+                            oHoster.setDisplayName(sMovieTitle)
+                            oHoster.setFileName(sMovieTitle)
+                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+
+            else:
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
 
     oGui.setEndOfDirectory()

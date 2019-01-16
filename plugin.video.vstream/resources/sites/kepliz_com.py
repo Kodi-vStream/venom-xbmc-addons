@@ -7,8 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress , VSlog
-
+from resources.lib.comaddon import progress
 import urllib2, urllib, re
 import unicodedata
 
@@ -16,8 +15,7 @@ import unicodedata
 SITE_IDENTIFIER = 'kepliz_com'
 SITE_NAME = 'Kepliz'
 SITE_DESC = 'Films en streaming'
-URL_HOST = 'http://pirkip.com/' #Mirror fonctionnel au 09/12/2018
-#URL_HOST = 'http://fetayo.com/' #Url HS
+URL_HOST = 'http://www.pirvox.com/'
 #URL_HOST = 'http://www.ozporo.com/'
 URL_MAIN = 'URL_MAIN'
 
@@ -173,14 +171,14 @@ def showMovies(sSearch = ''):
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', URL_HOST + sNextPage)
+            oOutputParameterHandler.addParameter('siteUrl', sMainUrl + sNextPage)
             oGui.addNext(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', oOutputParameterHandler)
 
     if not sSearch:
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a href="/([^"]+)" title="Suivant">Suivant<\/a>'
+    sPattern = '<a href="\/[0-9a-zA-Z]+\/([^"]+)" title="Suivant">'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -413,21 +411,18 @@ def showHostersLink3():
     response.close()
 
     # Recherche du premier lien
-    sPattern = 'href="([^"]+)'
+    sPattern = 'href="([^"]+)" title'
     aResult = oParser.parse(data, sPattern)
 
     # Si il existe, suivi du lien
     if ( aResult[0] == True ):
-        if (False):
-            VSlog(aResult[1][0])
-            sLink = sLink.rsplit('/', 1)[0] # supprime la dernière partie de l'url de l'iframe
-            VSlog(sLink)
-            href = sLink + '/' + aResult[1][0] # concaténation du résultat avec le href trouvé via regex
-            VSlog(href)
-        else:
-            href = aResult[1][0]
+        # VSlog(aResult[1][0])
+        # sLink = sLink.rsplit('/', 1)[0] # supprime la dernière partie de l'url de l'iframe
+        # VSlog(sLink)
+        # href = sLink + '/' + aResult[1][0] # concaténation du résultat avec le href trouvé via regex
+        # VSlog(href)
 
-        req = urllib2.Request(href, None, headers)
+        req = urllib2.Request(aResult[1][0], None, headers)
         response = urllib2.urlopen(req)
         data = response.read()
         response.close()

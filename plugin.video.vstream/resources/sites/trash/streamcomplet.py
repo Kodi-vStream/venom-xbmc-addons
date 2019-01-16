@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 #Vstream https://github.com/Kodi-vStream/venom-xbmc-addons
-#21/05 2host beaucoup de lien mort site pas interessant.
-return False
+
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -9,15 +8,15 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.config import cConfig
 from resources.lib.packer import cPacker
 import re
+from resources.lib.comaddon import progress,VSlog
 
 SITE_IDENTIFIER = 'streamcomplet'
 SITE_NAME = 'StreamComplet'
 SITE_DESC = 'Streaming Gratuit de 6420 Films Complets en VF.'
 
-URL_MAIN = 'http://streamcomplet.me/'
+URL_MAIN = 'https://streamcomplet.me/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
@@ -98,10 +97,10 @@ def showMovies(sSearch = ''):
 
     if (aResult[0] == True):
         total = len(aResult[1])
-        dialog = cConfig().createDialog(SITE_NAME)
+        progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
-            cConfig().updateDialog(dialog, total)
-            if dialog.iscanceled():
+            progress_.VSupdate(progress_, total)
+            if progress_.iscanceled():
                 break
 
             sThumb = str(aEntry[0])
@@ -119,9 +118,8 @@ def showMovies(sSearch = ''):
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
 
-        cConfig().finishDialog(dialog)
+        progress_.VSclose(progress_)
 
-    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -154,16 +152,17 @@ def showHosters():
     oParser = cParser()
     list_url = []
 
-    sPattern = 'src="(http:\/\/media\.vimple\.me.+?f=([^"]+))"'
+    sPattern = '<iframe.+?src="(http(?:|s):\/\/media\.vimple\.me.+?f=([^"]+))"'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
+    
         sUrl3 = 'https://ok.ru/videoembed/' + aResult[1][0][1]
         list_url.append(sUrl3)
 
         sUrl2 = aResult[1][0][0]
 
         oRequestHandler = cRequestHandler(sUrl2)
-        oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0')
+        oRequestHandler.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0')
         oRequestHandler.addHeaderEntry('Referer', sUrl)
         sHtmlContent = oRequestHandler.request()
 

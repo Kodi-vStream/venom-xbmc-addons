@@ -158,7 +158,7 @@ def showSearchMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
         sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
-        
+
         pdata = 'nonce=3119876a57&action=tr_livearch&trsearch=' + sSearch #voir si nonce change
 
         oRequest = cRequestHandler(sUrl2)
@@ -206,7 +206,7 @@ def showSearchMovies(sSearch = ''):
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-        sUrl = sSearch
+        sUrl = sSearch.replace(' ','+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
