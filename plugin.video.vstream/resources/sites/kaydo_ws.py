@@ -33,6 +33,12 @@ URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'sHowResultSearch')
 URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'sHowResultSearch')
 FUNCTION_SEARCH = 'sHowResultSearch'
 
+
+def getHost(url):
+    parts = url.split('//', 1)
+    host = parts[0] + '//' + parts[1].split('/', 1)[0]
+    return host
+        
 def Decode(chain):
     try:
         chain = 'aHR' + chain
@@ -366,7 +372,7 @@ def showHosters():
         oRequestHandler.addParameters('type','movie')
     sHtmlContent2 = oRequestHandler.request()
 
-    sPattern2 = 'src="(.+?)"'
+    sPattern2 = 'src=["\'](.+?)[\'"]'
     aResult = oParser.parse(sHtmlContent2, sPattern2)
 
     if (aResult[0] == True):
@@ -381,19 +387,36 @@ def showHosters():
 
     sPattern3 = '(\s*eval\s*\(\s*function(?:.|\s)+?{}\)\))'
     aResult = oParser.parse(sHtmlContent3, sPattern3)
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent3)
+    #fh.close()
 
-    if aResult:
+    if aResult[0]:
         str2 = str(aResult[1][0])
-    if not str2.endswith(';'):
-        str2 = str2 + ';'
+        if not str2.endswith(';'):
+            str2 = str2 + ';'
 
-    strs = cPacker().unpack(str2)
+        strs = cPacker().unpack(str2)
 
-    sPattern4 = 'file:"(.+?)"'
-    aResult = oParser.parse(strs, sPattern4)
-    if aResult:
-        sHosterUrl = aResult[1][0]
-        VSlog(sHosterUrl)
+        sPattern4 = 'file:"(.+?)"'
+        aResult = oParser.parse(strs, sPattern4)
+        if aResult:
+            sHosterUrl = aResult[1][0]
+            VSlog(sHosterUrl)
+    else:
+        url2 = url.split('?')
+        tab = url2[1].split('=')
+        url3 = getHost(url) + '/embed-'+ tab[0] + '.html?auto=1'
+        VSlog(url3)
+        
+        oRequestHandler = cRequestHandler(url3)
+        sHtmlContent3 = oRequestHandler.request()
+        
+        aResult = oParser.parse(sHtmlContent3, 'sources: *\["([^"\']+)')
+        if aResult:
+            sHosterUrl = aResult[1][0]
+            VSlog(sHosterUrl)
 
     oHoster = cHosterGui().checkHoster(sHosterUrl)
     if (oHoster != False):
