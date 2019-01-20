@@ -13,7 +13,7 @@ SITE_IDENTIFIER = 'filmstreamvk_com'
 SITE_NAME = 'Filmstreamvk'
 SITE_DESC = 'Films, Séries & Mangas en Streaming'
 
-URL_MAIN = 'http://filmstreamvk.club/'
+URL_MAIN = 'http://filmstreamvf.com/'
 
 MOVIE_MOVIE = ('http', 'load')
 MOVIE_NEWS = (URL_MAIN + 'film-streaming-vf', 'showMovies')
@@ -150,7 +150,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="moviefilm">.+?<img src="([^<"]+)".+?<a href="([^<]+)">([^<]+)<\/a>'
+    sPattern = '<div class="movie-poster">.+?<img src="([^"]+)".+?<a href="([^"]+)" title="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -196,10 +196,9 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a class="nextpostslink" rel="next" href="([^"]+)">'
+    sPattern = '<a href="([^"]+)" *>Suivan.+?<\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == True):
         return aResult[1][0]
 
@@ -219,7 +218,7 @@ def showLinks():
     #recuperation du synopsis
     sDesc = ''
     try:
-        sPattern = '<div class="konuozet">.+?<p>(.+?)</p>'
+        sPattern = '<div class="excerpt.+?">(.+?)<\/div>'
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
@@ -235,7 +234,7 @@ def showLinks():
         ListeUrl = [(sUrl, aResult[1][0])]
 
     #recuperation des suivants
-    sPattern = '<a href="([^<]+)"><span>(.+?)</span>'
+    sPattern = '<a href="([^"]+)"><span>(.+?)</span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     ListeUrl = ListeUrl + aResult[1]
 
@@ -307,54 +306,14 @@ def showEpisode():
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
                 oOutputParameterHandler.addParameter('sThumb', sThumb)
-                oGui.addTV(SITE_IDENTIFIER, 'showHostersSerie', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
-def showHostersSerie():
-    oGui = cGui()
-    oInputParameterHandler = cInputParameterHandler()
-    sUrl = oInputParameterHandler.getValue('siteUrl')
-    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumb = oInputParameterHandler.getValue('sThumb')
-
-    oRequestHandler = cRequestHandler(sUrl)
-    sHtmlContent = oRequestHandler.request()
-    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/', '')
-
-    #deux pattern pour supprimer les doublons hoster dans les series
-    if '/manga/' in sUrl:
-        sPattern = 'onclick="lecteur_.+?\([0-9]+,\'((?:http|\/)[^<>]+?)\'\);" class="bb">'
-    else:
-        sPattern = 'class="bb".+?onclick="lecteur_.+?\([0-9]+,\'((?:http|\/)[^<>]+?)\'\);">'
-
-    oParser = cParser()
-    aResult = oParser.parse(sHtmlContent, sPattern)
-
-    #si quedale on tente le tout pour le tout
-    if (aResult[0] == False):
-        showHosters()
-
-    if (aResult[0] == True):
-        for aEntry in aResult[1]:
-
-            sHosterUrl = aEntry
-            if sHosterUrl.startswith('/'):
-                sHosterUrl = 'http:' + sHosterUrl
-
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-    oGui.setEndOfDirectory()
-
 def showHosters():
-
+    
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -363,21 +322,47 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/', '')
 
-    sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]'
+
+    sPattern = '<input type="hidden" name="ep" id="ep" value="([^"]+)".+?name="type" id="type" value="([^"]+)".+?name="np" id="np" value="([^"]+)"'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
-        for aEntry in aResult[1]:
+        ep = aResult[1][0][0]
+        type = aResult[1][0][1]
+        np = aResult[1][0][2]
+        ref = sUrl.rsplit('/', 1)[0]
 
-            sHosterUrl = aEntry
+        pdata = 'action=electeur&lien_referer='+ ref + '&ep=' + ep +'&type=' + type + '&np=' + np
+        
 
-            oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle)
-                oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+        oRequest = cRequestHandler('https://filmstreamvf.com/wp-admin/admin-ajax.php')
+        oRequest.setRequestType(1)
+        oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0')
+        oRequest.addHeaderEntry('Referer', sUrl)
+        oRequest.addHeaderEntry('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
+        oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded')
+        oRequest.addParametersLine(pdata)
+
+        sHtmlContent = oRequest.request()
+
+        if 'serie' in sUrl or 'manga' in sUrl:
+            sPattern = "onclick=\"lecteur_.+?\(.+?'([^']+)',.+?\);"
+        else:
+            sPattern = '<iframe.+?src=[\'|"](.+?)[\'|"]'
+
+        aResult = oParser.parse(sHtmlContent, sPattern)
+        if (aResult[0] == True):
+            for aEntry in aResult[1]:
+
+                sHosterUrl = aEntry
+
+                oHoster = cHosterGui().checkHoster(sHosterUrl)
+                if (oHoster != False):
+                    oHoster.setDisplayName(sMovieTitle)
+                    oHoster.setFileName(sMovieTitle)
+                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
