@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 import re
 
 #Ce site a des probleme en http/1.1 >> incomplete read error
@@ -320,33 +320,42 @@ def showLinks():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
     sPattern = '(?:<div class="title">(.+?)</div>.+?<div class="iframe".+?|<div class="video-video".+?)data-src="([^"]+)"'
+    sPattern1 = '<a class="team".+?>\[([^"]+)\]</a>'
     oParser = cParser()
-    aResult = re.findall(sPattern, sHtmlContent, re.DOTALL)
+    aResult1 = oParser.parse(sHtmlContent, sPattern1)
 
-    if (aResult):
-        for aEntry in aResult:
-            if aEntry[0]:
-                sHost = aEntry[0].replace('Ouvrir ', '')
-                sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
-            else:
-                sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, 'Inconnu')
-                
-            sUrl = aEntry[1].replace('https://www.youtube.com/embed/', '').replace('+', 'plus')
- 
-            oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
-            oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
-            oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
-            
+    if "Crunchyroll" in str(aResult1) or "Wakanim" in str(aResult1) or "Anime Digital Network" in str(aResult1):
+        if (aResult1):
+            for aEntry in aResult1[1]:
+                if aEntry:
+                    sLicence = aEntry
+                    oGui.addText(SITE_IDENTIFIER, "[COLOR red]Animés dispo gratuitement et legalement sur %s [/COLOR]" % str(sLicence))
+    else:
+        aResult = re.findall(sPattern, sHtmlContent, re.DOTALL)
+        if (aResult):
+            for aEntry in aResult:
+                if aEntry[0]:
+                    sHost = aEntry[0].replace('Ouvrir ', '')
+                    sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
+                else:
+                    sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, 'Inconnu')
+
+                sUrl = aEntry[1].replace('https://www.youtube.com/embed/', '').replace('+', 'plus')
+
+                oOutputParameterHandler = cOutputParameterHandler()
+                oOutputParameterHandler.addParameter('siteUrl', sUrl)
+                oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
+                oOutputParameterHandler.addParameter('sThumb', sThumb)
+                oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, '', oOutputParameterHandler)
+
     oGui.setEndOfDirectory()
-    
-    
+
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -355,11 +364,11 @@ def showHosters():
 
     #bidouille facile
     sUrl = sUrl.replace('plus', '+')
-    
+
     sHosterUrl = decodex(sUrl)
     if sHosterUrl.startswith('//'):
         sHosterUrl = 'http:' + sHosterUrl
-       
+
     if (sHosterUrl):
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
@@ -368,7 +377,7 @@ def showHosters():
             cHosterGui().showHoster(oGui, oHoster, sHosterUrl, '')
 
     oGui.setEndOfDirectory()
-    
+
 def decodex(x):
     from itertools import chain
     import base64
@@ -382,4 +391,4 @@ def decodex(x):
     for y in list(px):
         t += chr(int(175 ^ ord(y[0])) - ord(r[a]))
         a = 0 if a > len(r) - 2 else a + 1
-    return t    
+    return t

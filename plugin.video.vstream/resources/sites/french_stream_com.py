@@ -336,7 +336,6 @@ def showMovies(sSearch = ''):
     sPattern = 'film-ripz"><a href=".+?">([^<]+)<\/a>.+?film-verz"><a href=".+?">([^<]+)<\/a>.+?href="([^"]+)">.+?src="([^"]+)".+?(?:alt|title)="(.+?)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
@@ -357,10 +356,13 @@ def showMovies(sSearch = ''):
             sQual = aEntry[0]
             sLang = aEntry[1]
             sUrl2 = aEntry[2]
-            sThumb = aEntry[3].replace('/img/french-stream.com.php?src=', '')
+            
+            sThumb = re.sub('http.+?/img/french-stream.com.php\?src=', '',aEntry[3])
+ 
             sThumb = sThumb.split('&')[0]
             if sThumb.startswith ('/'):
                 sThumb = URL_MAIN[:-1] + sThumb
+                
             sTitle = aEntry[4]
             sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
 
@@ -417,7 +419,7 @@ def showSeries(sSearch = ''):
                     continue
 
             sUrl2 = aEntry[0]
-            sThumb = aEntry[1].replace('/img/french-stream.com.php?src=', '')
+            sThumb = re.sub('http.+?/img/french-stream.com.php\?src=', '',aEntry[1])
             sThumb = sThumb.split('&')[0]
             if sThumb.startswith ('/'):
                 sThumb = URL_MAIN[:-1] + sThumb

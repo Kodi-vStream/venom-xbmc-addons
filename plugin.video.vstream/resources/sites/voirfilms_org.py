@@ -16,7 +16,7 @@ SITE_IDENTIFIER = 'voirfilms_org'
 SITE_NAME = 'VoirFilms'
 SITE_DESC = 'Films, Séries & Animés en Streaming'
 
-URL_MAIN = 'https://www.voirfilms.ws/'
+URL_MAIN = 'https://www.voirfilms.one/'
 
 MOVIE_MOVIE = (URL_MAIN + 'alphabet', 'showAlpha')
 MOVIE_NEWS = (URL_MAIN + 'film-en-streaming', 'showMovies')
@@ -257,21 +257,21 @@ def showMovies(sSearch = ''):
 
         sHtmlContent = oRequest.request()
 
-        sPattern = '<div class="voirfilmPosts".+?<a href="([^"]+)".+?<img src="([^"]+)".+?<h4 class="movie-title.+?>(.+?)<\/h4>'
+        sPattern = '<div class="unfilm".+?<a href="([^"]+)" title="([^"]+)".+?<img src="([^"]+)"'
 
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
-        
-        sPattern = '<div class="voirfilmPosts".+?<a href="([^"]+)".+?<img src="([^"]+)" alt="(.+?)"'
+        sHtmlContent = re.sub('alt="title="','alt="',sHtmlContent) #anime
+        sPattern = '<div class="unfilm".+?<a href="([^"]+)".+?<img src="([^"]+)" alt="([^"]+)"'
 
 
-    #sHtmlContent = sHtmlContent.replace('\n', '')
+    
 
     aResult = oParser.parse(sHtmlContent, sPattern)
-
+ 
     if (aResult[0] == False):
         oGui.addText(SITE_IDENTIFIER)
 
@@ -284,15 +284,17 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            # if type == '2':
-               # sThumb = aEntry[1]
-               # sUrl = aEntry[0]
-            # else:
-            sThumb = aEntry[1]
+            if sSearch:
+                sThumb = aEntry[2]
+                sTitle = aEntry[1]
+            else:
+                sThumb = aEntry[1]
+                sTitle = aEntry[2]
+                
             sUrl = aEntry[0]
 
             #sTitle = cUtil().unescape(aEntry[2])#ancien traitement du titre
-            sTitle = aEntry[2].replace('film ','') #genre
+            sTitle = sTitle.replace('film ','') #genre
 
             if not 'http' in sThumb:
                 sThumb = URL_MAIN + sThumb
@@ -354,9 +356,8 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-
     
-    sPattern='data-src="([^"]+)" target="filmPlayer".+?<img src="/themes/assets/img/(.+?).png">.+?<p class=".+?">(.+?)<\/p>'
+    sPattern='data-src="([^"]+)" target="filmPlayer".+?span class="(.+?)"><\/span>.+?<span style="width.+?" class="([^"]+)"><\/span>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -369,8 +370,8 @@ def showHosters():
                 break
 
             sUrl = aEntry[0]
-            sHost = aEntry[2].capitalize()
-            sLang = aEntry[1].upper()
+            sHost = aEntry[1].capitalize()
+            sLang = aEntry[2].upper().replace('L','')
 
             sTitle = '%s (%s) [COLOR coral]%s[/COLOR]' %(sMovieTitle, sLang, sHost)
 
@@ -395,13 +396,13 @@ def serieHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    # sHtmlContent = sHtmlContent.replace("\n", "")
+
     # sHtmlContent = sHtmlContent.replace("\r\t", "")
     if '-saison-' in sUrl or 'anime' in sUrl:
-        sPattern = '<li class="saison".+?<a href="([^"]+)".+?<h2 class="saison__title">(.+?)<span'
+        sPattern = '<a class="n_episode2" title=".+?, *([A-Z]+) *,.+?" *href="([^"]+)">(.+?)<\/a><\/li>'
     else:
 
-        sPattern = '<main>.+?class="saison".+?<a href="([^"]+)" title="(.+?)">'
+        sPattern = '<div class="unepetitesaisons">.+?<a href="([^"]+)".+?title="(.+?)">'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -414,22 +415,29 @@ def serieHosters():
             if progress_.iscanceled():
                 break
                 
-            sUrl = aEntry[0]
-            sTitle = re.sub('\d x ','E',aEntry[1])
-            sTitle = sTitle.replace('EP ','E')
-            
-            if 'http' not in sUrl:
-                sUrl = URL_MAIN + sUrl
+            if '-saison-' in sUrl or 'anime' in sUrl:
+                sUrl2 = aEntry[1]
+                sNM = aEntry[2].replace('<span>',' ').replace('</span>','')
+                sTitle = sMovieTitle + sNM
+                sDisplaytile = sMovieTitle + sNM + ' (' + aEntry[0] + ')'
+            else:            
+                sUrl2 = aEntry[0]
+                sTitle = re.sub('\d x ','E',aEntry[1])
+                sTitle = sTitle.replace('EP ','E')
+                sDisplaytile = sTitle
+                
+            if 'http' not in sUrl2:
+                sUrl2 = URL_MAIN + sUrl2
 
             oOutputParameterHandler = cOutputParameterHandler()
-            oOutputParameterHandler.addParameter('siteUrl', sUrl)
+            oOutputParameterHandler.addParameter('siteUrl', sUrl2)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if '-episode-' in aEntry[0] or '/anime' in sUrl:
-                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+            if '-episode-' in sUrl2 or '/anime' in sUrl:
+                oGui.addTV(SITE_IDENTIFIER, 'showHosters', sDisplaytile, '', sThumb, '', oOutputParameterHandler)
             else:
-                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sTitle, '', sThumb, '', oOutputParameterHandler)
+                oGui.addTV(SITE_IDENTIFIER, 'serieHosters', sDisplaytile, '', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -446,7 +454,7 @@ def showHostersLink():
     host = sUrl.split('/')[0:3]
     host = host[0] + '//' + host[2] + '/'
 
-    VSlog('org > ' + sUrl)
+    #VSlog('org > ' + sUrl)
 
     #Attention ne marche pas dans tout les cas, certain site retourne aussi un 302 et la lib n'en gere qu'un
     if (False):
@@ -476,7 +484,7 @@ def showHostersLink():
 
         #VSlog('cod > ' + sHtmlContent)
 
-    VSlog('red > ' + redirection_target)
+    #VSlog('red > ' + redirection_target)
 
     #attention fake redirection
     sUrl = redirection_target

@@ -480,7 +480,7 @@ def ExtractLink(html):
     oParser = cParser()
 
     sPattern = '(?i)src=(?:\'|")(.+?)(?:\'|")'
-    aResult = re.findall(sPattern, html)
+    aResult = re.findall(sPattern, html, re.DOTALL)
     loop = 0
     if aResult:
         for a in aResult:
@@ -506,7 +506,7 @@ def ExtractLink(html):
     if (not final.startswith('http')) and (len(final) > 2):
         final = URL_MAIN + final
 
-    return final
+    return final.replace(' ','').replace('\n','')
 
 def showHosters():
     oGui = cGui()
