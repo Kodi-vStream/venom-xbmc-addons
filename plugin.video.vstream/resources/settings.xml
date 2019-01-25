@@ -74,10 +74,6 @@
 
         <setting visible="false" id="plugin_buzzmonclick_com" type="bool" label="BuzzMonClick" default="true"/>
 
-        <setting visible="false" id="plugin_cineiz" type="bool" label="cineiz" default="true"/>
-
-        <setting visible="false" id="plugin_cinemavf" type="bool" label="filmstreamin" default="true"/>
-
         <setting visible="false" id="plugin_cinemay_com" type="bool" label="Cinemay" default="true"/>
 
         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
