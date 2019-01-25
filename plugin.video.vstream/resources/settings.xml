@@ -18,6 +18,7 @@
         <setting id="poster_tmdb" type="select" label="30007" values="w92|w154|w185|w342|w500|w780|original" default="w342"/>
         <setting id="backdrop_tmdb" type="select" label="30008" values="w300|w780|w1280|original" default="w1280"/>
         <setting id="extendedinfo-view" type="bool" label="Use extendedinfo" default="false"/>
+        <setting id="synopsis-first" type="bool" label="Synopsis par défaut" default="false"/>
 
         <setting label="30076" type="lsep"/>
         <setting type="sep"/>
