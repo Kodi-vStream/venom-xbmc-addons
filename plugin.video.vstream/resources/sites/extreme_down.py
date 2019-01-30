@@ -21,7 +21,7 @@ SITE_IDENTIFIER = 'extreme_down'
 SITE_NAME = 'Extreme-Download (beta)'
 SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
-URL_MAIN = 'https://ww2.extreme-d0wn.com/'
+URL_MAIN = 'https://www.extreme-d0wn.net/'
 
 URL_SEARCH = (URL_MAIN + 'index.php?', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + 'index.php?', 'showMovies')
