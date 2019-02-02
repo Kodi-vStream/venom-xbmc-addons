@@ -118,7 +118,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     if sSearch:
-        sPattern = '<a href="([^<]+)"><img src="([^<]+)" alt=.+?href=.+?>([^<]+)<.+?<p>([^<]+)</p>'
+        sPattern = '<a href="([^<]+)"><img src="([^<]+)" alt=.+?href=.+?>([^<]+)<.+?<p>'
     else:
        sPattern = '<img src="([^"]+)" alt="(?:film|serie) ([^"]+)streaming".+?(?:quality">([^"]+)</span>|.+?)href="([^"]+)".+?(?:div class="texto">([^"]+)</div>|)'
 
@@ -141,7 +141,7 @@ def showMovies(sSearch = ''):
                 sTitle = aEntry[2]
                 sUrl2 = aEntry[0]
                 sThumb = aEntry[1]
-                sDesc = aEntry[3]
+                sDesc = ""
                 setDisplayName = ('%s') % (sTitle)
             else:
                 sTitle = aEntry[1]
