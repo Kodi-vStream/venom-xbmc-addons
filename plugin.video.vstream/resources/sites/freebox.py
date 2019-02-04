@@ -247,7 +247,7 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
             sHtmlContent = getHtml(sUrl,token)
 
     if 'firstonetv' in sUrl:
-        sPattern = '(?:"surl":"{\".+?|,.+?)"([^"]+)\".+?"http([^"]+).m3u8'
+        sPattern = '"([^"]+).m3u8'
     elif 'myfree-tivi' in sUrl:
         sPattern = 'url".+?"(.+?)".+?title.+?"(.+?)".+?thumb".+?"(.+?)"'
     elif 'iptvgratuit.com' in sUrl:
@@ -270,10 +270,13 @@ def showAllPlaylist():#On recupere les differentes playlist si il y en a
                 break
 
             if 'firstonetv' in sUrl:
-                sTitle = sTitle + aEntry[0]
+                sTitle = sTitle
                 sDesc = sDesc
                 sThumb = sThumb
-                sUrl2 = 'http' + aEntry[1].replace('\\\/','/').replace("\/","/") + '.m3u8|Referer='+sUrl+'&User-Agent='+UA+'&X-Requested-With=ShockwaveFlash/28.0.0.137&Origin=https://www.firstonetv.live'
+                if aEntry.startswith('/hls/'):
+                    sUrl2 = 'https://rtm-1.firstonetv.live:4433'+aEntry.replace('\\\/','/').replace("\/","/") + '.m3u8|Referer='+sUrl+'&User-Agent='+UA+'&X-Requested-With=ShockwaveFlash/28.0.0.137&Origin=https://www.firstonetv.live'
+                else:
+                    sUrl2 = aEntry.replace('\\\/','/').replace("\/","/") + '.m3u8|Referer='+sUrl+'&User-Agent='+UA+'&X-Requested-With=ShockwaveFlash/28.0.0.137&Origin=https://www.firstonetv.live'
             elif 'myfree-tivi' in sUrl:
                 sTitle = str(aEntry[1])
                 sUrl2 = aEntry[0].replace('\\\/','/').replace("\/","/")
@@ -366,7 +369,6 @@ def getHtml(sUrl, data=None):#S'occupe des requetes
     elif 'firstonetv'and '/France/' in sUrl:#On passe les redirection
         aResult = re.findall('Live/.+?/*[^<>]+(?:-)([^"]+)',sUrl)
         idChannel = aResult[0]
-        VSlog(idChannel)
 
         apiNumber = random.uniform(0.0000000000000000,0.9999999999999999)
         url = 'https://www.firstonetv.live/api/?cacheFucker=' + str(apiNumber)
@@ -378,7 +380,6 @@ def getHtml(sUrl, data=None):#S'occupe des requetes
         oRequestHandler.addParameters('result','get')
         data = oRequestHandler.request()
         hiro = unFuckFirst(data)#On decode Hiro
-        VSlog(hiro)
 
         sPattern = '"hiro":(.+?),"hash":"(.+?)","time":(.+?),'
 
@@ -417,6 +418,7 @@ def getHtml(sUrl, data=None):#S'occupe des requetes
         oRequestHandler.addParameters('id',idChannel)
         oRequestHandler.addParameters('native_hls','0')
         oRequestHandler.addParameters('unsecure_hls','0')
+        oRequestHandler.addParameters('worldstream','{"RTM":16387,"AMS":999999,"DUB":10280,"IAD":11158}')
         data = oRequestHandler.request()
         return data
     elif 'firstonetv' in sUrl:
