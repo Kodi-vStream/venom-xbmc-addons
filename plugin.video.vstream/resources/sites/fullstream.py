@@ -152,7 +152,7 @@ def AlphaDisplay(sSearch = ''):
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
         
-        if 'tvshows' in sUrl:
+        if '/serie/' in sUrl2:
             oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, '',oOutputParameterHandler)
         else:
             oGui.addMovie(SITE_IDENTIFIER, 'showLink', sTitle, '', sThumb, '', oOutputParameterHandler)
