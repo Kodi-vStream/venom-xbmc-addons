@@ -40,6 +40,7 @@ class cHoster(iHoster):
         return True
 
     def setUrl(self, sUrl):
+        sUrl = sUrl.replace('embed-dlox.me/','embed-')
         self.__sUrl = str(sUrl)
 
     def getMediaLink(self):
