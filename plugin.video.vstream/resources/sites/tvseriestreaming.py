@@ -17,12 +17,12 @@ SITE_IDENTIFIER = 'tvseriestreaming'
 SITE_NAME = 'Tv_seriestreaming'
 SITE_DESC = 'Séries & Animés en Streaming'
 
-URL_MAIN = 'https://fr.seriestreaming.site/'
+URL_MAIN = 'https://w1.seriestreaming.site/'
 
 SERIE_SERIES = ('http://', 'load')
-SERIE_NEWS = (URL_MAIN + 'les-nouveaux-episodes', 'showMovies')
+SERIE_NEWS = (URL_MAIN + 'nouveaux-episodes', 'showMovies')
 SERIE_VIEWS = (URL_MAIN + 'top-series', 'showMovies')
-SERIE_COMMENT = (URL_MAIN + 'le-top-des-meilleures-serie', 'showMovies')
+SERIE_COMMENT = (URL_MAIN + 'les-serie-populaire-streaming', 'showMovies')
 SERIE_LIST = (URL_MAIN, 'showAZ')
 SERIE_GENRES = (True, 'showGenres')
 SERIE_ANNEES = (True, 'showSerieYears')
@@ -48,7 +48,7 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENT[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENT[1], 'Séries (Les plus commentées)', 'comments.png', oOutputParameterHandler)
+    oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENT[1], 'Séries (Populaire)', 'comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
@@ -110,8 +110,9 @@ def AlphaDisplay():
     oInputParameterHandler = cInputParameterHandler()
     sLetter = oInputParameterHandler.getValue('sLetter')
 
-    oRequestHandler = cRequestHandler(URL_MAIN)
+    oRequestHandler = cRequestHandler(URL_MAIN + 'serie-vf.html')
     sHtmlContent = oRequestHandler.request()
+
     sHtmlContent = oParser.abParse(sHtmlContent, '<h1>Listes des séries:</h1>', '<div class="container"><br>')
 
     sPattern = '<a title="(' + sLetter + '.+?)" href="([^"]+)"'
