@@ -70,7 +70,8 @@ def showGenres():
     sEnd = '<h3 class="nav-title nop">Film Streaming par Années</h3>'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
-    sPattern = '<li class="cat-item cat-item.+?"><a href="([^"]+)"><i class="icons icon-play"></i>(.+?)<i class="count">(.+?)</i>'
+    #sPattern = '<li class="cat-item cat-item.+?"><a href="([^"]+)"><i class="icons icon-play"></i>(.+?)<i class="count">(.+?)</i>'
+    sPattern = '<li class="cat-item.+?"><a href=([^<]+)><i class="icons icon-play"></i>(.+?)<i class=count>(.+?)</i>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -120,8 +121,9 @@ def showMovies(sSearch = ''):
     if sSearch:
         sPattern = 'post_title":[\'"]([^<>\'"]+)[\'"],"post_name":[\'"]([^<>\'"]+)[\'"],"poster_url":[\'"]([^<>\'"]+)[\'"]'
     else:
-        sPattern = '<div class="movie_last"><a href="([^"]+)".+?<img src="([^"]+)".+?<div class="title">(.+?)<\/div>.+?<i class="quality">(.+?)</i>.+?<p class="nop synopsis">(.+?)</p>'
-
+        #sPattern = '<div class="movie_last"><a href="([^"]+)".+?<img src="([^"]+)".+?<div class="title">(.+?)<\/div>.+?<i class="quality">(.+?)</i>.+?<p class="nop synopsis">(.+?)</p>'
+        sPattern = '<div class=movie_last> *<a href=([^ ]+).+?<img src=([^ ]+).+?<div class=title>(.+?)<\/div>.+?<i class=quality>(.+?)</i>.+?<p class="nop synopsis">(.+?)</p>'
+        
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -168,7 +170,8 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<li class=.active.>.+?<\/a><\/li><li><a.+?ref=.(.+?).>'
+    #sPattern = '<li class=.active.>.+?<\/a><\/li><li><a.+?ref=.(.+?).>'
+    sPattern = '<li class=active>.+?<\/a><\/li><li><a.+?ref=(.+?)>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -187,7 +190,8 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="movie_player" data-id="(.+?)"'
+    #sPattern = '<div class="movie_player" data-id="(.+?)"'
+    sPattern = '<div class=movie_player data-id=([0-9]+)'
     Fresult = oParser.parse(sHtmlContent, sPattern)
 
     if (Fresult[0] == True):
