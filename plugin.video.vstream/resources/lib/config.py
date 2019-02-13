@@ -179,6 +179,9 @@ def WindowsBoxes(sTitle, sFileName, num,year = ''):
 
             self.getControl(50).setVisible(False)
             self.getControl(5200).setVisible(False)
+            #synopsis_first
+            self.setFocusId(36)
+                
             #self.getControl(50).reset()
             listitems = []
             cast = []

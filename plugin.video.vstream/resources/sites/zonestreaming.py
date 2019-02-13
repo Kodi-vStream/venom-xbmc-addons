@@ -205,7 +205,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
     
     sHtmlContent = sHtmlContent.replace(' [Streaming]', '').replace(' [Streaming', '').replace(' [Telecharger]', '').replace(' [Téléchargement]', '').replace(' [Telechargement]', '')
-    sPattern = '<div class="post-thumb is-image"><a href="([^"]+)".+?title="([^"]+)".+?src="(.+?)".+?<p>(.+?)<\/p>'
+    sPattern = '<div class="post-thumb is-image"><a href="([^"]+)".+?title="([^"]+)".+?src="([^"]+)".+?<p>([^<]+)<\/p>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -345,7 +345,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<span style="color: #ff990.+?>([^<]+)<|large button.+?href="(.+?)"'
+    sPattern = '<span style="color: #ff990.+?>([^<]+)<|large button.+?href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -413,7 +413,7 @@ def serieHosters():
 
     oParser = cParser()
 
-    sPattern = 'href="([^<]+)" target="_blank".+?</a>'
+    sPattern = 'href="([^"]+)" target="_blank".+?</a>'
     aResult = oParser.parse(sUrl, sPattern)
 
     if (aResult[0] == True):
@@ -475,7 +475,7 @@ def showHostersFhds():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<iframe.+?src="(.+?)"'
+    sPattern = '<iframe.+?src="([^"]+)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 

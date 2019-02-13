@@ -84,9 +84,9 @@ def showGenres():
     oRequestHandler = cRequestHandler(URL_MAIN)
     sHtmlContent = oRequestHandler.request()
 
-    sHtmlContent = oParser.abParse(sHtmlContent, '<div class="Title">Film Streaming Par Genres</div>', '</div></aside>')
+    sHtmlContent = oParser.abParse(sHtmlContent, '<div class=Title>Film Streaming Par Genres</div>', '</div></aside>')
 
-    sPattern = '<li class="cat-item cat-item-.+?"><a href="(.+?)">(.+?)</a> (.+?)</li>'
+    sPattern = '<li class="cat-item cat-item-.+?"><a href=(.+?)>(.+?)</a> (.+?)</li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -159,7 +159,7 @@ def showSearchMovies(sSearch = ''):
     if sSearch:
         sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
 
-        pdata = 'nonce=3119876a57&action=tr_livearch&trsearch=' + sSearch #voir si nonce change
+        pdata = 'nonce=af72e2fa42&action=tr_livearch&trsearch=' + sSearch #voir si nonce change
 
         oRequest = cRequestHandler(sUrl2)
         oRequest.setRequestType(1)
@@ -216,8 +216,8 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sHtmlContent = oParser.abParse(sHtmlContent, 'MovieList Rows', '</html>')
-    sPattern = '<div class="Image">.+?<img src="([^"]+)".+?<a href="([^"]+)"><div class="Title">(.+?)</div></a>.+?<p>(.+?)</p>'
+    sHtmlContent = oParser.abParse(sHtmlContent, 'MovieList Rows', '</body></html>')
+    sPattern = '<div class=Image>.+?img src=([^ ]+).+?<a href=([^ ]+)><div class=Title>(.+?)</div></a>.+?<div class=Description><p>(.+?)</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -262,7 +262,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = 'href="([^"]+)">Next.+?<\/a><\/div>'
+    sPattern = 'href=([^"]+)>Next.+?<\/a><\/div>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -279,14 +279,15 @@ def showHosters():
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
+
     oParser = cParser()
 
-    sPattern = 'data-.+?t="VideoOption.+?">.+?ecteur <span>(.+?)</span></div><p class="AAIco-language">(.+?)</p><p class="AAIco-dns">(.+?)</p><p class="AAIco-equalizer">(.+?)</p>' #lang,qual,host
+    sPattern = 'data-.+?t=VideoOption.+?>.+?ecteur <span>(.+?)</span></div><p class=AAIco-language>(.+?)</p><p class=AAIco-dns>(.+?)</p><p class=AAIco-equalizer>(.+?)</p>' #lang,qual,host
     aResult1 = re.findall(sPattern, sHtmlContent, re.DOTALL)
 
-    sHtmlContent = oParser.abParse(sHtmlContent, '<div class="VideoPlayer">', '<div class="Image">')
+    sHtmlContent = oParser.abParse(sHtmlContent, '<div class=VideoPlayer>', '<div class=Image>')
 
-    sPattern2 = '<div id="VideoOption\d+" class="Vid.+?">(.+?)</div>'
+    sPattern2 = '<div id=VideoOption\d+ class=Vid.+?>(.+?)</div>'
     aResult2 = re.findall(sPattern2, sHtmlContent, re.DOTALL)
 
     aResult = zip(aResult2, [x[0] + ' ' + x[1] for x in aResult1])
