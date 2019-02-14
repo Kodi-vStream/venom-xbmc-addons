@@ -19,7 +19,7 @@ MOVIE_NEWS = (URL_MAIN + 'recemment-ajoute/', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN, 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + 'les-plus-vus/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
-MOVIE_ANNEES = ('http/venom', 'showYears')
+MOVIE_ANNEES = (True, 'showYears')
 
 URL_SEARCH = (URL_API + 'search/?query=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_API + 'search/?query=', 'showMovies')
@@ -63,15 +63,14 @@ def showMoviesSearch():
 def showGenres():
     oGui = cGui()
     oParser = cParser()
-    oRequestHandler = cRequestHandler(URL_MAIN)
+    oRequestHandler = cRequestHandler(URL_MAIN + 'accueil-site/')
 
     sHtmlContent = oRequestHandler.request()
     sStart = '<h3 class="nav-title nop">Film Streaming par Genres</h3>'
     sEnd = '<h3 class="nav-title nop">Film Streaming par Années</h3>'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
 
-    #sPattern = '<li class="cat-item cat-item.+?"><a href="([^"]+)"><i class="icons icon-play"></i>(.+?)<i class="count">(.+?)</i>'
-    sPattern = '<li class="cat-item.+?"><a href=([^<]+)><i class="icons icon-play"></i>(.+?)<i class=count>(.+?)</i>'
+    sPattern = '<li class="cat-item.+?"><a href=([^>]+)><i class="icons icon-play"></i>([^<]+)<i class=count>([^<]+)</i>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -90,9 +89,9 @@ def showYears():
     oGui = cGui()
     #compliquer pour rien.
     # from itertools import chain
-    # generator = chain([1998,1999],xrange(2000,2019))#desordre
+    # generator = chain([1998, 1999], xrange(2000, 2019))#desordre
     # for i in reversed(list(generator)):
-    for i in reversed(range(2000,2019)):
+    for i in reversed(range(2000, 2019)):
         Year = str(i)
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', ('%s%s%s%s') % (URL_MAIN, 'annee/', Year, '/'))
@@ -121,9 +120,8 @@ def showMovies(sSearch = ''):
     if sSearch:
         sPattern = 'post_title":[\'"]([^<>\'"]+)[\'"],"post_name":[\'"]([^<>\'"]+)[\'"],"poster_url":[\'"]([^<>\'"]+)[\'"]'
     else:
-        #sPattern = '<div class="movie_last"><a href="([^"]+)".+?<img src="([^"]+)".+?<div class="title">(.+?)<\/div>.+?<i class="quality">(.+?)</i>.+?<p class="nop synopsis">(.+?)</p>'
-        sPattern = '<div class=movie_last> *<a href=([^ ]+).+?<img src=([^ ]+).+?<div class=title>(.+?)<\/div>.+?<i class=quality>(.+?)</i>.+?<p class="nop synopsis">(.+?)</p>'
-        
+        sPattern = '<div class=movie_last> *<a href=([^ ]+).+?src=([^ ]+).+?<div class=title>([^<]+)<\/div>.+?<i class=quality>([^<]+)</i>.+?class="nop synopsis">([^<]+)</p>'
+
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -170,8 +168,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    #sPattern = '<li class=.active.>.+?<\/a><\/li><li><a.+?ref=.(.+?).>'
-    sPattern = '<li class=active>.+?<\/a><\/li><li><a.+?ref=(.+?)>'
+    sPattern = '<li class=active>.+?<\/a><\/li><li><a.+?ref=([^>]+)>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -190,7 +187,6 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    #sPattern = '<div class="movie_player" data-id="(.+?)"'
     sPattern = '<div class=movie_player data-id=([0-9]+)'
     Fresult = oParser.parse(sHtmlContent, sPattern)
 
