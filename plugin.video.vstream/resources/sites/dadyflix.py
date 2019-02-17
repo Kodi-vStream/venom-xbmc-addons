@@ -11,7 +11,7 @@ from resources.lib.comaddon import progress, VSlog
 
 SITE_IDENTIFIER = 'dadyflix'
 SITE_NAME = 'DadyFlix'
-SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
+SITE_DESC = 'Films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
 URL_MAIN = 'https://hd.dadyflix.com/'
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
@@ -119,7 +119,7 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     if sSearch:
-        sPattern = '<a href="([^"]+)"><img src="([^"]+)" alt=.+?href=.+?>([^<]+)<(?:|.+?<p>([^<]+)<)'
+        sPattern = '<a href="([^"]+)"><img src="([^"]+)" alt=.+?href=.+?>([^<]+)<(?:.+?<p>([^<]+)<|)'
     elif 'les-plus-populaires/' in sUrl or 'tendance/' in sUrl:
         sPattern = '<img src="([^"]+)" alt="(?:film|serie) ([^"]+)streaming".+?(?:|quality">([^<]+)<.+?)href="([^"]+)"'
     else:
