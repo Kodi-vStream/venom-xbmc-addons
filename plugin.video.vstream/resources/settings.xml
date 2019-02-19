@@ -77,6 +77,8 @@
 
         <setting visible="false" id="plugin_cinemegatoil_org" type="bool" label="Cinemegatoil" default="true"/>
 
+        <setting visible="false" id="plugin_dadyflix" type="bool" label="dadyflix" default="true"/>
+        
         <setting visible="false" id="plugin_ddl_island_su" type="bool" label="DDL Island" default="true"/>
 
         <setting visible="false" id="plugin_ddlfr" type="bool" label="Ddlfr" default="true"/>
@@ -160,8 +162,6 @@
         <setting visible="false" id="plugin_streamay_bz" type="bool" label="Streamay" default="true"/>
         
         <setting visible="false" id="plugin_streamelite" type="bool" label="StreamElite" default="true"/>
-
-        <setting visible="false" id="plugin_streamfilmzzz" type="bool" label="StreamFilmzzz" default="true"/>
 
         <setting visible="false" id="plugin_streaming_series_org" type="bool" label="Streaming-Series" default="true"/>
 
