@@ -11,9 +11,9 @@ from resources.lib.comaddon import progress, VSlog
 
 SITE_IDENTIFIER = 'dadyflix'
 SITE_NAME = 'DadyFlix'
-SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/séries, récent'
+SITE_DESC = 'Films en streaming, streaming hd, streaming 720p, Films/séries, récent'
 
-URL_MAIN = 'https://streaming-hd.dadyflix.com/' #url de votre source
+URL_MAIN = 'https://hd.dadyflix.com/'
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
@@ -22,13 +22,14 @@ FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN + 'films/', 'showMovies')
 MOVIE_MOVIE = ('http://', 'load')
-MOVIE_VIEWS = (URL_MAIN + 'les-plus-populaires/', 'showMovies')
-MOVIE_POPULAIRE = (URL_MAIN + 'tendance/','showMovies')
+MOVIE_VIEWS = (URL_MAIN + 'tendance/','showMovies')
+MOVIE_COMMENTS = (URL_MAIN + 'les-plus-populaires/', 'showMovies')
 MOVIE_GENRES = (True, 'showGenres')
 
 SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = (URL_MAIN + 'series/', 'showMovies')
-SERIE_POPULAIRE =  (URL_MAIN + 'les-plus-populaires/?get=tv', 'showMovies')
+SERIE_COMMENTS =  (URL_MAIN + 'les-plus-populaires/?get=tv', 'showMovies')
+MOVIE_GENRES = (True, 'showGenres')
 SERIE_NETFLIX = (URL_MAIN + 'network/netflix/', 'showMovies')
 
 def load():
@@ -51,16 +52,16 @@ def load():
     oGui.addDir(SITE_IDENTIFIER, MOVIE_VIEWS[1], 'Films (Les plus vus)', 'views.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', MOVIE_POPULAIRE[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_POPULAIRE[1], 'Films (Les plus populaire)', 'views.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', MOVIE_COMMENTS[0])
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_COMMENTS[1], 'Films (Les plus populaires)', 'comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_NEWS[1], 'Séries (Derniers ajouts)', 'news.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', SERIE_POPULAIRE[0])
-    oGui.addDir(SITE_IDENTIFIER, SERIE_POPULAIRE[1], 'Séries (Les plus populaire)', 'views.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_COMMENTS[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_COMMENTS[1], 'Séries (Les plus populaires)', 'comments.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_NETFLIX[0])
@@ -82,7 +83,7 @@ def showGenres():
     oGui = cGui()
 
     liste = []
-    liste.append( ['Action', URL_MAIN + 'genre/action//'] )
+    liste.append( ['Action', URL_MAIN + 'genre/action/'] )
     liste.append( ['Animation', URL_MAIN + 'genre/animation/'] )
     liste.append( ['Aventure', URL_MAIN + 'genre/aventure/'] )
     liste.append( ['Comédie', URL_MAIN + 'genre/comedie/'] )
@@ -118,9 +119,11 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     if sSearch:
-        sPattern = '<a href="([^<]+)"><img src="([^<]+)" alt=.+?href=.+?>([^<]+)<.+?<p>'
+        sPattern = '<a href="([^"]+)"><img src="([^"]+)" alt=.+?href=.+?>([^<]+)<(?:.+?<p>([^<]+)<|)'
+    elif 'les-plus-populaires/' in sUrl or 'tendance/' in sUrl:
+        sPattern = '<img src="([^"]+)" alt="(?:film|serie) ([^"]+)streaming".+?(?:|quality">([^<]+)<.+?)href="([^"]+)"'
     else:
-       sPattern = '<img src="([^"]+)" alt="(?:film|serie) ([^"]+)streaming".+?(?:quality">([^"]+)</span>|.+?)href="([^"]+)".+?(?:div class="texto">([^"]+)</div>|)'
+        sPattern = '<img src="([^"]+)" alt="(?:film|serie) ([^"]+)streaming".+?(?:|quality">([^<]+)<.+?)href="([^"]+)".+?div class="texto">*([^<]+)</div>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -138,17 +141,24 @@ def showMovies(sSearch = ''):
                 break
 
             if sSearch:
-                sTitle = aEntry[2]
                 sUrl2 = aEntry[0]
-                sThumb = aEntry[1]
-                sDesc = ""
+                sThumb = aEntry[1].replace('w92', 'w342')
+                sTitle = aEntry[2]
+                sDesc = aEntry[3].replace('&#8217;', '\'').replace('&#8230;', '...')
                 setDisplayName = ('%s') % (sTitle)
-            else:
+            elif 'les-plus-populaires/' in sUrl or 'tendance/' in sUrl:
+                sThumb = aEntry[0].replace('w185', 'w342')
                 sTitle = aEntry[1]
+                sQual = aEntry[2].replace('Haute-qualité', 'HD')
                 sUrl2 = aEntry[3]
-                sThumb = aEntry[0]
-                sDesc = aEntry[4]
-                sQual = aEntry[2]
+                sDesc = ''
+                setDisplayName = ('%s [%s]') % (sTitle , sQual)
+            else:
+                sThumb = aEntry[0].replace('w185', 'w342')
+                sTitle = aEntry[1]
+                sQual = aEntry[2].replace('Haute-qualité', 'HD')
+                sUrl2 = aEntry[3]
+                sDesc = aEntry[4].replace('&#8217;', '\'').replace('&#8230;', '...').replace('>', '')
                 setDisplayName = ('%s [%s]') % (sTitle , sQual)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -174,7 +184,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<i id=\'nextpagination\'.+?resppages\'><a href="(.+?)">'
+    sPattern = '<a href="([^"]+)"><span class="icon-chevron-right">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -236,7 +246,7 @@ def ShowSerieSaisonEpisodes():
                 break
 
             sTitle = aEntry[4]
-            sTitle = 'Saison ' + aEntry[2] + ' Episode' + aEntry[3] +' ' + sMovieTitle
+            sTitle = 'Saison ' + aEntry[2] + ' Episode' + aEntry[3] + ' ' + sMovieTitle
             sUrl2 = aEntry[0]
             sThumb = aEntry[1]
 

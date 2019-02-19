@@ -296,7 +296,7 @@ class cHosterGui:
             return self.getHoster('vidbom')
         if ('upvid.' in sHostName):
             return self.getHoster('upvid')
-        if ('cloudvid' in sHostName):
+        if (('cloudvid' in sHostName ) or ('clipwatching.' in sHostName)):#meme code
             return self.getHoster('cloudvid')
         if ('megadrive' in sHostName):
             return self.getHoster('megadrive')
