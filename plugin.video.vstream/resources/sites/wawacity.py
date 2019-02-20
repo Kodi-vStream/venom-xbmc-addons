@@ -840,7 +840,7 @@ def DecryptddlProtect(url):
             oRequestHandler = cRequestHandler(url)
             sHtmlContent = oRequestHandler.request()
 
-        s = re.findall('<label for="captcha-response-newvar" >.+?</label><img src="(.+?)"', sHtmlContent)
+        s = re.findall('<label for=".+? >.+?</label><img src="(.+?)"', sHtmlContent)
         if host in s[0]:
             image = s[0]
         else:
@@ -858,7 +858,7 @@ def DecryptddlProtect(url):
         oRequestHandler.addHeaderEntry('Referer', url)
 
         oRequestHandler.addParameters('submit', 'unlock')
-        oRequestHandler.addParameters('captcha-response-newvar', captcha.upper())
+        oRequestHandler.addParameters('cr-nvar', captcha.upper())
 
         sHtmlContent = oRequestHandler.request()
 
