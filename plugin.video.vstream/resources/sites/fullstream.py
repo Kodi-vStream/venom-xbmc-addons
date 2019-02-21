@@ -45,8 +45,8 @@ def load():
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
-    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films & Series (Genres)', 'genres.png', oOutputParameterHandler)
-    
+    oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films & Séries (Genres)', 'genres.png', oOutputParameterHandler)
+
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_LIST[1], 'Films (Liste) ', 'az.png', oOutputParameterHandler)
@@ -78,13 +78,13 @@ def showSearch():
             AlphaDisplay(sUrl)
             oGui.setEndOfDirectory()
             return
-        
+
 def get_nonce(sHtmlContent = ''):
     oParser = cParser()
     if not sHtmlContent:
         oRequestHandler = cRequestHandler(URL_MAIN)
         sHtmlContent = oRequestHandler.request()
-        
+
     sPattern1 = '"nonce":"([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern1)
     if (aResult[0] == True):
@@ -97,23 +97,23 @@ def AlphaSearch():
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
-    
+
     if 'serie' in sUrl:
         type = 'tvshows'
-    else: 
+    else:
         type = 'movies'
-        
+
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    
+
     nonce = get_nonce()
     if not nonce == False:
        sPattern = '<a class="lglossary" data-type=".+?" data-glossary="(.+?)">(.+?)<\/a>'
        aResult = oParser.parse(sHtmlContent, sPattern)
        if (aResult[0] == True):
             for aEntry in aResult[1]:
-                sLetter = aEntry[1] 
-                sUrl = URL_MAIN + 'wp-json/dooplay/glossary/?term=' + aEntry[0].replace('#','09') + '&nonce=' + nonce + '&type=' + type
+                sLetter = aEntry[1]
+                sUrl = URL_MAIN + 'wp-json/dooplay/glossary/?term=' + aEntry[0].replace('#', '09') + '&nonce=' + nonce + '&type=' + type
 
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -134,24 +134,24 @@ def AlphaDisplay(sSearch = ''):
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
-        
-    if not '&nonce=' in sUrl: #globalsearch
+
+    if not '&nonce=' in sUrl:#globalsearch
         sUrl = sUrl + '&nonce=' + get_nonce()
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-   
+
     content = json.loads(sHtmlContent)
     for x in content:
         sTitle = content[x]['title'].encode('utf-8')
         sUrl2 = content[x]['url']
-        sThumb = content[x]['img'].replace('w92','w342')
+        sThumb = content[x]['img'].replace('w92', 'w342')
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl2)
         oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
         oOutputParameterHandler.addParameter('sThumb', sThumb)
-        
+
         if '/serie/' in sUrl2:
             oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, '',oOutputParameterHandler)
         else:
@@ -203,7 +203,7 @@ def showMovies():
     if '/serie' in sUrl or 'episode' in sUrl:
         sPattern = 'data-src="([^"]+)" alt="([^"]+)".+?<div class="see">.+?<a href="([^"]+)">'
     else:
-        sPattern = 'data-src="([^"]+)" alt=.+?<span class="quality">(.+?)</span>.+?<div class="see">.+?<a href="([^"]+)">(.+?)<\/a>'
+        sPattern = 'data-src="([^"]+)" alt=.+?<span class="quality">([^<]+)</span>.+?<div class="see">.+?<a href="([^"]+)">([^<]+)<\/a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -221,14 +221,14 @@ def showMovies():
                 break
 
             sUrl2 = aEntry[2]
-            
+
             if 'episode-' in sUrl2 or '/serie' in sUrl2:
                 sQual = ''
                 sTitle = aEntry[1]
             else:
                 sQual = aEntry[1]
                 sTitle = aEntry[3]
-                
+
             sThumb = aEntry[0]
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
@@ -281,13 +281,12 @@ def showEpisodes():
     sDesc = ''
     sPattern = '<div id="info".+?<p>(.+?)<\/p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
-
     if aResult[0]:
         sDesc = aResult[1][0]
-        
-    sHtmlContent = oParser.abParse(sHtmlContent, '<h2>Seasons and episodes</h2>', '<h2>titres similaires</h2>')   
+
+    sHtmlContent = oParser.abParse(sHtmlContent, '<h2>Seasons and episodes</h2>', '<h2>titres similaires</h2>')
     #recuperation des suivants
-    sPattern = '<span class="title">(.+?)<i>|<a href="([^"]+)"><img src=".+?">.+?<div class="numerando">(.+?)</div>'
+    sPattern = '<span class="title">([^<]+)<i>|<a href="([^"]+)"><img src=".+?">.+?<div class="numerando">([^<]+)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -298,15 +297,15 @@ def showEpisodes():
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
-                
+
             if aEntry[0]:
                 oGui.addText(SITE_IDENTIFIER, '[COLOR crimson]' + aEntry[0] + '[/COLOR]')
-                
+
             else:
                 sUrl2 = aEntry[1]
-                SxE = re.sub('(\d+) - (\d+)','S\g<1>E\g<2>',aEntry[2])
+                SxE = re.sub('(\d+) - (\d+)','S\g<1>E\g<2>', aEntry[2])
                 sTitle = sMovieTitle + SxE
-                
+
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', sUrl2)
                 oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -315,9 +314,8 @@ def showEpisodes():
 
         progress_.VSclose(progress_)
 
-
     oGui.setEndOfDirectory()
-    
+
 def showLink():
     oGui = cGui()
     oParser = cParser()
@@ -325,7 +323,7 @@ def showLink():
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
-    
+
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
 
@@ -333,9 +331,9 @@ def showLink():
     cooka = ''
     for i in cookie:
         if not 'wordpress' in i:
-            cooka = cooka +  i + '; '
-            
-    sPattern = '<a id="player-.+?" class="server.+?" data-post="([^"]+)" data-nume="([^"]+)">(.+?)<.+?<img src=\'http.+?img/flags/(.+?).png\'>'
+            cooka = cooka + i + '; '
+
+    sPattern = '<a id="player-.+?" class="server.+?" data-post="([^"]+)" data-nume="([^"]+)">([^<]+)<.+?<img src=\'http.+?img/flags/(.+?).png\'>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -347,16 +345,16 @@ def showLink():
                 break
 
             sUrl2 = 'https://fr.full-stream.cc/wp-admin/admin-ajax.php'
-            sLang = aEntry[3]
-            sHost = aEntry[2]
+            sLang = aEntry[3].upper()
+            sHost = aEntry[2].capitalize()
 
             data = 'action=doo_player_ajax&post=' + aEntry[0] + '&nume=' + aEntry[1]
 
             sTitle = ('%s (%s) [COLOR coral]%s[/COLOR]') % (sMovieTitle, sLang, sHost)
-            
+
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
-            
+
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sdata', data)
@@ -367,7 +365,7 @@ def showLink():
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
-    
+
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -380,7 +378,7 @@ def showHosters():
 
     oRequest = cRequestHandler(sUrl)
     oRequest.setRequestType(1)
-    oRequest.addHeaderEntry('User-Agent','Mozilla/5.0 (Windows NT 6.1; rv:54.0) Gecko/20100101 Firefox/54.0')
+    oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:54.0) Gecko/20100101 Firefox/54.0')
     oRequest.addHeaderEntry('Accept', '*/*')
     oRequest.addHeaderEntry('Accept-Language', 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3')
     oRequest.addHeaderEntry('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
@@ -390,14 +388,14 @@ def showHosters():
     oRequest.addHeaderEntry('Connection', 'keep-alive')
     oRequest.addHeaderEntry('Cookie', sCook)
     oRequest.addParametersLine(pdata)
-    
+
     sHtmlContent = oRequest.request()
 
     cookie = oRequest.GetCookies().split(';')
     cooka = ''
     for i in cookie:
         if not 'wordpress' in i:
-            cooka = cooka +  i + '; '
+            cooka = cooka + i + '; '
 
     oParser = cParser()
     sPattern = "<iframe.+?src='([^']+)'"
@@ -408,11 +406,11 @@ def showHosters():
         sUrl = URL_MAIN[:-1] + aResult[1][0]
 
         UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
-        headers = { 'User-Agent' : UA ,'Referer': sRef, 'Cookie': cooka}
+        headers = {'User-Agent' : UA ,'Referer': sRef, 'Cookie': cooka}
         req = urllib2.Request(sUrl, None, headers)
 
         try:
-            response = urllib2.urlopen(req)     
+            response = urllib2.urlopen(req)
         except urllib2.URLError, e:
             return ''
 
