@@ -7,9 +7,9 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress,VSlog
+from resources.lib.comaddon import progress, VSlog
 
-import urllib2,re
+import urllib2, re
 
 SITE_IDENTIFIER = 'fullstream'
 SITE_NAME = 'FullStream'
@@ -30,6 +30,7 @@ MOVIE_LIST = (URL_MAIN + 'film', 'AlphaSearch')
 
 SERIE_NEWS = (URL_MAIN + 'episode', 'showMovies')
 SERIE_SERIES = (URL_MAIN + 'serie', 'showMovies')
+SERIE_NETFLIX = (URL_MAIN + 'network/netflix', 'showMovies')
 SERIE_LIST = (URL_MAIN + 'serie', 'AlphaSearch')
 
 def load():
@@ -58,6 +59,10 @@ def load():
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, SERIE_SERIES[1], 'Séries', 'series.png', oOutputParameterHandler)
+
+    oOutputParameterHandler = cOutputParameterHandler()
+    oOutputParameterHandler.addParameter('siteUrl', SERIE_NETFLIX[0])
+    oGui.addDir(SITE_IDENTIFIER, SERIE_NETFLIX[1], 'Séries Netflix', 'series.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', SERIE_LIST[0])
@@ -200,10 +205,7 @@ def showMovies():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    if '/serie' in sUrl or 'episode' in sUrl:
-        sPattern = 'data-src="([^"]+)" alt="([^"]+)".+?<div class="see">.+?<a href="([^"]+)">'
-    else:
-        sPattern = 'data-src="([^"]+)" alt=.+?<span class="quality">([^<]+)</span>.+?<div class="see">.+?<a href="([^"]+)">([^<]+)<\/a>'
+    sPattern = 'data-src="([^"]+)" alt="([^"]+)".+?(?:|<span class="quality">([^<]+)</span>.+?)<div class="see">.+?<a href="([^"]+)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -220,16 +222,10 @@ def showMovies():
             if progress_.iscanceled():
                 break
 
-            sUrl2 = aEntry[2]
-
-            if 'episode-' in sUrl2 or '/serie' in sUrl2:
-                sQual = ''
-                sTitle = aEntry[1]
-            else:
-                sQual = aEntry[1]
-                sTitle = aEntry[3]
-
-            sThumb = aEntry[0]
+            sThumb = aEntry[0].replace('w185', 'w342')
+            sTitle = aEntry[1]
+            sQual = aEntry[2]
+            sUrl2 = aEntry[3]
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
@@ -258,7 +254,7 @@ def showMovies():
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<a class=\'arrow_pag\' href="([^"]+)"'
+    sPattern = '<span class="current">.+?</span><a href=\'([^"]+)\''
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         return aResult[1][0]
@@ -344,7 +340,7 @@ def showLink():
             if progress_.iscanceled():
                 break
 
-            sUrl2 = 'https://fr.full-stream.cc/wp-admin/admin-ajax.php'
+            sUrl2 = URL_MAIN + 'wp-admin/admin-ajax.php'
             sLang = aEntry[3].upper()
             sHost = aEntry[2].capitalize()
 
