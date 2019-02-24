@@ -106,7 +106,7 @@ class main:
 
                 oGui = cGui()
                 oPluginHandler = cPluginHandler()
-                aPlugins = oPluginHandler.getAvailablePlugins()
+                aPlugins = oPluginHandler.getAvailablePlugins(True)
                 if (len(aPlugins) == 0):
                     addons = addon()
                     addons.openSettings()
