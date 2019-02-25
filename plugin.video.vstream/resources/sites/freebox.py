@@ -469,8 +469,12 @@ def parseM3U(infile):#Traite les m3u local
         site= infile
         user_agent = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.116 Chrome/48.0.2564.116 Safari/537.36'
         headers = {'User-Agent': user_agent}
-        req = urllib2.Request(site,headers=headers)
-        inf = urllib2.urlopen(req)
+        #req = urllib2.Request(site,headers=headers)
+        #inf = urllib2.urlopen(req)
+        
+        oRequestHandler = cRequestHandler(sUrl)
+        oRequestHandler.addHeaderEntry('User-Agent',user_agent)
+        inf = oRequestHandler.request()
     else:
         inf = infile
 
