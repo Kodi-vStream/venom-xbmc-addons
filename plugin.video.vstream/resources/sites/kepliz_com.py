@@ -15,7 +15,7 @@ import unicodedata
 SITE_IDENTIFIER = 'kepliz_com'
 SITE_NAME = 'Kepliz'
 SITE_DESC = 'Films en streaming'
-URL_HOST = 'http://www.pirvox.com/'
+URL_HOST = 'http://wobno.com/'
 #URL_HOST = 'http://www.ozporo.com/'
 URL_MAIN = 'URL_MAIN'
 
@@ -111,7 +111,7 @@ def showMovies(sSearch = ''):
         #limite de caractere sinon bug de la recherche
         sSearch = sSearch[:20]
         sUrl = URL_MAIN + 'index.php?ordering=&searchphrase=all&option=com_search&searchword=' + sSearch.replace(' ','+')
-        sPattern = 'class="rahh".+?href="\/[0-9a-zA-Z]+\/(.+?)".+?>(.+?)</a>'
+        sPattern = 'class="contentpaneopen".+?href="\/[0-9a-zA-Z]+\/(.+?)".+?>(.+?)</a>' #wobno
     else :
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -123,7 +123,7 @@ def showMovies(sSearch = ''):
     data = response.read()
     response.close()
     sMainUrl = ''
-    aResult = oParser.parse(data, 'window\.location\.href="([0-9a-zA-Z]+)";')
+    aResult = oParser.parse(data, '"position:relative; top:243px" href="([0-9a-zA-Z]+)">') #wobno
 
     if aResult[0]:
         #memorisation pour la suite
