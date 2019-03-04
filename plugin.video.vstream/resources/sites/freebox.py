@@ -475,6 +475,9 @@ def parseM3U(infile):#Traite les m3u local
         oRequestHandler = cRequestHandler(sUrl)
         oRequestHandler.addHeaderEntry('User-Agent',user_agent)
         inf = oRequestHandler.request()
+
+        inf = inf.split('\n')
+           
     else:
         inf = infile
 
