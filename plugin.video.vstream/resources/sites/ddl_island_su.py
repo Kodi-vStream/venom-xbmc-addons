@@ -361,7 +361,7 @@ def showMovies(sSearch = ''):
     if sSearch:
 
         #par defaut
-        sUrl = sSearch.replace(' ','+')
+        sUrl = sSearch.replace(' ', '+')
 
         if URL_SEARCH[0] in sSearch:
             bGlobal_Search = True
@@ -421,7 +421,7 @@ def showMovies(sSearch = ''):
                 if '-3d-' in aEntry[0]:
                     sQual = '3D'
             else:
-                sQual = aEntry[3]
+                sQual = aEntry[3].replace('&eacute;', 'é')
             sDesc = aEntry[4].replace('&rsquo;', '\'').replace('&ldquo;', '"').replace('&rdquo;', '"').replace('&hellip;', '...')
             sTitle = aEntry[2]
             #print sUrl2
@@ -795,7 +795,7 @@ def DecryptDlProtecte(url):
     sHtmlContent = oRequestHandler.request()
 
     cookies = oRequestHandler.GetCookies()
-    GestionCookie().SaveCookie('dl_protect.ru',cookies)
+    GestionCookie().SaveCookie('dl_protect.ru', cookies)
     #VSlog( 'result'  + sHtmlContent)
 
     if not '"error":false' in sHtmlContent:

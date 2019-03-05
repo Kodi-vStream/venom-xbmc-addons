@@ -81,7 +81,7 @@ class cPluginHandler:
     #     sFolder = sFolder.replace('\\', '/')
     #     return sFolder
 
-    def getAvailablePlugins(self):
+    def getAvailablePlugins(self,force = False):
         #oConfig = cConfig()
         addons = addon()
 
@@ -109,7 +109,7 @@ class cPluginHandler:
                 bPlugin = addons.getSetting(sPluginSettingsName)
                 if (bPlugin != ''):
                     # settings gefunden
-                    if (bPlugin == 'true'):
+                    if (bPlugin == 'true') or (force == True):
                         aPlugins.append(self.__createAvailablePluginsItem(sSiteName, sFileName, sSiteDesc))
                 else:
                    # settings nicht gefunden, also schalten wir es trotzdem sichtbar

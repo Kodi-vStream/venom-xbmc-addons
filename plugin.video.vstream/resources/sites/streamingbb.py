@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
+return false#Doublon de "regarderfilm"
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -103,6 +104,7 @@ def showGenres():
 
     oGui.setEndOfDirectory()
 
+							 
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
@@ -158,6 +160,7 @@ def showMovies(sSearch = ''):
     if not sSearch:
         oGui.setEndOfDirectory()
 
+									 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     sPattern = '<a class="nextpostslink" rel="next" href="(.+?)">'
@@ -168,6 +171,7 @@ def __checkForNextPage(sHtmlContent):
 
     return False
 
+				
 def showLinks():
     oGui = cGui()
 
@@ -201,12 +205,14 @@ def showLinks():
     if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
+								 
         for aEntry in aResult[1]:
             progress_.VSupdate(progress_, total)
             if progress_.iscanceled():
                 break
 
             sHost = re.sub('\.\w+', '', aEntry[0])
+									  
             sHost = sHost.capitalize()
             sPost = aEntry[1]
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
@@ -222,6 +228,7 @@ def showLinks():
 
     oGui.setEndOfDirectory()
 
+				  
 def showHosters():
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
@@ -244,6 +251,7 @@ def showHosters():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
+								 
         for aEntry in aResult[1]:
 
             sHosterUrl = aEntry

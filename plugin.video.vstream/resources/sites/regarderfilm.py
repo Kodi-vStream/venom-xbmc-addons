@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -10,8 +9,6 @@ from resources.lib.util import cUtil
 from resources.lib.parser import cParser
 from resources.lib.comaddon import progress
 import re
-
-
 
 SITE_IDENTIFIER = 'regarderfilm'
 SITE_NAME = 'Regarder Film'
@@ -53,7 +50,6 @@ def showSearch():
         showMovies(sUrl)
         oGui.setEndOfDirectory()
         return
-
 
 def showGenres():
     oGui = cGui()
@@ -111,7 +107,7 @@ def showGenres():
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-        sUrl = sSearch
+        sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -120,7 +116,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<div class="MovieItem".+?href="([^<]+)".+?src="([^<]+)" alt="(.+?)"'
+    sPattern = '<div class="MovieItem".+?href="([^"]+)".+?src="([^"]+)" alt="([^"]+)"'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -135,9 +131,9 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sUrl = str(aEntry[0])
-            sThumb = str(aEntry[1])
-            sTitle = str(aEntry[2])#.decode("unicode_escape").encode("latin-1")
+            sUrl = aEntry[0]
+            sThumb = aEntry[1]
+            sTitle = aEntry[2]#.decode("unicode_escape").encode("latin-1")
 
             #Si recherche et trop de resultat, on nettoye
             if sSearch and total > 2:
@@ -153,6 +149,7 @@ def showMovies(sSearch = ''):
 
         progress_.VSclose(progress_)
 
+    if not sSearch:
         sNextPage = __checkForNextPage(sHtmlContent)
         if (sNextPage != False):
             oOutputParameterHandler = cOutputParameterHandler()
@@ -165,7 +162,7 @@ def showMovies(sSearch = ''):
 
 def __checkForNextPage(sHtmlContent):
     oParser = cParser()
-    sPattern = '<a class="nextpostslink" rel="next" href="(.+?)">'
+    sPattern = '<a class="nextpostslink" rel="next" href="([^"]+)">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -193,11 +190,11 @@ def showLinks():
         if (aResult[0] == True):
             sDesc = aResult[1][0]
             sDesc = re.sub('<[^<]+?>', '', sDesc)
+            sDesc = sDesc.replace('&#8217;', '\'').replace('&#8230;', '...')
     except:
         pass
 
     sPattern = '<form action="#playfilm" method="post">.+?<span>([^<>]+)</span>.+?<input name="levideo" value="([^"]+)"'
-
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -212,10 +209,9 @@ def showLinks():
             if progress_.iscanceled():
                 break
 
-            sHost = str(aEntry[0]).replace('.net', '').replace('.com', '').replace('.tv', '')
-            sHost = sHost.replace('.to', '').replace('.co', '').replace('.me', '').replace('.ec', '').replace('.eu', '').replace('.sx', '')
+            sHost = re.sub('\.\w+', '', aEntry[0])
             sHost = sHost.capitalize()
-            sPost = str(aEntry[1])
+            sPost = aEntry[1]
             sTitle = ('%s [COLOR coral]%s[/COLOR]') % (sMovieTitle, sHost)
 
             oOutputParameterHandler = cOutputParameterHandler()
@@ -223,7 +219,7 @@ def showLinks():
             oOutputParameterHandler.addParameter('sPost', sPost)
             oOutputParameterHandler.addParameter('sMovieTitle', sMovieTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addLink(SITE_IDENTIFIER, 'showHosters', sTitle, sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
@@ -244,7 +240,7 @@ def showHosters():
     sHtmlContent = oRequestHandler.request()
 
     oParser = cParser()
-    sPattern = '<iframe.+?src=["\'](.+?)["\']'
+    sPattern = '<iframe.+?src=["\']([^"]+)["\']'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -252,10 +248,9 @@ def showHosters():
         oGui.addText(SITE_IDENTIFIER)
 
     if (aResult[0] == True):
-        total = len(aResult[1])
         for aEntry in aResult[1]:
 
-            sHosterUrl = str(aEntry)
+            sHosterUrl = aEntry
             if sHosterUrl.startswith('/'):
                 sHosterUrl = 'http:' + sHosterUrl
             oHoster = cHosterGui().checkHoster(sHosterUrl)

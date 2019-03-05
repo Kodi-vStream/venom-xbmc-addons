@@ -21,7 +21,7 @@ URL_MAIN = 'https://w1.seriestreaming.site/'
 
 SERIE_SERIES = ('http://', 'load')
 SERIE_NEWS = (URL_MAIN + 'nouveaux-episodes', 'showMovies')
-SERIE_VIEWS = (URL_MAIN + 'top-series', 'showMovies')
+SERIE_VIEWS = (URL_MAIN + 'la-top-des-meilleures-series', 'showMovies')
 SERIE_COMMENT = (URL_MAIN + 'les-serie-populaire-streaming', 'showMovies')
 SERIE_LIST = (URL_MAIN, 'showAZ')
 SERIE_GENRES = (True, 'showGenres')
@@ -90,7 +90,7 @@ def showSerieYears():
 def showAZ():
     oGui = cGui()
 
-    for i in range(0, 27) :
+    for i in range(0, 27):
         if (i < 1):
             sLetter = '\d+'
             aLetter = '0-9'
@@ -117,7 +117,7 @@ def AlphaDisplay():
 
     sPattern = '<a title="(' + sLetter + '.+?)" href="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
-    if (aResult[0] == True) :
+    if (aResult[0] == True):
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -126,7 +126,7 @@ def AlphaDisplay():
                 break
 
             sUrl = aEntry[1]
-            sTitle =  aEntry[0]
+            sTitle = aEntry[0]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -198,7 +198,7 @@ def showMovies(sSearch=''):
     oInputParameterHandler = cInputParameterHandler()
 
     if sSearch:
-        sUrl = sSearch.replace(' ','+')
+        sUrl = sSearch.replace(' ', '+')
     else:
         sUrl = oInputParameterHandler.getValue('siteUrl')
 
@@ -362,7 +362,7 @@ def showLink():
 
             else:
                 sUrl = URL_MAIN + 'links/' + aEntry[3] #ancienne methode du site tjr ok
-                
+
 
             sLang = aEntry[1]
             sTitle = ('%s (%s) [COLOR %s]%s[/COLOR]') % (sMovieTitle, sLang, sColor, sHost)
@@ -397,8 +397,8 @@ def showHosters():
         sHosterUrl = aResult[1][0]
     else:
         sHosterUrl = sHtmlContent #ancienne methode du site tjr ok
-        
-    if sHosterUrl:    
+
+    if sHosterUrl:
         oHoster = cHosterGui().checkHoster(sHosterUrl)
 
         if (oHoster != False):

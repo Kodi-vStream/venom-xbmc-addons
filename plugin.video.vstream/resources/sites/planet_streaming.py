@@ -15,7 +15,7 @@ SITE_IDENTIFIER = 'planet_streaming'
 SITE_NAME = 'Planet Streaming'
 SITE_DESC = 'Films en Streaming complet  VF HD'
 
-URL_MAIN = 'http://ww5.planet-streaming.com/'
+URL_MAIN = 'https://streamcomplet.planet-streaming.com/'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'regarder-film/', 'showMovies')
@@ -148,7 +148,7 @@ def showMovies(sSearch = ''):
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="fullstream fullstreaming">\s*<img src="([^><"]+)"[^<>]+alt="([^"<>]+)".+?<h3 class="mov-title"><a href="([^><"]+)">.+?<strong>(?:Qualité|Version)(.+?)<\/*strong>'
+    sPattern = '<div class="fullstream fullstreaming">\s*<img src="([^"]+)"[^<>]+alt="([^"]+)".+?<h3 class="mov-title"><a href="([^"]+)".+?<strong>(?:Qualité|Version)(.+?)<\/*strong>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -205,7 +205,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = '<a href="([^<>"]+)">Suivant &#8594;<\/a>'
+    sPattern = '<a href="([^"]+)">Suivant &#8594;<\/a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -225,7 +225,7 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<i class="fa fa-play-circle-o"></i>([^<]+)</div>|<a href="([^<>"]+)" title="([^<]+)" target="seriePlayer".+?>'
+    sPattern = '<i class="fa fa-play-circle-o"></i>([^<]+)</div>|<a href="([^"]+)" title="([^"]+)" target="seriePlayer".+?>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):

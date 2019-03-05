@@ -266,7 +266,7 @@ class cClear:
 
                         #icon = os.path.join(unicode(cConfig().getRootArt(), 'utf-8'), 'sites', aPlugin[1]+'.png')
                         icon = "special://home/addons/plugin.video.vstream/resources/art/sites/%s.png" % aPlugin[1]
-                        stitle = aPlugin[0].replace('[COLOR violet]','').replace('[COLOR orange]','').replace('[/COLOR]','')
+                        stitle = aPlugin[0].replace('[COLOR violet]','').replace('[COLOR orange]','').replace('[/COLOR]','').replace('[COLOR dodgerblue]','').replace('[COLOR coral]','')
                         if (bPlugin == 'true'):
                             stitle = ('%s %s') % (stitle, valid)
                         listitem = xbmcgui.ListItem(label = stitle, label2 = aPlugin[2])

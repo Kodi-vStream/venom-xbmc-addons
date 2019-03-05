@@ -460,7 +460,7 @@ def showMovies(sSearch = ''):
     if not 'films' in sUrl:
         sPattern = '<a href="([^"]+)"><img alt="([^"]+)" src="([^"]+)" class="img-responsive"></a>'
     else:
-        sPattern = '<a href="([^"]+)"><img alt="([^"]+) \[(.+?)" src="([^"]+)" class="img-responsive"></a>'
+        sPattern = '<a href="([^"]+)"><img alt="([^"]+) (\[.+?)" src="([^"]+)" class="img-responsive"></a>'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -479,15 +479,19 @@ def showMovies(sSearch = ''):
             sUrl2 = URL_MAIN + aEntry[0]
 
             if not 'films' in sUrl:
-                sTitle = aEntry[1]
+                sTitle = aEntry[1].split(' - ')[0]
+                sSaison = aEntry[1].split(' - ')[1]
+                sLang = aEntry[1].split(' - ')[2].upper()
                 sThumb = URL_MAIN + aEntry[2]
                 sQual = ''
             else:
                 sTitle = aEntry[1]
-                sQual = aEntry[2]
+                # sQual = aEntry[2]
+                sQual = aEntry[2].split(' - ')[0]
+                sLang = aEntry[2].split(' - ')[1]
                 sThumb = URL_MAIN + aEntry[3]
 
-            sDisplayTitle = ('%s [%s] (%s)') % (sTitle, sQual, sLang)
+            sDisplayTitle = ('%s %s (%s)') % (sSaison + sTitle, sQual, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl2)
@@ -551,8 +555,10 @@ def showMoviesLinks():
 
     sQual = ''
     if (aResult[0]):
-        sQual = aResult[1][0]
-        sTitle = ('%s [%s]') % (sMovieTitle, sQual)
+        # sQual = aResult[1][0]
+        sQual = aResult[1][0].split(' - ')[0]
+        sLang = aResult[1][0].split(' - ')[1]
+        sTitle = ('%s %s (%s)') % (sMovieTitle, sQual, sLang)
 
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -562,7 +568,7 @@ def showMoviesLinks():
         oGui.addMovie(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
     #on regarde si dispo dans d'autres qualités
-    sPattern = '<li><a href="(.+?)"><button class=".+?>(.+?)<i>(.+?)</i> <i class=".+?"></i></button></a></li>'
+    sPattern = '<li><a href="([^"]+)"><button class=".+?>([^<]+)<i>([^<]+)</i> <i class=".+?"></i></button></a></li>'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 
@@ -620,17 +626,17 @@ def showSeriesLinks():
 
     if (aResult[0]):
         sSaison = aResult[1][0][2]
-        sMovieTitle = (aResult[1][0][0].replace('&amp;','') + aResult[1][0][1] + ' ' + aResult[1][0][2]).replace('Télécharger', '')
+        sMovieTitle = (aResult[1][0][0].replace('&amp;', '') + aResult[1][0][1] + ' ' + aResult[1][0][2]).replace('Télécharger', '')
 
-    #on recherche d'abord la qualité courante
+    #on recherche d'abord la langue courante
     sPattern = '<i class="fa fa-folder-open"></i>\s*.+?<i>([^"]+)</i>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-    sQual = ''
+    sLang = ''
     if (aResult[1]):
-        sQual = aResult[1][0]
+        sLang = aResult[1][0].replace(' - ', '')
 
-    sDisplayTitle = ('%s [%s]') % (sMovieTitle, sQual.replace('|', ''))
+    sDisplayTitle = ('%s [%s]') % (sMovieTitle, sLang.replace('|', ''))
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -638,9 +644,8 @@ def showSeriesLinks():
     oOutputParameterHandler.addParameter('sThumb', sThumb)
     oGui.addTV(SITE_IDENTIFIER, 'showSeriesHosters', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
-    #on regarde si dispo dans d'autres qualités
-    sPattern1 = '<li><a href="([^"]+)"><button class="btn btn-default" style="width:100%">([^"]+)' + sSaison + '<i> -([^"]+)</i></button></a></li'
-
+    #on regarde si dispo dans d'autres langues
+    sPattern1 = '<li><a href="([^"]+)"><button class="btn btn-default" style="width:100%">([^"]+)' + sSaison + '<i> - ([^"]+)</i></button></a></li'
     aResult1 = oParser.parse(sHtmlContent, sPattern1)
 
     if (aResult1[0] == True):
@@ -652,9 +657,9 @@ def showSeriesLinks():
                 break
 
             sUrl = URL_MAIN + aEntry[0]
-            sQual = aEntry[1]
+            sQual = ''
             sLang = aEntry[2]
-            sDisplayTitle = ('%s [%s] %s') % (sMovieTitle, sQual, sLang)
+            sDisplayTitle = ('%s [%s] (%s)') % (sMovieTitle, sQual, sLang)
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -665,7 +670,7 @@ def showSeriesLinks():
         progress_.VSclose(progress_)
 
     #on regarde si dispo d'autres saisons
-    sPattern2 = '<li><a href="([^"]+)"><button class="btn btn-default" style="width:100%">([^"]+)((?!'+sSaison+').)<i> -([^"]+)</i></button></a></li'
+    sPattern2 = '<li><a href="([^"]+)"><button class="btn btn-default" style="width:100%">([^"]+)((?!' + sSaison + ').)<i> -([^"]+)</i></button></a></li'
     aResult2 = oParser.parse(sHtmlContent, sPattern2)
 
     #Affichage du texte
@@ -840,7 +845,7 @@ def DecryptddlProtect(url):
             oRequestHandler = cRequestHandler(url)
             sHtmlContent = oRequestHandler.request()
 
-        s = re.findall('<label for="captcha-response-newvar" >.+?</label><img src="(.+?)"', sHtmlContent)
+        s = re.findall('<label for=".+? >.+?</label><img src="(.+?)"', sHtmlContent)
         if host in s[0]:
             image = s[0]
         else:
@@ -858,7 +863,7 @@ def DecryptddlProtect(url):
         oRequestHandler.addHeaderEntry('Referer', url)
 
         oRequestHandler.addParameters('submit', 'unlock')
-        oRequestHandler.addParameters('captcha-response-newvar', captcha.upper())
+        oRequestHandler.addParameters('cr-nvar', captcha.upper())
 
         sHtmlContent = oRequestHandler.request()
 
