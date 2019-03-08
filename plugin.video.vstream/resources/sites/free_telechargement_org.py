@@ -12,7 +12,7 @@ from resources.lib.cloudflare import NoRedirection
 from resources.lib.config import GestionCookie
 from resources.lib.comaddon import progress, dialog, xbmc, xbmcgui
 
-import re
+import re,unicodedata
 
 UA = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; de-DE; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
@@ -467,6 +467,7 @@ def showMovies():
             sDesc = aEntry[2]
             sDesc = sDesc.decode("unicode_escape").encode("latin-1")
             sThumb = aEntry[3]
+            sTitle = unicodedata.normalize('NFKD', sTitle.decode('latin-1')).encode('ascii', 'ignore')
 
             sDisplayTitle = ('%s [%s]') % (sTitle, sQual)
 
