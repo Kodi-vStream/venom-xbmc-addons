@@ -401,8 +401,7 @@ def serieHosters():
     if '-saison-' in sUrl or 'anime' in sUrl:
         sPattern = '<a class="n_episode2" title=".+?, *([A-Z]+) *,.+?" *href="([^"]+)">(.+?)<\/a><\/li>'
     else:
-
-        sPattern = '<div class="unepetitesaisons">.+?<a href="([^"]+)".+?title="(.+?)">'
+        sPattern = '<div class="unepetitesaisons">[^<>]*?<a href="([^"]+)".+?title="(.+?)">'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
