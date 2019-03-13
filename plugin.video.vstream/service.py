@@ -28,7 +28,7 @@ def service():
             heure = path + '/' + heure
             heure = xbmc.translatePath(heure)
             EnregistrementEnCours = True
-            xbmc.executebuiltin("System.Exec("+(heure)+")")
+            os.system('python -i '+heure)
 
 if __name__ == '__main__':
     service()

@@ -11,8 +11,8 @@ class cEnregistremement:
     def programmation_enregistrement(self, sUrl):
         oGui = cGui()
         ADDON = addon()
-        if 'firstonetv' in sUrl or 'bouygtel' in sUrl:
-            sUrl = sUrl.replace('|Referer=','" -headers "Referer:').replace('&User-Agent=Mozilla/5.0+(X11;+Linux+i686)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Ubuntu+Chromium/48.0.2564.116+Chrome/48.0.2564.116+Safari/537.36&X-Requested-With=ShockwaveFlash/28.0.0.137&Origin=https://www.firstonetv.net','" -headers "User-Agent:Mozilla/5.0+(X11;+Linux+i686)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Ubuntu+Chromium/48.0.2564.116+Chrome/48.0.2564.116+Safari/537.36" -headers "X-Requested-With:ShockwaveFlash/28.0.0.137" -headers "Origin:https://www.firstonetv.net" -sn -c:v copy -c:a copy')
+        if 'firstonetv' in sUrl or 'bouygtel' in sUrl or 'heroku' in sUrl:
+            sUrl = sUrl.replace('|Referer=','" -headers "Referer:').replace('&User-Agent=Mozilla/5.0+(X11;+Linux+i686)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Ubuntu+Chromium/48.0.2564.116+Chrome/48.0.2564.116+Safari/537.36&X-Requested-With=ShockwaveFlash/28.0.0.137&Origin=https://www.firstonetv.live','" -headers "User-Agent:Mozilla/5.0+(X11;+Linux+i686)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Ubuntu+Chromium/48.0.2564.116+Chrome/48.0.2564.116+Safari/537.36" -headers "X-Requested-With:ShockwaveFlash/28.0.0.137" -headers "Origin:https://www.firstonetv.live" -sn -c:v copy -c:a copy')
             header = '-fflags +genpts+igndts -y -i "' + sUrl
         elif '.m3u8' in sUrl:
             header = '-fflags +genpts+igndts -y -i "' + sUrl +'"'
@@ -40,14 +40,15 @@ class cEnregistremement:
         realPath = xbmc.translatePath(pathEnregistrement + '/' + str(heureFichier) + '.py').replace('\\','\\\\')
 
         f = xbmcvfs.File(realPath,'w')
-        f = f.write('''import os,subprocess
+        read = f.write('''#-*- coding: utf-8 -*-
+import os,subprocess
 command = '"'''+ffmpeg+'''" '''+header+''' -t '''+str(durer)+''' "'''+currentPath+'''/'''+titre+'''.mkv"'
 proc = subprocess.Popen(command, stdout=subprocess.PIPE)
 p_status = proc.wait()
 f = open("'''+currentPath+'''/test.txt",'w')
 f.write('Finit avec code erreur ' + str(p_status))
-f.close()
-os.remove("'''+realPath+'''")''')
+f.close()''')
+        f.close()
         oDialog = dialog().VSinfo('Redemarrer Kodi pour prendre en compte la planification','Vstream',10)
         oGui.setEndOfDirectory()
 
