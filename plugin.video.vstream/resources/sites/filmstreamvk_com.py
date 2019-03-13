@@ -234,7 +234,7 @@ def showLinks():
         ListeUrl = [(sUrl, aResult[1][0])]
 
     #recuperation des suivants
-    sPattern = '<a href="([^"]+)"><span>(.+?)</span>'
+    sPattern = '<a href="([^"]+)" class="post-page-numbers".+?<span>(.+?)<\/span>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     ListeUrl = ListeUrl + aResult[1]
 
