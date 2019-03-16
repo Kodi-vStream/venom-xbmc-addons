@@ -240,8 +240,6 @@ class cHosterGui:
             return self.getHoster('uqload')
         if ('letwatch' in sHostName):
             return self.getHoster('letwatch')
-        if ('easyvid' in sHostName):
-            return self.getHoster('easyvid')
         if ('www.amazon' in sHostName):
             return self.getHoster('amazon')
         if ('filepup' in sHostName):
