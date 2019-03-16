@@ -381,11 +381,12 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
         if 'stream365' in url:#Terminé
             oRequestHandler = cRequestHandler(url)
             sHtmlContent2 = oRequestHandler.request()
-            sPattern2 = '<param name="flashvars" value="ZonePlayGameId=(.+?)&'
+            sPattern2 = 'var a[ 0-9]+="(.+?)"'
             aResult = re.findall(sPattern2, sHtmlContent2)
             if aResult:
-                gameId = aResult[0]
-                sHosterUrl = 'http://91.192.80.210/edge0/xrecord/' + gameId + '/prog_index.m3u8'
+                gameId = int(aResult[2]) + int(aResult[0]) - int(aResult[1]) - int(aResult[2])
+                VSlog(gameId)
+                sHosterUrl = 'http://91.192.80.210/edge0/xrecord/' + str(gameId) + '/prog_index.m3u8'
 
         if 'youtube' in url:#Je sais pas
             dialog().VSinfo('Youtube peut ne pas marcher c\'est de la faute à Kodi', "Livetv", 15)
@@ -396,7 +397,7 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
                 video_id = aResult[0]
                 #VSlog(video_id)
 
-            url1 = url.replace('/embed/', '/watch?v=')
+            url1 = url.replace('/embed/', '/watch?v=').replace('?autoplay=1','')
             oRequestHandler = cRequestHandler(url1)
             sHtmlContent2 = oRequestHandler.request()
 
@@ -423,7 +424,7 @@ def showHosters(sSearch = ''): #affiche les videos disponible du live
             sHtmlContent3 = urllib2.unquote(response.read())
             #VSlog(sHtmlContent3)
 
-            sPattern3 = 'hlsvp=(.+?)&'
+            sPattern3 = 'hlsManifestUrl":"(.+?)"'
             aResult = re.findall(sPattern3, sHtmlContent3)
 
             if aResult:

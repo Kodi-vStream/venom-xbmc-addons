@@ -42,7 +42,7 @@ class cEnregistremement:
         f = xbmcvfs.File(realPath,'w')
         read = f.write('''#-*- coding: utf-8 -*-
 import os,subprocess
-command = '"'''+ffmpeg+'''" '''+header+''' -t '''+str(durer)+''' "'''+currentPath+'''/'''+titre+'''.mkv"'
+command = '"'''+ffmpeg+'''" '''+header+''' -t '''+str(durer)+''' "'''+currentPath+titre+'''.mkv"'
 proc = subprocess.Popen(command, stdout=subprocess.PIPE)
 p_status = proc.wait()
 f = open("'''+currentPath+'''/test.txt",'w')
