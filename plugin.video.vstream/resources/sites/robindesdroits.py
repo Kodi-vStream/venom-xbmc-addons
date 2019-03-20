@@ -13,6 +13,8 @@ from resources.lib.multihost import cMultiup
 from resources.lib.packer import cPacker
 from resources.lib.comaddon import progress, VSlog
 
+import urllib
+
 SITE_IDENTIFIER = 'robindesdroits'
 SITE_NAME = 'Robin des Droits'
 SITE_DESC = 'Replay sports'
@@ -333,8 +335,6 @@ def AdflyDecoder(url):
         from math import isnan
         code = aResult[1][0]
 
-        VSlog(code)
-
         A = ''
         B = ''
         #First pass
@@ -387,6 +387,12 @@ def showHosters():
 
     if 'AdF' in sHtmlContent:
         sUrl = AdflyDecoder(sUrl)
+        if 'motheregarded' in sUrl:
+            sPattern = 'href=(.+?)&dp_lp'
+            aResult = oParser.parse(sUrl, sPattern)
+            if (aResult[0] == True):
+                sUrl = urllib.unquote(''.join(aResult[1])).decode('utf8')
+
         oRequestHandler = cRequestHandler(sUrl)
         sHtmlContent = oRequestHandler.request()
 
@@ -397,10 +403,10 @@ def showHosters():
     sPattern = '<b><a href=".+?redirect\/\?url\=(.+?)\&id.+?">'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
-
     if (aResult[0] == True) or 'gounlimited' or 'jheberg' or 'multiup' in sUrl:
         if (aResult[0] == True):
             sUrl = cUtil().urlDecode(aResult[1][0])
+            VSlog(sUrl)
 
         if 'gounlimited' in sUrl:
             oRequestHandler = cRequestHandler(sUrl)

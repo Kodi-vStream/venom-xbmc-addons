@@ -1,4 +1,4 @@
-import time, os, xbmcvfs
+import time, os, subprocess, xbmcvfs
 from resources.lib.comaddon import progress, addon, xbmc, xbmcgui, VSlog, dialog
 from datetime import datetime
 
@@ -28,7 +28,10 @@ def service():
             heure = path + '/' + heure
             heure = xbmc.translatePath(heure)
             EnregistrementEnCours = True
-            xbmc.executebuiltin("System.Exec("+(heure)+")")
+            VSlog('python '+heure)
+            command ='python '+heure
+            proc = subprocess.Popen(command, stdout=subprocess.PIPE)
+            p_status = proc.wait()
 
 if __name__ == '__main__':
     service()

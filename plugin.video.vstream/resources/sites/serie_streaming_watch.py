@@ -192,7 +192,7 @@ def ShowEpisode():
     except:
         pass
 
-    sPattern = '<a href="([^"]+)"><span>([^<>]+)<\/span><\/a>'
+    sPattern = '<a href="([^"]+)" class="post-page-numbers".+?<span>([^<>]+)<\/span><\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):

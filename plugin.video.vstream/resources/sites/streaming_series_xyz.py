@@ -262,7 +262,7 @@ def showSeries():
     except:
         pass
 
-    sPattern = '<a href="([^<]+)"><span>(.+?)</span></a>'
+    sPattern = '<a href="([^<]+)" class.+?><span>(.+?)</span></a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
