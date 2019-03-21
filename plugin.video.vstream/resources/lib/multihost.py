@@ -4,7 +4,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 import re, urllib
 from resources.lib.comaddon import VSlog
-UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0',
+UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
 #modif cloudflare
 def GetHtml(url, postdata = None):
 
@@ -25,7 +25,7 @@ def GetHtml(url, postdata = None):
             oRequest.addHeaderEntry('Referer', 'https://download.jheberg.net/redirect/xxxxxx/yyyyyy/')
 
         elif 'download.jheberg.net' in url:
-            oRequest.addHeaderEntry('Host','download.jheberg.net')
+            oRequest.addHeaderEntry('Host', 'download.jheberg.net')
             oRequest.addHeaderEntry('Referer', url)
 
         oRequest.addParametersLine(postdata)
@@ -50,7 +50,7 @@ class cMultiup:
         sHtmlContent = GetHtml(NewUrl)
 
         sPattern = 'nameHost="([^"]+)".+?link="([^"]+)".+?class="([^"]+)"'
-        r = re.findall(sPattern,sHtmlContent, re.DOTALL)
+        r = re.findall(sPattern, sHtmlContent, re.DOTALL)
 
         if not r:
             return False
@@ -69,7 +69,7 @@ class cJheberg:
 
     def GetUrls(self, url):
         idFile = url.rsplit('/', 1)[-1]
-        NewUrl = 'https://api.jheberg.net/file/'+idFile
+        NewUrl = 'https://api.jheberg.net/file/' + idFile
         sHtmlContent = GetHtml(NewUrl)
 
         sPattern = '"hosterId":([^"]+),"hosterName":"([^"]+)",".+?status":"([^"]+)"'
@@ -79,10 +79,9 @@ class cJheberg:
 
         for item in r:
             if not 'ERROR' in item[2]:
-                urllink = 'https://download.jheberg.net/redirect/'+idFile+'-'+item[0]
+                urllink = 'https://download.jheberg.net/redirect/' + idFile + '-' + item[0]
                 url = GetHtml(urllink)
 
                 self.list.append(url)
 
         return self.list
-
