@@ -274,10 +274,15 @@ class CloudflareBypass(object):
             if ('cf_clearance' not in cookies) and htmlcontent and ('__cfduid=' in cookies):
 
                 xbmc.log("******  Decodage *****", xbmc.LOGNOTICE)
+                
+                #fh = open('c:\\test.txt', "w")
+                #fh.write(htmlcontent)
+                #fh.close()
 
                 #recuperation parametres
                 hash = re.findall('<input type="hidden" name="jschl_vc" value="(.+?)"\/>',htmlcontent)[0]
                 passe = re.findall('<input type="hidden" name="pass" value="(.+?)"\/>',htmlcontent)[0]
+                s = re.findall('<input type="hidden" name="s" value="([^"]+)"',htmlcontent, re.DOTALL)[0]
 
                 #calcul de la reponse
                 rep = self.GetResponse(htmlcontent)
@@ -286,7 +291,7 @@ class CloudflareBypass(object):
                 #showInfo("Information", 'Decodage protection CloudFlare' , 5)
                 xbmc.sleep(6000)
 
-                url = self.hostComplet + '/cdn-cgi/l/chk_jschl?jschl_vc='+ urllib.quote_plus(hash) +'&pass=' + urllib.quote_plus(passe) + '&jschl_answer=' + rep
+                url = self.hostComplet + '/cdn-cgi/l/chk_jschl?s=' + urllib.quote_plus(s) + '&jschl_vc='+ urllib.quote_plus(hash) +'&pass=' + urllib.quote_plus(passe) + '&jschl_answer=' + rep
 
                 #No post data here
                 postdata = None
@@ -354,6 +359,8 @@ class CloudflareBypass(object):
                 #fh = open('c:\\test.txt', "w")
                 #fh.write(htmlcontent)
                 #fh.close()
+                
+                #xbmc.log(str(self.Header), xbmc.LOGNOTICE)
 
                 url2 = self.Header.get('Location','')
                 if url2:
