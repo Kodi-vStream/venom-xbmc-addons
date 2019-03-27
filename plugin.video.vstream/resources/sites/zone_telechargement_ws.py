@@ -597,9 +597,9 @@ def showSeriesLinks():
     #print aResult
     if (aResult[0]):
         if '&raquo; Annuaire Telechargement' in str(aResult[1][0][0]):
-            sMovieTitle = aResult[1][0][0].replace('&amp;','').replace('&raquo; Annuaire Telechargement','')
+            sMovieTitle = aResult[1][0][0].replace('&amp;', '').replace('&raquo; Annuaire Telechargement', '')
         else:
-            sMovieTitle = aResult[1][0][0].replace('&amp;','') + aResult[1][0][1] + ' ' + aResult[1][0][2]
+            sMovieTitle = aResult[1][0][0].replace('&amp;', '') + aResult[1][0][1] + ' ' + aResult[1][0][2]
 
     #on recherche d'abord la qualité courante
     sPattern = '<div style="[^"]+?">.+?Qualité (.+?)<'
@@ -893,7 +893,7 @@ def CutQual(sHtmlContent):
 
 def CutSais(sHtmlContent):
     oParser = cParser()
-    sPattern = '<h3>Saisons.+?galement disponibles pour cette saison:</h3>(.+?)<h3>Qualit.+?galement disponibles pour cette saison:</h3>'
+    sPattern = '<h3>Saisons.+?galement disponibles pour cette saison:</h3>(.+?)</div>'
     aResult = oParser.parse(sHtmlContent, sPattern)
     #print aResult
     if (aResult[0]):
