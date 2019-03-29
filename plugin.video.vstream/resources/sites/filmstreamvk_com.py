@@ -222,7 +222,7 @@ def showLinks():
         aResult = oParser.parse(sHtmlContent, sPattern)
         if aResult[0]:
             sDesc = aResult[1][0]
-            sDesc = sDesc.replace('<br />', '').replace('&#8230;', '...').replace('&#8217;', '\'')
+            sDesc = sDesc.replace('<br />', '').replace('&#8217;', '\'').replace('&#8230;', '...')
     except:
         pass
 
@@ -280,7 +280,7 @@ def showEpisode():
     except:
         pass
 
-    sPattern = '<td class="liste_episode" width="10%">(.+?)<\/td>|<a href="([^<>"]+?)" title="" class="num_episode">([0-9]+)<\/a>'
+    sPattern = '<td class="liste_episode" width="10%">([^<]+)<\/td>|<a href="([^<>"]+?)" title="" class="num_episode">([0-9]+)<\/a>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -334,10 +334,10 @@ def showHosters():
         np = aResult[1][0][2]
         ref = sUrl.rsplit('/', 1)[0]
 
-        pdata = 'action=electeur&lien_referer='+ ref + '&ep=' + ep +'&type=' + type + '&np=' + np
+        pdata = 'action=electeur&lien_referer=' + ref + '&ep=' + ep + '&type=' + type + '&np=' + np
         
 
-        oRequest = cRequestHandler('https://filmstreamvf.com/wp-admin/admin-ajax.php')
+        oRequest = cRequestHandler(URL_MAIN + 'wp-admin/admin-ajax.php')
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0')
         oRequest.addHeaderEntry('Referer', sUrl)
