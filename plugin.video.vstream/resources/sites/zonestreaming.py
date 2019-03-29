@@ -7,7 +7,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress
 from resources.lib.multihost import cJheberg
 from resources.lib.util import cUtil
 import re
@@ -431,7 +431,6 @@ def serieHosters():
                 break
 
             sHosterUrl = aEntry
-            VSlog(sHosterUrl)
             #pour récuperer tous les liens
             if '&url=' in sHosterUrl:
                 sHosterUrl = sHosterUrl.split('&url=')[1]
