@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress,VSlog
 import urllib2, urllib, re
 import unicodedata
 
@@ -409,10 +409,14 @@ def showHostersLink3():
     response = urllib2.urlopen(req)
     data = response.read()
     response.close()
-
+    
     # Recherche du premier lien
-    sPattern = 'href="([^"]+)" title'
+    sPattern = 'href=["\'](http[^"\']+)["\']'
     aResult = oParser.parse(data, sPattern)
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(data)
+    #fh.close()
 
     # Si il existe, suivi du lien
     if ( aResult[0] == True ):
@@ -422,13 +426,14 @@ def showHostersLink3():
         # href = sLink + '/' + aResult[1][0] # concaténation du résultat avec le href trouvé via regex
         # VSlog(href)
 
+        #VSlog(aResult[1][0]) 
         req = urllib2.Request(aResult[1][0], None, headers)
         response = urllib2.urlopen(req)
         data = response.read()
         response.close()
 
     #VSlog(data)
-
+    
     sPattern = 'file:"(.+?)".+?label:"(.+?)"'
     aResult = oParser.parse(data, sPattern)
 
@@ -465,6 +470,8 @@ def showHostersLink3():
             else:
                 sHosterUrl = str(sLink2)
                 oHoster = cHosterGui().checkHoster(sHosterUrl)
+                
+            #VSlog(sHosterUrl)
 
             if (oHoster != False):
                 oHoster.setDisplayName(sTitle)
