@@ -133,14 +133,14 @@ def WindowsBoxes(sTitle, sFileName, num,year = ''):
         try:
             from resources.lib.tmdb import cTMDb
             grab = cTMDb()
-            meta = grab.get_meta('movie',sFileName, '', xbmc.getInfoLabel('ListItem.Property(TmdbId)'))
+            meta = grab.get_meta('movie', sFileName, '', xbmc.getInfoLabel('ListItem.Property(TmdbId)'))
         except:
             pass
     elif num == "2":
         try:
             from resources.lib.tmdb import cTMDb
             grab = cTMDb()
-            meta = grab.get_meta('tvshow',sFileName, '', xbmc.getInfoLabel('ListItem.Property(TmdbId)'))
+            meta = grab.get_meta('tvshow', sFileName, '', xbmc.getInfoLabel('ListItem.Property(TmdbId)'))
         except:
             pass
 
@@ -181,11 +181,11 @@ def WindowsBoxes(sTitle, sFileName, num,year = ''):
             self.getControl(5200).setVisible(False)
             #synopsis_first
             self.setFocusId(36)
-                
+
             #self.getControl(50).reset()
             listitems = []
             cast = []
-        
+
             try:
                 for slabel, slabel2, sicon, sid in meta['cast']:
                     listitem_ = listitem(label = slabel, label2=slabel2, iconImage=sicon)
@@ -203,7 +203,7 @@ def WindowsBoxes(sTitle, sFileName, num,year = ''):
             #self.getControl(49).setVisible(True)
             #self.getControl(2).setImage(meta['cover_url'])
             #self.getControl(3).setLabel(meta['rating'])
- 
+
             for e in meta:
                 property = 'ListItem.%s' %(e)
                 if isinstance(meta[e], unicode):
@@ -219,7 +219,7 @@ def WindowsBoxes(sTitle, sFileName, num,year = ''):
             try:
                 for i in meta:
                     try:
-                        sTitle = unicodedata.normalize('NFKD', i['title']).encode('ascii','ignore')
+                        sTitle = unicodedata.normalize('NFKD', i['title']).encode('ascii', 'ignore')
                     except: sTitle = "Aucune information"
                     try:
                         sThumbnail = 'https://image.tmdb.org/t/p/w342' + i['poster_path']
@@ -254,7 +254,7 @@ def WindowsBoxes(sTitle, sFileName, num,year = ''):
 
             try:
                 try:
-                    sTitle = unicodedata.normalize('NFKD', meta['name']).encode('ascii','ignore')
+                    sTitle = unicodedata.normalize('NFKD', meta['name']).encode('ascii', 'ignore')
                 except: sTitle = "Aucune information"
                 #xbmcgui.Window(10000).setProperty('person_name', sTitle)
                 try:
@@ -352,7 +352,7 @@ def WindowsBoxes(sTitle, sFileName, num,year = ''):
                         self.credit(meta)
                     else:
                         self.getControl(13).setLabel("Aucune Information")
-                    
+
                 except: return
 
             elif controlId == 5200:
