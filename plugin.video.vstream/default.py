@@ -33,7 +33,7 @@ class main:
 
         oInputParameterHandler = cInputParameterHandler()
         oInputParameterHandler.getAllParameter()
-        
+
         if (oInputParameterHandler.exist('function')):
             sFunction = oInputParameterHandler.getValue('function')
         else:
@@ -146,14 +146,14 @@ class main:
 def isHosterGui(sSiteName, sFunction):
     if (sSiteName == 'cHosterGui'):
         oHosterGui = cHosterGui()
-        exec "oHosterGui."+ sFunction +"()"
+        exec "oHosterGui." + sFunction + "()"
         return True
     return False
 
 def isGui(sSiteName, sFunction):
     if (sSiteName == 'cGui'):
         oGui = cGui()
-        exec "oGui."+ sFunction +"()"
+        exec "oGui." + sFunction + "()"
         return True
     return False
 
@@ -161,7 +161,7 @@ def isFav(sSiteName, sFunction):
     if (sSiteName == 'cFav'):
         from resources.lib.favourite import cFav
         oFav = cFav()
-        exec "oFav."+ sFunction +"()"
+        exec "oFav." + sFunction + "()"
         return True
     return False
 
@@ -169,7 +169,7 @@ def isLibrary(sSiteName, sFunction):
     if (sSiteName == 'cLibrary'):
         from resources.lib.library import cLibrary
         oLibrary = cLibrary()
-        exec "oLibrary."+ sFunction +"()"
+        exec "oLibrary." + sFunction + "()"
         return True
     return False
 
@@ -177,14 +177,14 @@ def isDl(sSiteName, sFunction):
     if (sSiteName == 'cDownload'):
         from resources.lib.download import cDownload
         oDownload = cDownload()
-        exec "oDownload."+ sFunction +"()"
+        exec "oDownload." + sFunction + "()"
         return True
     return False
 
 def isHome(sSiteName, sFunction):
     if (sSiteName == 'cHome'):
         oHome = cHome()
-        exec "oHome."+ sFunction +"()"
+        exec "oHome." + sFunction + "()"
         return True
     return False
 
@@ -192,7 +192,7 @@ def isTrakt(sSiteName, sFunction):
     if (sSiteName == 'cTrakt'):
         from resources.lib.trakt import cTrakt
         oTrakt = cTrakt()
-        exec "oTrakt."+ sFunction +"()"
+        exec "oTrakt." + sFunction + "()"
         return True
     return False
 
@@ -216,12 +216,12 @@ def searchGlobal():
     #VSlog(str(aPlugins), xbmc.LOGNOTICE)
 
     progress_ = progress().VScreate()
-  
+
     #kodi 17 vire la fenetre busy qui ce pose au dessus de la barre de Progress
     try:
         xbmc.executebuiltin("Dialog.Close(busydialog)")
     except: pass
-    
+
     window(10101).setProperty('search', 'true')
 
     oGui.addText('globalSearch', addons.VSlang(30081) % (sSearchText), 'none.png')
@@ -258,10 +258,10 @@ def searchGlobal():
 
 
 
-        #result['params'].addParameter('VSTRMSEARCH','True')
+        #result['params'].addParameter('VSTRMSEARCH', 'True')
 
         oGui.addFolder(result['guiElement'],result['params'])
-        #VSlog('%s - %s' % (middle,old_label),  xbmc.LOGNOTICE)
+        #VSlog('%s - %s' % (middle, old_label),  xbmc.LOGNOTICE)
 
         # if progress_.iscanceled():
         #     if cancel == True:
@@ -279,10 +279,10 @@ def _pluginSearch(plugin, sSearchText):
     try:
         plugins = __import__('resources.sites.%s' % plugin['identifier'], fromlist=[plugin['identifier']])
         function = getattr(plugins, plugin['search'][1])
-        sUrl = plugin['search'][0]+str(sSearchText)
+        sUrl = plugin['search'][0] + str(sSearchText)
         function(sUrl)
         VSlog("Load Recherche: " + str(plugin['identifier']))
     except:
-        VSlog(plugin['identifier']+': search failed')
+        VSlog(plugin['identifier'] + ': search failed')
 
 main()
