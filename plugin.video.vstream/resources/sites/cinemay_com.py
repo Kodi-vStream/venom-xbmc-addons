@@ -18,15 +18,15 @@ SITE_IDENTIFIER = 'cinemay_com'
 SITE_NAME = 'Cinemay'
 SITE_DESC = 'Films & Séries en streaming'
 
-URL_MAIN = 'http://cinemay.ws/'
+URL_MAIN = 'https://cinemay.ws/'
 
-MOVIE_NEWS = (URL_MAIN + 'film-en-streaming-vf/', 'showMovies')
-MOVIE_MOVIE = (URL_MAIN + 'film-en-streaming-vf/', 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'film-vf-streaming/', 'showMovies')
+MOVIE_MOVIE = (URL_MAIN + 'film-vf-streaming/', 'showMovies')
 MOVIE_GENRES = (True, 'showMovieGenres')
 
 SERIE_NEWS = (URL_MAIN, 'showSeriesNews')
 SERIE_SERIES = (URL_MAIN, 'showSeriesNews')
-SERIE_LIST = (URL_MAIN + 'series-tv-streaming-vf/', 'showSeriesList')
+SERIE_LIST = (URL_MAIN + 'serie-streaming/', 'showSeriesList')
 
 URL_SEARCH = (URL_MAIN + '?s=', 'showMovies')
 URL_SEARCH_MOVIES = (URL_MAIN + '?s=', 'showMovies')
@@ -107,7 +107,7 @@ def showMovies(sSearch=''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<a href="([^"]+)" data-url=".+?" class=".+?" title="([^"]+)"><img.+?src="(.+?)"'
+    sPattern = '<a href="([^"]+)" data-url=".+?" class=".+?" title="([^"]+)"><img.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == False):
@@ -173,7 +173,7 @@ def showSeriesNews():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="titleE".+?<a href="([^"]+)">(.+?)</a>'
+    sPattern = '<div class="titleE".+?<a href="([^"]+)">([^<]+)</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -207,7 +207,7 @@ def showSeriesList():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<li class="alpha-title"><h3>([^"]+)</h3>|</li><li class="item-title">.+?href="([^"]+)">(.+?)</a>'
+    sPattern = '<li class="alpha-title"><h3>([^<]+)</h3>|</li><li class="item-title">.+?href="([^"]+)">([^<]+)</a>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -243,7 +243,7 @@ def showSeries():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
 
-    sPattern = '<div class="poster dsdataposter".+?img src="(.+?)"|<span class="title">(.+?)<i>|<div class="numerando">(.+?)<\/div>.+?<a href="(.+?)">'
+    sPattern = '<div class="imagen">.+?img src="([^"]+)"|<span class="title">([^<]+)<i>|<div class="numerando">([^<]+)<\/div>.+?<a href="([^"]+)"'
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
@@ -315,7 +315,7 @@ def showLinks():
 
         cookies = getcookie(head)
 
-    sPattern = '<input type="hidden" name="videov" id="videov" value="(.+?)">.+?<\/b>(.+?)<span class="dt_flag">.+?\/flags\/(.+?)\.'
+    sPattern = '<input type="hidden" name="videov" id="videov" value="([^"]+)">.+?<\/b>([^<]+)<span class="dt_flag">.+?\/flags\/(.+?)\.'
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
         for aEntry in aResult[1]:

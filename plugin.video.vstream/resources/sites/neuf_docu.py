@@ -127,7 +127,7 @@ def showMovies(sSearch = ''):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sPattern = 'class="attachment-medium aligncenter" src="([^<]+)" />.+?<h2 class="entry-title"><a href="([^<]+)" rel="bookmark" title=".+?">(.+?)<\/a><\/h2>.+?entry-meta">.+?>(.+?)<\/p>'
+    sPattern = 'class="attachment-medium aligncenter" src="([^<]+)".+?<a href="([^"<]+)"[^<>]+>([^<>]+)'
     aResult = oParser.parse(sHtmlContent, sPattern)
         
     if (aResult[0] == False):
@@ -145,14 +145,13 @@ def showMovies(sSearch = ''):
             sThumb = aEntry[0]
             sUrl = aEntry[1]
             sTitle = aEntry[2]
-            sDesc = aEntry[3]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, 'doc.png', sThumb, '', oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 

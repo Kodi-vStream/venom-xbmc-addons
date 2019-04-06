@@ -38,12 +38,12 @@ def ProtectstreamBypass(url):
     session = requests.Session()
     session.headers.update({
         'User-Agent': UA,
-        'Referer' : 'https://dpstreaming.to/',
+        'Referer': URL_MAIN,
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     })
 
     try:
-        response = session.get( url, timeout=5 )
+        response = session.get(url, timeout=5)
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
         print "erreur " + str(e)
@@ -62,16 +62,16 @@ def ProtectstreamBypass(url):
 
         postdata = aResult[1][0]
         headers = {
-            'User-Agent' : UA,
-            'Accept' : '*/*',
-            'Referer' : url,
-            'Content-Type' : 'application/x-www-form-urlencoded',
+            'User-Agent': UA,
+            'Accept': '*/*',
+            'Referer': url,
+            'Content-Type': 'application/x-www-form-urlencoded',
         }
         session.headers.update( headers )
-        data = {'k' : postdata}
+        data = {'k': postdata}
 
         try:
-            response = session.post( 'https://www.protect-stream.com/secur2.php', data=data )
+            response = session.post('https://www.protect-stream.com/secur2.php', data=data)
         except requests.exceptions.RequestException as e:
             print "erreur" + str(e)
             return ''
@@ -280,13 +280,13 @@ def showSeries():
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
 
     oGui.setEndOfDirectory()
 
-def showHosters():
+def showLinks():
     oGui = cGui()
     oParser = cParser()
     oInputParameterHandler = cInputParameterHandler()

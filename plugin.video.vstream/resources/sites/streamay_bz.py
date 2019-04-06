@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, dialog
+from resources.lib.comaddon import progress, dialog#, VSlog
 from resources.lib.util import cUtil
 import base64, re
 
@@ -16,14 +16,14 @@ SITE_DESC = 'Films, Séries & Mangas en streaming'
 URL_MAIN = 'https://ww1.streamay.com/'
 
 MOVIE_MOVIE = ('http://', 'load')
-MOVIE_NEWS = (URL_MAIN, 'showMovies')
+MOVIE_NEWS = (URL_MAIN + 'accueil/', 'showMovies')
 MOVIE_VIEWS = (URL_MAIN + '?v_sortby=views&v_orderby=desc', 'showMovies')
-MOVIE_GENRES = (URL_MAIN + 'films', 'showGenres')
+MOVIE_GENRES = (True, 'showGenres')
 MOVIE_LIST = (URL_MAIN, 'AlphaSearch')
 
 URL_SEARCH = ('', 'showSearchMovies')
 URL_SEARCH_MOVIES = ('', 'showSearchMovies')
-URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
+# URL_SEARCH_SERIES = (URL_MAIN + '?s=', 'showMovies')
 FUNCTION_SEARCH = 'showSearchMovies'
 
 def load():
@@ -45,7 +45,7 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_GENRES[0])
     oGui.addDir(SITE_IDENTIFIER, MOVIE_GENRES[1], 'Films (Genres)', 'genres.png', oOutputParameterHandler)
 
-    #30/10 Ne marche le site ne renvoie rien
+    #30/10 Ne marche pas le site ne renvoi rien
     #oOutputParameterHandler = cOutputParameterHandler()
     #oOutputParameterHandler.addParameter('siteUrl', MOVIE_LIST[0])
     #oGui.addDir(SITE_IDENTIFIER, MOVIE_LIST[1], 'Films (Liste) ', 'listes.png', oOutputParameterHandler)
@@ -81,18 +81,18 @@ def AlphaSearch():
 def showGenres():
     oGui = cGui()
     oParser = cParser()
-    oRequestHandler = cRequestHandler(URL_MAIN)
+    oRequestHandler = cRequestHandler(MOVIE_NEWS[0])
     sHtmlContent = oRequestHandler.request()
 
     sHtmlContent = oParser.abParse(sHtmlContent, '<div class=Title>Film Streaming Par Genres</div>', '</div></aside>')
 
-    sPattern = '<li class="cat-item cat-item-.+?"><a href=(.+?)>(.+?)</a> (.+?)</li>'
+    sPattern = '<li class="cat-item cat-item-.+?"><a href=([^>]+)>(.+?)</a>([^<]+)</li>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
         for aEntry in aResult[1]:
             sUrl = aEntry[0]
-            sTitle = aEntry[1] + ' ' +aEntry[2]
+            sTitle = aEntry[1] + aEntry[2]
 
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -164,12 +164,12 @@ def showSearchMovies(sSearch = ''):
         oRequest = cRequestHandler(sUrl2)
         oRequest.setRequestType(1)
         oRequest.addHeaderEntry('User-Agent',"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0")
-        oRequest.addParameters('Referer', 'https://ww1.streamay.com/')
+        oRequest.addParameters('Referer', URL_MAIN)
 
         oRequest.addParametersLine(pdata)
         sHtmlContent = oRequest.request()
 
-        sPattern = '<div class="TPost B">.+?<a href="([^"]+)">.+?<img src="([^"]+)".+?<div class="Title">(.+?)</div>'
+        sPattern = '<div class="TPost B">.+?<a href="([^"]+)">.+?<img src="([^"]+)".+?<div class="Title">([^<]+)</div>'
 
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
@@ -206,7 +206,7 @@ def showSearchMovies(sSearch = ''):
 def showMovies(sSearch = ''):
     oGui = cGui()
     if sSearch:
-        sUrl = sSearch.replace(' ','+')
+        sUrl = sSearch.replace(' ', '+')
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -217,7 +217,7 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
 
     sHtmlContent = oParser.abParse(sHtmlContent, 'MovieList Rows', '</body></html>')
-    sPattern = '<div class=Image>.+?img src=([^ ]+).+?<a href=([^ ]+)><div class=Title>(.+?)</div></a>.+?<div class=Description><p>(.+?)</p>'
+    sPattern = '<div class=Image>.+?src=([^ ]+) .+?<span class=Qlty>.+?<a href=([^>]+)><div class=Title>([^<]+)</div></a>.+?<div class=Description><p>(.+?)</p>'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     if (aResult[0] == True):
@@ -228,8 +228,8 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
 
-            sTitle = aEntry[2]
             sUrl = aEntry[1]
+            sTitle = aEntry[2]
             sThumb = aEntry[0].replace('w154', 'w342')
             if not sThumb.startswith('http'):
                 sThumb = 'http:' + sThumb
@@ -262,7 +262,7 @@ def showMovies(sSearch = ''):
         oGui.setEndOfDirectory()
 
 def __checkForNextPage(sHtmlContent):
-    sPattern = 'href=([^"]+)>Next.+?<\/a><\/div>'
+    sPattern = 'href="*([^">]+)"*>Next'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
     if (aResult[0] == True):
@@ -282,27 +282,37 @@ def showHosters():
 
     oParser = cParser()
 
-    sPattern = 'data-.+?t=VideoOption.+?>.+?ecteur <span>(.+?)</span></div><p class=AAIco-language>(.+?)</p><p class=AAIco-dns>(.+?)</p><p class=AAIco-equalizer>(.+?)</p>' #lang,qual,host
+    sPattern = '<p class=AAIco-language>([^<]+)</p><p class=AAIco-dns>.+?<p class=AAIco-equalizer>([^<]+)</p>' #lang,qual
     aResult1 = re.findall(sPattern, sHtmlContent, re.DOTALL)
+    # VSlog(str(aResult1)) #Commenter ou supprimer cette ligne une fois fini
 
     sHtmlContent = oParser.abParse(sHtmlContent, '<div class=VideoPlayer>', '<div class=Image>')
 
-    sPattern2 = '<div id=VideoOption\d+ class=Vid.+?>(.+?)</div>'
+    sPattern2 = '<div id=VideoOption\d+ class="*Vid.+?>([^<]+)</div>'
     aResult2 = re.findall(sPattern2, sHtmlContent, re.DOTALL)
+    # VSlog(str(aResult2)) #Commenter ou supprimer cette ligne une fois fini
 
-    aResult = zip(aResult2, [x[0] + ' ' + x[1] for x in aResult1])
+    aResult = zip(aResult2, [x[1] + '] (' + x[0] for x in aResult1])
+    # VSlog(str(aResult)) #Commenter ou supprimer cette ligne une fois fini
 
     if (aResult):
         for aEntry in aResult:
             sHtmlContent = base64.b64decode(aEntry[0])
+            # VSlog(sHtmlContent)
 
+            sHosterUrl = ''
             sUrl = re.search('src="([^"]+)"', sHtmlContent)
+            sHosterUrl = sUrl.group(1)
+
+            oRequestHandler = cRequestHandler(sHosterUrl)
+            sHtmlContent = oRequestHandler.request()
+            sUrl = re.search('<iframe id="iframe" src="([^"]+)"', sHtmlContent)
             if sUrl:
                 sHosterUrl = sUrl.group(1)
 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
             if (oHoster != False):
-                oHoster.setDisplayName(sMovieTitle + ' [' + aEntry[1] + ']')
+                oHoster.setDisplayName(sMovieTitle + ' [' + aEntry[1] + ')')
                 oHoster.setFileName(sMovieTitle)
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 

@@ -19,12 +19,12 @@ SITE_NAME = 'Home'
 #temp d'execution
 # import time, random
 
-# l = range(100000) 
+# l = range(100000)
 
-# tps1 = time.clock() 
-# random.shuffle(l) 
-# l.sort() 
-# tps2 = time.clock() 
+# tps1 = time.clock()
+# random.shuffle(l)
+# l.sort()
+# tps2 = time.clock()
 # print(tps2 - tps1)
 
 class cHome:
@@ -122,7 +122,7 @@ class cHome:
 
         # oOutputParameterHandler = cOutputParameterHandler()
         # oOutputParameterHandler.addParameter('siteUrl', 'http://venom')
-        # oGui.addDir('globalParametre', 'showSources', '[COLOR teal]'+self.ADDON.VSlang(30023)+'[/COLOR]', 'param.png', oOutputParameterHandler)
+        # oGui.addDir('globalParametre', 'showSources', '[COLOR teal]' + self.ADDON.VSlang(30023) + '[/COLOR]', 'param.png', oOutputParameterHandler)
 
 
         view = False
@@ -459,7 +459,7 @@ class cHome:
             oGuiElement = cGuiElement()
             oGuiElement.setSiteName('globalSearch')
             oGuiElement.setFunction('globalSearch')
-            oGuiElement.setTitle("- "+match[1])
+            oGuiElement.setTitle("- " + match[1])
             oGuiElement.setFileName(match[1])
             oGuiElement.setCat(match[2])
             oGuiElement.setIcon("search.png")
@@ -490,8 +490,8 @@ class cHome:
         aPlugins = oPluginHandler.getAvailablePlugins(sSiteUrl)
         for aPlugin in aPlugins:
             try:
-                #exec "import "+aPlugin[1]
-                #exec "sSiteUrl = "+aPlugin[1]+"."+sVar
+                #exec "import " + aPlugin[1]
+                #exec "sSiteUrl = " + aPlugin[1] + "." + sVar
                 oOutputParameterHandler = cOutputParameterHandler()
                 oOutputParameterHandler.addParameter('siteUrl', aPlugin[0])
                 icon = 'sites/%s.png' % (aPlugin[2])

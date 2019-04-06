@@ -161,7 +161,7 @@ class cFav:
                 oGuiElement.setFanart(fanart)
 
                 #self.createContexMenuDelFav(oGuiElement, oOutputParameterHandler)
-                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler,'cFav','cFav','delFavouritesMenu',self.ADDON.VSlang(30412))
+                oGui.CreateSimpleMenu(oGuiElement,oOutputParameterHandler, 'cFav', 'cFav', 'delFavouritesMenu', self.ADDON.VSlang(30412))
 
                 if (function == 'play'):
                     oGui.addHost(oGuiElement, oOutputParameterHandler)
@@ -185,11 +185,11 @@ class cFav:
         oInputParameterHandler = cInputParameterHandler()
 
         if oInputParameterHandler.getValue('sId') == 'kepliz_com':
-            self.DIALOG.VSinfo('Error','Non possible pour ce site')
+            self.DIALOG.VSinfo('Error', 'Non possible pour ce site')
             return
 
         if int(oInputParameterHandler.getValue('sCat')) < 1:
-            self.DIALOG.VSinfo('Error','Mise en Favoris non possible pour ce lien')
+            self.DIALOG.VSinfo('Error', 'Mise en Favoris non possible pour ce lien')
             return
 
         meta = {}
