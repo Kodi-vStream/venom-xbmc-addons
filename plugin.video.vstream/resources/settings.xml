@@ -97,6 +97,8 @@
         <setting visible="false" id="plugin_film_vf_gratuit" type="bool" label="Filmvf Gratuit" default="true"/>
 
         <setting visible="false" id="plugin_filmcomplet" type="bool" label="FilmComplet" default="true"/>
+        
+        <setting visible="false" id="plugin_films_cafe" type="bool" label="Film cafe" default="true"/>
 
         <setting visible="false" id="plugin_filmstreamvk_com" type="bool" label="Film stream vk" default="true"/>
 
