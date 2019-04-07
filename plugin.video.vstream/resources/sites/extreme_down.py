@@ -23,9 +23,9 @@ SITE_DESC = 'films en streaming, streaming hd, streaming 720p, Films/s√©ries, r√
 
 URL_MAIN = 'https://www.extreme-d0wn.net/'
 
-URL_SEARCH = ('https://ww1.extreme-d0wn.net/index.php?do=search', 'showMovies')
-URL_SEARCH_MOVIES = ('https://ww1.extreme-d0wn.net/index.php?do=search', 'showMovies')
-URL_SEARCH_SERIES = ('https://ww1.extreme-d0wn.net/index.php?do=search', 'showMovies')
+URL_SEARCH = ('https://ww2.extreme-d0wn.net/home.html', 'showMovies')
+URL_SEARCH_MOVIES = ('https://ww2.extreme-d0wn.net/home.html', 'showMovies')
+URL_SEARCH_SERIES = ('https://ww2.extreme-d0wn.net/home.html', 'showMovies')
 FUNCTION_SEARCH = 'showMovies'
 
 MOVIE_NEWS = (URL_MAIN, 'showMovies')
