@@ -4,8 +4,8 @@
 #alors la j'ai pas le courage
 from __future__ import division
 
-import re,os
-import urllib2,urllib
+import re, os
+import urllib2, urllib
 import xbmc
 import xbmcaddon
 
@@ -37,7 +37,7 @@ Mode_Debug = False
             # if CloudflareBypass().check(e.headers):
                 # cookies = e.headers['Set-Cookie']
                 # cookies = cookies.split(';')[0]
-                # sHtmlContent = CloudflareBypass().GetHtml(sUrl,e.read(),cookies)
+                # sHtmlContent = CloudflareBypass().GetHtml(sUrl, e.read(), cookies)
 
 #Heavy method
 # sHtmlContent = CloudflareBypass().GetHtml(sUrl)
@@ -47,19 +47,19 @@ UA = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/5
 
 def parseIntOld(chain):
 
-    chain = chain.replace(' ','')
-    chain = re.sub(r'!!\[\]','1',chain) # !![] = 1
-    chain = re.sub(r'\(!\+\[\]','(1',chain)  #si le bloc commence par !+[] >> +1
-    chain = re.sub(r'(\([^()]+)\+\[\]\)','(\\1)*10)',chain)  # si le bloc fini par +[] >> *10
+    chain = chain.replace(' ', '')
+    chain = re.sub(r'!!\[\]', '1', chain) # !![] = 1
+    chain = re.sub(r'\(!\+\[\]', '(1', chain)  #si le bloc commence par !+[] >> +1
+    chain = re.sub(r'(\([^()]+)\+\[\]\)', '(\\1)*10)', chain)  # si le bloc fini par +[] >> *10
 
     #bidouilles a optimiser non geree encore par regex
-    chain = re.sub(r'\(\+\[\]\)','0',chain)
+    chain = re.sub(r'\(\+\[\]\)', '0', chain)
     if chain.startswith('!+[]'):
-        chain = chain.replace('!+[]','1')
+        chain = chain.replace('!+[]', '1')
 
     return eval(chain)
 
-def checkpart(s,sens):
+def checkpart(s, sens):
     number = 0
     p = 0
     if sens == 1:
@@ -79,21 +79,21 @@ def checkpart(s,sens):
                 break
 
             number +=1
-            pos=pos + sens
+            pos = pos + sens
     except:
 
         pass
 
 
     if sens == 1:
-        return s[:number],number
+        return s[:number], number
     else:
-        return s[-number:],number
+        return s[-number:], number
 
 def parseInt(s):
 
-    offset=1 if s[0]=='+' else 0
-    chain = s.replace('!+[]','1').replace('!![]','1').replace('[]','0').replace('(','str(')[offset:]
+    offset = 1 if s[0]== '+' else 0
+    chain = s.replace('!+[]', '1').replace('!![]', '1').replace('[]', '0').replace('(', 'str(')[offset:]
 
     if '/' in chain:
 
@@ -101,11 +101,11 @@ def parseInt(s):
         #print('avant ' + chain)
 
         val = chain.split('/')
-        gauche,sizeg = checkpart(val[0],-1)
-        droite,sized = checkpart(val[1],1)
+        gauche,sizeg = checkpart(val[0], -1)
+        droite,sized = checkpart(val[1], 1)
         sign = ''
 
-        chain = droite.replace(droite,'')
+        chain = droite.replace(droite, '')
 
         if droite.startswith('+') or droite.startswith('-'):
             sign = droite[0]
@@ -132,12 +132,12 @@ def CheckIfActive(data):
         return True
     return False
 
-def showInfo(sTitle, sDescription, iSeconds=0):
+def showInfo(sTitle, sDescription, iSeconds = 0):
     if (iSeconds == 0):
         iSeconds = 1000
     else:
         iSeconds = iSeconds * 1000
-    xbmc.executebuiltin("Notification(%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds))
+    xbmc.executebuiltin("Notification(%s,%s,%s)" % sTitle, (str(sDescription)), iSeconds))
 
 class NoRedirection(urllib2.HTTPErrorProcessor):
     def http_response(self, request, response):
@@ -157,26 +157,26 @@ class CloudflareBypass(object):
         self.RedirectionUrl = None
 
     #Return param for head
-    def GetHeadercookie(self,url):
+    def GetHeadercookie(self, url):
         #urllib.quote_plus()
-        Domain = re.sub(r'https*:\/\/([^/]+)(\/*.*)','\\1',url)
-        cook = GestionCookie().Readcookie(Domain.replace('.','_'))
+        Domain = re.sub(r'https*:\/\/([^/]+)(\/*.*)', '\\1', url)
+        cook = GestionCookie().Readcookie(Domain.replace('.', '_'))
         if cook == '':
             return ''
 
-        return '|' + urllib.urlencode({'User-Agent':UA,'Cookie': cook })
+        return '|' + urllib.urlencode({'User-Agent':UA, 'Cookie': cook })
 
-    def ParseCookies(self,data):
+    def ParseCookies(self, data):
         list = []
 
         sPattern = '(?:^|,) *([^;,]+?)=([^;,\/]+?)(?:$|;)'
-        aResult = re.findall(sPattern,data)
+        aResult = re.findall(sPattern, data)
         #xbmc.log(str(aResult), xbmc.LOGNOTICE)
         if (aResult):
             for cook in aResult:
                 if 'deleted' in cook[1]:
                     continue
-                list.append((cook[0],cook[1]))
+                list.append((cook[0], cook[1]))
                 #cookies = cookies + cook[0] + '=' + cook[1]+ ';'
 
         #xbmc.log(str(list), xbmc.LOGNOTICE)
@@ -187,7 +187,7 @@ class CloudflareBypass(object):
         head=[]
         if not (self.Memorised_Headers):
             head.append(('User-Agent', UA))
-            head.append(('Host' , self.host))
+            head.append(('Host', self.host))
             head.append(('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'))
             head.append(('Referer', self.url))
             head.append(('Content-Type', 'text/html; charset=utf-8'))
@@ -197,29 +197,29 @@ class CloudflareBypass(object):
                 if ('Cookie' in i):
                     continue
                 if ('Content-Type' not in i) and ('Accept-charset' not in i):
-                    head.append((i,self.Memorised_Headers[i]))
+                    head.append((i, self.Memorised_Headers[i]))
         return head
 
-    def GetResponse(self,htmlcontent):
+    def GetResponse(self, htmlcontent):
 
-        line1 = re.findall('var s,t,o,p,b,r,e,a,k,i,n,g,f, (.+?)={"(.+?)":\+*(.+?)};',htmlcontent)
+        line1 = re.findall('var s,t,o,p,b,r,e,a,k,i,n,g,f, (.+?)={"(.+?)":\+*(.+?)};', htmlcontent)
 
         varname = line1[0][0] + '.' + line1[0][1]
         calcul = parseInt(line1[0][2])
 
-        AllLines = re.findall(';' + varname + '([*\-+])=([^;]+)',htmlcontent)
+        AllLines = re.findall(';' + varname + '([*\-+])=([^;]+)', htmlcontent)
 
         for aEntry in AllLines:
-            calcul = eval( format(calcul,'.17g') + str(aEntry[0]) + format(parseInt(aEntry[1]),'.17g'))
+            calcul = eval( format(calcul, '.17g') + aEntry[0] + format(parseInt(aEntry[1]), '.17g'))
 
         rep = calcul + len(self.host)
 
-        return format(rep,'.10f')
+        return format(rep, '.10f')
 
     def GetReponseInfo(self):
         return self.RedirectionUrl, self.Header
 
-    def GetHtml(self,url,htmlcontent = '',cookies = '',postdata = None,Gived_headers = ''):
+    def GetHtml(self, url, htmlcontent = '', cookies = '', postdata = None, Gived_headers = ''):
 
         #Memorise headers
         self.Memorised_Headers = Gived_headers
@@ -231,7 +231,7 @@ class CloudflareBypass(object):
         self.Memorised_Cookies = cookies
 
         #cookies in headers ?
-        if Gived_headers.get('Cookie',None):
+        if Gived_headers.get('Cookie', None):
             if cookies:
                 self.Memorised_Cookies = cookies + '; ' + Gived_headers.get('Cookie')
             else:
@@ -246,11 +246,11 @@ class CloudflareBypass(object):
             xbmc.log('cookies passés' + self.Memorised_Cookies, xbmc.LOGNOTICE)
             xbmc.log('post data :' + str(postdata), xbmc.LOGNOTICE)
 
-        self.hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',url)
-        self.host = re.sub(r'https*:\/\/','',self.hostComplet)
+        self.hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)', '\\1', url)
+        self.host = re.sub(r'https*:\/\/', '', self.hostComplet)
         self.url = url
 
-        cookieMem = GestionCookie().Readcookie(self.host.replace('.','_'))
+        cookieMem = GestionCookie().Readcookie(self.host.replace('.', '_'))
         if not (cookieMem == ''):
             xbmc.log('cookies present sur disque :' + cookieMem , xbmc.LOGNOTICE)
             if not (self.Memorised_Cookies):
@@ -274,24 +274,24 @@ class CloudflareBypass(object):
             if ('cf_clearance' not in cookies) and htmlcontent and ('__cfduid=' in cookies):
 
                 xbmc.log("******  Decodage *****", xbmc.LOGNOTICE)
-                
+
                 #fh = open('c:\\test.txt', "w")
                 #fh.write(htmlcontent)
                 #fh.close()
 
                 #recuperation parametres
-                hash = re.findall('<input type="hidden" name="jschl_vc" value="(.+?)"\/>',htmlcontent)[0]
-                passe = re.findall('<input type="hidden" name="pass" value="(.+?)"\/>',htmlcontent)[0]
-                s = re.findall('<input type="hidden" name="s" value="([^"]+)"',htmlcontent, re.DOTALL)[0]
+                hash = re.findall('<input type="hidden" name="jschl_vc" value="(.+?)"\/>', htmlcontent)[0]
+                passe = re.findall('<input type="hidden" name="pass" value="(.+?)"\/>', htmlcontent)[0]
+                s = re.findall('<input type="hidden" name="s" value="([^"]+)"', htmlcontent, re.DOTALL)[0]
 
                 #calcul de la reponse
                 rep = self.GetResponse(htmlcontent)
 
                 #Temporisation
-                #showInfo("Information", 'Decodage protection CloudFlare' , 5)
+                #showInfo("Information", 'Décodage protection CloudFlare', 5)
                 xbmc.sleep(6000)
 
-                url = self.hostComplet + '/cdn-cgi/l/chk_jschl?s=' + urllib.quote_plus(s) + '&jschl_vc='+ urllib.quote_plus(hash) +'&pass=' + urllib.quote_plus(passe) + '&jschl_answer=' + rep
+                url = self.hostComplet + '/cdn-cgi/l/chk_jschl?s=' + urllib.quote_plus(s) + '&jschl_vc=' + urllib.quote_plus(hash) + '&pass=' + urllib.quote_plus(passe) + '&jschl_answer=' + rep
 
                 #No post data here
                 postdata = None
@@ -318,7 +318,7 @@ class CloudflareBypass(object):
                 url = self.hostComplet+ url
             try:
                 if postdata:
-                    self.HttpReponse = opener.open(url,postdata)
+                    self.HttpReponse = opener.open(url, postdata)
                 else:
                     self.HttpReponse = opener.open(url)
                 htmlcontent = self.HttpReponse.read()
@@ -346,7 +346,7 @@ class CloudflareBypass(object):
                 #fh.write(htmlcontent)
                 #fh.close()
                 xbmc.log("Probleme protection Cloudflare : Protection captcha", xbmc.LOGNOTICE)
-                showInfo("Erreur", 'Probleme CloudFlare, pls Retry' , 5)
+                showInfo("Erreur", 'Probleme CloudFlare, pls Retry', 5)
                 return ''
 
             if not CheckIfActive(htmlcontent):
@@ -354,15 +354,15 @@ class CloudflareBypass(object):
                 xbmc.log("Page ok", xbmc.LOGNOTICE)
                 #need to save cookies ?
                 if not cookieMem:
-                    GestionCookie().SaveCookie(self.host.replace('.','_'),cookies)
+                    GestionCookie().SaveCookie(self.host.replace('.', '_'),cookies)
 
                 #fh = open('c:\\test.txt', "w")
                 #fh.write(htmlcontent)
                 #fh.close()
-                
+
                 #xbmc.log(str(self.Header), xbmc.LOGNOTICE)
 
-                url2 = self.Header.get('Location','')
+                url2 = self.Header.get('Location', '')
                 if url2:
                     url = url2
                 else:
@@ -373,7 +373,7 @@ class CloudflareBypass(object):
                 #Arf, problem, cookies not working, delete them
                 if cookieMem:
                     xbmc.log('Cookies Out of date', xbmc.LOGNOTICE)
-                    GestionCookie().DeleteCookie(self.host.replace('.','_'))
+                    GestionCookie().DeleteCookie(self.host.replace('.', '_'))
                     cookieMem = ''
                     #one more loop, and reset all cookies, event only cf_clearance is needed
                     loop += 1
@@ -403,5 +403,5 @@ class CloudflareBypass(object):
 
 
         xbmc.log("Probleme protection Cloudflare : Cookies manquants", xbmc.LOGNOTICE)
-        showInfo("Erreur", 'Probleme protection CloudFlare' , 5)
+        showInfo("Erreur", 'Probleme protection CloudFlare', 5)
         return ''
