@@ -336,12 +336,12 @@ def showHosters(sLoop = False):
 
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    sHtmlContent = sHtmlContent.replace('<iframe src="//www.facebook.com/', '')
-    sHtmlContent = sHtmlContent.replace("src='https://ad.a-ads.com", '')
+    #Réécriture de sHtmlContent pour récuperer la qualité
+    sHtmlContent = sHtmlContent.replace('<span style="color: #ff9900;"><strong>', '<strong><span style="color: #ff9900;">')
 
     oParser = cParser()
 
-    sPattern = '<a class="large button.+?" href="([^<>"]+?)" target="(?:_blank|vid)"'
+    sPattern = '<strong><span style="color: #ff9900;">([^<]+)<|<a class="large button.+?" href="([^<>"]+?)" target="(?:_blank|vid)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     #Si il y a rien a afficher c'est peut etre une serie
@@ -353,46 +353,50 @@ def showHosters(sLoop = False):
     if (aResult[0] == True):
         for aEntry in aResult[1]:
 
-            sHosterUrl = aEntry
-            #pour récuperer tous les liens
-            if '&url=' in sHosterUrl:
-                sHosterUrl = sHosterUrl.split('&url=')[1]
-
-            #pour récuperer le lien jwplayer(GoogleDrive)
-            if 'filmhdstream' in sHosterUrl:
-                oRequestHandler = cRequestHandler(sHosterUrl)
-                sHtmlContent = oRequestHandler.request()
-                sPattern = '<iframe.+?src="([^"]+)"'
-                aResult = oParser.parse(sHtmlContent, sPattern)
-                if (aResult[0] == True):
-                    for aEntry in aResult[1]:
-                        sHosterUrl = aEntry
-
-                        oHoster = cHosterGui().checkHoster(sHosterUrl)
-                        if (oHoster != False):
-                            oHoster.setDisplayName(sMovieTitle)
-                            oHoster.setFileName(sMovieTitle)
-                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
-
-            #pour récuperer les liens jheberg
-            elif 'jheberg' in sHosterUrl:
-                aResult = cJheberg().GetUrls(sHosterUrl)
-                if aResult:
-                    for aEntry in aResult:
-                        sHosterUrl = aEntry
-
-                        oHoster = cHosterGui().checkHoster(sHosterUrl)
-                        if (oHoster != False):
-                            oHoster.setDisplayName(sMovieTitle)
-                            oHoster.setFileName(sMovieTitle)
-                            cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+            if aEntry[0]:
+                oGui.addText(SITE_IDENTIFIER, '[COLOR red]' + aEntry[0] + '[/COLOR]')
 
             else:
-                oHoster = cHosterGui().checkHoster(sHosterUrl)
-                if (oHoster != False):
-                    oHoster.setDisplayName(sMovieTitle)
-                    oHoster.setFileName(sMovieTitle)
-                    cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+                sHosterUrl = aEntry[1]
+                #pour récuperer tous les liens
+                if '&url=' in sHosterUrl:
+                    sHosterUrl = sHosterUrl.split('&url=')[1]
+
+                #pour récuperer le lien jwplayer(GoogleDrive)
+                if 'filmhdstream' in sHosterUrl:
+                    oRequestHandler = cRequestHandler(sHosterUrl)
+                    sHtmlContent = oRequestHandler.request()
+                    sPattern = '<iframe.+?src="([^"]+)"'
+                    aResult = oParser.parse(sHtmlContent, sPattern)
+                    if (aResult[0] == True):
+                        for aEntry in aResult[1]:
+                            sHosterUrl = aEntry
+
+                            oHoster = cHosterGui().checkHoster(sHosterUrl)
+                            if (oHoster != False):
+                                oHoster.setDisplayName(sMovieTitle)
+                                oHoster.setFileName(sMovieTitle)
+                                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+                #pour récuperer les liens jheberg
+                elif 'jheberg' in sHosterUrl:
+                    aResult = cJheberg().GetUrls(sHosterUrl)
+                    if aResult:
+                        for aEntry in aResult:
+                            sHosterUrl = aEntry
+
+                            oHoster = cHosterGui().checkHoster(sHosterUrl)
+                            if (oHoster != False):
+                                oHoster.setDisplayName(sMovieTitle)
+                                oHoster.setFileName(sMovieTitle)
+                                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
+
+                else:
+                    oHoster = cHosterGui().checkHoster(sHosterUrl)
+                    if (oHoster != False):
+                        oHoster.setDisplayName(sMovieTitle)
+                        oHoster.setFileName(sMovieTitle)
+                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
 
