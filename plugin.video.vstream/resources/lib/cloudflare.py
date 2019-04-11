@@ -137,7 +137,7 @@ def showInfo(sTitle, sDescription, iSeconds = 0):
         iSeconds = 1000
     else:
         iSeconds = iSeconds * 1000
-    xbmc.executebuiltin("Notification(%s,%s,%s)" % sTitle, (str(sDescription)), iSeconds))
+    xbmc.executebuiltin("Notification(%s,%s,%s)" % (str(sTitle), (str(sDescription)), iSeconds))
 
 class NoRedirection(urllib2.HTTPErrorProcessor):
     def http_response(self, request, response):
@@ -210,7 +210,7 @@ class CloudflareBypass(object):
         AllLines = re.findall(';' + varname + '([*\-+])=([^;]+)', htmlcontent)
 
         for aEntry in AllLines:
-            calcul = eval( format(calcul, '.17g') + aEntry[0] + format(parseInt(aEntry[1]), '.17g'))
+            calcul = eval( format(calcul,'.17g') + str(aEntry[0]) + format(parseInt(aEntry[1]),'.17g'))
 
         rep = calcul + len(self.host)
 
