@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, addon
+from resources.lib.comaddon import progress, addon, VSlog
 import re
 sColor = addon().getSetting("deco_color")
 
@@ -15,7 +15,8 @@ SITE_NAME = 'Tfarjo'
 SITE_DESC = 'Films & Séries en streaming VO | VF | VOSTFR'
 
 #URL_MAIN = 'https://www5.tfarjo.ws/'
-URL_MAIN = 'https://www.filmz.cc/'
+#URL_MAIN = 'https://www.filmz.cc/'
+URL_MAIN = 'https://www.tfarjo.cc/'
 
 MOVIE_NEWS = (URL_MAIN + 'films', 'showMovies')
 MOVIE_MOVIE = (URL_MAIN + 'films', 'showMovies')
@@ -354,6 +355,9 @@ def showHosters():
     sCook = oInputParameterHandler.getValue('sCook')
 
     oParser = cParser()
+    
+    #VSlog(URL_MAIN + 'getlinke')
+    #VSlog(sCook)
 
     if '/serie' in sUrl:
         oRequest = cRequestHandler(URL_MAIN + 'getlinke')
@@ -369,6 +373,10 @@ def showHosters():
     
     sHtmlContent = oRequest.request()
     sHtmlContent = sHtmlContent.replace('\\', '')
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
 
     sPattern = '<iframe.+?src="([^"]+)"'
     aResult = oParser.parse(sHtmlContent, sPattern)
