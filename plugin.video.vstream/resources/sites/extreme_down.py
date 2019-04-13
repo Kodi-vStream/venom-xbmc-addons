@@ -81,7 +81,7 @@ def load():
     if ADDON.getSetting('token_alldebrid') == "":
         oOutputParameterHandler = cOutputParameterHandler()
         oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-        oGui.addDir(SITE_IDENTIFIER, 'getToken', '[COLOR red]Les utilisateurs d\'Alldebrid cliquez ici.\nPour les autres ceci n\'est pas necessaire.[/COLOR]', 'films.png', oOutputParameterHandler)
+        oGui.addDir(SITE_IDENTIFIER, 'getToken', '[COLOR red]Les utilisateurs d\'Alldebrid cliquez ici.\nPour les autres ceci n\'est pas necessaire car l\'ancienne methode est toujours fonctionnel.[/COLOR]', 'films.png', oOutputParameterHandler)
 
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
@@ -550,8 +550,13 @@ def showHosters():
     #Detection de la taille des fichier pour separer les fichier premuim des parties en .rar
     if not 'saison' in sUrl:
         fileSize = re.findall('<strong>Taille</strong><span style="float: right;">(.+?)</span></td>',sHtmlContent)
-        if ' Go' in str(fileSize[0]):
-            size,unite = str(fileSize[0]).split(' ')
+        if 'et' in str(fileSize[0]):
+            taille = str(fileSize[:-7])
+        else:
+            taille = str(fileSize[0])
+
+        if ' Go' in taille:
+            size,unite = taille.split(' ')
             if float(size) > 4.85:
                 if "1 Lien" in sHtmlContent:
                     VSlog('1 Lien premuim')
@@ -605,15 +610,15 @@ def showHosters():
 
 def RecapchaBypass():#Ouverture de Chrome Launcher s'il est intallez
     ADDON = addon()
-    Token_Alldebrid = ADDON.getSetting('token_alldebrid')
     oGui = cGui()
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
+    Token_Alldebrid = ADDON.getSetting('token_alldebrid')
 
     if Token_Alldebrid == "":
-        sUrl_Bypass = "https://api.alldebrid.com/link/redirector?agent=service&version=1.0-bc7e1b20c2&token=783fbed50d05600c6d739bc4db3e18a21vlvo&link="+sUrl
+        RecapchaBypassOld(sUrl)
     else:
         sUrl_Bypass = "https://api.alldebrid.com/link/redirector?agent=mySoft&token="+Token_Alldebrid+"&link="+sUrl
 
@@ -634,6 +639,21 @@ def RecapchaBypass():#Ouverture de Chrome Launcher s'il est intallez
                 cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
     oGui.setEndOfDirectory()
+
+def RecapchaBypassOld(sUrl):#Ouverture de Chrome Launcher s'il est intallez
+    oGui = cGui()
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
+    sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
+    sThumb = oInputParameterHandler.getValue('sThumb')
+
+    sPath = "special://home/addons/plugin.program.chrome.launcher/default.py"
+
+    if xbmcvfs.exists(sPath):
+        sUrl2 = urllib.quote_plus(sUrl)
+        xbmc.executebuiltin('RunPlugin("plugin://plugin.program.chrome.launcher/?url=' + sUrl2 + '&mode=showSite&stopPlayback=yes")')
+
+    getHoster()
 
 def getHoster():#Ouvrir le clavier + requete
     oGui = cGui()
