@@ -17,7 +17,7 @@ try:
 except ImportError:
     from urllib.parse import urlparse
 
-if (True):
+if (False):
     import logging
     # These two lines enable debugging at httplib level (requests->urllib3->http.client)
     # You will see the REQUEST, including HEADERS and DATA, and RESPONSE with HEADERS but without DATA.
@@ -43,7 +43,7 @@ from requests.sessions import Session
 from jsunfuck import JSUnfuck
 
 
-Mode_Debug = False
+Mode_Debug = True
 
 
 import requests
@@ -290,13 +290,12 @@ class CloudflareBypass(object):
 
         #For debug
         if (Mode_Debug):
-            print('Headers present ' + str(Gived_headers))
-            print('url ' + url)
-            print('Content : ' + str(htmlcontent))
+            xbmc.log('Headers present ' + str(Gived_headers), xbmc.LOGNOTICE)
+            xbmc.log('url ' + url, xbmc.LOGNOTICE)
             if (htmlcontent):
-                print('code html ok')
-            print('cookies passes' + self.Memorised_Cookies)
-            print('post data :' + str(postdata))
+                xbmc.log('code html ok', xbmc.LOGNOTICE)
+            xbmc.log('cookies passés' + self.Memorised_Cookies, xbmc.LOGNOTICE)
+            xbmc.log('post data :' + str(postdata), xbmc.LOGNOTICE)
 
         self.hostComplet = re.sub(r'(https*:\/\/[^/]+)(\/*.*)','\\1',url)
         self.host = re.sub(r'https*:\/\/','',self.hostComplet)
@@ -467,8 +466,7 @@ class CloudflareScraper(Session):
         method = resp.request.method
         cloudflare_kwargs["allow_redirects"] = False
         
-        #submit_url = 'http://httpbin.org/get'
-
+        xbmc.log('Trying :' + str(params), xbmc.LOGNOTICE)
 
         # One of these '.request()' calls below might trigger another challenge.
         redirect = self.request(method, submit_url, **cloudflare_kwargs)
