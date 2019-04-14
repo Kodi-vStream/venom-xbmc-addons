@@ -36,14 +36,12 @@ if (False):
     requests_log.setLevel(logging.DEBUG)
     requests_log.propagate = True
 
-
-
 from requests.sessions import Session
 
 from jsunfuck import JSUnfuck
 
 
-Mode_Debug = True
+Mode_Debug = False
 
 
 import requests
@@ -303,25 +301,21 @@ class CloudflareBypass(object):
 
         cookieMem = GestionCookie().Readcookie(self.host.replace('.', '_'))
         if not (cookieMem == ''):
-            xbmc.log('cookies present sur disque :' + cookieMem , xbmc.LOGNOTICE)
-            if not (self.Memorised_Cookies):
-                cookies = cookieMem
-            else:
-                cookies = self.Memorised_Cookies + '; ' + cookieMem
-
-        ##print(PathCache +'/'+self.host.replace('.','_')+'.txt')
-        if not (cookieMem == ''):
-            ##print('cookies present sur disque :' + cookieMem )
+            if (Mode_Debug):
+                xbmc.log('cookies present sur disque :' + cookieMem , xbmc.LOGNOTICE)
             if not (self.Memorised_Cookies):
                 cookies = cookieMem
             else:
                 cookies = self.Memorised_Cookies + '; ' + cookieMem
                 
-        data = ''
+        data = {}
         if postdata:
             method = 'POST'
-            #Need to convert data to dictionnary ?
-            #data = {'key':'value'}
+            #Need to convert data to dictionnary
+            d = postdata.split('&')
+            for dd in d:
+                ddd = dd.split('=')
+                data[ddd[0]] = ddd[1]
         else:
             method = 'GET'
 
@@ -557,3 +551,4 @@ class CloudflareScraper(Session):
                 return _get_jsfuck_number(dividend) / float(_get_jsfuck_number(divisor))
         else:
             return _get_jsfuck_number(expression[2:-1])
+
