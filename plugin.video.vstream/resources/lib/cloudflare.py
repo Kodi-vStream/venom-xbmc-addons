@@ -316,10 +316,18 @@ class CloudflareBypass(object):
                 cookies = cookieMem
             else:
                 cookies = self.Memorised_Cookies + '; ' + cookieMem
+                
+        data = ''
+        if postdata:
+            method = 'POST'
+            #Need to convert data to dictionnary ?
+            #data = {'key':'value'}
+        else:
+            method = 'GET'
 
         s = CloudflareScraper()
         
-        r = s.request('GET',url,headers = self.SetHeader() , cookies = self.ParseCookies(cookies) )
+        r = s.request(method,url,headers = self.SetHeader() , cookies = self.ParseCookies(cookies) , data = data )
         sContent = r.text
         
         xbmc.log('Page decodee' , xbmc.LOGNOTICE)
@@ -549,4 +557,3 @@ class CloudflareScraper(Session):
                 return _get_jsfuck_number(dividend) / float(_get_jsfuck_number(divisor))
         else:
             return _get_jsfuck_number(expression[2:-1])
-
