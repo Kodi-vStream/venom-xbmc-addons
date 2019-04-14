@@ -68,6 +68,10 @@ class cJheberg:
         self.list = []
 
     def GetUrls(self, url):
+
+        if url.endswith('/'):
+            url = url[:-1]
+
         idFile = url.rsplit('/', 1)[-1]
         NewUrl = 'https://api.jheberg.net/file/' + idFile
         sHtmlContent = GetHtml(NewUrl)
