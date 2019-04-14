@@ -7,7 +7,7 @@ from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog
 import urllib2, urllib, re
 import unicodedata, random
 
@@ -484,7 +484,7 @@ def ExtractLink(html):
     loop = 0
     if aResult:
         for a in aResult:
-            if 'adnetworkperformance' in a:
+            if ('adnetworkperformance' in a) or ('jquery' in a):
                 continue
             final = a
             break
@@ -686,7 +686,7 @@ def showHosters():
                     oRequestHandler.addHeaderEntry('Referer', sUrl)
                     sHtmlContent = oRequestHandler.request()
                     
-                    #VSlog(sHtmlContent)
+                    #VSlog("Img decode " + sHtmlContent)
                     
                     sHosterUrl2 = ExtractLink(sHtmlContent)
                  
