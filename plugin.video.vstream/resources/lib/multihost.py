@@ -68,10 +68,10 @@ class cJheberg:
         self.list = []
 
     def GetUrls(self, url):
-
+        
         if url.endswith('/'):
             url = url[:-1]
-
+        
         idFile = url.rsplit('/', 1)[-1]
         NewUrl = 'https://api.jheberg.net/file/' + idFile
         sHtmlContent = GetHtml(NewUrl)
@@ -84,8 +84,10 @@ class cJheberg:
         for item in r:
             if not 'ERROR' in item[2]:
                 urllink = 'https://download.jheberg.net/redirect/' + idFile + '-' + item[0]
-                url = GetHtml(urllink)
-
-                self.list.append(url)
+                try:
+                    url = GetHtml(urllink)
+                    self.list.append(url)
+                except:
+                    pass
 
         return self.list
