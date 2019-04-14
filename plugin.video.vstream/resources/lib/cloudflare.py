@@ -363,17 +363,22 @@ class CloudflareScraper(Session):
             self.MemCookie.update( kwargs['cookies'] )
             
         resp = super(CloudflareScraper, self).request(method, url, *args, **kwargs)
-        
+
+        #xbmc.log( 'cookie recu ' + str(resp.cookies.get_dict())  , xbmc.LOGNOTICE)
+
         #save cookie
-        self.MemCookie.update( resp.cookies.get_dict() ) 
+        self.MemCookie.update( resp.cookies.get_dict() )
+        
+        #bug
+        kwargs['cookies'].update( resp.cookies.get_dict() )
 
         # Check if Cloudflare anti-bot is on
         if self.ifCloudflare(resp):
             
             resp2 = self.solve_cf_challenge(resp, **kwargs)
             
-            self.MemCookie.update( resp.cookies.get_dict() )
-            print ('cookie recu ' + str(self.MemCookie) )
+            #self.MemCookie.update( resp.cookies.get_dict() )
+            #print ('cookie recu ' + str(self.MemCookie) )
         
             return resp2
             
@@ -466,12 +471,14 @@ class CloudflareScraper(Session):
         method = resp.request.method
         cloudflare_kwargs["allow_redirects"] = False
         
-        xbmc.log('Trying :' + str(params), xbmc.LOGNOTICE)
+        #xbmc.log('Trying :' + str(params), xbmc.LOGNOTICE)
+        #xbmc.log('With :' + str(cloudflare_kwargs['cookies']), xbmc.LOGNOTICE)
+        #xbmc.log('With :' + str(cloudflare_kwargs['headers']), xbmc.LOGNOTICE)
 
         # One of these '.request()' calls below might trigger another challenge.
         redirect = self.request(method, submit_url, **cloudflare_kwargs)
-        
-        self.MemCookie.update( redirect.cookies.get_dict() )
+
+        #self.MemCookie.update( redirect.cookies.get_dict() )
         
         #print (str(redirect.headers))
 
