@@ -15,7 +15,8 @@ SITE_IDENTIFIER = 'fullstream'
 SITE_NAME = 'FullStream'
 SITE_DESC = 'Films, Séries et Mangas Gratuit en streaming sur Full stream'
 
-URL_MAIN = 'https://vf.full-stream.cc/'
+#URL_MAIN = 'https://vf.full-stream.cc/'
+URL_MAIN = 'https://w1.full-stream.cc/'
 
 URL_SEARCH = (URL_MAIN + 'wp-json/dooplay/search/?keyword=', 'AlphaDisplay')
 URL_SEARCH_MOVIES = (URL_MAIN + 'wp-json/dooplay/search/?keyword=', 'AlphaDisplay')
@@ -410,7 +411,17 @@ def showHosters():
         except urllib2.URLError, e:
             return ''
 
-        sHosterUrl = response.geturl()
+        sHosterUrl = ''
+        if not response.geturl() == sUrl:
+            sHosterUrl = response.geturl()
+        else:
+            c = str(response.read())
+            sPattern = 'src="([^"]+)"'
+            aResult = oParser.parse(c, sPattern)
+            if aResult[0]:
+                sHosterUrl = aResult[1][0]
+
+        VSlog(sHosterUrl)
 
         oHoster = cHosterGui().checkHoster(sHosterUrl)
         if (oHoster != False):
