@@ -31,7 +31,7 @@ SERIE_LIST = (True, 'showList')
 #SERIE_COMMENTS = (URL_MAIN + 'most-popular/', 'showMovies')
 #SERIE_NOTES = (URL_MAIN + 'most-like/', 'showMovies')
 SERIE_VFS = (URL_MAIN + 'category/series-tv/series-streaming-vf/', 'showMovies')
-SERIE_VOSTFR = (URL_MAIN + 'series-tv/series-streaming-vostfr/', 'showMovies')
+SERIE_VOSTFR = (URL_MAIN + 'category/series-tv/series-streaming-vostfr/', 'showMovies')
 
 ANIM_ANIMS = (URL_MAIN + 'category/mangas/', 'showMovies')
 ANIM_NEWS = (URL_MAIN + 'category/mangas/', 'showMovies')
