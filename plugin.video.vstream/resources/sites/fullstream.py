@@ -323,6 +323,10 @@ def showLink():
 
     oRequest = cRequestHandler(sUrl)
     sHtmlContent = oRequest.request()
+    
+    #fh = open('c:\\test.txt', "w")
+    #fh.write(sHtmlContent)
+    #fh.close()
 
     cookie = oRequest.GetCookies().split(';')
     cooka = ''
@@ -330,8 +334,13 @@ def showLink():
         if not 'wordpress' in i:
             cooka = cooka + i + '; '
 
-    sPattern = '<a id="player-.+?" class="server.+?" data-post="([^"]+)" data-nume="([^"]+)">([^<]+)<.+?<img src=\'http.+?img/flags/(.+?).png\'>'
+    if '/film/' in sUrl:
+        sPattern = '<a id="player-.+?" class="server.+?" data-post="([^"]+)" data-nume="([^"]+)">([^<]+)<.+?<img src=\'http.+?img/flags/(.+?).png\'>'
+    else:
+        sPattern = 'id="player-[^<>]+data-post="([^"]+)" data-nume="([^"]+)".*?"title">([^<]+)<\/*span.+?<img src=\'http.+?img\/flags\/(.+?).png\'>'
     aResult = oParser.parse(sHtmlContent, sPattern)
+    
+    VSlog(aResult)
 
     if (aResult[0] == True):
         total = len(aResult[1])
